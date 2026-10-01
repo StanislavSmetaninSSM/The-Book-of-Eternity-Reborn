@@ -135,16 +135,37 @@ public static class LocalWebUiHost
                 return Results.Json(new { error = ex.Message }, WebJsonOptions, statusCode: StatusCodes.Status404NotFound);
             }
         });
-        app.MapGet("/api/client/settings", async (BrowserClientSettingsService settings) => await settings.BuildAsync());
+        app.MapGet("/api/client/settings", async Task<IResult> (BrowserClientSettingsService settings) =>
+        {
+            try { return Results.Json(await settings.BuildAsync(), WebJsonOptions); }
+            catch (InvalidDataException)
+            {
+                return Results.Conflict(new { error = "Не удалось безопасно прочитать настройки. Сохранённое состояние требует проверки.", persistenceStatus = "blocked" });
+            }
+        });
         app.MapPost("/api/client/settings", async (BrowserClientSettingsUpdateRequest request, BrowserClientSettingsService settings) =>
         {
             var result = await settings.UpdateAsync(request);
             return result.Success
                 ? Results.Json(result.Settings, WebJsonOptions)
-                : Results.Conflict(new { error = result.Message });
+                : Results.Conflict(new { error = result.Message, persistenceStatus = result.Disposition.ToString().ToLowerInvariant() });
         });
-        app.MapGet("/api/audio/settings", async (BrowserAudioService audio) => await audio.BuildSettingsAsync());
-        app.MapPost("/api/audio/settings", async (BrowserAudioSettingsUpdateRequest request, BrowserAudioService audio) => await audio.UpdateSettingsAsync(request));
+        app.MapGet("/api/audio/settings", async Task<IResult> (BrowserAudioService audio) =>
+        {
+            try { return Results.Json(await audio.BuildSettingsAsync(), WebJsonOptions); }
+            catch (InvalidDataException)
+            {
+                return Results.Conflict(new { error = "Не удалось безопасно прочитать настройки. Сохранённое состояние требует проверки.", persistenceStatus = "blocked" });
+            }
+        });
+        app.MapPost("/api/audio/settings", async Task<IResult> (BrowserAudioSettingsUpdateRequest request, BrowserAudioService audio) =>
+        {
+            try { return Results.Json(await audio.UpdateSettingsAsync(request), WebJsonOptions); }
+            catch (BrowserSettingsWriteException ex)
+            {
+                return Results.Conflict(new { error = ex.Message, persistenceStatus = ex.Disposition.ToString().ToLowerInvariant() });
+            }
+        });
         app.MapGet("/api/audio/assets/{assetId}", (string assetId, BrowserAudioService audio) => audio.ServeAsset(assetId));
         app.MapGet("/api/lifecycle/dashboard", async (BrowserLifecycleDashboardService lifecycle) =>
             await lifecycle.BuildDashboardAsync());

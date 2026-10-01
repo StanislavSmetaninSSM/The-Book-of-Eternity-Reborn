@@ -1,0 +1,461 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="8fc82c5c-e940-4c2e-ab14-bc7f055f96a3" name="b2b-services-red" runUser="$USER">
+  <ns0:Times creation="2026-09-30T20:58:45.1195531-04:00" queuing="2026-09-30T20:58:45.1195531-04:00" start="2026-09-30T20:58:42.4660708-04:00" finish="2026-09-30T20:58:45.4573150-04:00" />
+  <ns0:TestSettings name="default" id="64e719ca-4a83-4801-8483-1597fe5a929a">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="e22a37a5-f6e3-4d3a-add5-d3b00c127b12" testId="e348508b-93b5-1477-6d8f-aa3270f7275a" testName="BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsUseOnePreparedPairAndApplyTheSameRuntimeInstanceOnlyAfterCommit" computerName="$HOST" duration="00:00:00.0166516" startTime="2026-09-30T20:58:45.1976194-04:00" endTime="2026-09-30T20:58:45.1976196-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e22a37a5-f6e3-4d3a-add5-d3b00c127b12">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Browser-write отменён до применения изменений: Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsUseOnePreparedPairAndApplyTheSameRuntimeInstanceOnlyAfterCommit() in $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs:line 91
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="47a858fe-e685-4a1b-a278-ab2fee0d06aa" testId="85913866-a2ce-c4f0-76f2-e093dd2c76de" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedGenerationRevocationAtMutationBoundaryCannotPublishSettings" computerName="$HOST" duration="00:00:00.0138452" startTime="2026-09-30T20:58:45.3225201-04:00" endTime="2026-09-30T20:58:45.3225202-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="47a858fe-e685-4a1b-a278-ab2fee0d06aa" />
+    <ns0:UnitTestResult executionId="b4717066-8f03-4270-b9ba-ab598df37fc8" testId="0356992c-1dd1-0e29-fbd3-aa85d9fa3239" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: &quot;unknown-close&quot;)" computerName="$HOST" duration="00:00:00.0259058" startTime="2026-09-30T20:58:45.2534833-04:00" endTime="2026-09-30T20:58:45.2534834-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b4717066-8f03-4270-b9ba-ab598df37fc8" />
+    <ns0:UnitTestResult executionId="67cc82a5-9953-44ca-97e7-aafcd8dd4e14" testId="25def16d-1ec7-a01a-566d-34d9eb59d2ed" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: &quot;unknown&quot;)" computerName="$HOST" duration="00:00:00.0145167" startTime="2026-09-30T20:58:45.3081810-04:00" endTime="2026-09-30T20:58:45.3081812-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="67cc82a5-9953-44ca-97e7-aafcd8dd4e14" />
+    <ns0:UnitTestResult executionId="2eaa1a90-e65c-465a-a51e-39d3075d2641" testId="ee3c022a-e6a8-14d5-d687-453e984ee313" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: &quot;rollback&quot;)" computerName="$HOST" duration="00:00:00.0188388" startTime="2026-09-30T20:58:45.2726725-04:00" endTime="2026-09-30T20:58:45.2726727-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2eaa1a90-e65c-465a-a51e-39d3075d2641" />
+    <ns0:UnitTestResult executionId="7fddf021-b054-478b-9dcd-b5cad202c8eb" testId="05f0e09a-e4f2-69fd-5caa-c1705cf9454b" testName="BookOfEternityClient.Tests.PortableBrowserSettingsTests.HardLinkedConfigSupportsBootstrapGetAndUpdateWithoutChangingOutsideAlias" computerName="$HOST" duration="00:00:00.0312935" startTime="2026-09-30T20:58:45.1814492-04:00" endTime="2026-09-30T20:58:45.1814493-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7fddf021-b054-478b-9dcd-b5cad202c8eb">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Browser-write отменён до применения изменений: Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableBrowserSettingsTests.HardLinkedConfigSupportsBootstrapGetAndUpdateWithoutChangingOutsideAlias() in $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs:line 216
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="53835457-ff3c-497c-8a6b-7168f8d69ca8" testId="1e02947f-99f5-b608-8a54-dd7afa852ba2" testName="BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication(cut: &quot;unknown&quot;)" computerName="$HOST" duration="00:00:00.0152619" startTime="2026-09-30T20:58:44.4476291-04:00" endTime="2026-09-30T20:58:44.4476295-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="53835457-ff3c-497c-8a6b-7168f8d69ca8">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.True() Failure
+Expected: True
+Actual:   False</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication(String cut) in $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs:line 142
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="31b30566-6d4d-4f7f-84bd-47e450ad24d6" testId="38658c11-b067-25be-7833-4d6a5a8b3888" testName="BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsWithoutDifficultyPreserveExactProjectionBytes" computerName="$HOST" duration="00:00:00.0183472" startTime="2026-09-30T20:58:45.1291499-04:00" endTime="2026-09-30T20:58:45.1291501-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="31b30566-6d4d-4f7f-84bd-47e450ad24d6">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Browser-write отменён до применения изменений: Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsWithoutDifficultyPreserveExactProjectionBytes() in $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs:line 106
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="4db45ed9-fd56-44b9-99f3-cc6053fb9535" testId="ac3447c0-acb7-6a46-35bf-37d87880ec70" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: &quot;committed-cleanup&quot;)" computerName="$HOST" duration="00:00:00.0200394" startTime="2026-09-30T20:58:45.2931370-04:00" endTime="2026-09-30T20:58:45.2931372-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4db45ed9-fd56-44b9-99f3-cc6053fb9535" />
+    <ns0:UnitTestResult executionId="8eb35ef3-86cf-4762-88bb-725df1317e77" testId="32acc2a0-b4b8-520b-2bc3-61a06f884e10" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles(failure: &quot;runtime&quot;)" computerName="$HOST" duration="00:00:00.0174295" startTime="2026-09-30T20:58:45.3404323-04:00" endTime="2026-09-30T20:58:45.3404325-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8eb35ef3-86cf-4762-88bb-725df1317e77" />
+    <ns0:UnitTestResult executionId="f428f30e-c530-406f-af8e-b14dd3e8ca4e" testId="9827d05e-d4ff-28d7-1164-f965ed9d89c9" testName="BookOfEternityClient.Tests.PortableBrowserSettingsTests.AudioUsesOneDeclaredConfigMemberAndKeepsProjectionUntouched" computerName="$HOST" duration="00:00:00.2213091" startTime="2026-09-30T20:58:44.3794498-04:00" endTime="2026-09-30T20:58:44.3794661-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f428f30e-c530-406f-af8e-b14dd3e8ca4e">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.InvalidOperationException : Browser-write отменён до применения изменений: Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.WebUi.BrowserAudioService.UpdateSettingsBoundAsync(CanonicalWriteLease writeLease, BrowserAudioSettingsUpdateRequest request) in $REPO/BookOfEternityClient/WebUi/BrowserAudioService.cs:line 106
+   at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 187
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 102
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 141
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, CanonicalWriteLease writeLease, Func`1 operation) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 58
+   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.RunBoundTransactionAsync[T](Func`2 operation) in $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs:line 212
+   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.RunBoundTransactionAsync[T](Func`2 operation) in $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs:line 212
+   at BookOfEternityClient.WebUi.BrowserAudioService.UpdateSettingsAsync(BrowserAudioSettingsUpdateRequest request) in $REPO/BookOfEternityClient/WebUi/BrowserAudioService.cs:line 52
+   at BookOfEternityClient.Tests.PortableBrowserSettingsTests.AudioUsesOneDeclaredConfigMemberAndKeepsProjectionUntouched() in $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs:line 119
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="59f87756-e65c-44a7-9181-38416ec44e63" testId="7a04f7d7-8141-d2bd-f48e-7b5e8f7e3195" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner(blocker: &quot;owner&quot;)" computerName="$HOST" duration="00:00:00.0194969" startTime="2026-09-30T20:58:45.3897008-04:00" endTime="2026-09-30T20:58:45.3897010-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="59f87756-e65c-44a7-9181-38416ec44e63" />
+    <ns0:UnitTestResult executionId="c217141f-4eff-42e6-b903-8a745037d25a" testId="e58ae7d1-2533-a3d9-34cf-8843275a164a" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedSetCommitsBeforeRuntimeApplicationAndCreatesNoLegacyBackup" computerName="$HOST" duration="00:00:00.0251038" startTime="2026-09-30T20:58:45.2273675-04:00" endTime="2026-09-30T20:58:45.2273677-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c217141f-4eff-42e6-b903-8a745037d25a" />
+    <ns0:UnitTestResult executionId="3f1f8f9b-0c6e-47b7-8662-415750fac0e8" testId="058c3d75-5795-a11b-1f1d-2e4c51d0a85a" testName="BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication(cut: &quot;committed-cleanup&quot;)" computerName="$HOST" duration="00:00:00.0346261" startTime="2026-09-30T20:58:44.4125063-04:00" endTime="2026-09-30T20:58:44.4125065-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3f1f8f9b-0c6e-47b7-8662-415750fac0e8">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.True() Failure
+Expected: True
+Actual:   False</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication(String cut) in $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs:line 142
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="0b8238ff-385a-4f66-a8c4-15d239674519" testId="000046b5-ade0-45fa-34e3-15cfbc826e84" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles(failure: &quot;owner-cleanup&quot;)" computerName="$HOST" duration="00:00:00.0168238" startTime="2026-09-30T20:58:45.3575881-04:00" endTime="2026-09-30T20:58:45.3575884-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0b8238ff-385a-4f66-a8c4-15d239674519" />
+    <ns0:UnitTestResult executionId="eb3567f0-7bd6-4e3f-a1f5-6751489b102e" testId="3ec18cb6-bac1-fe3c-8bd2-ec08bfdcc419" testName="BookOfEternityClient.Tests.PortableBrowserSettingsTests.AudioSeparatesRollbackFromCommittedCleanupWarning(committed: False)" computerName="$HOST" duration="00:00:00.5482481" startTime="2026-09-30T20:58:45.0847465-04:00" endTime="2026-09-30T20:58:45.0847467-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eb3567f0-7bd6-4e3f-a1f5-6751489b102e">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(BookOfEternityClient.WebUi.BrowserSettingsWriteException)
+Actual:   typeof(System.InvalidOperationException)
+---- System.InvalidOperationException : Browser-write отменён до применения изменений: Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableBrowserSettingsTests.AudioSeparatesRollbackFromCommittedCleanupWarning(Boolean committed) in $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs:line 186
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.WebUi.BrowserAudioService.UpdateSettingsBoundAsync(CanonicalWriteLease writeLease, BrowserAudioSettingsUpdateRequest request) in $REPO/BookOfEternityClient/WebUi/BrowserAudioService.cs:line 106
+   at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 187
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 102
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 141
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, CanonicalWriteLease writeLease, Func`1 operation) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 58
+   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.RunBoundTransactionAsync[T](Func`2 operation) in $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs:line 212
+   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.RunBoundTransactionAsync[T](Func`2 operation) in $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs:line 212
+   at BookOfEternityClient.WebUi.BrowserAudioService.UpdateSettingsAsync(BrowserAudioSettingsUpdateRequest request) in $REPO/BookOfEternityClient/WebUi/BrowserAudioService.cs:line 52</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="4a3070b3-416e-4a75-a4a3-b22995e8150f" testId="3df18ded-16a8-3f4a-b301-a5b165e063e7" testName="BookOfEternityClient.Tests.PortableBrowserSettingsTests.AudioSeparatesRollbackFromCommittedCleanupWarning(committed: True)" computerName="$HOST" duration="00:00:00.0204894" startTime="2026-09-30T20:58:45.1082236-04:00" endTime="2026-09-30T20:58:45.1082238-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4a3070b3-416e-4a75-a4a3-b22995e8150f">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.InvalidOperationException : Browser-write отменён до применения изменений: Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.WebUi.BrowserAudioService.UpdateSettingsBoundAsync(CanonicalWriteLease writeLease, BrowserAudioSettingsUpdateRequest request) in $REPO/BookOfEternityClient/WebUi/BrowserAudioService.cs:line 106
+   at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 187
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 102
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 141
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, CanonicalWriteLease writeLease, Func`1 operation) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 58
+   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.RunBoundTransactionAsync[T](Func`2 operation) in $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs:line 212
+   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.RunBoundTransactionAsync[T](Func`2 operation) in $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs:line 212
+   at BookOfEternityClient.WebUi.BrowserAudioService.UpdateSettingsAsync(BrowserAudioSettingsUpdateRequest request) in $REPO/BookOfEternityClient/WebUi/BrowserAudioService.cs:line 52
+   at BookOfEternityClient.Tests.PortableBrowserSettingsTests.AudioSeparatesRollbackFromCommittedCleanupWarning(Boolean committed) in $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs:line 180
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="05d182ca-c615-414a-88cc-a6ea3eedd4fd" testId="b3abc6da-8334-21fd-1649-c0f989c6aa41" testName="BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsAndAudioGetRejectInvalidConfigRatherThanShowingAcceptedDefaults(invalid: &quot;{broken&quot;)" computerName="$HOST" duration="00:00:00.0200276" startTime="2026-09-30T20:58:44.5227877-04:00" endTime="2026-09-30T20:58:44.5227880-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="05d182ca-c615-414a-88cc-a6ea3eedd4fd">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.IO.InvalidDataException)</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsAndAudioGetRejectInvalidConfigRatherThanShowingAcceptedDefaults(String invalid) in $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs:line 201
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="7d3fe40e-b7d3-4a10-9a5c-835e0ec3852d" testId="e6905328-7d8f-f4bc-8a4b-40fdd5324e74" testName="BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication(cut: &quot;unknown-close&quot;)" computerName="$HOST" duration="00:00:00.0148202" startTime="2026-09-30T20:58:44.4279152-04:00" endTime="2026-09-30T20:58:44.4279154-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7d3fe40e-b7d3-4a10-9a5c-835e0ec3852d">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.True() Failure
+Expected: True
+Actual:   False</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication(String cut) in $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs:line 142
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="5bd079c2-c5da-41ee-9901-9b5c0b3a04dd" testId="b4b854e4-9402-9858-9db0-8058a6be7875" testName="BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsAndAudioGetRejectInvalidConfigRatherThanShowingAcceptedDefaults(invalid: &quot;{\&quot;language\&quot;:\&quot;en\&quot;,\&quot;language\&quot;:\&quot;ru\&quot;}&quot;)" computerName="$HOST" duration="00:00:00.0303731" startTime="2026-09-30T20:58:44.5026289-04:00" endTime="2026-09-30T20:58:44.5026291-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5bd079c2-c5da-41ee-9901-9b5c0b3a04dd">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.IO.InvalidDataException)</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsAndAudioGetRejectInvalidConfigRatherThanShowingAcceptedDefaults(String invalid) in $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs:line 201
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="154c6d13-c340-4c46-aa60-2e1706f7ef59" testId="ecc0dfe2-99b6-25ad-3aef-a382bbc77179" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner(blocker: &quot;pending&quot;)" computerName="$HOST" duration="00:00:00.0110309" startTime="2026-09-30T20:58:45.3697878-04:00" endTime="2026-09-30T20:58:45.3697880-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="154c6d13-c340-4c46-aa60-2e1706f7ef59" />
+    <ns0:UnitTestResult executionId="fcc02edd-b96e-4757-b496-6c0878a91c15" testId="ad8511d0-a1fc-eb6a-046e-2221e43de80e" testName="BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication(cut: &quot;rollback&quot;)" computerName="$HOST" duration="00:00:00.0244599" startTime="2026-09-30T20:58:44.4702586-04:00" endTime="2026-09-30T20:58:44.4702588-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fcc02edd-b96e-4757-b496-6c0878a91c15">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.True() Failure
+Expected: True
+Actual:   False</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication(String cut) in $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs:line 142
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="fda321ec-3919-42d5-8f35-6bec35da5187" testId="e13fd790-fa2d-ade3-2c06-ba7a3a35decc" testName="BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsAndAudioGetRejectInvalidConfigRatherThanShowingAcceptedDefaults(invalid: &quot;null&quot;)" computerName="$HOST" duration="00:00:00.0091191" startTime="2026-09-30T20:58:44.5328568-04:00" endTime="2026-09-30T20:58:44.5328570-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fda321ec-3919-42d5-8f35-6bec35da5187">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.IO.InvalidDataException)</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsAndAudioGetRejectInvalidConfigRatherThanShowingAcceptedDefaults(String invalid) in $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs:line 201
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="a94870e7-026e-4f87-91c4-71cbc4dd746c" testId="d276a5d8-9147-8f50-1391-edc1c18386c7" testName="BookOfEternityClient.Tests.PortableBrowserSettingsTests.PreparedSettingsSurviveAnActualColdBootstrapProcess" computerName="$HOST" duration="00:00:00.0177011" startTime="2026-09-30T20:58:45.1477275-04:00" endTime="2026-09-30T20:58:45.1477276-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a94870e7-026e-4f87-91c4-71cbc4dd746c">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Browser-write отменён до применения изменений: Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableBrowserSettingsTests.PreparedSettingsSurviveAnActualColdBootstrapProcess() in $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs:line 223
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: &quot;unknown-close&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0356992c-1dd1-0e29-fbd3-aa85d9fa3239">
+      <ns0:Execution id="b4717066-8f03-4270-b9ba-ab598df37fc8" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsUseOnePreparedPairAndApplyTheSameRuntimeInstanceOnlyAfterCommit" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e348508b-93b5-1477-6d8f-aa3270f7275a">
+      <ns0:Execution id="e22a37a5-f6e3-4d3a-add5-d3b00c127b12" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserSettingsTests" name="SettingsUseOnePreparedPairAndApplyTheSameRuntimeInstanceOnlyAfterCommit" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: &quot;rollback&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ee3c022a-e6a8-14d5-d687-453e984ee313">
+      <ns0:Execution id="2eaa1a90-e65c-465a-a51e-39d3075d2641" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableBrowserSettingsTests.AudioSeparatesRollbackFromCommittedCleanupWarning(committed: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3df18ded-16a8-3f4a-b301-a5b165e063e7">
+      <ns0:Execution id="4a3070b3-416e-4a75-a4a3-b22995e8150f" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserSettingsTests" name="AudioSeparatesRollbackFromCommittedCleanupWarning" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: &quot;committed-cleanup&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ac3447c0-acb7-6a46-35bf-37d87880ec70">
+      <ns0:Execution id="4db45ed9-fd56-44b9-99f3-cc6053fb9535" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableBrowserSettingsTests.PreparedSettingsSurviveAnActualColdBootstrapProcess" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d276a5d8-9147-8f50-1391-edc1c18386c7">
+      <ns0:Execution id="a94870e7-026e-4f87-91c4-71cbc4dd746c" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserSettingsTests" name="PreparedSettingsSurviveAnActualColdBootstrapProcess" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsAndAudioGetRejectInvalidConfigRatherThanShowingAcceptedDefaults(invalid: &quot;{\&quot;language\&quot;:\&quot;en\&quot;,\&quot;language\&quot;:\&quot;ru\&quot;}&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b4b854e4-9402-9858-9db0-8058a6be7875">
+      <ns0:Execution id="5bd079c2-c5da-41ee-9901-9b5c0b3a04dd" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserSettingsTests" name="SettingsAndAudioGetRejectInvalidConfigRatherThanShowingAcceptedDefaults" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner(blocker: &quot;owner&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7a04f7d7-8141-d2bd-f48e-7b5e8f7e3195">
+      <ns0:Execution id="59f87756-e65c-44a7-9181-38416ec44e63" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication(cut: &quot;committed-cleanup&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="058c3d75-5795-a11b-1f1d-2e4c51d0a85a">
+      <ns0:Execution id="3f1f8f9b-0c6e-47b7-8662-415750fac0e8" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserSettingsTests" name="SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication(cut: &quot;rollback&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ad8511d0-a1fc-eb6a-046e-2221e43de80e">
+      <ns0:Execution id="fcc02edd-b96e-4757-b496-6c0878a91c15" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserSettingsTests" name="SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication(cut: &quot;unknown&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1e02947f-99f5-b608-8a54-dd7afa852ba2">
+      <ns0:Execution id="53835457-ff3c-497c-8a6b-7168f8d69ca8" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserSettingsTests" name="SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsAndAudioGetRejectInvalidConfigRatherThanShowingAcceptedDefaults(invalid: &quot;null&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e13fd790-fa2d-ade3-2c06-ba7a3a35decc">
+      <ns0:Execution id="fda321ec-3919-42d5-8f35-6bec35da5187" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserSettingsTests" name="SettingsAndAudioGetRejectInvalidConfigRatherThanShowingAcceptedDefaults" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableBrowserSettingsTests.AudioSeparatesRollbackFromCommittedCleanupWarning(committed: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3ec18cb6-bac1-fe3c-8bd2-ec08bfdcc419">
+      <ns0:Execution id="eb3567f0-7bd6-4e3f-a1f5-6751489b102e" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserSettingsTests" name="AudioSeparatesRollbackFromCommittedCleanupWarning" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableBrowserSettingsTests.HardLinkedConfigSupportsBootstrapGetAndUpdateWithoutChangingOutsideAlias" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="05f0e09a-e4f2-69fd-5caa-c1705cf9454b">
+      <ns0:Execution id="7fddf021-b054-478b-9dcd-b5cad202c8eb" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserSettingsTests" name="HardLinkedConfigSupportsBootstrapGetAndUpdateWithoutChangingOutsideAlias" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsAndAudioGetRejectInvalidConfigRatherThanShowingAcceptedDefaults(invalid: &quot;{broken&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b3abc6da-8334-21fd-1649-c0f989c6aa41">
+      <ns0:Execution id="05d182ca-c615-414a-88cc-a6ea3eedd4fd" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserSettingsTests" name="SettingsAndAudioGetRejectInvalidConfigRatherThanShowingAcceptedDefaults" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedSetCommitsBeforeRuntimeApplicationAndCreatesNoLegacyBackup" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e58ae7d1-2533-a3d9-34cf-8843275a164a">
+      <ns0:Execution id="c217141f-4eff-42e6-b903-8a745037d25a" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedSetCommitsBeforeRuntimeApplicationAndCreatesNoLegacyBackup" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableBrowserSettingsTests.AudioUsesOneDeclaredConfigMemberAndKeepsProjectionUntouched" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9827d05e-d4ff-28d7-1164-f965ed9d89c9">
+      <ns0:Execution id="f428f30e-c530-406f-af8e-b14dd3e8ca4e" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserSettingsTests" name="AudioUsesOneDeclaredConfigMemberAndKeepsProjectionUntouched" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner(blocker: &quot;pending&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ecc0dfe2-99b6-25ad-3aef-a382bbc77179">
+      <ns0:Execution id="154c6d13-c340-4c46-aa60-2e1706f7ef59" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsWithoutDifficultyPreserveExactProjectionBytes" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="38658c11-b067-25be-7833-4d6a5a8b3888">
+      <ns0:Execution id="31b30566-6d4d-4f7f-84bd-47e450ad24d6" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserSettingsTests" name="SettingsWithoutDifficultyPreserveExactProjectionBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication(cut: &quot;unknown-close&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e6905328-7d8f-f4bc-8a4b-40fdd5324e74">
+      <ns0:Execution id="7d3fe40e-b7d3-4a10-9a5c-835e0ec3852d" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserSettingsTests" name="SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles(failure: &quot;runtime&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="32acc2a0-b4b8-520b-2bc3-61a06f884e10">
+      <ns0:Execution id="8eb35ef3-86cf-4762-88bb-725df1317e77" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedGenerationRevocationAtMutationBoundaryCannotPublishSettings" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="85913866-a2ce-c4f0-76f2-e093dd2c76de">
+      <ns0:Execution id="47a858fe-e685-4a1b-a278-ab2fee0d06aa" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedGenerationRevocationAtMutationBoundaryCannotPublishSettings" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles(failure: &quot;owner-cleanup&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="000046b5-ade0-45fa-34e3-15cfbc826e84">
+      <ns0:Execution id="0b8238ff-385a-4f66-a8c4-15d239674519" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: &quot;unknown&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="25def16d-1ec7-a01a-566d-34d9eb59d2ed">
+      <ns0:Execution id="67cc82a5-9953-44ca-97e7-aafcd8dd4e14" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="e348508b-93b5-1477-6d8f-aa3270f7275a" executionId="e22a37a5-f6e3-4d3a-add5-d3b00c127b12" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="85913866-a2ce-c4f0-76f2-e093dd2c76de" executionId="47a858fe-e685-4a1b-a278-ab2fee0d06aa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="0356992c-1dd1-0e29-fbd3-aa85d9fa3239" executionId="b4717066-8f03-4270-b9ba-ab598df37fc8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="25def16d-1ec7-a01a-566d-34d9eb59d2ed" executionId="67cc82a5-9953-44ca-97e7-aafcd8dd4e14" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="ee3c022a-e6a8-14d5-d687-453e984ee313" executionId="2eaa1a90-e65c-465a-a51e-39d3075d2641" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="05f0e09a-e4f2-69fd-5caa-c1705cf9454b" executionId="7fddf021-b054-478b-9dcd-b5cad202c8eb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="1e02947f-99f5-b608-8a54-dd7afa852ba2" executionId="53835457-ff3c-497c-8a6b-7168f8d69ca8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="38658c11-b067-25be-7833-4d6a5a8b3888" executionId="31b30566-6d4d-4f7f-84bd-47e450ad24d6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="ac3447c0-acb7-6a46-35bf-37d87880ec70" executionId="4db45ed9-fd56-44b9-99f3-cc6053fb9535" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="32acc2a0-b4b8-520b-2bc3-61a06f884e10" executionId="8eb35ef3-86cf-4762-88bb-725df1317e77" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="9827d05e-d4ff-28d7-1164-f965ed9d89c9" executionId="f428f30e-c530-406f-af8e-b14dd3e8ca4e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="7a04f7d7-8141-d2bd-f48e-7b5e8f7e3195" executionId="59f87756-e65c-44a7-9181-38416ec44e63" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="e58ae7d1-2533-a3d9-34cf-8843275a164a" executionId="c217141f-4eff-42e6-b903-8a745037d25a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="058c3d75-5795-a11b-1f1d-2e4c51d0a85a" executionId="3f1f8f9b-0c6e-47b7-8662-415750fac0e8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="000046b5-ade0-45fa-34e3-15cfbc826e84" executionId="0b8238ff-385a-4f66-a8c4-15d239674519" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="3ec18cb6-bac1-fe3c-8bd2-ec08bfdcc419" executionId="eb3567f0-7bd6-4e3f-a1f5-6751489b102e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="3df18ded-16a8-3f4a-b301-a5b165e063e7" executionId="4a3070b3-416e-4a75-a4a3-b22995e8150f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="b3abc6da-8334-21fd-1649-c0f989c6aa41" executionId="05d182ca-c615-414a-88cc-a6ea3eedd4fd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="e6905328-7d8f-f4bc-8a4b-40fdd5324e74" executionId="7d3fe40e-b7d3-4a10-9a5c-835e0ec3852d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="b4b854e4-9402-9858-9db0-8058a6be7875" executionId="5bd079c2-c5da-41ee-9901-9b5c0b3a04dd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="ecc0dfe2-99b6-25ad-3aef-a382bbc77179" executionId="154c6d13-c340-4c46-aa60-2e1706f7ef59" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="ad8511d0-a1fc-eb6a-046e-2221e43de80e" executionId="fcc02edd-b96e-4757-b496-6c0878a91c15" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="e13fd790-fa2d-ade3-2c06-ba7a3a35decc" executionId="fda321ec-3919-42d5-8f35-6bec35da5187" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="d276a5d8-9147-8f50-1391-edc1c18386c7" executionId="a94870e7-026e-4f87-91c4-71cbc4dd746c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Failed">
+    <ns0:Counters total="24" executed="24" passed="10" failed="14" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.18]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.21]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.24]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.52]       System.InvalidOperationException : Browser-write отменён до применения изменений: Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.
+[xUnit.net 00:00:01.52]       Stack Trace:
+[xUnit.net 00:00:01.52]         $REPO/BookOfEternityClient/WebUi/BrowserAudioService.cs(106,0): at BookOfEternityClient.WebUi.BrowserAudioService.UpdateSettingsBoundAsync(CanonicalWriteLease writeLease, BrowserAudioSettingsUpdateRequest request)
+[xUnit.net 00:00:01.52]         $REPO/BookOfEternityClient/Core/SessionOperationContext.cs(187,0): at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation)
+[xUnit.net 00:00:01.52]         $REPO/BookOfEternityClient/Core/SessionOperationContext.cs(102,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease)
+[xUnit.net 00:00:01.52]         $REPO/BookOfEternityClient/Core/SessionOperationContext.cs(141,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease)
+[xUnit.net 00:00:01.52]         $REPO/BookOfEternityClient/Core/SessionOperationContext.cs(58,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, CanonicalWriteLease writeLease, Func`1 operation)
+[xUnit.net 00:00:01.52]         $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs(212,0): at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.RunBoundTransactionAsync[T](Func`2 operation)
+[xUnit.net 00:00:01.52]         $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs(212,0): at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.RunBoundTransactionAsync[T](Func`2 operation)
+[xUnit.net 00:00:01.52]         $REPO/BookOfEternityClient/WebUi/BrowserAudioService.cs(52,0): at BookOfEternityClient.WebUi.BrowserAudioService.UpdateSettingsAsync(BrowserAudioSettingsUpdateRequest request)
+[xUnit.net 00:00:01.52]         $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs(119,0): at BookOfEternityClient.Tests.PortableBrowserSettingsTests.AudioUsesOneDeclaredConfigMemberAndKeepsProjectionUntouched()
+[xUnit.net 00:00:01.52]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.55]       Assert.True() Failure
+[xUnit.net 00:00:01.55]       Expected: True
+[xUnit.net 00:00:01.55]       Actual:   False
+[xUnit.net 00:00:01.55]       Stack Trace:
+[xUnit.net 00:00:01.55]         $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs(142,0): at BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication(String cut)
+[xUnit.net 00:00:01.55]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.57]       Assert.True() Failure
+[xUnit.net 00:00:01.57]       Expected: True
+[xUnit.net 00:00:01.57]       Actual:   False
+[xUnit.net 00:00:01.57]       Stack Trace:
+[xUnit.net 00:00:01.57]         $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs(142,0): at BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication(String cut)
+[xUnit.net 00:00:01.57]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.59]       Assert.True() Failure
+[xUnit.net 00:00:01.59]       Expected: True
+[xUnit.net 00:00:01.59]       Actual:   False
+[xUnit.net 00:00:01.59]       Stack Trace:
+[xUnit.net 00:00:01.59]         $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs(142,0): at BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication(String cut)
+[xUnit.net 00:00:01.59]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.61]       Assert.True() Failure
+[xUnit.net 00:00:01.61]       Expected: True
+[xUnit.net 00:00:01.61]       Actual:   False
+[xUnit.net 00:00:01.61]       Stack Trace:
+[xUnit.net 00:00:01.61]         $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs(142,0): at BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication(String cut)
+[xUnit.net 00:00:01.61]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.64]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:01.64]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.64]       Stack Trace:
+[xUnit.net 00:00:01.64]         $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs(201,0): at BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsAndAudioGetRejectInvalidConfigRatherThanShowingAcceptedDefaults(String invalid)
+[xUnit.net 00:00:01.64]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:01.66]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs(201,0): at BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsAndAudioGetRejectInvalidConfigRatherThanShowingAcceptedDefaults(String invalid)
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.67]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:01.67]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.67]       Stack Trace:
+[xUnit.net 00:00:01.67]         $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs(201,0): at BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsAndAudioGetRejectInvalidConfigRatherThanShowingAcceptedDefaults(String invalid)
+[xUnit.net 00:00:01.67]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.22]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:02.22]       Expected: typeof(BookOfEternityClient.WebUi.BrowserSettingsWriteException)
+[xUnit.net 00:00:02.22]       Actual:   typeof(System.InvalidOperationException)
+[xUnit.net 00:00:02.22]       ---- System.InvalidOperationException : Browser-write отменён до применения изменений: Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.
+[xUnit.net 00:00:02.22]       Stack Trace:
+[xUnit.net 00:00:02.22]         $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs(186,0): at BookOfEternityClient.Tests.PortableBrowserSettingsTests.AudioSeparatesRollbackFromCommittedCleanupWarning(Boolean committed)
+[xUnit.net 00:00:02.22]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.22]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:02.22]         $REPO/BookOfEternityClient/WebUi/BrowserAudioService.cs(106,0): at BookOfEternityClient.WebUi.BrowserAudioService.UpdateSettingsBoundAsync(CanonicalWriteLease writeLease, BrowserAudioSettingsUpdateRequest request)
+[xUnit.net 00:00:02.22]         $REPO/BookOfEternityClient/Core/SessionOperationContext.cs(187,0): at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation)
+[xUnit.net 00:00:02.22]         $REPO/BookOfEternityClient/Core/SessionOperationContext.cs(102,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease)
+[xUnit.net 00:00:02.22]         $REPO/BookOfEternityClient/Core/SessionOperationContext.cs(141,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease)
+[xUnit.net 00:00:02.22]         $REPO/BookOfEternityClient/Core/SessionOperationContext.cs(58,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, CanonicalWriteLease writeLease, Func`1 operation)
+[xUnit.net 00:00:02.22]         $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs(212,0): at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.RunBoundTransactionAsync[T](Func`2 operation)
+[xUnit.net 00:00:02.22]         $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs(212,0): at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.RunBoundTransactionAsync[T](Func`2 operation)
+[xUnit.net 00:00:02.22]         $REPO/BookOfEternityClient/WebUi/BrowserAudioService.cs(52,0): at BookOfEternityClient.WebUi.BrowserAudioService.UpdateSettingsAsync(BrowserAudioSettingsUpdateRequest request)
+[xUnit.net 00:00:02.25]       System.InvalidOperationException : Browser-write отменён до применения изменений: Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.
+[xUnit.net 00:00:02.25]       Stack Trace:
+[xUnit.net 00:00:02.25]         $REPO/BookOfEternityClient/WebUi/BrowserAudioService.cs(106,0): at BookOfEternityClient.WebUi.BrowserAudioService.UpdateSettingsBoundAsync(CanonicalWriteLease writeLease, BrowserAudioSettingsUpdateRequest request)
+[xUnit.net 00:00:02.25]         $REPO/BookOfEternityClient/Core/SessionOperationContext.cs(187,0): at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation)
+[xUnit.net 00:00:02.25]         $REPO/BookOfEternityClient/Core/SessionOperationContext.cs(102,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease)
+[xUnit.net 00:00:02.25]         $REPO/BookOfEternityClient/Core/SessionOperationContext.cs(141,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease)
+[xUnit.net 00:00:02.25]         $REPO/BookOfEternityClient/Core/SessionOperationContext.cs(58,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, CanonicalWriteLease writeLease, Func`1 operation)
+[xUnit.net 00:00:02.25]         $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs(212,0): at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.RunBoundTransactionAsync[T](Func`2 operation)
+[xUnit.net 00:00:02.25]         $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs(212,0): at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.RunBoundTransactionAsync[T](Func`2 operation)
+[xUnit.net 00:00:02.25]         $REPO/BookOfEternityClient/WebUi/BrowserAudioService.cs(52,0): at BookOfEternityClient.WebUi.BrowserAudioService.UpdateSettingsAsync(BrowserAudioSettingsUpdateRequest request)
+[xUnit.net 00:00:02.25]         $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs(180,0): at BookOfEternityClient.Tests.PortableBrowserSettingsTests.AudioSeparatesRollbackFromCommittedCleanupWarning(Boolean committed)
+[xUnit.net 00:00:02.25]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.27]       Browser-write отменён до применения изменений: Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.
+[xUnit.net 00:00:02.27]       Stack Trace:
+[xUnit.net 00:00:02.27]         $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs(106,0): at BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsWithoutDifficultyPreserveExactProjectionBytes()
+[xUnit.net 00:00:02.27]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.29]       Browser-write отменён до применения изменений: Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.
+[xUnit.net 00:00:02.29]       Stack Trace:
+[xUnit.net 00:00:02.29]         $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs(223,0): at BookOfEternityClient.Tests.PortableBrowserSettingsTests.PreparedSettingsSurviveAnActualColdBootstrapProcess()
+[xUnit.net 00:00:02.29]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.32]       Browser-write отменён до применения изменений: Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.
+[xUnit.net 00:00:02.32]       Stack Trace:
+[xUnit.net 00:00:02.32]         $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs(216,0): at BookOfEternityClient.Tests.PortableBrowserSettingsTests.HardLinkedConfigSupportsBootstrapGetAndUpdateWithoutChangingOutsideAlias()
+[xUnit.net 00:00:02.32]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.34]       Browser-write отменён до применения изменений: Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.
+[xUnit.net 00:00:02.34]       Stack Trace:
+[xUnit.net 00:00:02.34]         $REPO/BookOfEternityClient.Tests/PortableBrowserSettingsTests.cs(91,0): at BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsUseOnePreparedPairAndApplyTheSameRuntimeInstanceOnlyAfterCommit()
+[xUnit.net 00:00:02.34]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.53]   Finished:    BookOfEternityClient.Tests
+</ns0:StdOut>
+    </ns0:Output>
+    <ns0:RunInfos>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:58:44.3775293-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.52]     BookOfEternityClient.Tests.PortableBrowserSettingsTests.AudioUsesOneDeclaredConfigMemberAndKeepsProjectionUntouched [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:58:44.4133957-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.55]     BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication(cut: "committed-cleanup") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:58:44.4297059-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.57]     BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication(cut: "unknown-close") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:58:44.4478237-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.59]     BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication(cut: "unknown") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:58:44.4702754-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.61]     BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsExposeDurableOutcomeWithoutPrematureRuntimeApplication(cut: "rollback") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:58:44.5030545-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.64]     BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsAndAudioGetRejectInvalidConfigRatherThanShowingAcceptedDefaults(invalid: "{\"language\":\"en\",\"language\":\"ru\"}") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:58:44.5232216-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsAndAudioGetRejectInvalidConfigRatherThanShowingAcceptedDefaults(invalid: "{broken") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:58:44.5331215-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.67]     BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsAndAudioGetRejectInvalidConfigRatherThanShowingAcceptedDefaults(invalid: "null") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:58:45.0858088-04:00">
+        <ns0:Text>[xUnit.net 00:00:02.22]     BookOfEternityClient.Tests.PortableBrowserSettingsTests.AudioSeparatesRollbackFromCommittedCleanupWarning(committed: False) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:58:45.1257961-04:00">
+        <ns0:Text>[xUnit.net 00:00:02.25]     BookOfEternityClient.Tests.PortableBrowserSettingsTests.AudioSeparatesRollbackFromCommittedCleanupWarning(committed: True) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:58:45.1291275-04:00">
+        <ns0:Text>[xUnit.net 00:00:02.27]     BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsWithoutDifficultyPreserveExactProjectionBytes [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:58:45.1495452-04:00">
+        <ns0:Text>[xUnit.net 00:00:02.29]     BookOfEternityClient.Tests.PortableBrowserSettingsTests.PreparedSettingsSurviveAnActualColdBootstrapProcess [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:58:45.1818229-04:00">
+        <ns0:Text>[xUnit.net 00:00:02.32]     BookOfEternityClient.Tests.PortableBrowserSettingsTests.HardLinkedConfigSupportsBootstrapGetAndUpdateWithoutChangingOutsideAlias [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:58:45.1978823-04:00">
+        <ns0:Text>[xUnit.net 00:00:02.34]     BookOfEternityClient.Tests.PortableBrowserSettingsTests.SettingsUseOnePreparedPairAndApplyTheSameRuntimeInstanceOnlyAfterCommit [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+    </ns0:RunInfos>
+  </ns0:ResultSummary>
+</ns0:TestRun>

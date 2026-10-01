@@ -49,8 +49,7 @@ public sealed class BrowserAudioService
         await SettingsWriteGate.WaitAsync();
         try
         {
-            return await _coordinator.RunBoundTransactionAsync(
-                writeLease => UpdateSettingsBoundAsync(writeLease, request));
+            return await UpdatePreparedSettingsAsync(request);
         }
         finally
         {
@@ -61,50 +60,43 @@ public sealed class BrowserAudioService
     private async Task<BrowserAudioSettingsDto> BuildSettingsBoundAsync(
         FileSystemManager.CanonicalWriteLease writeLease)
     {
-        await _stateManager.LoadSettingsAsync(writeLease);
+        var snapshot = await _stateManager.ReadLocalSettingsAsync(writeLease);
+        _stateManager.Settings.ApplyLoadedValues(snapshot.Settings);
         return BuildSettings();
     }
 
-    private async Task<BrowserAudioSettingsDto> UpdateSettingsBoundAsync(
-        FileSystemManager.CanonicalWriteLease writeLease,
-        BrowserAudioSettingsUpdateRequest request)
+    private async Task<BrowserAudioSettingsDto> UpdatePreparedSettingsAsync(BrowserAudioSettingsUpdateRequest request)
     {
-        await _stateManager.LoadSettingsAsync(writeLease);
-        var result = await _coordinator.ExecuteAtomicWithinTransactionAsync(
-            writeLease,
+        ArgumentNullException.ThrowIfNull(request);
+        BrowserAudioSettingsDto? preparedResponse = null;
+        var result = await _coordinator.ExecutePreparedAsync(
             new BrowserLocalWriteRequest(
                 OwnerId: $"browser-audio:{Environment.MachineName}:{Environment.ProcessId}",
                 OwnerLabel: "Browser audio settings",
                 OperationLabel: "Browser audio settings update"),
-            ["config.json"],
-            async transactionLease =>
+            async writeLease =>
             {
-                var settings = _stateManager.Settings;
-                if (request.MusicEnabled.HasValue)
-                    settings.MusicEnabled = request.MusicEnabled.Value;
-                if (request.MusicVolume.HasValue)
-                    settings.MusicVolume = Math.Clamp(request.MusicVolume.Value, 0, 100);
-                if (request.SoundEnabled.HasValue)
-                    settings.SoundEnabled = request.SoundEnabled.Value;
-                if (request.SoundVolume.HasValue)
-                    settings.SoundVolume = Math.Clamp(request.SoundVolume.Value, 0, 100);
-
-                await _stateManager.SaveSettingsAsync(transactionLease);
-                await _audioService.ApplySettingsAsync();
-            },
-            prepareAfterRollback: () =>
-            {
-                var runtimeSnapshot = _stateManager.CaptureRuntimeSnapshot();
-                return () =>
-                {
-                    _stateManager.RestoreRuntimeSnapshot(runtimeSnapshot);
-                    _audioService.ApplySettingsAsync().GetAwaiter().GetResult();
-                };
+                var snapshot = await _stateManager.ReadLocalSettingsAsync(writeLease);
+                var candidate = snapshot.Settings;
+                if (request.MusicEnabled.HasValue) candidate.MusicEnabled = request.MusicEnabled.Value;
+                if (request.MusicVolume.HasValue) candidate.MusicVolume = Math.Clamp(request.MusicVolume.Value, 0, 100);
+                if (request.SoundEnabled.HasValue) candidate.SoundEnabled = request.SoundEnabled.Value;
+                if (request.SoundVolume.HasValue) candidate.SoundVolume = Math.Clamp(request.SoundVolume.Value, 0, 100);
+                preparedResponse = BuildSettings(candidate);
+                return new PreparedBrowserLocalWrite(
+                    [new("config.json", snapshot.Bytes, _stateManager.EncodeLocalSettings(candidate))],
+                    async () =>
+                    {
+                        _stateManager.Settings.ApplyLoadedValues(candidate);
+                        await _audioService.ApplySettingsAsync();
+                    });
             });
-
-        if (!result.Success)
-            throw new InvalidOperationException(result.Message);
-        return BuildSettings();
+        if (result.Disposition != BrowserPreparedWriteDisposition.Committed)
+            throw new BrowserSettingsWriteException(result.Disposition, result.Message);
+        if (preparedResponse == null)
+            throw new BrowserSettingsWriteException(BrowserPreparedWriteDisposition.Committed,
+                "Настройки сохранены, но ответ не удалось подготовить. Обновите состояние книги.");
+        return preparedResponse with { PersistenceWarning = result.NeedsFollowUp ? result.Message : null };
     }
 
     public IResult ServeAsset(string assetId)
@@ -124,9 +116,9 @@ public sealed class BrowserAudioService
             enableRangeProcessing: true);
     }
 
-    private BrowserAudioSettingsDto BuildSettings()
+    private BrowserAudioSettingsDto BuildSettings(GameSettings? candidate = null)
     {
-        var settings = _stateManager.Settings;
+        var settings = candidate ?? _stateManager.Settings;
         var playlists = BuildPlaylists();
         var cues = BuildCues();
         var hasAssets = playlists.Any(playlist => playlist.Available) || cues.Any(cue => cue.Available);

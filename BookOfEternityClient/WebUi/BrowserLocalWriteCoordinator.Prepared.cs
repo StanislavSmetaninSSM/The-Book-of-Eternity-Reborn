@@ -28,7 +28,7 @@ public sealed partial class BrowserLocalWriteCoordinator
                     return new BrowserPreparedWriteResult(BrowserPreparedWriteDisposition.Blocked, false, admission.BlockerMessage);
 
                 var result = new BrowserPreparedWriteResult(BrowserPreparedWriteDisposition.Blocked, false,
-                    "Настройки не изменены: не удалось подготовить запись.");
+                    "Не удалось подготовить новую запись настроек.");
                 try
                 {
                     var prepared = await prepare(writeLease);
@@ -66,7 +66,7 @@ public sealed partial class BrowserLocalWriteCoordinator
                     // PublishLocalFilesAsync returns an explicit outcome once
                     // publication is attempted. Exceptions here precede it.
                     result = new(BrowserPreparedWriteDisposition.Blocked, false,
-                        "Настройки не изменены: не удалось безопасно подготовить запись.");
+                        "Не удалось безопасно подготовить новую запись настроек.");
                 }
                 finally
                 {
@@ -89,7 +89,7 @@ public sealed partial class BrowserLocalWriteCoordinator
         {
             return publicationOutcome != null ? WithPreparedFollowUp(publicationOutcome) : new(
                 BrowserPreparedWriteDisposition.Blocked, true,
-                "Настройки не изменены: локальное хранилище требует проверки перед записью.");
+                "Запрос на изменение настроек заблокирован: локальное хранилище требует проверки перед записью.");
         }
     }
 

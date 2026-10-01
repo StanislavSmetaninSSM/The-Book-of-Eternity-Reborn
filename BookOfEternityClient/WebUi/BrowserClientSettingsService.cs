@@ -39,7 +39,9 @@ public sealed class BrowserClientSettingsService
             return await _coordinator.RunBoundTransactionAsync(
                 async writeLease =>
                 {
-                    await _stateManager.LoadSettingsAsync(writeLease);
+                    var snapshot = await _stateManager.ReadLocalSettingsAsync(writeLease);
+                    _stateManager.Settings.ApplyLoadedValues(snapshot.Settings);
+                    _localization.CurrentLanguage = NormalizeLanguage(snapshot.Settings.Language);
                     return BuildDto();
                 });
         }
@@ -51,19 +53,43 @@ public sealed class BrowserClientSettingsService
 
     public async Task<BrowserClientSettingsUpdateResult> UpdateAsync(BrowserClientSettingsUpdateRequest request)
     {
+        ArgumentNullException.ThrowIfNull(request);
         await BrowserAudioService.SettingsWriteGate.WaitAsync();
         try
         {
-            try
+            BrowserClientSettingsDto? preparedResponse = null;
+            var result = await _coordinator.ExecutePreparedAsync(
+                new BrowserLocalWriteRequest(
+                    OwnerId: $"browser-settings:{Environment.MachineName}:{Environment.ProcessId}",
+                    OwnerLabel: "Browser Client settings",
+                    OperationLabel: "Browser Client settings update"),
+                async writeLease =>
+                {
+                    var snapshot = await _stateManager.ReadLocalSettingsAsync(writeLease);
+                    var candidate = snapshot.Settings;
+                    ApplyRequest(candidate, request);
+                    var projectionBefore = await _fs.ReadLocalFileBytesAsync(writeLease, "game_state/core/game_settings.json");
+                    var projectionAfter = request.Difficulty == null ? projectionBefore : BuildGmSettingsProjection(candidate);
+                    preparedResponse = BuildDto(candidate);
+                    return new PreparedBrowserLocalWrite(
+                        [new("config.json", snapshot.Bytes, _stateManager.EncodeLocalSettings(candidate)),
+                         new("game_state/core/game_settings.json", projectionBefore, projectionAfter)],
+                        async () =>
+                        {
+                            _stateManager.Settings.ApplyLoadedValues(candidate);
+                            _localization.CurrentLanguage = NormalizeLanguage(candidate.Language);
+                            await _audioService.ApplySettingsAsync();
+                        });
+                });
+            if (result.Disposition != BrowserPreparedWriteDisposition.Committed)
+                return BrowserClientSettingsUpdateResult.NotCompleted(result.Disposition, result.Message);
+            if (preparedResponse == null)
+                return BrowserClientSettingsUpdateResult.NotCompleted(BrowserPreparedWriteDisposition.Committed,
+                    "Настройки сохранены, но ответ не удалось подготовить. Обновите состояние книги.");
+            return BrowserClientSettingsUpdateResult.Completed(preparedResponse with
             {
-                return await _coordinator.RunBoundTransactionAsync(
-                    writeLease => UpdateBoundAsync(writeLease, request));
-            }
-            catch (SessionReplacedException)
-            {
-                return BrowserClientSettingsUpdateResult.Blocked(
-                    "Игровая сессия изменилась во время сохранения настроек. Повторите действие.");
-            }
+                PersistenceWarning = result.NeedsFollowUp ? result.Message : null
+            });
         }
         finally
         {
@@ -71,52 +97,12 @@ public sealed class BrowserClientSettingsService
         }
     }
 
-    private async Task<BrowserClientSettingsUpdateResult> UpdateBoundAsync(
-        FileSystemManager.CanonicalWriteLease writeLease,
-        BrowserClientSettingsUpdateRequest request)
+    private static void ApplyRequest(GameSettings settings, BrowserClientSettingsUpdateRequest request)
     {
-        await _stateManager.LoadSettingsAsync(writeLease);
-        var shouldWriteGmProjection = request.Difficulty is not null;
-        var result = await _coordinator.ExecuteAtomicWithinTransactionAsync(
-            writeLease,
-            new BrowserLocalWriteRequest(
-                OwnerId: $"browser-settings:{Environment.MachineName}:{Environment.ProcessId}",
-                OwnerLabel: "Browser Client settings",
-                OperationLabel: "Browser Client settings update"),
-            ["config.json", "game_state/core/game_settings.json"],
-            async transactionLease =>
-            {
-                ApplyRequest(request);
-                await _stateManager.SaveSettingsAsync(transactionLease);
-                if (shouldWriteGmProjection)
-                    await WriteGmSettingsProjectionAsync(transactionLease);
-                await _audioService.ApplySettingsAsync();
-            },
-            prepareAfterRollback: () =>
-            {
-                var runtimeSnapshot = _stateManager.CaptureRuntimeSnapshot();
-                var localizationLanguage = _localization.CurrentLanguage;
-                return () =>
-                {
-                    _stateManager.RestoreRuntimeSnapshot(runtimeSnapshot);
-                    _localization.CurrentLanguage = localizationLanguage;
-                    _audioService.ApplySettingsAsync().GetAwaiter().GetResult();
-                };
-            });
-
-        return result.Success
-            ? BrowserClientSettingsUpdateResult.Completed(BuildDto())
-            : BrowserClientSettingsUpdateResult.Blocked(result.Message);
-    }
-
-    private void ApplyRequest(BrowserClientSettingsUpdateRequest request)
-    {
-        var settings = _stateManager.Settings;
 
         if (request.Language is not null)
         {
             settings.Language = NormalizeLanguage(request.Language);
-            _localization.CurrentLanguage = settings.Language;
         }
         if (request.Difficulty is not null)
             settings.Difficulty = NormalizeDifficulty(request.Difficulty);
@@ -140,9 +126,9 @@ public sealed class BrowserClientSettingsService
             settings.BrowserContrastFriendly = request.BrowserContrastFriendly.Value;
     }
 
-    private BrowserClientSettingsDto BuildDto()
+    private BrowserClientSettingsDto BuildDto(GameSettings? candidate = null)
     {
-        var settings = _stateManager.Settings;
+        var settings = candidate ?? _stateManager.Settings;
         var language = NormalizeLanguage(settings.Language);
         var difficulty = NormalizeDifficulty(settings.Difficulty);
         var gameSessionExists = Directory.Exists(_fs.GameSessionPath);
@@ -182,10 +168,8 @@ public sealed class BrowserClientSettingsService
                 SafetySummary: "Книга открыта только на этом устройстве и хранит настройки вместе с вашим прохождением."));
     }
 
-    private async Task WriteGmSettingsProjectionAsync(
-        FileSystemManager.CanonicalWriteLease writeLease)
+    private static byte[] BuildGmSettingsProjection(GameSettings settings)
     {
-        var settings = _stateManager.Settings;
         var activeMods = settings.EnabledSystemMods
             .Where(name => !string.IsNullOrWhiteSpace(name))
             .Distinct(StringComparer.OrdinalIgnoreCase)
@@ -207,10 +191,8 @@ public sealed class BrowserClientSettingsService
             _lastUpdated = DateTime.UtcNow.ToString("o")
         };
 
-        await _fs.WriteFileAtomicAsync(
-            writeLease,
-            "game_state/core/game_settings.json",
-            JsonSerializer.Serialize(gameSettings, JsonOpts));
+        return System.Text.Encoding.UTF8.GetPreamble()
+            .Concat(JsonSerializer.SerializeToUtf8Bytes(gameSettings, JsonOpts)).ToArray();
     }
 
     private static string NormalizeLanguage(string? value) =>
@@ -259,10 +241,13 @@ public sealed record BrowserClientSettingsUpdateResult(
     public BrowserPreparedWriteDisposition Disposition { get; init; } = BrowserPreparedWriteDisposition.Blocked;
 
     public static BrowserClientSettingsUpdateResult Completed(BrowserClientSettingsDto settings) =>
-        new(true, false, string.Empty, settings);
+        new(true, false, string.Empty, settings) { Disposition = BrowserPreparedWriteDisposition.Committed };
 
     public static BrowserClientSettingsUpdateResult Blocked(string message) =>
         new(false, true, message, null);
+
+    internal static BrowserClientSettingsUpdateResult NotCompleted(BrowserPreparedWriteDisposition disposition, string message) =>
+        new(false, disposition == BrowserPreparedWriteDisposition.Blocked, message, null) { Disposition = disposition };
 }
 
 public sealed record BrowserClientSettingsDto(

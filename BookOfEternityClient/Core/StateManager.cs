@@ -53,23 +53,8 @@ public partial class StateManager
         await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
         _fs.EnsureDirectoryStructure(lease);
         var before = await _fs.ReadLocalFileBytesAsync(lease, "config.json");
-        GameSettings? loaded = null;
-        if (before != null)
-        {
-            try
-            {
-                using var stream = new MemoryStream(before, writable: false);
-                using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true);
-                loaded = StrictJsonAuthority.Deserialize<GameSettings>(await reader.ReadToEndAsync(), JsonOpts, "config.json")
-                    ?? throw new InvalidDataException("config.json must contain a settings object.");
-            }
-            catch (JsonException ex)
-            {
-                throw new InvalidDataException("config.json is invalid; its existing bytes have been preserved.", ex);
-            }
-        }
-        var desired = before ?? Encoding.UTF8.GetPreamble()
-            .Concat(JsonSerializer.SerializeToUtf8Bytes(Settings, JsonOpts)).ToArray();
+        var loaded = before == null ? null : DecodeLocalSettings(before);
+        var desired = before ?? EncodeLocalSettings(Settings);
         var generation = _fs.BootstrapLocalStorage(lease, before, desired);
         if (loaded != null) Settings.ApplyLoadedValues(loaded);
         return generation;
