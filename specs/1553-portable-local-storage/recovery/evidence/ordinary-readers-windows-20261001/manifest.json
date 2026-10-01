@@ -1,0 +1,454 @@
+{
+  "kind": "T030-E exact twenty-five-case native Windows ordinary-reader verification",
+  "sourceSha": "29f485748819a8d95fd94b483f96e98c3f6e4b81",
+  "sourceTree": "539e296627618c3497d67b5d872e6c522c9b18f3",
+  "catalogBlob": "ad2fe43ab192f5908e328d6bead37cb8f31af595",
+  "category": "portable-ordinary-read-windows",
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-ordinary-read-windows -Parallelism 1",
+  "os": "Microsoft Windows 10.0.26200",
+  "architecture": "X64",
+  "isWindows": true,
+  "powershell": "7.6.6",
+  "dotnetSdk": "10.0.401",
+  "startedUtc": "2026-10-01T14:32:55.1062769Z",
+  "endedUtc": "2026-10-01T14:36:03.0669375Z",
+  "wallTime": "00:03:07.1109345",
+  "result": {
+    "failed": 0,
+    "skipped": 0,
+    "plannedCases": 25,
+    "selectionComplete": true,
+    "exitCode": 0,
+    "launcherExitCode": 0,
+    "timedOut": false,
+    "passed": 25,
+    "executed": 25,
+    "plannedDescriptors": 2,
+    "total": 25,
+    "plannedMethods": 19,
+    "completedDescriptors": 2,
+    "unrun": 0,
+    "completedCases": 25,
+    "duplicateIds": 0
+  },
+  "bodyEvidence": "Nineteen selected methods expand to twenty-five cases. No FIFO methods are selected. All platform-gated returns are off-Windows only; this host is native Windows. Hard-link creation asserts or throws and junction helper failure throws. The two corrected fixtures use actual owning leases and original-handler writes, require exactly one physical-hook hit, and assert actual quarantine destination absence. No silent fixture pass, elevation or security changes.",
+  "cleanup": {
+    "syntheticFixtureDirectoryRemainders": 0,
+    "ownedTreeComplete": true,
+    "runtimeDirectoryRemainders": 0,
+    "launcherProcessRemainders": 0,
+    "runtimeComplete": true
+  },
+  "isolation": "Per-process synthetic temp, CLI home, NuGet cache and appdata; unique runner output under owned QA TestResults. No user saves/profiles used.",
+  "externalExecution": "Only selected filesystem/service assertions; browser pre-recorder guard invokes no browser client. No app/game/server, GM/provider/GUI/audio entrypoints. Junction helper runs hidden on synthetic paths.",
+  "telemetryOptOuts": [
+    "DOTNET_CLI_TELEMETRY_OPTOUT=1",
+    "POWERSHELL_TELEMETRY_OPTOUT=1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT=1"
+  ],
+  "sourceReadback": {
+    "source": "Independent GitHub-only fetch into clean readback clone; no QA objects copied",
+    "sourceSha": "29f485748819a8d95fd94b483f96e98c3f6e4b81",
+    "sourceTree": "539e296627618c3497d67b5d872e6c522c9b18f3",
+    "githubApiRefTreeParentVerified": true,
+    "workingTreeClean": true,
+    "coreAutocrlf": "false",
+    "blobs": {
+      "BookOfEternityClient/Core/FileSystemManager.cs": "d44879dd699ed5629fecf7647c565372fe6121cd",
+      "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs": "83bfbd225e43c7a4e4244e067175a2481e39cbae",
+      "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs": "0b0ddd29d385108c8633f7022b29280d2ddca309",
+      "tests/categories.json": "ad2fe43ab192f5908e328d6bead37cb8f31af595",
+      "tests/selection.json": "493a1bcf22fe5ae7ea621abd6271a943edde7e33"
+    },
+    "verifiedUtc": "2026-10-01T14:29:28.3283497Z"
+  },
+  "sourceWorkingTreeClean": true,
+  "cases": [
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable",
+      "outcome": "Passed",
+      "duration": "00:00:00.3319508"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_ParentReplacedByJunctionBeforeOpenFailsClosed",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_ParentReplacedByJunctionBeforeOpenFailsClosed",
+      "outcome": "Passed",
+      "duration": "00:00:00.3724125"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_RecoversPublishedUncommittedPublicationBeforeCanonicalRead",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_RecoversPublishedUncommittedPublicationBeforeCanonicalRead",
+      "outcome": "Passed",
+      "duration": "00:00:00.2354797"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeDirectoryPublicationWaitsForLeaseBeforeClassifyingDestination",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeDirectoryPublicationWaitsForLeaseBeforeClassifyingDestination",
+      "outcome": "Passed",
+      "duration": "00:00:00.2248187"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_LegacyRecoveryRejectsHardLinkedCanonicalState",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_LegacyRecoveryRejectsHardLinkedCanonicalState",
+      "outcome": "Passed",
+      "duration": "00:00:00.1479261"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_OwnedLeaseWithPendingPublicationDoesNotReacquire",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_OwnedLeaseWithPendingPublicationDoesNotReacquire",
+      "outcome": "Passed",
+      "duration": "00:00:00.5201659"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_AbsentDuringQuarantineWaitsForCommittedPublication",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_AbsentDuringQuarantineWaitsForCommittedPublication",
+      "outcome": "Passed",
+      "duration": "00:00:00.3201532"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeSavePublicationWaitsForLeaseBeforeReportingAbsence",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeSavePublicationWaitsForLeaseBeforeReportingAbsence",
+      "outcome": "Passed",
+      "duration": "00:00:00.2616473"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_FilePublishedAfterInitialAbsentProbe_RechecksUnderQuiescenceLease",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_FilePublishedAfterInitialAbsentProbe_RechecksUnderQuiescenceLease",
+      "outcome": "Passed",
+      "duration": "00:00:00.1968910"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_CompletionRejectsLinkAddedAfterConsumption",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_CompletionRejectsLinkAddedAfterConsumption",
+      "outcome": "Passed",
+      "duration": "00:00:00.0706177"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_FinalizesCommittedPublicationBeforeCanonicalRead",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_FinalizesCommittedPublicationBeforeCanonicalRead",
+      "outcome": "Passed",
+      "duration": "00:00:00.2820167"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_RejectsHardLinkedSaveArchive",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_RejectsHardLinkedSaveArchive",
+      "outcome": "Passed",
+      "duration": "00:00:00.0818686"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_UnknownPublicationIdentityFencesAndRetainsEvidence",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_UnknownPublicationIdentityFencesAndRetainsEvidence",
+      "outcome": "Passed",
+      "duration": "00:00:00.2578015"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding(value: \"absent\")",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding",
+      "outcome": "Passed",
+      "duration": "00:00:00.2054872"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding(value: \"empty\")",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding",
+      "outcome": "Passed",
+      "duration": "00:00:00.1703850"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.CancellationBeforeOrAtOpenDoesNotConsumeBytes(atBoundary: True)",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.CancellationBeforeOrAtOpenDoesNotConsumeBytes",
+      "outcome": "Passed",
+      "duration": "00:00:00.0937712"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.BrowserStagingBeforeRecorderAttachmentRetainsPhysicalHardLinkRejection",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.BrowserStagingBeforeRecorderAttachmentRetainsPhysicalHardLinkRejection",
+      "outcome": "Passed",
+      "duration": "00:00:00.1359131"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding(value: \"utf8-bom\")",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding",
+      "outcome": "Passed",
+      "duration": "00:00:00.1969518"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding(value: \"utf16-bom\")",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding",
+      "outcome": "Passed",
+      "duration": "00:00:00.2321415"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.SnapshotTimestampAndBytesBelongToTheOpenedFile",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.SnapshotTimestampAndBytesBelongToTheOpenedFile",
+      "outcome": "Passed",
+      "duration": "00:00:00.1100689"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.HardLinkedOrdinaryInputReachesCoordinatedPublicationWithoutChangingOutsideAlias",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.HardLinkedOrdinaryInputReachesCoordinatedPublicationWithoutChangingOutsideAlias",
+      "outcome": "Passed",
+      "duration": "00:00:00.4318683"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening(disposed: False)",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening",
+      "outcome": "Passed",
+      "duration": "00:00:00.1785006"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding(value: \"binary\")",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding",
+      "outcome": "Passed",
+      "duration": "00:00:00.1592880"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.CancellationBeforeOrAtOpenDoesNotConsumeBytes(atBoundary: False)",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.CancellationBeforeOrAtOpenDoesNotConsumeBytes",
+      "outcome": "Passed",
+      "duration": "00:00:00.0654118"
+    },
+    {
+      "stack": "",
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening(disposed: True)",
+      "fixtureSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening",
+      "outcome": "Passed",
+      "duration": "00:00:00.1002099"
+    }
+  ],
+  "methodCoverage": [
+    {
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_LegacyRecoveryRejectsHardLinkedCanonicalState",
+      "unrunCases": 0,
+      "recordedCases": 1,
+      "plannedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_ParentReplacedByJunctionBeforeOpenFailsClosed",
+      "unrunCases": 0,
+      "recordedCases": 1,
+      "plannedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_RecoversPublishedUncommittedPublicationBeforeCanonicalRead",
+      "unrunCases": 0,
+      "recordedCases": 1,
+      "plannedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_FinalizesCommittedPublicationBeforeCanonicalRead",
+      "unrunCases": 0,
+      "recordedCases": 1,
+      "plannedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_UnknownPublicationIdentityFencesAndRetainsEvidence",
+      "unrunCases": 0,
+      "recordedCases": 1,
+      "plannedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_AbsentDuringQuarantineWaitsForCommittedPublication",
+      "unrunCases": 0,
+      "recordedCases": 1,
+      "plannedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_FilePublishedAfterInitialAbsentProbe_RechecksUnderQuiescenceLease",
+      "unrunCases": 0,
+      "recordedCases": 1,
+      "plannedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_OwnedLeaseWithPendingPublicationDoesNotReacquire",
+      "unrunCases": 0,
+      "recordedCases": 1,
+      "plannedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeSavePublicationWaitsForLeaseBeforeReportingAbsence",
+      "unrunCases": 0,
+      "recordedCases": 1,
+      "plannedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeDirectoryPublicationWaitsForLeaseBeforeClassifyingDestination",
+      "unrunCases": 0,
+      "recordedCases": 1,
+      "plannedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_RejectsHardLinkedSaveArchive",
+      "unrunCases": 0,
+      "recordedCases": 1,
+      "plannedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_CompletionRejectsLinkAddedAfterConsumption",
+      "unrunCases": 0,
+      "recordedCases": 1,
+      "plannedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable",
+      "unrunCases": 0,
+      "recordedCases": 1,
+      "plannedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.BrowserStagingBeforeRecorderAttachmentRetainsPhysicalHardLinkRejection",
+      "unrunCases": 0,
+      "recordedCases": 1,
+      "plannedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding",
+      "unrunCases": 0,
+      "recordedCases": 5,
+      "plannedCases": 5
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening",
+      "unrunCases": 0,
+      "recordedCases": 2,
+      "plannedCases": 2
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.CancellationBeforeOrAtOpenDoesNotConsumeBytes",
+      "unrunCases": 0,
+      "recordedCases": 2,
+      "plannedCases": 2
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.HardLinkedOrdinaryInputReachesCoordinatedPublicationWithoutChangingOutsideAlias",
+      "unrunCases": 0,
+      "recordedCases": 1,
+      "plannedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.SnapshotTimestampAndBytesBelongToTheOpenedFile",
+      "unrunCases": 0,
+      "recordedCases": 1,
+      "plannedCases": 1
+    }
+  ],
+  "trxCounters": [
+    {
+      "executed": 13,
+      "skipped": 0,
+      "total": 13,
+      "passed": 13,
+      "failed": 0,
+      "file": "portable-ordinary-read-windows-integration-001.sanitized.trx"
+    },
+    {
+      "executed": 12,
+      "skipped": 0,
+      "total": 12,
+      "passed": 12,
+      "failed": 0,
+      "file": "portable-ordinary-read-windows-unit-002.sanitized.trx"
+    }
+  ],
+  "files": [
+    {
+      "originalSha256": "cf6d8999773de25192e300281741f6d5de947f8ba213522778b67ec7043cd730",
+      "bytes": 1670,
+      "sanitizedSha256": "f056540851623ad24ca195f25fb0831a08aff57bfa533ac07ac9e018dbe0aaa8",
+      "file": "summary.sanitized.json"
+    },
+    {
+      "originalSha256": "cb406112e3862ff2a7734b214c07ddc52093cb48853d7ea6d0a6f7c216157a39",
+      "bytes": 20616,
+      "sanitizedSha256": "7b1a73128786becfaf4eeb288bab753eb7ffac4b4dee1b6810d6f8c6baafe350",
+      "file": "portable-ordinary-read-windows-integration-001.sanitized.trx"
+    },
+    {
+      "originalSha256": "e62cd03685eca6cb3e0ea38e0f9aa34c44e3e797dd2092f728259ba239c2182f",
+      "bytes": 18693,
+      "sanitizedSha256": "2198885d57f1bab9f988c49cd7f58d8fff809ff1bb5add9852eec53c465bc9f0",
+      "file": "portable-ordinary-read-windows-unit-002.sanitized.trx"
+    }
+  ],
+  "limits": [
+    "Only the twenty-five explicitly selected native filesystem cases; missing/failed fixture setup is not success",
+    "No additional suite, passing rerun or source fixes",
+    "No Linux/full-suite/PTY/browser/GM/provider/GUI/audio/game/server acceptance",
+    "T030-E final scoped acceptance remains separate"
+  ],
+  "sanitization": "Only generated summary/TRX and own run metadata read. Private source/run/home/tool paths and host/user labels replaced consistently. UTF-8 without BOM, LF; original and sanitized SHA256 recorded. JSON/TRX reparsed and privacy/token-like guards passed. No raw logs, credentials, authorization profiles or user saves published."
+}
