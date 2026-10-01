@@ -2,6 +2,500 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-backup-native-boundaries",
+      "responsibility": "Exact native Windows by-name links, namespace/alias/type and real lease/debt subset; all link fixtures must execute.",
+      "excludes": "Full storage or gameplay coverage and unrelated accepted cohorts.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+        "BookOfEternityClient/IO/StateDistributor.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.HardLinkedSourceTargetAndBackupPreserveEveryOutsideName",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreSameNameIsRejectedBeforeDeletingItsOnlyCopy",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-backup-native-routing",
+      "responsibility": "Actual original native physical backup handler and unchanged recorder bypass, plus both mixed-route rejections.",
+      "excludes": "Full storage or gameplay coverage and unrelated accepted cohorts.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+        "BookOfEternityClient/IO/StateDistributor.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.OriginalRecorderAndRecoveryKeepPhysicalCoreWithoutNewCallbacks",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-backup-native-cold",
+      "responsibility": "Two actual public restore cuts with separate-process normal lease recovery and external hard-link preservation on Windows.",
+      "excludes": "Full storage or gameplay coverage and unrelated accepted cohorts.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+        "BookOfEternityClient/IO/StateDistributor.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdRestoreAndCleanupPreserveExternalHardLinkNames"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-backup-review-regressions",
+      "responsibility": "Affected P1 ordering dependencies: debt-free generation and malformed input remain known errors; no-op/real lease/original route/same-lease debt preserve their boundary.",
+      "excludes": "Full storage or gameplay coverage and unrelated accepted cohorts.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+        "BookOfEternityClient/IO/StateDistributor.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.AbsentSourceAndCleanupDoNotCreateGenerationOrJournal",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SuppliedLeaseHonorsChangedBoundGenerationBeforeNoOp",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.OriginalRecorderAndRecoveryKeepPhysicalCoreWithoutNewCallbacks",
+            "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_MalformedExistingJson_FailsClosedAndPreservesExactBytes"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-backup-compensation-cause",
+      "responsibility": "Actual reverse-restore uncertainty stays outermost while preserving both distinct primary distribution and publication-cut causes.",
+      "excludes": "Other distributor/backup scenarios and broad lifecycle execution.",
+      "changeHints": [
+        "BookOfEternityClient/IO/StateDistributor.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsReverseCompensationWhenRestoreIsUnresolved"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-backup-generation-debt",
+      "responsibility": "Actual bound StateDistributor generation conflict after a committed backup retains journal uncertainty before compensation; outer SessionOperationContext finalization remains separate.",
+      "excludes": "Ordinary no-debt generation fencing and whole scope finalization migration.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableBackupConsumerTests.BoundDistributorClassifiesGenerationConflictInCommittedBackupDebtBeforeCompensation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-backup-routing",
+      "responsibility": "Backup source-link revalidation and explicit original recorder/recovery/evidence routes. Linux verifies original blocking; native bodies verify original publication and unchanged recorder bypass.",
+      "excludes": "Whole-flow atomicity, broad storage/QTE/wound/turn-lifecycle or physical browser receipt matrices.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+        "BookOfEternityClient/IO/StateDistributor.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SourceLinkBeforeOrAtReadBoundaryCannotBeBackedUp",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.OriginalRecorderAndRecoveryKeepPhysicalCoreWithoutNewCallbacks",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.ExistingOriginalEvidenceBlocksEvenOrdinaryAbsenceWithoutDeletingEvidence"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-backup-linux-case",
+      "responsibility": "Actual Linux case-distinct backup/target names remain independent.",
+      "excludes": "Whole-flow atomicity, broad storage/QTE/wound/turn-lifecycle or physical browser receipt matrices.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+        "BookOfEternityClient/IO/StateDistributor.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.LinuxCaseDistinctBackupAndTargetAreIndependentNames"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-backup-windows-paths",
+      "responsibility": "Actual Windows extended-root create/restore/cleanup and same-file case alias rejection; required native body with no silent platform return.",
+      "excludes": "Whole-flow atomicity, broad storage/QTE/wound/turn-lifecycle or physical browser receipt matrices.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+        "BookOfEternityClient/IO/StateDistributor.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.WindowsExtendedRootBackupLifecycleAndCaseAliasAreValidated"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-backup-existing-consumers",
+      "responsibility": "Existing actual distributor known-failure compensation, writer contention, accepted cleanup and malformed JSON controls; waits observe task failures as well as reached hooks.",
+      "excludes": "Whole-flow atomicity, broad storage/QTE/wound/turn-lifecycle or physical browser receipt matrices.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+        "BookOfEternityClient/IO/StateDistributor.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterBackupCapture_DoesNotOverwriteConcurrentAcceptedWriter",
+            "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterFirstWrite_DoesNotRollbackConcurrentAcceptedWriter",
+            "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_BackupCleanupFailure_DoesNotRollbackCommittedDistribution",
+            "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_MalformedExistingJson_FailsClosedAndPreservesExactBytes"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-backup-existing-api",
+      "responsibility": "Existing actual backup API contention and outside/missing evidence controls.",
+      "excludes": "Whole-flow atomicity, broad storage/QTE/wound/turn-lifecycle or physical browser receipt matrices.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+        "BookOfEternityClient/IO/StateDistributor.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.FileSystemManagerTests.CreateBackup_WaitsForCanonicalWriteLease",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_WaitsForCanonicalWriteLease",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.CleanupBackup_WaitsForCanonicalWriteLease",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_RejectsBackupOutsideCanonicalSession",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_MissingBeforeImageFailsClosed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-backup-recovery",
+      "responsibility": "Actual public backup APIs interrupted in owned processes, normal separate-process lease recovery, exact complete decisions, conflicts, hard links and unchanged synthetic save ZIPs.",
+      "excludes": "Whole-flow atomicity, broad QTE/wound/turn-lifecycle or physical browser receipt matrices.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+        "BookOfEternityClient/IO/StateDistributor.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess",
+            "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdUnknownLaterBackupOrGenerationRetainsEarlierTargetAndEvidence",
+            "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdRestoreAndCleanupPreserveExternalHardLinkNames"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-backup-linux-special",
+      "responsibility": "Required Linux FIFO source/target/backup rejection through public APIs in bounded owned processes; no Windows early return.",
+      "excludes": "Whole-flow atomicity, broad QTE/wound/turn-lifecycle or physical browser receipt matrices.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+        "BookOfEternityClient/IO/StateDistributor.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableBackupRecoveryTests.LinuxFifoIsRejectedInBoundedActualApiProcess"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-backup-treatment-claims",
+      "responsibility": "Actual StateDistributor accepted wound input and real held treatment/resource/item claim retention across unresolved backup and same-lease committed debt.",
+      "excludes": "Whole-flow atomicity, broad QTE/wound/turn-lifecycle or physical browser receipt matrices.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+        "BookOfEternityClient/IO/StateDistributor.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BackupUncertaintyRetainsRealTreatmentResourceAndItemClaims"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-backup-consumers",
+      "responsibility": "Actual StateDistributor backup capture, reverse restoration and accepted cleanup uncertainty; no later compensation or diagnostic reversal.",
+      "excludes": "Whole-flow atomicity, broad QTE/wound/turn-lifecycle or physical browser receipt matrices.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+        "BookOfEternityClient/IO/StateDistributor.cs",
+        "BookOfEternityClient/Services/QteSceneService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt",
+            "BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsReverseCompensationWhenRestoreIsUnresolved",
+            "BookOfEternityClient.Tests.PortableBackupConsumerTests.AcceptedDistributionSurvivesCleanupDebtAndDiagnosticFailure"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-backup-qte",
+      "responsibility": "Actual QTE backup publication and same-lease debt reach its immediate distributor boundary; uncertainty excludes wider baseline compensation and later writes.",
+      "excludes": "Whole-flow atomicity, broad QTE/wound/turn-lifecycle or physical browser receipt matrices.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+        "BookOfEternityClient/IO/StateDistributor.cs",
+        "BookOfEternityClient/Services/QteSceneService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-backup-api",
+      "responsibility": "Public ordinary sync/async backup creation, independently seeded restore and cleanup with exact bytes and B1 decision semantics on Linux/Windows.",
+      "excludes": "Whole StateDistributor/QTE atomicity, original physical evidence, archive/load and external profiles.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+        "BookOfEternityClient/Core/FileSystemManager.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-backup-boundaries",
+      "responsibility": "Ordinary backup path/type/link, exact absence/empty/hard-link, real lease/generation and same-lease recovery boundaries. Each test has isolated mutable state.",
+      "excludes": "Whole StateDistributor/QTE atomicity, original physical evidence, archive/load and external profiles.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+        "BookOfEternityClient/Core/FileSystemManager.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.AbsentSourceAndCleanupDoNotCreateGenerationOrJournal",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.EmptyBackupRestoresExactEmptyBytesOverPresentOrAbsentTarget",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CollidingBackupNameIsRejectedBeforeIntentAndPreservesExistingBytes",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreSameNameIsRejectedBeforeDeletingItsOnlyCopy",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidSourceOrTargetTypeIsRejectedBeforeBackupMutation",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SuppliedLeaseHonorsChangedBoundGenerationBeforeNoOp",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CapturedSourceAndGenerationAreRecheckedAfterMutationHook",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.HardLinkedSourceTargetAndBackupPreserveEveryOutsideName"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-backup-publication",
+      "responsibility": "Nontransient warm backup lifecycle faults, complete restore membership, exact rollback/committed outcomes, unknown bytes and postcommit logger failure.",
+      "excludes": "Whole StateDistributor/QTE atomicity, original physical evidence, archive/load and external profiles.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+        "BookOfEternityClient/Core/FileSystemManager.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreUnknownBytesRetainPartialMembersAndUnresolvedClassification",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.FreshGenerationAndBackupRollBackAsOneDecision"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-directory-uncertain-consumer",
       "responsibility": "Exact actual LiveTurnPreparationService unresolved tree evidence and finalization recovery propagation; rerun only the reviewed assertion correction.",
       "excludes": "Whole lifecycle, unrelated gameplay and full accepted-turn/backup migration.",
@@ -26,7 +520,7 @@
     },
     {
       "id": "portable-directory-backup-prerequisite",
-      "responsibility": "Known Linux-blocked actual quarantine fixture: preparation advances past tree cleanup but original StateDistributor CreateBackupCore descriptor-bound publication fails before quarantine assertions. Explicit separate reproducer; native qualification is allowed.",
+      "responsibility": "Exact real quarantine consumer previously blocked at StateDistributor CreateBackupCore on Linux; T030-G now reaches and passes its assertions. Preserve the real preparation/distribution fixture as a bounded end-to-end prerequisite check.",
       "excludes": "Whole lifecycle, unrelated gameplay and full accepted-turn/backup migration.",
       "changeHints": [
         "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs"

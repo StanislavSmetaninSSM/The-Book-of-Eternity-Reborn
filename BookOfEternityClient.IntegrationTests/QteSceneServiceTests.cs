@@ -15,7 +15,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 [Trait("Category", "RegressionIntegration")]
-public sealed class QteSceneServiceTests : IDisposable
+public sealed partial class QteSceneServiceTests : IDisposable
 {
     private const string QteNormalizerBackupDirectory = "game_state/control/qte_normalizer_backups";
     private readonly string _rootPath;

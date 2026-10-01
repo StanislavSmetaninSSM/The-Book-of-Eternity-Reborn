@@ -2201,6 +2201,10 @@ public sealed partial class QteSceneService
     {
         RejectUnboundResourceSurfaces(response);
         await _stateDistributor.DistributeAsync(writeLease, response);
+        // An accepted distribution can retain backup cleanup debt. Resolve it
+        // before experience/normalizer work, preserving the existing uncertain
+        // classification that excludes the enclosing baseline compensation.
+        _fs.ResolveBackupPublicationRecovery(writeLease);
 
         await ApplyAuthoritativeExperienceAsync(writeLease, response.ExperienceGained);
         var qteNormalizer = _normalizer.ForQteNormalization();

@@ -5636,14 +5636,12 @@ public partial class FileSystemManager
 
     public async Task<string?> CreateBackupAsync(string relativePath)
     {
-        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
-        return CreateBackupCore(relativePath);
+        return await WithOwnedBackupLeaseAsync(lease => CreateBackupWithLeaseAsync(lease, relativePath));
     }
 
     internal string? CreateBackup(CanonicalWriteLease writeLease, string relativePath)
     {
-        EnsureValidCanonicalWriteLease(writeLease);
-        return CreateBackupCore(relativePath);
+        return CreateBackupWithLeaseAsync(writeLease, relativePath).GetAwaiter().GetResult();
     }
 
     private string? CreateBackupCore(string relativePath)
@@ -5666,8 +5664,11 @@ public partial class FileSystemManager
 
     public async Task RestoreBackupAsync(string backupFullPath, string originalRelativePath)
     {
-        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
-        RestoreBackupCore(backupFullPath, originalRelativePath);
+        await WithOwnedBackupLeaseAsync(async lease =>
+        {
+            await RestoreBackupWithLeaseAsync(lease, backupFullPath, originalRelativePath);
+            return true;
+        });
     }
 
     internal void RestoreBackup(
@@ -5675,8 +5676,7 @@ public partial class FileSystemManager
         string backupFullPath,
         string originalRelativePath)
     {
-        EnsureValidCanonicalWriteLease(writeLease);
-        RestoreBackupCore(backupFullPath, originalRelativePath);
+        RestoreBackupWithLeaseAsync(writeLease, backupFullPath, originalRelativePath).GetAwaiter().GetResult();
     }
 
     private void RestoreBackupCore(string backupFullPath, string originalRelativePath)
@@ -5701,14 +5701,16 @@ public partial class FileSystemManager
 
     public async Task CleanupBackupAsync(string backupFullPath)
     {
-        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
-        CleanupBackupCore(backupFullPath);
+        await WithOwnedBackupLeaseAsync(async lease =>
+        {
+            await CleanupBackupWithLeaseAsync(lease, backupFullPath);
+            return true;
+        });
     }
 
     internal void CleanupBackup(CanonicalWriteLease writeLease, string backupFullPath)
     {
-        EnsureValidCanonicalWriteLease(writeLease);
-        CleanupBackupCore(backupFullPath);
+        CleanupBackupWithLeaseAsync(writeLease, backupFullPath).GetAwaiter().GetResult();
     }
 
     private void CleanupBackupCore(string backupFullPath)
