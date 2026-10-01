@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "6e48b997ac74973fa227ef8df768a0c6447f7438",
+  "catalogBlobAfterPatch": "161d1afde1d97bc3d158863c92b51d90eaec48c9",
+  "kind": "newly executed b2c-initial-guard-red; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained. Captured console line endings normalized to LF and trailing line whitespace stripped; original hashes retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "5a4c02c22dd1b53fb810a776ea53ac9a78ca74a4828dd32e2a9f0fa5f763c3ed",
+      "sanitizedSha256": "5a4c02c22dd1b53fb810a776ea53ac9a78ca74a4828dd32e2a9f0fa5f763c3ed"
+    },
+    {
+      "path": "portable-console-settings-session-unit-001.trx",
+      "originalSha256": "ea7419fc380e7d9487cd4f84e822ccaf9161101d0afdbf4fca42c0798defc090",
+      "sanitizedSha256": "cb888505111ad00e86a0dc1997ce2a3ecb4ad72c23f81ef6d00b1ba13f7da322"
+    }
+  ]
+}

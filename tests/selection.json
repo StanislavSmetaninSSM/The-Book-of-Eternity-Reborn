@@ -3,10 +3,18 @@
   "selections": [
     {
       "category": "portable-console-settings-session",
-      "reason": "Real initial-settings failure boundary under SessionOperationContext must stop both request and wait continuation for blocked, rolled-back, committed-follow-up and uncertain results; source-order check ties it to the actual initializer without changing generation-return anchors.",
+      "reason": "Corrected initial-settings failure boundary, real initializer wiring and all affected console recovery/preview consumers; clean committed positive control must allow continuation.",
       "contracts": [
         "fresh-game settings admission failure",
         "generation-bound dispatch continuation"
+      ]
+    },
+    {
+      "category": "portable-console-settings-client",
+      "reason": "Cover the five exact real-process menu consumers after the pending recovery-flow and initial-caller changes. Unchanged preparation cases are already green and excluded.",
+      "contracts": [
+        "console settings menu behavior",
+        "real process persistence and discard"
       ]
     }
   ]

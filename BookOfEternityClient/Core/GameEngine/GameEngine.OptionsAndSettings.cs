@@ -1185,6 +1185,8 @@ public partial class GameEngine
         }
         var result = await session.SaveAsync(RefreshAcceptedSettingsAsync);
         if (result.Disposition == BrowserPreparedWriteDisposition.Committed && !result.NeedsFollowUp) return true;
+        _logger.LogWarning("Console settings synchronization result: {Disposition}; follow-up={NeedsFollowUp}; {Message}",
+            result.Disposition, result.NeedsFollowUp, result.Message);
         AnsiConsole.MarkupLine($"[yellow]{Markup.Escape(result.Message)}[/]");
         return false;
     }

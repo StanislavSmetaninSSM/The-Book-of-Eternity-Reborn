@@ -948,6 +948,7 @@ public partial class GameEngine
             pendingGuardianCreation = _systemGuardianLibraryService.BuildPendingGuardianCreationNode(selectedPreset, soulName);
         }
 
+        var initializationCompleted = false;
         try
         {
             // Step 3: Enter the Chaos Sea — NO character/world description at this point.
@@ -957,6 +958,7 @@ public partial class GameEngine
                 soulFormDescription,
                 pendingGuardianCreation,
                 selectedSystemGuardianPreset);
+            initializationCompleted = true;
             var initialTurnAccepted = await SessionOperationContext.RunBoundAsync(
                 _fs, sessionGeneration, WaitForGmResponse);
             if (!initialTurnAccepted)
@@ -968,6 +970,14 @@ public partial class GameEngine
                 ex,
                 "Начальная сессия была заменена во время GM repair; новая сессия сохранена без очистки и rollback старого запуска.");
             await RebindRuntimeAfterSessionReplacementAsync();
+            return;
+        }
+        catch (InvalidDataException ex) when (!initializationCompleted)
+        {
+            _logger.LogWarning(ex, "Fresh-game initialization was not confirmed; no initial GM wait was entered.");
+            AnsiConsole.MarkupLine("[yellow]Подготовка первого хода не завершена. Ожидание ответа не начато; проверьте состояние книги перед повторным запуском.[/]");
+            AnsiConsole.MarkupLine($"[dim]{Markup.Escape(_loc.T("press_any_key"))}[/]");
+            _inputSource.ReadKey(intercept: true);
             return;
         }
 
@@ -1212,8 +1222,8 @@ public partial class GameEngine
         _gameLoop.SetSession(sessionId, 0);
         await RefreshRuntimeStateAsync();
 
-        // Write game settings (difficulty flags) for GM
-        if (!await WriteGameSettingsForGm()) return;
+        // A failed settings outcome must leave the entire initialization scope.
+        await RequireInitialSettingsReadyAsync();
 
         var guardianRequestLabel =
             pendingGuardianCreation["presetDisplayName"]?.GetValue<string>() ??
