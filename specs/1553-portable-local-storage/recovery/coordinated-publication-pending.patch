@@ -1,3 +1,16 @@
+diff --git a/BookOfEternityClient.IntegrationTests/ShiningTradeRequestStateTests.cs b/BookOfEternityClient.IntegrationTests/ShiningTradeRequestStateTests.cs
+index 8af7cf89..f2193f22 100644
+--- a/BookOfEternityClient.IntegrationTests/ShiningTradeRequestStateTests.cs
++++ b/BookOfEternityClient.IntegrationTests/ShiningTradeRequestStateTests.cs
+@@ -1855,7 +1855,7 @@ public sealed class ShiningTradeRequestStateTests
+         }
+     }
+ 
+-    private static async Task WriteMinimalShiningTradeStateAsync(FileSystemManager fs, int factionStrength, bool withReadyInventory = false)
++    internal static async Task WriteMinimalShiningTradeStateAsync(FileSystemManager fs, int factionStrength, bool withReadyInventory = false)
+     {
+         await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", new JsonObject
+         {
 diff --git a/BookOfEternityClient/Core/FileSystemManager.cs b/BookOfEternityClient/Core/FileSystemManager.cs
 index d44879dd..936b6809 100644
 --- a/BookOfEternityClient/Core/FileSystemManager.cs
@@ -61,10 +74,10 @@ index 4a4415cc..33f1deab 100644
  
  B1 already distinguishes `Committed`, `RolledBack`, `Uncertain` (`TrustedLocalFilePublication.cs:75–104`), including committed observer/cleanup failure. Keep the bool facade: true for committed, false for initial baseline mismatch or positively confirmed rollback, distinct unresolved exception for uncertain. Never broadly catch the publish API and return false. Capture the durable result before owned-lease disposal/follow-up; a disposal/cleanup failure cannot turn an established commit into uncommitted or start manual undo. Surface/log the follow-up without changing that disposition. The prepared settings implementation supplies the existing model (`WebUi/BrowserLocalWriteCoordinator.Prepared.cs:35–59,73–92`).
 diff --git a/tests/categories.json b/tests/categories.json
-index ad2fe43a..f049c709 100644
+index ad2fe43a..6a031acd 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -8417,6 +8417,148 @@
+@@ -8417,6 +8417,177 @@
            ]
          }
        ]
@@ -207,6 +220,35 @@ index ad2fe43a..f049c709 100644
 +          "project": "unit",
 +          "tests": [
 +            "BookOfEternityClient.Tests.PortableCoordinatedAuthorityTests.*"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-coordinated-cleanup",
++      "responsibility": "Actual NPC owning/supplied-lease, Guardian, Shining and resident helper callers preserve malformed planning aborts and propagate new uncertain publication or retained-evidence admission; existing QTE acceptance exposes its ordinary callback route.",
++      "excludes": "Whole trade/normalizer/domain categories and broader browser/save-load migration.",
++      "changeHints": [
++        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
++        "BookOfEternityClient/Services/NpcTradeRequestState.cs",
++        "BookOfEternityClient/Services/GuardianTradeRequestState.cs",
++        "BookOfEternityClient/Services/ShiningTradeRequestState.cs",
++        "BookOfEternityClient/Services/GuardianAbodeResidentRequestState.cs",
++        "BookOfEternityClient/Services/QteSceneService.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "integration",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.*",
++            "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.AcceptOffer_SealsGenerationOfferTurnAndExactEffectRootWithoutLiveRebuild"
 +          ]
 +        }
 +      ]

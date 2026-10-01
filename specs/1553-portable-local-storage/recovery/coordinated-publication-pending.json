@@ -1,10 +1,17 @@
 {
   "schemaVersion": 1,
-  "baseCommit": "ed0cec422339228139cff8805b4d680fd0866129",
+  "baseCommit": "b5eca4d03ad4b7b9032490b2fa97af70def2425f",
   "patchFile": "coordinated-publication-pending.patch",
-  "patchBytes": 11012,
-  "patchSha256": "73214196e9038dc988d6cf00ae51c8494e28e8bbf7bd575547a28e6d754bc661",
+  "patchBytes": 13273,
+  "patchSha256": "2978b6266a65ac9a2ec0a52315aebe5b49234e389cd8b0c43d32d4c41d37143d",
   "entries": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ShiningTradeRequestStateTests.cs",
+      "beforeBlob": "8af7cf8921753d22e7eb2d917f7efebb8efc7e63",
+      "afterBlob": "f2193f222e0e8000970578d0da4cc576b78976b5",
+      "beforeSha256": "d720243cd860fce3050840b94c5e32d863952df0c5c345eedd07540f46d2f9e4",
+      "afterSha256": "406341a88c769d60eb55e5549480ea286f159f5345acaf174ff3f8dd10bd9bbc"
+    },
     {
       "path": "BookOfEternityClient/Core/FileSystemManager.cs",
       "beforeBlob": "d44879dd699ed5629fecf7647c565372fe6121cd",
@@ -22,12 +29,12 @@
     {
       "path": "tests/categories.json",
       "beforeBlob": "ad2fe43ab192f5908e328d6bead37cb8f31af595",
-      "afterBlob": "f049c70987e9375d41ba5801801708cb54253b3d",
+      "afterBlob": "6a031acd75cd72c91209f56a2ccf33a81234eb00",
       "beforeSha256": "928087ad1e5e6df965427ab13db6db1381804d0d4ee8651b45211a9c5a7d9576",
-      "afterSha256": "9bea26f94d4e78e52f75426b3a51b500bdff07d2abb87618c51a5880b1e818ec"
+      "afterSha256": "8f014244368ef63861d52ca0d63c6b8c13ebfdf0a0892d0320018728ac5a5775"
     }
   ],
-  "appliedSourceTree": "ca0496bc6f09305a08ee405ca23fe80e079811d3",
+  "appliedSourceTree": "827d13e7ed1327b724fd7ba5f0d427a5f6c3178f",
   "comparisonExcludes": [
     "specs/1553-portable-local-storage/recovery/coordinated-publication-pending.patch",
     "specs/1553-portable-local-storage/recovery/coordinated-publication-pending.json"

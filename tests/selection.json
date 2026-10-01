@@ -2,33 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-coordinated-publication",
-      "reason": "Correct the two observed post-commit diagnostic failures; cover exact images, all initial guards, duplicate final ordering and corrected alias/explicit original routes.",
+      "category": "portable-coordinated-cleanup",
+      "reason": "First bounded actual cleanup-caller RED: five uncertainty routes, five matching publication controls, five malformed-planning controls, two distinct retained-evidence admissions, plus the existing actual QTE acceptance route. Production unchanged.",
       "contracts": [
-        "durable disposition survives diagnostics",
-        "complete final member set"
-      ]
-    },
-    {
-      "category": "portable-coordinated-authority",
-      "reason": "Correct the reached Linux factory stale-guard failure.",
-      "contracts": [
-        "platform-distinct initial authority"
-      ]
-    },
-    {
-      "category": "portable-coordinated-lease",
-      "reason": "Cover the changed completed-release diagnostic branch and retained real-lease/primary-error contract.",
-      "contracts": [
-        "actual owned release and zero-write lease admission"
-      ]
-    },
-    {
-      "category": "portable-coordinated-recovery",
-      "reason": "First execution of the saved actual-helper cold cuts and outside hard-link/unknown/generation controls.",
-      "contracts": [
-        "whole-set cold recovery",
-        "outside alias preservation"
+        "unknown publication never swallowed",
+        "acquisition/read admission propagates",
+        "known parse abort retained",
+        "QTE acceptance ordinary helper route"
       ]
     }
   ]
