@@ -8232,6 +8232,45 @@
       ]
     },
     {
+      "id": "portable-storage-windows-handle-comparison",
+      "responsibility": "Native Windows comparison correction: extended-root clear and lease admission, causally proven alias before-write generation fencing, original opened-external-lock path rejection and hard-linked-lock rejection. Exactly seven cases; run behavior only on Windows.",
+      "excludes": "Linux behavioral claims from gated bodies, unchanged junction-clear cohort, broad canonical storage, legacy recovery migration or any relaxation of handle/type/link identity guards.",
+      "changeHints": [
+        "BookOfEternityClient/Core/PhysicalFileAuthority.cs",
+        "BookOfEternityClient.Tests/PortableSessionRootKeyTests.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-storage-windows-paths",
+          "when": "The wider Windows replacement namespace or alias contract changes beyond this comparison correction."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ExtendedWindowsRootPreservesExclusionsAndCanonicalMutationBoundaries",
+            "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasesShareRevisionIdentityWithoutRewritingBaseOrJournalPaths",
+            "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasBoundWriterCannotMutateTheReplacementSessionBeforeFinalFence"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireCanonicalWriteLease_RejectsOpenedExternalLockHandleAfterPathSwap",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireSessionLifecycleLease_RejectsOpenedExternalLockHandleAfterPathSwap",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.LeaseAcquisition_RejectsHardLinkedLockFile"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-storage-windows-paths",
       "responsibility": "Exactly six Windows-only filesystem bodies: selected directory junction, lock junction/dangling node, extended-root clear boundaries, shared alias revision identity and cross-manager before-write fencing.",
       "excludes": "Pure drive/UNC policy (portable-session-root-keys), Linux execution claims, broad Windows suites, provider/backend/GM acceptance and silent link-fixture setup success.",

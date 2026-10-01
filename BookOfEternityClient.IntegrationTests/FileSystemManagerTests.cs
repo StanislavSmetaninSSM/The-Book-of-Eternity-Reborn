@@ -5999,8 +5999,9 @@ public sealed class FileSystemManagerTests : IDisposable
         var outsideRoot = Path.Combine(_rootPath, "opened-lock-outside");
         var probeLink = Path.Combine(_rootPath, "opened-lock-probe");
         Directory.CreateDirectory(outsideRoot);
-        if (!TryCreateDirectoryLink(probeLink, outsideRoot))
-            return;
+        Assert.True(
+            TryCreateDirectoryLink(probeLink, outsideRoot),
+            "The opened-lock path-swap scenario requires a working directory-link fixture.");
         Directory.Delete(probeLink);
 
         var swappedToOutside = false;

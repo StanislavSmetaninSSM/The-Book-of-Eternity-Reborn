@@ -2,14 +2,11 @@
 
 ## Current Windows handle-comparison correction WIP
 
-The normal source/evidence base is `a7925a189a6bab356afdee525fb79d72eb3e4609`. Before build or native verification, apply the [exact pending correction](windows-handle-comparison-pending.json) once. It contains only the large physical-authority, two-scenario integration fixture and category deltas; the strengthened focused test and current selection are normal blobs.
+The frozen comparison correction is now delivered as normal Git files: PhysicalFileAuthority `1445bf5f6cc3c3c5bb8145983974336446a53604`, integration tests `a942b4d8a99689f1e8447b8c08fb053536e3ac4f`, catalog `dd51f5e50a73baeed77ac23c29895b7f5a0cb7a1`. The strengthened root-key test `ca02ff37574e32da385374db87746d3e31d99be1` and selection `7ae4542ff8b8b9833fd6817730f5ff24737db068` remain unchanged normal blobs. Native normalization starts from `195af7c92ef742983788bc27a025555b2fd63367`, tree `3d59c52d6b68419a1eee541df82f962ea472bbf3`, in the clean separate QA copy with clone-local `core.autocrlf=false`. The exact 4,265-byte patch, SHA256 `385578978141eee54a2fbcb525f7c6c4af676fb567b8eaac181f8451d7995a6c`, passed ordinary `git apply --check` and `git apply`, with no zero-context flag. All before/after blobs and the full applied tree `c351104b3a337bcf3f11fdb02af268b4ce849ee1` matched before retirement and delivery instruction updates; this is not the final normalized tree.
 
-```sh
-git apply --check specs/1553-portable-local-storage/recovery/windows-handle-comparison.pending.patch
-git apply specs/1553-portable-local-storage/recovery/windows-handle-comparison.pending.patch
-```
+Only this patch and manifest are retired; their [exact historical packet at 195af7c9](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/tree/195af7c92ef742983788bc27a025555b2fd63367/specs/1553-portable-local-storage/recovery) and all earlier evidence remain. No patch application is required on this normal checkpoint. Verify the complete remote SHA and exact blobs above before native execution. The earlier six-case native RED remains immutable, including its qualified alias-writer reported pass. Fresh Linux build/discovery already validated 122 categories / 10,340 methods/files; its zero-test plan selected two descriptors / seven cases. Do not repeat those checks.
 
-Verify every after-blob in the manifest; reverse `--check` identifies an already applied patch. Preserve the packet until normal delivery verifies exact bytes. Linux uses discovery/PlanOnly; actual behavioral correction evidence requires the seven-case `portable-storage-windows-handle-comparison` category on Windows. The earlier six-case native RED remains immutable, including its qualified alias-writer reported pass. Fresh Linux build/discovery validated 122 categories / 10,340 methods/files; the subsequent zero-test plan selected exactly two descriptors / seven cases. Independent scoped Astra XHigh source review accepted the narrow correction and selection. Actual Windows correction GREEN and B3b acceptance remain pending.
+Independent scoped Astra XHigh source review accepted the narrow correction and seven-case selection. Run only `pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-storage-windows-handle-comparison -Parallelism 1` on Windows in separate synthetic temp/output with process-scoped telemetry opt-outs; no GM/provider/browser/audio or permission/security changes. Actual Windows result and final B3b acceptance remain separate pending gates.
 
 ## Normalized B3b base and native RED
 
