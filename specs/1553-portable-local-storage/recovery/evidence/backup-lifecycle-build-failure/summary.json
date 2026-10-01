@@ -1,0 +1,85 @@
+{
+  "Categories": [
+    "portable-backup-api",
+    "portable-backup-boundaries",
+    "portable-backup-publication"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-backup-api",
+      "reason": "Public ordinary sync/async backup creation, independently seeded restore and cleanup with exact bytes and B1 decision semantics on Linux/Windows.",
+      "contracts": [
+        "FR-002 through FR-007; ordinary backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-boundaries",
+      "reason": "Ordinary backup path/type/link, exact absence/empty/hard-link, real lease/generation and same-lease recovery boundaries. Each test has isolated mutable state.",
+      "contracts": [
+        "FR-002 through FR-007; ordinary backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-publication",
+      "reason": "Nontransient warm backup lifecycle faults, complete restore membership, exact rollback/committed outcomes, unknown bytes and postcommit logger failure.",
+      "contracts": [
+        "FR-002 through FR-007; ordinary backup lifecycle"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "eeb411c5d1bc083af34ca22e5ce6405728b70b73",
+    "WorkingTreeFingerprint": "1DD5276A9F2E40B2D922B687A50460DB471314D8FE4B1A5AAF05687AD84A928A",
+    "ChangedFiles": 2
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0627297,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0168491,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0225874,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 136.7638276,
+      "Completed": false
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 20,
+  "WallTime": "00:02:16.9927560",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 0,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 0,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

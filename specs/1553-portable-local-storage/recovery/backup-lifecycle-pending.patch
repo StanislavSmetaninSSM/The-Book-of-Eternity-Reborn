@@ -1,3 +1,16 @@
+diff --git a/BookOfEternityClient.IntegrationTests/QteSceneServiceTests.cs b/BookOfEternityClient.IntegrationTests/QteSceneServiceTests.cs
+index 4cec0dc9..de441eb7 100644
+--- a/BookOfEternityClient.IntegrationTests/QteSceneServiceTests.cs
++++ b/BookOfEternityClient.IntegrationTests/QteSceneServiceTests.cs
+@@ -15,7 +15,7 @@ using Xunit;
+ namespace BookOfEternityClient.Tests;
+ 
+ [Trait("Category", "RegressionIntegration")]
+-public sealed class QteSceneServiceTests : IDisposable
++public sealed partial class QteSceneServiceTests : IDisposable
+ {
+     private const string QteNormalizerBackupDirectory = "game_state/control/qte_normalizer_backups";
+     private readonly string _rootPath;
 diff --git a/BookOfEternityClient/Core/FileSystemManager.cs b/BookOfEternityClient/Core/FileSystemManager.cs
 index 70079f9d..4dc1ce30 100644
 --- a/BookOfEternityClient/Core/FileSystemManager.cs
@@ -65,13 +78,63 @@ index 70079f9d..4dc1ce30 100644
  
      private void CleanupBackupCore(string backupFullPath)
 diff --git a/tests/categories.json b/tests/categories.json
-index 0a621b60..73b498c3 100644
+index 0a621b60..532a1bd0 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -1,6 +1,92 @@
+@@ -1,6 +1,142 @@
  {
    "schemaVersion": 1,
    "categories": [
++    {
++      "id": "portable-backup-consumers",
++      "responsibility": "Actual StateDistributor backup capture, reverse restoration and accepted cleanup uncertainty; no later compensation or diagnostic reversal.",
++      "excludes": "Whole-flow atomicity, broad QTE/wound/turn-lifecycle or physical browser receipt matrices.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
++        "BookOfEternityClient/IO/StateDistributor.cs",
++        "BookOfEternityClient/Services/QteSceneService.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableBackupConsumerTests.*"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-backup-qte",
++      "responsibility": "Actual QTE backup publication and same-lease debt reach its immediate distributor boundary; uncertainty excludes wider baseline compensation and later writes.",
++      "excludes": "Whole-flow atomicity, broad QTE/wound/turn-lifecycle or physical browser receipt matrices.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
++        "BookOfEternityClient/IO/StateDistributor.cs",
++        "BookOfEternityClient/Services/QteSceneService.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "integration",
++          "tests": [
++            "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation"
++          ]
++        }
++      ]
++    },
 +    {
 +      "id": "portable-backup-api",
 +      "responsibility": "Public ordinary sync/async backup creation, independently seeded restore and cleanup with exact bytes and B1 decision semantics on Linux/Windows.",

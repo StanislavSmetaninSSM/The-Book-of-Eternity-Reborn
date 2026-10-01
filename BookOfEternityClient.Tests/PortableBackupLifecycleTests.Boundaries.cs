@@ -139,8 +139,9 @@ public sealed partial class PortableBackupLifecycleTests
     [Fact]
     public async Task SuppliedLeaseHonorsChangedBoundGenerationBeforeNoOp()
     {
-        var files = Manager(); SeedGeneration(files);
-        var generation = files.GetOrCreateSessionGeneration();
+        var files = Manager();
+        using var document = JsonDocument.Parse(SeedGeneration(files));
+        var generation = document.RootElement.GetProperty("generationId").GetString()!;
         await Assert.ThrowsAsync<SessionReplacedException>(() => SessionOperationContext.RunBoundAsync(files, generation, async () =>
         {
             await using var lease = await files.AcquireCanonicalWriteLeaseAsync();

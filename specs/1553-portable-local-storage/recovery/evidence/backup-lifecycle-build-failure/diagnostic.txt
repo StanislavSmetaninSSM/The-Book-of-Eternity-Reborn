@@ -1,0 +1,1 @@
+Build-unit exit 1: PortableBackupLifecycleTests.Boundaries.cs(143,32), CS7036: no argument for required writeLease parameter of FileSystemManager.GetOrCreateSessionGeneration(CanonicalWriteLease). Zero tests executed. Corrected test reads its seeded generation; no production change for this build failure.
