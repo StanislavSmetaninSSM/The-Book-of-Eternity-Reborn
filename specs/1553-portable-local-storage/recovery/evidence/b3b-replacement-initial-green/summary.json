@@ -1,0 +1,73 @@
+{
+  "Categories": [
+    "portable-session-replacement"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "00e2ce0b68394a3261bf2756f1f3e02b7118e81a",
+    "WorkingTreeFingerprint": "A466DE444FF423544EC310A8768A040BA1A61EE51BE395C08BDB6CB3ED15CE6F",
+    "ChangedFiles": 2
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-session-replacement",
+      "Seconds": 4.0229978,
+      "BudgetMinutes": 4,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0854554,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0130565,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0118421,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 157.3549906,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0106149,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 9,
+  "WallTime": "00:02:46.6728596",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 15,
+    "CompletedCases": 15,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 15,
+    "Executed": 15,
+    "Passed": 15,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

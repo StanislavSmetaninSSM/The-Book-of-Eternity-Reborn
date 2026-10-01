@@ -10,6 +10,40 @@ public static class TrustedLocalPublicationCrashFixture
     {
         if (args.Length != 4) return 64;
         var files = new FileSystemManager(args[0], NullLogger<FileSystemManager>.Instance);
+        if (args[2].StartsWith("replacement-", StringComparison.Ordinal))
+        {
+            try
+            {
+                if (args[2] == "replacement-recover")
+                {
+                    await using var replacementRecoveryLease = await files.AcquireCanonicalWriteLeaseAsync();
+                    return 0;
+                }
+                var replacementGenerationBefore = File.ReadAllBytes(files.SessionGenerationPath);
+                var replacementFiles = new FileSystemManager(args[0], NullLogger<FileSystemManager>.Instance,
+                    PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+                    {
+                        LocalPublicationObserver = (phase, index) =>
+                        {
+                            if (args[2] != "replacement-cut") return;
+                            var cut = args[3] switch
+                            {
+                                "early-member" => phase == TrustedLocalPublicationPhase.MemberPublished && index == 0,
+                                "after-generation" => phase == TrustedLocalPublicationPhase.MemberPublished &&
+                                    !replacementGenerationBefore.AsSpan().SequenceEqual(File.ReadAllBytes(files.SessionGenerationPath)),
+                                "committed" => phase == TrustedLocalPublicationPhase.Committed,
+                                "cleanup" => phase == TrustedLocalPublicationPhase.CleanupMember,
+                                _ => false
+                            };
+                            if (cut) Environment.Exit(73);
+                        }
+                    });
+                await replacementFiles.ClearGameStateAsync();
+                return args[2] == "replacement-success" ? 0 : 66;
+            }
+            catch (InvalidDataException) when (args[2] == "replacement-reject") { return 0; }
+            catch (Exception ex) { Console.Error.WriteLine(ex); return 1; }
+        }
         if (args[2] == "generation-read")
         {
             var request = args[3].Split(':');

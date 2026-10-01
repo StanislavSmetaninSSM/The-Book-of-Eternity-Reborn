@@ -1,6 +1,6 @@
 {
   "baseCommit": "41d9104076d59fabacf93c3b1be3cc8d5ccc238f",
-  "status": "B3b initial 15-case RED observed; first clear/rotation/pending-inspector implementation WIP, covering GREEN and remaining console/proposal/cold/negative cases pending.",
+  "status": "Initial 15-case GREEN at 00e2ce0b plus this manager/catalog patch; 37-case boundary/normalization test-first increment is unrun, caller fixes pending.",
   "patches": [
     {
       "path": "session-replacement-source.pending.patch",
@@ -31,6 +31,9 @@
       "applyArguments": []
     }
   ],
-  "testSourceBlob": "cf5e22ecc6595a43d0f483a3fdbadbc3703ec546",
-  "selectionBlob": "1ea930f6de88d967e9b9b8dba607c3b66ddd16ce"
+  "testSourceBlob": "499d89322195fd0eb6b3912c2ea276aa2a970e6a",
+  "selectionBlob": "1ea930f6de88d967e9b9b8dba607c3b66ddd16ce",
+  "boundaryTestBlob": "95ab0fb66b275a0eb6847f18602659baf10c282a",
+  "crashFixtureBlob": "14bbdef398f3a9be46b73ac1ab1d0f0a48c3f90b",
+  "replacementPartialBlob": "3297f578cb89c80aec80c560cac603134c24d5ba"
 }

@@ -6,7 +6,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class PortableSessionReplacementTests : IDisposable
+public sealed partial class PortableSessionReplacementTests : IDisposable
 {
     private readonly string _root = Path.Combine(Path.GetTempPath(), "boe-session-replacement-" + Guid.NewGuid().ToString("N"));
     private readonly string _generation = Guid.NewGuid().ToString("N");

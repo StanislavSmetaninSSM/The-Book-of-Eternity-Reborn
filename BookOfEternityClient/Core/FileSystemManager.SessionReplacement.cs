@@ -4,6 +4,11 @@ namespace BookOfEternityClient.Core;
 
 public partial class FileSystemManager
 {
+    // Pure policy seam for supported Windows root/member spellings; caller wiring
+    // is the next test-first correction, not part of this throwing scaffold.
+    internal static string GetLocalRelativePath(string root, string path, bool windows) =>
+        throw new NotImplementedException();
+
     private async Task<string> PublishSessionReplacementAsync(CanonicalWriteLease lease, bool clearGameState)
     {
         EnsureValidSessionReplacementLease(lease);

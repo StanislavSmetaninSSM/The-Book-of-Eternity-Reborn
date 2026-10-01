@@ -2,7 +2,7 @@
 
 ## Current B3b implementation WIP packet
 
-The initial 15-case RED ran; the first implementation and its covering GREEN are not yet verified. New focused source/tests, selection and evidence are normal blobs. The large manager/catalog deltas are retained in [session-replacement-pending.json](session-replacement-pending.json), with exact base/after blobs and SHA256 values. After verifying the remote SHA, check/apply each patch once:
+The initial 15-case RED and GREEN ran at their recorded exact sources. The expanded 37-case boundary/normalization test-first increment is unrun; its throwing path-policy seam is not yet wired. New focused source/tests, selection and evidence are normal blobs. The large manager/catalog deltas are retained in [session-replacement-pending.json](session-replacement-pending.json), with exact base/after blobs and SHA256 values. After verifying the remote SHA, check/apply each patch once:
 
 ```sh
 git apply --check --unidiff-zero specs/1553-portable-local-storage/recovery/session-replacement-source.pending.patch
