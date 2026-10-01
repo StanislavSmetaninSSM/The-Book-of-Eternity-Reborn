@@ -91,6 +91,7 @@ public sealed class PortablePreparedSettingsTests : IDisposable
     [InlineData("rollback")]
     [InlineData("committed-cleanup")]
     [InlineData("unknown")]
+    [InlineData("unknown-close")]
     public async Task PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(string cut)
     {
         var before = await Initialize(); var applied = false; var injected = false;
@@ -99,7 +100,9 @@ public sealed class PortablePreparedSettingsTests : IDisposable
             var wanted = cut == "committed-cleanup" ? TrustedLocalPublicationPhase.Committed : TrustedLocalPublicationPhase.MemberPublished;
             if (injected || phase != wanted) return;
             injected = true;
-            if (cut == "unknown") File.WriteAllBytes(_files.ResolvePath(Projection), [99]);
+            if (cut.StartsWith("unknown", StringComparison.Ordinal)) File.WriteAllBytes(_files.ResolvePath(Projection), [99]);
+            if (cut == "unknown-close")
+                SessionOperationContext.MarkReplaced(_root, null, "Revoked after partial publication with unknown bytes.");
             throw new InvalidOperationException("Injected settings interruption.");
         };
         var result = await _coordinator.ExecutePreparedAsync(Request, _ => Task.FromResult(Prepared(before, () =>
@@ -123,6 +126,7 @@ public sealed class PortablePreparedSettingsTests : IDisposable
         {
             Assert.Equal(BrowserPreparedWriteDisposition.Uncertain, result.Disposition); Assert.False(applied);
             Assert.Equal(new byte[] { 99 }, File.ReadAllBytes(_files.ResolvePath(Projection)));
+            Assert.Equal(Desired, File.ReadAllBytes(_files.ResolvePath("config.json")));
             Assert.True(File.Exists(Path.Combine(_files.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));
         }
     }
