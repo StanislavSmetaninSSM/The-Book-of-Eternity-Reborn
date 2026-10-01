@@ -29,7 +29,7 @@
     },
     {
       "category": "portable-settings-notices",
-      "reason": "#1553 B2b success warnings and explicit failure outcomes must reach the actual settings/audio response handlers without stale/interrupted responses clearing committed follow-up.",
+      "reason": "#1553 B2b success warnings and explicit failure outcomes must reach the actual settings/audio response handlers without stale/interrupted responses clearing committed follow-up. Also covers the exact OS-aware npm build prerequisite and optional owned refresh publication seam.",
       "contracts": [
         "visible persistence notice",
         "response ownership",

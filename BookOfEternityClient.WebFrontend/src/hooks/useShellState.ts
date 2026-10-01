@@ -6,7 +6,8 @@ import { settledToResult } from './shellStateResult';
 export function useShellState(advancedEnabled: boolean) {
   const [shellState, setShellState] = useState<BrowserShellState>({ status: 'loading' });
 
-  const loadBrowserState = useCallback(async () => {
+  const loadBrowserState = useCallback(async (isCurrent: () => boolean = () => true) => {
+    if (!isCurrent()) return;
     setShellState((prev) => prev.status === 'ready' ? prev : { status: 'loading' });
 
     const results = await Promise.allSettled([
@@ -18,6 +19,7 @@ export function useShellState(advancedEnabled: boolean) {
       browserApi.getCommandCoverage()
     ]);
 
+    if (!isCurrent()) return;
     const menu = settledToResult(results[0]);
     const session = settledToResult(results[1]);
     const game = settledToResult(results[2]);
@@ -47,6 +49,7 @@ export function useShellState(advancedEnabled: boolean) {
       lifecycle = settledToResult(advResults[0]);
     }
 
+    if (!isCurrent()) return;
     setShellState({
       status: 'ready',
       connectionStatus: anyNetworkFailed ? 'partial' : 'connected',

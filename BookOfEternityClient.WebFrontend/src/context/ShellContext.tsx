@@ -77,7 +77,7 @@ export interface ShellContextValue {
   isCommandView: boolean;
   executeCommand: (command: string) => Promise<void>;
   clearCommandResult: () => void;
-  loadBrowserState: () => Promise<void>;
+  loadBrowserState: (isCurrent?: () => boolean) => Promise<void>;
 }
 
 const fallbackTheme: RealmTheme = {

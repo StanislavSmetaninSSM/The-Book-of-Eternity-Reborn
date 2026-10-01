@@ -155,6 +155,10 @@ await scenario('shared refresh checks optional owner after asynchronous reads be
   const cwd = (globalThis as { process?: { cwd?: () => string } }).process?.cwd?.() ?? '.';
   const root = basename(cwd) === 'BookOfEternityClient.WebFrontend' ? cwd : join(cwd, 'BookOfEternityClient.WebFrontend');
   const source = readFileSync(join(root, 'src', 'hooks', 'useShellState.ts'), 'utf8');
+  const context = readFileSync(join(root, 'src', 'context', 'ShellContext.tsx'), 'utf8');
+  assert(context.includes('loadBrowserState: (isCurrent?: () => boolean) => Promise<void>'), 'Context type drops the optional refresh owner.');
+  assert(context.includes('const { shellState, loadBrowserState } = useShellState(advancedEnabled);') &&
+    context.includes('    loadBrowserState\n  }),'), 'Context no longer directly forwards the owned refresh function.');
   assert(source.includes('isCurrent: () => boolean = () => true'), 'Refresh lacks optional response ownership.');
   const readIndex = source.indexOf('const results = await Promise.allSettled');
   const errorIndex = source.indexOf("status: 'error'");

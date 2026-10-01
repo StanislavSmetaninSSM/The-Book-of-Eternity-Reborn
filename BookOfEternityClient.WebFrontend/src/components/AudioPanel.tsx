@@ -10,30 +10,37 @@ import type {
 import { isSuccess, useShell } from '../context/ShellContext';
 import { EmptyOrFailure } from './ErrorNotice';
 import { formatSidebarAudioSummary } from '../utils/formatters';
+import { createSettingsWriteNoticeTracker, type SettingsWriteNotice } from '../utils/settingsPersistenceNotice';
 import { toPlayerFacingText } from '../utils/playerCopy';
 
 export function AudioPanel() {
-  const { activeRoute, advancedEnabled, readyState } = useShell();
+  const { activeRoute, advancedEnabled, readyState, loadBrowserState } = useShell();
   const [audioResult, setAudioResult] = useState<BrowserApiResult<BrowserAudioSettingsDto> | null>(readyState?.audio ?? null);
+  const [persistenceNotice, setPersistenceNotice] = useState<SettingsWriteNotice | null>(null);
+  const persistenceTracker = useRef(createSettingsWriteNoticeTracker());
+  const pendingUpdate = useRef(false);
   const [notice, setNotice] = useState('');
   const audioElementRef = useRef<HTMLAudioElement | null>(null);
   const audioSettingsUpdateQueueRef = useRef<Promise<void>>(Promise.resolve());
 
   useEffect(() => {
-    setAudioResult(readyState?.audio ?? null);
+    if (!pendingUpdate.current) setAudioResult(readyState?.audio ?? null);
   }, [readyState?.audio]);
 
   useEffect(() => () => {
+    persistenceTracker.current.invalidate();
     audioElementRef.current?.pause();
     audioElementRef.current = null;
   }, []);
 
   if (!audioResult) {
-    return null;
+    return persistenceNotice ? <p className="composer-notice" role="status">{persistenceNotice.message}</p> : null;
   }
 
   if (!isSuccess(audioResult)) {
     return (
+      <>
+      {persistenceNotice && <p className="composer-notice" role="status">{persistenceNotice.message}</p>}
       <EmptyOrFailure
         result={audioResult}
         advancedEnabled={advancedEnabled}
@@ -44,6 +51,7 @@ export function AudioPanel() {
           action: 'Игра продолжит работать без музыки; технические подробности остаются в расширенном режиме.'
         }}
       />
+      </>
     );
   }
 
@@ -54,28 +62,32 @@ export function AudioPanel() {
   const notificationCue = audio.cues.find((cue) => cue.id === 'turn-ready' && cue.asset) ?? audio.cues.find((cue) => cue.asset);
 
   function updateAudioSettings(request: BrowserAudioSettingsUpdateRequest) {
+    const responseOwner = persistenceTracker.current.begin();
+    pendingUpdate.current = true;
     audioSettingsUpdateQueueRef.current = audioSettingsUpdateQueueRef.current
       .catch(() => undefined)
-      .then(async () => {
-        try {
-          const updated = await browserApi.updateAudioSettings(request);
+      .then(() => browserApi.updateAudioSettings(request).then((updated) => {
+        persistenceTracker.current.resolve(responseOwner, updated, (writeNotice) => {
+          pendingUpdate.current = false;
+          setPersistenceNotice(writeNotice);
           setAudioResult(updated);
           if (isSuccess(updated)) {
             const currentElement = audioElementRef.current;
             if (currentElement) {
               currentElement.volume = volumeToUnit(updated.data.musicVolume);
-              if (!updated.data.musicEnabled) {
-                currentElement.pause();
-              }
+              if (!updated.data.musicEnabled) currentElement.pause();
             }
-            setNotice('Настройки звука сохранены в общей конфигурации книги.');
-          } else {
-            setNotice(toPlayerFacingText(updated.playerMessage, 'Не удалось сохранить настройки звука.'));
           }
-        } catch {
-          setNotice('Не удалось сохранить настройки звука. Попробуйте ещё раз или проверьте, что книга запущена.');
-        }
-      });
+          void loadBrowserState(() => persistenceTracker.current.isCurrent(responseOwner));
+        });
+      }, () => {
+        persistenceTracker.current.interrupted(responseOwner, (writeNotice) => {
+          pendingUpdate.current = false;
+          setPersistenceNotice(writeNotice);
+          setAudioResult(null);
+          void loadBrowserState(() => persistenceTracker.current.isCurrent(responseOwner));
+        });
+      }));
     return audioSettingsUpdateQueueRef.current;
   }
 
@@ -214,6 +226,7 @@ export function AudioPanel() {
           Доступно плейлистов: {audio.playlists.filter((item) => item.available).length}/{audio.playlists.length} · Подсказок: {audio.cues.filter((cue) => cue.available).length}/{audio.cues.length}
         </p>
       ) : null}
+      {persistenceNotice && <p className="composer-notice" role="status">{persistenceNotice.message}</p>}
       {notice && <p className="composer-notice">{notice}</p>}
     </section>
   );

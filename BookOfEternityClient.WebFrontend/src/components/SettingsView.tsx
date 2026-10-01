@@ -4,11 +4,17 @@ import type { BrowserClientSettingsDto, BrowserClientSettingsUpdateRequest, Brow
 import { isSuccess, useShell } from '../context/ShellContext';
 import { toLauncherSaveFailureNotice } from '../utils/formatters';
 import { toPlayerFacingText } from '../utils/playerCopy';
+import { createSettingsWriteNoticeTracker, mergeSettingsPatch, type SettingsWriteNotice } from '../utils/settingsPersistenceNotice';
 import { AudioPanel } from './AudioPanel';
 
 export function SettingsView() {
   const { readyState, menu, advancedEnabled, setAdvancedEnabled, setActiveRoute, loadBrowserState } = useShell();
   const [settings, setSettings] = useState<BrowserClientSettingsDto | null>(null);
+  const [persistenceNotice, setPersistenceNotice] = useState<SettingsWriteNotice | null>(null);
+  const persistenceTracker = useRef(createSettingsWriteNoticeTracker());
+  const pendingPatch = useRef<BrowserClientSettingsUpdateRequest>({});
+  const pendingUpdate = useRef(false);
+  const settingsWriteQueue = useRef<Promise<void>>(Promise.resolve());
   const [saveNotice, setSaveNotice] = useState('');
   const [creatingSave, setCreatingSave] = useState(false);
   const [loadingSaveId, setLoadingSaveId] = useState<string | null>(null);
@@ -19,19 +25,44 @@ export function SettingsView() {
     isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
+      persistenceTracker.current.invalidate();
     };
   }, []);
 
   useEffect(() => {
-    if (readyState && isSuccess(readyState.settings)) {
+    if (!pendingUpdate.current && readyState && isSuccess(readyState.settings)) {
       setSettings(readyState.settings.data);
     }
   }, [readyState]);
 
   const debouncedUpdate = useCallback((patch: BrowserClientSettingsUpdateRequest) => {
+    const request = persistenceTracker.current.begin();
+    pendingUpdate.current = true;
+    pendingPatch.current = mergeSettingsPatch(pendingPatch.current, patch);
     if (updateQueue.current) clearTimeout(updateQueue.current);
     updateQueue.current = setTimeout(() => {
-      void browserApi.updateClientSettings(patch).then(() => void loadBrowserState());
+      const combined = pendingPatch.current;
+      pendingPatch.current = {};
+      updateQueue.current = null;
+      // Serialize admitted patches so an earlier request cannot commit after a later one.
+      // Navigation invalidates response effects; it does not revoke an authorized write.
+      settingsWriteQueue.current = settingsWriteQueue.current.catch(() => undefined).then(() =>
+        browserApi.updateClientSettings(combined).then((result) => {
+          persistenceTracker.current.resolve(request, result, (writeNotice) => {
+            pendingUpdate.current = false;
+            setPersistenceNotice(writeNotice);
+            setSettings(result.ok ? result.data : null);
+            void loadBrowserState(() => persistenceTracker.current.isCurrent(request));
+          });
+        }, () => {
+          persistenceTracker.current.interrupted(request, (writeNotice) => {
+            pendingUpdate.current = false;
+            setPersistenceNotice(writeNotice);
+            setSettings(null);
+            void loadBrowserState(() => persistenceTracker.current.isCurrent(request));
+          });
+        })
+      );
     }, 500);
   }, [loadBrowserState]);
 
@@ -97,7 +128,10 @@ export function SettingsView() {
   }
 
   if (!settings) {
-    return <div className="settings-view"><p className="block-text--muted">Загрузка настроек…</p></div>;
+    return <div className="settings-view">
+      {persistenceNotice && <p className="composer-notice" role="status">{persistenceNotice.message}</p>}
+      <p className="block-text--muted">{persistenceNotice ? 'Текущие настройки требуют обновления.' : 'Загрузка настроек…'}</p>
+    </div>;
   }
 
   const canCreateSave = Boolean(menu?.session.gameSessionExists && menu.session.hasReadableSoul && menu.session.canStartBrowserWrite);
@@ -111,6 +145,7 @@ export function SettingsView() {
 
   return (
     <div className="settings-view">
+      {persistenceNotice && <p className="composer-notice" role="status">{persistenceNotice.message}</p>}
       <section className="settings-card">
         <h3>⚙️ Основные</h3>
         <div className="settings-row">
