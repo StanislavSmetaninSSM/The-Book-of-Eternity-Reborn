@@ -1,0 +1,125 @@
+{
+  "Categories": [
+    "portable-coordinated-publication",
+    "portable-coordinated-authority",
+    "portable-coordinated-lease",
+    "portable-coordinated-recovery"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-coordinated-publication",
+      "reason": "Correct the two observed post-commit diagnostic failures; cover exact images, all initial guards, duplicate final ordering and corrected alias/explicit original routes.",
+      "contracts": [
+        "durable disposition survives diagnostics",
+        "complete final member set"
+      ]
+    },
+    {
+      "category": "portable-coordinated-authority",
+      "reason": "Correct the reached Linux factory stale-guard failure.",
+      "contracts": [
+        "platform-distinct initial authority"
+      ]
+    },
+    {
+      "category": "portable-coordinated-lease",
+      "reason": "Cover the changed completed-release diagnostic branch and retained real-lease/primary-error contract.",
+      "contracts": [
+        "actual owned release and zero-write lease admission"
+      ]
+    },
+    {
+      "category": "portable-coordinated-recovery",
+      "reason": "First execution of the saved actual-helper cold cuts and outside hard-link/unknown/generation controls.",
+      "contracts": [
+        "whole-set cold recovery",
+        "outside alias preservation"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "ed0cec422339228139cff8805b4d680fd0866129",
+    "WorkingTreeFingerprint": "22BD32350A217DE2AF2DFAC4EB966F34D90943DADA2B8E811DCAAE2B41BCC8DA",
+    "ChangedFiles": 3
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-coordinated-authority",
+      "Seconds": 3.9086004,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "portable-coordinated-lease",
+      "Seconds": 3.8988215,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "portable-coordinated-publication",
+      "Seconds": 5.8381814,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "portable-coordinated-recovery",
+      "Seconds": 10.364467,
+      "BudgetMinutes": 4,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.1140108,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0233468,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0270996,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 160.3197683,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0126305,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 21,
+  "WallTime": "00:03:10.7882438",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 4,
+    "PlannedCases": 50,
+    "CompletedCases": 50,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 50,
+    "Executed": 50,
+    "Passed": 50,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
