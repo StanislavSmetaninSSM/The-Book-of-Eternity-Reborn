@@ -46,3 +46,11 @@ Shape:
 
 The block message is intentionally player-facing and local: it tells the user that another UI session is editing the save and names the lock path for manual inspection if needed.
 
+
+## Console settings publication and recovery
+
+The console settings menu uses a detached draft and temporary language/font/audio preview. It does not keep the canonical write lease while waiting for input. Esc/Back keeps its existing save behavior; difficulty, QTE and mod choices keep their immediate save points. Each save prepares and publishes config, GM settings projection and system-mod manifest as one declared set through the common journal, retaining generation, exact config baseline, pending-GM and local-owner gates. The console identifies itself with `ownerKind=console`; payload schemas and the existing GM contract are unchanged.
+
+A blocked or rolled-back save retains the draft for editing/retry and displays a Russian notice. A confirmed baseline/generation conflict or uncertain publication requires reconciliation; the menu offers an explicit reread/discard action and cannot silently exit as if saved. Last accepted runtime language/font/audio effects are restored while unresolved, without claiming they describe current disk state. A refused reread preserves the draft and outcome notice. A durable commit followed by cleanup/runtime failure is reported as saved with follow-up, never as rollback; do not delete journal evidence to dismiss it. Ordinary menu exit/discard and exceptional unwinding restore accepted preview effects.
+
+Startup and MainMenu projection synchronization use the same prepared set. An already synchronized set can be confirmed without publication under the canonical lease, including during a pending turn; a required change still obeys the gates. An unsuccessful fresh-game settings boundary stops request/wait continuation. The older accepted-turn health/reminder and generation-rotation paths remain the separate B3 migration scope.

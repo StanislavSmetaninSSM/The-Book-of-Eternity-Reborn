@@ -14,7 +14,7 @@ git status --short
 
 Compare the complete SHAs; read AGENTS.md, docs/development-workflow.md and this feature's spec/plan/tasks before editing. No local-only code cache is needed. Application/test execution is separate evidence from successful download.
 
-The exact menu source and catalog are now stored as normal Git blobs; no pending recovery patch needs application. After SHA verification, follow the [current source/catalog recovery procedure](recovery/README.md) to confirm the catalog identity and read the plan. This menu implementation remains untested WIP; the next cloud-executor step is the targeted current selection, not a claim of menu/client or Windows acceptance.
+The exact menu source and catalog are now stored as normal Git blobs; no pending recovery patch needs application. After SHA verification, follow the [current source/catalog recovery procedure](recovery/README.md) to confirm the catalog identity and read the plan. The menu implementation has targeted Linux automated evidence recorded below and in the plan. Connected independent review and live PTY acceptance are pending; Windows execution is untested.
 
 ## Tool versions actually verified on Debian 13 x64
 
@@ -100,3 +100,31 @@ Windows owner checks for the review corrections: repeat publication/bootstrap/re
 ## Isolated verification after an inconclusive run
 
 Never infer cleanup from an inaccessible process view or silently overlap a vanished run. The B2c execution-control denial and the later authorized isolated attempt are separate evidence in plan.md. The successful execution attempt used a fresh exact-SHA checkout with the apply-once catalog patch, a new writable `RUN_ROOT` for HOME/CLI/NuGet/XDG state and `TMPDIR`/`TMP`/`TEMP`, and only shared official tool binaries. Its one PowerShell process asserted `.NET GetTempPath()` equals that new temp root and all three opt-outs are `1`, then invoked the same selected canonical runner. No prior fixture, build output or fixed port was reused. This is a recorded, specifically authorized recovery procedure, not permission to evade another denial or force an unknown lease.
+
+
+## B2c console review candidate
+
+At source `48357174ccdada168b31545b2057e0f5a0f6db99`, the saved two-category selection passed **37/37** cases, including five scripted real-process checks; the unchanged preparation boundary had already passed in the prior 42-case run. `pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1` produced the covering result. `pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild` then validated 113 categories / 10,301 methods or files without executing tests. All invocations inherited the three opt-outs and isolated writable environment described above. Sanitized original artifacts and hashes are under `recovery/evidence/b2c-connected-green/` and `b2c-final-audit/`.
+
+For a separate live PTY check, create a disposable base directory, copy the repository's synthetic `FileSystemExample/game_session` into its `game_session` subdirectory and copy `BookOfEternityClient/system_guardians` into its `system_guardians` subdirectory. Seed `game_session/config.json` with:
+
+```json
+{
+  "language": "ru",
+  "musicEnabled": false,
+  "soundEnabled": false,
+  "gmBridgeEnabled": false,
+  "gmBridgeAutoStart": false,
+  "gmWorkerBridgeProfiles": [],
+  "generateSceneImages": false,
+  "enableQteEvents": true
+}
+```
+
+After loading the safe task environment, use the built application as the PTY's terminal process; the base directory is the existing positional argument:
+
+```sh
+exec dotnet "$REPO/BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll" "$LIVE_ROOT"
+```
+
+Use the terminal's actual advertised capabilities; do not override TERM. Omit scripted-input, agent-console and browser flags. Observe the ordinary menu, enter settings, toggle QTE, leave through the normal save point and exit. Inspect config and GM projection before restarting the complete process against the same isolated root, then confirm the retained value. W/S and Enter are supported main-menu navigation when appropriate for the terminal. No surviving shell receives input after application exit. This is the planned live scenario, not a recorded live result. Full new-game initialization, GM turns and save/load remain B3/B4 work.

@@ -1,0 +1,57 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="016dea78-df16-4ce2-98ea-97a9e4eaf097" name="b2c-connected-green" runUser="$USER">
+  <ns0:Times creation="2026-10-01T02:13:10.8028637-04:00" queuing="2026-10-01T02:13:10.8028638-04:00" start="2026-10-01T02:13:05.9957078-04:00" finish="2026-10-01T02:13:23.6614831-04:00" />
+  <ns0:TestSettings name="default" id="56b260dd-87a9-4ba0-a99f-0072e0cd7a8e">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="77606029-bb27-4964-a923-f2bd1f70882f" testId="0a3feb9e-032f-8110-65ff-2f80144e562a" testName="BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleSettings_DiscardRestoresAcceptedLanguageAfterPreviewOrBlockedSave(otherOwner: False)" computerName="$HOST" duration="00:00:02.2675111" startTime="2026-10-01T02:13:21.8101852-04:00" endTime="2026-10-01T02:13:21.8101855-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="77606029-bb27-4964-a923-f2bd1f70882f" />
+    <ns0:UnitTestResult executionId="71fa0804-8aac-4811-9e67-5a924e209a28" testId="ca963fdd-7ceb-f09c-6ada-c8f0721cad8e" testName="BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleSettings_DiscardRestoresAcceptedLanguageAfterPreviewOrBlockedSave(otherOwner: True)" computerName="$HOST" duration="00:00:02.1477241" startTime="2026-10-01T02:13:19.5422118-04:00" endTime="2026-10-01T02:13:19.5422121-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="71fa0804-8aac-4811-9e67-5a924e209a28" />
+    <ns0:UnitTestResult executionId="7dbfe76f-e27b-4c4a-bfdf-5e45e5b213ac" testId="ddde6b86-e76f-d78d-f417-5de51de57d86" testName="BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleSettings_ImmediateQteSaveSurvivesInterruptedMenuAndProcessRestart" computerName="$HOST" duration="00:00:06.6308604" startTime="2026-10-01T02:13:17.3931816-04:00" endTime="2026-10-01T02:13:17.3931818-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7dbfe76f-e27b-4c4a-bfdf-5e45e5b213ac" />
+    <ns0:UnitTestResult executionId="c20156cd-d28e-49a5-8edb-fbafb8619278" testId="82c79bdf-0169-16a9-8b43-c8cedd2209a8" testName="BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleE2E_OptionsMenuScript_UsesScriptedInputAndEmitsMenuObservations" computerName="$HOST" duration="00:00:02.2445900" startTime="2026-10-01T02:13:10.7608211-04:00" endTime="2026-10-01T02:13:10.7608400-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c20156cd-d28e-49a5-8edb-fbafb8619278" />
+    <ns0:UnitTestResult executionId="3ec10d24-a9c8-43ca-a6b0-87f616e7aa2d" testId="5c08e586-846b-28e9-248a-97f5d4897701" testName="BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleE2E_MainMenuExitScript_UsesSandboxAndEmitsObservationArtifacts" computerName="$HOST" duration="00:00:01.7686691" startTime="2026-10-01T02:13:23.5797663-04:00" endTime="2026-10-01T02:13:23.5797665-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3ec10d24-a9c8-43ca-a6b0-87f616e7aa2d" />
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleSettings_ImmediateQteSaveSurvivesInterruptedMenuAndProcessRestart" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ddde6b86-e76f-d78d-f417-5de51de57d86">
+      <ns0:Execution id="7dbfe76f-e27b-4c4a-bfdf-5e45e5b213ac" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleE2ESmokeTests" name="ConsoleSettings_ImmediateQteSaveSurvivesInterruptedMenuAndProcessRestart" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleE2E_MainMenuExitScript_UsesSandboxAndEmitsObservationArtifacts" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="5c08e586-846b-28e9-248a-97f5d4897701">
+      <ns0:Execution id="3ec10d24-a9c8-43ca-a6b0-87f616e7aa2d" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleE2ESmokeTests" name="ConsoleE2E_MainMenuExitScript_UsesSandboxAndEmitsObservationArtifacts" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleE2E_OptionsMenuScript_UsesScriptedInputAndEmitsMenuObservations" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="82c79bdf-0169-16a9-8b43-c8cedd2209a8">
+      <ns0:Execution id="c20156cd-d28e-49a5-8edb-fbafb8619278" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleE2ESmokeTests" name="ConsoleE2E_OptionsMenuScript_UsesScriptedInputAndEmitsMenuObservations" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleSettings_DiscardRestoresAcceptedLanguageAfterPreviewOrBlockedSave(otherOwner: False)" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="0a3feb9e-032f-8110-65ff-2f80144e562a">
+      <ns0:Execution id="77606029-bb27-4964-a923-f2bd1f70882f" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleE2ESmokeTests" name="ConsoleSettings_DiscardRestoresAcceptedLanguageAfterPreviewOrBlockedSave" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleSettings_DiscardRestoresAcceptedLanguageAfterPreviewOrBlockedSave(otherOwner: True)" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ca963fdd-7ceb-f09c-6ada-c8f0721cad8e">
+      <ns0:Execution id="71fa0804-8aac-4811-9e67-5a924e209a28" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleE2ESmokeTests" name="ConsoleSettings_DiscardRestoresAcceptedLanguageAfterPreviewOrBlockedSave" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="0a3feb9e-032f-8110-65ff-2f80144e562a" executionId="77606029-bb27-4964-a923-f2bd1f70882f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="ca963fdd-7ceb-f09c-6ada-c8f0721cad8e" executionId="71fa0804-8aac-4811-9e67-5a924e209a28" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="ddde6b86-e76f-d78d-f417-5de51de57d86" executionId="7dbfe76f-e27b-4c4a-bfdf-5e45e5b213ac" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="82c79bdf-0169-16a9-8b43-c8cedd2209a8" executionId="c20156cd-d28e-49a5-8edb-fbafb8619278" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="5c08e586-846b-28e9-248a-97f5d4897701" executionId="3ec10d24-a9c8-43ca-a6b0-87f616e7aa2d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Completed">
+    <ns0:Counters total="5" executed="5" passed="5" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.42]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.97]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.01]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:17.13]   Finished:    BookOfEternityClient.IntegrationTests
+</ns0:StdOut>
+    </ns0:Output>
+  </ns0:ResultSummary>
+</ns0:TestRun>

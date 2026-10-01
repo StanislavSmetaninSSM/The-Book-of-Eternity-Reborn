@@ -1,0 +1,102 @@
+{
+  "Categories": [
+    "portable-console-settings-session",
+    "portable-console-settings-client"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-console-settings-session",
+      "reason": "Corrected initial-settings failure boundary, real initializer wiring and all affected console recovery/preview consumers; clean committed positive control must allow continuation.",
+      "contracts": [
+        "fresh-game settings admission failure",
+        "generation-bound dispatch continuation"
+      ]
+    },
+    {
+      "category": "portable-console-settings-client",
+      "reason": "Cover the five exact real-process menu consumers after the pending recovery-flow and initial-caller changes. Unchanged preparation cases are already green and excluded.",
+      "contracts": [
+        "console settings menu behavior",
+        "real process persistence and discard"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "48357174ccdada168b31545b2057e0f5a0f6db99",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-console-settings-client",
+      "Seconds": 18.8078468,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-console-settings-session",
+      "Seconds": 5.4377344,
+      "BudgetMinutes": 4,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0818242,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0132237,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0164179,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 184.2915597,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 35.9996073,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0135935,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 14,
+  "WallTime": "00:04:13.5363101",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 37,
+    "CompletedCases": 37,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 37,
+    "Executed": 37,
+    "Passed": 37,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

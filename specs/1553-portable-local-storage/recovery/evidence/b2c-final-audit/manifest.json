@@ -1,0 +1,13 @@
+{
+  "sourceCommit": "48357174ccdada168b31545b2057e0f5a0f6db99",
+  "kind": "Discovery-only ownership audit; no tests executed",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "496ba6d174c57febf965335e7930a9aee7b2cef0091165a05fb252fdf1d68c90",
+      "sanitizedSha256": "496ba6d174c57febf965335e7930a9aee7b2cef0091165a05fb252fdf1d68c90"
+    }
+  ],
+  "catalogBlob": "161d1afde1d97bc3d158863c92b51d90eaec48c9"
+}

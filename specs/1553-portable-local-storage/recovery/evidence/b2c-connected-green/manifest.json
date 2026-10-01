@@ -1,0 +1,23 @@
+{
+  "sourceCommit": "48357174ccdada168b31545b2057e0f5a0f6db99",
+  "kind": "newly executed b2c-connected-green; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained. Isolated run root replaced; captured console line endings normalized to LF and trailing line whitespace stripped; original hashes retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "ae11b40d02fba9d81a88d2d790a4552ae54a4fe059c8d5f87dfe737f6ce721b3",
+      "sanitizedSha256": "ae11b40d02fba9d81a88d2d790a4552ae54a4fe059c8d5f87dfe737f6ce721b3"
+    },
+    {
+      "path": "portable-console-settings-client-integration-001.trx",
+      "originalSha256": "95230c00c05e7eaa0b8420ad10d37e599e6fc524c01d9f563dc0d04312efbd91",
+      "sanitizedSha256": "0cb3f86cb61cb3eddd96e8405c65242f1d4cf031d657850e1b6a8c005bd075c9"
+    },
+    {
+      "path": "portable-console-settings-session-unit-002.trx",
+      "originalSha256": "c0e8f9ced1b84669122d53cd1a03a20242455407a2d7ff355f3188c0d6738861",
+      "sanitizedSha256": "048f371f90024a1affc071e04b4156f0f7f7be3f6390698d6432742eaac08513"
+    }
+  ],
+  "catalogBlob": "161d1afde1d97bc3d158863c92b51d90eaec48c9"
+}
