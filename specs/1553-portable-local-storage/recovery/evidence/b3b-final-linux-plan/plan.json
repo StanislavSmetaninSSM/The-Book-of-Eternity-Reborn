@@ -1,0 +1,551 @@
+{
+  "Categories": [
+    "portable-session-replacement",
+    "portable-client-bootstrap",
+    "portable-storage-consumers",
+    "portable-proposal-admission",
+    "portable-session-replacement-consumers",
+    "portable-session-root-keys",
+    "portable-session-root-key-consumers"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-session-replacement",
+      "reason": "Complete clear/rotation member decisions, cold recovery, namespace preflight and actual pending consumers; preserved 86-case covering evidence establishes this unchanged cohort.",
+      "contracts": [
+        "B3b complete replacement and logical-empty pending content"
+      ]
+    },
+    {
+      "category": "portable-client-bootstrap",
+      "reason": "Generation bootstrap and ordinary client admission affected by the clear/rotation transition; preserved 86-case covering evidence.",
+      "contracts": [
+        "generation bootstrap and original-handler-or-block admission"
+      ]
+    },
+    {
+      "category": "portable-storage-consumers",
+      "reason": "Exact ordinary writer and local UI-owner interaction boundaries already passed in the 86-case covering run.",
+      "contracts": [
+        "ordinary writer and local owner consumers"
+      ]
+    },
+    {
+      "category": "portable-proposal-admission",
+      "reason": "Actual proposal-store destination preflight and recursively-empty reuse; preserved 30-case covering run proves Linux admission through the explicit Windows backend rejection, not successful Linux publication.",
+      "contracts": [
+        "proposal namespace admission and empty residue"
+      ]
+    },
+    {
+      "category": "portable-session-replacement-consumers",
+      "reason": "Exact lifecycle/lease fences, accepted authority invalidation, local-owner release and source guards already passed in the 30-case covering run; Windows-only bodies now have a separate category.",
+      "contracts": [
+        "replacement lifecycle and existing authority consumers"
+      ]
+    },
+    {
+      "category": "portable-session-root-keys",
+      "reason": "Six Linux-executable key and case-distinct member cases passed in the final 17-case increment; Windows-only filesystem bodies remain separately owned.",
+      "contracts": [
+        "supported alias keys and Linux case distinctions"
+      ]
+    },
+    {
+      "category": "portable-session-root-key-consumers",
+      "reason": "Eleven exact positive/current/replaced/closing operation and same/different-root/cache consumers passed after both production key consumers were wired.",
+      "contracts": [
+        "operation binding and root/revision authority"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "bcecdd3aa7b1e8f53b7fdd43441724c65cf658a1",
+    "WorkingTreeFingerprint": "824AE4948B2D2F157E1A9E69925DD96B12E2FC7A58F02BEB76ADB335F258DC52",
+    "ChangedFiles": 4
+  },
+  "PreparationSeconds": 8.9910135,
+  "Descriptors": [
+    {
+      "Name": "portable-client-bootstrap-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-client-bootstrap",
+      "Categories": [
+        "portable-client-bootstrap"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.AcquireLease_UnresolvedLegacyPublicationCannotSilentlyPassOnLinux|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.ActualConsoleEntrypointRejectsInvalidConfigBeforeMainMenuAndKeepsEvidence|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.ActualWebHostBuildBootstrapsConfigAndGenerationBeforeServingAnything|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.ActualWebHostBuildRejectsInvalidExistingConfigWithoutCreatingGeneration|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_CreatesConfigAndGenerationUnderOneLeaseAndInvalidatesGenerationRevision|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_EmptyLegacyRootsAreNotUnresolvedEvidence|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_RepeatedAndNewManagerLoadsExistingValuesWithoutRewritingExactConfigOrGeneration|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UsesRealColdProcessAndRetainsConfigAndGenerationAfterRestart|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriteAppendCompareExchangeAndDeleteUseExactLogicalContent|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterPreservesBoundaryHooksAndStopsARevokedBoundOperationBeforeMutation|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterRejectsStaleBoundGenerationWithoutChangingContent|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.OriginalRecoveryCallbackDoesNotCreatePortableJournalOrGenerationAndRestoresLeaseMode|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.PreparedCanonicalSetPublishesOneLogicalResultWithoutPhysicalReceipt|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 34,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.AcquireLease_UnresolvedLegacyPublicationCannotSilentlyPassOnLinux",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.ActualConsoleEntrypointRejectsInvalidConfigBeforeMainMenuAndKeepsEvidence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.ActualWebHostBuildBootstrapsConfigAndGenerationBeforeServingAnything",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.ActualWebHostBuildRejectsInvalidExistingConfigWithoutCreatingGeneration",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_CreatesConfigAndGenerationUnderOneLeaseAndInvalidatesGenerationRevision",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_EmptyLegacyRootsAreNotUnresolvedEvidence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_RepeatedAndNewManagerLoadsExistingValuesWithoutRewritingExactConfigOrGeneration",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UsesRealColdProcessAndRetainsConfigAndGenerationAfterRestart",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup",
+          "Cases": 5
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes",
+          "Cases": 5
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriteAppendCompareExchangeAndDeleteUseExactLogicalContent",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterPreservesBoundaryHooksAndStopsARevokedBoundOperationBeforeMutation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterRejectsStaleBoundGenerationWithoutChangingContent",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.OriginalRecoveryCallbackDoesNotCreatePortableJournalOrGenerationAndRestoresLeaseMode",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.PreparedCanonicalSetPublishesOneLogicalResultWithoutPhysicalReceipt",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "portable-proposal-admission-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-proposal-admission",
+      "Categories": [
+        "portable-proposal-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableProposalAdmissionTests.EmptyDestinationReachesExistingBackendAfterActualStoreAdmission|FullyQualifiedName=BookOfEternityClient.Tests.PortableProposalAdmissionTests.LinkedDestinationRetainsOutsideDataAndNeverPublishesInbox|FullyQualifiedName=BookOfEternityClient.Tests.PortableProposalAdmissionTests.NonemptyDestinationIsRejectedWithoutDeletingUnknownBytes|FullyQualifiedName=BookOfEternityClient.Tests.PortableProposalAdmissionTests.StaleGenerationOrTaskCannotRemoveEmptyDestination|FullyQualifiedName=BookOfEternityClient.Tests.PortableProposalAdmissionTests.WrongTypeDestinationFailsAdmissionBeforeTheBackendAndPreservesBytes",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableProposalAdmissionTests.EmptyDestinationReachesExistingBackendAfterActualStoreAdmission",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableProposalAdmissionTests.LinkedDestinationRetainsOutsideDataAndNeverPublishesInbox",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableProposalAdmissionTests.NonemptyDestinationIsRejectedWithoutDeletingUnknownBytes",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableProposalAdmissionTests.StaleGenerationOrTaskCannotRemoveEmptyDestination",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableProposalAdmissionTests.WrongTypeDestinationFailsAdmissionBeforeTheBackendAndPreservesBytes",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-session-replacement-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-session-replacement",
+      "Categories": [
+        "portable-session-replacement"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeLocalActionGuardTests.ActiveGmTurnBlocker_DetectsTurnArtifactsAndIgnoresEmptySnapshotDirectory|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionReplacementTests.BrowserPendingProjection_EmptySnapshotAllowsFormAndActualFileBlocksIt|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_AbsentGenerationRollsBackAsAbsenceWithSelectedMembers|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ChangedGenerationRetainsPartialMembersAndJournal|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ColdProcessRecoveryIncludesGenerationWorkersAndEmptyResidue|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_DeletesCompleteSelectedSetAndPreservesExcludedBytes|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_HardLinkedGenerationAndMemberLeaveOutsideNamesUnchanged|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_InvalidLockLinkRetainsOutsideBytesAndAllSelectedMembers|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_InvalidRequiredDirectoryRejectsBeforeGenerationOrSelectedMutation|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_LockDirectoryIsInvalidEvenWhenStructurallyEmpty|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ManifestlessLegacyEvidenceRemainsBlockedAndIntact|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_OpaqueContextPackFifoRemainsUnopenedInColdProcess|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_OpaqueContextPackLinkIsPreservedWithoutFollowingIt|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_SelectedFifoIsRejectedBeforeOpenInColdProcess|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_UnknownLaterMemberBlocksCompleteRollbackAndRetainsEvidence|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionReplacementTests.PendingInspector_IgnoresEmptySnapshotDescendantsButCountsZeroByteFiles|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionReplacementTests.PendingInspector_RejectsWrongTypeRootOrLinkedDescendant|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionReplacementTests.Rotate_WorkerCleanupAndGenerationRollbackTogether",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 37,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeLocalActionGuardTests.ActiveGmTurnBlocker_DetectsTurnArtifactsAndIgnoresEmptySnapshotDirectory",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.BrowserPendingProjection_EmptySnapshotAllowsFormAndActualFileBlocksIt",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_AbsentGenerationRollsBackAsAbsenceWithSelectedMembers",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ChangedGenerationRetainsPartialMembersAndJournal",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ColdProcessRecoveryIncludesGenerationWorkersAndEmptyResidue",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_DeletesCompleteSelectedSetAndPreservesExcludedBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_HardLinkedGenerationAndMemberLeaveOutsideNamesUnchanged",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_InvalidLockLinkRetainsOutsideBytesAndAllSelectedMembers",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_InvalidRequiredDirectoryRejectsBeforeGenerationOrSelectedMutation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_LockDirectoryIsInvalidEvenWhenStructurallyEmpty",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ManifestlessLegacyEvidenceRemainsBlockedAndIntact",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_OpaqueContextPackFifoRemainsUnopenedInColdProcess",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_OpaqueContextPackLinkIsPreservedWithoutFollowingIt",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet",
+          "Cases": 8
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_SelectedFifoIsRejectedBeforeOpenInColdProcess",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_UnknownLaterMemberBlocksCompleteRollbackAndRetainsEvidence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.PendingInspector_IgnoresEmptySnapshotDescendantsButCountsZeroByteFiles",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.PendingInspector_RejectsWrongTypeRootOrLinkedDescendant",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.Rotate_WorkerCleanupAndGenerationRollbackTogether",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-session-replacement-consumers-integration-004",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-session-replacement-consumers",
+      "Categories": [
+        "portable-session-replacement-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameState_PreservesGmBridgeRuntimeStatus|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameState_PreservesGmContextPackJsonArtifacts|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameState_WaitsForCanonicalWriteLease|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsLocalUiLockDirectoryAndPreservesEvidence|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsManifestlessBrowserRollbackEvidence|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_WaitsForActiveSessionLifecycleLease|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.SessionMutationLease_CannotRotateSessionGeneration|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_CanRotateGenerationWhileLifecycleAuthorityIsActive|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_RequiresActiveLifecycleAuthority|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.TryAcquireSessionLifecycleLeaseAsync_StaleGenerationReturnsNull",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 10,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameState_PreservesGmBridgeRuntimeStatus",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameState_PreservesGmContextPackJsonArtifacts",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameState_WaitsForCanonicalWriteLease",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsLocalUiLockDirectoryAndPreservesEvidence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsManifestlessBrowserRollbackEvidence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_WaitsForActiveSessionLifecycleLease",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.SessionMutationLease_CannotRotateSessionGeneration",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_CanRotateGenerationWhileLifecycleAuthorityIsActive",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_RequiresActiveLifecycleAuthority",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.TryAcquireSessionLifecycleLeaseAsync_StaleGenerationReturnsNull",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-session-replacement-consumers-unit-005",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-session-replacement-consumers",
+      "Categories": [
+        "portable-session-replacement-consumers",
+        "portable-session-root-key-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_RotatedGenerationRejectsOldPreparedHandoff|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_SameGenerationNewRevisionRejectsOldPreparedHandoff|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions|FullyQualifiedName=BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.ReleaseAsync_OldSameOwnerLeaseDoesNotDeleteReplacementGenerationLock|FullyQualifiedName=BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_LeafSwallowsWriteFailure_OuterBoundaryStillThrows|FullyQualifiedName=BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ReplacementWithoutLaterWrite_FinalCheckStillThrows|FullyQualifiedName=BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_ClearRotatesGeneration_ThrowsBeforeReplacementMutation|FullyQualifiedName=BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_FenceAppliesAcrossFileSystemManagerInstancesForSameRoot|FullyQualifiedName=BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPendingAndRecoveryAuthority_ContainsNoPathnameAbsenceFallback",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 9,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_RotatedGenerationRejectsOldPreparedHandoff",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_SameGenerationNewRevisionRejectsOldPreparedHandoff",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.ReleaseAsync_OldSameOwnerLeaseDoesNotDeleteReplacementGenerationLock",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_LeafSwallowsWriteFailure_OuterBoundaryStillThrows",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ReplacementWithoutLaterWrite_FinalCheckStillThrows",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_ClearRotatesGeneration_ThrowsBeforeReplacementMutation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_FenceAppliesAcrossFileSystemManagerInstancesForSameRoot",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPendingAndRecoveryAuthority_ContainsNoPathnameAbsenceFallback",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-session-root-key-consumers-unit-006",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-session-root-key-consumers",
+      "Categories": [
+        "portable-session-root-key-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_DifferentCanonicalRootsNeverShareAuthority|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_SameRootAndGenerationSharePreparedAuthority|FullyQualifiedName=BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter|FullyQualifiedName=BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_EscapedTaskCannotWriteAfterOwningScopeCloses|FullyQualifiedName=BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_CurrentGeneration_UsesOrdinaryCanonicalWriter",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_DifferentCanonicalRootsNeverShareAuthority",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_SameRootAndGenerationSharePreparedAuthority",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_EscapedTaskCannotWriteAfterOwningScopeCloses",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_CurrentGeneration_UsesOrdinaryCanonicalWriter",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-session-root-keys-unit-007",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-session-root-keys",
+      "Categories": [
+        "portable-session-root-keys"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionRootKeyTests.LinuxClearRetainsDistinctMemberImagesAcrossRollbackThenDeletesBoth|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionRootKeyTests.LinuxRootKeysKeepCaseDistinctNamesSeparate|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionRootKeyTests.LinuxClearRetainsDistinctMemberImagesAcrossRollbackThenDeletesBoth",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionRootKeyTests.LinuxRootKeysKeepCaseDistinctNamesSeparate",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings",
+          "Cases": 4
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-consumers-integration-008",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-storage-consumers",
+      "Categories": [
+        "portable-storage-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.CompareExchangeFileBytesAsync_ConcurrentReplacementsAllowExactlyOneWinner|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.CompareExchangeFileBytesAsync_RejectsStaleExpectedBytesWithoutWriting|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.CompareExchangeFileBytesAsync_RollbackDoesNotOverwriteNewerBytes|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.DeleteFile_WhenTargetIsBrieflyLocked_RetriesUntilDeleteSucceeds|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.WriteFileAtomicAsync_PreservesUtf8BomContract|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.WriteFileAtomicAsync_RelativeTraversalFailsClosed|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.WriteFileAtomicAsync_WhenTargetIsBrieflyLocked_RetriesUntilReplacementSucceeds|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.WriteFileAtomicBytesAsync_PreservesExactBytes",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.CompareExchangeFileBytesAsync_ConcurrentReplacementsAllowExactlyOneWinner",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.CompareExchangeFileBytesAsync_RejectsStaleExpectedBytesWithoutWriting",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.CompareExchangeFileBytesAsync_RollbackDoesNotOverwriteNewerBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.DeleteFile_WhenTargetIsBrieflyLocked_RetriesUntilDeleteSucceeds",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.WriteFileAtomicAsync_PreservesUtf8BomContract",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.WriteFileAtomicAsync_RelativeTraversalFailsClosed",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.WriteFileAtomicAsync_WhenTargetIsBrieflyLocked_RetriesUntilReplacementSucceeds",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.WriteFileAtomicBytesAsync_PreservesExactBytes",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-consumers-unit-009",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-consumers",
+      "Categories": [
+        "portable-storage-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.AcquireOrRefreshAsync_ActiveOtherOwner_BlocksMutation|FullyQualifiedName=BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.AcquireOrRefreshAsync_MalformedStaleLock_ReplacesLock|FullyQualifiedName=BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.AcquireOrRefreshAsync_NewLock_WritesOwnerAndHeartbeat|FullyQualifiedName=BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.AcquireOrRefreshAsync_SameOwnerWithoutLease_DoesNotRefreshHeartbeat|FullyQualifiedName=BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.AcquireOrRefreshAsync_StaleOtherOwner_ReplacesLock|FullyQualifiedName=BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.RefreshAsync_ExactLeaseRefreshesHeartbeat",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.AcquireOrRefreshAsync_ActiveOtherOwner_BlocksMutation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.AcquireOrRefreshAsync_MalformedStaleLock_ReplacesLock",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.AcquireOrRefreshAsync_NewLock_WritesOwnerAndHeartbeat",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.AcquireOrRefreshAsync_SameOwnerWithoutLease_DoesNotRefreshHeartbeat",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.AcquireOrRefreshAsync_StaleOtherOwner_ReplacesLock",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.RefreshAsync_ExactLeaseRefreshesHeartbeat",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

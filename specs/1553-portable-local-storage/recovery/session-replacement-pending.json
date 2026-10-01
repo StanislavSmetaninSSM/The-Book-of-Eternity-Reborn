@@ -1,6 +1,6 @@
 {
   "baseCommit": "41d9104076d59fabacf93c3b1be3cc8d5ccc238f",
-  "status": "B3b 86-case, 30-case and final 17-case root-key GREEN preserved at distinct exact sources. Consolidated Linux selection is for zero-test final planning; unchanged passing cohorts are not rerun. Discovery/plan audit, independent review, normal publication and six native Windows filesystem bodies remain pending.",
+  "status": "Frozen B3b review candidate: prior 86/30-case covering GREEN and final 17-case root-key/consumer GREEN retained at distinct exact sources. Fresh discovery validates 121 categories / 10,340 methods/files. Linux 123-case and Windows six-case plans execute zero tests. Independent review, normal publication and actual Windows execution remain pending.",
   "patches": [
     {
       "path": "session-replacement-source.pending.patch",

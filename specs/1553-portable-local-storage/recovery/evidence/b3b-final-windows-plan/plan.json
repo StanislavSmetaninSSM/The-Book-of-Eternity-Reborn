@@ -1,0 +1,70 @@
+{
+  "Categories": [
+    "portable-storage-windows-paths"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "bcecdd3aa7b1e8f53b7fdd43441724c65cf658a1",
+    "WorkingTreeFingerprint": "824AE4948B2D2F157E1A9E69925DD96B12E2FC7A58F02BEB76ADB335F258DC52",
+    "ChangedFiles": 4
+  },
+  "PreparationSeconds": 9.5598579,
+  "Descriptors": [
+    {
+      "Name": "portable-storage-windows-paths-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-storage-windows-paths",
+      "Categories": [
+        "portable-storage-windows-paths"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsDanglingLocalUiLockNode|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsDirectoryJunctionAndPreservesOutsideData|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsLocalUiLockJunctionWithoutTraversingTarget",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsDanglingLocalUiLockNode",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsDirectoryJunctionAndPreservesOutsideData",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsLocalUiLockJunctionWithoutTraversingTarget",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-windows-paths-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-windows-paths",
+      "Categories": [
+        "portable-storage-windows-paths"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ExtendedWindowsRootPreservesExclusionsAndCanonicalMutationBoundaries|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasBoundWriterCannotMutateTheReplacementSessionBeforeFinalFence|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasesShareRevisionIdentityWithoutRewritingBaseOrJournalPaths",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ExtendedWindowsRootPreservesExclusionsAndCanonicalMutationBoundaries",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasBoundWriterCannotMutateTheReplacementSessionBeforeFinalFence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasesShareRevisionIdentityWithoutRewritingBaseOrJournalPaths",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

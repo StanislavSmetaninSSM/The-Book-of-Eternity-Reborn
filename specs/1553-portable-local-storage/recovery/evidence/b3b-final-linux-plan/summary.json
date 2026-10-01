@@ -1,0 +1,127 @@
+{
+  "Categories": [
+    "portable-session-replacement",
+    "portable-client-bootstrap",
+    "portable-storage-consumers",
+    "portable-proposal-admission",
+    "portable-session-replacement-consumers",
+    "portable-session-root-keys",
+    "portable-session-root-key-consumers"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-session-replacement",
+      "reason": "Complete clear/rotation member decisions, cold recovery, namespace preflight and actual pending consumers; preserved 86-case covering evidence establishes this unchanged cohort.",
+      "contracts": [
+        "B3b complete replacement and logical-empty pending content"
+      ]
+    },
+    {
+      "category": "portable-client-bootstrap",
+      "reason": "Generation bootstrap and ordinary client admission affected by the clear/rotation transition; preserved 86-case covering evidence.",
+      "contracts": [
+        "generation bootstrap and original-handler-or-block admission"
+      ]
+    },
+    {
+      "category": "portable-storage-consumers",
+      "reason": "Exact ordinary writer and local UI-owner interaction boundaries already passed in the 86-case covering run.",
+      "contracts": [
+        "ordinary writer and local owner consumers"
+      ]
+    },
+    {
+      "category": "portable-proposal-admission",
+      "reason": "Actual proposal-store destination preflight and recursively-empty reuse; preserved 30-case covering run proves Linux admission through the explicit Windows backend rejection, not successful Linux publication.",
+      "contracts": [
+        "proposal namespace admission and empty residue"
+      ]
+    },
+    {
+      "category": "portable-session-replacement-consumers",
+      "reason": "Exact lifecycle/lease fences, accepted authority invalidation, local-owner release and source guards already passed in the 30-case covering run; Windows-only bodies now have a separate category.",
+      "contracts": [
+        "replacement lifecycle and existing authority consumers"
+      ]
+    },
+    {
+      "category": "portable-session-root-keys",
+      "reason": "Six Linux-executable key and case-distinct member cases passed in the final 17-case increment; Windows-only filesystem bodies remain separately owned.",
+      "contracts": [
+        "supported alias keys and Linux case distinctions"
+      ]
+    },
+    {
+      "category": "portable-session-root-key-consumers",
+      "reason": "Eleven exact positive/current/replaced/closing operation and same/different-root/cache consumers passed after both production key consumers were wired.",
+      "contracts": [
+        "operation binding and root/revision authority"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "bcecdd3aa7b1e8f53b7fdd43441724c65cf658a1",
+    "WorkingTreeFingerprint": "824AE4948B2D2F157E1A9E69925DD96B12E2FC7A58F02BEB76ADB335F258DC52",
+    "ChangedFiles": 4
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0673365,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0205294,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0193711,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0134962,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 30,
+  "WallTime": "00:00:09.2780420",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 9,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 123,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-client-bootstrap-unit-001",
+      "portable-proposal-admission-unit-002",
+      "portable-session-replacement-unit-003",
+      "portable-session-replacement-consumers-integration-004",
+      "portable-session-replacement-consumers-unit-005",
+      "portable-session-root-key-consumers-unit-006",
+      "portable-session-root-keys-unit-007",
+      "portable-storage-consumers-integration-008",
+      "portable-storage-consumers-unit-009"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
