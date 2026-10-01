@@ -2,6 +2,12 @@ namespace BookOfEternityClient.Core;
 
 public partial class FileSystemManager
 {
+    // .NET's Linux FileStream reports an existing sharing lock as raw errno 11
+    // (EWOULDBLOCK), rather than the Windows sharing/lock HRESULTs.
+    private static bool IsTransientOrdinaryReadOpenException(Exception exception) =>
+        IsTransientReadOpenException(exception) ||
+        (OperatingSystem.IsLinux() && exception is IOException && exception.HResult == 11);
+
     // These entrypoints are deliberately explicit. Browser v6 rollback reads
     // tracked before-images before attaching its physical mutation recorder.
     internal Task<byte[]?> ReadOriginalFileBytesAsync(CanonicalWriteLease lease, string relativePath)
@@ -59,7 +65,7 @@ public partial class FileSystemManager
                     await _hooks.AfterCanonicalReadInitialValidationAsync(relativePath);
                 break;
             }
-            catch (Exception ex) when (IsTransientReadOpenException(ex) && attempt < TransientFileAccessRetryCount)
+            catch (Exception ex) when (IsTransientOrdinaryReadOpenException(ex) && attempt < TransientFileAccessRetryCount)
             {
                 if (stream != null) await stream.DisposeAsync();
                 await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);
@@ -105,7 +111,7 @@ public partial class FileSystemManager
                 return new(buffer.ToArray(), timestamp);
             }
             catch (Exception ex) when (!initialValidationComplete &&
-                IsTransientReadOpenException(ex) && attempt < TransientFileAccessRetryCount)
+                IsTransientOrdinaryReadOpenException(ex) && attempt < TransientFileAccessRetryCount)
             {
                 Thread.Sleep(TransientFileAccessRetryDelay);
             }

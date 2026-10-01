@@ -26,6 +26,15 @@
         "B2 ordinary writers",
         "UI ownership and timestamps"
       ]
+    },
+    {
+      "category": "portable-client-bootstrap",
+      "reason": "The shared B2 before-image reader serves actual StateManager config/bootstrap. Cover absent config/generation, preserved existing config and integrated FIFO/hard-link bootstrap plus legacy admission; common recovery selectors are deduplicated.",
+      "contracts": [
+        "actual client bootstrap",
+        "portable before-image input",
+        "original recovery admission"
+      ]
     }
   ]
 }

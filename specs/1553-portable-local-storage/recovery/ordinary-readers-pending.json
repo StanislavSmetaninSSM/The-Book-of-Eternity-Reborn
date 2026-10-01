@@ -1,8 +1,8 @@
 {
-  "baseCommit": "642f58285f8927cdbac8dbd8a341654e1927a43c",
+  "baseCommit": "eaa7266d7b1ca9ef7e8601cfaf0c4697c5d63cc5",
   "patch": "ordinary-readers-pending.patch",
-  "patchSha256": "06fa5100c9d817b1566fabfc51242ca05f0649d9ff92a2d951b06d020b8d07b8",
-  "patchBytes": 30089,
+  "patchSha256": "cfc031c5e6cc5bd0dfa6a528e112c572596f2b9f606e392257796db2e84e1000",
+  "patchBytes": 30232,
   "apply": "git apply --check specs/1553-portable-local-storage/recovery/ordinary-readers-pending.patch && git apply specs/1553-portable-local-storage/recovery/ordinary-readers-pending.patch",
   "files": [
     {
@@ -23,7 +23,7 @@
     {
       "path": "tests/categories.json",
       "beforeBlob": "dd51f5e50a73baeed77ac23c29895b7f5a0cb7a1",
-      "afterBlob": "cf5fd01dbf31b48f7fbd74bdfc47808546681157"
+      "afterBlob": "ad2fe43ab192f5908e328d6bead37cb8f31af595"
     }
   ]
 }

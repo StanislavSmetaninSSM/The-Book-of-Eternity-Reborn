@@ -200,7 +200,7 @@ public partial class FileSystemManager
                 stream = OpenValidatedOrdinaryFile(scope, path, asynchronous: true);
                 if (stream == null) return null;
             }
-            catch (Exception ex) when (IsTransientReadOpenException(ex) && attempt < TransientFileAccessRetryCount)
+            catch (Exception ex) when (IsTransientOrdinaryReadOpenException(ex) && attempt < TransientFileAccessRetryCount)
             {
                 await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);
                 continue;

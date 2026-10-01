@@ -357,7 +357,7 @@ index 8371b0d3..83bfbd22 100644
  
          DeleteEmptyDirectories(fs, writeLease);
 diff --git a/tests/categories.json b/tests/categories.json
-index dd51f5e5..cf5fd01d 100644
+index dd51f5e5..ad2fe43a 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
 @@ -546,14 +546,6 @@
@@ -398,7 +398,7 @@ index dd51f5e5..cf5fd01d 100644
              "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_MissingBeforeImageFailsClosed",
              "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_RejectsBackupOutsideCanonicalSession",
              "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_WaitsForCanonicalWriteLease",
-@@ -8313,6 +8292,130 @@
+@@ -8313,6 +8292,131 @@
            ]
          }
        ]
@@ -463,6 +463,7 @@ index dd51f5e5..cf5fd01d 100644
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_RegularFileAtIntermediateParentFailsClosed",
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileSync_DirectoryAtOptionalFileBoundaryFailsClosed",
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileSync_RegularFileAtIntermediateParentFailsClosed",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_FilePublishedAfterInitialAbsentProbe_RechecksUnderQuiescenceLease",
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_DirectoryAtFileAuthorityFailsClosed",
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RegularFileAtIntermediateParentFailsClosed",
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_AbsentTargetWithoutPublication_DoesNotAcquireCanonicalWriteLease",
