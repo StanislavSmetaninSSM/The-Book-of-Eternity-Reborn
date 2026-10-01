@@ -38,6 +38,8 @@ internal sealed class ConsoleSettingsPreview : IAsyncDisposable
         return fontApplied;
     }
 
+    internal Task RestoreLastAcceptedEffectsAsync() => throw new NotImplementedException();
+
     public async ValueTask DisposeAsync()
     {
         if (_disposed) return;

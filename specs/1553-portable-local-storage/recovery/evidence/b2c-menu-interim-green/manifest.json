@@ -1,0 +1,32 @@
+{
+  "sourceCommit": "fcdfcb0f472fe7aad110659be533b1a95b854a73",
+  "catalogBlobAfterPatch": "161d1afde1d97bc3d158863c92b51d90eaec48c9",
+  "kind": "newly executed b2c-menu-interim-green; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "dc4cb75f0c666e8e1f9e393933b890ec367e85da08f17310cefa0c8af2df9905",
+      "sanitizedSha256": "dc4cb75f0c666e8e1f9e393933b890ec367e85da08f17310cefa0c8af2df9905"
+    },
+    {
+      "path": "portable-console-settings-client-integration-002.trx",
+      "originalSha256": "467c0b64196c254d73bf016103871458a3851503f1fcdc49ece359d8d8a06e1b",
+      "sanitizedSha256": "35b1c7e9743b62c03cb2b45e19318b3ea60bfbed88dc1eb12442252cd0195d72"
+    },
+    {
+      "path": "portable-console-settings-session-unit-003.trx",
+      "originalSha256": "239f19a0f52a44f83945e2444584397a4e0755b969d3da4a63118c834226c9a7",
+      "sanitizedSha256": "0444d05e4c12ed9b3cbbd72909e35e672fd976c8709a0b69edbebe2caa2c9aa3"
+    },
+    {
+      "path": "portable-console-settings-unit-001.trx",
+      "originalSha256": "6ef80d96c5ececae804a8433f2ee5244b2f07c51fda57d738c23abb09d0bcf84",
+      "sanitizedSha256": "e9485e75462269161a6082fe529073520d86f3c2fea71717af7baf4564cd9c15"
+    }
+  ],
+  "sourcePatchSha256": "70139dc167c48d84619e5aaa4e735d22e953bffcf13460b5f117c5ec1dc2bc2a",
+  "testedAppliedIndexTree": "2f17b07ba0dc482100f1592d4eaea68a4ade98c1",
+  "normalizedEquivalentSourceCommit": "d3773edf3e43516170b44e12421ed345fb0445ef",
+  "limit": "Interim 42-case GREEN before the separately identified immediate-save reconciliation and retained-preview correction; not final B2c acceptance."
+}

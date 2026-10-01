@@ -354,5 +354,65 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
         Assert.True(cts.IsCancellationRequested); Assert.True(restoredPlayback);
     }
 
+    [Fact]
+    public async Task UncertainImmediateMenuSaveReachesRecoveryBeforeAnotherModRead()
+    {
+        await Open();
+        var script = Path.Combine(_root, "menu-input.json"); var artifacts = Path.Combine(_root, "menu-artifacts");
+        File.WriteAllText(script, "{\"steps\":[{\"kind\":\"key\",\"key\":\"Down\"},{\"kind\":\"key\",\"key\":\"Down\"},{\"kind\":\"key\",\"key\":\"Down\"},{\"kind\":\"key\",\"key\":\"Down\"},{\"kind\":\"key\",\"key\":\"Enter\"}]}");
+        var input = ConsoleE2EScriptedInputSource.FromFile(script, artifacts);
+        var loc = new BookOfEternityClient.UI.LocalizationManager();
+        var audio = new AudioService(_files, _live, NullLogger<AudioService>.Instance);
+        // Invoke the actual menu with its real dependencies. Unused gameplay/GM
+        // services are absent; this fixture cannot launch a turn or provider.
+        var engine = new GameEngine(fs: _files, stateManager: _state, gameLoop: null!, normalizer: null!,
+            progressionSchedule: null!, ui: null!, explorer: null!, loc: loc, saveLoad: null!, imageService: null!,
+            validator: null!, charService: null!, storyService: null!, actorMemoryService: null!, audioService: audio,
+            consoleAppearance: new ConsoleAppearanceService(_live, NullLogger<ConsoleAppearanceService>.Instance),
+            systemModService: _mods, systemGuardianLibraryService: null!, criticalStateHealth: null!, worldDirectiveService: null!,
+            scenarioCoreService: null!, afterlifeArchiveCandidateService: null!, afterlifeReturnGuardService: null!,
+            rivalSoulArcService: null!, guardianCorrectionService: null!, pendingTurnState: null!, qteSceneService: null!,
+            clipboardService: null!, logger: NullLogger<GameEngine>.Instance, inputSource: input);
+        var injected = false;
+        _observe = (phase, _) =>
+        {
+            if (injected || phase != TrustedLocalPublicationPhase.MemberPublished) return;
+            injected = true; File.WriteAllBytes(_files.ResolvePath(Projection), [99]);
+            throw new InvalidOperationException("Unknown member after immediate QTE publication.");
+        };
+        var method = typeof(GameEngine).GetMethod("OptionsMenu", BindingFlags.NonPublic | BindingFlags.Instance)!;
+        await Assert.ThrowsAsync<ConsoleE2EScriptInputException>(() => (Task)method.Invoke(engine, null)!);
+        Assert.True(injected); Assert.True(_live.EnableQteEvents);
+        Assert.Equal(new byte[] { 99 }, File.ReadAllBytes(_files.ResolvePath(Projection)));
+        Assert.True(File.Exists(Path.Combine(_files.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));
+        var screens = Directory.GetFiles(Path.Combine(artifacts, "screens"), "*.json");
+        Assert.Contains(screens, path => JsonNode.Parse(File.ReadAllText(path))!["screenTitle"]!.GetValue<string>() == "Настройки требуют проверки");
+    }
+
+    [Fact]
+    public async Task LastAcceptedEffectsCanBeRestoredWithoutDiscardingOrCertifyingTheDraft()
+    {
+        var session = await Open(); var font = _live.ConsoleFontSize;
+        session.Draft.Language = "en"; session.Draft.ConsoleFontSize = 30;
+        session.Draft.MusicEnabled = true; session.Draft.MusicVolume = 50;
+        var loc = new BookOfEternityClient.UI.LocalizationManager();
+        var audio = new AudioService(_files, _live, NullLogger<AudioService>.Instance);
+        var appearance = new ConsoleAppearanceService(_live, NullLogger<ConsoleAppearanceService>.Instance);
+        var field = typeof(AudioService).GetField("_musicCts", BindingFlags.NonPublic | BindingFlags.Instance)!;
+        using var first = new CancellationTokenSource(); using var second = new CancellationTokenSource();
+        await using (var preview = new ConsoleSettingsPreview(_live, session.Draft, loc, audio, appearance, _ => Task.CompletedTask))
+        {
+            field.SetValue(audio, first); await preview.ApplyAsync();
+            Assert.Equal("en", loc.CurrentLanguage); Assert.False(first.IsCancellationRequested);
+            await preview.RestoreLastAcceptedEffectsAsync();
+            Assert.Equal("ru", loc.CurrentLanguage); Assert.True(first.IsCancellationRequested);
+            Assert.Equal(font, _live.ConsoleFontSize); Assert.Equal("en", session.Draft.Language);
+            Assert.True(session.Draft.MusicEnabled); // Restoration is not draft discard or a disk-state proof.
+            field.SetValue(audio, second); await preview.ApplyAsync();
+            Assert.Equal("en", loc.CurrentLanguage); Assert.False(second.IsCancellationRequested);
+        }
+        Assert.Equal("ru", loc.CurrentLanguage); Assert.True(second.IsCancellationRequested);
+    }
+
     public void Dispose() { if (Directory.Exists(_root)) Directory.Delete(_root, recursive: true); }
 }
