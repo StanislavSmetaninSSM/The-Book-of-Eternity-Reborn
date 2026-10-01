@@ -93,13 +93,36 @@ index 3a0189ff..17ddc4ef 100644
          await ApplyAuthoritativeExperienceAsync(writeLease, response.ExperienceGained);
          var qteNormalizer = _normalizer.ForQteNormalization();
 diff --git a/tests/categories.json b/tests/categories.json
-index 0a621b60..64bd318e 100644
+index 0a621b60..011005b7 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -1,6 +1,346 @@
+@@ -1,6 +1,371 @@
  {
    "schemaVersion": 1,
    "categories": [
++    {
++      "id": "portable-backup-generation-debt",
++      "responsibility": "Actual bound StateDistributor generation conflict after a committed backup retains journal uncertainty before compensation; outer SessionOperationContext finalization remains separate.",
++      "excludes": "Ordinary no-debt generation fencing and whole scope finalization migration.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableBackupConsumerTests.BoundDistributorClassifiesGenerationConflictInCommittedBackupDebtBeforeCompensation"
++          ]
++        }
++      ]
++    },
 +    {
 +      "id": "portable-backup-routing",
 +      "responsibility": "Backup source-link revalidation and explicit original recorder/recovery/evidence routes. Linux verifies original blocking; native bodies verify original publication and unchanged recorder bypass.",
@@ -324,7 +347,9 @@ index 0a621b60..64bd318e 100644
 +        {
 +          "project": "unit",
 +          "tests": [
-+            "BookOfEternityClient.Tests.PortableBackupConsumerTests.*"
++            "BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt",
++            "BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsReverseCompensationWhenRestoreIsUnresolved",
++            "BookOfEternityClient.Tests.PortableBackupConsumerTests.AcceptedDistributionSurvivesCleanupDebtAndDiagnosticFailure"
 +          ]
 +        }
 +      ]

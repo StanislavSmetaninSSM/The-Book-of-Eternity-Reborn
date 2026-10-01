@@ -18,6 +18,37 @@ public sealed class PortableBackupConsumerTests : IDisposable
     private static readonly byte[] Baseline = Encoding.UTF8.GetBytes("{\"marker\":\"baseline\"}");
     private sealed class CutFailure : Exception { }
 
+    [Fact]
+    public async Task BoundDistributorClassifiesGenerationConflictInCommittedBackupDebtBeforeCompensation()
+    {
+        FileSystemManager? files = null; var backups = 0; var reached = 0;
+        files = new(_root, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks { LocalPublicationObserver = (phase, _) =>
+            {
+                if (phase != TrustedLocalPublicationPhase.Committed) return;
+                var members = ReadMembers(files!);
+                if (members.Length != 1 || !members[0].Contains(".backup.", StringComparison.Ordinal) || ++backups != 2) return;
+                reached++; SeedGeneration(files!); throw new CutFailure();
+            } });
+        Seed(files, Weather); Seed(files, Output); SeedGeneration(files);
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        var generation = files.GetOrCreateSessionGeneration(lease);
+        Exception? directFailure = null;
+        var distributor = new StateDistributor(files, NullLogger<StateDistributor>.Instance);
+        _ = await Record.ExceptionAsync(() => SessionOperationContext.RunBoundAsync(files, generation, lease, async () =>
+        {
+            directFailure = await Record.ExceptionAsync(() => distributor.DistributeAsync(lease, Response()));
+            return false;
+        }));
+        // Inspect the direct consumer result, independently of the outer bound
+        // scope's existing finalization fence (not migrated by this slice).
+        Assert.Equal(1, reached);
+        Assert.IsType<CoordinatedStatePublicationUncertainException>(directFailure);
+        Assert.Equal(Baseline, File.ReadAllBytes(files.ResolvePath(Weather)));
+        Assert.Equal(Baseline, File.ReadAllBytes(files.ResolvePath(Output)));
+        Assert.True(File.Exists(Journal(files)));
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
