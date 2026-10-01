@@ -3,20 +3,8 @@
   "selections": [
     {
       "category": "portable-console-settings-session",
-      "reason": "Eight console draft/controller and audio-preview cases cover the new outcome consumer and source restoration. No full menu wiring yet.",
-      "contracts": [
-        "console settings draft lifecycle",
-        "publication outcome consumption",
-        "temporary audio settings source"
-      ]
-    },
-    {
-      "category": "portable-prepared-settings",
-      "reason": "Shared coordinator now uses an explicit console owner kind while keeping the browser default; retain its exact admission/outcome/late-close consumers.",
-      "contracts": [
-        "prepared local owner admission",
-        "explicit publication outcomes"
-      ]
+      "reason": "Console owner/pending/config/generation admission and explicit discard/reload before menu wiring; real unknown evidence must remain unresolved. Mod listing uses the same portable input checks with draft selection.",
+      "contracts": ["console settings admission", "draft discard and confirmed reload", "portable mod listing"]
     }
   ]
 }

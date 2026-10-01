@@ -150,5 +150,106 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
         await audio.StopAllAsync();
     }
 
+    [Theory]
+    [InlineData("pending")]
+    [InlineData("owner")]
+    public async Task PendingTurnOrOtherOwnerBlocksTheDraftWithoutRuntimeAcceptance(string blocker)
+    {
+        var session = await Open(); session.Draft.Language = "en";
+        var before = File.ReadAllBytes(_files.ResolvePath("config.json"));
+        if (blocker == "pending") await _files.WriteFileAtomicAsync("input/turn_request.json", "{}");
+        else await new LocalUiSessionLockService(_files).AcquireOrRefreshAsync(
+            new("other", "browser", "Other UI", TimeSpan.FromSeconds(120)), "Other operation");
+        var result = await session.SaveAsync();
+        Assert.Equal(BrowserPreparedWriteDisposition.Blocked, result.Disposition);
+        Assert.Equal(before, File.ReadAllBytes(_files.ResolvePath("config.json")));
+        Assert.Equal("ru", _live.Language); Assert.Equal("en", session.Draft.Language);
+        Assert.DoesNotContain("Browser-write", result.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task StaleConfigRequiresReloadBeforeAnotherSave()
+    {
+        var session = await Open(); session.Draft.Language = "en";
+        var changed = _state.EncodeLocalSettings(new GameSettings { Language = "ru", Difficulty = "hard" });
+        File.WriteAllBytes(_files.ResolvePath("config.json"), changed);
+        var result = await session.SaveAsync();
+        Assert.Equal(BrowserPreparedWriteDisposition.Blocked, result.Disposition);
+        Assert.True(session.RequiresReload); Assert.Equal("en", session.Draft.Language);
+        Assert.Equal(changed, File.ReadAllBytes(_files.ResolvePath("config.json")));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ChangedOrMissingGenerationCannotBeAdoptedOrBootstrappedBySave(bool absent)
+    {
+        var session = await Open(); session.Draft.Language = "en";
+        var before = File.ReadAllBytes(_files.ResolvePath("config.json"));
+        if (absent) File.Delete(_files.SessionGenerationPath);
+        else File.WriteAllText(_files.SessionGenerationPath,
+            "{\"SchemaVersion\":1,\"GenerationId\":\"another-session\"}");
+        var result = await session.SaveAsync();
+        Assert.Equal(BrowserPreparedWriteDisposition.Blocked, result.Disposition);
+        Assert.True(session.RequiresReload); Assert.Equal("ru", _live.Language);
+        Assert.Equal(before, File.ReadAllBytes(_files.ResolvePath("config.json")));
+        if (absent) Assert.False(File.Exists(_files.SessionGenerationPath));
+    }
+
+    [Fact]
+    public async Task ExplicitReloadDiscardsDraftAndAcceptsConfirmedConfigWithoutChangingReferences()
+    {
+        var session = await Open(); var draft = session.Draft; draft.Language = "en";
+        File.WriteAllBytes(_files.ResolvePath("config.json"), _state.EncodeLocalSettings(new GameSettings { Difficulty = "hard" }));
+        await session.SaveAsync(); var refreshed = false;
+        await session.ReloadAsync(() => { refreshed = true; Assert.Equal("hard", _live.Difficulty); return Task.CompletedTask; });
+        Assert.True(refreshed); Assert.Same(draft, session.Draft); Assert.Same(_live, _state.Settings);
+        Assert.Equal("ru", draft.Language); Assert.Equal("hard", draft.Difficulty); Assert.False(session.RequiresReload);
+        draft.Language = "en";
+        Assert.Equal(BrowserPreparedWriteDisposition.Committed, (await session.SaveAsync()).Disposition);
+    }
+
+    [Fact]
+    public async Task ReloadRejectsAReplacedSessionAndRetainsTheUnacceptedDraft()
+    {
+        var session = await Open(); session.Draft.Language = "en";
+        File.WriteAllText(_files.SessionGenerationPath,
+            "{\"SchemaVersion\":1,\"GenerationId\":\"another-session\"}");
+        await Assert.ThrowsAsync<SessionReplacedException>(() => session.ReloadAsync());
+        Assert.True(session.RequiresReload); Assert.Equal("en", session.Draft.Language); Assert.Equal("ru", _live.Language);
+    }
+
+    [Fact]
+    public async Task ReloadCannotClaimUnknownPublicationEvidenceWasDiscarded()
+    {
+        var session = await Open(); session.Draft.Language = "en"; var injected = false;
+        _observe = (phase, _) =>
+        {
+            if (injected || phase != TrustedLocalPublicationPhase.MemberPublished) return;
+            injected = true; File.WriteAllBytes(_files.ResolvePath(Projection), [99]);
+            throw new InvalidOperationException("Unknown content after console publication.");
+        };
+        Assert.Equal(BrowserPreparedWriteDisposition.Uncertain, (await session.SaveAsync()).Disposition);
+        _observe = null;
+        await Assert.ThrowsAnyAsync<InvalidDataException>(() => session.ReloadAsync());
+        Assert.True(session.RequiresReload); Assert.Equal("en", session.Draft.Language); Assert.Equal("ru", _live.Language);
+        Assert.Equal(new byte[] { 99 }, File.ReadAllBytes(_files.ResolvePath(Projection)));
+    }
+
+    [Fact]
+    public async Task ModListingUsesDraftSelectionAndPortableInputValidationWithoutPublication()
+    {
+        var session = await Open();
+        File.WriteAllText(_files.ResolvePath("mods/weather.json"), "{\"modId\":\"weather\"}");
+        session.Draft.EnabledSystemMods = ["weather.json"];
+        var before = File.ReadAllBytes(_files.ResolvePath("config.json"));
+        var mods = await session.ReadModsAsync();
+        Assert.True(Assert.Single(mods).Enabled); Assert.Empty(_live.EnabledSystemMods);
+        Assert.Equal(before, File.ReadAllBytes(_files.ResolvePath("config.json")));
+        File.Delete(_files.ResolvePath("mods/weather.json"));
+        File.CreateSymbolicLink(_files.ResolvePath("mods/weather.json"), _files.ResolvePath("config.json"));
+        await Assert.ThrowsAnyAsync<InvalidDataException>(() => session.ReadModsAsync());
+    }
+
     public void Dispose() { if (Directory.Exists(_root)) Directory.Delete(_root, recursive: true); }
 }

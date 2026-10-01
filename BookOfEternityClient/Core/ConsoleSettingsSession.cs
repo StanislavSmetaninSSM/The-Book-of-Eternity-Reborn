@@ -45,6 +45,11 @@ internal sealed class ConsoleSettingsSession
         finally { BrowserAudioService.SettingsWriteGate.Release(); }
     }
 
+    internal Task ReloadAsync(Func<Task>? refreshRuntime = null) => throw new NotImplementedException();
+
+    internal Task<IReadOnlyList<SystemModService.SystemModDescriptor>> ReadModsAsync()
+        => throw new NotImplementedException();
+
     internal async Task<BrowserPreparedWriteResult> SaveAsync(Func<Task>? refreshRuntime = null)
     {
         await BrowserAudioService.SettingsWriteGate.WaitAsync();
