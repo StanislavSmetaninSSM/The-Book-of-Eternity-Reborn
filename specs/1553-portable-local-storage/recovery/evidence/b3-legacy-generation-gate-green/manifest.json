@@ -1,0 +1,38 @@
+{
+  "sourceCommit": "81cee6b208fa1c99108477cedc41bde431e043c6",
+  "catalogBlobAfterPatch": "4d0f8d6ce7bf4a9c9a9795a998bee27e9accc3aa",
+  "kind": "newly executed b3-legacy-generation-gate-green; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained. Run root replaced; LF and trailing-whitespace normalization; original hashes retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "43976f0d30431a3ebec633b088b50e02e5f4542a7831f59eac49edccdea02059",
+      "sanitizedSha256": "43976f0d30431a3ebec633b088b50e02e5f4542a7831f59eac49edccdea02059"
+    },
+    {
+      "path": "portable-session-generation-consumers-integration-001.trx",
+      "originalSha256": "4c2a01e511eccc8965dd0519a52eb9f50fbebb0355070b859c0888a7e4ae9153",
+      "sanitizedSha256": "c9ab0a6669c746b020de38c7a75ecf3822998ea88856f9b2576538d70ddf9e82"
+    },
+    {
+      "path": "portable-session-generation-consumers-unit-002.trx",
+      "originalSha256": "b255335401e0f909ac502cc6ab3b73e01ffb88feb30c7e2ea74be41e7db54a58",
+      "sanitizedSha256": "eda9530142e5e3611c6669f77220cf9b35f1c274647e84f3324cfaed09789994"
+    }
+  ],
+  "appliedSourceTree": "2dea295136e3a233c8c2e841934a3282f561b3be",
+  "patches": [
+    {
+      "path": "generation-reader-source.pending.patch",
+      "sha256": "bba0455efb3cb515315830f828c5ac0171157cefd2f3e6c6f846f63c1571b62a"
+    },
+    {
+      "path": "categories-pending.patch",
+      "sha256": "112ab0e20509b2565d0c6b271955a9c14535af9aa2ff910b450705431bf352a0"
+    }
+  ],
+  "limits": [
+    "Three LegacyLoadBegin cases are Windows-gated; their physical-reader assertions did not execute on Linux.",
+    "The unconditional legacy commit case proves its original pre-publication read boundary, not successful legacy load publication."
+  ]
+}

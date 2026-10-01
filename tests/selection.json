@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-session-generation-consumers",
-      "reason": "Observe the actual legacy CommitLoadTransaction reader-boundary regression before restoring that private gate; prior 138-case common-reader covering evidence stays separate.",
+      "category": "portable-session-generation-source",
+      "reason": "Observe the single existing stale parser-chain guard against freshly built unchanged runtime/test assemblies; all other browser guards remain excluded.",
       "contracts": [
-        "original load-journal generation read gate",
-        "journal retained before legacy commit"
+        "strict generation parser delegation",
+        "existing authority classification and lease bookkeeping"
       ]
     }
   ]
