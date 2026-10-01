@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "restoredCommit": "48629924d489156e6ca0ec0491608f693030f4d7",
+  "checkpointTree": "0a3db9e55169d06a9362d9dd0f7bf1d8c0b0e9a2",
+  "method": "Fresh depth-1 single-branch clone directly from GitHub into a new empty directory; no old checkout, source cache or local Git objects copied.",
+  "trackedFiles": 3830,
+  "initialCheckoutClean": true,
+  "connectivityCheck": "git fsck --connectivity-only, exit 0",
+  "patchBytes": 23583,
+  "patchSha256": "7211e9d68f85aadd15b46cfdb90da707baaa9cf359cc7243cd7b04718be13b03",
+  "packetManifestSha256": "eca87bdb92f24f16209c47fec28b5f9ce87cdaefac4105e9b53996d1e8f55166",
+  "appliedSourceTree": "077fd89fd9f3d8b8920cc45450e5a545b4b9bd9e",
+  "beforeAfterImagesVerified": 5,
+  "codeTestSelectionIdentitiesVerified": 17,
+  "evidenceArtifactsHashed": 35,
+  "effectiveTrxXmlParsed": 11,
+  "retainedMalformedTrxWithVerifiedCorrections": 5,
+  "scope": "Source and evidence recovery only; no build, behavior, native execution or power-loss guarantee."
+}
