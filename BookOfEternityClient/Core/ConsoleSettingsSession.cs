@@ -107,7 +107,7 @@ internal sealed class ConsoleSettingsSession
                         async lease =>
                         {
                             try { prepared = await _preparation.PrepareAsync(lease, _baseline, Draft); }
-                            catch { RequiresReload = true; throw; }
+                            catch (LocalSettingsBaselineChangedException) { RequiresReload = true; throw; }
                             return new(prepared.Changes, async () =>
                             {
                                 _state.Settings.ApplyLoadedValues(prepared.Settings);

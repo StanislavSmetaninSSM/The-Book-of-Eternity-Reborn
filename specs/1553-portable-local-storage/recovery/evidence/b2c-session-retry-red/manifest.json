@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "a92c5ee02a69198736908f16666ba8ddec9332a4",
+  "catalogBlobAfterPatch": "14e7851b5ac4fde7c2555aa82d5235996b5f1e89",
+  "kind": "newly executed b2c-session-retry-red; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "ac883681f73dcf8d8127d2ec08e2fcca1dac7591b707d925a4841b4ab2c1cda7",
+      "sanitizedSha256": "ac883681f73dcf8d8127d2ec08e2fcca1dac7591b707d925a4841b4ab2c1cda7"
+    },
+    {
+      "path": "portable-console-settings-session-unit-001.trx",
+      "originalSha256": "4b1d1f8b45815a9eb03e1f9e8fb3585f9f873c0f7250c2783da9a64c8b24f502",
+      "sanitizedSha256": "835801c3f718cc22dc2c4516d9f428c8755b023e9f406193d838e7466d25ea4f"
+    }
+  ]
+}

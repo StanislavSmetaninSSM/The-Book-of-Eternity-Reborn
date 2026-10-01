@@ -6,6 +6,9 @@ using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.Core;
 
+internal sealed class LocalSettingsBaselineChangedException()
+    : IOException("The config changed since this settings draft was opened; reload before saving.") { }
+
 internal sealed record LocalSettingsBaseline(string Generation, byte[] ConfigBytes);
 internal sealed record PreparedLocalSettings(GameSettings Settings, IReadOnlyList<CanonicalLocalFileChange> Changes);
 
@@ -38,7 +41,7 @@ internal sealed class LocalSettingsPreparation
 
         var snapshot = await _state.ReadLocalSettingsAsync(lease);
         if (!snapshot.Bytes.AsSpan().SequenceEqual(baseline.ConfigBytes))
-            throw new IOException("The config changed since this settings draft was opened; reload before saving.");
+            throw new LocalSettingsBaselineChangedException();
 
         // Clone the complete draft, including nested worker/profile collections.
         // Later normalization must not mutate the menu draft or live references.

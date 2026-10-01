@@ -131,7 +131,7 @@ public sealed class PortableConsoleSettingsPreparationTests : IDisposable
         var baseline = await Initialize(); var changed = EncodeUtf16("{\"language\":\"en\"}");
         File.WriteAllBytes(_files.ResolvePath("config.json"), changed);
         await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();
-        await Assert.ThrowsAsync<IOException>(() => _prepare.PrepareAsync(lease, baseline, Draft()));
+        await Assert.ThrowsAsync<LocalSettingsBaselineChangedException>(() => _prepare.PrepareAsync(lease, baseline, Draft()));
         Assert.Equal(changed, File.ReadAllBytes(_files.ResolvePath("config.json")));
         Assert.Equal(OldManifest, File.ReadAllBytes(_files.ResolvePath(Manifest)));
     }

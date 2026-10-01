@@ -3,11 +3,19 @@
   "selections": [
     {
       "category": "portable-console-settings-session",
-      "reason": "One-shot preparation read failure must retain an unchanged draft for retry; corrected valid replacement-generation fixture. Only affected console session cases selected for RED.",
+      "reason": "Retryable preparation failure now remains distinct from explicit baseline conflict; cover all console session admission, reload and outcome consumers.",
       "contracts": [
         "console settings admission",
         "draft discard and confirmed reload",
         "portable mod listing"
+      ]
+    },
+    {
+      "category": "portable-console-settings",
+      "reason": "The preparation API now exposes its confirmed exact-baseline conflict as a specific IOException subtype; retain the direct contract and member preparation consumers.",
+      "contracts": [
+        "exact settings baseline conflict",
+        "three-member preparation"
       ]
     }
   ]
