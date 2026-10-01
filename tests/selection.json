@@ -26,6 +26,15 @@
         "strict config decoding",
         "leased config bootstrap"
       ]
+    },
+    {
+      "category": "portable-settings-notices",
+      "reason": "#1553 B2b success warnings and explicit failure outcomes must reach the actual settings/audio response handlers without stale/interrupted responses clearing committed follow-up.",
+      "contracts": [
+        "visible persistence notice",
+        "response ownership",
+        "rapid settings patch coalescing"
+      ]
     }
   ]
 }

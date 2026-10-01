@@ -149,6 +149,7 @@ export interface BrowserCreateSaveResultDto {
 }
 
 export interface BrowserAudioSettingsDto {
+  persistenceWarning?: string | null;
   schemaVersion: number;
   musicEnabled: boolean;
   musicVolume: number;
@@ -191,6 +192,7 @@ export interface BrowserAudioSettingsUpdateRequest {
 }
 
 export interface BrowserClientSettingsDto {
+  persistenceWarning?: string | null;
   schemaVersion: number;
   language: BrowserSettingsChoiceGroupDto;
   difficulty: BrowserSettingsChoiceGroupDto;

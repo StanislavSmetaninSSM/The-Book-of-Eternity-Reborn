@@ -1,8 +1,8 @@
 diff --git a/tests/categories.json b/tests/categories.json
-index 4b805af9..d5b80e19 100644
+index 4b805af9..9c5a9135 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -7600,6 +7600,160 @@
+@@ -7600,6 +7600,195 @@
            ]
          }
        ]
@@ -157,6 +157,41 @@ index 4b805af9..d5b80e19 100644
 +            "BookOfEternityClient.Tests.LocalWebUiHostTests.AudioSettingsEndpoint_UpdatesAndPersistsSharedSettingsWithClampedVolumes",
 +            "BookOfEternityClient.Tests.LocalWebUiHostTests.BrowserAudioService_SerializesSharedSettingsUpdates",
 +            "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAsync_ActiveOtherOwner_BlocksWithoutRunningWrite"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-settings-notices",
++      "responsibility": "Visible prepared-settings persistence notice semantics, stale/interrupted response ownership and rapid patch coalescing in the exact SettingsView and AudioPanel consumers.",
++      "excludes": "Real browser interaction, audio playback, unrelated frontend state/gameplay and backend storage protocol. Uses one file-only Node contract, plus production frontend typecheck/build.",
++      "changeHints": [
++        "BookOfEternityClient.WebFrontend/src/utils/settingsPersistenceNotice.ts",
++        "BookOfEternityClient.WebFrontend/src/components/SettingsView.tsx",
++        "BookOfEternityClient.WebFrontend/src/components/AudioPanel.tsx"
++      ],
++      "related": [
++        {
++          "id": "portable-prepared-settings",
++          "when": "Backend publication result semantics change."
++        },
++        {
++          "id": "portable-settings-endpoints",
++          "when": "Settings/audio HTTP outcome metadata changes."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": true,
++        "exclusive": false
++      },
++      "timeoutMinutes": 4,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "frontend",
++          "runner": "node",
++          "tests": [
++            "BookOfEternityClient.WebFrontend/test/settingsPersistenceNotice.test.ts"
 +          ]
 +        }
 +      ]
