@@ -1,8 +1,44 @@
 diff --git a/BookOfEternityClient/Core/FileSystemManager.cs b/BookOfEternityClient/Core/FileSystemManager.cs
-index d44879dd..f9b2b7a9 100644
+index d44879dd..936b6809 100644
 --- a/BookOfEternityClient/Core/FileSystemManager.cs
 +++ b/BookOfEternityClient/Core/FileSystemManager.cs
-@@ -3980,7 +3980,7 @@ public partial class FileSystemManager
+@@ -293,19 +293,31 @@ public partial class FileSystemManager
+             _parentAuthority = null;
+             ExternalPublicationContext = null;
+             MutationIntentRecorder = null;
++            Exception? failure = null;
++            void RetainFailure(Exception next) =>
++                failure = failure == null ? next : new AggregateException(failure, next);
++
++            try { externalPublicationContext?.Dispose(); }
++            catch (Exception ex) { RetainFailure(ex); }
++            // Every owned resource must be released even if the earlier
++            // external context failed. Clearing _stream above makes retries
++            // idempotent, so skipping this close would orphan the lock handle.
+             try
+             {
+-                externalPublicationContext?.Dispose();
+                 if (stream != null)
+                     await stream.DisposeAsync();
+             }
++            catch (Exception ex) { RetainFailure(ex); }
++            try { parentAuthority?.Dispose(); }
++            catch (Exception ex) { RetainFailure(ex); }
++            try { Owner.ReleaseAmbientCanonicalLease(_ambientRegistration); }
++            catch (Exception ex) { RetainFailure(ex); }
+             finally
+             {
+-                parentAuthority?.Dispose();
+-                Owner.ReleaseAmbientCanonicalLease(
+-                    _ambientRegistration);
+                 _ambientRegistration = null;
+             }
++            if (failure != null)
++                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failure).Throw();
+         }
+     }
+ 
+@@ -3980,7 +3992,7 @@ public partial class FileSystemManager
          return true;
      }
  
@@ -25,10 +61,10 @@ index 4a4415cc..5391cb96 100644
  
  B1 already distinguishes `Committed`, `RolledBack`, `Uncertain` (`TrustedLocalFilePublication.cs:75–104`), including committed observer/cleanup failure. Keep the bool facade: true for committed, false for initial baseline mismatch or positively confirmed rollback, distinct unresolved exception for uncertain. Never broadly catch the publish API and return false. Capture the durable result before owned-lease disposal/follow-up; a disposal/cleanup failure cannot turn an established commit into uncommitted or start manual undo. Surface/log the follow-up without changing that disposition. The prepared settings implementation supplies the existing model (`WebUi/BrowserLocalWriteCoordinator.Prepared.cs:35–59,73–92`).
 diff --git a/tests/categories.json b/tests/categories.json
-index ad2fe43a..0deede0e 100644
+index ad2fe43a..109bc829 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -8417,6 +8417,64 @@
+@@ -8417,6 +8417,91 @@
            ]
          }
        ]
@@ -87,6 +123,33 @@ index ad2fe43a..0deede0e 100644
 +          "project": "unit",
 +          "tests": [
 +            "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.*"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-coordinated-lease-consumers",
++      "responsibility": "Exact existing real canonical-lease consumers for T031 admission/disposal: direct B1 owning-lease rejection, ordinary disposed/foreign readers, trade lock ordering and bound close/reacquisition fencing.",
++      "excludes": "Full canonical storage, browser recorder/save-load migration and unrelated session lifecycle scenarios.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.cs",
++        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 4,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RequiresItsOwnActiveCanonicalLease",
++            "BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening",
++            "BookOfEternityClient.Tests.TradeRequestLockOrderingTests.*",
++            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter"
 +          ]
 +        }
 +      ]

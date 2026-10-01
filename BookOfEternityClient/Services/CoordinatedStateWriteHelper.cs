@@ -105,6 +105,12 @@ internal static class CoordinatedStateWriteHelper
         Exception? operationFailure)
     {
         try { await writeLease.DisposeAsync(); }
+        catch (Exception failure) when (operationFailure != null)
+        {
+            // A secondary release failure cannot turn unresolved publication
+            // into an ordinary error eligible for compensation or safe retry.
+            operationFailure.Data["CoordinatedLeaseReleaseFailure"] = failure;
+        }
         catch (Exception failure) when (completed)
         {
             fs.LogCompletedCoordinatedWriteReleaseFailure(failure);
@@ -151,6 +157,7 @@ internal static class CoordinatedStateWriteHelper
         Func<PlannedWrite, Task>? afterWriteApplied,
         PlannedWrite[] writes)
     {
+        fs.EnsureCanonicalWriteLeaseActive(writeLease);
         foreach (var write in writes)
         {
             if (write.RequireCurrentBaseline &&

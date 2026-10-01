@@ -3,11 +3,28 @@
   "selections": [
     {
       "category": "portable-coordinated-lease",
-      "reason": "T031 next bounded RED: ten real-lease admission/release cases; preserve unchanged valid no-op/completed controls, reject foreign/disposed empty guards, close the actual lock after context failure and retain primary failure. The four-case adapter GREEN is separately preserved.",
+      "reason": "T031 GREEN for observed invalid zero-write admission, real context-disposal lock leak and primary-failure masking; includes three passing controls.",
       "contracts": [
-        "owning lease admission",
+        "real lease admission",
         "complete owned cleanup",
-        "durable failure precedence"
+        "primary failure precedence"
+      ]
+    },
+    {
+      "category": "portable-coordinated-publication",
+      "reason": "The owned wrapper/release routine changed after its initial four-case GREEN; recheck actual member-set rollback/uncertainty/committed cleanup once on the corrected path.",
+      "contracts": [
+        "complete declared member set",
+        "durable outcome preservation"
+      ]
+    },
+    {
+      "category": "portable-coordinated-lease-consumers",
+      "reason": "CanonicalWriteLease.DisposeAsync now closes every owned resource after external-context failure. Exact existing owning-lease, reader rejection, trade ordering and bound close consumers qualify this shared cleanup change without a broad category.",
+      "contracts": [
+        "canonical lease ownership",
+        "generation close fence",
+        "lock ordering"
       ]
     }
   ]
