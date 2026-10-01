@@ -288,7 +288,9 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
         else await new LocalUiSessionLockService(_files).AcquireOrRefreshAsync(
             new("other", "browser", "Other UI", TimeSpan.FromSeconds(120)), "Other operation");
         var published = false; _observe = (_, _) => published = true;
-        Assert.True(await session.IsCurrentSetSynchronizedAsync());
+        _live.Language = "en"; // A prior runtime snapshot; the complete confirmed set is ru.
+        Assert.True(await session.TryAcceptSynchronizedSettingsAsync());
+        Assert.Equal("ru", _live.Language);
         Assert.False(published); Assert.Equal(encoded, File.ReadAllBytes(_files.ResolvePath("config.json")));
     }
 
@@ -298,7 +300,9 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
         var session = await Open();
         await _files.WriteFileAtomicAsync("input/turn_request.json", "{}");
         var before = File.ReadAllBytes(_files.ResolvePath("config.json"));
-        Assert.False(await session.IsCurrentSetSynchronizedAsync());
+        session.Draft.Language = "en";
+        Assert.False(await session.TryAcceptSynchronizedSettingsAsync());
+        Assert.Equal("ru", _live.Language); Assert.Equal("en", session.Draft.Language);
         Assert.Equal(BrowserPreparedWriteDisposition.Blocked, (await session.SaveAsync()).Disposition);
         Assert.False(File.Exists(_files.ResolvePath(Projection)));
         Assert.Equal(before, File.ReadAllBytes(_files.ResolvePath("config.json")));
@@ -310,7 +314,7 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
         var session = await Open(); await session.SaveAsync();
         File.WriteAllText(_files.SessionGenerationPath,
             "{\"SchemaVersion\":1,\"GenerationId\":\"11111111111111111111111111111111\"}");
-        await Assert.ThrowsAsync<SessionReplacedException>(() => session.IsCurrentSetSynchronizedAsync());
+        await Assert.ThrowsAsync<SessionReplacedException>(() => session.TryAcceptSynchronizedSettingsAsync());
     }
 
     [Theory]

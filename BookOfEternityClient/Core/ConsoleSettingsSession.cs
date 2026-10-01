@@ -47,7 +47,28 @@ internal sealed class ConsoleSettingsSession
         finally { BrowserAudioService.SettingsWriteGate.Release(); }
     }
 
-    internal Task<bool> IsCurrentSetSynchronizedAsync() => throw new NotImplementedException();
+    internal async Task<bool> TryAcceptSynchronizedSettingsAsync()
+    {
+        await BrowserAudioService.SettingsWriteGate.WaitAsync();
+        try
+        {
+            if (RequiresReload) return false;
+            await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();
+            var prepared = await _preparation.PrepareAsync(lease, _baseline, Draft);
+            // No file publication is needed only after the entire current set
+            // and captured generation match. An edited/unconfirmed draft is
+            // never applied to runtime through this path.
+            var synchronized = prepared.Changes.All(change => change.Before == null
+                ? change.After == null
+                : change.After != null && change.Before.AsSpan().SequenceEqual(change.After));
+            if (!synchronized) return false;
+            _state.Settings.ApplyLoadedValues(prepared.Settings);
+            Draft.ApplyLoadedValues(_state.CaptureRuntimeSnapshot().Settings);
+            VerifyGeneration(lease);
+            return true;
+        }
+        finally { BrowserAudioService.SettingsWriteGate.Release(); }
+    }
 
     internal async Task ReloadAsync(Func<Task>? refreshRuntime = null)
     {

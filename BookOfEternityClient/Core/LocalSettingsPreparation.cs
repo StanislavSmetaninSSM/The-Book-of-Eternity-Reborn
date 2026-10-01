@@ -69,10 +69,13 @@ internal sealed class LocalSettingsPreparation
             projectionAfter = EncodeText(projection.ToJsonString(JsonOpts));
         }
 
+        var encodedCandidate = _state.EncodeLocalSettings(candidate);
+        var configAfter = encodedCandidate.AsSpan().SequenceEqual(_state.EncodeLocalSettings(snapshot.Settings))
+            ? snapshot.Bytes : encodedCandidate;
         VerifyGeneration(lease, baseline.Generation);
         return new(candidate,
         [
-            new("config.json", snapshot.Bytes, _state.EncodeLocalSettings(candidate)),
+            new("config.json", snapshot.Bytes, configAfter),
             new(ProjectionPath, projectionBefore, projectionAfter),
             new(SystemModService.ManifestPath, manifestBefore, manifest.Bytes)
         ]);

@@ -14,7 +14,7 @@ git status --short
 
 Compare the complete SHAs; read AGENTS.md, docs/development-workflow.md and this feature's spec/plan/tasks before editing. No local-only code cache is needed. Application/test execution is separate evidence from successful download.
 
-While `recovery/categories-pending.patch` exists, follow the [current catalog recovery procedure](recovery/README.md) immediately after SHA verification and before running verification: apply the exact patch once and check its current catalog blob hash. Do not apply it twice to an already reconstructed implementation checkout. The README and plan identify the current source/evidence status.
+The exact menu source and catalog are now stored as normal Git blobs; no pending recovery patch needs application. After SHA verification, follow the [current source/catalog recovery procedure](recovery/README.md) to confirm the catalog identity and read the plan. This menu implementation remains untested WIP; the next cloud-executor step is the targeted current selection, not a claim of menu/client or Windows acceptance.
 
 ## Tool versions actually verified on Debian 13 x64
 

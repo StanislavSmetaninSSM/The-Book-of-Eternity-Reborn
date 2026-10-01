@@ -406,7 +406,7 @@ public partial class GameEngine
             return false;
 
         await NormalizeRuntimeUiArtifactsAsync();
-        await EnsureClientOwnedSystemFilesHealthyAsync();
+        await EnsureClientOwnedSystemFilesHealthyAsync(ordinaryEntry: true);
         var sessionHealth = await _criticalStateHealth.AssessCurrentSessionHealthAsync();
         if (sessionHealth.HasRecoverableSessionError)
         {
@@ -1213,7 +1213,7 @@ public partial class GameEngine
         await RefreshRuntimeStateAsync();
 
         // Write game settings (difficulty flags) for GM
-        await WriteGameSettingsForGm();
+        if (!await WriteGameSettingsForGm()) return;
 
         var guardianRequestLabel =
             pendingGuardianCreation["presetDisplayName"]?.GetValue<string>() ??
@@ -1237,7 +1237,7 @@ public partial class GameEngine
             PlayerAction = firstAction,
             Timestamp = DateTime.UtcNow.ToString("o"),
             GameMode = "normal",
-            SystemReminder = await BuildTurnSystemReminderAsync()
+            SystemReminder = await BuildTurnSystemReminderAsync(maintainLegacyTurnSettings: false)
         };
         AttachFreshDiceAndGacha(request);
         request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
@@ -3333,7 +3333,7 @@ public partial class GameEngine
             await Task.Delay(1000);
 
             // Ensure game settings (difficulty) are synced to game_state for GM
-            await WriteGameSettingsForGm();
+            if (!await WriteGameSettingsForGm()) return;
             await NormalizeRuntimeUiArtifactsAsync();
 
             // Build response from saved output files for initial display

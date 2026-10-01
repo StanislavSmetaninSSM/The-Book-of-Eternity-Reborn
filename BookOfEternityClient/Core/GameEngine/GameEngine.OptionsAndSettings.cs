@@ -9,6 +9,7 @@ using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.Services.GmWorkers;
 using BookOfEternityClient.UI;
+using BookOfEternityClient.WebUi;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
 
@@ -18,6 +19,21 @@ public partial class GameEngine
 {
     private async Task OptionsMenu()
     {
+        var session = await ConsoleSettingsSession.OpenAsync(_fs, _stateManager, _systemModService);
+        var settings = session.Draft;
+        await using var preview = new ConsoleSettingsPreview(_stateManager.Settings, settings, _loc,
+            _audioService, _consoleAppearance, RefreshAudioPlaybackContextAsync);
+        string? notice = null;
+        var exitAfterReconcile = false;
+        async Task<BrowserPreparedWriteResult> SaveDraftAsync()
+        {
+            var outcome = await session.SaveAsync(async () => { await preview.ApplyAsync(); });
+            notice = outcome.Message;
+            return outcome;
+        }
+        static bool CanLeave(BrowserPreparedWriteResult result) =>
+            result.Disposition == BrowserPreparedWriteDisposition.Committed && !result.NeedsFollowUp;
+
         var selectedIndex = 0;
         var lastWidth = -1;
         var lastHeight = -1;
@@ -25,7 +41,26 @@ public partial class GameEngine
 
         while (true)
         {
-            var entries = await BuildOptionsEntriesAsync();
+            if (session.RequiresReload)
+            {
+                var action = ShowSingleChoiceMenu("Настройки требуют проверки",
+                    new List<MenuChoiceItem> { new("reload", "Перечитать сохранённые настройки", "Отменить неподтверждённый черновик после успешного чтения", "yellow") },
+                    footer: notice + " Esc — остаться в настройках");
+                if (action == null) continue;
+                try
+                {
+                    await session.ReloadAsync(async () => { await preview.ApplyAsync(); });
+                    notice = "Подтверждённые настройки перечитаны.";
+                    if (exitAfterReconcile) return;
+                }
+                catch (Exception ex) when (ex is not ConsoleE2EScriptInputException)
+                {
+                    notice = "Не удалось перечитать настройки: " + ex.Message;
+                    continue;
+                }
+                lastWidth = -1;
+            }
+            var entries = await BuildOptionsEntriesAsync(session);
             if (selectedIndex >= entries.Count)
                 selectedIndex = Math.Max(0, entries.Count - 1);
 
@@ -33,9 +68,9 @@ public partial class GameEngine
             var currentHeight = GetSafeConsoleHeight();
             if (currentWidth != lastWidth || currentHeight != lastHeight)
             {
-                menuTop = RenderOptionsStaticFrame();
-                RedrawOptionsMenuArea(entries, selectedIndex, menuTop, currentHeight);
-                WriteOptionsMenuObservation(entries, selectedIndex, "options-menu");
+                menuTop = RenderOptionsStaticFrame(settings, notice);
+                RedrawOptionsMenuArea(entries, selectedIndex, menuTop, currentHeight, settings, notice);
+                WriteOptionsMenuObservation(entries, selectedIndex, "options-menu", notice);
                 lastWidth = currentWidth;
                 lastHeight = currentHeight;
             }
@@ -57,8 +92,10 @@ public partial class GameEngine
                     selectionChanged = true;
                     break;
                 case ConsoleKey.Escape:
-                    await _stateManager.SaveSettingsAsync();
-                    return;
+                    exitAfterReconcile = true;
+                    if (CanLeave(await SaveDraftAsync())) return;
+                    lastWidth = -1;
+                    continue;
                 case ConsoleKey.Enter:
                     _audioService.PlayCue(AudioCue.MenuSelect);
                     chosen = entries[selectedIndex];
@@ -67,62 +104,63 @@ public partial class GameEngine
 
             if (selectionChanged)
             {
-                RedrawOptionsMenuArea(entries, selectedIndex, menuTop, currentHeight);
-                WriteOptionsMenuObservation(entries, selectedIndex, "options-menu");
+                RedrawOptionsMenuArea(entries, selectedIndex, menuTop, currentHeight, settings, notice);
+                WriteOptionsMenuObservation(entries, selectedIndex, "options-menu", notice);
                 continue;
             }
 
             if (chosen == null)
                 continue;
 
+            exitAfterReconcile = false;
+            if (chosen.Key is not ("difficulty" or "qte" or "system_mods" or "back" or "reload" or "gm_worker_profiles" or "image_cleanup"))
+                notice = "Предпросмотр: изменения ещё не сохранены.";
             if (chosen.Key == "difficulty")
             {
-                await ShowDifficultySelection();
+                if (await ShowDifficultySelection(settings)) await SaveDraftAsync();
             }
             else if (chosen.Key == "history")
             {
-                _stateManager.Settings.AllowHistoryManipulation = !_stateManager.Settings.AllowHistoryManipulation;
+                settings.AllowHistoryManipulation = !settings.AllowHistoryManipulation;
             }
             else if (chosen.Key == "show_gm")
             {
-                _stateManager.Settings.ShowGmThoughts = !_stateManager.Settings.ShowGmThoughts;
+                settings.ShowGmThoughts = !settings.ShowGmThoughts;
             }
             else if (chosen.Key == "auto_discard")
             {
-                _stateManager.Settings.AutoDiscardBrokenItems = !_stateManager.Settings.AutoDiscardBrokenItems;
+                settings.AutoDiscardBrokenItems = !settings.AutoDiscardBrokenItems;
             }
             else if (chosen.Key == "qte")
             {
-                _stateManager.Settings.EnableQteEvents = !_stateManager.Settings.EnableQteEvents;
-                await WriteGameSettingsForGm();
+                settings.EnableQteEvents = !settings.EnableQteEvents;
+                await SaveDraftAsync();
             }
             else if (chosen.Key == "music")
             {
-                _stateManager.Settings.MusicEnabled = !_stateManager.Settings.MusicEnabled;
-                await _audioService.ApplySettingsAsync();
-                await RefreshAudioPlaybackContextAsync();
+                settings.MusicEnabled = !settings.MusicEnabled;
+                await preview.ApplyAsync();
             }
             else if (chosen.Key == "music_volume")
             {
-                _stateManager.Settings.MusicVolume = PromptVolume(_loc.T("volume_prompt_music"), _stateManager.Settings.MusicVolume);
-                await _audioService.ApplySettingsAsync();
-                await RefreshAudioPlaybackContextAsync();
+                settings.MusicVolume = PromptVolume(_loc.T("volume_prompt_music"), settings.MusicVolume);
+                await preview.ApplyAsync();
             }
             else if (chosen.Key == "sound")
             {
-                _stateManager.Settings.SoundEnabled = !_stateManager.Settings.SoundEnabled;
-                await _audioService.ApplySettingsAsync();
+                settings.SoundEnabled = !settings.SoundEnabled;
+                await preview.ApplyAsync();
             }
             else if (chosen.Key == "sound_volume")
             {
-                _stateManager.Settings.SoundVolume = PromptVolume(_loc.T("volume_prompt_sound"), _stateManager.Settings.SoundVolume);
-                await _audioService.ApplySettingsAsync();
+                settings.SoundVolume = PromptVolume(_loc.T("volume_prompt_sound"), settings.SoundVolume);
+                await preview.ApplyAsync();
                 _audioService.PlayCue(AudioCue.MenuSelect);
             }
             else if (chosen.Key == "font_size")
             {
-                _stateManager.Settings.ConsoleFontSize = PromptFontSize(_stateManager.Settings.ConsoleFontSize);
-                if (!_consoleAppearance.TryApplyFontSize(_stateManager.Settings.ConsoleFontSize))
+                settings.ConsoleFontSize = PromptFontSize(settings.ConsoleFontSize);
+                if (!await preview.ApplyAsync())
                 {
                     AnsiConsole.MarkupLine($"[dim]{Markup.Escape(_loc.T("font_size_apply_note"))}[/]");
                     _inputSource.ReadKey(intercept: true);
@@ -130,7 +168,7 @@ public partial class GameEngine
             }
             else if (chosen.Key == "gm_cli_launch_command")
             {
-                _stateManager.Settings.GmCliLaunchCommand = PromptGmCliLaunchCommand(_stateManager.Settings.GmCliLaunchCommand);
+                settings.GmCliLaunchCommand = PromptGmCliLaunchCommand(settings.GmCliLaunchCommand);
             }
             else if (chosen.Key == "gm_worker_profiles")
             {
@@ -138,11 +176,11 @@ public partial class GameEngine
             }
             else if (chosen.Key == "system_mods")
             {
-                await ShowSystemModsMenu();
+                await ShowSystemModsMenu(session, SaveDraftAsync);
             }
             else if (chosen.Key == "image_provider")
             {
-                var currentPollKey = _stateManager.Settings.PollinationsApiKey;
+                var currentPollKey = settings.PollinationsApiKey;
                 var hasPollKey = !string.IsNullOrWhiteSpace(currentPollKey);
                 var pollLabel = hasPollKey
                     ? "Pollinations.ai (API ключ задан ✅)"
@@ -156,18 +194,18 @@ public partial class GameEngine
                         new("pollinations", pollLabel, "Генерация через Pollinations.ai", "purple")
                     },
                     footer: "Esc — назад",
-                    initialIndex: _stateManager.Settings.ImageProvider == "pollinations" ? 1 : 0);
+                    initialIndex: settings.ImageProvider == "pollinations" ? 1 : 0);
 
                 if (providerChoice == null)
                 {
-                    menuTop = RenderOptionsStaticFrame();
-                    RedrawOptionsMenuArea(await BuildOptionsEntriesAsync(), selectedIndex, menuTop, GetSafeConsoleHeight());
+                    menuTop = RenderOptionsStaticFrame(settings, notice);
+                    RedrawOptionsMenuArea(await BuildOptionsEntriesAsync(session), selectedIndex, menuTop, GetSafeConsoleHeight(), settings, notice);
                     continue;
                 }
 
                 if (providerChoice.Key == "pollinations")
                 {
-                    _stateManager.Settings.ImageProvider = "pollinations";
+                    settings.ImageProvider = "pollinations";
 
                     // Ask for API key
                     var keyPrompt = hasPollKey
@@ -175,10 +213,10 @@ public partial class GameEngine
                         : "[cyan]Введите API ключ Pollinations (получить на enter.pollinations.ai):[/]";
                     var newKey = PromptTextInput(keyPrompt, allowEmpty: true, preserveNewlines: false);
                     if (!string.IsNullOrWhiteSpace(newKey))
-                        _stateManager.Settings.PollinationsApiKey = newKey.Trim();
+                        settings.PollinationsApiKey = newKey.Trim();
 
                     // Ask for model
-                    var currentModel = _stateManager.Settings.PollinationsImageModel;
+                    var currentModel = settings.PollinationsImageModel;
                     var modelChoice = ShowSingleChoiceMenu(
                         "Модель изображений",
                         new List<MenuChoiceItem>
@@ -195,8 +233,8 @@ public partial class GameEngine
 
                     if (modelChoice == null)
                     {
-                        menuTop = RenderOptionsStaticFrame();
-                        RedrawOptionsMenuArea(await BuildOptionsEntriesAsync(), selectedIndex, menuTop, GetSafeConsoleHeight());
+                        menuTop = RenderOptionsStaticFrame(settings, notice);
+                        RedrawOptionsMenuArea(await BuildOptionsEntriesAsync(session), selectedIndex, menuTop, GetSafeConsoleHeight(), settings, notice);
                         continue;
                     }
 
@@ -206,29 +244,29 @@ public partial class GameEngine
                             defaultValue: currentModel,
                             allowEmpty: false,
                             preserveNewlines: false);
-                        _stateManager.Settings.PollinationsImageModel = customModel.Trim();
+                        settings.PollinationsImageModel = customModel.Trim();
                     }
                     else
                     {
-                        _stateManager.Settings.PollinationsImageModel = modelChoice.Key;
+                        settings.PollinationsImageModel = modelChoice.Key;
                     }
                 }
                 else
                 {
-                    _stateManager.Settings.ImageProvider = "placeholder";
+                    settings.ImageProvider = "placeholder";
                 }
             }
             else if (chosen.Key == "scene_images")
             {
-                _stateManager.Settings.GenerateSceneImages = !_stateManager.Settings.GenerateSceneImages;
+                settings.GenerateSceneImages = !settings.GenerateSceneImages;
             }
             else if (chosen.Key == "image_display")
             {
-                _stateManager.Settings.ShowImagesInConsole = !_stateManager.Settings.ShowImagesInConsole;
+                settings.ShowImagesInConsole = !settings.ShowImagesInConsole;
             }
             else if (chosen.Key == "no_autodisplay")
             {
-                _stateManager.Settings.GenerateImagesWithoutDisplay = !_stateManager.Settings.GenerateImagesWithoutDisplay;
+                settings.GenerateImagesWithoutDisplay = !settings.GenerateImagesWithoutDisplay;
             }
             else if (chosen.Key == "image_cleanup")
             {
@@ -256,47 +294,62 @@ public partial class GameEngine
             }
             else if (chosen.Key == "language")
             {
-                var lang = _stateManager.Settings.Language == "ru" ? "en" : "ru";
-                _stateManager.Settings.Language = lang;
-                _loc.CurrentLanguage = lang;
+                var lang = settings.Language == "ru" ? "en" : "ru";
+                settings.Language = lang;
+                await preview.ApplyAsync();
+            }
+            else if (chosen.Key == "reload")
+            {
+                try
+                {
+                    await session.ReloadAsync(async () => { await preview.ApplyAsync(); });
+                    return; // Explicit discard; disposal restores accepted effects.
+                }
+                catch (Exception ex) when (ex is not ConsoleE2EScriptInputException)
+                {
+                    notice = "Не удалось перечитать настройки: " + ex.Message;
+                }
             }
             else if (chosen.Key == "back")
             {
-                await _stateManager.SaveSettingsAsync();
-                return;
+                exitAfterReconcile = true;
+                if (CanLeave(await SaveDraftAsync())) return;
             }
 
-            menuTop = RenderOptionsStaticFrame();
-            RedrawOptionsMenuArea(await BuildOptionsEntriesAsync(), selectedIndex, menuTop, GetSafeConsoleHeight());
+            menuTop = RenderOptionsStaticFrame(settings, notice);
+            var updatedEntries = await BuildOptionsEntriesAsync(session);
+            RedrawOptionsMenuArea(updatedEntries, selectedIndex, menuTop, GetSafeConsoleHeight(), settings, notice);
+            WriteOptionsMenuObservation(updatedEntries, selectedIndex, "options-menu", notice);
         }
     }
 
-    private async Task<List<OptionsMenuEntry>> BuildOptionsEntriesAsync()
+    private async Task<List<OptionsMenuEntry>> BuildOptionsEntriesAsync(ConsoleSettingsSession session)
     {
-        var histStatus = _stateManager.Settings.AllowHistoryManipulation ? _loc.T("enabled") : _loc.T("disabled");
-        var gmStatus = _stateManager.Settings.ShowGmThoughts ? _loc.T("enabled") : _loc.T("disabled");
-        var autoDiscardStatus = _stateManager.Settings.AutoDiscardBrokenItems ? _loc.T("enabled") : _loc.T("disabled");
-        var sceneImgStatus = _stateManager.Settings.GenerateSceneImages ? _loc.T("enabled") : _loc.T("disabled");
-        var noDisplayStatus = _stateManager.Settings.GenerateImagesWithoutDisplay ? _loc.T("enabled") : _loc.T("disabled");
-        var qteStatus = _stateManager.Settings.EnableQteEvents ? _loc.T("enabled") : _loc.T("disabled");
-        var musicStatus = _stateManager.Settings.MusicEnabled ? _loc.T("enabled") : _loc.T("disabled");
-        var soundStatus = _stateManager.Settings.SoundEnabled ? _loc.T("enabled") : _loc.T("disabled");
-        var systemMods = await _systemModService.GetAvailableModsAsync(includeContent: false);
+        var settings = session.Draft;
+        var histStatus = settings.AllowHistoryManipulation ? _loc.T("enabled") : _loc.T("disabled");
+        var gmStatus = settings.ShowGmThoughts ? _loc.T("enabled") : _loc.T("disabled");
+        var autoDiscardStatus = settings.AutoDiscardBrokenItems ? _loc.T("enabled") : _loc.T("disabled");
+        var sceneImgStatus = settings.GenerateSceneImages ? _loc.T("enabled") : _loc.T("disabled");
+        var noDisplayStatus = settings.GenerateImagesWithoutDisplay ? _loc.T("enabled") : _loc.T("disabled");
+        var qteStatus = settings.EnableQteEvents ? _loc.T("enabled") : _loc.T("disabled");
+        var musicStatus = settings.MusicEnabled ? _loc.T("enabled") : _loc.T("disabled");
+        var soundStatus = settings.SoundEnabled ? _loc.T("enabled") : _loc.T("disabled");
+        var systemMods = await session.ReadModsAsync();
         var systemModsStatus = _systemModService.GetStatusSummary(systemMods);
-        var workerProfilesStatus = BuildGmWorkerBridgeProfileSummary();
-        var imgDisplay = _stateManager.Settings.ShowImagesInConsole ? _loc.T("opt_in_console") : _loc.T("opt_in_viewer");
-        var imgProvider = _stateManager.Settings.ImageProvider switch
+        var workerProfilesStatus = BuildGmWorkerBridgeProfileSummary(settings);
+        var imgDisplay = settings.ShowImagesInConsole ? _loc.T("opt_in_console") : _loc.T("opt_in_viewer");
+        var imgProvider = settings.ImageProvider switch
         {
-            "pollinations" => $"Pollinations ({_stateManager.Settings.PollinationsImageModel})",
+            "pollinations" => $"Pollinations ({settings.PollinationsImageModel})",
             _ => "Выключено"
         };
-        var difficultyLabel = _stateManager.Settings.Difficulty switch
+        var difficultyLabel = settings.Difficulty switch
         {
             "hard" => _loc.T("difficulty_hard"),
             "impossible" => _loc.T("difficulty_impossible"),
             _ => _loc.T("difficulty_normal")
         };
-        var difficultyColor = _stateManager.Settings.Difficulty switch
+        var difficultyColor = settings.Difficulty switch
         {
             "hard" => "darkorange",
             "impossible" => "red",
@@ -310,31 +363,35 @@ public partial class GameEngine
             new("show_gm", $"{_loc.T("opt_show_gm")}: [{(gmStatus == _loc.T("enabled") ? "green" : "red")}]{gmStatus}[/]"),
             new("auto_discard", $"🗑️ Авто-выброс сломанных: [{(autoDiscardStatus == _loc.T("enabled") ? "green" : "red")}]{autoDiscardStatus}[/]"),
             new("qte", $"🎬 QTE события: [{(qteStatus == _loc.T("enabled") ? "green" : "red")}]{qteStatus}[/]"),
-            new("gm_cli_launch_command", $"🌉 {_loc.T("opt_gm_cli_launch_command")}: [yellow]{Markup.Escape(TruncateDiagnosticValue(_stateManager.Settings.GmCliLaunchCommand, 56))}[/]"),
+            new("gm_cli_launch_command", $"🌉 {_loc.T("opt_gm_cli_launch_command")}: [yellow]{Markup.Escape(TruncateDiagnosticValue(settings.GmCliLaunchCommand, 56))}[/]"),
             new("gm_worker_profiles", $"🧵 GM worker bridges: [yellow]{Markup.Escape(workerProfilesStatus)}[/]"),
             new("music", $"🎵 {_loc.T("opt_music")}: [{(musicStatus == _loc.T("enabled") ? "green" : "red")}]{musicStatus}[/]"),
-            new("music_volume", $"🎚 {_loc.T("opt_music_volume")}: [yellow]{_stateManager.Settings.MusicVolume}%[/]"),
+            new("music_volume", $"🎚 {_loc.T("opt_music_volume")}: [yellow]{settings.MusicVolume}%[/]"),
             new("sound", $"🔊 {_loc.T("opt_sound")}: [{(soundStatus == _loc.T("enabled") ? "green" : "red")}]{soundStatus}[/]"),
-            new("sound_volume", $"🎛 {_loc.T("opt_sound_volume")}: [yellow]{_stateManager.Settings.SoundVolume}%[/]"),
-            new("font_size", $"🔤 {_loc.T("opt_font_size")}: [yellow]{_stateManager.Settings.ConsoleFontSize}[/]"),
+            new("sound_volume", $"🎛 {_loc.T("opt_sound_volume")}: [yellow]{settings.SoundVolume}%[/]"),
+            new("font_size", $"🔤 {_loc.T("opt_font_size")}: [yellow]{settings.ConsoleFontSize}[/]"),
             new("system_mods", $"🧩 {_loc.T("opt_system_mods")}: [yellow]{systemModsStatus}[/]"),
             new("image_provider", $"🎨 Генерация изображений: [yellow]{imgProvider}[/]"),
             new("scene_images", $"🖼️ Изображения сцен (ежеходные): [{(sceneImgStatus == _loc.T("enabled") ? "green" : "red")}]{sceneImgStatus}[/]"),
             new("image_display", $"{_loc.T("opt_image_display")}: [yellow]{imgDisplay}[/]"),
             new("no_autodisplay", $"📁 {_loc.T("opt_image_no_autodisplay")}: [{(noDisplayStatus == _loc.T("enabled") ? "green" : "red")}]{noDisplayStatus}[/]"),
             new("image_cleanup", $"🧹 {_loc.T("opt_image_cleanup")}"),
-            new("language", $"{_loc.T("opt_language")}: [yellow]{_stateManager.Settings.Language.ToUpper()}[/]"),
+            new("language", $"{_loc.T("opt_language")}: [yellow]{settings.Language.ToUpper()}[/]"),
+            new("reload", "Перечитать сохранённые настройки (отменить черновик)"),
             new("back", _loc.T("back"))
         };
     }
 
-    private int RenderOptionsStaticFrame()
+    private int RenderOptionsStaticFrame(GameSettings settings, string? notice)
     {
         SpectreConsoleSafe.Clear();
         AnsiConsole.Write(new Rule("[cyan]⚙️ Опции[/]").RuleStyle("cyan"));
         AnsiConsole.WriteLine();
+        AnsiConsole.MarkupLine("[dim]Предпросмотр настроек. Esc/Назад — сохранить; перечитать — отменить несохранённое.[/]");
+        if (!string.IsNullOrWhiteSpace(notice))
+            AnsiConsole.MarkupLine($"[yellow]{Markup.Escape(notice)}[/]");
 
-        if (_stateManager.Settings.GenerateImagesWithoutDisplay)
+        if (settings.GenerateImagesWithoutDisplay)
         {
             AnsiConsole.MarkupLine($"[dim]{Markup.Escape(_loc.T("opt_image_no_autodisplay_hint"))}[/]");
             AnsiConsole.WriteLine();
@@ -350,7 +407,7 @@ public partial class GameEngine
         }
     }
 
-    private void RedrawOptionsMenuArea(IReadOnlyList<OptionsMenuEntry> entries, int selectedIndex, int menuTop, int consoleHeight)
+    private void RedrawOptionsMenuArea(IReadOnlyList<OptionsMenuEntry> entries, int selectedIndex, int menuTop, int consoleHeight, GameSettings settings, string? notice)
     {
         var availableRows = Math.Max(6, consoleHeight - menuTop - 4);
         var visibleCount = Math.Max(5, availableRows - 2);
@@ -365,7 +422,7 @@ public partial class GameEngine
         }
         catch
         {
-            RenderOptionsStaticFrame();
+            RenderOptionsStaticFrame(settings, notice);
             return;
         }
 
@@ -390,7 +447,7 @@ public partial class GameEngine
         AnsiConsole.Write(ConsoleLayout.WithHorizontalMargin(body, 2));
     }
 
-    private void WriteOptionsMenuObservation(IReadOnlyList<OptionsMenuEntry> entries, int selectedIndex, string slug)
+    private void WriteOptionsMenuObservation(IReadOnlyList<OptionsMenuEntry> entries, int selectedIndex, string slug, string? notice = null)
     {
         var boundedIndex = entries.Count == 0
             ? -1
@@ -405,7 +462,7 @@ public partial class GameEngine
         RecordConsoleObservation(
             ConsoleE2EInputMode.Menu,
             "⚙️ Опции",
-            playerText,
+            playerText + (string.IsNullOrWhiteSpace(notice) ? string.Empty : " " + notice),
             optionTitles,
             selectedOption,
             slug);
@@ -469,9 +526,9 @@ public partial class GameEngine
         return string.IsNullOrWhiteSpace(entered) ? current : entered;
     }
 
-    private string BuildGmWorkerBridgeProfileSummary()
+    private string BuildGmWorkerBridgeProfileSummary(GameSettings settings)
     {
-        var profiles = _stateManager.Settings.GmWorkerBridgeProfiles;
+        var profiles = settings.GmWorkerBridgeProfiles;
         if (profiles.Count == 0)
             return "не настроены";
 
@@ -585,9 +642,11 @@ public partial class GameEngine
         _inputSource.ReadKey(intercept: true);
     }
 
-    private async Task RefreshAudioPlaybackContextAsync()
+    private Task RefreshAudioPlaybackContextAsync() => RefreshAudioPlaybackContextAsync(_stateManager.Settings);
+
+    private async Task RefreshAudioPlaybackContextAsync(GameSettings settings)
     {
-        if (!_stateManager.Settings.MusicEnabled || _stateManager.Settings.MusicVolume <= 0)
+        if (!settings.MusicEnabled || settings.MusicVolume <= 0)
         {
             await _audioService.StopMusicAsync();
             return;
@@ -599,7 +658,7 @@ public partial class GameEngine
             await _audioService.PlayMainMenuMusicAsync();
     }
 
-    private async Task ShowDifficultySelection()
+    private Task<bool> ShowDifficultySelection(GameSettings settings)
     {
         SpectreConsoleSafe.Clear();
         AnsiConsole.Write(new Rule("[cyan]⚔️ Сложность[/]").RuleStyle("cyan"));
@@ -639,7 +698,7 @@ public partial class GameEngine
             "Выберите уровень сложности",
             difficultyItems,
             footer: "Esc — назад",
-            initialIndex: _stateManager.Settings.Difficulty switch
+            initialIndex: settings.Difficulty switch
             {
                 "hard" => 1,
                 "impossible" => 2,
@@ -647,21 +706,20 @@ public partial class GameEngine
             });
 
         if (selected == null || selected.Key == "back")
-            return;
+            return Task.FromResult(false);
 
-        _stateManager.Settings.Difficulty = selected.Key;
+        settings.Difficulty = selected.Key;
 
-        // Persist to game_state so the GM agent reads it
-        await WriteGameSettingsForGm();
+        return Task.FromResult(true);
     }
 
-    private async Task ShowSystemModsMenu()
+    private async Task ShowSystemModsMenu(ConsoleSettingsSession session, Func<Task<BrowserPreparedWriteResult>> save)
     {
         var selectedIndex = 0;
         while (true)
         {
             SpectreConsoleSafe.Clear();
-            var mods = await _systemModService.GetAvailableModsAsync(includeContent: false);
+            var mods = await session.ReadModsAsync();
             var modsDir = _systemModService.GetModsDirectoryPath();
 
             AnsiConsole.Write(new Rule($"[cyan]{Markup.Escape(_loc.T("system_mods_title"))}[/]").RuleStyle("cyan"));
@@ -754,15 +812,15 @@ public partial class GameEngine
             if (selectedLabels == null)
                 continue;
 
-            _stateManager.Settings.EnabledSystemMods = selectedLabels
+            session.Draft.EnabledSystemMods = selectedLabels
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToList();
 
-            await _stateManager.SaveSettingsAsync();
-            await WriteGameSettingsForGm();
-
-            AnsiConsole.MarkupLine($"[green]{Markup.Escape(_loc.T("system_mods_saved"))}[/]");
+            var result = await save();
+            var color = result.Disposition == BrowserPreparedWriteDisposition.Committed ? "green" : "yellow";
+            AnsiConsole.MarkupLine($"[{color}]{Markup.Escape(result.Message)}[/]");
             _inputSource.ReadKey(intercept: true);
+            if (session.RequiresReload) return;
         }
     }
 
@@ -1082,32 +1140,29 @@ public partial class GameEngine
     /// Writes game_state/core/game_settings.json so the GM agent can read difficulty flags.
     /// Maps client difficulty setting to Context.gameSettings.hardMode / impossibleMode.
     /// </summary>
-    private async Task WriteGameSettingsForGm()
+    private async Task<bool> WriteGameSettingsForGm()
     {
-        if (await _systemModService.WriteManifestForGmAsync())
-            await _stateManager.SaveSettingsAsync();
-
-        var activeMods = (await _systemModService.GetAvailableModsAsync(includeContent: false))
-            .Where(mod => mod.Enabled)
-            .Select(mod => new
-            {
-                mod.FileName,
-                mod.ModId,
-                mod.Name
-            })
-            .ToArray();
-
-        var gameSettings = new
+        var session = await ConsoleSettingsSession.OpenAsync(_fs, _stateManager, _systemModService);
+        async Task RefreshAcceptedSettingsAsync()
         {
-            hardMode = _stateManager.Settings.Difficulty == "hard",
-            impossibleMode = _stateManager.Settings.Difficulty == "impossible",
-            difficulty = _stateManager.Settings.Difficulty,
-            qteEventsEnabled = _stateManager.Settings.EnableQteEvents,
-            enabledSystemMods = activeMods,
-            _lastUpdated = DateTime.UtcNow.ToString("o")
-        };
-        await _fs.WriteFileAtomicAsync("game_state/core/game_settings.json",
-            JsonSerializer.Serialize(gameSettings, JsonOpts));
+            _loc.CurrentLanguage = _stateManager.Settings.Language;
+            _consoleAppearance.ApplyConfiguredFontSize();
+            await _audioService.ApplySettingsAsync();
+        }
+        if (await session.TryAcceptSynchronizedSettingsAsync())
+        {
+            try { await RefreshAcceptedSettingsAsync(); return true; }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Confirmed settings require console refresh follow-up.");
+                AnsiConsole.MarkupLine("[yellow]Сохранённые настройки подтверждены, но обновление консоли требует проверки.[/]");
+                return false;
+            }
+        }
+        var result = await session.SaveAsync(RefreshAcceptedSettingsAsync);
+        if (result.Disposition == BrowserPreparedWriteDisposition.Committed && !result.NeedsFollowUp) return true;
+        AnsiConsole.MarkupLine($"[yellow]{Markup.Escape(result.Message)}[/]");
+        return false;
     }
 
     private async Task<bool> InGameOptionsMenu()

@@ -7,10 +7,47 @@ namespace BookOfEternityClient.Core;
 // Visual/audio preview lifetime only. Accepted settings stay owned by StateManager.
 internal sealed class ConsoleSettingsPreview : IAsyncDisposable
 {
+    private readonly GameSettings _accepted;
+    private readonly GameSettings _draft;
+    private readonly LocalizationManager _localization;
+    private readonly AudioService _audio;
+    private readonly ConsoleAppearanceService _appearance;
+    private readonly Func<GameSettings, Task> _refreshPlayback;
+    private readonly IDisposable _audioPreview;
+    private bool _disposed;
+
     internal ConsoleSettingsPreview(GameSettings accepted, GameSettings draft, LocalizationManager localization,
         AudioService audio, ConsoleAppearanceService appearance, Func<GameSettings, Task> refreshPlayback)
-        => throw new NotImplementedException();
+    {
+        _accepted = accepted;
+        _draft = draft;
+        _localization = localization;
+        _audio = audio;
+        _appearance = appearance;
+        _refreshPlayback = refreshPlayback;
+        _audioPreview = audio.BeginSettingsPreview(draft);
+    }
 
-    internal Task<bool> ApplyAsync() => throw new NotImplementedException();
-    public ValueTask DisposeAsync() => throw new NotImplementedException();
+    internal async Task<bool> ApplyAsync()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        _localization.CurrentLanguage = _draft.Language;
+        var fontApplied = _appearance.TryPreviewFontSize(_draft.ConsoleFontSize);
+        await _audio.ApplySettingsAsync();
+        await _refreshPlayback(_draft);
+        return fontApplied;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_disposed) return;
+        _disposed = true;
+        _audioPreview.Dispose();
+        _localization.CurrentLanguage = _accepted.Language;
+        _appearance.ApplyConfiguredFontSize();
+        // Even if a backend cannot stop cleanly, still attempt to restore the
+        // accepted playlist context. File acceptance is unaffected by either.
+        try { await _audio.ApplySettingsAsync(); }
+        finally { await _refreshPlayback(_accepted); }
+    }
 }

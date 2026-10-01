@@ -4451,9 +4451,11 @@ The client owns the guarded quartet game_state/resources/resource_definitions.js
 " + _storyService.BuildStoryContext();
     }
 
-    private async Task<string> BuildTurnSystemReminderAsync(string? extraReminder = null)
+    private async Task<string> BuildTurnSystemReminderAsync(string? extraReminder = null, bool maintainLegacyTurnSettings = true)
     {
-        if (await _systemModService.WriteManifestForGmAsync())
+        // B3 owns the active turn/snapshot/receipt migration. The fresh-game
+        // caller has already completed the ordinary prepared settings operation.
+        if (maintainLegacyTurnSettings && await _systemModService.WriteManifestForGmAsync())
             await _stateManager.SaveSettingsAsync();
 
         if (_fs.FileExists(WorldDirectiveService.PendingSetupPath))

@@ -192,7 +192,7 @@ public partial class GameEngine
         _loc.CurrentLanguage = _stateManager.Settings.Language;
         _consoleAppearance.ApplyConfiguredFontSize();
         await _audioService.ApplySettingsAsync();
-        await EnsureClientOwnedSystemFilesHealthyAsync();
+        await EnsureClientOwnedSystemFilesHealthyAsync(ordinaryEntry: true);
 
         while (_isRunning)
         {
