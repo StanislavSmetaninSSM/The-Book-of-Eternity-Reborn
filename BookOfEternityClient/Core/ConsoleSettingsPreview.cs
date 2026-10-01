@@ -13,7 +13,7 @@ internal sealed class ConsoleSettingsPreview : IAsyncDisposable
     private readonly AudioService _audio;
     private readonly ConsoleAppearanceService _appearance;
     private readonly Func<GameSettings, Task> _refreshPlayback;
-    private readonly IDisposable _audioPreview;
+    private IDisposable? _audioPreview;
     private bool _disposed;
 
     internal ConsoleSettingsPreview(GameSettings accepted, GameSettings draft, LocalizationManager localization,
@@ -31,6 +31,7 @@ internal sealed class ConsoleSettingsPreview : IAsyncDisposable
     internal async Task<bool> ApplyAsync()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
+        _audioPreview ??= _audio.BeginSettingsPreview(_draft);
         _localization.CurrentLanguage = _draft.Language;
         var fontApplied = _appearance.TryPreviewFontSize(_draft.ConsoleFontSize);
         await _audio.ApplySettingsAsync();
@@ -38,13 +39,25 @@ internal sealed class ConsoleSettingsPreview : IAsyncDisposable
         return fontApplied;
     }
 
-    internal Task RestoreLastAcceptedEffectsAsync() => throw new NotImplementedException();
+    internal Task RestoreLastAcceptedEffectsAsync()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        return RestoreEffectsAsync();
+    }
 
     public async ValueTask DisposeAsync()
     {
         if (_disposed) return;
         _disposed = true;
-        _audioPreview.Dispose();
+        await RestoreEffectsAsync();
+    }
+
+    private async Task RestoreEffectsAsync()
+    {
+        // This restores the last accepted runtime effects, not a proof of the
+        // current disk state. Keep the draft available for explicit later use.
+        _audioPreview?.Dispose();
+        _audioPreview = null;
         _localization.CurrentLanguage = _accepted.Language;
         _appearance.ApplyConfiguredFontSize();
         // Even if a backend cannot stop cleanly, still attempt to restore the

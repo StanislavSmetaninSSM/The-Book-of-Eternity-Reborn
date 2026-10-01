@@ -3,10 +3,18 @@
   "selections": [
     {
       "category": "portable-console-settings-session",
-      "reason": "Actual immediate-save recovery screen must be reached before any further canonical mod read; last accepted effects can be restored without discarding or certifying the retained draft, and a later explicit preview may rearm.",
+      "reason": "Correction of actual immediate-save recovery control flow and last accepted preview restoration/rearm; retain all affected session and preview cases.",
       "contracts": [
         "console recovery control flow",
         "last accepted preview effect restoration"
+      ]
+    },
+    {
+      "category": "portable-console-settings-client",
+      "reason": "OptionsMenu control flow and preview restoration changed; rerun its five exact real-process save/discard/restart/owner and existing menu consumers. Unchanged preparation category is excluded.",
+      "contracts": [
+        "console settings menu outcomes",
+        "scripted process persistence and discard"
       ]
     }
   ]

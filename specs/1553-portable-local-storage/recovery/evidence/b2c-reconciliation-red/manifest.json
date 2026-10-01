@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "a98eb0e7e7966460dfbf09837990f636039da174",
+  "catalogBlobAfterPatch": "161d1afde1d97bc3d158863c92b51d90eaec48c9",
+  "kind": "newly executed b2c-reconciliation-red; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained. Captured console output line endings normalized to LF and trailing line whitespace stripped; original hashes retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "b8369a3668f358ff0b4b23dbd94eb91a8b8441c8315a2673bc6dfc7ce30fcb9f",
+      "sanitizedSha256": "b8369a3668f358ff0b4b23dbd94eb91a8b8441c8315a2673bc6dfc7ce30fcb9f"
+    },
+    {
+      "path": "portable-console-settings-session-unit-001.trx",
+      "originalSha256": "89dc91f6f2ffb45f3e4023afbdba44174015a78298d4bbefd39fc3cfed4f6ad9",
+      "sanitizedSha256": "206c6c5b13e2d7e7e8d5f321491153ae37f6041bc9f0ab5dba99fad8812e1735"
+    }
+  ]
+}

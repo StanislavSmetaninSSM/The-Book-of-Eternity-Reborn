@@ -24,12 +24,23 @@ public partial class GameEngine
         await using var preview = new ConsoleSettingsPreview(_stateManager.Settings, settings, _loc,
             _audioService, _consoleAppearance, RefreshAudioPlaybackContextAsync);
         string? notice = null;
+        string? reconciliationOutcomeMessage = null;
         var exitAfterReconcile = false;
         async Task<BrowserPreparedWriteResult> SaveDraftAsync()
         {
             var outcome = await session.SaveAsync(async () => { await preview.ApplyAsync(); });
             notice = outcome.Message;
+            reconciliationOutcomeMessage = session.RequiresReload ? outcome.Message : null;
             return outcome;
+        }
+        async Task RestoreLastAcceptedEffectsAsync()
+        {
+            try { await preview.RestoreLastAcceptedEffectsAsync(); }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Last accepted settings effects require follow-up.");
+                notice += " Не удалось полностью восстановить прежний вид или звук; требуется повторная проверка.";
+            }
         }
         static bool CanLeave(BrowserPreparedWriteResult result) =>
             result.Disposition == BrowserPreparedWriteDisposition.Committed && !result.NeedsFollowUp;
@@ -43,6 +54,7 @@ public partial class GameEngine
         {
             if (session.RequiresReload)
             {
+                await RestoreLastAcceptedEffectsAsync();
                 var action = ShowSingleChoiceMenu("Настройки требуют проверки",
                     new List<MenuChoiceItem> { new("reload", "Перечитать сохранённые настройки", "Отменить неподтверждённый черновик после успешного чтения", "yellow") },
                     footer: notice + " Esc — остаться в настройках");
@@ -51,11 +63,15 @@ public partial class GameEngine
                 {
                     await session.ReloadAsync(async () => { await preview.ApplyAsync(); });
                     notice = "Подтверждённые настройки перечитаны.";
+                    reconciliationOutcomeMessage = null;
                     if (exitAfterReconcile) return;
                 }
                 catch (Exception ex) when (ex is not ConsoleE2EScriptInputException)
                 {
-                    notice = "Не удалось перечитать настройки: " + ex.Message;
+                    _logger.LogWarning(ex, "Console settings reload failed; retained draft and publication outcome.");
+                    notice = (reconciliationOutcomeMessage == null ? string.Empty : reconciliationOutcomeMessage + " ")
+                        + "Не удалось безопасно перечитать настройки. Черновик не отброшен; повторите проверку перед продолжением.";
+                    await RestoreLastAcceptedEffectsAsync();
                     continue;
                 }
                 lastWidth = -1;
@@ -307,7 +323,10 @@ public partial class GameEngine
                 }
                 catch (Exception ex) when (ex is not ConsoleE2EScriptInputException)
                 {
-                    notice = "Не удалось перечитать настройки: " + ex.Message;
+                    _logger.LogWarning(ex, "Console settings reload failed; retained draft and publication outcome.");
+                    notice = (reconciliationOutcomeMessage == null ? string.Empty : reconciliationOutcomeMessage + " ")
+                        + "Не удалось безопасно перечитать настройки. Черновик не отброшен; повторите проверку перед продолжением.";
+                    await RestoreLastAcceptedEffectsAsync();
                 }
             }
             else if (chosen.Key == "back")
@@ -316,6 +335,11 @@ public partial class GameEngine
                 if (CanLeave(await SaveDraftAsync())) return;
             }
 
+            if (session.RequiresReload)
+            {
+                lastWidth = -1;
+                continue; // Reconciliation must precede any further canonical read.
+            }
             menuTop = RenderOptionsStaticFrame(settings, notice);
             var updatedEntries = await BuildOptionsEntriesAsync(session);
             RedrawOptionsMenuArea(updatedEntries, selectedIndex, menuTop, GetSafeConsoleHeight(), settings, notice);

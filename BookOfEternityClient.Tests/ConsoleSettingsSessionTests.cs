@@ -359,7 +359,8 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
     {
         await Open();
         var script = Path.Combine(_root, "menu-input.json"); var artifacts = Path.Combine(_root, "menu-artifacts");
-        File.WriteAllText(script, "{\"steps\":[{\"kind\":\"key\",\"key\":\"Down\"},{\"kind\":\"key\",\"key\":\"Down\"},{\"kind\":\"key\",\"key\":\"Down\"},{\"kind\":\"key\",\"key\":\"Down\"},{\"kind\":\"key\",\"key\":\"Enter\"}]}");
+        var keys = new[] { "Down", "Down", "Down", "Down", "Enter", "Enter" };
+        File.WriteAllText(script, System.Text.Json.JsonSerializer.Serialize(new { steps = keys.Select(key => new { kind = "key", key }) }));
         var input = ConsoleE2EScriptedInputSource.FromFile(script, artifacts);
         var loc = new BookOfEternityClient.UI.LocalizationManager();
         var audio = new AudioService(_files, _live, NullLogger<AudioService>.Instance);
@@ -386,7 +387,7 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
         Assert.Equal(new byte[] { 99 }, File.ReadAllBytes(_files.ResolvePath(Projection)));
         Assert.True(File.Exists(Path.Combine(_files.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));
         var screens = Directory.GetFiles(Path.Combine(artifacts, "screens"), "*.json");
-        Assert.Contains(screens, path => JsonNode.Parse(File.ReadAllText(path))!["screenTitle"]!.GetValue<string>() == "Настройки требуют проверки");
+        Assert.Equal(2, screens.Count(path => JsonNode.Parse(File.ReadAllText(path))!["screenTitle"]!.GetValue<string>() == "Настройки требуют проверки")); // Initial recovery, then still-open recovery after rejected reload.
     }
 
     [Fact]
