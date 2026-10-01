@@ -1,0 +1,68 @@
+RequestedLane: Categories
+EffectiveLane: Categories
+Filter: <pending validation>
+TimeoutMinutes: 9
+StartedUtc: 2026-10-01T06:57:22.2823490Z
+Owned process 'Revision': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== Revision: stdout =====
+f0e46b09c30df97e58197c14efceb8d69c3d93eb
+
+===== Revision: stderr =====
+
+===== Revision: exit 0 =====
+Owned process 'Changed-paths': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== Changed-paths: stdout =====
+tests/categories.json
+
+===== Changed-paths: stderr =====
+
+===== Changed-paths: exit 0 =====
+Owned process 'New-paths': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== New-paths: stdout =====
+
+===== New-paths: stderr =====
+
+===== New-paths: exit 0 =====
+Owned process 'Build-unit': FileName=dotnet; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=dotnet
+
+===== Build-unit: stdout =====
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+$REPO/BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs(1095,5): warning CS1587: XML comment is not placed on a valid language element [$REPO/BookOfEternityClient/BookOfEternityClient.csproj]
+$REPO/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs(1637,5): warning CS1587: XML comment is not placed on a valid language element [$REPO/BookOfEternityClient/BookOfEternityClient.csproj]
+$REPO/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.Trade.cs(756,5): warning CS1587: XML comment is not placed on a valid language element [$REPO/BookOfEternityClient/BookOfEternityClient.csproj]
+  BookOfEternityClient -> $REPO/BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll
+$REPO/BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs(30,37): error CS0136: A local or parameter named 'lease' cannot be declared in this scope because that name is used in an enclosing local scope to define a local or parameter [$REPO/BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj]
+
+Build FAILED.
+
+$REPO/BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs(1095,5): warning CS1587: XML comment is not placed on a valid language element [$REPO/BookOfEternityClient/BookOfEternityClient.csproj]
+$REPO/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs(1637,5): warning CS1587: XML comment is not placed on a valid language element [$REPO/BookOfEternityClient/BookOfEternityClient.csproj]
+$REPO/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.Trade.cs(756,5): warning CS1587: XML comment is not placed on a valid language element [$REPO/BookOfEternityClient/BookOfEternityClient.csproj]
+$REPO/BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs(30,37): error CS0136: A local or parameter named 'lease' cannot be declared in this scope because that name is used in an enclosing local scope to define a local or parameter [$REPO/BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj]
+    3 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:01:52.82
+
+===== Build-unit: stderr =====
+
+===== Build-unit: exit 1 =====
+
+Category result
+  Categories: portable-session-generation
+  Filter: <none>
+  Timeout: 9 minute(s)
+  Wall time: 00:01:53.4787358
+  Exit code: 1
+  Timed out: False
+  Owned-tree cleanup: complete
+  Planned selection: descriptors=0, cases=0; completed descriptors=0, cases=0, complete=False
+  Tests: total=0, executed=0, passed=0, failed=0
+  Duplicate test IDs: 0
+  Results: $REPO/TestResults/test-categories/20261001-025722-264-5-167600863cb44868a3d187656e89548d-categories
+  Log: $REPO/TestResults/test-categories/20261001-025722-264-5-167600863cb44868a3d187656e89548d-categories/dotnet-test.log
+  Failure: Build-unit failed with exit code 1.

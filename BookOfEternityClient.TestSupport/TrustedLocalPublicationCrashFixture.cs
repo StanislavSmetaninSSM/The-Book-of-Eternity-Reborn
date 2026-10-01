@@ -20,20 +20,20 @@ public static class TrustedLocalPublicationCrashFixture
                 if (request[0] == "bound-write")
                     await SessionOperationContext.RunBoundAsync(files, args[1], async () =>
                     {
-                        await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
-                            if (files.ReadLocalGenerationSnapshot(lease).Binding.Id != args[1])
+                        await using (var generationLease = await files.AcquireCanonicalWriteLeaseAsync())
+                            if (files.ReadLocalGenerationSnapshot(generationLease).Binding.Id != args[1])
                                 throw new InvalidOperationException("The snapshot returned a different generation.");
                         await files.WriteFileAtomicBytesAsync("game_state/core/read-proof.json", [1]);
                     });
                 else
                 {
-                    await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+                    await using var generationLease = await files.AcquireCanonicalWriteLeaseAsync();
                     var id = request[0] switch
                     {
-                        "snapshot" => files.ReadLocalGenerationSnapshot(lease).Binding.Id,
-                        "existing" => files.ReadExistingSessionGeneration(lease),
-                        "current" => files.IsCurrentSessionGeneration(lease, args[1]) ? args[1] : null,
-                        "get-or-create" => files.GetOrCreateSessionGeneration(lease),
+                        "snapshot" => files.ReadLocalGenerationSnapshot(generationLease).Binding.Id,
+                        "existing" => files.ReadExistingSessionGeneration(generationLease),
+                        "current" => files.IsCurrentSessionGeneration(generationLease, args[1]) ? args[1] : null,
+                        "get-or-create" => files.GetOrCreateSessionGeneration(generationLease),
                         _ => throw new ArgumentException("Unknown generation reader.")
                     };
                     if (id != args[1]) throw new InvalidOperationException("The reader returned a different generation.");
