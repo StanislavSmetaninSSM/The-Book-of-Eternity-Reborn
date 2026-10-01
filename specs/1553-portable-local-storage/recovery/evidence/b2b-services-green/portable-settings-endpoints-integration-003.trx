@@ -1,0 +1,75 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="fb3c57d7-f496-4ba5-8dec-515106ff11d7" name="b2b-services-green" runUser="$USER">
+  <ns0:Times creation="2026-09-30T21:11:56.8138261-04:00" queuing="2026-09-30T21:11:56.8138261-04:00" start="2026-09-30T21:11:53.0255416-04:00" finish="2026-09-30T21:11:57.1769348-04:00" />
+  <ns0:TestSettings name="default" id="44277111-62e7-43c7-9613-0bf2b8e6f247">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="acb2d97c-a972-48e7-ab91-c4a8fc97c059" testId="9e8733e8-166c-f8db-1413-9da8e243cdea" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.BrowserAudioService_SerializesSharedSettingsUpdates" computerName="$HOST" duration="00:00:00.0009481" startTime="2026-09-30T21:11:56.9764036-04:00" endTime="2026-09-30T21:11:56.9764037-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="acb2d97c-a972-48e7-ab91-c4a8fc97c059" />
+    <ns0:UnitTestResult executionId="cac47b12-05ac-46d4-ba9f-cf340803c6ab" testId="53cde21d-c2b1-6730-2397-b9749da77090" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.ClientSettingsEndpoint_BlocksGameplaySettingsWhenPendingTurnExists" computerName="$HOST" duration="00:00:00.0897714" startTime="2026-09-30T21:11:56.8872566-04:00" endTime="2026-09-30T21:11:56.8872568-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cac47b12-05ac-46d4-ba9f-cf340803c6ab" />
+    <ns0:UnitTestResult executionId="bf885047-ffd4-498c-89c9-c7ef6ce9720c" testId="baad08cb-2d30-6178-5cee-9147c4c0084d" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.AudioSettingsEndpoint_UpdatesAndPersistsSharedSettingsWithClampedVolumes" computerName="$HOST" duration="00:00:00.0867745" startTime="2026-09-30T21:11:56.9746877-04:00" endTime="2026-09-30T21:11:56.9746879-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bf885047-ffd4-498c-89c9-c7ef6ce9720c" />
+    <ns0:UnitTestResult executionId="7bf8ef55-8ca9-49b8-93c9-0cddc4c554d0" testId="94ceb278-87c3-4e39-3ed3-5f3d0ddfab79" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.ClientSettingsEndpoint_DoesNotReuseActiveBrowserWriteOwnerLock" computerName="$HOST" duration="00:00:00.0664547" startTime="2026-09-30T21:11:57.0436711-04:00" endTime="2026-09-30T21:11:57.0436713-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7bf8ef55-8ca9-49b8-93c9-0cddc4c554d0" />
+    <ns0:UnitTestResult executionId="b45dd23c-41a6-4a60-a776-1bfffe09cf2e" testId="1a31f2d8-7a3a-8802-3e89-d72be760bbe1" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.ClientSettingsEndpoint_UpdatesWhitelistedSettingsAndWritesGmProjection" computerName="$HOST" duration="00:00:01.2987225" startTime="2026-09-30T21:11:56.6897722-04:00" endTime="2026-09-30T21:11:56.6897724-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b45dd23c-41a6-4a60-a776-1bfffe09cf2e" />
+    <ns0:UnitTestResult executionId="7aa1e79e-c0a8-4ead-abcb-b4e17ed74329" testId="129fe9fc-d549-e962-fdc6-64cb99f5ebe5" testName="BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAsync_ActiveOtherOwner_BlocksWithoutRunningWrite" computerName="$HOST" duration="00:00:00.1202846" startTime="2026-09-30T21:11:55.3855931-04:00" endTime="2026-09-30T21:11:55.3856089-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7aa1e79e-c0a8-4ead-abcb-b4e17ed74329" />
+    <ns0:UnitTestResult executionId="e77b63a5-78d5-48f7-9ff4-61640409b51e" testId="ebb919e6-42ff-cf9a-78fd-152226d41da7" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.AudioSettingsEndpoint_LoadsSharedSettingsAndReturnsSafeCatalog" computerName="$HOST" duration="00:00:00.0561594" startTime="2026-09-30T21:11:57.1007634-04:00" endTime="2026-09-30T21:11:57.1007636-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e77b63a5-78d5-48f7-9ff4-61640409b51e" />
+    <ns0:UnitTestResult executionId="37f38c4f-e46c-4e91-b668-1bdce62e7488" testId="7bb8e890-c4a8-6513-4cea-f537c4be33d6" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.ClientSettingsEndpoint_LoadsPlayerSafeSharedSettingsAndLocality" computerName="$HOST" duration="00:00:00.1065054" startTime="2026-09-30T21:11:56.7969604-04:00" endTime="2026-09-30T21:11:56.7969606-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="37f38c4f-e46c-4e91-b668-1bdce62e7488" />
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.ClientSettingsEndpoint_BlocksGameplaySettingsWhenPendingTurnExists" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="53cde21d-c2b1-6730-2397-b9749da77090">
+      <ns0:Execution id="cac47b12-05ac-46d4-ba9f-cf340803c6ab" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="ClientSettingsEndpoint_BlocksGameplaySettingsWhenPendingTurnExists" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.BrowserAudioService_SerializesSharedSettingsUpdates" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="9e8733e8-166c-f8db-1413-9da8e243cdea">
+      <ns0:Execution id="acb2d97c-a972-48e7-ab91-c4a8fc97c059" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="BrowserAudioService_SerializesSharedSettingsUpdates" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.ClientSettingsEndpoint_LoadsPlayerSafeSharedSettingsAndLocality" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="7bb8e890-c4a8-6513-4cea-f537c4be33d6">
+      <ns0:Execution id="37f38c4f-e46c-4e91-b668-1bdce62e7488" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="ClientSettingsEndpoint_LoadsPlayerSafeSharedSettingsAndLocality" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.ClientSettingsEndpoint_DoesNotReuseActiveBrowserWriteOwnerLock" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="94ceb278-87c3-4e39-3ed3-5f3d0ddfab79">
+      <ns0:Execution id="7bf8ef55-8ca9-49b8-93c9-0cddc4c554d0" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="ClientSettingsEndpoint_DoesNotReuseActiveBrowserWriteOwnerLock" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.ClientSettingsEndpoint_UpdatesWhitelistedSettingsAndWritesGmProjection" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="1a31f2d8-7a3a-8802-3e89-d72be760bbe1">
+      <ns0:Execution id="b45dd23c-41a6-4a60-a776-1bfffe09cf2e" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="ClientSettingsEndpoint_UpdatesWhitelistedSettingsAndWritesGmProjection" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.AudioSettingsEndpoint_LoadsSharedSettingsAndReturnsSafeCatalog" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ebb919e6-42ff-cf9a-78fd-152226d41da7">
+      <ns0:Execution id="e77b63a5-78d5-48f7-9ff4-61640409b51e" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="AudioSettingsEndpoint_LoadsSharedSettingsAndReturnsSafeCatalog" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAsync_ActiveOtherOwner_BlocksWithoutRunningWrite" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="129fe9fc-d549-e962-fdc6-64cb99f5ebe5">
+      <ns0:Execution id="7aa1e79e-c0a8-4ead-abcb-b4e17ed74329" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests" name="ExecuteAsync_ActiveOtherOwner_BlocksWithoutRunningWrite" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.AudioSettingsEndpoint_UpdatesAndPersistsSharedSettingsWithClampedVolumes" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="baad08cb-2d30-6178-5cee-9147c4c0084d">
+      <ns0:Execution id="bf885047-ffd4-498c-89c9-c7ef6ce9720c" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="AudioSettingsEndpoint_UpdatesAndPersistsSharedSettingsWithClampedVolumes" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="9e8733e8-166c-f8db-1413-9da8e243cdea" executionId="acb2d97c-a972-48e7-ab91-c4a8fc97c059" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="53cde21d-c2b1-6730-2397-b9749da77090" executionId="cac47b12-05ac-46d4-ba9f-cf340803c6ab" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="baad08cb-2d30-6178-5cee-9147c4c0084d" executionId="bf885047-ffd4-498c-89c9-c7ef6ce9720c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="94ceb278-87c3-4e39-3ed3-5f3d0ddfab79" executionId="7bf8ef55-8ca9-49b8-93c9-0cddc4c554d0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="1a31f2d8-7a3a-8802-3e89-d72be760bbe1" executionId="b45dd23c-41a6-4a60-a776-1bfffe09cf2e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="129fe9fc-d549-e962-fdc6-64cb99f5ebe5" executionId="7aa1e79e-c0a8-4ead-abcb-b4e17ed74329" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="ebb919e6-42ff-cf9a-78fd-152226d41da7" executionId="e77b63a5-78d5-48f7-9ff4-61640409b51e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="7bb8e890-c4a8-6513-4cea-f537c4be33d6" executionId="37f38c4f-e46c-4e91-b668-1bdce62e7488" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Completed">
+    <ns0:Counters total="8" executed="8" passed="8" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.39]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.75]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.77]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:03.66]   Finished:    BookOfEternityClient.IntegrationTests
+</ns0:StdOut>
+    </ns0:Output>
+  </ns0:ResultSummary>
+</ns0:TestRun>

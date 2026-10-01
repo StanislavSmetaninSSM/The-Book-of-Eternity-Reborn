@@ -1,0 +1,119 @@
+{
+  "Categories": [
+    "portable-prepared-settings",
+    "portable-settings-endpoints",
+    "portable-client-bootstrap"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-prepared-settings",
+      "reason": "#1553 B2b prepared settings/audio services, exact member bytes, outcome-to-runtime application, hard-linked GET and cold bootstrap restart.",
+      "contracts": [
+        "prepared settings publication",
+        "explicit durable outcome",
+        "strict detached settings reader"
+      ]
+    },
+    {
+      "category": "portable-settings-endpoints",
+      "reason": "#1553 B2b exact existing HTTP settings/audio and shared active-owner guard consumers; no broad browser sweep.",
+      "contracts": [
+        "settings/audio HTTP persistence",
+        "pending GM and local owner",
+        "player-safe settings response"
+      ]
+    },
+    {
+      "category": "portable-client-bootstrap",
+      "reason": "#1553 B2b will share the strict config decoder with accepted bootstrap; validate that affected read/encoding/admission contract.",
+      "contracts": [
+        "strict config decoding",
+        "leased config bootstrap"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "6075fac49f854626b9ff69eda4e17ae874146bf1",
+    "WorkingTreeFingerprint": "A05CA8674CB72CD85CE92647510786BFF459942D2FAC83ACD2566FA4C80DDA8C",
+    "ChangedFiles": 1
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-client-bootstrap",
+      "Seconds": 5.336745,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "portable-prepared-settings",
+      "Seconds": 4.4375033,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "portable-settings-endpoints",
+      "Seconds": 5.275793,
+      "BudgetMinutes": 4,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0548031,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0240985,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.015921,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 157.7824855,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 38.5185947,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0043266,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 17,
+  "WallTime": "00:03:39.0739218",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 66,
+    "CompletedCases": 66,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 66,
+    "Executed": 66,
+    "Passed": 66,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
