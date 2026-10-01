@@ -1,6 +1,18 @@
 # Source and evidence recovery
 
-## Current B3a generation-reader checkpoint
+## Current B3b test-first WIP catalog
+
+New replacement tests and selection are normal source files; their initial behavioral RED has not run. Apply the exact catalog patch once after verifying the current remote SHA. [session-replacement-pending.json](session-replacement-pending.json) records base/after blobs and patch SHA256. The expected applied catalog is `bfb8b0a8249766620d7b833b7fbca3670ec72f67`.
+
+```sh
+git apply --check specs/1553-portable-local-storage/recovery/categories-pending.patch
+git apply specs/1553-portable-local-storage/recovery/categories-pending.patch
+git hash-object tests/categories.json
+```
+
+If already applied, `git apply --reverse --check` against the same patch succeeds; do not apply it twice. Keep the exact delta staged during tests and small source saves. Do not upload the full catalog through an oversized connector call. Retire this patch/manifest only after normal publication verifies the after blob. No B3b runtime or test acceptance is claimed; the current plan is authoritative.
+
+## Accepted B3a generation-reader checkpoint
 
 The B3a reader accepted at `740b4d09beb2d59a7866a6919200595d0f4c74de` (tree `0cac7855feb311fd29ae198798b4eb17efa9993e`) is stored as normal Git blobs: FileSystemManager `3afd41d4a0a08780d32839c9a8f80dd1e158f35d`, integration tests `9f7bd2e4a6dad783eaeac6c565eca27c22c85be5`, catalog `b803fccaafbb24a5824d00984117b3ead6d3afa3`, and selection `bf910c649b0c9d278996984f7c23ecbb41ae97ce`. Native normalization started from `ff34aa221d2b7d88faaf3af7f25f3e0a4a737b3e`, tree `f629eadd3ad85a41977c60c89b2c73f8ff715df1`, in the clean separate QA copy with clone-local `core.autocrlf=false`. The 7,832-byte source patch, SHA256 `bba0455efb3cb515315830f828c5ac0171157cefd2f3e6c6f846f63c1571b62a`, passed `git apply --check --unidiff-zero` and `git apply --unidiff-zero`; the 10,406-byte catalog patch, SHA256 `e93f2166f03ecb8f22f7b2019f8f8e3f4ff028fb48648801bb72d9451a28a3d0`, passed ordinary check/apply. Before retiring the three pending packet files and their current instructions, the complete applied index tree matched `865246abd9135a1e59a21033a8bdea7188a948da`. This is the pre-retirement tree, excluding subsequent Windows evidence/documentation additions, not the final normalized checkpoint tree.
 

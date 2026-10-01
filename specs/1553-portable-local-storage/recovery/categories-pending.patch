@@ -1,0 +1,46 @@
+diff --git a/tests/categories.json b/tests/categories.json
+index b803fcca..bfb8b0a8 100644
+--- a/tests/categories.json
++++ b/tests/categories.json
+@@ -8021,6 +8021,41 @@
+           ]
+         }
+       ]
++    },
++    {
++      "id": "portable-session-replacement",
++      "responsibility": "Complete trusted-local session generation plus selected clear/worker-file publication, admission, exact preservation, recovery outcomes and logical-empty pending consumers.",
++      "excludes": "Legacy save/load replacement, full new-game bootstrap, provider shutdown, full worker bundle publication, broad gameplay and unexecuted Windows claims.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.cs",
++        "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
++        "BookOfEternityClient/WebUi/BrowserPendingTurnInspector.cs",
++        "BookOfEternityClient/UI/ExplorerLifecycleLocalTurnCommandResultBuilder.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-storage-publication",
++          "when": "Common journal generation transition or recovery behavior changes."
++        },
++        {
++          "id": "portable-storage-paths",
++          "when": "Common non-following enumeration or directory/type validation changes."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 4,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.*"
++          ]
++        }
++      ]
+     }
+   ]
+ }

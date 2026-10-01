@@ -1,0 +1,21 @@
+{
+  "baseCommit": "41d9104076d59fabacf93c3b1be3cc8d5ccc238f",
+  "status": "B3b test-first WIP; no runtime implementation or RED result yet. New test source and selection are normal Git blobs; only the exact catalog delta uses this apply-once recovery packet.",
+  "patches": [
+    {
+      "path": "categories-pending.patch",
+      "bytes": 1676,
+      "sha256": "00851affca53e9fcdd07ab46d681b13912bfef37dd84009f5291b2488bd93cf3",
+      "files": [
+        {
+          "path": "tests/categories.json",
+          "beforeBlob": "b803fccaafbb24a5824d00984117b3ead6d3afa3",
+          "afterBlob": "bfb8b0a8249766620d7b833b7fbca3670ec72f67"
+        }
+      ],
+      "applyArguments": []
+    }
+  ],
+  "testSourceBlob": "cf5e22ecc6595a43d0f483a3fdbadbc3703ec546",
+  "selectionBlob": "1ea930f6de88d967e9b9b8dba607c3b66ddd16ce"
+}
