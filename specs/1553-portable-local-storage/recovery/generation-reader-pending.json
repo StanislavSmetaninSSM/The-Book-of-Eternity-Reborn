@@ -1,6 +1,6 @@
 {
   "baseCommit": "6f2e95e356e977199717fef57863b4dcf288720f",
-  "status": "Common-reader 138 and legacy-gate 10-case GREEN saved; exact stale parser source guard pending correction/review",
+  "status": "138-case common reader and 10-case legacy-gate GREEN saved; source-guard RED observed and assertion-chain correction pending focused GREEN/review",
   "preparedIndexTreeBeforeRecoveryBookkeeping": "0a318b5fe447fdabc3e7ba55064d5f60e0d02e91",
   "treeQualification": "Historical prepared index before these packet/recovery bookkeeping files; not the tree of the later checkpoint. Native normalization verifies the exact per-file blobs and the separately reported applied index tree.",
   "patches": [
