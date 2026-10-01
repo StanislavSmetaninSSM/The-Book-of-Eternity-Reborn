@@ -9,11 +9,18 @@ public sealed class CoordinatedStateWriteHelperTests : IDisposable
 {
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
+    private Action<TrustedLocalPublicationPhase, int>? _observer;
+    private Action? _onLockContention;
 
     public CoordinatedStateWriteHelperTests()
     {
         _rootPath = Path.Combine(Path.GetTempPath(), $"boe-coordinated-write-{Guid.NewGuid():N}");
-        _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
+        _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            {
+                LocalPublicationObserver = (phase, index) => _observer?.Invoke(phase, index),
+                CanonicalWriteLockContendedAsync = () => { _onLockContention?.Invoke(); return Task.CompletedTask; }
+            });
         _fs.EnsureDirectoryStructure();
     }
 
@@ -26,45 +33,26 @@ public sealed class CoordinatedStateWriteHelperTests : IDisposable
         const string nextJson = "{\"value\":\"client-next\"}";
         const string concurrentJson = "{\"value\":\"gm-concurrent\"}";
         await _fs.WriteFileAtomicAsync(firstPath, previousJson);
-
         var concurrentWriteObserved = false;
-        var exception = await Record.ExceptionAsync(
-            () => CoordinatedStateWriteHelper.TryCommitWithHookAsync(
-                _fs,
-                async write =>
-                {
-                    if (!string.Equals(
-                            write.Path,
-                            firstPath,
-                            StringComparison.OrdinalIgnoreCase))
-                    {
-                        return;
-                    }
+        _observer = (phase, index) =>
+        {
+            if (phase != TrustedLocalPublicationPhase.MemberPublished || index != 0) return;
+            concurrentWriteObserved = true;
+            File.WriteAllText(_fs.ResolvePath(firstPath), concurrentJson,
+                new System.Text.UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+            Directory.CreateDirectory(_fs.ResolvePath(blockedPath));
+        };
 
-                    concurrentWriteObserved = true;
-                    await File.WriteAllTextAsync(
-                        _fs.ResolvePath(firstPath),
-                        concurrentJson,
-                        new System.Text.UTF8Encoding(
-                            encoderShouldEmitUTF8Identifier: false));
-                    Directory.CreateDirectory(_fs.ResolvePath(blockedPath));
-                },
-                new CoordinatedStateWriteHelper.PlannedWrite(
-                    firstPath,
-                    previousJson,
-                    nextJson,
-                    true),
-                new CoordinatedStateWriteHelper.PlannedWrite(
-                    blockedPath,
-                    null,
-                    "{}",
-                    true)));
+        var exception = await Record.ExceptionAsync(() => CoordinatedStateWriteHelper.TryCommitAsync(
+            _fs,
+            new CoordinatedStateWriteHelper.PlannedWrite(firstPath, previousJson, nextJson, true),
+            new CoordinatedStateWriteHelper.PlannedWrite(blockedPath, null, "{}", true)));
 
-        Assert.True(
-            concurrentWriteObserved,
-            "Fault-injection hook did not observe the first coordinated write.");
-        Assert.IsType<InvalidOperationException>(exception);
-        Assert.Equal(concurrentJson, await _fs.ReadFileAsync(firstPath));
+        Assert.True(concurrentWriteObserved, "The first published member cut was not reached.");
+        Assert.IsType<CoordinatedStatePublicationUncertainException>(exception);
+        // Ordinary reads must refuse this unresolved journal; inspect the owned
+        // fixture bytes directly rather than implicitly attempting recovery.
+        Assert.Equal(concurrentJson, File.ReadAllText(_fs.ResolvePath(firstPath)));
     }
 
     [Fact]
@@ -79,49 +67,40 @@ public sealed class CoordinatedStateWriteHelperTests : IDisposable
         await _fs.WriteFileAtomicAsync(secondPath, previousJson);
 
         Task? concurrentWrite = null;
-        var concurrentWriteCompletedInsideTransaction = false;
-        var committed = await CoordinatedStateWriteHelper.TryCommitWithHookAsync(
-            _fs,
-            async write =>
-            {
-                if (!string.Equals(write.Path, firstPath, StringComparison.Ordinal))
-                    return;
-
-                concurrentWrite = _fs.WriteFileAtomicAsync(firstPath, concurrentJson);
-                var completed = await Task.WhenAny(
-                    concurrentWrite,
-                    Task.Delay(TimeSpan.FromMilliseconds(150)));
-                concurrentWriteCompletedInsideTransaction = completed == concurrentWrite;
-            },
-            new CoordinatedStateWriteHelper.PlannedWrite(
-                firstPath,
-                previousJson,
-                nextJson,
-                true),
-            new CoordinatedStateWriteHelper.PlannedWrite(
-                secondPath,
-                previousJson,
-                nextJson,
-                true));
+        var contended = false;
+        var memberObserved = false;
+        _onLockContention = () => contended = true;
+        _observer = (phase, index) =>
+        {
+            if (phase != TrustedLocalPublicationPhase.MemberPublished || index != 0 || concurrentWrite != null) return;
+            memberObserved = true;
+            concurrentWrite = _fs.WriteFileAtomicAsync(firstPath, concurrentJson);
+            Assert.True(contended, "The competing writer did not reach the held canonical lock.");
+            Assert.False(concurrentWrite.IsCompleted);
+        };
+        bool committed;
+        try
+        {
+            committed = await CoordinatedStateWriteHelper.TryCommitAsync(_fs,
+                new CoordinatedStateWriteHelper.PlannedWrite(firstPath, previousJson, nextJson, true),
+                new CoordinatedStateWriteHelper.PlannedWrite(secondPath, previousJson, nextJson, true));
+        }
+        finally
+        {
+            _observer = null;
+            if (concurrentWrite != null) await concurrentWrite.WaitAsync(TimeSpan.FromSeconds(5));
+        }
 
         Assert.True(committed);
-        Assert.False(concurrentWriteCompletedInsideTransaction);
+        Assert.True(memberObserved);
+        Assert.True(contended);
         Assert.NotNull(concurrentWrite);
-        await concurrentWrite!;
         Assert.Equal(concurrentJson, await _fs.ReadFileAsync(firstPath));
         Assert.Equal(nextJson, await _fs.ReadFileAsync(secondPath));
     }
 
     public void Dispose()
     {
-        try
-        {
-            if (Directory.Exists(_rootPath))
-                Directory.Delete(_rootPath, recursive: true);
-        }
-        catch
-        {
-            // Ignore temp cleanup failures.
-        }
+        if (Directory.Exists(_rootPath)) Directory.Delete(_rootPath, recursive: true);
     }
 }

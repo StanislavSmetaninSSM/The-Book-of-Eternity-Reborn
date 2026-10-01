@@ -1,5 +1,5 @@
 diff --git a/BookOfEternityClient.IntegrationTests/QteDeferredEffectContinuationIntegrationTests.cs b/BookOfEternityClient.IntegrationTests/QteDeferredEffectContinuationIntegrationTests.cs
-index 91fc4e02..9ac85e57 100644
+index 91fc4e02..6cd8bc86 100644
 --- a/BookOfEternityClient.IntegrationTests/QteDeferredEffectContinuationIntegrationTests.cs
 +++ b/BookOfEternityClient.IntegrationTests/QteDeferredEffectContinuationIntegrationTests.cs
 @@ -11,7 +11,7 @@ using Xunit;
@@ -11,6 +11,59 @@ index 91fc4e02..9ac85e57 100644
  {
      private const string ContinuationPath =
          "game_state/control/qte_deferred_effect_continuation.json";
+@@ -1280,7 +1280,12 @@ public sealed class QteDeferredEffectContinuationIntegrationTests
+     public async Task BoundedReceipt_NextWaveFailureAtEveryMutationRestoresExactCurrentWave(
+         string failurePoint)
+     {
+-        await using var context = await EffectMaterializationTestContext.CreateAsync();
++        Action<TrustedLocalPublicationPhase, int>? observer = null;
++        var cutHits = 0;
++        await using var context = await EffectMaterializationTestContext.CreateAsync(new FileSystemManagerHooks
++        {
++            LocalPublicationObserver = (phase, index) => observer?.Invoke(phase, index)
++        });
+         const int sourceTurn = 42;
+         var scenario = await PrepareAwaitingReceiptAsync(
+             context,
+@@ -1295,15 +1300,21 @@ public sealed class QteDeferredEffectContinuationIntegrationTests
+             ReceiptResumeProtectedPaths);
+         var injected = new IOException(
+             $"Injected deferred QTE failure at {failurePoint}.");
+-        var service = CreateQteService(
+-            context.FileSystem,
+-            new QteSceneServiceHooks
+-            {
+-                AfterDeferredEffectMutationAsync = actual =>
+-                    string.Equals(actual, failurePoint, StringComparison.Ordinal)
+-                        ? Task.FromException(injected)
+-                        : Task.CompletedTask
+-            });
++        observer = (phase, index) =>
++        {
++            if (phase != TrustedLocalPublicationPhase.MemberPublished) return;
++            using var journal = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(
++                context.FileSystem.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));
++            var members = journal.RootElement.GetProperty("Members").EnumerateArray()
++                .Select(member => member.GetProperty("Path").GetString()!).ToArray();
++            if (members.Length != 6 ||
++                !members.Contains(context.FileSystem.ResolvePath(QteDeferredEffectContinuation.ReceiptPath), StringComparer.Ordinal)) return;
++            var target = context.FileSystem.ResolvePath(failurePoint["next_wave:".Length..]);
++            if (!string.Equals(members[index], target, StringComparison.Ordinal)) return;
++            cutHits++;
++            throw injected;
++        };
++        var service = CreateQteService(context.FileSystem);
+ 
+         var error = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+         {
+@@ -1319,6 +1330,7 @@ public sealed class QteDeferredEffectContinuationIntegrationTests
+                     allowPreexistingStateIssues: true));
+         });
+ 
++        Assert.Equal(1, cutHits);
+         Assert.Contains(
+             "qte_deferred_next_wave_publication_conflict",
+             error.Message,
 diff --git a/BookOfEternityClient.IntegrationTests/ShiningTradeRequestStateTests.cs b/BookOfEternityClient.IntegrationTests/ShiningTradeRequestStateTests.cs
 index 8af7cf89..f2193f22 100644
 --- a/BookOfEternityClient.IntegrationTests/ShiningTradeRequestStateTests.cs
@@ -491,10 +544,10 @@ index 4a4415cc..75e93ec4 100644
 +
 +T031 implementation refinement: ordinary QTE acceptance/transport calls use the helper without callbacks; explicit AfterLegacyAcceptanceRuntimeWrittenAsync/AfterLegacyDeferredEffectMutationAsync preserve original recorder/recovery callbacks. AfterRuntimeWrittenAsync and final:* AfterDeferredEffectMutationAsync remain later domain hooks. Uncertainty bypasses domain compensation; the private Russian notice avoids unchanged-state/retry claims. This is the bounded helper/error boundary, not full accepted-turn or browser-v6 migration; current verified/unrun evidence lives in plan.md.
 diff --git a/tests/categories.json b/tests/categories.json
-index ad2fe43a..4f2eb0f3 100644
+index ad2fe43a..5402a0ef 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -8417,6 +8417,238 @@
+@@ -8417,6 +8417,312 @@
            ]
          }
        ]
@@ -727,6 +780,80 @@ index ad2fe43a..4f2eb0f3 100644
 +          "tests": [
 +            "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.CoordinatedUncertaintyRetainsTheAcceptedMechanicsCutWithoutDomainCompensation",
 +            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CoordinatedPublication_UncertainOutcomeUsesRussianRecoveryNoticeWithoutRetryPromise"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-coordinated-phase-consumers",
++      "responsibility": "Actual helper lease/concurrent-unknown and quartet/item/trade B1 MemberPublished rollback cuts; QTE next-wave pre-decision cuts remain distinct from later final:* domain compensation and accepted backup cleanup.",
++      "excludes": "Whole domain categories, full normalizer/accepted-turn migration, original browser-v6/save-load/external profile migration and live UI/provider execution.",
++      "changeHints": [
++        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
++        "BookOfEternityClient/Services/QteSceneService.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 6,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.CoordinatedStateWriteHelperTests.*",
++            "BookOfEternityClient.Tests.MortalItemIdentityTransitionTests.ExecuteAsync_SecondCarrierWriteFailureRestoresExactBeforeImages",
++            "BookOfEternityClient.Tests.MortalItemIdentityTransitionTests.ExecuteAsync_SplitIndexWriteFailureRestoresExactBeforeImages"
++          ]
++        },
++        {
++          "project": "integration",
++          "tests": [
++            "BookOfEternityClient.Tests.ResourceMaterializationTestContextTests.CoordinatedQuartetFailure_RestoresExactBytesAndPriorAbsence",
++            "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.BoundedReceipt_NextWaveFailureAtEveryMutationRestoresExactCurrentWave",
++            "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.BoundedReceipt_FinalFailureAtEveryMutationRestoresExactAwaitingBoundary",
++            "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_BackupCleanupFailureDoesNotMaskCommittedResult",
++            "BookOfEternityClient.Tests.NpcTradeServiceRequestFlowTests.BuyAsync_SecondSettlementWriteFailureRestoresExactBeforeImages"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-coordinated-actual-consumers",
++      "responsibility": "Exact existing helper consumers: training guard-only visibility/purchase conflict, item settlement, afterlife owner/quartet, blessing overlap, progression exact guards, wound command quarantine, successful/stale-sealed QTE flow and generic private console notice.",
++      "excludes": "Whole domain categories, full normalizer/accepted-turn migration, original browser-v6/save-load/external profile migration and live UI/provider execution.",
++      "changeHints": [
++        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
++        "BookOfEternityClient/Services/QteSceneService.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 6,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.ProgressionScheduleServiceTests.ApplyAcceptedTurnOutcomeAsync_ValidChaosProgressionReport_AdvancesOrdinals"
++          ]
++        },
++        {
++          "project": "integration",
++          "tests": [
++            "BookOfEternityClient.Tests.TrainingServiceTests.EnsureTrainingAsync_MortalActorChangesAfterFinalRead_IsRejectedByVisibilityGuard",
++            "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_ConcurrentEvolutionRequestSurvivesFailedStateCommit",
++            "BookOfEternityClient.Tests.NpcTradeServiceRequestFlowTests.BuyAsync_TemplateOnlyTradeOutput_SealsIndependentCanonicalItem",
++            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.LocalAfterlifeOwnerResourceService_CommitsSpiritFocusAndLedgerAtomically",
++            "BookOfEternityClient.Tests.ShiningBlessingEffectStateTests.MaterializeForBootstrapAsync_WritesCanonicalBlessingStateAndAppliesResources",
++            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim",
++            "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.BoundedReceipt_TwoWavesSurviveRestartsAndPublishMechanicsOnlyAtFinalWave",
++            "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.TerminalSelection_ByteDifferentSealedRootFailsBeforeAnyWrite",
++            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationRepairLifecycleTests_Privacy_AgentConsoleOuterFailureUsesPlayerSafeProjection"
 +          ]
 +        }
 +      ]
