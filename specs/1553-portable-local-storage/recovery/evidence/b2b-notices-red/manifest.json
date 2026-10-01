@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "ab2163c6b16c638497683e3301b98ea58d770ff7",
+  "catalogBlobAfterPatch": "9c5a91355cf17dac7a9506fc06154ab8cf0228f7",
+  "kind": "newly executed b2b-notices-red; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "edd888aabec06874cdb5bdc4d7c22bbf4c08f077adcfeadd8dec0b41b3024278",
+      "sanitizedSha256": "edd888aabec06874cdb5bdc4d7c22bbf4c08f077adcfeadd8dec0b41b3024278"
+    },
+    {
+      "path": "phase.log",
+      "originalSha256": "c692d1d4b9573d6dd7c56bfb3d7828cd3b5d423a2314ebb7318002098a95ed40",
+      "sanitizedSha256": "40eeb34772d311145ec27aeb15969f4f3358f08aa0843e78c95251ed17862432"
+    }
+  ]
+}

@@ -86,6 +86,20 @@ await scenario('a committed failure-shaped response still reports persisted foll
   assert(tracker.resolve(tracker.begin(), failure('committed'))?.kind === 'follow-up', 'HTTP failure shape overrode explicit commit authority.');
 });
 
+await scenario('an earlier commit warning remains relevant while the latest request is uncertain', () => {
+  const tracker = createSettingsWriteNoticeTracker(); const earlier = tracker.begin(); const latest = tracker.begin();
+  assert(tracker.resolve(earlier, success(warning)) === null, 'Older response must not own the UI.');
+  const notice = tracker.interrupted(latest);
+  assert(notice?.kind === 'uncertain' && notice.message.includes(warning), 'Pending response ordering discarded known committed follow-up.');
+});
+
+await scenario('duplicate older completion cannot restore advice cleared by a later clean commit', () => {
+  const tracker = createSettingsWriteNoticeTracker(); const earlier = tracker.begin();
+  tracker.resolve(earlier, success(warning)); const latest = tracker.begin(); tracker.resolve(latest, success());
+  tracker.resolve(earlier, success(warning));
+  assert(!tracker.interrupted(tracker.begin())?.message.includes(warning), 'A duplicate old response resurrected cleared advice.');
+});
+
 await scenario('rapid independent settings changes coalesce without losing fields', () => {
   const merged = mergeSettingsPatch<{ language?: string; difficulty?: string }>({ language: 'en' }, { difficulty: 'hard' });
   assert(merged.language === 'en' && merged.difficulty === 'hard', 'Debounce lost an independent settings change.');
