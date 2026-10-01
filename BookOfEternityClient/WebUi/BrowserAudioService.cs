@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -332,7 +333,8 @@ public sealed record BrowserAudioSettingsDto(
     string AutoplayGuidance,
     string MissingAssetsMessage,
     IReadOnlyList<BrowserAudioPlaylistDto> Playlists,
-    IReadOnlyList<BrowserAudioCueDto> Cues);
+    IReadOnlyList<BrowserAudioCueDto> Cues,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? PersistenceWarning = null);
 
 public sealed record BrowserAudioPlaylistDto(
     string Id,

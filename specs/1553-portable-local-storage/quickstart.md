@@ -14,6 +14,8 @@ git status --short
 
 Compare the complete SHAs; read AGENTS.md, docs/development-workflow.md and this feature's spec/plan/tasks before editing. No local-only code cache is needed. Application/test execution is separate evidence from successful download.
 
+While `recovery/categories-pending.patch` exists, follow the [current catalog recovery procedure](recovery/README.md) immediately after SHA verification and before running verification: apply the exact patch once and check its current catalog blob hash. Do not apply it twice to an already reconstructed implementation checkout. The README and plan identify the current source/evidence status.
+
 ## Tool versions actually verified on Debian 13 x64
 
 - .NET SDK 10.0.401; .NET and ASP.NET runtime 8.0.31
@@ -63,7 +65,7 @@ In this restricted executor, the default parallel MSBuild restore failed without
 
 ## Verification
 
-Read docs/testing.md and select categories for the actual block. Use scripts/test-csharp.ps1; new B1 categories will be named in the checkpoint when added. `-ValidateCatalog` discovers ownership without executing tests. Never use a full-suite/aggregate/all-category run. Store meaningful result counts and source SHA remotely in plan.md, not only ignored TestResults.
+Read docs/testing.md and select categories for the actual block. Use scripts/test-csharp.ps1. The B1 categories `portable-storage-paths` and `portable-storage-publication` already exist; later cutover categories and the actual reviewed selection are recorded in tests/categories.json and tests/selection.json. `-ValidateCatalog` discovers ownership without executing tests. Never use a full-suite/aggregate/all-category run. Store meaningful result counts and source SHA remotely in plan.md, not only ignored TestResults.
 
 For actual client acceptance use separate fresh roots for console and web. Change one ordinary setting, stop the full client process, restart and inspect the retained value. Then test real GM turn, save/load and restart, including failed/conflicting operations. Exact accepted command/scenario evidence is added as each block becomes runnable.
 

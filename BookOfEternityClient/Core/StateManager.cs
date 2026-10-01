@@ -19,7 +19,7 @@ internal sealed class StateManagerHooks
 /// Central game state manager. Loads aggregated state from files,
 /// manages settings, and coordinates between subsystems.
 /// </summary>
-public class StateManager
+public partial class StateManager
 {
     private readonly FileSystemManager _fs;
     private readonly ILogger<StateManager> _logger;

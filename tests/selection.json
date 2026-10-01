@@ -3,12 +3,28 @@
   "selections": [
     {
       "category": "portable-prepared-settings",
-      "reason": "#1553 B2b first bounded coordinator API and outcome/admission regressions; later service/endpoint/UI slices add their exact consumers.",
+      "reason": "#1553 B2b prepared settings/audio services, exact member bytes, outcome-to-runtime application, hard-linked GET and cold bootstrap restart.",
       "contracts": [
-        "prepared member publication",
-        "durable outcome vs runtime application",
-        "pending GM and local UI ownership",
-        "generation boundary"
+        "prepared settings publication",
+        "explicit durable outcome",
+        "strict detached settings reader"
+      ]
+    },
+    {
+      "category": "portable-settings-endpoints",
+      "reason": "#1553 B2b exact existing HTTP settings/audio and shared active-owner guard consumers; no broad browser sweep.",
+      "contracts": [
+        "settings/audio HTTP persistence",
+        "pending GM and local owner",
+        "player-safe settings response"
+      ]
+    },
+    {
+      "category": "portable-client-bootstrap",
+      "reason": "#1553 B2b will share the strict config decoder with accepted bootstrap; validate that affected read/encoding/admission contract.",
+      "contracts": [
+        "strict config decoding",
+        "leased config bootstrap"
       ]
     }
   ]

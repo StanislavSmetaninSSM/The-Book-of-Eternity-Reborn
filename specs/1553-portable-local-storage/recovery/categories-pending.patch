@@ -1,8 +1,8 @@
 diff --git a/tests/categories.json b/tests/categories.json
-index 4b805af9..79aa0e82 100644
+index 4b805af9..d5b80e19 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -7600,6 +7600,122 @@
+@@ -7600,6 +7600,160 @@
            ]
          }
        ]
@@ -118,7 +118,45 @@ index 4b805af9..79aa0e82 100644
 +        {
 +          "project": "unit",
 +          "tests": [
-+            "BookOfEternityClient.Tests.PortablePreparedSettingsTests.*"
++            "BookOfEternityClient.Tests.PortablePreparedSettingsTests.*",
++            "BookOfEternityClient.Tests.PortableBrowserSettingsTests.*"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-settings-endpoints",
++      "responsibility": "Exact settings/audio HTTP consumers and the existing active-owner admission consumer of the prepared coordinator cutover.",
++      "excludes": "Unrelated browser API/parity/gameplay and old physical rollback consumers; actual Browser Use UI acceptance. Host tests use immutable public fallback assets.",
++      "changeHints": [
++        "BookOfEternityClient/WebUi/BrowserClientSettingsService.cs",
++        "BookOfEternityClient/WebUi/BrowserAudioService.cs",
++        "BookOfEternityClient/WebUi/LocalWebUiHost.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-prepared-settings",
++          "when": "Prepared settings service, outcomes or admission behavior changes."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 4,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "integration",
++          "tests": [
++            "BookOfEternityClient.Tests.LocalWebUiHostTests.ClientSettingsEndpoint_LoadsPlayerSafeSharedSettingsAndLocality",
++            "BookOfEternityClient.Tests.LocalWebUiHostTests.ClientSettingsEndpoint_UpdatesWhitelistedSettingsAndWritesGmProjection",
++            "BookOfEternityClient.Tests.LocalWebUiHostTests.ClientSettingsEndpoint_BlocksGameplaySettingsWhenPendingTurnExists",
++            "BookOfEternityClient.Tests.LocalWebUiHostTests.ClientSettingsEndpoint_DoesNotReuseActiveBrowserWriteOwnerLock",
++            "BookOfEternityClient.Tests.LocalWebUiHostTests.AudioSettingsEndpoint_LoadsSharedSettingsAndReturnsSafeCatalog",
++            "BookOfEternityClient.Tests.LocalWebUiHostTests.AudioSettingsEndpoint_UpdatesAndPersistsSharedSettingsWithClampedVolumes",
++            "BookOfEternityClient.Tests.LocalWebUiHostTests.BrowserAudioService_SerializesSharedSettingsUpdates",
++            "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAsync_ActiveOtherOwner_BlocksWithoutRunningWrite"
 +          ]
 +        }
 +      ]

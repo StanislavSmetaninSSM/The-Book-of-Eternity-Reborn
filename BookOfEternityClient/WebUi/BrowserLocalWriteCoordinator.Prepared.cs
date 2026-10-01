@@ -3,7 +3,7 @@ using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.WebUi;
 
-internal enum BrowserPreparedWriteDisposition { Blocked, Committed, RolledBack, Uncertain }
+public enum BrowserPreparedWriteDisposition { Blocked, Committed, RolledBack, Uncertain }
 internal sealed record BrowserPreparedWriteResult(BrowserPreparedWriteDisposition Disposition,
     bool NeedsFollowUp, string Message);
 internal sealed record PreparedBrowserLocalWrite(IReadOnlyList<CanonicalLocalFileChange> Changes,

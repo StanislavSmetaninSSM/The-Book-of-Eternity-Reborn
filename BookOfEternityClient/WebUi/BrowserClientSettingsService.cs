@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -255,6 +256,8 @@ public sealed record BrowserClientSettingsUpdateResult(
     string Message,
     BrowserClientSettingsDto? Settings)
 {
+    public BrowserPreparedWriteDisposition Disposition { get; init; } = BrowserPreparedWriteDisposition.Blocked;
+
     public static BrowserClientSettingsUpdateResult Completed(BrowserClientSettingsDto settings) =>
         new(true, false, string.Empty, settings);
 
@@ -269,7 +272,8 @@ public sealed record BrowserClientSettingsDto(
     bool ShowGmThoughts,
     BrowserClientAudioSettingsDto Audio,
     BrowserClientAccessibilitySettingsDto Accessibility,
-    BrowserClientLocalityDto Locality);
+    BrowserClientLocalityDto Locality,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? PersistenceWarning = null);
 
 public sealed record BrowserSettingsChoiceGroupDto(
     string Value,
