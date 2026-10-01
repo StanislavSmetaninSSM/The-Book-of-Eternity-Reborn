@@ -110,14 +110,19 @@ export function SettingsView() {
 
   async function loadSaveSlot(slot: BrowserMainMenuDto['saves'][number]) {
     invalidatePendingSettings();
+    const loadGeneration = writeScope.current.generation;
+    const ownsLoad = () => isMountedRef.current && writeScope.current.generation === loadGeneration;
+    let loaded = false;
+    // The cancelled optimistic draft is no longer a confirmed settings view.
+    // A failed load must reload current storage too; it may have changed generation.
+    setSettings(null);
     setLoadingSaveId(slot.saveId);
     setSaveNotice('Загружаем выбранное сохранение…');
     try {
       const result = await browserApi.loadSave({ saveId: slot.saveId });
-      if (!isMountedRef.current) {
-        return;
-      }
+      if (!ownsLoad()) return;
       if (isSuccess(result) && result.data.success) {
+        loaded = true;
         setSaveNotice(`Сохранение «${toPlayerFacingText(slot.displayName, 'выбранная запись')}» загружено. Открываем главу…`);
         setActiveRoute('game');
         await loadBrowserState();
@@ -129,21 +134,28 @@ export function SettingsView() {
       }
       setSaveNotice(toLauncherSaveFailureNotice(result.playerMessage));
     } catch {
-      if (!isMountedRef.current) {
-        return;
-      }
-      setSaveNotice('Сохранение не удалось загрузить. Проверьте, что книга запущена, и попробуйте ещё раз.');
+      if (!ownsLoad()) return;
+      setSaveNotice(loaded
+        ? 'Сохранение загружено, но обновление текущего интерфейса требует повторной проверки.'
+        : 'Сохранение не удалось загрузить. Проверьте, что книга запущена, и попробуйте ещё раз.');
     } finally {
-      if (isMountedRef.current) {
-        setLoadingSaveId(null);
+      if (!loaded && ownsLoad()) {
+        setSettings(null);
+        try {
+          await loadBrowserState(ownsLoad);
+        } catch {
+          if (ownsLoad()) setSaveNotice((previous) => `${previous} Текущие настройки не подтверждены. Обновите состояние книги перед изменениями.`);
+        }
       }
+      if (ownsLoad()) setLoadingSaveId(null);
     }
   }
 
   if (!settings) {
     return <div className="settings-view">
+      {saveNotice && <p className="composer-notice" role="status">{saveNotice}</p>}
       {persistenceNotice && <p className="composer-notice" role="status">{persistenceNotice.message}</p>}
-      <p className="block-text--muted">{persistenceNotice ? 'Текущие настройки требуют обновления.' : 'Загрузка настроек…'}</p>
+      <p className="block-text--muted">{persistenceNotice || saveNotice ? 'Текущие настройки требуют обновления.' : 'Загрузка настроек…'}</p>
     </div>;
   }
 

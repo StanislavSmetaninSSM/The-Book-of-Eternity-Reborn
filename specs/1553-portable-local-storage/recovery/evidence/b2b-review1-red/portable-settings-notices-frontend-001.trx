@@ -1,0 +1,11 @@
+<TestRun name="b2b-review1-red" runUser="$USER">
+  <Results>
+    <UnitTestResult testId="F1969004A93CE0E61D8C0E1187D18432651E57BFA8D3FDBC89BE3EB81EB21786" testName="BookOfEternityClient.WebFrontend/test/settingsPersistenceNotice.test.ts(node)" outcome="Passed" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest id="F1969004A93CE0E61D8C0E1187D18432651E57BFA8D3FDBC89BE3EB81EB21786" storage="category-node" />
+  </TestDefinitions>
+  <ResultSummary>
+    <Counters total="1" executed="1" passed="1" failed="0" />
+  </ResultSummary>
+</TestRun>

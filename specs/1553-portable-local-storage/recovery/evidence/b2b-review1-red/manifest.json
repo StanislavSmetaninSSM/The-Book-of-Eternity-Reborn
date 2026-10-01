@@ -1,0 +1,28 @@
+{
+  "sourceCommit": "09dfedc16eecd93665bcb5c453418dc588e827d1",
+  "catalogBlobAfterPatch": "ba9b41236b5df635fbf4bb151f8d5710f3b44435",
+  "kind": "newly executed b2b-review1-red; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained. Extra JSON/log line endings normalized to LF and trailing whitespace removed; original hashes retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "e275afe2d4cec1cdd4836a3bfba4ea978e587ed38582c786f5beb135d3d0f3e5",
+      "sanitizedSha256": "e275afe2d4cec1cdd4836a3bfba4ea978e587ed38582c786f5beb135d3d0f3e5"
+    },
+    {
+      "path": "portable-settings-notices-frontend-001.trx",
+      "originalSha256": "911a3eaa5b44afa2b3d20a04b02fdd8a422a8a5f57ee1c6f3347a1d5ad50faa1",
+      "sanitizedSha256": "b6ebe48474279df94003bf1f4d5aaf86f878c902ec0ec1ac2569184e4c71cc12"
+    },
+    {
+      "path": "portable-settings-notices-frontend-002.vitest.json",
+      "originalSha256": "50e735237d61e89bb4b43ef9f2335fac267a7e4c91093e68438cbcd203cf1c13",
+      "sanitizedSha256": "f99fe1f554de5df395e928c7b7212bed62de1403aec063caa3296d5ff4f206a0"
+    },
+    {
+      "path": "phase.log",
+      "originalSha256": "5b7daa08d31f5ba603079fc611dcd071381f76c8c64bcaf63cfe10731d1550c9",
+      "sanitizedSha256": "7ce97229ba6a2ee455e09206e49d61e5df8989b189d14ee333d48a40cc4d3327"
+    }
+  ]
+}

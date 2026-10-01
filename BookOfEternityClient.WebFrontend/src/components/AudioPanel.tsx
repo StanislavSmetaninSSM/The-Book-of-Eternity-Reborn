@@ -19,13 +19,20 @@ export function AudioPanel({ writeScope }: { writeScope: SettingsWriteScope }) {
   const [persistenceNotice, setPersistenceNotice] = useState<SettingsWriteNotice | null>(null);
   const persistenceTracker = useRef(createSettingsWriteNoticeTracker(writeScope));
   const pendingUpdate = useRef(false);
+  const pendingScopeGeneration = useRef(writeScope.generation);
   const [notice, setNotice] = useState('');
   const audioElementRef = useRef<HTMLAudioElement | null>(null);
   const audioSettingsUpdateQueueRef = useRef<Promise<void>>(Promise.resolve());
 
   useEffect(() => {
+    if (pendingScopeGeneration.current !== writeScope.generation) {
+      // Invalidated requests no longer own either response effects or the pending
+      // flag that protects a current draft from unrelated refreshes.
+      pendingScopeGeneration.current = writeScope.generation;
+      pendingUpdate.current = false;
+    }
     if (!pendingUpdate.current) setAudioResult(readyState?.audio ?? null);
-  }, [readyState?.audio]);
+  }, [readyState?.audio, writeScope.generation]);
 
   useEffect(() => () => {
     persistenceTracker.current.invalidate();
