@@ -18,6 +18,7 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
     private readonly SystemModService _mods;
     private Action<TrustedLocalPublicationPhase, int>? _observe;
     private Action? _closing;
+    private Action<string>? _read;
     private bool _settingsPublication;
     private const string Projection = LocalSettingsPreparation.ProjectionPath;
 
@@ -33,6 +34,7 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
                     return Task.CompletedTask;
                 },
                 LocalPublicationObserver = (phase, index) => { if (_settingsPublication) _observe?.Invoke(phase, index); },
+                BeforeCanonicalReadOpenAsync = path => { _read?.Invoke(path.Replace('\\', '/')); return Task.CompletedTask; },
                 SessionOperationClosingAsync = () => { _closing?.Invoke(); return Task.CompletedTask; }
             });
         _state = new StateManager(_files, _live, NullLogger<StateManager>.Instance);
@@ -188,7 +190,7 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
         var before = File.ReadAllBytes(_files.ResolvePath("config.json"));
         if (absent) File.Delete(_files.SessionGenerationPath);
         else File.WriteAllText(_files.SessionGenerationPath,
-            "{\"SchemaVersion\":1,\"GenerationId\":\"another-session\"}");
+            "{\"SchemaVersion\":1,\"GenerationId\":\"11111111111111111111111111111111\"}");
         var result = await session.SaveAsync();
         Assert.Equal(BrowserPreparedWriteDisposition.Blocked, result.Disposition);
         Assert.True(session.RequiresReload); Assert.Equal("ru", _live.Language);
@@ -214,7 +216,7 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
     {
         var session = await Open(); session.Draft.Language = "en";
         File.WriteAllText(_files.SessionGenerationPath,
-            "{\"SchemaVersion\":1,\"GenerationId\":\"another-session\"}");
+            "{\"SchemaVersion\":1,\"GenerationId\":\"11111111111111111111111111111111\"}");
         await Assert.ThrowsAsync<SessionReplacedException>(() => session.ReloadAsync());
         Assert.True(session.RequiresReload); Assert.Equal("en", session.Draft.Language); Assert.Equal("ru", _live.Language);
     }
@@ -249,6 +251,26 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
         File.Delete(_files.ResolvePath("mods/weather.json"));
         File.CreateSymbolicLink(_files.ResolvePath("mods/weather.json"), _files.ResolvePath("config.json"));
         await Assert.ThrowsAnyAsync<InvalidDataException>(() => session.ReadModsAsync());
+    }
+
+    [Fact]
+    public async Task OneShotPreparationReadFailureKeepsUnchangedDraftRetryable()
+    {
+        var session = await Open(); session.Draft.Language = "en";
+        var before = File.ReadAllBytes(_files.ResolvePath("config.json")); var injected = false;
+        _read = path =>
+        {
+            if (path != "config.json" || injected) return;
+            injected = true; throw new IOException("One-shot settings read interruption.");
+        };
+        var failed = await session.SaveAsync();
+        Assert.True(injected); Assert.Equal(BrowserPreparedWriteDisposition.Blocked, failed.Disposition);
+        Assert.Equal(before, File.ReadAllBytes(_files.ResolvePath("config.json")));
+        Assert.Equal("ru", _live.Language); Assert.Equal("en", session.Draft.Language);
+        Assert.False(session.RequiresReload);
+        _read = null;
+        Assert.Equal(BrowserPreparedWriteDisposition.Committed, (await session.SaveAsync()).Disposition);
+        Assert.Equal("en", _live.Language);
     }
 
     public void Dispose() { if (Directory.Exists(_root)) Directory.Delete(_root, recursive: true); }

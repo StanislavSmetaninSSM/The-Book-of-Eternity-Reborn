@@ -3,19 +3,11 @@
   "selections": [
     {
       "category": "portable-console-settings-session",
-      "reason": "Console owner/pending/config/generation admission and explicit discard/reload before menu wiring; real unknown evidence must remain unresolved. Mod listing uses the same portable input checks with draft selection.",
+      "reason": "One-shot preparation read failure must retain an unchanged draft for retry; corrected valid replacement-generation fixture. Only affected console session cases selected for RED.",
       "contracts": [
         "console settings admission",
         "draft discard and confirmed reload",
         "portable mod listing"
-      ]
-    },
-    {
-      "category": "portable-console-settings",
-      "reason": "Portable mod scan was extracted for draft-aware listing and remains the preparation input; retain the exact three-member and existing semantic-manifest consumers.",
-      "contracts": [
-        "checked portable mod input scan",
-        "three-member settings preparation"
       ]
     }
   ]

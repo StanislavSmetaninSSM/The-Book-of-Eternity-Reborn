@@ -1,0 +1,23 @@
+{
+  "sourceCommit": "ab6e0725e5edf6c8fc068f49aa235b537ad3af7b",
+  "catalogBlobAfterPatch": "14e7851b5ac4fde7c2555aa82d5235996b5f1e89",
+  "kind": "First covering attempt: 28 passed / 1 fixture mismatch; not GREEN",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "6456117878a296cb580fdd35b23946f9e968adcabd10eec561142331450e8d48",
+      "sanitizedSha256": "6456117878a296cb580fdd35b23946f9e968adcabd10eec561142331450e8d48"
+    },
+    {
+      "path": "portable-console-settings-session-unit-002.trx",
+      "originalSha256": "1d527696ea06111a5a75a6ab0b038fd115377ae7d0f4be64955419efabd51521",
+      "sanitizedSha256": "7bfe63841ad38f0a6fe8dfc49a7d299fbff2173835afc4201be3427d3f743e42"
+    },
+    {
+      "path": "portable-console-settings-unit-001.trx",
+      "originalSha256": "93723e22d61a8b94b7a35a13666059dc27ac38530fe22c8c295da50938682ede",
+      "sanitizedSha256": "fc993cdb34717da143e281a39e2aa7ad811e2bc7adb4ee6daa775deb28ac20a4"
+    }
+  ]
+}
