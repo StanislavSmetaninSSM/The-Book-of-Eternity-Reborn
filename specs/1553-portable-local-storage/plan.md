@@ -351,3 +351,18 @@ The final affected-consumer scan found three existing source guards tied to the 
 
 
 Exact existing-consumer RED at `c3db1410` plus catalog `4f48467e` stopped at the expected stale gracefulDegradation source-path assertion after the audio catalog file passed. The Node descriptor emits no TRX until every file passes, so no complete descriptor/case count is claimed; the Vitest descriptor had not started. Elapsed 1.6437545 seconds, cleanup complete; sanitized original summary/phase log and hashes are in `recovery/evidence/b2b-consumers-red/`. The correction only points settled-load/coverage assertions to the extracted production helper, verifies the hook still delegates to it, updates the real AudioPanel shared-scope mount spelling, and extends safe-copy scanning to both new helpers. No assertion is deleted or weakened; production code is unchanged. Run only portable-settings-consumers next.
+
+
+### B2b browser capability candidate, 2026-10-01 01:59 UTC
+
+Exact existing frontend consumers GREEN at `527dfa1b80fb0b087731aaddf1957fdad019353e` plus catalog `4f48467ede0a1e2e78a5577d7a1205808c1e1d7f`: **27/27 passed** (two Node file cases and 25 Vitest tests across the two selected files), both descriptors complete, no duplicates/timeouts, cleanup complete, **2.4302071 seconds**. Normal Vitest adapter worked without transport/environment changes. Sanitized original summary, both real TRX files and Vitest JSON with original/sanitized hashes are preserved in `recovery/evidence/b2b-consumers-green/`.
+
+Final discovery-only audit at the same source/catalog passed: **110 categories / 10,267 methods/files**, zero tests executed, **10.8212570 seconds**, owned cleanup complete. Sanitized summary/hash manifest is in `recovery/evidence/b2b-final-audit/`. The only applied local source delta is the documented catalog patch. `git diff --check cbc6b29c..HEAD` passes after evidence normalization. No production source changed after its corresponding GREEN.
+
+Current verification commands (run separately at the named saved sources, never a full suite):
+- Backend `6075fac4` + catalog `d5b80e19`: `pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-prepared-settings,portable-settings-endpoints,portable-client-bootstrap`, **66/66**
+- Frontend production `5d304430` + catalog `9c5a9135`: `pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-settings-notices`, **22 named scenarios / 1 file case**, plus production typecheck/build
+- Existing frontend consumers `527dfa1b` + current catalog: `pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-settings-consumers`, **27/27**
+- Ownership audit `527dfa1b` + current catalog: `pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild`, **110 / 10267**, zero test execution; unchanged fresh C# assemblies reused
+
+Freeze this connected browser settings/audio source for independent Astra XHigh review from accepted B2a `cbc6b29c`; fresh exact-head GitHub clone/patch reconstruction is the next read-only recovery proof. B2a/B2b remain unaccepted overall while normal catalog publication is pending. Console three-file settings publication (including the two MainMenu WriteGameSettingsForGm callers), actual Linux console menu/settings restart, environment-blocked actual Browser Use and owner-run Windows remain explicit next work/limits.

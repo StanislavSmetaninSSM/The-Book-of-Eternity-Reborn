@@ -1,0 +1,28 @@
+{
+  "sourceCommit": "527dfa1b80fb0b087731aaddf1957fdad019353e",
+  "catalogBlobAfterPatch": "4f48467ede0a1e2e78a5577d7a1205808c1e1d7f",
+  "kind": "newly executed b2b-consumers-green; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "08c16902fb1a8bfb8d07104eb6132dbd92ee9121249fb77e5237b70549b6d627",
+      "sanitizedSha256": "08c16902fb1a8bfb8d07104eb6132dbd92ee9121249fb77e5237b70549b6d627"
+    },
+    {
+      "path": "portable-settings-consumers-frontend-001.trx",
+      "originalSha256": "892ee791d9a2958128ee968a06d24ff293d0d9096c0c1c9b6fed570aff6a8ea3",
+      "sanitizedSha256": "26c5917e4a72e93173346f3b36305a904cadd266eb0cee92acb3d165b9b32521"
+    },
+    {
+      "path": "portable-settings-consumers-frontend-002.trx",
+      "originalSha256": "8794c2fb16894b2bb2c473578b666c74e7b06ee13a63568fdcea5c49d807050c",
+      "sanitizedSha256": "f2e1410d3f1586ee402bdaba78b5738c51a5c2c74547223ba27e52e218e3568d"
+    },
+    {
+      "path": "portable-settings-consumers-frontend-002.vitest.json",
+      "originalSha256": "056e9a3cd26660209b8e9254a139d55b3ca91237fb2eac16886aead097b8298d",
+      "sanitizedSha256": "c927ed97f7f5c4b828b2b84649f2c3aaa7420275991b392c83b7769dde1b9d3b"
+    }
+  ]
+}

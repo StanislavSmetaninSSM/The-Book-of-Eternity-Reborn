@@ -1,0 +1,59 @@
+<TestRun name="b2b-consumers-green" runUser="$USER">
+  <Results>
+    <UnitTestResult testId="E370C469ECBE957D8753B9CF53E704F8E62907699B862FF279CF9F1B0EDEE9A0" testName="BookOfEternityClient.WebFrontend/test/browserSettingsSavesAudio.test.ts(browser settings saves and audio surfaces #1186 #1187 exposes save management from the browser settings route)" outcome="Passed" />
+    <UnitTestResult testId="15E2F356D30654541F11962889813FCD0065EE58732920F0469F2BDB2643A897" testName="BookOfEternityClient.WebFrontend/test/browserSettingsSavesAudio.test.ts(browser settings saves and audio surfaces #1186 #1187 mounts the real audio panel from settings so music is playable)" outcome="Passed" />
+    <UnitTestResult testId="9C0FA870A2B813B5720C2DA9D47FCBA06FC9D5B053F53DE1ACFF1BF53CFB89C7" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness does not mangle normal narrative text)" outcome="Passed" />
+    <UnitTestResult testId="A9E2A7587E1A96F7F9E052932B14F18DB94A25EF2E881244305E68BE8905EE5C" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness still translates compound technical phrases)" outcome="Passed" />
+    <UnitTestResult testId="E2B0A0A3E44E455C0ADC9A807AC090AED19C7D6FFF0165E35E30B110FA823ADA" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness translates realm names consistently)" outcome="Passed" />
+    <UnitTestResult testId="1A55735F2A610ADEDE29337E8FC9D77C90DDCAAEC7A67D69B38AE084FD04F345" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness translates GM terminology)" outcome="Passed" />
+    <UnitTestResult testId="B2F946EEB2938FF7D897D77BC7BD4A4E944A4456EF4C106439D2B830177BBB11" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness handles debug shell replacement without mangling)" outcome="Passed" />
+    <UnitTestResult testId="654B47CC28A61D4DF1D1833A0CC9058567FFC609CA2F1F036B913B7B450952CE" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness does not replace &quot;by&quot; as standalone word)" outcome="Passed" />
+    <UnitTestResult testId="CF446FEA36C2FE13968742DF4C62D7DF011DAA2FAFE775D27CA76C1E723CD5F7" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness does not replace &quot;action&quot; in narrative context)" outcome="Passed" />
+    <UnitTestResult testId="597E2EB4CD076C599C94EFE0A2461A71B3D46ED81EF7095CB0C14E52D8F5AD48" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness does not replace &quot;realm&quot; in narrative context)" outcome="Passed" />
+    <UnitTestResult testId="45CA5EF8B411F0E437F62011D55E41A4B20FFE8B0C009034B5C6D434EC3DDFF9" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness does not replace &quot;offer&quot; in narrative context)" outcome="Passed" />
+    <UnitTestResult testId="4BC4AD5CD712A2E5E4FABAB3E39D30DB5207B0423240FBB30200BF8AD9DAAF80" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness preserves sanitizePlayerMessage behavior for file paths)" outcome="Passed" />
+    <UnitTestResult testId="F45F4C3BBE1BCD4F28B4D95B1CC0A47456358BAA6BAB88D946A7BF616E559D49" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness sanitizes prompt-session protocol copy before default rendering)" outcome="Passed" />
+    <UnitTestResult testId="E4AEF10A7CD66AA5500EB14D4376862AADEC6DF4E2ADD0907A9BFCE010482824" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness translates identifiers with underscores/hyphens)" outcome="Passed" />
+    <UnitTestResult testId="C4D47F78F82DECC3D9F554291CCF56C183E6FF1A74B644F45658517E2D0CB719" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness translates pending afterlife identifiers from backend payloads)" outcome="Passed" />
+    <UnitTestResult testId="FD2A995B220BB3C55C4D6A8EFBB71C356AF45D9EACFD20A01226F39478643DD5" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness localizes canonical browser world time month names)" outcome="Passed" />
+    <UnitTestResult testId="46090F7A49C1482A12E73D599B74D57F33290A69DF8E40FC13851562A06A7BFF" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness preserves custom GM-authored browser world time month names)" outcome="Passed" />
+    <UnitTestResult testId="D7192E7B591FB8B15DCC180F8562E5ACC0AB2AD51981B08410126F32ACFC800B" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness uses shared player-facing world time formatting on browser world surfaces)" outcome="Passed" />
+    <UnitTestResult testId="B2CAD49849001086B28FD064C7FA56891E8784855D8A86605B01B295A248916C" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness keeps advanced diagnostics hardcoded copy in Russian)" outcome="Passed" />
+    <UnitTestResult testId="1C4329163F4653C6E0DA82A58A4CF111C168C1DF5E34CFFC554A6EF7B5EA06A6" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness keeps current afterlife and command help copy in Russian)" outcome="Passed" />
+    <UnitTestResult testId="1484489C3B64BBDB7A284737B57512DE6D7AA7475B3556B7EAFE9A1488C7CC34" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness keeps default Browser Client source copy behind the player boundary)" outcome="Passed" />
+    <UnitTestResult testId="149A38CFC0B9DEE9E28451E0C766216BFD854BE79C87D1EEBCC8BB8E272A94AD" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness loads command coverage for Help while keeping advanced commands behind opt-in)" outcome="Passed" />
+    <UnitTestResult testId="BAC067E34BBD4305F54753B8E722D8DE1C3265D1832D90D17C96CE3EE836F41B" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness keeps raw command strings and raw JSON out of default command result rendering)" outcome="Passed" />
+    <UnitTestResult testId="FE02A3D8000F7A9F00DEBC0D200248C27A49F558BC4FEC4F391EFD2D99D325A9" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness renders command map blocks through the unified MapAtlas surface instead of text or node lists)" outcome="Passed" />
+    <UnitTestResult testId="B1E0CAEEBA1F9A12F7F6EC5171B9460FE5A4E9C4B91964DB1E5CD3FC80F68655" testName="BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts(playerCopy robustness resets browser map selection controls when a different map block is rendered)" outcome="Passed" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest id="E370C469ECBE957D8753B9CF53E704F8E62907699B862FF279CF9F1B0EDEE9A0" storage="category-vitest" />
+    <UnitTest id="15E2F356D30654541F11962889813FCD0065EE58732920F0469F2BDB2643A897" storage="category-vitest" />
+    <UnitTest id="9C0FA870A2B813B5720C2DA9D47FCBA06FC9D5B053F53DE1ACFF1BF53CFB89C7" storage="category-vitest" />
+    <UnitTest id="A9E2A7587E1A96F7F9E052932B14F18DB94A25EF2E881244305E68BE8905EE5C" storage="category-vitest" />
+    <UnitTest id="E2B0A0A3E44E455C0ADC9A807AC090AED19C7D6FFF0165E35E30B110FA823ADA" storage="category-vitest" />
+    <UnitTest id="1A55735F2A610ADEDE29337E8FC9D77C90DDCAAEC7A67D69B38AE084FD04F345" storage="category-vitest" />
+    <UnitTest id="B2F946EEB2938FF7D897D77BC7BD4A4E944A4456EF4C106439D2B830177BBB11" storage="category-vitest" />
+    <UnitTest id="654B47CC28A61D4DF1D1833A0CC9058567FFC609CA2F1F036B913B7B450952CE" storage="category-vitest" />
+    <UnitTest id="CF446FEA36C2FE13968742DF4C62D7DF011DAA2FAFE775D27CA76C1E723CD5F7" storage="category-vitest" />
+    <UnitTest id="597E2EB4CD076C599C94EFE0A2461A71B3D46ED81EF7095CB0C14E52D8F5AD48" storage="category-vitest" />
+    <UnitTest id="45CA5EF8B411F0E437F62011D55E41A4B20FFE8B0C009034B5C6D434EC3DDFF9" storage="category-vitest" />
+    <UnitTest id="4BC4AD5CD712A2E5E4FABAB3E39D30DB5207B0423240FBB30200BF8AD9DAAF80" storage="category-vitest" />
+    <UnitTest id="F45F4C3BBE1BCD4F28B4D95B1CC0A47456358BAA6BAB88D946A7BF616E559D49" storage="category-vitest" />
+    <UnitTest id="E4AEF10A7CD66AA5500EB14D4376862AADEC6DF4E2ADD0907A9BFCE010482824" storage="category-vitest" />
+    <UnitTest id="C4D47F78F82DECC3D9F554291CCF56C183E6FF1A74B644F45658517E2D0CB719" storage="category-vitest" />
+    <UnitTest id="FD2A995B220BB3C55C4D6A8EFBB71C356AF45D9EACFD20A01226F39478643DD5" storage="category-vitest" />
+    <UnitTest id="46090F7A49C1482A12E73D599B74D57F33290A69DF8E40FC13851562A06A7BFF" storage="category-vitest" />
+    <UnitTest id="D7192E7B591FB8B15DCC180F8562E5ACC0AB2AD51981B08410126F32ACFC800B" storage="category-vitest" />
+    <UnitTest id="B2CAD49849001086B28FD064C7FA56891E8784855D8A86605B01B295A248916C" storage="category-vitest" />
+    <UnitTest id="1C4329163F4653C6E0DA82A58A4CF111C168C1DF5E34CFFC554A6EF7B5EA06A6" storage="category-vitest" />
+    <UnitTest id="1484489C3B64BBDB7A284737B57512DE6D7AA7475B3556B7EAFE9A1488C7CC34" storage="category-vitest" />
+    <UnitTest id="149A38CFC0B9DEE9E28451E0C766216BFD854BE79C87D1EEBCC8BB8E272A94AD" storage="category-vitest" />
+    <UnitTest id="BAC067E34BBD4305F54753B8E722D8DE1C3265D1832D90D17C96CE3EE836F41B" storage="category-vitest" />
+    <UnitTest id="FE02A3D8000F7A9F00DEBC0D200248C27A49F558BC4FEC4F391EFD2D99D325A9" storage="category-vitest" />
+    <UnitTest id="B1E0CAEEBA1F9A12F7F6EC5171B9460FE5A4E9C4B91964DB1E5CD3FC80F68655" storage="category-vitest" />
+  </TestDefinitions>
+  <ResultSummary>
+    <Counters total="25" executed="25" passed="25" failed="0" />
+  </ResultSummary>
+</TestRun>
