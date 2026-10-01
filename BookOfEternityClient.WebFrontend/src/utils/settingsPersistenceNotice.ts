@@ -4,10 +4,12 @@ import { toPlayerFacingText } from './playerCopy.js';
 export type SettingsWriteNoticeKind = 'saved' | 'follow-up' | 'blocked' | 'rolled-back' | 'uncertain';
 export interface SettingsWriteNotice { kind: SettingsWriteNoticeKind; message: string }
 export interface SettingsPersistenceResponse { persistenceWarning?: string | null }
+export interface SettingsWriteScope { generation: number }
 export interface SettingsWriteNoticeTracker {
   begin(): number;
   invalidate(): void;
   isCurrent(request: number): boolean;
+  canDispatch(request: number): boolean;
   resolve<T extends SettingsPersistenceResponse>(request: number, result: BrowserApiResult<T>, apply?: (notice: SettingsWriteNotice) => void): SettingsWriteNotice | null;
   interrupted(request: number, apply?: (notice: SettingsWriteNotice) => void): SettingsWriteNotice | null;
 }
@@ -16,7 +18,7 @@ const savedMessage = 'Настройки сохранены в общей кон
 const followUpMessage = 'Настройки сохранены. Обновление интерфейса требует проверки.';
 const uncertainMessage = 'Результат сохранения настроек не подтверждён. Обновите данные перед следующим изменением.';
 
-export function createSettingsWriteNoticeTracker(): SettingsWriteNoticeTracker {
+export function createSettingsWriteNoticeTracker(scope: SettingsWriteScope = { generation: 0 }): SettingsWriteNoticeTracker {
   let current = 0;
   let invalidatedThrough = 0;
   let lastCommitted = 0;
@@ -35,6 +37,7 @@ export function createSettingsWriteNoticeTracker(): SettingsWriteNoticeTracker {
     begin: () => ++current,
     invalidate: () => { invalidatedThrough = ++current; },
     isCurrent,
+    canDispatch: () => { throw new Error('Settings dispatch ownership is not implemented.'); },
     resolve(request, result, apply) {
       let notice: SettingsWriteNotice;
       if (result.ok) {

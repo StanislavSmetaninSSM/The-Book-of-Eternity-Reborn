@@ -1,3 +1,5 @@
+import { loadShellState } from '../src/hooks/loadShellState.js';
+import type { BrowserShellState } from '../src/context/ShellContext.js';
 import { createBrowserApiClient } from '../src/api/client.js';
 import type { BrowserApiFailure, BrowserApiResult } from '../src/api/contracts.js';
 import { createSettingsWriteNoticeTracker, mergeSettingsPatch } from '../src/utils/settingsPersistenceNotice.js';
@@ -116,6 +118,58 @@ await scenario('current response applies once and a delayed refresh loses owners
   assert(applied === 1 && tracker.isCurrent(request), 'Current response was not applied.');
   const refreshIsCurrent = () => tracker.isCurrent(request); tracker.begin();
   assert(!refreshIsCurrent(), 'A refresh still owned publication after a newer request.');
+});
+
+await scenario('unmount cancels unsent dispatch but superseded same-mount changes remain admitted', () => {
+  const tracker = createSettingsWriteNoticeTracker(); const older = tracker.begin(); const newer = tracker.begin();
+  assert(tracker.canDispatch(older) && tracker.canDispatch(newer), 'A superseded independent queued patch was dropped.');
+  tracker.invalidate();
+  assert(!tracker.canDispatch(older) && !tracker.canDispatch(newer), 'An unsent POST can still start after unmount.');
+});
+
+await scenario('save-load boundary invalidates both settings and audio dispatch and response ownership', () => {
+  const scope = { generation: 0 };
+  const settings = createSettingsWriteNoticeTracker(scope); const audio = createSettingsWriteNoticeTracker(scope);
+  const oldSetting = settings.begin(); const oldAudio = audio.begin(); scope.generation++;
+  assert(!settings.canDispatch(oldSetting) && !audio.canDispatch(oldAudio), 'Old-view writes can start in the replacement session.');
+  assert(!settings.isCurrent(oldSetting) && !audio.isCurrent(oldAudio), 'Old-session responses can change the new view.');
+  const newSetting = settings.begin();
+  assert(settings.canDispatch(newSetting) && !settings.canDispatch(oldSetting), 'Starting in the new scope resurrected old queued work.');
+});
+
+await scenario('two locally current settings/audio refreshes publish only the newest shared snapshot', async () => {
+  let version = 0;
+  const gates = [0, 1].map(() => { let release!: () => void; const promise = new Promise<void>((resolve) => { release = resolve; }); return { promise, release }; });
+  const client = createBrowserApiClient({ fetcher: async () => {
+    const captured = version; await gates[captured].promise;
+    return new Response(JSON.stringify({ tag: captured }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+  } });
+  let state: BrowserShellState = { status: 'loading' };
+  const publish = (next: BrowserShellState | ((previous: BrowserShellState) => BrowserShellState)) => { state = typeof next === 'function' ? next(state) : next; };
+  const owner = { current: 0 };
+  const older = loadShellState(client, publish, owner, false, () => true);
+  version = 1;
+  const newer = loadShellState(client, publish, owner, false, () => true);
+  gates[1].release(); await newer;
+  gates[0].release(); await older;
+  const actual = state as BrowserShellState;
+  assert(actual.status === 'ready' && actual.settings.ok && (actual.settings.data as unknown as { tag: number }).tag === 1,
+    'Slower older refresh overwrote the newer other-flow snapshot.');
+});
+
+await scenario('actual consumers fence dispatch and cancel settings before save loading', async () => {
+  const fsSpecifier = 'node:fs'; const pathSpecifier = 'node:path';
+  const { readFileSync } = await import(fsSpecifier); const { join, basename } = await import(pathSpecifier);
+  const cwd = (globalThis as { process?: { cwd?: () => string } }).process?.cwd?.() ?? '.';
+  const root = basename(cwd) === 'BookOfEternityClient.WebFrontend' ? cwd : join(cwd, 'BookOfEternityClient.WebFrontend');
+  for (const file of ['SettingsView.tsx', 'AudioPanel.tsx']) {
+    const source = readFileSync(join(root, 'src', 'components', file), 'utf8');
+    assert(source.includes('.canDispatch('), `${file} does not fence the actual queued POST dispatch.`);
+  }
+  const settings = readFileSync(join(root, 'src', 'components', 'SettingsView.tsx'), 'utf8');
+  const load = settings.slice(settings.indexOf('async function loadSaveSlot'), settings.indexOf('if (!settings)'));
+  assert(load.indexOf('invalidatePendingSettings()') >= 0 && load.indexOf('invalidatePendingSettings()') < load.indexOf('await browserApi.loadSave'), 'Save load begins before pending settings lose ownership.');
+  assert(settings.includes('clearTimeout(updateQueue.current)') && settings.includes('writeScope.current.generation++'), 'Unmount/load does not invalidate the shared settings/audio scope.');
 });
 
 await scenario('rapid independent settings changes coalesce without losing fields', () => {
