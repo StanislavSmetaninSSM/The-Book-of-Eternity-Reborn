@@ -6,6 +6,21 @@ The [current T031 checkpoint](../plan.md#current-checkpoint--t031-helper-green-c
 
 
 <a id="active-t030-e-wip-recovery"></a>
+
+Before normal delivery, verify all production/test/catalog/selection hashes in `coordinated-delivery-source.json`. Apply the current exact pending packet, verify its after-images, then commit those normal Git files and retire only the two active pending packet files under the parent's serialized source/ref handoff. Retain historical packets through their immutable commit links. Normalization must not change source/test bytes or rerun completed Linux cohorts.
+
+Actual native qualification uses the already-qualified toolchain and the canonical runner with all three telemetry opt-outs and DOTNET_PROCESSOR_COUNT=1:
+
+```powershell
+$env:DOTNET_PROCESSOR_COUNT = '1'
+$env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
+$env:POWERSHELL_TELEMETRY_OPTOUT = '1'
+$env:TESTINGPLATFORM_TELEMETRY_OPTOUT = '1'
+pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile specs/1553-portable-local-storage/recovery/coordinated-native-selection.json -Parallelism 1
+```
+
+Expect two descriptors / 16 actual cases, not a Linux execution of the native plan. Preserve exact normal source SHA/tree, environment fingerprint, summary/TRXs, original/sanitized hashes, reached fixtures, failures/unrun cases and cleanup. File.CreateSymbolicLink capability is unestablished on HOME-PC; report setup failure honestly without elevation/security changes or silent return. The original-browser accept/decline callbacks and real wound preparation must execute. Native success does not close the observed Linux directory/preparation blocker or full accepted-turn/save-load/browser-v6 migration.
+
 ## Accepted T030-E recovery
 
 The ordinary-reader block is accepted at normal source `29f485748819a8d95fd94b483f96e98c3f6e4b81` with final evidence checkpoint `9232216fd23909477d908c4433ac5debc8db4b7f`, tree `6b6bc6c6523059270dc337dbde72b5fe4412996f`. **All source/tests/catalog/selection are normal Git files; no patch is required.** Final native GitHub-only restoration verified 3,691 tracked files, clean checkout/connectivity, five source blobs and the four native artifact hashes. Preserve the native artifacts' exact bytes and hashes.

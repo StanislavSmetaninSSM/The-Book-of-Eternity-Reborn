@@ -1,0 +1,36 @@
+{
+  "sourceCommit": "733c40fe862908616e2db3c4ea2b8d03bd273034",
+  "sourceAppliedTree": "cdf74a5d6d45f6135ee6c0c9c10264aab66ae75b",
+  "packetSha256": "730c0dd18dbe2d2b189e827e74f099e860842ee60158be7cfef2f3dfcc2a6f98",
+  "kind": "coordinated-final-audit; exact completed selected-run evidence",
+  "sanitization": "Repository/toolchain/isolated environment paths and TRX run user/computer/deployment identifiers replaced; original and sanitized hashes retained.",
+  "command": "DOTNET_PROCESSOR_COUNT=1 DOTNET_CLI_TELEMETRY_OPTOUT=1 POWERSHELL_TELEMETRY_OPTOUT=1 TESTINGPLATFORM_TELEMETRY_OPTOUT=1 pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild",
+  "environment": "Linux x64; SDK10.0.401, .NET8.0.31, PowerShell7.6.6; existing isolated homes/temp/cache; no app/provider execution",
+  "tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 0,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 0,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [],
+    "Complete": false
+  },
+  "exitCode": 0,
+  "wallTime": "00:00:10.8346837",
+  "timedOut": false,
+  "ownedCleanup": true,
+  "runtimeCleanup": true,
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "0396c661b7f4e26df0e016966b28aa95f680d4fbc07ad1acf689fb3ae8b01050",
+      "sanitizedSha256": "0396c661b7f4e26df0e016966b28aa95f680d4fbc07ad1acf689fb3ae8b01050"
+    }
+  ],
+  "scope": "Catalog valid: 137 categories, 10387 methods/files. Discovery only, zero tests."
+}
