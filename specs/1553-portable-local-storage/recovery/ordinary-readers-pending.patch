@@ -1,8 +1,21 @@
 diff --git a/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs b/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs
-index a942b4d8..f4474207 100644
+index a942b4d8..98531f82 100644
 --- a/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs
 +++ b/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs
-@@ -2591,7 +2591,7 @@ public sealed class FileSystemManagerTests : IDisposable
+@@ -36,8 +36,10 @@ public sealed class FileSystemManagerTests : IDisposable
+         await Task.Delay(100);
+         await lockStream.DisposeAsync();
+ 
+-        var content = await readTask;
+-
++        string? content = null;
++        var failure = await Record.ExceptionAsync(async () => content = await readTask);
++        Assert.True(failure == null,
++            $"The transient read failed with HResult 0x{failure?.HResult:X8}: {failure}");
+         Assert.Equal("stable content", content);
+     }
+ 
+@@ -2591,7 +2593,7 @@ public sealed class FileSystemManagerTests : IDisposable
      }
  
      [Fact]
@@ -11,7 +24,7 @@ index a942b4d8..f4474207 100644
      {
          if (!OperatingSystem.IsWindows())
              return;
-@@ -2603,8 +2603,9 @@ public sealed class FileSystemManagerTests : IDisposable
+@@ -2603,8 +2605,9 @@ public sealed class FileSystemManagerTests : IDisposable
          await File.WriteAllBytesAsync(externalPath, externalBytes);
          CreateHardLink(canonicalPath, externalPath);
  
@@ -344,7 +357,7 @@ index 8371b0d3..83bfbd22 100644
  
          DeleteEmptyDirectories(fs, writeLease);
 diff --git a/tests/categories.json b/tests/categories.json
-index dd51f5e5..dbfe038b 100644
+index dd51f5e5..cf5fd01d 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
 @@ -546,14 +546,6 @@
@@ -385,7 +398,7 @@ index dd51f5e5..dbfe038b 100644
              "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_MissingBeforeImageFailsClosed",
              "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_RejectsBackupOutsideCanonicalSession",
              "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_WaitsForCanonicalWriteLease",
-@@ -8313,6 +8292,124 @@
+@@ -8313,6 +8292,130 @@
            ]
          }
        ]
@@ -407,6 +420,12 @@ index dd51f5e5..dbfe038b 100644
 +      "timeoutMinutes": 4,
 +      "expectedSeconds": null,
 +      "selectors": [
++        {
++          "project": "integration",
++          "tests": [
++            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable"
++          ]
++        },
 +        {
 +          "project": "unit",
 +          "tests": [
@@ -440,7 +459,6 @@ index dd51f5e5..dbfe038b 100644
 +        {
 +          "project": "integration",
 +          "tests": [
-+            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable",
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_DirectoryAtOptionalFileBoundaryFailsClosed",
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_RegularFileAtIntermediateParentFailsClosed",
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileSync_DirectoryAtOptionalFileBoundaryFailsClosed",
@@ -492,7 +510,8 @@ index dd51f5e5..dbfe038b 100644
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeSavePublicationWaitsForLeaseBeforeReportingAbsence",
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeDirectoryPublicationWaitsForLeaseBeforeClassifyingDestination",
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_RejectsHardLinkedSaveArchive",
-+            "BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_CompletionRejectsLinkAddedAfterConsumption"
++            "BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_CompletionRejectsLinkAddedAfterConsumption",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable"
 +          ]
 +        },
 +        {

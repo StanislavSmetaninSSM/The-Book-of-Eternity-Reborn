@@ -1,8 +1,8 @@
 {
-  "baseCommit": "7695f47816cfdb62a1f307cfb6cd6bb35f2849c6",
+  "baseCommit": "642f58285f8927cdbac8dbd8a341654e1927a43c",
   "patch": "ordinary-readers-pending.patch",
-  "patchSha256": "f6134b0df9ab1a5e5271a2b1fda440002e41c2388a1524d4b5d2258619c6419d",
-  "patchBytes": 29356,
+  "patchSha256": "06fa5100c9d817b1566fabfc51242ca05f0649d9ff92a2d951b06d020b8d07b8",
+  "patchBytes": 30089,
   "apply": "git apply --check specs/1553-portable-local-storage/recovery/ordinary-readers-pending.patch && git apply specs/1553-portable-local-storage/recovery/ordinary-readers-pending.patch",
   "files": [
     {
@@ -18,12 +18,12 @@
     {
       "path": "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs",
       "beforeBlob": "a942b4d8a99689f1e8447b8c08fb053536e3ac4f",
-      "afterBlob": "f44742070f7b4b174d32d80ed1bdd2c3354e9c95"
+      "afterBlob": "98531f82191b2e43368e8e270303178010284b4e"
     },
     {
       "path": "tests/categories.json",
       "beforeBlob": "dd51f5e50a73baeed77ac23c29895b7f5a0cb7a1",
-      "afterBlob": "dbfe038bca16726f42bc74fdb9d13cbf095aa079"
+      "afterBlob": "cf5fd01dbf31b48f7fbd74bdfc47808546681157"
     }
   ]
 }

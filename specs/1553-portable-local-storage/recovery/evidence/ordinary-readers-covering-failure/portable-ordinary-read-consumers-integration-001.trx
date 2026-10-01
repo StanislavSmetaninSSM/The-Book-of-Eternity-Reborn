@@ -1,0 +1,118 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="68fe1847-6c82-4fd4-a013-f81371818f2f" name="ordinary-readers-covering-failure" runUser="$USER">
+  <ns0:Times creation="2026-10-01T09:14:46.0174688-04:00" queuing="2026-10-01T09:14:46.0174689-04:00" start="2026-10-01T09:14:41.5749404-04:00" finish="2026-10-01T09:14:46.0268541-04:00" />
+  <ns0:TestSettings name="default" id="4dbd4b69-d1da-4885-a5ac-145d7c1aa812">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="c61d59d3-720e-47e3-a552-bd1e01907128" testId="b9f906ba-994c-b5c7-5026-a0995ad18bd3" testName="BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileSync_RegularFileAtIntermediateParentFailsClosed" computerName="$HOST" duration="00:00:00.0568971" startTime="2026-10-01T09:14:44.7069261-04:00" endTime="2026-10-01T09:14:44.7069468-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c61d59d3-720e-47e3-a552-bd1e01907128" />
+    <ns0:UnitTestResult executionId="fd9dd1e3-b104-4695-98c3-7691fc1d93a0" testId="fe4ff733-9163-affe-db4b-1f43af385e7f" testName="BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_DirectoryAtFileAuthorityFailsClosed" computerName="$HOST" duration="00:00:00.0047527" startTime="2026-10-01T09:14:44.7645950-04:00" endTime="2026-10-01T09:14:44.7645951-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fd9dd1e3-b104-4695-98c3-7691fc1d93a0" />
+    <ns0:UnitTestResult executionId="4ae14024-22ef-49e0-8ee6-375a5d11ceac" testId="3b3ad619-0653-3ce7-40dd-5625735d2621" testName="BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileSync_DirectoryAtOptionalFileBoundaryFailsClosed" computerName="$HOST" duration="00:00:00.0053876" startTime="2026-10-01T09:14:44.7396323-04:00" endTime="2026-10-01T09:14:44.7396324-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4ae14024-22ef-49e0-8ee6-375a5d11ceac" />
+    <ns0:UnitTestResult executionId="83c5eb88-5b21-4a68-9d03-658840784ea4" testId="c3208d87-f7c6-27da-f543-b48256b20a93" testName="BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_DirectoryAtOptionalFileBoundaryFailsClosed" computerName="$HOST" duration="00:00:00.0106885" startTime="2026-10-01T09:14:44.7172758-04:00" endTime="2026-10-01T09:14:44.7172761-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="83c5eb88-5b21-4a68-9d03-658840784ea4" />
+    <ns0:UnitTestResult executionId="8305fe9f-f09c-44ac-9ae0-cfa98022e076" testId="fb5c9093-8d9f-774f-a264-63ef6922cbd9" testName="BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_AbsentTargetWithoutPublication_DoesNotAcquireCanonicalWriteLease" computerName="$HOST" duration="00:00:00.0151518" startTime="2026-10-01T09:14:44.7550413-04:00" endTime="2026-10-01T09:14:44.7550414-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8305fe9f-f09c-44ac-9ae0-cfa98022e076" />
+    <ns0:UnitTestResult executionId="130693e6-adb8-467c-b86a-963baf47ce94" testId="2af6e70c-fe4a-7b83-244a-f8d682bf0231" testName="BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable" computerName="$HOST" duration="00:00:00.1162041" startTime="2026-10-01T09:14:45.9036800-04:00" endTime="2026-10-01T09:14:45.9036801-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="130693e6-adb8-467c-b86a-963baf47ce94">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.IO.IOException : The process cannot access the file '$ISOLATED_RUN/temp/boe-filesystem-manager-9eb1ce326e774739bab3fda839d14221/game_session/input/turn_request.json' because it is being used by another process.</ns0:Message>
+          <ns0:StackTrace>   at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64&amp; fileLength, UnixFileMode&amp; filePermissions)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)
+   at BookOfEternityClient.Core.FileSystemManager.OpenValidatedOrdinaryFile(TrustedLocalFileScope scope, String expectedPath, Boolean asynchronous) in $REPO/BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs:line 123
+   at BookOfEternityClient.Core.FileSystemManager.ReadOrdinaryFileSnapshotCoreAsync(String relativePath, CancellationToken cancellationToken, CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs:line 56
+   at BookOfEternityClient.Core.FileSystemManager.ReadOrdinaryFileSnapshotCoreAsync(String relativePath, CancellationToken cancellationToken, CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs:line 70
+   at BookOfEternityClient.Core.FileSystemManager.ReadOrdinaryFileCoreAsync(String relativePath, CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs:line 20
+   at BookOfEternityClient.Core.FileSystemManager.ReadFileAsync(String relativePath) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 1200
+   at BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable() in $REPO/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs:line 39
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="fb98ac96-ba6c-4960-9876-fd8741b37e33" testId="c65aa22c-e96f-f2c5-1733-4a175de9df99" testName="BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_RegularFileAtIntermediateParentFailsClosed" computerName="$HOST" duration="00:00:00.0108863" startTime="2026-10-01T09:14:44.7324820-04:00" endTime="2026-10-01T09:14:44.7324822-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fb98ac96-ba6c-4960-9876-fd8741b37e33" />
+    <ns0:UnitTestResult executionId="10c2ff3e-d8ad-4b49-9781-0017648e559c" testId="44a15d82-5d7b-c2d0-3cca-33cae5ea5e1f" testName="BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_WriterRegistersInsideFollowUpProbeGap_WaitsForPublication" computerName="$HOST" duration="00:00:00.9964380" startTime="2026-10-01T09:14:45.7618031-04:00" endTime="2026-10-01T09:14:45.7618032-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="10c2ff3e-d8ad-4b49-9781-0017648e559c" />
+    <ns0:UnitTestResult executionId="242eeb51-0f77-43b1-ab79-041af6b08c29" testId="9c4379f3-1d03-0ffd-befc-4a958b2bc330" testName="BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RegularFileAtIntermediateParentFailsClosed" computerName="$HOST" duration="00:00:00.0043710" startTime="2026-10-01T09:14:44.7596256-04:00" endTime="2026-10-01T09:14:44.7596257-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="242eeb51-0f77-43b1-ab79-041af6b08c29" />
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_DirectoryAtFileAuthorityFailsClosed" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="fe4ff733-9163-affe-db4b-1f43af385e7f">
+      <ns0:Execution id="fd9dd1e3-b104-4695-98c3-7691fc1d93a0" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="FileExists_DirectoryAtFileAuthorityFailsClosed" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_RegularFileAtIntermediateParentFailsClosed" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c65aa22c-e96f-f2c5-1733-4a175de9df99">
+      <ns0:Execution id="fb98ac96-ba6c-4960-9876-fd8741b37e33" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="ReadFileAsync_RegularFileAtIntermediateParentFailsClosed" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileSync_RegularFileAtIntermediateParentFailsClosed" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b9f906ba-994c-b5c7-5026-a0995ad18bd3">
+      <ns0:Execution id="c61d59d3-720e-47e3-a552-bd1e01907128" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="ReadFileSync_RegularFileAtIntermediateParentFailsClosed" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_WriterRegistersInsideFollowUpProbeGap_WaitsForPublication" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="44a15d82-5d7b-c2d0-3cca-33cae5ea5e1f">
+      <ns0:Execution id="10c2ff3e-d8ad-4b49-9781-0017648e559c" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="FileExists_WriterRegistersInsideFollowUpProbeGap_WaitsForPublication" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_DirectoryAtOptionalFileBoundaryFailsClosed" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c3208d87-f7c6-27da-f543-b48256b20a93">
+      <ns0:Execution id="83c5eb88-5b21-4a68-9d03-658840784ea4" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="ReadFileAsync_DirectoryAtOptionalFileBoundaryFailsClosed" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileSync_DirectoryAtOptionalFileBoundaryFailsClosed" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="3b3ad619-0653-3ce7-40dd-5625735d2621">
+      <ns0:Execution id="4ae14024-22ef-49e0-8ee6-375a5d11ceac" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="ReadFileSync_DirectoryAtOptionalFileBoundaryFailsClosed" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_AbsentTargetWithoutPublication_DoesNotAcquireCanonicalWriteLease" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="fb5c9093-8d9f-774f-a264-63ef6922cbd9">
+      <ns0:Execution id="8305fe9f-f09c-44ac-9ae0-cfa98022e076" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="FileExists_AbsentTargetWithoutPublication_DoesNotAcquireCanonicalWriteLease" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RegularFileAtIntermediateParentFailsClosed" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="9c4379f3-1d03-0ffd-befc-4a958b2bc330">
+      <ns0:Execution id="242eeb51-0f77-43b1-ab79-041af6b08c29" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="FileExists_RegularFileAtIntermediateParentFailsClosed" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="2af6e70c-fe4a-7b83-244a-f8d682bf0231">
+      <ns0:Execution id="130693e6-adb8-467c-b86a-963baf47ce94" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="b9f906ba-994c-b5c7-5026-a0995ad18bd3" executionId="c61d59d3-720e-47e3-a552-bd1e01907128" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="fe4ff733-9163-affe-db4b-1f43af385e7f" executionId="fd9dd1e3-b104-4695-98c3-7691fc1d93a0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="3b3ad619-0653-3ce7-40dd-5625735d2621" executionId="4ae14024-22ef-49e0-8ee6-375a5d11ceac" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="c3208d87-f7c6-27da-f543-b48256b20a93" executionId="83c5eb88-5b21-4a68-9d03-658840784ea4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="fb5c9093-8d9f-774f-a264-63ef6922cbd9" executionId="8305fe9f-f09c-44ac-9ae0-cfa98022e076" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="2af6e70c-fe4a-7b83-244a-f8d682bf0231" executionId="130693e6-adb8-467c-b86a-963baf47ce94" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="c65aa22c-e96f-f2c5-1733-4a175de9df99" executionId="fb98ac96-ba6c-4960-9876-fd8741b37e33" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="44a15d82-5d7b-c2d0-3cca-33cae5ea5e1f" executionId="10c2ff3e-d8ad-4b49-9781-0017648e559c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="9c4379f3-1d03-0ffd-befc-4a958b2bc330" executionId="242eeb51-0f77-43b1-ab79-041af6b08c29" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Failed">
+    <ns0:Counters total="9" executed="9" passed="8" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.51]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.29]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.32]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:03.66]       System.IO.IOException : The process cannot access the file '$ISOLATED_RUN/temp/boe-filesystem-manager-9eb1ce326e774739bab3fda839d14221/game_session/input/turn_request.json' because it is being used by another process.
+[xUnit.net 00:00:03.66]       Stack Trace:
+[xUnit.net 00:00:03.66]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64&amp; fileLength, UnixFileMode&amp; filePermissions)
+[xUnit.net 00:00:03.66]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:03.66]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:03.66]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:03.66]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)
+[xUnit.net 00:00:03.66]         $REPO/BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs(123,0): at BookOfEternityClient.Core.FileSystemManager.OpenValidatedOrdinaryFile(TrustedLocalFileScope scope, String expectedPath, Boolean asynchronous)
+[xUnit.net 00:00:03.66]         $REPO/BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs(56,0): at BookOfEternityClient.Core.FileSystemManager.ReadOrdinaryFileSnapshotCoreAsync(String relativePath, CancellationToken cancellationToken, CanonicalWriteLease lease)
+[xUnit.net 00:00:03.66]         $REPO/BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs(70,0): at BookOfEternityClient.Core.FileSystemManager.ReadOrdinaryFileSnapshotCoreAsync(String relativePath, CancellationToken cancellationToken, CanonicalWriteLease lease)
+[xUnit.net 00:00:03.66]         $REPO/BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs(20,0): at BookOfEternityClient.Core.FileSystemManager.ReadOrdinaryFileCoreAsync(String relativePath, CanonicalWriteLease lease)
+[xUnit.net 00:00:03.66]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(1200,0): at BookOfEternityClient.Core.FileSystemManager.ReadFileAsync(String relativePath)
+[xUnit.net 00:00:03.66]         $REPO/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs(39,0): at BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable()
+[xUnit.net 00:00:03.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.67]   Finished:    BookOfEternityClient.IntegrationTests
+</ns0:StdOut>
+    </ns0:Output>
+    <ns0:RunInfos>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T09:14:45.9028336-04:00">
+        <ns0:Text>[xUnit.net 00:00:03.66]     BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+    </ns0:RunInfos>
+  </ns0:ResultSummary>
+</ns0:TestRun>
