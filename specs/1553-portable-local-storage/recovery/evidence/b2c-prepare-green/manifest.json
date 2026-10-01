@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "c69e6237a17e87a9b46b3d874bce8b35a265b5db",
+  "catalogBlobAfterPatch": "c94ec11efff309e6f4f43821584b516906695e2d",
+  "kind": "newly executed b2c-prepare-green; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained. Isolated mutable run-root paths replaced with $RUN_ROOT.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "6bb42a6fc56fbd7135efd650d6da051b0337d99e69facabf4d79c4fa3235a14e",
+      "sanitizedSha256": "6bb42a6fc56fbd7135efd650d6da051b0337d99e69facabf4d79c4fa3235a14e"
+    },
+    {
+      "path": "portable-console-settings-unit-001.trx",
+      "originalSha256": "054e880cf448150e4d61d9fabe54d4d94c03a531660c6510bd988d098931e849",
+      "sanitizedSha256": "9caee2b23705c8808f40e902826d6210bfad9153198ded21f667f1c481b8334f"
+    }
+  ]
+}
