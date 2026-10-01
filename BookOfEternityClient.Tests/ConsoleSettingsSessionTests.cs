@@ -94,7 +94,7 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
             if (injected || phase != wanted) return;
             injected = true;
             if (cut == "uncertain") File.WriteAllBytes(_files.ResolvePath(Projection), [99]);
-            throw new IOException("Injected console settings interruption.");
+            throw new InvalidOperationException("Injected console settings interruption.");
         };
         var result = await session.SaveAsync();
         Assert.True(injected); Assert.Equal("en", session.Draft.Language);

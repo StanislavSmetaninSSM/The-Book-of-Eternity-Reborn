@@ -415,13 +415,14 @@ public sealed partial class BrowserLocalWriteCoordinator
 
     private static LocalUiSessionLockOwner BuildOwner(BrowserLocalWriteRequest request)
     {
+        var kind = string.IsNullOrWhiteSpace(request.OwnerKind) ? "browser" : request.OwnerKind.Trim();
         var ownerId = string.IsNullOrWhiteSpace(request.OwnerId)
-            ? $"browser:{Environment.MachineName}:{Environment.ProcessId}"
+            ? $"{kind}:{Environment.MachineName}:{Environment.ProcessId}"
             : request.OwnerId.Trim();
         var label = string.IsNullOrWhiteSpace(request.OwnerLabel)
             ? $"Local Browser UI PID {Environment.ProcessId}"
             : request.OwnerLabel.Trim();
-        return new LocalUiSessionLockOwner(ownerId, "browser", label, LockLease);
+        return new LocalUiSessionLockOwner(ownerId, kind, label, LockLease);
     }
 
 }
@@ -430,7 +431,8 @@ public sealed record BrowserLocalWriteRequest(
     string? OwnerId,
     string? OwnerLabel,
     string OperationLabel,
-    LocalUiSessionLockLease? ExistingLease = null);
+    LocalUiSessionLockLease? ExistingLease = null,
+    string OwnerKind = "browser");
 
 public sealed record BrowserLocalWriteResult(
     bool Success,

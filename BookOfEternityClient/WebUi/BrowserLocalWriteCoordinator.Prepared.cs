@@ -104,16 +104,17 @@ public sealed partial class BrowserLocalWriteCoordinator
     private async Task<LocalUiSessionLockResult> AcquireLocalWriteGuardAsync(
         FileSystemManager.CanonicalWriteLease writeLease, BrowserLocalWriteRequest request)
     {
+        var writeLabel = request.OwnerKind == "console" ? "Сохранение настроек" : "Browser-write";
         BrowserPendingTurnStatus pending;
         try { pending = BrowserPendingTurnInspector.Build(_fs, writeLease); }
         catch (InvalidDataException ex)
         {
             return LocalUiSessionLockResult.BlockedBy(null,
-                $"Browser-write заблокирован: повреждена служебная разметка активного хода ({ex.Message}).");
+                $"{writeLabel} заблокировано: повреждена служебная разметка активного хода ({ex.Message}).");
         }
         if (pending.HasActiveGmTurn)
             return LocalUiSessionLockResult.BlockedBy(null,
-                "Browser-write заблокирован: активный GM-turn или rollback/snapshot artifact должен быть завершён до локальной записи.");
+                $"{writeLabel} заблокировано: активный GM-turn или rollback/snapshot artifact должен быть завершён до локальной записи.");
         return request.ExistingLease == null
             ? await _lockService.AcquireOrRefreshAsync(writeLease, BuildOwner(request), request.OperationLabel)
             : await _lockService.RefreshAsync(writeLease, request.ExistingLease, request.OperationLabel);

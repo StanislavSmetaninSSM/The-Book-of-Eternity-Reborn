@@ -89,7 +89,7 @@ public sealed partial class AudioService
 
     public async Task ApplySettingsAsync()
     {
-        if (!_settings.MusicEnabled || _settings.MusicVolume <= 0)
+        if (!CurrentSettings.MusicEnabled || CurrentSettings.MusicVolume <= 0)
         {
             await StopMusicAsync();
             return;
@@ -98,13 +98,13 @@ public sealed partial class AudioService
         lock (_sync)
         {
             if (_musicReader != null)
-                _musicReader.Volume = NormalizeVolume(_settings.MusicVolume);
+                _musicReader.Volume = NormalizeVolume(CurrentSettings.MusicVolume);
         }
     }
 
     public void PlayCue(AudioCue cue)
     {
-        if (!_settings.SoundEnabled || _settings.SoundVolume <= 0)
+        if (!CurrentSettings.SoundEnabled || CurrentSettings.SoundVolume <= 0)
             return;
         if (!CanPlayCueNow(cue))
             return;
@@ -119,7 +119,7 @@ public sealed partial class AudioService
 
                 using var reader = new AudioFileReader(path)
                 {
-                    Volume = NormalizeVolume(_settings.SoundVolume)
+                    Volume = NormalizeVolume(CurrentSettings.SoundVolume)
                 };
                 using var output = new WaveOutEvent();
                 var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -162,7 +162,7 @@ public sealed partial class AudioService
 
     private async Task SetPlaylistAsync(MusicPlaylist playlist)
     {
-        if (!_settings.MusicEnabled || _settings.MusicVolume <= 0)
+        if (!CurrentSettings.MusicEnabled || CurrentSettings.MusicVolume <= 0)
         {
             await StopMusicAsync();
             return;
@@ -227,7 +227,7 @@ public sealed partial class AudioService
     {
         var reader = new AudioFileReader(trackPath)
         {
-            Volume = NormalizeVolume(_settings.MusicVolume)
+            Volume = NormalizeVolume(CurrentSettings.MusicVolume)
         };
         var output = new WaveOutEvent();
         var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);

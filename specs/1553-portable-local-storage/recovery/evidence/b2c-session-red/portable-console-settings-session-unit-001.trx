@@ -1,0 +1,227 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="df49f9e5-1067-49ef-a4f8-378104e58f1b" name="b2c-session-red" runUser="$USER">
+  <ns0:Times creation="2026-10-01T00:03:59.5745192-04:00" queuing="2026-10-01T00:03:59.5745192-04:00" start="2026-10-01T00:03:57.6685120-04:00" finish="2026-10-01T00:03:59.6059367-04:00" />
+  <ns0:TestSettings name="default" id="7059020f-935e-4c9c-b0a3-f463bcfc762e">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="997b842d-79a7-4dd2-ac2d-e9b0fcba2a6b" testId="14c70289-d99c-25ac-9993-851f2943e8c1" testName="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed" computerName="$HOST" duration="00:00:00.0026086" startTime="2026-10-01T00:03:59.5353491-04:00" endTime="2026-10-01T00:03:59.5353493-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="997b842d-79a7-4dd2-ac2d-e9b0fcba2a6b">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Services.AudioService.BeginSettingsPreview(GameSettings draft) in $REPO/BookOfEternityClient/Services/AudioService.SettingsPreview.cs:line 8
+   at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed() in $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs:line 145
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="d9720fc2-2a37-441a-8ff6-5c0c6524d9f2" testId="3d22374c-eb49-2436-6ddc-77fc22ed41ad" testName="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime(cut: &quot;uncertain&quot;)" computerName="$HOST" duration="00:00:00.0058559" startTime="2026-10-01T00:03:59.4888108-04:00" endTime="2026-10-01T00:03:59.4888108-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d9720fc2-2a37-441a-8ff6-5c0c6524d9f2">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.ConsoleSettingsSession.OpenAsync(FileSystemManager files, StateManager state, SystemModService mods) in $REPO/BookOfEternityClient/Core/ConsoleSettingsSession.cs:line 15
+   at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.Open() in $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs:line 46
+   at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime(String cut) in $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs:line 89
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="2d1f8dd7-a44c-4362-bbf8-4059be6437e2" testId="d1b229bc-587a-a663-7c34-d53b9de0fa63" testName="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.DraftIsDetachedAndDoesNotKeepTheCanonicalLeaseAcrossMenuInput" computerName="$HOST" duration="00:00:00.0059525" startTime="2026-10-01T00:03:59.5357577-04:00" endTime="2026-10-01T00:03:59.5357577-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2d1f8dd7-a44c-4362-bbf8-4059be6437e2">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.ConsoleSettingsSession.OpenAsync(FileSystemManager files, StateManager state, SystemModService mods) in $REPO/BookOfEternityClient/Core/ConsoleSettingsSession.cs:line 15
+   at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.Open() in $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs:line 46
+   at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.DraftIsDetachedAndDoesNotKeepTheCanonicalLeaseAcrossMenuInput() in $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs:line 52
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="30a90558-1523-4386-bb7a-e85f02752ebd" testId="d8fe0f48-6898-4f0d-c382-ba8c2ea93961" testName="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.RuntimeOrClosingFailureCannotRelabelCommittedFiles(closing: False)" computerName="$HOST" duration="00:00:00.1003467" startTime="2026-10-01T00:03:59.4664508-04:00" endTime="2026-10-01T00:03:59.4664656-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="30a90558-1523-4386-bb7a-e85f02752ebd">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.ConsoleSettingsSession.OpenAsync(FileSystemManager files, StateManager state, SystemModService mods) in $REPO/BookOfEternityClient/Core/ConsoleSettingsSession.cs:line 15
+   at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.Open() in $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs:line 46
+   at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.RuntimeOrClosingFailureCannotRelabelCommittedFiles(Boolean closing) in $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs:line 128
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="d4217314-a03b-4abe-9009-ff658b68e515" testId="d44fb6a9-2b2f-540e-673e-4871849b71bb" testName="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime(cut: &quot;committed-cleanup&quot;)" computerName="$HOST" duration="00:00:00.0061862" startTime="2026-10-01T00:03:59.4821635-04:00" endTime="2026-10-01T00:03:59.4821638-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d4217314-a03b-4abe-9009-ff658b68e515">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.ConsoleSettingsSession.OpenAsync(FileSystemManager files, StateManager state, SystemModService mods) in $REPO/BookOfEternityClient/Core/ConsoleSettingsSession.cs:line 15
+   at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.Open() in $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs:line 46
+   at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime(String cut) in $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs:line 89
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="5dc16f4a-2170-4849-b883-29202df0b7de" testId="d6f390ed-3773-3b66-704e-f28b924f2002" testName="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime(cut: &quot;rollback&quot;)" computerName="$HOST" duration="00:00:00.0072730" startTime="2026-10-01T00:03:59.4757893-04:00" endTime="2026-10-01T00:03:59.4757896-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5dc16f4a-2170-4849-b883-29202df0b7de">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.ConsoleSettingsSession.OpenAsync(FileSystemManager files, StateManager state, SystemModService mods) in $REPO/BookOfEternityClient/Core/ConsoleSettingsSession.cs:line 15
+   at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.Open() in $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs:line 46
+   at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime(String cut) in $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs:line 89
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="71ac7c0a-b69d-4b2b-95d8-63c9fdda29de" testId="2ab5f3a4-9aa0-5ca2-75fd-dabe3a38ab86" testName="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.RuntimeOrClosingFailureCannotRelabelCommittedFiles(closing: True)" computerName="$HOST" duration="00:00:00.0074343" startTime="2026-10-01T00:03:59.4714880-04:00" endTime="2026-10-01T00:03:59.4714882-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="71ac7c0a-b69d-4b2b-95d8-63c9fdda29de">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.ConsoleSettingsSession.OpenAsync(FileSystemManager files, StateManager state, SystemModService mods) in $REPO/BookOfEternityClient/Core/ConsoleSettingsSession.cs:line 15
+   at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.Open() in $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs:line 46
+   at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.RuntimeOrClosingFailureCannotRelabelCommittedFiles(Boolean closing) in $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs:line 128
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="d371ad46-c4e3-496b-a33f-12e2ab247375" testId="2998bc8f-0d49-7844-25de-277ae41c2cd7" testName="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.CommitUsesConsoleOwnerAndKeepsLiveSettingsReferenceThenAdvancesBaseline" computerName="$HOST" duration="00:00:00.0219483" startTime="2026-10-01T00:03:59.5356239-04:00" endTime="2026-10-01T00:03:59.5356239-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d371ad46-c4e3-496b-a33f-12e2ab247375">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.ConsoleSettingsSession.OpenAsync(FileSystemManager files, StateManager state, SystemModService mods) in $REPO/BookOfEternityClient/Core/ConsoleSettingsSession.cs:line 15
+   at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.Open() in $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs:line 46
+   at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.CommitUsesConsoleOwnerAndKeepsLiveSettingsReferenceThenAdvancesBaseline() in $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs:line 63
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.DraftIsDetachedAndDoesNotKeepTheCanonicalLeaseAcrossMenuInput" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d1b229bc-587a-a663-7c34-d53b9de0fa63">
+      <ns0:Execution id="2d1f8dd7-a44c-4362-bbf8-4059be6437e2" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleSettingsSessionTests" name="DraftIsDetachedAndDoesNotKeepTheCanonicalLeaseAcrossMenuInput" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime(cut: &quot;rollback&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d6f390ed-3773-3b66-704e-f28b924f2002">
+      <ns0:Execution id="5dc16f4a-2170-4849-b883-29202df0b7de" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleSettingsSessionTests" name="PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.CommitUsesConsoleOwnerAndKeepsLiveSettingsReferenceThenAdvancesBaseline" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2998bc8f-0d49-7844-25de-277ae41c2cd7">
+      <ns0:Execution id="d371ad46-c4e3-496b-a33f-12e2ab247375" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleSettingsSessionTests" name="CommitUsesConsoleOwnerAndKeepsLiveSettingsReferenceThenAdvancesBaseline" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime(cut: &quot;committed-cleanup&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d44fb6a9-2b2f-540e-673e-4871849b71bb">
+      <ns0:Execution id="d4217314-a03b-4abe-9009-ff658b68e515" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleSettingsSessionTests" name="PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime(cut: &quot;uncertain&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3d22374c-eb49-2436-6ddc-77fc22ed41ad">
+      <ns0:Execution id="d9720fc2-2a37-441a-8ff6-5c0c6524d9f2" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleSettingsSessionTests" name="PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="14c70289-d99c-25ac-9993-851f2943e8c1">
+      <ns0:Execution id="997b842d-79a7-4dd2-ac2d-e9b0fcba2a6b" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleSettingsSessionTests" name="AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.RuntimeOrClosingFailureCannotRelabelCommittedFiles(closing: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d8fe0f48-6898-4f0d-c382-ba8c2ea93961">
+      <ns0:Execution id="30a90558-1523-4386-bb7a-e85f02752ebd" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleSettingsSessionTests" name="RuntimeOrClosingFailureCannotRelabelCommittedFiles" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.RuntimeOrClosingFailureCannotRelabelCommittedFiles(closing: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2ab5f3a4-9aa0-5ca2-75fd-dabe3a38ab86">
+      <ns0:Execution id="71ac7c0a-b69d-4b2b-95d8-63c9fdda29de" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleSettingsSessionTests" name="RuntimeOrClosingFailureCannotRelabelCommittedFiles" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="14c70289-d99c-25ac-9993-851f2943e8c1" executionId="997b842d-79a7-4dd2-ac2d-e9b0fcba2a6b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="3d22374c-eb49-2436-6ddc-77fc22ed41ad" executionId="d9720fc2-2a37-441a-8ff6-5c0c6524d9f2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="d1b229bc-587a-a663-7c34-d53b9de0fa63" executionId="2d1f8dd7-a44c-4362-bbf8-4059be6437e2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="d8fe0f48-6898-4f0d-c382-ba8c2ea93961" executionId="30a90558-1523-4386-bb7a-e85f02752ebd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="d44fb6a9-2b2f-540e-673e-4871849b71bb" executionId="d4217314-a03b-4abe-9009-ff658b68e515" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="d6f390ed-3773-3b66-704e-f28b924f2002" executionId="5dc16f4a-2170-4849-b883-29202df0b7de" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="2ab5f3a4-9aa0-5ca2-75fd-dabe3a38ab86" executionId="71ac7c0a-b69d-4b2b-95d8-63c9fdda29de" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="2998bc8f-0d49-7844-25de-277ae41c2cd7" executionId="d371ad46-c4e3-496b-a33f-12e2ab247375" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Failed">
+    <ns0:Counters total="8" executed="8" passed="0" failed="8" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.25]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.25]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.26]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.41]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.41]       Stack Trace:
+[xUnit.net 00:00:01.41]         $REPO/BookOfEternityClient/Core/ConsoleSettingsSession.cs(15,0): at BookOfEternityClient.Core.ConsoleSettingsSession.OpenAsync(FileSystemManager files, StateManager state, SystemModService mods)
+[xUnit.net 00:00:01.41]         $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs(46,0): at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.Open()
+[xUnit.net 00:00:01.41]         $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs(128,0): at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.RuntimeOrClosingFailureCannotRelabelCommittedFiles(Boolean closing)
+[xUnit.net 00:00:01.41]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.42]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.42]       Stack Trace:
+[xUnit.net 00:00:01.42]         $REPO/BookOfEternityClient/Core/ConsoleSettingsSession.cs(15,0): at BookOfEternityClient.Core.ConsoleSettingsSession.OpenAsync(FileSystemManager files, StateManager state, SystemModService mods)
+[xUnit.net 00:00:01.42]         $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs(46,0): at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.Open()
+[xUnit.net 00:00:01.42]         $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs(128,0): at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.RuntimeOrClosingFailureCannotRelabelCommittedFiles(Boolean closing)
+[xUnit.net 00:00:01.42]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.42]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.42]       Stack Trace:
+[xUnit.net 00:00:01.42]         $REPO/BookOfEternityClient/Core/ConsoleSettingsSession.cs(15,0): at BookOfEternityClient.Core.ConsoleSettingsSession.OpenAsync(FileSystemManager files, StateManager state, SystemModService mods)
+[xUnit.net 00:00:01.42]         $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs(46,0): at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.Open()
+[xUnit.net 00:00:01.42]         $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs(89,0): at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime(String cut)
+[xUnit.net 00:00:01.42]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.43]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.43]       Stack Trace:
+[xUnit.net 00:00:01.43]         $REPO/BookOfEternityClient/Core/ConsoleSettingsSession.cs(15,0): at BookOfEternityClient.Core.ConsoleSettingsSession.OpenAsync(FileSystemManager files, StateManager state, SystemModService mods)
+[xUnit.net 00:00:01.43]         $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs(46,0): at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.Open()
+[xUnit.net 00:00:01.43]         $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs(89,0): at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime(String cut)
+[xUnit.net 00:00:01.43]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.44]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.44]       Stack Trace:
+[xUnit.net 00:00:01.44]         $REPO/BookOfEternityClient/Core/ConsoleSettingsSession.cs(15,0): at BookOfEternityClient.Core.ConsoleSettingsSession.OpenAsync(FileSystemManager files, StateManager state, SystemModService mods)
+[xUnit.net 00:00:01.44]         $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs(46,0): at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.Open()
+[xUnit.net 00:00:01.44]         $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs(89,0): at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime(String cut)
+[xUnit.net 00:00:01.44]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.48]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.48]       Stack Trace:
+[xUnit.net 00:00:01.48]         $REPO/BookOfEternityClient/Services/AudioService.SettingsPreview.cs(8,0): at BookOfEternityClient.Services.AudioService.BeginSettingsPreview(GameSettings draft)
+[xUnit.net 00:00:01.48]         $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs(145,0): at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed()
+[xUnit.net 00:00:01.48]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.48]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.48]       Stack Trace:
+[xUnit.net 00:00:01.48]         $REPO/BookOfEternityClient/Core/ConsoleSettingsSession.cs(15,0): at BookOfEternityClient.Core.ConsoleSettingsSession.OpenAsync(FileSystemManager files, StateManager state, SystemModService mods)
+[xUnit.net 00:00:01.48]         $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs(46,0): at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.Open()
+[xUnit.net 00:00:01.48]         $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs(63,0): at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.CommitUsesConsoleOwnerAndKeepsLiveSettingsReferenceThenAdvancesBaseline()
+[xUnit.net 00:00:01.48]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.48]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.48]       Stack Trace:
+[xUnit.net 00:00:01.48]         $REPO/BookOfEternityClient/Core/ConsoleSettingsSession.cs(15,0): at BookOfEternityClient.Core.ConsoleSettingsSession.OpenAsync(FileSystemManager files, StateManager state, SystemModService mods)
+[xUnit.net 00:00:01.48]         $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs(46,0): at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.Open()
+[xUnit.net 00:00:01.48]         $REPO/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs(52,0): at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.DraftIsDetachedAndDoesNotKeepTheCanonicalLeaseAcrossMenuInput()
+[xUnit.net 00:00:01.48]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.48]   Finished:    BookOfEternityClient.Tests
+</ns0:StdOut>
+    </ns0:Output>
+    <ns0:RunInfos>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T00:03:59.4638622-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.41]     BookOfEternityClient.Tests.ConsoleSettingsSessionTests.RuntimeOrClosingFailureCannotRelabelCommittedFiles(closing: False) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T00:03:59.4715622-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.42]     BookOfEternityClient.Tests.ConsoleSettingsSessionTests.RuntimeOrClosingFailureCannotRelabelCommittedFiles(closing: True) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T00:03:59.4759841-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.42]     BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime(cut: "rollback") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T00:03:59.4822857-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.43]     BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime(cut: "committed-cleanup") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T00:03:59.4888761-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.44]     BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime(cut: "uncertain") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T00:03:59.5820449-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.48]     BookOfEternityClient.Tests.ConsoleSettingsSessionTests.AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T00:03:59.5825660-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.48]     BookOfEternityClient.Tests.ConsoleSettingsSessionTests.CommitUsesConsoleOwnerAndKeepsLiveSettingsReferenceThenAdvancesBaseline [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T00:03:59.5825850-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.48]     BookOfEternityClient.Tests.ConsoleSettingsSessionTests.DraftIsDetachedAndDoesNotKeepTheCanonicalLeaseAcrossMenuInput [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+    </ns0:RunInfos>
+  </ns0:ResultSummary>
+</ns0:TestRun>

@@ -8,12 +8,96 @@ namespace BookOfEternityClient.Core;
 // runtime acceptance use the existing local-write coordinator and journal.
 internal sealed class ConsoleSettingsSession
 {
-    internal GameSettings Draft => throw new NotImplementedException();
-    internal bool RequiresReload => throw new NotImplementedException();
+    private readonly FileSystemManager _files;
+    private readonly StateManager _state;
+    private readonly LocalSettingsPreparation _preparation;
+    private readonly BrowserLocalWriteCoordinator _coordinator;
+    private readonly string _ownerId = $"console:{Environment.MachineName}:{Environment.ProcessId}:{Guid.NewGuid():N}";
+    private LocalSettingsBaseline _baseline;
 
-    internal static Task<ConsoleSettingsSession> OpenAsync(FileSystemManager files,
-        StateManager state, SystemModService mods) => throw new NotImplementedException();
+    private ConsoleSettingsSession(FileSystemManager files, StateManager state, SystemModService mods,
+        LocalSettingsBaseline baseline, GameSettings draft)
+    {
+        _files = files;
+        _state = state;
+        _preparation = new(files, state, mods);
+        _coordinator = new(files, new LocalUiSessionLockService(files));
+        _baseline = baseline;
+        Draft = draft;
+    }
 
-    internal Task<BrowserPreparedWriteResult> SaveAsync(Func<Task>? refreshRuntime = null)
-        => throw new NotImplementedException();
+    internal GameSettings Draft { get; }
+    internal bool RequiresReload { get; private set; }
+
+    internal static async Task<ConsoleSettingsSession> OpenAsync(FileSystemManager files,
+        StateManager state, SystemModService mods)
+    {
+        await BrowserAudioService.SettingsWriteGate.WaitAsync();
+        try
+        {
+            await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+            var generation = files.ReadExistingSessionGeneration(lease)
+                ?? throw new InvalidDataException("Сначала завершите начальную подготовку локального хранилища.");
+            var snapshot = await state.ReadLocalSettingsAsync(lease);
+            files.VerifyCurrentSessionOperation(lease);
+            return new(files, state, mods, new(generation, snapshot.Bytes), snapshot.Settings);
+        }
+        finally { BrowserAudioService.SettingsWriteGate.Release(); }
+    }
+
+    internal async Task<BrowserPreparedWriteResult> SaveAsync(Func<Task>? refreshRuntime = null)
+    {
+        await BrowserAudioService.SettingsWriteGate.WaitAsync();
+        try
+        {
+            if (RequiresReload)
+                return new(BrowserPreparedWriteDisposition.Blocked, true,
+                    "Перед следующей записью перечитайте подтверждённые настройки. Текущий черновик не сохранён повторно.");
+
+            BrowserPreparedWriteResult? established = null;
+            PreparedLocalSettings? prepared = null;
+            try
+            {
+                await SessionOperationContext.RunBoundAsync(_files, _baseline.Generation, async () =>
+                {
+                    established = await _coordinator.ExecutePreparedAsync(
+                        new(_ownerId, "Локальные настройки консоли", "Сохранение настроек консоли", OwnerKind: "console"),
+                        async lease =>
+                        {
+                            prepared = await _preparation.PrepareAsync(lease, _baseline, Draft);
+                            return new(prepared.Changes, async () =>
+                            {
+                                _state.Settings.ApplyLoadedValues(prepared.Settings);
+                                // A later menu edit must not share nested profile arrays
+                                // with accepted settings or with the prepared image.
+                                Draft.ApplyLoadedValues(_state.CaptureRuntimeSnapshot().Settings);
+                                if (refreshRuntime != null) await refreshRuntime();
+                            });
+                        });
+                });
+            }
+            catch
+            {
+                // The outer operation's closing fence can fail after the shared
+                // coordinator established a durable or uncertain publication.
+                established = established == null
+                    ? new(BrowserPreparedWriteDisposition.Blocked, true,
+                        "Сохранение заблокировано: игровая сессия или локальное хранилище изменились. Перечитайте настройки.")
+                    : established with
+                    {
+                        NeedsFollowUp = true,
+                        Message = established.Disposition == BrowserPreparedWriteDisposition.Committed
+                            ? "Настройки сохранены. Обновление консоли или служебная очистка требуют проверки; сохранённые файлы не отменены."
+                            : established.Message
+                    };
+            }
+
+            var result = established!;
+            if (result.Disposition == BrowserPreparedWriteDisposition.Committed && prepared != null)
+                _baseline = _baseline with { ConfigBytes = prepared.Changes[0].After! };
+            RequiresReload = result.NeedsFollowUp || result.Disposition == BrowserPreparedWriteDisposition.Uncertain;
+            return result;
+        }
+        finally { BrowserAudioService.SettingsWriteGate.Release(); }
+    }
 }
