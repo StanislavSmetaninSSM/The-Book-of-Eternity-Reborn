@@ -557,10 +557,10 @@ index 4a4415cc..1ef228e3 100644
 +
 +T031 implementation refinement: ordinary QTE acceptance/transport calls use the helper without callbacks; explicit AfterLegacyAcceptanceRuntimeWrittenAsync/AfterLegacyDeferredEffectMutationAsync preserve original recorder/recovery callbacks. AfterRuntimeWrittenAsync and final:* AfterDeferredEffectMutationAsync remain later domain hooks. Uncertainty bypasses domain compensation; the private Russian notice avoids unchanged-state/retry claims. This is the bounded helper/error boundary, not full accepted-turn or browser-v6 migration; current verified/unrun evidence lives in plan.md.
 diff --git a/tests/categories.json b/tests/categories.json
-index ad2fe43a..4bef4a4a 100644
+index ad2fe43a..b63e8a81 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -8417,6 +8417,330 @@
+@@ -8417,6 +8417,370 @@
            ]
          }
        ]
@@ -709,7 +709,7 @@ index ad2fe43a..4bef4a4a 100644
 +    },
 +    {
 +      "id": "portable-coordinated-cleanup",
-+      "responsibility": "Actual NPC owning/supplied-lease, Guardian, Shining and resident helper callers preserve malformed planning aborts and propagate new uncertain publication or retained-evidence admission; existing QTE acceptance exposes its ordinary callback route.",
++      "responsibility": "Actual NPC owning/supplied-lease, Guardian and Shining helper callers preserve malformed planning aborts and propagate new uncertain publication or retained-evidence admission; existing QTE acceptance exposes its ordinary callback route.",
 +      "excludes": "Whole trade/normalizer/domain categories and broader browser/save-load migration.",
 +      "changeHints": [
 +        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
@@ -835,7 +835,7 @@ index ad2fe43a..4bef4a4a 100644
 +    },
 +    {
 +      "id": "portable-coordinated-actual-consumers",
-+      "responsibility": "Exact existing helper consumers: training guard-only visibility/purchase conflict, item settlement, afterlife owner/quartet, blessing overlap, wound command quarantine, successful/stale-sealed QTE flow and generic private console notice.",
++      "responsibility": "Exact existing helper consumers: training guard-only visibility/purchase conflict, item settlement, afterlife owner/quartet, blessing overlap, successful/stale-sealed QTE flow and generic private console notice.",
 +      "excludes": "Whole domain categories, full normalizer/accepted-turn migration, original browser-v6/save-load/external profile migration and live UI/provider execution.",
 +      "changeHints": [
 +        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
@@ -857,7 +857,6 @@ index ad2fe43a..4bef4a4a 100644
 +            "BookOfEternityClient.Tests.NpcTradeServiceRequestFlowTests.BuyAsync_TemplateOnlyTradeOutput_SealsIndependentCanonicalItem",
 +            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.LocalAfterlifeOwnerResourceService_CommitsSpiritFocusAndLedgerAtomically",
 +            "BookOfEternityClient.Tests.ShiningBlessingEffectStateTests.MaterializeForBootstrapAsync_WritesCanonicalBlessingStateAndAppliesResources",
-+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim",
 +            "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.BoundedReceipt_TwoWavesSurviveRestartsAndPublishMechanicsOnlyAtFinalWave",
 +            "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.TerminalSelection_ByteDifferentSealedRootFailsBeforeAnyWrite",
 +            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationRepairLifecycleTests_Privacy_AgentConsoleOuterFailureUsesPlayerSafeProjection"
@@ -885,6 +884,47 @@ index ad2fe43a..4bef4a4a 100644
 +          "project": "unit",
 +          "tests": [
 +            "BookOfEternityClient.Tests.ProgressionScheduleServiceTests.ApplyAcceptedTurnOutcomeAsync_ValidChaosProgressionReport_AdvancesOrdinals"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-coordinated-windows",
++      "responsibility": "Exact native Windows qualification of coordinated helper path/case/link admission, whole-set uncertainty, real lease release/reacquisition, cold outside hard links, original browser recorder callbacks and the real wound consumer with its retained Windows preparation prerequisite. File-symlink fixture capability failures are explicit, never skips.",
++      "excludes": "Full domain/platform sweep, live browser/game/GM/save-load acceptance, directory/preparation migration and any elevation/security changes.",
++      "changeHints": [
++        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
++        "BookOfEternityClient/Core/FileSystemManager.cs",
++        "BookOfEternityClient/Services/QteSceneService.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 6,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperPublishesCompleteMemberSetUnderOneDecision",
++            "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperUnknownLaterMemberPreservesWholeUnresolvedSet",
++            "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DestinationCaseUsesTheActualPlatformPolicy",
++            "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ResolvedSeparatorAndWhitespaceAliasesPublishOneFinalDestination",
++            "BookOfEternityClient.Tests.PortableCoordinatedAuthorityTests.ActualAuthorityFactoryRetainsEveryPlatformDistinctInitialGuard",
++            "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.RealLeaseContextFailureStillClosesLockAndAllowsReacquisition",
++            "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure",
++            "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseKeepsCompletedDispositionOnContextFailure",
++            "BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperColdRecoveryPreservesTheOutsideHardLink",
++            "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.InvalidLaterTypeFailsBeforeAnyNewIntentOrMutation"
++          ]
++        },
++        {
++          "project": "integration",
++          "tests": [
++            "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ResolveOfferDecision_LateRuntimeFailureRollsBackOfferAndRuntime",
++            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim"
 +          ]
 +        }
 +      ]

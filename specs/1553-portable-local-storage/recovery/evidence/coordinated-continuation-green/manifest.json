@@ -1,0 +1,57 @@
+{
+  "sourceCommit": "4daa2d52a8f9f26897279e06f54482535fd8d3b4",
+  "sourceAppliedTree": "dd389afa09dbca94845fd1b734e0a2c6a8e8fb89",
+  "packetSha256": "828af193ce777f9c5cf658b060e64366b70c50e711e66c795dfc93b197c6895d",
+  "kind": "coordinated-continuation-green; exact completed selected-run evidence",
+  "sanitization": "Repository/toolchain/isolated environment paths and TRX run user/computer/deployment identifiers replaced; original and sanitized hashes retained.",
+  "command": "DOTNET_PROCESSOR_COUNT=1 DOTNET_CLI_TELEMETRY_OPTOUT=1 POWERSHELL_TELEMETRY_OPTOUT=1 TESTINGPLATFORM_TELEMETRY_OPTOUT=1 pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+  "environment": "Linux x64; SDK10.0.401, .NET8.0.31, PowerShell7.6.6; existing isolated homes/temp/cache; no app/provider execution",
+  "tests": {
+    "Total": 26,
+    "Executed": 26,
+    "Passed": 26,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 4,
+    "PlannedCases": 26,
+    "CompletedCases": 26,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "exitCode": 0,
+  "wallTime": "00:04:15.9422436",
+  "timedOut": false,
+  "ownedCleanup": true,
+  "runtimeCleanup": true,
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "0e3f0fcfb129bb1715765544f50a3b712f48318851d56ba842cbf5eb29327678",
+      "sanitizedSha256": "0e3f0fcfb129bb1715765544f50a3b712f48318851d56ba842cbf5eb29327678"
+    },
+    {
+      "path": "portable-coordinated-phase-consumers-integration-001.trx",
+      "originalSha256": "be540f47538988a8334a2f8a50274e36aeeab1a8d757985748e54279c002b516",
+      "sanitizedSha256": "8896c3c04d074d75fcf54a56035b60a050d04230af29736eaa40a2dfd6545d21"
+    },
+    {
+      "path": "portable-coordinated-phase-consumers-unit-002.trx",
+      "originalSha256": "ce281c0c9fa62e1988c8fa13855d8fe191b7065c490c38fcba7bd9f80191544a",
+      "sanitizedSha256": "f201d839088585d991d0e09e6091492839959a12a14c5ced572265bc95cafd17"
+    },
+    {
+      "path": "portable-coordinated-progression-unit-003.trx",
+      "originalSha256": "24f3f4ef21e6ef584172941a487a82679ee6edea4e97403aac5114d4c8bbbde0",
+      "sanitizedSha256": "ff9f42ad1686ab9d6c67f9ea3799dfd10267c167ebcf33802b2953c55d94c67b"
+    },
+    {
+      "path": "portable-coordinated-qte-outcome-integration-004.trx",
+      "originalSha256": "c7746efb41e2e77c49b7f166ed955307ed39dd7c181960664c157f8fade494f0",
+      "sanitizedSha256": "ed558b96a84451785b094b5a162896b600edcd6c4ae2c9f92ce4a8213ba93eb7"
+    }
+  ],
+  "scope": "Exact 26 previously unrun cases: 23 phase/domain-compensation controls, progression one, QTE uncertainty/Russian projection two. All bodies executed on Linux. Actual uncertain QTE cut retained journal/images/backups with zero later mutation attempts; later final:* IOException controls retained their gameplay compensation phase. Non-I/O MemberPublished fault correction avoids unchanged B1 transient retry. This does not rerun the prior eight passes or establish the Linux-blocked/native-pending wound preparation case.",
+  "productionSourceEquivalentTo": "5cc0bc984e31c0606097c2100aa9e8d0afc5f17b"
+}

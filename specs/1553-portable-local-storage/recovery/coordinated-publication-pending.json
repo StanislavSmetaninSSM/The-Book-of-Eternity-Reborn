@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "baseCommit": "5321448295b6eda3d4ecc96293a8dcdcf00a7f4b",
+  "baseCommit": "4daa2d52a8f9f26897279e06f54482535fd8d3b4",
   "patchFile": "coordinated-publication-pending.patch",
-  "patchBytes": 49034,
-  "patchSha256": "828af193ce777f9c5cf658b060e64366b70c50e711e66c795dfc93b197c6895d",
+  "patchBytes": 51685,
+  "patchSha256": "730c0dd18dbe2d2b189e827e74f099e860842ee60158be7cfef2f3dfcc2a6f98",
   "entries": [
     {
       "path": "BookOfEternityClient.IntegrationTests/QteDeferredEffectContinuationIntegrationTests.cs",
@@ -64,12 +64,12 @@
     {
       "path": "tests/categories.json",
       "beforeBlob": "ad2fe43ab192f5908e328d6bead37cb8f31af595",
-      "afterBlob": "4bef4a4acb1afdb2250209012cebe59995bd51eb",
+      "afterBlob": "b63e8a81f53172bdd26eae63570a6a894bee4560",
       "beforeSha256": "928087ad1e5e6df965427ab13db6db1381804d0d4ee8651b45211a9c5a7d9576",
-      "afterSha256": "78424dc4598a729daef6e48211eb5560c239fcfc15b50135c8f1377c2667bf55"
+      "afterSha256": "3907b1ca149b740ce1c3954777faaa8e8a74695b4b345c92723d2d379529a3a7"
     }
   ],
-  "appliedSourceTree": "dd389afa09dbca94845fd1b734e0a2c6a8e8fb89",
+  "appliedSourceTree": "cdf74a5d6d45f6135ee6c0c9c10264aab66ae75b",
   "comparisonExcludes": [
     "specs/1553-portable-local-storage/recovery/coordinated-publication-pending.patch",
     "specs/1553-portable-local-storage/recovery/coordinated-publication-pending.json"

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "portable-coordinated-windows",
+      "reason": "Frozen native-only qualification: 16 planned cases. Cloud performs discovery/planning only; parent coordinates HOME-PC normal delivery and actual execution. Do not repeat completed Linux cohorts. File.CreateSymbolicLink setup capability is unestablished and must fail/report honestly without elevation or silent pass.",
+      "contracts": [
+        "actual Windows case/separator and link policy",
+        "real lease cleanup and primary outcome",
+        "cold hard-link preservation",
+        "original browser accept/decline callbacks",
+        "real wound quarantine after native preparation"
+      ]
+    }
+  ]
+}
