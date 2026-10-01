@@ -1,5 +1,5 @@
 diff --git a/tests/categories.json b/tests/categories.json
-index e69c1668..a66e7792 100644
+index e69c1668..4d0f8d6c 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
 @@ -598,7 +598,6 @@
@@ -42,13 +42,13 @@ index e69c1668..a66e7792 100644
              "BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.AcquireOrRefreshAsync_NewLock_WritesOwnerAndHeartbeat",
              "BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.AcquireOrRefreshAsync_SameOwnerWithoutLease_DoesNotRefreshHeartbeat",
              "BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.RefreshAsync_ExactLeaseRefreshesHeartbeat",
-@@ -7789,6 +7780,48 @@
+@@ -7789,6 +7780,49 @@
          }
        ]
      },
 +    {
 +      "id": "portable-session-generation-consumers",
-+      "responsibility": "Exact existing generation schema/type and operation-fence consumers, plus explicitly legacy load-reader physical regressions retained only on that unmigrated Windows route.",
++      "responsibility": "Exact existing generation schema/type and operation-fence consumers, plus original load-reader boundary regressions. Windows-only physical cases remain restricted to the unmigrated load route.",
 +      "excludes": "Broad canonical storage, generation rotation/clear/save-load behavior, provider ownership and claims that Linux exercises Windows-gated assertions.",
 +      "changeHints": [
 +        "BookOfEternityClient/Core/FileSystemManager.cs",
@@ -83,7 +83,8 @@ index e69c1668..a66e7792 100644
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.RuntimeAtomicWrite_DirectoryDestinationFailsBeforeMutationHook",
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyLoadBegin_RejectsHardLinkedGenerationAuthorityFile",
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyLoadBegin_GenerationLinkAddedAfterInitialValidationFailsClosed",
-+            "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyLoadBegin_SwapBackReadCannotAuthorizeExternalGeneration"
++            "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyLoadBegin_SwapBackReadCannotAuthorizeExternalGeneration",
++            "BookOfEternityClient.Tests.PortableLegacyGenerationTests.CommitLoadTransaction_UsesOriginalGenerationReadBoundaryBeforeCommittingJournal"
 +          ]
 +        }
 +      ]

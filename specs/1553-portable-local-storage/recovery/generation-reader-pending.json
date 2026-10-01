@@ -1,6 +1,6 @@
 {
   "baseCommit": "6f2e95e356e977199717fef57863b4dcf288720f",
-  "status": "Untested reader implementation; observed RED is preserved; GREEN pending",
+  "status": "Common-reader interim 138-case covering result saved; added legacy commit-gate regression pending RED and correction",
   "preparedIndexTreeBeforeRecoveryBookkeeping": "0a318b5fe447fdabc3e7ba55064d5f60e0d02e91",
   "treeQualification": "Historical prepared index before these packet/recovery bookkeeping files; not the tree of the later checkpoint. Native normalization verifies the exact per-file blobs and the separately reported applied index tree.",
   "patches": [
@@ -26,13 +26,13 @@
     },
     {
       "path": "categories-pending.patch",
-      "bytes": 6880,
-      "sha256": "96e96f5a33c7a37335321509f4e5ab83e306be21b39cee50f258d8a071c59180",
+      "bytes": 7053,
+      "sha256": "112ab0e20509b2565d0c6b271955a9c14535af9aa2ff910b450705431bf352a0",
       "files": [
         {
           "path": "tests/categories.json",
           "beforeBlob": "e69c166820095b9b42140ab9ce78b3f848cd076d",
-          "afterBlob": "a66e7792c1e4208f728d87a39924d0ae4d2f55ea"
+          "afterBlob": "4d0f8d6ce7bf4a9c9a9795a998bee27e9accc3aa"
         }
       ],
       "applyArguments": []

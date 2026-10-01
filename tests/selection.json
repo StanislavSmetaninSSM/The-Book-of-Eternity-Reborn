@@ -2,36 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-session-generation",
-      "reason": "Cover the observed 24-case snapshot/FIFO/fence RED after implementation.",
-      "contracts": [
-        "generation snapshot bytes/type admission",
-        "nonrecursive existing reader wiring"
-      ]
-    },
-    {
       "category": "portable-session-generation-consumers",
-      "reason": "Exact existing schema/type and bound-operation consumers; three explicitly legacy physical-reader tests are Windows-gated and their assertions are not exercised by Linux.",
+      "reason": "Observe the actual legacy CommitLoadTransaction reader-boundary regression before restoring that private gate; prior 138-case common-reader covering evidence stays separate.",
       "contracts": [
-        "canonical generation schema",
-        "operation lifetime fencing",
-        "original load-reader separation"
-      ]
-    },
-    {
-      "category": "portable-client-bootstrap",
-      "reason": "Bootstrap, cold recovery and ordinary writes now reach the common generation snapshot.",
-      "contracts": [
-        "common client generation admission",
-        "cold bootstrap and writer recovery"
-      ]
-    },
-    {
-      "category": "portable-storage-publication",
-      "reason": "B1 generation validation and recovery call the newly wired ReadExistingSessionGeneration.",
-      "contracts": [
-        "generation-bound journal recovery",
-        "exact member preflight and generation image compatibility"
+        "original load-journal generation read gate",
+        "journal retained before legacy commit"
       ]
     }
   ]
