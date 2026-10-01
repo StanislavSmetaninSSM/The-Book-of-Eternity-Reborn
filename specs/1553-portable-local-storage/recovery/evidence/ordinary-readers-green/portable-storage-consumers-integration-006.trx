@@ -1,0 +1,75 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="a564ecab-e068-4030-9db2-20aea6095a47" name="ordinary-readers-green" runUser="$USER">
+  <ns0:Times creation="2026-10-01T09:34:31.8840139-04:00" queuing="2026-10-01T09:34:31.8840139-04:00" start="2026-10-01T09:34:26.9147612-04:00" finish="2026-10-01T09:34:31.8975499-04:00" />
+  <ns0:TestSettings name="default" id="b1b52002-850f-4e57-a7a7-87212a10f161">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="a79e0244-0b5f-406b-b2cb-2ea39935f6d3" testId="b2bba58d-b28a-ac63-6e0d-32af66410ae8" testName="BookOfEternityClient.Tests.FileSystemManagerTests.WriteFileAtomicAsync_RelativeTraversalFailsClosed" computerName="$HOST" duration="00:00:00.0121691" startTime="2026-10-01T09:34:30.6618420-04:00" endTime="2026-10-01T09:34:30.6618422-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a79e0244-0b5f-406b-b2cb-2ea39935f6d3" />
+    <ns0:UnitTestResult executionId="4458bb03-01c0-4e77-8fd4-e65bd72f31c5" testId="a1987854-e933-b6a7-0415-289614d31d25" testName="BookOfEternityClient.Tests.FileSystemManagerTests.DeleteFile_WhenTargetIsBrieflyLocked_RetriesUntilDeleteSucceeds" computerName="$HOST" duration="00:00:00.7519432" startTime="2026-10-01T09:34:31.6439552-04:00" endTime="2026-10-01T09:34:31.6439554-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4458bb03-01c0-4e77-8fd4-e65bd72f31c5" />
+    <ns0:UnitTestResult executionId="fcbf2012-1c39-4e7c-8262-50473567377d" testId="02f33b77-2259-2f9a-4dbe-0ca564e0a63e" testName="BookOfEternityClient.Tests.FileSystemManagerTests.WriteFileAtomicAsync_WhenTargetIsBrieflyLocked_RetriesUntilReplacementSucceeds" computerName="$HOST" duration="00:00:00.1386139" startTime="2026-10-01T09:34:30.8905473-04:00" endTime="2026-10-01T09:34:30.8905477-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fcbf2012-1c39-4e7c-8262-50473567377d" />
+    <ns0:UnitTestResult executionId="7978f19a-ad4e-4087-87e8-a0679c5f7762" testId="b367b45a-1053-d962-a7b3-0a1054d0a26f" testName="BookOfEternityClient.Tests.FileSystemManagerTests.CompareExchangeFileBytesAsync_RollbackDoesNotOverwriteNewerBytes" computerName="$HOST" duration="00:00:00.1854390" startTime="2026-10-01T09:34:30.5816057-04:00" endTime="2026-10-01T09:34:30.5816194-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7978f19a-ad4e-4087-87e8-a0679c5f7762" />
+    <ns0:UnitTestResult executionId="ddb0a7d1-68ab-4185-85fe-d7cc27756449" testId="6ad78de7-084c-1ae4-5adb-573e6630858c" testName="BookOfEternityClient.Tests.FileSystemManagerTests.WriteFileAtomicBytesAsync_PreservesExactBytes" computerName="$HOST" duration="00:00:00.0376571" startTime="2026-10-01T09:34:31.6838875-04:00" endTime="2026-10-01T09:34:31.6838877-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ddb0a7d1-68ab-4185-85fe-d7cc27756449" />
+    <ns0:UnitTestResult executionId="2f0ba2ae-8417-4a1b-84a3-557358283ec1" testId="25eacfcd-42b6-fac1-835a-7988e13ae59a" testName="BookOfEternityClient.Tests.FileSystemManagerTests.CompareExchangeFileBytesAsync_RejectsStaleExpectedBytesWithoutWriting" computerName="$HOST" duration="00:00:00.0350154" startTime="2026-10-01T09:34:30.6194886-04:00" endTime="2026-10-01T09:34:30.6194888-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2f0ba2ae-8417-4a1b-84a3-557358283ec1" />
+    <ns0:UnitTestResult executionId="d1ff5a1a-504e-408a-adef-80b0cf5a40c0" testId="670ef357-131f-fd12-6c6a-94046f2eb7f2" testName="BookOfEternityClient.Tests.FileSystemManagerTests.WriteFileAtomicAsync_PreservesUtf8BomContract" computerName="$HOST" duration="00:00:00.0284410" startTime="2026-10-01T09:34:30.6487159-04:00" endTime="2026-10-01T09:34:30.6487161-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d1ff5a1a-504e-408a-adef-80b0cf5a40c0" />
+    <ns0:UnitTestResult executionId="5ed2c7b6-542e-498d-9ffd-fc42957ba06e" testId="87c4af67-cb11-1613-b501-8a4909dd85f4" testName="BookOfEternityClient.Tests.FileSystemManagerTests.CompareExchangeFileBytesAsync_ConcurrentReplacementsAllowExactlyOneWinner" computerName="$HOST" duration="00:00:00.0863675" startTime="2026-10-01T09:34:30.7497284-04:00" endTime="2026-10-01T09:34:30.7497286-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5ed2c7b6-542e-498d-9ffd-fc42957ba06e" />
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.WriteFileAtomicAsync_WhenTargetIsBrieflyLocked_RetriesUntilReplacementSucceeds" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="02f33b77-2259-2f9a-4dbe-0ca564e0a63e">
+      <ns0:Execution id="fcbf2012-1c39-4e7c-8262-50473567377d" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="WriteFileAtomicAsync_WhenTargetIsBrieflyLocked_RetriesUntilReplacementSucceeds" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.WriteFileAtomicAsync_PreservesUtf8BomContract" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="670ef357-131f-fd12-6c6a-94046f2eb7f2">
+      <ns0:Execution id="d1ff5a1a-504e-408a-adef-80b0cf5a40c0" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="WriteFileAtomicAsync_PreservesUtf8BomContract" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.WriteFileAtomicBytesAsync_PreservesExactBytes" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="6ad78de7-084c-1ae4-5adb-573e6630858c">
+      <ns0:Execution id="ddb0a7d1-68ab-4185-85fe-d7cc27756449" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="WriteFileAtomicBytesAsync_PreservesExactBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.CompareExchangeFileBytesAsync_RejectsStaleExpectedBytesWithoutWriting" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="25eacfcd-42b6-fac1-835a-7988e13ae59a">
+      <ns0:Execution id="2f0ba2ae-8417-4a1b-84a3-557358283ec1" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="CompareExchangeFileBytesAsync_RejectsStaleExpectedBytesWithoutWriting" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.CompareExchangeFileBytesAsync_RollbackDoesNotOverwriteNewerBytes" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b367b45a-1053-d962-a7b3-0a1054d0a26f">
+      <ns0:Execution id="7978f19a-ad4e-4087-87e8-a0679c5f7762" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="CompareExchangeFileBytesAsync_RollbackDoesNotOverwriteNewerBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.WriteFileAtomicAsync_RelativeTraversalFailsClosed" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b2bba58d-b28a-ac63-6e0d-32af66410ae8">
+      <ns0:Execution id="a79e0244-0b5f-406b-b2cb-2ea39935f6d3" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="WriteFileAtomicAsync_RelativeTraversalFailsClosed" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.DeleteFile_WhenTargetIsBrieflyLocked_RetriesUntilDeleteSucceeds" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="a1987854-e933-b6a7-0415-289614d31d25">
+      <ns0:Execution id="4458bb03-01c0-4e77-8fd4-e65bd72f31c5" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="DeleteFile_WhenTargetIsBrieflyLocked_RetriesUntilDeleteSucceeds" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.CompareExchangeFileBytesAsync_ConcurrentReplacementsAllowExactlyOneWinner" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="87c4af67-cb11-1613-b501-8a4909dd85f4">
+      <ns0:Execution id="5ed2c7b6-542e-498d-9ffd-fc42957ba06e" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="CompareExchangeFileBytesAsync_ConcurrentReplacementsAllowExactlyOneWinner" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="b2bba58d-b28a-ac63-6e0d-32af66410ae8" executionId="a79e0244-0b5f-406b-b2cb-2ea39935f6d3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="a1987854-e933-b6a7-0415-289614d31d25" executionId="4458bb03-01c0-4e77-8fd4-e65bd72f31c5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="02f33b77-2259-2f9a-4dbe-0ca564e0a63e" executionId="fcbf2012-1c39-4e7c-8262-50473567377d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="b367b45a-1053-d962-a7b3-0a1054d0a26f" executionId="7978f19a-ad4e-4087-87e8-a0679c5f7762" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="6ad78de7-084c-1ae4-5adb-573e6630858c" executionId="ddb0a7d1-68ab-4185-85fe-d7cc27756449" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="25eacfcd-42b6-fac1-835a-7988e13ae59a" executionId="2f0ba2ae-8417-4a1b-84a3-557358283ec1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="670ef357-131f-fd12-6c6a-94046f2eb7f2" executionId="d1ff5a1a-504e-408a-adef-80b0cf5a40c0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="87c4af67-cb11-1613-b501-8a4909dd85f4" executionId="5ed2c7b6-542e-498d-9ffd-fc42957ba06e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Completed">
+    <ns0:Counters total="8" executed="8" passed="8" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.56]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.50]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.56]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:03.94]   Finished:    BookOfEternityClient.IntegrationTests
+</ns0:StdOut>
+    </ns0:Output>
+  </ns0:ResultSummary>
+</ns0:TestRun>

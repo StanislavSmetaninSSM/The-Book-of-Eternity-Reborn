@@ -1,0 +1,53 @@
+{
+  "sourceCommit": "e688dfbeea2890c96691215306a02faa8760be9c",
+  "catalogBlobAfterPatch": "ad2fe43ab192f5908e328d6bead37cb8f31af595",
+  "kind": "newly executed ordinary-readers-green; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "6454bee4718244ae8a190dd4f635f047e6b7735c87897e68ac95f4006da18d20",
+      "sanitizedSha256": "6454bee4718244ae8a190dd4f635f047e6b7735c87897e68ac95f4006da18d20"
+    },
+    {
+      "path": "portable-client-bootstrap-unit-001.trx",
+      "originalSha256": "e81ef31bec084abd74b1aca33e3fd5e5ca3aead2dfdc14e0e3f14a693d6be55b",
+      "sanitizedSha256": "4e9054a48030ed6fe74b4ddca2fce10032f466152c10b7bb609170f1f0a26728"
+    },
+    {
+      "path": "portable-ordinary-read-consumers-integration-002.trx",
+      "originalSha256": "af314a6b231b5da5605283809f5fb9db521cdaa42c7b9979c815d8b06d0d923c",
+      "sanitizedSha256": "e7f9520f597ab0b12705219e44ef33a1327dc8073254811a8bb52b957b31dd24"
+    },
+    {
+      "path": "portable-ordinary-read-consumers-unit-003.trx",
+      "originalSha256": "8eb897cdcd4caafa87874896f0bd7f0899a560356e476ad882e7a929ee9e9b88",
+      "sanitizedSha256": "2f52055047a5cdee75ecc6baccbed5f2045497ba9201b2e15e432ae26e81739c"
+    },
+    {
+      "path": "portable-ordinary-readers-integration-004.trx",
+      "originalSha256": "7fe20163a3c351e838cd12cb5cf1d9141a197f9831af558c77d6dc2b864bf8b1",
+      "sanitizedSha256": "2e27bf8e627e461e3976b2848959a8cd3bfdc8719361210c9447910c70d49d01"
+    },
+    {
+      "path": "portable-ordinary-readers-unit-005.trx",
+      "originalSha256": "ff5017609ad7da6f15d41b96cf5738094c9c45c34d995c8c16735a7aa507468a",
+      "sanitizedSha256": "a797be24e3e312f71ea9e70f1642a7b32ca4b783ff7555b785658580d629d5e9"
+    },
+    {
+      "path": "portable-storage-consumers-integration-006.trx",
+      "originalSha256": "8598db0d899cd974494db7cad1746bd83db0a96aa3553a3ddfe7cc76ae735c88",
+      "sanitizedSha256": "f2c50ab260c3956ec97ef8dfcf2a1695d2e2c1935aff120cd99bfb6b8b174226"
+    },
+    {
+      "path": "portable-storage-consumers-unit-007.trx",
+      "originalSha256": "75d7ef3e429db55f1d1d3d324ebd28f0bcaf92c76d6278f22028a5a6c0b615ff",
+      "sanitizedSha256": "ad3a8cb47dfd4a6bd74a3a431ef4cdd6bd0094cb0ac06ebfff7e34e024081a4e"
+    }
+  ],
+  "command": "source isolated env.sh; DOTNET_CLI_TELEMETRY_OPTOUT=1 POWERSHELL_TELEMETRY_OPTOUT=1 TESTINGPLATFORM_TELEMETRY_OPTOUT=1 pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+  "sourceAppliedTree": "d5ed321e58a1c4085ba3793dc685a37ac9f4e858",
+  "environment": "Linux x64, .NET SDK 10.0.401, runtime 8.0.31, PowerShell 7.6.6; existing isolated homes/cache/temp, DOTNET_PROCESSOR_COUNT=1",
+  "result": "76/76 cases passed, seven descriptors complete; exit 0, 6:00.3004909 including both fresh project builds; no skipped/unrun cases, timeout or duplicates; owned process/runtime cleanup complete",
+  "scope": "Ordinary reader APIs and actual bootstrap, coordinated-write, UI-owner, common recovery and exact type/recheck consumers. No actual Windows/socket/device evidence, full accepted-turn/save-load/worker migration or B3b rerun."
+}
