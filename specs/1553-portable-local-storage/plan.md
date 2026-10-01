@@ -14,7 +14,7 @@ B1 common scope/journal and B2 ordinary bootstrap/writes plus browser/console se
 
 This file is the authoritative current plan. The [chronological archive](plan-history-through-b3a.md) preserves the previous normal plan byte-for-byte, Git blob `a1d249678d855fab85f847d879f8f1c68daead59`, including all decisions, links, exact test/review identities, failures and historical recovery proofs. Its dated WIP/pending statements describe their original checkpoints. Subsequent updates should replace this current status and the affected next-step section, with exact evidence links, rather than append repetitive chronology.
 
-## Goal, architecture and constraints
+## Summary
 
 Complete Linux/Windows portability while preserving the existing game and persistent arbitrary interactive GM workflow. Use the approved trusted-local-player model: exact bytes/absence, content hashes, generation and participating-writer ownership. Closed-game current-schema edits are permitted; simultaneous external editing is unsupported. Roots/exact external grants, type/link/schema/archive validation, once-only gameplay authority and non-following cleanup remain required. No synthetic physical identity, privileged service or protection against the computer owner is added.
 
@@ -22,9 +22,31 @@ One common B1 journal handles a single file or a declared complete member set: s
 
 Canonical/lifecycle leases, mutation boundaries, generation revision invalidation, pending-GM and local UI-owner gates remain. Old journal evidence uses its original supported handler or blocks before common bootstrap; formats are never reinterpreted or erased to gain admission. Original physical-recorder/save-load routes remain separate until their complete consumers migrate. Ordinary generation reading deliberately stays below its own operation fence to avoid recursion.
 
+## Technical Context
+
 C# targets .NET 8; the current tests require SDK 10 and PowerShell 7. Frontend is React/TypeScript/Vite. Verified Linux tools are SDK 10.0.401, .NET/ASP.NET 8.0.31, PowerShell 7.6.6, Node 24.19.0/npm 11.9.0 and Spec Kit 1.0.13. Set all three supported telemetry opt-outs before tool startup and use isolated mutable homes/caches/temp roots as documented in quickstart. The restricted Linux runner uses `DOTNET_PROCESSOR_COUNT=1`; this is an observed build workaround, not a product prerequisite.
 
+Storage uses .NET BCL filesystem/JSON/hash operations and the single private member journal; no storage dependency or privileged service is introduced. Scope is the existing single-player console/local-web application on Linux and Windows. Preserve existing behavior and resource bounds without introducing an arbitrary file-size or performance promise. Focused C# categories, frontend contract checks and separately qualified process/live checks supply verification; commands and source identities are below and in quickstart.
+
+## Constitution Check
+
+Issue/spec traceability, client parity, canonical state ownership, test-first work, isolated selected-category verification and independent per-block review are retained. Player notices remain Russian and avoid raw technical diagnostics. Storage-only changes keep current GM payload schemas and client-owned authority; any later workflow/ownership change must update its operational guides/examples/source guards in the same block. The approved trusted-player constraint supersedes the listed owner-resistant requirements in spec.md. Pre-release historical compatibility is not assumed: current-format legacy evidence requires its original supported handler or blocks migration. The test/category restrictions and serialized writer/review workflow remain as documented below.
+
 The branch begins at explicitly authorized wound-merge base `f6dc2a1ce3e73f5e6940f686c97b863c9f7a8173`. Lost earlier local portability commits were not reconstructed from conversation. #1536 gameplay acceptance remains separate. The approved storage design and constitution supersession are recorded in spec.md; no renewed design approval is needed for the planned storage cutover.
+
+## Project Structure
+
+- Feature requirements, current plan, tasks, research and quickstart remain in `specs/1553-portable-local-storage/`; the exact previous plan is `plan-history-through-b3a.md`, and sanitized evidence/manifests are under `recovery/evidence/`
+- Common storage lives in `BookOfEternityClient/Core/TrustedLocalFileScope.cs`, `TrustedLocalFilePublication.cs`, and the `FileSystemManager.TrustedLocalStorage.cs` / `FileSystemManager.GenerationSnapshot.cs` partials; retain original manager legacy routes until their bounded migration
+- Prepared settings use `Core/LocalSettingsPreparation.cs`, `ConsoleSettingsSession.cs`, `ConsoleSettingsPreview.cs`, `Services/SystemModService.Prepared.cs`, and `WebUi/BrowserLocalWriteCoordinator.Prepared.cs`, with actual entrypoints/menu and browser service/frontend consumers
+- Future replacement/worker/save-load changes belong beside these existing Core and Services consumers; B4 uses the existing bridge/runtime projects, and B5 uses the existing platform service boundaries rather than new parallel frameworks
+- Focused tests live in `BookOfEternityClient.Tests/` and `BookOfEternityClient.IntegrationTests/`; shared cold-process fixtures are under `tests/fixtures/`, with exact ownership/selection in `tests/categories.json` and `tests/selection.json`. Browser component/contract tests remain in `BookOfEternityClient.WebFrontend/`
+
+Structure decision: use small focused partials and existing caller/coordinator boundaries; keep one journal and preserve original-format recovery separation. No additional application project is justified by the accepted storage slice.
+
+## Complexity Tracking
+
+No new constitution exception is introduced. The approved trust-model supersession is explicit in spec.md; bounded legacy handlers remain transitional, and native B4/B5 candidates require qualification before selection. No extra abstraction or dependency is justified solely by this documentation cleanup.
 
 ## Accepted blocks and evidence
 
