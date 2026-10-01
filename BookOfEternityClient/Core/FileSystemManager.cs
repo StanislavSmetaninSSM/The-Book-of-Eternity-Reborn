@@ -1197,14 +1197,14 @@ public partial class FileSystemManager
     {
         await RecoverPendingFilePublicationsBeforeCanonicalReadAsync(
             CancellationToken.None);
-        var result = await ReadFileCoreAsync(relativePath);
+        var result = await ReadOrdinaryFileCoreAsync(relativePath);
         await InvokeAfterCanonicalReadAttemptAsync(relativePath);
         if (!HasAmbientCanonicalLease() &&
             (result == null || HasPendingFilePublications()))
         {
             await using var writeLease =
                 await AcquirePublicationReadQuiescenceLeaseAsync();
-            result = await ReadFileCoreAsync(relativePath);
+            result = await ReadOrdinaryFileCoreAsync(relativePath);
         }
 
         return result;
@@ -1215,7 +1215,9 @@ public partial class FileSystemManager
         string relativePath)
     {
         EnsureValidCanonicalWriteLease(writeLease);
-        return await ReadFileCoreAsync(relativePath);
+        return UsesTrustedLocalWriter(writeLease, relativePath)
+            ? await ReadOrdinaryFileCoreAsync(relativePath, writeLease)
+            : await ReadFileCoreAsync(relativePath);
     }
 
     private async Task<string?> ReadFileCoreAsync(string relativePath)
@@ -1255,7 +1257,9 @@ public partial class FileSystemManager
         string relativePath)
     {
         EnsureValidCanonicalWriteLease(writeLease);
-        return await ReadFileBytesCoreAsync(relativePath, CancellationToken.None);
+        return UsesTrustedLocalWriter(writeLease, relativePath)
+            ? await ReadOrdinaryFileBytesCoreAsync(relativePath, CancellationToken.None, writeLease)
+            : await ReadFileBytesCoreAsync(relativePath, CancellationToken.None);
     }
 
     internal async Task<CanonicalFileReadSnapshot?> ReadFileSnapshotAsync(
@@ -1263,15 +1267,15 @@ public partial class FileSystemManager
         string relativePath)
     {
         EnsureValidCanonicalWriteLease(writeLease);
-        return await ReadFileSnapshotCoreAsync(
-            relativePath,
-            CancellationToken.None);
+        return UsesTrustedLocalWriter(writeLease, relativePath)
+            ? await ReadOrdinaryFileSnapshotCoreAsync(relativePath, CancellationToken.None, writeLease)
+            : await ReadFileSnapshotCoreAsync(relativePath, CancellationToken.None);
     }
 
     internal string? ReadFileSync(string relativePath)
     {
         RecoverPendingFilePublicationsBeforeCanonicalRead();
-        var snapshot = ReadFileSnapshotCore(relativePath);
+        var snapshot = ReadOrdinaryFileSnapshotCore(relativePath);
         InvokeAfterCanonicalReadAttempt(relativePath);
         if (!HasAmbientCanonicalLease() &&
             (snapshot == null || HasPendingFilePublications()))
@@ -1281,7 +1285,7 @@ public partial class FileSystemManager
                 .GetResult();
             try
             {
-                snapshot = ReadFileSnapshotCore(relativePath);
+                snapshot = ReadOrdinaryFileSnapshotCore(relativePath);
             }
             finally
             {
@@ -1301,7 +1305,9 @@ public partial class FileSystemManager
         EnsureValidCanonicalWriteLease(writeLease);
         // The explicit lease already supplies publication quiescence, even when
         // its ambient execution context did not flow to this synchronous caller.
-        return DecodeFileSnapshot(ReadFileSnapshotCore(relativePath));
+        return DecodeFileSnapshot(UsesTrustedLocalWriter(writeLease, relativePath)
+            ? ReadOrdinaryFileSnapshotCore(relativePath, writeLease)
+            : ReadFileSnapshotCore(relativePath));
     }
 
     private static string? DecodeFileSnapshot(CanonicalFileReadSnapshot? snapshot)
@@ -1320,7 +1326,7 @@ public partial class FileSystemManager
     internal byte[]? ReadFileBytesSync(string relativePath)
     {
         RecoverPendingFilePublicationsBeforeCanonicalRead();
-        var snapshot = ReadFileSnapshotCore(relativePath);
+        var snapshot = ReadOrdinaryFileSnapshotCore(relativePath);
         InvokeAfterCanonicalReadAttempt(relativePath);
         if (!HasAmbientCanonicalLease() &&
             (snapshot == null || HasPendingFilePublications()))
@@ -1330,7 +1336,7 @@ public partial class FileSystemManager
                 .GetResult();
             try
             {
-                snapshot = ReadFileSnapshotCore(relativePath);
+                snapshot = ReadOrdinaryFileSnapshotCore(relativePath);
             }
             finally
             {
@@ -1352,7 +1358,7 @@ public partial class FileSystemManager
     {
         await RecoverPendingFilePublicationsBeforeCanonicalReadAsync(
             cancellationToken);
-        var result = await ReadFileBytesCoreAsync(
+        var result = await ReadOrdinaryFileBytesCoreAsync(
             relativePath,
             cancellationToken);
         await InvokeAfterCanonicalReadAttemptAsync(relativePath);
@@ -1362,7 +1368,7 @@ public partial class FileSystemManager
             await using var writeLease =
                 await AcquirePublicationReadQuiescenceLeaseAsync(
                     cancellationToken);
-            result = await ReadFileBytesCoreAsync(
+            result = await ReadOrdinaryFileBytesCoreAsync(
                 relativePath,
                 cancellationToken);
         }
@@ -1440,7 +1446,7 @@ public partial class FileSystemManager
     public bool FileExists(string relativePath)
     {
         RecoverPendingFilePublicationsBeforeCanonicalRead();
-        var exists = FileExistsCore(relativePath);
+        var exists = OrdinaryFileExistsCore(relativePath);
         InvokeAfterCanonicalReadAttempt(relativePath);
         if (!HasAmbientCanonicalLease())
         {
@@ -1452,7 +1458,7 @@ public partial class FileSystemManager
                     .GetResult();
                 try
                 {
-                    exists = FileExistsCore(relativePath);
+                    exists = OrdinaryFileExistsCore(relativePath);
                 }
                 finally
                 {
@@ -1474,7 +1480,7 @@ public partial class FileSystemManager
                     ?.Invoke(relativePath)
                     .GetAwaiter()
                     .GetResult();
-                exists = FileExistsCore(relativePath);
+                exists = OrdinaryFileExistsCore(relativePath);
                 var mutationAfterProbe =
                     observation.CaptureMutationState();
                 if (mutationBeforeProbe.MutationActive ||
@@ -1489,7 +1495,7 @@ public partial class FileSystemManager
                             .GetResult();
                     try
                     {
-                        exists = FileExistsCore(relativePath);
+                        exists = OrdinaryFileExistsCore(relativePath);
                     }
                     finally
                     {
@@ -1507,7 +1513,9 @@ public partial class FileSystemManager
     internal bool FileExists(CanonicalWriteLease writeLease, string relativePath)
     {
         EnsureValidCanonicalWriteLease(writeLease);
-        return FileExistsCore(relativePath);
+        return UsesTrustedLocalWriter(writeLease, relativePath)
+            ? OrdinaryFileExistsCore(relativePath)
+            : FileExistsCore(relativePath);
     }
 
     private bool FileExistsCore(string relativePath)

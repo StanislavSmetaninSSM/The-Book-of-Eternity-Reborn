@@ -36,8 +36,10 @@ public sealed class FileSystemManagerTests : IDisposable
         await Task.Delay(100);
         await lockStream.DisposeAsync();
 
-        var content = await readTask;
-
+        string? content = null;
+        var failure = await Record.ExceptionAsync(async () => content = await readTask);
+        Assert.True(failure == null,
+            $"The transient read failed with HResult 0x{failure?.HResult:X8}: {failure}");
         Assert.Equal("stable content", content);
     }
 
@@ -2591,7 +2593,7 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task ReadFileAsync_RejectsHardLinkedCanonicalState()
+    public async Task ReadFileAsync_LegacyRecoveryRejectsHardLinkedCanonicalState()
     {
         if (!OperatingSystem.IsWindows())
             return;
@@ -2603,8 +2605,9 @@ public sealed class FileSystemManagerTests : IDisposable
         await File.WriteAllBytesAsync(externalPath, externalBytes);
         CreateHardLink(canonicalPath, externalPath);
 
-        await Assert.ThrowsAsync<InvalidDataException>(
-            () => _fs.ReadFileAsync(relativePath));
+        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        await Assert.ThrowsAsync<InvalidDataException>(() => _fs.RunLegacyStorageRecoveryAsync(
+            lease, async () => { await _fs.ReadFileAsync(lease, relativePath); }));
 
         Assert.Equal(externalBytes, await File.ReadAllBytesAsync(externalPath));
     }

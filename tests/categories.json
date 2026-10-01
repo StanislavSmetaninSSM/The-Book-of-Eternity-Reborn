@@ -546,14 +546,6 @@
             "BookOfEternityClient.Tests.FileSystemManagerTests.DeleteFile_RejectsHardLinkedCanonicalState",
             "BookOfEternityClient.Tests.FileSystemManagerTests.DeleteFile_WhenTargetIsBrieflyLocked_RetriesUntilDeleteSucceeds",
             "BookOfEternityClient.Tests.FileSystemManagerTests.EnsureDirectoryStructure_RecoversInterruptedLoadBeforeCreatingEmptySession",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_AbsentTargetWithoutPublication_DoesNotAcquireCanonicalWriteLease",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_DirectoryAtFileAuthorityFailsClosed",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_FilePublishedAfterInitialAbsentProbe_RechecksUnderQuiescenceLease",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_OwnedLeaseWithPendingPublicationDoesNotReacquire",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RegularFileAtIntermediateParentFailsClosed",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeDirectoryPublicationWaitsForLeaseBeforeClassifyingDestination",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeSavePublicationWaitsForLeaseBeforeReportingAbsence",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_WriterRegistersInsideFollowUpProbeGap_WaitsForPublication",
             "BookOfEternityClient.Tests.FileSystemManagerTests.FileSystemManagers_ForPhysicalRootAliases_ShareCanonicalRuntimeIdentity",
             "BookOfEternityClient.Tests.FileSystemManagerTests.IdentityBoundDelete_ByteIdenticalForeignReplacementIsRejected",
             "BookOfEternityClient.Tests.FileSystemManagerTests.IdentityBoundWrite_ByteIdenticalForeignReplacementIsRejected",
@@ -569,22 +561,9 @@
             "BookOfEternityClient.Tests.FileSystemManagerTests.LoadTransactionMove_RevalidatesRetainedFileAuthorityAcrossDirectoryRename",
             "BookOfEternityClient.Tests.FileSystemManagerTests.LoadTransactionStaging_RejectsRuntimeSiblingReparsePoint",
             "BookOfEternityClient.Tests.FileSystemManagerTests.LoadTransactionWrite_RejectsActualLengthMismatch",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_CompletionRejectsLinkAddedAfterConsumption",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_RejectsHardLinkedSaveArchive",
             "BookOfEternityClient.Tests.FileSystemManagerTests.PhysicalFileAuthority_RetainedLeafAuthorityBlocksEveryAncestorRename",
             "BookOfEternityClient.Tests.FileSystemManagerTests.PublicationRecovery_DirectoryAtSourceCandidateRetainsEvidence",
             "BookOfEternityClient.Tests.FileSystemManagerTests.PublicationRecovery_DuplicateIntentPropertyRetainsEvidence",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_DirectoryAtOptionalFileBoundaryFailsClosed",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_RegularFileAtIntermediateParentFailsClosed",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_RejectsHardLinkedCanonicalState",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_AbsentDuringQuarantineWaitsForCommittedPublication",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_FinalizesCommittedPublicationBeforeCanonicalRead",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_ParentReplacedByJunctionBeforeOpenFailsClosed",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_RecoversPublishedUncommittedPublicationBeforeCanonicalRead",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_UnknownPublicationIdentityFencesAndRetainsEvidence",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileSync_DirectoryAtOptionalFileBoundaryFailsClosed",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileSync_RegularFileAtIntermediateParentFailsClosed",
             "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_MissingBeforeImageFailsClosed",
             "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_RejectsBackupOutsideCanonicalSession",
             "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_WaitsForCanonicalWriteLease",
@@ -8310,6 +8289,131 @@
             "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ExtendedWindowsRootPreservesExclusionsAndCanonicalMutationBoundaries",
             "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasesShareRevisionIdentityWithoutRewritingBaseOrJournalPaths",
             "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasBoundWriterCannotMutateTheReplacementSessionBeforeFinalFence"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-ordinary-readers",
+      "responsibility": "Ordinary content, presence and opened-handle timestamp semantics; exact data, real leases, hard-link input through coordinated publication and bounded Linux FIFO pre-open rejection.",
+      "excludes": "Original physical recovery/archive authority and full transaction migration. FIFO bodies are Linux-only; AF_UNIX/socket/device fixtures are unavailable and are not attempted.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+        "BookOfEternityClient/Core/FileSystemManager.cs",
+        "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding",
+            "BookOfEternityClient.Tests.PortableOrdinaryReadTests.HardLinkedOrdinaryInputReachesCoordinatedPublicationWithoutChangingOutsideAlias",
+            "BookOfEternityClient.Tests.PortableOrdinaryReadTests.SnapshotTimestampAndBytesBelongToTheOpenedFile",
+            "BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening",
+            "BookOfEternityClient.Tests.PortableOrdinaryReadTests.CancellationBeforeOrAtOpenDoesNotConsumeBytes",
+            "BookOfEternityClient.Tests.PortableOrdinaryReadTests.FifoRejectedBeforeOpenInBoundedOwnedProcess"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-ordinary-read-consumers",
+      "responsibility": "Exact existing ordinary-read consumers: wrong type, transient open, absence/observation policy, common-journal recovery, coordinated baseline ownership and retained source separation.",
+      "excludes": "Broad canonical/worker/browser/gameplay classes, B3b replacement and Windows-only physical recovery bodies.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+        "BookOfEternityClient/Core/FileSystemManager.cs",
+        "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_DirectoryAtOptionalFileBoundaryFailsClosed",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_RegularFileAtIntermediateParentFailsClosed",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileSync_DirectoryAtOptionalFileBoundaryFailsClosed",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileSync_RegularFileAtIntermediateParentFailsClosed",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_FilePublishedAfterInitialAbsentProbe_RechecksUnderQuiescenceLease",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_DirectoryAtFileAuthorityFailsClosed",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RegularFileAtIntermediateParentFailsClosed",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_AbsentTargetWithoutPublication_DoesNotAcquireCanonicalWriteLease",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_WriterRegistersInsideFollowUpProbeGap_WaitsForPublication"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.CoordinatedStateWriteHelperTests.*",
+            "BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes",
+            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.DurableFileAuthoritySourceGuard_RejectsPathBasedRuntimeMutations"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-ordinary-read-windows",
+      "responsibility": "Native-only original physical reader/recovery/archive boundaries and browser rollback before recorder attachment; ordinary hard-link and handle timestamp assertions from the common reader owner.",
+      "excludes": "Linux early-return passes, Unix FIFO fixtures, broad save/load/browser execution or changed receipt formats.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+        "BookOfEternityClient/Core/FileSystemManager.cs",
+        "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_LegacyRecoveryRejectsHardLinkedCanonicalState",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_ParentReplacedByJunctionBeforeOpenFailsClosed",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_RecoversPublishedUncommittedPublicationBeforeCanonicalRead",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_FinalizesCommittedPublicationBeforeCanonicalRead",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_UnknownPublicationIdentityFencesAndRetainsEvidence",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_AbsentDuringQuarantineWaitsForCommittedPublication",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_FilePublishedAfterInitialAbsentProbe_RechecksUnderQuiescenceLease",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_OwnedLeaseWithPendingPublicationDoesNotReacquire",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeSavePublicationWaitsForLeaseBeforeReportingAbsence",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeDirectoryPublicationWaitsForLeaseBeforeClassifyingDestination",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_RejectsHardLinkedSaveArchive",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_CompletionRejectsLinkAddedAfterConsumption",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableOrdinaryReadTests.BrowserStagingBeforeRecorderAttachmentRetainsPhysicalHardLinkRejection",
+            "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding",
+            "BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening",
+            "BookOfEternityClient.Tests.PortableOrdinaryReadTests.CancellationBeforeOrAtOpenDoesNotConsumeBytes",
+            "BookOfEternityClient.Tests.PortableOrdinaryReadTests.HardLinkedOrdinaryInputReachesCoordinatedPublicationWithoutChangingOutsideAlias",
+            "BookOfEternityClient.Tests.PortableOrdinaryReadTests.SnapshotTimestampAndBytesBelongToTheOpenedFile"
           ]
         }
       ]
