@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="52d223ba-bc75-497a-a8a7-e23283731994" name="{USER}@{HOST} 2026-10-02 09:40:09" runUser="{HOST}\{USER}" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-02T09:40:09.3429719+10:00" queuing="2026-10-02T09:40:09.3429722+10:00" start="2026-10-02T09:40:05.2645765+10:00" finish="2026-10-02T09:40:09.3519194+10:00" />
+  <TestSettings name="default" id="b2a4d112-666e-489c-948f-63f86c848dd5">
+    <Deployment runDeploymentRoot="{USER}_{HOST}_2026-10-02_09_40_09" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="4157190f-d6a3-4a2d-beb8-dfc224e155f0" testId="18cde7bf-a81a-34d9-d9d1-0e314fd0a817" testName="BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes(asynchronous: True)" computerName="{HOST}" duration="00:00:00.1349650" startTime="2026-10-02T09:40:08.9129853+10:00" endTime="2026-10-02T09:40:08.9129855+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4157190f-d6a3-4a2d-beb8-dfc224e155f0" />
+    <UnitTestResult executionId="9b958384-8267-4cff-95e4-7f1712de6b31" testId="eeac358e-cc87-6afd-ff65-a65537adf895" testName="BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion(asynchronous: True)" computerName="{HOST}" duration="00:00:00.0819939" startTime="2026-10-02T09:40:09.1029660+10:00" endTime="2026-10-02T09:40:09.1029662+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9b958384-8267-4cff-95e4-7f1712de6b31" />
+    <UnitTestResult executionId="700fcee6-8c63-497e-bb36-f8cc96fb2bdf" testId="3342614c-7b1e-3fa2-8175-8ad236f0fcf4" testName="BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes(asynchronous: False)" computerName="{HOST}" duration="00:00:00.1072568" startTime="2026-10-02T09:40:09.0204644+10:00" endTime="2026-10-02T09:40:09.0204646+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="700fcee6-8c63-497e-bb36-f8cc96fb2bdf" />
+    <UnitTestResult executionId="fc4abff6-8ac3-4eaf-91df-bae0ca68f9c2" testId="caffeb95-8848-370a-79e6-6cb9a176af62" testName="BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether(asynchronous: True)" computerName="{HOST}" duration="00:00:00.0962741" startTime="2026-10-02T09:40:08.7751562+10:00" endTime="2026-10-02T09:40:08.7751566+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fc4abff6-8ac3-4eaf-91df-bae0ca68f9c2" />
+    <UnitTestResult executionId="b346d484-8b2d-4831-ae9b-5c0330b5de79" testId="0fa4b1bf-1b9d-1f01-671f-3ea3c382d899" testName="BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether(asynchronous: False)" computerName="{HOST}" duration="00:00:00.9148395" startTime="2026-10-02T09:40:08.6756399+10:00" endTime="2026-10-02T09:40:08.6756705+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b346d484-8b2d-4831-ae9b-5c0330b5de79" />
+    <UnitTestResult executionId="ffa22d1d-828c-4e73-a615-92f5f3ce02c2" testId="165e4097-c3d0-44ea-5aee-30b11c3ce562" testName="BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion(asynchronous: False)" computerName="{HOST}" duration="00:00:00.0957419" startTime="2026-10-02T09:40:09.1988910+10:00" endTime="2026-10-02T09:40:09.1988912+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ffa22d1d-828c-4e73-a615-92f5f3ce02c2" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes(asynchronous: True)" storage="{SOURCE_ROOT}\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="18cde7bf-a81a-34d9-d9d1-0e314fd0a817">
+      <Execution id="4157190f-d6a3-4a2d-beb8-dfc224e155f0" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupLifecycleTests" name="CreateBackupPreservesExactSourceAndPublishesIndependentBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes(asynchronous: False)" storage="{SOURCE_ROOT}\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="3342614c-7b1e-3fa2-8175-8ad236f0fcf4">
+      <Execution id="700fcee6-8c63-497e-bb36-f8cc96fb2bdf" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupLifecycleTests" name="CreateBackupPreservesExactSourceAndPublishesIndependentBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion(asynchronous: True)" storage="{SOURCE_ROOT}\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="eeac358e-cc87-6afd-ff65-a65537adf895">
+      <Execution id="9b958384-8267-4cff-95e4-7f1712de6b31" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupLifecycleTests" name="CleanupBackupPublishesEvidenceDeletion" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether(asynchronous: False)" storage="{SOURCE_ROOT}\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="0fa4b1bf-1b9d-1f01-671f-3ea3c382d899">
+      <Execution id="b346d484-8b2d-4831-ae9b-5c0330b5de79" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupLifecycleTests" name="IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether(asynchronous: True)" storage="{SOURCE_ROOT}\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="caffeb95-8848-370a-79e6-6cb9a176af62">
+      <Execution id="fc4abff6-8ac3-4eaf-91df-bae0ca68f9c2" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupLifecycleTests" name="IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion(asynchronous: False)" storage="{SOURCE_ROOT}\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="165e4097-c3d0-44ea-5aee-30b11c3ce562">
+      <Execution id="ffa22d1d-828c-4e73-a615-92f5f3ce02c2" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupLifecycleTests" name="CleanupBackupPublishesEvidenceDeletion" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="18cde7bf-a81a-34d9-d9d1-0e314fd0a817" executionId="4157190f-d6a3-4a2d-beb8-dfc224e155f0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="eeac358e-cc87-6afd-ff65-a65537adf895" executionId="9b958384-8267-4cff-95e4-7f1712de6b31" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3342614c-7b1e-3fa2-8175-8ad236f0fcf4" executionId="700fcee6-8c63-497e-bb36-f8cc96fb2bdf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="caffeb95-8848-370a-79e6-6cb9a176af62" executionId="fc4abff6-8ac3-4eaf-91df-bae0ca68f9c2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0fa4b1bf-1b9d-1f01-671f-3ea3c382d899" executionId="b346d484-8b2d-4831-ae9b-5c0330b5de79" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="165e4097-c3d0-44ea-5aee-30b11c3ce562" executionId="ffa22d1d-828c-4e73-a615-92f5f3ce02c2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="6" executed="6" passed="6" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.22]   Discovering: BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.81]   Discovered:  BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.83]   Starting:    BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:03.33]   Finished:    BookOfEternityClient.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>
