@@ -1,8 +1,8 @@
 diff --git a/tests/categories.json b/tests/categories.json
-index 4b805af9..9c5a9135 100644
+index 4b805af9..4f48467e 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -7600,6 +7600,195 @@
+@@ -7600,6 +7600,236 @@
            ]
          }
        ]
@@ -157,6 +157,47 @@ index 4b805af9..9c5a9135 100644
 +            "BookOfEternityClient.Tests.LocalWebUiHostTests.AudioSettingsEndpoint_UpdatesAndPersistsSharedSettingsWithClampedVolumes",
 +            "BookOfEternityClient.Tests.LocalWebUiHostTests.BrowserAudioService_SerializesSharedSettingsUpdates",
 +            "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAsync_ActiveOtherOwner_BlocksWithoutRunningWrite"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-settings-consumers",
++      "responsibility": "Exact existing settings/audio mount, safe copy, and settled shared-refresh consumers affected by the prepared settings cutover.",
++      "excludes": "Broad frontend shell, command rendering, media generation, and actual browser UI acceptance.",
++      "changeHints": [
++        "BookOfEternityClient.WebFrontend/src/components/SettingsView.tsx",
++        "BookOfEternityClient.WebFrontend/src/components/AudioPanel.tsx",
++        "BookOfEternityClient.WebFrontend/src/hooks/loadShellState.ts",
++        "BookOfEternityClient.WebFrontend/src/utils/settingsPersistenceNotice.ts"
++      ],
++      "related": [
++        {
++          "id": "portable-settings-notices",
++          "when": "Prepared settings response or dispatch ownership changes."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 3,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "frontend",
++          "runner": "node",
++          "tests": [
++            "BookOfEternityClient.WebFrontend/test/gracefulDegradation.test.ts",
++            "BookOfEternityClient.WebFrontend/test/audioPanelCatalogVisibility.test.ts"
++          ]
++        },
++        {
++          "project": "frontend",
++          "runner": "vitest",
++          "tests": [
++            "BookOfEternityClient.WebFrontend/test/browserSettingsSavesAudio.test.ts",
++            "BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts"
 +          ]
 +        }
 +      ]

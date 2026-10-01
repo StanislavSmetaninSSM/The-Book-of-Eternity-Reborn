@@ -35,6 +35,15 @@
         "response ownership",
         "rapid settings patch coalescing"
       ]
+    },
+    {
+      "category": "portable-settings-consumers",
+      "reason": "Exact existing consumers affected by AudioPanel shared-scope props and refresh-body extraction; update stale source paths without weakening safe-copy or settled-load coverage.",
+      "contracts": [
+        "settings/audio actual mount",
+        "player-safe settings copy",
+        "settled shared refresh"
+      ]
     }
   ]
 }
