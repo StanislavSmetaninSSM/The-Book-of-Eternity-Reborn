@@ -1,7 +1,22 @@
 {
   "baseCommit": "41d9104076d59fabacf93c3b1be3cc8d5ccc238f",
-  "status": "B3b test-first WIP; no runtime implementation or RED result yet. New test source and selection are normal Git blobs; only the exact catalog delta uses this apply-once recovery packet.",
+  "status": "B3b initial 15-case RED observed; first clear/rotation/pending-inspector implementation WIP, covering GREEN and remaining console/proposal/cold/negative cases pending.",
   "patches": [
+    {
+      "path": "session-replacement-source.pending.patch",
+      "bytes": 4541,
+      "sha256": "f8724f54143a531119101d172cc4641b9c3a9a338913e6769d2fbd917af3a0b0",
+      "files": [
+        {
+          "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+          "beforeBlob": "3afd41d4a0a08780d32839c9a8f80dd1e158f35d",
+          "afterBlob": "ea2037c46788a99b051e7f892fd40edb9f156f7d"
+        }
+      ],
+      "applyArguments": [
+        "--unidiff-zero"
+      ]
+    },
     {
       "path": "categories-pending.patch",
       "bytes": 1676,

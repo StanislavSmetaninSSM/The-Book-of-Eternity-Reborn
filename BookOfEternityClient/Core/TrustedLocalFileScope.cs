@@ -150,7 +150,7 @@ internal sealed class TrustedLocalFileScope
             Directory.Delete(ValidateDirectory(directories[index], allowMissing: false), recursive: false);
     }
 
-    private string ValidateDirectory(string path, bool allowMissing = true)
+    internal string ValidateDirectory(string path, bool allowMissing = true)
     {
         var normalized = Normalize(path);
         EnsureAllowed(normalized, file: false);

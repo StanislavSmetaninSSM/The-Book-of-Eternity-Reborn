@@ -1,16 +1,18 @@
 # Source and evidence recovery
 
-## Current B3b test-first WIP catalog
+## Current B3b implementation WIP packet
 
-New replacement tests and selection are normal source files; their initial behavioral RED has not run. Apply the exact catalog patch once after verifying the current remote SHA. [session-replacement-pending.json](session-replacement-pending.json) records base/after blobs and patch SHA256. The expected applied catalog is `bfb8b0a8249766620d7b833b7fbca3670ec72f67`.
+The initial 15-case RED ran; the first implementation and its covering GREEN are not yet verified. New focused source/tests, selection and evidence are normal blobs. The large manager/catalog deltas are retained in [session-replacement-pending.json](session-replacement-pending.json), with exact base/after blobs and SHA256 values. After verifying the remote SHA, check/apply each patch once:
 
 ```sh
+git apply --check --unidiff-zero specs/1553-portable-local-storage/recovery/session-replacement-source.pending.patch
+git apply --unidiff-zero specs/1553-portable-local-storage/recovery/session-replacement-source.pending.patch
 git apply --check specs/1553-portable-local-storage/recovery/categories-pending.patch
 git apply specs/1553-portable-local-storage/recovery/categories-pending.patch
-git hash-object tests/categories.json
+git hash-object BookOfEternityClient/Core/FileSystemManager.cs tests/categories.json
 ```
 
-If already applied, `git apply --reverse --check` against the same patch succeeds; do not apply it twice. Keep the exact delta staged during tests and small source saves. Do not upload the full catalog through an oversized connector call. Retire this patch/manifest only after normal publication verifies the after blob. No B3b runtime or test acceptance is claimed; the current plan is authoritative.
+If already applied, reverse `--check` with the same apply flags succeeds; do not apply twice. Expected manager/catalog blobs are `ea2037c46788a99b051e7f892fd40edb9f156f7d` / `bfb8b0a8249766620d7b833b7fbca3670ec72f67`. Keep exact applied deltas staged during tests and small source saves. Do not upload large full files through oversized connector calls. Retire this packet only after normal publication verifies all after blobs. No B3b acceptance is claimed; the current plan is authoritative.
 
 ## Accepted B3a generation-reader checkpoint
 

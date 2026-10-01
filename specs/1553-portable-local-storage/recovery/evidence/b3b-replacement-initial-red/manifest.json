@@ -1,0 +1,21 @@
+{
+  "sourceCommit": "cb4837acdaed1eb45522a25d7d86234fd67bf413",
+  "catalogBlobAfterPatch": "bfb8b0a8249766620d7b833b7fbca3670ec72f67",
+  "kind": "newly executed b3b-replacement-initial-red; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained. Isolated run-root paths replaced; LF and trailing whitespace normalized; original hashes retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "8bcb863929c9e6921b3817dd58b0fb47f89f3994d57abf484fbe372a7962182f",
+      "sanitizedSha256": "8bcb863929c9e6921b3817dd58b0fb47f89f3994d57abf484fbe372a7962182f"
+    },
+    {
+      "path": "portable-session-replacement-unit-001.trx",
+      "originalSha256": "8772be9083ed17e77bf48ced7cb014c15d54ba70747e5356f694d1fe4143ee7e",
+      "sanitizedSha256": "bb873eabde773263bb928321ae018d8843be177e166dc59884fc9c487d2a36fe"
+    }
+  ],
+  "appliedSourceTree": "578eb5c31733c88cfb0e92b90a0c0e9cc593b7eb",
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-session-replacement -Parallelism 1",
+  "interpretation": "15 cases executed, 14 intended failures and one existing legacy-evidence preservation pass; old Windows-only generation publication prevents common clear/rotation and empty descendants incorrectly mark pending work. No fixture/build failure."
+}
