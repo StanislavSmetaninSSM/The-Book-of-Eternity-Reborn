@@ -1,8 +1,8 @@
 diff --git a/tests/categories.json b/tests/categories.json
-index 4b805af9..7b6ad998 100644
+index 4b805af9..79aa0e82 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -7600,6 +7600,88 @@
+@@ -7600,6 +7600,122 @@
            ]
          }
        ]
@@ -85,6 +85,40 @@ index 4b805af9..7b6ad998 100644
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.CompareExchangeFileBytesAsync_ConcurrentReplacementsAllowExactlyOneWinner",
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.CompareExchangeFileBytesAsync_RollbackDoesNotOverwriteNewerBytes",
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.DeleteFile_WhenTargetIsBrieflyLocked_RetriesUntilDeleteSucceeds"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-prepared-settings",
++      "responsibility": "Prepared browser settings/audio member-set publication, detached runtime application and explicit committed/rolled-back/uncertain outcomes with existing owner/generation admission.",
++      "excludes": "Old v6 physical recorder transactions, unrelated browser/gameplay commands, console system-mod manifest transaction and actual browser UI acceptance.",
++      "changeHints": [
++        "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs",
++        "BookOfEternityClient/WebUi/BrowserClientSettingsService.cs",
++        "BookOfEternityClient/WebUi/BrowserAudioService.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-client-bootstrap",
++          "when": "Shared leased settings byte reader/bootstrap changes."
++        },
++        {
++          "id": "portable-storage-publication",
++          "when": "Journal protocol/outcome implementation changes."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 4,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortablePreparedSettingsTests.*"
 +          ]
 +        }
 +      ]

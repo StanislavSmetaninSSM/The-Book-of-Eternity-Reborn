@@ -2,29 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-storage-publication",
-      "reason": "#1553 B2a extends the accepted publisher with explicit committed/rolled-back/uncertain results; its prior recovery contract remains required.",
+      "category": "portable-prepared-settings",
+      "reason": "#1553 B2b first bounded coordinator API and outcome/admission regressions; later service/endpoint/UI slices add their exact consumers.",
       "contracts": [
-        "logical publication outcome",
-        "process-crash recovery"
-      ]
-    },
-    {
-      "category": "portable-client-bootstrap",
-      "reason": "#1553 B2a common config+generation bootstrap, legacy admission and prepared ordinary file API.",
-      "contracts": [
-        "current-schema config bootstrap",
-        "generation fencing",
-        "legacy admission"
-      ]
-    },
-    {
-      "category": "portable-storage-consumers",
-      "reason": "#1553 B2a ordinary writer/generation routing affects these exact existing lease, session, I/O and compare-exchange consumers.",
-      "contracts": [
-        "session operation boundary",
-        "local UI owner",
-        "byte-preserving ordinary writer"
+        "prepared member publication",
+        "durable outcome vs runtime application",
+        "pending GM and local UI ownership",
+        "generation boundary"
       ]
     }
   ]

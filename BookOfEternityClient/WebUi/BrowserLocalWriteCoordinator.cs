@@ -3,7 +3,7 @@ using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.WebUi;
 
-public sealed class BrowserLocalWriteCoordinator
+public sealed partial class BrowserLocalWriteCoordinator
 {
     private static readonly TimeSpan LockLease = TimeSpan.FromSeconds(120);
 
