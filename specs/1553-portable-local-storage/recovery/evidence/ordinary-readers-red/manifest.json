@@ -1,0 +1,30 @@
+{
+  "sourceCommit": "e4990d8c97bb618fd7b9cf80ea47ee31c0b66c0d",
+  "catalogBlobAfterPatch": "196b257f2083d02bb50050a995d1e069217cc634",
+  "kind": "newly executed ordinary-readers-red; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "cb84fb7ba005e47122666c5d9907cbfb807383ccc7a6c5956ca702b44e842092",
+      "sanitizedSha256": "cb84fb7ba005e47122666c5d9907cbfb807383ccc7a6c5956ca702b44e842092"
+    },
+    {
+      "path": "portable-ordinary-readers-unit-001.trx",
+      "originalSha256": "3026a19b064a68cdb1a9c570414056103c834b9471ebac3f562cf7961f7eb88c",
+      "sanitizedSha256": "735ea428c7b6e2610a789b9e5658041bdf3d8501e56c0b1493c2e72d19435afb"
+    }
+  ],
+  "command": "source isolated env.sh; DOTNET_CLI_TELEMETRY_OPTOUT=1 POWERSHELL_TELEMETRY_OPTOUT=1 TESTINGPLATFORM_TELEMETRY_OPTOUT=1 pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-ordinary-readers -Parallelism 1",
+  "sourceAppliedTree": "2df70da9efecd16165eaa72b4f7d6e3ac38666ae",
+  "environment": "Linux x64, .NET SDK 10.0.401, .NET runtime 8.0.31, PowerShell 7.6.6; existing isolated homes/temp/cache; DOTNET_PROCESSOR_COUNT=1",
+  "result": "15 executed, 11 passed, 4 intended FIFO failures; exit 1; 3:18.2082565; selection and owned cleanup complete; no skips/timeouts/duplicates",
+  "restoreProof": {
+    "commit": "e4990d8c97bb618fd7b9cf80ea47ee31c0b66c0d",
+    "files": 3661,
+    "cleanBeforePatch": true,
+    "connectivityFsck": "passed",
+    "patchAndAfterBlobs": "verified",
+    "appliedTree": "2df70da9efecd16165eaa72b4f7d6e3ac38666ae"
+  }
+}

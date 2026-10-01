@@ -1,0 +1,68 @@
+{
+  "Categories": [
+    "portable-ordinary-readers"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "e4990d8c97bb618fd7b9cf80ea47ee31c0b66c0d",
+    "WorkingTreeFingerprint": "999342DE74B825480B334918DA83908946AC4A99F76169F4652E145DB682827E",
+    "ChangedFiles": 2
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-ordinary-readers",
+      "Seconds": 19.3837607,
+      "BudgetMinutes": 4,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0820598,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0364923,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0196939,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 173.4325209,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 9,
+  "WallTime": "00:03:18.2082565",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 15,
+    "CompletedCases": 15,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 15,
+    "Executed": 15,
+    "Passed": 11,
+    "Failed": 4
+  },
+  "DuplicateTests": []
+}
