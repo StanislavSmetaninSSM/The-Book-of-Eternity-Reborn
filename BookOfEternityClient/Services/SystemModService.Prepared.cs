@@ -10,6 +10,26 @@ public sealed partial class SystemModService
     internal async Task<PreparedSystemModManifest> PrepareManifestForGmAsync(
         FileSystemManager.CanonicalWriteLease lease, IReadOnlyCollection<string> enabledFiles, byte[]? currentBytes)
     {
+        var mods = await ReadAvailableModsAsync(lease, enabledFiles);
+        var active = mods.Where(mod => mod.Enabled).ToArray();
+        var normalizedEnabled = active.Select(mod => mod.FileName).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+        var manifest = BuildManifestNode(mods, normalizedEnabled);
+        var currentJson = currentBytes == null ? null : LocalSettingsPreparation.DecodeText(currentBytes);
+        byte[] desired;
+        if (currentBytes != null && SemanticallyMatchesExistingManifest(currentJson, manifest))
+            desired = currentBytes;
+        else
+        {
+            manifest["_lastUpdated"] = DateTime.UtcNow.ToString("o");
+            desired = LocalSettingsPreparation.EncodeText(manifest.ToJsonString(JsonOpts));
+        }
+        _fs.VerifyCurrentSessionOperation(lease);
+        return new(desired, normalizedEnabled, active);
+    }
+
+    internal async Task<IReadOnlyList<SystemModDescriptor>> ReadAvailableModsAsync(
+        FileSystemManager.CanonicalWriteLease lease, IReadOnlyCollection<string> enabledFiles)
+    {
         ArgumentNullException.ThrowIfNull(enabledFiles);
         _fs.EnsureCanonicalWriteLeaseActive(lease);
         _fs.VerifyCurrentSessionOperation(lease);
@@ -34,19 +54,7 @@ public sealed partial class SystemModService
                 mods.Add(BuildDescriptor(path, LocalSettingsPreparation.DecodeText(bytes), includeContent: true, enabled.Contains(fileName)));
             }
         }
-        var active = mods.Where(mod => mod.Enabled).ToArray();
-        var normalizedEnabled = active.Select(mod => mod.FileName).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
-        var manifest = BuildManifestNode(mods, normalizedEnabled);
-        var currentJson = currentBytes == null ? null : LocalSettingsPreparation.DecodeText(currentBytes);
-        byte[] desired;
-        if (currentBytes != null && SemanticallyMatchesExistingManifest(currentJson, manifest))
-            desired = currentBytes;
-        else
-        {
-            manifest["_lastUpdated"] = DateTime.UtcNow.ToString("o");
-            desired = LocalSettingsPreparation.EncodeText(manifest.ToJsonString(JsonOpts));
-        }
         _fs.VerifyCurrentSessionOperation(lease);
-        return new(desired, normalizedEnabled, active);
+        return mods;
     }
 }

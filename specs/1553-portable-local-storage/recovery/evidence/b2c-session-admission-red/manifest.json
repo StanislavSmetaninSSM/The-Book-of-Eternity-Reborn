@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "8edef0d326a6bc813d5c1a454011ff8a0afb0221",
+  "catalogBlobAfterPatch": "14e7851b5ac4fde7c2555aa82d5235996b5f1e89",
+  "kind": "newly executed b2c-session-admission-red; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "1883efe6806fcaf1cceee4e4ca6f0758a6a1e745bcc68409a0b63d8c8c6e8858",
+      "sanitizedSha256": "1883efe6806fcaf1cceee4e4ca6f0758a6a1e745bcc68409a0b63d8c8c6e8858"
+    },
+    {
+      "path": "portable-console-settings-session-unit-001.trx",
+      "originalSha256": "6e5ec5dddb356f773a35a6911c7190a4cd725c410e3bfb83b17da6e0518636f5",
+      "sanitizedSha256": "de9e53059e696155055f5dab3a0fff1c541536192456809f8d3c3706acb3b3e6"
+    }
+  ]
+}
