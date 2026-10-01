@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "3c66f2125eb0b2f7b69a7c22188f08ba89f4f302",
+  "sourceFingerprint": "90C72774541F2A89A56DE92AFF516F64042EF6253052E3DE5E65C6963C9CCC83",
+  "patchSha256": "a2fdc38037603bada35bc546fca0da90395e4811666143638e3baa7104341c08",
+  "appliedSourceTree": "09e5efe98813b3527403e6348367161972b41a98",
+  "platform": "Linux x64",
+  "toolchain": {
+    "sdk": "10.0.401",
+    "runtime": "8.0.31",
+    "powershell": "7.6.6"
+  },
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category portable-directory-same-lease-recovery -Parallelism 1",
+  "scope": "Causal four-case RED: repeated same-tree/ancestor deletion destroys retained scratch parents and fails later real recovery; generation-conflict rows incorrectly return success. No acceptance.",
+  "categories": [
+    "portable-directory-same-lease-recovery"
+  ],
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 4,
+    "CompletedCases": 4,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 4,
+    "Executed": 4,
+    "Passed": 0,
+    "Failed": 4
+  },
+  "duration": "00:02:30.6613744",
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedCleanup": true,
+  "runtimeCleanup": true,
+  "artifacts": [
+    {
+      "file": "summary.json",
+      "originalSha256": "536180f9aabdf2e7b2429c5ea19da0ad6fae3f5490649bc2f2ff6a4c835dd277",
+      "sanitizedSha256": "536180f9aabdf2e7b2429c5ea19da0ad6fae3f5490649bc2f2ff6a4c835dd277",
+      "sanitizedBytes": 1481
+    },
+    {
+      "file": "plan.json",
+      "originalSha256": "e6f698d7b783d6169c5a34c6bab3868aa6f2059d44d4ef35dee2dbef30d0a672",
+      "sanitizedSha256": "e6f698d7b783d6169c5a34c6bab3868aa6f2059d44d4ef35dee2dbef30d0a672",
+      "sanitizedBytes": 1148
+    },
+    {
+      "file": "portable-directory-same-lease-recovery-unit-001.trx",
+      "originalSha256": "2cd86fb8e1e56cf750ab52a877422ac1fa3a7a8cfa9ef0421eb99a9f71dd4e9e",
+      "sanitizedSha256": "fc5925b8ac8a356714a22af23a24abeff89ca220a87e4d03bbffa6e0cd90fe11",
+      "sanitizedBytes": 23337
+    }
+  ]
+}
