@@ -78,13 +78,87 @@ index 70079f9d..4dc1ce30 100644
  
      private void CleanupBackupCore(string backupFullPath)
 diff --git a/tests/categories.json b/tests/categories.json
-index 0a621b60..532a1bd0 100644
+index 0a621b60..ad714ece 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -1,6 +1,142 @@
+@@ -1,6 +1,216 @@
  {
    "schemaVersion": 1,
    "categories": [
++    {
++      "id": "portable-backup-recovery",
++      "responsibility": "Actual public backup APIs interrupted in owned processes, normal separate-process lease recovery, exact complete decisions, conflicts, hard links and unchanged synthetic save ZIPs.",
++      "excludes": "Whole-flow atomicity, broad QTE/wound/turn-lifecycle or physical browser receipt matrices.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
++        "BookOfEternityClient/IO/StateDistributor.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess",
++            "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdUnknownLaterBackupOrGenerationRetainsEarlierTargetAndEvidence",
++            "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdRestoreAndCleanupPreserveExternalHardLinkNames"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-backup-linux-special",
++      "responsibility": "Required Linux FIFO source/target/backup rejection through public APIs in bounded owned processes; no Windows early return.",
++      "excludes": "Whole-flow atomicity, broad QTE/wound/turn-lifecycle or physical browser receipt matrices.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
++        "BookOfEternityClient/IO/StateDistributor.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableBackupRecoveryTests.LinuxFifoIsRejectedInBoundedActualApiProcess"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-backup-treatment-claims",
++      "responsibility": "Actual StateDistributor accepted wound input and real held treatment/resource/item claim retention across unresolved backup and same-lease committed debt.",
++      "excludes": "Whole-flow atomicity, broad QTE/wound/turn-lifecycle or physical browser receipt matrices.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
++        "BookOfEternityClient/IO/StateDistributor.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "integration",
++          "tests": [
++            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BackupUncertaintyRetainsRealTreatmentResourceAndItemClaims"
++          ]
++        }
++      ]
++    },
 +    {
 +      "id": "portable-backup-consumers",
 +      "responsibility": "Actual StateDistributor backup capture, reverse restoration and accepted cleanup uncertainty; no later compensation or diagnostic reversal.",

@@ -1,0 +1,101 @@
+{
+  "Categories": [
+    "portable-backup-api",
+    "portable-backup-boundaries",
+    "portable-backup-publication",
+    "portable-backup-consumers",
+    "portable-backup-qte"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-backup-api",
+      "reason": "Public ordinary sync/async backup creation, independently seeded restore and cleanup with exact bytes and B1 decision semantics on Linux/Windows.",
+      "contracts": [
+        "FR-002 through FR-007; ordinary backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-boundaries",
+      "reason": "Ordinary backup path/type/link, exact absence/empty/hard-link, real lease/generation and same-lease recovery boundaries. Each test has isolated mutable state.",
+      "contracts": [
+        "FR-002 through FR-007; ordinary backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-publication",
+      "reason": "Nontransient warm backup lifecycle faults, complete restore membership, exact rollback/committed outcomes, unknown bytes and postcommit logger failure.",
+      "contracts": [
+        "FR-002 through FR-007; ordinary backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-consumers",
+      "reason": "Actual StateDistributor backup capture, reverse restoration and accepted cleanup uncertainty; no later compensation or diagnostic reversal.",
+      "contracts": [
+        "FR-005/006; immediate consumer unresolved/accepted boundary"
+      ]
+    },
+    {
+      "category": "portable-backup-qte",
+      "reason": "Actual QTE backup publication and same-lease debt reach its immediate distributor boundary; uncertainty excludes wider baseline compensation and later writes.",
+      "contracts": [
+        "FR-005/006; immediate consumer unresolved/accepted boundary"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "0a503418b68d5abcaa1deddc28a550ecc66e4075",
+    "WorkingTreeFingerprint": "F64C2311DF225BEFC0FB353FA368C031AFF3E56C4DE13CF5893D5922DFC557D0",
+    "ChangedFiles": 3
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0665557,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0086141,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0162631,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 161.8855781,
+      "Completed": false
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 30,
+  "WallTime": "00:02:42.1129569",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 0,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 0,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

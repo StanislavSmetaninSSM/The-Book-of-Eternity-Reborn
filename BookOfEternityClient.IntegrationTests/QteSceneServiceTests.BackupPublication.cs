@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -43,9 +44,9 @@ public sealed partial class QteSceneServiceTests
                 }
             });
         var service = CreateRuntimeCapableService(files);
-        var outcome = new QteTerminalOutcome
+        var outcome = new QteSceneService.QteTerminalOutcome
         {
-            ResponseFragment = JsonSerializer.SerializeToElement(new { weatherChange = new { description = "accepted weather" }, experienceGained = 10 })
+            ResponseFragment = new JsonObject { ["weatherChange"] = new JsonObject { ["description"] = "accepted weather" }, ["experienceGained"] = 10 }
         };
         await Assert.ThrowsAsync<CoordinatedStatePublicationUncertainException>(() => service.ApplyTerminalOutcomeStateChangesAsync(outcome));
         Assert.Equal(1, reached); Assert.Equal(0, laterMutations);

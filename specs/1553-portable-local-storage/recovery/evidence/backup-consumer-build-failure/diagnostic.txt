@@ -1,0 +1,1 @@
+Build-integration exit 1: QteSceneServiceTests.BackupPublication.cs(46,27), CS0246: QteTerminalOutcome requires QteSceneService qualification. Existing type declares JsonObject ResponseFragment. Fixture corrected to both declared contracts. Zero tests executed; production unchanged.

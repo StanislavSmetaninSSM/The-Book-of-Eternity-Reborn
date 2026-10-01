@@ -14,6 +14,49 @@ public static class TrustedLocalPublicationCrashFixture
     {
         if (args.Length != 4) return 64;
         var files = new FileSystemManager(args[0], NullLogger<FileSystemManager>.Instance);
+        if (args[2].StartsWith("backup-", StringComparison.Ordinal))
+        {
+            try
+            {
+                if (args[2] is "backup-recover" or "backup-conflict")
+                {
+                    await using var recoveryLease = await files.AcquireCanonicalWriteLeaseAsync();
+                    return args[2] == "backup-recover" ? 0 : 78;
+                }
+                files = new FileSystemManager(args[0], NullLogger<FileSystemManager>.Instance,
+                    PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+                    {
+                        LocalPublicationObserver = (phase, index) =>
+                        {
+                            if (args[3] == "cleanup-debt")
+                            {
+                                if (phase == TrustedLocalPublicationPhase.Committed) throw new BeginRecovery();
+                                return;
+                            }
+                            var reached = args[3] switch
+                            {
+                                "first-member" => phase == TrustedLocalPublicationPhase.MemberPublished && index == 0,
+                                "last-member" => phase == TrustedLocalPublicationPhase.MemberPublished && index == 1,
+                                _ => phase.ToString() == args[3]
+                            };
+                            if (reached) Environment.Exit(73);
+                        }
+                    });
+                const string source = "game_state/core/backup-source.bin";
+                var backup = files.ResolvePath("game_state/core/arbitrary.test-backup");
+                switch (args[2])
+                {
+                    case "backup-create": await files.CreateBackupAsync(source); break;
+                    case "backup-restore": await files.RestoreBackupAsync(backup, source); break;
+                    case "backup-cleanup": await files.CleanupBackupAsync(backup); break;
+                    default: return 64;
+                }
+                if (args[3] == "cleanup-debt") Environment.Exit(73);
+                return 78;
+            }
+            catch (InvalidDataException) when (args[2] == "backup-conflict" || args[3] == "reject") { return 0; }
+            catch (Exception ex) { Console.Error.WriteLine(ex); return 1; }
+        }
         if (args[2].StartsWith("directory-", StringComparison.Ordinal))
         {
             try
