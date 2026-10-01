@@ -194,14 +194,12 @@ public partial class FileSystemManager
             VerifyCurrentSessionOperation(lease);
             EnsureCanonicalPathStillSafe(relativePath, expectedPath);
             scope.ValidateFile(path); // Revalidate after the read boundary hook, before opening.
-            FileStream stream;
+            FileStream? stream;
             try
             {
-                stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete,
-                    bufferSize: 4096, FileOptions.Asynchronous | FileOptions.SequentialScan);
+                stream = OpenValidatedOrdinaryFile(scope, path, asynchronous: true);
+                if (stream == null) return null;
             }
-            catch (FileNotFoundException) { scope.ValidateFile(path); return null; }
-            catch (DirectoryNotFoundException) { scope.ValidateFile(path); return null; }
             catch (Exception ex) when (IsTransientReadOpenException(ex) && attempt < TransientFileAccessRetryCount)
             {
                 await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);
@@ -211,12 +209,9 @@ public partial class FileSystemManager
             {
                 if (_hooks?.AfterCanonicalReadInitialValidationAsync != null)
                     await _hooks.AfterCanonicalReadInitialValidationAsync(relativePath);
-                using var bytes = new MemoryStream();
-                await stream.CopyToAsync(bytes, cancellationToken);
-                scope.ValidateFile(path, allowMissing: false);
-                EnsureCanonicalPathStillSafe(relativePath, expectedPath);
+                var snapshot = await ReadOpenedOrdinarySnapshotAsync(stream, scope, relativePath, expectedPath, cancellationToken);
                 VerifyCurrentSessionOperation(lease);
-                return bytes.ToArray();
+                return snapshot.Content;
             }
         }
     }

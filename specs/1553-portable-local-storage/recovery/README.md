@@ -2,7 +2,7 @@
 
 ## Active T030-E WIP recovery
 
-This reader test-first WIP requires applying [ordinary-readers-pending.patch](ordinary-readers-pending.patch) once after verifying [its exact manifest](ordinary-readers-pending.json). Check the base blobs, patch byte count/SHA256, run git apply --check then git apply, and verify both after-blobs before any selected test. The integration test and category catalog remain patch-backed until normal delivery; other current files are normal blobs. This pending packet is distinct from the accepted historical B3b packets below.
+This reader implementation WIP requires applying [ordinary-readers-pending.patch](ordinary-readers-pending.patch) once after verifying [its exact manifest](ordinary-readers-pending.json). Check the base blobs, patch byte count/SHA256, run git apply --check then git apply, and verify all four after-blobs before any selected test. The manager, browser rollback service, integration test and category catalog remain patch-backed until normal delivery; other current files are normal blobs. This pending packet is distinct from the accepted historical B3b packets below.
 
 ## Accepted B3b Windows handle-comparison correction
 
