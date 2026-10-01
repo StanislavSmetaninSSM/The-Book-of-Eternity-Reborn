@@ -1,7 +1,7 @@
-<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="3f7efb49-ffa2-4db9-97fe-b88a6a4bd00e" name="portable-client-bootstrap RED" runUser="$USER">
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="3f7efb49-ffa2-4db9-97fe-b88a6a4bd00e" name="b2a-round1-red" runUser="$USER">
   <ns0:Times creation="2026-09-30T19:48:50.1408271-04:00" queuing="2026-09-30T19:48:50.1408272-04:00" start="2026-09-30T19:48:46.6433021-04:00" finish="2026-09-30T19:49:15.3309276-04:00" />
   <ns0:TestSettings name="default" id="611b93c4-8117-4ae0-9741-30a416097765">
-    <ns0:Deployment runDeploymentRoot="_ff00c3d48a40_2026-09-30_19_48_50" />
+    <ns0:Deployment runDeploymentRoot="$RUN" />
   </ns0:TestSettings>
   <ns0:Results>
     <ns0:UnitTestResult executionId="4f225220-498a-4e2c-b622-0b30d9c1f487" testId="794b4c94-8643-36c1-34af-769d79ac6782" testName="BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: &quot;append&quot;)" computerName="$HOST" duration="00:00:05.0145153" startTime="2026-09-30T19:48:58.8415148-04:00" endTime="2026-09-30T19:48:58.8415150-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4f225220-498a-4e2c-b622-0b30d9c1f487">
@@ -288,19 +288,19 @@
 </ns0:StdOut>
     </ns0:Output>
     <ns0:RunInfos>
-      <ns0:RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-09-30T19:48:53.8372919-04:00">
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T19:48:53.8372919-04:00">
         <ns0:Text>[xUnit.net 00:00:06.71]     BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: "compare") [FAIL]</ns0:Text>
       </ns0:RunInfo>
-      <ns0:RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-09-30T19:48:58.8440599-04:00">
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T19:48:58.8440599-04:00">
         <ns0:Text>[xUnit.net 00:00:11.72]     BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: "append") [FAIL]</ns0:Text>
       </ns0:RunInfo>
-      <ns0:RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-09-30T19:49:03.8516392-04:00">
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T19:49:03.8516392-04:00">
         <ns0:Text>[xUnit.net 00:00:16.73]     BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: "delete") [FAIL]</ns0:Text>
       </ns0:RunInfo>
-      <ns0:RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-09-30T19:49:08.8580901-04:00">
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T19:49:08.8580901-04:00">
         <ns0:Text>[xUnit.net 00:00:21.74]     BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: "write") [FAIL]</ns0:Text>
       </ns0:RunInfo>
-      <ns0:RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-09-30T19:49:13.8674641-04:00">
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T19:49:13.8674641-04:00">
         <ns0:Text>[xUnit.net 00:00:26.75]     BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: "bootstrap") [FAIL]</ns0:Text>
       </ns0:RunInfo>
     </ns0:RunInfos>

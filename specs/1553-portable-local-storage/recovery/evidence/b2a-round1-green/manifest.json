@@ -1,0 +1,28 @@
+{
+  "sourceCommit": "6435920da57471ab852f028e394374097f78a9c9",
+  "catalogBlobAfterPatch": "7b6ad998bc2ffb09ca45ae5581e2b37815588166",
+  "kind": "newly executed b2a-round1-green; sanitized originals, not recovered prior evidence",
+  "sanitization": "Repository/toolchain absolute paths, run user, computer and deployment names are replaced; results and timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "e294c6876bc1bc463282c0f20f49b112dce3fffdbfdf0be339654cffecf41afa",
+      "sanitizedSha256": "e294c6876bc1bc463282c0f20f49b112dce3fffdbfdf0be339654cffecf41afa"
+    },
+    {
+      "path": "portable-client-bootstrap-unit-001.trx",
+      "originalSha256": "559e732c8da18bc02f2a23d4efb7928d0229bf40e6308fdaab262b9888afc109",
+      "sanitizedSha256": "a276038077d706b8ae5492f38b8635c8e15ddbc631c7efefac7b4dc4a65141bb"
+    },
+    {
+      "path": "portable-storage-consumers-integration-002.trx",
+      "originalSha256": "2a7d2c2d13b974fd975c811272d0ee1f336179645e52d47d86ed5aa656da6135",
+      "sanitizedSha256": "b31929d4e93ee475684572055fc18e36e1e5076919fc19450c343c6f32f090ee"
+    },
+    {
+      "path": "portable-storage-consumers-unit-003.trx",
+      "originalSha256": "a7173ad8cc84fa0bc656518cdb7a262e01dd8c8d7b4aba346621d4d300efd7c1",
+      "sanitizedSha256": "fa61b8be87f9a78a55e93b47e9ba0a5598fde8b41bc6c8573092156115e3850b"
+    }
+  ]
+}

@@ -1,5 +1,13 @@
-# Pending B2a WIP catalog recovery
+# B2a catalog recovery procedure
 
-2026-09-30 UTC. This is a B2a WIP catalog recovery boundary, not accepted implementation; the current source and test phase is recorded in ../plan.md. Large catalog publication stalled; all other source and planning changes are published normally. The exact catalog delta is retained in categories-pending.patch so recovery does not depend on the old environment.
+The task branch contains the current source and its evidence normally. The catalog is preserved as an exact small patch because full-catalog upload stalled. This is a publication boundary, not a statement that the current source is an untested scaffold; see `../plan.md` for current source, test and review status.
 
-Before running selected tests, from repository root run `git apply --check specs/1553-portable-local-storage/recovery/categories-pending.patch`, then `git apply specs/1553-portable-local-storage/recovery/categories-pending.patch`. Verify `git hash-object tests/categories.json` equals `7b6ad998bc2ffb09ca45ae5581e2b37815588166`. Do not apply twice. Before application the catalog and selection intentionally describe an incomplete WIP checkpoint. Publish the catalog normally and remove this pending patch/notice only after verifying the normal blob. Do not retry a large upload blindly; smaller source checkpoints can continue while this exact patch preserves the catalog. This notice does not claim B2 acceptance; see ../plan.md for exact RED/GREEN source evidence. Base before this WIP: 706604f40728764ce02865d55b0117645e6acf45. Exact original scaffold tree after applying the patch and excluding these two recovery-only files: 4212f4f36a3e5fc51bb80ea27eb193bf9b96859b.
+After a fresh clone, verify the branch HEAD against the latest recorded remote checkpoint and confirm the checkout is clean. From the repository root:
+
+1. Run `git apply --check specs/1553-portable-local-storage/recovery/categories-pending.patch`
+2. Run `git apply specs/1553-portable-local-storage/recovery/categories-pending.patch` once
+3. Verify `git hash-object tests/categories.json` equals `7b6ad998bc2ffb09ca45ae5581e2b37815588166`
+
+Do not apply twice to an implementation checkout whose patch is already applied. Before application, the catalog and selection intentionally describe an incomplete WIP publication. Keep the exact patch until the normal catalog blob has been published and verified, then remove this pending notice and patch. Do not retry a large upload blindly; bounded source/evidence checkpoints may continue with this recovery procedure.
+
+Historical whole-tree proofs in the plan apply only to their named source commits. In particular, the original scaffold tree `4212f4f36a3e5fc51bb80ea27eb193bf9b96859b` was reconstructed from `017eee06ed23b05f835842e8e7da2613aa4b5eaa` after applying the patch and excluding its two recovery-only files; it is not the expected tree of later checkpoints. Sanitized newly executed summary/TRX bundles are retained under `evidence/`, with exact source/patch identity and original/sanitized hashes in each manifest.
