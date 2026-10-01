@@ -2,19 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-console-settings-session",
-      "reason": "Corrected initial-settings failure boundary, real initializer wiring and all affected console recovery/preview consumers; clean committed positive control must allow continuation.",
+      "category": "portable-session-generation",
+      "reason": "Initial test-first exact generation snapshot and cold nonregular/fence reader cases; rotation/clear remain unchanged.",
       "contracts": [
-        "fresh-game settings admission failure",
-        "generation-bound dispatch continuation"
-      ]
-    },
-    {
-      "category": "portable-console-settings-client",
-      "reason": "Cover the five exact real-process menu consumers after the pending recovery-flow and initial-caller changes. Unchanged preparation cases are already green and excluded.",
-      "contracts": [
-        "console settings menu behavior",
-        "real process persistence and discard"
+        "exact generation bytes and explicit absence",
+        "nonrecursive regular-file generation admission"
       ]
     }
   ]

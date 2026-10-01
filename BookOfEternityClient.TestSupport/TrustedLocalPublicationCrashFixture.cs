@@ -10,6 +10,39 @@ public static class TrustedLocalPublicationCrashFixture
     {
         if (args.Length != 4) return 64;
         var files = new FileSystemManager(args[0], NullLogger<FileSystemManager>.Instance);
+        if (args[2] == "generation-read")
+        {
+            var request = args[3].Split(':');
+            if (request.Length != 2) return 64;
+            var reject = request[1] == "reject";
+            try
+            {
+                if (request[0] == "bound-write")
+                    await SessionOperationContext.RunBoundAsync(files, args[1], async () =>
+                    {
+                        await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+                            if (files.ReadLocalGenerationSnapshot(lease).Binding.Id != args[1])
+                                throw new InvalidOperationException("The snapshot returned a different generation.");
+                        await files.WriteFileAtomicBytesAsync("game_state/core/read-proof.json", [1]);
+                    });
+                else
+                {
+                    await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+                    var id = request[0] switch
+                    {
+                        "snapshot" => files.ReadLocalGenerationSnapshot(lease).Binding.Id,
+                        "existing" => files.ReadExistingSessionGeneration(lease),
+                        "current" => files.IsCurrentSessionGeneration(lease, args[1]) ? args[1] : null,
+                        "get-or-create" => files.GetOrCreateSessionGeneration(lease),
+                        _ => throw new ArgumentException("Unknown generation reader.")
+                    };
+                    if (id != args[1]) throw new InvalidOperationException("The reader returned a different generation.");
+                }
+                return reject ? 78 : 0;
+            }
+            catch (InvalidDataException) when (reject) { return 0; }
+            catch (Exception ex) { Console.Error.WriteLine(ex); return 1; }
+        }
         if (args[2] == "client-nonregular")
         {
             try
