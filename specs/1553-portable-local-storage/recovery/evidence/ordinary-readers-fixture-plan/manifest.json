@@ -1,0 +1,20 @@
+{
+  "sourceCommit": "9091b6d9c92f17a32094d84de79d61579c068d01",
+  "sourceAppliedTree": "a29c055fc6b05aee16f351299c57eb652cca1047",
+  "command": "source isolated env.sh; DOTNET_CLI_TELEMETRY_OPTOUT=1 POWERSHELL_TELEMETRY_OPTOUT=1 TESTINGPLATFORM_TELEMETRY_OPTOUT=1 pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-ordinary-read-windows -PlanOnly -Parallelism 1",
+  "environment": "Linux x64, .NET SDK 10.0.401/runtime 8.0.31, PowerShell 7.6.6; documented isolated state, DOTNET_PROCESSOR_COUNT=1",
+  "result": "Both integration/unit projects freshly built; two descriptors / 25 planned cases, zero executed tests; exit 0, 5:28.0471434, complete owned cleanup. Execution selection is incomplete by design for PlanOnly, not behavioral GREEN.",
+  "sourceReview": "Independent GPT-6 Astra XHigh scoped source re-review received 2026-10-01 14:12 UTC accepted both fixture P2 corrections, with no new consequential issue. This is separate from native behavior, which remains entirely unrun.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "c66df12ea0c45e02c9336a98d4624ef5642587eb6acc6ec3cecd784d1bc80b91",
+      "sanitizedSha256": "c66df12ea0c45e02c9336a98d4624ef5642587eb6acc6ec3cecd784d1bc80b91"
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "76dbcb6b2d13498d91163bd979b2ee36c384486256632fe2b04036c0b2d7ad3a",
+      "sanitizedSha256": "76dbcb6b2d13498d91163bd979b2ee36c384486256632fe2b04036c0b2d7ad3a"
+    }
+  ]
+}
