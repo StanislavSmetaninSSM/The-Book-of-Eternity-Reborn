@@ -2,10 +2,33 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-coordinated-authority",
-      "reason": "One causal actual factory/helper regression before changing the platform comparer; other newly saved helper and cold qualifications remain unrun.",
+      "category": "portable-coordinated-publication",
+      "reason": "Correct the two observed post-commit diagnostic failures; cover exact images, all initial guards, duplicate final ordering and corrected alias/explicit original routes.",
       "contracts": [
-        "platform-distinct initial authority guards"
+        "durable disposition survives diagnostics",
+        "complete final member set"
+      ]
+    },
+    {
+      "category": "portable-coordinated-authority",
+      "reason": "Correct the reached Linux factory stale-guard failure.",
+      "contracts": [
+        "platform-distinct initial authority"
+      ]
+    },
+    {
+      "category": "portable-coordinated-lease",
+      "reason": "Cover the changed completed-release diagnostic branch and retained real-lease/primary-error contract.",
+      "contracts": [
+        "actual owned release and zero-write lease admission"
+      ]
+    },
+    {
+      "category": "portable-coordinated-recovery",
+      "reason": "First execution of the saved actual-helper cold cuts and outside hard-link/unknown/generation controls.",
+      "contracts": [
+        "whole-set cold recovery",
+        "outside alias preservation"
       ]
     }
   ]

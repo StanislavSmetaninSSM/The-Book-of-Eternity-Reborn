@@ -40,7 +40,8 @@ internal static class CoordinatedStateWriteHelper
 
     internal static PlannedWrite[] CreateAuthorityGuardWrites(LocalInteractionScope scope) =>
         scope.AuthoritySnapshots
-            .GroupBy(snapshot => snapshot.Path, StringComparer.OrdinalIgnoreCase)
+            .GroupBy(snapshot => snapshot.Path,
+                OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal)
             .Select(group => group.Last())
             .Select(snapshot => new PlannedWrite(
                 snapshot.Path,
@@ -113,7 +114,9 @@ internal static class CoordinatedStateWriteHelper
         }
         catch (Exception failure) when (completed)
         {
-            fs.LogCompletedCoordinatedWriteReleaseFailure(failure);
+            // Diagnostics are follow-up after an established completed result.
+            try { fs.LogCompletedCoordinatedWriteReleaseFailure(failure); }
+            catch { /* A failed warning sink cannot change that result. */ }
         }
     }
 
@@ -251,7 +254,10 @@ internal static class CoordinatedStateWriteHelper
         var outcome = await fs.PublishLocalFilesAsync(writeLease, changes);
         if (outcome.Disposition == TrustedLocalPublicationDisposition.Committed)
         {
-            fs.RequireCommittedLocalPublication(outcome);
+            // This branch has already established commitment. The manager
+            // only reports any cleanup failure; its logger is best-effort here.
+            try { fs.RequireCommittedLocalPublication(outcome); }
+            catch { /* Retain the committed result even if diagnostics fail. */ }
             return true;
         }
         if (outcome.Disposition == TrustedLocalPublicationDisposition.RolledBack)
