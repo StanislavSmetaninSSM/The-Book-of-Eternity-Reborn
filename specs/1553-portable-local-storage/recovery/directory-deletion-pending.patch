@@ -69,10 +69,10 @@ index 83bfbd22..24afa3fe 100644
          }
          catch
 diff --git a/specs/1553-portable-local-storage/research.md b/specs/1553-portable-local-storage/research.md
-index f226ef97..d6796ffa 100644
+index f226ef97..753830c2 100644
 --- a/specs/1553-portable-local-storage/research.md
 +++ b/specs/1553-portable-local-storage/research.md
-@@ -347,3 +347,17 @@ The [bounded save/load engineering map](save-load-cutover.md) and [admission add
+@@ -347,3 +347,20 @@ The [bounded save/load engineering map](save-load-cutover.md) and [admission add
  The [ordinary-reader map](ordinary-read-cutover.md) distinguishes content/presence and bytes-plus-real-LastWriteTimeUtc results from original physical publication receipts. It recommends common validated reads while preserving public recovery/quiescence/no-reacquire/absence behavior and explicit original entrypoints/scopes for old setup and recovery. Browser v6 before-image setup reads tracked bytes before attaching its recorder, so recorder presence or evidence-path exclusion alone is insufficient. The current B3b block does not migrate those readers; ordinary reads, later accepted publication and save/load retain their separate bounded verification.
  
  T031 implementation refinement: ordinary QTE acceptance/transport calls use the helper without callbacks; explicit AfterLegacyAcceptanceRuntimeWrittenAsync/AfterLegacyDeferredEffectMutationAsync preserve original recorder/recovery callbacks. AfterRuntimeWrittenAsync and final:* AfterDeferredEffectMutationAsync remain later domain hooks. Uncertainty bypasses domain compensation; the private Russian notice avoids unchanged-state/retry claims. This is the bounded helper/error boundary, not full accepted-turn or browser-v6 migration; current verified/unrun evidence lives in plan.md.
@@ -90,6 +90,9 @@ index f226ef97..d6796ffa 100644
 +### T031 original backup prerequisite exposed after T030-F
 +
 +The actual Linux `ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim` fixture at tested `efc28137` now passes its live-preparation tree stage (Procedure.cs 1065–1079), then fails during `StateDistributor.DistributeAsync` before the fixture returns (1183–1186): `FileSystemManager.CreateBackupCore` calls the original physical `WriteFileAtomicBytesCoreAsync`, whose descriptor-bound create-only publication is unsupported on Linux. Quarantine assertions at the test's line 256 onward were not reached. Preserve this failed/unqualified Linux consumer as a later T031 backup/accepted-publication prerequisite; do not weaken or bypass its fixture, copy method, receipts, original cleanup or physical backend in T030-F. Exact console snapshot and terminal-error cleanup consumers passed in that same separate partial run.
++
++
++The [future ordinary backup lifecycle map](backup-lifecycle-cutover.md) preserves the exact create/restore/evidence-delete/cleanup and StateDistributor/QTE outcome seams from immutable source. Creation alone is insufficient; the existing B1 mechanism can serve the bounded lifecycle while original browser/load/workspace/Daren routes and non-atomic whole distribution remain separate. This is read-only follow-on research, not implementation, approval or expansion of T030-F.
 diff --git a/tests/categories.json b/tests/categories.json
 index b63e8a81..0a621b60 100644
 --- a/tests/categories.json
