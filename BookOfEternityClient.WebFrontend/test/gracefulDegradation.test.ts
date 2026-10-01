@@ -20,8 +20,10 @@ function assert(condition: unknown, message: string) {
 }
 
 const hook = readSrc('hooks/useShellState.ts');
-assert(hook.includes('Promise.allSettled'), 'useShellState should use Promise.allSettled.');
-assert(!/Promise\.all\(/.test(hook), 'useShellState should not use Promise.all.');
+const loader = readSrc('hooks/loadShellState.ts');
+assert(hook.includes('return loadShellState(browserApi, setShellState, publicationOwner, advancedEnabled, isCurrent)'), 'useShellState should delegate to the owned settled loader.');
+assert(loader.includes('Promise.allSettled'), 'The shell loader should use Promise.allSettled.');
+assert(!/Promise\.all\(/.test(loader), 'The shell loader should not use Promise.all.');
 
 const banner = readSrc('components/ConnectionBanner.tsx');
 assert(banner.includes('is-disconnected'), 'ConnectionBanner should expose the disconnected class.');
