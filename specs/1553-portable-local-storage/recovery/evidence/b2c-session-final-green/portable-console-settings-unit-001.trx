@@ -1,0 +1,99 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="b168e7cd-f502-4d9c-8dc3-e63b5ef32616" name="b2c-session-final-green" runUser="$USER">
+  <ns0:Times creation="2026-10-01T00:34:58.3419262-04:00" queuing="2026-10-01T00:34:58.3419263-04:00" start="2026-10-01T00:34:56.4256952-04:00" finish="2026-10-01T00:34:58.7324142-04:00" />
+  <ns0:TestSettings name="default" id="4d038ae8-6a65-44a9-9090-0e64e46b634d">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="1c32573e-8b36-46ee-a497-1d65b7f273d9" testId="8c1bdd8e-4dbb-436b-14c5-2b23f3893cbd" testName="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.MissingModsDirectoryIsNotCreatedDuringPreparation" computerName="$HOST" duration="00:00:00.0176114" startTime="2026-10-01T00:34:58.5494108-04:00" endTime="2026-10-01T00:34:58.5494112-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1c32573e-8b36-46ee-a497-1d65b7f273d9" />
+    <ns0:UnitTestResult executionId="5788107d-a2de-408c-b1cd-457368cb79fb" testId="db75ac65-f350-d4a7-9ee2-0d101fdc14b4" testName="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedOrAbsentGenerationIsRejectedWithoutBootstrap(absent: False)" computerName="$HOST" duration="00:00:00.0171134" startTime="2026-10-01T00:34:58.3068927-04:00" endTime="2026-10-01T00:34:58.3068929-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5788107d-a2de-408c-b1cd-457368cb79fb" />
+    <ns0:UnitTestResult executionId="3a8d0ea4-ab46-432e-a4e5-6c2a3664f25a" testId="084ef64c-9120-43b6-eeb8-ebc0ff5dd6ae" testName="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedOrAbsentGenerationIsRejectedWithoutBootstrap(absent: True)" computerName="$HOST" duration="00:00:00.0134951" startTime="2026-10-01T00:34:58.2696948-04:00" endTime="2026-10-01T00:34:58.2696950-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3a8d0ea4-ab46-432e-a4e5-6c2a3664f25a" />
+    <ns0:UnitTestResult executionId="b4f1b852-8069-4bde-88ec-cd99dcd3a809" testId="9defe9b0-697a-6a9e-3ae1-c6ab0d622662" testName="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.LinkedModInputIsRejectedInsteadOfFollowingItsTarget" computerName="$HOST" duration="00:00:00.0264018" startTime="2026-10-01T00:34:58.3173460-04:00" endTime="2026-10-01T00:34:58.3173461-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b4f1b852-8069-4bde-88ec-cd99dcd3a809" />
+    <ns0:UnitTestResult executionId="60333411-8adb-40ba-b956-765adf583c5a" testId="2ec0f112-1fdc-68ec-444d-b4ea6b8c2b13" testName="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.PreparedSetPublishesThroughTheExistingCommonJournal" computerName="$HOST" duration="00:00:00.1571473" startTime="2026-10-01T00:34:58.2550691-04:00" endTime="2026-10-01T00:34:58.2551171-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="60333411-8adb-40ba-b956-765adf583c5a" />
+    <ns0:UnitTestResult executionId="1b907610-7bb1-4145-a47d-7c9f14f76c09" testId="df26a52c-80ca-00bb-b650-6289dc80e6ec" testName="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.EquivalentProjectionAndManifestRetainExactUtf16BytesAndWhitespace" computerName="$HOST" duration="00:00:00.0171137" startTime="2026-10-01T00:34:58.3643849-04:00" endTime="2026-10-01T00:34:58.3643851-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1b907610-7bb1-4145-a47d-7c9f14f76c09" />
+    <ns0:UnitTestResult executionId="d5e7f9f6-7394-47ed-977a-f66386de096b" testId="0a549c7d-9c72-7d8c-4c90-b0ed1e2185db" testName="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedConfigBaselineIsRejectedBeforePreparation" computerName="$HOST" duration="00:00:00.0351899" startTime="2026-10-01T00:34:58.5294545-04:00" endTime="2026-10-01T00:34:58.5294547-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d5e7f9f6-7394-47ed-977a-f66386de096b" />
+    <ns0:UnitTestResult executionId="6045f036-adae-428c-9a69-7d42366c1e58" testId="fe2bfb6d-2c2f-9576-d9a5-81045a3921a6" testName="BookOfEternityClient.Tests.SystemModServiceTests.WriteManifestForGmAsync_RebuildsInvalidManifest" computerName="$HOST" duration="00:00:00.0209678" startTime="2026-10-01T00:34:58.6487000-04:00" endTime="2026-10-01T00:34:58.6487002-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6045f036-adae-428c-9a69-7d42366c1e58" />
+    <ns0:UnitTestResult executionId="7e3e1f21-c12d-48e0-97a4-d154243c6752" testId="fb1ba453-0273-6420-8039-f1bc89a42f23" testName="BookOfEternityClient.Tests.SystemModServiceTests.WriteManifestForGmAsync_DoesNotRewrite_WhenSemanticsUnchanged" computerName="$HOST" duration="00:00:00.0701041" startTime="2026-10-01T00:34:58.6271320-04:00" endTime="2026-10-01T00:34:58.6271322-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7e3e1f21-c12d-48e0-97a4-d154243c6752" />
+    <ns0:UnitTestResult executionId="484127ac-19ba-438b-af36-4737d0da93b3" testId="bfec7ade-6041-ee83-82bc-aaf95bbca5c3" testName="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.PreparationDeclaresThreeExactMembersWithoutFilesOrRuntimeMutation" computerName="$HOST" duration="00:00:00.1090439" startTime="2026-10-01T00:34:58.4926456-04:00" endTime="2026-10-01T00:34:58.4926460-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="484127ac-19ba-438b-af36-4737d0da93b3" />
+    <ns0:UnitTestResult executionId="907de924-1eae-469f-a0b9-a7d292173018" testId="e0ec5fb5-6949-ca93-888f-4937a0bb0f2d" testName="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.OneModSnapshotNormalizesDetachedCandidateAndProjectionWithoutMutatingDraft" computerName="$HOST" duration="00:00:00.0322850" startTime="2026-10-01T00:34:58.3467221-04:00" endTime="2026-10-01T00:34:58.3467223-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="907de924-1eae-469f-a0b9-a7d292173018" />
+    <ns0:UnitTestResult executionId="395fe676-4801-4072-8e1f-48f96df0a3a1" testId="1e6b8af1-3439-6396-6db4-11e92a4e918a" testName="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ReleasedLeaseCannotPrepareMemberImages" computerName="$HOST" duration="00:00:00.0134645" startTime="2026-10-01T00:34:58.3780370-04:00" endTime="2026-10-01T00:34:58.3780372-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="395fe676-4801-4072-8e1f-48f96df0a3a1" />
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.SystemModServiceTests.WriteManifestForGmAsync_RebuildsInvalidManifest" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fe2bfb6d-2c2f-9576-d9a5-81045a3921a6">
+      <ns0:Execution id="6045f036-adae-428c-9a69-7d42366c1e58" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SystemModServiceTests" name="WriteManifestForGmAsync_RebuildsInvalidManifest" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.SystemModServiceTests.WriteManifestForGmAsync_DoesNotRewrite_WhenSemanticsUnchanged" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fb1ba453-0273-6420-8039-f1bc89a42f23">
+      <ns0:Execution id="7e3e1f21-c12d-48e0-97a4-d154243c6752" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SystemModServiceTests" name="WriteManifestForGmAsync_DoesNotRewrite_WhenSemanticsUnchanged" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.PreparationDeclaresThreeExactMembersWithoutFilesOrRuntimeMutation" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="bfec7ade-6041-ee83-82bc-aaf95bbca5c3">
+      <ns0:Execution id="484127ac-19ba-438b-af36-4737d0da93b3" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests" name="PreparationDeclaresThreeExactMembersWithoutFilesOrRuntimeMutation" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.EquivalentProjectionAndManifestRetainExactUtf16BytesAndWhitespace" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="df26a52c-80ca-00bb-b650-6289dc80e6ec">
+      <ns0:Execution id="1b907610-7bb1-4145-a47d-7c9f14f76c09" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests" name="EquivalentProjectionAndManifestRetainExactUtf16BytesAndWhitespace" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedConfigBaselineIsRejectedBeforePreparation" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0a549c7d-9c72-7d8c-4c90-b0ed1e2185db">
+      <ns0:Execution id="d5e7f9f6-7394-47ed-977a-f66386de096b" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests" name="ChangedConfigBaselineIsRejectedBeforePreparation" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.OneModSnapshotNormalizesDetachedCandidateAndProjectionWithoutMutatingDraft" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e0ec5fb5-6949-ca93-888f-4937a0bb0f2d">
+      <ns0:Execution id="907de924-1eae-469f-a0b9-a7d292173018" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests" name="OneModSnapshotNormalizesDetachedCandidateAndProjectionWithoutMutatingDraft" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.PreparedSetPublishesThroughTheExistingCommonJournal" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2ec0f112-1fdc-68ec-444d-b4ea6b8c2b13">
+      <ns0:Execution id="60333411-8adb-40ba-b956-765adf583c5a" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests" name="PreparedSetPublishesThroughTheExistingCommonJournal" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedOrAbsentGenerationIsRejectedWithoutBootstrap(absent: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="db75ac65-f350-d4a7-9ee2-0d101fdc14b4">
+      <ns0:Execution id="5788107d-a2de-408c-b1cd-457368cb79fb" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests" name="ChangedOrAbsentGenerationIsRejectedWithoutBootstrap" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.LinkedModInputIsRejectedInsteadOfFollowingItsTarget" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9defe9b0-697a-6a9e-3ae1-c6ab0d622662">
+      <ns0:Execution id="b4f1b852-8069-4bde-88ec-cd99dcd3a809" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests" name="LinkedModInputIsRejectedInsteadOfFollowingItsTarget" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedOrAbsentGenerationIsRejectedWithoutBootstrap(absent: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="084ef64c-9120-43b6-eeb8-ebc0ff5dd6ae">
+      <ns0:Execution id="3a8d0ea4-ab46-432e-a4e5-6c2a3664f25a" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests" name="ChangedOrAbsentGenerationIsRejectedWithoutBootstrap" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.MissingModsDirectoryIsNotCreatedDuringPreparation" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8c1bdd8e-4dbb-436b-14c5-2b23f3893cbd">
+      <ns0:Execution id="1c32573e-8b36-46ee-a497-1d65b7f273d9" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests" name="MissingModsDirectoryIsNotCreatedDuringPreparation" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ReleasedLeaseCannotPrepareMemberImages" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1e6b8af1-3439-6396-6db4-11e92a4e918a">
+      <ns0:Execution id="395fe676-4801-4072-8e1f-48f96df0a3a1" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests" name="ReleasedLeaseCannotPrepareMemberImages" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="8c1bdd8e-4dbb-436b-14c5-2b23f3893cbd" executionId="1c32573e-8b36-46ee-a497-1d65b7f273d9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="db75ac65-f350-d4a7-9ee2-0d101fdc14b4" executionId="5788107d-a2de-408c-b1cd-457368cb79fb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="084ef64c-9120-43b6-eeb8-ebc0ff5dd6ae" executionId="3a8d0ea4-ab46-432e-a4e5-6c2a3664f25a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="9defe9b0-697a-6a9e-3ae1-c6ab0d622662" executionId="b4f1b852-8069-4bde-88ec-cd99dcd3a809" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="2ec0f112-1fdc-68ec-444d-b4ea6b8c2b13" executionId="60333411-8adb-40ba-b956-765adf583c5a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="df26a52c-80ca-00bb-b650-6289dc80e6ec" executionId="1b907610-7bb1-4145-a47d-7c9f14f76c09" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="0a549c7d-9c72-7d8c-4c90-b0ed1e2185db" executionId="d5e7f9f6-7394-47ed-977a-f66386de096b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="fe2bfb6d-2c2f-9576-d9a5-81045a3921a6" executionId="6045f036-adae-428c-9a69-7d42366c1e58" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="fb1ba453-0273-6420-8039-f1bc89a42f23" executionId="7e3e1f21-c12d-48e0-97a4-d154243c6752" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="bfec7ade-6041-ee83-82bc-aaf95bbca5c3" executionId="484127ac-19ba-438b-af36-4737d0da93b3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="e0ec5fb5-6949-ca93-888f-4937a0bb0f2d" executionId="907de924-1eae-469f-a0b9-a7d292173018" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="1e6b8af1-3439-6396-6db4-11e92a4e918a" executionId="395fe676-4801-4072-8e1f-48f96df0a3a1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Completed">
+    <ns0:Counters total="12" executed="12" passed="12" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.16]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.15]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.17]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.81]   Finished:    BookOfEternityClient.Tests
+</ns0:StdOut>
+    </ns0:Output>
+  </ns0:ResultSummary>
+</ns0:TestRun>
