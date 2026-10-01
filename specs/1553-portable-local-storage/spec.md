@@ -2,7 +2,7 @@
 
 **Feature Branch**: `1553-cross-platform-runtime`
 **Created**: 2026-09-30
-**Status**: Approved; B1 foundations, B2 ordinary startup/settings and B3a generation readers accepted; remaining B3/B4/B5 and full-platform acceptance pending
+**Status**: Approved; B1 foundations, B2 ordinary startup/settings, B3a generation readers and bounded B3b replacement/residue/root keys accepted; remaining B3/B4/B5 and full-platform acceptance pending
 
 ## Source Issues & Scope
 
