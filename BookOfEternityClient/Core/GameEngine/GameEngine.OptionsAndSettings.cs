@@ -68,9 +68,9 @@ public partial class GameEngine
                 }
                 catch (Exception ex) when (ex is not ConsoleE2EScriptInputException)
                 {
-                    _logger.LogWarning(ex, "Console settings reload failed; retained draft and publication outcome.");
+                    _logger.LogWarning(ex, "Console settings refresh did not complete.");
                     notice = (reconciliationOutcomeMessage == null ? string.Empty : reconciliationOutcomeMessage + " ")
-                        + "Не удалось безопасно перечитать настройки. Черновик не отброшен; повторите проверку перед продолжением.";
+                        + "Обновление настроек не завершено. Повторите проверку перед продолжением.";
                     await RestoreLastAcceptedEffectsAsync();
                     continue;
                 }
@@ -323,9 +323,9 @@ public partial class GameEngine
                 }
                 catch (Exception ex) when (ex is not ConsoleE2EScriptInputException)
                 {
-                    _logger.LogWarning(ex, "Console settings reload failed; retained draft and publication outcome.");
+                    _logger.LogWarning(ex, "Console settings refresh did not complete.");
                     notice = (reconciliationOutcomeMessage == null ? string.Empty : reconciliationOutcomeMessage + " ")
-                        + "Не удалось безопасно перечитать настройки. Черновик не отброшен; повторите проверку перед продолжением.";
+                        + "Обновление настроек не завершено. Повторите проверку перед продолжением.";
                     await RestoreLastAcceptedEffectsAsync();
                 }
             }
