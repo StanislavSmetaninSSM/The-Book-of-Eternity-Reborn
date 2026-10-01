@@ -6,10 +6,45 @@ namespace BookOfEternityClient.Tests;
 /// <summary>Test-only executable entry: abrupt process exit never runs lease/finally cleanup.</summary>
 public static class TrustedLocalPublicationCrashFixture
 {
+    [System.Runtime.InteropServices.DllImport("libc", EntryPoint = "mkfifo", SetLastError = true)]
+    private static extern int MakeOrdinaryReadFifo(string path, uint mode);
+
     public static async Task<int> RunAsync(string[] args)
     {
         if (args.Length != 4) return 64;
         var files = new FileSystemManager(args[0], NullLogger<FileSystemManager>.Instance);
+        if (args[2] == "ordinary-read")
+        {
+            const string member = "game_state/core/ordinary-read.bin";
+            if (args[3] == "async-boundary")
+                files = new FileSystemManager(args[0], NullLogger<FileSystemManager>.Instance,
+                    PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+                    {
+                        BeforeCanonicalReadOpenAsync = relative =>
+                        {
+                            if (relative != member) return Task.CompletedTask;
+                            var path = Path.Combine(args[0], "game_session", member);
+                            File.Delete(path);
+                            if (MakeOrdinaryReadFifo(path, Convert.ToUInt32("600", 8)) != 0)
+                                throw new IOException("The owned FIFO boundary fixture could not be created.");
+                            return Task.CompletedTask;
+                        }
+                    });
+            try
+            {
+                switch (args[3])
+                {
+                    case "async":
+                    case "async-boundary": await files.ReadFileBytesAsync(member); break;
+                    case "sync": files.ReadFileBytesSync(member); break;
+                    case "exists": files.FileExists(member); break;
+                    default: return 64;
+                }
+                return 78;
+            }
+            catch (InvalidDataException) { return 0; }
+            catch (Exception ex) { Console.Error.WriteLine(ex); return 1; }
+        }
         if (args[2].StartsWith("replacement-", StringComparison.Ordinal))
         {
             try

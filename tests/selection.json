@@ -2,12 +2,29 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-storage-windows-handle-comparison",
-      "reason": "The saved native two-failure run supplies RED. This correction changes only Windows handle-path comparison and causal native assertions. Linux performs fresh build/discovery and PlanOnly; the parent runs these seven actual Windows cases. Unaffected GREEN cohorts are not repeated.",
+      "category": "portable-ordinary-readers",
+      "reason": "T030-E ordinary content/presence cutover: exact data, ownership, timestamp, cancellation, hard-linked real publication input and Linux FIFO boundaries. Initial RED runs only this owner.",
       "contracts": [
-        "symmetric supported handle-path spelling",
-        "direct before-write generation rejection",
-        "retained original path and hard-link rejection"
+        "ordinary reads",
+        "pre-open non-following type checks",
+        "owning lease and handle timestamp"
+      ]
+    },
+    {
+      "category": "portable-ordinary-read-consumers",
+      "reason": "GREEN selection preserves ordinary type/retry/absence and common-journal recovery, real coordinated baseline/rollback ownership and original-handler source guard.",
+      "contracts": [
+        "recovery/quiescence",
+        "coordinated publication",
+        "retained original authority"
+      ]
+    },
+    {
+      "category": "portable-storage-consumers",
+      "reason": "Sharing the B2 read core affects the already-migrated ordinary writers and LocalUiSessionLockService, including actual stale malformed timestamp fallback.",
+      "contracts": [
+        "B2 ordinary writers",
+        "UI ownership and timestamps"
       ]
     }
   ]

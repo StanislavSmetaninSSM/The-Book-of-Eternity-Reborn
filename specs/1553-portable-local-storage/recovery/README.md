@@ -1,5 +1,9 @@
 # Source and evidence recovery
 
+## Active T030-E WIP recovery
+
+This reader test-first WIP requires applying [ordinary-readers-pending.patch](ordinary-readers-pending.patch) once after verifying [its exact manifest](ordinary-readers-pending.json). Check the base blobs, patch byte count/SHA256, run git apply --check then git apply, and verify both after-blobs before any selected test. The integration test and category catalog remain patch-backed until normal delivery; other current files are normal blobs. This pending packet is distinct from the accepted historical B3b packets below.
+
 ## Accepted B3b Windows handle-comparison correction
 
 The frozen comparison correction is now delivered as normal Git files: PhysicalFileAuthority `1445bf5f6cc3c3c5bb8145983974336446a53604`, integration tests `a942b4d8a99689f1e8447b8c08fb053536e3ac4f`, catalog `dd51f5e50a73baeed77ac23c29895b7f5a0cb7a1`. The strengthened root-key test `ca02ff37574e32da385374db87746d3e31d99be1` and selection `7ae4542ff8b8b9833fd6817730f5ff24737db068` remain unchanged normal blobs. Native normalization starts from `195af7c92ef742983788bc27a025555b2fd63367`, tree `3d59c52d6b68419a1eee541df82f962ea472bbf3`, in the clean separate QA copy with clone-local `core.autocrlf=false`. The exact 4,265-byte patch, SHA256 `385578978141eee54a2fbcb525f7c6c4af676fb567b8eaac181f8451d7995a6c`, passed ordinary `git apply --check` and `git apply`, with no zero-context flag. All before/after blobs and the full applied tree `c351104b3a337bcf3f11fdb02af268b4ce849ee1` matched before retirement and delivery instruction updates; this is not the final normalized tree.
