@@ -18,7 +18,7 @@ public sealed partial class BrowserLocalWriteCoordinator
     {
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(prepare);
-        BrowserPreparedWriteResult? committed = null;
+        BrowserPreparedWriteResult? publicationOutcome = null;
         try
         {
             return await RunBoundTransactionAsync(async writeLease =>
@@ -42,11 +42,12 @@ public sealed partial class BrowserLocalWriteCoordinator
                         _ => new(BrowserPreparedWriteDisposition.Uncertain, true,
                             "Не удалось подтвердить состояние сохранения настроек. Требуется восстановление сохранённых свидетельств; прежние настройки не считаются подтверждёнными.")
                     };
+                    // Retain every established outcome before later callbacks,
+                    // owner cleanup or bound close can throw. In particular,
+                    // unknown evidence cannot become an unchanged-files claim.
+                    publicationOutcome = result;
                     if (result.Disposition == BrowserPreparedWriteDisposition.Committed)
                     {
-                        // Record this before any callback or owner cleanup. Even
-                        // a later bound-operation fence cannot revoke this fact.
-                        committed = result;
                         try
                         {
                             _fs.VerifyCurrentSessionOperation(writeLease);
@@ -55,7 +56,7 @@ public sealed partial class BrowserLocalWriteCoordinator
                         catch
                         {
                             result = WithPreparedFollowUp(result);
-                            committed = result;
+                            publicationOutcome = result;
                         }
                     }
                 }
@@ -71,8 +72,8 @@ public sealed partial class BrowserLocalWriteCoordinator
                 {
                     if (!await TryReleaseAsync(writeLease, admission.Lease))
                         result = WithPreparedFollowUp(result);
-                    if (result.Disposition == BrowserPreparedWriteDisposition.Committed)
-                        committed = result;
+                    if (result.Disposition != BrowserPreparedWriteDisposition.Blocked)
+                        publicationOutcome = result;
                 }
                 return result.NeedsFollowUp && result.Disposition == BrowserPreparedWriteDisposition.Committed
                     ? WithPreparedFollowUp(result) : result;
@@ -80,13 +81,13 @@ public sealed partial class BrowserLocalWriteCoordinator
         }
         catch (SessionReplacedException)
         {
-            return committed != null ? WithPreparedFollowUp(committed) : new(
+            return publicationOutcome != null ? WithPreparedFollowUp(publicationOutcome) : new(
                 BrowserPreparedWriteDisposition.Blocked, true,
                 "Игровая сессия изменилась до сохранения настроек. Обновите состояние книги.");
         }
         catch
         {
-            return committed != null ? WithPreparedFollowUp(committed) : new(
+            return publicationOutcome != null ? WithPreparedFollowUp(publicationOutcome) : new(
                 BrowserPreparedWriteDisposition.Blocked, true,
                 "Настройки не изменены: локальное хранилище требует проверки перед записью.");
         }
