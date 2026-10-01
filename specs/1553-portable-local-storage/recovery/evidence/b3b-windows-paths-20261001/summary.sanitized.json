@@ -1,0 +1,73 @@
+{
+  "Categories": [
+    "portable-storage-windows-paths"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "830e160df6ea4fd94b875c7c591b7aa71e9f50aa",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-storage-windows-paths",
+      "Seconds": 10.2311684,
+      "BudgetMinutes": 4,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.6377019,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.5801117,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.6612369,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 151.1831024,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 27.0812116,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 9,
+  "WallTime": "00:03:36.8466801",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 6,
+    "CompletedCases": 6,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 6,
+    "Executed": 6,
+    "Passed": 4,
+    "Failed": 2
+  },
+  "DuplicateTests": []
+}

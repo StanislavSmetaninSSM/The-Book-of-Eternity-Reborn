@@ -1,0 +1,154 @@
+{
+  "kind": "B3b exact six-body native Windows filesystem verification",
+  "sourceSha": "830e160df6ea4fd94b875c7c591b7aa71e9f50aa",
+  "sourceTree": "2ec06a3d9f22e2265d144ef34841900331ee8a7b",
+  "catalogBlob": "f8dd72a355a4639ca7b95ccce7eee5cd23c43038",
+  "category": "portable-storage-windows-paths",
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-storage-windows-paths -Parallelism 1",
+  "os": "Microsoft Windows 10.0.26200",
+  "architecture": "X64",
+  "isWindows": true,
+  "powershell": "7.6.6",
+  "dotnetSdk": "10.0.401",
+  "startedUtc": "2026-10-01T11:37:00.1706815Z",
+  "endedUtc": "2026-10-01T11:40:37.8128019Z",
+  "wallTime": "00:03:36.8466801",
+  "result": {
+    "plannedDescriptors": 2,
+    "passed": 4,
+    "executed": 6,
+    "failed": 2,
+    "completedCases": 6,
+    "exitCode": 1,
+    "duplicateIds": 0,
+    "plannedCases": 6,
+    "unrun": 0,
+    "timedOut": false,
+    "completedDescriptors": 2,
+    "launcherExitCode": 1,
+    "skipped": 0,
+    "total": 6,
+    "selectionComplete": true
+  },
+  "bodyEvidence": "Six selected bodies return early only on non-Windows; native host is Windows. Link fixture inability asserts failure, never silently passes. No security change or elevation.",
+  "cleanup": {
+    "launcherProcessRemainders": 0,
+    "ownedTreeComplete": true,
+    "runtimeDirectoryRemainders": 0,
+    "syntheticFixtureDirectoryRemainders": 0,
+    "runtimeComplete": true
+  },
+  "isolation": "Per-process synthetic temp, CLI home, NuGet cache and appdata; unique runner output under owned QA TestResults. No user saves/profiles used.",
+  "externalExecution": "Selected filesystem tests instantiate no game/GM/provider/browser/GUI/audio entrypoints; junction helper is hidden. No provider or app/server is launched.",
+  "telemetryOptOuts": [
+    "DOTNET_CLI_TELEMETRY_OPTOUT=1",
+    "POWERSHELL_TELEMETRY_OPTOUT=1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT=1"
+  ],
+  "sourceReadback": {
+    "sourceSha": "830e160df6ea4fd94b875c7c591b7aa71e9f50aa",
+    "sourceTree": "2ec06a3d9f22e2265d144ef34841900331ee8a7b",
+    "retrieval": "Independent fresh single-branch depth-1 GitHub clone; no local object/cache reuse",
+    "trackedFiles": 3644,
+    "clean": true,
+    "connectivity": true,
+    "blobs": {
+      "BookOfEternityClient/Core/FileSystemManager.cs": "10eeac63899e657daba881c68ebe1d6bca9c9e38",
+      "BookOfEternityClient/UI/ExplorerLifecycleLocalTurnCommandResultBuilder.cs": "469a367355b1fb8298e95782e736fd87ffd836a7",
+      "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs": "2931c6c169bf2532c8bd278692baa7fe0d685193",
+      "tests/categories.json": "f8dd72a355a4639ca7b95ccce7eee5cd23c43038",
+      "tests/selection.json": "3ef6dd248116c38d2a8286116afe31f0ae74fc81"
+    }
+  },
+  "sourceWorkingTreeClean": true,
+  "cases": [
+    {
+      "message": "",
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsDanglingLocalUiLockNode",
+      "duration": "00:00:00.2459964",
+      "outcome": "Passed",
+      "fixtureSetupFailure": false
+    },
+    {
+      "message": "",
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsLocalUiLockJunctionWithoutTraversingTarget",
+      "duration": "00:00:00.2337310",
+      "outcome": "Passed",
+      "fixtureSetupFailure": false
+    },
+    {
+      "message": "",
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsDirectoryJunctionAndPreservesOutsideData",
+      "duration": "00:00:00.2249122",
+      "outcome": "Passed",
+      "fixtureSetupFailure": false
+    },
+    {
+      "message": "System.IO.InvalidDataException : Client runtime handle resolved outside its physical authority path.",
+      "name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ExtendedWindowsRootPreservesExclusionsAndCanonicalMutationBoundaries",
+      "duration": "00:00:00.0291131",
+      "outcome": "Failed",
+      "fixtureSetupFailure": false
+    },
+    {
+      "message": "System.IO.InvalidDataException : Client runtime handle resolved outside its physical authority path.",
+      "name": "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasesShareRevisionIdentityWithoutRewritingBaseOrJournalPaths",
+      "duration": "00:00:00.2162330",
+      "outcome": "Failed",
+      "fixtureSetupFailure": false
+    },
+    {
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasBoundWriterCannotMutateTheReplacementSessionBeforeFinalFence",
+      "duration": "00:00:00.3593072",
+      "outcome": "Passed",
+      "fixtureSetupFailure": false
+    }
+  ],
+  "unrunBodies": [],
+  "trxCounters": [
+    {
+      "failed": 0,
+      "executed": 3,
+      "total": 3,
+      "passed": 3,
+      "file": "portable-storage-windows-paths-integration-001.sanitized.trx",
+      "skipped": 0
+    },
+    {
+      "failed": 2,
+      "executed": 3,
+      "total": 3,
+      "passed": 1,
+      "file": "portable-storage-windows-paths-unit-002.sanitized.trx",
+      "skipped": 0
+    }
+  ],
+  "files": [
+    {
+      "originalSha256": "8fbe29c4aceb69aeb217c295ac73aa9c2bc11294213aa514395a85edc3c4aad9",
+      "sanitizedSha256": "ebc7bae8003e4d39002db7e9f4abd5fbf86d1864cc2dda64f0acc7542fa29829",
+      "bytes": 1567,
+      "file": "summary.sanitized.json"
+    },
+    {
+      "originalSha256": "8d80cbfc6b0a6e6ddadbcbd026085a16f4d47d368f471a33d01b547a36ae2804",
+      "sanitizedSha256": "c76b9fb3f12894540ce622ace39f6909844e674d525fc32bb072f142b72b0287",
+      "bytes": 6013,
+      "file": "portable-storage-windows-paths-integration-001.sanitized.trx"
+    },
+    {
+      "originalSha256": "6dcf6f9876085bb2f6ba7e1afe5574073e7627bc99506229ef6110d4dd62b3a2",
+      "sanitizedSha256": "0ea591b2c4d1cbf67b1dc2e551a9e4e34b215cb8e443e26b6328ac0950c4ebbf",
+      "bytes": 16142,
+      "file": "portable-storage-windows-paths-unit-002.sanitized.trx"
+    }
+  ],
+  "limits": [
+    "Only the six explicitly selected native filesystem bodies; missing/failed fixture setup is not success",
+    "No passing rerun or source fixes",
+    "No Linux/full-suite/PTY/browser/GM/provider/GUI/audio/game/server acceptance",
+    "B3b independent behavior review/acceptance remains separate"
+  ],
+  "sanitization": "Only generated summary/TRX and own run metadata read. Private source/run/home/tool paths and host/user labels replaced consistently. UTF-8 without BOM, LF; original and sanitized SHA256 recorded. JSON/TRX reparsed and privacy/token-like guards passed. No raw logs, credentials, authorization profiles or user saves published."
+}

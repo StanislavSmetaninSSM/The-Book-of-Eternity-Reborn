@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="2012e0a6-3ddd-4602-86f2-d3fb29ae1650" name="{USER}@{HOST} 2026-10-01 21:40:37" runUser="{HOST}\{USER}" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-01T21:40:37.5015840+10:00" queuing="2026-10-01T21:40:37.5015842+10:00" start="2026-10-01T21:40:34.5417443+10:00" finish="2026-10-01T21:40:37.5095215+10:00" />
+  <TestSettings name="default" id="ea3115d5-6ce4-4d88-a14c-a0f0ececde34">
+    <Deployment runDeploymentRoot="{USER}_{HOST}_2026-10-01_21_40_37" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="7eb6942a-c5c6-4d1c-afca-f277f66b0f27" testId="337f8398-1336-68e2-aa36-d631abe2d578" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ExtendedWindowsRootPreservesExclusionsAndCanonicalMutationBoundaries" computerName="{HOST}" duration="00:00:00.0291131" startTime="2026-10-01T21:40:36.8719473+10:00" endTime="2026-10-01T21:40:36.8719739+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7eb6942a-c5c6-4d1c-afca-f277f66b0f27">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException : Client runtime handle resolved outside its physical authority path.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.PhysicalFileAuthority.EnsureHandlePathMatchesExpectedPath(SafeFileHandle handle, String expectedPath, String authorityName, UInt32 flags) in {SOURCE_ROOT}\BookOfEternityClient\Core\PhysicalFileAuthority.cs:line 1558&#xD;
+   at BookOfEternityClient.Core.PhysicalFileAuthority.EnsureHandleMatchesExpectedPath(SafeFileHandle handle, String expectedPath, String authorityName, UInt32 flags) in {SOURCE_ROOT}\BookOfEternityClient\Core\PhysicalFileAuthority.cs:line 1537&#xD;
+   at BookOfEternityClient.Core.PhysicalFileAuthority.OpenStableDirectory(String expectedPath, String authorityName, Boolean allowRename, Boolean shareDelete) in {SOURCE_ROOT}\BookOfEternityClient\Core\PhysicalFileAuthority.cs:line 516&#xD;
+   at BookOfEternityClient.Core.PhysicalFileAuthority.EnsureStableDirectory(String rootPath, String targetPath, String authorityName) in {SOURCE_ROOT}\BookOfEternityClient\Core\PhysicalFileAuthority.cs:line 282&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.EnsureStableRuntimeDirectory(String directoryPath) in {SOURCE_ROOT}\BookOfEternityClient\Core\FileSystemManager.cs:line 4963&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.EnsureRuntimeDirectoryExistsAndIsSafe(String directoryPath) in {SOURCE_ROOT}\BookOfEternityClient\Core\FileSystemManager.cs:line 4981&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.AcquireSessionLifecycleLeaseAsync() in {SOURCE_ROOT}\BookOfEternityClient\Core\FileSystemManager.cs:line 3682&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync() in {SOURCE_ROOT}\BookOfEternityClient\Core\FileSystemManager.cs:line 5736&#xD;
+   at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ExtendedWindowsRootPreservesExclusionsAndCanonicalMutationBoundaries() in {SOURCE_ROOT}\BookOfEternityClient.Tests\PortableSessionReplacementTests.Boundaries.cs:line 246&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9d76e2ef-a84f-4732-a112-8a702e4aa792" testId="929f995d-920a-b37b-af19-0cce324381c9" testName="BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasesShareRevisionIdentityWithoutRewritingBaseOrJournalPaths" computerName="{HOST}" duration="00:00:00.2162330" startTime="2026-10-01T21:40:37.0379180+10:00" endTime="2026-10-01T21:40:37.0379182+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9d76e2ef-a84f-4732-a112-8a702e4aa792">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException : Client runtime handle resolved outside its physical authority path.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.PhysicalFileAuthority.EnsureHandlePathMatchesExpectedPath(SafeFileHandle handle, String expectedPath, String authorityName, UInt32 flags) in {SOURCE_ROOT}\BookOfEternityClient\Core\PhysicalFileAuthority.cs:line 1558&#xD;
+   at BookOfEternityClient.Core.PhysicalFileAuthority.EnsureHandleMatchesExpectedPath(SafeFileHandle handle, String expectedPath, String authorityName, UInt32 flags) in {SOURCE_ROOT}\BookOfEternityClient\Core\PhysicalFileAuthority.cs:line 1537&#xD;
+   at BookOfEternityClient.Core.PhysicalFileAuthority.OpenStableDirectory(String expectedPath, String authorityName, Boolean allowRename, Boolean shareDelete) in {SOURCE_ROOT}\BookOfEternityClient\Core\PhysicalFileAuthority.cs:line 516&#xD;
+   at BookOfEternityClient.Core.PhysicalFileAuthority.EnsureStableDirectory(String rootPath, String targetPath, String authorityName) in {SOURCE_ROOT}\BookOfEternityClient\Core\PhysicalFileAuthority.cs:line 282&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.EnsureStableRuntimeDirectory(String directoryPath) in {SOURCE_ROOT}\BookOfEternityClient\Core\FileSystemManager.cs:line 4963&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.EnsureRuntimeDirectoryExistsAndIsSafe(String directoryPath) in {SOURCE_ROOT}\BookOfEternityClient\Core\FileSystemManager.cs:line 4981&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in {SOURCE_ROOT}\BookOfEternityClient\Core\FileSystemManager.cs:line 3556&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken) in {SOURCE_ROOT}\BookOfEternityClient\Core\FileSystemManager.cs:line 3533&#xD;
+   at BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasesShareRevisionIdentityWithoutRewritingBaseOrJournalPaths() in {SOURCE_ROOT}\BookOfEternityClient.Tests\PortableSessionRootKeyTests.cs:line 76&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0363a2c4-9586-4bbc-b4c3-426e87961898" testId="77ef19e6-fd93-33d6-b94a-ce0b37862a1c" testName="BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasBoundWriterCannotMutateTheReplacementSessionBeforeFinalFence" computerName="{HOST}" duration="00:00:00.3593072" startTime="2026-10-01T21:40:37.3999026+10:00" endTime="2026-10-01T21:40:37.3999028+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0363a2c4-9586-4bbc-b4c3-426e87961898" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ExtendedWindowsRootPreservesExclusionsAndCanonicalMutationBoundaries" storage="{SOURCE_ROOT}\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="337f8398-1336-68e2-aa36-d631abe2d578">
+      <Execution id="7eb6942a-c5c6-4d1c-afca-f277f66b0f27" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_ExtendedWindowsRootPreservesExclusionsAndCanonicalMutationBoundaries" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasesShareRevisionIdentityWithoutRewritingBaseOrJournalPaths" storage="{SOURCE_ROOT}\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="929f995d-920a-b37b-af19-0cce324381c9">
+      <Execution id="9d76e2ef-a84f-4732-a112-8a702e4aa792" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionRootKeyTests" name="WindowsAliasesShareRevisionIdentityWithoutRewritingBaseOrJournalPaths" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasBoundWriterCannotMutateTheReplacementSessionBeforeFinalFence" storage="{SOURCE_ROOT}\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="77ef19e6-fd93-33d6-b94a-ce0b37862a1c">
+      <Execution id="0363a2c4-9586-4bbc-b4c3-426e87961898" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionRootKeyTests" name="WindowsAliasBoundWriterCannotMutateTheReplacementSessionBeforeFinalFence" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="337f8398-1336-68e2-aa36-d631abe2d578" executionId="7eb6942a-c5c6-4d1c-afca-f277f66b0f27" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="929f995d-920a-b37b-af19-0cce324381c9" executionId="9d76e2ef-a84f-4732-a112-8a702e4aa792" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="77ef19e6-fd93-33d6-b94a-ce0b37862a1c" executionId="0363a2c4-9586-4bbc-b4c3-426e87961898" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="3" executed="3" passed="1" failed="2" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.21]   Discovering: BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.68]   Discovered:  BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.71]   Starting:    BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.80]       System.IO.InvalidDataException : Client runtime handle resolved outside its physical authority path.&#xD;
+[xUnit.net 00:00:01.80]       Stack Trace:&#xD;
+[xUnit.net 00:00:01.80]         {SOURCE_ROOT}\BookOfEternityClient\Core\PhysicalFileAuthority.cs(1558,0): at BookOfEternityClient.Core.PhysicalFileAuthority.EnsureHandlePathMatchesExpectedPath(SafeFileHandle handle, String expectedPath, String authorityName, UInt32 flags)&#xD;
+[xUnit.net 00:00:01.80]         {SOURCE_ROOT}\BookOfEternityClient\Core\PhysicalFileAuthority.cs(1537,0): at BookOfEternityClient.Core.PhysicalFileAuthority.EnsureHandleMatchesExpectedPath(SafeFileHandle handle, String expectedPath, String authorityName, UInt32 flags)&#xD;
+[xUnit.net 00:00:01.80]         {SOURCE_ROOT}\BookOfEternityClient\Core\PhysicalFileAuthority.cs(516,0): at BookOfEternityClient.Core.PhysicalFileAuthority.OpenStableDirectory(String expectedPath, String authorityName, Boolean allowRename, Boolean shareDelete)&#xD;
+[xUnit.net 00:00:01.80]         {SOURCE_ROOT}\BookOfEternityClient\Core\PhysicalFileAuthority.cs(282,0): at BookOfEternityClient.Core.PhysicalFileAuthority.EnsureStableDirectory(String rootPath, String targetPath, String authorityName)&#xD;
+[xUnit.net 00:00:01.80]         {SOURCE_ROOT}\BookOfEternityClient\Core\FileSystemManager.cs(4963,0): at BookOfEternityClient.Core.FileSystemManager.EnsureStableRuntimeDirectory(String directoryPath)&#xD;
+[xUnit.net 00:00:01.80]         {SOURCE_ROOT}\BookOfEternityClient\Core\FileSystemManager.cs(4981,0): at BookOfEternityClient.Core.FileSystemManager.EnsureRuntimeDirectoryExistsAndIsSafe(String directoryPath)&#xD;
+[xUnit.net 00:00:01.80]         {SOURCE_ROOT}\BookOfEternityClient\Core\FileSystemManager.cs(3682,0): at BookOfEternityClient.Core.FileSystemManager.AcquireSessionLifecycleLeaseAsync()&#xD;
+[xUnit.net 00:00:01.80]         {SOURCE_ROOT}\BookOfEternityClient\Core\FileSystemManager.cs(5736,0): at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync()&#xD;
+[xUnit.net 00:00:01.80]         {SOURCE_ROOT}\BookOfEternityClient.Tests\PortableSessionReplacementTests.Boundaries.cs(246,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ExtendedWindowsRootPreservesExclusionsAndCanonicalMutationBoundaries()&#xD;
+[xUnit.net 00:00:01.80]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:01.97]       System.IO.InvalidDataException : Client runtime handle resolved outside its physical authority path.&#xD;
+[xUnit.net 00:00:01.97]       Stack Trace:&#xD;
+[xUnit.net 00:00:01.97]         {SOURCE_ROOT}\BookOfEternityClient\Core\PhysicalFileAuthority.cs(1558,0): at BookOfEternityClient.Core.PhysicalFileAuthority.EnsureHandlePathMatchesExpectedPath(SafeFileHandle handle, String expectedPath, String authorityName, UInt32 flags)&#xD;
+[xUnit.net 00:00:01.97]         {SOURCE_ROOT}\BookOfEternityClient\Core\PhysicalFileAuthority.cs(1537,0): at BookOfEternityClient.Core.PhysicalFileAuthority.EnsureHandleMatchesExpectedPath(SafeFileHandle handle, String expectedPath, String authorityName, UInt32 flags)&#xD;
+[xUnit.net 00:00:01.97]         {SOURCE_ROOT}\BookOfEternityClient\Core\PhysicalFileAuthority.cs(516,0): at BookOfEternityClient.Core.PhysicalFileAuthority.OpenStableDirectory(String expectedPath, String authorityName, Boolean allowRename, Boolean shareDelete)&#xD;
+[xUnit.net 00:00:01.97]         {SOURCE_ROOT}\BookOfEternityClient\Core\PhysicalFileAuthority.cs(282,0): at BookOfEternityClient.Core.PhysicalFileAuthority.EnsureStableDirectory(String rootPath, String targetPath, String authorityName)&#xD;
+[xUnit.net 00:00:01.97]         {SOURCE_ROOT}\BookOfEternityClient\Core\FileSystemManager.cs(4963,0): at BookOfEternityClient.Core.FileSystemManager.EnsureStableRuntimeDirectory(String directoryPath)&#xD;
+[xUnit.net 00:00:01.97]         {SOURCE_ROOT}\BookOfEternityClient\Core\FileSystemManager.cs(4981,0): at BookOfEternityClient.Core.FileSystemManager.EnsureRuntimeDirectoryExistsAndIsSafe(String directoryPath)&#xD;
+[xUnit.net 00:00:01.97]         {SOURCE_ROOT}\BookOfEternityClient\Core\FileSystemManager.cs(3556,0): at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken)&#xD;
+[xUnit.net 00:00:01.97]         {SOURCE_ROOT}\BookOfEternityClient\Core\FileSystemManager.cs(3533,0): at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken)&#xD;
+[xUnit.net 00:00:01.97]         {SOURCE_ROOT}\BookOfEternityClient.Tests\PortableSessionRootKeyTests.cs(76,0): at BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasesShareRevisionIdentityWithoutRewritingBaseOrJournalPaths()&#xD;
+[xUnit.net 00:00:01.97]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:02.34]   Finished:    BookOfEternityClient.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="{HOST}" outcome="Error" timestamp="2026-10-01T21:40:36.8689953+10:00">
+        <Text>[xUnit.net 00:00:01.80]     BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ExtendedWindowsRootPreservesExclusionsAndCanonicalMutationBoundaries [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="{HOST}" outcome="Error" timestamp="2026-10-01T21:40:37.0370114+10:00">
+        <Text>[xUnit.net 00:00:01.97]     BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasesShareRevisionIdentityWithoutRewritingBaseOrJournalPaths [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>
