@@ -1,0 +1,104 @@
+{
+  "Categories": [
+    "portable-proposal-admission",
+    "portable-session-replacement-consumers"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-proposal-admission",
+      "reason": "Cover actual store empty-structure admission RED while preserving generation/task and unknown-data gates; reaching the unsupported Linux backend is admission evidence only.",
+      "contracts": [
+        "safe empty-only destination normalization",
+        "proposal generation/task/inbox admission"
+      ]
+    },
+    {
+      "category": "portable-session-replacement-consumers",
+      "reason": "Execute exact still-unrun clear/rotation lifecycle/fence/cache/UI-owner/source-guard consumers. Five superseded invalid-node deletion expectations now assert reject-and-preserve; three Windows-only bodies remain unexecuted on Linux.",
+      "contracts": [
+        "lifecycle/canonical lease ordering",
+        "replacement revokes prior generation/revision ownership",
+        "complete invalid-namespace evidence retention",
+        "actual authority caller/source boundaries"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "438d5bbec51cf939a236a20a1a95efff04a12d68",
+    "WorkingTreeFingerprint": "DCCA00E67F47A8FF8621ED938F026FB2B19D5D1AE2D738A5DE61711E4FF1D8D0",
+    "ChangedFiles": 4
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-proposal-admission",
+      "Seconds": 3.0722136,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "portable-session-replacement-consumers",
+      "Seconds": 8.2981498,
+      "BudgetMinutes": 4,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0853402,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0171856,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0294069,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 175.5458999,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 41.4909959,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.003752,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 13,
+  "WallTime": "00:03:57.5777377",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 30,
+    "CompletedCases": 30,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 30,
+    "Executed": 30,
+    "Passed": 30,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

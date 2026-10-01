@@ -1,5 +1,5 @@
 diff --git a/tests/categories.json b/tests/categories.json
-index b803fcca..75452a9f 100644
+index b803fcca..a9bc36ee 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
 @@ -534,15 +534,6 @@
@@ -104,7 +104,7 @@ index b803fcca..75452a9f 100644
              "BookOfEternityClient.Tests.AfterlifeOwnerResourceStateServiceTests.*",
              "BookOfEternityClient.Tests.AfterlifeRealmAutoRollbackTests.*",
              "BookOfEternityClient.Tests.AfterlifeReturnGuardServiceTests.*",
-@@ -8021,6 +8025,126 @@
+@@ -8021,6 +8025,216 @@
            ]
          }
        ]
@@ -139,7 +139,25 @@ index b803fcca..75452a9f 100644
 +        {
 +          "project": "unit",
 +          "tests": [
-+            "BookOfEternityClient.Tests.PortableSessionReplacementTests.*",
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_DeletesCompleteSelectedSetAndPreservesExcludedBytes",
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet",
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_InvalidRequiredDirectoryRejectsBeforeGenerationOrSelectedMutation",
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_InvalidLockLinkRetainsOutsideBytesAndAllSelectedMembers",
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_OpaqueContextPackLinkIsPreservedWithoutFollowingIt",
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ManifestlessLegacyEvidenceRemainsBlockedAndIntact",
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.PendingInspector_IgnoresEmptySnapshotDescendantsButCountsZeroByteFiles",
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.Rotate_WorkerCleanupAndGenerationRollbackTogether",
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_LockDirectoryIsInvalidEvenWhenStructurallyEmpty",
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.BrowserPendingProjection_EmptySnapshotAllowsFormAndActualFileBlocksIt",
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.PendingInspector_RejectsWrongTypeRootOrLinkedDescendant",
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_AbsentGenerationRollsBackAsAbsenceWithSelectedMembers",
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_HardLinkedGenerationAndMemberLeaveOutsideNamesUnchanged",
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_UnknownLaterMemberBlocksCompleteRollbackAndRetainsEvidence",
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ChangedGenerationRetainsPartialMembersAndJournal",
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_SelectedFifoIsRejectedBeforeOpenInColdProcess",
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_OpaqueContextPackFifoRemainsUnopenedInColdProcess",
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ColdProcessRecoveryIncludesGenerationWorkersAndEmptyResidue",
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings",
 +            "BookOfEternityClient.Tests.AfterlifeLocalActionGuardTests.ActiveGmTurnBlocker_DetectsTurnArtifactsAndIgnoresEmptySnapshotDirectory"
 +          ]
 +        }
@@ -206,10 +224,7 @@ index b803fcca..75452a9f 100644
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameState_WaitsForCanonicalWriteLease",
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameState_PreservesGmBridgeRuntimeStatus",
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameState_PreservesGmContextPackJsonArtifacts",
-+            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsDirectoryJunctionAndPreservesOutsideData",
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsLocalUiLockDirectoryAndPreservesEvidence",
-+            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsLocalUiLockJunctionWithoutTraversingTarget",
-+            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsDanglingLocalUiLockNode",
 +            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsManifestlessBrowserRollbackEvidence"
 +          ]
 +        },
@@ -225,6 +240,81 @@ index b803fcca..75452a9f 100644
 +            "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_SameGenerationNewRevisionRejectsOldPreparedHandoff",
 +            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
 +            "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPendingAndRecoveryAuthority_ContainsNoPathnameAbsenceFallback"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-session-root-keys",
++      "responsibility": "Shared in-process canonical root/revision and operation-binding keys for supported drive/UNC aliases, with actual Windows cross-manager before-write fencing and Linux case-distinct keys/member images.",
++      "excludes": "Rewriting BasePath, original journal/member/lock path spelling, broad session framework changes and Windows filesystem claims from pure policy or Linux early returns.",
++      "changeHints": [
++        "BookOfEternityClient/Core/CanonicalRootIdentity.cs",
++        "BookOfEternityClient/Core/SessionOperationContext.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-session-replacement-consumers",
++          "when": "Bound-operation/revision keys change for clear/rotation consumers."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 4,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings",
++            "BookOfEternityClient.Tests.PortableSessionRootKeyTests.LinuxRootKeysKeepCaseDistinctNamesSeparate",
++            "BookOfEternityClient.Tests.PortableSessionRootKeyTests.LinuxClearRetainsDistinctMemberImagesAcrossRollbackThenDeletesBoth"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-storage-windows-paths",
++      "responsibility": "Exactly six Windows-only filesystem bodies: selected directory junction, lock junction/dangling node, extended-root clear boundaries, shared alias revision identity and cross-manager before-write fencing.",
++      "excludes": "Pure drive/UNC policy (portable-session-root-keys), Linux execution claims, broad Windows suites, provider/backend/GM acceptance and silent link-fixture setup success.",
++      "changeHints": [
++        "BookOfEternityClient/Core/CanonicalRootIdentity.cs",
++        "BookOfEternityClient/Core/SessionOperationContext.cs",
++        "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-session-root-keys",
++          "when": "Pure root-key alias or case policy changes."
++        },
++        {
++          "id": "portable-session-replacement",
++          "when": "Clear/member selection or root spelling behavior changes."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 4,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "integration",
++          "tests": [
++            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsDirectoryJunctionAndPreservesOutsideData",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsLocalUiLockJunctionWithoutTraversingTarget",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsDanglingLocalUiLockNode"
++          ]
++        },
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ExtendedWindowsRootPreservesExclusionsAndCanonicalMutationBoundaries",
++            "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasesShareRevisionIdentityWithoutRewritingBaseOrJournalPaths",
++            "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasBoundWriterCannotMutateTheReplacementSessionBeforeFinalFence"
 +          ]
 +        }
 +      ]

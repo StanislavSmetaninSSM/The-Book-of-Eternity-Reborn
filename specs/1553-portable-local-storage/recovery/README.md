@@ -2,7 +2,7 @@
 
 ## Current B3b implementation WIP packet
 
-The initial 15-case RED/GREEN and expanded 37-case RED ran at their recorded exact sources. Narrow caller corrections passed the affected 86-case covering selection at f38a68f6 plus its exact packet. The eight-case proposal-store admission RED is preserved; empty-only normalization is implemented and its 30-case proposal/exact-consumer GREEN is unrun. This remains B3b WIP. New focused source/tests, selection and evidence are normal blobs. The large manager/UI-builder/integration-test/catalog deltas are retained in [session-replacement-pending.json](session-replacement-pending.json), with exact base/after blobs and SHA256 values. After verifying the remote SHA, check/apply each patch once:
+The initial 15-case RED/GREEN and expanded 37-case RED ran at their recorded exact sources. Narrow caller corrections passed the affected 86-case covering selection at f38a68f6 plus its exact packet. The proposal-store RED and 30-case proposal/exact-consumer GREEN are preserved. The next in-process root-key policy scaffold is unrun, with six Linux-executable cases and six separately owned Windows-only bodies. This remains B3b WIP. New focused source/tests, selection and evidence are normal blobs. The large manager/UI-builder/integration-test/catalog deltas are retained in [session-replacement-pending.json](session-replacement-pending.json), with exact base/after blobs and SHA256 values. After verifying the remote SHA, check/apply each patch once:
 
 ```sh
 git apply --check --unidiff-zero specs/1553-portable-local-storage/recovery/session-replacement-source.pending.patch

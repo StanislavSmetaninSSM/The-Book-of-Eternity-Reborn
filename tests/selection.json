@@ -2,21 +2,12 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-proposal-admission",
-      "reason": "Cover actual store empty-structure admission RED while preserving generation/task and unknown-data gates; reaching the unsupported Linux backend is admission evidence only.",
+      "category": "portable-session-root-keys",
+      "reason": "Six Linux-executable cases: four pure drive/UNC alias cases, case-distinct keys and actual Linux member-image preservation. The six actual Windows-only bodies have their separate exact ownership category.",
       "contracts": [
-        "safe empty-only destination normalization",
-        "proposal generation/task/inbox admission"
-      ]
-    },
-    {
-      "category": "portable-session-replacement-consumers",
-      "reason": "Execute exact still-unrun clear/rotation lifecycle/fence/cache/UI-owner/source-guard consumers. Five superseded invalid-node deletion expectations now assert reject-and-preserve; three Windows-only bodies remain unexecuted on Linux.",
-      "contracts": [
-        "lifecycle/canonical lease ordering",
-        "replacement revokes prior generation/revision ownership",
-        "complete invalid-namespace evidence retention",
-        "actual authority caller/source boundaries"
+        "shared revision/binding root keys",
+        "stale alias writer is rejected before mutation",
+        "case-distinct Linux roots and member bytes"
       ]
     }
   ]

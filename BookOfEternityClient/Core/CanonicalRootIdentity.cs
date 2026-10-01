@@ -84,6 +84,10 @@ internal static class CanonicalRootIdentityInterner
         WeakReference<CanonicalRootIdentity>> Identities =
         new(RootPathComparer);
 
+    // Pure key-policy scaffold; filesystem and original journal paths are not rewritten.
+    internal static string NormalizeRootKey(string fullPath, bool windows) =>
+        throw new NotImplementedException();
+
     internal static CanonicalRootIdentity Get(string canonicalRoot)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(canonicalRoot);

@@ -1,0 +1,75 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="beb4fd6e-5b5a-422e-901d-bd9960497d13" name="b3b-proposal-consumers-green" runUser="$USER">
+  <ns0:Times creation="2026-10-01T06:29:48.1392277-04:00" queuing="2026-10-01T06:29:48.1392278-04:00" start="2026-10-01T06:29:45.9799419-04:00" finish="2026-10-01T06:29:48.1455888-04:00" />
+  <ns0:TestSettings name="default" id="1da4df72-046b-4f54-965d-7530ad4b14f5">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="b5b66e56-c436-466a-9eb0-297aaaafbd9f" testId="e6898da2-df40-9797-0324-5a503a6e5e74" testName="BookOfEternityClient.Tests.PortableProposalAdmissionTests.EmptyDestinationReachesExistingBackendAfterActualStoreAdmission(nested: False)" computerName="$HOST" duration="00:00:00.0115897" startTime="2026-10-01T06:29:48.0537547-04:00" endTime="2026-10-01T06:29:48.0537549-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b5b66e56-c436-466a-9eb0-297aaaafbd9f" />
+    <ns0:UnitTestResult executionId="dec10d0d-ae28-4c04-820b-8f1855c95ab7" testId="6919b00a-c91e-91ae-b1e8-b7e304d4d84e" testName="BookOfEternityClient.Tests.PortableProposalAdmissionTests.WrongTypeDestinationFailsAdmissionBeforeTheBackendAndPreservesBytes" computerName="$HOST" duration="00:00:00.0125492" startTime="2026-10-01T06:29:48.0233183-04:00" endTime="2026-10-01T06:29:48.0233185-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dec10d0d-ae28-4c04-820b-8f1855c95ab7" />
+    <ns0:UnitTestResult executionId="b4cfb6ab-8901-4c1e-8370-a725fd0b33fb" testId="a50100e8-88c9-63ef-20b2-5614325818c1" testName="BookOfEternityClient.Tests.PortableProposalAdmissionTests.NonemptyDestinationIsRejectedWithoutDeletingUnknownBytes(nested: False)" computerName="$HOST" duration="00:00:00.0182931" startTime="2026-10-01T06:29:48.0007525-04:00" endTime="2026-10-01T06:29:48.0007527-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b4cfb6ab-8901-4c1e-8370-a725fd0b33fb" />
+    <ns0:UnitTestResult executionId="17a123e4-5e4f-4ebe-8fc4-de568481dc88" testId="1549996e-1073-d366-9b34-a5b88fc8abd4" testName="BookOfEternityClient.Tests.PortableProposalAdmissionTests.EmptyDestinationReachesExistingBackendAfterActualStoreAdmission(nested: True)" computerName="$HOST" duration="00:00:00.0173334" startTime="2026-10-01T06:29:48.0414836-04:00" endTime="2026-10-01T06:29:48.0414838-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="17a123e4-5e4f-4ebe-8fc4-de568481dc88" />
+    <ns0:UnitTestResult executionId="d7efd3b0-08fa-4cff-9c4f-83bab0834ad5" testId="b28760d3-665f-1778-0ebd-3a65be759efb" testName="BookOfEternityClient.Tests.PortableProposalAdmissionTests.StaleGenerationOrTaskCannotRemoveEmptyDestination(staleGeneration: True)" computerName="$HOST" duration="00:00:00.0131091" startTime="2026-10-01T06:29:47.9600670-04:00" endTime="2026-10-01T06:29:47.9600672-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d7efd3b0-08fa-4cff-9c4f-83bab0834ad5" />
+    <ns0:UnitTestResult executionId="7968fa20-87b1-4274-9d99-498095f7a236" testId="5515a4aa-a986-6750-4524-11534b13f756" testName="BookOfEternityClient.Tests.PortableProposalAdmissionTests.NonemptyDestinationIsRejectedWithoutDeletingUnknownBytes(nested: True)" computerName="$HOST" duration="00:00:00.0160661" startTime="2026-10-01T06:29:47.9817481-04:00" endTime="2026-10-01T06:29:47.9817483-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7968fa20-87b1-4274-9d99-498095f7a236" />
+    <ns0:UnitTestResult executionId="a2cabf5a-cae5-48a6-83f8-e50e113ac439" testId="2a02244b-00d9-f849-323a-4827750e80c9" testName="BookOfEternityClient.Tests.PortableProposalAdmissionTests.StaleGenerationOrTaskCannotRemoveEmptyDestination(staleGeneration: False)" computerName="$HOST" duration="00:00:00.1477134" startTime="2026-10-01T06:29:47.9456113-04:00" endTime="2026-10-01T06:29:47.9456245-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a2cabf5a-cae5-48a6-83f8-e50e113ac439" />
+    <ns0:UnitTestResult executionId="24c5ff04-dc50-4cdb-b2ce-15e2c6c65a11" testId="9871cc70-9699-7f19-7a62-7228e48c3e34" testName="BookOfEternityClient.Tests.PortableProposalAdmissionTests.LinkedDestinationRetainsOutsideDataAndNeverPublishesInbox" computerName="$HOST" duration="00:00:00.0086166" startTime="2026-10-01T06:29:48.0100135-04:00" endTime="2026-10-01T06:29:48.0100137-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="24c5ff04-dc50-4cdb-b2ce-15e2c6c65a11" />
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableProposalAdmissionTests.StaleGenerationOrTaskCannotRemoveEmptyDestination(staleGeneration: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b28760d3-665f-1778-0ebd-3a65be759efb">
+      <ns0:Execution id="d7efd3b0-08fa-4cff-9c4f-83bab0834ad5" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableProposalAdmissionTests" name="StaleGenerationOrTaskCannotRemoveEmptyDestination" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableProposalAdmissionTests.LinkedDestinationRetainsOutsideDataAndNeverPublishesInbox" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9871cc70-9699-7f19-7a62-7228e48c3e34">
+      <ns0:Execution id="24c5ff04-dc50-4cdb-b2ce-15e2c6c65a11" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableProposalAdmissionTests" name="LinkedDestinationRetainsOutsideDataAndNeverPublishesInbox" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableProposalAdmissionTests.EmptyDestinationReachesExistingBackendAfterActualStoreAdmission(nested: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e6898da2-df40-9797-0324-5a503a6e5e74">
+      <ns0:Execution id="b5b66e56-c436-466a-9eb0-297aaaafbd9f" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableProposalAdmissionTests" name="EmptyDestinationReachesExistingBackendAfterActualStoreAdmission" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableProposalAdmissionTests.WrongTypeDestinationFailsAdmissionBeforeTheBackendAndPreservesBytes" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6919b00a-c91e-91ae-b1e8-b7e304d4d84e">
+      <ns0:Execution id="dec10d0d-ae28-4c04-820b-8f1855c95ab7" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableProposalAdmissionTests" name="WrongTypeDestinationFailsAdmissionBeforeTheBackendAndPreservesBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableProposalAdmissionTests.NonemptyDestinationIsRejectedWithoutDeletingUnknownBytes(nested: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a50100e8-88c9-63ef-20b2-5614325818c1">
+      <ns0:Execution id="b4cfb6ab-8901-4c1e-8370-a725fd0b33fb" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableProposalAdmissionTests" name="NonemptyDestinationIsRejectedWithoutDeletingUnknownBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableProposalAdmissionTests.StaleGenerationOrTaskCannotRemoveEmptyDestination(staleGeneration: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2a02244b-00d9-f849-323a-4827750e80c9">
+      <ns0:Execution id="a2cabf5a-cae5-48a6-83f8-e50e113ac439" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableProposalAdmissionTests" name="StaleGenerationOrTaskCannotRemoveEmptyDestination" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableProposalAdmissionTests.EmptyDestinationReachesExistingBackendAfterActualStoreAdmission(nested: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1549996e-1073-d366-9b34-a5b88fc8abd4">
+      <ns0:Execution id="17a123e4-5e4f-4ebe-8fc4-de568481dc88" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableProposalAdmissionTests" name="EmptyDestinationReachesExistingBackendAfterActualStoreAdmission" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableProposalAdmissionTests.NonemptyDestinationIsRejectedWithoutDeletingUnknownBytes(nested: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5515a4aa-a986-6750-4524-11534b13f756">
+      <ns0:Execution id="7968fa20-87b1-4274-9d99-498095f7a236" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableProposalAdmissionTests" name="NonemptyDestinationIsRejectedWithoutDeletingUnknownBytes" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="e6898da2-df40-9797-0324-5a503a6e5e74" executionId="b5b66e56-c436-466a-9eb0-297aaaafbd9f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="6919b00a-c91e-91ae-b1e8-b7e304d4d84e" executionId="dec10d0d-ae28-4c04-820b-8f1855c95ab7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="a50100e8-88c9-63ef-20b2-5614325818c1" executionId="b4cfb6ab-8901-4c1e-8370-a725fd0b33fb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="1549996e-1073-d366-9b34-a5b88fc8abd4" executionId="17a123e4-5e4f-4ebe-8fc4-de568481dc88" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="b28760d3-665f-1778-0ebd-3a65be759efb" executionId="d7efd3b0-08fa-4cff-9c4f-83bab0834ad5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="5515a4aa-a986-6750-4524-11534b13f756" executionId="7968fa20-87b1-4274-9d99-498095f7a236" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="2a02244b-00d9-f849-323a-4827750e80c9" executionId="a2cabf5a-cae5-48a6-83f8-e50e113ac439" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="9871cc70-9699-7f19-7a62-7228e48c3e34" executionId="24c5ff04-dc50-4cdb-b2ce-15e2c6c65a11" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Completed">
+    <ns0:Counters total="8" executed="8" passed="8" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.16]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.36]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.38]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.69]   Finished:    BookOfEternityClient.Tests
+</ns0:StdOut>
+    </ns0:Output>
+  </ns0:ResultSummary>
+</ns0:TestRun>

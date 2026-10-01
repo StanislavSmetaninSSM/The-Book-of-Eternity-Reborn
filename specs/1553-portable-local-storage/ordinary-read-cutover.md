@@ -1,0 +1,73 @@
+# Ordinary reader dependency for accepted publication — 2026-10-01
+
+Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553). Current scope is [plan.md](plan.md); this note changes no implementation.
+
+## Finding and bounded recommendation
+
+Ordinary text, byte and existence APIs return no physical identity and can use the existing trusted-local scope. They still reach the physical namespace/open/completion checks: Windows rejects hard-linked inputs, while the Unix attribute fallback accepts special files as regular before opening them. This can prevent otherwise B2-compatible ordinary game writes from reaching publication. It is **not** an unconditional Linux `PlatformNotSupportedException` for normal-file reads.
+
+Split common content/presence reading from the original physical readers, preserving existing public recovery/quiescence behavior. Share the validated read core with B2's leased byte reader; do not replace every `ReadFileBytesCoreAsync`/`FileExistsCore` call indiscriminately. Preserve named original readers or an explicit original-handler read scope for legacy setup/receipts/recovery until those complete routes migrate. No synthetic identity, new journal, gameplay schema change or whole-normalizer transaction redesign is needed for this dependency.
+
+## Source identity and limits
+
+Read in the feature checkout, branch `1553-cross-platform-runtime`, observed HEAD `2bc28a21734ef504f4e485c1f4bfbfb51100000f`. B3b working source was active; no repository files/refs were changed and no tests/apps/providers were run. This is a source-backed map, not runtime acceptance. Source blobs inspected:
+
+- `Core/FileSystemManager.cs`: `10eeac63899e657daba881c68ebe1d6bca9c9e38`
+- `Core/FileSystemManager.TrustedLocalStorage.cs`: `38defcbefa20cea6cb8cbc663dbcbea4ac43c6f8`
+- `Core/PhysicalFileAuthority.cs`: `f11db9017b69fcbcd7f7616a7e98327faf21ff1b`
+- `Services/ExplorerLocalTurnRollbackArtifacts.cs`: `8371b0d3dee8972f780e2be6424cedee7386ef01`
+- `Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs`: `a56ee6f826e6aaaf2392f3d95d61de837b0bb392`
+
+Production paths below start at `BookOfEternityClient/`; cited tests identify their project explicitly. Line references describe these inspected bytes, not a future normalized manager.
+
+## Exact migration surface
+
+1. `FileSystemManager.ReadFileAsync(string)` / leased overload `:1196–1235`: public recovery/recheck wrapper → `ReadFileCoreAsync` → physical snapshot; result is only decoded text. Preserve UTF-8/BOM-detecting `StreamReader` behavior, null vs empty and errors; do not silently add JSON parsing or new decoding rules.
+2. `ReadFileBytesAsync(string)`, cancellation overload and leased overload `:1237–1259`; `ReadFileBytesWithPublicationRecoveryAsync:1349–1380`: exact bytes/absence only. Suitable for the common content reader.
+3. `ReadFileSync(string)` / leased overload `:1271–1318`, `ReadFileBytesSync:1320–1343`: same content semantics and recovery wrappers. They are real accepted-turn consumers, not redundant convenience methods; leaving them physical leaves signed snapshot/receipt validation blocked on the same inputs.
+4. `FileExists(string)` / leased overload `:1440–1533`: validated presence only. Use scope validation followed by presence probing, without reading file contents or acquiring an unconditional new lease. Missing is false; directory/link/special type remains an error. A zero-byte regular file is present.
+5. `ReadFileSnapshotAsync(lease,...):1261–1268`: the returned `CanonicalFileReadSnapshot:1723–1725` is **bytes + LastWriteTimeUtc**, not `FileIdentity`. It too can migrate using metadata from the same opened ordinary file. Sole production direct consumer found: `LocalUiSessionLockService.TryReadSnapshotAsync:164–174`; malformed/legacy lock parsing uses the real timestamp (`:196,222,252`). Do not substitute current time or lose the stale-lock fallback.
+
+The old async snapshot path is `ReadFileSnapshotCoreAsync:1383–1430` → `OpenCanonicalReadStreamAsync:5280+` → `FileExistsCore` and `PhysicalFileAuthority.OpenReadFile`; `StableReadFile.Complete:1750–1756` validates the physical path again. Sync snapshot `:1670–1721` does the equivalent directly. Windows `ProbeNamespaceEntry:125–156` calls `EnsureHandleMatchesExpectedPath:1528–1543` → single-link check; open defaults to `requireSingleLink=true` (`PhysicalFileAuthority:598–655`). Thus replacing only the open is insufficient: the existence probe already rejects the hard link.
+
+On Unix `ProbeNamespaceEntry:104–123` classifies every non-directory/non-reparse attribute as regular, and physical handle validation is Windows-conditional. `TrustedLocalFileScope.Probe:201–237` already handles Linux FIFO/socket/device types without opening them. Reuse it rather than adding a second type classifier.
+
+## Concrete ordinary consumers enabled
+
+- Normalizer read/existence wrappers: `CanonicalStateNormalizer.PrivateImplementation.cs:161–164,202–205`; ordinary writer `:180–182` already calls the B2-routed manager write. Accepted publication's retained-before-images `AcceptedMechanics.cs:390–407`, deleted/retained agreement `:433–451`, exact after-image checks `:1198–1238` need content/presence only. Logical history/once-only authority is retained; a storage physical receipt is not required by these reads.
+- Signed pending snapshots: `PendingTurnSnapshotReader.cs:137–197,318–332` uses sync text/bytes plus signed manifest/hash/generation validation. Those are logical authority checks and remain intact under common reads. Likewise `ValidationService.AcceptedTurnAndInkFeathers.cs:3274,3411–3442,3539,5212,5243`, `GuardianPowerEventState.cs:507`, `RealmSegregationAutoRollbackService.cs:309`, `CanonicalStateNormalizer.SoulAndMeta.cs:902` consume contents. Do not confuse these gameplay/snapshot receipts with browser v6 physical publication receipts.
+- Wound history/receipt inputs: `MortalWoundOpportunityAdapter.cs:605–611` sync reads; `MortalWoundRecoveryPlanner.cs:510` explicit leased sync history read. No returned file identity is consumed.
+- `CoordinatedStateWriteHelper.cs:145–150,241–307` reads baselines/before bytes, checks presence for deletes and restores exact bytes. Its current CommitGate→canonical lease ordering (`:106–110`) stays. Reader migration removes an input restriction; it does **not** by itself upgrade that helper's transaction outcome/recovery behavior.
+- `StateManager.cs:63–72,346,453–455,499` and `LiveTurnPreparationService.cs:267,297,308,335,379` consume ordinary text/bytes. `LocalUiSessionLockService` needs the timestamp extension above, not physical identity.
+- Deferred settings health/reminder: `SystemModService.WriteManifestForGmAsync:94` reads the manifest before the ordinary B2 write; callers remain `GameEngine.ValidationAndRepair.cs:149–150` and `GameEngine.TurnLifecycle.cs:4458–4459`. The prior recommendation remains the exact manifest + conditional config member set under the existing owning lease, excluding snapshot-bound `game_settings.json`. Common readers alone do not finish this two-member publication work.
+- Save archive assembly's ordinary canonical byte reads can benefit, but exact archive opening, staging and activation remain the separate mapped save/load migration. No save/load completion claim follows.
+
+## Original physical routes that must stay explicit
+
+- Manager `CanonicalMutationPublication:80–83` genuinely contains `PhysicalFileAuthority.FileIdentity`. Conditional identity-based write/delete methods, capture/revalidation and retained load `LoadStagingAuthoritySet` must retain real original semantics until replaced as a complete consumer boundary. Changing ordinary reads does not allow constructing a fake receipt.
+- **Browser setup precedes recorder attachment:** `ExplorerLocalTurnRollbackArtifacts.cs:413` reads tracked before-images, writes backups at `:424–426`, then attaches `MutationIntentRecorder` only at `:511`. A test of `MutationIntentRecorder != null` alone misses this setup. Preserve explicit original reads for this whole transitional path, including its `FileExists` calls (`:324,343`), manifest/backups/cleanup (`:634,709,818+`) and tracked-file restoration checks (`:770–787`). Its v6 receipt uses physical identity (`:37–40`), and external entries store parent/baseline/published identities (`:55–64`). Original handlers may read canonical paths outside the rollback evidence subtree, so path exclusion alone is also insufficient.
+- `UsesTrustedLocalWriter` already excludes recorder, `IsLegacyStorageRecovery`, and the browser rollback root (`FileSystemManager.TrustedLocalStorage.cs:45–54`); `ReadLocalFileBytesAsync:182–184` refuses those contexts. Keep that conservative boundary for the leased B2 API. Original-handler scope `:14–20` plus manager acquisition recovery `FileSystemManager:3613–3626` must still original-recover-or-block before common mutation. Never weaken these guards just to reuse the B2 reader.
+- Preserve physical fallback reads in legacy append/CAS branches (`FileSystemManager:839,920`), and private `ReadRuntimeText:5147–5181` for old load/worker manifests and original generation reader (`:4479,4653,4864,5535`). Keep B3a ordinary generation below its own operation fence; do not route it recursively through a new public reader.
+- `ReadExactBytesFromStablePath:5874–5904` is recovery evidence, called for worker before-images (`:4845`). `OpenExactPhysicalReadFile:5235–5278` also serves SaveLoadService archive and metadata opening (`:381,642`). Do not globally weaken `StableReadFile.Complete` or `PhysicalFileAuthority.OpenReadFile` to fix the ordinary surface.
+- `CreateBackupCore:5613–5623` / `RestoreBackupCore:5646–5658` still pair private physical reads with direct old physical writes/deletion. Keep them on their original route until their complete callers migrate; a read-only substitution does not make backup publication portable.
+- `DarenRewardProfileFileStore.ReadExactBytesAsync:27–61` bypasses these public APIs and keeps its physical read/write integration; its companion rollback identities remain a separate migration. Its fixed profile is under `fs.BasePath/client_profile`, external to `game_session`, not a new global/home grant.
+
+## Smallest safe integration shape and guards
+
+Extract/share a common validated byte/snapshot core from the B2 reader; keep ordinary wrappers' existing recovery and observation policy. Explicit leased ordinary calls validate the actual owning lease and preserve the bound-session fence as appropriate; never manufacture a lease. For unleased wrappers, do not call `ReadLocalFileBytesAsync` by acquiring a second lease inside an active operation. Ambient registrations currently expose only active/pending state (`FileSystemManager:104–158,3919–3929`), not a usable owning lease or legacy flags. Use explicit original read entrypoints/scopes for transitional consumers, including pre-recorder setup, rather than inferring ownership from a boolean.
+
+Keep `HasPendingFilePublications:3848–3849`, pre-read recovery `:3948–3972`, after-attempt rechecks and mutation-observation/quiescence behavior. `PublicationReadQuiescence` is a distinct lease purpose (`:3504–3509`); replacing it with a normal mutation lease can change generation/recovery behavior. Existing no-reacquire and absence fast-path contracts are deliberate. A common type preflight must occur before every actual open and after boundary hooks, preserve cancellation/sharing-violation retry behavior, and surface wrong types/permission errors instead of returning absence.
+
+## Focused RED/consumer selection
+
+Propose a small ordinary-reader owner, extracting exact selectors from oversized `canonical-storage`; do not run its complete class/category. Core cases: public+leased async text/bytes, sync text/bytes, existence and timestamp snapshot; exact BOM/non-UTF8/empty/absence; ordinary hard links accepted on both OSes and outside alias unchanged by subsequent by-name B2 write; FIFO/socket/device rejected **before open** in bounded child processes; file-at-parent/directory/link/path spelling and cancellation. Add the real leased/ambient normalizer or coordinated-write input path so the test reaches ordinary publication, not just an isolated helper.
+
+Existing references to carry forward:
+
+- `IntegrationTests/FileSystemManagerTests.cs`: `ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable:29`; `ReadFileBytesAsync_ParentReplacedByJunctionBeforeOpenFailsClosed:335`; read/sync/existence wrong-type tests `:2616–2676`; `FileExists_FilePublishedAfterInitialAbsentProbe_RechecksUnderQuiescenceLease:4102`; `FileExists_OwnedLeaseWithPendingPublicationDoesNotReacquire:4332`; `FileExists_AbsentTargetWithoutPublication_DoesNotAcquireCanonicalWriteLease:4384`; follow-up gap `:4407`.
+- `ReadFileAsync_RejectsHardLinkedCanonicalState:2597` is a Windows-gated old policy assertion: replace its **ordinary** expectation with accepted trusted-local behavior, while retaining explicit legacy/archive hard-link assertions (for example `OpenExactPhysicalReadFile_RejectsHardLinkedSaveArchive:4703`). The physical-publication recovery tests `:3549,3600,3651,4012` still test original evidence and must not be silently converted into new-format recovery cases.
+- `Tests/PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes:154` already covers B1 pre/postcommit/unknown evidence. Extend exact ordinary surfaces as necessary; bootstrap's FIFO/hardlink cases `:343,380` do not prove public ordinary reader behavior. Current owners: `portable-client-bootstrap`, `portable-storage-consumers` for relevant integration/UI-lock consumers.
+- `Tests/LocalUiSessionLockServiceTests.AcquireOrRefreshAsync_MalformedStaleLock_ReplacesLock:140` exercises real timestamp fallback; active-owner and generation/release tests retain lease semantics. `Tests/CoordinatedStateWriteHelperTests.TryCommitAsync_HoldsCanonicalLeaseAcrossBaselineChecksAndEveryWrite:71` and `...ConcurrentChangeAfterFirstWrite_IsNotOverwrittenByRollback:21` are exact input/publication consumers.
+- `Tests/GmWorkerBridgeDocumentationTests.DurableFileAuthoritySourceGuard_RejectsPathBasedRuntimeMutations:794` still expects original physical methods to exist globally. Keep original-handler assertions, and add route-specific common-reader separation if needed; do not delete the guard because ordinary reads migrate.
+
+A reader cutover enables current content/presence semantics consistently. It does not establish accepted-turn transaction migration, provider stop, real GM operation, complete save/load, or Windows execution; those remain their existing bounded blocks.
