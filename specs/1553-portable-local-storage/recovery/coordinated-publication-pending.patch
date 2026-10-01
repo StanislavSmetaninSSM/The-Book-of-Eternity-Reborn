@@ -74,10 +74,10 @@ index 4a4415cc..33f1deab 100644
  
  B1 already distinguishes `Committed`, `RolledBack`, `Uncertain` (`TrustedLocalFilePublication.cs:75–104`), including committed observer/cleanup failure. Keep the bool facade: true for committed, false for initial baseline mismatch or positively confirmed rollback, distinct unresolved exception for uncertain. Never broadly catch the publish API and return false. Capture the durable result before owned-lease disposal/follow-up; a disposal/cleanup failure cannot turn an established commit into uncommitted or start manual undo. Surface/log the follow-up without changing that disposition. The prepared settings implementation supplies the existing model (`WebUi/BrowserLocalWriteCoordinator.Prepared.cs:35–59,73–92`).
 diff --git a/tests/categories.json b/tests/categories.json
-index ad2fe43a..6a031acd 100644
+index ad2fe43a..67957d28 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -8417,6 +8417,177 @@
+@@ -8417,6 +8417,204 @@
            ]
          }
        ]
@@ -247,8 +247,35 @@ index ad2fe43a..6a031acd 100644
 +        {
 +          "project": "integration",
 +          "tests": [
-+            "BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.*",
++            "BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ActualCleanupConsumerReachesOneCommittedMemberSet",
++            "BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ActualCleanupConsumerDoesNotSwallowUncertainPublication",
++            "BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.MalformedPlanningInputRemainsAnOrdinaryKnownAbort",
++            "BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.RetainedEvidenceAdmissionPropagatesBeforeAnyNewPublication",
 +            "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.AcceptOffer_SealsGenerationOfferTurnAndExactEffectRootWithoutLiveRebuild"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-coordinated-cleanup-resident",
++      "responsibility": "Actual resident manifestation cleanup helper after its independent public cleanup preamble: exact target member set, uncertain outcome, malformed planning and every attempted publication after retained-evidence read admission.",
++      "excludes": "Migration of the whole resident normalizer and its earlier independent cleanup writes.",
++      "changeHints": [
++        "BookOfEternityClient/Services/GuardianAbodeResidentRequestState.cs",
++        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 4,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "integration",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.Resident*"
 +          ]
 +        }
 +      ]

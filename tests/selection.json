@@ -2,13 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-coordinated-cleanup",
-      "reason": "First bounded actual cleanup-caller RED: five uncertainty routes, five matching publication controls, five malformed-planning controls, two distinct retained-evidence admissions, plus the existing actual QTE acceptance route. Production unchanged.",
+      "category": "portable-coordinated-cleanup-resident",
+      "reason": "Correct four resident fixture observations only. Require target helper cut hits and independently forbid every publication after retained evidence is injected during the intervening read. Production unchanged; other completed RED rows are not repeated.",
       "contracts": [
-        "unknown publication never swallowed",
-        "acquisition/read admission propagates",
-        "known parse abort retained",
-        "QTE acceptance ordinary helper route"
+        "target versus preamble publication",
+        "uncertainty propagation",
+        "known parse abort",
+        "retained-evidence read admission"
       ]
     }
   ]

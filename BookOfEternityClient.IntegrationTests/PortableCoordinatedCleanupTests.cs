@@ -37,16 +37,23 @@ public sealed class PortableCoordinatedCleanupTests : IDisposable
     [InlineData("npc-leased")]
     [InlineData("guardian")]
     [InlineData("shining")]
-    [InlineData("resident")]
-    public async Task ActualCleanupConsumerReachesOneCommittedMemberSet(string consumer)
+    public Task ActualCleanupConsumerReachesOneCommittedMemberSet(string consumer) => AssertCommittedCleanup(consumer);
+
+    private async Task AssertCommittedCleanup(string consumer)
     {
         var target = await Seed(consumer);
         string[]? members = null;
         var commits = 0;
+        var targetPublication = false;
         _observer = (phase, _) =>
         {
-            if (phase == TrustedLocalPublicationPhase.IntentPublished) members = ReadMembers();
-            if (phase == TrustedLocalPublicationPhase.Committed) commits++;
+            if (phase == TrustedLocalPublicationPhase.IntentPublished)
+            {
+                var current = ReadMembers();
+                targetPublication = current.Contains(_files.ResolvePath(target), StringComparer.Ordinal);
+                if (targetPublication) members = current;
+            }
+            if (targetPublication && phase == TrustedLocalPublicationPhase.Committed) commits++;
         };
 
         await Invoke(consumer);
@@ -63,8 +70,9 @@ public sealed class PortableCoordinatedCleanupTests : IDisposable
     [InlineData("npc-leased")]
     [InlineData("guardian")]
     [InlineData("shining")]
-    [InlineData("resident")]
-    public async Task ActualCleanupConsumerDoesNotSwallowUncertainPublication(string consumer)
+    public Task ActualCleanupConsumerDoesNotSwallowUncertainPublication(string consumer) => AssertUncertainCleanup(consumer);
+
+    private async Task AssertUncertainCleanup(string consumer)
     {
         var target = await Seed(consumer);
         var hits = 0;
@@ -74,7 +82,7 @@ public sealed class PortableCoordinatedCleanupTests : IDisposable
         {
             if (phase != TrustedLocalPublicationPhase.MemberPublished || index != 0) return;
             var members = ReadMembers();
-            Assert.Contains(_files.ResolvePath(target), members);
+            if (!members.Contains(_files.ResolvePath(target), StringComparer.Ordinal)) return;
             hits++;
             File.WriteAllText(_files.ResolvePath(target), "{\"unknownAuthority\":true}", new UTF8Encoding(false));
             evidence = File.ReadAllBytes(Journal);
@@ -95,8 +103,9 @@ public sealed class PortableCoordinatedCleanupTests : IDisposable
     [InlineData("npc-leased")]
     [InlineData("guardian")]
     [InlineData("shining")]
-    [InlineData("resident")]
-    public async Task MalformedPlanningInputRemainsAnOrdinaryKnownAbort(string consumer)
+    public Task MalformedPlanningInputRemainsAnOrdinaryKnownAbort(string consumer) => AssertMalformedPlanning(consumer);
+
+    private async Task AssertMalformedPlanning(string consumer)
     {
         var target = await Seed(consumer);
         var before = File.ReadAllBytes(_files.ResolvePath(target));
@@ -108,7 +117,11 @@ public sealed class PortableCoordinatedCleanupTests : IDisposable
         };
         File.WriteAllText(_files.ResolvePath(input), "{ malformed");
         var intents = 0;
-        _observer = (phase, _) => { if (phase == TrustedLocalPublicationPhase.IntentPublished) intents++; };
+        _observer = (phase, _) =>
+        {
+            if (phase == TrustedLocalPublicationPhase.IntentPublished &&
+                ReadMembers().Contains(_files.ResolvePath(target), StringComparer.Ordinal)) intents++;
+        };
 
         await Invoke(consumer);
 
@@ -119,8 +132,10 @@ public sealed class PortableCoordinatedCleanupTests : IDisposable
 
     [Theory]
     [InlineData("npc", false)]
-    [InlineData("resident", true)]
-    public async Task RetainedEvidenceAdmissionPropagatesBeforeAnyNewPublication(string consumer, bool duringRead)
+    public Task RetainedEvidenceAdmissionPropagatesBeforeAnyNewPublication(string consumer, bool duringRead) =>
+        AssertRetainedAdmission(consumer, duringRead);
+
+    private async Task AssertRetainedAdmission(string consumer, bool duringRead)
     {
         var target = await Seed(consumer);
         var before = File.ReadAllBytes(_files.ResolvePath(target));
@@ -142,7 +157,12 @@ public sealed class PortableCoordinatedCleanupTests : IDisposable
             return Task.CompletedTask;
         };
         _beforeLease = () => { if (armed) RetainEvidence(); return Task.CompletedTask; };
-        _observer = (phase, _) => { if (phase == TrustedLocalPublicationPhase.IntentPublished) intents++; };
+        // Admission must block every new publication after evidence appears,
+        // independently of which files the earlier public cleanup touched.
+        _observer = (phase, _) =>
+        {
+            if (hits != 0 && phase == TrustedLocalPublicationPhase.IntentPublished) intents++;
+        };
 
         var error = await Record.ExceptionAsync(() => Invoke(consumer));
 
@@ -152,6 +172,18 @@ public sealed class PortableCoordinatedCleanupTests : IDisposable
         Assert.Equal(invalidEvidence, File.ReadAllBytes(Journal));
         Assert.IsType<InvalidDataException>(error);
     }
+
+    [Fact]
+    public Task ResidentTargetPublicationFollowsItsIndependentCleanupPreamble() => AssertCommittedCleanup("resident");
+
+    [Fact]
+    public Task ResidentTargetUncertaintyCannotBecomeSuccessfulCleanup() => AssertUncertainCleanup("resident");
+
+    [Fact]
+    public Task ResidentMalformedNpcPlanningRetainsTheManifestationBoundary() => AssertMalformedPlanning("resident");
+
+    [Fact]
+    public Task ResidentRetainedEvidenceDuringInterveningReadMustPropagate() => AssertRetainedAdmission("resident", duringRead: true);
 
     private async Task Invoke(string consumer)
     {
