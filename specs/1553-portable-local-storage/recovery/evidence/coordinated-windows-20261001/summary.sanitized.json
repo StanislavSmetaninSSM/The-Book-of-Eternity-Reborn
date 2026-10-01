@@ -1,0 +1,90 @@
+{
+  "Categories": [
+    "portable-coordinated-windows"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-coordinated-windows",
+      "reason": "Frozen native-only qualification: 16 planned cases. Cloud performs discovery/planning only; parent coordinates {HOST} normal delivery and actual execution. Do not repeat completed Linux cohorts. File.CreateSymbolicLink setup capability is unestablished and must fail/report honestly without elevation or silent pass.",
+      "contracts": [
+        "actual Windows case/separator and link policy",
+        "real lease cleanup and primary outcome",
+        "cold hard-link preservation",
+        "original browser accept/decline callbacks",
+        "real wound quarantine after native preparation"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "5bfa0a1b017f4830e202be7fd8cb25d5c180082a",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-coordinated-windows",
+      "Seconds": 92.9601069,
+      "BudgetMinutes": 6,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.8895325,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.7227293,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.8473315,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 320.8956018,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 45.9761017,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.005213,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:07:57.9395266",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 16,
+    "CompletedCases": 16,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 16,
+    "Executed": 16,
+    "Passed": 16,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
