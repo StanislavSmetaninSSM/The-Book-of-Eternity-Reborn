@@ -1,0 +1,206 @@
+{
+  "kind": "B3b exact seven-case native Windows handle-comparison verification",
+  "sourceSha": "e5ee470eecf3da01172894f3c81a3fe4da25709d",
+  "sourceTree": "6a2bcd2d7abde7f5db20c7e44353dbcf7773f61d",
+  "catalogBlob": "dd51f5e50a73baeed77ac23c29895b7f5a0cb7a1",
+  "category": "portable-storage-windows-handle-comparison",
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-storage-windows-handle-comparison -Parallelism 1",
+  "os": "Microsoft Windows 10.0.26200",
+  "architecture": "X64",
+  "isWindows": true,
+  "powershell": "7.6.6",
+  "dotnetSdk": "10.0.401",
+  "startedUtc": "2026-10-01T12:24:16.0529194Z",
+  "endedUtc": "2026-10-01T12:27:32.642202Z",
+  "wallTime": "00:03:15.4926899",
+  "result": {
+    "completedDescriptors": 2,
+    "plannedDescriptors": 2,
+    "plannedCases": 7,
+    "launcherExitCode": 0,
+    "plannedMethods": 6,
+    "passed": 7,
+    "failed": 0,
+    "exitCode": 0,
+    "completedCases": 7,
+    "skipped": 0,
+    "executed": 7,
+    "selectionComplete": true,
+    "duplicateIds": 0,
+    "total": 7,
+    "timedOut": false,
+    "unrun": 0
+  },
+  "bodyEvidence": "Six selected methods expand to seven native Windows cases and return early only on non-Windows; native host is Windows. Directory-link fixture inability asserts failure; hard-link fixture failure throws. No silent pass, security change or elevation. Before-write fence asserts the immediate direct-write SessionReplacedException and both generations.",
+  "cleanup": {
+    "runtimeComplete": true,
+    "ownedTreeComplete": true,
+    "launcherProcessRemainders": 0,
+    "syntheticFixtureDirectoryRemainders": 0,
+    "runtimeDirectoryRemainders": 0
+  },
+  "isolation": "Per-process synthetic temp, CLI home, NuGet cache and appdata; unique runner output under owned QA TestResults. No user saves/profiles used.",
+  "externalExecution": "Selected filesystem tests instantiate no game/GM/provider/browser/GUI/audio entrypoints. No provider or app/server is launched.",
+  "telemetryOptOuts": [
+    "DOTNET_CLI_TELEMETRY_OPTOUT=1",
+    "POWERSHELL_TELEMETRY_OPTOUT=1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT=1"
+  ],
+  "sourceReadback": {
+    "source": "Independent GitHub-only fetch into clean isolated readback clone; no source objects copied from QA",
+    "sourceSha": "e5ee470eecf3da01172894f3c81a3fe4da25709d",
+    "sourceTree": "6a2bcd2d7abde7f5db20c7e44353dbcf7773f61d",
+    "workingTreeClean": true,
+    "coreAutocrlf": "false",
+    "blobs": {
+      "BookOfEternityClient/Core/PhysicalFileAuthority.cs": "1445bf5f6cc3c3c5bb8145983974336446a53604",
+      "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs": "a942b4d8a99689f1e8447b8c08fb053536e3ac4f",
+      "tests/categories.json": "dd51f5e50a73baeed77ac23c29895b7f5a0cb7a1",
+      "BookOfEternityClient.Tests/PortableSessionRootKeyTests.cs": "ca02ff37574e32da385374db87746d3e31d99be1",
+      "tests/selection.json": "7ae4542ff8b8b9833fd6817730f5ff24737db068"
+    },
+    "verifiedUtc": "2026-10-01T12:24:14.2946359Z"
+  },
+  "sourceWorkingTreeClean": true,
+  "cases": [
+    {
+      "outcome": "Passed",
+      "duration": "00:00:00.1442952",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireSessionLifecycleLease_RejectsOpenedExternalLockHandleAfterPathSwap",
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireSessionLifecycleLease_RejectsOpenedExternalLockHandleAfterPathSwap"
+    },
+    {
+      "outcome": "Passed",
+      "duration": "00:00:00.0604915",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.LeaseAcquisition_RejectsHardLinkedLockFile(isLifecycleLease: True)",
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.LeaseAcquisition_RejectsHardLinkedLockFile"
+    },
+    {
+      "outcome": "Passed",
+      "duration": "00:00:00.0703476",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.LeaseAcquisition_RejectsHardLinkedLockFile(isLifecycleLease: False)",
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.LeaseAcquisition_RejectsHardLinkedLockFile"
+    },
+    {
+      "outcome": "Passed",
+      "duration": "00:00:00.1111567",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireCanonicalWriteLease_RejectsOpenedExternalLockHandleAfterPathSwap",
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireCanonicalWriteLease_RejectsOpenedExternalLockHandleAfterPathSwap"
+    },
+    {
+      "outcome": "Passed",
+      "duration": "00:00:00.3556505",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasesShareRevisionIdentityWithoutRewritingBaseOrJournalPaths",
+      "method": "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasesShareRevisionIdentityWithoutRewritingBaseOrJournalPaths"
+    },
+    {
+      "outcome": "Passed",
+      "duration": "00:00:00.5731422",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ExtendedWindowsRootPreservesExclusionsAndCanonicalMutationBoundaries",
+      "method": "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ExtendedWindowsRootPreservesExclusionsAndCanonicalMutationBoundaries"
+    },
+    {
+      "outcome": "Passed",
+      "duration": "00:00:00.5713880",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasBoundWriterCannotMutateTheReplacementSessionBeforeFinalFence",
+      "method": "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasBoundWriterCannotMutateTheReplacementSessionBeforeFinalFence"
+    }
+  ],
+  "methodCoverage": [
+    {
+      "recordedCases": 1,
+      "method": "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ExtendedWindowsRootPreservesExclusionsAndCanonicalMutationBoundaries",
+      "plannedCases": 1,
+      "unrunCases": 0
+    },
+    {
+      "recordedCases": 1,
+      "method": "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasesShareRevisionIdentityWithoutRewritingBaseOrJournalPaths",
+      "plannedCases": 1,
+      "unrunCases": 0
+    },
+    {
+      "recordedCases": 1,
+      "method": "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasBoundWriterCannotMutateTheReplacementSessionBeforeFinalFence",
+      "plannedCases": 1,
+      "unrunCases": 0
+    },
+    {
+      "recordedCases": 1,
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireCanonicalWriteLease_RejectsOpenedExternalLockHandleAfterPathSwap",
+      "plannedCases": 1,
+      "unrunCases": 0
+    },
+    {
+      "recordedCases": 1,
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireSessionLifecycleLease_RejectsOpenedExternalLockHandleAfterPathSwap",
+      "plannedCases": 1,
+      "unrunCases": 0
+    },
+    {
+      "recordedCases": 2,
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.LeaseAcquisition_RejectsHardLinkedLockFile",
+      "plannedCases": 2,
+      "unrunCases": 0
+    }
+  ],
+  "trxCounters": [
+    {
+      "passed": 4,
+      "total": 4,
+      "skipped": 0,
+      "file": "portable-storage-windows-handle-comparison-integration-001.sanitized.trx",
+      "failed": 0,
+      "executed": 4
+    },
+    {
+      "passed": 3,
+      "total": 3,
+      "skipped": 0,
+      "file": "portable-storage-windows-handle-comparison-unit-002.sanitized.trx",
+      "failed": 0,
+      "executed": 3
+    }
+  ],
+  "files": [
+    {
+      "originalSha256": "522cebf4329ed5940cad0b98a006bddec8dc9bdd9a04ca40a521d62ac3cd08ea",
+      "file": "summary.sanitized.json",
+      "sanitizedSha256": "8c40dfd120e120fc4580b30bbf4a0059948337f612be2ae2fb8b4a3a7e4c43ba",
+      "bytes": 1688
+    },
+    {
+      "originalSha256": "ec1e9d752e37a11a98488651a7dbdaeb62307c15d88285f11c75f84b70ed0fd4",
+      "file": "portable-storage-windows-handle-comparison-integration-001.sanitized.trx",
+      "sanitizedSha256": "1b92bbdcd56d2b7330636d49b782ded3908a9884aa502985eab51260b5a79ba2",
+      "bytes": 7490
+    },
+    {
+      "originalSha256": "59f9ff301daf25b6f5c86cea635d8e0ad4c22e02b55704a327449e50546ea7eb",
+      "file": "portable-storage-windows-handle-comparison-unit-002.sanitized.trx",
+      "sanitizedSha256": "8eef43754aba44ebbe5b6d5605afc7ea5dc8a87a92335aea32a35c5c58d56804",
+      "bytes": 5981
+    }
+  ],
+  "limits": [
+    "Only the seven explicitly selected native filesystem cases; missing/failed fixture setup is not success",
+    "No additional suite, passing rerun or source fixes",
+    "No Linux/full-suite/PTY/browser/GM/provider/GUI/audio/game/server acceptance",
+    "B3b independent behavior review/acceptance remains separate"
+  ],
+  "sanitization": "Only generated summary/TRX and own run metadata read. Private source/run/home/tool paths and host/user labels replaced consistently. UTF-8 without BOM, LF; original and sanitized SHA256 recorded. JSON/TRX reparsed and privacy/token-like guards passed. No raw logs, credentials, authorization profiles or user saves published."
+}

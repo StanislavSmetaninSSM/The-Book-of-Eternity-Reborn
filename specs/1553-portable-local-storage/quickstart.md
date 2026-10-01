@@ -2,7 +2,7 @@
 
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 
-The current Windows handle-comparison fix is WIP with all three correction files delivered as normal Git blobs. Verify the exact SHA and [normal correction identities](recovery/README.md#current-windows-handle-comparison-correction-wip); no patch application is needed. Linux build/discovery and zero-test planning already passed and are not repeated. The parent runs only `-Category portable-storage-windows-handle-comparison -Parallelism 1` on Windows. The earlier native RED remains preserved; actual seven-case results and final B3b acceptance are separate gates.
+The current Windows handle-comparison fix has native seven-case GREEN with all three correction files delivered as normal Git blobs. Verify the exact SHA and [normal correction identities](recovery/README.md#current-windows-handle-comparison-correction-wip); no patch application is needed. Linux build/discovery and zero-test planning already passed and were not repeated. The single native `-Category portable-storage-windows-handle-comparison -Parallelism 1` run passed **7/7**, exit 0, at `e5ee470eecf3da01172894f3c81a3fe4da25709d`; [exact evidence](recovery/evidence/b3b-windows-handle-comparison-20261001/manifest.json) records complete selection and cleanup. The earlier native RED remains preserved; final B3b acceptance is pending.
 
 ## Restore source first
 
