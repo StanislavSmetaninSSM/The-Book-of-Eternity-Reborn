@@ -1,0 +1,51 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="c1826e7e-7ab0-4942-bde4-74bdd64274d1" name="coordinated-cleanup-green" runUser="$USER">
+  <ns0:Times creation="2026-10-01T13:07:59.1348386-04:00" queuing="2026-10-01T13:07:59.1348386-04:00" start="2026-10-01T13:07:55.9625638-04:00" finish="2026-10-01T13:07:59.1413889-04:00" />
+  <ns0:TestSettings name="default" id="bc6b0303-fdb7-485c-bfd8-40cd3f3b51da">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="ff98fee4-d612-4326-b3f2-3fb1b4648ae6" testId="345721e1-6d3b-ffe6-7fa8-45ae7fc49c09" testName="BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ResidentMalformedNpcPlanningRetainsTheManifestationBoundary" computerName="$HOST" duration="00:00:00.0365018" startTime="2026-10-01T13:07:59.0113872-04:00" endTime="2026-10-01T13:07:59.0113874-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ff98fee4-d612-4326-b3f2-3fb1b4648ae6" />
+    <ns0:UnitTestResult executionId="f1edb203-7c51-48c4-9358-2e1ecacce757" testId="325090a3-be03-9568-2d3a-e0022cc00f99" testName="BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ResidentRetainedEvidenceDuringInterveningReadMustPropagate" computerName="$HOST" duration="00:00:00.1782827" startTime="2026-10-01T13:07:58.8618171-04:00" endTime="2026-10-01T13:07:58.8618403-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f1edb203-7c51-48c4-9358-2e1ecacce757" />
+    <ns0:UnitTestResult executionId="c10eedc7-4b72-4eb0-b6cd-984d1354ec21" testId="437bc469-7d9c-15d8-6bef-3f85f0a45d90" testName="BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ResidentTargetUncertaintyCannotBecomeSuccessfulCleanup" computerName="$HOST" duration="00:00:00.0689553" startTime="2026-10-01T13:07:58.9335201-04:00" endTime="2026-10-01T13:07:58.9335203-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c10eedc7-4b72-4eb0-b6cd-984d1354ec21" />
+    <ns0:UnitTestResult executionId="163509ff-8d79-44a7-b113-34852479a84e" testId="e4033bd3-e586-9f22-6cec-dda50c4c1875" testName="BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ResidentTargetPublicationFollowsItsIndependentCleanupPreamble" computerName="$HOST" duration="00:00:00.0405759" startTime="2026-10-01T13:07:58.9738755-04:00" endTime="2026-10-01T13:07:58.9738759-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="163509ff-8d79-44a7-b113-34852479a84e" />
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ResidentTargetUncertaintyCannotBecomeSuccessfulCleanup" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="437bc469-7d9c-15d8-6bef-3f85f0a45d90">
+      <ns0:Execution id="c10eedc7-4b72-4eb0-b6cd-984d1354ec21" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedCleanupTests" name="ResidentTargetUncertaintyCannotBecomeSuccessfulCleanup" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ResidentRetainedEvidenceDuringInterveningReadMustPropagate" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="325090a3-be03-9568-2d3a-e0022cc00f99">
+      <ns0:Execution id="f1edb203-7c51-48c4-9358-2e1ecacce757" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedCleanupTests" name="ResidentRetainedEvidenceDuringInterveningReadMustPropagate" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ResidentMalformedNpcPlanningRetainsTheManifestationBoundary" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="345721e1-6d3b-ffe6-7fa8-45ae7fc49c09">
+      <ns0:Execution id="ff98fee4-d612-4326-b3f2-3fb1b4648ae6" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedCleanupTests" name="ResidentMalformedNpcPlanningRetainsTheManifestationBoundary" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ResidentTargetPublicationFollowsItsIndependentCleanupPreamble" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e4033bd3-e586-9f22-6cec-dda50c4c1875">
+      <ns0:Execution id="163509ff-8d79-44a7-b113-34852479a84e" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedCleanupTests" name="ResidentTargetPublicationFollowsItsIndependentCleanupPreamble" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="345721e1-6d3b-ffe6-7fa8-45ae7fc49c09" executionId="ff98fee4-d612-4326-b3f2-3fb1b4648ae6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="325090a3-be03-9568-2d3a-e0022cc00f99" executionId="f1edb203-7c51-48c4-9358-2e1ecacce757" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="437bc469-7d9c-15d8-6bef-3f85f0a45d90" executionId="c10eedc7-4b72-4eb0-b6cd-984d1354ec21" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="e4033bd3-e586-9f22-6cec-dda50c4c1875" executionId="163509ff-8d79-44a7-b113-34852479a84e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Completed">
+    <ns0:Counters total="4" executed="4" passed="4" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.43]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.02]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.05]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.45]   Finished:    BookOfEternityClient.IntegrationTests
+</ns0:StdOut>
+    </ns0:Output>
+  </ns0:ResultSummary>
+</ns0:TestRun>

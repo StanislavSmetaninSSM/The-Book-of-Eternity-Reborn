@@ -1,0 +1,51 @@
+{
+  "sourceCommit": "a7eaf3cdc783bda74b718f8a704b2b8bca852719",
+  "sourceAppliedTree": "b90063d467e8a7a965ca752e2299c97346f9d4cc",
+  "packetSha256": "a7cf294f3d1773ca996dbbc45737111419efa6c156ad74486664a5fb75c70fff",
+  "kind": "coordinated-cleanup-green; exact completed selected-run evidence",
+  "sanitization": "Repository/toolchain/isolated environment paths and TRX run user/computer/deployment identifiers replaced; original and sanitized hashes retained.",
+  "command": "DOTNET_PROCESSOR_COUNT=1 DOTNET_CLI_TELEMETRY_OPTOUT=1 POWERSHELL_TELEMETRY_OPTOUT=1 TESTINGPLATFORM_TELEMETRY_OPTOUT=1 pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+  "environment": "Linux x64; SDK10.0.401, .NET8.0.31, PowerShell7.6.6; existing isolated homes/temp/cache; no app/provider execution",
+  "tests": {
+    "Total": 20,
+    "Executed": 20,
+    "Passed": 20,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 20,
+    "CompletedCases": 20,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "exitCode": 0,
+  "wallTime": "00:04:19.5932273",
+  "timedOut": false,
+  "ownedCleanup": true,
+  "runtimeCleanup": true,
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "5b79ff17aef92f1f2e2c0a6b4466e11711da03489523cdf904abcf544790d126",
+      "sanitizedSha256": "5b79ff17aef92f1f2e2c0a6b4466e11711da03489523cdf904abcf544790d126"
+    },
+    {
+      "path": "portable-coordinated-cleanup-integration-001.trx",
+      "originalSha256": "3c6fde28f9838cbeb6e8aa60bc6291b9f5cac84b1a258f91ce451b84acf7e219",
+      "sanitizedSha256": "eca284b4e3ab0d24cf20805cc52a932406d30fb9a74f3e2cc58f808250773fd6"
+    },
+    {
+      "path": "portable-coordinated-cleanup-resident-integration-002.trx",
+      "originalSha256": "374c8930c14c82edd0e26dd31af2c4b73acddc05e235fa8e39950cea12885091",
+      "sanitizedSha256": "2c1a64a7b1ee6d1593d2b861e455a9fe334472f20c5ccbf12a224d9c9f4ca30e"
+    },
+    {
+      "path": "portable-coordinated-cleanup-resident-unit-003.trx",
+      "originalSha256": "f01c41c2d013f333619befdd6eb5d32d6680f9b963bc1f1c6856b3f6008446dc",
+      "sanitizedSha256": "bdce8ec3a60525ea9878820c02e64ffd8ce4f1549020ae2dc3b113337a762b20"
+    }
+  ],
+  "scope": "20/20 actual Linux bodies: NPC owning/supplied, Guardian/Shining and resident cleanup controls; retained-evidence admissions; ordinary QTE acceptance; two existing resident materialized/malformed-soul semantics. Original-browser accept/decline fixture was changed but is NOT selected or executed here. QTE compensation/UI remain pending."
+}
