@@ -1,0 +1,276 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="53dce885-7af5-42dd-90cc-f1887fc0ef2e" name="coordinated-contract-red" runUser="$USER">
+  <ns0:Times creation="2026-10-01T12:16:39.6296473-04:00" queuing="2026-10-01T12:16:39.6296474-04:00" start="2026-10-01T12:16:36.9799536-04:00" finish="2026-10-01T12:16:40.1822005-04:00" />
+  <ns0:TestSettings name="default" id="ac9b4f76-d238-4766-9e9b-e26042f55040">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="9b0c8bc3-5719-418b-a39e-b06fa6ed7627" testId="9c46f9f2-da4d-b0ae-2e21-e9cf2717fd0f" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.InvalidLaterTypeFailsBeforeAnyNewIntentOrMutation(kind: &quot;directory&quot;)" computerName="$HOST" duration="00:00:00.1150315" startTime="2026-10-01T12:16:39.2878315-04:00" endTime="2026-10-01T12:16:39.2878489-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9b0c8bc3-5719-418b-a39e-b06fa6ed7627" />
+    <ns0:UnitTestResult executionId="aed30ba9-453e-4f7e-9ba5-e919c9025c33" testId="d56b19e2-cf7c-6a7c-5570-33812b1f9840" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.UnknownBeforeImageAtPublicationPreflightIsNotReportedAsRestored" computerName="$HOST" duration="00:00:00.0248993" startTime="2026-10-01T12:16:39.7243707-04:00" endTime="2026-10-01T12:16:39.7243709-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aed30ba9-453e-4f7e-9ba5-e919c9025c33" />
+    <ns0:UnitTestResult executionId="06509391-d056-4bcf-8210-3edec3acff0a" testId="7e8b8938-1659-3ca2-00ce-b16cc53c67e3" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.MixedOrdinaryAndOriginalArtifactMembersFailBeforeMutation" computerName="$HOST" duration="00:00:00.1396224" startTime="2026-10-01T12:16:39.9031933-04:00" endTime="2026-10-01T12:16:39.9031935-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="06509391-d056-4bcf-8210-3edec3acff0a" />
+    <ns0:UnitTestResult executionId="9866c77f-fc20-4245-9590-9db2f3137191" testId="a11c2910-84b9-9502-a4aa-75e5d770997e" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.SemanticExactAndOptionalBaselinesKeepTheirDistinctContracts(mode: &quot;unguarded&quot;)" computerName="$HOST" duration="00:00:00.0208654" startTime="2026-10-01T12:16:39.6331270-04:00" endTime="2026-10-01T12:16:39.6331272-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9866c77f-fc20-4245-9590-9db2f3137191" />
+    <ns0:UnitTestResult executionId="d6153c5a-1e73-4ca3-b82d-30e02a2fa2ad" testId="c73ce345-e94e-2ae0-3b62-a5961d1fa7b6" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DuplicateGuardsAfterARealWriteStillBindTheInitialExactImage" computerName="$HOST" duration="00:00:00.0221215" startTime="2026-10-01T12:16:39.6987831-04:00" endTime="2026-10-01T12:16:39.6987833-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d6153c5a-1e73-4ca3-b82d-30e02a2fa2ad" />
+    <ns0:UnitTestResult executionId="0e8f8892-1b96-4e7a-aa52-b6e33e46b8d7" testId="1bc78d48-c6de-8bec-978e-86d365f97f79" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.SemanticExactAndOptionalBaselinesKeepTheirDistinctContracts(mode: &quot;semantic&quot;)" computerName="$HOST" duration="00:00:00.0232676" startTime="2026-10-01T12:16:39.6094439-04:00" endTime="2026-10-01T12:16:39.6094442-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0e8f8892-1b96-4e7a-aa52-b6e33e46b8d7" />
+    <ns0:UnitTestResult executionId="64e5effc-cb00-4f36-90ec-a91c01261b0f" testId="768d2c8d-b2f0-caab-5884-e11685a48eff" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperUnknownLaterMemberPreservesWholeUnresolvedSet" computerName="$HOST" duration="00:00:00.0257802" startTime="2026-10-01T12:16:39.9934810-04:00" endTime="2026-10-01T12:16:39.9934812-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="64e5effc-cb00-4f36-90ec-a91c01261b0f" />
+    <ns0:UnitTestResult executionId="327cc1db-f646-4aff-9072-236963faf47c" testId="8d79e74d-a2c7-716c-3822-219786df2e60" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ConflictingDuplicateGuardIsNotDiscarded(first: False)" computerName="$HOST" duration="00:00:00.0165657" startTime="2026-10-01T12:16:39.6632370-04:00" endTime="2026-10-01T12:16:39.6632372-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="327cc1db-f646-4aff-9072-236963faf47c" />
+    <ns0:UnitTestResult executionId="03c52117-efae-43fd-8180-5c5bf0f568f1" testId="fc9cadf9-c016-241e-ffdd-f58b04c002c0" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperReachedSecondMemberFailureRestoresWholeExactBeforeSet" computerName="$HOST" duration="00:00:00.0385856" startTime="2026-10-01T12:16:39.9430314-04:00" endTime="2026-10-01T12:16:39.9430316-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="03c52117-efae-43fd-8180-5c5bf0f568f1" />
+    <ns0:UnitTestResult executionId="b24f3e82-d8fa-48a8-9f10-45635b3ef467" testId="2a94df0a-0b9a-9dbc-0419-3c83ae8043ad" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DestinationCaseUsesTheActualPlatformPolicy" computerName="$HOST" duration="00:00:00.0225703" startTime="2026-10-01T12:16:39.9666598-04:00" endTime="2026-10-01T12:16:39.9666600-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b24f3e82-d8fa-48a8-9f10-45635b3ef467" />
+    <ns0:UnitTestResult executionId="f2bb3b46-0613-40e8-b9e3-8e1e87e02569" testId="28c7b052-4d43-df5c-8e92-cd42e383d84e" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DuplicateRealDestinationsUseInitialBeforeAndLastImageOrder(final: &quot;replace&quot;)" computerName="$HOST" duration="00:00:00.0218136" startTime="2026-10-01T12:16:39.4400497-04:00" endTime="2026-10-01T12:16:39.4400499-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f2bb3b46-0613-40e8-b9e3-8e1e87e02569" />
+    <ns0:UnitTestResult executionId="584ed410-7eef-49b0-91e8-a99af7be489c" testId="1c95927a-61ec-5653-0855-a203fd860c5e" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ExistingUnresolvedJournalBlocksOwnedAdmissionBeforeAnyNewAttempt" computerName="$HOST" duration="00:00:00.0088763" startTime="2026-10-01T12:16:39.7594357-04:00" endTime="2026-10-01T12:16:39.7594359-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="584ed410-7eef-49b0-91e8-a99af7be489c" />
+    <ns0:UnitTestResult executionId="abbab9b0-f30d-4b90-861e-d04de68787cc" testId="82e0579c-9b0e-66f3-c54e-fadbb8f84fc4" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DuplicateRealDestinationsUseInitialBeforeAndLastImageOrder(final: &quot;delete&quot;)" computerName="$HOST" duration="00:00:00.0843844" startTime="2026-10-01T12:16:39.4162756-04:00" endTime="2026-10-01T12:16:39.4162758-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="abbab9b0-f30d-4b90-861e-d04de68787cc" />
+    <ns0:UnitTestResult executionId="fb4caa68-4336-4f60-8eea-26aff7c5ad20" testId="d0537abf-ac53-0119-c5f2-6760600c43ae" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.InvalidLaterTypeFailsBeforeAnyNewIntentOrMutation(kind: &quot;link&quot;)" computerName="$HOST" duration="00:00:00.0094448" startTime="2026-10-01T12:16:39.2975583-04:00" endTime="2026-10-01T12:16:39.2975585-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fb4caa68-4336-4f60-8eea-26aff7c5ad20" />
+    <ns0:UnitTestResult executionId="d01f17a5-7d55-4331-a8fe-2484bbe10d41" testId="2eca3a2e-420b-cf3c-1134-c59d94087c59" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ThrowingPostCommitDiagnosticCannotChangeTheCommittedHelperResult" computerName="$HOST" duration="00:00:00.0219649" startTime="2026-10-01T12:16:39.5621205-04:00" endTime="2026-10-01T12:16:39.5621208-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d01f17a5-7d55-4331-a8fe-2484bbe10d41">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Null() Failure: Value is not null
+Expected: null
+Actual:   System.InvalidOperationException: Injected warning sink failure.
+   at BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ThrowingWarningLogger.Log[TState](LogLevel level, EventId eventId, TState state, Exception exception, Func`3 formatter) in $REPO/BookOfEternityClient.Tests/PortableCoordinatedPublicationTests.Contracts.cs:line 310
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogWarning(ILogger logger, Exception exception, String message, Object[] args)
+   at BookOfEternityClient.Core.FileSystemManager.RequireCommittedLocalPublication(TrustedLocalPublicationOutcome outcome) in $REPO/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 168
+   at BookOfEternityClient.Services.CoordinatedStateWriteHelper.TryCommitOrdinaryAsync(FileSystemManager fs, CanonicalWriteLease writeLease, PlannedWrite[] writes) in $REPO/BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs:line 254
+   at BookOfEternityClient.Services.CoordinatedStateWriteHelper.TryCommitCoreAsync(FileSystemManager fs, CanonicalWriteLease writeLease, Func`2 afterWriteApplied, PlannedWrite[] writes) in $REPO/BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs:line 181
+   at BookOfEternityClient.Services.CoordinatedStateWriteHelper.TryCommitWithOwnedLeaseAsync(FileSystemManager fs, Func`2 afterWriteApplied, PlannedWrite[] writes) in $REPO/BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs:line 78
+   at BookOfEternityClient.Services.CoordinatedStateWriteHelper.TryCommitWithOwnedLeaseAsync(FileSystemManager fs, Func`2 afterWriteApplied, PlannedWrite[] writes) in $REPO/BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs:line 98
+   at BookOfEternityClient.Services.CoordinatedStateWriteHelper.TryCommitAsync(FileSystemManager fs, PlannedWrite[] writes) in $REPO/BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs:line 64
+   at BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.&lt;&gt;c__DisplayClass12_0.&lt;&lt;ThrowingPostCommitDiagnosticCannotChangeTheCommittedHelperResult&gt;b__1&gt;d.MoveNext() in $REPO/BookOfEternityClient.Tests/PortableCoordinatedPublicationTests.Contracts.cs:line 261
+--- End of stack trace from previous location ---
+   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ThrowingPostCommitDiagnosticCannotChangeTheCommittedHelperResult() in $REPO/BookOfEternityClient.Tests/PortableCoordinatedPublicationTests.Contracts.cs:line 265
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="c00fa290-1460-49b8-8159-e5814c0eb907" testId="e79aebf1-7073-1a67-6bf4-fc422c1bcf2a" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperPublishesCompleteMemberSetUnderOneDecision" computerName="$HOST" duration="00:00:00.0242380" startTime="2026-10-01T12:16:39.7503219-04:00" endTime="2026-10-01T12:16:39.7503222-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c00fa290-1460-49b8-8159-e5814c0eb907" />
+    <ns0:UnitTestResult executionId="9f184e28-05a0-4f98-b236-8428aeb4b18e" testId="fd9c0b6b-3cbb-4416-d1e3-7c1fc2302613" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.SemanticExactAndOptionalBaselinesKeepTheirDistinctContracts(mode: &quot;exact&quot;)" computerName="$HOST" duration="00:00:00.0137460" startTime="2026-10-01T12:16:39.6461705-04:00" endTime="2026-10-01T12:16:39.6461707-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9f184e28-05a0-4f98-b236-8428aeb4b18e" />
+    <ns0:UnitTestResult executionId="d8f8642e-e6b5-4aff-8872-ee1488a3d34e" testId="8f340010-0f02-4473-be4a-b60fa5fa0588" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ThrowingCompletedReleaseDiagnosticCannotChangeTheCompletedDisposition" computerName="$HOST" duration="00:00:00.0263017" startTime="2026-10-01T12:16:39.3375797-04:00" endTime="2026-10-01T12:16:39.3375799-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d8f8642e-e6b5-4aff-8872-ee1488a3d34e">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Null() Failure: Value is not null
+Expected: null
+Actual:   System.InvalidOperationException: Injected warning sink failure.
+   at BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ThrowingWarningLogger.Log[TState](LogLevel level, EventId eventId, TState state, Exception exception, Func`3 formatter) in $REPO/BookOfEternityClient.Tests/PortableCoordinatedPublicationTests.Contracts.cs:line 310
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogWarning(ILogger logger, Exception exception, String message, Object[] args)
+   at BookOfEternityClient.Core.FileSystemManager.LogCompletedCoordinatedWriteReleaseFailure(Exception failure) in $REPO/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 177
+   at BookOfEternityClient.Services.CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(FileSystemManager fs, CanonicalWriteLease writeLease, Boolean completed, Exception operationFailure) in $REPO/BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs:line 116
+   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ThrowingCompletedReleaseDiagnosticCannotChangeTheCompletedDisposition() in $REPO/BookOfEternityClient.Tests/PortableCoordinatedPublicationTests.Contracts.cs:line 282
+   at BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ThrowingCompletedReleaseDiagnosticCannotChangeTheCompletedDisposition() in $REPO/BookOfEternityClient.Tests/PortableCoordinatedPublicationTests.Contracts.cs:line 283
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="ce3c0540-263d-46f2-8f4e-7061a49242c6" testId="ff1627e4-7d6b-45dc-1975-fdf3a780afc8" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.OrdinaryApplyCallbackIsRejectedRatherThanSilentlyDiscarded" computerName="$HOST" duration="00:00:00.0318267" startTime="2026-10-01T12:16:40.0691446-04:00" endTime="2026-10-01T12:16:40.0691450-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ce3c0540-263d-46f2-8f4e-7061a49242c6" />
+    <ns0:UnitTestResult executionId="3ee1de81-f1e1-46ef-8f2d-1433f7145200" testId="112c752c-43ec-f70a-f565-2ca9650637c9" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.OriginalRecorderAndRecoveryModesDoNotEnterTheCommonJournal(recovery: False)" computerName="$HOST" duration="00:00:00.0079111" startTime="2026-10-01T12:16:39.5890540-04:00" endTime="2026-10-01T12:16:39.5890541-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3ee1de81-f1e1-46ef-8f2d-1433f7145200" />
+    <ns0:UnitTestResult executionId="9c13dfd1-df72-4572-9a79-e9ce110b2cbd" testId="839c35d8-7629-3a2f-a9bf-690ce5468d7c" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.OriginalRecorderAndRecoveryModesDoNotEnterTheCommonJournal(recovery: True)" computerName="$HOST" duration="00:00:00.0150719" startTime="2026-10-01T12:16:39.5760238-04:00" endTime="2026-10-01T12:16:39.5760241-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9c13dfd1-df72-4572-9a79-e9ce110b2cbd" />
+    <ns0:UnitTestResult executionId="9d83cf2b-6e20-4884-a4d2-1899d2f1b1f8" testId="a216251b-5662-238c-d4c6-2d044ede900e" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ResolvedSeparatorAndWhitespaceAliasesPublishOneFinalDestination" computerName="$HOST" duration="00:00:00.0358428" startTime="2026-10-01T12:16:40.0362327-04:00" endTime="2026-10-01T12:16:40.0362329-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9d83cf2b-6e20-4884-a4d2-1899d2f1b1f8">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Equal() Failure: Collections differ
+Expected: ["$RUN_ENV/temp/"···]
+Actual:   ["$RUN_ENV/temp/"···, "$RUN_ENV/temp/"···]
+                                                                    ↑ (pos 1)</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ResolvedSeparatorAndWhitespaceAliasesPublishOneFinalDestination() in $REPO/BookOfEternityClient.Tests/PortableCoordinatedPublicationTests.Contracts.cs:line 88
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="aa88be99-5b39-4616-b068-06b31db14fbd" testId="a8279877-025d-cf72-8e35-dcf756b9fc8c" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperCommittedCleanupFailureKeepsCompleteCommittedResult" computerName="$HOST" duration="00:00:00.0615621" startTime="2026-10-01T12:16:39.5372246-04:00" endTime="2026-10-01T12:16:39.5372248-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aa88be99-5b39-4616-b068-06b31db14fbd" />
+    <ns0:UnitTestResult executionId="1adfdfc8-2541-4eb9-b091-7562ad03df4f" testId="a1845945-fe98-9327-ba7d-a928493af37b" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DuplicateRealDestinationsUseInitialBeforeAndLastImageOrder(final: &quot;recreate&quot;)" computerName="$HOST" duration="00:00:00.0310682" startTime="2026-10-01T12:16:39.4726215-04:00" endTime="2026-10-01T12:16:39.4726217-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1adfdfc8-2541-4eb9-b091-7562ad03df4f" />
+    <ns0:UnitTestResult executionId="1d9c0e35-eabf-47a0-be17-b46b45486175" testId="cd693f69-a337-0eac-4e27-26d9a1d01e2f" testName="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ConflictingDuplicateGuardIsNotDiscarded(first: True)" computerName="$HOST" duration="00:00:00.0115609" startTime="2026-10-01T12:16:39.6757942-04:00" endTime="2026-10-01T12:16:39.6757943-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1d9c0e35-eabf-47a0-be17-b46b45486175" />
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.MixedOrdinaryAndOriginalArtifactMembersFailBeforeMutation" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7e8b8938-1659-3ca2-00ce-b16cc53c67e3">
+      <ns0:Execution id="06509391-d056-4bcf-8210-3edec3acff0a" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="MixedOrdinaryAndOriginalArtifactMembersFailBeforeMutation" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ThrowingPostCommitDiagnosticCannotChangeTheCommittedHelperResult" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2eca3a2e-420b-cf3c-1134-c59d94087c59">
+      <ns0:Execution id="d01f17a5-7d55-4331-a8fe-2484bbe10d41" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="ThrowingPostCommitDiagnosticCannotChangeTheCommittedHelperResult" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperPublishesCompleteMemberSetUnderOneDecision" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e79aebf1-7073-1a67-6bf4-fc422c1bcf2a">
+      <ns0:Execution id="c00fa290-1460-49b8-8159-e5814c0eb907" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="ActualHelperPublishesCompleteMemberSetUnderOneDecision" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.SemanticExactAndOptionalBaselinesKeepTheirDistinctContracts(mode: &quot;exact&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fd9c0b6b-3cbb-4416-d1e3-7c1fc2302613">
+      <ns0:Execution id="9f184e28-05a0-4f98-b236-8428aeb4b18e" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="SemanticExactAndOptionalBaselinesKeepTheirDistinctContracts" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.InvalidLaterTypeFailsBeforeAnyNewIntentOrMutation(kind: &quot;directory&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9c46f9f2-da4d-b0ae-2e21-e9cf2717fd0f">
+      <ns0:Execution id="9b0c8bc3-5719-418b-a39e-b06fa6ed7627" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="InvalidLaterTypeFailsBeforeAnyNewIntentOrMutation" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.OriginalRecorderAndRecoveryModesDoNotEnterTheCommonJournal(recovery: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="112c752c-43ec-f70a-f565-2ca9650637c9">
+      <ns0:Execution id="3ee1de81-f1e1-46ef-8f2d-1433f7145200" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="OriginalRecorderAndRecoveryModesDoNotEnterTheCommonJournal" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.SemanticExactAndOptionalBaselinesKeepTheirDistinctContracts(mode: &quot;unguarded&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a11c2910-84b9-9502-a4aa-75e5d770997e">
+      <ns0:Execution id="9866c77f-fc20-4245-9590-9db2f3137191" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="SemanticExactAndOptionalBaselinesKeepTheirDistinctContracts" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ResolvedSeparatorAndWhitespaceAliasesPublishOneFinalDestination" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a216251b-5662-238c-d4c6-2d044ede900e">
+      <ns0:Execution id="9d83cf2b-6e20-4884-a4d2-1899d2f1b1f8" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="ResolvedSeparatorAndWhitespaceAliasesPublishOneFinalDestination" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.OriginalRecorderAndRecoveryModesDoNotEnterTheCommonJournal(recovery: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="839c35d8-7629-3a2f-a9bf-690ce5468d7c">
+      <ns0:Execution id="9c13dfd1-df72-4572-9a79-e9ce110b2cbd" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="OriginalRecorderAndRecoveryModesDoNotEnterTheCommonJournal" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ExistingUnresolvedJournalBlocksOwnedAdmissionBeforeAnyNewAttempt" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1c95927a-61ec-5653-0855-a203fd860c5e">
+      <ns0:Execution id="584ed410-7eef-49b0-91e8-a99af7be489c" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="ExistingUnresolvedJournalBlocksOwnedAdmissionBeforeAnyNewAttempt" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.SemanticExactAndOptionalBaselinesKeepTheirDistinctContracts(mode: &quot;semantic&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1bc78d48-c6de-8bec-978e-86d365f97f79">
+      <ns0:Execution id="0e8f8892-1b96-4e7a-aa52-b6e33e46b8d7" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="SemanticExactAndOptionalBaselinesKeepTheirDistinctContracts" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DuplicateRealDestinationsUseInitialBeforeAndLastImageOrder(final: &quot;replace&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="28c7b052-4d43-df5c-8e92-cd42e383d84e">
+      <ns0:Execution id="f2bb3b46-0613-40e8-b9e3-8e1e87e02569" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="DuplicateRealDestinationsUseInitialBeforeAndLastImageOrder" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperUnknownLaterMemberPreservesWholeUnresolvedSet" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="768d2c8d-b2f0-caab-5884-e11685a48eff">
+      <ns0:Execution id="64e5effc-cb00-4f36-90ec-a91c01261b0f" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="ActualHelperUnknownLaterMemberPreservesWholeUnresolvedSet" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperReachedSecondMemberFailureRestoresWholeExactBeforeSet" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fc9cadf9-c016-241e-ffdd-f58b04c002c0">
+      <ns0:Execution id="03c52117-efae-43fd-8180-5c5bf0f568f1" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="ActualHelperReachedSecondMemberFailureRestoresWholeExactBeforeSet" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ThrowingCompletedReleaseDiagnosticCannotChangeTheCompletedDisposition" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8f340010-0f02-4473-be4a-b60fa5fa0588">
+      <ns0:Execution id="d8f8642e-e6b5-4aff-8872-ee1488a3d34e" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="ThrowingCompletedReleaseDiagnosticCannotChangeTheCompletedDisposition" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ConflictingDuplicateGuardIsNotDiscarded(first: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8d79e74d-a2c7-716c-3822-219786df2e60">
+      <ns0:Execution id="327cc1db-f646-4aff-9072-236963faf47c" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="ConflictingDuplicateGuardIsNotDiscarded" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperCommittedCleanupFailureKeepsCompleteCommittedResult" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a8279877-025d-cf72-8e35-dcf756b9fc8c">
+      <ns0:Execution id="aa88be99-5b39-4616-b068-06b31db14fbd" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="ActualHelperCommittedCleanupFailureKeepsCompleteCommittedResult" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DuplicateRealDestinationsUseInitialBeforeAndLastImageOrder(final: &quot;delete&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="82e0579c-9b0e-66f3-c54e-fadbb8f84fc4">
+      <ns0:Execution id="abbab9b0-f30d-4b90-861e-d04de68787cc" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="DuplicateRealDestinationsUseInitialBeforeAndLastImageOrder" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DestinationCaseUsesTheActualPlatformPolicy" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2a94df0a-0b9a-9dbc-0419-3c83ae8043ad">
+      <ns0:Execution id="b24f3e82-d8fa-48a8-9f10-45635b3ef467" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="DestinationCaseUsesTheActualPlatformPolicy" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.UnknownBeforeImageAtPublicationPreflightIsNotReportedAsRestored" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d56b19e2-cf7c-6a7c-5570-33812b1f9840">
+      <ns0:Execution id="aed30ba9-453e-4f7e-9ba5-e919c9025c33" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="UnknownBeforeImageAtPublicationPreflightIsNotReportedAsRestored" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DuplicateRealDestinationsUseInitialBeforeAndLastImageOrder(final: &quot;recreate&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a1845945-fe98-9327-ba7d-a928493af37b">
+      <ns0:Execution id="1adfdfc8-2541-4eb9-b091-7562ad03df4f" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="DuplicateRealDestinationsUseInitialBeforeAndLastImageOrder" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.InvalidLaterTypeFailsBeforeAnyNewIntentOrMutation(kind: &quot;link&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d0537abf-ac53-0119-c5f2-6760600c43ae">
+      <ns0:Execution id="fb4caa68-4336-4f60-8eea-26aff7c5ad20" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="InvalidLaterTypeFailsBeforeAnyNewIntentOrMutation" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.OrdinaryApplyCallbackIsRejectedRatherThanSilentlyDiscarded" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ff1627e4-7d6b-45dc-1975-fdf3a780afc8">
+      <ns0:Execution id="ce3c0540-263d-46f2-8f4e-7061a49242c6" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="OrdinaryApplyCallbackIsRejectedRatherThanSilentlyDiscarded" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DuplicateGuardsAfterARealWriteStillBindTheInitialExactImage" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c73ce345-e94e-2ae0-3b62-a5961d1fa7b6">
+      <ns0:Execution id="d6153c5a-1e73-4ca3-b82d-30e02a2fa2ad" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="DuplicateGuardsAfterARealWriteStillBindTheInitialExactImage" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ConflictingDuplicateGuardIsNotDiscarded(first: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="cd693f69-a337-0eac-4e27-26d9a1d01e2f">
+      <ns0:Execution id="1d9c0e35-eabf-47a0-be17-b46b45486175" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedPublicationTests" name="ConflictingDuplicateGuardIsNotDiscarded" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="9c46f9f2-da4d-b0ae-2e21-e9cf2717fd0f" executionId="9b0c8bc3-5719-418b-a39e-b06fa6ed7627" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="d56b19e2-cf7c-6a7c-5570-33812b1f9840" executionId="aed30ba9-453e-4f7e-9ba5-e919c9025c33" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="7e8b8938-1659-3ca2-00ce-b16cc53c67e3" executionId="06509391-d056-4bcf-8210-3edec3acff0a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="a11c2910-84b9-9502-a4aa-75e5d770997e" executionId="9866c77f-fc20-4245-9590-9db2f3137191" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="c73ce345-e94e-2ae0-3b62-a5961d1fa7b6" executionId="d6153c5a-1e73-4ca3-b82d-30e02a2fa2ad" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="1bc78d48-c6de-8bec-978e-86d365f97f79" executionId="0e8f8892-1b96-4e7a-aa52-b6e33e46b8d7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="768d2c8d-b2f0-caab-5884-e11685a48eff" executionId="64e5effc-cb00-4f36-90ec-a91c01261b0f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="8d79e74d-a2c7-716c-3822-219786df2e60" executionId="327cc1db-f646-4aff-9072-236963faf47c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="fc9cadf9-c016-241e-ffdd-f58b04c002c0" executionId="03c52117-efae-43fd-8180-5c5bf0f568f1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="2a94df0a-0b9a-9dbc-0419-3c83ae8043ad" executionId="b24f3e82-d8fa-48a8-9f10-45635b3ef467" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="28c7b052-4d43-df5c-8e92-cd42e383d84e" executionId="f2bb3b46-0613-40e8-b9e3-8e1e87e02569" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="1c95927a-61ec-5653-0855-a203fd860c5e" executionId="584ed410-7eef-49b0-91e8-a99af7be489c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="82e0579c-9b0e-66f3-c54e-fadbb8f84fc4" executionId="abbab9b0-f30d-4b90-861e-d04de68787cc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="d0537abf-ac53-0119-c5f2-6760600c43ae" executionId="fb4caa68-4336-4f60-8eea-26aff7c5ad20" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="2eca3a2e-420b-cf3c-1134-c59d94087c59" executionId="d01f17a5-7d55-4331-a8fe-2484bbe10d41" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="e79aebf1-7073-1a67-6bf4-fc422c1bcf2a" executionId="c00fa290-1460-49b8-8159-e5814c0eb907" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="fd9c0b6b-3cbb-4416-d1e3-7c1fc2302613" executionId="9f184e28-05a0-4f98-b236-8428aeb4b18e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="8f340010-0f02-4473-be4a-b60fa5fa0588" executionId="d8f8642e-e6b5-4aff-8872-ee1488a3d34e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="ff1627e4-7d6b-45dc-1975-fdf3a780afc8" executionId="ce3c0540-263d-46f2-8f4e-7061a49242c6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="112c752c-43ec-f70a-f565-2ca9650637c9" executionId="3ee1de81-f1e1-46ef-8f2d-1433f7145200" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="839c35d8-7629-3a2f-a9bf-690ce5468d7c" executionId="9c13dfd1-df72-4572-9a79-e9ce110b2cbd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="a216251b-5662-238c-d4c6-2d044ede900e" executionId="9d83cf2b-6e20-4884-a4d2-1899d2f1b1f8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="a8279877-025d-cf72-8e35-dcf756b9fc8c" executionId="aa88be99-5b39-4616-b068-06b31db14fbd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="a1845945-fe98-9327-ba7d-a928493af37b" executionId="1adfdfc8-2541-4eb9-b091-7562ad03df4f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="cd693f69-a337-0eac-4e27-26d9a1d01e2f" executionId="1d9c0e35-eabf-47a0-be17-b46b45486175" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Failed">
+    <ns0:Counters total="25" executed="25" passed="22" failed="3" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.18]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.63]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.66]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.88]       Assert.Null() Failure: Value is not null
+[xUnit.net 00:00:01.88]       Expected: null
+[xUnit.net 00:00:01.88]       Actual:   System.InvalidOperationException: Injected warning sink failure.
+[xUnit.net 00:00:01.88]          at BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ThrowingWarningLogger.Log[TState](LogLevel level, EventId eventId, TState state, Exception exception, Func`3 formatter) in $REPO/BookOfEternityClient.Tests/PortableCoordinatedPublicationTests.Contracts.cs:line 310
+[xUnit.net 00:00:01.88]          at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+[xUnit.net 00:00:01.88]          at Microsoft.Extensions.Logging.LoggerExtensions.LogWarning(ILogger logger, Exception exception, String message, Object[] args)
+[xUnit.net 00:00:01.88]          at BookOfEternityClient.Core.FileSystemManager.LogCompletedCoordinatedWriteReleaseFailure(Exception failure) in $REPO/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 177
+[xUnit.net 00:00:01.88]          at BookOfEternityClient.Services.CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(FileSystemManager fs, CanonicalWriteLease writeLease, Boolean completed, Exception operationFailure) in $REPO/BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs:line 116
+[xUnit.net 00:00:01.88]          at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76
+[xUnit.net 00:00:01.89]       Stack Trace:
+[xUnit.net 00:00:01.89]         $REPO/BookOfEternityClient.Tests/PortableCoordinatedPublicationTests.Contracts.cs(282,0): at BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ThrowingCompletedReleaseDiagnosticCannotChangeTheCompletedDisposition()
+[xUnit.net 00:00:01.89]         $REPO/BookOfEternityClient.Tests/PortableCoordinatedPublicationTests.Contracts.cs(283,0): at BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ThrowingCompletedReleaseDiagnosticCannotChangeTheCompletedDisposition()
+[xUnit.net 00:00:01.89]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.11]       Assert.Null() Failure: Value is not null
+[xUnit.net 00:00:02.11]       Expected: null
+[xUnit.net 00:00:02.11]       Actual:   System.InvalidOperationException: Injected warning sink failure.
+[xUnit.net 00:00:02.11]          at BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ThrowingWarningLogger.Log[TState](LogLevel level, EventId eventId, TState state, Exception exception, Func`3 formatter) in $REPO/BookOfEternityClient.Tests/PortableCoordinatedPublicationTests.Contracts.cs:line 310
+[xUnit.net 00:00:02.11]          at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+[xUnit.net 00:00:02.11]          at Microsoft.Extensions.Logging.LoggerExtensions.LogWarning(ILogger logger, Exception exception, String message, Object[] args)
+[xUnit.net 00:00:02.11]          at BookOfEternityClient.Core.FileSystemManager.RequireCommittedLocalPublication(TrustedLocalPublicationOutcome outcome) in $REPO/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 168
+[xUnit.net 00:00:02.11]          at BookOfEternityClient.Services.CoordinatedStateWriteHelper.TryCommitOrdinaryAsync(FileSystemManager fs, CanonicalWriteLease writeLease, PlannedWrite[] writes) in $REPO/BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs:line 254
+[xUnit.net 00:00:02.11]          at BookOfEternityClient.Services.CoordinatedStateWriteHelper.TryCommitCoreAsync(FileSystemManager fs, CanonicalWriteLease writeLease, Func`2 afterWriteApplied, PlannedWrite[] writes) in $REPO/BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs:line 181
+[xUnit.net 00:00:02.11]          at BookOfEternityClient.Services.CoordinatedStateWriteHelper.TryCommitWithOwnedLeaseAsync(FileSystemManager fs, Func`2 afterWriteApplied, PlannedWrite[] writes) in $REPO/BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs:line 78
+[xUnit.net 00:00:02.11]          at BookOfEternityClient.Services.CoordinatedStateWriteHelper.TryCommitWithOwnedLeaseAsync(FileSystemManager fs, Func`2 afterWriteApplied, PlannedWrite[] writes) in $REPO/BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs:line 98
+[xUnit.net 00:00:02.11]          at BookOfEternityClient.Services.CoordinatedStateWriteHelper.TryCommitAsync(FileSystemManager fs, PlannedWrite[] writes) in $REPO/BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs:line 64
+[xUnit.net 00:00:02.11]          at BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.&lt;&gt;c__DisplayClass12_0.&lt;&lt;ThrowingPostCommitDiagnosticCannotChangeTheCommittedHelperResult&gt;b__1&gt;d.MoveNext() in $REPO/BookOfEternityClient.Tests/PortableCoordinatedPublicationTests.Contracts.cs:line 261
+[xUnit.net 00:00:02.11]       --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.11]          at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76
+[xUnit.net 00:00:02.11]       Stack Trace:
+[xUnit.net 00:00:02.11]         $REPO/BookOfEternityClient.Tests/PortableCoordinatedPublicationTests.Contracts.cs(265,0): at BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ThrowingPostCommitDiagnosticCannotChangeTheCommittedHelperResult()
+[xUnit.net 00:00:02.11]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.58]       Assert.Equal() Failure: Collections differ
+[xUnit.net 00:00:02.59]       Expected: ["$RUN_ENV/temp/"···]
+[xUnit.net 00:00:02.59]       Actual:   ["$RUN_ENV/temp/"···, "$RUN_ENV/temp/"···]
+[xUnit.net 00:00:02.59]                                                                           ↑ (pos 1)
+[xUnit.net 00:00:02.59]       Stack Trace:
+[xUnit.net 00:00:02.59]         $REPO/BookOfEternityClient.Tests/PortableCoordinatedPublicationTests.Contracts.cs(88,0): at BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ResolvedSeparatorAndWhitespaceAliasesPublishOneFinalDestination()
+[xUnit.net 00:00:02.59]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.63]   Finished:    BookOfEternityClient.Tests
+</ns0:StdOut>
+    </ns0:Output>
+    <ns0:RunInfos>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T12:16:39.3353926-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.88]     BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ThrowingCompletedReleaseDiagnosticCannotChangeTheCompletedDisposition [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T12:16:39.5615345-04:00">
+        <ns0:Text>[xUnit.net 00:00:02.11]     BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ThrowingPostCommitDiagnosticCannotChangeTheCommittedHelperResult [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T12:16:40.0428481-04:00">
+        <ns0:Text>[xUnit.net 00:00:02.58]     BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ResolvedSeparatorAndWhitespaceAliasesPublishOneFinalDestination [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+    </ns0:RunInfos>
+  </ns0:ResultSummary>
+</ns0:TestRun>

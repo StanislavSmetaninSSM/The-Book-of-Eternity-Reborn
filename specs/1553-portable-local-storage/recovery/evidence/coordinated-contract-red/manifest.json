@@ -1,0 +1,41 @@
+{
+  "sourceCommit": "3c6ffdbe2a51ed61c10102adea029b4fec782d21",
+  "sourceAppliedTree": "857aa5a8687e5d1df54119ce7ebc138c2078cbe1",
+  "packetSha256": "6dd9780cffc12d168e30d2654b4fd32da8e93ed75d3d92464d8898667441d084",
+  "kind": "coordinated-contract-red; exact completed selected-run evidence",
+  "sanitization": "Repository/toolchain/isolated environment paths and TRX run user/computer/deployment identifiers replaced; original and sanitized hashes retained.",
+  "command": "DOTNET_PROCESSOR_COUNT=1 DOTNET_CLI_TELEMETRY_OPTOUT=1 POWERSHELL_TELEMETRY_OPTOUT=1 TESTINGPLATFORM_TELEMETRY_OPTOUT=1 pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-coordinated-publication -Parallelism 1",
+  "environment": "Linux x64; SDK10.0.401, .NET8.0.31, PowerShell7.6.6; existing isolated homes/temp/cache; no app/provider execution",
+  "tests": {
+    "Total": 25,
+    "Executed": 25,
+    "Passed": 22,
+    "Failed": 3
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 25,
+    "CompletedCases": 25,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "exitCode": 1,
+  "wallTime": "00:03:16.6714413",
+  "timedOut": false,
+  "ownedCleanup": true,
+  "runtimeCleanup": true,
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "fd4b03999a359acef760b73f4597396a1cc206d2aad06126853d45e84891a87d",
+      "sanitizedSha256": "fd4b03999a359acef760b73f4597396a1cc206d2aad06126853d45e84891a87d"
+    },
+    {
+      "path": "portable-coordinated-publication-unit-001.trx",
+      "originalSha256": "0c3fafdc56a58c359784c33c8274e8d159848656e8bf24ee42daf4a122333ac3",
+      "sanitizedSha256": "3de56da46dff41b247fe6173289f088343a91f11963372cd41073b700c59d6bb"
+    }
+  ],
+  "causalResult": "25/25 executed: 22 passed, two intended throwing diagnostic failures, one fixture failure. ResolvePath uses platform separators; backslash is a legal distinct Linux filename, not an alias. Correct the fixture to the actual platform AltDirectorySeparatorChar without changing production resolution."
+}
