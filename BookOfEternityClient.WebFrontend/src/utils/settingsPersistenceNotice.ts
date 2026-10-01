@@ -6,8 +6,9 @@ export interface SettingsPersistenceResponse { persistenceWarning?: string | nul
 export interface SettingsWriteNoticeTracker {
   begin(): number;
   invalidate(): void;
-  resolve<T extends SettingsPersistenceResponse>(request: number, result: BrowserApiResult<T>): SettingsWriteNotice | null;
-  interrupted(request: number): SettingsWriteNotice | null;
+  isCurrent(request: number): boolean;
+  resolve<T extends SettingsPersistenceResponse>(request: number, result: BrowserApiResult<T>, apply?: (notice: SettingsWriteNotice) => void): SettingsWriteNotice | null;
+  interrupted(request: number, apply?: (notice: SettingsWriteNotice) => void): SettingsWriteNotice | null;
 }
 
 export function createSettingsWriteNoticeTracker(): SettingsWriteNoticeTracker {

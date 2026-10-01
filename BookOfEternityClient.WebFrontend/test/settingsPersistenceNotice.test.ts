@@ -100,6 +100,24 @@ await scenario('duplicate older completion cannot restore advice cleared by a la
   assert(!tracker.interrupted(tracker.begin())?.message.includes(warning), 'A duplicate old response resurrected cleared advice.');
 });
 
+await scenario('stale and unmounted responses cannot apply state or start refresh side effects', () => {
+  const tracker = createSettingsWriteNoticeTracker(); const old = tracker.begin(); const latest = tracker.begin();
+  let state = 'newer draft'; let refreshes = 0;
+  tracker.resolve(old, success(), () => { state = 'stale'; refreshes++; });
+  assert(state === 'newer draft' && refreshes === 0, 'Stale response still mutated state or refreshed.');
+  tracker.invalidate();
+  tracker.interrupted(latest, () => { state = 'unmounted'; refreshes++; });
+  assert(state === 'newer draft' && refreshes === 0, 'Unmounted rejection still applied side effects.');
+});
+
+await scenario('current response applies once and a delayed refresh loses ownership after a new request', () => {
+  const tracker = createSettingsWriteNoticeTracker(); const request = tracker.begin(); let applied = 0;
+  tracker.resolve(request, success(), () => { applied++; });
+  assert(applied === 1 && tracker.isCurrent(request), 'Current response was not applied.');
+  const refreshIsCurrent = () => tracker.isCurrent(request); tracker.begin();
+  assert(!refreshIsCurrent(), 'A refresh still owned publication after a newer request.');
+});
+
 await scenario('rapid independent settings changes coalesce without losing fields', () => {
   const merged = mergeSettingsPatch<{ language?: string; difficulty?: string }>({ language: 'en' }, { difficulty: 'hard' });
   assert(merged.language === 'en' && merged.difficulty === 'hard', 'Debounce lost an independent settings change.');
@@ -115,6 +133,7 @@ await scenario('both actual settings consumers render and own persistence notice
     const source = readFileSync(join(root, 'src', 'components', file), 'utf8');
     assert(source.includes('createSettingsWriteNoticeTracker'), `${file} does not use the checked response-owner logic.`);
     assert(source.includes('persistenceNotice.message') && source.includes('role="status"'), `${file} does not visibly render the persistence notice.`);
+    assert(source.includes('persistenceTracker.current.resolve') && source.includes('persistenceTracker.current.interrupted'), `${file} bypasses guarded response application.`);
     assert(source.includes('.invalidate()'), `${file} does not invalidate response ownership on unmount.`);
   }
 });
@@ -128,6 +147,21 @@ await scenario('frontend build resolves the platform-specific npm application', 
   const resolver = source.slice(source.indexOf('function Resolve-NpmCommandPath {'), source.indexOf('function New-OwnedProcessContainment {'));
   assert(resolver.includes('$npmName = if ($IsWindows) { "npm.cmd" } else { "npm" }'), 'Windows/Linux npm application selection regressed.');
   assert(resolver.includes('Get-Command -Name $npmName -CommandType Application'), 'Resolver does not use the selected application name.');
+});
+
+await scenario('shared refresh checks optional owner after asynchronous reads before publication', async () => {
+  const fsSpecifier = 'node:fs'; const pathSpecifier = 'node:path';
+  const { readFileSync } = await import(fsSpecifier); const { join, basename } = await import(pathSpecifier);
+  const cwd = (globalThis as { process?: { cwd?: () => string } }).process?.cwd?.() ?? '.';
+  const root = basename(cwd) === 'BookOfEternityClient.WebFrontend' ? cwd : join(cwd, 'BookOfEternityClient.WebFrontend');
+  const source = readFileSync(join(root, 'src', 'hooks', 'useShellState.ts'), 'utf8');
+  assert(source.includes('isCurrent: () => boolean = () => true'), 'Refresh lacks optional response ownership.');
+  const readIndex = source.indexOf('const results = await Promise.allSettled');
+  const errorIndex = source.indexOf("status: 'error'");
+  assert(source.slice(readIndex, errorIndex).includes('if (!isCurrent()) return;'), 'Error publication is not fenced after reads.');
+  const advancedRead = source.indexOf('const advResults = await Promise.allSettled');
+  const readyPublication = source.indexOf("status: 'ready'", advancedRead);
+  assert(source.slice(advancedRead, readyPublication).includes('if (!isCurrent()) return;'), 'Ready publication is not fenced after advanced reads.');
 });
 
 console.log(`Settings persistence scenarios: passed=${passed} failed=${failures.length}`);
