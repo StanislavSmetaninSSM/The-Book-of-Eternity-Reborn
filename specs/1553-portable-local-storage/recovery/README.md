@@ -9,7 +9,7 @@ The [current T031 checkpoint](../plan.md#current-checkpoint--t031-helper-green-c
 
 After a clean GitHub-only restore, verify the full normal SHA/tree and all 31 production/test/catalog/selection hashes in `coordinated-delivery-source.json`, plus the nine after-images in immutable packet history. All source/tests/catalog/selection are ordinary Git files; no active packet application is needed. Retain historical packets and all evidence. Normal delivery must preserve exact source/test bytes and must not rerun completed Linux cohorts.
 
-Actual native qualification uses the already-qualified toolchain and the canonical runner with all three telemetry opt-outs and DOTNET_PROCESSOR_COUNT=1:
+The completed native run used the already-qualified toolchain and this canonical invocation with all three telemetry opt-outs and DOTNET_PROCESSOR_COUNT=1; this records the executed command, not a request to repeat it:
 
 ```powershell
 $env:DOTNET_PROCESSOR_COUNT = '1'
@@ -19,7 +19,7 @@ $env:TESTINGPLATFORM_TELEMETRY_OPTOUT = '1'
 pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile specs/1553-portable-local-storage/recovery/coordinated-native-selection.json -Parallelism 1
 ```
 
-Expect two descriptors / 16 actual cases, not a Linux execution of the native plan. Preserve exact normal source SHA/tree, environment fingerprint, summary/TRXs, original/sanitized hashes, reached fixtures, failures/unrun cases and cleanup. File.CreateSymbolicLink capability is unestablished on HOME-PC; report setup failure honestly without elevation/security changes or silent return. The original-browser accept/decline callbacks and real wound preparation must execute. Native success does not close the observed Linux directory/preparation blocker or full accepted-turn/save-load/browser-v6 migration.
+The pre-run requirement was two descriptors / 16 actual Windows cases with exact normal source SHA/tree, environment fingerprint, summary/TRXs, original/sanitized hashes, reached fixtures, failures/unrun cases and cleanup retained. File.CreateSymbolicLink capability was unestablished before the run, and setup failure had to remain explicit without elevation/security changes or silent return. The original-browser accept/decline callbacks and real wound preparation were required to execute; all passed in the recorded native result, including actual file-link setup and corrected native alias assertions. Native success does not close the observed Linux directory/preparation blocker or full accepted-turn/save-load/browser-v6 migration.
 
 ## Accepted T030-E recovery
 
