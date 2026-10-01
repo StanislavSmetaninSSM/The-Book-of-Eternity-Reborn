@@ -1,8 +1,8 @@
 diff --git a/tests/categories.json b/tests/categories.json
-index 4b805af9..ba9b4123 100644
+index 4b805af9..cbe81a68 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -7600,6 +7600,243 @@
+@@ -7600,6 +7600,277 @@
            ]
          }
        ]
@@ -157,6 +157,40 @@ index 4b805af9..ba9b4123 100644
 +            "BookOfEternityClient.Tests.LocalWebUiHostTests.AudioSettingsEndpoint_UpdatesAndPersistsSharedSettingsWithClampedVolumes",
 +            "BookOfEternityClient.Tests.LocalWebUiHostTests.BrowserAudioService_SerializesSharedSettingsUpdates",
 +            "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAsync_ActiveOtherOwner_BlocksWithoutRunningWrite"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-console-settings",
++      "responsibility": "B2c complete local config/projection/mod-manifest preparation, exact baseline/generation admission, detached candidate normalization and console settings publication consumers as wired.",
++      "excludes": "Unmigrated menu/preview integration, gameplay save/load, audio backend portability and actual browser/Windows execution; initial API is unwired WIP.",
++      "changeHints": [
++        "BookOfEternityClient/Core/LocalSettingsPreparation.cs",
++        "BookOfEternityClient/Services/SystemModService.Prepared.cs",
++        "BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-prepared-settings",
++          "when": "Shared settings outcome/gate integration changes."
++        },
++        {
++          "id": "portable-storage-publication",
++          "when": "Common journal engine changes."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 4,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.*"
 +          ]
 +        }
 +      ]

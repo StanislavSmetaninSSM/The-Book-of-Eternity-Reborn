@@ -2,21 +2,12 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-settings-notices",
-      "reason": "B2b independent review P2: actual failed-load settings/audio handler reconciliation, cancelled draft visibility, shared-scope pending reset and stale/unmounted ownership; unchanged C# is not rerun.",
+      "category": "portable-console-settings",
+      "reason": "B2c first preparation-only TDD slice: complete declared members, no mutation/live settings application, exact baseline/generation admission and normalizing one mod snapshot; menu/coordinator cutover remains unwired.",
       "contracts": [
-        "visible persistence notice",
-        "response ownership",
-        "rapid settings patch coalescing"
-      ]
-    },
-    {
-      "category": "portable-settings-consumers",
-      "reason": "Exact existing consumers affected by AudioPanel shared-scope props and refresh-body extraction; update stale source paths without weakening safe-copy or settled-load coverage.",
-      "contracts": [
-        "settings/audio actual mount",
-        "player-safe settings copy",
-        "settled shared refresh"
+        "local settings member preparation",
+        "exact config/generation baseline",
+        "read-only mod preparation"
       ]
     }
   ]

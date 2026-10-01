@@ -13,7 +13,7 @@ namespace BookOfEternityClient.Services;
 /// Scans global system mods, persists enabled-file selection through GameSettings,
 /// and writes a client-authored manifest for the GM.
 /// </summary>
-public sealed class SystemModService
+public sealed partial class SystemModService
 {
     public const string ModsDirectory = "mods";
     public const string ManifestPath = "game_state/core/system_mods.json";
