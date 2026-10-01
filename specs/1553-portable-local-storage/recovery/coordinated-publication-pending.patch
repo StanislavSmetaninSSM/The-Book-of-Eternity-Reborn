@@ -100,6 +100,60 @@ index d44879dd..936b6809 100644
      {
          var preamble = Encoding.UTF8.GetPreamble();
          var body = Encoding.UTF8.GetBytes(content);
+diff --git a/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs b/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs
+index 3871b026..1bc5d975 100644
+--- a/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs
++++ b/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs
+@@ -1047,20 +1047,24 @@ public partial class GameEngine
+                 continue;
+ 
+             // Detect console resize — if width changed, just re-render (loop continues)
++            int? currentWidth = null;
+             try
+             {
+-                var currentWidth = Console.WindowWidth;
+-                if (_lastConsoleWidth > 0 && currentWidth != _lastConsoleWidth)
+-                {
+-                    await NormalizeRuntimeUiArtifactsAsync();
+-                    await RefreshRuntimeStateAsync();
+-                }
+-                _lastConsoleWidth = currentWidth;
++                currentWidth = Console.WindowWidth;
+             }
+             catch (Exception ex) when (ex is IOException or InvalidOperationException or PlatformNotSupportedException)
+             {
+                 // Some console hosts cannot report window size reliably; resize detection is best-effort.
+             }
++            if (currentWidth is { } width)
++            {
++                if (_lastConsoleWidth > 0 && width != _lastConsoleWidth)
++                {
++                    await NormalizeRuntimeUiArtifactsAsync();
++                    await RefreshRuntimeStateAsync();
++                }
++                _lastConsoleWidth = width;
++            }
+ 
+             // Render current state (preserve last response for dialogue options etc.)
+             _ui.RenderGameScreen(_stateManager.CurrentState, _lastResponse, _gameLoop.TurnNumber);
+@@ -1203,8 +1207,15 @@ public partial class GameEngine
+             catch (Exception ex)
+             {
+                 LogError(ex);
+-                AnsiConsole.MarkupLine("\n[red]❌ Мир не смог безопасно завершить действие. Подробности сохранены для диагностики.[/]");
+-                AnsiConsole.MarkupLine("[dim]Вернитесь к последнему доступному состоянию и повторите действие позже.[/]");
++                if (ex is CoordinatedStatePublicationUncertainException)
++                {
++                    AnsiConsole.MarkupLine($"\n[red]❌ {Markup.Escape(CoordinatedStatePublicationUncertainException.PlayerMessage)}[/]");
++                }
++                else
++                {
++                    AnsiConsole.MarkupLine("\n[red]❌ Мир не смог безопасно завершить действие. Подробности сохранены для диагностики.[/]");
++                    AnsiConsole.MarkupLine("[dim]Вернитесь к последнему доступному состоянию и повторите действие позже.[/]");
++                }
+                 AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
+                 RecordGameLoopErrorObservation(ex);
+                 _inputSource.ReadKey(intercept: true);
 diff --git a/BookOfEternityClient/Services/GuardianAbodeResidentRequestState.cs b/BookOfEternityClient/Services/GuardianAbodeResidentRequestState.cs
 index 52f49775..1fe48d03 100644
 --- a/BookOfEternityClient/Services/GuardianAbodeResidentRequestState.cs
@@ -319,10 +373,16 @@ index 52f49775..1fe48d03 100644
  
      private static bool TryFindManifestedNpc(
 diff --git a/BookOfEternityClient/Services/QteSceneService.cs b/BookOfEternityClient/Services/QteSceneService.cs
-index da14ab71..079a7f33 100644
+index da14ab71..3a0189ff 100644
 --- a/BookOfEternityClient/Services/QteSceneService.cs
 +++ b/BookOfEternityClient/Services/QteSceneService.cs
-@@ -23,7 +23,11 @@ internal sealed class QteSceneServiceHooks
+@@ -18,12 +18,17 @@ namespace BookOfEternityClient.Services;
+ internal sealed class QteSceneServiceHooks
+ {
+     internal Func<Task>? BeforeRuntimeWriteAsync { get; init; }
++    // Standalone/runtime domain writes; deferred acceptance uses the explicit legacy hook below.
+     internal Func<QteSceneService.QteRuntimeState, Task>? AfterRuntimeWrittenAsync { get; init; }
+     internal Func<Task>? AfterHistoryWrittenAsync { get; init; }
      internal Func<Task>? BeforeDarenProfileWriteAsync { get; init; }
      internal Func<Task>? AfterDarenProfileWrittenAsync { get; init; }
      internal Func<Task>? BeforeQteCharacteristicReadAsync { get; init; }
@@ -334,7 +394,7 @@ index da14ab71..079a7f33 100644
  }
  
  public sealed partial class QteSceneService
-@@ -730,21 +734,16 @@ public sealed partial class QteSceneService
+@@ -730,21 +735,16 @@ public sealed partial class QteSceneService
                      ExactPrevious: capture.OfferBeforeImage)
              ])
              .ToArray();
@@ -366,7 +426,7 @@ index da14ab71..079a7f33 100644
          if (!committed)
          {
              throw new InvalidOperationException(
-@@ -1782,7 +1781,7 @@ public sealed partial class QteSceneService
+@@ -1782,7 +1782,7 @@ public sealed partial class QteSceneService
                              writeLease,
                              active,
                              receiptResume,
@@ -375,7 +435,7 @@ index da14ab71..079a7f33 100644
                      return new QteSceneCompletion
                      {
                          QteId = offer.QteId,
-@@ -1804,7 +1803,7 @@ public sealed partial class QteSceneService
+@@ -1804,7 +1804,7 @@ public sealed partial class QteSceneService
                          writeLease,
                          active,
                          deferredPreparation,
@@ -384,8 +444,35 @@ index da14ab71..079a7f33 100644
                  return new QteSceneCompletion
                  {
                      QteId = offer.QteId,
+@@ -1919,7 +1919,7 @@ public sealed partial class QteSceneService
+                 ScoreSummary = scoreSummary
+             };
+         }
+-        catch (Exception originalFailure)
++        catch (Exception originalFailure) when (originalFailure is not CoordinatedStatePublicationUncertainException)
+         {
+             await RestoreQteNormalizationBaselineAfterFailureAsync(
+                 writeLease,
+@@ -2001,7 +2001,7 @@ public sealed partial class QteSceneService
+             baseline.AllowCleanup();
+             return response;
+         }
+-        catch (Exception originalFailure)
++        catch (Exception originalFailure) when (originalFailure is not CoordinatedStatePublicationUncertainException)
+         {
+             await RestoreQteNormalizationBaselineAfterFailureAsync(
+                 writeLease,
+@@ -2038,7 +2038,7 @@ public sealed partial class QteSceneService
+             baseline.AllowCleanup();
+             return response;
+         }
+-        catch (Exception originalFailure)
++        catch (Exception originalFailure) when (originalFailure is not CoordinatedStatePublicationUncertainException)
+         {
+             await RestoreQteNormalizationBaselineAfterFailureAsync(
+                 writeLease,
 diff --git a/specs/1553-portable-local-storage/research.md b/specs/1553-portable-local-storage/research.md
-index 4a4415cc..33f1deab 100644
+index 4a4415cc..75e93ec4 100644
 --- a/specs/1553-portable-local-storage/research.md
 +++ b/specs/1553-portable-local-storage/research.md
 @@ -292,6 +292,8 @@ Prefer migrating **helper-specific** fault injections to the existing synchronou
@@ -397,6 +484,12 @@ index 4a4415cc..33f1deab 100644
  ### Outcomes and minimal caller changes
  
  B1 already distinguishes `Committed`, `RolledBack`, `Uncertain` (`TrustedLocalFilePublication.cs:75–104`), including committed observer/cleanup failure. Keep the bool facade: true for committed, false for initial baseline mismatch or positively confirmed rollback, distinct unresolved exception for uncertain. Never broadly catch the publish API and return false. Capture the durable result before owned-lease disposal/follow-up; a disposal/cleanup failure cannot turn an established commit into uncommitted or start manual undo. Surface/log the follow-up without changing that disposition. The prepared settings implementation supplies the existing model (`WebUi/BrowserLocalWriteCoordinator.Prepared.cs:35–59,73–92`).
+@@ -339,3 +341,5 @@ The [bounded save/load engineering map](save-load-cutover.md) and [admission add
+ ## Ordinary-reader continuation, source-only 2026-10-01
+ 
+ The [ordinary-reader map](ordinary-read-cutover.md) distinguishes content/presence and bytes-plus-real-LastWriteTimeUtc results from original physical publication receipts. It recommends common validated reads while preserving public recovery/quiescence/no-reacquire/absence behavior and explicit original entrypoints/scopes for old setup and recovery. Browser v6 before-image setup reads tracked bytes before attaching its recorder, so recorder presence or evidence-path exclusion alone is insufficient. The current B3b block does not migrate those readers; ordinary reads, later accepted publication and save/load retain their separate bounded verification.
++
++T031 implementation refinement: ordinary QTE acceptance/transport calls use the helper without callbacks; explicit AfterLegacyAcceptanceRuntimeWrittenAsync/AfterLegacyDeferredEffectMutationAsync preserve original recorder/recovery callbacks. AfterRuntimeWrittenAsync and final:* AfterDeferredEffectMutationAsync remain later domain hooks. Uncertainty bypasses domain compensation; the private Russian notice avoids unchanged-state/retry claims. This is the bounded helper/error boundary, not full accepted-turn or browser-v6 migration; current verified/unrun evidence lives in plan.md.
 diff --git a/tests/categories.json b/tests/categories.json
 index ad2fe43a..4f2eb0f3 100644
 --- a/tests/categories.json

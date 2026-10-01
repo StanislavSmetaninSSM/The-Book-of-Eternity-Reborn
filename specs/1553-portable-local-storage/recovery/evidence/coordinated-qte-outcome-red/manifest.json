@@ -1,0 +1,40 @@
+{
+  "sourceCommit": "9622195741164e122480c7ca46867a92812417e2",
+  "sourceAppliedTree": "11ff5b38cdcd76c37fb463a7fab3419e3444c12f",
+  "packetSha256": "b1f761aede50f5f678eb2a5617f080867cda819c4c73af37a2cf46a0f8ba971e",
+  "kind": "coordinated-qte-outcome-red; exact completed selected-run evidence",
+  "sanitization": "Repository/toolchain/isolated environment paths and TRX run user/computer/deployment identifiers replaced; original and sanitized hashes retained.",
+  "command": "DOTNET_PROCESSOR_COUNT=1 DOTNET_CLI_TELEMETRY_OPTOUT=1 POWERSHELL_TELEMETRY_OPTOUT=1 TESTINGPLATFORM_TELEMETRY_OPTOUT=1 pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-coordinated-qte-outcome -Parallelism 1",
+  "environment": "Linux x64; SDK10.0.401, .NET8.0.31, PowerShell7.6.6; existing isolated homes/temp/cache; no app/provider execution",
+  "tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 0,
+    "Failed": 2
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 2,
+    "CompletedCases": 2,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "exitCode": 1,
+  "wallTime": "00:03:12.8915488",
+  "timedOut": false,
+  "ownedCleanup": true,
+  "runtimeCleanup": true,
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "3f4ca9ef9a40c918b98eaf787cb0d1e63946df7e7239db73092358095ba009c0",
+      "sanitizedSha256": "3f4ca9ef9a40c918b98eaf787cb0d1e63946df7e7239db73092358095ba009c0"
+    },
+    {
+      "path": "portable-coordinated-qte-outcome-integration-001.trx",
+      "originalSha256": "004918f52387145917f10c600426e56ca5dc7e0e5b7aa707df83848dd6c704e0",
+      "sanitizedSha256": "a627ea4a9840009f96965c4b464d64fc3bbc8c1bb38ae40fa0a55cf237d06345"
+    }
+  ]
+}

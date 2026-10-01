@@ -4,9 +4,10 @@ using BookOfEternityClient.Core;
 namespace BookOfEternityClient.Services;
 
 internal sealed class CoordinatedStatePublicationUncertainException(Exception? failure)
-    : InvalidOperationException(
-        "Coordinated state publication is unresolved; retain its evidence before retry or compensation.", failure)
+    : InvalidOperationException(PlayerMessage, failure)
 {
+    internal const string PlayerMessage =
+        "Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.";
 }
 
 internal static class CoordinatedStateWriteHelper
