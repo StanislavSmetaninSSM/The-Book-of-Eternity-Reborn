@@ -1,0 +1,692 @@
+{
+  "kind": "T030-F exact thirty-case native Windows directory-deletion verification",
+  "sourceSha": "89ea5e001135d1ae76e3cd0c755c70febdfec1cd",
+  "sourceTree": "d74398a7a1b3e97da83c5a5d2c1ca78ba6bd80d8",
+  "catalogBlob": "0a621b605dac7029df573211c7dd091615f870fe",
+  "categories": [
+    "portable-directory-windows-boundaries",
+    "portable-directory-original-windows",
+    "portable-directory-backup-prerequisite"
+  ],
+  "selectionFile": "specs/1553-portable-local-storage/recovery/directory-windows-selection.json",
+  "selectionFileBlob": "b1e6ba4b26a963d11dc28c75c959b22edf77cfbc",
+  "selectionFileSha256": "3a32e3e03e24abcf4e0d327c051044b05028c2827d0c96e2dcfcf78138cb59f0",
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -SelectionFile specs/1553-portable-local-storage/recovery/directory-windows-selection.json -Parallelism 1",
+  "os": "Microsoft Windows 10.0.26200",
+  "architecture": "X64",
+  "isWindows": true,
+  "powershell": "7.6.6",
+  "dotnetSdk": "10.0.401",
+  "startedUtc": "2026-10-01T21:25:19.8348405Z",
+  "endedUtc": "2026-10-01T21:36:10.0064049Z",
+  "wallTime": "00:10:48.5515160",
+  "result": {
+    "executed": 30,
+    "unrun": 0,
+    "plannedCases": 30,
+    "timedOut": false,
+    "selectionComplete": true,
+    "exitCode": 0,
+    "passed": 30,
+    "total": 30,
+    "skipped": 0,
+    "plannedDescriptors": 4,
+    "failed": 0,
+    "completedDescriptors": 4,
+    "completedCases": 30,
+    "plannedMethods": 14,
+    "launcherExitCode": 0,
+    "duplicateIds": 0
+  },
+  "bodyEvidence": "Exactly14methods30cases4descriptors: unchanged real quarantine integration1; original browser integration4 (warm recorder-cleared rollback, cold rollback cleanup and two wrong-type negatives); native extended-root unit1; common native boundary24. Windows-only fixtures assert Windows rather than silently return. Root directory link, late file/dangling links use direct CreateSymbolicLink before assertions. Hard-link creation asserts actual CreateHardLinkW. Cold recovery uses owned separate crash-host processes across9cuts and2outside-hard-link cases. Repeated same-lease debt and whole-set exact images are real filesystem assertions. No selected Linux FIFO method or fixture workaround.",
+  "fixtureQualification": {
+    "actualNativeBodies": "Exactly14methods30cases4descriptors: unchanged real quarantine integration1; original browser integration4 (warm recorder-cleared rollback, cold rollback cleanup and two wrong-type negatives); native extended-root unit1; common native boundary24. Windows-only fixtures assert Windows rather than silently return. Root directory link, late file/dangling links use direct CreateSymbolicLink before assertions. Hard-link creation asserts actual CreateHardLinkW. Cold recovery uses owned separate crash-host processes across9cuts and2outside-hard-link cases. Repeated same-lease debt and whole-set exact images are real filesystem assertions. No selected Linux FIFO method or fixture workaround.",
+    "nativePrerequisiteOutcomes": [
+      {
+        "outcome": "Passed",
+        "symbolicLinkSetupFailure": false,
+        "name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.BrowserRollback_CleanupDirectoryReplacedByFileBeforeDeletionRetainsEvidence",
+        "fixtureSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "symbolicLinkSetupFailure": false,
+        "name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_WarmRollbackDynamicDirectoryUsesOriginalCleanupAfterRecorderCleared",
+        "fixtureSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "symbolicLinkSetupFailure": false,
+        "name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.InterruptedStagedBrowserWrite_RemovesDeclaredRollbackCleanupDirectories",
+        "fixtureSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "symbolicLinkSetupFailure": false,
+        "name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.BrowserRollback_RegularFileAtCleanupDirectoryRetainsEvidence",
+        "fixtureSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "symbolicLinkSetupFailure": false,
+        "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionWindowsTests.ExtendedRootUsesNormalizedMembersAndCanonicalHookNames",
+        "fixtureSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "symbolicLinkSetupFailure": false,
+        "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes(invalid: \"root-link\")",
+        "fixtureSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "symbolicLinkSetupFailure": false,
+        "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ColdHardLinkOutsideBytesSurviveRollbackAndCommittedCleanup(cut: \"first-member\", committed: False)",
+        "fixtureSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "symbolicLinkSetupFailure": false,
+        "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes(invalid: \"late-link\")",
+        "fixtureSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "symbolicLinkSetupFailure": false,
+        "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ColdHardLinkOutsideBytesSurviveRollbackAndCommittedCleanup(cut: \"cleanup-debt\", committed: True)",
+        "fixtureSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "symbolicLinkSetupFailure": false,
+        "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes(invalid: \"root-file\")",
+        "fixtureSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "symbolicLinkSetupFailure": false,
+        "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.HardLinkedMemberDeletionPreservesTheOutsideName",
+        "fixtureSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "symbolicLinkSetupFailure": false,
+        "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes(invalid: \"late-dangling-link\")",
+        "fixtureSetupFailure": false
+      }
+    ],
+    "realQuarantineWindowsBody": {
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim",
+      "qualification": "Unchanged real PrepareAsync and terminal quarantine body; no platform-return or prerequisite workaround",
+      "stack": ""
+    },
+    "linuxBackupLimit": "Directory preparation now passed in prior accepted Linux evidence, but unchanged real quarantine still fails later at StateDistributor->CreateBackupCore. Windows success cannot close this later Linux backup/prerequisite blocker or full T030/T031/platform readiness."
+  },
+  "normalizationProof": {
+    "frozenHead": "f35810be27975454fbf3cc276089bd89e444c3bd",
+    "frozenTree": "31cafcfd7174d747405e169c97a046aa623ac190",
+    "fullAppliedTree": "2a8056815c828d157c9ca7edfb69345ac7d99f82",
+    "packetExcludedSourceTree": "093d68f4ecff157a24ed242e322d22ee0a28b24e",
+    "patchBytes": 23583,
+    "patchSha256": "7211e9d68f85aadd15b46cfdb90da707baaa9cf359cc7243cd7b04718be13b03",
+    "manifestSha256": "c00888611ee21d65cb45be827f284482067714fcc5b8f0cd5f16ed7f4defc41e",
+    "deliveryManifestSha256": "6fbb1f68fea6b7e338ba5251f8756ae2642fee9f80d0064b6d1d16b3b24de2f2",
+    "verifiedPacketEntries": 5,
+    "verifiedDeliveryEntries": 17,
+    "allAcceptedBytesIdentical": true,
+    "nativeExecutedCases": 0,
+    "normalizationQualification": "One exact ordinary apply. An empty process-only alternate-index override caused a non-mutating retirement error; primary index/files verified intact, then retired once from the primary index.",
+    "stagedTree": "d74398a7a1b3e97da83c5a5d2c1ca78ba6bd80d8",
+    "stagedPaths": [
+      "BookOfEternityClient.IntegrationTests/BrowserLocalWriteCoordinatorTests.cs",
+      "BookOfEternityClient/Core/FileSystemManager.cs",
+      "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+      "specs/1553-portable-local-storage/plan.md",
+      "specs/1553-portable-local-storage/recovery/README.md",
+      "specs/1553-portable-local-storage/recovery/directory-deletion-pending.json",
+      "specs/1553-portable-local-storage/recovery/directory-deletion-pending.patch",
+      "specs/1553-portable-local-storage/research.md",
+      "tests/categories.json"
+    ]
+  },
+  "immutableDeliveryManifest": "specs/1553-portable-local-storage/recovery/directory-delivery-source.json",
+  "cleanup": {
+    "runtimeComplete": true,
+    "runtimeDirectoryRemainders": 0,
+    "ownedTreeComplete": true,
+    "syntheticFixtureDirectoryRemainders": 0,
+    "launcherProcessRemainders": 0
+  },
+  "protectedEnvironment": "HOME/home/CODEX_HOME untouched; no profile/security/elevation changes",
+  "isolation": "Per-process synthetic TEMP, CLI home, NuGet caches, appdata; unique runner output under owned QA copy. No user saves/profiles.",
+  "externalExecution": "Only selected assertion fixtures and owned cold-recovery crash-host processes; original browser coordinator tests use service fixtures, no live browser/client/game/server/GM/provider/GUI/audio.",
+  "processorCount": "DOTNET_PROCESSOR_COUNT=1",
+  "telemetryOptOuts": [
+    "DOTNET_CLI_TELEMETRY_OPTOUT=1",
+    "POWERSHELL_TELEMETRY_OPTOUT=1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT=1"
+  ],
+  "sourceReadback": {
+    "sourceSha": "89ea5e001135d1ae76e3cd0c755c70febdfec1cd",
+    "sourceTree": "d74398a7a1b3e97da83c5a5d2c1ca78ba6bd80d8",
+    "parentSha": "f35810be27975454fbf3cc276089bd89e444c3bd",
+    "restoration": "New clean depth-two GitHub-only clone; no local source/object copy",
+    "trackedFiles": 3829,
+    "verifiedDeliveryEntries": 17,
+    "verifiedPacketAfterImages": 5,
+    "clean": true,
+    "fsckPassed": true,
+    "githubApiCommitTreeParentVerified": true,
+    "verifiedUtc": "2026-10-01T21:21:30.0055973Z"
+  },
+  "sourceWorkingTreeClean": true,
+  "cases": [
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim",
+      "stack": "",
+      "duration": "00:01:22.1518641",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.BrowserRollback_CleanupDirectoryReplacedByFileBeforeDeletionRetainsEvidence",
+      "stack": "",
+      "duration": "00:00:02.8968879",
+      "name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.BrowserRollback_CleanupDirectoryReplacedByFileBeforeDeletionRetainsEvidence",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_WarmRollbackDynamicDirectoryUsesOriginalCleanupAfterRecorderCleared",
+      "stack": "",
+      "duration": "00:00:02.3109085",
+      "name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_WarmRollbackDynamicDirectoryUsesOriginalCleanupAfterRecorderCleared",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.InterruptedStagedBrowserWrite_RemovesDeclaredRollbackCleanupDirectories",
+      "stack": "",
+      "duration": "00:00:02.1407823",
+      "name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.InterruptedStagedBrowserWrite_RemovesDeclaredRollbackCleanupDirectories",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.BrowserRollback_RegularFileAtCleanupDirectoryRetainsEvidence",
+      "stack": "",
+      "duration": "00:00:00.8723402",
+      "name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.BrowserRollback_RegularFileAtCleanupDirectoryRetainsEvidence",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionWindowsTests.ExtendedRootUsesNormalizedMembersAndCanonicalHookNames",
+      "stack": "",
+      "duration": "00:00:01.3988775",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionWindowsTests.ExtendedRootUsesNormalizedMembersAndCanonicalHookNames",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess",
+      "stack": "",
+      "duration": "00:00:00.6931384",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess(cut: \"CleanupMember\", committed: True)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes",
+      "stack": "",
+      "duration": "00:00:00.0245257",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes(invalid: \"root-link\")",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PlatformDistinctNamesRemainSeparateJournalMembers",
+      "stack": "",
+      "duration": "00:00:00.0850049",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PlatformDistinctNamesRemainSeparateJournalMembers",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration",
+      "stack": "",
+      "duration": "00:00:00.0621550",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration(exists: False)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess",
+      "stack": "",
+      "duration": "00:00:00.6765919",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess(cut: \"last-member\", committed: False)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ColdHardLinkOutsideBytesSurviveRollbackAndCommittedCleanup",
+      "stack": "",
+      "duration": "00:00:00.6732433",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ColdHardLinkOutsideBytesSurviveRollbackAndCommittedCleanup(cut: \"first-member\", committed: False)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes",
+      "stack": "",
+      "duration": "00:00:00.0327331",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes(invalid: \"late-link\")",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning",
+      "stack": "",
+      "duration": "00:00:00.1572548",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning(ancestor: True, conflict: True)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ColdHardLinkOutsideBytesSurviveRollbackAndCommittedCleanup",
+      "stack": "",
+      "duration": "00:00:01.7492977",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ColdHardLinkOutsideBytesSurviveRollbackAndCommittedCleanup(cut: \"cleanup-debt\", committed: True)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes",
+      "stack": "",
+      "duration": "00:00:00.0313821",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes(invalid: \"root-file\")",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess",
+      "stack": "",
+      "duration": "00:00:01.4509223",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess(cut: \"CleanupComplete\", committed: True)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration",
+      "stack": "",
+      "duration": "00:00:00.0451055",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration(exists: True)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess",
+      "stack": "",
+      "duration": "00:00:00.6719233",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess(cut: \"CommitStaged\", committed: False)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling",
+      "stack": "",
+      "duration": "00:00:00.1134729",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.HardLinkedMemberDeletionPreservesTheOutsideName",
+      "stack": "",
+      "duration": "00:00:00.0731516",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.HardLinkedMemberDeletionPreservesTheOutsideName",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning",
+      "stack": "",
+      "duration": "00:00:00.1355583",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning(ancestor: False, conflict: False)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning",
+      "stack": "",
+      "duration": "00:00:00.1891855",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning(ancestor: True, conflict: False)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess",
+      "stack": "",
+      "duration": "00:00:00.6943516",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess(cut: \"cleanup-debt\", committed: True)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning",
+      "stack": "",
+      "duration": "00:00:00.1269276",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning(ancestor: False, conflict: True)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess",
+      "stack": "",
+      "duration": "00:00:00.7120624",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess(cut: \"IntentPublished\", committed: False)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes",
+      "stack": "",
+      "duration": "00:00:00.0403537",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes(invalid: \"late-dangling-link\")",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess",
+      "stack": "",
+      "duration": "00:00:00.6437879",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess(cut: \"IntentStaged\", committed: False)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess",
+      "stack": "",
+      "duration": "00:00:00.7365469",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess(cut: \"first-member\", committed: False)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "fixtureSetupFailure": false,
+      "message": "",
+      "outcome": "Passed",
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess",
+      "stack": "",
+      "duration": "00:00:01.1580742",
+      "name": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess(cut: \"Committed\", committed: True)",
+      "symbolicLinkSetupFailure": false
+    }
+  ],
+  "methodCoverage": [
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim",
+      "unrunCases": 0,
+      "plannedCases": 1,
+      "recordedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.BrowserRollback_CleanupDirectoryReplacedByFileBeforeDeletionRetainsEvidence",
+      "unrunCases": 0,
+      "plannedCases": 1,
+      "recordedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.BrowserRollback_RegularFileAtCleanupDirectoryRetainsEvidence",
+      "unrunCases": 0,
+      "plannedCases": 1,
+      "recordedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_WarmRollbackDynamicDirectoryUsesOriginalCleanupAfterRecorderCleared",
+      "unrunCases": 0,
+      "plannedCases": 1,
+      "recordedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.InterruptedStagedBrowserWrite_RemovesDeclaredRollbackCleanupDirectories",
+      "unrunCases": 0,
+      "plannedCases": 1,
+      "recordedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionWindowsTests.ExtendedRootUsesNormalizedMembersAndCanonicalHookNames",
+      "unrunCases": 0,
+      "plannedCases": 1,
+      "recordedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess",
+      "unrunCases": 0,
+      "plannedCases": 9,
+      "recordedCases": 9
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ColdHardLinkOutsideBytesSurviveRollbackAndCommittedCleanup",
+      "unrunCases": 0,
+      "plannedCases": 2,
+      "recordedCases": 2
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration",
+      "unrunCases": 0,
+      "plannedCases": 2,
+      "recordedCases": 2
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.HardLinkedMemberDeletionPreservesTheOutsideName",
+      "unrunCases": 0,
+      "plannedCases": 1,
+      "recordedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes",
+      "unrunCases": 0,
+      "plannedCases": 4,
+      "recordedCases": 4
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling",
+      "unrunCases": 0,
+      "plannedCases": 1,
+      "recordedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PlatformDistinctNamesRemainSeparateJournalMembers",
+      "unrunCases": 0,
+      "plannedCases": 1,
+      "recordedCases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning",
+      "unrunCases": 0,
+      "plannedCases": 4,
+      "recordedCases": 4
+    }
+  ],
+  "trxCounters": [
+    {
+      "skipped": 0,
+      "passed": 1,
+      "file": "portable-directory-backup-prerequisite-integration-001.sanitized.trx",
+      "executed": 1,
+      "total": 1,
+      "failed": 0
+    },
+    {
+      "skipped": 0,
+      "passed": 4,
+      "file": "portable-directory-original-windows-integration-002.sanitized.trx",
+      "executed": 4,
+      "total": 4,
+      "failed": 0
+    },
+    {
+      "skipped": 0,
+      "passed": 1,
+      "file": "portable-directory-original-windows-unit-003.sanitized.trx",
+      "executed": 1,
+      "total": 1,
+      "failed": 0
+    },
+    {
+      "skipped": 0,
+      "passed": 24,
+      "file": "portable-directory-windows-boundaries-unit-004.sanitized.trx",
+      "executed": 24,
+      "total": 24,
+      "failed": 0
+    }
+  ],
+  "descriptorResults": [
+    {
+      "failed": 0,
+      "recordedCases": 1,
+      "plannedCases": 1,
+      "name": "portable-directory-backup-prerequisite-integration-001",
+      "adapter": "integration",
+      "category": "portable-directory-backup-prerequisite",
+      "unrun": 0,
+      "passed": 1,
+      "skipped": 0
+    },
+    {
+      "failed": 0,
+      "recordedCases": 4,
+      "plannedCases": 4,
+      "name": "portable-directory-original-windows-integration-002",
+      "adapter": "integration",
+      "category": "portable-directory-original-windows",
+      "unrun": 0,
+      "passed": 4,
+      "skipped": 0
+    },
+    {
+      "failed": 0,
+      "recordedCases": 1,
+      "plannedCases": 1,
+      "name": "portable-directory-original-windows-unit-003",
+      "adapter": "unit",
+      "category": "portable-directory-original-windows",
+      "unrun": 0,
+      "passed": 1,
+      "skipped": 0
+    },
+    {
+      "failed": 0,
+      "recordedCases": 24,
+      "plannedCases": 24,
+      "name": "portable-directory-windows-boundaries-unit-004",
+      "adapter": "unit",
+      "category": "portable-directory-windows-boundaries",
+      "unrun": 0,
+      "passed": 24,
+      "skipped": 0
+    }
+  ],
+  "files": [
+    {
+      "sanitizedSha256": "b7e568af3cafec481801e9609a401388fc07e2d65a8f0c1e694bda85ca3a8ba6",
+      "bytes": 3074,
+      "file": "summary.sanitized.json",
+      "originalSha256": "1d4f8e0760c3bf10f82399a6494cb364fb732639de46a915519d52acc4a786e4"
+    },
+    {
+      "sanitizedSha256": "2bedc1c00e845a30cc7e6eadfaddf5adfd271bafef5a6daa3d3b34a88f18cbb2",
+      "bytes": 3496,
+      "file": "portable-directory-backup-prerequisite-integration-001.sanitized.trx",
+      "originalSha256": "4d298b5b5c46b1ceb6b9ad5c2e947f6417d4a8282f6ec402e9dc2d2c0b328d01"
+    },
+    {
+      "sanitizedSha256": "4108da2a9ee342a322bc03e6380f7a9e3b04f17e051d69db95fc0d1cda281e40",
+      "bytes": 7716,
+      "file": "portable-directory-original-windows-integration-002.sanitized.trx",
+      "originalSha256": "39b46b27392774685dc52107d9dd9817aa90735549f7ccefef40133c67e938f0"
+    },
+    {
+      "sanitizedSha256": "531626c1470e6ca1bec1dd5a665b8db649fb100ae38995150fd304e2c454a977",
+      "bytes": 3068,
+      "file": "portable-directory-original-windows-unit-003.sanitized.trx",
+      "originalSha256": "2b585c72dd31dd0c191f8e17b9f790794dbea87850c3741e0c262897f8af80a8"
+    },
+    {
+      "sanitizedSha256": "bac296ce99381639460f0de134b365b253d40aaf1bcc31906bae944902b553ad",
+      "bytes": 37243,
+      "file": "portable-directory-windows-boundaries-unit-004.sanitized.trx",
+      "originalSha256": "01493a32affdd115ab15a65a5158bf29c653ba7f7d34866d54774e6c1361bc9d"
+    }
+  ],
+  "limits": [
+    "Only the thirty explicitly selected native filesystem cases; missing/failed fixture setup is not success",
+    "No additional suite, passing rerun or source fixes",
+    "No Linux/full-suite/PTY/browser/GM/provider/GUI/audio/game/server acceptance",
+    "T030-F final scoped acceptance remains parent-owned; later unchanged Linux StateDistributor/CreateBackupCore quarantine blocker remains open"
+  ],
+  "sanitization": "Only generated summary/TRX and own run metadata read. Private source/run/home/tool paths and host/user labels replaced consistently. UTF-8 without BOM, LF; original and sanitized SHA256 recorded. JSON/TRX reparsed and privacy/token-like guards passed. No raw logs, credentials, authorization profiles or user saves published."
+}

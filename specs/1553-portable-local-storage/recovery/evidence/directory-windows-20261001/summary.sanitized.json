@@ -1,0 +1,114 @@
+{
+  "Categories": [
+    "portable-directory-windows-boundaries",
+    "portable-directory-original-windows",
+    "portable-directory-backup-prerequisite"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-directory-windows-boundaries",
+      "reason": "Actual native links/hard links, case paths, repeated same-lease debt and cold whole-set recovery; no Linux early-return qualification.",
+      "contracts": [
+        "T030-F native ordinary tree deletion and original browser cleanup boundaries"
+      ]
+    },
+    {
+      "category": "portable-directory-original-windows",
+      "reason": "Actual extended-root deletion plus warm recorder-cleared and cold original browser cleanup with wrong-type negatives.",
+      "contracts": [
+        "T030-F native ordinary tree deletion and original browser cleanup boundaries"
+      ]
+    },
+    {
+      "category": "portable-directory-backup-prerequisite",
+      "reason": "Qualify the unchanged real quarantine body on this source; retain its distinct Linux backup failure and prior T031-A evidence.",
+      "contracts": [
+        "T030-F native ordinary tree deletion and original browser cleanup boundaries"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "89ea5e001135d1ae76e3cd0c755c70febdfec1cd",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-directory-backup-prerequisite",
+      "Seconds": 90.6507474,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-directory-original-windows",
+      "Seconds": 27.2095821,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-directory-windows-boundaries",
+      "Seconds": 19.0935386,
+      "BudgetMinutes": 5,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.9335909,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.8204406,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.8274157,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 379.7738865,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 91.7097904,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.00812,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 20,
+  "WallTime": "00:10:48.5515160",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 4,
+    "PlannedCases": 30,
+    "CompletedCases": 30,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 30,
+    "Executed": 30,
+    "Passed": 30,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
