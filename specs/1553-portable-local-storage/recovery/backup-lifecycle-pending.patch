@@ -93,7 +93,7 @@ index 3a0189ff..17ddc4ef 100644
          await ApplyAuthoritativeExperienceAsync(writeLease, response.ExperienceGained);
          var qteNormalizer = _normalizer.ForQteNormalization();
 diff --git a/tests/categories.json b/tests/categories.json
-index 0a621b60..3ebd8f7a 100644
+index 0a621b60..6bbd1c6f 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
 @@ -1,6 +1,500 @@
@@ -597,3 +597,12 @@ index 0a621b60..3ebd8f7a 100644
      {
        "id": "portable-directory-uncertain-consumer",
        "responsibility": "Exact actual LiveTurnPreparationService unresolved tree evidence and finalization recovery propagation; rerun only the reviewed assertion correction.",
+@@ -26,7 +520,7 @@
+     },
+     {
+       "id": "portable-directory-backup-prerequisite",
+-      "responsibility": "Known Linux-blocked actual quarantine fixture: preparation advances past tree cleanup but original StateDistributor CreateBackupCore descriptor-bound publication fails before quarantine assertions. Explicit separate reproducer; native qualification is allowed.",
++      "responsibility": "Exact real quarantine consumer previously blocked at StateDistributor CreateBackupCore on Linux; T030-G now reaches and passes its assertions. Preserve the real preparation/distribution fixture as a bounded end-to-end prerequisite check.",
+       "excludes": "Whole lifecycle, unrelated gameplay and full accepted-turn/backup migration.",
+       "changeHints": [
+         "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs"

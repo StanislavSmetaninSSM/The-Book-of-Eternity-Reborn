@@ -1,10 +1,12 @@
 {
-  "schemaVersion": 1,
-  "baseCommit": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
-  "patchFile": "backup-lifecycle-pending.patch",
-  "patchBytes": 28296,
-  "patchSha256": "a88e5df0ed4ae56fe851e5bba7aa8cb9b0962074cd12cd3c789693604c793e38",
-  "entries": [
+  "remoteSha": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+  "initialCleanTree": "162e3a24ea97924f68bc8af2bce37f2fde7669cd",
+  "fullAppliedTree": "1fe4a385bf399677a0a3da195a3334421e297623",
+  "carrierExcludedSourceTree": "cf9baca27417a06377139c9772b924c01520e101",
+  "trackedFiles": 3896,
+  "packetSha256": "5b48f19600f0daac8c1f224393ea3b826ae24a05069fabc0a9cba509ab3741fb",
+  "manifestSha256": "d38152ba350d03bb03e5215da6359381804ae08ec0abd18eb4860d4311f3bea2",
+  "afterImages": [
     {
       "path": "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.cs",
       "beforeBlob": "4cec0dc9a5ca6428c86e891135dae1ad163ed4b9",
@@ -29,15 +31,10 @@
     {
       "path": "tests/categories.json",
       "beforeBlob": "0a621b605dac7029df573211c7dd091615f870fe",
-      "afterBlob": "6bbd1c6f0e8a087a7c92df4cce0a6e798bcfa4e5",
+      "afterBlob": "3ebd8f7aab07b46a45f3db2f297eec07fbe378cd",
       "beforeSha256": "e90132627211590d9b78798133175d6468b59907801c83a9818500cd610bc045",
-      "afterSha256": "414e68f9da3eb09121c430204bf04f199dba5d27d2b9065ab404d995ad919e08"
+      "afterSha256": "32ee1d18b259b69d681ea78e9bdee716e1d89a6daeeacb19c62af07bc9f1410c"
     }
   ],
-  "appliedSourceTree": "5c779cdf9a30d15a4d3134c5eb5d5a702f836f4b",
-  "comparisonExcludes": [
-    "specs/1553-portable-local-storage/recovery/backup-lifecycle-pending.patch",
-    "specs/1553-portable-local-storage/recovery/backup-lifecycle-pending.json"
-  ],
-  "scope": "T030-G ordinary backup lifecycle; current plan records exact execution and remaining scope"
+  "origin": "fresh GitHub-only shallow clone; no prior local object store"
 }

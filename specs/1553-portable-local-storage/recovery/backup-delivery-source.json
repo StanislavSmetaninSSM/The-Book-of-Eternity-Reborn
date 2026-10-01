@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "scope": "T030-G exact containing-checkpoint source/test/catalog/selection delivery identities; runtime/test bytes remain at reviewedRuntimeTestCommit plus its packet. Catalog/selection descriptive wording can clarify the observed quarantine result without behavioral changes.",
+  "baseCommit": "5e0292fd1969eb9ec047a100dca0318d560fceb0",
+  "packetSha256": "5b48f19600f0daac8c1f224393ea3b826ae24a05069fabc0a9cba509ab3741fb",
+  "files": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.Backup.cs",
+      "gitBlob": "522f2573bb692dd1f2db2629ab29f21f2624b25e",
+      "sha256": "a79f6eb9fb214e26226b29ec19abd1addf2888479aafffa4872ebb9c62748393",
+      "bytes": 4615
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.BackupPublication.cs",
+      "gitBlob": "98b268049cbcc1f1d289ecd44215b105c1817429",
+      "sha256": "727e4fd494f48f912a736d6c3cc40e3328787dfd7f3567ab1b3da672f3b83e38",
+      "bytes": 3620
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.cs",
+      "gitBlob": "de441eb73df3be9d4fdeb5281528a131739de35e",
+      "sha256": "7711cd74f294c0eb0ef88539094a4e58b62b7abaae1cba3910850e6ad4fa31c5",
+      "bytes": 104462
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs",
+      "gitBlob": "d5ece7f4c9efa89eedf977952a971a779108efe6",
+      "sha256": "c0ea6ca997470500c4d41e4bc41ce7d8ddf4bf9398638d605a87c1614fa76ddc",
+      "bytes": 17368
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PortableBackupConsumerTests.cs",
+      "gitBlob": "d29cb8b6eb872645cd69a652e6805d8988cd2cb6",
+      "sha256": "3eabf17553e08bd742970ce0db26c8886b3813ebd7c09704b9dd2d21a6be58fc",
+      "bytes": 9998
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PortableBackupLifecycleTests.Boundaries.cs",
+      "gitBlob": "10cd10f61afad2b88d0496d2f6397f2aa1886fa9",
+      "sha256": "fbee43d39e78e82768fdec55c7305d1c13d613e28be88d53eb632419f16ff1b0",
+      "bytes": 11300
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PortableBackupLifecycleTests.Publication.cs",
+      "gitBlob": "036696431c2144692b933b22c7e6e65529e20594",
+      "sha256": "7876532427e15ee367702e6efcd79cf5d3175e5f57d3ef702c64a4dc5817e481",
+      "bytes": 5337
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PortableBackupLifecycleTests.Routing.cs",
+      "gitBlob": "3047999c440437c19c05ea0011cc3ccd8298d209",
+      "sha256": "23ac58458497e09c4b9f5d6117edc65f5685f96a0c9ddae61459451897b0d01c",
+      "bytes": 6627
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PortableBackupLifecycleTests.cs",
+      "gitBlob": "4ce3a12857ec7c0e8aab2709ccba352decc25cb1",
+      "sha256": "ac51c6cf6bac05daaf87f0b7cfb1658a5030c72e2a58b22766eddf4cd10cc2c2",
+      "bytes": 3971
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PortableBackupRecoveryTests.cs",
+      "gitBlob": "4cc4e08fc1d9576d10ceb18cbf028c3db83afc97",
+      "sha256": "b531e6db5957d5b8f427c8d1e85e015626fef8e636149560aa4d35e913161c4c",
+      "bytes": 9405
+    },
+    {
+      "path": "BookOfEternityClient.Tests/StateDistributorCanonicalLeaseTests.cs",
+      "gitBlob": "1256ca88322eaf6a345a18bcf2047c2637cc3235",
+      "sha256": "1d6847944d4bed406caa47934e67365990cc50b8df0baa649c688e9812d52c0d",
+      "bytes": 12881
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+      "gitBlob": "6ab249e4d30d7b2ffebec86e4a7f43490170bedd",
+      "sha256": "0b7788e3ec09cbcdacf0463cbe040d531dd8e1b91dedac2bec9744f7ea7fc050",
+      "bytes": 7574
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "gitBlob": "4dc1ce302c9f0db8c167901f61c548513098d296",
+      "sha256": "764e3698d84bdeeffa372e0830b8b643373b14e5e963132fde88562c1ae5805f",
+      "bytes": 226775
+    },
+    {
+      "path": "BookOfEternityClient/IO/StateDistributor.cs",
+      "gitBlob": "de12ee76a7ee5616f2ba0ee661252398216507ab",
+      "sha256": "55762adcd9ec302a221953829f6616dbba43b5ccce11c0a468064b33e53dd02b",
+      "bytes": 32169
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteSceneService.cs",
+      "gitBlob": "17ddc4efbeaee534b32cce33bd56bcb2ec3a27e8",
+      "sha256": "aedb827fecd686b904f549d4c22008176932896edb8f2c7b73c194476d272d50",
+      "bytes": 256045
+    },
+    {
+      "path": "tests/categories.json",
+      "gitBlob": "6bbd1c6f0e8a087a7c92df4cce0a6e798bcfa4e5",
+      "sha256": "414e68f9da3eb09121c430204bf04f199dba5d27d2b9065ab404d995ad919e08",
+      "bytes": 869387
+    },
+    {
+      "path": "tests/selection.json",
+      "gitBlob": "d5df74b26aaec37733e070f8d5ae390beaa3623f",
+      "sha256": "58aa07c7c728844a625bb948ca38d87aabee340d02fcbdb70fbef504d72f6bf5",
+      "bytes": 4855
+    }
+  ],
+  "reviewedRuntimeTestCommit": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449"
+}

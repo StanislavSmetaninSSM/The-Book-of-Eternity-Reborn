@@ -1,0 +1,128 @@
+{
+  "Categories": [
+    "portable-backup-review-regressions",
+    "portable-backup-generation-debt",
+    "portable-backup-consumers",
+    "portable-backup-qte"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-backup-review-regressions",
+      "reason": "Affected P1 ordering dependencies: debt-free generation and malformed input remain known errors; no-op/real lease/original route/same-lease debt preserve their boundary.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-generation-debt",
+      "reason": "Actual bound StateDistributor generation conflict after a committed backup retains journal uncertainty before compensation; outer SessionOperationContext finalization remains separate.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-consumers",
+      "reason": "Actual StateDistributor backup capture, reverse restoration and accepted cleanup uncertainty; no later compensation or diagnostic reversal.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-qte",
+      "reason": "Actual QTE backup publication and same-lease debt reach its immediate distributor boundary; uncertainty excludes wider baseline compensation and later writes.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+    "WorkingTreeFingerprint": "1A213280A1EF25C5E062C05D481A20DF62A358F2537E57CE8242AE528A0B2692",
+    "ChangedFiles": 4
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-backup-consumers",
+      "Seconds": 3.0652688,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-backup-generation-debt",
+      "Seconds": 3.8731979,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-backup-qte",
+      "Seconds": 3.4387872,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-backup-review-regressions",
+      "Seconds": 3.0451391,
+      "BudgetMinutes": 5,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0705734,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0141907,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0157765,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 143.0895928,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 34.554036,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0035295,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 25,
+  "WallTime": "00:03:19.0390784",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 4,
+    "PlannedCases": 19,
+    "CompletedCases": 19,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 19,
+    "Executed": 19,
+    "Passed": 19,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

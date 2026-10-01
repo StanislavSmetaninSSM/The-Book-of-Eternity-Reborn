@@ -1,0 +1,154 @@
+{
+  "Categories": [
+    "portable-backup-review-regressions",
+    "portable-backup-generation-debt",
+    "portable-backup-consumers",
+    "portable-backup-qte"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-backup-review-regressions",
+      "reason": "Affected P1 ordering dependencies: debt-free generation and malformed input remain known errors; no-op/real lease/original route/same-lease debt preserve their boundary.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-generation-debt",
+      "reason": "Actual bound StateDistributor generation conflict after a committed backup retains journal uncertainty before compensation; outer SessionOperationContext finalization remains separate.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-consumers",
+      "reason": "Actual StateDistributor backup capture, reverse restoration and accepted cleanup uncertainty; no later compensation or diagnostic reversal.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-qte",
+      "reason": "Actual QTE backup publication and same-lease debt reach its immediate distributor boundary; uncertainty excludes wider baseline compensation and later writes.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+    "WorkingTreeFingerprint": "1A213280A1EF25C5E062C05D481A20DF62A358F2537E57CE8242AE528A0B2692",
+    "ChangedFiles": 4
+  },
+  "PreparationSeconds": 185.3403537,
+  "Descriptors": [
+    {
+      "Name": "portable-backup-consumers-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-backup-consumers",
+      "Categories": [
+        "portable-backup-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupConsumerTests.AcceptedDistributionSurvivesCleanupDebtAndDiagnosticFailure|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsReverseCompensationWhenRestoreIsUnresolved",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupConsumerTests.AcceptedDistributionSurvivesCleanupDebtAndDiagnosticFailure",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsReverseCompensationWhenRestoreIsUnresolved",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-backup-generation-debt-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-backup-generation-debt",
+      "Categories": [
+        "portable-backup-generation-debt"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupConsumerTests.BoundDistributorClassifiesGenerationConflictInCommittedBackupDebtBeforeCompensation",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupConsumerTests.BoundDistributorClassifiesGenerationConflictInCommittedBackupDebtBeforeCompensation",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-backup-qte-integration-003",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-backup-qte",
+      "Categories": [
+        "portable-backup-qte"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "portable-backup-review-regressions-unit-004",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-backup-review-regressions",
+      "Categories": [
+        "portable-backup-review-regressions"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.AbsentSourceAndCleanupDoNotCreateGenerationOrJournal|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.OriginalRecorderAndRecoveryKeepPhysicalCoreWithoutNewCallbacks|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.SuppliedLeaseHonorsChangedBoundGenerationBeforeNoOp|FullyQualifiedName=BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_MalformedExistingJson_FailsClosedAndPreservesExactBytes",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 10,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.AbsentSourceAndCleanupDoNotCreateGenerationOrJournal",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.OriginalRecorderAndRecoveryKeepPhysicalCoreWithoutNewCallbacks",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SuppliedLeaseHonorsChangedBoundGenerationBeforeNoOp",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_MalformedExistingJson_FailsClosedAndPreservesExactBytes",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

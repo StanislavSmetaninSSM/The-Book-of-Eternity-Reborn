@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="d1fd6f23-9908-44c2-95e8-f54b97742bd0" name="@ff00c3d48a40 2026-10-01 19:03:48" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-01T19:03:48.0165186-04:00" queuing="2026-10-01T19:03:48.0165186-04:00" start="2026-10-01T19:03:45.4591487-04:00" finish="2026-10-01T19:03:48.0222497-04:00" />
+  <TestSettings name="default" id="b5e2ca1c-36d8-4b6a-a0e4-24a114620f8a">
+    <Deployment runDeploymentRoot="_ff00c3d48a40_2026-10-01_19_03_48" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="0152ea20-d062-4b77-bd93-41bf8498a231" testId="56a5896f-a9ee-a960-fdb3-943f6a3d5368" testName="BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation(cut: &quot;accepted-cleanup&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0689528" startTime="2026-10-01T19:03:47.9093735-04:00" endTime="2026-10-01T19:03:47.9093737-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0152ea20-d062-4b77-bd93-41bf8498a231" />
+    <UnitTestResult executionId="b61e69e0-c6d1-4d37-b57b-937eee5cea84" testId="2c964b24-d03a-49fe-7f21-8609d4e3eda3" testName="BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation(cut: &quot;create-unknown&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0383791" startTime="2026-10-01T19:03:47.8385840-04:00" endTime="2026-10-01T19:03:47.8385842-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b61e69e0-c6d1-4d37-b57b-937eee5cea84" />
+    <UnitTestResult executionId="9f80680e-ec83-429c-924a-8d2efd82c376" testId="50bdf3fd-87b5-ff9f-ddf7-421d48981d5a" testName="BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation(cut: &quot;create-debt&quot;)" computerName="ff00c3d48a40" duration="00:00:00.2299723" startTime="2026-10-01T19:03:47.8000575-04:00" endTime="2026-10-01T19:03:47.8000710-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9f80680e-ec83-429c-924a-8d2efd82c376" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation(cut: &quot;create-unknown&quot;)" storage="SOURCE_ROOT/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="2c964b24-d03a-49fe-7f21-8609d4e3eda3">
+      <Execution id="b61e69e0-c6d1-4d37-b57b-937eee5cea84" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.QteSceneServiceTests" name="ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation(cut: &quot;accepted-cleanup&quot;)" storage="SOURCE_ROOT/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="56a5896f-a9ee-a960-fdb3-943f6a3d5368">
+      <Execution id="0152ea20-d062-4b77-bd93-41bf8498a231" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.QteSceneServiceTests" name="ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation(cut: &quot;create-debt&quot;)" storage="SOURCE_ROOT/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="50bdf3fd-87b5-ff9f-ddf7-421d48981d5a">
+      <Execution id="9f80680e-ec83-429c-924a-8d2efd82c376" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.QteSceneServiceTests" name="ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="56a5896f-a9ee-a960-fdb3-943f6a3d5368" executionId="0152ea20-d062-4b77-bd93-41bf8498a231" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2c964b24-d03a-49fe-7f21-8609d4e3eda3" executionId="b61e69e0-c6d1-4d37-b57b-937eee5cea84" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="50bdf3fd-87b5-ff9f-ddf7-421d48981d5a" executionId="9f80680e-ec83-429c-924a-8d2efd82c376" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="3" executed="3" passed="3" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.36]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.54]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.56]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.95]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

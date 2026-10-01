@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "Head": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+    "WorkingTreeFingerprint": "1A213280A1EF25C5E062C05D481A20DF62A358F2537E57CE8242AE528A0B2692",
+    "ChangedFiles": 4
+  },
+  "command": "scripts/test-csharp.ps1 -SelectionFile specs/1553-portable-local-storage/recovery/backup-review-correction-selection.json -Parallelism 1",
+  "summary": {
+    "ExitCode": 0,
+    "WallTime": "00:03:19.0390784",
+    "Tests": {
+      "Total": 19,
+      "Executed": 19,
+      "Passed": 19,
+      "Failed": 0
+    },
+    "Selection": {
+      "PlannedDescriptors": 4,
+      "CompletedDescriptors": 4,
+      "PlannedCases": 19,
+      "CompletedCases": 19,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "DuplicateTests": []
+  },
+  "artifacts": [
+    {
+      "file": "summary.json",
+      "originalSha256": "c686575bd687b2081dec3a7c2a13cdfaa030d97846db0e347f0fcfa700ae6f45",
+      "sanitizedSha256": "c686575bd687b2081dec3a7c2a13cdfaa030d97846db0e347f0fcfa700ae6f45"
+    },
+    {
+      "file": "plan.json",
+      "originalSha256": "c5da9a987832738da923fe5ba6bb3e70635267d88d39f9bbc7d7122d90989773",
+      "sanitizedSha256": "c5da9a987832738da923fe5ba6bb3e70635267d88d39f9bbc7d7122d90989773"
+    },
+    {
+      "file": "portable-backup-consumers-unit-001.trx",
+      "originalSha256": "2a893f94ef6c06e7d1a6b8d2e91780b96ce99d26aca5b118896811775dae5e8d",
+      "sanitizedSha256": "c3c8d91c6088ab95c8a960d1931d8ecfa0ec3fe0bd1d5f79e6bc010333ed712f"
+    },
+    {
+      "file": "portable-backup-qte-integration-003.trx",
+      "originalSha256": "207661152162c8d10ea2a499615aa72a5b285efa9496b03aca46ce91c0e4f595",
+      "sanitizedSha256": "9f18e60fc1195e972d0ef987b4ae04bf1b7872539be4110ec94875563e5e6fab"
+    },
+    {
+      "file": "portable-backup-review-regressions-unit-004.trx",
+      "originalSha256": "6d2a32a54ba1a5946ddb8bfabf42fb101ee759cf0c5d537d4312953fc099c93d",
+      "sanitizedSha256": "8c5993547516c35400bddaf2b31369379648987e289e5dbf08b02baa67f631da"
+    },
+    {
+      "file": "portable-backup-generation-debt-unit-002.trx",
+      "originalSha256": "68bc0d24ef71403fb0bc240feba8b5f40a709428dd147802d08c4261103a85df",
+      "sanitizedSha256": "03e3dbd087310e886a02e5a24fdb7f7e166c24814ff4ba16c7d8a068084e819c"
+    }
+  ],
+  "sanitization": "Role-based path tokens without angle brackets; all sanitized TRX parsed as XML before publication. Raw hashes retain original provenance.",
+  "packet": {
+    "schemaVersion": 1,
+    "baseCommit": "df602d2708010a965f004a73a1dc3b3e7a2eae4d",
+    "patchFile": "backup-lifecycle-pending.patch",
+    "patchBytes": 27453,
+    "patchSha256": "5b48f19600f0daac8c1f224393ea3b826ae24a05069fabc0a9cba509ab3741fb",
+    "entries": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.cs",
+        "beforeBlob": "4cec0dc9a5ca6428c86e891135dae1ad163ed4b9",
+        "afterBlob": "de441eb73df3be9d4fdeb5281528a131739de35e",
+        "beforeSha256": "81f40dc827bc9d7759b7091b238d31a533fb7fdbb87b2b3152b53cfb43c716e1",
+        "afterSha256": "7711cd74f294c0eb0ef88539094a4e58b62b7abaae1cba3910850e6ad4fa31c5"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "beforeBlob": "70079f9db26fd60980f9a7868a2644436bbeb9d8",
+        "afterBlob": "4dc1ce302c9f0db8c167901f61c548513098d296",
+        "beforeSha256": "8cfec1a97f1ec180325b5b4cb7ebf3082300bf31f6e6d8421f128e368cbecf83",
+        "afterSha256": "764e3698d84bdeeffa372e0830b8b643373b14e5e963132fde88562c1ae5805f"
+      },
+      {
+        "path": "BookOfEternityClient/Services/QteSceneService.cs",
+        "beforeBlob": "3a0189ff949ee8a6f0a09b894a87d4cbcc76e110",
+        "afterBlob": "17ddc4efbeaee534b32cce33bd56bcb2ec3a27e8",
+        "beforeSha256": "752cf5468cd818d241d190b4b22184f79ed211abab4a1b282a192b2d2f94aea9",
+        "afterSha256": "aedb827fecd686b904f549d4c22008176932896edb8f2c7b73c194476d272d50"
+      },
+      {
+        "path": "tests/categories.json",
+        "beforeBlob": "0a621b605dac7029df573211c7dd091615f870fe",
+        "afterBlob": "3ebd8f7aab07b46a45f3db2f297eec07fbe378cd",
+        "beforeSha256": "e90132627211590d9b78798133175d6468b59907801c83a9818500cd610bc045",
+        "afterSha256": "32ee1d18b259b69d681ea78e9bdee716e1d89a6daeeacb19c62af07bc9f1410c"
+      }
+    ],
+    "appliedSourceTree": "cf9baca27417a06377139c9772b924c01520e101",
+    "comparisonExcludes": [
+      "specs/1553-portable-local-storage/recovery/backup-lifecycle-pending.patch",
+      "specs/1553-portable-local-storage/recovery/backup-lifecycle-pending.json"
+    ],
+    "scope": "T030-G ordinary backup lifecycle; current plan records exact execution and remaining scope"
+  }
+}

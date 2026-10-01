@@ -87,7 +87,7 @@
     },
     {
       "category": "portable-directory-backup-prerequisite",
-      "reason": "Known Linux-blocked actual quarantine fixture: preparation advances past tree cleanup but original StateDistributor CreateBackupCore descriptor-bound publication fails before quarantine assertions. Explicit separate reproducer; native qualification is allowed.",
+      "reason": "Exact real quarantine consumer previously blocked at StateDistributor CreateBackupCore on Linux; T030-G now reaches and passes its assertions. Preserve the real preparation/distribution fixture as a bounded end-to-end prerequisite check.",
       "contracts": [
         "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
       ]
