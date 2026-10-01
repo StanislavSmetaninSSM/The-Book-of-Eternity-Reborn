@@ -14,7 +14,7 @@ git status --short
 
 Compare the complete SHAs; read AGENTS.md, docs/development-workflow.md and this feature's spec/plan/tasks before editing. No local-only code cache is needed. Application/test execution is separate evidence from successful download.
 
-The exact menu source and catalog are now stored as normal Git blobs; no pending recovery patch needs application. After SHA verification, follow the [current source/catalog recovery procedure](recovery/README.md) to confirm the catalog identity and read the plan. The menu implementation has targeted Linux automated evidence recorded below and in the plan. Connected independent review is pending; a separate ordinary Linux live PTY setting/restart check passed, and Windows execution is untested.
+The exact menu source and catalog are now stored as normal Git blobs; no pending recovery patch needs application. After SHA verification, follow the [current source/catalog recovery procedure](recovery/README.md) to confirm the catalog identity and read the plan. The menu implementation has targeted Linux automated evidence recorded below and in the plan. Connected independent B2c review and the literal-only P3 readback are accepted through 88a02f36; a separate ordinary Linux live PTY setting/restart check passed. This is bounded startup/settings acceptance; Windows and full-game execution remain untested.
 
 ## Tool versions actually verified on Debian 13 x64
 
