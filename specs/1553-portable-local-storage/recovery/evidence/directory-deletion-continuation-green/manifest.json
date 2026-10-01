@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "2daa5992eb9f43ed187b0d244f0ac23dcdd41277",
+  "sourceFingerprint": "4A1152B90C7B03174BE5D7376A7EF621DCC2994B4F8BBB0A0ED9CAE53BD3C6BA",
+  "patchSha256": "6ad42b6e8b6feb154f6c7f3ff261087083a6b780570c2903d13371f8c59da857",
+  "appliedSourceTree": "ba21d87bb9aea9f3079259ede049f303e0633e03",
+  "platform": "Linux x64",
+  "toolchain": {
+    "sdk": "10.0.401",
+    "runtime": "8.0.31",
+    "powershell": "7.6.6"
+  },
+  "command": "pwsh -NoLogo -NoProfile -Command: scripts/test-csharp.ps1 -Category portable-directory-fixture-correction,portable-directory-recovery,portable-directory-linux-special -Parallelism 1",
+  "scope": "Two corrected ordinary methods and all previously unrun cold/FIFO cases. Separate from the initial ordinary partial cohort; no native or complete workflow acceptance.",
+  "categories": [
+    "portable-directory-fixture-correction",
+    "portable-directory-recovery",
+    "portable-directory-linux-special"
+  ],
+  "selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 19,
+    "CompletedCases": 19,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 19,
+    "Executed": 19,
+    "Passed": 19,
+    "Failed": 0
+  },
+  "duration": "00:02:33.7793983",
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedCleanup": true,
+  "runtimeCleanup": true,
+  "artifacts": [
+    {
+      "file": "summary.json",
+      "originalSha256": "531c4c1bf02b519488799f98b02ae21cee98a0e054e7780f7ca5d808eb065d4a",
+      "sanitizedSha256": "531c4c1bf02b519488799f98b02ae21cee98a0e054e7780f7ca5d808eb065d4a",
+      "sanitizedBytes": 1942
+    },
+    {
+      "file": "plan.json",
+      "originalSha256": "9643ab4bde05b4b1e4805786b6d2d00ec160b906fc8896cadcd4592e8054ee58",
+      "sanitizedSha256": "9643ab4bde05b4b1e4805786b6d2d00ec160b906fc8896cadcd4592e8054ee58",
+      "sanitizedBytes": 3791
+    },
+    {
+      "file": "portable-directory-fixture-correction-unit-001.trx",
+      "originalSha256": "796d1512e8dbd3752d0aef2f6e051bbe2f3e3506e74cb1e0c881e5123f9e0d2a",
+      "sanitizedSha256": "7501a374602bba43c947e31a56f52eea864bfa067eb48e195b22dbb578d49ac0",
+      "sanitizedBytes": 8730
+    },
+    {
+      "file": "portable-directory-linux-special-unit-002.trx",
+      "originalSha256": "be061537f51c69da3ca4d206d223c345c400917c9c17b068382003106ce68822",
+      "sanitizedSha256": "95630025085b956e3588f1cd3dfce60c4dc0f45b3ffbfd2754f30bf88eb5472e",
+      "sanitizedBytes": 2998
+    },
+    {
+      "file": "portable-directory-recovery-unit-003.trx",
+      "originalSha256": "ede761915c28ec17b7a60a0975b9c9584fc7605ccf51bf7011c99c47cb4e5382",
+      "sanitizedSha256": "f6140639f4bdaca3fb98737944140aa04c9f4910930afffad065e3a499b7cd36",
+      "sanitizedBytes": 21326
+    }
+  ]
+}

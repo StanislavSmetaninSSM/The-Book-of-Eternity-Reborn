@@ -1,0 +1,87 @@
+{
+  "Categories": [
+    "portable-directory-fixture-correction",
+    "portable-directory-recovery",
+    "portable-directory-linux-special"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "2daa5992eb9f43ed187b0d244f0ac23dcdd41277",
+    "WorkingTreeFingerprint": "4A1152B90C7B03174BE5D7376A7EF621DCC2994B4F8BBB0A0ED9CAE53BD3C6BA",
+    "ChangedFiles": 5
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-directory-fixture-correction",
+      "Seconds": 3.2982254,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-directory-linux-special",
+      "Seconds": 3.2794832,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-directory-recovery",
+      "Seconds": 8.1637447,
+      "BudgetMinutes": 5,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0657136,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0253171,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0169877,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 134.6496228,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0041114,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 20,
+  "WallTime": "00:02:33.7793983",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 19,
+    "CompletedCases": 19,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 19,
+    "Executed": 19,
+    "Passed": 19,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
