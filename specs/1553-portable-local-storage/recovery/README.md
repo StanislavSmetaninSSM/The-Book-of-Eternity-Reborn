@@ -2,17 +2,17 @@
 
 ## Current B3b implementation WIP packet
 
-The initial 15-case RED and GREEN ran at their recorded exact sources. The expanded 37-case boundary/normalization test-first increment is unrun; its throwing path-policy seam is not yet wired. New focused source/tests, selection and evidence are normal blobs. The large manager/catalog deltas are retained in [session-replacement-pending.json](session-replacement-pending.json), with exact base/after blobs and SHA256 values. After verifying the remote SHA, check/apply each patch once:
+The initial 15-case RED/GREEN and expanded 37-case RED ran at their recorded exact sources. Narrow caller corrections are saved; the affected 86-case covering GREEN is unrun. New focused source/tests, selection and evidence are normal blobs. The large manager/UI-builder/catalog deltas are retained in [session-replacement-pending.json](session-replacement-pending.json), with exact base/after blobs and SHA256 values. After verifying the remote SHA, check/apply each patch once:
 
 ```sh
 git apply --check --unidiff-zero specs/1553-portable-local-storage/recovery/session-replacement-source.pending.patch
 git apply --unidiff-zero specs/1553-portable-local-storage/recovery/session-replacement-source.pending.patch
 git apply --check specs/1553-portable-local-storage/recovery/categories-pending.patch
 git apply specs/1553-portable-local-storage/recovery/categories-pending.patch
-git hash-object BookOfEternityClient/Core/FileSystemManager.cs tests/categories.json
+git hash-object BookOfEternityClient/Core/FileSystemManager.cs BookOfEternityClient/UI/ExplorerLifecycleLocalTurnCommandResultBuilder.cs tests/categories.json
 ```
 
-If already applied, reverse `--check` with the same apply flags succeeds; do not apply twice. Expected manager/catalog blobs are `ea2037c46788a99b051e7f892fd40edb9f156f7d` / `bfb8b0a8249766620d7b833b7fbca3670ec72f67`. Keep exact applied deltas staged during tests and small source saves. Do not upload large full files through oversized connector calls. Retire this packet only after normal publication verifies all after blobs. No B3b acceptance is claimed; the current plan is authoritative.
+If already applied, reverse `--check` with the same apply flags succeeds; do not apply twice. Expected per-file blobs are recorded in the manifest. Keep exact applied deltas staged during tests and small source saves. Do not upload large full files through oversized connector calls. Retire this packet only after normal publication verifies all after blobs. No B3b acceptance is claimed; the current plan is authoritative.
 
 ## Accepted B3a generation-reader checkpoint
 

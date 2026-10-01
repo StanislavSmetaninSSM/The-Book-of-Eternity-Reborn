@@ -1,8 +1,16 @@
 diff --git a/tests/categories.json b/tests/categories.json
-index b803fcca..bfb8b0a8 100644
+index b803fcca..3fcff6c9 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -8021,6 +8021,41 @@
+@@ -6023,7 +6023,6 @@
+             "BookOfEternityClient.Tests.AfterlifeActionCostRulesTests.*",
+             "BookOfEternityClient.Tests.AfterlifeContractRegistryTests.*",
+             "BookOfEternityClient.Tests.AfterlifeControlStateRulesTests.*",
+-            "BookOfEternityClient.Tests.AfterlifeLocalActionGuardTests.*",
+             "BookOfEternityClient.Tests.AfterlifeOwnerResourceStateServiceTests.*",
+             "BookOfEternityClient.Tests.AfterlifeRealmAutoRollbackTests.*",
+             "BookOfEternityClient.Tests.AfterlifeReturnGuardServiceTests.*",
+@@ -8021,6 +8020,42 @@
            ]
          }
        ]
@@ -37,7 +45,8 @@ index b803fcca..bfb8b0a8 100644
 +        {
 +          "project": "unit",
 +          "tests": [
-+            "BookOfEternityClient.Tests.PortableSessionReplacementTests.*"
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.*",
++            "BookOfEternityClient.Tests.AfterlifeLocalActionGuardTests.ActiveGmTurnBlocker_DetectsTurnArtifactsAndIgnoresEmptySnapshotDirectory"
 +          ]
 +        }
 +      ]

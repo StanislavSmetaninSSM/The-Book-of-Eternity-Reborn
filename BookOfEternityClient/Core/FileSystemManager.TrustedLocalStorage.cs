@@ -127,11 +127,17 @@ public partial class FileSystemManager
                 scope.ValidateFile(change.Path);
                 registrations.Add(new InProcessMutationRegistration(change.Path));
             }
-            foreach (var change in changes.Where(change => change.Path != SessionGenerationPath))
+            var windows = OperatingSystem.IsWindows();
+            var generationPath = TrustedLocalFilePublication.NormalizeAuthorityPath(SessionGenerationPath, windows);
+            foreach (var change in changes)
             {
-                var relative = Path.GetRelativePath(GameSessionPath, change.Path);
+                var memberPath = scope.ValidateFile(change.Path);
+                if (string.Equals(memberPath, generationPath,
+                        windows ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal)) continue;
+                var relative = GetLocalRelativePath(GameSessionPath, memberPath, windows);
+                var canonicalPath = ResolvePath(relative);
                 await InvokeBeforeCanonicalMutationBoundaryAsync(relative);
-                EnsureCanonicalMutationBoundary(relative, change.Path);
+                EnsureCanonicalMutationBoundary(relative, canonicalPath);
                 await InvokeAfterCanonicalMutationBoundaryValidatedAsync(relative);
             }
             cancellationToken.ThrowIfCancellationRequested();

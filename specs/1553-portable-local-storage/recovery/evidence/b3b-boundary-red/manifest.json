@@ -1,0 +1,22 @@
+{
+  "sourceCommit": "0e33215ef55c2eb73a44460a08b40ff5dbf7a2b3",
+  "catalogBlobAfterPatch": "bfb8b0a8249766620d7b833b7fbca3670ec72f67",
+  "kind": "newly executed b3b-boundary-red; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained. Isolated run-root paths replaced; LF/trailing whitespace normalized; original hashes retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "3830337c9291a1f5cc76587c90c917824ee5ae6c905c880154b736da72c66d2d",
+      "sanitizedSha256": "3830337c9291a1f5cc76587c90c917824ee5ae6c905c880154b736da72c66d2d"
+    },
+    {
+      "path": "portable-session-replacement-unit-001.trx",
+      "originalSha256": "4f69936524d9fd9719833f1c535ded246828b0f0bae25d15ca8379a3810d18c8",
+      "sanitizedSha256": "2b03c4bc80c5bea5257a6dc0776751beb3e422d4df5486fcbcaa389ab4865194"
+    }
+  ],
+  "appliedSourceTree": "49df80c38eb72ff9a76e26030873d655a5f88cb9",
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-session-replacement -Parallelism 1",
+  "interpretation": "37 executed, 30 reported passes and 7 intended failures: two logical lock directories, browser form pending-status and four throwing Windows path-policy cases. Actual Windows extended-root body returned early; Linux does not establish its assertions. No fixture/build failure.",
+  "testNameQualification": "The historical ConsolePendingProjection test name was inaccurate: the actual builder is dispatched by ExplorerWebCommandService. It is browser form control-flow evidence, not console execution; the current source name is corrected."
+}

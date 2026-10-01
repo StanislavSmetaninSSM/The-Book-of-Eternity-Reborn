@@ -1,16 +1,21 @@
 {
   "baseCommit": "41d9104076d59fabacf93c3b1be3cc8d5ccc238f",
-  "status": "Initial 15-case GREEN at 00e2ce0b plus this manager/catalog patch; 37-case boundary/normalization test-first increment is unrun, caller fixes pending.",
+  "status": "Initial 15-case GREEN preserved; expanded 37-case RED observed (30 reported passes, 7 intended failures); narrow caller corrections and affected 86-case covering selection saved, GREEN unrun.",
   "patches": [
     {
       "path": "session-replacement-source.pending.patch",
-      "bytes": 4541,
-      "sha256": "f8724f54143a531119101d172cc4641b9c3a9a338913e6769d2fbd917af3a0b0",
+      "bytes": 6196,
+      "sha256": "2d3fc898c05d3c33a6b67161546475fe7cc92c7d871f46afff3bf9e9f933a81c",
       "files": [
         {
           "path": "BookOfEternityClient/Core/FileSystemManager.cs",
           "beforeBlob": "3afd41d4a0a08780d32839c9a8f80dd1e158f35d",
-          "afterBlob": "ea2037c46788a99b051e7f892fd40edb9f156f7d"
+          "afterBlob": "10eeac63899e657daba881c68ebe1d6bca9c9e38"
+        },
+        {
+          "path": "BookOfEternityClient/UI/ExplorerLifecycleLocalTurnCommandResultBuilder.cs",
+          "beforeBlob": "5f01feaa21be4655735c884c05ab80881e7d2aed",
+          "afterBlob": "469a367355b1fb8298e95782e736fd87ffd836a7"
         }
       ],
       "applyArguments": [
@@ -19,21 +24,22 @@
     },
     {
       "path": "categories-pending.patch",
-      "bytes": 1676,
-      "sha256": "00851affca53e9fcdd07ab46d681b13912bfef37dd84009f5291b2488bd93cf3",
+      "bytes": 2389,
+      "sha256": "ae241f6c3db4570dec81c890bc93af6b085124cdd66056241f6420b2adcd45ae",
       "files": [
         {
           "path": "tests/categories.json",
           "beforeBlob": "b803fccaafbb24a5824d00984117b3ead6d3afa3",
-          "afterBlob": "bfb8b0a8249766620d7b833b7fbca3670ec72f67"
+          "afterBlob": "3fcff6c9dd92c9a943c50b23ce435c4c08f9b8bf"
         }
       ],
       "applyArguments": []
     }
   ],
   "testSourceBlob": "499d89322195fd0eb6b3912c2ea276aa2a970e6a",
-  "selectionBlob": "1ea930f6de88d967e9b9b8dba607c3b66ddd16ce",
-  "boundaryTestBlob": "95ab0fb66b275a0eb6847f18602659baf10c282a",
+  "selectionBlob": "a6a30796a10f7a7215a6daaf7359fa45b889c5af",
+  "boundaryTestBlob": "719822eff3c45b9fa21f50f3b27e579473ff24f8",
   "crashFixtureBlob": "14bbdef398f3a9be46b73ac1ab1d0f0a48c3f90b",
-  "replacementPartialBlob": "3297f578cb89c80aec80c560cac603134c24d5ba"
+  "replacementPartialBlob": "207b9d3019bf42cd9d0ec6813d69fcbcaee4ab16",
+  "consoleGuardTestBlob": "5bacc6613d2069f57801aaf1fd6bdb2863bd93a0"
 }

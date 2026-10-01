@@ -32,7 +32,7 @@ public sealed partial class PortableSessionReplacementTests
     }
 
     [Fact]
-    public async Task ConsolePendingProjection_EmptySnapshotAllowsFormAndActualFileBlocksIt()
+    public async Task BrowserPendingProjection_EmptySnapshotAllowsFormAndActualFileBlocksIt()
     {
         var child = PathFor(BrowserPendingTurnInspector.PendingTurnSnapshotDirectory + "/game_state/core");
         Directory.CreateDirectory(child);

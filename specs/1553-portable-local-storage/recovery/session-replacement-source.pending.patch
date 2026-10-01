@@ -1,11 +1,13 @@
 diff --git a/BookOfEternityClient/Core/FileSystemManager.cs b/BookOfEternityClient/Core/FileSystemManager.cs
-index 3afd41d4..ea2037c4 100644
+index 3afd41d4..10eeac63 100644
 --- a/BookOfEternityClient/Core/FileSystemManager.cs
 +++ b/BookOfEternityClient/Core/FileSystemManager.cs
-@@ -1553,12 +1553,2 @@ public partial class FileSystemManager
+@@ -1553,2 +1553,2 @@ public partial class FileSystemManager
 -        if (!DirectoryExists(writeLease, relativePath))
 -            return false;
--
++        return DirectoryHasLocalContent(relativePath);
++    }
+@@ -1556,9 +1556,6 @@ public partial class FileSystemManager
 -        var fullPath = ResolvePath(relativePath);
 -        using var authority = PhysicalFileAuthority.OpenStableDirectory(
 -            fullPath,
@@ -15,9 +17,18 @@ index 3afd41d4..ea2037c4 100644
 -                "*",
 -                SearchOption.TopDirectoryOnly)
 -            .Any();
-+        return EnumerateLocalTreeFiles(new TrustedLocalFileScope([GameSessionPath]),
++    internal bool DirectoryHasContent(string relativePath)
++    {
++        if (HasAmbientCanonicalLease()) return DirectoryHasLocalContent(relativePath);
++        var lease = AcquirePublicationReadQuiescenceLeaseAsync().GetAwaiter().GetResult();
++        try { return DirectoryHasContent(lease, relativePath); }
++        finally { lease.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
+@@ -1566,0 +1564,4 @@ public partial class FileSystemManager
++    private bool DirectoryHasLocalContent(string relativePath) =>
++        EnumerateLocalTreeFiles(new TrustedLocalFileScope([GameSessionPath]),
 +            ResolvePath(relativePath)).Count != 0;
-@@ -5527,5 +5517,2 @@ public partial class FileSystemManager
++
+@@ -5527,5 +5528,2 @@ public partial class FileSystemManager
 -        EnsureValidSessionReplacementLease(writeLease);
 -        var generationId = Guid.NewGuid().ToString("N");
 -        WriteSessionGeneration(generationId);
@@ -25,7 +36,7 @@ index 3afd41d4..ea2037c4 100644
 -        return generationId;
 +        return PublishSessionReplacementAsync(writeLease, clearGameState: false)
 +            .GetAwaiter().GetResult();
-@@ -5746,73 +5733 @@ public partial class FileSystemManager
+@@ -5746,73 +5744 @@ public partial class FileSystemManager
 -        var sessionGeneration = RotateSessionGeneration(writeLock);
 -        ClearGameStateCore();
 -        return sessionGeneration;
@@ -100,5 +111,18 @@ index 3afd41d4..ea2037c4 100644
 -        // Re-create structure
 -        EnsureDirectoryStructureCore();
 +        return await PublishSessionReplacementAsync(writeLock, clearGameState: true);
-@@ -5828,0 +5744 @@ public partial class FileSystemManager
+@@ -5823,3 +5749 @@ public partial class FileSystemManager
+-        var relative = Path.GetRelativePath(gameStatePath, filePath)
+-            .Replace(Path.DirectorySeparatorChar, '/')
+-            .Replace(Path.AltDirectorySeparatorChar, '/');
++        var relative = GetLocalRelativePath(gameStatePath, filePath, OperatingSystem.IsWindows());
+@@ -5828,0 +5753 @@ public partial class FileSystemManager
 +               relative.Equals("control/gm_context_pack", StringComparison.OrdinalIgnoreCase) ||
+diff --git a/BookOfEternityClient/UI/ExplorerLifecycleLocalTurnCommandResultBuilder.cs b/BookOfEternityClient/UI/ExplorerLifecycleLocalTurnCommandResultBuilder.cs
+index 5f01feaa..469a3673 100644
+--- a/BookOfEternityClient/UI/ExplorerLifecycleLocalTurnCommandResultBuilder.cs
++++ b/BookOfEternityClient/UI/ExplorerLifecycleLocalTurnCommandResultBuilder.cs
+@@ -5234,2 +5234 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
+-        var fullPath = fs.ResolvePath(path);
+-        return Directory.Exists(fullPath) && Directory.EnumerateFileSystemEntries(fullPath, "*", SearchOption.AllDirectories).Any();
++        return fs.DirectoryHasContent(path);

@@ -1,13 +1,25 @@
 using System.Text.Json;
+using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.Core;
 
 public partial class FileSystemManager
 {
-    // Pure policy seam for supported Windows root/member spellings; caller wiring
-    // is the next test-first correction, not part of this throwing scaffold.
-    internal static string GetLocalRelativePath(string root, string path, bool windows) =>
-        throw new NotImplementedException();
+    // Paths have already passed common scope validation. Normalize both sides
+    // before deriving a canonical relative name, including extended Windows roots.
+    internal static string GetLocalRelativePath(string root, string path, bool windows)
+    {
+        var separator = windows ? '\\' : Path.DirectorySeparatorChar;
+        root = TrustedLocalFilePublication.NormalizeAuthorityPath(root, windows).TrimEnd(separator);
+        path = TrustedLocalFilePublication.NormalizeAuthorityPath(path, windows);
+        var comparison = windows ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        if (string.Equals(root, path.TrimEnd(separator), comparison)) return string.Empty;
+        var prefix = root + separator;
+        if (!path.StartsWith(prefix, comparison))
+            throw new InvalidDataException("The local member is outside its declared root.");
+        var relative = path[prefix.Length..];
+        return windows ? relative.Replace('\\', '/') : relative;
+    }
 
     private async Task<string> PublishSessionReplacementAsync(CanonicalWriteLease lease, bool clearGameState)
     {
@@ -27,6 +39,8 @@ public partial class FileSystemManager
         }
         if (clearGameState)
         {
+            scope.ValidateFile(Path.Combine(GameSessionPath,
+                LocalUiSessionLockService.LockPath.Replace('/', Path.DirectorySeparatorChar)));
             // Directory creation can leave harmless structure on failure, but a
             // wrong-type required path must fail before publishing any file.
             foreach (var directory in RequiredDirectories)
@@ -55,10 +69,11 @@ public partial class FileSystemManager
         var changes = new List<TrustedLocalFileChange>();
         foreach (var path in selected.OrderBy(path => path, StringComparer.Ordinal))
         {
-            var relative = Path.GetRelativePath(GameSessionPath, path);
+            var relative = GetLocalRelativePath(GameSessionPath, path, OperatingSystem.IsWindows());
             var bytes = await ReadLocalFileBytesAsync(lease, relative)
                 ?? throw new InvalidDataException("A selected session file disappeared during replacement preparation.");
-            changes.Add(new(path, bytes, null));
+            // Keep the manager's root spelling at its existing mutation/lease boundaries.
+            changes.Add(new(ResolvePath(relative), bytes, null));
         }
         var replacement = Guid.NewGuid().ToString("N");
         changes.Add(new(SessionGenerationPath, generation.Bytes,

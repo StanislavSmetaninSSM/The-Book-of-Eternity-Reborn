@@ -3,11 +3,28 @@
   "selections": [
     {
       "category": "portable-session-replacement",
-      "reason": "Initial behavioral RED for the actual clear/rotation and pending-inspector boundaries before implementation; mapped exact existing consumers join the connected covering selection.",
+      "reason": "Cover seven observed boundary/path-policy failures plus integrated clear/rotation/browser pending/cold/conflict cases and the exact existing console pending guard with nested empty residue. One actual Windows extended-root body is gated on Windows.",
       "contracts": [
-        "complete generation/clear/worker-file decision",
-        "preflight and opaque preserved namespace",
-        "logical-empty pending snapshot residue"
+        "complete session replacement decision",
+        "logical file/empty-directory admission",
+        "canonical relative-path mapping and cold recovery"
+      ]
+    },
+    {
+      "category": "portable-client-bootstrap",
+      "reason": "The shared publication adapter now derives canonical hook paths from normalized authority spellings; bootstrap and ordinary writers consume it.",
+      "contracts": [
+        "config/generation bootstrap",
+        "ordinary leased publication boundaries"
+      ]
+    },
+    {
+      "category": "portable-storage-consumers",
+      "reason": "The shared adapter changed canonical relative-path and mutation-hook mapping; exact ordinary byte/text/CAS/transient writers and UI-owner leases consume that boundary. Direct journal recovery semantics are unchanged.",
+      "contracts": [
+        "ordinary canonical writer mutation boundaries",
+        "UI-owner lease publications",
+        "compare-exchange conflict and transient access behavior"
       ]
     }
   ]
