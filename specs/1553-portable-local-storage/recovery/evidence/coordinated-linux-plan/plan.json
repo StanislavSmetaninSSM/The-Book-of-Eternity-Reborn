@@ -1,0 +1,574 @@
+{
+  "Categories": [
+    "portable-coordinated-publication",
+    "portable-coordinated-authority",
+    "portable-coordinated-lease",
+    "portable-coordinated-lease-consumers",
+    "portable-coordinated-recovery",
+    "portable-coordinated-cleanup",
+    "portable-coordinated-cleanup-resident",
+    "portable-coordinated-phase-consumers",
+    "portable-coordinated-actual-consumers",
+    "portable-coordinated-progression",
+    "portable-coordinated-qte-outcome"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-coordinated-publication",
+      "reason": "Bounded Linux T031 default/reproduction selection. Complete member-set helper, all initial guards, platform destinations/bytes and durable outcomes. Final checkpoint uses PlanOnly; completed behavioral cohorts are not repeated.",
+      "contracts": [
+        "Complete member-set helper, all initial guards, platform destinations/bytes and durable outcomes."
+      ]
+    },
+    {
+      "category": "portable-coordinated-authority",
+      "reason": "Bounded Linux T031 default/reproduction selection. Actual authority factory initial guard preservation. Final checkpoint uses PlanOnly; completed behavioral cohorts are not repeated.",
+      "contracts": [
+        "Actual authority factory initial guard preservation."
+      ]
+    },
+    {
+      "category": "portable-coordinated-lease",
+      "reason": "Bounded Linux T031 default/reproduction selection. Real owning/supplied lease admission, release precedence and actual reacquisition. Final checkpoint uses PlanOnly; completed behavioral cohorts are not repeated.",
+      "contracts": [
+        "Real owning/supplied lease admission, release precedence and actual reacquisition."
+      ]
+    },
+    {
+      "category": "portable-coordinated-lease-consumers",
+      "reason": "Bounded Linux T031 default/reproduction selection. Six exact existing lease consumers for the necessary shared disposal correction. Final checkpoint uses PlanOnly; completed behavioral cohorts are not repeated.",
+      "contracts": [
+        "Six exact existing lease consumers for the necessary shared disposal correction."
+      ]
+    },
+    {
+      "category": "portable-coordinated-recovery",
+      "reason": "Bounded Linux T031 default/reproduction selection. Actual-helper abrupt-process whole-set recovery, unknown/generation conflicts and outside hard links. Final checkpoint uses PlanOnly; completed behavioral cohorts are not repeated.",
+      "contracts": [
+        "Actual-helper abrupt-process whole-set recovery, unknown/generation conflicts and outside hard links."
+      ]
+    },
+    {
+      "category": "portable-coordinated-cleanup",
+      "reason": "Bounded Linux T031 default/reproduction selection. Actual NPC/Guardian/Shining cleanup outcome/admission propagation and ordinary QTE acceptance. Final checkpoint uses PlanOnly; completed behavioral cohorts are not repeated.",
+      "contracts": [
+        "Actual NPC/Guardian/Shining cleanup outcome/admission propagation and ordinary QTE acceptance."
+      ]
+    },
+    {
+      "category": "portable-coordinated-cleanup-resident",
+      "reason": "Bounded Linux T031 default/reproduction selection. Resident target helper, independent preamble, retained-read admission and existing semantics. Final checkpoint uses PlanOnly; completed behavioral cohorts are not repeated.",
+      "contracts": [
+        "Resident target helper, independent preamble, retained-read admission and existing semantics."
+      ]
+    },
+    {
+      "category": "portable-coordinated-phase-consumers",
+      "reason": "Bounded Linux T031 default/reproduction selection. Deterministic pre-decision faults and separate later QTE domain/cleanup controls. Final checkpoint uses PlanOnly; completed behavioral cohorts are not repeated.",
+      "contracts": [
+        "Deterministic pre-decision faults and separate later QTE domain/cleanup controls."
+      ]
+    },
+    {
+      "category": "portable-coordinated-actual-consumers",
+      "reason": "Bounded Linux T031 default/reproduction selection. Eight actual Linux consumers; the unchanged Windows-only wound preparation is separately natively owned. Final checkpoint uses PlanOnly; completed behavioral cohorts are not repeated.",
+      "contracts": [
+        "Eight actual Linux consumers; the unchanged Windows-only wound preparation is separately natively owned."
+      ]
+    },
+    {
+      "category": "portable-coordinated-progression",
+      "reason": "Bounded Linux T031 default/reproduction selection. Exact progression accepted-turn schedule/report mutation. Final checkpoint uses PlanOnly; completed behavioral cohorts are not repeated.",
+      "contracts": [
+        "Exact progression accepted-turn schedule/report mutation."
+      ]
+    },
+    {
+      "category": "portable-coordinated-qte-outcome",
+      "reason": "Bounded Linux T031 default/reproduction selection. Actual uncertainty compensation boundary and private Russian recovery notice. Final checkpoint uses PlanOnly; completed behavioral cohorts are not repeated.",
+      "contracts": [
+        "Actual uncertainty compensation boundary and private Russian recovery notice."
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "733c40fe862908616e2db3c4ea2b8d03bd273034",
+    "WorkingTreeFingerprint": "9035B29521E94B1D8D892F14E3BF662B1444D3DA1D739EA6EC64B4CC38B0C1E5",
+    "ChangedFiles": 9
+  },
+  "PreparationSeconds": 8.3115097,
+  "Descriptors": [
+    {
+      "Name": "portable-coordinated-actual-consumers-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-coordinated-actual-consumers",
+      "Categories": [
+        "portable-coordinated-actual-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.LocalAfterlifeOwnerResourceService_CommitsSpiritFocusAndLedgerAtomically|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationRepairLifecycleTests_Privacy_AgentConsoleOuterFailureUsesPlayerSafeProjection|FullyQualifiedName=BookOfEternityClient.Tests.NpcTradeServiceRequestFlowTests.BuyAsync_TemplateOnlyTradeOutput_SealsIndependentCanonicalItem|FullyQualifiedName=BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.BoundedReceipt_TwoWavesSurviveRestartsAndPublishMechanicsOnlyAtFinalWave|FullyQualifiedName=BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.TerminalSelection_ByteDifferentSealedRootFailsBeforeAnyWrite|FullyQualifiedName=BookOfEternityClient.Tests.ShiningBlessingEffectStateTests.MaterializeForBootstrapAsync_WritesCanonicalBlessingStateAndAppliesResources|FullyQualifiedName=BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_ConcurrentEvolutionRequestSurvivesFailedStateCommit|FullyQualifiedName=BookOfEternityClient.Tests.TrainingServiceTests.EnsureTrainingAsync_MortalActorChangesAfterFinalRead_IsRejectedByVisibilityGuard",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 6,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.LocalAfterlifeOwnerResourceService_CommitsSpiritFocusAndLedgerAtomically",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationRepairLifecycleTests_Privacy_AgentConsoleOuterFailureUsesPlayerSafeProjection",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.NpcTradeServiceRequestFlowTests.BuyAsync_TemplateOnlyTradeOutput_SealsIndependentCanonicalItem",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.BoundedReceipt_TwoWavesSurviveRestartsAndPublishMechanicsOnlyAtFinalWave",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.TerminalSelection_ByteDifferentSealedRootFailsBeforeAnyWrite",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ShiningBlessingEffectStateTests.MaterializeForBootstrapAsync_WritesCanonicalBlessingStateAndAppliesResources",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_ConcurrentEvolutionRequestSurvivesFailedStateCommit",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrainingServiceTests.EnsureTrainingAsync_MortalActorChangesAfterFinalRead_IsRejectedByVisibilityGuard",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-coordinated-authority-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-coordinated-authority",
+      "Categories": [
+        "portable-coordinated-authority"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedAuthorityTests.ActualAuthorityFactoryRetainsEveryPlatformDistinctInitialGuard",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedAuthorityTests.ActualAuthorityFactoryRetainsEveryPlatformDistinctInitialGuard",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-coordinated-cleanup-integration-003",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-coordinated-cleanup",
+      "Categories": [
+        "portable-coordinated-cleanup"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ActualCleanupConsumerDoesNotSwallowUncertainPublication|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ActualCleanupConsumerReachesOneCommittedMemberSet|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.MalformedPlanningInputRemainsAnOrdinaryKnownAbort|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.RetainedEvidenceAdmissionPropagatesBeforeAnyNewPublication|FullyQualifiedName=BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.AcceptOffer_SealsGenerationOfferTurnAndExactEffectRootWithoutLiveRebuild",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 14,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ActualCleanupConsumerDoesNotSwallowUncertainPublication",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ActualCleanupConsumerReachesOneCommittedMemberSet",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.MalformedPlanningInputRemainsAnOrdinaryKnownAbort",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.RetainedEvidenceAdmissionPropagatesBeforeAnyNewPublication",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.AcceptOffer_SealsGenerationOfferTurnAndExactEffectRootWithoutLiveRebuild",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-coordinated-cleanup-resident-integration-004",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-coordinated-cleanup-resident",
+      "Categories": [
+        "portable-coordinated-cleanup-resident"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ResidentMalformedNpcPlanningRetainsTheManifestationBoundary|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ResidentRetainedEvidenceDuringInterveningReadMustPropagate|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ResidentTargetPublicationFollowsItsIndependentCleanupPreamble|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ResidentTargetUncertaintyCannotBecomeSuccessfulCleanup",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ResidentMalformedNpcPlanningRetainsTheManifestationBoundary",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ResidentRetainedEvidenceDuringInterveningReadMustPropagate",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ResidentTargetPublicationFollowsItsIndependentCleanupPreamble",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ResidentTargetUncertaintyCannotBecomeSuccessfulCleanup",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-coordinated-cleanup-resident-unit-005",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-coordinated-cleanup-resident",
+      "Categories": [
+        "portable-coordinated-cleanup-resident"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GuardianAbodeResidentRequestStateTests.EnsureHealthyAsync_MalformedCurrentSoulRelics_KeepsManifestationRequestRetryable|FullyQualifiedName=BookOfEternityClient.Tests.GuardianAbodeResidentRequestStateTests.EnsureHealthyAsync_MaterializedCompanion_PrunesUnsafeSameRelicAddAndMarksRelicResolved",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GuardianAbodeResidentRequestStateTests.EnsureHealthyAsync_MalformedCurrentSoulRelics_KeepsManifestationRequestRetryable",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GuardianAbodeResidentRequestStateTests.EnsureHealthyAsync_MaterializedCompanion_PrunesUnsafeSameRelicAddAndMarksRelicResolved",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-coordinated-lease-unit-006",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-coordinated-lease",
+      "Categories": [
+        "portable-coordinated-lease"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.RealLeaseContextFailureStillClosesLockAndAllowsReacquisition|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseKeepsCompletedDispositionOnContextFailure|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ValidZeroWriteBranchesDoNotCreateGenerationOrPublication|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 10,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.RealLeaseContextFailureStillClosesLockAndAllowsReacquisition",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseKeepsCompletedDispositionOnContextFailure",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ValidZeroWriteBranchesDoNotCreateGenerationOrPublication",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease",
+          "Cases": 4
+        }
+      ]
+    },
+    {
+      "Name": "portable-coordinated-lease-consumers-unit-007",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-coordinated-lease-consumers",
+      "Categories": [
+        "portable-coordinated-lease-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening|FullyQualifiedName=BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter|FullyQualifiedName=BookOfEternityClient.Tests.TradeRequestLockOrderingTests.GuardianTrade_LeaseBoundWriteDoesNotWaitBehindUnboundCanonicalContention|FullyQualifiedName=BookOfEternityClient.Tests.TradeRequestLockOrderingTests.ShiningTrade_LeaseBoundWriteDoesNotWaitBehindUnboundCanonicalContention|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RequiresItsOwnActiveCanonicalLease",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TradeRequestLockOrderingTests.GuardianTrade_LeaseBoundWriteDoesNotWaitBehindUnboundCanonicalContention",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TradeRequestLockOrderingTests.ShiningTrade_LeaseBoundWriteDoesNotWaitBehindUnboundCanonicalContention",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RequiresItsOwnActiveCanonicalLease",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-coordinated-phase-consumers-integration-008",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-coordinated-phase-consumers",
+      "Categories": [
+        "portable-coordinated-phase-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.NpcTradeServiceRequestFlowTests.BuyAsync_SecondSettlementWriteFailureRestoresExactBeforeImages|FullyQualifiedName=BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.BoundedReceipt_FinalFailureAtEveryMutationRestoresExactAwaitingBoundary|FullyQualifiedName=BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.BoundedReceipt_NextWaveFailureAtEveryMutationRestoresExactCurrentWave|FullyQualifiedName=BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_BackupCleanupFailureDoesNotMaskCommittedResult|FullyQualifiedName=BookOfEternityClient.Tests.ResourceMaterializationTestContextTests.CoordinatedQuartetFailure_RestoresExactBytesAndPriorAbsence",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 6,
+      "EstimatedCases": 19,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.NpcTradeServiceRequestFlowTests.BuyAsync_SecondSettlementWriteFailureRestoresExactBeforeImages",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.BoundedReceipt_FinalFailureAtEveryMutationRestoresExactAwaitingBoundary",
+          "Cases": 7
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.BoundedReceipt_NextWaveFailureAtEveryMutationRestoresExactCurrentWave",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_BackupCleanupFailureDoesNotMaskCommittedResult",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ResourceMaterializationTestContextTests.CoordinatedQuartetFailure_RestoresExactBytesAndPriorAbsence",
+          "Cases": 4
+        }
+      ]
+    },
+    {
+      "Name": "portable-coordinated-phase-consumers-unit-009",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-coordinated-phase-consumers",
+      "Categories": [
+        "portable-coordinated-phase-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.CoordinatedStateWriteHelperTests.TryCommitAsync_ConcurrentChangeAfterFirstWrite_IsNotOverwrittenByRollback|FullyQualifiedName=BookOfEternityClient.Tests.CoordinatedStateWriteHelperTests.TryCommitAsync_HoldsCanonicalLeaseAcrossBaselineChecksAndEveryWrite|FullyQualifiedName=BookOfEternityClient.Tests.MortalItemIdentityTransitionTests.ExecuteAsync_SecondCarrierWriteFailureRestoresExactBeforeImages|FullyQualifiedName=BookOfEternityClient.Tests.MortalItemIdentityTransitionTests.ExecuteAsync_SplitIndexWriteFailureRestoresExactBeforeImages",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 6,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.CoordinatedStateWriteHelperTests.TryCommitAsync_ConcurrentChangeAfterFirstWrite_IsNotOverwrittenByRollback",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.CoordinatedStateWriteHelperTests.TryCommitAsync_HoldsCanonicalLeaseAcrossBaselineChecksAndEveryWrite",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalItemIdentityTransitionTests.ExecuteAsync_SecondCarrierWriteFailureRestoresExactBeforeImages",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalItemIdentityTransitionTests.ExecuteAsync_SplitIndexWriteFailureRestoresExactBeforeImages",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-coordinated-progression-unit-010",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-coordinated-progression",
+      "Categories": [
+        "portable-coordinated-progression"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ProgressionScheduleServiceTests.ApplyAcceptedTurnOutcomeAsync_ValidChaosProgressionReport_AdvancesOrdinals",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ProgressionScheduleServiceTests.ApplyAcceptedTurnOutcomeAsync_ValidChaosProgressionReport_AdvancesOrdinals",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-coordinated-publication-unit-011",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-coordinated-publication",
+      "Categories": [
+        "portable-coordinated-publication"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperCommittedCleanupFailureKeepsCompleteCommittedResult|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperPublishesCompleteMemberSetUnderOneDecision|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperReachedSecondMemberFailureRestoresWholeExactBeforeSet|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperUnknownLaterMemberPreservesWholeUnresolvedSet|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ConflictingDuplicateGuardIsNotDiscarded|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DeclaredSameImageMutationsStillReceiveOneDurableDecision|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DestinationCaseUsesTheActualPlatformPolicy|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DuplicateGuardsAfterARealWriteStillBindTheInitialExactImage|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DuplicateRealDestinationsUseInitialBeforeAndLastImageOrder|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ExistingUnresolvedJournalBlocksOwnedAdmissionBeforeAnyNewAttempt|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.InvalidLaterTypeFailsBeforeAnyNewIntentOrMutation|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.MixedOrdinaryAndOriginalArtifactMembersFailBeforeMutation|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.OrdinaryApplyCallbackIsRejectedRatherThanSilentlyDiscarded|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.OriginalRecorderRejectionDoesNotEnterTheCommonJournal|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.RecorderFreeLegacyRecoveryRetainsTheOriginalNoOpCallbackRoute|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ResolvedSeparatorAndWhitespaceAliasesPublishOneFinalDestination|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.SemanticExactAndOptionalBaselinesKeepTheirDistinctContracts|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ThrowingCompletedReleaseDiagnosticCannotChangeTheCompletedDisposition|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ThrowingPostCommitDiagnosticCannotChangeTheCommittedHelperResult|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.UnknownBeforeImageAtPublicationPreflightIsNotReportedAsRestored",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 27,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperCommittedCleanupFailureKeepsCompleteCommittedResult",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperPublishesCompleteMemberSetUnderOneDecision",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperReachedSecondMemberFailureRestoresWholeExactBeforeSet",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperUnknownLaterMemberPreservesWholeUnresolvedSet",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ConflictingDuplicateGuardIsNotDiscarded",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DeclaredSameImageMutationsStillReceiveOneDurableDecision",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DestinationCaseUsesTheActualPlatformPolicy",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DuplicateGuardsAfterARealWriteStillBindTheInitialExactImage",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DuplicateRealDestinationsUseInitialBeforeAndLastImageOrder",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ExistingUnresolvedJournalBlocksOwnedAdmissionBeforeAnyNewAttempt",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.InvalidLaterTypeFailsBeforeAnyNewIntentOrMutation",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.MixedOrdinaryAndOriginalArtifactMembersFailBeforeMutation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.OrdinaryApplyCallbackIsRejectedRatherThanSilentlyDiscarded",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.OriginalRecorderRejectionDoesNotEnterTheCommonJournal",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.RecorderFreeLegacyRecoveryRetainsTheOriginalNoOpCallbackRoute",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ResolvedSeparatorAndWhitespaceAliasesPublishOneFinalDestination",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.SemanticExactAndOptionalBaselinesKeepTheirDistinctContracts",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ThrowingCompletedReleaseDiagnosticCannotChangeTheCompletedDisposition",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ThrowingPostCommitDiagnosticCannotChangeTheCommittedHelperResult",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.UnknownBeforeImageAtPublicationPreflightIsNotReportedAsRestored",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-coordinated-qte-outcome-integration-012",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-coordinated-qte-outcome",
+      "Categories": [
+        "portable-coordinated-qte-outcome"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CoordinatedPublication_UncertainOutcomeUsesRussianRecoveryNoticeWithoutRetryPromise|FullyQualifiedName=BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.CoordinatedUncertaintyRetainsTheAcceptedMechanicsCutWithoutDomainCompensation",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CoordinatedPublication_UncertainOutcomeUsesRussianRecoveryNoticeWithoutRetryPromise",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.CoordinatedUncertaintyRetainsTheAcceptedMechanicsCutWithoutDomainCompensation",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-coordinated-recovery-unit-013",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-coordinated-recovery",
+      "Categories": [
+        "portable-coordinated-recovery"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperColdRecoveryPreservesTheOutsideHardLink|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ColdRecoveryChangedGenerationKeepsCompleteEvidenceAndCurrentImages|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ColdRecoveryUnknownLaterMemberKeepsEarlierPublishedBytesAndEvidence",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 12,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess",
+          "Cases": 8
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperColdRecoveryPreservesTheOutsideHardLink",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ColdRecoveryChangedGenerationKeepsCompleteEvidenceAndCurrentImages",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ColdRecoveryUnknownLaterMemberKeepsEarlierPublishedBytesAndEvidence",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

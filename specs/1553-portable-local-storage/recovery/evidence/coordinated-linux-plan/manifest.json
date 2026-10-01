@@ -44,7 +44,13 @@
       "path": "summary.json",
       "originalSha256": "f5a28c926120fbf7040529b7b373c4f042abd128f85696fb2002b64b4a8c6013",
       "sanitizedSha256": "f5a28c926120fbf7040529b7b373c4f042abd128f85696fb2002b64b4a8c6013"
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "4825c8f32c88ed2648d4fa78e2d96874e62933b5b306306ac79f2f7a7e08ce7e",
+      "sanitizedSha256": "4825c8f32c88ed2648d4fa78e2d96874e62933b5b306306ac79f2f7a7e08ce7e"
     }
   ],
-  "scope": "Linux default plan: 13 descriptors, 110 cases. Zero executed; not an aggregate GREEN or repeated behavioral run."
+  "scope": "Linux default plan: 13 descriptors, 110 cases. Zero executed; not an aggregate GREEN or repeated behavioral run.",
+  "expandedPlan": "Original generated plan.json preserved without rerunning: exact descriptor filters, method identities and planned case counts; paths sanitized with original/sanitized hashes."
 }

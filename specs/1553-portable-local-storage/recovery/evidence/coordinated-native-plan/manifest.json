@@ -33,7 +33,13 @@
       "path": "summary.json",
       "originalSha256": "1582c7528c4d8b077b7af594a243a639d6b3641699e0a8efec24445e5e3bec80",
       "sanitizedSha256": "1582c7528c4d8b077b7af594a243a639d6b3641699e0a8efec24445e5e3bec80"
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "bf87f5fafdb97060dd8aa89f8d948d9187b3858a96d3e3eb252d4d0745536731",
+      "sanitizedSha256": "bf87f5fafdb97060dd8aa89f8d948d9187b3858a96d3e3eb252d4d0745536731"
     }
   ],
-  "scope": "Native plan: two descriptors, 16 cases. Zero executed on cloud. Actual Windows qualification remains pending, including symbolic-link setup capability and the real wound preparation case."
+  "scope": "Native plan: two descriptors, 16 cases. Zero executed on cloud. Actual Windows qualification remains pending, including symbolic-link setup capability and the real wound preparation case.",
+  "expandedPlan": "Original generated plan.json preserved without rerunning: exact descriptor filters, method identities and planned case counts; paths sanitized with original/sanitized hashes."
 }

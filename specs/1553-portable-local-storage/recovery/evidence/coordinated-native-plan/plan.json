@@ -1,0 +1,106 @@
+{
+  "Categories": [
+    "portable-coordinated-windows"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-coordinated-windows",
+      "reason": "Frozen native-only qualification: 16 planned cases. Cloud performs discovery/planning only; parent coordinates HOME-PC normal delivery and actual execution. Do not repeat completed Linux cohorts. File.CreateSymbolicLink setup capability is unestablished and must fail/report honestly without elevation or silent pass.",
+      "contracts": [
+        "actual Windows case/separator and link policy",
+        "real lease cleanup and primary outcome",
+        "cold hard-link preservation",
+        "original browser accept/decline callbacks",
+        "real wound quarantine after native preparation"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "733c40fe862908616e2db3c4ea2b8d03bd273034",
+    "WorkingTreeFingerprint": "9035B29521E94B1D8D892F14E3BF662B1444D3DA1D739EA6EC64B4CC38B0C1E5",
+    "ChangedFiles": 9
+  },
+  "PreparationSeconds": 8.8504836,
+  "Descriptors": [
+    {
+      "Name": "portable-coordinated-windows-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-coordinated-windows",
+      "Categories": [
+        "portable-coordinated-windows"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim|FullyQualifiedName=BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ResolveOfferDecision_LateRuntimeFailureRollsBackOfferAndRuntime",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 6,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ResolveOfferDecision_LateRuntimeFailureRollsBackOfferAndRuntime",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-coordinated-windows-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-coordinated-windows",
+      "Categories": [
+        "portable-coordinated-windows"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedAuthorityTests.ActualAuthorityFactoryRetainsEveryPlatformDistinctInitialGuard|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.RealLeaseContextFailureStillClosesLockAndAllowsReacquisition|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseKeepsCompletedDispositionOnContextFailure|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperPublishesCompleteMemberSetUnderOneDecision|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperUnknownLaterMemberPreservesWholeUnresolvedSet|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DestinationCaseUsesTheActualPlatformPolicy|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.InvalidLaterTypeFailsBeforeAnyNewIntentOrMutation|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ResolvedSeparatorAndWhitespaceAliasesPublishOneFinalDestination|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperColdRecoveryPreservesTheOutsideHardLink",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 6,
+      "EstimatedCases": 13,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedAuthorityTests.ActualAuthorityFactoryRetainsEveryPlatformDistinctInitialGuard",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.RealLeaseContextFailureStillClosesLockAndAllowsReacquisition",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseKeepsCompletedDispositionOnContextFailure",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperPublishesCompleteMemberSetUnderOneDecision",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperUnknownLaterMemberPreservesWholeUnresolvedSet",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DestinationCaseUsesTheActualPlatformPolicy",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.InvalidLaterTypeFailsBeforeAnyNewIntentOrMutation",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ResolvedSeparatorAndWhitespaceAliasesPublishOneFinalDestination",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperColdRecoveryPreservesTheOutsideHardLink",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}
