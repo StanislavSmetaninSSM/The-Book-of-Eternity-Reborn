@@ -525,10 +525,19 @@ index da14ab71..3a0189ff 100644
              await RestoreQteNormalizationBaselineAfterFailureAsync(
                  writeLease,
 diff --git a/specs/1553-portable-local-storage/research.md b/specs/1553-portable-local-storage/research.md
-index 4a4415cc..75e93ec4 100644
+index 4a4415cc..1ef228e3 100644
 --- a/specs/1553-portable-local-storage/research.md
 +++ b/specs/1553-portable-local-storage/research.md
-@@ -292,6 +292,8 @@ Prefer migrating **helper-specific** fault injections to the existing synchronou
+@@ -266,6 +266,8 @@ The [proposed T031 coordinated-helper boundary](#t031-proposed-coordinated-publi
+ GM-authored schemas and decisions need not change for a storage-only seam; record the operational recovery rationale. If receipt/pending fields, ownership, cleanup or acceptance timing changes, update applicable GM guides/examples/manifests/source guards in the same bounded block. Preserve the ban on GM writes to client-owned resource/history/control authority. Ordinary/held/spiritual runtime outcomes, complete dynamic command inventory, external profile/save-load, real GM and Windows execution remain unestablished by this source map.
+ 
+ 
++Observed remaining B3 preparation blocker (2026-10-01): the selected `GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim` failed on Linux during `LiveTurnPreparationService.PrepareWithinBindingAsync` before reaching the T031 coordinated quarantine helper. The call chain is `FileSystemManager.DeleteDirectoryTree` → `PhysicalFileAuthority.TryDeleteDirectoryTree` → `TryDeleteEntry` → kernel32 CreateFile, producing DllNotFoundException. [Exact partial-run evidence](recovery/evidence/coordinated-consumers-partial/manifest.json) at source `5cc0bc98` plus packet records nine executed/eight pass/one preparation failure and 26 unrun. This is a real open Linux turn-preparation limit for a later directory/preparation migration. Keep the real consumer for native qualification; do not fabricate a fixture bypass, broaden this helper slice, or imply that full Linux preparation/accepted-turn acceptance is closed.
++
+ ## T031 proposed coordinated publication boundary
+ 
+ Source-only investigation at `c2babf6a0195a88d1cf895e22fffa8d561e847e3`, 2026-10-01; those production bytes are unchanged in accepted T030-E normal source `29f485748819a8d95fd94b483f96e98c3f6e4b81`. The proposal below preserves the complete read-only report's useful caller/contract/verification findings. **T031 is not implemented or verified by this record.** It completes neither full accepted-turn acceptance nor browser/worker/save-load migration. Source locations are relative to the repository at the inspected source.
+@@ -292,6 +294,8 @@ Prefer migrating **helper-specific** fault injections to the existing synchronou
  
  Do not replay old callbacks after commit, ignore returned Tasks, or block arbitrary async callbacks with sync-over-async. Preserving the arbitrary internal `Func<PlannedWrite,Task>` contract would require a genuinely awaited observer path through B1 and is a wider alternative. There is no observed production need for that alternative. Collapsing duplicates necessarily changes synthetic intermediate-image hook observations; state the revised test contract as one observation per published unique final member.
  
@@ -537,7 +546,7 @@ index 4a4415cc..75e93ec4 100644
  ### Outcomes and minimal caller changes
  
  B1 already distinguishes `Committed`, `RolledBack`, `Uncertain` (`TrustedLocalFilePublication.cs:75–104`), including committed observer/cleanup failure. Keep the bool facade: true for committed, false for initial baseline mismatch or positively confirmed rollback, distinct unresolved exception for uncertain. Never broadly catch the publish API and return false. Capture the durable result before owned-lease disposal/follow-up; a disposal/cleanup failure cannot turn an established commit into uncommitted or start manual undo. Surface/log the follow-up without changing that disposition. The prepared settings implementation supplies the existing model (`WebUi/BrowserLocalWriteCoordinator.Prepared.cs:35–59,73–92`).
-@@ -339,3 +341,5 @@ The [bounded save/load engineering map](save-load-cutover.md) and [admission add
+@@ -339,3 +343,5 @@ The [bounded save/load engineering map](save-load-cutover.md) and [admission add
  ## Ordinary-reader continuation, source-only 2026-10-01
  
  The [ordinary-reader map](ordinary-read-cutover.md) distinguishes content/presence and bytes-plus-real-LastWriteTimeUtc results from original physical publication receipts. It recommends common validated reads while preserving public recovery/quiescence/no-reacquire/absence behavior and explicit original entrypoints/scopes for old setup and recovery. Browser v6 before-image setup reads tracked bytes before attaching its recorder, so recorder presence or evidence-path exclusion alone is insufficient. The current B3b block does not migrate those readers; ordinary reads, later accepted publication and save/load retain their separate bounded verification.
