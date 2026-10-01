@@ -82,7 +82,8 @@ public sealed class GmWorkerProposalStore
                     "Worker task no longer belongs to the current game session generation.");
             }
 
-            if (Directory.Exists(finalBundleRoot) || _fs.FileExists(proposalInboxPath))
+            if (_fs.FileExists(proposalInboxPath) ||
+                !_fs.TryRemoveEmptyCanonicalDirectory(writeLease, finalBundleRelativePath))
             {
                 return WorkerProposalPublicationResult.Rejected(
                     $"Worker proposal id already exists and cannot be overwritten: {proposal.ProposalId}.");

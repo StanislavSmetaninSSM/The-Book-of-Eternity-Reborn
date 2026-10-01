@@ -2,14 +2,14 @@
 
 ## Current B3b implementation WIP packet
 
-The initial 15-case RED/GREEN and expanded 37-case RED ran at their recorded exact sources. Narrow caller corrections passed the affected 86-case covering selection at f38a68f6 plus its exact packet. The eight-case proposal-store admission scaffold is now unrun; this remains B3b WIP. New focused source/tests, selection and evidence are normal blobs. The large manager/UI-builder/catalog deltas are retained in [session-replacement-pending.json](session-replacement-pending.json), with exact base/after blobs and SHA256 values. After verifying the remote SHA, check/apply each patch once:
+The initial 15-case RED/GREEN and expanded 37-case RED ran at their recorded exact sources. Narrow caller corrections passed the affected 86-case covering selection at f38a68f6 plus its exact packet. The eight-case proposal-store admission RED is preserved; empty-only normalization is implemented and its 30-case proposal/exact-consumer GREEN is unrun. This remains B3b WIP. New focused source/tests, selection and evidence are normal blobs. The large manager/UI-builder/integration-test/catalog deltas are retained in [session-replacement-pending.json](session-replacement-pending.json), with exact base/after blobs and SHA256 values. After verifying the remote SHA, check/apply each patch once:
 
 ```sh
 git apply --check --unidiff-zero specs/1553-portable-local-storage/recovery/session-replacement-source.pending.patch
 git apply --unidiff-zero specs/1553-portable-local-storage/recovery/session-replacement-source.pending.patch
 git apply --check specs/1553-portable-local-storage/recovery/categories-pending.patch
 git apply specs/1553-portable-local-storage/recovery/categories-pending.patch
-git hash-object BookOfEternityClient/Core/FileSystemManager.cs BookOfEternityClient/UI/ExplorerLifecycleLocalTurnCommandResultBuilder.cs tests/categories.json
+git hash-object BookOfEternityClient/Core/FileSystemManager.cs BookOfEternityClient/UI/ExplorerLifecycleLocalTurnCommandResultBuilder.cs BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs tests/categories.json
 ```
 
 If already applied, reverse `--check` with the same apply flags succeeds; do not apply twice. Expected per-file blobs are recorded in the manifest. Keep exact applied deltas staged during tests and small source saves. Do not upload large full files through oversized connector calls. Retire this packet only after normal publication verifies all after blobs. No B3b acceptance is claimed; the current plan is authoritative.

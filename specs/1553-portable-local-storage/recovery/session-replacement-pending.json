@@ -1,11 +1,11 @@
 {
   "baseCommit": "41d9104076d59fabacf93c3b1be3cc8d5ccc238f",
-  "status": "B3b covering 86/86 reported GREEN at f38a68f6 plus its exact packet; eight-case actual proposal-store admission RED scaffold is unrun. Connected review, remaining exact consumers and normal delivery pending.",
+  "status": "86-case covering GREEN preserved; actual store admission RED 8/8 executed with 5 passes/3 intended failures; empty-only normalization implemented, 30-case proposal/exact-consumer GREEN unrun. Connected review, final consumers and normal delivery pending.",
   "patches": [
     {
       "path": "session-replacement-source.pending.patch",
-      "bytes": 6196,
-      "sha256": "2d3fc898c05d3c33a6b67161546475fe7cc92c7d871f46afff3bf9e9f933a81c",
+      "bytes": 13053,
+      "sha256": "31c820993c30d7cf0051ae637e4de68917d846be032b99a5f0f25c9afc5f30f5",
       "files": [
         {
           "path": "BookOfEternityClient/Core/FileSystemManager.cs",
@@ -16,6 +16,11 @@
           "path": "BookOfEternityClient/UI/ExplorerLifecycleLocalTurnCommandResultBuilder.cs",
           "beforeBlob": "5f01feaa21be4655735c884c05ab80881e7d2aed",
           "afterBlob": "469a367355b1fb8298e95782e736fd87ffd836a7"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs",
+          "beforeBlob": "9f7bd2e4a6dad783eaeac6c565eca27c22c85be5",
+          "afterBlob": "3db7fd13a7fc9ab15c783f3fd1326b8e202263dd"
         }
       ],
       "applyArguments": [
@@ -24,23 +29,24 @@
     },
     {
       "path": "categories-pending.patch",
-      "bytes": 3571,
-      "sha256": "ee26f31f099f411f00e212e39909bc4986851aa0e299a23831dc4f441016c064",
+      "bytes": 17806,
+      "sha256": "b51b36404d9fce61d111ae3e2c394d1dab9fb283cdd8266993abb36bc92f9bd1",
       "files": [
         {
           "path": "tests/categories.json",
           "beforeBlob": "b803fccaafbb24a5824d00984117b3ead6d3afa3",
-          "afterBlob": "a290e401e39ab1bc4fa8460114c21634c4bba455"
+          "afterBlob": "75452a9f5bbe1c0b383eaa680214ed64a4d1ce02"
         }
       ],
       "applyArguments": []
     }
   ],
   "testSourceBlob": "499d89322195fd0eb6b3912c2ea276aa2a970e6a",
-  "selectionBlob": "3ad6c22d8fb3c4dd38049456a774eb18347898db",
+  "selectionBlob": "a4d7efb005b761b2afcd06642497de57fb153e07",
   "boundaryTestBlob": "719822eff3c45b9fa21f50f3b27e579473ff24f8",
   "crashFixtureBlob": "14bbdef398f3a9be46b73ac1ab1d0f0a48c3f90b",
-  "replacementPartialBlob": "207b9d3019bf42cd9d0ec6813d69fcbcaee4ab16",
+  "replacementPartialBlob": "2453f1f39d34b5bc0a992a3e78a874f7d1cf6e83",
   "consoleGuardTestBlob": "5bacc6613d2069f57801aaf1fd6bdb2863bd93a0",
-  "proposalTestBlob": "0ccec690fc143889cded35be34c6d77a9d8d0d40"
+  "proposalTestBlob": "e6ec3a4f16e5dc7cfe6e09ef3b30f1d9c4155eab",
+  "proposalStoreBlob": "a1e4741bbc1dd34bb2cd9abbde77ebf3224f1f9a"
 }

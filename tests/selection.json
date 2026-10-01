@@ -3,11 +3,20 @@
   "selections": [
     {
       "category": "portable-proposal-admission",
-      "reason": "Initial eight-case RED on the actual store path before empty-destination normalization; preserve generation/task/data admission and label Linux backend unavailability honestly.",
+      "reason": "Cover actual store empty-structure admission RED while preserving generation/task and unknown-data gates; reaching the unsupported Linux backend is admission evidence only.",
       "contracts": [
-        "safe reuse of empty structural residue",
-        "current task/generation admission ordering",
-        "retained existing proposal and outside data"
+        "safe empty-only destination normalization",
+        "proposal generation/task/inbox admission"
+      ]
+    },
+    {
+      "category": "portable-session-replacement-consumers",
+      "reason": "Execute exact still-unrun clear/rotation lifecycle/fence/cache/UI-owner/source-guard consumers. Five superseded invalid-node deletion expectations now assert reject-and-preserve; three Windows-only bodies remain unexecuted on Linux.",
+      "contracts": [
+        "lifecycle/canonical lease ordering",
+        "replacement revokes prior generation/revision ownership",
+        "complete invalid-namespace evidence retention",
+        "actual authority caller/source boundaries"
       ]
     }
   ]

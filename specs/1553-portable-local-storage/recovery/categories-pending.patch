@@ -1,8 +1,102 @@
 diff --git a/tests/categories.json b/tests/categories.json
-index b803fcca..a290e401 100644
+index b803fcca..75452a9f 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -6023,7 +6023,6 @@
+@@ -534,15 +534,6 @@
+             "BookOfEternityClient.Tests.FileSystemManagerTests.CanonicalWriter_RejectsHardLinkedTransactionJournal",
+             "BookOfEternityClient.Tests.FileSystemManagerTests.CleanupBackup_WaitsForCanonicalWriteLease",
+             "BookOfEternityClient.Tests.FileSystemManagerTests.ClearCurrentWorldLore_WaitsForCanonicalWriteLease",
+-            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_DoesNotTraverseDirectoryJunction",
+-            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RemovesDanglingLocalUiLockNode",
+-            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RemovesLocalUiLockJunctionWithoutTraversingTarget",
+-            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RemovesLocalUiLockNamespaceDirectory",
+-            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RemovesManifestlessBrowserRollbackRoot",
+-            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_WaitsForActiveSessionLifecycleLease",
+-            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameState_PreservesGmBridgeRuntimeStatus",
+-            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameState_PreservesGmContextPackJsonArtifacts",
+-            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameState_WaitsForCanonicalWriteLease",
+             "BookOfEternityClient.Tests.FileSystemManagerTests.CommittedWorkerApply_CleanupFailureRetainsJournalForNextWriterRetry",
+             "BookOfEternityClient.Tests.FileSystemManagerTests.CompareExchangeFileBytesAsync_ConcurrentReplacementsAllowExactlyOneWinner",
+             "BookOfEternityClient.Tests.FileSystemManagerTests.CompareExchangeFileBytesAsync_RejectsStaleExpectedBytesWithoutWriting",
+@@ -606,10 +597,6 @@
+             "BookOfEternityClient.Tests.FileSystemManagerTests.RuntimeDirectoryMove_RejectsRegularFileRacedIntoDirectorySource",
+             "BookOfEternityClient.Tests.FileSystemManagerTests.SessionGenerationWrite_ParentSwapAfterAuthorityValidationIsBlocked",
+             "BookOfEternityClient.Tests.FileSystemManagerTests.SessionGeneration_RejectsRuntimeSiblingReparsePoint",
+-            "BookOfEternityClient.Tests.FileSystemManagerTests.SessionMutationLease_CannotRotateSessionGeneration",
+-            "BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_CanRotateGenerationWhileLifecycleAuthorityIsActive",
+-            "BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_RequiresActiveLifecycleAuthority",
+-            "BookOfEternityClient.Tests.FileSystemManagerTests.TryAcquireSessionLifecycleLeaseAsync_StaleGenerationReturnsNull",
+             "BookOfEternityClient.Tests.FileSystemManagerTests.WorkerApplyTransaction_RejectsRuntimeSiblingReparsePoint",
+             "BookOfEternityClient.Tests.FileSystemManagerTests.WorkerRecovery_BeforeImageLinkAddedAfterInitialValidationFailsAndRetainsEvidence",
+             "BookOfEternityClient.Tests.FileSystemManagerTests.WorkerRecovery_BeforeImageReplacementAfterInitialValidationIsBlocked",
+@@ -630,7 +617,7 @@
+           "project": "unit",
+           "tests": [
+             "BookOfEternityClient.Tests.CoordinatedStateWriteHelperTests.*",
+-            "BookOfEternityClient.Tests.SessionOperationContextTests.*",
++            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_LoadRotatesGeneration_ThrowsBeforeReplacementMutation",
+             "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.*",
+             "BookOfEternityClient.Tests.StateManagerTests.*",
+             "BookOfEternityClient.Tests.TradeRequestLockOrderingTests.*"
+@@ -1359,7 +1346,29 @@
+         {
+           "project": "unit",
+           "tests": [
+-            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.*"
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.GmWorkerBridgeGuide_IsReferencedByLauncherAndExamplesManifest",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.GmLauncherScript_DoesNotContainStaleWorktreePaths",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.GmLauncherGenerator_AcceptsExplicitGameSessionPathForSandboxedRuns",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.GmDaemonScript_InitializesUtf8ConsoleOutputForRussianDiagnostics",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.MainGmPrompt_DocumentsExplicitWorkerDelegationFlow",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.GmWorkerBridgeExamples_DocumentHiddenWorkersProposalOnlyAndApplyGate",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.GmWorkerBridgeDocs_DocumentWorkerRuntimeEnvironmentProtocol",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.WorkerExecutionDocs_RequireConfirmedSuccessfulProcessBeforeProposalImport",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentExclusiveHandoffExactHashesAndAfterlifeRepairShape",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.GmWorkerTaskExamples_BindEveryTaskPacketToSessionGeneration",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.GmWorkerTaskExamples_UseCanonicalSessionGenerationInEveryTaskPacket",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentExplicitChangeKindsAndPinnedAfterlifeRealmAuthority",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentReservedAuthorityAndSessionReplacementAbort",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.DurableFileAuthoritySourceGuard_RejectsPathBasedRuntimeMutations",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.GmWorkerBridgeDocs_DocumentExternalRuntimeAndArtifactBudgets",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ActorMaterializationSpec_DocumentsImmutableSessionOperationFence",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.GmWorkerBridgeDocs_DocumentCliRunnerEntrypoint",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.LauncherAndDaemon_DefaultConfigExposeDisabledWorkerProfileTemplates",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairLoop_AbortsEveryDispatchThatBelongsToReplacedSession",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ActiveWorkerGuidance_DoesNotAdvertiseDeprecatedGeminiCli",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.LiveTurnQuickstart_DocumentsGenerationBoundPreparationTransaction",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.GmWorkerBridgeGuide_DocumentsDisabledProfileTemplates"
+           ]
+         }
+       ]
+@@ -1949,7 +1958,6 @@
+             "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPlayerActionSarefAndManualSave_BindBeforeAuthoritativeReads",
+             "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPromptSessionsAndLocalUiLocks_UseGenerationBoundCanonicalAuthority",
+             "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.DarenRewardProfile_UsesOnePhysicalAuthorityStoreWithoutRawPathIo",
+-            "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPendingAndRecoveryAuthority_ContainsNoPathnameAbsenceFallback",
+             "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.CanonicalMutationObservation_UsesAtomicTransitionsAndSnapshots",
+             "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.Phase43AuthorityBoundaries_KeepOwnedPostImagesManifestedSavesAndAncestorFencing",
+             "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserQteCanonicalMutations_RunInsideGenerationBoundTransactions",
+@@ -2105,8 +2113,7 @@
+             "BookOfEternityClient.Tests.ExplorerCommandMigrationRegistryTests.NonParityBrowserCommands_HaveFollowUpIssueOrExplicitReason",
+             "BookOfEternityClient.Tests.ExplorerCommandMigrationRegistryTests.UniversalMetaCommands_HaveReadOnlyParity",
+             "BookOfEternityClient.Tests.LocalInteractionScopeServiceTests.*",
+-            "BookOfEternityClient.Tests.LocalMapViewerServiceTests.*",
+-            "BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.*"
++            "BookOfEternityClient.Tests.LocalMapViewerServiceTests.*"
+           ]
+         }
+       ]
+@@ -2613,8 +2620,6 @@
+             "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_ExplicitEffectRevalidationRotatesOpaqueHandoff",
+             "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_FinalizationRequiresCurrentRegistryOwnedEffectStage",
+             "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_RequiresOwningActiveCanonicalWriteLease",
+-            "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_RotatedGenerationRejectsOldPreparedHandoff",
+-            "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_SameGenerationNewRevisionRejectsOldPreparedHandoff",
+             "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_SameRootAndGenerationSharePreparedAuthority",
+             "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRootAssembly_RejectsChangedImmutableEffectContract",
+             "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRootAssembly_RejectsCrossPlanInitialEffectStage",
+@@ -6023,7 +6028,6 @@
              "BookOfEternityClient.Tests.AfterlifeActionCostRulesTests.*",
              "BookOfEternityClient.Tests.AfterlifeContractRegistryTests.*",
              "BookOfEternityClient.Tests.AfterlifeControlStateRulesTests.*",
@@ -10,7 +104,7 @@ index b803fcca..a290e401 100644
              "BookOfEternityClient.Tests.AfterlifeOwnerResourceStateServiceTests.*",
              "BookOfEternityClient.Tests.AfterlifeRealmAutoRollbackTests.*",
              "BookOfEternityClient.Tests.AfterlifeReturnGuardServiceTests.*",
-@@ -8021,6 +8020,71 @@
+@@ -8021,6 +8025,126 @@
            ]
          }
        ]
@@ -76,6 +170,61 @@ index b803fcca..a290e401 100644
 +          "project": "unit",
 +          "tests": [
 +            "BookOfEternityClient.Tests.PortableProposalAdmissionTests.*"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-session-replacement-consumers",
++      "responsibility": "Exact lifecycle lock ordering/waits, generation-bound operations, old UI-owner release, accepted-plan generation/revision rejection and source guards for the migrated clear/rotation boundary. Invalid type/link and unresolved legacy-evidence clear tests retain original data instead of deleting it.",
++      "excludes": "Load-specific generation replacement, broad canonical/browser/gameplay/worker categories and Windows assertions inferred from Linux-gated completion. Ordinary malformed regular clear-member bytes remain admitted.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.cs",
++        "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-session-replacement",
++          "when": "Clear/rotation member decision or namespace admission changes."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 4,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "integration",
++          "tests": [
++            "BookOfEternityClient.Tests.FileSystemManagerTests.TryAcquireSessionLifecycleLeaseAsync_StaleGenerationReturnsNull",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.SessionMutationLease_CannotRotateSessionGeneration",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_RequiresActiveLifecycleAuthority",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_CanRotateGenerationWhileLifecycleAuthorityIsActive",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_WaitsForActiveSessionLifecycleLease",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameState_WaitsForCanonicalWriteLease",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameState_PreservesGmBridgeRuntimeStatus",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameState_PreservesGmContextPackJsonArtifacts",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsDirectoryJunctionAndPreservesOutsideData",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsLocalUiLockDirectoryAndPreservesEvidence",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsLocalUiLockJunctionWithoutTraversingTarget",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsDanglingLocalUiLockNode",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsManifestlessBrowserRollbackEvidence"
++          ]
++        },
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_ClearRotatesGeneration_ThrowsBeforeReplacementMutation",
++            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_FenceAppliesAcrossFileSystemManagerInstancesForSameRoot",
++            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_LeafSwallowsWriteFailure_OuterBoundaryStillThrows",
++            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ReplacementWithoutLaterWrite_FinalCheckStillThrows",
++            "BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.ReleaseAsync_OldSameOwnerLeaseDoesNotDeleteReplacementGenerationLock",
++            "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_RotatedGenerationRejectsOldPreparedHandoff",
++            "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_SameGenerationNewRevisionRejectsOldPreparedHandoff",
++            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
++            "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPendingAndRecoveryAuthority_ContainsNoPathnameAbsenceFallback"
 +          ]
 +        }
 +      ]

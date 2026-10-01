@@ -85,12 +85,16 @@ public sealed class PortableProposalAdmissionTests : IDisposable
     public async Task NonemptyDestinationIsRejectedWithoutDeletingUnknownBytes(bool nested)
     {
         var destination = Destination;
+        var emptySibling = Path.Combine(destination, "empty-sibling");
+        Directory.CreateDirectory(emptySibling);
         var data = Path.Combine(destination, nested ? "nested" : "", "unknown.bin");
-        Directory.CreateDirectory(Path.GetDirectoryName(data)!); File.WriteAllBytes(data, [0xFF, 0]);
+        byte[] bytes = nested ? [0xFF, 0] : [];
+        Directory.CreateDirectory(Path.GetDirectoryName(data)!); File.WriteAllBytes(data, bytes);
         var result = await Publish();
         Assert.False(result.Published);
         Assert.False(result.SessionReplaced);
-        Assert.Equal(new byte[] { 0xFF, 0 }, File.ReadAllBytes(data));
+        Assert.Equal(bytes, File.ReadAllBytes(data));
+        Assert.True(Directory.Exists(emptySibling));
         Assert.False(File.Exists(_files.ResolvePath(InboxPath)));
     }
 

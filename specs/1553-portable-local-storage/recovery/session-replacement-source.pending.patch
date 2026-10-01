@@ -1,3 +1,99 @@
+diff --git a/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs b/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs
+index 9f7bd2e4..3db7fd13 100644
+--- a/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs
++++ b/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs
+@@ -72 +72 @@ public sealed class FileSystemManagerTests : IDisposable
+-    public async Task ClearGameStateAsync_DoesNotTraverseDirectoryJunction()
++    public async Task ClearGameStateAsync_RejectsDirectoryJunctionAndPreservesOutsideData()
+@@ -76,0 +77,5 @@ public sealed class FileSystemManagerTests : IDisposable
++        const string sentinel = "input/clear-sentinel.json";
++        byte[] sentinelBytes = [0xFF, 0, 0xFE];
++        await _fs.WriteFileAtomicBytesAsync(sentinel, sentinelBytes);
++        var generationBefore = await File.ReadAllBytesAsync(_fs.SessionGenerationPath);
++
+@@ -88 +93,3 @@ public sealed class FileSystemManagerTests : IDisposable
+-            await _fs.ClearGameStateAsync();
++            await Assert.ThrowsAsync<InvalidDataException>(() => _fs.ClearGameStateAsync());
++            Assert.Equal(sentinelBytes, await File.ReadAllBytesAsync(_fs.ResolvePath(sentinel)));
++            Assert.Equal(generationBefore, await File.ReadAllBytesAsync(_fs.SessionGenerationPath));
+@@ -103 +110 @@ public sealed class FileSystemManagerTests : IDisposable
+-    public async Task ClearGameStateAsync_RemovesLocalUiLockNamespaceDirectory()
++    public async Task ClearGameStateAsync_RejectsLocalUiLockDirectoryAndPreservesEvidence()
+@@ -104,0 +112,4 @@ public sealed class FileSystemManagerTests : IDisposable
++        const string sentinel = "input/clear-sentinel.json";
++        byte[] sentinelBytes = [0xFF, 0, 0xFE];
++        await _fs.WriteFileAtomicBytesAsync(sentinel, sentinelBytes);
++        var generationBefore = await File.ReadAllBytesAsync(_fs.SessionGenerationPath);
+@@ -111 +122,3 @@ public sealed class FileSystemManagerTests : IDisposable
+-        await _fs.ClearGameStateAsync();
++        await Assert.ThrowsAsync<InvalidDataException>(() => _fs.ClearGameStateAsync());
++        Assert.Equal(sentinelBytes, await File.ReadAllBytesAsync(_fs.ResolvePath(sentinel)));
++        Assert.Equal(generationBefore, await File.ReadAllBytesAsync(_fs.SessionGenerationPath));
+@@ -113,2 +126,3 @@ public sealed class FileSystemManagerTests : IDisposable
+-        Assert.False(File.Exists(lockNode));
+-        Assert.False(Directory.Exists(lockNode));
++        Assert.True(Directory.Exists(lockNode));
++        Assert.Equal("{\"crafted\":true}",
++            await File.ReadAllTextAsync(Path.Combine(lockNode, "nested", "lock.json")));
+@@ -118 +132 @@ public sealed class FileSystemManagerTests : IDisposable
+-    public async Task ClearGameStateAsync_RemovesLocalUiLockJunctionWithoutTraversingTarget()
++    public async Task ClearGameStateAsync_RejectsLocalUiLockJunctionWithoutTraversingTarget()
+@@ -122,0 +137,5 @@ public sealed class FileSystemManagerTests : IDisposable
++        const string sentinel = "input/clear-sentinel.json";
++        byte[] sentinelBytes = [0xFF, 0, 0xFE];
++        await _fs.WriteFileAtomicBytesAsync(sentinel, sentinelBytes);
++        var generationBefore = await File.ReadAllBytesAsync(_fs.SessionGenerationPath);
++
+@@ -134 +153,3 @@ public sealed class FileSystemManagerTests : IDisposable
+-            await _fs.ClearGameStateAsync();
++            await Assert.ThrowsAsync<InvalidDataException>(() => _fs.ClearGameStateAsync());
++            Assert.Equal(sentinelBytes, await File.ReadAllBytesAsync(_fs.ResolvePath(sentinel)));
++            Assert.Equal(generationBefore, await File.ReadAllBytesAsync(_fs.SessionGenerationPath));
+@@ -136 +157 @@ public sealed class FileSystemManagerTests : IDisposable
+-            Assert.False(Directory.Exists(lockNode));
++            Assert.True(Directory.Exists(lockNode));
+@@ -152 +173 @@ public sealed class FileSystemManagerTests : IDisposable
+-    public async Task ClearGameStateAsync_RemovesDanglingLocalUiLockNode()
++    public async Task ClearGameStateAsync_RejectsDanglingLocalUiLockNode()
+@@ -156,0 +178,5 @@ public sealed class FileSystemManagerTests : IDisposable
++        const string sentinel = "input/clear-sentinel.json";
++        byte[] sentinelBytes = [0xFF, 0, 0xFE];
++        await _fs.WriteFileAtomicBytesAsync(sentinel, sentinelBytes);
++        var generationBefore = await File.ReadAllBytesAsync(_fs.SessionGenerationPath);
++
+@@ -171 +197,3 @@ public sealed class FileSystemManagerTests : IDisposable
+-        await _fs.ClearGameStateAsync();
++        await Assert.ThrowsAsync<InvalidDataException>(() => _fs.ClearGameStateAsync());
++        Assert.Equal(sentinelBytes, await File.ReadAllBytesAsync(_fs.ResolvePath(sentinel)));
++        Assert.Equal(generationBefore, await File.ReadAllBytesAsync(_fs.SessionGenerationPath));
+@@ -173,2 +201,2 @@ public sealed class FileSystemManagerTests : IDisposable
+-        Assert.Throws<FileNotFoundException>(
+-            () => File.GetAttributes(lockNode));
++        Assert.True(File.GetAttributes(lockNode).HasFlag(FileAttributes.ReparsePoint));
++        Assert.False(Directory.Exists(missingTarget));
+@@ -1811 +1839 @@ public sealed class FileSystemManagerTests : IDisposable
+-    public async Task ClearGameStateAsync_RemovesManifestlessBrowserRollbackRoot()
++    public async Task ClearGameStateAsync_RejectsManifestlessBrowserRollbackEvidence()
+@@ -1812,0 +1841,4 @@ public sealed class FileSystemManagerTests : IDisposable
++        const string sentinel = "input/clear-sentinel.json";
++        byte[] sentinelBytes = [0xFF, 0, 0xFE];
++        await _fs.WriteFileAtomicBytesAsync(sentinel, sentinelBytes);
++        var generationBefore = await File.ReadAllBytesAsync(_fs.SessionGenerationPath);
+@@ -1815 +1847,3 @@ public sealed class FileSystemManagerTests : IDisposable
+-        await _fs.WriteFileAtomicBytesAsync(orphanPath, [1, 2, 3, 4]);
++        var evidencePath = _fs.ResolvePath(orphanPath);
++        Directory.CreateDirectory(Path.GetDirectoryName(evidencePath)!);
++        await File.WriteAllBytesAsync(evidencePath, [1, 2, 3, 4]);
+@@ -1817 +1851,3 @@ public sealed class FileSystemManagerTests : IDisposable
+-        await _fs.ClearGameStateAsync();
++        await Assert.ThrowsAsync<InvalidDataException>(() => _fs.ClearGameStateAsync());
++        Assert.Equal(sentinelBytes, await File.ReadAllBytesAsync(_fs.ResolvePath(sentinel)));
++        Assert.Equal(generationBefore, await File.ReadAllBytesAsync(_fs.SessionGenerationPath));
+@@ -1821,2 +1857,2 @@ public sealed class FileSystemManagerTests : IDisposable
+-        Assert.False(File.Exists(rollbackRoot));
+-        Assert.False(Directory.Exists(rollbackRoot));
++        Assert.True(Directory.Exists(rollbackRoot));
++        Assert.Equal(new byte[] { 1, 2, 3, 4 }, await File.ReadAllBytesAsync(evidencePath));
 diff --git a/BookOfEternityClient/Core/FileSystemManager.cs b/BookOfEternityClient/Core/FileSystemManager.cs
 index 3afd41d4..10eeac63 100644
 --- a/BookOfEternityClient/Core/FileSystemManager.cs

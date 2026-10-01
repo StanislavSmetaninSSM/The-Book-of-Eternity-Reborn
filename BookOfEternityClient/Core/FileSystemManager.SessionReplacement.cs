@@ -88,8 +88,26 @@ public partial class FileSystemManager
         return replacement;
     }
 
+    internal bool TryRemoveEmptyCanonicalDirectory(CanonicalWriteLease lease, string relativePath)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(relativePath);
+        VerifyCurrentSessionOperation(lease);
+        if (!UsesTrustedLocalWriter(lease, relativePath))
+            throw new InvalidOperationException("Empty structure normalization cannot alter a legacy transaction namespace.");
+        var scope = new TrustedLocalFileScope([GameSessionPath]);
+        var path = scope.ValidateDirectory(ResolvePath(relativePath));
+        var directories = new List<string>();
+        if (EnumerateLocalTreeFiles(scope, path, inspectedDirectories: directories).Count != 0)
+            return false;
+        // Only validated empty structure is removed. Nonrecursive deletion also
+        // retains a file arriving after preflight instead of silently deleting it.
+        for (var index = directories.Count - 1; index >= 0; index--)
+            Directory.Delete(scope.ValidateDirectory(directories[index], allowMissing: false), recursive: false);
+        return true;
+    }
+
     private static IReadOnlyList<string> EnumerateLocalTreeFiles(TrustedLocalFileScope scope, string root,
-        Func<string, bool>? exclude = null, bool jsonOnly = false)
+        Func<string, bool>? exclude = null, bool jsonOnly = false, List<string>? inspectedDirectories = null)
     {
         root = scope.ValidateDirectory(root);
         if (!Directory.Exists(root)) return [];
@@ -115,6 +133,7 @@ public partial class FileSystemManager
                 }
             }
         }
+        inspectedDirectories?.AddRange(directories);
         return files;
     }
 }
