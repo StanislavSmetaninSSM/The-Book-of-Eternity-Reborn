@@ -1,6 +1,6 @@
 {
   "baseCommit": "41d9104076d59fabacf93c3b1be3cc8d5ccc238f",
-  "status": "Initial 15-case GREEN preserved; expanded 37-case RED observed (30 reported passes, 7 intended failures); narrow caller corrections and affected 86-case covering selection saved, GREEN unrun.",
+  "status": "B3b covering 86/86 reported GREEN at f38a68f6 plus its exact packet; eight-case actual proposal-store admission RED scaffold is unrun. Connected review, remaining exact consumers and normal delivery pending.",
   "patches": [
     {
       "path": "session-replacement-source.pending.patch",
@@ -24,22 +24,23 @@
     },
     {
       "path": "categories-pending.patch",
-      "bytes": 2389,
-      "sha256": "ae241f6c3db4570dec81c890bc93af6b085124cdd66056241f6420b2adcd45ae",
+      "bytes": 3571,
+      "sha256": "ee26f31f099f411f00e212e39909bc4986851aa0e299a23831dc4f441016c064",
       "files": [
         {
           "path": "tests/categories.json",
           "beforeBlob": "b803fccaafbb24a5824d00984117b3ead6d3afa3",
-          "afterBlob": "3fcff6c9dd92c9a943c50b23ce435c4c08f9b8bf"
+          "afterBlob": "a290e401e39ab1bc4fa8460114c21634c4bba455"
         }
       ],
       "applyArguments": []
     }
   ],
   "testSourceBlob": "499d89322195fd0eb6b3912c2ea276aa2a970e6a",
-  "selectionBlob": "a6a30796a10f7a7215a6daaf7359fa45b889c5af",
+  "selectionBlob": "3ad6c22d8fb3c4dd38049456a774eb18347898db",
   "boundaryTestBlob": "719822eff3c45b9fa21f50f3b27e579473ff24f8",
   "crashFixtureBlob": "14bbdef398f3a9be46b73ac1ab1d0f0a48c3f90b",
   "replacementPartialBlob": "207b9d3019bf42cd9d0ec6813d69fcbcaee4ab16",
-  "consoleGuardTestBlob": "5bacc6613d2069f57801aaf1fd6bdb2863bd93a0"
+  "consoleGuardTestBlob": "5bacc6613d2069f57801aaf1fd6bdb2863bd93a0",
+  "proposalTestBlob": "0ccec690fc143889cded35be34c6d77a9d8d0d40"
 }

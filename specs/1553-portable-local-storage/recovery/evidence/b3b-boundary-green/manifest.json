@@ -1,0 +1,36 @@
+{
+  "sourceCommit": "f38a68f6c559392913ad2d4b36197af074a970a7",
+  "catalogBlobAfterPatch": "3fcff6c9dd92c9a943c50b23ce435c4c08f9b8bf",
+  "kind": "newly executed b3b-boundary-green; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained. Isolated run-root paths replaced; LF/trailing whitespace normalized; original hashes retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "ec3b9e5251c8664517266d574e53f0f7a9f19b4a7d6925ea86e1b708157e1f12",
+      "sanitizedSha256": "ec3b9e5251c8664517266d574e53f0f7a9f19b4a7d6925ea86e1b708157e1f12"
+    },
+    {
+      "path": "portable-client-bootstrap-unit-001.trx",
+      "originalSha256": "e8f6c32461b94856f61d444a456e2240f44c114c2e5fcc5e58fb61503dfc8eef",
+      "sanitizedSha256": "c13f279ceab8330fd71d6d6dc4d306b1d6faf96769ae4424780aca8d400618a0"
+    },
+    {
+      "path": "portable-session-replacement-unit-002.trx",
+      "originalSha256": "4068b0b01dc4cb74e329efc3249b74a5e2dbf5375764ec2c37c9160a63c03a34",
+      "sanitizedSha256": "e27ac361cde2f03058b091501f09205b8ef1075e59effb14506f9cb629e11d40"
+    },
+    {
+      "path": "portable-storage-consumers-integration-003.trx",
+      "originalSha256": "5f39a2fa5522ea4dea77ab0f97a4b55b791b0658c2d136cc5f80367c8fd7ef4c",
+      "sanitizedSha256": "1348c9ac76753ef025218ee9305426fd881dd4aca60ffbd730c1397819315a7f"
+    },
+    {
+      "path": "portable-storage-consumers-unit-004.trx",
+      "originalSha256": "b661b26e157771e795b9864f6efbde7457c5ebe9bae0b518161c7ef1e9f71266",
+      "sanitizedSha256": "95d470be56f997d3e85266f4c4eaf0cf1fcea4c0233d2f0ff81d437d90c55d50"
+    }
+  ],
+  "appliedSourceTree": "ee2bf45bd0df97ebade75b80d385e2f4f8f1939e",
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+  "interpretation": "86/86 reported passes: replacement plus existing console helper 38, bootstrap 34, ordinary integration consumers 8 and UI-owner unit consumers 6. Windows extended-root case body did not execute on Linux. No new live console/browser/GM or Windows claim."
+}

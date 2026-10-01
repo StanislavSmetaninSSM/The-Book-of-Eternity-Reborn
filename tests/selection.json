@@ -2,29 +2,12 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-session-replacement",
-      "reason": "Cover seven observed boundary/path-policy failures plus integrated clear/rotation/browser pending/cold/conflict cases and the exact existing console pending guard with nested empty residue. One actual Windows extended-root body is gated on Windows.",
+      "category": "portable-proposal-admission",
+      "reason": "Initial eight-case RED on the actual store path before empty-destination normalization; preserve generation/task/data admission and label Linux backend unavailability honestly.",
       "contracts": [
-        "complete session replacement decision",
-        "logical file/empty-directory admission",
-        "canonical relative-path mapping and cold recovery"
-      ]
-    },
-    {
-      "category": "portable-client-bootstrap",
-      "reason": "The shared publication adapter now derives canonical hook paths from normalized authority spellings; bootstrap and ordinary writers consume it.",
-      "contracts": [
-        "config/generation bootstrap",
-        "ordinary leased publication boundaries"
-      ]
-    },
-    {
-      "category": "portable-storage-consumers",
-      "reason": "The shared adapter changed canonical relative-path and mutation-hook mapping; exact ordinary byte/text/CAS/transient writers and UI-owner leases consume that boundary. Direct journal recovery semantics are unchanged.",
-      "contracts": [
-        "ordinary canonical writer mutation boundaries",
-        "UI-owner lease publications",
-        "compare-exchange conflict and transient access behavior"
+        "safe reuse of empty structural residue",
+        "current task/generation admission ordering",
+        "retained existing proposal and outside data"
       ]
     }
   ]

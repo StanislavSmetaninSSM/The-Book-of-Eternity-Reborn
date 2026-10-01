@@ -1,5 +1,5 @@
 diff --git a/tests/categories.json b/tests/categories.json
-index b803fcca..3fcff6c9 100644
+index b803fcca..a290e401 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
 @@ -6023,7 +6023,6 @@
@@ -10,7 +10,7 @@ index b803fcca..3fcff6c9 100644
              "BookOfEternityClient.Tests.AfterlifeOwnerResourceStateServiceTests.*",
              "BookOfEternityClient.Tests.AfterlifeRealmAutoRollbackTests.*",
              "BookOfEternityClient.Tests.AfterlifeReturnGuardServiceTests.*",
-@@ -8021,6 +8020,42 @@
+@@ -8021,6 +8020,71 @@
            ]
          }
        ]
@@ -47,6 +47,35 @@ index b803fcca..3fcff6c9 100644
 +          "tests": [
 +            "BookOfEternityClient.Tests.PortableSessionReplacementTests.*",
 +            "BookOfEternityClient.Tests.AfterlifeLocalActionGuardTests.ActiveGmTurnBlocker_DetectsTurnArtifactsAndIgnoresEmptySnapshotDirectory"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-proposal-admission",
++      "responsibility": "Actual worker proposal-store admission of empty structural residue, retained nonempty/type/link evidence, and current generation/task checks before the existing publication backend.",
++      "excludes": "Linux worker bundle publication, provider execution/shutdown, broad worker lifecycle and successful backend behavior inferred from an unsupported-platform exception.",
++      "changeHints": [
++        "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalStore.cs",
++        "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-session-replacement",
++          "when": "File-only clear leaves validated empty worker/proposal structure."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 4,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableProposalAdmissionTests.*"
 +          ]
 +        }
 +      ]
