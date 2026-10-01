@@ -2,6 +2,321 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-directory-uncertain-consumer",
+      "responsibility": "Exact actual LiveTurnPreparationService unresolved tree evidence and finalization recovery propagation; rerun only the reviewed assertion correction.",
+      "excludes": "Whole lifecycle, unrelated gameplay and full accepted-turn/backup migration.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.LivePreparationPropagatesUncertainTreeOutcomeAndStopsBeforeDiceCleanup"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-directory-backup-prerequisite",
+      "responsibility": "Known Linux-blocked actual quarantine fixture: preparation advances past tree cleanup but original StateDistributor CreateBackupCore descriptor-bound publication fails before quarantine assertions. Explicit separate reproducer; native qualification is allowed.",
+      "excludes": "Whole lifecycle, unrelated gameplay and full accepted-turn/backup migration.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-directory-windows-boundaries",
+      "responsibility": "Selected ordinary tree boundaries for actual native Windows qualification: empty/nested, links, by-name outside hard links, case names, repeated same-lease debt and real cold recovery.",
+      "excludes": "Whole lifecycle, unrelated gameplay and full accepted-turn/backup migration.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration",
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling",
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes",
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.HardLinkedMemberDeletionPreservesTheOutsideName",
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PlatformDistinctNamesRemainSeparateJournalMembers",
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning",
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess",
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ColdHardLinkOutsideBytesSurviveRollbackAndCommittedCleanup"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-directory-consumers-continuation",
+      "responsibility": "Six unit live-preparation/source/uncertainty consumers left unrun after the actual quarantine physical-backup prerequisite failure.",
+      "excludes": "The two already-passing integration consumers and the unchanged blocked quarantine fixture; full lifecycle and backup migration.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_RemovesStalePendingDiceStateSoTurnRequestIsOnlyCurrentDiceAuthority",
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts",
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.*",
+            "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPendingAndRecoveryAuthority_ContainsNoPathnameAbsenceFallback",
+            "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PendingSnapshotCleanup_AndLateRollback_MustNotTrustRawManifestArtifactPaths"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-directory-recovery-boundary",
+      "responsibility": "Direct dependencies of the same-lease recovery correction: absent/empty/nested tree entry and actual-directory-API crash/cleanup-debt admission.",
+      "excludes": "Unchanged path/type/link/lease negative cohorts, whole preparation and original browser recovery.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration",
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling",
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-directory-same-lease-recovery",
+      "responsibility": "Repeated same-lease tree or ancestor deletion must recover retained common cleanup debt before empty pruning, or retain parents/evidence on generation conflict.",
+      "excludes": "Unchanged ordinary validation, whole preparation and original browser recovery.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-directory-fixture-correction",
+      "responsibility": "Exact correction of root-link parent setup and propagated stale-bound-scope assertion after the initial ordinary cohort.",
+      "excludes": "Unchanged passing ordinary cases, complete turn workflow and native original handlers.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/PortableDirectoryDeletionTests.Boundaries.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes",
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.StaleBoundGenerationRejectsBeforeDeletingAnyMember"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-directory-recovery",
+      "responsibility": "Actual directory API abrupt-process and cleanup-debt recovery, exact sets, unknown/generation conflicts and outside hard links.",
+      "excludes": "Whole turn lifecycle, browser-v6 migration, save/load/library, worker runtime and unrelated gameplay.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess",
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ColdUnknownBytesOrGenerationPreserveThePartialSetAndJournal",
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ColdHardLinkOutsideBytesSurviveRollbackAndCommittedCleanup"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-directory-linux-special",
+      "responsibility": "Linux FIFO preflight rejection through the actual directory API in an owned bounded process.",
+      "excludes": "Whole turn lifecycle, browser-v6 migration, save/load/library, worker runtime and unrelated gameplay.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.LinuxFifoIsRejectedBeforeAnyOpenOrMemberMutationInBoundedProcess"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-directory-consumers",
+      "responsibility": "Exact live preparation, console snapshot/terminal cleanup, unresolved finalization outcome and original-route source consumers; original physical-backup prerequisite is separately owned.",
+      "excludes": "Whole turn lifecycle, browser-v6 migration, save/load/library, worker runtime and unrelated gameplay.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcessPlayerTurn_TerminalError_CleansTurnRequestAndPendingSnapshot",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_RemovesStalePendingDiceStateSoTurnRequestIsOnlyCurrentDiceAuthority",
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts",
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.*",
+            "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPendingAndRecoveryAuthority_ContainsNoPathnameAbsenceFallback",
+            "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PendingSnapshotCleanup_AndLateRollback_MustNotTrustRawManifestArtifactPaths"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-directory-original-windows",
+      "responsibility": "Native original warm recorder-cleared and cold browser cleanup, wrong-type retained evidence and actual extended-root ordinary deletion.",
+      "excludes": "Whole turn lifecycle, browser-v6 migration, save/load/library, worker runtime and unrelated gameplay.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_WarmRollbackDynamicDirectoryUsesOriginalCleanupAfterRecorderCleared",
+            "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.InterruptedStagedBrowserWrite_RemovesDeclaredRollbackCleanupDirectories",
+            "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.BrowserRollback_RegularFileAtCleanupDirectoryRetainsEvidence",
+            "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.BrowserRollback_CleanupDirectoryReplacedByFileBeforeDeletionRetainsEvidence"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionWindowsTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-directory-deletion",
+      "responsibility": "Ordinary canonical directory-tree deletion through one exact B1 member set, complete validation and safe empty structure cleanup on Linux and Windows.",
+      "excludes": "Whole pending-turn preparation, original browser-v6 migration, runtime/worker/load cleanup and save library.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs",
+        "BookOfEternityClient/Core/FileSystemManager.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "test-selection-contracts",
       "responsibility": "Catalog selection, runner safety, test inventory, and process cleanup contracts.",
       "excludes": "Gameplay rules, GM contracts, and frontend rendering.",

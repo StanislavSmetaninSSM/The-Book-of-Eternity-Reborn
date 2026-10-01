@@ -1333,7 +1333,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
         {
             try
             {
-                fs.DeleteDirectoryTree(writeLease, cleanupDirectory);
+                fs.DeleteOriginalDirectoryTree(writeLease, cleanupDirectory);
             }
             catch (Exception ex)
             {
@@ -1929,14 +1929,14 @@ public static class ExplorerLocalTurnRollbackArtifacts
             if (Directory.Exists(scopeFullPath) &&
                 !Directory.EnumerateFileSystemEntries(scopeFullPath).Any())
             {
-                fs.DeleteDirectoryTree(writeLease, scopePath);
+                fs.DeleteOriginalDirectoryTree(writeLease, scopePath);
             }
 
             var rootFullPath = fs.ResolvePath(Root);
             if (Directory.Exists(rootFullPath) &&
                 !Directory.EnumerateFileSystemEntries(rootFullPath).Any())
             {
-                fs.DeleteDirectoryTree(writeLease, Root);
+                fs.DeleteOriginalDirectoryTree(writeLease, Root);
             }
         }
         catch

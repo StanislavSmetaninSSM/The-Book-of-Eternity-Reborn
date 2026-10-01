@@ -1615,6 +1615,22 @@ public partial class FileSystemManager
     {
         EnsureValidCanonicalWriteLease(writeLease);
         EnsureSafeCanonicalRelativePath(relativePath);
+        if (UsesTrustedLocalWriter(writeLease, relativePath))
+        {
+            DeleteTrustedLocalDirectoryTreeAsync(writeLease, relativePath).GetAwaiter().GetResult();
+            return;
+        }
+        DeleteOriginalDirectoryTree(writeLease, relativePath);
+    }
+
+    // Original browser rollback owns dynamic cleanup even after clearing its
+    // recorder. Such cleanup must never enter a new common publication journal.
+    internal void DeleteOriginalDirectoryTree(
+        CanonicalWriteLease writeLease,
+        string relativePath)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        EnsureSafeCanonicalRelativePath(relativePath);
         var fullPath = ResolvePath(relativePath);
         InvokeBeforeCanonicalMutationBoundaryAsync(relativePath).GetAwaiter().GetResult();
         using var parentAuthority = EnsureStableCanonicalParent(
