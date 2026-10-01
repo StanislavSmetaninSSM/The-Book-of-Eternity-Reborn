@@ -3644,9 +3644,7 @@ public partial class FileSystemManager
         if (!SessionOperationContext.TryGetExpectedGeneration(_basePath, out var expectedGeneration))
             return;
 
-        var actualGeneration = RuntimeFileExists(SessionGenerationPath)
-            ? ReadSessionGeneration()
-            : null;
+        var actualGeneration = ReadLocalGenerationSnapshot(writeLease).Binding.Id;
         if (string.Equals(expectedGeneration, actualGeneration, StringComparison.Ordinal))
             return;
 
@@ -4039,9 +4037,12 @@ public partial class FileSystemManager
     {
         EnsureValidSessionReplacementLease(writeLease);
         var journal = ReadLoadTransactionJournal();
+        // This unmigrated load journal retains its original physical generation
+        // read; ordinary logical readers must not alter its commit admission.
         if (!string.Equals(journal.TransactionId, transactionId, StringComparison.OrdinalIgnoreCase) ||
             string.IsNullOrWhiteSpace(journal.ReplacementGenerationId) ||
-            !IsCurrentSessionGeneration(writeLease, journal.ReplacementGenerationId))
+            !RuntimeFileExists(SessionGenerationPath) ||
+            !string.Equals(ReadSessionGeneration(), journal.ReplacementGenerationId, StringComparison.Ordinal))
         {
             throw new InvalidDataException("Active load transaction generation was not activated.");
         }
@@ -5502,43 +5503,23 @@ public partial class FileSystemManager
 
     internal string GetOrCreateSessionGeneration(CanonicalWriteLease writeLease)
     {
-        EnsureValidCanonicalWriteLease(writeLease);
-        if (RuntimeFileExists(SessionGenerationPath))
-            return ReadSessionGeneration();
-
+        var snapshot = ReadLocalGenerationSnapshot(writeLease);
+        if (snapshot.Binding.Exists) return snapshot.Binding.Id!;
         return CreateTrustedLocalGeneration(writeLease);
     }
 
-    /// <summary>
-    /// Reads an existing session generation without creating or replacing runtime authority.
-    /// </summary>
-    /// <param name="writeLease">
-    /// Active canonical lease for the physical runtime root.
-    /// </param>
-    /// <returns>
-    /// The validated existing generation, or <see langword="null"/> when its authority file is absent.
-    /// </returns>
-    internal string? ReadExistingSessionGeneration(CanonicalWriteLease writeLease)
-    {
-        EnsureCanonicalWriteLeaseActive(writeLease);
-        return RuntimeFileExists(SessionGenerationPath) ? ReadSessionGeneration() : null;
-    }
+    /// <summary>Reads existing logical generation authority without creating or replacing it.</summary>
+    internal string? ReadExistingSessionGeneration(CanonicalWriteLease writeLease) =>
+        ReadLocalGenerationSnapshot(writeLease).Binding.Id;
 
     internal bool IsCurrentSessionGeneration(
         CanonicalWriteLease writeLease,
         string? expectedGenerationId)
     {
-        EnsureValidCanonicalWriteLease(writeLease);
-        if (string.IsNullOrWhiteSpace(expectedGenerationId) ||
-            !RuntimeFileExists(SessionGenerationPath))
-        {
-            return false;
-        }
-
-        return string.Equals(
-            ReadSessionGeneration(),
-            expectedGenerationId,
-            StringComparison.Ordinal);
+        EnsureCanonicalWriteLeaseActive(writeLease);
+        if (string.IsNullOrWhiteSpace(expectedGenerationId)) return false;
+        return string.Equals(ReadLocalGenerationSnapshot(writeLease).Binding.Id,
+            expectedGenerationId, StringComparison.Ordinal);
     }
 
     internal string RotateSessionGeneration(CanonicalWriteLease writeLease)
@@ -5550,31 +5531,10 @@ public partial class FileSystemManager
         return generationId;
     }
 
-    private string ReadSessionGeneration()
-    {
-        try
-        {
-            var document = StrictJsonAuthority.Deserialize<SessionGenerationDocument>(
-                ReadRuntimeText(SessionGenerationPath),
-                RecoveryJsonOptions,
-                "Session generation authority");
-            if (document is null || document.SchemaVersion != 1 ||
-                !Guid.TryParseExact(document.GenerationId, "N", out var parsedGeneration) ||
-                !string.Equals(
-                    document.GenerationId,
-                    parsedGeneration.ToString("N"),
-                    StringComparison.Ordinal))
-            {
-                throw new InvalidDataException("Session generation authority is invalid.");
-            }
-
-            return document.GenerationId;
-        }
-        catch (JsonException ex)
-        {
-            throw new InvalidDataException("Session generation authority is invalid.", ex);
-        }
-    }
+    // Original load-transaction generation read; keep its physical open contract
+    // separate until the load journal itself is migrated.
+    private string ReadSessionGeneration() =>
+        ParseSessionGenerationText(ReadRuntimeText(SessionGenerationPath));
 
     private void WriteSessionGeneration(string generationId)
     {

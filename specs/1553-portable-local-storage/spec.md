@@ -76,7 +76,7 @@ Empty files, non-UTF8 bytes, BOMs, absent files, case-distinct Linux names, dupl
 - **FR-008**: Explicitly support fresh roots and current-schema, quiescent roots with no unresolved old journal. Back up the existing state before any format conversion. Other historical saves are not promised compatibility
 - **FR-009**: Do not require a privileged service, security-setting change, protection from the computer owner, synthetic physical FileIdentity, or Windows APIs activated merely by deleting IsWindows guards
 - **FR-010**: Promise process-crash recovery. Do not claim power-loss durability without separately verified file/directory synchronization ordering
-- **FR-011**: Both actual Linux clients must satisfy US1 and US3. Windows uses the same intended behavior; provide a reproducible owner-run checklist and disclose that local Windows execution is unavailable
+- **FR-011**: Both actual Linux clients must satisfy US1 and US3. Windows uses the same intended behavior; provide a reproducible owner-run checklist and report Windows coverage by the capabilities actually executed at their exact source revision, leaving all remaining capabilities explicitly unverified
 - **FR-012**: Replace Windows-only process, IPC, bridge, daemon, launcher, audio and clipboard mechanisms with supported cross-platform behavior. Thin platform adapters are permissible where a native primitive is necessary, with equivalent declared behavior
 - **FR-013**: Persistent arbitrary interactive CLI and automatic daemon text delivery are mandatory. No special game API is required of the CLI
 - **FR-014**: Resolve process ownership, cancellation, timeout and restart uncertainty without deleting or reusing files while an old writer may still run

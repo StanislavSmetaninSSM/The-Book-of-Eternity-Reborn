@@ -2161,7 +2161,7 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task SessionGeneration_RejectsHardLinkedAuthorityFile()
+    public async Task LegacyLoadBegin_RejectsHardLinkedGenerationAuthorityFile()
     {
         if (!OperatingSystem.IsWindows())
             return;
@@ -2180,9 +2180,12 @@ public sealed class FileSystemManagerTests : IDisposable
         File.Delete(_fs.SessionGenerationPath);
         CreateHardLink(_fs.SessionGenerationPath, externalPath);
 
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        // Only the original load journal retains this Windows physical-reader contract.
+        await using var lifecycleLease = await _fs.AcquireSessionLifecycleLeaseAsync();
+        await using var writeLease = await _fs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease);
         Assert.Throws<InvalidDataException>(
-            () => _fs.IsCurrentSessionGeneration(writeLease, externalGeneration));
+            () => _fs.BeginLoadTransaction(writeLease, Guid.NewGuid().ToString("N")));
+        Assert.False(File.Exists(_fs.ActiveLoadTransactionJournalPath));
         Assert.Equal(externalBytes, await File.ReadAllBytesAsync(externalPath));
     }
 
@@ -2214,7 +2217,7 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task SessionGeneration_LinkAddedAfterInitialValidationFailsClosed()
+    public async Task LegacyLoadBegin_GenerationLinkAddedAfterInitialValidationFailsClosed()
     {
         if (!OperatingSystem.IsWindows())
             return;
@@ -2250,12 +2253,14 @@ public sealed class FileSystemManagerTests : IDisposable
             PhysicalLoadTransactionOperations.Instance,
             hooks);
 
-        await using var writeLease =
-            await raceFs.AcquireCanonicalWriteLeaseAsync();
+        // Ordinary generation reads no longer use these legacy physical hooks.
+        await using var lifecycleLease = await raceFs.AcquireSessionLifecycleLeaseAsync();
+        await using var writeLease = await raceFs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease);
         armed = true;
 
         Assert.Throws<InvalidDataException>(
-            () => raceFs.IsCurrentSessionGeneration(writeLease, generation));
+            () => raceFs.BeginLoadTransaction(writeLease, Guid.NewGuid().ToString("N")));
+        Assert.False(File.Exists(raceFs.ActiveLoadTransactionJournalPath));
         Assert.True(linked);
     }
 
@@ -5016,7 +5021,7 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task SessionGeneration_SwapBackReadCannotAuthorizeExternalGeneration()
+    public async Task LegacyLoadBegin_SwapBackReadCannotAuthorizeExternalGeneration()
     {
         if (!OperatingSystem.IsWindows())
             return;
@@ -5105,13 +5110,14 @@ public sealed class FileSystemManagerTests : IDisposable
 
         try
         {
-            await using var writeLease = await raceFs.AcquireCanonicalWriteLeaseAsync();
+            // Exercise the original load handler, not the common logical reader.
+            await using var lifecycleLease = await raceFs.AcquireSessionLifecycleLeaseAsync();
+            await using var writeLease = await raceFs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease);
             armed = true;
 
             Assert.Throws<InvalidDataException>(
-                () => raceFs.IsCurrentSessionGeneration(
-                    writeLease,
-                    externalGeneration));
+                () => raceFs.BeginLoadTransaction(writeLease, Guid.NewGuid().ToString("N")));
+            Assert.False(File.Exists(raceFs.ActiveLoadTransactionJournalPath));
 
             Assert.True(swapped);
             Assert.True(restored);
