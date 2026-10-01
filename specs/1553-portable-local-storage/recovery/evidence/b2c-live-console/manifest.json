@@ -1,0 +1,17 @@
+{
+  "sourceCommit": "48357174ccdada168b31545b2057e0f5a0f6db99",
+  "kind": "Observed ordinary interactive PTY console setting/save/process restart; no scripted input mode",
+  "sanitization": "Coordinator-sanitized artifacts copied byte-for-byte. Transcript collapses repeated padding and normalizes CRLF; raw transcript is not published. Its original SHA256 is retained in both artifacts.",
+  "files": [
+    {
+      "path": "observations.json",
+      "originalSha256": "af8862f7a0211f04fb6cc72e1508eff5822c18549ebb3bbe6c68ff2b79d7afc7",
+      "sanitizedSha256": "af8862f7a0211f04fb6cc72e1508eff5822c18549ebb3bbe6c68ff2b79d7afc7"
+    },
+    {
+      "path": "pty-transcript.json",
+      "originalSha256": "42e50d0fa55ab901e1bf27aca25211da1b9d455a8c40c7127b1baef2d63f08f0",
+      "sanitizedSha256": "42e50d0fa55ab901e1bf27aca25211da1b9d455a8c40c7127b1baef2d63f08f0"
+    }
+  ]
+}

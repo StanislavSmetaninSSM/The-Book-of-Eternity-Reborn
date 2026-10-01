@@ -1,0 +1,70 @@
+{
+  "startedAtUtc": "2026-10-01T06:15:16.122142+00:00",
+  "sourceCommit": "48357174ccdada168b31545b2057e0f5a0f6db99",
+  "binarySha256": "4cd9eecfa766def3d7cb2fb2d3e0ac8f2510992fd3cb11cc8d15926f0481aa62",
+  "terminal": "dumb",
+  "seedMembers": {
+    "config.json": "bb766172d464c80b39b3122b96f4b349e1800e71e57be11100f0ffde7f9fc62a",
+    "game_state/core/game_settings.json": null,
+    "game_state/core/system_mods.json": "3f6986a8583f71a120fabc3e7c118c3f7e0625a58e343032135f28185e323285"
+  },
+  "settings": {
+    "language": "ru",
+    "enableqteevents": true,
+    "gmbridgeenabled": false,
+    "gmbridgeautostart": false,
+    "musicenabled": false,
+    "soundenabled": false,
+    "generatesceneimages": false
+  },
+  "workerProfileCount": 0,
+  "mode": "ordinary interactive console; no e2e, agent-console, web, or provider mode",
+  "afterImmediateSave": {
+    "observedAtUtc": "2026-10-01T06:17:40.720184+00:00",
+    "configQte": false,
+    "projectionQte": false,
+    "language": "ru",
+    "members": {
+      "config.json": "87f3d2cba7bbfe907aa28cf298b3e5602482948555edcf1876d51fc5c022c604",
+      "game_state/core/game_settings.json": "5367edc1aba5490f2a0c38ff0a41a459356080a7373a672471eb416ac94099aa",
+      "game_state/core/system_mods.json": "d3006c4a22b18169240bb710f92f56d61d2a0ec08c5da284ad999ef3ea8cabe2"
+    },
+    "activeWorkerProfiles": 0,
+    "configuredWorkerProfiles": 8
+  },
+  "firstExit": {
+    "exitCode": 0,
+    "observedAtUtc": "2026-10-01T06:18:56.893948+00:00",
+    "membersUnchangedSinceImmediateSave": true
+  },
+  "freshProcessRestart": {
+    "observedAtUtc": "2026-10-01T06:19:45.185967+00:00",
+    "visibleOptionsQte": "Выключено",
+    "configQte": false,
+    "projectionQte": false,
+    "allThreeMemberBytesUnchanged": true
+  },
+  "secondExit": {
+    "exitCode": 0,
+    "observedAtUtc": "2026-10-01T06:22:58.827362+00:00",
+    "allThreeMemberBytesUnchanged": true
+  },
+  "terminalProtocol": {
+    "launch": "Direct dotnet process via shell exec after isolated environment setup",
+    "input": "Observed W/S navigation, separate Enter, and Escape through a real PTY",
+    "termOverride": false,
+    "scriptedInputMode": false,
+    "originalTranscriptSha256": "3b99ccedf8274ff35df7d64a366745d12d2fb6c91c46d09161faa6d2d39c543e",
+    "normalizedTranscriptSha256": "42e50d0fa55ab901e1bf27aca25211da1b9d455a8c40c7127b1baef2d63f08f0",
+    "captures": 13
+  },
+  "result": "Passed: visible ordinary menu/settings/immediate save/normal exit/fresh-process reread/normal exit",
+  "limits": [
+    "Synthetic fixture, not personal game data; full new-game, gameplay, accepted GM turn and save/load flows were not tested.",
+    "GM bridge/autostart were disabled; no provider/bridge workflow was exercised.",
+    "Audio and image generation were disabled; native font/audio capability was not tested.",
+    "Browser UI and Windows application execution were not tested.",
+    "Both owned application process handles exited 0; this is not a B4 all-descendant-containment claim.",
+    "Terminal text/control behavior was observed; no pixel-based visual/layout acceptance is claimed."
+  ]
+}
