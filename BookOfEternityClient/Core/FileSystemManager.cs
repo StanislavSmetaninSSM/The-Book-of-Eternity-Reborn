@@ -1550,19 +1550,20 @@ public partial class FileSystemManager
         string relativePath)
     {
         EnsureValidCanonicalWriteLease(writeLease);
-        if (!DirectoryExists(writeLease, relativePath))
-            return false;
-
-        var fullPath = ResolvePath(relativePath);
-        using var authority = PhysicalFileAuthority.OpenStableDirectory(
-            fullPath,
-            "Canonical directory inspection");
-        return Directory.EnumerateFileSystemEntries(
-                fullPath,
-                "*",
-                SearchOption.TopDirectoryOnly)
-            .Any();
+        return DirectoryHasLocalContent(relativePath);
     }
+
+    internal bool DirectoryHasContent(string relativePath)
+    {
+        if (HasAmbientCanonicalLease()) return DirectoryHasLocalContent(relativePath);
+        var lease = AcquirePublicationReadQuiescenceLeaseAsync().GetAwaiter().GetResult();
+        try { return DirectoryHasContent(lease, relativePath); }
+        finally { lease.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
+    }
+
+    private bool DirectoryHasLocalContent(string relativePath) =>
+        EnumerateLocalTreeFiles(new TrustedLocalFileScope([GameSessionPath]),
+            ResolvePath(relativePath)).Count != 0;
 
     internal bool DirectoryExists(
         CanonicalWriteLease writeLease,
@@ -5524,11 +5525,8 @@ public partial class FileSystemManager
 
     internal string RotateSessionGeneration(CanonicalWriteLease writeLease)
     {
-        EnsureValidSessionReplacementLease(writeLease);
-        var generationId = Guid.NewGuid().ToString("N");
-        WriteSessionGeneration(generationId);
-        DeleteWorkerSessionArtifactsCore();
-        return generationId;
+        return PublishSessionReplacementAsync(writeLease, clearGameState: false)
+            .GetAwaiter().GetResult();
     }
 
     // Original load-transaction generation read; keep its physical open contract
@@ -5743,89 +5741,16 @@ public partial class FileSystemManager
     {
         EnsureValidSessionLifecycleLease(lifecycleLease);
         await using var writeLock = await AcquireSessionReplacementWriteLeaseAsync(lifecycleLease);
-        var sessionGeneration = RotateSessionGeneration(writeLock);
-        ClearGameStateCore();
-        return sessionGeneration;
-    }
-
-    private void ClearGameStateCore()
-    {
-        var inputPath = Path.Combine(_basePath, "game_session", "input");
-        if (Directory.Exists(inputPath))
-        {
-            foreach (var file in EnumerateFilesWithoutFollowingReparsePoints(inputPath, "*.json"))
-                DeleteCanonicalFileByFullPath(file);
-        }
-
-        var gameStatePath = Path.Combine(_basePath, "game_session", "game_state");
-        var localUiLockNode = Path.GetFullPath(Path.Combine(
-            GameSessionPath,
-            LocalUiSessionLockService.LockPath.Replace(
-                '/',
-                Path.DirectorySeparatorChar)));
-        DeleteUntrustedCanonicalNamespaceNode(
-            localUiLockNode,
-            "Local UI lock namespace cleanup");
-
-        var browserRollbackRoot = ResolvePath(
-            ExplorerLocalTurnRollbackArtifacts.Root);
-        if (File.Exists(browserRollbackRoot))
-            DeleteCanonicalFileByFullPath(browserRollbackRoot);
-        else if (Directory.Exists(browserRollbackRoot))
-            DeleteCanonicalDirectoryTreeByFullPath(browserRollbackRoot);
-
-        if (Directory.Exists(gameStatePath))
-        {
-            foreach (var file in EnumerateFilesWithoutFollowingReparsePoints(gameStatePath, "*"))
-            {
-                if (ShouldPreserveAcrossGameStateClear(gameStatePath, file))
-                    continue;
-
-                DeleteCanonicalFileByFullPath(file);
-            }
-        }
-
-        // Clear output and ready
-        var outputPath = Path.Combine(_basePath, "game_session", "output");
-        if (Directory.Exists(outputPath))
-        {
-            foreach (var file in EnumerateFilesWithoutFollowingReparsePoints(outputPath, "*.json"))
-                DeleteCanonicalFileByFullPath(file);
-        }
-
-        var readyPath = Path.Combine(_basePath, "game_session", "ready");
-        if (Directory.Exists(readyPath))
-        {
-            foreach (var file in EnumerateFilesWithoutFollowingReparsePoints(readyPath, "*.json"))
-                DeleteCanonicalFileByFullPath(file);
-        }
-
-        var lorePath = Path.Combine(_basePath, "game_session", "lore");
-        if (Directory.Exists(lorePath))
-        {
-            foreach (var file in EnumerateFilesWithoutFollowingReparsePoints(lorePath, "*"))
-                DeleteCanonicalFileByFullPath(file);
-        }
-
-        var storiesPath = Path.Combine(_basePath, "game_session", "stories");
-        if (Directory.Exists(storiesPath))
-        {
-            foreach (var file in EnumerateFilesWithoutFollowingReparsePoints(storiesPath, "*"))
-                DeleteCanonicalFileByFullPath(file);
-        }
-
-        // Re-create structure
-        EnsureDirectoryStructureCore();
+        return await PublishSessionReplacementAsync(writeLock, clearGameState: true);
     }
 
     private static bool ShouldPreserveAcrossGameStateClear(string gameStatePath, string filePath)
     {
-        var relative = Path.GetRelativePath(gameStatePath, filePath)
-            .Replace(Path.DirectorySeparatorChar, '/')
-            .Replace(Path.AltDirectorySeparatorChar, '/');
+        var relative = GetLocalRelativePath(gameStatePath, filePath, OperatingSystem.IsWindows());
 
         return relative.Equals("control/gm_bridge_status.json", StringComparison.OrdinalIgnoreCase) ||
                relative.Equals("control/gm_cli_window_binding.json", StringComparison.OrdinalIgnoreCase) ||
+               relative.Equals("control/gm_context_pack", StringComparison.OrdinalIgnoreCase) ||
                relative.StartsWith("control/gm_context_pack/", StringComparison.OrdinalIgnoreCase);
     }
 

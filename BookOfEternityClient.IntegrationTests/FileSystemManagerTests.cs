@@ -69,10 +69,15 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task ClearGameStateAsync_DoesNotTraverseDirectoryJunction()
+    public async Task ClearGameStateAsync_RejectsDirectoryJunctionAndPreservesOutsideData()
     {
         if (!OperatingSystem.IsWindows())
             return;
+
+        const string sentinel = "input/clear-sentinel.json";
+        byte[] sentinelBytes = [0xFF, 0, 0xFE];
+        await _fs.WriteFileAtomicBytesAsync(sentinel, sentinelBytes);
+        var generationBefore = await File.ReadAllBytesAsync(_fs.SessionGenerationPath);
 
         var outsideRoot = Path.Combine(
             Path.GetTempPath(),
@@ -85,7 +90,9 @@ public sealed class FileSystemManagerTests : IDisposable
         {
             CreateDirectoryJunction(junctionPath, outsideRoot);
 
-            await _fs.ClearGameStateAsync();
+            await Assert.ThrowsAsync<InvalidDataException>(() => _fs.ClearGameStateAsync());
+            Assert.Equal(sentinelBytes, await File.ReadAllBytesAsync(_fs.ResolvePath(sentinel)));
+            Assert.Equal(generationBefore, await File.ReadAllBytesAsync(_fs.SessionGenerationPath));
 
             Assert.True(File.Exists(outsideFile));
             Assert.Equal("{\"mustRemain\":true}", await File.ReadAllTextAsync(outsideFile));
@@ -100,25 +107,37 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task ClearGameStateAsync_RemovesLocalUiLockNamespaceDirectory()
+    public async Task ClearGameStateAsync_RejectsLocalUiLockDirectoryAndPreservesEvidence()
     {
+        const string sentinel = "input/clear-sentinel.json";
+        byte[] sentinelBytes = [0xFF, 0, 0xFE];
+        await _fs.WriteFileAtomicBytesAsync(sentinel, sentinelBytes);
+        var generationBefore = await File.ReadAllBytesAsync(_fs.SessionGenerationPath);
         var lockNode = _fs.ResolvePath(LocalUiSessionLockService.LockPath);
         Directory.CreateDirectory(Path.Combine(lockNode, "nested"));
         await File.WriteAllTextAsync(
             Path.Combine(lockNode, "nested", "lock.json"),
             "{\"crafted\":true}");
 
-        await _fs.ClearGameStateAsync();
+        await Assert.ThrowsAsync<InvalidDataException>(() => _fs.ClearGameStateAsync());
+        Assert.Equal(sentinelBytes, await File.ReadAllBytesAsync(_fs.ResolvePath(sentinel)));
+        Assert.Equal(generationBefore, await File.ReadAllBytesAsync(_fs.SessionGenerationPath));
 
-        Assert.False(File.Exists(lockNode));
-        Assert.False(Directory.Exists(lockNode));
+        Assert.True(Directory.Exists(lockNode));
+        Assert.Equal("{\"crafted\":true}",
+            await File.ReadAllTextAsync(Path.Combine(lockNode, "nested", "lock.json")));
     }
 
     [Fact]
-    public async Task ClearGameStateAsync_RemovesLocalUiLockJunctionWithoutTraversingTarget()
+    public async Task ClearGameStateAsync_RejectsLocalUiLockJunctionWithoutTraversingTarget()
     {
         if (!OperatingSystem.IsWindows())
             return;
+
+        const string sentinel = "input/clear-sentinel.json";
+        byte[] sentinelBytes = [0xFF, 0, 0xFE];
+        await _fs.WriteFileAtomicBytesAsync(sentinel, sentinelBytes);
+        var generationBefore = await File.ReadAllBytesAsync(_fs.SessionGenerationPath);
 
         var outsideRoot = Path.Combine(
             Path.GetTempPath(),
@@ -131,9 +150,11 @@ public sealed class FileSystemManagerTests : IDisposable
         {
             CreateDirectoryJunction(lockNode, outsideRoot);
 
-            await _fs.ClearGameStateAsync();
+            await Assert.ThrowsAsync<InvalidDataException>(() => _fs.ClearGameStateAsync());
+            Assert.Equal(sentinelBytes, await File.ReadAllBytesAsync(_fs.ResolvePath(sentinel)));
+            Assert.Equal(generationBefore, await File.ReadAllBytesAsync(_fs.SessionGenerationPath));
 
-            Assert.False(Directory.Exists(lockNode));
+            Assert.True(Directory.Exists(lockNode));
             Assert.True(File.Exists(outsideFile));
             Assert.Equal(
                 "{\"mustRemain\":true}",
@@ -149,29 +170,33 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task ClearGameStateAsync_RemovesDanglingLocalUiLockNode()
+    public async Task ClearGameStateAsync_RejectsDanglingLocalUiLockNode()
     {
         if (!OperatingSystem.IsWindows())
             return;
+
+        const string sentinel = "input/clear-sentinel.json";
+        byte[] sentinelBytes = [0xFF, 0, 0xFE];
+        await _fs.WriteFileAtomicBytesAsync(sentinel, sentinelBytes);
+        var generationBefore = await File.ReadAllBytesAsync(_fs.SessionGenerationPath);
 
         var lockNode = _fs.ResolvePath(LocalUiSessionLockService.LockPath);
         var missingTarget = Path.Combine(
             _rootPath,
             "missing-local-ui-lock-target");
         Directory.CreateDirectory(missingTarget);
-        if (!TryCreateDirectoryLink(lockNode, missingTarget))
-        {
-            Directory.Delete(missingTarget);
-            return;
-        }
+        Assert.True(TryCreateDirectoryLink(lockNode, missingTarget),
+            "The Windows directory-link fixture could not be created; its assertions were not exercised.");
         Directory.Delete(missingTarget);
         Assert.True(
             File.GetAttributes(lockNode).HasFlag(FileAttributes.ReparsePoint));
 
-        await _fs.ClearGameStateAsync();
+        await Assert.ThrowsAsync<InvalidDataException>(() => _fs.ClearGameStateAsync());
+        Assert.Equal(sentinelBytes, await File.ReadAllBytesAsync(_fs.ResolvePath(sentinel)));
+        Assert.Equal(generationBefore, await File.ReadAllBytesAsync(_fs.SessionGenerationPath));
 
-        Assert.Throws<FileNotFoundException>(
-            () => File.GetAttributes(lockNode));
+        Assert.True(File.GetAttributes(lockNode).HasFlag(FileAttributes.ReparsePoint));
+        Assert.False(Directory.Exists(missingTarget));
     }
 
     [Fact]
@@ -1808,18 +1833,26 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task ClearGameStateAsync_RemovesManifestlessBrowserRollbackRoot()
+    public async Task ClearGameStateAsync_RejectsManifestlessBrowserRollbackEvidence()
     {
+        const string sentinel = "input/clear-sentinel.json";
+        byte[] sentinelBytes = [0xFF, 0, 0xFE];
+        await _fs.WriteFileAtomicBytesAsync(sentinel, sentinelBytes);
+        var generationBefore = await File.ReadAllBytesAsync(_fs.SessionGenerationPath);
         var orphanPath =
             $"{ExplorerLocalTurnRollbackArtifacts.Root}/orphan/evidence.bin";
-        await _fs.WriteFileAtomicBytesAsync(orphanPath, [1, 2, 3, 4]);
+        var evidencePath = _fs.ResolvePath(orphanPath);
+        Directory.CreateDirectory(Path.GetDirectoryName(evidencePath)!);
+        await File.WriteAllBytesAsync(evidencePath, [1, 2, 3, 4]);
 
-        await _fs.ClearGameStateAsync();
+        await Assert.ThrowsAsync<InvalidDataException>(() => _fs.ClearGameStateAsync());
+        Assert.Equal(sentinelBytes, await File.ReadAllBytesAsync(_fs.ResolvePath(sentinel)));
+        Assert.Equal(generationBefore, await File.ReadAllBytesAsync(_fs.SessionGenerationPath));
 
         var rollbackRoot = _fs.ResolvePath(
             ExplorerLocalTurnRollbackArtifacts.Root);
-        Assert.False(File.Exists(rollbackRoot));
-        Assert.False(Directory.Exists(rollbackRoot));
+        Assert.True(Directory.Exists(rollbackRoot));
+        Assert.Equal(new byte[] { 1, 2, 3, 4 }, await File.ReadAllBytesAsync(evidencePath));
     }
 
     [Fact]
