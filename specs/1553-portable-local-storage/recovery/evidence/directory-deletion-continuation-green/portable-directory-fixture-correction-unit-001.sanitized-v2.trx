@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="ae0e0e59-6cbb-4e8f-841e-509a09f50b0a" name="@ff00c3d48a40 2026-10-01 16:22:52" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-01T16:22:52.6231250-04:00" queuing="2026-10-01T16:22:52.6231251-04:00" start="2026-10-01T16:22:50.2883034-04:00" finish="2026-10-01T16:22:52.6349214-04:00" />
+  <TestSettings name="default" id="b2a5fb09-0611-48ba-ac4f-fbd46101510e">
+    <Deployment runDeploymentRoot="_ff00c3d48a40_2026-10-01_16_22_52" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="0905bf8b-344d-44cd-b743-56ffde862417" testId="48515fcc-70ff-1a08-d6ae-1d7962a4bae4" testName="BookOfEternityClient.Tests.PortableDirectoryDeletionTests.StaleBoundGenerationRejectsBeforeDeletingAnyMember" computerName="ff00c3d48a40" duration="00:00:00.0128650" startTime="2026-10-01T16:22:52.4799745-04:00" endTime="2026-10-01T16:22:52.4799747-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0905bf8b-344d-44cd-b743-56ffde862417" />
+    <UnitTestResult executionId="3ef06fa6-e0b7-40e5-bbfc-188c26bde562" testId="9f992afd-025e-84fe-7230-26ed6673eb0e" testName="BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes(invalid: &quot;late-dangling-link&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0175826" startTime="2026-10-01T16:22:52.4606816-04:00" endTime="2026-10-01T16:22:52.4606818-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3ef06fa6-e0b7-40e5-bbfc-188c26bde562" />
+    <UnitTestResult executionId="4a9e0803-1929-444f-9156-b3af4e1a6aa7" testId="78261867-46eb-c3f9-6bda-02edadfd47a3" testName="BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes(invalid: &quot;root-link&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0543030" startTime="2026-10-01T16:22:52.4439244-04:00" endTime="2026-10-01T16:22:52.4439371-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4a9e0803-1929-444f-9156-b3af4e1a6aa7" />
+    <UnitTestResult executionId="4e3df7d5-a694-4345-95d4-4a00aa602f9a" testId="b244f1a9-2adb-cd61-0909-b78795ee2b60" testName="BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes(invalid: &quot;late-link&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0029816" startTime="2026-10-01T16:22:52.4637702-04:00" endTime="2026-10-01T16:22:52.4637704-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4e3df7d5-a694-4345-95d4-4a00aa602f9a" />
+    <UnitTestResult executionId="ffbaa271-f91b-4ded-aacf-f55e118aabcf" testId="6862c17e-bc60-94f9-b8c4-25ce29fdcb19" testName="BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes(invalid: &quot;root-file&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0027113" startTime="2026-10-01T16:22:52.4667158-04:00" endTime="2026-10-01T16:22:52.4667159-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ffbaa271-f91b-4ded-aacf-f55e118aabcf" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableDirectoryDeletionTests.StaleBoundGenerationRejectsBeforeDeletingAnyMember" storage="[REPO]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="48515fcc-70ff-1a08-d6ae-1d7962a4bae4">
+      <Execution id="0905bf8b-344d-44cd-b743-56ffde862417" />
+      <TestMethod codeBase="[REPO]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableDirectoryDeletionTests" name="StaleBoundGenerationRejectsBeforeDeletingAnyMember" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes(invalid: &quot;root-file&quot;)" storage="[REPO]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6862c17e-bc60-94f9-b8c4-25ce29fdcb19">
+      <Execution id="ffbaa271-f91b-4ded-aacf-f55e118aabcf" />
+      <TestMethod codeBase="[REPO]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableDirectoryDeletionTests" name="InvalidTreePreflightRetainsAllMembersAndOutsideBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes(invalid: &quot;late-link&quot;)" storage="[REPO]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b244f1a9-2adb-cd61-0909-b78795ee2b60">
+      <Execution id="4e3df7d5-a694-4345-95d4-4a00aa602f9a" />
+      <TestMethod codeBase="[REPO]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableDirectoryDeletionTests" name="InvalidTreePreflightRetainsAllMembersAndOutsideBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes(invalid: &quot;late-dangling-link&quot;)" storage="[REPO]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9f992afd-025e-84fe-7230-26ed6673eb0e">
+      <Execution id="3ef06fa6-e0b7-40e5-bbfc-188c26bde562" />
+      <TestMethod codeBase="[REPO]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableDirectoryDeletionTests" name="InvalidTreePreflightRetainsAllMembersAndOutsideBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes(invalid: &quot;root-link&quot;)" storage="[REPO]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="78261867-46eb-c3f9-6bda-02edadfd47a3">
+      <Execution id="4a9e0803-1929-444f-9156-b3af4e1a6aa7" />
+      <TestMethod codeBase="[REPO]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableDirectoryDeletionTests" name="InvalidTreePreflightRetainsAllMembersAndOutsideBytes" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="48515fcc-70ff-1a08-d6ae-1d7962a4bae4" executionId="0905bf8b-344d-44cd-b743-56ffde862417" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9f992afd-025e-84fe-7230-26ed6673eb0e" executionId="3ef06fa6-e0b7-40e5-bbfc-188c26bde562" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="78261867-46eb-c3f9-6bda-02edadfd47a3" executionId="4a9e0803-1929-444f-9156-b3af4e1a6aa7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b244f1a9-2adb-cd61-0909-b78795ee2b60" executionId="4e3df7d5-a694-4345-95d4-4a00aa602f9a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6862c17e-bc60-94f9-b8c4-25ce29fdcb19" executionId="ffbaa271-f91b-4ded-aacf-f55e118aabcf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="5" executed="5" passed="5" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.19]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.53]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.55]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.70]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

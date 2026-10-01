@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "0462e13abb9e7c75bbb0eb319943545f67cafb7e",
+  "sourceFingerprint": "4A1152B90C7B03174BE5D7376A7EF621DCC2994B4F8BBB0A0ED9CAE53BD3C6BA",
+  "patchSha256": "6ad42b6e8b6feb154f6c7f3ff261087083a6b780570c2903d13371f8c59da857",
+  "appliedSourceTree": "8176dafab3d4832f26f709b31e61e6fa55921890",
+  "platform": "Linux x64",
+  "toolchain": {
+    "sdk": "10.0.401",
+    "runtime": "8.0.31",
+    "powershell": "7.6.6"
+  },
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category portable-directory-consumers -Parallelism 1",
+  "scope": "Both projects built, but three LiveTurnPreparationService methods were misassigned to integration. Discovery rejected the selection; zero tests ran.",
+  "categories": [
+    "portable-directory-consumers"
+  ],
+  "selection": {
+    "PlannedDescriptors": 0,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 0,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "duration": "00:03:41.9415840",
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedCleanup": true,
+  "runtimeCleanup": true,
+  "artifacts": [
+    {
+      "file": "summary.json",
+      "originalSha256": "4b302dba841dd1fe683948a04117594046e40c53b63853c6bdc9c2ad027734db",
+      "sanitizedSha256": "4b302dba841dd1fe683948a04117594046e40c53b63853c6bdc9c2ad027734db",
+      "sanitizedBytes": 1419
+    }
+  ]
+}

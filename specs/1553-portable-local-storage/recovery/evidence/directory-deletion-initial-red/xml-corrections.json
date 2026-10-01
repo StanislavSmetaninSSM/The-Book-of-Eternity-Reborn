@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "provenance": "Original raw artifact bytes verified against the existing manifest; all path replacements use XML-safe square-bracket tokens. Original manifest and malformed sanitized artifact remain unchanged. No behavior was rerun.",
+  "originalManifestSha256": "f6c45bffd6539e4906f9a48c580dbe0ce96088a9b15382ea4d677c86db89bd4e",
+  "corrections": [
+    {
+      "originalArtifact": "portable-directory-deletion-unit-001.trx",
+      "originalRawSha256": "fdf8b8f1a8b4a3e95f43ab5381b2cf216b9dda50c6b509a6ab7301ebcc028891",
+      "retainedMalformedSanitizedSha256": "4a3fc53cfd1a42b1044574cb2c5f9f0a0f608d2597c84cea9e9124b789096460",
+      "parseError": "mismatched tag: line 20, column 2",
+      "correctedArtifact": "portable-directory-deletion-unit-001.sanitized-v2.trx",
+      "correctedSanitizedSha256": "c16d11a66946c1b362f955fa9771fe0a557f80f2959bbdb909097847d9d45e5c",
+      "correctedBytes": 25149,
+      "xmlValid": true,
+      "testIdentitiesAndOutcomesUnchanged": true
+    }
+  ]
+}

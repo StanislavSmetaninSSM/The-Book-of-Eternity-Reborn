@@ -86,13 +86,36 @@ index f226ef97..a9291256 100644
 +
 +The saved Linux ProcedureTerminalQuarantine failure is in preparation before its helper. Verify that exact body after the tree port, without bypassing its fixture. Complete live/console preparation remains non-atomic because request/manifest/authority/dice/snapshot operations are separate. Full preparation, browser-v6, load/save/library, worker and B4/B5 remain later work. A fresh read-only Astra XHigh investigation found no material product decision blocking this slice; focused implementation and review evidence are still pending.
 diff --git a/tests/categories.json b/tests/categories.json
-index b63e8a81..0b3c37a1 100644
+index b63e8a81..208022b8 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -1,6 +1,170 @@
+@@ -1,6 +1,193 @@
  {
    "schemaVersion": 1,
    "categories": [
++    {
++      "id": "portable-directory-same-lease-recovery",
++      "responsibility": "Repeated same-lease tree or ancestor deletion must recover retained common cleanup debt before empty pruning, or retain parents/evidence on generation conflict.",
++      "excludes": "Unchanged ordinary validation, whole preparation and original browser recovery.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning"
++          ]
++        }
++      ]
++    },
 +    {
 +      "id": "portable-directory-fixture-correction",
 +      "responsibility": "Exact correction of root-link parent setup and propagated stale-bound-scope assertion after the initial ordinary cohort.",
@@ -183,9 +206,6 @@ index b63e8a81..0b3c37a1 100644
 +        {
 +          "project": "integration",
 +          "tests": [
-+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
-+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_RemovesStalePendingDiceStateSoTurnRequestIsOnlyCurrentDiceAuthority",
-+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts",
 +            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim",
 +            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcessPlayerTurn_TerminalError_CleansTurnRequestAndPendingSnapshot",
 +            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes"
@@ -194,6 +214,9 @@ index b63e8a81..0b3c37a1 100644
 +        {
 +          "project": "unit",
 +          "tests": [
++            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
++            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_RemovesStalePendingDiceStateSoTurnRequestIsOnlyCurrentDiceAuthority",
++            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts",
 +            "BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.*",
 +            "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPendingAndRecoveryAuthority_ContainsNoPathnameAbsenceFallback",
 +            "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PendingSnapshotCleanup_AndLateRollback_MustNotTrustRawManifestArtifactPaths"
