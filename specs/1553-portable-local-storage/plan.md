@@ -377,3 +377,13 @@ Supplemental B4 evidence-only checkpoint while B2 source is frozen: the separate
 
 
 Supplemental browser diagnostic evidence-only checkpoint: `recovery/evidence/browser-loopback-diagnostic-20261001/` preserves a minimized derivative and original/derived hashes for the read-only 02:08–02:10 UTC observation. The existing error attributes blocking to an extension, but its identity/rule, network topology and a permitted private preview remain unresolved; broad HTTP policy alone is not proof of a blanket localhost ban. Prior zero-request synthetic evidence was not rerun. No policy changes, tunnel or alternate target were attempted; no B2 source/test/catalog changed. Research links the diagnostic and public documentation without asserting a game defect or recommending restriction changes.
+
+
+### B2b independent review correction round 1, 2026-10-01 02:18 UTC
+
+Independent Astra XHigh completed the connected review with one P2: cancelling queued settings before a save load did not reconcile a failed load's still-visible language draft, and shared audio-scope invalidation left a pending flag that ignored later confirmed refreshes. The reviewer controlled unchanged actual TSX handlers/hooks/promises and reproduced both; this is component-control-flow evidence, not Browser Use. No additional code finding was reported.
+
+At unchanged reviewed B2 source (current docs head `8f9e13cc`), add six permanent actual-handler regressions derived from that diagnostic: HTTP/domain/thrown load failure, audio refresh after invalidated in-flight update, unmount exclusion, and failed reconciliation without presenting the cancelled optimistic value as confirmed. Each fixture has its own module cache/hooks/timers/API promises; production TSX and tracker execute unchanged in a controlled Node VM. Formatting and unrelated child rendering are stubbed, not the handlers under test. The narrow notice category owns this exact Vitest file alongside its prior Node contract. Existing portable-settings-consumers stays selected; unchanged C# selections are deliberately not rerun. Recovery patch now yields `ba9b41236b5df635fbf4bb151f8d5710f3b44435`. Publish this test-only checkpoint before RED; B2c implementation stays pending.
+
+
+Browser diagnostic closeout (reported by the coordinator): managed-page DevTools was explicitly organization-disabled. Diagnosis stopped with root cause unverified; no further browser, extension, policy or tunnel probing is authorized in this work. Research records the boundary without publishing internal policy data.

@@ -6,7 +6,7 @@ After a fresh clone, verify the branch HEAD against the latest recorded remote c
 
 1. Run `git apply --check specs/1553-portable-local-storage/recovery/categories-pending.patch`
 2. Run `git apply specs/1553-portable-local-storage/recovery/categories-pending.patch` once
-3. Verify `git hash-object tests/categories.json` equals `4f48467ede0a1e2e78a5577d7a1205808c1e1d7f`
+3. Verify `git hash-object tests/categories.json` equals `ba9b41236b5df635fbf4bb151f8d5710f3b44435`
 
 Do not apply twice to an implementation checkout whose patch is already applied. Before application, the catalog and selection intentionally describe an incomplete WIP publication. Keep the exact patch until the normal catalog blob has been published and verified, then remove this pending notice and patch. Do not retry a large upload blindly; bounded source/evidence checkpoints may continue with this recovery procedure.
 

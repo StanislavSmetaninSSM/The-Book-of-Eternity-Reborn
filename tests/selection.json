@@ -2,34 +2,8 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-prepared-settings",
-      "reason": "#1553 B2b prepared settings/audio services, exact member bytes, outcome-to-runtime application, hard-linked GET and cold bootstrap restart.",
-      "contracts": [
-        "prepared settings publication",
-        "explicit durable outcome",
-        "strict detached settings reader"
-      ]
-    },
-    {
-      "category": "portable-settings-endpoints",
-      "reason": "#1553 B2b exact existing HTTP settings/audio and shared active-owner guard consumers; no broad browser sweep.",
-      "contracts": [
-        "settings/audio HTTP persistence",
-        "pending GM and local owner",
-        "player-safe settings response"
-      ]
-    },
-    {
-      "category": "portable-client-bootstrap",
-      "reason": "#1553 B2b will share the strict config decoder with accepted bootstrap; validate that affected read/encoding/admission contract.",
-      "contracts": [
-        "strict config decoding",
-        "leased config bootstrap"
-      ]
-    },
-    {
       "category": "portable-settings-notices",
-      "reason": "#1553 B2b success warnings and explicit failure outcomes must reach the actual settings/audio response handlers without stale/interrupted responses clearing committed follow-up. Also covers the exact OS-aware npm build prerequisite and optional owned refresh publication seam.",
+      "reason": "B2b independent review P2: actual failed-load settings/audio handler reconciliation, cancelled draft visibility, shared-scope pending reset and stale/unmounted ownership; unchanged C# is not rerun.",
       "contracts": [
         "visible persistence notice",
         "response ownership",

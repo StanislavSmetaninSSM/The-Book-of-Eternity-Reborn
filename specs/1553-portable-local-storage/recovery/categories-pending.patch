@@ -1,8 +1,8 @@
 diff --git a/tests/categories.json b/tests/categories.json
-index 4b805af9..4f48467e 100644
+index 4b805af9..ba9b4123 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -7600,6 +7600,236 @@
+@@ -7600,6 +7600,243 @@
            ]
          }
        ]
@@ -205,7 +205,7 @@ index 4b805af9..4f48467e 100644
 +    {
 +      "id": "portable-settings-notices",
 +      "responsibility": "Visible prepared-settings persistence notice semantics, stale/interrupted response ownership and rapid patch coalescing in the exact SettingsView and AudioPanel consumers.",
-+      "excludes": "Real browser interaction, audio playback, unrelated frontend state/gameplay and backend storage protocol. Uses one file-only Node contract, plus production frontend typecheck/build.",
++      "excludes": "Real browser interaction, audio playback, unrelated frontend state/gameplay and backend storage protocol. Uses focused Node and controlled-component Vitest contracts, plus production frontend typecheck/build.",
 +      "changeHints": [
 +        "BookOfEternityClient.WebFrontend/src/utils/settingsPersistenceNotice.ts",
 +        "BookOfEternityClient.WebFrontend/src/components/SettingsView.tsx",
@@ -233,6 +233,13 @@ index 4b805af9..4f48467e 100644
 +          "runner": "node",
 +          "tests": [
 +            "BookOfEternityClient.WebFrontend/test/settingsPersistenceNotice.test.ts"
++          ]
++        },
++        {
++          "project": "frontend",
++          "runner": "vitest",
++          "tests": [
++            "BookOfEternityClient.WebFrontend/test/settingsLoadReconciliation.test.ts"
 +          ]
 +        }
 +      ]
