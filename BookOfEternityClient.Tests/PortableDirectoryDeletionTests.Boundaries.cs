@@ -24,7 +24,11 @@ public sealed partial class PortableDirectoryDeletionTests
         var generation = SeedGeneration(files);
         var outside = Path.Combine(_root, "outside.bin"); File.WriteAllBytes(outside, [42]);
         if (invalid == "root-file") Seed(files, Tree, [11]);
-        else if (invalid == "root-link") Directory.CreateSymbolicLink(files.ResolvePath(Tree), _root);
+        else if (invalid == "root-link")
+        {
+            Directory.CreateDirectory(files.GameSessionPath);
+            Directory.CreateSymbolicLink(files.ResolvePath(Tree), _root);
+        }
         else
         {
             Seed(files, Tree + "/a.bin", [0xFF, 0]);
@@ -70,13 +74,13 @@ public sealed partial class PortableDirectoryDeletionTests
     public async Task StaleBoundGenerationRejectsBeforeDeletingAnyMember()
     {
         var files = Manager(); SeedGeneration(files); Seed(files, Tree + "/keep", [1]);
-        await SessionOperationContext.RunBoundAsync(files, _generation, async () =>
+        await Assert.ThrowsAsync<SessionReplacedException>(() => SessionOperationContext.RunBoundAsync(files, _generation, async () =>
         {
             await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
             File.WriteAllBytes(files.SessionGenerationPath,
                 JsonSerializer.SerializeToUtf8Bytes(new { schemaVersion = 1, generationId = Guid.NewGuid().ToString("N") }));
             Assert.Throws<SessionReplacedException>(() => files.DeleteDirectoryTree(lease, Tree));
-        });
+        }));
         Assert.Equal(new byte[] { 1 }, File.ReadAllBytes(files.ResolvePath(Tree + "/keep")));
         Assert.False(File.Exists(Journal(files)));
     }
