@@ -1,0 +1,34 @@
+{
+  "sourceCommit": "fca31f352abcc9363be973fa4f335bd81eb982eb",
+  "catalogBlobAfterPatch": "4d0f8d6ce7bf4a9c9a9795a998bee27e9accc3aa",
+  "kind": "newly executed b3-legacy-generation-gate-red; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained. Run-root paths replaced; LF/trailing-line normalization; original hashes retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "4a3c4251cbf997493d268936cf0ad7b18764e67e134653c482178bb96f57e1d8",
+      "sanitizedSha256": "4a3c4251cbf997493d268936cf0ad7b18764e67e134653c482178bb96f57e1d8"
+    },
+    {
+      "path": "portable-session-generation-consumers-integration-001.trx",
+      "originalSha256": "0fadb016e3f78be281ab94326ed2820f026ce3317be352e81feb641bbd1e6ce2",
+      "sanitizedSha256": "f31dc41b7a9fce7a4075841249c9dd00f35ce7466f985699b0b5e1674d8aeb98"
+    }
+  ],
+  "appliedSourceTree": "509568f097f2c1e38ffcb598fe6dec6fb21bc4c0",
+  "patches": [
+    {
+      "path": "generation-reader-source.pending.patch",
+      "sha256": "f2c0f469d6ce2f07a2d3071b88bdab2f806721f527cc7f97d704a0d71ff6b8ef"
+    },
+    {
+      "path": "categories-pending.patch",
+      "sha256": "112ab0e20509b2565d0c6b271955a9c14535af9aa2ff910b450705431bf352a0"
+    }
+  ],
+  "limits": [
+    "Selection stopped after the failing integration descriptor: 7/10 cases and 1/2 descriptors completed; three unit cases unrun.",
+    "Three reported integration passes are Windows-gated assertion bodies not executed on Linux.",
+    "Actual legacy commit read-boundary execution only; no successful legacy replacement, RotateSessionGeneration or NewGameFlow run."
+  ]
+}

@@ -38,10 +38,12 @@ public sealed class PortableLegacyGenerationTests : IDisposable
         await using var lifecycleLease = await files.AcquireSessionLifecycleLeaseAsync();
         await using var replacementLease = await files.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease);
         var transactionId = Guid.NewGuid().ToString("N");
+        var previousGeneration = Guid.NewGuid().ToString("N");
+        Assert.NotEqual(generation, previousGeneration);
         var journalBytes = JsonSerializer.SerializeToUtf8Bytes(new
         {
             SchemaVersion = 2, TransactionId = transactionId, Committed = false,
-            PreviousGenerationId = generation, ReplacementGenerationId = generation
+            PreviousGenerationId = previousGeneration, ReplacementGenerationId = generation
         });
         // Seed current-schema evidence only after admission under this owned
         // lease. We test the read gate before any legacy replacement publication.

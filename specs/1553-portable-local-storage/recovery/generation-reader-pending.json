@@ -1,18 +1,18 @@
 {
   "baseCommit": "6f2e95e356e977199717fef57863b4dcf288720f",
-  "status": "Common-reader interim 138-case covering result saved; added legacy commit-gate regression pending RED and correction",
+  "status": "Common-reader 138-case GREEN and focused legacy-gate RED saved; restored original legacy commit comparison pending focused GREEN",
   "preparedIndexTreeBeforeRecoveryBookkeeping": "0a318b5fe447fdabc3e7ba55064d5f60e0d02e91",
   "treeQualification": "Historical prepared index before these packet/recovery bookkeeping files; not the tree of the later checkpoint. Native normalization verifies the exact per-file blobs and the separately reported applied index tree.",
   "patches": [
     {
       "path": "generation-reader-source.pending.patch",
-      "bytes": 7292,
-      "sha256": "f2c0f469d6ce2f07a2d3071b88bdab2f806721f527cc7f97d704a0d71ff6b8ef",
+      "bytes": 7832,
+      "sha256": "bba0455efb3cb515315830f828c5ac0171157cefd2f3e6c6f846f63c1571b62a",
       "files": [
         {
           "path": "BookOfEternityClient/Core/FileSystemManager.cs",
           "beforeBlob": "d7c13693e69c43b7050e29a423e55e02f3d5b7ed",
-          "afterBlob": "05cbe935435a9245604b89f7f631239b994630d5"
+          "afterBlob": "3afd41d4a0a08780d32839c9a8f80dd1e158f35d"
         },
         {
           "path": "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs",

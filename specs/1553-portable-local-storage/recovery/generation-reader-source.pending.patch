@@ -42,7 +42,7 @@ index b73559c5..9f7bd2e4 100644
 +                () => raceFs.BeginLoadTransaction(writeLease, Guid.NewGuid().ToString("N")));
 +            Assert.False(File.Exists(raceFs.ActiveLoadTransactionJournalPath));
 diff --git a/BookOfEternityClient/Core/FileSystemManager.cs b/BookOfEternityClient/Core/FileSystemManager.cs
-index d7c13693..05cbe935 100644
+index d7c13693..3afd41d4 100644
 --- a/BookOfEternityClient/Core/FileSystemManager.cs
 +++ b/BookOfEternityClient/Core/FileSystemManager.cs
 @@ -3647,3 +3647 @@ public partial class FileSystemManager
@@ -50,14 +50,21 @@ index d7c13693..05cbe935 100644
 -            ? ReadSessionGeneration()
 -            : null;
 +        var actualGeneration = ReadLocalGenerationSnapshot(writeLease).Binding.Id;
-@@ -5505,4 +5503,2 @@ public partial class FileSystemManager
+@@ -4041,0 +4040,2 @@ public partial class FileSystemManager
++        // This unmigrated load journal retains its original physical generation
++        // read; ordinary logical readers must not alter its commit admission.
+@@ -4044 +4044,2 @@ public partial class FileSystemManager
+-            !IsCurrentSessionGeneration(writeLease, journal.ReplacementGenerationId))
++            !RuntimeFileExists(SessionGenerationPath) ||
++            !string.Equals(ReadSessionGeneration(), journal.ReplacementGenerationId, StringComparison.Ordinal))
+@@ -5505,4 +5506,2 @@ public partial class FileSystemManager
 -        EnsureValidCanonicalWriteLease(writeLease);
 -        if (RuntimeFileExists(SessionGenerationPath))
 -            return ReadSessionGeneration();
 -
 +        var snapshot = ReadLocalGenerationSnapshot(writeLease);
 +        if (snapshot.Binding.Exists) return snapshot.Binding.Id!;
-@@ -5512,14 +5508,3 @@ public partial class FileSystemManager
+@@ -5512,14 +5511,3 @@ public partial class FileSystemManager
 -    /// <summary>
 -    /// Reads an existing session generation without creating or replacing runtime authority.
 -    /// </summary>
@@ -75,7 +82,7 @@ index d7c13693..05cbe935 100644
 +    /// <summary>Reads existing logical generation authority without creating or replacing it.</summary>
 +    internal string? ReadExistingSessionGeneration(CanonicalWriteLease writeLease) =>
 +        ReadLocalGenerationSnapshot(writeLease).Binding.Id;
-@@ -5531,11 +5516,4 @@ public partial class FileSystemManager
+@@ -5531,11 +5519,4 @@ public partial class FileSystemManager
 -        EnsureValidCanonicalWriteLease(writeLease);
 -        if (string.IsNullOrWhiteSpace(expectedGenerationId) ||
 -            !RuntimeFileExists(SessionGenerationPath))
@@ -91,7 +98,7 @@ index d7c13693..05cbe935 100644
 +        if (string.IsNullOrWhiteSpace(expectedGenerationId)) return false;
 +        return string.Equals(ReadLocalGenerationSnapshot(writeLease).Binding.Id,
 +            expectedGenerationId, StringComparison.Ordinal);
-@@ -5553,25 +5531,4 @@ public partial class FileSystemManager
+@@ -5553,25 +5534,4 @@ public partial class FileSystemManager
 -    private string ReadSessionGeneration()
 -    {
 -        try
