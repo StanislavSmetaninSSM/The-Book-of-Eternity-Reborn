@@ -286,3 +286,6 @@ Before expanding, the controller identified a concrete outcome edge: only Commit
 
 
 The closing-boundary regression is reproduced at `fd4ef133827351b7d640d7444a35519c21365fc3` plus catalog `79aa0e82`: **10 executed, 9 passed, 1 failed**. Only unknown-close failed, with Expected Uncertain / Actual Blocked. Complete selection/cleanup, no overall timeout, **2:05.3896745**. Sanitized original summary/TRX and hashes are in `recovery/evidence/b2b-closing-red/`. The correction now retains every already-established publication outcome before callbacks/owner cleanup/bound close, including Uncertain, rather than remembering only commit. No GREEN claim yet; the unchanged ten-case category is the next check.
+
+
+Closing-outcome correction GREEN at `48a1ef1670b07d6b937d2322386be1d0d8cfe5c5` plus catalog `79aa0e82`: **10/10 passed**, complete selected descriptor/cases, no skips/duplicates/timeouts, owned cleanup complete, **2:14.1159541**. This includes the reproduced unknown-close case. Sanitized original summary/TRX and hashes are preserved in `recovery/evidence/b2b-closing-green/`. The coordinator remains unaccepted WIP within the connected B2b settings capability. Continue the strict detached settings/audio services and exact endpoint/frontend consumer coverage; no separate helper-only review or overall B2 completion is claimed.
