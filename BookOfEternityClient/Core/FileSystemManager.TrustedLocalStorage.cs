@@ -139,7 +139,7 @@ public partial class FileSystemManager
             var publisher = new TrustedLocalFilePublication(this, scope);
             for (var attempt = 0; ; attempt++)
             {
-                var outcome = publisher.PublishWithOutcome(lease, generation, changes);
+                var outcome = publisher.PublishWithOutcome(lease, generation, changes, _hooks?.LocalPublicationObserver);
                 if (outcome.Disposition != TrustedLocalPublicationDisposition.RolledBack ||
                     outcome.Failure is InvalidDataException || outcome.Failure == null ||
                     !IsTransientFileAccessException(outcome.Failure) || attempt >= TransientFileAccessRetryCount - 1)

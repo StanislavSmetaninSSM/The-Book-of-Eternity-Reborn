@@ -29,8 +29,9 @@ public sealed class PortablePreparedSettingsTests : IDisposable
             {
                 BeforeCanonicalMutationBoundaryAsync = path =>
                 {
-                    _before?.Invoke(path);
-                    if (path == "config.json") _settingsPublication = true;
+                    var logicalPath = path.Replace('\\', '/');
+                    _before?.Invoke(logicalPath);
+                    if (logicalPath == "config.json") _settingsPublication = true;
                     return Task.CompletedTask;
                 },
                 LocalPublicationObserver = (phase, index) =>

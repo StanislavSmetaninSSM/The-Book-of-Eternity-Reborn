@@ -248,35 +248,7 @@ public sealed partial class BrowserLocalWriteCoordinator
         IReadOnlyCollection<string>? rollbackCleanupDirectories,
         IReadOnlyCollection<string>? rollbackExternalFileIds)
     {
-        BrowserPendingTurnStatus pending;
-        try
-        {
-            pending = BrowserPendingTurnInspector.Build(
-                _fs,
-                writeLease);
-        }
-        catch (InvalidDataException ex)
-        {
-            return BrowserLocalWriteResult.Blocked(
-                $"Browser-write заблокирован: повреждена служебная разметка активного хода ({ex.Message}).");
-        }
-
-        if (pending.HasActiveGmTurn)
-        {
-            return BrowserLocalWriteResult.Blocked(
-                "Browser-write заблокирован: активный GM-turn или rollback/snapshot artifact должен быть завершён до локальной записи.");
-        }
-
-        var owner = BuildOwner(request);
-        var lockResult = request.ExistingLease == null
-            ? await _lockService.AcquireOrRefreshAsync(
-                writeLease,
-                owner,
-                request.OperationLabel)
-            : await _lockService.RefreshAsync(
-                writeLease,
-                request.ExistingLease,
-                request.OperationLabel);
+        var lockResult = await AcquireLocalWriteGuardAsync(writeLease, request);
         if (!lockResult.Acquired || lockResult.Lease == null)
             return BrowserLocalWriteResult.Blocked(lockResult.BlockerMessage);
         var lockLease = lockResult.Lease;
