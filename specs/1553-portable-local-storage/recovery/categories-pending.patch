@@ -1,8 +1,19 @@
 diff --git a/tests/categories.json b/tests/categories.json
-index 4b805af..14e7851 100644
+index 4b805af..161d1af 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -7600,6 +7600,307 @@
+@@ -1895,7 +1895,9 @@
+         {
+           "project": "integration",
+           "tests": [
+-            "BookOfEternityClient.Tests.ConsoleE2ESmokeTests.*"
++            "BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleE2E_StatusCommand_RealSpectreRenderReturnsAfterKeyPrompt",
++            "BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleE2E_ExhaustedScript_PreservesRealRunnerFailureArtifacts",
++            "BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleE2E_InvalidScriptJson_ReturnsExit2AndFailureArtifactBeforeHostStartup"
+           ]
+         },
+         {
+@@ -7600,6 +7602,339 @@
            ]
          }
        ]
@@ -157,6 +168,38 @@ index 4b805af..14e7851 100644
 +            "BookOfEternityClient.Tests.LocalWebUiHostTests.AudioSettingsEndpoint_UpdatesAndPersistsSharedSettingsWithClampedVolumes",
 +            "BookOfEternityClient.Tests.LocalWebUiHostTests.BrowserAudioService_SerializesSharedSettingsUpdates",
 +            "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAsync_ActiveOtherOwner_BlocksWithoutRunningWrite"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-console-settings-client",
++      "responsibility": "Real scripted console settings save/discard/owner-block and interruption/restart behavior, plus exact existing main-menu exit and options rendering consumers.",
++      "excludes": "Live PTY acceptance, gameplay/GM execution, broader console command coverage, browser UI and Windows execution.",
++      "changeHints": [
++        "BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs",
++        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
++        "BookOfEternityClient.IntegrationTests/ConsoleE2ESmokeTests.Settings.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-console-settings-session",
++          "when": "Draft, preview, synchronization or outcome integration changes."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": true
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "integration",
++          "tests": [
++            "BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleSettings_*",
++            "BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleE2E_MainMenuExitScript_UsesSandboxAndEmitsObservationArtifacts",
++            "BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleE2E_OptionsMenuScript_UsesScriptedInputAndEmitsMenuObservations"
 +          ]
 +        }
 +      ]

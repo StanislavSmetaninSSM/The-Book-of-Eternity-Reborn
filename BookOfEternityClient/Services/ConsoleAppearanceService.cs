@@ -30,6 +30,8 @@ public sealed class ConsoleAppearanceService
         return TryApplyFontSize(_settings.ConsoleFontSize);
     }
 
+    internal bool TryPreviewFontSize(int requestedSize) => throw new NotImplementedException();
+
     public bool TryApplyFontSize(int requestedSize)
     {
         var normalized = NormalizeFontSize(requestedSize);

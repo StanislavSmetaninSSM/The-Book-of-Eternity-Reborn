@@ -47,6 +47,8 @@ internal sealed class ConsoleSettingsSession
         finally { BrowserAudioService.SettingsWriteGate.Release(); }
     }
 
+    internal Task<bool> IsCurrentSetSynchronizedAsync() => throw new NotImplementedException();
+
     internal async Task ReloadAsync(Func<Task>? refreshRuntime = null)
     {
         await BrowserAudioService.SettingsWriteGate.WaitAsync();

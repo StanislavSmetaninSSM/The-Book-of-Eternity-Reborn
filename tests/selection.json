@@ -3,19 +3,27 @@
   "selections": [
     {
       "category": "portable-console-settings-session",
-      "reason": "Retryable preparation failure now remains distinct from explicit baseline conflict; cover all console session admission, reload and outcome consumers.",
+      "reason": "Ordinary-entry read-only full-set comparison and complete scoped language/font/audio preview unwind APIs, plus their established controller consumers.",
       "contracts": [
-        "console settings admission",
-        "draft discard and confirmed reload",
-        "portable mod listing"
+        "ordinary settings entry",
+        "detached preview unwind"
       ]
     },
     {
       "category": "portable-console-settings",
-      "reason": "The preparation API now exposes its confirmed exact-baseline conflict as a specific IOException subtype; retain the direct contract and member preparation consumers.",
+      "reason": "An unchanged effective config must preserve original BOM/encoding/whitespace, avoiding manufactured entrypoint publication.",
       "contracts": [
-        "exact settings baseline conflict",
+        "exact unchanged config preservation",
         "three-member preparation"
+      ]
+    },
+    {
+      "category": "portable-console-settings-client",
+      "reason": "Immediate QTE save must remain complete before interrupted-menu restart; explicit discard and blocked-save discard restore accepted locale. Exact existing menu consumers moved here, without the broad console category.",
+      "contracts": [
+        "console settings save triggers",
+        "real process settings restart",
+        "discard and owner-block UI"
       ]
     }
   ]

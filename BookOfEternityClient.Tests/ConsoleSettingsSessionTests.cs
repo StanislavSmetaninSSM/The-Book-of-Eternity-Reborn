@@ -273,5 +273,82 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
         Assert.Equal("en", _live.Language);
     }
 
+    [Theory]
+    [InlineData("pending")]
+    [InlineData("owner")]
+    public async Task SynchronizedEntryIsReadOnlyEvenWhileAnotherWriterBlocksPublication(string blocker)
+    {
+        var session = await Open(); Assert.Equal(BrowserPreparedWriteDisposition.Committed, (await session.SaveAsync()).Disposition);
+        // Encoding/whitespace alone must not manufacture an entrypoint write.
+        var text = File.ReadAllText(_files.ResolvePath("config.json"));
+        var encoded = System.Text.Encoding.Unicode.GetPreamble().Concat(System.Text.Encoding.Unicode.GetBytes(" \n" + text + "\n")).ToArray();
+        File.WriteAllBytes(_files.ResolvePath("config.json"), encoded);
+        session = await ConsoleSettingsSession.OpenAsync(_files, _state, _mods);
+        if (blocker == "pending") await _files.WriteFileAtomicAsync("input/turn_request.json", "{}");
+        else await new LocalUiSessionLockService(_files).AcquireOrRefreshAsync(
+            new("other", "browser", "Other UI", TimeSpan.FromSeconds(120)), "Other operation");
+        var published = false; _observe = (_, _) => published = true;
+        Assert.True(await session.IsCurrentSetSynchronizedAsync());
+        Assert.False(published); Assert.Equal(encoded, File.ReadAllBytes(_files.ResolvePath("config.json")));
+    }
+
+    [Fact]
+    public async Task EntryWithChangedMembersReportsPublicationNeededAndRetainsPendingAdmission()
+    {
+        var session = await Open();
+        await _files.WriteFileAtomicAsync("input/turn_request.json", "{}");
+        var before = File.ReadAllBytes(_files.ResolvePath("config.json"));
+        Assert.False(await session.IsCurrentSetSynchronizedAsync());
+        Assert.Equal(BrowserPreparedWriteDisposition.Blocked, (await session.SaveAsync()).Disposition);
+        Assert.False(File.Exists(_files.ResolvePath(Projection)));
+        Assert.Equal(before, File.ReadAllBytes(_files.ResolvePath("config.json")));
+    }
+
+    [Fact]
+    public async Task SynchronizedEntryCannotAcceptAStaleGeneration()
+    {
+        var session = await Open(); await session.SaveAsync();
+        File.WriteAllText(_files.SessionGenerationPath,
+            "{\"SchemaVersion\":1,\"GenerationId\":\"11111111111111111111111111111111\"}");
+        await Assert.ThrowsAsync<SessionReplacedException>(() => session.IsCurrentSetSynchronizedAsync());
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task PreviewUnwindRestoresLanguageFontAndAudioAfterExceptionOrRejectedReload(bool rejectedReload)
+    {
+        var session = await Open(); var acceptedFont = _live.ConsoleFontSize;
+        session.Draft.Language = "en"; session.Draft.ConsoleFontSize = 30;
+        session.Draft.MusicEnabled = true; session.Draft.MusicVolume = 50;
+        var loc = new BookOfEternityClient.UI.LocalizationManager { CurrentLanguage = "ru" };
+        var audio = new AudioService(_files, _live, NullLogger<AudioService>.Instance);
+        var appearance = new ConsoleAppearanceService(_live, NullLogger<ConsoleAppearanceService>.Instance);
+        using var cts = new CancellationTokenSource();
+        typeof(AudioService).GetField("_musicCts", BindingFlags.NonPublic | BindingFlags.Instance)!.SetValue(audio, cts);
+        var restoredPlayback = false;
+        var failure = await Record.ExceptionAsync(async () =>
+        {
+            await using var preview = new ConsoleSettingsPreview(_live, session.Draft, loc, audio, appearance, settings =>
+            {
+                if (ReferenceEquals(settings, _live)) restoredPlayback = true;
+                return Task.CompletedTask;
+            });
+            await preview.ApplyAsync();
+            Assert.Equal("en", loc.CurrentLanguage); Assert.Equal("ru", _live.Language);
+            Assert.Equal(acceptedFont, _live.ConsoleFontSize); Assert.False(cts.IsCancellationRequested);
+            if (rejectedReload)
+            {
+                File.Delete(_files.SessionGenerationPath);
+                await session.ReloadAsync();
+            }
+            else throw new ApplicationException("Scripted input exhausted during preview.");
+        });
+        if (rejectedReload) Assert.IsType<SessionReplacedException>(failure);
+        else Assert.IsType<ApplicationException>(failure);
+        Assert.Equal("ru", loc.CurrentLanguage); Assert.Equal(acceptedFont, _live.ConsoleFontSize);
+        Assert.True(cts.IsCancellationRequested); Assert.True(restoredPlayback);
+    }
+
     public void Dispose() { if (Directory.Exists(_root)) Directory.Delete(_root, recursive: true); }
 }

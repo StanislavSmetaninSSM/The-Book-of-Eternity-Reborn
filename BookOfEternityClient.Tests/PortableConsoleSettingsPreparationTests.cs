@@ -182,6 +182,16 @@ public sealed class PortableConsoleSettingsPreparationTests : IDisposable
         Assert.Equal("outside unchanged", File.ReadAllText(outside)); AssertUnchanged(baseline);
     }
 
+    [Fact]
+    public async Task UnchangedEffectiveConfigRetainsItsExactUtf16BeforeImage()
+    {
+        var baseline = await Initialize(withMod: false);
+        await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();
+        var current = await _state.ReadLocalSettingsAsync(lease);
+        var prepared = await _prepare.PrepareAsync(lease, baseline, current.Settings);
+        Assert.Equal(baseline.ConfigBytes, prepared.Changes[0].After);
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_root)) Directory.Delete(_root, recursive: true);
