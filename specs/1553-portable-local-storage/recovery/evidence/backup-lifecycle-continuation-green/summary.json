@@ -1,0 +1,212 @@
+{
+  "Categories": [
+    "portable-backup-consumers",
+    "portable-backup-qte",
+    "portable-backup-treatment-claims",
+    "portable-backup-recovery",
+    "portable-backup-linux-special",
+    "portable-backup-routing",
+    "portable-backup-linux-case",
+    "portable-backup-existing-consumers",
+    "portable-backup-existing-api",
+    "portable-directory-backup-prerequisite"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-backup-consumers",
+      "reason": "Actual StateDistributor backup capture, reverse restoration and accepted cleanup uncertainty; no later compensation or diagnostic reversal.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-qte",
+      "reason": "Actual QTE backup publication and same-lease debt reach its immediate distributor boundary; uncertainty excludes wider baseline compensation and later writes.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-treatment-claims",
+      "reason": "Actual StateDistributor accepted wound input and real held treatment/resource/item claim retention across unresolved backup and same-lease committed debt.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-recovery",
+      "reason": "Actual public backup APIs interrupted in owned processes, normal separate-process lease recovery, exact complete decisions, conflicts, hard links and unchanged synthetic save ZIPs.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-linux-special",
+      "reason": "Required Linux FIFO source/target/backup rejection through public APIs in bounded owned processes; no Windows early return.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-routing",
+      "reason": "Backup source-link revalidation and explicit original recorder/recovery/evidence routes. Linux verifies original blocking; native bodies verify original publication and unchanged recorder bypass.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-linux-case",
+      "reason": "Actual Linux case-distinct backup/target names remain independent.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-existing-consumers",
+      "reason": "Existing actual distributor known-failure compensation, writer contention, accepted cleanup and malformed JSON controls; waits observe task failures as well as reached hooks.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-existing-api",
+      "reason": "Existing actual backup API contention and outside/missing evidence controls.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-directory-backup-prerequisite",
+      "reason": "Known Linux-blocked actual quarantine fixture: preparation advances past tree cleanup but original StateDistributor CreateBackupCore descriptor-bound publication fails before quarantine assertions. Explicit separate reproducer; native qualification is allowed.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+    "WorkingTreeFingerprint": "D73BA68C47E47FDC75469A48F6BED7DFB500ADAB20E1A7802D2A057DD2B08C3A",
+    "ChangedFiles": 4
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-backup-consumers",
+      "Seconds": 3.9115903,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-backup-existing-api",
+      "Seconds": 4.2508943,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-backup-existing-consumers",
+      "Seconds": 3.830621,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-backup-linux-case",
+      "Seconds": 2.627929,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-backup-linux-special",
+      "Seconds": 3.0186749,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-backup-qte",
+      "Seconds": 3.6514622,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-backup-recovery",
+      "Seconds": 10.2498231,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-backup-routing",
+      "Seconds": 2.8139031,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-backup-treatment-claims",
+      "Seconds": 17.8658115,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-directory-backup-prerequisite",
+      "Seconds": 19.9435461,
+      "BudgetMinutes": 5,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0999102,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0124375,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0209728,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 148.886582,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 39.7622277,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0070814,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 30,
+  "WallTime": "00:04:28.4633871",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 10,
+    "CompletedDescriptors": 10,
+    "PlannedCases": 50,
+    "CompletedCases": 50,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 50,
+    "Executed": 50,
+    "Passed": 50,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="46cff809-fed8-4c0e-825d-f5c98e3a47ca" name="@ff00c3d48a40 2026-10-01 18:46:00" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-01T18:46:00.9675174-04:00" queuing="2026-10-01T18:46:00.9675174-04:00" start="2026-10-01T18:45:58.7163020-04:00" finish="2026-10-01T18:46:00.9736830-04:00" />
+  <TestSettings name="default" id="4e4330dc-7556-4a4f-8c5c-ffc50ffd2d80">
+    <Deployment runDeploymentRoot="_ff00c3d48a40_2026-10-01_18_46_00" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="d834e4c1-9e5d-4574-8b76-ee7561765cb9" testId="c70649d5-84d4-cb29-5727-eba20b5010a8" testName="BookOfEternityClient.Tests.PortableBackupRecoveryTests.LinuxFifoIsRejectedInBoundedActualApiProcess(operation: &quot;restore&quot;, backup: True)" computerName="ff00c3d48a40" duration="00:00:00.1168668" startTime="2026-10-01T18:46:00.8837385-04:00" endTime="2026-10-01T18:46:00.8837387-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d834e4c1-9e5d-4574-8b76-ee7561765cb9" />
+    <UnitTestResult executionId="68eab8d7-2655-4295-8e03-28f51bd3330d" testId="e9c2d7c1-47db-9214-f68e-c11d1a3f28b8" testName="BookOfEternityClient.Tests.PortableBackupRecoveryTests.LinuxFifoIsRejectedInBoundedActualApiProcess(operation: &quot;cleanup&quot;, backup: True)" computerName="ff00c3d48a40" duration="00:00:00.1578669" startTime="2026-10-01T18:46:00.5578958-04:00" endTime="2026-10-01T18:46:00.5579544-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="68eab8d7-2655-4295-8e03-28f51bd3330d" />
+    <UnitTestResult executionId="ccb18c15-104f-497a-93bf-64f66ed5914c" testId="5b1383a2-c59a-8748-ec14-1353ab65a030" testName="BookOfEternityClient.Tests.PortableBackupRecoveryTests.LinuxFifoIsRejectedInBoundedActualApiProcess(operation: &quot;restore&quot;, backup: False)" computerName="ff00c3d48a40" duration="00:00:00.1073794" startTime="2026-10-01T18:46:00.6659508-04:00" endTime="2026-10-01T18:46:00.6659510-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ccb18c15-104f-497a-93bf-64f66ed5914c" />
+    <UnitTestResult executionId="1073a904-0953-4d74-bf34-0aa37489cc73" testId="625d1ba8-07e4-ccc2-751c-3ed18d448620" testName="BookOfEternityClient.Tests.PortableBackupRecoveryTests.LinuxFifoIsRejectedInBoundedActualApiProcess(operation: &quot;create&quot;, backup: False)" computerName="ff00c3d48a40" duration="00:00:00.0995106" startTime="2026-10-01T18:46:00.7671256-04:00" endTime="2026-10-01T18:46:00.7671260-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1073a904-0953-4d74-bf34-0aa37489cc73" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupRecoveryTests.LinuxFifoIsRejectedInBoundedActualApiProcess(operation: &quot;restore&quot;, backup: False)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5b1383a2-c59a-8748-ec14-1353ab65a030">
+      <Execution id="ccb18c15-104f-497a-93bf-64f66ed5914c" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupRecoveryTests" name="LinuxFifoIsRejectedInBoundedActualApiProcess" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupRecoveryTests.LinuxFifoIsRejectedInBoundedActualApiProcess(operation: &quot;cleanup&quot;, backup: True)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e9c2d7c1-47db-9214-f68e-c11d1a3f28b8">
+      <Execution id="68eab8d7-2655-4295-8e03-28f51bd3330d" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupRecoveryTests" name="LinuxFifoIsRejectedInBoundedActualApiProcess" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupRecoveryTests.LinuxFifoIsRejectedInBoundedActualApiProcess(operation: &quot;create&quot;, backup: False)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="625d1ba8-07e4-ccc2-751c-3ed18d448620">
+      <Execution id="1073a904-0953-4d74-bf34-0aa37489cc73" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupRecoveryTests" name="LinuxFifoIsRejectedInBoundedActualApiProcess" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupRecoveryTests.LinuxFifoIsRejectedInBoundedActualApiProcess(operation: &quot;restore&quot;, backup: True)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c70649d5-84d4-cb29-5727-eba20b5010a8">
+      <Execution id="d834e4c1-9e5d-4574-8b76-ee7561765cb9" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupRecoveryTests" name="LinuxFifoIsRejectedInBoundedActualApiProcess" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="c70649d5-84d4-cb29-5727-eba20b5010a8" executionId="d834e4c1-9e5d-4574-8b76-ee7561765cb9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e9c2d7c1-47db-9214-f68e-c11d1a3f28b8" executionId="68eab8d7-2655-4295-8e03-28f51bd3330d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5b1383a2-c59a-8748-ec14-1353ab65a030" executionId="ccb18c15-104f-497a-93bf-64f66ed5914c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="625d1ba8-07e4-ccc2-751c-3ed18d448620" executionId="1073a904-0953-4d74-bf34-0aa37489cc73" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="4" executed="4" passed="4" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.16]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.22]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.24]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.77]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

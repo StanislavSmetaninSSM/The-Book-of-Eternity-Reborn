@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "baseCommit": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+  "baseCommit": "66bbcd240424f696709b7eea4bd96783f7eec59d",
   "patchFile": "backup-lifecycle-pending.patch",
   "patchBytes": 21742,
   "patchSha256": "1e877b2a6e4f233d8f5db24eb119fa76418c5c592d4fdbaed5cfccb5b0b31656",
@@ -34,7 +34,7 @@
       "afterSha256": "31149e5aef2be2c628ec77e40e32805dcf2a7aece71975c1501224ef4c5f9239"
     }
   ],
-  "appliedSourceTree": "070613815ca28282f8b470fbd95ba6a94e578bc7",
+  "appliedSourceTree": "ebe21ebe737ca806caaaf078d185207bdcb5c19e",
   "comparisonExcludes": [
     "specs/1553-portable-local-storage/recovery/backup-lifecycle-pending.patch",
     "specs/1553-portable-local-storage/recovery/backup-lifecycle-pending.json"

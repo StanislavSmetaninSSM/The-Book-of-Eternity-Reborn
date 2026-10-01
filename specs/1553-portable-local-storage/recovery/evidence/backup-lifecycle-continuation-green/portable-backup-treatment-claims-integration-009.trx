@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="70b71dd4-c525-4120-b22c-0024464e5a14" name="@ff00c3d48a40 2026-10-01 18:46:28" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-01T18:46:28.9484941-04:00" queuing="2026-10-01T18:46:28.9484941-04:00" start="2026-10-01T18:46:18.6098827-04:00" finish="2026-10-01T18:46:35.3925010-04:00" />
+  <TestSettings name="default" id="bc68760c-ea36-4e59-9b14-e15277ca4f3e">
+    <Deployment runDeploymentRoot="_ff00c3d48a40_2026-10-01_18_46_28" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="6420e332-65ac-4fd5-8bd2-64ff4d43ce88" testId="6d149cbd-04fd-6a66-9121-5e7c4145cbb5" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BackupUncertaintyRetainsRealTreatmentResourceAndItemClaims(committedDebt: False)" computerName="ff00c3d48a40" duration="00:00:06.3852260" startTime="2026-10-01T18:46:35.3002105-04:00" endTime="2026-10-01T18:46:35.3002109-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6420e332-65ac-4fd5-8bd2-64ff4d43ce88" />
+    <UnitTestResult executionId="0f3bd1b6-cc8a-461a-a0ce-f993740d31bd" testId="acc72970-b76c-f296-6466-7d6483b3dcd8" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BackupUncertaintyRetainsRealTreatmentResourceAndItemClaims(committedDebt: True)" computerName="ff00c3d48a40" duration="00:00:08.3257993" startTime="2026-10-01T18:46:28.9101566-04:00" endTime="2026-10-01T18:46:28.9101716-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0f3bd1b6-cc8a-461a-a0ce-f993740d31bd" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BackupUncertaintyRetainsRealTreatmentResourceAndItemClaims(committedDebt: True)" storage="SOURCE_ROOT/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="acc72970-b76c-f296-6466-7d6483b3dcd8">
+      <Execution id="0f3bd1b6-cc8a-461a-a0ce-f993740d31bd" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="BackupUncertaintyRetainsRealTreatmentResourceAndItemClaims" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BackupUncertaintyRetainsRealTreatmentResourceAndItemClaims(committedDebt: False)" storage="SOURCE_ROOT/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="6d149cbd-04fd-6a66-9121-5e7c4145cbb5">
+      <Execution id="6420e332-65ac-4fd5-8bd2-64ff4d43ce88" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="BackupUncertaintyRetainsRealTreatmentResourceAndItemClaims" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="6d149cbd-04fd-6a66-9121-5e7c4145cbb5" executionId="6420e332-65ac-4fd5-8bd2-64ff4d43ce88" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="acc72970-b76c-f296-6466-7d6483b3dcd8" executionId="0f3bd1b6-cc8a-461a-a0ce-f993740d31bd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="2" executed="2" passed="2" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.33]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.50]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.53]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:16.30]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>
