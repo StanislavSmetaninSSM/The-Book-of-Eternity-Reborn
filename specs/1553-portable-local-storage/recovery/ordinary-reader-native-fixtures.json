@@ -1,0 +1,15 @@
+{
+  "baseCommit": "e8fb8d8b4a229e9c56d69e37216e8e021b761692",
+  "patch": "ordinary-reader-native-fixtures.patch",
+  "patchSha256": "e52478401bcf6e36351bc4a2f4df7ce6a767f755084a74921a2f17ec726be4a3",
+  "patchBytes": 4052,
+  "scope": "Only two Windows fixture bodies: explicit actual lease/original-handler writes, required physical-hook counts and actual quarantine absence. Production, all Linux-executed tests, catalog and selection unchanged. Native QA has never run.",
+  "apply": "git apply --check specs/1553-portable-local-storage/recovery/ordinary-reader-native-fixtures.patch && git apply specs/1553-portable-local-storage/recovery/ordinary-reader-native-fixtures.patch",
+  "files": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs",
+      "beforeBlob": "98531f82191b2e43368e8e270303178010284b4e",
+      "afterBlob": "0b0ddd29d385108c8633f7022b29280d2ddca309"
+    }
+  ]
+}
