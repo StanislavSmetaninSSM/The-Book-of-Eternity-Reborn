@@ -1,0 +1,29 @@
+RequestedLane: Categories
+EffectiveLane: Categories
+Filter: <pending validation>
+TimeoutMinutes: 9
+StartedUtc: 2026-10-01T02:38:56.0745402Z
+Owned process 'Revision': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== Revision: stdout =====
+d23fb486a282346040e2c4b444390faa08743077
+
+===== Revision: stderr =====
+
+===== Revision: exit 0 =====
+Owned process 'Changed-paths': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== Changed-paths: stdout =====
+tests/categories.json
+
+===== Changed-paths: stderr =====
+
+===== Changed-paths: exit 0 =====
+Owned process 'New-paths': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== New-paths: stdout =====
+
+===== New-paths: stderr =====
+
+===== New-paths: exit 0 =====
+Owned process 'Build-unit': FileName=dotnet; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=dotnet

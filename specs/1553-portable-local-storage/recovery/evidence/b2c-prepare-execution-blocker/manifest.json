@@ -1,0 +1,15 @@
+{
+  "kind": "Partial local run log plus separately labelled execution-control observations; not a RED/build/test result",
+  "normalization": "Repository/toolchain paths replaced, LF line endings and trailing whitespace normalized. The exact cleanup response retains only its known owned run handle. No endpoint or secret values inferred.",
+  "files": [
+    {
+      "path": "partial-run.log",
+      "originalSha256": "6a5da3d2779655f666ecc2844e39efb997a05f02af1241ff94933b272c7664cc",
+      "sanitizedSha256": "6a5da3d2779655f666ecc2844e39efb997a05f02af1241ff94933b272c7664cc"
+    },
+    {
+      "path": "blocker.json",
+      "recordedSha256": "89867b0fb03c0d54cceeed45cba88f0057062ca5f38cca90351bff1cc0d1733f"
+    }
+  ]
+}
