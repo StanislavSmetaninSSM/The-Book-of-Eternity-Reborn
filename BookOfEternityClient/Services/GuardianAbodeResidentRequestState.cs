@@ -1477,8 +1477,7 @@ internal static class GuardianAbodeResidentRequestState
     {
         if (!IsMortalRealm(currentRealm))
         {
-            // Manifestation requests are Mortal-only, but afterlife runtime must not delete them:
-            // a wrong-realm file is repair evidence and should block Soul Gates until resolved.
+            // Wrong-realm requests remain repair evidence for Soul Gates.
             return;
         }
 
@@ -1486,17 +1485,22 @@ internal static class GuardianAbodeResidentRequestState
         if (string.IsNullOrWhiteSpace(soulJson))
             return;
 
+        JsonObject? soulRoot;
+        try { soulRoot = JsonNode.Parse(soulJson) as JsonObject; }
+        catch { return; }
+        if (soulRoot == null)
+            return;
+
+        // Recovery-capable reads and publication must not be mistaken for
+        // malformed in-memory planning input.
+        var lifeTransitionsJson = await fs.ReadFileAsync("game_state/control/life_transitions.json");
+        var hasCanonicalTriggerLifeEnd = await CanonicalStateNormalizer.HasLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync(
+            fs,
+            lifeTransitionsJson,
+            soulRoot);
+        List<PendingResidentCompanionManifestationRequest> validForIncarnation;
         try
         {
-            if (JsonNode.Parse(soulJson) is not JsonObject soulRoot)
-                return;
-
-            var lifeTransitionsJson = await fs.ReadFileAsync("game_state/control/life_transitions.json");
-            var hasCanonicalTriggerLifeEnd = await CanonicalStateNormalizer.HasLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync(
-                fs,
-                lifeTransitionsJson,
-                soulRoot);
-
             if (!GuardianPolicyContracts.TryReadStrictCurrentManifestationSoulRelicCollections(
                     soulRoot,
                     hasCanonicalTriggerLifeEnd,
@@ -1504,105 +1508,95 @@ internal static class GuardianAbodeResidentRequestState
                     out _,
                     out _,
                     out _))
-            {
                 return;
-            }
-
-            var validForIncarnation = requests
+            validForIncarnation = requests
                 .Where(request =>
                     !string.IsNullOrWhiteSpace(request.RequestId) &&
                     !string.IsNullOrWhiteSpace(request.RelicId) &&
                     request.TargetIncarnation == currentIncarnation)
                 .ToList();
+        }
+        catch { return; }
 
-            if (validForIncarnation.Count == 0)
-            {
-                ClearManifestationRequest(fs);
-                return;
-            }
-
-            var npcJson = await fs.ReadFileAsync("game_state/npcs/npc_core.json");
-            if (string.IsNullOrWhiteSpace(npcJson))
-            {
-                await WriteManifestationRequestsAsync(fs, validForIncarnation);
-                return;
-            }
-
-            try
-            {
-                using var npcDoc = JsonDocument.Parse(npcJson);
-                var remaining = new List<PendingResidentCompanionManifestationRequest>();
-                var soulChanged = false;
-                var matchedNpcIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                var resolvedRelicIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                foreach (var request in validForIncarnation)
-                {
-                    if (TryFindManifestedNpc(npcDoc.RootElement, validForIncarnation, request, matchedNpcIds, out var manifestedNpc))
-                    {
-                        var requestResolved = MarkManifestationResolved(
-                            soulRoot,
-                            request,
-                            manifestedNpc,
-                            hasCanonicalTriggerLifeEnd);
-                        soulChanged |= requestResolved;
-                        if (requestResolved)
-                        {
-                            if (!string.IsNullOrWhiteSpace(request.RelicId))
-                                resolvedRelicIds.Add(request.RelicId);
-
-                            continue;
-                        }
-                    }
-
-                    remaining.Add(request);
-                }
-
-                if (soulChanged)
-                {
-                    var unsafeToReplayAddedRelicIds = BuildUnsafeReplayAddedRelicIds(
-                        soulRoot,
-                        resolvedRelicIds,
-                        hasCanonicalTriggerLifeEnd);
-                }
-                var preManifestationJson = await fs.ReadFileAsync(PendingManifestationRequestPath);
-                var preSoulJson = soulJson;
-                var postSoulJson = soulChanged
-                    ? GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
-                        soulRoot,
-                        new GuardianPolicyContracts.SoulStatePatchConflictContext(
-                            GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
-                            unsafeToReplayAddedSoulRelicIds: BuildUnsafeReplayAddedRelicIds(
-                                soulRoot,
-                                resolvedRelicIds,
-                                hasCanonicalTriggerLifeEnd),
-                            updatedSoulRelicFieldsById: BuildManifestationRelicFieldUpdates(resolvedRelicIds))).ToJsonString(JsonOpts)
-                    : preSoulJson;
-                var postManifestationJson = remaining.Count == 0
-                    ? null
-                    : JsonSerializer.Serialize(new Dictionary<string, object?>
-                    {
-                        [ManifestationRequestsProperty] = remaining
-                    }, JsonOpts);
-
-                if (!await CoordinatedStateWriteHelper.TryCommitAsync(
-                        fs,
-                        new CoordinatedStateWriteHelper.PlannedWrite("game_state/meta/soul_state.json", preSoulJson, postSoulJson),
-                        new CoordinatedStateWriteHelper.PlannedWrite(PendingManifestationRequestPath, preManifestationJson, postManifestationJson)))
-                {
-                    return;
-                }
-            }
-            catch
-            {
-                // keep requests until npc state is readable again
-            }
-
+        if (validForIncarnation.Count == 0)
+        {
+            ClearManifestationRequest(fs);
             return;
+        }
+        var npcJson = await fs.ReadFileAsync("game_state/npcs/npc_core.json");
+        if (string.IsNullOrWhiteSpace(npcJson))
+        {
+            await WriteManifestationRequestsAsync(fs, validForIncarnation);
+            return;
+        }
+
+        string? postSoulJson;
+        string? postManifestationJson;
+        try
+        {
+            using var npcDoc = JsonDocument.Parse(npcJson);
+            var remaining = new List<PendingResidentCompanionManifestationRequest>();
+            var soulChanged = false;
+            var matchedNpcIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var resolvedRelicIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var request in validForIncarnation)
+            {
+                if (TryFindManifestedNpc(npcDoc.RootElement, validForIncarnation, request, matchedNpcIds, out var manifestedNpc))
+                {
+                    var requestResolved = MarkManifestationResolved(
+                        soulRoot,
+                        request,
+                        manifestedNpc,
+                        hasCanonicalTriggerLifeEnd);
+                    soulChanged |= requestResolved;
+                    if (requestResolved)
+                    {
+                        if (!string.IsNullOrWhiteSpace(request.RelicId))
+                            resolvedRelicIds.Add(request.RelicId);
+
+                        continue;
+                    }
+                }
+
+                remaining.Add(request);
+            }
+
+            if (soulChanged)
+            {
+                var unsafeToReplayAddedRelicIds = BuildUnsafeReplayAddedRelicIds(
+                    soulRoot,
+                    resolvedRelicIds,
+                    hasCanonicalTriggerLifeEnd);
+            }
+            postSoulJson = soulChanged
+                ? GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+                    soulRoot,
+                    new GuardianPolicyContracts.SoulStatePatchConflictContext(
+                        GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
+                        unsafeToReplayAddedSoulRelicIds: BuildUnsafeReplayAddedRelicIds(
+                            soulRoot,
+                            resolvedRelicIds,
+                            hasCanonicalTriggerLifeEnd),
+                        updatedSoulRelicFieldsById: BuildManifestationRelicFieldUpdates(resolvedRelicIds))).ToJsonString(JsonOpts)
+                : soulJson;
+            postManifestationJson = remaining.Count == 0
+                ? null
+                : JsonSerializer.Serialize(new Dictionary<string, object?>
+                {
+                    [ManifestationRequestsProperty] = remaining
+                }, JsonOpts);
         }
         catch
         {
+            // Keep requests until in-memory NPC/soul planning is readable.
             return;
         }
+
+        var preManifestationJson = await fs.ReadFileAsync(PendingManifestationRequestPath);
+        await CoordinatedStateWriteHelper.TryCommitAsync(
+            fs,
+            new CoordinatedStateWriteHelper.PlannedWrite("game_state/meta/soul_state.json", soulJson, postSoulJson),
+            new CoordinatedStateWriteHelper.PlannedWrite(PendingManifestationRequestPath, preManifestationJson, postManifestationJson));
     }
 
     private static bool TryFindManifestedNpc(

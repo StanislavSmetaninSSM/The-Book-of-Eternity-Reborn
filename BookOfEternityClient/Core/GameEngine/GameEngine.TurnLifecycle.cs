@@ -1047,19 +1047,23 @@ public partial class GameEngine
                 continue;
 
             // Detect console resize — if width changed, just re-render (loop continues)
+            int? currentWidth = null;
             try
             {
-                var currentWidth = Console.WindowWidth;
-                if (_lastConsoleWidth > 0 && currentWidth != _lastConsoleWidth)
-                {
-                    await NormalizeRuntimeUiArtifactsAsync();
-                    await RefreshRuntimeStateAsync();
-                }
-                _lastConsoleWidth = currentWidth;
+                currentWidth = Console.WindowWidth;
             }
             catch (Exception ex) when (ex is IOException or InvalidOperationException or PlatformNotSupportedException)
             {
                 // Some console hosts cannot report window size reliably; resize detection is best-effort.
+            }
+            if (currentWidth is { } width)
+            {
+                if (_lastConsoleWidth > 0 && width != _lastConsoleWidth)
+                {
+                    await NormalizeRuntimeUiArtifactsAsync();
+                    await RefreshRuntimeStateAsync();
+                }
+                _lastConsoleWidth = width;
             }
 
             // Render current state (preserve last response for dialogue options etc.)
@@ -1203,8 +1207,15 @@ public partial class GameEngine
             catch (Exception ex)
             {
                 LogError(ex);
-                AnsiConsole.MarkupLine("\n[red]❌ Мир не смог безопасно завершить действие. Подробности сохранены для диагностики.[/]");
-                AnsiConsole.MarkupLine("[dim]Вернитесь к последнему доступному состоянию и повторите действие позже.[/]");
+                if (ex is CoordinatedStatePublicationUncertainException)
+                {
+                    AnsiConsole.MarkupLine($"\n[red]❌ {Markup.Escape(CoordinatedStatePublicationUncertainException.PlayerMessage)}[/]");
+                }
+                else
+                {
+                    AnsiConsole.MarkupLine("\n[red]❌ Мир не смог безопасно завершить действие. Подробности сохранены для диагностики.[/]");
+                    AnsiConsole.MarkupLine("[dim]Вернитесь к последнему доступному состоянию и повторите действие позже.[/]");
+                }
                 AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
                 RecordGameLoopErrorObservation(ex);
                 _inputSource.ReadKey(intercept: true);

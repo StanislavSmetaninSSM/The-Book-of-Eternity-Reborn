@@ -8417,6 +8417,370 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-coordinated-publication",
+      "responsibility": "Ordinary CoordinatedStateWriteHelper complete member-set decisions, semantic/exact guards, platform-aware duplicate destinations, exact images, preflight/admission and durable outcomes including diagnostic failure. Uses the actual helper under an admitted existing generation.",
+      "excludes": "Legacy browser recorder migration, full accepted-turn/gameplay acceptance, generation bootstrap redesign, external profiles and save/load.",
+      "changeHints": [
+        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-storage-publication",
+          "when": "The shared B1 publication adapter or phase observer semantics change."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-coordinated-lease",
+      "responsibility": "Real lease admission for empty and guard-only coordinated operations; deterministic real external-context disposal, actual canonical-lock reacquisition and primary operation failure precedence in the owned release routine.",
+      "excludes": "Synthetic identities, OS FileStream fault injection, browser-v6 transaction migration and unrelated lifecycle/lease matrices.",
+      "changeHints": [
+        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "BookOfEternityClient/Core/FileSystemManager.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-coordinated-publication",
+          "when": "Owned helper acquisition/release or publication disposition handling changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-coordinated-lease-consumers",
+      "responsibility": "Exact existing real canonical-lease consumers for T031 admission/disposal: direct B1 owning-lease rejection, ordinary disposed/foreign readers, trade lock ordering and bound close/reacquisition fencing.",
+      "excludes": "Full canonical storage, browser recorder/save-load migration and unrelated session lifecycle scenarios.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.cs",
+        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RequiresItsOwnActiveCanonicalLease",
+            "BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening",
+            "BookOfEternityClient.Tests.TradeRequestLockOrderingTests.*",
+            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-coordinated-recovery",
+      "responsibility": "Actual owning coordinated-helper abrupt-process publication and separate normal-lease recovery at staged intent, published intent, early/last member, commit staging, durable commit and cleanup; retain unknown-member and changed-generation evidence.",
+      "excludes": "Direct-publisher-only substitutes, full accepted-turn/domain acceptance, browser-v6/external/worker/save-load migration and provider lifecycle.",
+      "changeHints": [
+        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-coordinated-publication",
+          "when": "The helper member set, outcome mapping or phase observation changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-coordinated-authority",
+      "responsibility": "Actual CreateAuthorityGuardWrites factory and coordinated guard-only consumer preserve every platform-distinct initial authority snapshot.",
+      "excludes": "Full interaction-scope discovery and unrelated domain authority rules.",
+      "changeHints": [
+        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-coordinated-publication",
+          "when": "Shared initial guard comparison or zero-write lease behavior changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableCoordinatedAuthorityTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-coordinated-cleanup",
+      "responsibility": "Actual NPC owning/supplied-lease, Guardian and Shining helper callers preserve malformed planning aborts and propagate new uncertain publication or retained-evidence admission; existing QTE acceptance exposes its ordinary callback route.",
+      "excludes": "Whole trade/normalizer/domain categories and broader browser/save-load migration.",
+      "changeHints": [
+        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "BookOfEternityClient/Services/NpcTradeRequestState.cs",
+        "BookOfEternityClient/Services/GuardianTradeRequestState.cs",
+        "BookOfEternityClient/Services/ShiningTradeRequestState.cs",
+        "BookOfEternityClient/Services/GuardianAbodeResidentRequestState.cs",
+        "BookOfEternityClient/Services/QteSceneService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ActualCleanupConsumerReachesOneCommittedMemberSet",
+            "BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.ActualCleanupConsumerDoesNotSwallowUncertainPublication",
+            "BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.MalformedPlanningInputRemainsAnOrdinaryKnownAbort",
+            "BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.RetainedEvidenceAdmissionPropagatesBeforeAnyNewPublication",
+            "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.AcceptOffer_SealsGenerationOfferTurnAndExactEffectRootWithoutLiveRebuild"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-coordinated-cleanup-resident",
+      "responsibility": "Actual resident manifestation cleanup helper after its independent public cleanup preamble: exact target member set, uncertain outcome, malformed planning and every attempted publication after retained-evidence read admission.",
+      "excludes": "Migration of the whole resident normalizer and its earlier independent cleanup writes.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GuardianAbodeResidentRequestState.cs",
+        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.Resident*"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GuardianAbodeResidentRequestStateTests.EnsureHealthyAsync_MaterializedCompanion_PrunesUnsafeSameRelicAddAndMarksRelicResolved",
+            "BookOfEternityClient.Tests.GuardianAbodeResidentRequestStateTests.EnsureHealthyAsync_MalformedCurrentSoulRelics_KeepsManifestationRequestRetryable"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-coordinated-qte-outcome",
+      "responsibility": "Actual accepted-mechanics QTE helper uncertainty preserves its published cut/backups without domain compensation, and the actual agent-console error projection reports a private Russian recovery notice without unchanged-state or retry promises.",
+      "excludes": "Full normalizer transaction migration, live console/browser UX and original browser-v6 recorder migration.",
+      "changeHints": [
+        "BookOfEternityClient/Services/QteSceneService.cs",
+        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.CoordinatedUncertaintyRetainsTheAcceptedMechanicsCutWithoutDomainCompensation",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CoordinatedPublication_UncertainOutcomeUsesRussianRecoveryNoticeWithoutRetryPromise"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-coordinated-phase-consumers",
+      "responsibility": "Actual helper lease/concurrent-unknown and quartet/item/trade B1 MemberPublished rollback cuts; QTE next-wave pre-decision cuts remain distinct from later final:* domain compensation and accepted backup cleanup.",
+      "excludes": "Whole domain categories, full normalizer/accepted-turn migration, original browser-v6/save-load/external profile migration and live UI/provider execution.",
+      "changeHints": [
+        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "BookOfEternityClient/Services/QteSceneService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 6,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.CoordinatedStateWriteHelperTests.*",
+            "BookOfEternityClient.Tests.MortalItemIdentityTransitionTests.ExecuteAsync_SecondCarrierWriteFailureRestoresExactBeforeImages",
+            "BookOfEternityClient.Tests.MortalItemIdentityTransitionTests.ExecuteAsync_SplitIndexWriteFailureRestoresExactBeforeImages"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ResourceMaterializationTestContextTests.CoordinatedQuartetFailure_RestoresExactBytesAndPriorAbsence",
+            "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.BoundedReceipt_NextWaveFailureAtEveryMutationRestoresExactCurrentWave",
+            "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.BoundedReceipt_FinalFailureAtEveryMutationRestoresExactAwaitingBoundary",
+            "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_BackupCleanupFailureDoesNotMaskCommittedResult",
+            "BookOfEternityClient.Tests.NpcTradeServiceRequestFlowTests.BuyAsync_SecondSettlementWriteFailureRestoresExactBeforeImages"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-coordinated-actual-consumers",
+      "responsibility": "Exact existing helper consumers: training guard-only visibility/purchase conflict, item settlement, afterlife owner/quartet, blessing overlap, successful/stale-sealed QTE flow and generic private console notice.",
+      "excludes": "Whole domain categories, full normalizer/accepted-turn migration, original browser-v6/save-load/external profile migration and live UI/provider execution.",
+      "changeHints": [
+        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "BookOfEternityClient/Services/QteSceneService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 6,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.TrainingServiceTests.EnsureTrainingAsync_MortalActorChangesAfterFinalRead_IsRejectedByVisibilityGuard",
+            "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_ConcurrentEvolutionRequestSurvivesFailedStateCommit",
+            "BookOfEternityClient.Tests.NpcTradeServiceRequestFlowTests.BuyAsync_TemplateOnlyTradeOutput_SealsIndependentCanonicalItem",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.LocalAfterlifeOwnerResourceService_CommitsSpiritFocusAndLedgerAtomically",
+            "BookOfEternityClient.Tests.ShiningBlessingEffectStateTests.MaterializeForBootstrapAsync_WritesCanonicalBlessingStateAndAppliesResources",
+            "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.BoundedReceipt_TwoWavesSurviveRestartsAndPublishMechanicsOnlyAtFinalWave",
+            "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.TerminalSelection_ByteDifferentSealedRootFailsBeforeAnyWrite",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationRepairLifecycleTests_Privacy_AgentConsoleOuterFailureUsesPlayerSafeProjection"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-coordinated-progression",
+      "responsibility": "One actual progression accepted-turn mutation through coordinated exact schedule/report guard/write publication. Independently selectable without repeating integration consumers.",
+      "excludes": "Full progression category and unrelated calendar/realm rules.",
+      "changeHints": [
+        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "BookOfEternityClient/Services/ProgressionScheduleService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ProgressionScheduleServiceTests.ApplyAcceptedTurnOutcomeAsync_ValidChaosProgressionReport_AdvancesOrdinals"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-coordinated-windows",
+      "responsibility": "Exact native Windows qualification of coordinated helper path/case/link admission, whole-set uncertainty, real lease release/reacquisition, cold outside hard links, original browser recorder callbacks and the real wound consumer with its retained Windows preparation prerequisite. File-symlink fixture capability failures are explicit, never skips.",
+      "excludes": "Full domain/platform sweep, live browser/game/GM/save-load acceptance, directory/preparation migration and any elevation/security changes.",
+      "changeHints": [
+        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "BookOfEternityClient/Core/FileSystemManager.cs",
+        "BookOfEternityClient/Services/QteSceneService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 6,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperPublishesCompleteMemberSetUnderOneDecision",
+            "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperUnknownLaterMemberPreservesWholeUnresolvedSet",
+            "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DestinationCaseUsesTheActualPlatformPolicy",
+            "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ResolvedSeparatorAndWhitespaceAliasesPublishOneFinalDestination",
+            "BookOfEternityClient.Tests.PortableCoordinatedAuthorityTests.ActualAuthorityFactoryRetainsEveryPlatformDistinctInitialGuard",
+            "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.RealLeaseContextFailureStillClosesLockAndAllowsReacquisition",
+            "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure",
+            "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseKeepsCompletedDispositionOnContextFailure",
+            "BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperColdRecoveryPreservesTheOutsideHardLink",
+            "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.InvalidLaterTypeFailsBeforeAnyNewIntentOrMutation"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ResolveOfferDecision_LateRuntimeFailureRollsBackOfferAndRuntime",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -1855,7 +1855,7 @@ public sealed class ShiningTradeRequestStateTests
         }
     }
 
-    private static async Task WriteMinimalShiningTradeStateAsync(FileSystemManager fs, int factionStrength, bool withReadyInventory = false)
+    internal static async Task WriteMinimalShiningTradeStateAsync(FileSystemManager fs, int factionStrength, bool withReadyInventory = false)
     {
         await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", new JsonObject
         {

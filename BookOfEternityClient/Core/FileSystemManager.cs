@@ -293,19 +293,31 @@ public partial class FileSystemManager
             _parentAuthority = null;
             ExternalPublicationContext = null;
             MutationIntentRecorder = null;
+            Exception? failure = null;
+            void RetainFailure(Exception next) =>
+                failure = failure == null ? next : new AggregateException(failure, next);
+
+            try { externalPublicationContext?.Dispose(); }
+            catch (Exception ex) { RetainFailure(ex); }
+            // Every owned resource must be released even if the earlier
+            // external context failed. Clearing _stream above makes retries
+            // idempotent, so skipping this close would orphan the lock handle.
             try
             {
-                externalPublicationContext?.Dispose();
                 if (stream != null)
                     await stream.DisposeAsync();
             }
+            catch (Exception ex) { RetainFailure(ex); }
+            try { parentAuthority?.Dispose(); }
+            catch (Exception ex) { RetainFailure(ex); }
+            try { Owner.ReleaseAmbientCanonicalLease(_ambientRegistration); }
+            catch (Exception ex) { RetainFailure(ex); }
             finally
             {
-                parentAuthority?.Dispose();
-                Owner.ReleaseAmbientCanonicalLease(
-                    _ambientRegistration);
                 _ambientRegistration = null;
             }
+            if (failure != null)
+                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failure).Throw();
         }
     }
 
@@ -3980,7 +3992,7 @@ public partial class FileSystemManager
         return true;
     }
 
-    private static byte[] EncodeUtf8WithPreamble(string content)
+    internal static byte[] EncodeUtf8WithPreamble(string content)
     {
         var preamble = Encoding.UTF8.GetPreamble();
         var body = Encoding.UTF8.GetBytes(content);
