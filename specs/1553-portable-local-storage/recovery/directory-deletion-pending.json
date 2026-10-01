@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "2e3cb6deb772b96fbcec53b98b5d2d50e0bdbc0e",
+  "patchFile": "directory-deletion-pending.patch",
+  "patchBytes": 4798,
+  "patchSha256": "78fb2c6488257cb3f1c8dc08e2dfe6f8a010a87864dc82055f831ec5e9f5487b",
+  "entries": [
+    {
+      "path": "specs/1553-portable-local-storage/research.md",
+      "beforeBlob": "f226ef9783005e3dff5a9e96d3026d59e0737f4a",
+      "afterBlob": "a929125666c894c40337929f8fb9a1e942963362",
+      "beforeSha256": "8758269b64f898c888375f5f0c959a3310841a75a2e1c3b7c57472aa94d88562",
+      "afterSha256": "fbc2c61e18813cec9ca78b8b52a4b901605b13cb5947694fc3ae8874adca74a7"
+    },
+    {
+      "path": "tests/categories.json",
+      "beforeBlob": "b63e8a81f53172bdd26eae63570a6a894bee4560",
+      "afterBlob": "82871a6906b7029a0e6bdd892bb2a9a0edc2b863",
+      "beforeSha256": "3907b1ca149b740ce1c3954777faaa8e8a74695b4b345c92723d2d379529a3a7",
+      "afterSha256": "4dab24ca5491963e8423afa00a4db2e9513bba0d8c1c0323d23c9fa42241baa0"
+    }
+  ],
+  "appliedSourceTree": "faf21c1f06df98f51102d09d8e708c46e62ae8d1",
+  "comparisonExcludes": [
+    "specs/1553-portable-local-storage/recovery/directory-deletion-pending.patch",
+    "specs/1553-portable-local-storage/recovery/directory-deletion-pending.json"
+  ],
+  "scope": "T030-F ordinary directory-tree deletion; current plan records exact execution and remaining scope"
+}

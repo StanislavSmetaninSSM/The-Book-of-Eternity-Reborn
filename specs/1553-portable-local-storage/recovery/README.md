@@ -1,5 +1,11 @@
 # Source and evidence recovery
 
+## Active T030-F WIP recovery
+
+The current tree-deletion work starts at accepted `2e3cb6deb772b96fbcec53b98b5d2d50e0bdbc0e`; its status and next step are in [the active plan](../plan.md#active-t030-f--ordinary-canonical-directory-tree-deletion). Until normal publication is confirmed, apply exactly [directory-deletion-pending.patch](directory-deletion-pending.patch) to a fresh exact-checkpoint clone after verifying [its manifest](directory-deletion-pending.json), before/after Git blobs and SHA256. Use `git apply --check` before apply, once only; reject mismatched before-images. The patch contains only the named large-file changes; all other source/test/plan files are ordinary Git blobs. Validate the manifest's applied source tree excluding exactly its two carriers. This is unverified WIP, not accepted implementation.
+
+The following T031-A delivery hashes and unchanged-after-image claims apply to their named historical checkpoint, not automatically to evolving T030-F source. For the accepted closure restore `2e3cb6d`; for current work use the current branch, active packet and plan. Never apply a historical packet to current source.
+
 <a id="active-t031-coordinated-recovery"></a>
 
 ## Accepted T031-A normal recovery

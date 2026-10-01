@@ -1,0 +1,52 @@
+diff --git a/specs/1553-portable-local-storage/research.md b/specs/1553-portable-local-storage/research.md
+index f226ef97..a9291256 100644
+--- a/specs/1553-portable-local-storage/research.md
++++ b/specs/1553-portable-local-storage/research.md
+@@ -347,3 +347,12 @@ The [bounded save/load engineering map](save-load-cutover.md) and [admission add
+ The [ordinary-reader map](ordinary-read-cutover.md) distinguishes content/presence and bytes-plus-real-LastWriteTimeUtc results from original physical publication receipts. It recommends common validated reads while preserving public recovery/quiescence/no-reacquire/absence behavior and explicit original entrypoints/scopes for old setup and recovery. Browser v6 before-image setup reads tracked bytes before attaching its recorder, so recorder presence or evidence-path exclusion alone is insufficient. The current B3b block does not migrate those readers; ordinary reads, later accepted publication and save/load retain their separate bounded verification.
+ 
+ T031 implementation refinement: ordinary QTE acceptance/transport calls use the helper without callbacks; explicit AfterLegacyAcceptanceRuntimeWrittenAsync/AfterLegacyDeferredEffectMutationAsync preserve original recorder/recovery callbacks. AfterRuntimeWrittenAsync and final:* AfterDeferredEffectMutationAsync remain later domain hooks. Uncertainty bypasses domain compensation; the private Russian notice avoids unchanged-state/retry claims. This is the bounded helper/error boundary, not full accepted-turn or browser-v6 migration; current verified/unrun evidence lives in plan.md.
++
++
++## T030-F ordinary tree deletion refinement, 2026-10-01
++
++The narrow approved FR-002–007 continuation reuses `EnumerateLocalTreeFiles` and `ReadLocalFileBytesAsync` to validate the complete tree before mutation, and publishes exact file before-images to absence as one existing B1 set. `GetLocalRelativePath` preserves normalized extended Windows roots; platform comparers preserve Linux case distinctions. Absent and recursively empty trees require no zero-member journal or invented generation. Nonrecursive validated pruning is structural follow-up only. A committed result with cleanup debt must retain member parents: B1 ScratchScope grants exact sibling stage/undo paths and requires those parents during cold recovery. Cleanup/pruning/logging failure must preserve the established byte decision.
++
++Recorder presence alone cannot choose the original handler. Warm BrowserLocalWriteCoordinator clears its recorder before ExplorerLocalTurnRollbackArtifacts restores dynamic cleanup directories; pending_turn_snapshot is outside the excluded evidence root and IsLegacyStorageRecovery is false. Add an explicit original directory deletion entry at that call and preserve original evidence-parent cleanup. Cold acquisition already uses RunLegacyStorageRecoveryAsync. Do not change physical authority globally or recursively delete nonempty ordinary canonical trees without B1.
++
++The saved Linux ProcedureTerminalQuarantine failure is in preparation before its helper. Verify that exact body after the tree port, without bypassing its fixture. Complete live/console preparation remains non-atomic because request/manifest/authority/dice/snapshot operations are separate. Full preparation, browser-v6, load/save/library, worker and B4/B5 remain later work. A fresh read-only Astra XHigh investigation found no material product decision blocking this slice; focused implementation and review evidence are still pending.
+diff --git a/tests/categories.json b/tests/categories.json
+index b63e8a81..82871a69 100644
+--- a/tests/categories.json
++++ b/tests/categories.json
+@@ -1,6 +1,30 @@
+ {
+   "schemaVersion": 1,
+   "categories": [
++    {
++      "id": "portable-directory-deletion",
++      "responsibility": "Ordinary canonical directory-tree deletion through one exact B1 member set, complete validation and safe empty structure cleanup on Linux and Windows.",
++      "excludes": "Whole pending-turn preparation, original browser-v6 migration, runtime/worker/load cleanup and save library.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs",
++        "BookOfEternityClient/Core/FileSystemManager.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.*"
++          ]
++        }
++      ]
++    },
+     {
+       "id": "test-selection-contracts",
+       "responsibility": "Catalog selection, runner safety, test inventory, and process cleanup contracts.",
