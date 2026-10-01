@@ -1,0 +1,163 @@
+{
+  "Categories": [
+    "portable-settings-notices",
+    "portable-settings-consumers"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-settings-notices",
+      "reason": "B2b independent review P2: actual failed-load settings/audio handler reconciliation, cancelled draft visibility, shared-scope pending reset and stale/unmounted ownership; unchanged C# is not rerun.",
+      "contracts": [
+        "visible persistence notice",
+        "response ownership",
+        "rapid settings patch coalescing"
+      ]
+    },
+    {
+      "category": "portable-settings-consumers",
+      "reason": "Exact existing consumers affected by AudioPanel shared-scope props and refresh-body extraction; update stale source paths without weakening safe-copy or settled-load coverage.",
+      "contracts": [
+        "settings/audio actual mount",
+        "player-safe settings copy",
+        "settled shared refresh"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "3442c169575b40d06a385920393f8ed7639552b0",
+    "WorkingTreeFingerprint": "EB04165DB6615B900E8FD957C0A8F29268E564678555709A3CD2D45509C62E36",
+    "ChangedFiles": 1
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-settings-consumers",
+      "Seconds": 1.6077269,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-settings-notices",
+      "Seconds": 2.3898745,
+      "BudgetMinutes": 4,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [
+    {
+      "Descriptor": "portable-settings-consumers-frontend-001",
+      "Adapter": "node",
+      "VerificationKind": "tests",
+      "Results": 2,
+      "Seconds": 0.9228789
+    },
+    {
+      "Descriptor": "portable-settings-consumers-frontend-002",
+      "Adapter": "vitest",
+      "VerificationKind": "tests",
+      "Results": 25,
+      "Seconds": 0.6688425
+    },
+    {
+      "Descriptor": "portable-settings-notices-frontend-003",
+      "Adapter": "node",
+      "VerificationKind": "tests",
+      "Results": 1,
+      "Seconds": 1.0843287
+    },
+    {
+      "Descriptor": "portable-settings-notices-frontend-004",
+      "Adapter": "vitest",
+      "VerificationKind": "tests",
+      "Results": 6,
+      "Seconds": 1.3041647
+    }
+  ],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.064326,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0221744,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0159469,
+      "Completed": true
+    },
+    {
+      "Name": "Frontend-build",
+      "Seconds": 5.8711893,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-consumers-frontend-001-compile",
+      "Seconds": 0.5836123,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-consumers-frontend-001-audioPanelCatalogVisibility.test.js",
+      "Seconds": 0.0731503,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-consumers-frontend-001-gracefulDegradation.test.js",
+      "Seconds": 0.0714148,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-consumers-frontend-002",
+      "Seconds": 0.6434637,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-notices-frontend-003-compile",
+      "Seconds": 0.9898678,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-notices-frontend-003-settingsPersistenceNotice.test.js",
+      "Seconds": 0.0882282,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-notices-frontend-004",
+      "Seconds": 1.2979014,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0057582,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 12,
+  "WallTime": "00:00:10.3979986",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 4,
+    "PlannedCases": 6,
+    "CompletedCases": 34,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 34,
+    "Executed": 34,
+    "Passed": 34,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

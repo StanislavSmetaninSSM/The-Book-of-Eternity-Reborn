@@ -1,0 +1,13 @@
+{
+  "sourceCommit": "3442c169575b40d06a385920393f8ed7639552b0",
+  "catalogBlobAfterPatch": "ba9b41236b5df635fbf4bb151f8d5710f3b44435",
+  "kind": "newly executed b2b-review1-audit; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "98cd436c6efe807bd1ee5cff93586576a1e97458ed4a0bf65f991ffc2e8b012f",
+      "sanitizedSha256": "98cd436c6efe807bd1ee5cff93586576a1e97458ed4a0bf65f991ffc2e8b012f"
+    }
+  ]
+}
