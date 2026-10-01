@@ -23,9 +23,12 @@ While `recovery/categories-pending.patch` exists, follow the [current catalog re
 - Node 24.19.0 and npm 11.9.0
 - Spec Kit CLI 1.0.13; repository Codex skills integration already present
 
+Before **any** tool startup (including first version/help checks) set the three supported opt-outs in the launching task/shell. Set the SDK opt-out before installation too: the installer has its own installation telemetry entry. These are per-task/per-invocation application settings, not global OS/security/network changes. Sources: [.NET SDK/installer telemetry](https://learn.microsoft.com/en-us/dotnet/core/tools/telemetry), [testing-platform telemetry](https://learn.microsoft.com/en-us/dotnet/core/testing/microsoft-testing-platform-telemetry), [PowerShell environment variables](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_Environment_Variables). Do not substitute a banner-suppression flag for telemetry opt-out.
+
 Install from official sources without privileged system changes. For example, use a writable TOOLCHAIN directory outside the checkout:
 
 ```sh
+export DOTNET_CLI_TELEMETRY_OPTOUT=1 POWERSHELL_TELEMETRY_OPTOUT=1 TESTINGPLATFORM_TELEMETRY_OPTOUT=1
 export TOOLCHAIN="$HOME/boe-toolchain"
 (
 set -eu
@@ -48,7 +51,7 @@ In restricted environments choose writable home/cache paths explicitly:
 
 ```sh
 export DOTNET_ROOT="$TOOLCHAIN/dotnet" DOTNET_CLI_HOME="$TOOLCHAIN/home"
-export DOTNET_CLI_TELEMETRY_OPTOUT=1
+export DOTNET_CLI_TELEMETRY_OPTOUT=1 POWERSHELL_TELEMETRY_OPTOUT=1 TESTINGPLATFORM_TELEMETRY_OPTOUT=1
 export XDG_CONFIG_HOME="$TOOLCHAIN/config" XDG_CACHE_HOME="$TOOLCHAIN/cache" XDG_DATA_HOME="$TOOLCHAIN/data"
 export NUGET_PACKAGES="$TOOLCHAIN/nuget" NUGET_HTTP_CACHE_PATH="$TOOLCHAIN/nuget-http"
 export NUGET_SCRATCH="$TOOLCHAIN/nuget-scratch" NUGET_PLUGINS_CACHE_PATH="$TOOLCHAIN/nuget-plugins"
@@ -67,9 +70,17 @@ In this restricted executor, the default parallel MSBuild restore failed without
 
 Read docs/testing.md and select categories for the actual block. Use scripts/test-csharp.ps1. The B1 categories `portable-storage-paths` and `portable-storage-publication` already exist; later cutover categories and the actual reviewed selection are recorded in tests/categories.json and tests/selection.json. `-ValidateCatalog` discovers ownership without executing tests. Never use a full-suite/aggregate/all-category run. Store meaningful result counts and source SHA remotely in plan.md, not only ignored TestResults.
 
-For actual client acceptance use separate fresh roots for console and web. Change one ordinary setting, stop the full client process, restart and inspect the retained value. Then test real GM turn, save/load and restart, including failed/conflicting operations. Exact accepted command/scenario evidence is added as each block becomes runnable.
+Current user-approved acceptance uses real console process/menu/settings/restart checks and automated browser-client checks. A later live browser run will use a server/access supplied by the user; it is not a current-phase blocker. Use separate fresh roots for eventual console/web live checks. Change one ordinary setting, stop the full client process, restart and inspect the retained value; then verify real GM turn, save/load and failure/conflict recovery. Exact accepted command/scenario evidence is added as each block becomes runnable; automated checks are never relabelled live browser execution.
 
 ## Windows owner handoff
+
+Before launching `pwsh`, `dotnet`, their first version/help checks or an SDK installer, set the opt-outs in the parent Windows Command Prompt session (do not use global `setx`):
+
+```cmd
+set DOTNET_CLI_TELEMETRY_OPTOUT=1
+set POWERSHELL_TELEMETRY_OPTOUT=1
+set TESTINGPLATFORM_TELEMETRY_OPTOUT=1
+```
 
 Use the exact published acceptance SHA with supported .NET/PowerShell/Node versions. Run the same selected storage/path/recovery categories, then console and browser startup-setting-restart, real persistent CLI/daemon turns, cancellation/restart, core game turn, save/load, audio and clipboard. Report Windows version, filesystem, terminal/provider and exact failures. These checks are not marked passed from Linux evidence.
 
@@ -84,3 +95,8 @@ The focused `portable-storage-publication` category covers the common member jou
 The v1 journal uses a new private runtime directory, flushed create-new sibling stages, complete member preflight and an atomic group commit decision before cleanup. It requires the existing canonical lease, explicit generation and safe existing destination parents. Only exact explicitly granted external destinations are permitted; derived private sibling names do not grant access to other external files. Before B2 cutover, old-format evidence must use its original supported handler or block with evidence retained. Do not manually delete an unresolved journal to make startup appear successful.
 
 Windows owner checks for the review corrections: repeat publication/bootstrap/recovery against an ordinary drive-root spelling and its supported extended `\\?\C:\...` spelling, and against an available UNC share with both ordinary and extended `\\?\UNC\server\share\...` spellings. Confirm generation members are recognized and equivalent journal/lock paths remain excluded. The 8 pure Windows spelling cases run on Linux establish comparison policy only; they do not execute a Windows filesystem. Generation encoding cases cover BOM-marked UTF-8, UTF-16 LE/BE and UTF-32 LE/BE with exact-byte bootstrap/transition/rollback, matching the current generation reader.
+
+
+## Isolated verification after an inconclusive run
+
+Never infer cleanup from an inaccessible process view or silently overlap a vanished run. The B2c execution-control denial and the later authorized isolated attempt are separate evidence in plan.md. The successful execution attempt used a fresh exact-SHA checkout with the apply-once catalog patch, a new writable `RUN_ROOT` for HOME/CLI/NuGet/XDG state and `TMPDIR`/`TMP`/`TEMP`, and only shared official tool binaries. Its one PowerShell process asserted `.NET GetTempPath()` equals that new temp root and all three opt-outs are `1`, then invoked the same selected canonical runner. No prior fixture, build output or fixed port was reused. This is a recorded, specifically authorized recovery procedure, not permission to evade another denial or force an unknown lease.
