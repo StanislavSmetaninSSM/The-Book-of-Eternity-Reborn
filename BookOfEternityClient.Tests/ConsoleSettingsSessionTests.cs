@@ -1,0 +1,154 @@
+using System.Reflection;
+using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
+using BookOfEternityClient.WebUi;
+using Microsoft.Extensions.Logging.Abstractions;
+using Xunit;
+
+namespace BookOfEternityClient.Tests;
+
+public sealed class ConsoleSettingsSessionTests : IDisposable
+{
+    private readonly string _root = Path.Combine(Path.GetTempPath(), "boe-console-draft-" + Guid.NewGuid().ToString("N"));
+    private readonly FileSystemManager _files;
+    private readonly GameSettings _live = new() { MusicEnabled = false, SoundEnabled = false };
+    private readonly StateManager _state;
+    private readonly SystemModService _mods;
+    private Action<TrustedLocalPublicationPhase, int>? _observe;
+    private Action? _closing;
+    private bool _settingsPublication;
+    private const string Projection = LocalSettingsPreparation.ProjectionPath;
+
+    public ConsoleSettingsSessionTests()
+    {
+        Directory.CreateDirectory(_root);
+        _files = new FileSystemManager(_root, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            {
+                BeforeCanonicalMutationBoundaryAsync = path =>
+                {
+                    if (path.Replace('\\', '/') == "config.json") _settingsPublication = true;
+                    return Task.CompletedTask;
+                },
+                LocalPublicationObserver = (phase, index) => { if (_settingsPublication) _observe?.Invoke(phase, index); },
+                SessionOperationClosingAsync = () => { _closing?.Invoke(); return Task.CompletedTask; }
+            });
+        _state = new StateManager(_files, _live, NullLogger<StateManager>.Instance);
+        _mods = new SystemModService(_files, _live, NullLogger<SystemModService>.Instance);
+    }
+
+    private async Task<ConsoleSettingsSession> Open()
+    {
+        await _state.BootstrapLocalStorageAsync();
+        _settingsPublication = false;
+        return await ConsoleSettingsSession.OpenAsync(_files, _state, _mods);
+    }
+
+    [Fact]
+    public async Task DraftIsDetachedAndDoesNotKeepTheCanonicalLeaseAcrossMenuInput()
+    {
+        var session = await Open();
+        session.Draft.Language = "en";
+        Assert.Equal("ru", _live.Language); Assert.NotSame(_live, session.Draft);
+        var acquisition = _files.AcquireCanonicalWriteLeaseAsync();
+        await using var lease = await acquisition.WaitAsync(TimeSpan.FromSeconds(2));
+        Assert.False(session.RequiresReload);
+    }
+
+    [Fact]
+    public async Task CommitUsesConsoleOwnerAndKeepsLiveSettingsReferenceThenAdvancesBaseline()
+    {
+        var session = await Open(); var draft = session.Draft; var ownerSeen = false;
+        session.Draft.Language = "en";
+        var result = await session.SaveAsync(() =>
+        {
+            using var reader = new StreamReader(_files.ResolvePath(LocalUiSessionLockService.LockPath));
+            var owner = JsonNode.Parse(reader.ReadToEnd())!;
+            Assert.Equal("console", owner["ownerKind"]!.GetValue<string>());
+            Assert.StartsWith("console:", owner["ownerId"]!.GetValue<string>());
+            Assert.Equal("en", _live.Language); Assert.Same(_live, _state.Settings);
+            Assert.True(File.Exists(_files.ResolvePath(Projection)));
+            Assert.True(File.Exists(_files.ResolvePath(SystemModService.ManifestPath)));
+            ownerSeen = true; return Task.CompletedTask;
+        });
+        Assert.True(ownerSeen); Assert.Equal(BrowserPreparedWriteDisposition.Committed, result.Disposition);
+        Assert.False(result.NeedsFollowUp); Assert.Same(draft, session.Draft);
+        session.Draft.Language = "ru";
+        Assert.Equal(BrowserPreparedWriteDisposition.Committed, (await session.SaveAsync()).Disposition);
+        Assert.Equal("ru", _live.Language); Assert.False(session.RequiresReload);
+    }
+
+    [Theory]
+    [InlineData("rollback")]
+    [InlineData("uncertain")]
+    [InlineData("committed-cleanup")]
+    public async Task PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime(string cut)
+    {
+        var session = await Open(); var before = File.ReadAllBytes(_files.ResolvePath("config.json"));
+        session.Draft.Language = "en"; var injected = false;
+        _observe = (phase, _) =>
+        {
+            var wanted = cut == "committed-cleanup" ? TrustedLocalPublicationPhase.Committed : TrustedLocalPublicationPhase.MemberPublished;
+            if (injected || phase != wanted) return;
+            injected = true;
+            if (cut == "uncertain") File.WriteAllBytes(_files.ResolvePath(Projection), [99]);
+            throw new IOException("Injected console settings interruption.");
+        };
+        var result = await session.SaveAsync();
+        Assert.True(injected); Assert.Equal("en", session.Draft.Language);
+        if (cut == "rollback")
+        {
+            Assert.Equal(BrowserPreparedWriteDisposition.RolledBack, result.Disposition);
+            Assert.Equal(before, File.ReadAllBytes(_files.ResolvePath("config.json")));
+            Assert.Equal("ru", _live.Language); Assert.False(session.RequiresReload);
+        }
+        else if (cut == "uncertain")
+        {
+            Assert.Equal(BrowserPreparedWriteDisposition.Uncertain, result.Disposition);
+            Assert.Equal("ru", _live.Language); Assert.True(session.RequiresReload);
+            _observe = null;
+            Assert.Equal(BrowserPreparedWriteDisposition.Blocked, (await session.SaveAsync()).Disposition);
+            Assert.Equal(new byte[] { 99 }, File.ReadAllBytes(_files.ResolvePath(Projection)));
+        }
+        else
+        {
+            Assert.Equal(BrowserPreparedWriteDisposition.Committed, result.Disposition);
+            Assert.True(result.NeedsFollowUp); Assert.Equal("en", _live.Language);
+            Assert.True(session.RequiresReload);
+        }
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task RuntimeOrClosingFailureCannotRelabelCommittedFiles(bool closing)
+    {
+        var session = await Open(); session.Draft.Language = "en";
+        if (closing) _closing = () => throw new IOException("Injected outer close failure.");
+        var result = await session.SaveAsync(() => closing ? Task.CompletedTask : throw new IOException("Runtime refresh failed."));
+        Assert.Equal(BrowserPreparedWriteDisposition.Committed, result.Disposition);
+        Assert.True(result.NeedsFollowUp); Assert.True(session.RequiresReload);
+        Assert.Equal("en", _live.Language);
+        using var reader = new StreamReader(_files.ResolvePath("config.json"));
+        Assert.Equal("en", JsonNode.Parse(reader.ReadToEnd())!["language"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed()
+    {
+        var audio = new AudioService(_files, new GameSettings { MusicEnabled = true, MusicVolume = 50 }, NullLogger<AudioService>.Instance);
+        var draft = new GameSettings { MusicEnabled = false, MusicVolume = 50 };
+        var field = typeof(AudioService).GetField("_musicCts", BindingFlags.NonPublic | BindingFlags.Instance)!;
+        using var previewCts = new CancellationTokenSource(); field.SetValue(audio, previewCts);
+        var preview = audio.BeginSettingsPreview(draft);
+        await audio.ApplySettingsAsync(); Assert.True(previewCts.IsCancellationRequested);
+        preview.Dispose(); preview.Dispose();
+        using var acceptedCts = new CancellationTokenSource(); field.SetValue(audio, acceptedCts);
+        await audio.ApplySettingsAsync(); Assert.False(acceptedCts.IsCancellationRequested);
+        await audio.StopAllAsync();
+    }
+
+    public void Dispose() { if (Directory.Exists(_root)) Directory.Delete(_root, recursive: true); }
+}

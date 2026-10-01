@@ -22,7 +22,7 @@ public enum MusicPlaylist
     InGame
 }
 
-public sealed class AudioService
+public sealed partial class AudioService
 {
     private const string MainTheme = "Main Theme.mp3";
     private const string MainThemeAlt = "Main Theme (alt).mp3";

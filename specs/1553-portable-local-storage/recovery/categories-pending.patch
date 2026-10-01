@@ -1,8 +1,8 @@
 diff --git a/tests/categories.json b/tests/categories.json
-index 4b805af..c94ec11 100644
+index 4b805af..14e7851 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -7600,6 +7600,278 @@
+@@ -7600,6 +7600,307 @@
            ]
          }
        ]
@@ -157,6 +157,35 @@ index 4b805af..c94ec11 100644
 +            "BookOfEternityClient.Tests.LocalWebUiHostTests.AudioSettingsEndpoint_UpdatesAndPersistsSharedSettingsWithClampedVolumes",
 +            "BookOfEternityClient.Tests.LocalWebUiHostTests.BrowserAudioService_SerializesSharedSettingsUpdates",
 +            "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAsync_ActiveOtherOwner_BlocksWithoutRunningWrite"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-console-settings-session",
++      "responsibility": "Console detached draft admission, explicit publication outcomes and temporary audio preview settings source before menu wiring.",
++      "excludes": "Menu rendering, gameplay/save-load, audio backend execution, browser UI and Windows execution.",
++      "changeHints": [
++        "BookOfEternityClient/Core/ConsoleSettingsSession.cs",
++        "BookOfEternityClient/Services/AudioService.SettingsPreview.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-prepared-settings",
++          "when": "Shared prepared-write owner or admission behavior changes."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 4,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.ConsoleSettingsSessionTests.*"
 +          ]
 +        }
 +      ]

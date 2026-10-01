@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-console-settings",
-      "reason": "B2c preparation implementation: ten declared-member/baseline/generation/read-only cases plus the two existing SystemModService semantic-manifest consumers because descriptor parsing is shared. Menu/coordinator cutover remains unwired.",
+      "category": "portable-console-settings-session",
+      "reason": "First runnable detached console draft/controller and temporary audio settings preview: eight decisive real-journal/outcome/lease/owner/source-restoration cases. APIs are unwired stubs for RED.",
       "contracts": [
-        "local settings member preparation",
-        "exact config/generation baseline",
-        "read-only mod preparation"
+        "console settings draft lifecycle",
+        "publication outcome consumption",
+        "temporary audio settings source"
       ]
     }
   ]
