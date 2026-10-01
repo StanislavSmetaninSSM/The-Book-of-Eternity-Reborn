@@ -2,20 +2,52 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-session-root-keys",
-      "reason": "Six Linux-executable cases: four pure drive/UNC alias cases, case-distinct keys and actual Linux member-image preservation. The six actual Windows-only bodies have their separate exact ownership category.",
+      "category": "portable-session-replacement",
+      "reason": "Complete clear/rotation member decisions, cold recovery, namespace preflight and actual pending consumers; preserved 86-case covering evidence establishes this unchanged cohort.",
       "contracts": [
-        "shared revision/binding root keys",
-        "stale alias writer is rejected before mutation",
-        "case-distinct Linux roots and member bytes"
+        "B3b complete replacement and logical-empty pending content"
+      ]
+    },
+    {
+      "category": "portable-client-bootstrap",
+      "reason": "Generation bootstrap and ordinary client admission affected by the clear/rotation transition; preserved 86-case covering evidence.",
+      "contracts": [
+        "generation bootstrap and original-handler-or-block admission"
+      ]
+    },
+    {
+      "category": "portable-storage-consumers",
+      "reason": "Exact ordinary writer and local UI-owner interaction boundaries already passed in the 86-case covering run.",
+      "contracts": [
+        "ordinary writer and local owner consumers"
+      ]
+    },
+    {
+      "category": "portable-proposal-admission",
+      "reason": "Actual proposal-store destination preflight and recursively-empty reuse; preserved 30-case covering run proves Linux admission through the explicit Windows backend rejection, not successful Linux publication.",
+      "contracts": [
+        "proposal namespace admission and empty residue"
+      ]
+    },
+    {
+      "category": "portable-session-replacement-consumers",
+      "reason": "Exact lifecycle/lease fences, accepted authority invalidation, local-owner release and source guards already passed in the 30-case covering run; Windows-only bodies now have a separate category.",
+      "contracts": [
+        "replacement lifecycle and existing authority consumers"
+      ]
+    },
+    {
+      "category": "portable-session-root-keys",
+      "reason": "Six Linux-executable key and case-distinct member cases passed in the final 17-case increment; Windows-only filesystem bodies remain separately owned.",
+      "contracts": [
+        "supported alias keys and Linux case distinctions"
       ]
     },
     {
       "category": "portable-session-root-key-consumers",
-      "reason": "The shared normalizer now feeds both the interner and operation binding. These eleven exact existing consumer cases prove positive binding, pre-write/final/closing fences, cross-manager authority sharing, root separation and revision invalidation; unrelated completed cohorts are not repeated.",
+      "reason": "Eleven exact positive/current/replaced/closing operation and same/different-root/cache consumers passed after both production key consumers were wired.",
       "contracts": [
-        "generation-bound operation lifetime",
-        "canonical root identity and revision authority"
+        "operation binding and root/revision authority"
       ]
     }
   ]

@@ -1,6 +1,6 @@
 {
   "baseCommit": "41d9104076d59fabacf93c3b1be3cc8d5ccc238f",
-  "status": "B3b prior 86-case and 30-case covering GREEN retained. Root-key RED completed 6/6 with five intended scaffold failures and one retained Linux behavior pass. Shared in-process key implementation and eleven exact consumers are saved but GREEN/audit/review/native Windows execution remain unrun.",
+  "status": "B3b 86-case, 30-case and final 17-case root-key GREEN preserved at distinct exact sources. Consolidated Linux selection is for zero-test final planning; unchanged passing cohorts are not rerun. Discovery/plan audit, independent review, normal publication and six native Windows filesystem bodies remain pending.",
   "patches": [
     {
       "path": "session-replacement-source.pending.patch",
@@ -42,7 +42,7 @@
     }
   ],
   "testSourceBlob": "499d89322195fd0eb6b3912c2ea276aa2a970e6a",
-  "selectionBlob": "d7cf76b6392c56db713c0c05057c8547013938aa",
+  "selectionBlob": "3ef6dd248116c38d2a8286116afe31f0ae74fc81",
   "boundaryTestBlob": "719822eff3c45b9fa21f50f3b27e579473ff24f8",
   "crashFixtureBlob": "14bbdef398f3a9be46b73ac1ab1d0f0a48c3f90b",
   "replacementPartialBlob": "2453f1f39d34b5bc0a992a3e78a874f7d1cf6e83",

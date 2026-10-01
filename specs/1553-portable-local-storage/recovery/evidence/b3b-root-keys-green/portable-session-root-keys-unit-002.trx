@@ -1,0 +1,63 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="14f504ef-94e3-4811-8b6e-c7ebb8af20df" name="b3b-root-keys-green" runUser="$USER">
+  <ns0:Times creation="2026-10-01T07:10:46.0435778-04:00" queuing="2026-10-01T07:10:46.0435779-04:00" start="2026-10-01T07:10:44.1179013-04:00" finish="2026-10-01T07:10:46.2120134-04:00" />
+  <ns0:TestSettings name="default" id="7ba7cf9c-191a-416d-891f-aa80800be7db">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="cce3a5d9-2886-4a87-b743-a9d21e86de32" testId="cc2dc164-57c0-d120-4c22-20820988027e" testName="BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(ordinary: &quot;\\\\server\\share\\session&quot;, extended: &quot;\\\\?\\UNC\\server\\share\\session&quot;)" computerName="$HOST" duration="00:00:00.0000341" startTime="2026-10-01T07:10:45.9454740-04:00" endTime="2026-10-01T07:10:45.9454742-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cce3a5d9-2886-4a87-b743-a9d21e86de32" />
+    <ns0:UnitTestResult executionId="aed7dfa3-3dde-408e-9138-6a783474833b" testId="f900360c-966e-5691-d376-faea54bc9db8" testName="BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(ordinary: &quot;\\\\server\\share\\session&quot;, extended: &quot;//?/UNC/server/share/session/&quot;)" computerName="$HOST" duration="00:00:00.0000511" startTime="2026-10-01T07:10:45.9455366-04:00" endTime="2026-10-01T07:10:45.9455367-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aed7dfa3-3dde-408e-9138-6a783474833b" />
+    <ns0:UnitTestResult executionId="b3e40197-f632-46cb-810b-6d17559d6704" testId="4ff63a89-df84-1f30-a65c-4d45aa545cb0" testName="BookOfEternityClient.Tests.PortableSessionRootKeyTests.LinuxClearRetainsDistinctMemberImagesAcrossRollbackThenDeletesBoth" computerName="$HOST" duration="00:00:00.1831303" startTime="2026-10-01T07:10:46.1270508-04:00" endTime="2026-10-01T07:10:46.1270510-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b3e40197-f632-46cb-810b-6d17559d6704" />
+    <ns0:UnitTestResult executionId="9ed30587-e1dc-464c-a7d0-7067060719bf" testId="e0decdc7-a668-a56e-4348-9a94ac4d4f78" testName="BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(ordinary: &quot;C:\\session&quot;, extended: &quot;\\\\?\\C:\\session\\&quot;)" computerName="$HOST" duration="00:00:00.0080123" startTime="2026-10-01T07:10:45.9400609-04:00" endTime="2026-10-01T07:10:45.9400950-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9ed30587-e1dc-464c-a7d0-7067060719bf" />
+    <ns0:UnitTestResult executionId="1dac4d5e-ff50-41f5-8f51-a0b5a85a972a" testId="12335c63-f102-edb3-8039-75deffae7bf7" testName="BookOfEternityClient.Tests.PortableSessionRootKeyTests.LinuxRootKeysKeepCaseDistinctNamesSeparate" computerName="$HOST" duration="00:00:00.0040052" startTime="2026-10-01T07:10:46.1329599-04:00" endTime="2026-10-01T07:10:46.1329600-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1dac4d5e-ff50-41f5-8f51-a0b5a85a972a" />
+    <ns0:UnitTestResult executionId="4883106d-7c0b-4447-bac3-34611397e1b8" testId="3c3e00d3-2268-b3e2-cac2-8d7925017920" testName="BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(ordinary: &quot;C:\\session&quot;, extended: &quot;\\\\?\\C:\\session&quot;)" computerName="$HOST" duration="00:00:00.0002965" startTime="2026-10-01T07:10:45.9449624-04:00" endTime="2026-10-01T07:10:45.9449625-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4883106d-7c0b-4447-bac3-34611397e1b8" />
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(ordinary: &quot;C:\\session&quot;, extended: &quot;\\\\?\\C:\\session\\&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e0decdc7-a668-a56e-4348-9a94ac4d4f78">
+      <ns0:Execution id="9ed30587-e1dc-464c-a7d0-7067060719bf" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionRootKeyTests" name="RootKeysUnifySupportedDriveAndUncSpellings" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(ordinary: &quot;\\\\server\\share\\session&quot;, extended: &quot;\\\\?\\UNC\\server\\share\\session&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="cc2dc164-57c0-d120-4c22-20820988027e">
+      <ns0:Execution id="cce3a5d9-2886-4a87-b743-a9d21e86de32" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionRootKeyTests" name="RootKeysUnifySupportedDriveAndUncSpellings" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionRootKeyTests.LinuxRootKeysKeepCaseDistinctNamesSeparate" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="12335c63-f102-edb3-8039-75deffae7bf7">
+      <ns0:Execution id="1dac4d5e-ff50-41f5-8f51-a0b5a85a972a" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionRootKeyTests" name="LinuxRootKeysKeepCaseDistinctNamesSeparate" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(ordinary: &quot;C:\\session&quot;, extended: &quot;\\\\?\\C:\\session&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3c3e00d3-2268-b3e2-cac2-8d7925017920">
+      <ns0:Execution id="4883106d-7c0b-4447-bac3-34611397e1b8" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionRootKeyTests" name="RootKeysUnifySupportedDriveAndUncSpellings" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionRootKeyTests.LinuxClearRetainsDistinctMemberImagesAcrossRollbackThenDeletesBoth" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4ff63a89-df84-1f30-a65c-4d45aa545cb0">
+      <ns0:Execution id="b3e40197-f632-46cb-810b-6d17559d6704" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionRootKeyTests" name="LinuxClearRetainsDistinctMemberImagesAcrossRollbackThenDeletesBoth" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(ordinary: &quot;\\\\server\\share\\session&quot;, extended: &quot;//?/UNC/server/share/session/&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f900360c-966e-5691-d376-faea54bc9db8">
+      <ns0:Execution id="aed7dfa3-3dde-408e-9138-6a783474833b" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionRootKeyTests" name="RootKeysUnifySupportedDriveAndUncSpellings" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="cc2dc164-57c0-d120-4c22-20820988027e" executionId="cce3a5d9-2886-4a87-b743-a9d21e86de32" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="f900360c-966e-5691-d376-faea54bc9db8" executionId="aed7dfa3-3dde-408e-9138-6a783474833b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="4ff63a89-df84-1f30-a65c-4d45aa545cb0" executionId="b3e40197-f632-46cb-810b-6d17559d6704" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="e0decdc7-a668-a56e-4348-9a94ac4d4f78" executionId="9ed30587-e1dc-464c-a7d0-7067060719bf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="12335c63-f102-edb3-8039-75deffae7bf7" executionId="1dac4d5e-ff50-41f5-8f51-a0b5a85a972a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="3c3e00d3-2268-b3e2-cac2-8d7925017920" executionId="4883106d-7c0b-4447-bac3-34611397e1b8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Completed">
+    <ns0:Counters total="6" executed="6" passed="6" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.14]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.31]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.34]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.60]   Finished:    BookOfEternityClient.Tests
+</ns0:StdOut>
+    </ns0:Output>
+  </ns0:ResultSummary>
+</ns0:TestRun>
