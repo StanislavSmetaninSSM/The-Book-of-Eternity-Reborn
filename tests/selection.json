@@ -3,9 +3,30 @@
   "selections": [
     {
       "category": "portable-directory-deletion",
-      "reason": "T030-F causal RED, then bounded complete-tree deletion behavior. Additional exact consumer and cold owners are added with their tests.",
+      "reason": "T030-F bounded Linux deletion, exact recovery or directly affected consumer coverage; native original handler is selected separately.",
       "contracts": [
-        "FR-002 through FR-007; ordinary canonical tree deletion"
+        "FR-002 through FR-007; canonical directory deletion"
+      ]
+    },
+    {
+      "category": "portable-directory-recovery",
+      "reason": "T030-F bounded Linux deletion, exact recovery or directly affected consumer coverage; native original handler is selected separately.",
+      "contracts": [
+        "FR-002 through FR-007; canonical directory deletion"
+      ]
+    },
+    {
+      "category": "portable-directory-linux-special",
+      "reason": "T030-F bounded Linux deletion, exact recovery or directly affected consumer coverage; native original handler is selected separately.",
+      "contracts": [
+        "FR-002 through FR-007; canonical directory deletion"
+      ]
+    },
+    {
+      "category": "portable-directory-consumers",
+      "reason": "T030-F bounded Linux deletion, exact recovery or directly affected consumer coverage; native original handler is selected separately.",
+      "contracts": [
+        "FR-002 through FR-007; canonical directory deletion"
       ]
     }
   ]
