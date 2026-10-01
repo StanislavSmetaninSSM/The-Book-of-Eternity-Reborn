@@ -1,8 +1,8 @@
 diff --git a/tests/categories.json b/tests/categories.json
-index 4b805af9..cbe81a68 100644
+index 4b805af..c94ec11 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -7600,6 +7600,277 @@
+@@ -7600,6 +7600,278 @@
            ]
          }
        ]
@@ -190,7 +190,8 @@ index 4b805af9..cbe81a68 100644
 +        {
 +          "project": "unit",
 +          "tests": [
-+            "BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.*"
++            "BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.*",
++            "BookOfEternityClient.Tests.SystemModServiceTests.*"
 +          ]
 +        }
 +      ]

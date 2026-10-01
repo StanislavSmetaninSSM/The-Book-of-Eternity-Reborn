@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-console-settings",
-      "reason": "B2c first preparation-only TDD slice: complete declared members, no mutation/live settings application, exact baseline/generation admission and normalizing one mod snapshot; menu/coordinator cutover remains unwired.",
+      "reason": "B2c preparation implementation: ten declared-member/baseline/generation/read-only cases plus the two existing SystemModService semantic-manifest consumers because descriptor parsing is shared. Menu/coordinator cutover remains unwired.",
       "contracts": [
         "local settings member preparation",
         "exact config/generation baseline",

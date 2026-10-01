@@ -211,10 +211,15 @@ public sealed partial class SystemModService
 
     private async Task<SystemModDescriptor> BuildDescriptorAsync(string fullPath, bool includeContent, bool enabled)
     {
+        var content = await File.ReadAllTextAsync(fullPath);
+        return BuildDescriptor(fullPath, content, includeContent, enabled);
+    }
+
+    private SystemModDescriptor BuildDescriptor(string fullPath, string content, bool includeContent, bool enabled)
+    {
         var fileName = Path.GetFileName(fullPath);
         var relativePath = $"{ModsDirectory}/{fileName}".Replace('\\', '/');
         var extension = Path.GetExtension(fullPath);
-        var content = await File.ReadAllTextAsync(fullPath);
 
         var descriptor = new SystemModDescriptor
         {
