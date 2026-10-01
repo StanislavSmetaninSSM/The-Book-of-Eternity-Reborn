@@ -1,0 +1,49 @@
+{
+  "reportVersion": 1,
+  "observationUtc": {
+    "from": "2026-10-01T02:08:00Z",
+    "through": "2026-10-01T02:10:00Z"
+  },
+  "scope": "Read-only observation of the existing synthetic loopback failure; no new browser request or game application test.",
+  "target": {
+    "scheme": "http",
+    "host": "127.0.0.1",
+    "port": "omitted",
+    "purpose": "synthetic marker server, not game data"
+  },
+  "observedFailure": {
+    "code": "ERR_BLOCKED_BY_CLIENT",
+    "renderedWording": [
+      "Сайт 127.0.0.1 заблокирован",
+      "Эта страница была заблокирована расширением."
+    ],
+    "limit": "The error page attributes the request to extension blocking but does not identify the responsible extension or rule."
+  },
+  "priorSyntheticServerResult": {
+    "evidenceKind": "Reported prior result; not rerun in this diagnostic",
+    "requestsReceived": 0,
+    "content": "random synthetic marker only",
+    "serverOutcome": "Owned synthetic server ended; no game data served."
+  },
+  "interpretationAndLimits": [
+    "Broad ordinary-HTTP URL policy alone does not prove a blanket localhost ban.",
+    "The responsible extension/rule and the relationship between the browser and repository-exec network remain unresolved.",
+    "No applicable private repository-exec-to-cloud-browser preview route was established.",
+    "No conclusion blames the game or establishes that policy/extension changes are necessary or appropriate."
+  ],
+  "actionsNotTaken": [
+    "Policy or extension changes",
+    "Tunnel or deployment",
+    "Alias, alternate-port or blocked-URL retry"
+  ],
+  "sources": [
+    {
+      "title": "Chromium URL blocklist filter format",
+      "url": "https://www.chromium.org/administrators/url-blocklist-filter-format/"
+    },
+    {
+      "title": "OpenAI Browser documentation: Preview a page",
+      "url": "https://learn.chatgpt.com/docs/browser#preview-a-page"
+    }
+  ]
+}
