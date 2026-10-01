@@ -1,0 +1,260 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="3d71a8a7-ca34-49fd-a9ad-fbd1219dfd58" name="coordinated-lease-red" runUser="$USER">
+  <ns0:Times creation="2026-10-01T11:42:35.1001797-04:00" queuing="2026-10-01T11:42:35.1001797-04:00" start="2026-10-01T11:42:32.2503943-04:00" finish="2026-10-01T11:42:37.2146174-04:00" />
+  <ns0:TestSettings name="default" id="292c68f8-e26e-446d-97c9-6f9ce6d5933c">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="140a95c4-4879-4188-b191-647d330fd078" testId="01a993c2-3a53-9404-63c6-da801991364b" testName="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(foreign: False, guardOnly: False)" computerName="$HOST" duration="00:00:00.0602979" startTime="2026-10-01T11:42:34.9671988-04:00" endTime="2026-10-01T11:42:34.9672157-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="140a95c4-4879-4188-b191-647d330fd078">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.InvalidOperationException)</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(Boolean foreign, Boolean guardOnly) in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 33
+   at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(Boolean foreign, Boolean guardOnly) in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 37
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="55ecfd7b-2ca6-4049-b6fa-7267ccfdac68" testId="7eb04ce6-de0d-34c6-d00e-b090a0642b69" testName="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ValidZeroWriteBranchesDoNotCreateGenerationOrPublication(guardOnly: True)" computerName="$HOST" duration="00:00:00.0148775" startTime="2026-10-01T11:42:35.0103697-04:00" endTime="2026-10-01T11:42:35.0103701-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="55ecfd7b-2ca6-4049-b6fa-7267ccfdac68" />
+    <ns0:UnitTestResult executionId="753e4f73-ac8a-4302-935f-13f06f7bc140" testId="9cdf2b5d-b40b-2354-171b-65fb669298ea" testName="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(foreign: True, guardOnly: True)" computerName="$HOST" duration="00:00:00.0075462" startTime="2026-10-01T11:42:34.9736935-04:00" endTime="2026-10-01T11:42:34.9736937-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="753e4f73-ac8a-4302-935f-13f06f7bc140">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.InvalidOperationException)</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(Boolean foreign, Boolean guardOnly) in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 33
+   at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(Boolean foreign, Boolean guardOnly) in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 37
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="6d3b3539-ef5c-44bf-9f15-8a3ee6cf6e2b" testId="7ebf374f-963f-45ad-8366-6b9c652a1fe6" testName="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure(uncertain: False)" computerName="$HOST" duration="00:00:00.0081892" startTime="2026-10-01T11:42:35.0408388-04:00" endTime="2026-10-01T11:42:35.0408391-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6d3b3539-ef5c-44bf-9f15-8a3ee6cf6e2b">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Same() Failure: Values are not the same instance
+Expected: System.IO.InvalidDataException: Admission failed before publication.
+   at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.&lt;&gt;c__DisplayClass6_0.&lt;&lt;SharedOwnedReleaseCannotReplacePrimaryOperationFailure&gt;b__0&gt;d.MoveNext() in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 94
+Actual:   System.IO.IOException: Injected owned context release failure.
+   at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ThrowingContext.Dispose() in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 141
+   at BookOfEternityClient.Core.FileSystemManager.CanonicalWriteLease.DisposeAsync() in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 298
+   at BookOfEternityClient.Services.CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(FileSystemManager fs, CanonicalWriteLease writeLease, Boolean completed, Exception operationFailure) in $REPO/BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs:line 107
+   at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.&lt;&gt;c__DisplayClass6_0.&lt;&lt;SharedOwnedReleaseCannotReplacePrimaryOperationFailure&gt;b__0&gt;d.MoveNext() in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 99
+--- End of stack trace from previous location ---
+   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure(Boolean uncertain) in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 103
+   at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure(Boolean uncertain) in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 110
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="58670343-c4b5-4729-a007-f8439cb2ca9d" testId="0a10101e-3690-2e2a-b546-e321711cb9be" testName="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure(uncertain: True)" computerName="$HOST" duration="00:00:00.0136632" startTime="2026-10-01T11:42:35.0318006-04:00" endTime="2026-10-01T11:42:35.0318010-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="58670343-c4b5-4729-a007-f8439cb2ca9d">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Same() Failure: Values are not the same instance
+Expected: BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException: Coordinated state publication is unresolved; retain its evidence before retry or compensation.
+ ---&gt; System.IO.IOException: Unknown member bytes.
+   --- End of inner exception stack trace ---
+   at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.&lt;&gt;c__DisplayClass6_0.&lt;&lt;SharedOwnedReleaseCannotReplacePrimaryOperationFailure&gt;b__0&gt;d.MoveNext() in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 94
+Actual:   System.IO.IOException: Injected owned context release failure.
+   at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ThrowingContext.Dispose() in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 141
+   at BookOfEternityClient.Core.FileSystemManager.CanonicalWriteLease.DisposeAsync() in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 298
+   at BookOfEternityClient.Services.CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(FileSystemManager fs, CanonicalWriteLease writeLease, Boolean completed, Exception operationFailure) in $REPO/BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs:line 107
+   at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.&lt;&gt;c__DisplayClass6_0.&lt;&lt;SharedOwnedReleaseCannotReplacePrimaryOperationFailure&gt;b__0&gt;d.MoveNext() in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 99
+--- End of stack trace from previous location ---
+   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure(Boolean uncertain) in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 103
+   at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure(Boolean uncertain) in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 110
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="c52dd707-3d39-4556-b5ed-57c3eb33da46" testId="71e4f95c-1456-cd8a-7831-34e0a5bd51a1" testName="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(foreign: False, guardOnly: True)" computerName="$HOST" duration="00:00:00.0138970" startTime="2026-10-01T11:42:34.9914683-04:00" endTime="2026-10-01T11:42:34.9914687-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c52dd707-3d39-4556-b5ed-57c3eb33da46">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.InvalidOperationException)</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(Boolean foreign, Boolean guardOnly) in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 33
+   at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(Boolean foreign, Boolean guardOnly) in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 37
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="2956d0a9-39e4-450c-a4c2-47b7b5f7ad8d" testId="e5e59e1e-089f-d1c9-960b-10b3a89da38d" testName="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(foreign: True, guardOnly: False)" computerName="$HOST" duration="00:00:00.0045982" startTime="2026-10-01T11:42:34.9761583-04:00" endTime="2026-10-01T11:42:34.9761585-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2956d0a9-39e4-450c-a4c2-47b7b5f7ad8d">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.InvalidOperationException)</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(Boolean foreign, Boolean guardOnly) in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 33
+   at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(Boolean foreign, Boolean guardOnly) in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 37
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="d66e1d77-c229-470f-9a6c-40ad3ea6d6b8" testId="a63f880c-4eb1-57b3-3730-f20ea4db2d57" testName="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.RealLeaseContextFailureStillClosesLockAndAllowsReacquisition" computerName="$HOST" duration="00:00:02.0206852" startTime="2026-10-01T11:42:37.0874215-04:00" endTime="2026-10-01T11:42:37.0874219-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d66e1d77-c229-470f-9a6c-40ad3ea6d6b8">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.Threading.Tasks.TaskCanceledException : A task was canceled.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 3588
+   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 3541
+   at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.RealLeaseContextFailureStillClosesLockAndAllowsReacquisition() in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 66
+   at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.RealLeaseContextFailureStillClosesLockAndAllowsReacquisition() in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 75
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="17b4702f-9b09-41ff-af14-7bfc1f261b4f" testId="95e16007-343a-8a6e-7a36-09ca98befc69" testName="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ValidZeroWriteBranchesDoNotCreateGenerationOrPublication(guardOnly: False)" computerName="$HOST" duration="00:00:00.0080666" startTime="2026-10-01T11:42:35.0167277-04:00" endTime="2026-10-01T11:42:35.0167280-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="17b4702f-9b09-41ff-af14-7bfc1f261b4f" />
+    <ns0:UnitTestResult executionId="25d5551a-70fa-4ce0-b012-fbe1c39c415b" testId="e88d8ced-26a4-6e4b-613d-e6d8b1af2ab8" testName="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseKeepsCompletedDispositionOnContextFailure" computerName="$HOST" duration="00:00:00.0073027" startTime="2026-10-01T11:42:35.0472343-04:00" endTime="2026-10-01T11:42:35.0472346-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="25d5551a-70fa-4ce0-b012-fbe1c39c415b" />
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(foreign: False, guardOnly: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="71e4f95c-1456-cd8a-7831-34e0a5bd51a1">
+      <ns0:Execution id="c52dd707-3d39-4556-b5ed-57c3eb33da46" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests" name="ZeroWriteBranchesRejectForeignOrDisposedLease" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(foreign: True, guardOnly: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9cdf2b5d-b40b-2354-171b-65fb669298ea">
+      <ns0:Execution id="753e4f73-ac8a-4302-935f-13f06f7bc140" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests" name="ZeroWriteBranchesRejectForeignOrDisposedLease" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ValidZeroWriteBranchesDoNotCreateGenerationOrPublication(guardOnly: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7eb04ce6-de0d-34c6-d00e-b090a0642b69">
+      <ns0:Execution id="55ecfd7b-2ca6-4049-b6fa-7267ccfdac68" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests" name="ValidZeroWriteBranchesDoNotCreateGenerationOrPublication" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.RealLeaseContextFailureStillClosesLockAndAllowsReacquisition" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a63f880c-4eb1-57b3-3730-f20ea4db2d57">
+      <ns0:Execution id="d66e1d77-c229-470f-9a6c-40ad3ea6d6b8" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests" name="RealLeaseContextFailureStillClosesLockAndAllowsReacquisition" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseKeepsCompletedDispositionOnContextFailure" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e88d8ced-26a4-6e4b-613d-e6d8b1af2ab8">
+      <ns0:Execution id="25d5551a-70fa-4ce0-b012-fbe1c39c415b" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests" name="SharedOwnedReleaseKeepsCompletedDispositionOnContextFailure" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure(uncertain: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7ebf374f-963f-45ad-8366-6b9c652a1fe6">
+      <ns0:Execution id="6d3b3539-ef5c-44bf-9f15-8a3ee6cf6e2b" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests" name="SharedOwnedReleaseCannotReplacePrimaryOperationFailure" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(foreign: True, guardOnly: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e5e59e1e-089f-d1c9-960b-10b3a89da38d">
+      <ns0:Execution id="2956d0a9-39e4-450c-a4c2-47b7b5f7ad8d" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests" name="ZeroWriteBranchesRejectForeignOrDisposedLease" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ValidZeroWriteBranchesDoNotCreateGenerationOrPublication(guardOnly: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="95e16007-343a-8a6e-7a36-09ca98befc69">
+      <ns0:Execution id="17b4702f-9b09-41ff-af14-7bfc1f261b4f" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests" name="ValidZeroWriteBranchesDoNotCreateGenerationOrPublication" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure(uncertain: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0a10101e-3690-2e2a-b546-e321711cb9be">
+      <ns0:Execution id="58670343-c4b5-4729-a007-f8439cb2ca9d" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests" name="SharedOwnedReleaseCannotReplacePrimaryOperationFailure" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(foreign: False, guardOnly: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="01a993c2-3a53-9404-63c6-da801991364b">
+      <ns0:Execution id="140a95c4-4879-4188-b191-647d330fd078" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedLeaseTests" name="ZeroWriteBranchesRejectForeignOrDisposedLease" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="01a993c2-3a53-9404-63c6-da801991364b" executionId="140a95c4-4879-4188-b191-647d330fd078" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="7eb04ce6-de0d-34c6-d00e-b090a0642b69" executionId="55ecfd7b-2ca6-4049-b6fa-7267ccfdac68" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="9cdf2b5d-b40b-2354-171b-65fb669298ea" executionId="753e4f73-ac8a-4302-935f-13f06f7bc140" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="7ebf374f-963f-45ad-8366-6b9c652a1fe6" executionId="6d3b3539-ef5c-44bf-9f15-8a3ee6cf6e2b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="0a10101e-3690-2e2a-b546-e321711cb9be" executionId="58670343-c4b5-4729-a007-f8439cb2ca9d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="71e4f95c-1456-cd8a-7831-34e0a5bd51a1" executionId="c52dd707-3d39-4556-b5ed-57c3eb33da46" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="e5e59e1e-089f-d1c9-960b-10b3a89da38d" executionId="2956d0a9-39e4-450c-a4c2-47b7b5f7ad8d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="a63f880c-4eb1-57b3-3730-f20ea4db2d57" executionId="d66e1d77-c229-470f-9a6c-40ad3ea6d6b8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="95e16007-343a-8a6e-7a36-09ca98befc69" executionId="17b4702f-9b09-41ff-af14-7bfc1f261b4f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="e88d8ced-26a4-6e4b-613d-e6d8b1af2ab8" executionId="25d5551a-70fa-4ce0-b012-fbe1c39c415b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Failed">
+    <ns0:Counters total="10" executed="10" passed="3" failed="7" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.22]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.64]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.67]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.89]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:01.89]       Expected: typeof(System.InvalidOperationException)
+[xUnit.net 00:00:01.89]       Stack Trace:
+[xUnit.net 00:00:01.89]         $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs(33,0): at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(Boolean foreign, Boolean guardOnly)
+[xUnit.net 00:00:01.89]         $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs(37,0): at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(Boolean foreign, Boolean guardOnly)
+[xUnit.net 00:00:01.89]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.90]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:01.90]       Expected: typeof(System.InvalidOperationException)
+[xUnit.net 00:00:01.90]       Stack Trace:
+[xUnit.net 00:00:01.90]         $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs(33,0): at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(Boolean foreign, Boolean guardOnly)
+[xUnit.net 00:00:01.90]         $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs(37,0): at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(Boolean foreign, Boolean guardOnly)
+[xUnit.net 00:00:01.90]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.90]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:01.90]       Expected: typeof(System.InvalidOperationException)
+[xUnit.net 00:00:01.90]       Stack Trace:
+[xUnit.net 00:00:01.90]         $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs(33,0): at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(Boolean foreign, Boolean guardOnly)
+[xUnit.net 00:00:01.90]         $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs(37,0): at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(Boolean foreign, Boolean guardOnly)
+[xUnit.net 00:00:01.90]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.92]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:01.92]       Expected: typeof(System.InvalidOperationException)
+[xUnit.net 00:00:01.92]       Stack Trace:
+[xUnit.net 00:00:01.92]         $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs(33,0): at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(Boolean foreign, Boolean guardOnly)
+[xUnit.net 00:00:01.92]         $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs(37,0): at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(Boolean foreign, Boolean guardOnly)
+[xUnit.net 00:00:01.92]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.96]       Assert.Same() Failure: Values are not the same instance
+[xUnit.net 00:00:01.96]       Expected: BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException: Coordinated state publication is unresolved; retain its evidence before retry or compensation.
+[xUnit.net 00:00:01.96]        ---&gt; System.IO.IOException: Unknown member bytes.
+[xUnit.net 00:00:01.96]          --- End of inner exception stack trace ---
+[xUnit.net 00:00:01.96]          at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.&lt;&gt;c__DisplayClass6_0.&lt;&lt;SharedOwnedReleaseCannotReplacePrimaryOperationFailure&gt;b__0&gt;d.MoveNext() in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 94
+[xUnit.net 00:00:01.96]       Actual:   System.IO.IOException: Injected owned context release failure.
+[xUnit.net 00:00:01.96]          at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ThrowingContext.Dispose() in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 141
+[xUnit.net 00:00:01.96]          at BookOfEternityClient.Core.FileSystemManager.CanonicalWriteLease.DisposeAsync() in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 298
+[xUnit.net 00:00:01.96]          at BookOfEternityClient.Services.CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(FileSystemManager fs, CanonicalWriteLease writeLease, Boolean completed, Exception operationFailure) in $REPO/BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs:line 107
+[xUnit.net 00:00:01.96]          at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.&lt;&gt;c__DisplayClass6_0.&lt;&lt;SharedOwnedReleaseCannotReplacePrimaryOperationFailure&gt;b__0&gt;d.MoveNext() in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 99
+[xUnit.net 00:00:01.96]       --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.96]          at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76
+[xUnit.net 00:00:01.96]       Stack Trace:
+[xUnit.net 00:00:01.96]         $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs(103,0): at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure(Boolean uncertain)
+[xUnit.net 00:00:01.96]         $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs(110,0): at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure(Boolean uncertain)
+[xUnit.net 00:00:01.96]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.97]       Assert.Same() Failure: Values are not the same instance
+[xUnit.net 00:00:01.97]       Expected: System.IO.InvalidDataException: Admission failed before publication.
+[xUnit.net 00:00:01.97]          at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.&lt;&gt;c__DisplayClass6_0.&lt;&lt;SharedOwnedReleaseCannotReplacePrimaryOperationFailure&gt;b__0&gt;d.MoveNext() in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 94
+[xUnit.net 00:00:01.97]       Actual:   System.IO.IOException: Injected owned context release failure.
+[xUnit.net 00:00:01.97]          at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ThrowingContext.Dispose() in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 141
+[xUnit.net 00:00:01.97]          at BookOfEternityClient.Core.FileSystemManager.CanonicalWriteLease.DisposeAsync() in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 298
+[xUnit.net 00:00:01.97]          at BookOfEternityClient.Services.CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(FileSystemManager fs, CanonicalWriteLease writeLease, Boolean completed, Exception operationFailure) in $REPO/BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs:line 107
+[xUnit.net 00:00:01.97]          at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.&lt;&gt;c__DisplayClass6_0.&lt;&lt;SharedOwnedReleaseCannotReplacePrimaryOperationFailure&gt;b__0&gt;d.MoveNext() in $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs:line 99
+[xUnit.net 00:00:01.97]       --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.97]          at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76
+[xUnit.net 00:00:01.97]       Stack Trace:
+[xUnit.net 00:00:01.97]         $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs(103,0): at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure(Boolean uncertain)
+[xUnit.net 00:00:01.97]         $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs(110,0): at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure(Boolean uncertain)
+[xUnit.net 00:00:01.97]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.01]       System.Threading.Tasks.TaskCanceledException : A task was canceled.
+[xUnit.net 00:00:04.02]       Stack Trace:
+[xUnit.net 00:00:04.02]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(3588,0): at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken)
+[xUnit.net 00:00:04.02]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(3541,0): at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken)
+[xUnit.net 00:00:04.02]         $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs(66,0): at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.RealLeaseContextFailureStillClosesLockAndAllowsReacquisition()
+[xUnit.net 00:00:04.02]         $REPO/BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs(75,0): at BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.RealLeaseContextFailureStillClosesLockAndAllowsReacquisition()
+[xUnit.net 00:00:04.02]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.03]   Finished:    BookOfEternityClient.Tests
+</ns0:StdOut>
+    </ns0:Output>
+    <ns0:RunInfos>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T11:42:34.9638031-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.89]     BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(foreign: False, guardOnly: False) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T11:42:34.9714573-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.90]     BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(foreign: True, guardOnly: True) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T11:42:34.9762249-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.90]     BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(foreign: True, guardOnly: False) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T11:42:34.9917228-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.92]     BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.ZeroWriteBranchesRejectForeignOrDisposedLease(foreign: False, guardOnly: True) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T11:42:35.0320504-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.96]     BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure(uncertain: True) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T11:42:35.0408101-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.97]     BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure(uncertain: False) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T11:42:37.0886446-04:00">
+        <ns0:Text>[xUnit.net 00:00:04.01]     BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.RealLeaseContextFailureStillClosesLockAndAllowsReacquisition [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+    </ns0:RunInfos>
+  </ns0:ResultSummary>
+</ns0:TestRun>

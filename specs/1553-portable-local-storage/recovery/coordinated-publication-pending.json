@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "baseCommit": "9e94091377fc1a7783fc6a8505b0918d8ca9ed1a",
+  "baseCommit": "f9ea61919f3e55b6df74acfb42d241139016b6c9",
   "patchFile": "coordinated-publication-pending.patch",
   "patchBytes": 5749,
   "patchSha256": "8fd6b5397d3a993b038d6810ed0f46a10f25c4689f518ef7ec5aed1183234603",
@@ -27,7 +27,7 @@
       "afterSha256": "7125215fa1223fecb932078b32653968d98c4444e2a02918e5f16771e772b173"
     }
   ],
-  "appliedSourceTree": "f3ee2adda514c41efcde2acff20d4a977cf0e8dc",
+  "appliedSourceTree": "313434b913732b7ce46672a57b19d1dde5aa3834",
   "comparisonExcludes": [
     "specs/1553-portable-local-storage/recovery/coordinated-publication-pending.patch",
     "specs/1553-portable-local-storage/recovery/coordinated-publication-pending.json"
