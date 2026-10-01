@@ -2,29 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-coordinated-lease",
-      "reason": "T031 GREEN for observed invalid zero-write admission, real context-disposal lock leak and primary-failure masking; includes three passing controls.",
-      "contracts": [
-        "real lease admission",
-        "complete owned cleanup",
-        "primary failure precedence"
-      ]
-    },
-    {
       "category": "portable-coordinated-publication",
-      "reason": "The owned wrapper/release routine changed after its initial four-case GREEN; recheck actual member-set rollback/uncertainty/committed cleanup once on the corrected path.",
+      "reason": "T031 expanded helper contract scaffold: 25 cases including the original four, all guards/duplicates/bytes, distinct admission/preflight/unknown boundaries, explicit original routes and two expected post-commit diagnostic failures. Cold owner is preserved but intentionally unrun until corrected covering GREEN.",
       "contracts": [
-        "complete declared member set",
-        "durable outcome preservation"
-      ]
-    },
-    {
-      "category": "portable-coordinated-lease-consumers",
-      "reason": "CanonicalWriteLease.DisposeAsync now closes every owned resource after external-context failure. Exact existing owning-lease, reader rejection, trade ordering and bound close consumers qualify this shared cleanup change without a broad category.",
-      "contracts": [
-        "canonical lease ownership",
-        "generation close fence",
-        "lock ordering"
+        "initial guard semantics",
+        "complete final member set",
+        "durable outcomes and follow-up diagnostics",
+        "original route separation"
       ]
     }
   ]

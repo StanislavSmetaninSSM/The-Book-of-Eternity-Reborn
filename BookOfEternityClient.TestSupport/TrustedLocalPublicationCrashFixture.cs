@@ -1,4 +1,5 @@
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace BookOfEternityClient.Tests;
@@ -13,6 +14,48 @@ public static class TrustedLocalPublicationCrashFixture
     {
         if (args.Length != 4) return 64;
         var files = new FileSystemManager(args[0], NullLogger<FileSystemManager>.Instance);
+        if (args[2].StartsWith("coordinated-", StringComparison.Ordinal))
+        {
+            try
+            {
+                if (args[2] is "coordinated-recover" or "coordinated-conflict")
+                {
+                    await using var recoveryLease = await files.AcquireCanonicalWriteLeaseAsync();
+                    return args[2] == "coordinated-recover" ? 0 : 78;
+                }
+                if (args[2] != "coordinated-cut") return 64;
+                files = new FileSystemManager(args[0], NullLogger<FileSystemManager>.Instance,
+                    PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+                    {
+                        LocalPublicationObserver = (phase, index) =>
+                        {
+                            var reached = args[3] switch
+                            {
+                                "first-member" => phase == TrustedLocalPublicationPhase.MemberPublished && index == 0,
+                                "last-member" => phase == TrustedLocalPublicationPhase.MemberPublished && index == 2,
+                                _ => phase.ToString() == args[3]
+                            };
+                            if (reached) Environment.Exit(73);
+                        }
+                    });
+                // The caller seeds an admitted existing generation; this
+                // invokes the real owning helper, not the publisher directly.
+                await CoordinatedStateWriteHelper.TryCommitAsync(files,
+                    new CoordinatedStateWriteHelper.PlannedWrite("game_state/meta/coordinated_replace.json", null, "{\"value\":\"accepted\"}", true,
+                        ExactPrevious: new CanonicalBeforeImage(true, [0xEF, 0xBB, 0xBF, 0xFF, 0])),
+                    new CoordinatedStateWriteHelper.PlannedWrite("game_state/meta/coordinated_create.json", null, "{\"value\":\"accepted\"}", true,
+                        ExactPrevious: new CanonicalBeforeImage(false, null)),
+                    new CoordinatedStateWriteHelper.PlannedWrite("game_state/meta/coordinated_delete.json", null, null, true,
+                        ExactPrevious: new CanonicalBeforeImage(true, [])));
+                return 66;
+            }
+            catch (InvalidDataException ex) when (args[2] == "coordinated-conflict")
+            {
+                Console.WriteLine(ex.Message);
+                return 0;
+            }
+            catch (Exception ex) { Console.Error.WriteLine(ex); return 1; }
+        }
         if (args[2] == "ordinary-read")
         {
             const string member = "game_state/core/ordinary-read.bin";

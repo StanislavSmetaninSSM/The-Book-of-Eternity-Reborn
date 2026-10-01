@@ -48,30 +48,30 @@ index d44879dd..936b6809 100644
          var preamble = Encoding.UTF8.GetPreamble();
          var body = Encoding.UTF8.GetBytes(content);
 diff --git a/specs/1553-portable-local-storage/research.md b/specs/1553-portable-local-storage/research.md
-index 4a4415cc..5391cb96 100644
+index 4a4415cc..33f1deab 100644
 --- a/specs/1553-portable-local-storage/research.md
 +++ b/specs/1553-portable-local-storage/research.md
 @@ -292,6 +292,8 @@ Prefer migrating **helper-specific** fault injections to the existing synchronou
  
  Do not replay old callbacks after commit, ignore returned Tasks, or block arbitrary async callbacks with sync-over-async. Preserving the arbitrary internal `Func<PlannedWrite,Task>` contract would require a genuinely awaited observer path through B1 and is a wider alternative. There is no observed production need for that alternative. Collapsing duplicates necessarily changes synthetic intermediate-image hook observations; state the revised test contract as one observation per published unique final member.
  
-+Chosen T031-A refinement (2026-10-01): retain the original-recorder browser acceptance callback on its existing route. Ordinary helper storage cuts move to B1; invalid mixed ordinary-publication/legacy-callback use must fail explicitly. The actual ordinary acceptance and next-wave tests must assert both the reached pre-decision member cut and absence of service acknowledgment. The existing `final:mechanics/history/runtime`, transport deletion and `final:continuation` controls remain later gameplay compensation tests, including exact restoration and retry identity reuse. `QteSceneServiceTests.ResolveActiveActionAsync_BackupCleanupFailureDoesNotMaskCommittedResult` remains a post-acceptance cleanup control. A test-only hook name does not make these boundaries semantically interchangeable. The first four-test helper scaffold has not yet run; implementation and these consumer refinements remain pending.
++Chosen T031-A refinement (2026-10-01): retain the original-recorder browser acceptance callback on its existing route. Ordinary helper storage cuts move to B1; invalid mixed ordinary-publication/legacy-callback use must fail explicitly. The actual ordinary acceptance and next-wave tests must assert both the reached pre-decision member cut and absence of service acknowledgment. The existing `final:mechanics/history/runtime`, transport deletion and `final:continuation` controls remain later gameplay compensation tests, including exact restoration and retry identity reuse. `QteSceneServiceTests.ResolveActiveActionAsync_BackupCleanupFailureDoesNotMaskCommittedResult` remains a post-acceptance cleanup control. A test-only hook name does not make these boundaries semantically interchangeable. At the time this refinement was recorded, the first four-test helper scaffold had not run; the current plan records later execution and the still-pending consumer refinements.
 +
  ### Outcomes and minimal caller changes
  
  B1 already distinguishes `Committed`, `RolledBack`, `Uncertain` (`TrustedLocalFilePublication.cs:75–104`), including committed observer/cleanup failure. Keep the bool facade: true for committed, false for initial baseline mismatch or positively confirmed rollback, distinct unresolved exception for uncertain. Never broadly catch the publish API and return false. Capture the durable result before owned-lease disposal/follow-up; a disposal/cleanup failure cannot turn an established commit into uncommitted or start manual undo. Surface/log the follow-up without changing that disposition. The prepared settings implementation supplies the existing model (`WebUi/BrowserLocalWriteCoordinator.Prepared.cs:35–59,73–92`).
 diff --git a/tests/categories.json b/tests/categories.json
-index ad2fe43a..109bc829 100644
+index ad2fe43a..a0e7ae38 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -8417,6 +8417,91 @@
+@@ -8417,6 +8417,120 @@
            ]
          }
        ]
 +    },
 +    {
 +      "id": "portable-coordinated-publication",
-+      "responsibility": "Ordinary CoordinatedStateWriteHelper complete member-set decisions, exact before/after images, confirmed rollback and retained uncertain/committed evidence. Initial scaffold exercises the actual helper with an admitted existing generation.",
++      "responsibility": "Ordinary CoordinatedStateWriteHelper complete member-set decisions, semantic/exact guards, platform-aware duplicate destinations, exact images, preflight/admission and durable outcomes including diagnostic failure. Uses the actual helper under an admitted existing generation.",
 +      "excludes": "Legacy browser recorder migration, full accepted-turn/gameplay acceptance, generation bootstrap redesign, external profiles and save/load.",
 +      "changeHints": [
 +        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
@@ -150,6 +150,35 @@ index ad2fe43a..109bc829 100644
 +            "BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening",
 +            "BookOfEternityClient.Tests.TradeRequestLockOrderingTests.*",
 +            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-coordinated-recovery",
++      "responsibility": "Actual owning coordinated-helper abrupt-process publication and separate normal-lease recovery at staged intent, published intent, early/last member, commit staging, durable commit and cleanup; retain unknown-member and changed-generation evidence.",
++      "excludes": "Direct-publisher-only substitutes, full accepted-turn/domain acceptance, browser-v6/external/worker/save-load migration and provider lifecycle.",
++      "changeHints": [
++        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
++        "BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-coordinated-publication",
++          "when": "The helper member set, outcome mapping or phase observation changes."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 4,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.*"
 +          ]
 +        }
 +      ]

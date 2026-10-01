@@ -7,7 +7,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class PortableCoordinatedPublicationTests : IDisposable
+public sealed partial class PortableCoordinatedPublicationTests : IDisposable
 {
     private const string ReplacePath = "game_state/meta/coordinated_replace.json";
     private const string CreatePath = "game_state/meta/coordinated_create.json";
