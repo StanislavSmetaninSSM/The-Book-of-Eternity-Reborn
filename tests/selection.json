@@ -2,21 +2,12 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-coordinated-cleanup",
-      "reason": "Cover the causal structural NPC/Guardian/Shining catch correction and actual ordinary QTE acceptance route, preserving malformed planning controls.",
+      "category": "portable-coordinated-qte-outcome",
+      "reason": "Two bounded RED cases before the QTE compensation filter and Russian uncertainty notice: prove the actual accepted-mechanics cut after real backups and the real agent-console projection. No production changes in this scaffold.",
       "contracts": [
-        "uncertain and retained admission propagate",
-        "known parse abort retained",
-        "ordinary QTE acceptance"
-      ]
-    },
-    {
-      "category": "portable-coordinated-cleanup-resident",
-      "reason": "Cover resident uncertainty/read-admission fixes and existing materialized/malformed-soul semantic branches after moving filesystem calls out of planning catches.",
-      "contracts": [
-        "target helper and independent preamble",
-        "every post-injection attempt blocked",
-        "pure planning behavior retained"
+        "uncertainty forbids domain compensation",
+        "published images and recovery backups retained",
+        "Russian private outcome notice without safe retry"
       ]
     }
   ]

@@ -1,10 +1,17 @@
 {
   "schemaVersion": 1,
-  "baseCommit": "a7eaf3cdc783bda74b718f8a704b2b8bca852719",
+  "baseCommit": "5a25f9528accdb14d4cced888ba5ed3ea48f46ce",
   "patchFile": "coordinated-publication-pending.patch",
-  "patchBytes": 30019,
-  "patchSha256": "a7cf294f3d1773ca996dbbc45737111419efa6c156ad74486664a5fb75c70fff",
+  "patchBytes": 32170,
+  "patchSha256": "b1f761aede50f5f678eb2a5617f080867cda819c4c73af37a2cf46a0f8ba971e",
   "entries": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/QteDeferredEffectContinuationIntegrationTests.cs",
+      "beforeBlob": "91fc4e02776e4c2992b51f84fc2d8369bad74ea0",
+      "afterBlob": "9ac85e57f257f6be64b75ebe96910d0c21ceb68c",
+      "beforeSha256": "bbdeba83f22922cb6ce88ad407875cf266f2a7dcb5c9747461b9bb6a3fd478c7",
+      "afterSha256": "192a84e9bccda09487d14fe65bb9b5f62e04d24cc5818c25cc8783f118e983ec"
+    },
     {
       "path": "BookOfEternityClient.IntegrationTests/ShiningTradeRequestStateTests.cs",
       "beforeBlob": "8af7cf8921753d22e7eb2d917f7efebb8efc7e63",
@@ -50,12 +57,12 @@
     {
       "path": "tests/categories.json",
       "beforeBlob": "ad2fe43ab192f5908e328d6bead37cb8f31af595",
-      "afterBlob": "1767d9d761f641839cf979ca2f11d056e6fbe1f2",
+      "afterBlob": "4f2eb0f36f21a0eb0b5f424528623518d106ca3b",
       "beforeSha256": "928087ad1e5e6df965427ab13db6db1381804d0d4ee8651b45211a9c5a7d9576",
-      "afterSha256": "886a3040a98c6d5e55f3f12e0117553a52aa78332861b751b8bd60ca2956bf86"
+      "afterSha256": "51ec49aab7bdf072dfcf1888e7799b3511288066a01a0f9e424e7961e410c101"
     }
   ],
-  "appliedSourceTree": "46a1f42d27eb9efc83cc6f61e3fc7bd8adca42b7",
+  "appliedSourceTree": "11ff5b38cdcd76c37fb463a7fab3419e3444c12f",
   "comparisonExcludes": [
     "specs/1553-portable-local-storage/recovery/coordinated-publication-pending.patch",
     "specs/1553-portable-local-storage/recovery/coordinated-publication-pending.json"

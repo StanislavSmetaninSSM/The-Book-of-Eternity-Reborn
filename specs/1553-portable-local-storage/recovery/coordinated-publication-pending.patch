@@ -1,3 +1,16 @@
+diff --git a/BookOfEternityClient.IntegrationTests/QteDeferredEffectContinuationIntegrationTests.cs b/BookOfEternityClient.IntegrationTests/QteDeferredEffectContinuationIntegrationTests.cs
+index 91fc4e02..9ac85e57 100644
+--- a/BookOfEternityClient.IntegrationTests/QteDeferredEffectContinuationIntegrationTests.cs
++++ b/BookOfEternityClient.IntegrationTests/QteDeferredEffectContinuationIntegrationTests.cs
+@@ -11,7 +11,7 @@ using Xunit;
+ 
+ namespace BookOfEternityClient.Tests;
+ 
+-public sealed class QteDeferredEffectContinuationIntegrationTests
++public sealed partial class QteDeferredEffectContinuationIntegrationTests
+ {
+     private const string ContinuationPath =
+         "game_state/control/qte_deferred_effect_continuation.json";
 diff --git a/BookOfEternityClient.IntegrationTests/ShiningTradeRequestStateTests.cs b/BookOfEternityClient.IntegrationTests/ShiningTradeRequestStateTests.cs
 index 8af7cf89..f2193f22 100644
 --- a/BookOfEternityClient.IntegrationTests/ShiningTradeRequestStateTests.cs
@@ -385,10 +398,10 @@ index 4a4415cc..33f1deab 100644
  
  B1 already distinguishes `Committed`, `RolledBack`, `Uncertain` (`TrustedLocalFilePublication.cs:75–104`), including committed observer/cleanup failure. Keep the bool facade: true for committed, false for initial baseline mismatch or positively confirmed rollback, distinct unresolved exception for uncertain. Never broadly catch the publish API and return false. Capture the durable result before owned-lease disposal/follow-up; a disposal/cleanup failure cannot turn an established commit into uncommitted or start manual undo. Surface/log the follow-up without changing that disposition. The prepared settings implementation supplies the existing model (`WebUi/BrowserLocalWriteCoordinator.Prepared.cs:35–59,73–92`).
 diff --git a/tests/categories.json b/tests/categories.json
-index ad2fe43a..1767d9d7 100644
+index ad2fe43a..4f2eb0f3 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -8417,6 +8417,211 @@
+@@ -8417,6 +8417,238 @@
            ]
          }
        ]
@@ -594,6 +607,33 @@ index ad2fe43a..1767d9d7 100644
 +          "tests": [
 +            "BookOfEternityClient.Tests.GuardianAbodeResidentRequestStateTests.EnsureHealthyAsync_MaterializedCompanion_PrunesUnsafeSameRelicAddAndMarksRelicResolved",
 +            "BookOfEternityClient.Tests.GuardianAbodeResidentRequestStateTests.EnsureHealthyAsync_MalformedCurrentSoulRelics_KeepsManifestationRequestRetryable"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-coordinated-qte-outcome",
++      "responsibility": "Actual accepted-mechanics QTE helper uncertainty preserves its published cut/backups without domain compensation, and the actual agent-console error projection reports a private Russian recovery notice without unchanged-state or retry promises.",
++      "excludes": "Full normalizer transaction migration, live console/browser UX and original browser-v6 recorder migration.",
++      "changeHints": [
++        "BookOfEternityClient/Services/QteSceneService.cs",
++        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
++        "BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs",
++        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "integration",
++          "tests": [
++            "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.CoordinatedUncertaintyRetainsTheAcceptedMechanicsCutWithoutDomainCompensation",
++            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CoordinatedPublication_UncertainOutcomeUsesRussianRecoveryNoticeWithoutRetryPromise"
 +          ]
 +        }
 +      ]
