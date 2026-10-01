@@ -84,15 +84,23 @@ internal static class CanonicalRootIdentityInterner
         WeakReference<CanonicalRootIdentity>> Identities =
         new(RootPathComparer);
 
-    // Pure key-policy scaffold; filesystem and original journal paths are not rewritten.
-    internal static string NormalizeRootKey(string fullPath, bool windows) =>
-        throw new NotImplementedException();
+    // These are in-process keys only; filesystem and original journal paths keep their spelling.
+    internal static string NormalizeRootKey(string fullPath, bool windows)
+    {
+        if (!windows)
+            return Path.TrimEndingDirectorySeparator(fullPath);
+
+        var normalized = TrustedLocalFileScope.NormalizeWindowsPathSpelling(fullPath).TrimEnd('\\');
+        return normalized.Length == 2 && normalized[1] == ':'
+            ? normalized + '\\'
+            : normalized;
+    }
 
     internal static CanonicalRootIdentity Get(string canonicalRoot)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(canonicalRoot);
-        var normalizedRoot = Path.TrimEndingDirectorySeparator(
-            Path.GetFullPath(canonicalRoot));
+        var normalizedRoot = NormalizeRootKey(
+            Path.GetFullPath(canonicalRoot), OperatingSystem.IsWindows());
 
         while (true)
         {

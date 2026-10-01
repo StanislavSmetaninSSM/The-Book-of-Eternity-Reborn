@@ -1,5 +1,5 @@
 diff --git a/tests/categories.json b/tests/categories.json
-index b803fcca..a9bc36ee 100644
+index b803fcca..f8dd72a3 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
 @@ -534,15 +534,6 @@
@@ -104,7 +104,7 @@ index b803fcca..a9bc36ee 100644
              "BookOfEternityClient.Tests.AfterlifeOwnerResourceStateServiceTests.*",
              "BookOfEternityClient.Tests.AfterlifeRealmAutoRollbackTests.*",
              "BookOfEternityClient.Tests.AfterlifeReturnGuardServiceTests.*",
-@@ -8021,6 +8025,216 @@
+@@ -8021,6 +8025,255 @@
            ]
          }
        ]
@@ -271,6 +271,45 @@ index b803fcca..a9bc36ee 100644
 +            "BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings",
 +            "BookOfEternityClient.Tests.PortableSessionRootKeyTests.LinuxRootKeysKeepCaseDistinctNamesSeparate",
 +            "BookOfEternityClient.Tests.PortableSessionRootKeyTests.LinuxClearRetainsDistinctMemberImagesAcrossRollbackThenDeletesBoth"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-session-root-key-consumers",
++      "responsibility": "Exact existing consumers of in-process root identity and binding keys: ordinary/current and replaced writers, cross-manager fences, closed/closing escaped writers, same/different-root authority sharing and generation/revision invalidation.",
++      "excludes": "Load-specific generation replacement, filesystem-path rewrites, broader gameplay mechanics, audit publication and unchanged clear/proposal/type/link cohorts.",
++      "changeHints": [
++        "BookOfEternityClient/Core/CanonicalRootIdentity.cs",
++        "BookOfEternityClient/Core/SessionOperationContext.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-session-root-keys",
++          "when": "Shared canonical identity or operation-binding root normalization changes."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 4,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_CurrentGeneration_UsesOrdinaryCanonicalWriter",
++            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_ClearRotatesGeneration_ThrowsBeforeReplacementMutation",
++            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_FenceAppliesAcrossFileSystemManagerInstancesForSameRoot",
++            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_LeafSwallowsWriteFailure_OuterBoundaryStillThrows",
++            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ReplacementWithoutLaterWrite_FinalCheckStillThrows",
++            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_EscapedTaskCannotWriteAfterOwningScopeCloses",
++            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter",
++            "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_RotatedGenerationRejectsOldPreparedHandoff",
++            "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_SameGenerationNewRevisionRejectsOldPreparedHandoff",
++            "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_SameRootAndGenerationSharePreparedAuthority",
++            "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_DifferentCanonicalRootsNeverShareAuthority"
 +          ]
 +        }
 +      ]

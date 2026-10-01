@@ -1,6 +1,6 @@
 {
   "baseCommit": "41d9104076d59fabacf93c3b1be3cc8d5ccc238f",
-  "status": "B3b 86-case and 30-case covering GREEN preserved at distinct sources. Narrow in-process root-key scaffold is unrun: six Linux-executable cases and six separately owned Windows-only bodies. Original filesystem/journal paths remain unchanged; normal publication and connected review pending.",
+  "status": "B3b prior 86-case and 30-case covering GREEN retained. Root-key RED completed 6/6 with five intended scaffold failures and one retained Linux behavior pass. Shared in-process key implementation and eleven exact consumers are saved but GREEN/audit/review/native Windows execution remain unrun.",
   "patches": [
     {
       "path": "session-replacement-source.pending.patch",
@@ -29,20 +29,20 @@
     },
     {
       "path": "categories-pending.patch",
-      "bytes": 23618,
-      "sha256": "2bc7fb509696194cc7f750ad9aaa26e360f44ef77274b83447d403dd5e4d8ea8",
+      "bytes": 26255,
+      "sha256": "77d154c64269afd34509ae3353fd08fb109e23fde4e154de0a86e6195cda782d",
       "files": [
         {
           "path": "tests/categories.json",
           "beforeBlob": "b803fccaafbb24a5824d00984117b3ead6d3afa3",
-          "afterBlob": "a9bc36eefff0fb0b184ea43b05d2737e373a78f6"
+          "afterBlob": "f8dd72a355a4639ca7b95ccce7eee5cd23c43038"
         }
       ],
       "applyArguments": []
     }
   ],
   "testSourceBlob": "499d89322195fd0eb6b3912c2ea276aa2a970e6a",
-  "selectionBlob": "7477d6f6a5912fe03167b219b497eea9575fbb96",
+  "selectionBlob": "d7cf76b6392c56db713c0c05057c8547013938aa",
   "boundaryTestBlob": "719822eff3c45b9fa21f50f3b27e579473ff24f8",
   "crashFixtureBlob": "14bbdef398f3a9be46b73ac1ab1d0f0a48c3f90b",
   "replacementPartialBlob": "2453f1f39d34b5bc0a992a3e78a874f7d1cf6e83",

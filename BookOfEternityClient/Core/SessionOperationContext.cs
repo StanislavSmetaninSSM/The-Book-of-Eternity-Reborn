@@ -219,7 +219,8 @@ internal static class SessionOperationContext
         if (string.IsNullOrWhiteSpace(root))
             throw new ArgumentException("Canonical root is required.", nameof(root));
 
-        return Path.TrimEndingDirectorySeparator(Path.GetFullPath(root));
+        return CanonicalRootIdentityInterner.NormalizeRootKey(
+            Path.GetFullPath(root), OperatingSystem.IsWindows());
     }
 
     private static bool RootsEqual(string left, string right) =>

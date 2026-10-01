@@ -9,6 +9,14 @@
         "stale alias writer is rejected before mutation",
         "case-distinct Linux roots and member bytes"
       ]
+    },
+    {
+      "category": "portable-session-root-key-consumers",
+      "reason": "The shared normalizer now feeds both the interner and operation binding. These eleven exact existing consumer cases prove positive binding, pre-write/final/closing fences, cross-manager authority sharing, root separation and revision invalidation; unrelated completed cohorts are not repeated.",
+      "contracts": [
+        "generation-bound operation lifetime",
+        "canonical root identity and revision authority"
+      ]
     }
   ]
 }
