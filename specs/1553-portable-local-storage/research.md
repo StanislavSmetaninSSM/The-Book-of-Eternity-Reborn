@@ -213,3 +213,8 @@ No policy/extension changes, tunnel, alias or alternate-port retry were performe
 
 
 Final diagnostic boundary: DevTools on the managed error page was explicitly organization-disabled, so diagnosis stopped. The root cause remains unverified. No further browser/extension/policy/tunnel probing is authorized for this work; no restriction change or workaround was attempted.
+
+
+## Current acceptance strategy, user clarification 2026-10-01 02:49 UTC
+
+User source: `Sentinel_00a9a93c9d088191b16a38541cd71c53`, 2026-10-01 02:49:21 UTC (following the 02:47 browser deferral). Prioritize live console application checks and OpenCode as GM when its integration is ready. Browser-client verification uses automated service/API/frontend checks for the current phase; a later live browser run will use a server/access supplied by the user. That later live run is no longer a current-phase blocker, and automated checks must still not be described as live UI execution. Continue the full Linux/Windows conversion; Windows execution remains owner-run. Managed-browser diagnostics, tunnels and restriction workarounds are not required and remain stopped.

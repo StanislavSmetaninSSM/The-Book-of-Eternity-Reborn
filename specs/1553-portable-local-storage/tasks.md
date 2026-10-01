@@ -21,17 +21,17 @@ Spec: [spec.md](spec.md) | Plan/checkpoint: [plan.md](plan.md)
 ## B2 — US1 ordinary startup/settings
 
 - [ ] T020-A B2a: shared leased bootstrap/config+generation, original-handler-or-block legacy admission, explicit publication outcomes and recorder-free ordinary writer route; focused consumer/cold checks and independent review (round-1 fixes 51/51 GREEN at 6435920d + exact catalog patch; 106/10253 discovery audited; both P2 fixes accepted by independent Astra XHigh at cbc6b29c; normal catalog publication remains the acceptance gate)
-- [ ] T020-B B2b: prepared browser settings/audio member sets, retaining B2a strict client entrypoint bootstrap, and actual Linux console/browser settings/process-restart acceptance; independent review
+- [ ] T020-B B2b: prepared browser settings/audio member sets, retaining B2a strict client entrypoint bootstrap, and real Linux console settings/process-restart acceptance plus automated browser checks; later live browser run on user-supplied server/access; independent review
 - [ ] T020-B1 Browser prepared settings/audio capability: backend 66/66 GREEN at 6075fac4, visible outcome/dispatch/response-ownership frontend 22 scenarios (1 file case) GREEN at 5d304430, exact existing frontend consumers 27/27 at 527dfa1b, 110/10267 discovery-only audit; independent review found one failed-load UI lifecycle P2; correction 34/34 covering frontend cases at 3442c169 and 110/10268 discovery-only audit, scoped Astra XHigh re-review accepted at 44f80acb with no new consequential defect; normal catalog delivery still pending
 - [ ] T020-C1 B2c preparation-only scaffold: detached candidate plus exact config/projection/manifest member set, explicit config/generation baseline and read-only mod normalization; initial ten-case RED pending, no menu integration
-- [ ] T020-B2 Console coupled config/projection/system-mod-manifest settings publication and actual two-client settings/process-restart acceptance; console slice remains pending, actual Browser Use is environment-blocked, Windows is owner-run
+- [ ] T020-B2 Console coupled config/projection/system-mod-manifest settings publication and real console settings/process-restart acceptance and automated browser-client checks; console slice remains pending, live browser run deferred to user-supplied server/access and not a current-phase blocker, Windows is owner-run
 
 - [ ] T020 Add failing client storage/generation/settings restart scenarios before changing `Core/FileSystemManager.cs` and `Core/StateManager.cs`
 - [ ] T021 Integrate B1 for common writes on both OSes, preserving participating leases/generation and exact bytes; no synthetic FileIdentity
 - [ ] T021-B Explicit common bootstrap for valid config and generation, plus the predeclared browser settings/audio transaction route; preserve runtime snapshot rollback and local UI ownership checks
 - [ ] T022 Add and prove legacy-journal cutover guard, retaining original handler and evidence on unsupported recovery
 - [ ] T023 Replace superseded anti-owner tests only with matching content/path/recovery coverage; maintain actual `tests/selection.json`
-- [ ] T024 Run selected consumers and actual Linux console/browser menu-setting-restart flows; document and independently review B2
+- [ ] T024 Run selected browser consumers and real Linux console menu-setting-restart flows; defer live browser run to user-supplied server/access, document and independently review B2
 
 ## B3 — US2/US3 transactions and accepted state
 

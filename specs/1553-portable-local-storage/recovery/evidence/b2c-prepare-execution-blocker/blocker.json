@@ -29,5 +29,14 @@
     "https://learn.microsoft.com/en-us/dotnet/core/tools/telemetry",
     "https://learn.microsoft.com/en-us/dotnet/core/testing/microsoft-testing-platform-telemetry",
     "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_Environment_Variables"
-  ]
+  ],
+  "runnerAdmissionInspection": {
+    "result": "No cross-invocation exclusive admission or lease protocol is present in the inspected canonical runner.",
+    "sources": [
+      "scripts/test-csharp.ps1: New-UniqueResultDirectory uses timestamp, namespace-local PID and GUID; Linux New-OwnedProcessContainment returns null.",
+      "scripts/testing/TestCategoryExecution.ps1: Exclusive only limits parallel capacity within the current invocation."
+    ],
+    "runMetadata": "Only the partial phase log exists; no lease/owner marker, summary or PID record was written. The directory embeds namespace-local PID 16, which cannot be safely targeted from a separate exec view.",
+    "decision": "No retry launched; isolated-checkout admission is a proposal awaiting coordinator assessment, not a workaround already used."
+  }
 }
