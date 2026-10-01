@@ -7790,9 +7790,43 @@
       ]
     },
     {
+      "id": "portable-session-generation",
+      "responsibility": "Exact leased generation snapshot and nonrecursive existing-generation/fence readers, including BOM/schema/absence, type/link admission and bounded cold-process probes.",
+      "excludes": "Generation rotation, destructive clear, legacy load recovery, accepted receipts, provider shutdown, gameplay and Windows execution claims.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+        "BookOfEternityClient/Core/FileSystemManager.cs",
+        "BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-client-bootstrap",
+          "when": "Generation bootstrap or ordinary bound-writer reader integration changes."
+        },
+        {
+          "id": "portable-storage-publication",
+          "when": "B1 generation validation/recovery reads change."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableSessionGenerationTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-console-settings-session",
-      "responsibility": "Console detached draft admission, explicit publication outcomes and temporary audio preview settings source before menu wiring.",
-      "excludes": "Menu rendering, gameplay/save-load, audio backend execution, browser UI and Windows execution.",
+      "responsibility": "Console detached draft admission, explicit publication outcomes, temporary preview restoration, actual recovery-menu handlers and initial-settings dispatch boundary.",
+      "excludes": "Pixel/layout acceptance, gameplay/save-load, native audio/font capability, browser UI and Windows execution.",
       "changeHints": [
         "BookOfEternityClient/Core/ConsoleSettingsSession.cs",
         "BookOfEternityClient/Services/AudioService.SettingsPreview.cs"
@@ -7821,7 +7855,7 @@
     {
       "id": "portable-console-settings",
       "responsibility": "B2c complete local config/projection/mod-manifest preparation, exact baseline/generation admission, detached candidate normalization and console settings publication consumers as wired.",
-      "excludes": "Unmigrated menu/preview integration, gameplay save/load, audio backend portability and actual browser/Windows execution; initial API is unwired WIP.",
+      "excludes": "Full menu/process behavior is owned by the dedicated console session/client categories; gameplay save/load, audio backend portability and actual browser/Windows execution are excluded.",
       "changeHints": [
         "BookOfEternityClient/Core/LocalSettingsPreparation.cs",
         "BookOfEternityClient/Services/SystemModService.Prepared.cs",
