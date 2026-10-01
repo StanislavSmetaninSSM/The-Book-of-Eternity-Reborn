@@ -86,13 +86,41 @@ index f226ef97..a9291256 100644
 +
 +The saved Linux ProcedureTerminalQuarantine failure is in preparation before its helper. Verify that exact body after the tree port, without bypassing its fixture. Complete live/console preparation remains non-atomic because request/manifest/authority/dice/snapshot operations are separate. Full preparation, browser-v6, load/save/library, worker and B4/B5 remain later work. A fresh read-only Astra XHigh investigation found no material product decision blocking this slice; focused implementation and review evidence are still pending.
 diff --git a/tests/categories.json b/tests/categories.json
-index b63e8a81..e52bf447 100644
+index b63e8a81..a5aec313 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -1,6 +1,218 @@
+@@ -1,6 +1,246 @@
  {
    "schemaVersion": 1,
    "categories": [
++    {
++      "id": "portable-directory-consumers-continuation",
++      "responsibility": "Six unit live-preparation/source/uncertainty consumers left unrun after the actual quarantine physical-backup prerequisite failure.",
++      "excludes": "The two already-passing integration consumers and the unchanged blocked quarantine fixture; full lifecycle and backup migration.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
++            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_RemovesStalePendingDiceStateSoTurnRequestIsOnlyCurrentDiceAuthority",
++            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts",
++            "BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.*",
++            "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPendingAndRecoveryAuthority_ContainsNoPathnameAbsenceFallback",
++            "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PendingSnapshotCleanup_AndLateRollback_MustNotTrustRawManifestArtifactPaths"
++          ]
++        }
++      ]
++    },
 +    {
 +      "id": "portable-directory-recovery-boundary",
 +      "responsibility": "Direct dependencies of the same-lease recovery correction: absent/empty/nested tree entry and actual-directory-API crash/cleanup-debt admission.",

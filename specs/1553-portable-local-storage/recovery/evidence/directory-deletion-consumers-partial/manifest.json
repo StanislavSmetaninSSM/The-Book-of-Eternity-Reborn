@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "efc28137c92515a9d72f16637084e571e48806b1",
+  "sourceFingerprint": "7E696551FCAD356396131896B8B1E7D4F3116A1069F7EA757D006C488207DB7E",
+  "patchSha256": "d50fa54d5472bfd2acb2e26aad60fe2ef6da9c9a808cacd9fff8deff971bff72",
+  "appliedSourceTree": "1f0800fa642cb3f58c7693bb392ec8ca691764e6",
+  "platform": "Linux x64",
+  "toolchain": {
+    "sdk": "10.0.401",
+    "runtime": "8.0.31",
+    "powershell": "7.6.6"
+  },
+  "command": "pwsh -NoLogo -NoProfile -Command: scripts/test-csharp.ps1 -Category portable-directory-same-lease-recovery,portable-directory-recovery-boundary,portable-directory-consumers -Parallelism 1",
+  "scope": "Three integration consumers reached: exact snapshot and terminal cleanup passed; actual quarantine setup advanced beyond tree deletion and failed in unchanged StateDistributor CreateBackupCore descriptor-bound publication. 22 planned cases unrun; no fixture bypass or full quarantine acceptance.",
+  "categories": [
+    "portable-directory-same-lease-recovery",
+    "portable-directory-recovery-boundary",
+    "portable-directory-consumers"
+  ],
+  "selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 25,
+    "CompletedCases": 3,
+    "UnderfilledDescriptors": [
+      "portable-directory-consumers-unit-002",
+      "portable-directory-recovery-boundary-unit-003",
+      "portable-directory-same-lease-recovery-unit-004"
+    ],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 3,
+    "Executed": 3,
+    "Passed": 2,
+    "Failed": 1
+  },
+  "duration": "00:04:01.7609863",
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedCleanup": true,
+  "runtimeCleanup": true,
+  "artifacts": [
+    {
+      "file": "summary.json",
+      "originalSha256": "944258f529201ce72729a98e655e83414b99a581b30e7d080dda5220d788aff2",
+      "sanitizedSha256": "944258f529201ce72729a98e655e83414b99a581b30e7d080dda5220d788aff2",
+      "sanitizedBytes": 1818
+    },
+    {
+      "file": "plan.json",
+      "originalSha256": "ffbf9d9df6755a6b23bedf277eeeff195feb771356a3384a0a30904226d809b7",
+      "sanitizedSha256": "ffbf9d9df6755a6b23bedf277eeeff195feb771356a3384a0a30904226d809b7",
+      "sanitizedBytes": 6788
+    },
+    {
+      "file": "portable-directory-consumers-integration-001.trx",
+      "originalSha256": "8263310663d4765d0c357642aede4769d44c2358d696774b465583253eb98145",
+      "sanitizedSha256": "f051e5088e1a78b9c3d498e6d31e529ef080f350e752db60b67e0603ae5325e6",
+      "sanitizedBytes": 14022
+    }
+  ]
+}
