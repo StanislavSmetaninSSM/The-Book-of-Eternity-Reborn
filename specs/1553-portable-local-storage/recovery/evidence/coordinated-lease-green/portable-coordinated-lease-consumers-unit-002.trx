@@ -1,0 +1,63 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="43b7d3c0-792d-49a9-aae3-f8fc9248bb82" name="coordinated-lease-green" runUser="$USER">
+  <ns0:Times creation="2026-10-01T11:53:34.8230163-04:00" queuing="2026-10-01T11:53:34.8230163-04:00" start="2026-10-01T11:53:31.0514134-04:00" finish="2026-10-01T11:53:34.8331604-04:00" />
+  <ns0:TestSettings name="default" id="7277ac03-3a2e-4067-a788-3bd2e24f9955">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="0ebbeb26-ec5e-4eb3-bd6a-dc8bc98462d0" testId="f468779d-b4d2-7b04-2790-96f98b4c5169" testName="BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RequiresItsOwnActiveCanonicalLease" computerName="$HOST" duration="00:00:00.1247580" startTime="2026-10-01T11:53:34.2429868-04:00" endTime="2026-10-01T11:53:34.2430005-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0ebbeb26-ec5e-4eb3-bd6a-dc8bc98462d0" />
+    <ns0:UnitTestResult executionId="53b4b9a6-b73b-4736-b3a2-73a5f4d21ddd" testId="fd9feeaa-6829-36c0-6f64-fd4f94c0a5cb" testName="BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter" computerName="$HOST" duration="00:00:00.0955146" startTime="2026-10-01T11:53:34.3852031-04:00" endTime="2026-10-01T11:53:34.3852034-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="53b4b9a6-b73b-4736-b3a2-73a5f4d21ddd" />
+    <ns0:UnitTestResult executionId="c9f7fac0-ac3a-4f81-b501-eafd73ee2b0b" testId="63185d91-3330-ee04-c607-6457a18cebb4" testName="BookOfEternityClient.Tests.TradeRequestLockOrderingTests.ShiningTrade_LeaseBoundWriteDoesNotWaitBehindUnboundCanonicalContention" computerName="$HOST" duration="00:00:00.1066653" startTime="2026-10-01T11:53:34.6875988-04:00" endTime="2026-10-01T11:53:34.6875992-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c9f7fac0-ac3a-4f81-b501-eafd73ee2b0b" />
+    <ns0:UnitTestResult executionId="695b2406-cf55-4ff4-aec0-b5acfbbf7a6f" testId="18d082f3-1c13-4fd8-ae23-7255df878802" testName="BookOfEternityClient.Tests.TradeRequestLockOrderingTests.GuardianTrade_LeaseBoundWriteDoesNotWaitBehindUnboundCanonicalContention" computerName="$HOST" duration="00:00:00.1915209" startTime="2026-10-01T11:53:34.5786670-04:00" endTime="2026-10-01T11:53:34.5786672-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="695b2406-cf55-4ff4-aec0-b5acfbbf7a6f" />
+    <ns0:UnitTestResult executionId="fd826127-138b-4918-801e-a85ab7ccbc53" testId="16cf7a47-2a95-4048-316d-f62b2ae1962a" testName="BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening(disposed: False)" computerName="$HOST" duration="00:00:00.0222755" startTime="2026-10-01T11:53:34.2703622-04:00" endTime="2026-10-01T11:53:34.2703625-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fd826127-138b-4918-801e-a85ab7ccbc53" />
+    <ns0:UnitTestResult executionId="91791b84-2fec-401b-b0c3-6817411eaa92" testId="c827ab1d-ae3e-9ff0-db8e-ecbeb93f65b2" testName="BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening(disposed: True)" computerName="$HOST" duration="00:00:00.0128292" startTime="2026-10-01T11:53:34.2833214-04:00" endTime="2026-10-01T11:53:34.2833218-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="91791b84-2fec-401b-b0c3-6817411eaa92" />
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.TradeRequestLockOrderingTests.GuardianTrade_LeaseBoundWriteDoesNotWaitBehindUnboundCanonicalContention" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="18d082f3-1c13-4fd8-ae23-7255df878802">
+      <ns0:Execution id="695b2406-cf55-4ff4-aec0-b5acfbbf7a6f" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TradeRequestLockOrderingTests" name="GuardianTrade_LeaseBoundWriteDoesNotWaitBehindUnboundCanonicalContention" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.TradeRequestLockOrderingTests.ShiningTrade_LeaseBoundWriteDoesNotWaitBehindUnboundCanonicalContention" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="63185d91-3330-ee04-c607-6457a18cebb4">
+      <ns0:Execution id="c9f7fac0-ac3a-4f81-b501-eafd73ee2b0b" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TradeRequestLockOrderingTests" name="ShiningTrade_LeaseBoundWriteDoesNotWaitBehindUnboundCanonicalContention" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening(disposed: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="16cf7a47-2a95-4048-316d-f62b2ae1962a">
+      <ns0:Execution id="fd826127-138b-4918-801e-a85ab7ccbc53" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableOrdinaryReadTests" name="LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fd9feeaa-6829-36c0-6f64-fd4f94c0a5cb">
+      <ns0:Execution id="53b4b9a6-b73b-4736-b3a2-73a5f4d21ddd" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SessionOperationContextTests" name="BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RequiresItsOwnActiveCanonicalLease" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f468779d-b4d2-7b04-2790-96f98b4c5169">
+      <ns0:Execution id="0ebbeb26-ec5e-4eb3-bd6a-dc8bc98462d0" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFilePublicationTests" name="Publish_RequiresItsOwnActiveCanonicalLease" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening(disposed: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c827ab1d-ae3e-9ff0-db8e-ecbeb93f65b2">
+      <ns0:Execution id="91791b84-2fec-401b-b0c3-6817411eaa92" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableOrdinaryReadTests" name="LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="f468779d-b4d2-7b04-2790-96f98b4c5169" executionId="0ebbeb26-ec5e-4eb3-bd6a-dc8bc98462d0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="fd9feeaa-6829-36c0-6f64-fd4f94c0a5cb" executionId="53b4b9a6-b73b-4736-b3a2-73a5f4d21ddd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="63185d91-3330-ee04-c607-6457a18cebb4" executionId="c9f7fac0-ac3a-4f81-b501-eafd73ee2b0b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="18d082f3-1c13-4fd8-ae23-7255df878802" executionId="695b2406-cf55-4ff4-aec0-b5acfbbf7a6f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="16cf7a47-2a95-4048-316d-f62b2ae1962a" executionId="fd826127-138b-4918-801e-a85ab7ccbc53" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="c827ab1d-ae3e-9ff0-db8e-ecbeb93f65b2" executionId="91791b84-2fec-401b-b0c3-6817411eaa92" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Completed">
+    <ns0:Counters total="6" executed="6" passed="6" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.32]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:02.18]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:02.20]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:02.85]   Finished:    BookOfEternityClient.Tests
+</ns0:StdOut>
+    </ns0:Output>
+  </ns0:ResultSummary>
+</ns0:TestRun>
