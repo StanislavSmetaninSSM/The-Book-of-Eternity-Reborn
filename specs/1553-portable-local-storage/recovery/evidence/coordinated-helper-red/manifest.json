@@ -1,0 +1,37 @@
+{
+  "sourceCommit": "9751f00760824e05fa67d0848b6ec55dd5836968",
+  "sourceAppliedTree": "8ed33429f2bfa185298f5a8ec60f86614b6b65fb",
+  "packetSha256": "11da0d6c0f50b62bfb82ae0db9b59575a52e558d580ff0ca5ff198233632d2a2",
+  "kind": "T031 four-case actual-helper RED; original summary/TRX with sanitized execution paths and identities",
+  "sanitization": "Repository, toolchain and isolated environment paths and TRX run user/computer/deployment replaced; original and sanitized SHA256 retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "b6378368d5be068014920cc7d330d9ed124d8bdd643492981d0c82833dd469f5",
+      "sanitizedSha256": "b6378368d5be068014920cc7d330d9ed124d8bdd643492981d0c82833dd469f5"
+    },
+    {
+      "path": "portable-coordinated-publication-unit-001.trx",
+      "originalSha256": "e7b1f613c0740e67d1abfae36785d6241b689d844e2f78f198b9fac681987c43",
+      "sanitizedSha256": "8d18868ff05e121b2b7873210233d1d84181117200fcf65b5498d9dd0bb4975d"
+    }
+  ],
+  "command": "DOTNET_PROCESSOR_COUNT=1 DOTNET_CLI_TELEMETRY_OPTOUT=1 POWERSHELL_TELEMETRY_OPTOUT=1 TESTINGPLATFORM_TELEMETRY_OPTOUT=1 pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-coordinated-publication -Parallelism 1",
+  "environment": "Linux x64; SDK10.0.401, runtime8.0.31, PowerShell7.6.6; existing isolated homes/cache/temp; no app/provider execution",
+  "result": "4 planned/executed, 0 passed, 4 intended failures, 0 skipped/unrun/duplicates; exit1, no timeout, 4:32.2556869 including fresh successful unit build; selection and owned/runtime cleanup complete",
+  "intendedFailures": {
+    "ActualHelperPublishesCompleteMemberSetUnderOneDecision": "3 separate journals instead of1",
+    "ActualHelperCommittedCleanupFailureKeepsCompleteCommittedResult": "3 separate decisions instead of1",
+    "ActualHelperReachedSecondMemberFailureRestoresWholeExactBeforeSet": "second member index never reached",
+    "ActualHelperUnknownLaterMemberPreservesWholeUnresolvedSet": "reached unknown-later-member injection returns false rather than unresolved exception"
+  },
+  "restoreProof": {
+    "head": "9751f00760824e05fa67d0848b6ec55dd5836968",
+    "files": 3694,
+    "cleanBeforeApply": true,
+    "connectivity": "passed",
+    "patchAndAfterBlobs": "verified",
+    "appliedSourceTree": "8ed33429f2bfa185298f5a8ec60f86614b6b65fb",
+    "testsRun": 0
+  }
+}

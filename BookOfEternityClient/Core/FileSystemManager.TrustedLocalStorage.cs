@@ -44,7 +44,7 @@ public partial class FileSystemManager
                 throw new InvalidDataException("Unresolved legacy storage evidence requires its original supported recovery handler: " + root);
     }
 
-    private bool UsesTrustedLocalWriter(CanonicalWriteLease lease, string relativePath)
+    internal bool UsesTrustedLocalWriter(CanonicalWriteLease lease, string relativePath)
     {
         if (lease.MutationIntentRecorder != null || lease.IsLegacyStorageRecovery) return false;
         // The old browser recorder owns its own manifest/before-image namespace,
@@ -160,7 +160,7 @@ public partial class FileSystemManager
         }
     }
 
-    private void RequireCommittedLocalPublication(TrustedLocalPublicationOutcome outcome)
+    internal void RequireCommittedLocalPublication(TrustedLocalPublicationOutcome outcome)
     {
         if (outcome.Disposition == TrustedLocalPublicationDisposition.Committed)
         {
@@ -172,6 +172,9 @@ public partial class FileSystemManager
             ExceptionDispatchInfo.Capture(outcome.Failure).Throw();
         throw new InvalidDataException("Local publication outcome is uncertain; retained evidence must be resolved before continuing.", outcome.Failure);
     }
+
+    internal void LogCompletedCoordinatedWriteReleaseFailure(Exception failure) =>
+        _logger.LogWarning(failure, "Coordinated write completed; canonical lease release requires follow-up.");
 
     // Byte authority for the trusted-local route. The legacy physical reader
     // both accepts Unix special-file attributes and requires one Windows link;

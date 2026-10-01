@@ -1,3 +1,16 @@
+diff --git a/BookOfEternityClient/Core/FileSystemManager.cs b/BookOfEternityClient/Core/FileSystemManager.cs
+index d44879dd..f9b2b7a9 100644
+--- a/BookOfEternityClient/Core/FileSystemManager.cs
++++ b/BookOfEternityClient/Core/FileSystemManager.cs
+@@ -3980,7 +3980,7 @@ public partial class FileSystemManager
+         return true;
+     }
+ 
+-    private static byte[] EncodeUtf8WithPreamble(string content)
++    internal static byte[] EncodeUtf8WithPreamble(string content)
+     {
+         var preamble = Encoding.UTF8.GetPreamble();
+         var body = Encoding.UTF8.GetBytes(content);
 diff --git a/specs/1553-portable-local-storage/research.md b/specs/1553-portable-local-storage/research.md
 index 4a4415cc..5391cb96 100644
 --- a/specs/1553-portable-local-storage/research.md
