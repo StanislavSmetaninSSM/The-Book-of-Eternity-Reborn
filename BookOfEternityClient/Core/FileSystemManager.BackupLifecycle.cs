@@ -30,11 +30,19 @@ public partial class FileSystemManager
     // if recovery fails; ordinary input/schema errors are not converted here.
     internal void ResolveBackupPublicationRecovery(CanonicalWriteLease lease)
     {
-        VerifyCurrentSessionOperation(lease);
-        if (lease.MutationIntentRecorder != null || lease.IsLegacyStorageRecovery) return;
+        EnsureValidCanonicalWriteLease(lease);
+        if (lease.MutationIntentRecorder != null || lease.IsLegacyStorageRecovery)
+        {
+            VerifyCurrentSessionOperation(lease);
+            return;
+        }
         EnsureNoLegacyStorageEvidence();
         try { RecoverTrustedLocalStorage(lease); }
         catch (Exception failure) { throw new CoordinatedStatePublicationUncertainException(failure); }
+        // Retained debt has its own generation authority. Classify its conflict
+        // before the ordinary bound-scope fence can hide it. With no debt, the
+        // existing known session-replacement rejection remains unchanged.
+        VerifyCurrentSessionOperation(lease);
     }
 
     private string GetLocalBackupRelativePath(string fullPath)

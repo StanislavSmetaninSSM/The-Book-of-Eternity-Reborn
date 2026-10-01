@@ -91,6 +91,13 @@
       "contracts": [
         "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
       ]
+    },
+    {
+      "category": "portable-backup-generation-debt",
+      "reason": "Actual bound StateDistributor generation conflict after a committed backup retains journal uncertainty before compensation; outer SessionOperationContext finalization remains separate.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
     }
   ]
 }

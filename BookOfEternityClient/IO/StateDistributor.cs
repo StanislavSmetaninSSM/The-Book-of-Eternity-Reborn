@@ -173,7 +173,15 @@ public class StateDistributor
         {
             try { _logger.LogError(ex, "Ошибка распределения, откат изменений"); }
             catch { /* Diagnostics cannot prevent required known-failure recovery. */ }
-            var rollbackFailures = RollbackMutations(writeLease, mutations.Values);
+            List<Exception> rollbackFailures;
+            try { rollbackFailures = RollbackMutations(writeLease, mutations.Values); }
+            catch (CoordinatedStatePublicationUncertainException uncertain)
+            {
+                // Keep uncertainty outermost for caller compensation guards,
+                // and retain the distinct error that required this rollback.
+                uncertain.Data["StateDistributionFailure"] = ex;
+                throw;
+            }
             if (rollbackFailures.Count > 0)
             {
                 throw new AggregateException(

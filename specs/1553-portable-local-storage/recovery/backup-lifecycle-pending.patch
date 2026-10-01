@@ -93,13 +93,119 @@ index 3a0189ff..17ddc4ef 100644
          await ApplyAuthoritativeExperienceAsync(writeLease, response.ExperienceGained);
          var qteNormalizer = _normalizer.ForQteNormalization();
 diff --git a/tests/categories.json b/tests/categories.json
-index 0a621b60..e9af9237 100644
+index 0a621b60..3ebd8f7a 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -1,6 +1,394 @@
+@@ -1,6 +1,500 @@
  {
    "schemaVersion": 1,
    "categories": [
++    {
++      "id": "portable-backup-native-boundaries",
++      "responsibility": "Exact native Windows by-name links, namespace/alias/type and real lease/debt subset; all link fixtures must execute.",
++      "excludes": "Full storage or gameplay coverage and unrelated accepted cohorts.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
++        "BookOfEternityClient/IO/StateDistributor.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.HardLinkedSourceTargetAndBackupPreserveEveryOutsideName",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreSameNameIsRejectedBeforeDeletingItsOnlyCopy",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-backup-native-routing",
++      "responsibility": "Actual original native physical backup handler and unchanged recorder bypass, plus both mixed-route rejections.",
++      "excludes": "Full storage or gameplay coverage and unrelated accepted cohorts.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
++        "BookOfEternityClient/IO/StateDistributor.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.OriginalRecorderAndRecoveryKeepPhysicalCoreWithoutNewCallbacks",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-backup-native-cold",
++      "responsibility": "Two actual public restore cuts with separate-process normal lease recovery and external hard-link preservation on Windows.",
++      "excludes": "Full storage or gameplay coverage and unrelated accepted cohorts.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
++        "BookOfEternityClient/IO/StateDistributor.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdRestoreAndCleanupPreserveExternalHardLinkNames"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-backup-review-regressions",
++      "responsibility": "Affected P1 ordering dependencies: debt-free generation and malformed input remain known errors; no-op/real lease/original route/same-lease debt preserve their boundary.",
++      "excludes": "Full storage or gameplay coverage and unrelated accepted cohorts.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
++        "BookOfEternityClient/IO/StateDistributor.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.AbsentSourceAndCleanupDoNotCreateGenerationOrJournal",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SuppliedLeaseHonorsChangedBoundGenerationBeforeNoOp",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.OriginalRecorderAndRecoveryKeepPhysicalCoreWithoutNewCallbacks",
++            "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_MalformedExistingJson_FailsClosedAndPreservesExactBytes"
++          ]
++        }
++      ]
++    },
 +    {
 +      "id": "portable-backup-compensation-cause",
 +      "responsibility": "Actual reverse-restore uncertainty stays outermost while preserving both distinct primary distribution and publication-cut causes.",

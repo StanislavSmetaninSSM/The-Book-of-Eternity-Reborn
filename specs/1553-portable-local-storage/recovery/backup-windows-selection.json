@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "portable-backup-api",
+      "reason": "Public ordinary sync/async backup creation, independently seeded restore and cleanup with exact bytes and B1 decision semantics on Linux/Windows.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-windows-paths",
+      "reason": "Actual Windows extended-root create/restore/cleanup and same-file case alias rejection; required native body with no silent platform return.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-native-boundaries",
+      "reason": "Exact native Windows by-name links, namespace/alias/type and real lease/debt subset; all link fixtures must execute.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-native-routing",
+      "reason": "Actual original native physical backup handler and unchanged recorder bypass, plus both mixed-route rejections.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-native-cold",
+      "reason": "Two actual public restore cuts with separate-process normal lease recovery and external hard-link preservation on Windows.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-generation-debt",
+      "reason": "Actual bound StateDistributor generation conflict after a committed backup retains journal uncertainty before compensation; outer SessionOperationContext finalization remains separate.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-qte",
+      "reason": "Actual QTE backup publication and same-lease debt reach its immediate distributor boundary; uncertainty excludes wider baseline compensation and later writes.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    }
+  ]
+}
