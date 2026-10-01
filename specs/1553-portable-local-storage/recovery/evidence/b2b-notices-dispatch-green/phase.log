@@ -2,11 +2,11 @@ RequestedLane: Categories
 EffectiveLane: Categories
 Filter: <pending validation>
 TimeoutMinutes: 9
-StartedUtc: 2026-10-01T01:31:19.2339647Z
+StartedUtc: 2026-10-01T01:50:28.0028970Z
 Owned process 'Revision': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
 
 ===== Revision: stdout =====
-ab2163c6b16c638497683e3301b98ea58d770ff7
+5d304430a6718b2b539425d97bc0dbd1f7e72a1a
 
 ===== Revision: stderr =====
 
@@ -39,7 +39,7 @@ Owned process 'Frontend-build': FileName=/opt/codex/runtimes/codex-primary-runti
 
 vite v8.0.14 building client environment for production...
 [2K
-transforming...✓ 1982 modules transformed.
+transforming...✓ 1984 modules transformed.
 rendering chunks...
 computing gzip size...
 dist/index.html                                                          0.76 kB │ gzip:   0.43 kB
@@ -143,9 +143,9 @@ dist/assets/cormorant-garamond-latin-400-italic-BLh7T8o8.woff           32.88 kB
 dist/assets/inter-latin-wght-normal-Dx4kXJAl.woff2                      48.25 kB
 dist/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2                  85.06 kB
 dist/assets/index-DrvFFnc7.css                                         248.15 kB │ gzip:  50.95 kB
-dist/assets/index-CPb5xUQr.js                                          527.26 kB │ gzip: 157.00 kB
+dist/assets/index-DE9O0TXO.js                                          530.40 kB │ gzip: 157.96 kB
 
-✓ built in 415ms
+✓ built in 561ms
 
 ===== Frontend-build: stderr =====
 npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
@@ -168,53 +168,43 @@ Owned process 'portable-settings-notices-frontend-001-settingsPersistenceNotice.
 
 ===== portable-settings-notices-frontend-001-settingsPersistenceNotice.test.js: stdout =====
 PASS HTTP client preserves committed follow-up metadata
+PASS committed warning is visible and survives ordinary refresh handling
+PASS a later clean update deliberately clears the previous warning
+PASS stale clean response cannot erase a newer committed warning
+PASS stale warning response cannot replace a newer clean result
+PASS unmounted or invalidated response ownership cannot update the notice
+PASS a lost response is uncertain rather than a rollback claim
+PASS server uncertainty remains explicit and retains prior committed advice
+PASS blocked and rolled-back outcomes are distinguishable
+PASS a committed failure-shaped response still reports persisted follow-up
+PASS an earlier commit warning remains relevant while the latest request is uncertain
+PASS duplicate older completion cannot restore advice cleared by a later clean commit
+PASS stale and unmounted responses cannot apply state or start refresh side effects
+PASS current response applies once and a delayed refresh loses ownership after a new request
+PASS unmount cancels unsent dispatch but superseded same-mount changes remain admitted
+PASS save-load boundary invalidates both settings and audio dispatch and response ownership
+PASS two locally current settings/audio refreshes publish only the newest shared snapshot
+PASS actual consumers fence dispatch and cancel settings before save loading
+PASS rapid independent settings changes coalesce without losing fields
+PASS both actual settings consumers render and own persistence notices
 PASS frontend build resolves the platform-specific npm application
-Settings persistence scenarios: passed=2 failed=11
+PASS shared refresh checks optional owner after asynchronous reads before publication
+Settings persistence scenarios: passed=22 failed=0
 
 ===== portable-settings-notices-frontend-001-settingsPersistenceNotice.test.js: stderr =====
-FAIL committed warning is visible and survives ordinary refresh handling: Prepared settings notice handling is not implemented.
-FAIL a later clean update deliberately clears the previous warning: Prepared settings notice handling is not implemented.
-FAIL stale clean response cannot erase a newer committed warning: Prepared settings notice handling is not implemented.
-FAIL stale warning response cannot replace a newer clean result: Prepared settings notice handling is not implemented.
-FAIL unmounted or invalidated response ownership cannot update the notice: Prepared settings notice handling is not implemented.
-FAIL a lost response is uncertain rather than a rollback claim: Prepared settings notice handling is not implemented.
-FAIL server uncertainty remains explicit and retains prior committed advice: Prepared settings notice handling is not implemented.
-FAIL blocked and rolled-back outcomes are distinguishable: Prepared settings notice handling is not implemented.
-FAIL a committed failure-shaped response still reports persisted follow-up: Prepared settings notice handling is not implemented.
-FAIL rapid independent settings changes coalesce without losing fields: Settings patch coalescing is not implemented.
-FAIL both actual settings consumers render and own persistence notices: SettingsView.tsx does not use the checked response-owner logic.
-file://$REPO/TestResults/test-categories/20260930-213119-220-16-2b8c2cf5250e49f4bbdc91d386115605-categories/portable-settings-notices-frontend-001-compiled/test/settingsPersistenceNotice.test.js:121
-    throw new Error(failures.join('\n'));
-          ^
 
-Error: committed warning is visible and survives ordinary refresh handling: Prepared settings notice handling is not implemented.
-a later clean update deliberately clears the previous warning: Prepared settings notice handling is not implemented.
-stale clean response cannot erase a newer committed warning: Prepared settings notice handling is not implemented.
-stale warning response cannot replace a newer clean result: Prepared settings notice handling is not implemented.
-unmounted or invalidated response ownership cannot update the notice: Prepared settings notice handling is not implemented.
-a lost response is uncertain rather than a rollback claim: Prepared settings notice handling is not implemented.
-server uncertainty remains explicit and retains prior committed advice: Prepared settings notice handling is not implemented.
-blocked and rolled-back outcomes are distinguishable: Prepared settings notice handling is not implemented.
-a committed failure-shaped response still reports persisted follow-up: Prepared settings notice handling is not implemented.
-rapid independent settings changes coalesce without losing fields: Settings patch coalescing is not implemented.
-both actual settings consumers render and own persistence notices: SettingsView.tsx does not use the checked response-owner logic.
-    at file://$REPO/TestResults/test-categories/20260930-213119-220-16-2b8c2cf5250e49f4bbdc91d386115605-categories/portable-settings-notices-frontend-001-compiled/test/settingsPersistenceNotice.test.js:121:11
-
-Node.js v24.19.0
-
-===== portable-settings-notices-frontend-001-settingsPersistenceNotice.test.js: exit 1 =====
+===== portable-settings-notices-frontend-001-settingsPersistenceNotice.test.js: exit 0 =====
 
 Category result
   Categories: portable-settings-notices
   Filter: <none>
   Timeout: 9 minute(s)
-  Wall time: 00:00:08.1554323
-  Exit code: 1
+  Wall time: 00:00:08.6453912
+  Exit code: 0
   Timed out: False
   Owned-tree cleanup: complete
-  Planned selection: descriptors=1, cases=1; completed descriptors=0, cases=0, complete=False
-  Tests: total=0, executed=0, passed=0, failed=0
+  Planned selection: descriptors=1, cases=1; completed descriptors=1, cases=1, complete=True
+  Tests: total=1, executed=1, passed=1, failed=0
   Duplicate test IDs: 0
-  Results: $REPO/TestResults/test-categories/20260930-213119-220-16-2b8c2cf5250e49f4bbdc91d386115605-categories
-  Log: $REPO/TestResults/test-categories/20260930-213119-220-16-2b8c2cf5250e49f4bbdc91d386115605-categories/dotnet-test.log
-  Failure: portable-settings-notices-frontend-001-settingsPersistenceNotice.test.js failed with exit code 1.
+  Results: $REPO/TestResults/test-categories/20260930-215027-989-16-de733d4fe4ef402a9e33ebde4f03b33e-categories
+  Log: $REPO/TestResults/test-categories/20260930-215027-989-16-de733d4fe4ef402a9e33ebde4f03b33e-categories/dotnet-test.log

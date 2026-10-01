@@ -2,7 +2,7 @@
   "sourceCommit": "108f45cae4ace8eb46c26ff7e87a483b6e694b0f",
   "catalogBlobAfterPatch": "9c5a91355cf17dac7a9506fc06154ab8cf0228f7",
   "kind": "newly executed b2b-notices-ownership-red; sanitized original artifacts",
-  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained. Phase-log line endings normalized to LF and trailing line whitespace removed; original hashes unchanged.",
   "files": [
     {
       "path": "summary.json",
@@ -12,7 +12,7 @@
     {
       "path": "phase.log",
       "originalSha256": "fa24da30463fa25a06ec9f51d585aa96b0bf5f9f6acb53ac41ca0fa9726ad351",
-      "sanitizedSha256": "795b6a6df8bd7f2a59c47820b9c37fda4ba4d9c6a2d251489260c75e88828697"
+      "sanitizedSha256": "bb64c2bb64ead4f52e2e744e7be570359f85013ca1abdf91d0afa7972f179db4"
     }
   ]
 }

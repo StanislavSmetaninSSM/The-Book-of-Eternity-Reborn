@@ -1,0 +1,91 @@
+{
+  "Categories": [
+    "portable-settings-notices"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "5d304430a6718b2b539425d97bc0dbd1f7e72a1a",
+    "WorkingTreeFingerprint": "CA6966CD6021B86F91544D631173481BC1CDDAF0A0CECE307891BFA9C2885748",
+    "ChangedFiles": 1
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-settings-notices",
+      "Seconds": 1.1447339,
+      "BudgetMinutes": 4,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [
+    {
+      "Descriptor": "portable-settings-notices-frontend-001",
+      "Adapter": "node",
+      "VerificationKind": "tests",
+      "Results": 1,
+      "Seconds": 1.1239928
+    }
+  ],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.058487,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0200043,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0161563,
+      "Completed": true
+    },
+    {
+      "Name": "Frontend-build",
+      "Seconds": 7.0115133,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-notices-frontend-001-compile",
+      "Seconds": 0.9725724,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-notices-frontend-001-settingsPersistenceNotice.test.js",
+      "Seconds": 0.085008,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0050386,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 9,
+  "WallTime": "00:00:08.6453912",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 1,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 1,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
