@@ -1,0 +1,74 @@
+{
+  "Categories": [
+    "portable-storage-windows-handle-comparison"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-storage-windows-handle-comparison",
+      "reason": "The saved native two-failure run supplies RED. This correction changes only Windows handle-path comparison and causal native assertions. Linux performs fresh build/discovery and PlanOnly; the parent runs these seven actual Windows cases. Unaffected GREEN cohorts are not repeated.",
+      "contracts": [
+        "symmetric supported handle-path spelling",
+        "direct before-write generation rejection",
+        "retained original path and hard-link rejection"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "82e30691d4c197fb560033b2f057bb622912bb0a",
+    "WorkingTreeFingerprint": "C303BA55D8633FF519E7746679D981BA9AE633AA1680E585708837B1D01EBC19",
+    "ChangedFiles": 3
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.1041673,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0140433,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0186537,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0056435,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 9,
+  "WallTime": "00:00:10.5527774",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 7,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-storage-windows-handle-comparison-integration-001",
+      "portable-storage-windows-handle-comparison-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

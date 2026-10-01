@@ -1,6 +1,6 @@
 {
   "baseCommit": "a7925a189a6bab356afdee525fb79d72eb3e4609",
-  "status": "Windows comparison correction WIP. Existing native two-failure evidence is RED. New Linux build/discovery/plan and parent-owned seven-case native GREEN are unrun; independent acceptance remains pending.",
+  "status": "Frozen Windows comparison correction. Saved native two-failure evidence is RED. Fresh Linux build/discovery passed 122 categories / 10,340 methods/files; zero-test plan selected 2 descriptors / 7 cases. Independent scoped Astra XHigh source verdict accepted; actual Windows GREEN and final B3b acceptance remain pending.",
   "patch": {
     "path": "windows-handle-comparison.pending.patch",
     "bytes": 4265,
