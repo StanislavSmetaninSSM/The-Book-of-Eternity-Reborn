@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "baseCommit": "261bda1b92fdca3bcb992008a7eeec822799f139",
+  "baseCommit": "16f2510f8f518b21fc67496a235ad2c697866ba9",
   "patchFile": "backup-lifecycle-pending.patch",
-  "patchBytes": 13624,
-  "patchSha256": "a0fffa84d210851c80be8732ec7dd1d3f13d5bbc414108cbababad4289a6b27c",
+  "patchBytes": 20483,
+  "patchSha256": "c483add96eae70c620b2565f7534b3587a7acf462a4d42b2e3e18890f2ef3317",
   "entries": [
     {
       "path": "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.cs",
@@ -20,14 +20,21 @@
       "afterSha256": "764e3698d84bdeeffa372e0830b8b643373b14e5e963132fde88562c1ae5805f"
     },
     {
+      "path": "BookOfEternityClient/Services/QteSceneService.cs",
+      "beforeBlob": "3a0189ff949ee8a6f0a09b894a87d4cbcc76e110",
+      "afterBlob": "17ddc4efbeaee534b32cce33bd56bcb2ec3a27e8",
+      "beforeSha256": "752cf5468cd818d241d190b4b22184f79ed211abab4a1b282a192b2d2f94aea9",
+      "afterSha256": "aedb827fecd686b904f549d4c22008176932896edb8f2c7b73c194476d272d50"
+    },
+    {
       "path": "tests/categories.json",
       "beforeBlob": "0a621b605dac7029df573211c7dd091615f870fe",
-      "afterBlob": "ad714ecee9b0ce13ddaa4485cb543fd35c07b345",
+      "afterBlob": "64bd318eef7d3dfae58eccbedbecdc45a162b9b2",
       "beforeSha256": "e90132627211590d9b78798133175d6468b59907801c83a9818500cd610bc045",
-      "afterSha256": "f3df46adccb35c754ebf6a82d190806a6de6e74e85964a9d60f391ce1e5f2a22"
+      "afterSha256": "3796d9b1d8d862e92d4d0915dc677cf63ece1b1c3e9ca3aa17917eec4a4b7667"
     }
   ],
-  "appliedSourceTree": "9c9a0ca8c02e0b6e2aa8337d28adcdb51c8e92da",
+  "appliedSourceTree": "8f3fe8d24fca04af56465a8a73d029db1fd0e74e",
   "comparisonExcludes": [
     "specs/1553-portable-local-storage/recovery/backup-lifecycle-pending.patch",
     "specs/1553-portable-local-storage/recovery/backup-lifecycle-pending.json"

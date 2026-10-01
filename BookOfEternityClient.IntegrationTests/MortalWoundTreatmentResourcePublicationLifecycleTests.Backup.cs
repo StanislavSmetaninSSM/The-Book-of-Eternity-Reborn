@@ -33,7 +33,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
         };
         await using var context = await CreateHeldTreatmentPipelineContextAsync(
-            fault: null, itemScenario: HeldTreatmentItemScenario.SelectedStack(), composePublication: false, hooks: hooks);
+            fault: null, itemScenario: HeldTreatmentItemScenario.SelectedStack(), hooks: hooks);
         files = context.FileSystem;
         await AssertConfirmedHeldLiveRegistryProbeAsync(context);
         var paths = new[] { ResourceMaterializationContract.StatePath, ResourceMaterializationContract.HistoryPath,

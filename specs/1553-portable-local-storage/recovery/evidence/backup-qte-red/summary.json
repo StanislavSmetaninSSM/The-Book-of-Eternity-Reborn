@@ -1,0 +1,68 @@
+{
+  "Categories": [
+    "portable-backup-qte"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "16f2510f8f518b21fc67496a235ad2c697866ba9",
+    "WorkingTreeFingerprint": "87EA4AE9E609E8D4C3F35ECBAABE889F1BF45BD38B5ED2A38F281119D92D7C9F",
+    "ChangedFiles": 3
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-backup-qte",
+      "Seconds": 5.2219567,
+      "BudgetMinutes": 5,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0699291,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0153956,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0237377,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 173.7860221,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 10,
+  "WallTime": "00:03:02.9693666",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 3,
+    "CompletedCases": 3,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 3,
+    "Executed": 3,
+    "Passed": 1,
+    "Failed": 2
+  },
+  "DuplicateTests": []
+}

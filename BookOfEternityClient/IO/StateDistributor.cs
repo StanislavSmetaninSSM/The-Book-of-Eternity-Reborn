@@ -20,7 +20,8 @@ internal sealed class StateDistributorHooks
 
 /// <summary>
 /// Distributes GameResponse fields to appropriate game state files per CLI API spec.
-/// All operations are atomic with backup/rollback.
+/// Individual file publications are atomic; known failures use captured backups.
+/// The complete distribution is not a single crash-recoverable decision.
 /// </summary>
 public class StateDistributor
 {
@@ -50,11 +51,7 @@ public class StateDistributor
     /// </summary>
     public async Task<List<string>> DistributeAsync(GameResponse response)
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        return await DistributeAsync(
-            writeLease,
-            response,
-            acceptedWoundInput: null);
+        return await DistributeWithOwnedLeaseAsync(response, acceptedWoundInput: null);
     }
 
     internal async Task<List<string>> DistributeAsync(
@@ -62,8 +59,28 @@ public class StateDistributor
         WoundResponseInputCompositionResult acceptedWoundInput)
     {
         ArgumentNullException.ThrowIfNull(acceptedWoundInput);
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        return await DistributeAsync(writeLease, response, acceptedWoundInput);
+        return await DistributeWithOwnedLeaseAsync(response, acceptedWoundInput);
+    }
+
+    private async Task<List<string>> DistributeWithOwnedLeaseAsync(
+        GameResponse response, WoundResponseInputCompositionResult? acceptedWoundInput)
+    {
+        FileSystemManager.CanonicalWriteLease? lease = null;
+        Exception? failure = null;
+        var completed = false;
+        try
+        {
+            lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            var result = await DistributeAsync(lease, response, acceptedWoundInput);
+            completed = true;
+            return result;
+        }
+        catch (Exception error) { failure = error; throw; }
+        finally
+        {
+            if (lease != null)
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, completed, failure);
+        }
     }
 
     internal async Task<List<string>> DistributeAsync(
@@ -96,6 +113,7 @@ public class StateDistributor
 
         try
         {
+            _fs.ResolveBackupPublicationRecovery(writeLease);
             // Phase 1: Create backups for all affected files
             foreach (var filePath in targetPaths)
             {
@@ -106,6 +124,9 @@ public class StateDistributor
                 };
                 mutations[filePath] = mutation;
                 mutation.BackupPath = _fs.CreateBackup(writeLease, filePath);
+                // Even a committed backup can retain cleanup debt. Resolve it
+                // before the next ordinary read/write can obscure its outcome.
+                _fs.ResolveBackupPublicationRecovery(writeLease);
             }
             if (_hooks?.AfterBackupsCapturedAsync != null)
                 await _hooks.AfterBackupsCapturedAsync();
@@ -148,9 +169,10 @@ public class StateDistributor
                 }
             }
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
-            _logger.LogError(ex, "Ошибка распределения, откат изменений");
+            try { _logger.LogError(ex, "Ошибка распределения, откат изменений"); }
+            catch { /* Diagnostics cannot prevent required known-failure recovery. */ }
             var rollbackFailures = RollbackMutations(writeLease, mutations.Values);
             if (rollbackFailures.Count > 0)
             {
@@ -183,7 +205,8 @@ public class StateDistributor
         }
 
         await CleanupCommittedBackupsAsync(writeLease, mutations.Values);
-        _logger.LogInformation("Распределено {Count} файлов", modifiedFiles.Count);
+        try { _logger.LogInformation("Распределено {Count} файлов", modifiedFiles.Count); }
+        catch { /* Diagnostics cannot reverse an accepted distribution. */ }
         return modifiedFiles;
     }
 
@@ -633,8 +656,9 @@ public class StateDistributor
                 {
                     _fs.DeleteFile(writeLease, mutation.Path);
                 }
+                _fs.ResolveBackupPublicationRecovery(writeLease);
             }
-            catch (Exception rollbackFailure)
+            catch (Exception rollbackFailure) when (rollbackFailure is not CoordinatedStatePublicationUncertainException)
             {
                 rollbackFailures.Add(rollbackFailure);
             }
@@ -649,8 +673,9 @@ public class StateDistributor
             {
                 _fs.CleanupBackup(writeLease, mutation.BackupPath);
                 mutation.BackupPath = null;
+                _fs.ResolveBackupPublicationRecovery(writeLease);
             }
-            catch (Exception cleanupFailure)
+            catch (Exception cleanupFailure) when (cleanupFailure is not CoordinatedStatePublicationUncertainException)
             {
                 rollbackFailures.Add(cleanupFailure);
             }
@@ -670,9 +695,7 @@ public class StateDistributor
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(
-                ex,
-                "Распределение состояния принято, но подготовка очистки backup завершилась ошибкой; backup оставлены как evidence.");
+            LogAcceptedBackupCleanupFailure(ex);
             return;
         }
 
@@ -688,12 +711,19 @@ public class StateDistributor
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(
-                    ex,
-                    "Распределение состояния принято, но backup {BackupPath} не удалось удалить.",
-                    mutation.BackupPath);
+                LogAcceptedBackupCleanupFailure(ex);
+                // The distribution is already accepted, but further cleanup
+                // must not proceed across unresolved evidence. Its immediate
+                // caller resolves the debt before starting another operation.
+                if (ex is CoordinatedStatePublicationUncertainException) return;
             }
         }
+    }
+
+    private void LogAcceptedBackupCleanupFailure(Exception failure)
+    {
+        try { _logger.LogWarning(failure, "Распределение состояния принято; очистка backup требует повторной проверки."); }
+        catch { /* Preserve the established accepted result and its evidence. */ }
     }
 
     private sealed class DistributionMutation

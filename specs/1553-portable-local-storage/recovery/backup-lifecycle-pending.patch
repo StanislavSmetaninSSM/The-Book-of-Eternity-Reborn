@@ -77,14 +77,159 @@ index 70079f9d..4dc1ce30 100644
      }
  
      private void CleanupBackupCore(string backupFullPath)
+diff --git a/BookOfEternityClient/Services/QteSceneService.cs b/BookOfEternityClient/Services/QteSceneService.cs
+index 3a0189ff..17ddc4ef 100644
+--- a/BookOfEternityClient/Services/QteSceneService.cs
++++ b/BookOfEternityClient/Services/QteSceneService.cs
+@@ -2201,6 +2201,10 @@ public sealed partial class QteSceneService
+     {
+         RejectUnboundResourceSurfaces(response);
+         await _stateDistributor.DistributeAsync(writeLease, response);
++        // An accepted distribution can retain backup cleanup debt. Resolve it
++        // before experience/normalizer work, preserving the existing uncertain
++        // classification that excludes the enclosing baseline compensation.
++        _fs.ResolveBackupPublicationRecovery(writeLease);
+ 
+         await ApplyAuthoritativeExperienceAsync(writeLease, response.ExperienceGained);
+         var qteNormalizer = _normalizer.ForQteNormalization();
 diff --git a/tests/categories.json b/tests/categories.json
-index 0a621b60..ad714ece 100644
+index 0a621b60..64bd318e 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -1,6 +1,216 @@
+@@ -1,6 +1,346 @@
  {
    "schemaVersion": 1,
    "categories": [
++    {
++      "id": "portable-backup-routing",
++      "responsibility": "Backup source-link revalidation and explicit original recorder/recovery/evidence routes. Linux verifies original blocking; native bodies verify original publication and unchanged recorder bypass.",
++      "excludes": "Whole-flow atomicity, broad storage/QTE/wound/turn-lifecycle or physical browser receipt matrices.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
++        "BookOfEternityClient/IO/StateDistributor.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SourceLinkBeforeOrAtReadBoundaryCannotBeBackedUp",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.OriginalRecorderAndRecoveryKeepPhysicalCoreWithoutNewCallbacks",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.ExistingOriginalEvidenceBlocksEvenOrdinaryAbsenceWithoutDeletingEvidence"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-backup-linux-case",
++      "responsibility": "Actual Linux case-distinct backup/target names remain independent.",
++      "excludes": "Whole-flow atomicity, broad storage/QTE/wound/turn-lifecycle or physical browser receipt matrices.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
++        "BookOfEternityClient/IO/StateDistributor.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.LinuxCaseDistinctBackupAndTargetAreIndependentNames"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-backup-windows-paths",
++      "responsibility": "Actual Windows extended-root create/restore/cleanup and same-file case alias rejection; required native body with no silent platform return.",
++      "excludes": "Whole-flow atomicity, broad storage/QTE/wound/turn-lifecycle or physical browser receipt matrices.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
++        "BookOfEternityClient/IO/StateDistributor.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.WindowsExtendedRootBackupLifecycleAndCaseAliasAreValidated"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-backup-existing-consumers",
++      "responsibility": "Existing actual distributor known-failure compensation, writer contention, accepted cleanup and malformed JSON controls; waits observe task failures as well as reached hooks.",
++      "excludes": "Whole-flow atomicity, broad storage/QTE/wound/turn-lifecycle or physical browser receipt matrices.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
++        "BookOfEternityClient/IO/StateDistributor.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterBackupCapture_DoesNotOverwriteConcurrentAcceptedWriter",
++            "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterFirstWrite_DoesNotRollbackConcurrentAcceptedWriter",
++            "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_BackupCleanupFailure_DoesNotRollbackCommittedDistribution",
++            "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_MalformedExistingJson_FailsClosedAndPreservesExactBytes"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-backup-existing-api",
++      "responsibility": "Existing actual backup API contention and outside/missing evidence controls.",
++      "excludes": "Whole-flow atomicity, broad storage/QTE/wound/turn-lifecycle or physical browser receipt matrices.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
++        "BookOfEternityClient/IO/StateDistributor.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "integration",
++          "tests": [
++            "BookOfEternityClient.Tests.FileSystemManagerTests.CreateBackup_WaitsForCanonicalWriteLease",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_WaitsForCanonicalWriteLease",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.CleanupBackup_WaitsForCanonicalWriteLease",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_RejectsBackupOutsideCanonicalSession",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_MissingBeforeImageFailsClosed"
++          ]
++        }
++      ]
++    },
 +    {
 +      "id": "portable-backup-recovery",
 +      "responsibility": "Actual public backup APIs interrupted in owned processes, normal separate-process lease recovery, exact complete decisions, conflicts, hard links and unchanged synthetic save ZIPs.",

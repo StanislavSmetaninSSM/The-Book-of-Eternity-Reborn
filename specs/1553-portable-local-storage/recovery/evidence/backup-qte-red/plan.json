@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-backup-qte"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "16f2510f8f518b21fc67496a235ad2c697866ba9",
+    "WorkingTreeFingerprint": "87EA4AE9E609E8D4C3F35ECBAABE889F1BF45BD38B5ED2A38F281119D92D7C9F",
+    "ChangedFiles": 3
+  },
+  "PreparationSeconds": 177.4518993,
+  "Descriptors": [
+    {
+      "Name": "portable-backup-qte-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-backup-qte",
+      "Categories": [
+        "portable-backup-qte"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

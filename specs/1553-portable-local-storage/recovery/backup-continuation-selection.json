@@ -2,27 +2,6 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-backup-api",
-      "reason": "Public ordinary sync/async backup creation, independently seeded restore and cleanup with exact bytes and B1 decision semantics on Linux/Windows.",
-      "contracts": [
-        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
-      ]
-    },
-    {
-      "category": "portable-backup-boundaries",
-      "reason": "Ordinary backup path/type/link, exact absence/empty/hard-link, real lease/generation and same-lease recovery boundaries. Each test has isolated mutable state.",
-      "contracts": [
-        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
-      ]
-    },
-    {
-      "category": "portable-backup-publication",
-      "reason": "Nontransient warm backup lifecycle faults, complete restore membership, exact rollback/committed outcomes, unknown bytes and postcommit logger failure.",
-      "contracts": [
-        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
-      ]
-    },
-    {
       "category": "portable-backup-consumers",
       "reason": "Actual StateDistributor backup capture, reverse restoration and accepted cleanup uncertainty; no later compensation or diagnostic reversal.",
       "contracts": [
