@@ -2,45 +2,52 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-storage-stream-cold-phases",
-      "reason": "First native Linux qualification of nine ordinary v2 publication crash phases and separate-process canonical acquisition; exact whole-set decisions and unchanged outside/library bytes.",
+      "category": "portable-save-filesystem-callers",
+      "reason": "Five new static caller checks for actual link admission, deterministic retention selection and public hard-link ZIP listing; preserve nine historical Windows-only controls without counting their Linux early returns.",
       "contracts": [
-        "#1553 FR-002/003/004/005/006/010/015; specs/1553-portable-local-storage/spec.md; T032-A1 native Linux prerequisite qualification"
+        "#1553 FR-002/003/004/005/006/010/015; T032-A1/A2/A3 bounded native Linux save caller/resource qualification"
       ]
     },
     {
-      "category": "portable-storage-stream-cold-before",
-      "reason": "First native Linux qualification of interrupted staged/restored 256 MiB before-image recovery without caller sources, preserving exact bytes and complete cleanup.",
+      "category": "portable-save-entry",
+      "reason": "Native Linux public create-only save and owned runtime scratch cleanup on the returned caller implementation.",
       "contracts": [
-        "#1553 FR-002/003/004/005/006/010/015; specs/1553-portable-local-storage/spec.md; T032-A1 native Linux prerequisite qualification"
+        "#1553 FR-002/003/004/005/006/010/015; T032-A1/A2/A3 bounded native Linux save caller/resource qualification"
       ]
     },
     {
-      "category": "portable-storage-stream-cold-conflicts",
-      "reason": "First native Linux qualification of later-member bytes/type/link and generation conflicts plus interrupted committed cleanup; preserve earlier bytes and journal evidence.",
+      "category": "portable-save-read-refresh",
+      "reason": "Native Linux ordinary metadata stream, profile mirror and same-lease debt behavior used by save callers.",
       "contracts": [
-        "#1553 FR-002/003/004/005/006/010/015; specs/1553-portable-local-storage/spec.md; T032-A1 native Linux prerequisite qualification"
+        "#1553 FR-002/003/004/005/006/010/015; T032-A1/A2/A3 bounded native Linux save caller/resource qualification"
       ]
     },
     {
-      "category": "portable-storage-stream-generation",
-      "reason": "First native Linux qualification of six fresh/existing generation ordering cuts, including BOM/case/extension bytes, present-empty and absent members.",
+      "category": "portable-save-outcomes",
+      "reason": "Native Linux immediate save/autosave known rollback, commit and uncertainty semantics, including selected retention follow-up.",
       "contracts": [
-        "#1553 FR-002/003/004/005/006/010/015; specs/1553-portable-local-storage/spec.md; T032-A1 native Linux prerequisite qualification"
+        "#1553 FR-002/003/004/005/006/010/015; T032-A1/A2/A3 bounded native Linux save caller/resource qualification"
       ]
     },
     {
-      "category": "portable-storage-image-admission",
-      "reason": "First native Linux qualification of pre-intent generation drift and changed/missing captured archive candidates, typed result and zero publication.",
+      "category": "portable-save-retention-release",
+      "reason": "Native Linux managed retention-release seam preserves committed primary outcome and stops unsafe continuation; no native handle-failure claim.",
       "contracts": [
-        "#1553 FR-002/003/004/005/006/010/015; specs/1553-portable-local-storage/spec.md; T032-A1 native Linux prerequisite qualification"
+        "#1553 FR-002/003/004/005/006/010/015; T032-A1/A2/A3 bounded native Linux save caller/resource qualification"
       ]
     },
     {
-      "category": "portable-storage-stream-linux-fifo",
-      "reason": "Execute the actual Linux FIFO body: reject a later special-file member before open or earlier rollback and preserve exact generation/library/outside/journal bytes.",
+      "category": "portable-save-bound-outcome",
+      "reason": "Native Linux save finalization preserves established outcomes and generation/escaped-owner fences.",
       "contracts": [
-        "#1553 FR-002/003/004/005/006/010/015; specs/1553-portable-local-storage/spec.md; T032-A1 native Linux prerequisite qualification"
+        "#1553 FR-002/003/004/005/006/010/015; T032-A1/A2/A3 bounded native Linux save caller/resource qualification"
+      ]
+    },
+    {
+      "category": "portable-storage-stream-resource",
+      "reason": "Separate native Linux current public SaveGame producer and three full-size workloads/fifteen children under unchanged resource bounds.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/010/015; T032-A1/A2/A3 bounded native Linux save caller/resource qualification"
       ]
     }
   ]

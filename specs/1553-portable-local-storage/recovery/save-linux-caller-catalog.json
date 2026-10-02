@@ -1,0 +1,10 @@
+{
+  "baseCommit": "0d7f6c89d370716cad374e397898f7dedfdd452c",
+  "path": "tests/categories.json",
+  "beforeGitBlob": "17afadcd03badce4e5b4a78f322f1e4be4b6a2eb",
+  "afterGitBlob": "1dd6d00b183e7aba02e5655173dab545f11dbb15",
+  "afterSha256": "320c752159ab1a93093e08ef72a34be4700c020ebe334446579479040b8e3aaf",
+  "afterBytes": 904946,
+  "patchSha256": "dd5a2c9cd1c627f3837d9499c29badf8478e01afd3ae54a040befbf0bc681331",
+  "purpose": "Exact bounded checkpoint before normal full catalog publication; no runner/schema change. Apply only to the stated base catalog and verify the after identity."
+}

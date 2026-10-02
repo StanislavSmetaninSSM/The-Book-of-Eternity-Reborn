@@ -6,6 +6,55 @@
 
 <a id="active-t032-a--ordinary-save-creation"></a>
 
+## Linux save caller WIP — 2026-10-02 17:07 UTC
+
+Issue #1553, T032-A1/A2/A3, same branch at verified entry
+`0d7f6c89d370716cad374e397898f7dedfdd452c`, tree
+`31b4648d1081cbeedb7d386986a386308039f6e2`. The preceding Linux storage26
+block passed actual independent GPT-6 Astra XHigh spec/quality review without
+findings and was accepted by the coordinator. Its cold16 and generation6/admission3/
+FIFO1 evidence and distinct tested sources below remain unchanged; do not rerun them.
+
+Five new isolated portable caller tests cover pre-existing linked manual destination,
+deterministically selected expired autosave link with truthful committed follow-up,
+linked descendant exclusion from a complete manifested ZIP, mandatory linked source
+root refusal, and public listing of a pre-existing hard-linked archive through exactly
+one opened stream. Existing fixture seeding, ordinary entrypoints and observation-only
+hooks are reused. All nine historical Windows-only consumer controls remain intact.
+The new catalog owner is `portable-save-filesystem-callers`; related owners' stale
+Linux exclusions are corrected without changing membership. No production change is
+needed or claimed before running these tests. Profile refresh may independently commit
+before archive preparation fails; these fixtures do not invent whole-session atomicity.
+
+This WIP is unbuilt/unrun and unreviewed. Publish the small source/evidence checkpoint
+and exact catalog patch plus after-image identity before the full catalog upload and
+before long verification. `tests/selection.json` records only this bounded seven-owner
+block, preserving prior selections in Git; eventual integration must reconcile the
+whole intended change. Execute the five new checks first after a fresh PlanOnly build;
+then the five affected ordinary save/read/outcome/retention/bound owners, split by their
+catalog budgets. Run current-producer resource3/fifteen children separately afterward
+with unchanged 64/128/near-512 MiB, 768 MiB heap/1 GiB RSS/3 GiB disk/120-second child
+limits. New ownership requires fresh discovery-only `-ValidateCatalog`, not execution
+of the complete inventory. Every runtime uses canonical `scripts/test-csharp.ps1`
+with `-Parallelism 1`; `-NoBuild` only follows fresh successful required builds.
+
+The official verified toolchain is unchanged: SDK10.0.401, runtime8.0.31,
+PowerShell7.6.6, Spec Kit1.0.13. This block uses new owned mutable CLI/XDG/NuGet
+HTTP/plugin/scratch/temp state, reusing only the preceding downloaded package cache.
+HOME/CODEX_HOME remain unchanged and all three telemetry opt-outs, certificate=false
+and processor-count1 apply before startup. Spec Kit prerequisite check exit0 resolves
+this feature and tasks. Equivalent scoped consistency review found no changed product
+requirement or task gap. Existing isolated checkout is retained under sole writer ownership.
+
+Ruling: add evidence for the agreed static/no-follow/hard-link caller semantics, not
+Linux emulation of superseded Windows physical pinning or simultaneous external swaps.
+If a new fixture reveals a defect, preserve the causal failure before a minimal fix.
+No broad suite, original known-failing Load diagnostic, historical whole-byte resource
+experiment, native Windows execution, user saves, provider/browser-live or desktop work.
+Coordinator owns independent Astra XHigh review and acceptance. Full T032-A1/A2/A3,
+T032-A, Load, engine/frontend and wider platform acceptance remain open. These tests
+change no GM-authored schema or gameplay contract, so no GM prompt/example update applies.
+
 ## Linux return WIP — 2026-10-02 16:25 UTC
 
 Tracked scope: **T032-A1 native Linux storage qualification**, on returned branch

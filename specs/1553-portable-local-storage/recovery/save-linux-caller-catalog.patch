@@ -1,0 +1,85 @@
+diff --git a/tests/categories.json b/tests/categories.json
+index 17afadcd..1dd6d00b 100644
+--- a/tests/categories.json
++++ b/tests/categories.json
+@@ -1,6 +1,44 @@
+ {
+   "schemaVersion": 1,
+   "categories": [
++    {
++      "id": "portable-save-filesystem-callers",
++      "responsibility": "Static ordinary SaveGame, autosave retention and public listing boundaries on Windows/Linux: linked destination rejection, deterministically selected expired linked member refusal with committed follow-up, source descendant exclusion, mandatory linked root refusal and pre-existing hard-linked ZIP metadata through one stream.",
++      "excludes": "Concurrent external namespace swaps, retained Win32 identity, original physical readers, full Load, engine/frontend flows and full-size resource qualification.",
++      "changeHints": [
++        "BookOfEternityClient/Services/SaveLoadService.cs",
++        "BookOfEternityClient/Services/SaveLoadService.Creation.cs",
++        "BookOfEternityClient.Tests/PortableSaveFilesystemCallerTests.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-save-entry",
++          "when": "Ordinary save creation or source/destination admission changes."
++        },
++        {
++          "id": "portable-save-outcomes",
++          "when": "Autosave retention or committed follow-up classification changes."
++        },
++        {
++          "id": "portable-save-read-refresh",
++          "when": "Ordinary leased metadata stream handling changes."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": true
++      },
++      "timeoutMinutes": 3,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableSaveFilesystemCallerTests.*"
++          ]
++        }
++      ]
++    },
+     {
+       "id": "portable-save-original-profile-windows",
+       "responsibility": "Native Windows original profile-refresh dispatch retains a real physical publication receipt under its held recorder lease, without B1 publication or generation/sentinel changes.",
+@@ -69,7 +107,7 @@
+     },
+     {
+       "id": "portable-save-consumer-contracts",
+-      "responsibility": "Affected ordinary save consumers preserve ZIP schema/manifest, exclusions, mandatory source/resource validation, snapshot lease, bounded listing/retry and retention path safety. Verify original physical read authority beside ordinary hard-link listing; original profile and full Load diagnostics have separate owners.",
++      "responsibility": "Affected ordinary save consumers preserve ZIP schema/manifest, exclusions, mandatory source/resource validation, snapshot lease, bounded listing/retry and retention path safety. Nine historical methods return early on Linux (original physical controls and Windows swap/link fixtures); do not count those bodies as native Linux proof. Five static caller counterparts belong to portable-save-filesystem-callers; original profile and full Load diagnostics have separate owners.",
+       "excludes": "Whole load matrix, broad filesystem or state aggregation, all save-size experiments, browser and complete gameplay lifecycle.",
+       "changeHints": [
+         "BookOfEternityClient/Services/SaveLoadService.cs",
+@@ -202,7 +240,7 @@
+     {
+       "id": "portable-save-bound-outcome",
+       "responsibility": "Actual save outcomes through ordinary session finalization preserve committed or uncertain decisions and retained evidence when closing recovery also fails; generation replacement and escaped writer fences remain authoritative.",
+-      "excludes": "Full engine accepted-turn preparation, browser transport, load and native Linux verification.",
++      "excludes": "Full engine accepted-turn preparation, browser transport and load; native OS evidence is recorded separately.",
+       "changeHints": ["BookOfEternityClient/Core/SessionOperationContext.cs", "BookOfEternityClient.Tests/PortableSaveBoundOutcomeTests.cs"],
+       "related": [],
+       "requirements": { "frontendBuild": false, "exclusive": true },
+@@ -250,7 +288,7 @@
+     {
+       "id": "portable-save-retention-release",
+       "responsibility": "Actual autosave retains its known committed archive and blocks continuation if the retention lease reports release failure, including preservation of an earlier typed retention outcome.",
+-      "excludes": "Native handle failure injection, broad retention matrix, engine lifecycle and Linux execution.",
++      "excludes": "Native handle failure injection, broad retention matrix and engine lifecycle; native OS evidence is recorded separately.",
+       "changeHints": ["BookOfEternityClient/Services/SaveLoadService.cs", "BookOfEternityClient.Tests/PortableSaveOutcomeTests.cs"],
+       "related": [],
+       "requirements": { "frontendBuild": false, "exclusive": true },
+@@ -305,7 +343,7 @@
+     {
+       "id": "portable-storage-stream-resource",
+       "responsibility": "T032-A1 full 64/128/near-512 MiB producer archives through file-backed before/after images, pending cold rollback and committed cold cleanup, exact generation/library/outside preservation and measured resource bounds on the executing Windows or Linux host.",
+-      "excludes": "SaveGame caller cutover, full crash-phase matrix, load, whole-platform acceptance and any native OS result that has not actually executed.",
++      "excludes": "Other SaveGame caller outcomes, full crash-phase matrix, load, whole-platform acceptance and any native OS result that has not actually executed.",
+       "changeHints": [
+         "BookOfEternityClient/Core/TrustedLocalFileImage.cs",
+         "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
