@@ -33,6 +33,7 @@ export function createSettingsComponentHarness() {
   const timers = new Map<number, () => void>();
   const cache = new Map<string, any>();
   const load = deferred<any>();
+  const save = deferred<any>();
   const audioWrite = deferred<any>();
   const persistedSettings = {
     language: { value: 'ru', choices: [] }, difficulty: { value: 'normal', choices: [] },
@@ -45,19 +46,27 @@ export function createSettingsComponentHarness() {
   let settingsPosts = 0;
   let audioPosts = 0;
   let refreshFailure = false;
+  let savePosts = 0;
+  let saveLatch: any;
   const api = {
     updateClientSettings: async () => { settingsPosts++; return ok(persistedSettings); },
     loadSave: () => load.promise,
+    createSave: () => { savePosts++; return save.promise; },
     updateAudioSettings: () => { audioPosts++; return audioWrite.promise; }
   };
   const shell: any = {
     readyState: { settings: ok(persistedSettings), audio: ok(initialAudio) },
-    menu: { session: {}, saves: [{ saveId: 'save', displayName: 'save', description: '', scopeLabel: '', characterName: '', turnLabel: '' }] },
+    menu: { session: { gameSessionExists: true, hasReadableSoul: true, canStartBrowserWrite: true }, saves: [{ saveId: 'save', displayName: 'save', description: '', scopeLabel: '', characterName: '', turnLabel: '' }] },
     advancedEnabled: false, activeRoute: 'settings', setAdvancedEnabled() {}, setActiveRoute() {},
     loadBrowserState: async (isCurrent: () => boolean = () => true) => {
+      if (saveLatch?.isBlocked()) return;
       refreshes++;
       if (refreshFailure) throw new Error('controlled refresh failure');
       if (isCurrent()) shell.readyState = { settings: ok(persistedSettings), audio: ok({ ...initialAudio, musicVolume: 99 }) };
+    },
+    blockSaveContinuation: (notice: unknown) => {
+      saveLatch ??= module('src/utils/savePersistenceNotice.ts').createSaveContinuationLatch();
+      shell.saveContinuationNotice = saveLatch.block(notice);
     }
   };
   const react = {
@@ -96,6 +105,7 @@ export function createSettingsComponentHarness() {
       if (id.includes('api/client')) return { browserApi: api };
       if (id.includes('ShellContext')) return { useShell: () => shell, isSuccess: (value: any) => value?.ok === true };
       if (id.includes('settingsPersistenceNotice')) return module('src/utils/settingsPersistenceNotice.ts');
+      if (id.includes('savePersistenceNotice')) return module('src/utils/savePersistenceNotice.ts');
       if (id.includes('playerCopy')) return { toPlayerFacingText: (value: string, fallback: string) => value || fallback };
       if (id.includes('formatters')) return { toLauncherSaveFailureNotice: () => 'load failed', formatSidebarAudioSummary: () => '' };
       if (id === './AudioPanel') return { AudioPanel: () => null };
@@ -119,7 +129,7 @@ export function createSettingsComponentHarness() {
   }
   const settings = () => renderer('src/components/SettingsView.tsx', 'SettingsView');
   const audio = (writeScope: { generation: number }) => renderer('src/components/AudioPanel.tsx', 'AudioPanel', { writeScope });
-  return { settings, audio, shell, load, audioWrite, initialAudio, persistedSettings, timers,
+  return { settings, audio, shell, load, save, audioWrite, initialAudio, persistedSettings, timers,
     setRefreshFailure: () => { refreshFailure = true; },
-    counts: () => ({ refreshes, settingsPosts, audioPosts }) };
+    counts: () => ({ refreshes, settingsPosts, audioPosts, savePosts }) };
 }

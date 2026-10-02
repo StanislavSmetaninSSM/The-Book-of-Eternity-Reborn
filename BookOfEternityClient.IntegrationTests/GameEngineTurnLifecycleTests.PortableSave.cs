@@ -1,6 +1,7 @@
 using System.IO.Compression;
 using System.Buffers.Binary;
 using System.Text.Json;
+using System.Diagnostics;
 using BookOfEternityClient.AgentConsole;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
@@ -172,7 +173,10 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// </returns>
     private async Task RunPortableAutosaveEngineContinuationAsync(string entry, bool committed)
     {
+        var timer = Stopwatch.StartNew();
+        var timings = new List<string>();
         CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
+        timings.Add($"template-copy={timer.Elapsed}");
         using var soul = JsonDocument.Parse(File.ReadAllBytes(_fs.ResolvePath("game_state/meta/soul_state.json")));
         var storyPath = StoryService.GetStoryPath(soul.RootElement.GetProperty("currentRealm").GetString()!,
             soul.RootElement.GetProperty("currentIncarnation").GetInt32());
@@ -190,6 +194,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     var archive = ReadPortableEngineSaveJournalTarget(files!);
                     if (archive == null) return; // Earlier accepted-state publications are outside this save decision.
                     reached++;
+                    timings.Add($"save-cut={timer.Elapsed}");
                     acceptedSoul = File.ReadAllBytes(files.ResolvePath("game_state/meta/soul_state.json"));
                     acceptedStory = File.ReadAllBytes(files.ResolvePath(storyPath));
                     File.WriteAllBytes(archive, [83, 0, 255]);
@@ -199,7 +204,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         var engine = CreateGameEngine(new QueuedConsoleInputSource([]), settings => settings.AutosaveIntervalTurns = 1,
             fileSystem: files);
         await InvokePrivateTaskAsync(engine, "RefreshRuntimeStateAsync");
+        timings.Add($"runtime-refresh={timer.Elapsed}");
         await InvokePrivateTaskAsync(engine, "EnsureClientOwnedSystemFilesHealthyAsync");
+        timings.Add($"client-health={timer.Elapsed}");
         var gameLoop = GetPrivateField<GameLoop>(engine, "_gameLoop");
         gameLoop.SetSession("portable-save-engine-session", 0);
         Task operation;
@@ -207,6 +214,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             operation = InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", "Синтетический принятый ход перед сохранением.", null);
             var request = await WaitForTurnRequestAsync();
+            timings.Add($"player-request-staged={timer.Elapsed}");
             await WritePortableSaveEngineReplyAsync(request);
         }
         else
@@ -222,7 +230,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             request.ProgressionControl = await new ProgressionScheduleService(files,
                 NullLogger<ProgressionScheduleService>.Instance).BuildControlForNextTurnAsync();
             var backup = await InvokePrivateTaskResultAsync(engine, "CreatePreTurnBackup", "portable-save-engine");
+            timings.Add($"backup-created={timer.Elapsed}");
             await InvokePrivateTaskResultAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, backup, "portable-save-engine");
+            timings.Add($"baseline-snapshot-created={timer.Elapsed}");
             await WriteJsonAsync("input/turn_request.json", request);
             await WritePortableSaveEngineReplyAsync(request);
             operation = InvokePrivateTaskAsync(engine, entry == "waiting" ? "WaitForGmResponse" :
@@ -230,10 +240,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
 
         var error = await Record.ExceptionAsync(() => operation.WaitAsync(TimeSpan.FromMinutes(2)));
-
-        Assert.Equal(1, reached); // Failure before save preparation does not satisfy this test.
-        if (committed) Assert.IsType<CommittedSaveContinuationException>(error);
-        else Assert.IsType<CoordinatedStatePublicationUncertainException>(error);
+        timings.Add($"operation-stopped={timer.Elapsed}");
+        var diagnostic = $"Entry={entry}; committed={committed}; {string.Join("; ", timings)}\n{error}";
+        Assert.True(reached == 1, $"Expected one actual save cut, reached {reached}. {diagnostic}");
+        var expected = committed ? typeof(CommittedSaveContinuationException) : typeof(CoordinatedStatePublicationUncertainException);
+        Assert.True(error?.GetType() == expected, $"Expected {expected}. {diagnostic}");
         Assert.Equal(1, gameLoop.TurnNumber);
         Assert.NotNull(acceptedSoul);
         Assert.NotNull(acceptedStory);

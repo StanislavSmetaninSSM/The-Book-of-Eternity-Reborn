@@ -1,0 +1,65 @@
+{
+  "Categories": [
+    "portable-save-consumer-contracts"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "dafd37e589eaf6fd4e05a996fd3ecf00e74e4a97",
+    "WorkingTreeFingerprint": "5B1A390A01EE08723F840D2F019D41D5F5415FC0B41BBD5D59B7A9A94E92D204",
+    "ChangedFiles": 17
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-save-consumer-contracts",
+      "Seconds": 32.5873938,
+      "BudgetMinutes": 6,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 1.4916641,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 1.1006549,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 1.1261205,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:00:51.3880601",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 27,
+    "CompletedCases": 24,
+    "UnderfilledDescriptors": [
+      "portable-save-consumer-contracts-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 24,
+    "Executed": 24,
+    "Passed": 20,
+    "Failed": 4
+  },
+  "DuplicateTests": []
+}

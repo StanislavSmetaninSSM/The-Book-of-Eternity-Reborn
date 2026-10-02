@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="95eeeb66-c76f-4d2c-af36-c83a8229b04f" name="Eja@[HOST] 2026-10-03 00:15:10" runUser="[HOST]\Eja" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-03T00:15:10.5905937+10:00" queuing="2026-10-03T00:15:10.5905945+10:00" start="2026-10-03T00:15:06.4926750+10:00" finish="2026-10-03T00:15:12.5297115+10:00" />
+  <TestSettings name="default" id="9997c712-bf93-4fe1-9e97-74bb26f5f46b">
+    <Deployment runDeploymentRoot="Eja_[HOST]_2026-10-03_00_15_10" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="b0401d68-9679-46b9-a8e4-774bab346b70" testId="2beb007e-6877-fb7a-47bb-b5bb34b0d347" testName="BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(fault: &quot;committed-cleanup&quot;, autosave: False)" computerName="[HOST]" duration="00:00:00.3114072" startTime="2026-10-03T00:15:11.2114852+10:00" endTime="2026-10-03T00:15:11.2114855+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b0401d68-9679-46b9-a8e4-774bab346b70" />
+    <UnitTestResult executionId="88fc4e09-9088-4fec-a31d-ce99e1950aed" testId="839f1521-0f16-71fb-e9d9-5df5b2344d22" testName="BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(fault: &quot;uncertain&quot;, autosave: False)" computerName="[HOST]" duration="00:00:00.2932029" startTime="2026-10-03T00:15:10.8996355+10:00" endTime="2026-10-03T00:15:10.8996357+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="88fc4e09-9088-4fec-a31d-ce99e1950aed" />
+    <UnitTestResult executionId="4144f18a-35ca-43c3-a9c8-bb429f886548" testId="648b96f8-5768-cdd5-81e1-5420692de47a" testName="BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveRetainsFollowUpWhenDeletionRollsBack" computerName="[HOST]" duration="00:00:00.3867515" startTime="2026-10-03T00:15:12.4313931+10:00" endTime="2026-10-03T00:15:12.4313932+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4144f18a-35ca-43c3-a9c8-bb429f886548" />
+    <UnitTestResult executionId="a71aea06-07b4-414a-9ea8-ae6b4bdfd5d9" testId="6461689b-d3a7-b89f-698a-a517bb715cc7" testName="BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveWithUnresolvedDebtStopsBeforeRetention" computerName="[HOST]" duration="00:00:00.2846290" startTime="2026-10-03T00:15:12.0442252+10:00" endTime="2026-10-03T00:15:12.0442255+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a71aea06-07b4-414a-9ea8-ae6b4bdfd5d9" />
+    <UnitTestResult executionId="039b48b1-2e25-49e9-a92b-723f6e129586" testId="eef421cf-04ef-4349-ded2-e33600c75cb1" testName="BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(fault: &quot;uncertain&quot;, autosave: True)" computerName="[HOST]" duration="00:00:00.2740348" startTime="2026-10-03T00:15:11.4860080+10:00" endTime="2026-10-03T00:15:11.4860082+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="039b48b1-2e25-49e9-a92b-723f6e129586" />
+    <UnitTestResult executionId="7c6a1d38-0034-4ba1-a2de-0d6c216ee29b" testId="79b307d7-b7ba-d4e5-0a85-5305dbd69bb5" testName="BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(fault: &quot;rollback&quot;, autosave: False)" computerName="[HOST]" duration="00:00:00.2727409" startTime="2026-10-03T00:15:11.7591464+10:00" endTime="2026-10-03T00:15:11.7591471+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7c6a1d38-0034-4ba1-a2de-0d6c216ee29b" />
+    <UnitTestResult executionId="76b2628c-f8ec-4c57-a39f-295d154a30c1" testId="47e7b02e-c3fc-d1c3-db39-84d24e9cf371" testName="BookOfEternityClient.Tests.PortableSaveOutcomeTests.PreparedCandidateRejectsGenerationDriftAndCreateCollision(generationDrift: True)" computerName="[HOST]" duration="00:00:00.2346701" startTime="2026-10-03T00:15:09.9130243+10:00" endTime="2026-10-03T00:15:09.9130244+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="76b2628c-f8ec-4c57-a39f-295d154a30c1" />
+    <UnitTestResult executionId="454a7e9f-3296-481e-bda3-07ae93a5ceb3" testId="c10ff3fd-540d-8e10-fa7f-5adc105b269a" testName="BookOfEternityClient.Tests.PortableSaveOutcomeTests.PreparedCandidateRejectsGenerationDriftAndCreateCollision(generationDrift: False)" computerName="[HOST]" duration="00:00:00.6486174" startTime="2026-10-03T00:15:09.6776073+10:00" endTime="2026-10-03T00:15:09.6776335+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="454a7e9f-3296-481e-bda3-07ae93a5ceb3" />
+    <UnitTestResult executionId="ece136ef-e877-4943-aee9-0682f4f78127" testId="b19eb169-d8fe-ad1f-1e80-d07d087b9c0d" testName="BookOfEternityClient.Tests.PortableSaveOutcomeTests.ClosedArchiveAndCommittedResultSurviveLoggingFailure" computerName="[HOST]" duration="00:00:00.3638023" startTime="2026-10-03T00:15:10.6059425+10:00" endTime="2026-10-03T00:15:10.6059426+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ece136ef-e877-4943-aee9-0682f4f78127" />
+    <UnitTestResult executionId="7c6cfe44-1afa-4971-9a1e-673a41254fc6" testId="3d462bfe-08ec-fbf8-a152-2630fb8d6780" testName="BookOfEternityClient.Tests.PortableSaveOutcomeTests.PreparedCandidateRequiresItsOriginalContinuouslyHeldLease" computerName="[HOST]" duration="00:00:00.3263973" startTime="2026-10-03T00:15:10.2414281+10:00" endTime="2026-10-03T00:15:10.2414283+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7c6cfe44-1afa-4971-9a1e-673a41254fc6" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveOutcomeTests.PreparedCandidateRejectsGenerationDriftAndCreateCollision(generationDrift: True)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="47e7b02e-c3fc-d1c3-db39-84d24e9cf371">
+      <Execution id="76b2628c-f8ec-4c57-a39f-295d154a30c1" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveOutcomeTests" name="PreparedCandidateRejectsGenerationDriftAndCreateCollision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(fault: &quot;uncertain&quot;, autosave: False)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="839f1521-0f16-71fb-e9d9-5df5b2344d22">
+      <Execution id="88fc4e09-9088-4fec-a31d-ce99e1950aed" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveOutcomeTests" name="PublicSavePreservesPublicationOutcomeThroughImmediateCaller" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveWithUnresolvedDebtStopsBeforeRetention" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="6461689b-d3a7-b89f-698a-a517bb715cc7">
+      <Execution id="a71aea06-07b4-414a-9ea8-ae6b4bdfd5d9" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveOutcomeTests" name="CommittedAutosaveWithUnresolvedDebtStopsBeforeRetention" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(fault: &quot;committed-cleanup&quot;, autosave: False)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="2beb007e-6877-fb7a-47bb-b5bb34b0d347">
+      <Execution id="b0401d68-9679-46b9-a8e4-774bab346b70" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveOutcomeTests" name="PublicSavePreservesPublicationOutcomeThroughImmediateCaller" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveOutcomeTests.PreparedCandidateRequiresItsOriginalContinuouslyHeldLease" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="3d462bfe-08ec-fbf8-a152-2630fb8d6780">
+      <Execution id="7c6cfe44-1afa-4971-9a1e-673a41254fc6" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveOutcomeTests" name="PreparedCandidateRequiresItsOriginalContinuouslyHeldLease" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveOutcomeTests.PreparedCandidateRejectsGenerationDriftAndCreateCollision(generationDrift: False)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="c10ff3fd-540d-8e10-fa7f-5adc105b269a">
+      <Execution id="454a7e9f-3296-481e-bda3-07ae93a5ceb3" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveOutcomeTests" name="PreparedCandidateRejectsGenerationDriftAndCreateCollision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveOutcomeTests.ClosedArchiveAndCommittedResultSurviveLoggingFailure" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="b19eb169-d8fe-ad1f-1e80-d07d087b9c0d">
+      <Execution id="ece136ef-e877-4943-aee9-0682f4f78127" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveOutcomeTests" name="ClosedArchiveAndCommittedResultSurviveLoggingFailure" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveRetainsFollowUpWhenDeletionRollsBack" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="648b96f8-5768-cdd5-81e1-5420692de47a">
+      <Execution id="4144f18a-35ca-43c3-a9c8-bb429f886548" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveOutcomeTests" name="CommittedAutosaveRetainsFollowUpWhenDeletionRollsBack" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(fault: &quot;uncertain&quot;, autosave: True)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="eef421cf-04ef-4349-ded2-e33600c75cb1">
+      <Execution id="039b48b1-2e25-49e9-a92b-723f6e129586" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveOutcomeTests" name="PublicSavePreservesPublicationOutcomeThroughImmediateCaller" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(fault: &quot;rollback&quot;, autosave: False)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="79b307d7-b7ba-d4e5-0a85-5305dbd69bb5">
+      <Execution id="7c6a1d38-0034-4ba1-a2de-0d6c216ee29b" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveOutcomeTests" name="PublicSavePreservesPublicationOutcomeThroughImmediateCaller" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="2beb007e-6877-fb7a-47bb-b5bb34b0d347" executionId="b0401d68-9679-46b9-a8e4-774bab346b70" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="839f1521-0f16-71fb-e9d9-5df5b2344d22" executionId="88fc4e09-9088-4fec-a31d-ce99e1950aed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="648b96f8-5768-cdd5-81e1-5420692de47a" executionId="4144f18a-35ca-43c3-a9c8-bb429f886548" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6461689b-d3a7-b89f-698a-a517bb715cc7" executionId="a71aea06-07b4-414a-9ea8-ae6b4bdfd5d9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="eef421cf-04ef-4349-ded2-e33600c75cb1" executionId="039b48b1-2e25-49e9-a92b-723f6e129586" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="79b307d7-b7ba-d4e5-0a85-5305dbd69bb5" executionId="7c6a1d38-0034-4ba1-a2de-0d6c216ee29b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="47e7b02e-c3fc-d1c3-db39-84d24e9cf371" executionId="76b2628c-f8ec-4c57-a39f-295d154a30c1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c10ff3fd-540d-8e10-fa7f-5adc105b269a" executionId="454a7e9f-3296-481e-bda3-07ae93a5ceb3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b19eb169-d8fe-ad1f-1e80-d07d087b9c0d" executionId="ece136ef-e877-4943-aee9-0682f4f78127" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3d462bfe-08ec-fbf8-a152-2630fb8d6780" executionId="7c6cfe44-1afa-4971-9a1e-673a41254fc6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="10" executed="10" passed="10" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.24]   Discovering: BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.82]   Discovered:  BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.85]   Starting:    BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:05.31]   Finished:    BookOfEternityClient.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

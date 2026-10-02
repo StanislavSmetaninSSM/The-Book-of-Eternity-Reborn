@@ -169,6 +169,17 @@
       ]
     },
     {
+      "id": "portable-save-bound-outcome",
+      "responsibility": "Actual save outcomes through ordinary session finalization preserve committed or uncertain decisions and retained evidence when closing recovery also fails; generation replacement and escaped writer fences remain authoritative.",
+      "excludes": "Full engine accepted-turn preparation, browser transport, load and native Linux verification.",
+      "changeHints": ["BookOfEternityClient/Core/SessionOperationContext.cs", "BookOfEternityClient.Tests/PortableSaveBoundOutcomeTests.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": true },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.*"] }]
+    },
+    {
       "id": "portable-browser-save-presentation",
       "responsibility": "Browser save transport notices retain confirmed commit, follow-up, rollback and uncertainty, including HTTP failure payloads and lost responses, without unsafe refresh or false retry promises.",
       "excludes": "Backend publication, full rendered browser GUI, load and settings publication.",
@@ -177,7 +188,10 @@
       "requirements": { "frontendBuild": false, "exclusive": false },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [{ "project": "frontend", "runner": "node", "tests": ["BookOfEternityClient.WebFrontend/test/savePersistenceNotice.test.ts"] }]
+      "selectors": [
+        { "project": "frontend", "runner": "node", "tests": ["BookOfEternityClient.WebFrontend/test/savePersistenceNotice.test.ts"] },
+        { "project": "frontend", "runner": "vitest", "tests": ["BookOfEternityClient.WebFrontend/test/browserSaveContinuation.test.ts"] }
+      ]
     },
     {
       "id": "portable-save-read-refresh",
