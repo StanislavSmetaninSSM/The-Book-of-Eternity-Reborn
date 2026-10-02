@@ -1,8 +1,31 @@
 # Implementation Plan: Trusted local storage and cross-platform runtime
 
-**Branch**: `1553-cross-platform-runtime` | **Updated**: 2026-10-01
+**Branch**: `1553-cross-platform-runtime` | **Updated**: 2026-10-02
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
+
+<a id="active-t032-a--ordinary-save-creation"></a>
+
+## Active T032-A — ordinary save creation
+
+**2026-10-02: planning and causal/resource evidence only; not accepted implementation.** This bounded work uses existing [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), approved [spec](spec.md), and [T032-A](tasks.md). Initial local HEAD and GitHub ref both equal `fc3f8bb9c9e36408c85cf37bbea9f35cb890a972`, tree `dbca7b4084aa2a633a4fb4745c9ea133cf5fd0b7`; the source checkout was clean. T030-G stays accepted; full T031/T032 remain open.
+
+The [save creation reconciliation](save-creation-cutover.md) is preserved byte-for-byte from the completed read-only research: SHA256 `35e89d331372499d8fe27a328802013ba9f645a36334e88b8e4a3ebf157e5742`, 33,422 bytes. Its seven runtime blob identities independently match this initial accepted tree. Its immutable e2d1afff/applied-tree provenance and source-only qualifications remain part of the artifact; its recommendations are not acceptance claims. [Original cutover](save-load-cutover.md) and [load admission](save-load-admission.md) remain binding. This first checkpoint changes planning only; no tests or runtime behavior have changed or run.
+
+### First gate: reproduce the boundary and qualify resources
+
+- [ ] Add a narrow catalog-owned integration test invoking the actual public `SaveLoadService.SaveGameAsync` from a coherent isolated current-schema root. Prove snapshot/archive preparation reached the existing final-publication boundary, assert the intended created ZIP and real `.boe_runtime/save-staging` cleanup contract, and preserve the causal RED before production changes
+- [ ] Inspect actual documented supported resource constraints. Measure the unchanged disk-backed producer and unchanged B1 byte-array candidate in separate owned bounded processes, with predeclared memory/disk/time limits and no generated archive or filler committed. The 8,192-entry, 64 MiB-entry and 512 MiB-expanded reader limits are not a producer or compressed-ZIP ceiling. A small smoke or caught OOM does not qualify the envelope; no smaller save cap or minimum RAM is invented
+- [ ] If unchanged B1 cannot faithfully qualify that envelope, propose bounded/stream-backed image handling inside the same B1 decision, including hashing, journal serialization and cold deserialization/recovery. Durable recovery images cannot depend solely on disposable save scratch. Preserve old supported evidence via its original handler or explicit blocking/schema admission; retain exact before/after conflict semantics and unknown evidence
+- [ ] Save the causal/resource evidence and concrete adapter/prerequisite choice remotely, verify SHA, then stop production edits for the coordinator’s independent actual Astra XHigh technical plan review. Harmless reads/fixture preparation may continue; this is an internal gate within the approved architecture
+
+### Subsequent capability and proof boundary
+
+After that gate, use TDD in bounded saved blocks: one held snapshot lease; fully closed/flushed disk archive; generation/absence-checked create-only B1 publication; owned private save-scratch cleanup; validated stream save listing under owned/supplied quiescence before archive interpretation; prepared browser save without a zero-member v6 recorder or nested lease/publication; Task-only ordinary profile-mirror repair while original load retains real receipts; exact created destination and committed/rolled-back/uncertain/follow-up outcomes through console, HTTP/frontend and the three actual autosave callers. Separate pre-save mirror repair remains an explicit prior decision unless a complete coupled set is proven. Post-commit cleanup/logging/owner/menu trouble cannot reverse archive success. Retained debt is classified before normal fencing and blocks retention/compensation/later writes when unresolved.
+
+Select only new save owners and exact changed B1, profile, browser, transport/frontend and autosave consumers using `scripts/test-csharp.ps1`; update selection reasons/catalog ownership and preserve failures, partial/zero-test outcomes, parsed sanitized TRX and exact tested identities. Assert actual reached cuts, full bytes/generation/library/outside-hardlink sentinels and separate-process recovery via real public APIs. Native verification is assigned only by the coordinator; browser GUI remains deferred. No accepted T030-G/T030-F cohort is rerun for planning.
+
+Load, library replacement/deletion, full logical receipts/accepted turns/browser-v6/worker migration, external Daren, B4 and B5 are out of this capability. Save libraries and `BasePath/client_profile/qte_showcase_rewards.json` remain untouched except the expressly created ZIP and separately permitted autosave retention. Original physical paths/evidence stay explicit. The feature is client-owned storage/outcome handling, not a GM-authored schema/gameplay change; synchronize operational and outcome documentation with actual behavior, without inventing a new GM payload example.
 
 <a id="active-t030-g--ordinary-backup-lifecycle"></a>
 
