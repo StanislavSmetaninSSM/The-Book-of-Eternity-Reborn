@@ -1,0 +1,21 @@
+  Определение проектов для восстановления...
+  Все проекты обновлены для восстановления.
+[WORKTREE]\BookOfEternityClient\Core\GameEngine\GameEngine.IncarnationAndAfterlife.cs(1095,5): warning CS1587: За XML-комментарием не следует допустимый элемент языка [[WORKTREE]\BookOfEternityClient\BookOfEternityClient.csproj]
+[WORKTREE]\BookOfEternityClient\UI\ExplorerMode\ExplorerMode.Npcs.ListAndDetails.cs(1637,5): warning CS1587: За XML-комментарием не следует допустимый элемент языка [[WORKTREE]\BookOfEternityClient\BookOfEternityClient.csproj]
+[WORKTREE]\BookOfEternityClient\UI\ExplorerMode\ExplorerMode.Npcs.Trade.cs(756,5): warning CS1587: За XML-комментарием не следует допустимый элемент языка [[WORKTREE]\BookOfEternityClient\BookOfEternityClient.csproj]
+  BookOfEternityClient -> [WORKTREE]\BookOfEternityClient\bin\Debug\net8.0\BookOfEternityClient.dll
+  BookOfEternityClient.TestSupport -> [WORKTREE]\BookOfEternityClient.TestSupport\bin\Debug\net8.0\BookOfEternityClient.TestSupport.dll
+[WORKTREE]\BookOfEternityClient.IntegrationTests\GameEngineTurnLifecycleTests.PortableSave.cs(198,54): warning CS8602: Разыменование вероятной пустой ссылки. [[WORKTREE]\BookOfEternityClient.IntegrationTests\BookOfEternityClient.IntegrationTests.csproj]
+  BookOfEternityClient.IntegrationTests -> [WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll
+
+Сборка успешно завершена.
+
+[WORKTREE]\BookOfEternityClient\Core\GameEngine\GameEngine.IncarnationAndAfterlife.cs(1095,5): warning CS1587: За XML-комментарием не следует допустимый элемент языка [[WORKTREE]\BookOfEternityClient\BookOfEternityClient.csproj]
+[WORKTREE]\BookOfEternityClient\UI\ExplorerMode\ExplorerMode.Npcs.ListAndDetails.cs(1637,5): warning CS1587: За XML-комментарием не следует допустимый элемент языка [[WORKTREE]\BookOfEternityClient\BookOfEternityClient.csproj]
+[WORKTREE]\BookOfEternityClient\UI\ExplorerMode\ExplorerMode.Npcs.Trade.cs(756,5): warning CS1587: За XML-комментарием не следует допустимый элемент языка [[WORKTREE]\BookOfEternityClient\BookOfEternityClient.csproj]
+[WORKTREE]\BookOfEternityClient.IntegrationTests\GameEngineTurnLifecycleTests.PortableSave.cs(198,54): warning CS8602: Разыменование вероятной пустой ссылки. [[WORKTREE]\BookOfEternityClient.IntegrationTests\BookOfEternityClient.IntegrationTests.csproj]
+    Предупреждений: 4
+    Ошибок: 0
+
+Прошло времени 00:00:35.64
+

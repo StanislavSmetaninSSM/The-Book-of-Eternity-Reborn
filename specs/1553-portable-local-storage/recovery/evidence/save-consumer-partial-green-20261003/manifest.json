@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "b674db67e4fce3c38b95a71d018b06a2f9142963",
+  "status": "Fresh b674db67 builds; 23/24 integration passed, original load false remains. Unit3,outcome10,retention2 unrun in this invocation. No timeout, complete owned cleanup. Original load failure subsequently instrumented independently.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-save-retention-release",
+    "portable-save-outcomes",
+    "portable-save-consumer-contracts"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:02:07.8725650",
+  "exitCode": 1,
+  "selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 39,
+    "CompletedCases": 24,
+    "UnderfilledDescriptors": [
+      "portable-save-consumer-contracts-unit-002",
+      "portable-save-outcomes-unit-003",
+      "portable-save-retention-release-unit-004"
+    ],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 24,
+    "Executed": 24,
+    "Passed": 23,
+    "Failed": 1
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "Build-unit.log",
+      "originalSha256": "F394F7A56818E2F5EE52AF795E60DEB73C93367504B0E8EBA9A7B466CA0EA7AB",
+      "sha256": "D3F3FA8B39CF37E090F53A5584254FE26B6A58F514A977B94845E2709F9BFBD8"
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "4BE76ED6F82DA41B209BE0633229B6C927EB298CADC08A7F477628241F9E37C7",
+      "sha256": "39F8E7CC4A653B420EC9794996EE9903B4451DCD3C8EC57507A5310E4CB22503"
+    },
+    {
+      "path": "portable-save-consumer-contracts-integration-001.trx",
+      "originalSha256": "FBE0B587E2FD5AD39485F5D8399B13E33B257136B851CC80E098B03C22380329",
+      "sha256": "AB51304E3D2B9C12A1D0313DC3D01D76DED7EE155038E8BE3B82A534795323F0"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "17AFFAC93A6F13DA92C4F49BF3C3788AB73A3B48298694A0F6101BB3E0C98FE6",
+      "sha256": "F4C66EFA52C5ADCDB9740928465A4ADEEE80C6557FEEE793CDFDB15E5FC8270D"
+    },
+    {
+      "path": "Build-integration.log",
+      "originalSha256": "D70DF61615A95FFDF2C28649E1A27BE3B58793C4FDB82EAB0952A911AD100A1C",
+      "sha256": "B7F59A12723AD256B5AB4941802DED261AA74C82B97F09D64FAD3A2DC22286D6",
+      "transform": "complete sanitized text"
+    }
+  ]
+}

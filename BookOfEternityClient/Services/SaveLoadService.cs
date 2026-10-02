@@ -524,10 +524,7 @@ public partial class SaveLoadService
                         .SealPublishedAuthorityForCanonicalReads(
                             liveSessionPath,
                             "Load publication before canonical reads");
-                    // This held original load owns the active journal and
-                    // sealed physical receipts until its commit boundary.
-                    await _fs.RunLegacyStorageRecoveryAsync(writeLease,
-                        () => _stateManager.RefreshGameStateAsync(writeLease));
+                    await _stateManager.RefreshGameStateAsync(writeLease);
                     await _stateManager.LoadSettingsAsync();
                     stagingAuthorities.EnsureSealedExactBeforeCommit(
                         liveSessionPath,
@@ -541,8 +538,7 @@ public partial class SaveLoadService
                         stagingAuthorities.ReleaseForRecovery();
                         _fs.RecoverInterruptedLoadTransaction(writeLease);
                         _stateManager.RestoreRuntimeSnapshot(runtimeSnapshot);
-                        await _fs.RunLegacyStorageRecoveryAsync(writeLease,
-                            () => _stateManager.RefreshGameStateAsync(writeLease));
+                        await _stateManager.RefreshGameStateAsync(writeLease);
                         await _stateManager.LoadSettingsAsync();
                     }
                     catch (Exception recoveryException)

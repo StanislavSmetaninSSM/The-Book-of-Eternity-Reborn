@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "b674db67e4fce3c38b95a71d018b06a2f9142963",
+  "status": "Frozen b674db67 binaries: actual save outcomes10 and retention release2 all12 passed, complete selection and owned cleanup; exact committed decisions and previous typed failure retained.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-save-retention-release",
+    "portable-save-outcomes"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:00:29.5530462",
+  "exitCode": 0,
+  "selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 12,
+    "CompletedCases": 12,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 12,
+    "Executed": 12,
+    "Passed": 12,
+    "Failed": 0
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "plan.json",
+      "originalSha256": "1F17F6601347DCE3ABB5AE7500123D72CB8515E92F4D36A69BCB7F2A73551A83",
+      "sha256": "3350E27E4500F059C3A125BF2FEB2543159611BA587F80A4EF90B9277E46D9BC"
+    },
+    {
+      "path": "portable-save-outcomes-unit-001.trx",
+      "originalSha256": "2E1A5CAFE16680ACD49B3FBAACF33BF8CD605BCF537647CC9E90C1BD80669BD3",
+      "sha256": "A734E5C427AACBAC318924586CB003F7E7D871DB4806E77CBD66939C0173F024"
+    },
+    {
+      "path": "portable-save-retention-release-unit-002.trx",
+      "originalSha256": "85F3C4F67D66643DA20A9D5E201F03E81254548076F3583195B1B05F5AC9FAA1",
+      "sha256": "951AF33C57658EBC03C28BB528A45F1109E2A896BC35924EE9CC3BFDC4FF627C"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "087D2A9B59D9F39732C38C54B8D02E0393C67823C33AF4C0EBA58C3F8957F231",
+      "sha256": "471D2D195CB0F32A331EBF5FB3AB14225F8BE3845165C26E5BFFDF37EF9C0C5C"
+    }
+  ]
+}

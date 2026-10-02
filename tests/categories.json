@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-save-original-profile-windows",
+      "responsibility": "Native Windows original profile-refresh dispatch retains a real physical publication receipt under its held recorder lease, without B1 publication or generation/sentinel changes.",
+      "excludes": "Full Load execution, known original Load staging admission blocker, portable original receipts and Linux execution; this owner requires Windows.",
+      "changeHints": ["BookOfEternityClient/Services/AfterlifeEntityProfileState.cs", "BookOfEternityClient.Tests/OriginalSaveProfileRefreshTests.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": true },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.OriginalSaveProfileRefreshTests.WindowsOriginalRecorderRefreshRetainsPhysicalPublicationReceipt"] }]
+    },
+    {
       "id": "portable-save-original-load",
       "responsibility": "Preserved original load profile repair succeeds under its own physical transaction and refuses replacement of its exact published file authority after ordinary save refresh cutover.",
       "excludes": "Full load matrix, portable load implementation, ordinary SaveGame and Linux execution.",
@@ -58,7 +69,7 @@
     },
     {
       "id": "portable-save-consumer-contracts",
-      "responsibility": "Affected ordinary save consumers preserve ZIP schema/manifest, exclusions, mandatory source/resource validation, snapshot lease, bounded listing/retry and retention path safety. Verify the unchanged original load mirror receipt and physical read authority beside ordinary hard-link listing.",
+      "responsibility": "Affected ordinary save consumers preserve ZIP schema/manifest, exclusions, mandatory source/resource validation, snapshot lease, bounded listing/retry and retention path safety. Verify original physical read authority beside ordinary hard-link listing; original profile and full Load diagnostics have separate owners.",
       "excludes": "Whole load matrix, broad filesystem or state aggregation, all save-size experiments, browser and complete gameplay lifecycle.",
       "changeHints": [
         "BookOfEternityClient/Services/SaveLoadService.cs",
@@ -105,7 +116,6 @@
             "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_WritesIntegrityManifestCoveringEveryPayloadEntry",
             "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_InvalidSoulStateRootDoesNotPublishArchive",
             "BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_OrdinaryMetadataAcceptsHardLinkWithoutRetry",
-            "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_RepairsClientOwnedProfileMirrorWithoutReacquiringCanonicalLease",
             "BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_CompletionRejectsLinkAddedAfterConsumption",
             "BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_RejectsHardLinkedSaveArchive"
           ]

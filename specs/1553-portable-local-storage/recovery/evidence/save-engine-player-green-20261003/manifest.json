@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "7c52a5e6bc2165a0a1cc1179f89f43e6749dac56",
+  "status": "Frozen7c52 integration binaries: real accepted player-turn uncertain and committed-debt autosave2/2 passed, no timeout/skip, complete owned process cleanup; total3:43.752, execution3m25s within4mincategory. Linux unrun.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-engine-save-player"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:03:43.7524908",
+  "exitCode": 0,
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 2,
+    "CompletedCases": 2,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 2,
+    "Failed": 0
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "plan.json",
+      "originalSha256": "3EC9BA1B8B0E8E0B3B9D57523F68712E9A4EBE662B480A1BFBD6E70C3E58496E",
+      "sha256": "DA6957E27EA4560C6770748F7AE16CE4DF8A1F827C38D5E1DCB0B5F9D4522F96"
+    },
+    {
+      "path": "portable-engine-save-player-integration-001.trx",
+      "originalSha256": "405B7E360FAFB795FB93A568ECDFE89D42D7A5AF76182C85CFAB49C6EC16E13C",
+      "sha256": "C532CC4BCC7037CD83B5287F804030BEE5823D1ED60761C4163ED6DE365600E1"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "1783A997A0314438FC0C8F04D381C1A5F84A2CCE5FFE78AFFDEE1A66A68BCF67",
+      "sha256": "DDCBFD4875818E1A28BBA4CE001E145F98A3D983083676B5D2189D7112E2839B"
+    }
+  ]
+}

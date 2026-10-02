@@ -1,0 +1,75 @@
+{
+  "Categories": [
+    "portable-save-retention-release",
+    "portable-save-outcomes"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "b674db67e4fce3c38b95a71d018b06a2f9142963",
+    "WorkingTreeFingerprint": "7800EA57ABF8F8A54CBE65B305F08C8682A2A0F6E223625165EB5394ECAFF8D0",
+    "ChangedFiles": 11
+  },
+  "PreparationSeconds": 6.7662761,
+  "Descriptors": [
+    {
+      "Name": "portable-save-outcomes-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-save-outcomes",
+      "Categories": [
+        "portable-save-outcomes"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveOutcomeTests.ClosedArchiveAndCommittedResultSurviveLoggingFailure|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveRetainsFollowUpWhenDeletionRollsBack|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveWithUnresolvedDebtStopsBeforeRetention|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveOutcomeTests.PreparedCandidateRejectsGenerationDriftAndCreateCollision|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveOutcomeTests.PreparedCandidateRequiresItsOriginalContinuouslyHeldLease|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 10,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveOutcomeTests.ClosedArchiveAndCommittedResultSurviveLoggingFailure",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveRetainsFollowUpWhenDeletionRollsBack",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveWithUnresolvedDebtStopsBeforeRetention",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveOutcomeTests.PreparedCandidateRejectsGenerationDriftAndCreateCollision",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveOutcomeTests.PreparedCandidateRequiresItsOriginalContinuouslyHeldLease",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller",
+          "Cases": 4
+        }
+      ]
+    },
+    {
+      "Name": "portable-save-retention-release-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-save-retention-release",
+      "Categories": [
+        "portable-save-retention-release"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveOutcomeTests.RetentionLeaseReleaseFailureBlocksCommittedAutosave",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveOutcomeTests.RetentionLeaseReleaseFailureBlocksCommittedAutosave",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

@@ -11,12 +11,24 @@
 Review corrections checkpoint: fresh `e6506c56` passed all seven bound-outcome
 cases and three existing final-generation/escaped-writer controls. The same run
 causally failed two new actual retention-release controls; correction now preserves
-the typed primary and blocks continuation after unsuccessful release. Independent
-Astra review also identified the original-load refresh admission regression and
-real browser refresh failures returning normally. The former now uses the existing
-original recovery scope only inside its owning load; the latter has explicit
-save-only confirmation of the refreshed surfaces and exact created archive ID.
-These corrections await their relevant GREEN and independent final review.
+the typed primary and blocks continuation after unsuccessful release. Frozen
+`b674db67` passed outcome10/retention2 in 29.553 seconds. Real browser refresh
+failures returning normally are now handled through explicit save-only confirmation
+of refreshed surfaces and the exact created archive ID. Its Node8/Vitest8 checks
+passed; the corrected existing settings guard, reconciliation and production
+frontend build also passed at `7c52a5e6`. Final caller review remains pending.
+
+The original Load diagnostic is a pre-existing boundary, not a caller regression:
+the logged failure occurs at acquisition after extraction created private staging,
+before BeginLoadTransaction or refresh. The same acquisition ordering and evidence
+guard exist at `6dc8c218` and `0f4fe247`, already documented in
+[save-load-cutover.md](save-load-cutover.md). Independent review retracted its
+earlier causal attribution. Both speculative load refresh wrappers are reverted;
+the original load body and physical receipts remain unchanged. The two failed
+load controls remain in their separate diagnostic owner and evidence, attached
+to the open load work. A direct Windows recorder/profile control verifies the
+changed original refresh dispatch without bypassing admission or claiming Load
+success. The 23 other integration consumer controls passed at `b674db67`.
 
 Each two-case engine continuation category now has a four-minute execution guard.
 The previous player row took about 92 seconds, so its two-minute category limit

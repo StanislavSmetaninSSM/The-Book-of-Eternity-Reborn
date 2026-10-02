@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "7c52a5e6bc2165a0a1cc1179f89f43e6749dac56",
+  "status": "Fresh frontend production build/typecheck succeeded. Node settings22 scenarios and Vitest reconciliation6 cases passed; formal7 across2 complete descriptors, owned cleanup complete.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-settings-notices"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:00:20.4722371",
+  "exitCode": 0,
+  "selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 2,
+    "CompletedCases": 7,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 7,
+    "Executed": 7,
+    "Passed": 7,
+    "Failed": 0
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "plan.json",
+      "originalSha256": "2F265BBE7726CA9BD2C9B04BA7AF7C3DABC93B5F1EC36016E99B63448FF6BD20",
+      "sha256": "8801F2EDACD05F05D5AD4F058183BE34940DE828E2F11EC340490F75A69D550C"
+    },
+    {
+      "path": "portable-settings-notices-frontend-001.trx",
+      "originalSha256": "1DC567A7EC68A7681A936E3B4B299A3AA56062E3E05679AB59AA0D5DDE568A79",
+      "sha256": "D3EB73103AA9EE848963E9AFEB362E4243E16B888D587ED466B804DE9CDEDD0D"
+    },
+    {
+      "path": "portable-settings-notices-frontend-002.trx",
+      "originalSha256": "BB029783ED6F9089A40FAA6FF59FEF0A064435C1514FD9A888E90629525A2B4F",
+      "sha256": "7C9BB3A3CBCACF34A76DF29D2B431CBBE16098DD541868DD9A9C43CA96D7EAEB"
+    },
+    {
+      "path": "portable-settings-notices-frontend-002.vitest.json",
+      "originalSha256": "76442D99516828A0CA132895994C2FB289C09BE185226CE63F090D62E8CF8CD5",
+      "sha256": "9E74E6E0123CA25EB2DD859ED5300D7EF8EDCD6802EEB2D7F6985F1940E51AC3"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "0BBA23DCB932C5493275A9ED864F473EC4B89E719C5B245D0F766968E9A5C352",
+      "sha256": "2171D966C9D9E40EB21543146331F50BEF3B885144F40859AFEEFF8FF99D6DA5"
+    },
+    {
+      "path": "dotnet-test.log",
+      "originalSha256": "39ED4609489B9D0A3A778725B6706FA7A95E356F54C52A1022EDE0FAC7453631",
+      "sha256": "9D866C8CC84F4E2D7E96B2D59B2F022599B0EF5986A1F7EB4A43DE0AE92AFD98",
+      "transform": "complete sanitized text"
+    }
+  ]
+}
