@@ -8,6 +8,18 @@
 
 ## Current Windows/Linux implementation checkpoint — 2026-10-02
 
+Caller implementation checkpoint (T032-A2/A3, WIP): frozen `7499f91f` fresh binaries
+established helper RED **1/9 passed, 8 failed** and outcome RED **0/5 passed** at
+the absent ordinary stream/publication/uncertainty boundaries; neither run timed out.
+Exact manifests are `recovery/evidence/save-helper-windows-red-20261002/manifest.json`
+and `recovery/evidence/save-outcomes-windows-red-20261002/manifest.json`.
+The current unverified source introduces a closed owned candidate tied to its exact
+snapshot lease, one create-only image publication, retained typed save decisions,
+ordinary leased streaming metadata and Task-only profile refresh. Original load
+receipts remain unchanged. Two additional retention outcome tests are RED candidates;
+retention, browser and console integration and actual GREEN/review are still open.
+No new Linux execution or full save acceptance is claimed.
+
 The owner now explicitly authorizes implementing Linux paths locally, marking native
 Linux execution unverified and returning its exact commands to the Linux coordinator.
 This does not convert Windows evidence into Linux acceptance. Work remains on
@@ -87,7 +99,7 @@ not relaxed to make them pass. No token/cost savings claim is inferred from thes
 
 ## Active T032-A caller implementation
 
-The original public-entry Windows baseline at frozen23d94fb7 binaries is preserved in [caller RED](recovery/evidence/save-caller-entry-windows-red-20261002/manifest.json):1pass/1causal failure, completed ZIP and saved=true but zero B1 decisions instead of one. Current new RED scaffolds add five public outcome cases and nine read/refresh helper cases. The ordinary stream API is intentionally stubbed until that scoped RED runs; no production caller uses it yet. This is WIP, not delivered save capability.
+The original public-entry Windows baseline at frozen23d94fb7 binaries is preserved in [caller RED](recovery/evidence/save-caller-entry-windows-red-20261002/manifest.json):1pass/1causal failure, completed ZIP and saved=true but zero B1 decisions instead of one. The following five public outcome and nine helper RED cases executed at frozen7499f91f as recorded above. Their source implementation is now WIP; retention and immediate browser/engine callers add their own causal checks. This is not delivered save capability.
 
 
 Preserve the approved source map and game/archive formats. Prepare one closed/flushed

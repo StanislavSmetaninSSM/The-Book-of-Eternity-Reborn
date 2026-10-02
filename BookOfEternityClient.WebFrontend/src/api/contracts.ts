@@ -145,7 +145,10 @@ export interface BrowserCreateSaveResultDto {
   success: boolean;
   error: string;
   createdSaveId: string;
-  menu: BrowserMainMenuDto;
+  menu: BrowserMainMenuDto | null;
+  disposition: 'Blocked' | 'Committed' | 'RolledBack' | 'Uncertain';
+  needsFollowUp: boolean;
+  continuationBlocked: boolean;
 }
 
 export interface BrowserAudioSettingsDto {

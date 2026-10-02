@@ -11,7 +11,6 @@ namespace BookOfEternityClient.Tests;
 /// <summary>Exploratory T032-A resource fixture, never a production save-size or RAM policy.</summary>
 public static class PortableSaveResourceProbe
 {
-    private sealed class StopAfterArchive : Exception { }
     private sealed class RetainCommittedEvidence : Exception { }
 
     public static async Task<int> RunAsync(string[] args)
@@ -39,7 +38,7 @@ public static class PortableSaveResourceProbe
         {
             if (mode == "producer")
             {
-                if (!OperatingSystem.IsLinux()) throw new InvalidOperationException("This unchanged-producer stop is qualified on Linux only.");
+                if (!OperatingSystem.IsLinux()) throw new InvalidOperationException("The historical whole-byte comparison remains a Linux-only diagnostic.");
                 var state = PortableSaveFixture.Seed(files);
                 WritePayloads(files, bytes);
                 // Seed three independent library members; this probe never interprets or deletes them.
@@ -50,19 +49,21 @@ public static class PortableSaveResourceProbe
                 var logger = new PortableSaveFixture.CaptureLogger();
                 var service = new SaveLoadService(files, state, logger, new SaveLoadServiceHooks
                 {
-                    BeforeSaveCommitAsync = () => { phases.Add("CompletedArchiveBoundary"); throw new StopAfterArchive(); }
+                    BeforeSaveCommitAsync = () => { phases.Add("CompletedArchiveBoundary"); return Task.CompletedTask; }
                 });
                 var saved = await service.SaveGameAsync("resource-producer", "bounded producer measurement");
                 report["saveReturned"] = saved;
                 report["producerMilliseconds"] = timer.Elapsed.TotalMilliseconds;
                 report["producerAllocatedBytes"] = GC.GetTotalAllocatedBytes(true) - allocated;
                 report["errors"] = logger.Errors.Select(ex => ex.GetType().FullName).ToArray();
-                if (saved || !phases.Contains("CompletedArchiveBoundary"))
-                    throw new InvalidOperationException("The unchanged producer did not reach the explicit final-publication cut.");
-                // SaveGame finally closed the stream. The known Linux physical cleanup failure retains it.
-                // This move belongs only to the isolated test fixture, never to product recovery authority.
-                var staged = Directory.GetFiles(Path.Combine(files.RuntimeRootPath, "save-staging"), "save.zip", SearchOption.AllDirectories).Single();
-                File.Move(staged, candidate);
+                report["producerRoute"] = "ordinary-create-only-image-publication";
+                if (!saved || !phases.Contains("CompletedArchiveBoundary"))
+                    throw new InvalidOperationException("The ordinary producer did not complete its declared archive publication.");
+                // The Linux branch is source-implemented but has not executed on this Windows host.
+                // This fixture moves only its own newly created member; no retained failure scratch is needed.
+                var produced = Directory.GetFiles(files.ResolvePath("saves/manual_saves"), "*.zip")
+                    .Single(path => Path.GetFileName(path) != "existing.zip");
+                File.Move(produced, candidate);
                 report["archiveBytes"] = new FileInfo(candidate).Length;
                 report["archiveSha256"] = Hash(candidate);
                 using (var archive = ZipFile.OpenRead(candidate))
@@ -73,7 +74,7 @@ public static class PortableSaveResourceProbe
                     report["archiveEntryCount"] = descriptors.Length;
                     report["expandedBytes"] = descriptors.Sum(e => e.Length);
                 }
-                Directory.Delete(Path.Combine(files.RuntimeRootPath, "save-staging"), recursive: true);
+                Directory.Delete(Path.Combine(files.RuntimeRootPath, "save-staging"), recursive: false);
                 report["completed"] = true;
             }
             else if (mode == "b1")

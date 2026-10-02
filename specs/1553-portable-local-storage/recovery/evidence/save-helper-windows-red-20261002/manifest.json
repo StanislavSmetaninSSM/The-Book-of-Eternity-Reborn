@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "7499f91f01e1c3a4db3182c80fe51440c2d41ce2",
+  "status": "Intended RED scaffold: 9 executed, 1 unchanged no-op control passed, 8 failed at absent stream/B1/uncertainty capability. Fresh XML build. T032-A2/A3; native Linux unexecuted.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-save-read-refresh"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:02:33.2615475",
+  "exitCode": 1,
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 9,
+    "CompletedCases": 9,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 9,
+    "Executed": 9,
+    "Passed": 1,
+    "Failed": 8
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "Build-unit.log",
+      "originalSha256": "72BB703F28E783F2455A0F35902E56FD5D3C82F87A19CD78C61098BD4EDB141C",
+      "sha256": "61D3D2B553C7D015DEB0211202992A54ACA66A4F40E4F16E312124D722416A5B"
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "E226B6FDA1252827B871B2A6E5DF280AA8AB090326B6C42FFE4DE4D569BB51AD",
+      "sha256": "B96876C8A60904C7EFC234EB5639D6B88189C7AC26B24D2D951830446A0137CA"
+    },
+    {
+      "path": "portable-save-read-refresh-unit-001.trx",
+      "originalSha256": "AAF0C12D31EC2317B4D5EDB99518651A37796A440EA2312CF957A0183B6D7FDD",
+      "sha256": "ADBC180CE7118D04DBA9B9E9FA8A6C4CD5C2C191C504C210CD39300DCE1C5DB1"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "1526513D0609396EA5C8D9FBB9747685A85CA49332166F1DFE08B587273BAF34",
+      "sha256": "1A02F7259BC009555A160B59307E9D4D8528D5513F70601AA3E0A9E76BCD6C19"
+    }
+  ]
+}

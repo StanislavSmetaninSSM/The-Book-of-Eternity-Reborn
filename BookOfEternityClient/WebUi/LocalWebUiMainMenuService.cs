@@ -178,7 +178,7 @@ public sealed class LocalWebUiMainMenuService
     {
         var dashboard = await _lifecycle.BuildDashboardAsync(writeLease);
         var terminalSoulDissipationMessage = await TryReadTerminalSoulDissipationMessageAsync();
-        var saves = await BuildSaveSlotsAsync();
+        var saves = await BuildSaveSlotsAsync(writeLease);
         var session = await BuildSessionSummaryAsync(
             dashboard,
             terminalSoulDissipationMessage,
@@ -410,30 +410,71 @@ public sealed class LocalWebUiMainMenuService
             Title: "Книга Вечности: Перерождение",
             Body: "Книга Вечности: Перерождение открывает текущую главу, сохранения и настройки в одном локальном окне. Игровые решения остаются в книге; этот экран помогает выбрать продолжение, новую главу или сохранение.");
 
-    private async Task<IReadOnlyList<BrowserSaveSlotDto>> BuildSaveSlotsAsync()
+    /// <summary>
+    /// Builds both save-library sections using the caller's lease when one is held.
+    /// </summary>
+    /// <param name="writeLease">
+    /// The held canonical lease, or <see langword="null"/> to acquire ordinary listing leases.
+    /// </param>
+    /// <returns>
+    /// The available save slots in display order.
+    /// </returns>
+    private async Task<IReadOnlyList<BrowserSaveSlotDto>> BuildSaveSlotsAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
-        var slots = await BuildSaveSlotsWithPathsAsync();
+        var slots = await BuildSaveSlotsWithPathsAsync(writeLease);
         return slots.Select(slot => slot.Dto).ToArray();
     }
 
-    private async Task<IReadOnlyList<BrowserSaveSlotWithPath>> BuildSaveSlotsWithPathsAsync()
+    /// <summary>
+    /// Builds save slots and their physical load paths without nesting lease acquisition.
+    /// </summary>
+    /// <param name="writeLease">
+    /// The held canonical lease, or <see langword="null"/> for independent listing.
+    /// </param>
+    /// <returns>
+    /// The available slots and physical paths in display order.
+    /// </returns>
+    private async Task<IReadOnlyList<BrowserSaveSlotWithPath>> BuildSaveSlotsWithPathsAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         var result = new List<BrowserSaveSlotWithPath>();
-        await AddSaveSlotsAsync(result, "manual", "Ручное сохранение", "saves/manual_saves");
-        await AddSaveSlotsAsync(result, "autosave", "Автосохранение", "saves/autosaves");
+        await AddSaveSlotsAsync(result, "manual", "Ручное сохранение", "saves/manual_saves", writeLease);
+        await AddSaveSlotsAsync(result, "autosave", "Автосохранение", "saves/autosaves", writeLease);
         return result
             .OrderByDescending(slot => slot.Dto.TimestampUtc ?? DateTime.MinValue)
             .ThenBy(slot => slot.Dto.DisplayName, StringComparer.OrdinalIgnoreCase)
             .ToArray();
     }
 
+    /// <summary>
+    /// Appends validated save slots from one library section.
+    /// </summary>
+    /// <param name="result">
+    /// The destination list to extend.
+    /// </param>
+    /// <param name="scope">
+    /// The section identifier used in each save identifier.
+    /// </param>
+    /// <param name="scopeLabel">
+    /// The section's display label.
+    /// </param>
+    /// <param name="saveDir">
+    /// The relative save-library directory to read.
+    /// </param>
+    /// <param name="writeLease">
+    /// The held canonical lease, or <see langword="null"/> for independent listing.
+    /// </param>
     private async Task AddSaveSlotsAsync(
         List<BrowserSaveSlotWithPath> result,
         string scope,
         string scopeLabel,
-        string saveDir)
+        string saveDir,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
-        var saves = await _saveLoad.GetAvailableSavesAsync(saveDir);
+        var saves = writeLease == null
+            ? await _saveLoad.GetAvailableSavesAsync(saveDir)
+            : await _saveLoad.GetAvailableSavesAsync(writeLease, saveDir);
         foreach (var save in saves)
         {
             var fileName = Path.GetFileName(save.FileName);
@@ -584,8 +625,35 @@ public sealed record BrowserLoadSaveResultDto(
 
 public sealed record BrowserCreateSaveRequest(string? SaveName);
 
+/// <summary>
+/// Carries the save publication decision separately from subsequent browser follow-up work.
+/// </summary>
+/// <param name="Success">
+/// Whether the save archive was committed.
+/// </param>
+/// <param name="Error">
+/// The explanation of a blocked operation or follow-up requirement; empty on ordinary success.
+/// </param>
+/// <param name="CreatedSaveId">
+/// The identifier derived from the committed destination, or empty when no commit is confirmed.
+/// </param>
+/// <param name="Menu">
+/// The refreshed menu, or <see langword="null"/> when continuation cannot safely refresh it.
+/// </param>
+/// <param name="Disposition">
+/// The established publication decision, including unresolved uncertainty.
+/// </param>
+/// <param name="NeedsFollowUp">
+/// Whether publication or subsequent browser work requires follow-up.
+/// </param>
+/// <param name="ContinuationBlocked">
+/// Whether further browser operations must stop until the session is reconciled.
+/// </param>
 public sealed record BrowserCreateSaveResultDto(
     bool Success,
     string Error,
     string CreatedSaveId,
-    BrowserMainMenuDto Menu);
+    BrowserMainMenuDto? Menu,
+    BrowserPreparedWriteDisposition Disposition = BrowserPreparedWriteDisposition.Blocked,
+    bool NeedsFollowUp = false,
+    bool ContinuationBlocked = false);

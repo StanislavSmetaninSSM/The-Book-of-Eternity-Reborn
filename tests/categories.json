@@ -2,6 +2,35 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-engine-save-continuation",
+      "responsibility": "Actual console save outcome display and the three accepted-turn autosave entry callers: retain committed decisions, stop on uncertain storage, preserve accepted story/soul and terminal evidence without compensation.",
+      "excludes": "Load, browser, provider integration, full accepted-turn atomicity and native Linux acceptance.",
+      "changeHints": ["BookOfEternityClient/Core/GameEngine", "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableSave.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": true },
+      "timeoutMinutes": 6,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "integration", "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_ConsoleMenuReportsActualDecision",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_CommittedDebtObservationDoesNotPromiseReplay",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableAutosave_RealTurnCallerRetainsAcceptedStateAndTerminalEvidence"
+      ] }]
+    },
+    {
+      "id": "portable-browser-save-creation",
+      "responsibility": "Actual browser manual save through one held lease and prepared v2 image decision; exact created destination, confirmed rollback, uncertainty, committed cleanup/close follow-up and truthful frontend transport notices.",
+      "excludes": "Load, original browser v6 writes for other consumers, gameplay/provider lifecycle, full browser GUI and native Linux execution.",
+      "changeHints": ["BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs", "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs", "BookOfEternityClient.WebFrontend/src/utils/savePersistenceNotice.ts"],
+      "related": [],
+      "requirements": { "frontendBuild": true, "exclusive": true },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        { "project": "unit", "tests": ["BookOfEternityClient.Tests.PortableBrowserSaveCreationTests.BrowserSaveUsesPreparedImageDecisionAndRetainsExactOutcome"] },
+        { "project": "frontend", "runner": "node", "files": ["test/savePersistenceNotice.test.ts"] }
+      ]
+    },
+    {
       "id": "portable-save-read-refresh",
       "responsibility": "Ordinary save-list stream and immediate profile-refresh prerequisites: leased seekable reads, hard-link acceptance, completion type/link rejection, one common mirror publication, byte-exact no-op and typed same-lease uncertainty/debt admission.",
       "excludes": "SaveLoadService listing integration, original load physical receipts, browser transport, resource envelopes and unrelated aggregate-state readers.",
@@ -28,7 +57,7 @@
       "requirements": { "frontendBuild": false, "exclusive": true },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
-      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller", "BookOfEternityClient.Tests.PortableSaveOutcomeTests.ClosedArchiveAndCommittedResultSurviveLoggingFailure"] }]
+      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller", "BookOfEternityClient.Tests.PortableSaveOutcomeTests.ClosedArchiveAndCommittedResultSurviveLoggingFailure", "BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveWithUnresolvedDebtStopsBeforeRetention", "BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveRetainsFollowUpWhenDeletionRollsBack"] }]
     },
     {
       "id": "portable-storage-stream-generation",
@@ -286,7 +315,7 @@
     },
     {
       "id": "portable-save-resource-qualification",
-      "responsibility": "Exploratory T032-A unchanged ZIP producer and B1 whole-archive candidate resource measurements in separate owned Linux processes; capped heap/RSS/disk/deadline, phase reach, exact archives/generation/library and cold acquisition. A measured bounded failure is not product support.",
+      "responsibility": "Historical whole-byte B1 comparison using the current ZIP producer in separate owned Linux processes; capped heap/RSS/disk/deadline, phase reach, exact archives/generation/library and cold acquisition. Immutable prior evidence used the former producer; a new run does not reproduce that source or qualify streaming image support. A measured bounded failure is not product support.",
       "excludes": "Full save acceptance, Windows measurements, browser/GM/gameplay, load and unbounded host stress.",
       "changeHints": [
         "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
@@ -303,7 +332,7 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.PortableSaveResourceTests.MeasureUnchangedProducerAndB1CandidateWithinDeclaredOwnedBounds"
+            "BookOfEternityClient.Tests.PortableSaveResourceTests.MeasureCurrentProducerAndOriginalByteCandidateWithinDeclaredOwnedBounds"
           ]
         }
       ]

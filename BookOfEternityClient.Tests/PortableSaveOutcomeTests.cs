@@ -118,6 +118,84 @@ public sealed class PortableSaveOutcomeTests : IDisposable
     }
 
     /// <summary>
+    /// Keeps a confirmed autosave visible while stopping retention when recovery cannot establish its owned state.
+    /// </summary>
+    [Fact]
+    public async Task CommittedAutosaveWithUnresolvedDebtStopsBeforeRetention()
+    {
+        FileSystemManager? files = null;
+        var committed = 0;
+        var deleting = 0;
+        files = new FileSystemManager(_root, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            {
+                LocalPublicationObserver = (phase, _) =>
+                {
+                    if (phase != TrustedLocalPublicationPhase.Committed) return;
+                    committed++;
+                    var created = Assert.Single(Directory.GetFiles(files!.ResolvePath("saves/autosaves"), "*.zip")
+                        .Where(path => Path.GetFileName(path) != "sentinel.zip"));
+                    File.WriteAllBytes(created, [81, 0, 254]);
+                    throw new InvalidDataException("retain conflicting committed evidence");
+                }
+            });
+        var state = PortableSaveFixture.Seed(files);
+        SeedLibrary(files);
+        var service = new SaveLoadService(files, state, NullLogger<SaveLoadService>.Instance, new SaveLoadServiceHooks
+        {
+            BeforeAutosaveDeletionAsync = () => { deleting++; return Task.CompletedTask; }
+        });
+
+        var exception = await Assert.ThrowsAsync<CommittedSaveContinuationException>(() => service.AutosaveAsync(9));
+
+        Assert.True(exception.Result.Committed);
+        Assert.True(exception.Result.NeedsFollowUp);
+        Assert.True(exception.Result.ContinuationBlocked);
+        Assert.Equal(1, committed);
+        Assert.Equal(0, deleting);
+        AssertLibrary(files, "saves/autosaves", created: true);
+        Assert.True(File.Exists(Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1/active.json")));
+        Assert.Equal(new byte[] { 81, 0, 254 }, File.ReadAllBytes(files.ResolvePath(exception.Result.DestinationRelativePath!)));
+    }
+
+    /// <summary>
+    /// Surfaces a known retention failure without changing the already committed archive decision.
+    /// </summary>
+    [Fact]
+    public async Task CommittedAutosaveRetainsFollowUpWhenDeletionRollsBack()
+    {
+        var commits = 0;
+        var cuts = 0;
+        var files = new FileSystemManager(_root, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            {
+                LocalPublicationObserver = (phase, index) =>
+                {
+                    if (phase == TrustedLocalPublicationPhase.Committed) commits++;
+                    if (commits > 0 && phase == TrustedLocalPublicationPhase.MemberPublished && index == 0)
+                    { cuts++; throw new InvalidDataException("retention rollback"); }
+                }
+            });
+        var state = PortableSaveFixture.Seed(files);
+        state.Settings.MaxAutosaves = 1;
+        SeedLibrary(files);
+        File.SetCreationTimeUtc(files.ResolvePath("saves/autosaves/sentinel.zip"), DateTime.UtcNow.AddDays(-3));
+        var service = new SaveLoadService(files, state, NullLogger<SaveLoadService>.Instance);
+
+        var result = await service.CreateAutosaveAsync(10);
+
+        Assert.True(result.Committed);
+        Assert.True(result.NeedsFollowUp);
+        Assert.False(result.ContinuationBlocked);
+        Assert.Equal(1, commits);
+        Assert.Equal(1, cuts);
+        AssertLibrary(files, "saves/autosaves", created: true);
+        Assert.False(File.Exists(Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1/active.json")));
+        using var archive = ZipFile.OpenRead(files.ResolvePath(result.DestinationRelativePath!));
+        Assert.NotNull(archive.GetEntry("save_manifest.json"));
+    }
+
+    /// <summary>
     /// Seeds one independent member in each save-library scope.
     /// </summary>
     /// <param name="files">

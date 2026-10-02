@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace BookOfEternityClient.Tests;
 
 /// <summary>
-/// Runs isolated image-resource probes without changing production save callers or publication policy.
+/// Runs isolated producer, image-publication and recovery resource probes with the ordinary save caller.
 /// </summary>
 public static class TrustedLocalStreamResourceProbe
 {
@@ -18,11 +18,6 @@ public static class TrustedLocalStreamResourceProbe
     /// Deliberately retains committed cleanup debt for a separate ordinary canonical acquisition.
     /// </summary>
     private sealed class RetainCommittedEvidence : Exception { }
-
-    /// <summary>
-    /// Cuts the unchanged Linux producer at its closed-archive boundary before its gated final move.
-    /// </summary>
-    private sealed class LinuxProducerBoundary : Exception { }
 
     /// <summary>
     /// Executes exactly one bounded producer, publication or cold recovery scenario.
@@ -77,7 +72,6 @@ public static class TrustedLocalStreamResourceProbe
                         phases.Add("CompletedArchiveBoundary");
                         report["producerBoundaryMilliseconds"] = timer.Elapsed.TotalMilliseconds;
                         report["producerBoundaryAllocatedBytes"] = GC.GetTotalAllocatedBytes(true) - allocated;
-                        if (OperatingSystem.IsLinux()) throw new LinuxProducerBoundary();
                         return Task.CompletedTask;
                     }
                 });
@@ -86,26 +80,22 @@ public static class TrustedLocalStreamResourceProbe
                 report["producerAllocatedBytes"] = GC.GetTotalAllocatedBytes(true) - allocated;
                 report["producerMilliseconds"] = timer.Elapsed.TotalMilliseconds;
                 report["producerErrors"] = logger.Errors.Select(failure => failure.GetType().FullName).ToArray();
-                if (!phases.Contains("CompletedArchiveBoundary") || saved != OperatingSystem.IsWindows())
+                report["producerRoute"] = "ordinary-create-only-image-publication";
+                if (!phases.Contains("CompletedArchiveBoundary") || !saved)
                     throw new InvalidOperationException("The actual producer did not reach its declared platform boundary.");
-                string produced;
-                if (OperatingSystem.IsWindows())
-                {
-                    // The existing native producer finishes; fixture movement affects only its newly created member.
-                    produced = Directory.GetFiles(files.ResolvePath("saves"), "*", SearchOption.AllDirectories)
-                        .Where(path => !libraryBefore.Contains(path)).Single();
-                }
-                else
-                {
-                    // Linux path implemented; native Linux execution remains pending in the 2026-10-02 handoff.
-                    // The unchanged Linux producer's known cleanup rejection retains its now-closed staged ZIP.
-                    // This is isolated fixture ownership, never portable publication or product recovery authority.
-                    produced = Directory.GetFiles(Path.Combine(files.RuntimeRootPath, "save-staging"), "save.zip", SearchOption.AllDirectories).Single();
-                }
+                // Both platforms execute the real public save path. Native Linux execution remains pending.
+                // Only this newly created fixture member moves; the established library stays intact.
+                var produced = Directory.GetFiles(files.ResolvePath("saves"), "*", SearchOption.AllDirectories)
+                    .Where(path => !libraryBefore.Contains(path)).Single();
                 File.Move(produced, candidate);
                 foreach (var path in Directory.GetFiles(files.ResolvePath("lore/current_world"), "resource-*.bin")) File.Delete(path);
                 var saveStaging = Path.Combine(files.RuntimeRootPath, "save-staging");
-                if (Directory.Exists(saveStaging)) Directory.Delete(saveStaging, recursive: true);
+                if (Directory.Exists(saveStaging))
+                {
+                    if (Directory.EnumerateFileSystemEntries(saveStaging).Any())
+                        throw new InvalidDataException("Ordinary save left private staging evidence after success.");
+                    Directory.Delete(saveStaging, recursive: false);
+                }
                 var inspectionStart = GC.GetTotalAllocatedBytes(true);
                 var descriptors = ValidateArchive(candidate);
                 report["archiveInspectionAllocatedBytes"] = GC.GetTotalAllocatedBytes(true) - inspectionStart;

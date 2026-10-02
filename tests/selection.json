@@ -21,6 +21,20 @@
       ],
       "category": "portable-save-entry",
       "reason": "T032-A2/A3 actual ordinary save caller cutover, typed outcomes, leased listing stream and immediate profile mirror prerequisites; only changed boundaries."
+    },
+    {
+      "category": "portable-browser-save-creation",
+      "reason": "T032-A3 immediate save callers: causal publication outcome, truthful presentation, exact identity and stop before unsafe post-save continuation.",
+      "contracts": [
+        "#1553 approved save-creation-cutover.md; T032-A2/A3"
+      ]
+    },
+    {
+      "category": "portable-engine-save-continuation",
+      "reason": "T032-A3 immediate save callers: causal publication outcome, truthful presentation, exact identity and stop before unsafe post-save continuation.",
+      "contracts": [
+        "#1553 approved save-creation-cutover.md; T032-A2/A3"
+      ]
     }
   ]
 }

@@ -57,7 +57,8 @@ public sealed class TrustedLocalStreamResourceTests(ITestOutputHelper output) : 
         var producer = await Run("producer", payloadBytes, 0);
         Assert.True(producer.GetProperty("completed").GetBoolean(), producer.ToString());
         Assert.Contains("CompletedArchiveBoundary", producer.GetProperty("phases").EnumerateArray().Select(value => value.GetString()));
-        Assert.Equal(OperatingSystem.IsWindows(), producer.GetProperty("saveReturned").GetBoolean());
+        Assert.True(producer.GetProperty("saveReturned").GetBoolean());
+        Assert.Equal("ordinary-create-only-image-publication", producer.GetProperty("producerRoute").GetString());
         var archiveBytes = new FileInfo(Candidate).Length;
         var afterHash = Hash(Candidate);
         Assert.Equal(producer.GetProperty("archiveSha256").GetString(), afterHash);

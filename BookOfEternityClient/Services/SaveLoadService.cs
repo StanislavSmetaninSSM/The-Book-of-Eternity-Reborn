@@ -23,7 +23,7 @@ internal sealed class SaveLoadServiceHooks
 /// <summary>
 /// Manages save/load with ZIP archives, autosaves, and metadata.
 /// </summary>
-public class SaveLoadService
+public partial class SaveLoadService
 {
     internal sealed record SaveArchiveBudget(
         int MaxEntryCount,
@@ -126,21 +126,28 @@ public class SaveLoadService
         _hooks = hooks;
     }
 
-    public async Task<bool> SaveGameAsync(string saveName, string description, string saveDir = "saves/manual_saves", int turnNumber = 0)
-    {
-        try
-        {
-            await using var canonicalSnapshotLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            return await SaveGameAsync(canonicalSnapshotLease, saveName, description, saveDir, turnNumber);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Ошибка сохранения: {Name}", saveName);
-            return false;
-        }
-    }
-
-    internal async Task<bool> SaveGameAsync(
+    /// <summary>
+    /// Prepares one complete closed archive under the caller's snapshot lease without publishing it.
+    /// </summary>
+    /// <param name="canonicalSnapshotLease">
+    /// The active canonical lease retained throughout preparation and the later publication decision.
+    /// </param>
+    /// <param name="saveName">
+    /// The player-visible name used in metadata and the sanitized destination filename.
+    /// </param>
+    /// <param name="description">
+    /// The player-visible description stored unchanged in metadata.
+    /// </param>
+    /// <param name="saveDir">
+    /// The canonical relative destination directory, defaulting to manual saves.
+    /// </param>
+    /// <param name="turnNumber">
+    /// A positive explicit turn number, or zero to use the current aggregated state.
+    /// </param>
+    /// <returns>
+    /// An owned closed candidate whose caller must dispose after publication or abandonment.
+    /// </returns>
+    internal async Task<PreparedSaveArchive> PrepareSaveArchiveAsync(
         FileSystemManager.CanonicalWriteLease canonicalSnapshotLease,
         string saveName,
         string description,
@@ -150,9 +157,11 @@ public class SaveLoadService
         string? stagingRoot = null;
         string? temporaryPath = null;
         FileSystemManager.RuntimeStagedFile? stagedFile = null;
+        Exception? preparationFailure = null;
         try
         {
-            _fs.EnsureCanonicalWriteLeaseActive(canonicalSnapshotLease);
+            _fs.ResolveBackupPublicationRecovery(canonicalSnapshotLease);
+            var generation = _fs.ReadLocalGenerationSnapshot(canonicalSnapshotLease).Binding;
             if (!_fs.DirectoryExists(
                     canonicalSnapshotLease,
                     GameStateDirectory))
@@ -170,7 +179,12 @@ public class SaveLoadService
             var fileName = SanitizeFileName($"{saveName}_{timestamp}.zip");
             var destinationRelativePath = Path.Combine(saveDir, fileName)
                 .Replace('\\', '/');
-            _ = _fs.ResolvePath(destinationRelativePath);
+            var destination = _fs.ResolvePath(destinationRelativePath);
+            if (!_fs.UsesTrustedLocalWriter(canonicalSnapshotLease, destinationRelativePath))
+                throw new InvalidOperationException("Ordinary save preparation cannot run inside an original physical publication recorder.");
+            var destinationScope = new TrustedLocalFileScope([_fs.GameSessionPath]);
+            if (File.Exists(destinationScope.ValidateFile(destination)))
+                throw new IOException("The save destination already exists; create-only save cannot replace it.");
             stagingRoot = _fs.CreateRuntimeSaveStagingRoot();
             temporaryPath = Path.Combine(stagingRoot, "save.zip");
             stagedFile = await _fs.CreateRuntimeStagedFileAsync(temporaryPath);
@@ -313,59 +327,27 @@ public class SaveLoadService
                             manifest,
                             SaveManifestJsonOptions)));
             }
+            await stagedFile.Stream.FlushAsync();
+            stagedFile.Stream.Flush(flushToDisk: true);
+            await stagedFile.DisposeAsync();
+            stagedFile = null;
             if (_hooks?.BeforeSaveCommitAsync != null)
                 await _hooks.BeforeSaveCommitAsync();
-            await _fs.MoveRuntimeFileIntoCanonicalSessionAsync(
-                canonicalSnapshotLease,
-                stagedFile,
-                destinationRelativePath);
-            stagedFile = null;
+            var candidate = new PreparedSaveArchive(_fs, canonicalSnapshotLease, destinationRelativePath, stagingRoot,
+                TrustedLocalFileImage.CaptureFile(new TrustedLocalFileScope([stagingRoot]), temporaryPath), generation);
+            stagingRoot = null;
             temporaryPath = null;
-
-            _logger.LogInformation("Игра сохранена: {Name}", saveName);
-            return true;
+            return candidate;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Ошибка сохранения: {Name}", saveName);
-            return false;
+            preparationFailure = ex;
+            throw;
         }
         finally
         {
-            if (stagedFile != null)
-                await stagedFile.DisposeAsync();
-            if (!string.IsNullOrWhiteSpace(stagingRoot))
-            {
-                try
-                {
-                    _fs.DeleteRuntimeSaveStagingRoot(stagingRoot);
-                }
-                catch (Exception cleanupEx)
-                {
-                    _logger.LogWarning(
-                        cleanupEx,
-                        "Не удалось удалить staging-директорию сохранения: {Path}",
-                        stagingRoot);
-                }
-            }
+            await ReleaseFailedSavePreparationAsync(stagedFile, stagingRoot, preparationFailure);
         }
-    }
-
-    public async Task<bool> AutosaveAsync(int turnNumber)
-    {
-        const string autosaveDirectory = "saves/autosaves";
-        var saved = await SaveGameAsync(
-            $"autosave_turn{turnNumber}",
-            $"Автосохранение - ход {turnNumber}",
-            autosaveDirectory,
-            turnNumber);
-        if (!saved)
-            return false;
-
-        if (_hooks?.BeforeAutosaveCleanupLeaseAcquisitionAsync != null)
-            await _hooks.BeforeAutosaveCleanupLeaseAcquisitionAsync();
-        await CleanupOldSaves(autosaveDirectory, _stateManager.Settings.MaxAutosaves);
-        return true;
     }
 
     public async Task<bool> LoadGameAsync(string saveFilePath)
@@ -600,10 +582,41 @@ public class SaveLoadService
         }
     }
 
+    /// <summary>
+    /// Lists readable save metadata while holding one ordinary canonical lease.
+    /// </summary>
+    /// <param name="saveDir">
+    /// The session-relative save directory; defaults to manual saves.
+    /// </param>
+    /// <returns>
+    /// Valid bounded archives ordered by descending metadata timestamp.
+    /// </returns>
     public async Task<List<SaveInfo>> GetAvailableSavesAsync(string saveDir = "saves/manual_saves")
     {
+        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        return await GetAvailableSavesAsync(lease, saveDir);
+    }
+
+    /// <summary>
+    /// Reads bounded metadata on the caller's existing lease without loading complete ZIP images into memory.
+    /// </summary>
+    /// <param name="lease">
+    /// The active lease held across listing and stream completion.
+    /// </param>
+    /// <param name="saveDir">
+    /// The session-relative directory containing save archives.
+    /// </param>
+    /// <returns>
+    /// Successfully validated metadata and opened file lengths, ordered by descending timestamp.
+    /// </returns>
+    internal async Task<List<SaveInfo>> GetAvailableSavesAsync(FileSystemManager.CanonicalWriteLease lease,
+        string saveDir = "saves/manual_saves")
+    {
+        _fs.ResolveBackupPublicationRecovery(lease);
         var saves = new List<SaveInfo>();
         var fullDir = _fs.ResolvePath(saveDir);
+        var ordinary = _fs.UsesTrustedLocalWriter(lease, saveDir);
+        if (ordinary) new TrustedLocalFileScope([_fs.GameSessionPath]).ValidateDirectory(fullDir);
 
         if (!Directory.Exists(fullDir))
             return saves;
@@ -612,27 +625,69 @@ public class SaveLoadService
         {
             try
             {
-                var metadata = await ReadSaveMetadataWithRetryAsync(saveFile);
-                if (metadata == null)
+                var relativePath = Path.GetRelativePath(_fs.GameSessionPath, saveFile).Replace('\\', '/');
+                var info = ordinary
+                    ? await ReadOrdinarySaveMetadataWithRetryAsync(lease, relativePath)
+                    : await ReadOriginalSaveMetadataWithRetryAsync(saveFile);
+                if (info?.Metadata == null)
                     continue;
 
-                saves.Add(new SaveInfo
-                {
-                    FileName = saveFile,
-                    Metadata = metadata,
-                    FileSize = new FileInfo(saveFile).Length
-                });
+                saves.Add(info);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException && ex is not SessionReplacedException)
             {
                 _logger.LogWarning(ex, "Повреждённое сохранение: {File}", Path.GetFileName(saveFile));
             }
         }
 
+        _fs.ResolveBackupPublicationRecovery(lease);
         return saves.OrderByDescending(s => s.Metadata?.Timestamp).ToList();
     }
 
-    private async Task<SaveMetadata?> ReadSaveMetadataWithRetryAsync(string saveFile)
+    /// <summary>
+    /// Retries only transient open failures and completes a validated ordinary archive stream.
+    /// </summary>
+    /// <param name="lease">
+    /// The lease retained by the enclosing listing operation.
+    /// </param>
+    /// <param name="relativePath">
+    /// The session-relative ZIP path.
+    /// </param>
+    /// <returns>
+    /// Its bounded metadata and opened length, or null when the validated file is absent.
+    /// </returns>
+    private async Task<SaveInfo?> ReadOrdinarySaveMetadataWithRetryAsync(FileSystemManager.CanonicalWriteLease lease, string relativePath)
+    {
+        FileSystemManager.OrdinaryReadFile? openedFile;
+        for (var attempt = 1; ; attempt++)
+        {
+            try { openedFile = await _fs.OpenOrdinaryReadFileAsync(lease, relativePath); break; }
+            catch (Exception ex) when (IsTransientSaveMetadataOpenException(ex) && attempt < SaveMetadataReadAttempts)
+            { await Task.Delay(SaveMetadataReadRetryDelay); }
+        }
+        if (openedFile == null) return null;
+        await using (openedFile)
+        {
+            try
+            {
+                var metadata = await ReadSaveMetadataStreamAsync(openedFile.Stream);
+                openedFile.Complete();
+                return new SaveInfo { FileName = _fs.ResolvePath(relativePath), Metadata = metadata, FileSize = openedFile.Length };
+            }
+            catch { openedFile.Abandon(); throw; }
+        }
+    }
+
+    /// <summary>
+    /// Retains original physical read authority for explicit original transaction callers.
+    /// </summary>
+    /// <param name="saveFile">
+    /// The original route's exact archive path.
+    /// </param>
+    /// <returns>
+    /// Its bounded metadata and opened length, or null for absence.
+    /// </returns>
+    private async Task<SaveInfo?> ReadOriginalSaveMetadataWithRetryAsync(string saveFile)
     {
         FileSystemManager.StableReadFile? openedFile = null;
         for (var attempt = 1; ; attempt++)
@@ -652,42 +707,15 @@ public class SaveLoadService
             }
         }
 
-        return openedFile == null
-            ? null
-            : await ReadSaveMetadataAsync(openedFile);
-    }
-
-    private static async Task<SaveMetadata?> ReadSaveMetadataAsync(
-        FileSystemManager.StableReadFile openedFile)
-    {
+        if (openedFile == null) return null;
         await using (openedFile)
         {
             try
             {
-                SaveMetadata? metadata = null;
-                ValidateTrustedArchiveBeforeMaterialization(
-                    openedFile.Stream);
-                using (var archive = new ZipArchive(
-                           openedFile.Stream,
-                           ZipArchiveMode.Read,
-                           leaveOpen: true))
-                {
-                    ValidateTrustedArchiveBudget(archive);
-                    var metadataEntry = archive.GetEntry("save_metadata.json");
-                    if (metadataEntry != null)
-                    {
-                        var content = await ReadArchiveEntryBytesAsync(
-                            metadataEntry,
-                            TrustedArchiveBudget.MaxEntryExpandedBytes,
-                            "Save metadata");
-                        metadata = JsonSerializer.Deserialize<SaveMetadata>(
-                            StripUtf8Bom(content).Span,
-                            SaveMetadataJsonOptions);
-                    }
-                }
-
+                var metadata = await ReadSaveMetadataStreamAsync(openedFile.Stream);
+                var length = openedFile.Stream.Length;
                 openedFile.Complete();
-                return metadata;
+                return new SaveInfo { FileName = saveFile, Metadata = metadata, FileSize = length };
             }
             catch
             {
@@ -697,9 +725,29 @@ public class SaveLoadService
         }
     }
 
+    /// <summary>
+    /// Validates raw ZIP structure and budgets before reading the bounded metadata entry.
+    /// </summary>
+    /// <param name="stream">
+    /// The readable seekable archive stream, retained by its owning read wrapper.
+    /// </param>
+    /// <returns>
+    /// The decoded metadata, or null when the archive has no metadata entry.
+    /// </returns>
+    private static async Task<SaveMetadata?> ReadSaveMetadataStreamAsync(Stream stream)
+    {
+        ValidateTrustedArchiveBeforeMaterialization(stream);
+        using var archive = new ZipArchive(stream, ZipArchiveMode.Read, leaveOpen: true);
+        ValidateTrustedArchiveBudget(archive);
+        var entry = archive.GetEntry("save_metadata.json");
+        if (entry == null) return null;
+        var content = await ReadArchiveEntryBytesAsync(entry, TrustedArchiveBudget.MaxEntryExpandedBytes, "Save metadata");
+        return JsonSerializer.Deserialize<SaveMetadata>(StripUtf8Bom(content).Span, SaveMetadataJsonOptions);
+    }
+
     private static bool IsTransientSaveMetadataOpenException(Exception ex) =>
         ex is IOException &&
-        (ex.HResult & 0xFFFF) is 32 or 33;
+        (ex.HResult & 0xFFFF) is 11 or 32 or 33;
 
     private async Task<int> AddDirectoryToArchive(
         FileSystemManager.CanonicalWriteLease canonicalSnapshotLease,

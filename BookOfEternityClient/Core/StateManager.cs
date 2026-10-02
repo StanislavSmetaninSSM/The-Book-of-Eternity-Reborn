@@ -112,8 +112,11 @@ public partial class StateManager
     }
 
     /// <summary>
-    /// Load aggregated game state from all game_state/ files for UI display.
+    /// Repairs client-owned profile mirrors and loads aggregated game state for UI display on one owned lease.
     /// </summary>
+    /// <returns>
+    /// Completion after aggregation, with uncertain publication or session replacement propagated to the caller.
+    /// </returns>
     public async Task RefreshGameStateAsync()
     {
         await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
@@ -121,13 +124,22 @@ public partial class StateManager
         {
             await RepairClientOwnedProfileMirrorsAsync(writeLease);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException && ex is not SessionReplacedException)
         {
             _logger.LogDebug(ex, "Не удалось синхронизировать клиентские зеркала профилей перед refresh.");
         }
         await RefreshGameStateCoreAsync(writeLease);
     }
 
+    /// <summary>
+    /// Refreshes runtime state after repairing client-owned profile mirrors on the caller's existing lease.
+    /// </summary>
+    /// <param name="writeLease">
+    /// The active canonical lease held across repair and aggregation; this method never acquires another lease.
+    /// </param>
+    /// <returns>
+    /// Completion after aggregation, with uncertain publication or session replacement propagated to the caller.
+    /// </returns>
     internal async Task RefreshGameStateAsync(FileSystemManager.CanonicalWriteLease writeLease)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
@@ -562,8 +574,17 @@ public partial class StateManager
         return words.Length <= 4 ? candidate : string.Join(' ', words.Take(4));
     }
 
+    /// <summary>
+    /// Repairs the ordinary player profile mirror while preserving original transaction dispatch where required.
+    /// </summary>
+    /// <param name="writeLease">
+    /// The caller's active canonical lease for all repair reads and publication.
+    /// </param>
+    /// <returns>
+    /// Completion after the mirror is current and its retained publication debt has been resolved.
+    /// </returns>
     private Task RepairClientOwnedProfileMirrorsAsync(FileSystemManager.CanonicalWriteLease writeLease) =>
-        AfterlifeEntityProfileState.ApplyPlayerSoulProfileClientAuthorityAsync(
+        AfterlifeEntityProfileState.ApplyPlayerSoulProfileClientAuthorityForRefreshAsync(
             _fs,
             writeLease,
             _hooks?.AfterPlayerSoulProfileInputsReadAsync);

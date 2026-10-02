@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
@@ -404,6 +405,103 @@ internal static class AfterlifeEntityProfileState
             writeLease,
             StatePath,
             content);
+    }
+
+    /// <summary>
+    /// Repairs the client-owned player profile projection through ordinary publication on the supplied lease.
+    /// </summary>
+    /// <param name="fs">
+    /// The manager whose admitted canonical state supplies the projection inputs and destination.
+    /// </param>
+    /// <param name="writeLease">
+    /// The active caller-owned lease, which remains held across input reads, projection and publication.
+    /// </param>
+    /// <param name="afterInputsReadAsync">
+    /// An optional boundary callback after projection inputs are read; <see langword="null"/> leaves the normal path unchanged.
+    /// </param>
+    /// <returns>
+    /// Completion after a no-op or confirmed repair with retained publication debt resolved.
+    /// </returns>
+    internal static async Task ApplyPlayerSoulProfileClientAuthorityForRefreshAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        Func<Task>? afterInputsReadAsync = null)
+    {
+        ArgumentNullException.ThrowIfNull(fs);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        fs.ResolveBackupPublicationRecovery(writeLease);
+        if (!fs.UsesTrustedLocalWriter(writeLease, StatePath))
+        {
+            // Original recorder/recovery callers retain their actual receipt-returning authority.
+            await ApplyPlayerSoulProfileClientAuthorityAsync(fs, writeLease, afterInputsReadAsync);
+            fs.ResolveBackupPublicationRecovery(writeLease);
+            return;
+        }
+
+        // Both supported platforms use the same leased byte path. Native Linux qualification is separate.
+        var currentSnapshot = await fs.ReadFileSnapshotAsync(writeLease, StatePath);
+        var currentRoot = DecodeMirrorObject(currentSnapshot?.Content);
+        if (currentRoot == null) { fs.ResolveBackupPublicationRecovery(writeLease); return; }
+        var soulRoot = await ReadMirrorObjectAsync(fs, writeLease, "game_state/meta/soul_state.json");
+        if (soulRoot == null) { fs.ResolveBackupPublicationRecovery(writeLease); return; }
+        var projectedRoot = currentRoot.DeepClone().AsObject();
+        var shiningRoot = await ReadMirrorObjectAsync(fs, writeLease, ShiningAbodeState.StatePath);
+        if (afterInputsReadAsync != null) await afterInputsReadAsync();
+        ApplyPlayerSoulProfileClientAuthority(projectedRoot, soulRoot, shiningRoot);
+
+        if (JsonNode.DeepEquals(currentRoot, projectedRoot))
+        {
+            // Preserve the exact original encoding, whitespace and bytes for an unchanged projection.
+            fs.ResolveBackupPublicationRecovery(writeLease);
+            return;
+        }
+        var content = projectedRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+        var outcome = await fs.PublishLocalFilesAsync(writeLease,
+            [new CanonicalLocalFileChange(StatePath, currentSnapshot!.Content, FileSystemManager.EncodeUtf8WithPreamble(content))]);
+        if (outcome.Disposition == TrustedLocalPublicationDisposition.Uncertain)
+            throw new CoordinatedStatePublicationUncertainException(outcome.Failure);
+        fs.RequireCommittedLocalPublication(outcome);
+        // A committed decision is retained; unresolved cleanup prevents the subsequent runtime refresh.
+        fs.ResolveBackupPublicationRecovery(writeLease);
+    }
+
+    /// <summary>
+    /// Reads one optional mirror input through the caller's existing canonical lease.
+    /// </summary>
+    /// <param name="fs">
+    /// The manager resolving the canonical input.
+    /// </param>
+    /// <param name="writeLease">
+    /// The caller's active canonical lease.
+    /// </param>
+    /// <param name="relativePath">
+    /// The optional projection input's canonical relative path.
+    /// </param>
+    /// <returns>
+    /// Its object document, or <see langword="null"/> for absent, blank or non-object/malformed JSON under the existing projection policy.
+    /// </returns>
+    private static async Task<JsonObject?> ReadMirrorObjectAsync(FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease, string relativePath) =>
+        DecodeMirrorObject(await fs.ReadFileBytesAsync(writeLease, relativePath));
+
+    /// <summary>
+    /// Decodes an optional projection document with the ordinary reader's BOM-aware text semantics.
+    /// </summary>
+    /// <param name="bytes">
+    /// The complete input bytes, or <see langword="null"/> for absence.
+    /// </param>
+    /// <returns>
+    /// The object root, or <see langword="null"/> when the existing optional projection policy has no usable object.
+    /// </returns>
+    private static JsonObject? DecodeMirrorObject(byte[]? bytes)
+    {
+        if (bytes == null) return null;
+        using var stream = new MemoryStream(bytes, writable: false);
+        using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true);
+        var raw = reader.ReadToEnd();
+        if (string.IsNullOrWhiteSpace(raw)) return null;
+        try { return JsonNode.Parse(raw) as JsonObject; }
+        catch (System.Text.Json.JsonException) { return null; }
     }
 
     private static HashSet<string> CollectCommandAuthoredMentorShowcaseKeys(JsonObject? currentRoot, JsonObject? previousRoot)

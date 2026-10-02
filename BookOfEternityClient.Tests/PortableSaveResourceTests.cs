@@ -18,9 +18,9 @@ public sealed class PortableSaveResourceTests(ITestOutputHelper output) : IDispo
     [InlineData(64)]
     [InlineData(128)]
     [InlineData(512)]
-    public async Task MeasureUnchangedProducerAndB1CandidateWithinDeclaredOwnedBounds(int mebibytes)
+    public async Task MeasureCurrentProducerAndOriginalByteCandidateWithinDeclaredOwnedBounds(int mebibytes)
     {
-        Assert.True(OperatingSystem.IsLinux(), "This qualification deliberately measures the unchanged Linux producer stop.");
+        Assert.True(OperatingSystem.IsLinux(), "This historical whole-byte comparison remains Linux-only; current image qualification is separate.");
         Directory.CreateDirectory(_root);
         var payloadBytes = (long)mebibytes * 1024 * 1024 - 64 * 1024; // Leave room for current required JSON/manifest metadata.
         var producer = await Run("producer", payloadBytes);
