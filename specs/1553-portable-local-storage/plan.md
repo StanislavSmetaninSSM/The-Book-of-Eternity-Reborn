@@ -6,6 +6,29 @@
 
 <a id="active-t032-a--ordinary-save-creation"></a>
 
+### Final GitHub restoration and writer handoff — 2026-10-02 17:58 UTC
+
+Complete bounded source/evidence is published at
+`3f50036ce07b8406ac5fd50fe23d666100785c23`, tree
+`6ecd89e2dc9aef93475990b20ac0fda3ef2b3027`; remote SHA and every changed file
+were verified. A [fresh GitHub-only restoration](recovery/save-linux-caller-restoration-20261002.json)
+into a new empty directory restored **4,313 tracked files**, exact HEAD/tree,
+clean worktree and successful connectivity fsck. All **40 stored artifact hashes**
+and **255 source-identity assertions** in nine native Linux bundles matched;
+there are no omitted artifacts. The first five-case source is explicitly commit
+plus its verified exact catalog patch, now delivered as normal content. No runtime
+tests ran in the restoration. Production, TestSupport and crash-host source remain
+unchanged from the entry checkpoint; returned Windows and earlier Linux evidence
+are intact.
+
+This proof-only supplement does not change tests, runtime, catalog or executed
+source identities. Source/ref ownership returns to the coordinator with the frozen
+diff for actual independent Astra XHigh review and acceptance. The block remains
+unreviewed until that gate completes. All broader unfinished tasks remain open.
+Original hash-bound build logs retain their generated terminal blank lines;
+log-only diff whitespace warnings do not alter the source/document checks or
+stored result integrity. No passing cohort needs repetition for this supplement.
+
 ## Linux caller/resource handoff WIP — 2026-10-02 17:52 UTC
 
 Bounded execution is complete; **independent review and coordinator acceptance are
