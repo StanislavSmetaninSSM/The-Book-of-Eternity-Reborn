@@ -44,7 +44,7 @@ No bound relaxation, admission bypass or fake phase reach is permitted. Newly ex
 separate dependencies are reported before expansion. Required save cut and terminal
 state must be reached for an engine result to qualify.
 
-Bounded consumer execution is complete; independent review/coordinator acceptance remain pending. One canonical discovery-only audit and fresh GitHub restoration follow; no passed runtime owner is repeated. Full T032-A1/A2/A3,
+Bounded consumer execution is complete; independent review/coordinator acceptance remain pending. The [canonical discovery-only audit](recovery/evidence/save-linux-consumer-audit-20261002/manifest.json) passed at176deddb in10.3228811s:198 owners, unchanged10,503 identities, zero unmapped/stale selectors and zero tests executed. It used supported `-ValidateCatalog -NoBuild` with the verified fresh compatible builds. Fresh GitHub restoration follows; no passed runtime owner is repeated. Full T032-A1/A2/A3,
 T032-A/T031/T032, live clients, real GM/gameplay, B4/B5 and full platform acceptance remain
 open. No GM-authored contract change. Group1 failure is before the save call: synthetic stale browser marker setup uses the original descriptor-bound create-only writer on Linux (SaveLoadServiceTests.cs:590), raising PlatformNotSupportedException. Ordinary admission is not reached. Exact stack and unchanged source identities are preserved; this does not establish a save regression. Correction is now GREEN with the exact legacy guard; backend/presentation, frontend and all three separate engine owners are now GREEN. Independent review remains pending for this consumer block.
 
