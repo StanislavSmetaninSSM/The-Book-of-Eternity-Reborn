@@ -14,6 +14,13 @@
       "contracts": [
         "#1553 FR-002 through FR-007; T032-A1 v1/v2 compatibility and exact-byte recovery"
       ]
+    },
+    {
+      "category": "portable-storage-stream-dispatch",
+      "reason": "Causal cold-resource regression for nonmatching v2 magic; preserve v1 reordered fields and long leading whitespace before legacy decoding.",
+      "contracts": [
+        "#1553 FR-005/007; T032-A1 bounded format dispatch"
+      ]
     }
   ]
 }

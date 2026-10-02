@@ -73,6 +73,8 @@ internal sealed partial class TrustedLocalFilePublication
         stream.Position = 0;
         if (count != FrameMagic.Length || !magic.SequenceEqual(FrameMagic))
         {
+            if (!HasPlausibleV1Prefix(stream))
+                throw Conflict("Unknown publication format; evidence retained.");
             Journal journal;
             try
             {
@@ -105,6 +107,49 @@ internal sealed partial class TrustedLocalFilePublication
         {
             throw new InvalidDataException("The v2 publication frame is invalid; evidence retained.", failure);
         }
+    }
+
+    private static bool HasPlausibleV1Prefix(Stream stream)
+    {
+        // Original v1 fields can be reordered/escaped and JSON whitespace can
+        // be arbitrarily long. Inspect it incrementally, without reading an
+        // unknown binary frame as one byte array. The longest legal first
+        // property is GenerationBefore (16 characters, at most six encoded
+        // bytes per character). Unknown properties were never admitted by v1.
+        int NextNonWhitespace()
+        {
+            int value;
+            do { value = stream.ReadByte(); } while (value is ' ' or '\t' or '\r' or '\n');
+            return value;
+        }
+        if (NextNonWhitespace() != '{' || NextNonWhitespace() != '"') return false;
+        Span<byte> property = stackalloc byte[2 + 6 * 16];
+        property[0] = (byte)'"';
+        var length = 1; var escaped = false; var closed = false;
+        while (length < property.Length)
+        {
+            var value = stream.ReadByte();
+            if (value < 0x20) return false;
+            property[length++] = (byte)value;
+            if (escaped) { escaped = false; continue; }
+            if (value == '\\') { escaped = true; continue; }
+            if (value == '"') { closed = true; break; }
+        }
+        if (!closed) return false;
+        string? name;
+        try { name = JsonSerializer.Deserialize<string>(property[..length]); }
+        catch (JsonException) { return false; }
+        if (NextNonWhitespace() != ':') return false;
+        var firstValueByte = NextNonWhitespace();
+        return name switch
+        {
+            "Format" => firstValueByte == '1',
+            "TransactionId" => firstValueByte == '"',
+            "Committed" => firstValueByte is 't' or 'f',
+            "GenerationBefore" or "GenerationAfter" => firstValueByte == '{',
+            "Members" => firstValueByte == '[',
+            _ => false
+        };
     }
 
     private Journal BindFrame(FrameHeader header, string path, long payloadStart, long fileLength)

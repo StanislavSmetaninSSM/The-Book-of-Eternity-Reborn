@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "portable-storage-stream-dispatch"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "a8a9f30020ee1c58576560b53f36452e85e984dd",
+    "WorkingTreeFingerprint": "1221B82887DEC0421AF32DA2FEB7F0593ECA0A170DC750195D774A4C90B85514",
+    "ChangedFiles": 2
+  },
+  "PreparationSeconds": 134.08396,
+  "Descriptors": [
+    {
+      "Name": "portable-storage-stream-dispatch-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-stream-dispatch",
+      "Categories": [
+        "portable-storage-stream-dispatch"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamDispatchTests.PlausibleV1PreservesReorderedPropertiesAndLongLeadingWhitespace|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamDispatchTests.UnknownLargeFrameRejectsBeforeLegacyWholeFileAllocation",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamDispatchTests.PlausibleV1PreservesReorderedPropertiesAndLongLeadingWhitespace",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamDispatchTests.UnknownLargeFrameRejectsBeforeLegacyWholeFileAllocation",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}
