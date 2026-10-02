@@ -34,17 +34,7 @@ original-v1/create-only controls without a relevant new change.
 
 Consumer/profile qualification is now complete in separate evidence:13 real consumer bodies passed in the initial partial run at06025c16 (plus9 Windows no-ops); profile3 passed at65f0b219. The retained-legacy-evidence fixture failed during setup, was corrected by directly seeding the same marker bytes, and its isolated owner passed1/1 atced9b540 with the exact real legacy-admission guard assertion and unchanged session/library preservation. See the current plan/manifests; do not repeat those passing bodies. Independent review of this new consumer continuation remains pending.
 
-The following are separate remaining owners. Use PowerShell 7 and fresh required
-builds before `-NoBuild`; execute each real engine owner separately. Do not assemble
-a full-suite command:
-
-```powershell
-./scripts/test-csharp.ps1 -Category portable-browser-save-creation,portable-engine-save-presentation -Parallelism 1
-./scripts/test-csharp.ps1 -Category portable-browser-save-presentation,portable-settings-notices,portable-settings-consumers,frontend-shell-types -Parallelism 1
-./scripts/test-csharp.ps1 -Category portable-engine-save-player -Parallelism 1
-./scripts/test-csharp.ps1 -Category portable-engine-save-waiting -Parallelism 1
-./scripts/test-csharp.ps1 -Category portable-engine-save-late -Parallelism 1
-```
+All remaining native consumer commands are now complete at their exact sources in the current plan: backend/presentation11, frontend45 formal results with explicit Node/Vitest/typecheck decomposition and production build, and separate player/waiting/late engine owners2 each at5b31ba9e. Each engine body reached the actual save cut, exact accepted state and retained terminal evidence; none is a preparation-only pass. The one fixture correction has native Linux proof; older returned Windows body evidence remains separate. Current work is discovery-only ownership audit, final exact restoration and independent review. Do not replay completed runtime owners for that review. The full31-owner impact/OS inventory in tests/selection.json is not an aggregate run request.
 
 The historical23-method consumer owner contained nine Windows-only early returns.
 After its single-method residue-admission split, the current consumer owner has22:

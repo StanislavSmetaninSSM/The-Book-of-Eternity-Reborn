@@ -133,6 +133,90 @@
       "contracts": [
         "#1553 FR-002/005/007/015; T032-A native Linux consumer qualification"
       ]
+    },
+    {
+      "category": "portable-storage-images",
+      "reason": "Whole ordinary-save prerequisite: unchanged file/byte images preserve absence, exact stream copies, scoped admission and source drift; carry source-bound historical proof.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/007/010/015; whole ordinary-save T032-A1/A2/A3 impact and OS inventory"
+      ]
+    },
+    {
+      "category": "portable-storage-stream-publication",
+      "reason": "Whole ordinary-save prerequisite: shared v2 framing/regions/authority, preflight and adapter behavior; retain original v1 byte-only controls and returned Windows format proof.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/007/010/015; whole ordinary-save T032-A1/A2/A3 impact and OS inventory"
+      ]
+    },
+    {
+      "category": "portable-storage-stream-dispatch",
+      "reason": "Whole ordinary-save prerequisite: bounded unknown-format rejection and explicitly supported original-v1 prefix dispatch, retaining separate cold source evidence.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/007/010/015; whole ordinary-save T032-A1/A2/A3 impact and OS inventory"
+      ]
+    },
+    {
+      "category": "portable-storage-original-v1-fixtures",
+      "reason": "Whole ordinary-save prerequisite: two independent immutable source-derived pending/committed v1 fixtures retain their accepted isolated compatibility evidence.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/007/010/015; whole ordinary-save T032-A1/A2/A3 impact and OS inventory"
+      ]
+    },
+    {
+      "category": "portable-save-create-only-adapter",
+      "reason": "Whole ordinary-save prerequisite: identical destination collision rejects without modifying exact archive/generation/library, retaining accepted isolated proof.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/007/010/015; whole ordinary-save T032-A1/A2/A3 impact and OS inventory"
+      ]
+    },
+    {
+      "category": "portable-storage-stream-cold-phases",
+      "reason": "Whole ordinary-save prerequisite: real process crash cuts and normal canonical cold acquisition; Linux and Windows source-bound results remain separate.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/007/010/015; whole ordinary-save T032-A1/A2/A3 impact and OS inventory"
+      ]
+    },
+    {
+      "category": "portable-storage-stream-cold-before",
+      "reason": "Whole ordinary-save prerequisite: large file-backed BEFORE restoration and interrupted rollback after candidate removal, on both native platforms.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/007/010/015; whole ordinary-save T032-A1/A2/A3 impact and OS inventory"
+      ]
+    },
+    {
+      "category": "portable-storage-stream-cold-conflicts",
+      "reason": "Whole ordinary-save prerequisite: later-member conflict/type/link/generation and committed cleanup preserve full preflight and evidence; distinct native counts.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/007/010/015; whole ordinary-save T032-A1/A2/A3 impact and OS inventory"
+      ]
+    },
+    {
+      "category": "portable-storage-stream-generation",
+      "reason": "Whole ordinary-save prerequisite: six real cold generation/member ordering and BOM/case/extension transitions on each qualified native platform.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/007/010/015; whole ordinary-save T032-A1/A2/A3 impact and OS inventory"
+      ]
+    },
+    {
+      "category": "portable-storage-image-admission",
+      "reason": "Whole ordinary-save prerequisite: changed/missing candidate and generation drift reject before image intent, preserving exact library/sentinels.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/007/010/015; whole ordinary-save T032-A1/A2/A3 impact and OS inventory"
+      ]
+    },
+    {
+      "category": "portable-storage-stream-linux-fifo",
+      "reason": "Linux-only prerequisite: real FIFO rejection before opening a later member; Windows compilation/early returns do not qualify it.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/007/010/015; whole ordinary-save T032-A1/A2/A3 impact and OS inventory"
+      ]
+    },
+    {
+      "category": "portable-save-original-profile-windows",
+      "reason": "Windows-only preserved original recorder profile refresh retains the real physical receipt; use its returned native Windows evidence and do not execute this owner on Linux.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/007/010/015; whole ordinary-save T032-A1/A2/A3 impact and OS inventory"
+      ]
     }
   ]
 }

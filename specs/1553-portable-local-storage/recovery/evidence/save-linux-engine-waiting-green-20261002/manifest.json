@@ -1,0 +1,336 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A native Linux ordinary-save consumer qualification",
+  "entryCommit": "24f3a1ad19b8bcbe854dc6643755773ea1c8a1ea",
+  "sourceCommit": "5b31ba9e7f7443cb0b4e3f32930c8ab57016953d",
+  "sourceTree": "a4a64e9520876a22aa0efd484f80962b9a0d46a5",
+  "sourceWorkingTree": {
+    "Head": "5b31ba9e7f7443cb0b4e3f32930c8ab57016953d",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category portable-engine-save-waiting -Parallelism 1 -NoBuild'",
+  "workingDirectory": "/repo",
+  "platform": {
+    "system": "Linux",
+    "architecture": "x86_64",
+    "kernel": "6.18.44"
+  },
+  "environment": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1",
+    "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+    "DOTNET_PROCESSOR_COUNT": "1",
+    "HOME_CODEX_HOME": "unchanged",
+    "mutableState": "Fresh owned CLI/XDG/HTTP/plugin/scratch/temp; prior immutable package cache and official toolchain"
+  },
+  "categories": [
+    "portable-engine-save-waiting"
+  ],
+  "planOnly": false,
+  "discoveryOnly": false,
+  "wallTime": "00:00:27.1751202",
+  "exitCode": 0,
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 2,
+    "CompletedCases": 2,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 2,
+    "Failed": 0
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "syntheticFixtureRemainders": [],
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableAutosave_WaitingTurnRetainsAcceptedStateAndTerminalEvidence(committed: False)",
+      "outcome": "Passed",
+      "duration": "00:00:08.1327632",
+      "artifact": "portable-engine-save-waiting-integration-001.trx"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableAutosave_WaitingTurnRetainsAcceptedStateAndTerminalEvidence(committed: True)",
+      "outcome": "Passed",
+      "duration": "00:00:09.9880057",
+      "artifact": "portable-engine-save-waiting-integration-001.trx"
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "path": "scripts/test-csharp.ps1",
+      "sha256": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1",
+      "gitBlob": "0576b2e34e5c0c5d164c173a9961a67c965c5509"
+    },
+    {
+      "path": "scripts/testing/TestCategoryCatalog.psm1",
+      "sha256": "865b7e528b48bca008524865abe6186d5c61f3e623f73f785ce1f41c3da53112",
+      "gitBlob": "eaee76832cb5fb99ea20598862ed6b4822532bcc"
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "6e84bee13a211bee8791c6c8fd4780868cec8eda0bf8b83edd7ba4b838b7f09f",
+      "gitBlob": "c4803592f0600c533c53af777cabc637f3e37e35"
+    },
+    {
+      "path": "tests/selection.json",
+      "sha256": "91388a03863836ef7280750aa40658d7c2ca5e93fcb6b88195da2e054bce1305",
+      "gitBlob": "ce1c2982e89dfa99c4058dbb1e584334f33ca33a"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/SaveLoadServiceTests.cs",
+      "sha256": "fd391b4b17d5732208baff8a15e247349f7c63dac10c25f6ed88dbf1f3774852",
+      "gitBlob": "702690aa947fadee647c682f7265c7c338a7925f"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs",
+      "sha256": "1ea671f2c88bb361b8e7f26fa5b402de596b174729de05613bfa34db17664150",
+      "gitBlob": "0b0ddd29d385108c8633f7022b29280d2ddca309"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableSave.cs",
+      "sha256": "a40580b7c372f38fc107385fa1abaa3c228e3fd32f8c00f2244f33c65f89bb0c",
+      "gitBlob": "37a7ceb88ec0ad02e2254fd5ad9d7092bf5f3605"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/StateManagerTests.cs",
+      "sha256": "9fcb456ae0707df176f68891bcc947b37fd9c3be3e6f866074266605d4ce9d45",
+      "gitBlob": "e029f67d6c479c4251ad5c8e3969f409e757fd1c"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PortableBrowserSaveCreationTests.cs",
+      "sha256": "f29c57ff46767025ca99e22429af57f3af090bf91528ab3da59b233fe9741a0e",
+      "gitBlob": "e9902fe86d1fb63bda2346a93dd8f4f3ef0b5a47"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "sha256": "cd245df8d02cc24e863cbbd010213e0001caebb02111208bc8a4ae91160bb0fc",
+      "gitBlob": "d608e0e78e97019b0361f7817fe6a14861cf6405"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "sha256": "a59d50fe221ee6dc170231551b6e5bb1652ae4575c9608a2a1dd08737a0436e0",
+      "gitBlob": "8f2cfc1eaed78460455f87c7e34620e6034acc40"
+    },
+    {
+      "path": "BookOfEternityClient/Core/StateManager.cs",
+      "sha256": "550b288beb5332efa75c98a6774c200418bf2447a39e049cfefc80294c3063e6",
+      "gitBlob": "4c4582b40c2eb969a6806085062b1dad34b44235"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+      "sha256": "ccdfa372877c5ddc2eaaa1dd77d063dc8c5a5e5b9ea5763db2724fd29c47c47e",
+      "gitBlob": "e5572e627d4caacce9872a1a50c20a8016418af2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.Creation.cs",
+      "sha256": "881559a5e20ce76489f16a2fecda55dc5a7c932bceccd6eee3ad6d0cd6161982",
+      "gitBlob": "460dffbea3364bbc98e2f6011668554b40bd907d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs",
+      "sha256": "9563ffcbf64e7469d2a964cc6f6ae590b56467914e0a014466b4820a372b182b",
+      "gitBlob": "d8092aefabce9b0e7079774f285b2f9fc544bea3"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "sha256": "03b170d32fd59d5c8c87ec6c75a32fb9a9494c85ee8135b95d4574033c063e84",
+      "gitBlob": "2e69f7b9ac0bc4324b8d785ad5f63f51e195ac0c"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs",
+      "sha256": "0a74e6e827ecd8a38d8622f8531327c306f068b13c1b9a043c83fe46b427baa0",
+      "gitBlob": "37a8dfb66c200f8ec29ce346450fa3a9b5a06d93"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs",
+      "sha256": "4e248b04c73731e2cc0c5c4b35e69d1bdbd141a6bace970cabba7e64589b0f70",
+      "gitBlob": "2548c6fb821a60a0230cc035a48f6c0307a31e20"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs",
+      "sha256": "cb811a209026ddff4481d721c0b96ec58a821e94975ebfcacdfdd9054695e6d1",
+      "gitBlob": "1dea24c2624cd66426f3972c6a4a9b0b41cd7221"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs",
+      "sha256": "422ccc535a90b54bec2352ff2db3dbfa13f7dece1c0647534de99d8efc7e72c3",
+      "gitBlob": "3096badc60b5860d771fb212f145b860f917893c"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/package.json",
+      "sha256": "34ea949d7c929126538542684bf2af693caecf2345a9e67e9ae1e1d794c505d7",
+      "gitBlob": "66ec5440ed1db21e2fedbe7438e1c98418116090"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/package-lock.json",
+      "sha256": "c4dd676e182fd9438736bc9cf67ee05165a34b0348bd93bbd6e3619b7164410c",
+      "gitBlob": "970c832fdb1f05dfc8967af96e71bbafab31d003"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/src/components/SettingsView.tsx",
+      "sha256": "c4c525ac5c53a55e347ab8a73e38042749ef6131b4d8d901cb2442f9f93e8735",
+      "gitBlob": "5d25522d5ea050be02015ea0849538027dcf7f97"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/src/components/AudioPanel.tsx",
+      "sha256": "5f32239885f8bf030d9e3df848df378c55e299efa8caeac35675177ac8e71fae",
+      "gitBlob": "e1c113ae7194eea2421273f0c3f399319a9c05df"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/src/hooks/useShellState.ts",
+      "sha256": "7687589a0cf93a0e28922267e5e804982c7db184ed2f8644ad830591b9ff3af7",
+      "gitBlob": "b39227acbbef586f2482e91c3d3bfda734a4fd75"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/src/hooks/loadShellState.ts",
+      "sha256": "17fe929c361bab2baf05ced70ad410af161c5a4dc58df4a559d9dd96c8004c5d",
+      "gitBlob": "4dc3cdefb7cf8db43e55ed1d468a2aaea2fa691e"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/src/utils/savePersistenceNotice.ts",
+      "sha256": "0c362767171b8f93b11c2e04652a78c3de4b9e8c8dae69d47a19c577d3e9bbfd",
+      "gitBlob": "f838776e771fcfb56cf07a2a6c883cba67ee9474"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/src/utils/settingsPersistenceNotice.ts",
+      "sha256": "24f2c3f984444f9d0c4cc014a88d406e034422e4277a03b4836da1c2b85b68f5",
+      "gitBlob": "6ca55dc404925a47f37385460fcce5361df6c2b1"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/test/savePersistenceNotice.test.ts",
+      "sha256": "34343eb20e2624f64cb0aaad3ddd0bd43015bbaec136f85b437f8201c50ff12b",
+      "gitBlob": "4f2ec0df75f4c9e0327f59234a4716b170beab19"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/test/browserSaveContinuation.test.ts",
+      "sha256": "c3d957ef889ece278aea12285c7791888add618340fa90e6cc2f1f3b5d5cf446",
+      "gitBlob": "01ab3764bd763377084a6e01a5f822b6afe4fd35"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/test/settingsPersistenceNotice.test.ts",
+      "sha256": "7b81e32c66a5281d6241bde892ef1daa634ceeb58f464bff27ae7ccca3ab967a",
+      "gitBlob": "5d2ec441f9b01ef50411521211944cf3579fe013"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/test/settingsLoadReconciliation.test.ts",
+      "sha256": "de90cb796cba70e36465d20e3daecb61dc67a04b4b2ee390f877707fbbd130a4",
+      "gitBlob": "ea26c6ad5084bc5ec3a20b75cd45bd0dd9a09fcf"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/test/gracefulDegradation.test.ts",
+      "sha256": "41165399d2c5c68b213d199010290ae7d3c013aa69568d6f3cb481c039b3c48b",
+      "gitBlob": "3b4ecb786662fa35cff285f429efe33436db5f8b"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/test/audioPanelCatalogVisibility.test.ts",
+      "sha256": "dd254e6bcbf642cc82b87d8c21e9bfafe94ced16d764a0e5b63e3fcf64a391f5",
+      "gitBlob": "b8b2955af1b8f9ccc606bcddad8375f783bcd2fc"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/test/browserSettingsSavesAudio.test.ts",
+      "sha256": "1da7ff8a81d761ec6c3ccaadcc2cfadb65b529f453f5140768ddd011d4e39510",
+      "gitBlob": "aa221c2d71c3e5ff9f6d039db7905cdc17bbba93"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts",
+      "sha256": "f0164e5910d119a9605dfeaf8f61aac9afe6154454d01f1aa968eceb7971244b",
+      "gitBlob": "e3fd28cae300c93adccad648c9177b00316a6cf3"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/test/appRouteExtraction.test.ts",
+      "sha256": "c90aa9e9bbd5b4c2eb6dc5bfa6d40466192b0c2289b040567e0005b1d4395a0f",
+      "gitBlob": "6c0f21546e70fc6298d886bb58507218f44602b4"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/test/shellContextComponents.test.ts",
+      "sha256": "30fabfa87931b1f8da26fc4217e75262cced3edf03fdb2a35d076f097ff2fa4c",
+      "gitBlob": "da105bc6ade4dd4e7f6bc38094fce94c2e2d541c"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.CoordinatedOutcome.cs",
+      "sha256": "fe9dbb1e933fb9879cea64e64a3c9d581cf7a2031ea3930ce087a5bf15078638",
+      "gitBlob": "88a13386228c5526832b854dcadf8f03f5faf405"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/WebUi/BrowserGenerationFencingSourceTests.cs",
+      "sha256": "fcd273e07f55ad7976ea77e5d0ba0eaa6374a2809565d41d751b38b5b781fb03",
+      "gitBlob": "e3ec0ebd77a5d42a0fe944f40e81c964369b92b5"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/PortableSaveFixture.cs",
+      "sha256": "7c05b769b4342ccad9692599eab0f37d35e4dea4077631ab213a62680a81e2b6",
+      "gitBlob": "eea32080e458e653c1beb8c56ba21280cbd7e569"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/test/helpers/settingsComponentHarness.ts",
+      "sha256": "3f1633993c0db0e53ebb01f7d9c2d1cad817ca91543855cdbe8ad53d0f5b312f",
+      "gitBlob": "90d405f06269dd7dde5f0626a3169aea3dffb85e"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/src/api/client.ts",
+      "sha256": "59f9d5a4d198f4ee0e3f07f6a3b5ddd5a8bac1402cc717ff24043edf24c01389",
+      "gitBlob": "1f209892968cbdcead8d308c0b712b92191dfe51"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/src/api/contracts.ts",
+      "sha256": "f22dad73924176b8f08aed881f23299de7a8d8f6e3a7f817a86bad1bfac7c633",
+      "gitBlob": "27c22701ab8e8700e9eed4bd8fd9b8ac9ded5b7d"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "dotnet-test.log",
+      "originalSha256": "76cdfe2c707cb6b54412107a677632ddbc064158a88eb327b3c5b72cb064ae6c",
+      "sanitizedSha256": "f60e75087746c1e3e923f9fa1ac3db9609f3614dca20d707a421ebc5dcc8fae4",
+      "originalBytes": 1470215,
+      "contentNotEmbedded": true,
+      "reason": "Large discovery/build output; exact selection, terminal result and causal failure remain in plan/summary/TRX."
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "b1ea49dfffe8475cd8fa20568e5def5136f845d37fe1dedd33b19bf6293aa23b",
+      "sha256": "b1ea49dfffe8475cd8fa20568e5def5136f845d37fe1dedd33b19bf6293aa23b",
+      "originalBytes": 1159,
+      "storedBytes": 1159
+    },
+    {
+      "path": "portable-engine-save-waiting-integration-001.trx",
+      "originalSha256": "12d71b591a54b09b174c92a661058a0b82cef3ad9d64d7cc3a7b203d0b6fe23d",
+      "sha256": "65e3632330cd94723c39d445e2cc3a9ea88f24508cf111a593ff03a4c1533ba7",
+      "originalBytes": 4928,
+      "storedBytes": 4745
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "f59b2907b24c26e6887d1e66e56c9fa33d40a4406eb40c2970e4711087baa176",
+      "sha256": "f59b2907b24c26e6887d1e66e56c9fa33d40a4406eb40c2970e4711087baa176",
+      "originalBytes": 1464,
+      "storedBytes": 1464
+    },
+    {
+      "path": "toolchain-provenance.txt",
+      "originalSha256": "ead6974b78c1d9a41de31550d957d41281040c2bdd4bb4878254ccbcfd426189",
+      "sha256": "2e1202fd5ee961c745268d011311b3fa87b77e0c188d640993d381ad2e33d5cc",
+      "originalBytes": 813,
+      "storedBytes": 617
+    },
+    {
+      "path": "build-reuse.json",
+      "originalSha256": "d5b8bf36ff9df4599bac7df393654d1612a5838959cb2c0146179646bc048073",
+      "sha256": "d5b8bf36ff9df4599bac7df393654d1612a5838959cb2c0146179646bc048073",
+      "originalBytes": 1869,
+      "storedBytes": 1869
+    }
+  ],
+  "limits": "Synthetic native consumer evidence, not live browser/provider/GM/gameplay/Load/full-platform acceptance; Windows early returns and pure typecheck remain explicitly distinct."
+}

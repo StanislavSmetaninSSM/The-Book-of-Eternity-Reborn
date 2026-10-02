@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-engine-save-player"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "5b31ba9e7f7443cb0b4e3f32930c8ab57016953d",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 5.4539865,
+  "Descriptors": [
+    {
+      "Name": "portable-engine-save-player-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-engine-save-player",
+      "Categories": [
+        "portable-engine-save-player"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableAutosave_PlayerTurnRetainsAcceptedStateAndTerminalEvidence",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableAutosave_PlayerTurnRetainsAcceptedStateAndTerminalEvidence",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}
