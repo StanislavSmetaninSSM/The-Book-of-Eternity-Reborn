@@ -1,0 +1,199 @@
+{
+  "Categories": [
+    "portable-browser-save-presentation",
+    "portable-settings-notices",
+    "portable-settings-consumers",
+    "frontend-shell-types"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "3b01ad5b3135144f4bc9d8f48be2da7472933c0e",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "frontend-shell-types",
+      "Seconds": 3.5517171,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-browser-save-presentation",
+      "Seconds": 2.8417899,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "portable-settings-consumers",
+      "Seconds": 1.6294294,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-settings-notices",
+      "Seconds": 2.7371084,
+      "BudgetMinutes": 4,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [
+    {
+      "Descriptor": "frontend-shell-types-frontend-001",
+      "Adapter": "typecheck",
+      "VerificationKind": "compile-contracts",
+      "Results": 2,
+      "Seconds": 3.5386278
+    },
+    {
+      "Descriptor": "portable-browser-save-presentation-frontend-002",
+      "Adapter": "node",
+      "VerificationKind": "tests",
+      "Results": 1,
+      "Seconds": 1.0412137
+    },
+    {
+      "Descriptor": "portable-browser-save-presentation-frontend-003",
+      "Adapter": "vitest",
+      "VerificationKind": "tests",
+      "Results": 8,
+      "Seconds": 1.7986602
+    },
+    {
+      "Descriptor": "portable-settings-consumers-frontend-004",
+      "Adapter": "node",
+      "VerificationKind": "tests",
+      "Results": 2,
+      "Seconds": 0.8788179
+    },
+    {
+      "Descriptor": "portable-settings-consumers-frontend-005",
+      "Adapter": "vitest",
+      "VerificationKind": "tests",
+      "Results": 25,
+      "Seconds": 0.7490777
+    },
+    {
+      "Descriptor": "portable-settings-notices-frontend-006",
+      "Adapter": "node",
+      "VerificationKind": "tests",
+      "Results": 1,
+      "Seconds": 1.2247261
+    },
+    {
+      "Descriptor": "portable-settings-notices-frontend-007",
+      "Adapter": "vitest",
+      "VerificationKind": "tests",
+      "Results": 6,
+      "Seconds": 1.5105083
+    }
+  ],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.1615547,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0262705,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0202982,
+      "Completed": true
+    },
+    {
+      "Name": "Frontend-build",
+      "Seconds": 7.8142216,
+      "Completed": true
+    },
+    {
+      "Name": "frontend-shell-types-frontend-001-compile",
+      "Seconds": 3.4926526,
+      "Completed": true
+    },
+    {
+      "Name": "portable-browser-save-presentation-frontend-002-compile",
+      "Seconds": 0.925561,
+      "Completed": true
+    },
+    {
+      "Name": "portable-browser-save-presentation-frontend-002-savePersistenceNotice.test.js",
+      "Seconds": 0.0970949,
+      "Completed": true
+    },
+    {
+      "Name": "portable-browser-save-presentation-frontend-003",
+      "Seconds": 1.7732494,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-consumers-frontend-004-compile",
+      "Seconds": 0.7016231,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-consumers-frontend-004-audioPanelCatalogVisibility.test.js",
+      "Seconds": 0.0811137,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-consumers-frontend-004-gracefulDegradation.test.js",
+      "Seconds": 0.0787294,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-consumers-frontend-005",
+      "Seconds": 0.7361652,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-notices-frontend-006-compile",
+      "Seconds": 1.117869,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-notices-frontend-006-settingsPersistenceNotice.test.js",
+      "Seconds": 0.097135,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-notices-frontend-007",
+      "Seconds": 1.5026108,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0060744,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 19,
+  "WallTime": "00:00:19.5306415",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 7,
+    "CompletedDescriptors": 7,
+    "PlannedCases": 10,
+    "CompletedCases": 45,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 45,
+    "Executed": 45,
+    "Passed": 45,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
