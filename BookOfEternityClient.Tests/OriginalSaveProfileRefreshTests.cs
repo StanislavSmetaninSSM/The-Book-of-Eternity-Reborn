@@ -90,7 +90,9 @@ public sealed class OriginalSaveProfileRefreshTests : IDisposable
         using (var handle = File.OpenHandle(profilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
             Assert.Equal(PhysicalFileAuthority.CaptureFileIdentity(handle, "original profile test result"),
                 publication.Receipt.PhysicalIdentity);
-        using var profile = JsonDocument.Parse(afterProfile);
+        // The original writer retains its UTF-8 preamble; raw bytes above remain
+        // authoritative for the receipt, while ordinary text decoding strips it.
+        using var profile = JsonDocument.Parse(File.ReadAllText(profilePath));
         var player = Assert.Single(profile.RootElement.GetProperty("profiles").EnumerateArray());
         Assert.Equal(0, player.GetProperty("currencies").GetProperty("inkFeathers").GetInt32());
         Assert.Equal(0, player.GetProperty("standardArts").GetProperty("guard").GetInt32());
