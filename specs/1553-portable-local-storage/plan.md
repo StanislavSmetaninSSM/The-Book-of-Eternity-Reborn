@@ -40,6 +40,27 @@ This does not convert Windows evidence into Linux acceptance. Work remains on
   duration or product requirement. No full suite, shared mutable cache or smaller
   supported-archive limit is introduced.
 
+Latest verified prerequisite evidence: frozen ec5e5ccf binaries passed format **29/29**
+and full archive resource **3/3** in **4:31.750** without rebuilding unchanged source.
+The preceding fresh build's five-case negative cohort passed four and exposed a test
+setup error: resolving the deliberately linked member again reached the ordinary
+reparse guard before cold recovery. Cache its already admitted path before creating
+the link; production remains unchanged. Preserve both outcomes separately.
+[Resource evidence](recovery/evidence/stream-windows-resource-green-20261002/manifest.json)
+includes all fifteen child measurements and independent Astra XHigh hash/result review.
+Near-512 ZIP: **536,973,572 bytes**, BEFORE **536,973,604 bytes**. V2 publication peak
+working set was at most **44.12 MiB**, versus **502.68 MiB** for the unchanged producer;
+maximum sampled logical disk **2,684,879,464 bytes** stayed below 3 GiB. Bulk publication
+allocations stayed approximately 1.16–1.52 MB and cold acquisition 1.00–1.14 MB. Small
+metadata diagnostics do not purport to isolate all codec metadata allocations.
+
+Remaining original gate coverage is now explicit: six generation-member/empty-image
+cold cases, three image-adapter pre-intent drift cases and one Linux-only FIFO case.
+Implement these under T032-A1; run the first nine plus the corrected five-case negative
+owner on Windows. The Linux-only owner asserts its OS and is intentionally excluded
+from Windows selection, so it cannot produce a misleading skipped-body pass. Native
+Linux execution remains for the Linux coordinator, as the owner requested.
+
 Before acceptance: publish source; run only changed conflict/format/resource owners;
 validate discovery metadata; preserve parsed results; obtain independent Astra XHigh
 review and fresh GitHub recovery. Full T032-A1 and SaveGame caller cutover remain open.

@@ -117,13 +117,14 @@ public sealed class TrustedLocalStreamRecoveryTests(ITestOutputHelper output) : 
         Assert.Equal(73, await Run("stream-publish", "last-member"));
         var outside = Path.Combine(_root, "outside-type-sentinel.bin");
         File.WriteAllBytes(outside, [91, 0, 255]);
-        File.Delete(Created);
+        var created = Created;
+        File.Delete(created);
         if (linked)
         {
-            File.CreateSymbolicLink(Created, outside);
-            Assert.True(File.GetAttributes(Created).HasFlag(FileAttributes.ReparsePoint));
+            File.CreateSymbolicLink(created, outside);
+            Assert.True(File.GetAttributes(created).HasFlag(FileAttributes.ReparsePoint));
         }
-        else Directory.CreateDirectory(Created);
+        else Directory.CreateDirectory(created);
         var evidence = Hash(Active);
 
         Assert.Equal(78, await Run("stream-recover", "unused"));
@@ -133,10 +134,55 @@ public sealed class TrustedLocalStreamRecoveryTests(ITestOutputHelper output) : 
         Assert.Equal(_generation, File.ReadAllBytes(Files.SessionGenerationPath));
         Assert.Equal(evidence, Hash(Active));
         Assert.Equal(new byte[] { 91, 0, 255 }, File.ReadAllBytes(outside));
-        if (linked) Assert.Equal(outside, new FileInfo(Created).LinkTarget);
-        else Assert.True(Directory.Exists(Created));
+        if (linked) Assert.Equal(outside, new FileInfo(created).LinkTarget);
+        else Assert.True(Directory.Exists(created));
         AssertSentinels();
     }
+
+    /// <summary>
+    /// Rejects a native Linux FIFO before opening it or restoring an earlier member during cold recovery.
+    /// </summary>
+    [Fact]
+    public async Task LinuxFifoLaterMemberPreventsEarlierColdRollback()
+    {
+        // Implemented on Windows; native Linux execution remains pending in the 2026-10-02 handoff.
+        // Its separate Linux-only category must not report a skipped body as a Windows pass.
+        Assert.True(OperatingSystem.IsLinux(), "Run the portable-storage-stream-linux-fifo category on Linux only.");
+        Seed();
+        Assert.Equal(73, await Run("stream-publish", "last-member"));
+        var created = Created;
+        File.Delete(created);
+        Assert.Equal(0, CreateFifo(created, 384));
+        var scope = new TrustedLocalFileScope([_root]);
+        Assert.Throws<InvalidDataException>(() => scope.ValidateFile(created, allowMissing: false));
+        var evidence = Hash(Active);
+
+        Assert.Equal(78, await Run("stream-recover", "unused"));
+
+        Assert.Equal(_afterHash, Hash(Target));
+        Assert.False(File.Exists(Deleted));
+        Assert.Equal(_generation, File.ReadAllBytes(Files.SessionGenerationPath));
+        Assert.Equal(evidence, Hash(Active));
+        Assert.True(File.Exists(created));
+        Assert.Throws<InvalidDataException>(() => scope.ValidateFile(created, allowMissing: false));
+        AssertSentinels();
+        File.Delete(created);
+    }
+
+    /// <summary>
+    /// Creates one FIFO name in the independently owned Linux fixture.
+    /// </summary>
+    /// <param name="path">
+    /// The absent absolute fixture member path.
+    /// </param>
+    /// <param name="mode">
+    /// The Unix permission bits, passed as owner read/write only.
+    /// </param>
+    /// <returns>
+    /// Zero on success, or the native failure status.
+    /// </returns>
+    [DllImport("libc", EntryPoint = "mkfifo", SetLastError = true)]
+    private static extern int CreateFifo(string path, uint mode);
 
     private void AssertDecision(bool committed)
     {

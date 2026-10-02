@@ -2,25 +2,25 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-storage-stream-cold-conflicts",
       "contracts": [
         "#1553 FR-004/005/006/007; save-resource-gate.md prerequisite"
       ],
-      "reason": "T032-A1 native continuation: changed conflict/format fixtures and new full-archive resource proof; unchanged passing cohorts retained at their exact prior sources."
+      "reason": "T032-A1 remaining bounded prerequisites: corrected negative fixture, actual pre-intent fences and generation/empty cold ordering. Prior format/resource GREEN retained; Linux FIFO has a separate unexecuted owner.",
+      "category": "portable-storage-stream-cold-conflicts"
     },
     {
-      "category": "portable-storage-stream-publication",
       "contracts": [
         "#1553 FR-004/005/006/007; save-resource-gate.md prerequisite"
       ],
-      "reason": "T032-A1 native continuation: changed conflict/format fixtures and new full-archive resource proof; unchanged passing cohorts retained at their exact prior sources."
+      "reason": "T032-A1 remaining bounded prerequisites: corrected negative fixture, actual pre-intent fences and generation/empty cold ordering. Prior format/resource GREEN retained; Linux FIFO has a separate unexecuted owner.",
+      "category": "portable-storage-image-admission"
     },
     {
-      "category": "portable-storage-stream-resource",
       "contracts": [
         "#1553 FR-004/005/006/007; save-resource-gate.md prerequisite"
       ],
-      "reason": "T032-A1 native continuation: changed conflict/format fixtures and new full-archive resource proof; unchanged passing cohorts retained at their exact prior sources."
+      "reason": "T032-A1 remaining bounded prerequisites: corrected negative fixture, actual pre-intent fences and generation/empty cold ordering. Prior format/resource GREEN retained; Linux FIFO has a separate unexecuted owner.",
+      "category": "portable-storage-stream-generation"
     }
   ]
 }

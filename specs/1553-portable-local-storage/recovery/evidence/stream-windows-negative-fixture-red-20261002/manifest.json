@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A1-WIN",
+  "sourceCommit": "ec5e5ccf05cccb4c611c0ebe8be5e78cc628509c",
+  "status": "4/5 cold conflicts passed; link fixture resolved its path again after deliberately installing a symlink and hit the admission guard before the intended recovery assertion. 32 format/resource cases unrun. Fresh XML build at clean ec5e5ccf; no product defect inferred.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-storage-stream-cold-conflicts",
+    "portable-storage-stream-publication",
+    "portable-storage-stream-resource"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:02:46.9854062",
+  "exitCode": 1,
+  "selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 37,
+    "CompletedCases": 5,
+    "UnderfilledDescriptors": [
+      "portable-storage-stream-publication-unit-002",
+      "portable-storage-stream-resource-unit-003"
+    ],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 5,
+    "Executed": 5,
+    "Passed": 4,
+    "Failed": 1
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "Build-unit.log",
+      "originalSha256": "D68B83430A008DAF8110D3D5EA4E251C1018AFF9E5F4022BAC3F098B9CABE9A0",
+      "sha256": "599156F1CAE801B5772874443DF4367F34B1D7DFC1A62C7AC503797AF5FE8701"
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "70239B3BCC09CEDDD1D75DF08C460CCEAD8B8E2FD3538098AD9D57C39255623E",
+      "sha256": "17A749D8358E9FFEA93F44492A7AC3857AA13E0D2C6D963C547FC59F4C72F92C"
+    },
+    {
+      "path": "portable-storage-stream-cold-conflicts-unit-001.trx",
+      "originalSha256": "B745691BC192D09F4E709C833A68F7D2143F7ADB9375C27F39C3F876332AE653",
+      "sha256": "5035EF3D92C719924633F1ACE9E7E23825B55A2E9A76F77A206404BDF16AB71D"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "08BA4F98CCD09CB01C01A13515425F4B22285B15B9B410760C16F34EC1782657",
+      "sha256": "2EA3FCE25A09F0C18ED3D33182BF9368656FD986AEA9B0AB5989900143145E9F"
+    }
+  ]
+}

@@ -2,6 +2,39 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-storage-stream-generation",
+      "responsibility": "Six separate-process v2 generation-member ordering cases: fresh adapter generation before/staged/published/commit cuts and existing BOM/case/extension-preserving transitions, with present-empty versus absent members and exact whole-set cold recovery.",
+      "excludes": "Full original v1 encoding matrix, generic content phase matrix, resource envelope, Linux FIFO and SaveGame caller cutover.",
+      "changeHints": ["BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs", "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs", "BookOfEternityClient.TestSupport/TrustedLocalStreamGenerationCrashFixture.cs", "BookOfEternityClient.Tests/TrustedLocalStreamGenerationRecoveryTests.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": true },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages"] }]
+    },
+    {
+      "id": "portable-storage-stream-linux-fifo",
+      "responsibility": "Linux-only real FIFO replacing a later v2 member: cold acquisition rejects the special file without opening it or changing earlier data, generation, journal or outside/library sentinels. Run on Linux; Windows compilation is not native execution.",
+      "excludes": "Windows execution, ordinary type/link cases owned by cold-conflicts, general scope FIFO validation and resource/caller acceptance.",
+      "changeHints": ["BookOfEternityClient.Tests/TrustedLocalStreamRecoveryTests.cs", "BookOfEternityClient/Core/TrustedLocalFileScope.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": true },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LinuxFifoLaterMemberPreventsEarlierColdRollback"] }]
+    },
+    {
+      "id": "portable-storage-image-admission",
+      "responsibility": "Actual image adapter pre-intent generation drift and changed/missing captured candidate rejection; exact typed result, no published phases and complete destination/library/generation/outside preservation.",
+      "excludes": "Ordinary identical-create collision, generation cold ordering, resource and SaveGame caller acceptance.",
+      "changeHints": ["BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs", "BookOfEternityClient.Tests/TrustedLocalImageAdapterAdmissionTests.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": true },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.TrustedLocalImageAdapterAdmissionTests.PreIntentDriftCannotPublishCapturedArchive"] }]
+    },
+    {
       "id": "portable-storage-stream-resource",
       "responsibility": "T032-A1 full 64/128/near-512 MiB producer archives through file-backed before/after images, pending cold rollback and committed cold cleanup, exact generation/library/outside preservation and measured resource bounds on the executing Windows or Linux host.",
       "excludes": "SaveGame caller cutover, full crash-phase matrix, load, whole-platform acceptance and any native OS result that has not actually executed.",

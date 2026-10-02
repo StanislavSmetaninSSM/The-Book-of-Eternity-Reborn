@@ -1,0 +1,134 @@
+{
+  "Categories": [
+    "portable-storage-stream-cold-conflicts",
+    "portable-storage-stream-publication",
+    "portable-storage-stream-resource"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-storage-stream-cold-conflicts",
+      "contracts": [
+        "#1553 FR-004/005/006/007; save-resource-gate.md prerequisite"
+      ],
+      "reason": "T032-A1 native continuation: changed conflict/format fixtures and new full-archive resource proof; unchanged passing cohorts retained at their exact prior sources."
+    },
+    {
+      "category": "portable-storage-stream-publication",
+      "contracts": [
+        "#1553 FR-004/005/006/007; save-resource-gate.md prerequisite"
+      ],
+      "reason": "T032-A1 native continuation: changed conflict/format fixtures and new full-archive resource proof; unchanged passing cohorts retained at their exact prior sources."
+    },
+    {
+      "category": "portable-storage-stream-resource",
+      "contracts": [
+        "#1553 FR-004/005/006/007; save-resource-gate.md prerequisite"
+      ],
+      "reason": "T032-A1 native continuation: changed conflict/format fixtures and new full-archive resource proof; unchanged passing cohorts retained at their exact prior sources."
+    }
+  ],
+  "Revision": {
+    "Head": "ec5e5ccf05cccb4c611c0ebe8be5e78cc628509c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 150.8539095,
+  "Descriptors": [
+    {
+      "Name": "portable-storage-stream-cold-conflicts-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-stream-cold-conflicts",
+      "Categories": [
+        "portable-storage-stream-cold-conflicts"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.ColdLaterMemberOrGenerationConflictRetainsEarlierImagesAndEvidence|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.ColdLaterMemberTypeOrLinkConflictPreventsEarlierRollback|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.CommittedColdCleanupCanBeInterruptedWithoutRestoringOldImages",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.ColdLaterMemberOrGenerationConflictRetainsEarlierImagesAndEvidence",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.ColdLaterMemberTypeOrLinkConflictPreventsEarlierRollback",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.CommittedColdCleanupCanBeInterruptedWithoutRestoringOldImages",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-stream-publication-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-stream-publication",
+      "Categories": [
+        "portable-storage-stream-publication"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.FileImagesBecomeSelfContainedBeforeDisposableSourcesAreRemoved|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.OriginalV1EvidenceKeepsItsOriginalPendingAndCommittedSemantics|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.UnknownLaterMemberPreventsEarlierRollbackAndRetainsV2Authority|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidActiveV2OwnsDecisionDespiteUnknownTemporaryContents|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidFramedEvidenceRecoversThroughNormalCanonicalAcquisition|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 29,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.FileImagesBecomeSelfContainedBeforeDisposableSourcesAreRemoved",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation",
+          "Cases": 14
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.OriginalV1EvidenceKeepsItsOriginalPendingAndCommittedSemantics",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.UnknownLaterMemberPreventsEarlierRollbackAndRetainsV2Authority",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidActiveV2OwnsDecisionDespiteUnknownTemporaryContents",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidFramedEvidenceRecoversThroughNormalCanonicalAcquisition",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision",
+          "Cases": 5
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-stream-resource-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-stream-resource",
+      "Categories": [
+        "portable-storage-stream-resource"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamResourceTests.FullArchiveImagesPublishAndRecoverWithinOriginalOwnedBounds",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 8,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamResourceTests.FullArchiveImagesPublishAndRecoverWithinOriginalOwnedBounds",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

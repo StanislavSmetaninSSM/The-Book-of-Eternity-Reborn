@@ -19,6 +19,8 @@ public static class Program
             ? BookOfEternityClient.Tests.PortableSaveResourceProbe.RunAsync(args)
             : args.Length == 4 && args[2] == "stream-resource"
                 ? BookOfEternityClient.Tests.TrustedLocalStreamResourceProbe.RunAsync(args)
+            : args.Length == 4 && args[2] is "generation-fresh-publish" or "generation-transition-publish" or "generation-recover"
+                ? BookOfEternityClient.Tests.TrustedLocalStreamGenerationCrashFixture.RunAsync(args)
             : args.Length == 4 && args[2] is "stream-recover" or "stream-publish" or "stream-recover-cut"
                 ? BookOfEternityClient.Tests.TrustedLocalStreamCrashFixture.RunAsync(args)
             : BookOfEternityClient.Tests.TrustedLocalPublicationCrashFixture.RunAsync(args);
