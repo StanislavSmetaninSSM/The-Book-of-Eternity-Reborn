@@ -271,9 +271,9 @@
     {
       "path": "child-measurements.json",
       "originalSha256": "20ab86b3f3f1463373119131904c078a675328a455ff9e530ca33431644b0961",
-      "sha256": "20ab86b3f3f1463373119131904c078a675328a455ff9e530ca33431644b0961",
+      "sha256": "d99400718cc2aa637a81c9bbc3a684a315927d9ca2901574fcd688db09cd0b91",
       "originalBytes": 30671,
-      "storedBytes": 30671,
+      "storedBytes": 29876,
       "provenance": "Derived without rounding from the fifteen validated JSON child reports and parent measurements in the preserved TRX."
     }
   ],
