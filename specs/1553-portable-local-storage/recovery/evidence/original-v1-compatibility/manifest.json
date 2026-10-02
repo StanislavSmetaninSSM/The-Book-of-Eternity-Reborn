@@ -354,7 +354,7 @@
     "No historical binary was executed.",
     "No production edits; no fabricated RED, broad suite, resource/dispatch/interruption or malformed-evidence run.",
     "T032-A1 remains unaccepted; separate-process v2/large-before/resource/adapter-negative/Windows lifetime proof remains open.",
-    "Independent evidence review and final clean GitHub-only restore are pending; source review reported no actionable finding."
+    "The bounded two-case source/evidence was independently accepted at bd23ad76; final status/new restoration-proof readback remains pending. Full T032-A1 and active-branch integration remain open."
   ],
   "auditBuild": {
     "sourceCommit": "fdd1f81b4ac58cff00e1f8ae93d6b16c7eb2606a",
@@ -377,5 +377,20 @@
     "subsequentProcessLocalSetting": "DOTNET_GENERATE_ASPNET_CERTIFICATE=false",
     "settingAppliedWhen": "After the observed unit build and the integration build had already started; before the discovery-only audit process. Not retroactive.",
     "documentation": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-environment-variables#dotnet_generate_aspnet_certificate"
+  },
+  "review": {
+    "status": "accepted",
+    "scope": "Two ordinary original-v1 cases, selection sufficiency, source/evidence identities and truthful limits only",
+    "reviewedCommit": "bd23ad76b1758c8b268733d6da04c3d2876d12a4",
+    "reviewer": "Independent GPT-6 Astra XHigh",
+    "actionableFindings": 0,
+    "closureDocuments": "Final status/new restoration-proof readback remains pending"
+  },
+  "restoration": {
+    "proof": "../../v1-compatibility-restoration.json",
+    "proofSha256": "a766c86f635b3053c1a7409fba60fa7b609014ac08d54661497887b13c223f44",
+    "restoredEvidenceCommit": "bd23ad76b1758c8b268733d6da04c3d2876d12a4",
+    "observationStartedUtc": "2026-10-02T07:25:48Z",
+    "result": "New GitHub-only source/packet/evidence restoration verified after earlier temporary files disappeared; no behavioral rerun"
   }
 }
