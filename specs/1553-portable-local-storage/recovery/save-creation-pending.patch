@@ -1,3 +1,15 @@
+diff --git a/BookOfEternityClient/Core/FileSystemManager.cs b/BookOfEternityClient/Core/FileSystemManager.cs
+index 4dc1ce30..36c3f76d 100644
+--- a/BookOfEternityClient/Core/FileSystemManager.cs
++++ b/BookOfEternityClient/Core/FileSystemManager.cs
+@@ -9,6 +9,7 @@ namespace BookOfEternityClient.Core;
+ internal sealed class FileSystemManagerHooks
+ {
+     internal Action<TrustedLocalPublicationPhase, int>? LocalPublicationObserver { get; init; }
++    internal Action<TrustedLocalPublicationPhase, int>? LocalPublicationRecoveryObserver { get; init; }
+     internal Func<Task>? CanonicalWriteLockContendedAsync { get; init; }
+     internal Func<Task>? SessionLifecycleLockContendedAsync { get; init; }
+     internal Func<Task>? BeforeCanonicalWriteLockOpenAsync { get; init; }
 diff --git a/tests/categories.json b/tests/categories.json
 index 6bbd1c6f..15baf6e5 100644
 --- a/tests/categories.json
