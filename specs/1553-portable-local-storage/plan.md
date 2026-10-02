@@ -4,6 +4,49 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T032-B0 ordinary-load design WIP — 2026-10-02
+
+Source/ref ownership resumed on `codex/1553-save-windows` at clean verified
+`2ffb84572d12f2ad47b219e33ee7b50ccf0e5418`, tree
+`4c57bd15eaedf9ba463f2dd4e6c034cd36e287f5`; GitHub ref and `git ls-remote` agreed.
+The [ordinary-load implementation plan](ordinary-load-plan.md) preserves the useful
+current-source report at accepted `ddaade72` (production unchanged through the entry
+SHA), reconciles it with this canonical feature and adds T032-B0–B5 in [tasks](tasks.md).
+The historical [cutover](save-load-cutover.md) and [admission](save-load-admission.md)
+source maps remain unchanged; the new load plan explicitly supersedes their tentative
+topology limit and unresolved both-absent settings baseline.
+
+The first connected block is owned archive preparation → complete live/incoming images
+and deletions → the same B1 replacement/generation decision → typed outcome and canonical
+runtime refresh. It includes the replacement-specific image adapter and streaming the
+existing v2 metadata frame without its save-only 1 MiB whole-header cap/allocation;
+existing v1/v2 evidence, type/link/schema/region checks and all archive budgets remain.
+Incoming limits do not cap the independently larger old deletion inventory. The whole
+save library and selected ZIP stay outside replacement through commit/rollback/cold recovery.
+
+Full valid file↔directory conversion is a required T032-B2 design/recovery gate before
+public caller cutover, not an optional final limitation. Both-absent config uses detached
+standard fresh `GameSettings` defaults from the existing product startup contract, keeps
+disk absence and affects runtime only after confirmed commit. Missing archive config
+with admitted live config retains its exact persisted bytes. Source references and causal
+cold/default tests are in the load plan; no mutable preview or new initial-profile authority.
+
+This checkpoint changes only four feature documents. No production, tests, catalog,
+selection or historical evidence changes; no test/build/PlanOnly/catalog-audit, original
+Load diagnostic, application, provider or installation execution. Self-checks are
+source/ref identity, documentation diff/links and the Spec Kit consistency pass; they do
+not prove runtime behavior. The existing task-local toolchain can be reused after reading
+its environment script; no toolchain setup or dependency reinstall was needed here.
+
+**Status:** docs-only WIP, independently unreviewed. Publish and verify this small
+checkpoint before review; the next action is coordinator-owned independent GPT-6 Astra
+XHigh design review of the connected boundary, streamed metadata semantics, topology gate,
+settings authority and task/test sufficiency. No production/test implementation before
+that disposition. T032-B0 and all load tasks remain unchecked; ordinary-save acceptance
+below is unchanged. Full T031/T032, T033/live clients/GM, overall B4/B5 and full platform
+acceptance remain open. Quiescent storage proof cannot stand in for provider confirmed-stop
+or actual gameplay. No GM-authored schema or gameplay contract changes in this plan.
+
 <a id="active-t032-a--ordinary-save-creation"></a>
 
 
@@ -16,11 +59,10 @@ supplement was fetched into the same fresh clone: 4,390 tracked files, clean che
 exact final HEAD/tree and all 81 changed files verified. This is ordinary-save acceptance;
 Load, full T031/T032, live clients/GM, T033/B4/B5 and overall platform acceptance remain open.
 
-Next: map ordinary-load preparation, complete member publication and preservation of the
-manual/autosave/checkpoint library. Refresh [save-load-cutover.md](save-load-cutover.md)
-and [save-load-admission.md](save-load-admission.md), which are historical source maps,
-against the current implementation before changing code. The known original Load 0/2
-diagnostic remains preserved; this closure neither reopens nor replays it.
+Next: review the reconciled [ordinary-load plan](ordinary-load-plan.md) and T032-B tasks
+above before implementation. The historical [cutover](save-load-cutover.md) and
+[admission](save-load-admission.md) maps retain their source identities. The known original
+Load 0/2 diagnostic remains preserved; this continuation neither reopens nor replays it.
 
 The accepted Linux continuation began from clean `24f3a1ad19b8bcbe854dc6643755773ea1c8a1ea`
 (tree `ea546bc3022d06a516127d3c3705cfe6c8d461fd`). The coordinator accepted the

@@ -9,12 +9,17 @@ GitHub-only restoration/readback verified the clean 4,390-file checkout and exac
 HEAD/tree and changed files. The current [plan](plan.md) keeps the criteria map and
 separate historical Windows/Linux execution sources; this docs closure adds no execution.
 
-Next, map ordinary-load preparation, complete member publication and preservation of the
-manual/autosave/checkpoint library. Refresh [save-load-cutover.md](save-load-cutover.md)
-and [save-load-admission.md](save-load-admission.md), historical source maps, against the
-current code before implementation. Do not reopen or replay the known original Load 0/2
-diagnostic as part of this handoff. Full T031/T032, Load, T033/live clients/GM, B4/B5 and
-overall platform acceptance remain open; live browser GUI is still deferred.
+The next capability now has a current-source [ordinary-load plan](ordinary-load-plan.md)
+and T032-B0–B5 in [tasks](tasks.md), reconciled from immutable `ddaade72` onto clean entry
+`2ffb84572`. This is docs-only WIP for independent Astra XHigh design review; no production,
+test, build or audit work ran. Preserve the historical [cutover](save-load-cutover.md) and
+[admission](save-load-admission.md) maps unchanged. The new plan requires full valid topology
+conversion before public cutover, standard detached defaults only when archive/live config
+are both absent, complete library preservation and one streamed B1 image/generation decision.
+Do not reopen or replay the known original Load 0/2 diagnostic. Full T031/T032, Load,
+T033/live clients/GM, B4/B5 and overall platform acceptance remain open; live browser GUI
+is still deferred. Continue with the coordinator's design-review disposition before
+production/test implementation.
 
 ## Returned Windows caller checkpoint and distinct evidence
 
