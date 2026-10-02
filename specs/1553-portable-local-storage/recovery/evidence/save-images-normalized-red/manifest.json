@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "Head": "52967dc2367d449e640e6d8e3f74cda933c06fe1",
+    "WorkingTreeFingerprint": "D8FABB04B9C94A5C764906C6B87FC65D1EC5699ACB17E42BA38A3725B32F178A",
+    "ChangedFiles": 1
+  },
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category portable-storage-images -NoBuild -Parallelism 1",
+  "summary": {
+    "ExitCode": 1,
+    "WallTime": "00:00:07.2094515",
+    "Tests": {
+      "Total": 11,
+      "Executed": 11,
+      "Passed": 0,
+      "Failed": 11
+    },
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 11,
+      "CompletedCases": 11,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "DuplicateTests": []
+  },
+  "artifacts": [
+    {
+      "file": "summary.json",
+      "originalSha256": "103a60df66062822a018a14880d5cb488974a652105da5e80ff1c167393e7598",
+      "sanitizedSha256": "103a60df66062822a018a14880d5cb488974a652105da5e80ff1c167393e7598"
+    },
+    {
+      "file": "plan.json",
+      "originalSha256": "8eef136b167e7468cc783e7020fffc6b0feb362f246a7ae91a1d3376c816134d",
+      "sanitizedSha256": "8eef136b167e7468cc783e7020fffc6b0feb362f246a7ae91a1d3376c816134d"
+    },
+    {
+      "file": "portable-storage-images-unit-001.trx",
+      "originalSha256": "c6e154687e961bac64e22a9a0b588c59114c2d65130c1ade102d845bd88d55ec",
+      "sanitizedSha256": "281646f3f8e696e8d9177e0d645207aa5457bddcc9abe0e2e2487d7baea82626"
+    }
+  ],
+  "sanitization": "Role-based path tokens without angle brackets; all sanitized TRX parsed as XML before publication. Raw hashes retain original provenance.",
+  "packet": {
+    "schemaVersion": 1,
+    "baseCommit": "22b486bc5448375f09ba09d27f3bfcd0f236509f",
+    "patchFile": "save-creation-pending.patch",
+    "patchBytes": 3234,
+    "patchSha256": "ea1ea13e74e9b9986a2674737d96436ed85351877f667bebaab8f13568c4c5ce",
+    "entries": [
+      {
+        "path": "tests/categories.json",
+        "beforeBlob": "6bbd1c6f0e8a087a7c92df4cce0a6e798bcfa4e5",
+        "afterBlob": "abe953acc624e868d37a88d6e13c5f66ef1b40ba",
+        "beforeSha256": "414e68f9da3eb09121c430204bf04f199dba5d27d2b9065ab404d995ad919e08",
+        "afterSha256": "2524af667b5d2ff17904fc3e14682ae2b903642b6364ec81edd7a1baaa53f83a"
+      }
+    ],
+    "appliedSourceTree": "ac0b9ce95c9090aea1a04bc9d6c9360fecf5c36d",
+    "comparisonExcludes": [
+      "specs/1553-portable-local-storage/recovery/save-creation-pending.patch",
+      "specs/1553-portable-local-storage/recovery/save-creation-pending.json"
+    ],
+    "scope": "T032-A ordinary save creation; current plan records exact execution and remaining scope"
+  },
+  "buildReuse": "All C# test/runtime bytes equal 22b486bc, whose fresh unit build succeeded in the earlier mixed run. Only the owned launcher/run environment and saved evidence/plan changed. This retry uses -NoBuild; all 11 cases reach the intended image scaffold exception."
+}

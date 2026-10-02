@@ -1,0 +1,345 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="2d543478-f747-4851-9565-167592d0b0c7" name="@ff00c3d48a40 2026-10-01 21:21:38" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-01T21:21:38.8230486-04:00" queuing="2026-10-01T21:21:38.8230487-04:00" start="2026-10-01T21:21:37.0020650-04:00" finish="2026-10-01T21:21:38.8544274-04:00" />
+  <TestSettings name="default" id="5549199d-913a-41da-b145-396babf161c9">
+    <Deployment runDeploymentRoot="_ff00c3d48a40_2026-10-01_21_21_38" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="4033eedb-d78c-44be-bbcb-4676f9832ee2" testId="139a859f-94ae-155b-7881-5c8b01aa374f" testName="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: &quot;absent&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0007946" startTime="2026-10-01T21:21:38.7499781-04:00" endTime="2026-10-01T21:21:38.7499781-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4033eedb-d78c-44be-bbcb-4676f9832ee2">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.FileNotFoundException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : T032-A1 image scaffold</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(String kind) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 59
+   at InvokeStub_TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.TrustedLocalFileImage.CaptureFile(TrustedLocalFileScope scope, String path) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs:line 15
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.&lt;&gt;c__DisplayClass7_0.&lt;CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource&gt;b__0() in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 59</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="90a82949-7984-4f73-abbd-a9ecd563f7b3" testId="dd972a63-8777-34f2-673e-ae2507d89afd" testName="BookOfEternityClient.Tests.TrustedLocalFileImageTests.ByteImageOwnsAnIndependentSnapshotAndAbsenceDiffersFromEmpty" computerName="ff00c3d48a40" duration="00:00:00.0009356" startTime="2026-10-01T21:21:38.7509028-04:00" endTime="2026-10-01T21:21:38.7509028-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="90a82949-7984-4f73-abbd-a9ecd563f7b3">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NotImplementedException : T032-A1 image scaffold</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFileImage.FromBytes(Byte[] bytes) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs:line 13
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.ByteImageOwnsAnIndependentSnapshotAndAbsenceDiffersFromEmpty() in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 33
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2046da64-dd23-41f4-9bc2-a3062520d14c" testId="cc55ab71-38c8-ae98-e283-a30510567d98" testName="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: &quot;outside&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0002788" startTime="2026-10-01T21:21:38.7506851-04:00" endTime="2026-10-01T21:21:38.7506852-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2046da64-dd23-41f4-9bc2-a3062520d14c">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : T032-A1 image scaffold</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(String kind) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 60
+   at InvokeStub_TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.TrustedLocalFileImage.CaptureFile(TrustedLocalFileScope scope, String path) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs:line 15
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.&lt;&gt;c__DisplayClass7_0.&lt;CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource&gt;b__1() in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 60</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d8003ca7-a504-483c-9329-5c89f61d86c9" testId="137f5aa3-1dbe-5eab-3e26-1efad8ea44a3" testName="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: &quot;directory&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0032557" startTime="2026-10-01T21:21:38.7494906-04:00" endTime="2026-10-01T21:21:38.7494907-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d8003ca7-a504-483c-9329-5c89f61d86c9">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : T032-A1 image scaffold</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(String kind) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 60
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.TrustedLocalFileImage.CaptureFile(TrustedLocalFileScope scope, String path) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs:line 15
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.&lt;&gt;c__DisplayClass7_0.&lt;CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource&gt;b__1() in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 60</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3c93fa93-39f7-4407-bed3-b80762b94729" testId="305ebdc8-fa56-76e0-7a21-f706946eceeb" testName="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(empty: False)" computerName="ff00c3d48a40" duration="00:00:00.0085773" startTime="2026-10-01T21:21:38.7441809-04:00" endTime="2026-10-01T21:21:38.7441968-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3c93fa93-39f7-4407-bed3-b80762b94729">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NotImplementedException : T032-A1 image scaffold</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFileImage.CaptureFile(TrustedLocalFileScope scope, String path) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs:line 15
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(Boolean empty) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 21
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4618bf9f-c127-4d02-9fb9-51da82a7f2f4" testId="4c919fcd-6773-85b9-1623-226a82fe4f1b" testName="BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: &quot;same-length&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0009230" startTime="2026-10-01T21:21:38.7522120-04:00" endTime="2026-10-01T21:21:38.7522121-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4618bf9f-c127-4d02-9fb9-51da82a7f2f4">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NotImplementedException : T032-A1 image scaffold</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFileImage.CaptureFile(TrustedLocalFileScope scope, String path) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs:line 15
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(String drift) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 71
+   at InvokeStub_TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="648cbe9c-4729-4765-84ba-0e5a9faeba9d" testId="5d65fada-ecfb-91a6-2bee-d354ce78a9ee" testName="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: &quot;link&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0005264" startTime="2026-10-01T21:21:38.7503852-04:00" endTime="2026-10-01T21:21:38.7503852-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="648cbe9c-4729-4765-84ba-0e5a9faeba9d">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : T032-A1 image scaffold</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(String kind) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 60
+   at InvokeStub_TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.TrustedLocalFileImage.CaptureFile(TrustedLocalFileScope scope, String path) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs:line 15
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.&lt;&gt;c__DisplayClass7_0.&lt;CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource&gt;b__1() in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 60</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="083de513-a1f3-4c48-8ea6-389c7e1b145d" testId="b9d12445-68dd-cb7b-ec2c-0f97a4599f38" testName="BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: &quot;deleted&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0008061" startTime="2026-10-01T21:21:38.7513348-04:00" endTime="2026-10-01T21:21:38.7513349-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="083de513-a1f3-4c48-8ea6-389c7e1b145d">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NotImplementedException : T032-A1 image scaffold</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFileImage.CaptureFile(TrustedLocalFileScope scope, String path) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs:line 15
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(String drift) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 71
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="13ba46cb-32b3-405d-8628-44e4edd29430" testId="72f7261d-a609-9c8e-8e44-efdffa1bae7d" testName="BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: &quot;shorter&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0004323" startTime="2026-10-01T21:21:38.7839217-04:00" endTime="2026-10-01T21:21:38.7839217-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="13ba46cb-32b3-405d-8628-44e4edd29430">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NotImplementedException : T032-A1 image scaffold</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFileImage.CaptureFile(TrustedLocalFileScope scope, String path) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs:line 15
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(String drift) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 71
+   at InvokeStub_TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="71de8f71-94b8-4119-a6bf-14ef173f6eee" testId="70b277b9-1e87-7194-d542-5f916afe3d60" testName="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(empty: True)" computerName="ff00c3d48a40" duration="00:00:00.0008184" startTime="2026-10-01T21:21:38.7483438-04:00" endTime="2026-10-01T21:21:38.7483439-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="71de8f71-94b8-4119-a6bf-14ef173f6eee">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NotImplementedException : T032-A1 image scaffold</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFileImage.CaptureFile(TrustedLocalFileScope scope, String path) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs:line 15
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(Boolean empty) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 21
+   at InvokeStub_TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="bdcd0c74-5031-4115-9d21-520d337057e3" testId="af5b9db0-9218-987a-6ac6-3dd9aced214e" testName="BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: &quot;longer&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0003481" startTime="2026-10-01T21:21:38.7843815-04:00" endTime="2026-10-01T21:21:38.7843816-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bdcd0c74-5031-4115-9d21-520d337057e3">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NotImplementedException : T032-A1 image scaffold</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFileImage.CaptureFile(TrustedLocalFileScope scope, String path) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs:line 15
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(String drift) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 71
+   at InvokeStub_TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileImageTests.ByteImageOwnsAnIndependentSnapshotAndAbsenceDiffersFromEmpty" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="dd972a63-8777-34f2-673e-ae2507d89afd">
+      <Execution id="90a82949-7984-4f73-abbd-a9ecd563f7b3" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileImageTests" name="ByteImageOwnsAnIndependentSnapshotAndAbsenceDiffersFromEmpty" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: &quot;absent&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="139a859f-94ae-155b-7881-5c8b01aa374f">
+      <Execution id="4033eedb-d78c-44be-bbcb-4676f9832ee2" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileImageTests" name="CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: &quot;longer&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="af5b9db0-9218-987a-6ac6-3dd9aced214e">
+      <Execution id="bdcd0c74-5031-4115-9d21-520d337057e3" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileImageTests" name="FileCopyRejectsDriftAfterCapture" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(empty: False)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="305ebdc8-fa56-76e0-7a21-f706946eceeb">
+      <Execution id="3c93fa93-39f7-4407-bed3-b80762b94729" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileImageTests" name="CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: &quot;directory&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="137f5aa3-1dbe-5eab-3e26-1efad8ea44a3">
+      <Execution id="d8003ca7-a504-483c-9329-5c89f61d86c9" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileImageTests" name="CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(empty: True)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="70b277b9-1e87-7194-d542-5f916afe3d60">
+      <Execution id="71de8f71-94b8-4119-a6bf-14ef173f6eee" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileImageTests" name="CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: &quot;same-length&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4c919fcd-6773-85b9-1623-226a82fe4f1b">
+      <Execution id="4618bf9f-c127-4d02-9fb9-51da82a7f2f4" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileImageTests" name="FileCopyRejectsDriftAfterCapture" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: &quot;shorter&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="72f7261d-a609-9c8e-8e44-efdffa1bae7d">
+      <Execution id="13ba46cb-32b3-405d-8628-44e4edd29430" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileImageTests" name="FileCopyRejectsDriftAfterCapture" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: &quot;link&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5d65fada-ecfb-91a6-2bee-d354ce78a9ee">
+      <Execution id="648cbe9c-4729-4765-84ba-0e5a9faeba9d" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileImageTests" name="CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: &quot;deleted&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b9d12445-68dd-cb7b-ec2c-0f97a4599f38">
+      <Execution id="083de513-a1f3-4c48-8ea6-389c7e1b145d" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileImageTests" name="FileCopyRejectsDriftAfterCapture" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: &quot;outside&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="cc55ab71-38c8-ae98-e283-a30510567d98">
+      <Execution id="2046da64-dd23-41f4-9bc2-a3062520d14c" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileImageTests" name="CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="139a859f-94ae-155b-7881-5c8b01aa374f" executionId="4033eedb-d78c-44be-bbcb-4676f9832ee2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dd972a63-8777-34f2-673e-ae2507d89afd" executionId="90a82949-7984-4f73-abbd-a9ecd563f7b3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cc55ab71-38c8-ae98-e283-a30510567d98" executionId="2046da64-dd23-41f4-9bc2-a3062520d14c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="137f5aa3-1dbe-5eab-3e26-1efad8ea44a3" executionId="d8003ca7-a504-483c-9329-5c89f61d86c9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="305ebdc8-fa56-76e0-7a21-f706946eceeb" executionId="3c93fa93-39f7-4407-bed3-b80762b94729" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4c919fcd-6773-85b9-1623-226a82fe4f1b" executionId="4618bf9f-c127-4d02-9fb9-51da82a7f2f4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5d65fada-ecfb-91a6-2bee-d354ce78a9ee" executionId="648cbe9c-4729-4765-84ba-0e5a9faeba9d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b9d12445-68dd-cb7b-ec2c-0f97a4599f38" executionId="083de513-a1f3-4c48-8ea6-389c7e1b145d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="72f7261d-a609-9c8e-8e44-efdffa1bae7d" executionId="13ba46cb-32b3-405d-8628-44e4edd29430" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="70b277b9-1e87-7194-d542-5f916afe3d60" executionId="71de8f71-94b8-4119-a6bf-14ef173f6eee" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="af5b9db0-9218-987a-6ac6-3dd9aced214e" executionId="bdcd0c74-5031-4115-9d21-520d337057e3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="11" executed="11" passed="0" failed="11" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.15]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.26]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.29]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.35]       System.NotImplementedException : T032-A1 image scaffold
+[xUnit.net 00:00:01.35]       Stack Trace:
+[xUnit.net 00:00:01.35]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs(15,0): at BookOfEternityClient.Core.TrustedLocalFileImage.CaptureFile(TrustedLocalFileScope scope, String path)
+[xUnit.net 00:00:01.35]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(21,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(Boolean empty)
+[xUnit.net 00:00:01.35]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.35]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.35]       System.NotImplementedException : T032-A1 image scaffold
+[xUnit.net 00:00:01.35]       Stack Trace:
+[xUnit.net 00:00:01.35]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs(15,0): at BookOfEternityClient.Core.TrustedLocalFileImage.CaptureFile(TrustedLocalFileScope scope, String path)
+[xUnit.net 00:00:01.35]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(21,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(Boolean empty)
+[xUnit.net 00:00:01.35]            at InvokeStub_TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(Object, Span`1)
+[xUnit.net 00:00:01.35]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.35]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.35]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.35]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.35]       ---- System.NotImplementedException : T032-A1 image scaffold
+[xUnit.net 00:00:01.35]       Stack Trace:
+[xUnit.net 00:00:01.35]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(60,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(String kind)
+[xUnit.net 00:00:01.35]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.35]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.35]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.35]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs(15,0): at BookOfEternityClient.Core.TrustedLocalFileImage.CaptureFile(TrustedLocalFileScope scope, String path)
+[xUnit.net 00:00:01.35]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(60,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.&lt;&gt;c__DisplayClass7_0.&lt;CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource&gt;b__1()
+[xUnit.net 00:00:01.35]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.35]       Expected: typeof(System.IO.FileNotFoundException)
+[xUnit.net 00:00:01.35]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.35]       ---- System.NotImplementedException : T032-A1 image scaffold
+[xUnit.net 00:00:01.35]       Stack Trace:
+[xUnit.net 00:00:01.35]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(59,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(String kind)
+[xUnit.net 00:00:01.35]            at InvokeStub_TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(Object, Span`1)
+[xUnit.net 00:00:01.35]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.35]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.35]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs(15,0): at BookOfEternityClient.Core.TrustedLocalFileImage.CaptureFile(TrustedLocalFileScope scope, String path)
+[xUnit.net 00:00:01.35]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(59,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.&lt;&gt;c__DisplayClass7_0.&lt;CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource&gt;b__0()
+[xUnit.net 00:00:01.35]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.35]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.35]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.35]       ---- System.NotImplementedException : T032-A1 image scaffold
+[xUnit.net 00:00:01.35]       Stack Trace:
+[xUnit.net 00:00:01.35]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(60,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(String kind)
+[xUnit.net 00:00:01.35]            at InvokeStub_TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(Object, Span`1)
+[xUnit.net 00:00:01.35]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.35]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.35]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs(15,0): at BookOfEternityClient.Core.TrustedLocalFileImage.CaptureFile(TrustedLocalFileScope scope, String path)
+[xUnit.net 00:00:01.35]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(60,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.&lt;&gt;c__DisplayClass7_0.&lt;CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource&gt;b__1()
+[xUnit.net 00:00:01.35]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.35]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.35]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.35]       ---- System.NotImplementedException : T032-A1 image scaffold
+[xUnit.net 00:00:01.36]       Stack Trace:
+[xUnit.net 00:00:01.36]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(60,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(String kind)
+[xUnit.net 00:00:01.36]            at InvokeStub_TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(Object, Span`1)
+[xUnit.net 00:00:01.36]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.36]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.36]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs(15,0): at BookOfEternityClient.Core.TrustedLocalFileImage.CaptureFile(TrustedLocalFileScope scope, String path)
+[xUnit.net 00:00:01.36]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(60,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.&lt;&gt;c__DisplayClass7_0.&lt;CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource&gt;b__1()
+[xUnit.net 00:00:01.36]       System.NotImplementedException : T032-A1 image scaffold
+[xUnit.net 00:00:01.36]       Stack Trace:
+[xUnit.net 00:00:01.36]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs(13,0): at BookOfEternityClient.Core.TrustedLocalFileImage.FromBytes(Byte[] bytes)
+[xUnit.net 00:00:01.36]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(33,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.ByteImageOwnsAnIndependentSnapshotAndAbsenceDiffersFromEmpty()
+[xUnit.net 00:00:01.36]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.36]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.36]       System.NotImplementedException : T032-A1 image scaffold
+[xUnit.net 00:00:01.36]       Stack Trace:
+[xUnit.net 00:00:01.36]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs(15,0): at BookOfEternityClient.Core.TrustedLocalFileImage.CaptureFile(TrustedLocalFileScope scope, String path)
+[xUnit.net 00:00:01.36]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(71,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(String drift)
+[xUnit.net 00:00:01.36]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.36]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.36]       System.NotImplementedException : T032-A1 image scaffold
+[xUnit.net 00:00:01.36]       Stack Trace:
+[xUnit.net 00:00:01.36]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs(15,0): at BookOfEternityClient.Core.TrustedLocalFileImage.CaptureFile(TrustedLocalFileScope scope, String path)
+[xUnit.net 00:00:01.36]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(71,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(String drift)
+[xUnit.net 00:00:01.36]            at InvokeStub_TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(Object, Span`1)
+[xUnit.net 00:00:01.36]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.39]       System.NotImplementedException : T032-A1 image scaffold
+[xUnit.net 00:00:01.39]       Stack Trace:
+[xUnit.net 00:00:01.39]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs(15,0): at BookOfEternityClient.Core.TrustedLocalFileImage.CaptureFile(TrustedLocalFileScope scope, String path)
+[xUnit.net 00:00:01.39]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(71,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(String drift)
+[xUnit.net 00:00:01.39]            at InvokeStub_TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(Object, Span`1)
+[xUnit.net 00:00:01.39]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.39]       System.NotImplementedException : T032-A1 image scaffold
+[xUnit.net 00:00:01.39]       Stack Trace:
+[xUnit.net 00:00:01.39]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs(15,0): at BookOfEternityClient.Core.TrustedLocalFileImage.CaptureFile(TrustedLocalFileScope scope, String path)
+[xUnit.net 00:00:01.39]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(71,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(String drift)
+[xUnit.net 00:00:01.39]            at InvokeStub_TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(Object, Span`1)
+[xUnit.net 00:00:01.39]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.39]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:21:38.7414709-04:00">
+        <Text>[xUnit.net 00:00:01.34]     BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(empty: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:21:38.7483507-04:00">
+        <Text>[xUnit.net 00:00:01.35]     BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(empty: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:21:38.7494067-04:00">
+        <Text>[xUnit.net 00:00:01.35]     BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: "directory") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:21:38.7497275-04:00">
+        <Text>[xUnit.net 00:00:01.35]     BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: "absent") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:21:38.7537034-04:00">
+        <Text>[xUnit.net 00:00:01.35]     BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: "link") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:21:38.7539596-04:00">
+        <Text>[xUnit.net 00:00:01.35]     BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: "outside") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:21:38.7542520-04:00">
+        <Text>[xUnit.net 00:00:01.36]     BookOfEternityClient.Tests.TrustedLocalFileImageTests.ByteImageOwnsAnIndependentSnapshotAndAbsenceDiffersFromEmpty [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:21:38.7544068-04:00">
+        <Text>[xUnit.net 00:00:01.36]     BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: "deleted") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:21:38.7545322-04:00">
+        <Text>[xUnit.net 00:00:01.36]     BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: "same-length") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:21:38.8310157-04:00">
+        <Text>[xUnit.net 00:00:01.39]     BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: "shorter") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:21:38.8310408-04:00">
+        <Text>[xUnit.net 00:00:01.39]     BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: "longer") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>
