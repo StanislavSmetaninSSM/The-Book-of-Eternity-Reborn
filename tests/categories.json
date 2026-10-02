@@ -2,19 +2,158 @@
   "schemaVersion": 1,
   "categories": [
     {
-      "id": "portable-engine-save-continuation",
-      "responsibility": "Actual console save outcome display and the three accepted-turn autosave entry callers: retain committed decisions, stop on uncertain storage, preserve accepted story/soul and terminal evidence without compensation.",
-      "excludes": "Load, browser, provider integration, full accepted-turn atomicity and native Linux acceptance.",
-      "changeHints": ["BookOfEternityClient/Core/GameEngine", "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableSave.cs"],
+      "id": "portable-engine-save-presentation",
+      "responsibility": "Real console manual save outcomes and agent-console diagnostics retain committed follow-up and distinguish existing uncertainty without false non-application or replay promises.",
+      "excludes": "Autosave accepted-turn continuation, browser, load and native Linux acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs"
+      ],
       "related": [],
-      "requirements": { "frontendBuild": false, "exclusive": true },
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_ConsoleMenuReportsActualDecision",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_CommittedDebtObservationDoesNotPromiseReplay",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CoordinatedPublication_UncertainOutcomeUsesRussianRecoveryNoticeWithoutRetryPromise"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-save-consumer-contracts",
+      "responsibility": "Affected ordinary save consumers preserve ZIP schema/manifest, exclusions, mandatory source/resource validation, snapshot lease, bounded listing/retry and retention path safety. Verify the unchanged original load mirror receipt and physical read authority beside ordinary hard-link listing.",
+      "excludes": "Whole load matrix, broad filesystem or state aggregation, all save-size experiments, browser and complete gameplay lifecycle.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SaveLoadService.cs",
+        "BookOfEternityClient/Core/StateManager.cs",
+        "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
       "timeoutMinutes": 6,
       "expectedSeconds": null,
-      "selectors": [{ "project": "integration", "tests": [
-        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_ConsoleMenuReportsActualDecision",
-        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_CommittedDebtObservationDoesNotPromiseReplay",
-        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableAutosave_RealTurnCallerRetainsAcceptedStateAndTerminalEvidence"
-      ] }]
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.StateManagerTests.AfterlifeEntityProfileState_DoesNotExposeUnleasedCanonicalMirrorWrite",
+            "BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_PlayerSoulProfileAuthorityMirror_RepairsStaleAutoProgression",
+            "BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_ProfileMirrorReadModifyWrite_HoldsOneCanonicalLease"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_FailureBeforeCommitLeavesNoPartialSaveOrTemporaryFile",
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_SaveDirectoryReplacedAtCommitCannotPublishOutsideSession",
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_RuntimeStagingParentSwapCannotCreateExternalArchive",
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.AutosaveAsync_DirectoryReplacedAfterEnumerationCannotDeleteOutsideFile",
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_SelfConsistentUnknownResourceOwnerIsRejected",
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_InvalidUtf8CanonicalResourceInputFailsClosed",
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ExcludesLocalUiLockNamespaceDescendants",
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ExcludesBrowserRollbackTransactions",
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_RetriesWhenSaveMetadataIsTemporarilyLocked",
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_RejectsOversizedMetadataThroughTrustedBudget",
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_WaitsForCanonicalWriteLeaseBeforeReadingSessionSnapshot",
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_DoesNotArchiveDirectoryJunctionTarget",
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_MissingMandatoryGameStateRootFailsClosed",
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_EmptyMandatoryGameStateRootFailsClosed",
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_RegularFileAtMandatoryGameStateRootFailsClosed",
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ReparsePointAtMandatoryGameStateRootFailsClosed",
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ParentReplacedByJunctionBeforeReadFailsClosed",
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.AutosaveAsync_CleanupWaitsForCanonicalWriteLeaseAfterSavePublication",
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_WritesIntegrityManifestCoveringEveryPayloadEntry",
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_InvalidSoulStateRootDoesNotPublishArchive",
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_OrdinaryMetadataAcceptsHardLinkWithoutRetry",
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_RepairsClientOwnedProfileMirrorWithoutReacquiringCanonicalLease",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_CompletionRejectsLinkAddedAfterConsumption",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_RejectsHardLinkedSaveArchive"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-engine-save-player",
+      "responsibility": "Actual player accepted-turn autosave caller preserves accepted story/soul and terminal evidence after uncertain publication or conflicting committed debt; one real save boundary per independently owned fixture.",
+      "excludes": "Other turn entry paths, manual display, browser, load, full accepted-turn atomicity and native Linux acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableSave.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableAutosave_PlayerTurnRetainsAcceptedStateAndTerminalEvidence"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-engine-save-waiting",
+      "responsibility": "Actual waiting accepted-turn autosave caller preserves accepted story/soul and terminal evidence after uncertain publication or conflicting committed debt; one real save boundary per independently owned fixture.",
+      "excludes": "Other turn entry paths, manual display, browser, load, full accepted-turn atomicity and native Linux acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableSave.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableAutosave_WaitingTurnRetainsAcceptedStateAndTerminalEvidence"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-engine-save-late",
+      "responsibility": "Actual late accepted-turn autosave caller preserves accepted story/soul and terminal evidence after uncertain publication or conflicting committed debt; one real save boundary per independently owned fixture.",
+      "excludes": "Other turn entry paths, manual display, browser, load, full accepted-turn atomicity and native Linux acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableSave.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableAutosave_LateTurnRetainsAcceptedStateAndTerminalEvidence"
+          ]
+        }
+      ]
     },
     {
       "id": "portable-browser-save-creation",
@@ -26,7 +165,7 @@
       "timeoutMinutes": 5,
       "expectedSeconds": null,
       "selectors": [
-        { "project": "unit", "tests": ["BookOfEternityClient.Tests.PortableBrowserSaveCreationTests.BrowserSaveUsesPreparedImageDecisionAndRetainsExactOutcome"] }
+        { "project": "unit", "tests": ["BookOfEternityClient.Tests.PortableBrowserSaveCreationTests.BrowserSaveUsesPreparedImageDecisionAndRetainsExactOutcome", "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPlayerActionSarefAndManualSave_BindBeforeAuthoritativeReads"] }
       ]
     },
     {
@@ -67,7 +206,7 @@
       "requirements": { "frontendBuild": false, "exclusive": true },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
-      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller", "BookOfEternityClient.Tests.PortableSaveOutcomeTests.ClosedArchiveAndCommittedResultSurviveLoggingFailure", "BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveWithUnresolvedDebtStopsBeforeRetention", "BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveRetainsFollowUpWhenDeletionRollsBack"] }]
+      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller", "BookOfEternityClient.Tests.PortableSaveOutcomeTests.ClosedArchiveAndCommittedResultSurviveLoggingFailure", "BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveWithUnresolvedDebtStopsBeforeRetention", "BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveRetainsFollowUpWhenDeletionRollsBack", "BookOfEternityClient.Tests.PortableSaveOutcomeTests.PreparedCandidateRequiresItsOriginalContinuouslyHeldLease", "BookOfEternityClient.Tests.PortableSaveOutcomeTests.PreparedCandidateRejectsGenerationDriftAndCreateCollision"] }]
     },
     {
       "id": "portable-storage-stream-generation",

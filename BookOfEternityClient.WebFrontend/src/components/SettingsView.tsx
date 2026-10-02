@@ -5,10 +5,11 @@ import { isSuccess, useShell } from '../context/ShellContext';
 import { toLauncherSaveFailureNotice } from '../utils/formatters';
 import { toPlayerFacingText } from '../utils/playerCopy';
 import { createSettingsWriteNoticeTracker, mergeSettingsPatch, type SettingsWriteNotice } from '../utils/settingsPersistenceNotice';
+import { executeBrowserSaveCreation, type SavePersistenceNotice } from '../utils/savePersistenceNotice';
 import { AudioPanel } from './AudioPanel';
 
 export function SettingsView() {
-  const { readyState, menu, advancedEnabled, setAdvancedEnabled, setActiveRoute, loadBrowserState } = useShell();
+  const { readyState, menu, advancedEnabled, setAdvancedEnabled, setActiveRoute, loadBrowserState, blockSaveContinuation } = useShell();
   const [settings, setSettings] = useState<BrowserClientSettingsDto | null>(null);
   const [persistenceNotice, setPersistenceNotice] = useState<SettingsWriteNotice | null>(null);
   const writeScope = useRef({ generation: 0 });
@@ -21,6 +22,7 @@ export function SettingsView() {
   const [loadingSaveId, setLoadingSaveId] = useState<string | null>(null);
   const updateQueue = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isMountedRef = useRef(true);
+  const saveContinuationBlocked = useRef(false);
 
   const invalidatePendingSettings = useCallback(() => {
     writeScope.current.generation++;
@@ -79,28 +81,22 @@ export function SettingsView() {
   }, [loadBrowserState]);
 
   async function createManualSave() {
+    if (saveContinuationBlocked.current || creatingSave || loadingSaveId !== null) return;
     setCreatingSave(true);
     setSaveNotice('Создаём ручное сохранение…');
+    const applyNotice = (notice: SavePersistenceNotice) => {
+      if (isMountedRef.current) setSaveNotice(notice.kind === 'follow-up' && notice.createdSaveId
+        ? `${notice.message} Созданное сохранение: ${notice.createdSaveId}` : notice.message);
+    };
+    const stopContinuation = (notice: SavePersistenceNotice) => {
+      saveContinuationBlocked.current = true;
+      invalidatePendingSettings();
+      blockSaveContinuation?.(notice);
+    };
     try {
-      const result = await browserApi.createSave({ saveName: null });
-      if (!isMountedRef.current) {
-        return;
-      }
-      if (isSuccess(result) && result.data.success) {
-        setSaveNotice('Игра сохранена. Новая запись появилась в списке сохранений.');
-        await loadBrowserState();
-        return;
-      }
-      if (isSuccess(result)) {
-        setSaveNotice(toLauncherSaveFailureNotice(result.data.error));
-        return;
-      }
-      setSaveNotice(toLauncherSaveFailureNotice(result.message || result.playerMessage));
-    } catch {
-      if (!isMountedRef.current) {
-        return;
-      }
-      setSaveNotice('Сохранение не удалось создать. Проверьте, что книга запущена, и попробуйте ещё раз.');
+      await executeBrowserSaveCreation(() => browserApi.createSave({ saveName: null }), applyNotice, stopContinuation, async () => {
+        if (isMountedRef.current) await loadBrowserState();
+      });
     } finally {
       if (isMountedRef.current) {
         setCreatingSave(false);
@@ -109,6 +105,7 @@ export function SettingsView() {
   }
 
   async function loadSaveSlot(slot: BrowserMainMenuDto['saves'][number]) {
+    if (saveContinuationBlocked.current || creatingSave) return;
     invalidatePendingSettings();
     const loadGeneration = writeScope.current.generation;
     const ownsLoad = () => isMountedRef.current && writeScope.current.generation === loadGeneration;
@@ -169,7 +166,7 @@ export function SettingsView() {
         : '';
 
   return (
-    <fieldset className="settings-view" disabled={loadingSaveId !== null} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
+    <fieldset className="settings-view" disabled={loadingSaveId !== null || creatingSave} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
       {persistenceNotice && <p className="composer-notice" role="status">{persistenceNotice.message}</p>}
       <section className="settings-card">
         <h3>⚙️ Основные</h3>

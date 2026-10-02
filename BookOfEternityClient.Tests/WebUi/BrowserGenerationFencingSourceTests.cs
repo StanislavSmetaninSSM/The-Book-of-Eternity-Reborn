@@ -228,8 +228,9 @@ public sealed class BrowserGenerationFencingSourceTests
             "CreateManualSaveBoundAsync",
             "private async Task<BrowserCreateSaveResultDto>");
         Assert.Contains("BuildBoundAsync(writeLease)", boundSave, StringComparison.Ordinal);
-        Assert.Contains("ExecuteAtomicWithinTransactionAsync", boundSave, StringComparison.Ordinal);
-        Assert.Contains("SaveGameAsync(", boundSave, StringComparison.Ordinal);
+        Assert.Contains("ExecutePreparedSaveWithinTransactionAsync", boundSave, StringComparison.Ordinal);
+        Assert.Contains("PrepareSaveArchiveAsync(", boundSave, StringComparison.Ordinal);
+        Assert.Contains("PublishPreparedSaveAsync", boundSave, StringComparison.Ordinal);
         Assert.Contains("writeLease,", boundSave, StringComparison.Ordinal);
     }
 

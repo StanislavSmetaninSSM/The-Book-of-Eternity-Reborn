@@ -1026,6 +1026,12 @@ public partial class GameEngine
         });
     }
 
+    /// <summary>
+    /// Processes session actions and reports stopped storage continuation without promising a replay of committed work.
+    /// </summary>
+    /// <returns>
+    /// A task completing when the player leaves the active game loop.
+    /// </returns>
     private async Task EnterGameLoop()
     {
         _inGame = true;
@@ -1210,6 +1216,10 @@ public partial class GameEngine
                 if (ex is CoordinatedStatePublicationUncertainException)
                 {
                     AnsiConsole.MarkupLine($"\n[red]❌ {Markup.Escape(CoordinatedStatePublicationUncertainException.PlayerMessage)}[/]");
+                }
+                else if (ex is CommittedSaveContinuationException)
+                {
+                    AnsiConsole.MarkupLine($"\n[yellow]⚠ {Markup.Escape(CommittedSaveContinuationException.PlayerMessage)}[/]");
                 }
                 else
                 {

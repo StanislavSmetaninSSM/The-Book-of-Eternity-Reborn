@@ -106,9 +106,7 @@ public static class LocalWebUiHost
         app.MapPost("/api/saves/create", async (BrowserCreateSaveRequest request, LocalWebUiMainMenuService menu) =>
         {
             var result = await menu.CreateManualSaveAsync(request);
-            return result.Success
-                ? Results.Json(result, WebJsonOptions)
-                : Results.BadRequest(new { result.Error, result.CreatedSaveId, result.Menu });
+            return CreateSaveResponse(result);
         });
         app.MapPost("/api/saves/load", async (BrowserLoadSaveRequest request, LocalWebUiMainMenuService menu) =>
         {
@@ -234,6 +232,20 @@ public static class LocalWebUiHost
 
         return app;
     }
+
+    /// <summary>
+    /// Serializes the complete save decision for both successful and rejected browser requests.
+    /// </summary>
+    /// <param name="result">
+    /// The retained save outcome, including committed follow-up and unresolved uncertainty.
+    /// </param>
+    /// <returns>
+    /// A JSON response preserving disposition, exact identity and continuation fields at every status.
+    /// </returns>
+    internal static IResult CreateSaveResponse(BrowserCreateSaveResultDto result) =>
+        Results.Json(result, WebJsonOptions, statusCode: result.ContinuationBlocked
+            ? StatusCodes.Status409Conflict
+            : result.Success ? StatusCodes.Status200OK : StatusCodes.Status400BadRequest);
 
     private static IResult ServeFrontendIndex(LocalWebUiFrontendAssets frontendAssets) =>
         Results.File(frontendAssets.IndexPath, "text/html; charset=utf-8");

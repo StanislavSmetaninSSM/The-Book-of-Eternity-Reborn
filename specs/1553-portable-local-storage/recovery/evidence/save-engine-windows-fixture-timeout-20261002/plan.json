@@ -1,0 +1,42 @@
+{
+  "Categories": [
+    "portable-engine-save-continuation"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "427afdb534da0368f730e9696c07edd91520f6aa",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 181.3542873,
+  "Descriptors": [
+    {
+      "Name": "portable-engine-save-continuation-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-engine-save-continuation",
+      "Categories": [
+        "portable-engine-save-continuation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableAutosave_RealTurnCallerRetainsAcceptedStateAndTerminalEvidence|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_CommittedDebtObservationDoesNotPromiseReplay|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_ConsoleMenuReportsActualDecision",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 6,
+      "EstimatedCases": 9,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableAutosave_RealTurnCallerRetainsAcceptedStateAndTerminalEvidence",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_CommittedDebtObservationDoesNotPromiseReplay",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_ConsoleMenuReportsActualDecision",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

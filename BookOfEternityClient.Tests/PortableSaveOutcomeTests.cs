@@ -196,6 +196,63 @@ public sealed class PortableSaveOutcomeTests : IDisposable
     }
 
     /// <summary>
+    /// Rejects publishing a prepared snapshot after its original lease has been released and reacquired.
+    /// </summary>
+    [Fact]
+    public async Task PreparedCandidateRequiresItsOriginalContinuouslyHeldLease()
+    {
+        var files = new FileSystemManager(_root, NullLogger<FileSystemManager>.Instance);
+        var state = PortableSaveFixture.Seed(files);
+        SeedLibrary(files);
+        var service = new SaveLoadService(files, state, NullLogger<SaveLoadService>.Instance);
+        await using var firstLease = await files.AcquireCanonicalWriteLeaseAsync();
+        await using var candidate = await service.PrepareSaveArchiveAsync(firstLease, "bound", "held lease");
+        await firstLease.DisposeAsync();
+        await using var secondLease = await files.AcquireCanonicalWriteLeaseAsync();
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.PublishPreparedSaveAsync(secondLease, candidate));
+
+        AssertLibrary(files, "saves/manual_saves", created: false);
+        Assert.False(File.Exists(Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1/active.json")));
+    }
+
+    /// <summary>
+    /// Preserves changed generation bytes or an independently created destination without publishing the old snapshot.
+    /// </summary>
+    /// <param name="generationDrift">
+    /// Changes the logical generation when true, or creates the absent destination independently otherwise.
+    /// </param>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task PreparedCandidateRejectsGenerationDriftAndCreateCollision(bool generationDrift)
+    {
+        var intents = 0;
+        var files = new FileSystemManager(_root, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            {
+                LocalPublicationObserver = (phase, _) => { if (phase == TrustedLocalPublicationPhase.IntentPublished) intents++; }
+            });
+        var state = PortableSaveFixture.Seed(files);
+        SeedLibrary(files);
+        var service = new SaveLoadService(files, state, NullLogger<SaveLoadService>.Instance);
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        await using var candidate = await service.PrepareSaveArchiveAsync(lease, "bound", "create only");
+        var changedPath = generationDrift ? files.SessionGenerationPath : files.ResolvePath(candidate.DestinationRelativePath);
+        var changed = generationDrift
+            ? System.Text.Encoding.UTF8.GetBytes("{\"schemaVersion\":1,\"generationId\":\"fedcba9876543210fedcba9876543210\"}")
+            : new byte[] { 89, 0, 253 };
+        File.WriteAllBytes(changedPath, changed);
+
+        await Assert.ThrowsAsync<InvalidDataException>(() => service.PublishPreparedSaveAsync(lease, candidate));
+
+        Assert.Equal(0, intents);
+        Assert.Equal(changed, File.ReadAllBytes(changedPath));
+        AssertLibrary(files, "saves/manual_saves", created: !generationDrift);
+        Assert.False(File.Exists(Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1/active.json")));
+    }
+
+    /// <summary>
     /// Seeds one independent member in each save-library scope.
     /// </summary>
     /// <param name="files">

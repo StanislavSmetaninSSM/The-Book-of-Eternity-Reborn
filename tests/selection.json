@@ -30,18 +30,46 @@
       ]
     },
     {
-      "category": "portable-engine-save-continuation",
-      "reason": "T032-A3 immediate save callers: causal publication outcome, truthful presentation, exact identity and stop before unsafe post-save continuation.",
-      "contracts": [
-        "#1553 approved save-creation-cutover.md; T032-A2/A3"
-      ]
-    },
-    {
       "contracts": [
         "#1553 save-creation-cutover.md"
       ],
       "category": "portable-browser-save-presentation",
       "reason": "T032-A3 truthful immediate browser save transport and response-loss handling."
+    },
+    {
+      "category": "portable-engine-save-presentation",
+      "reason": "Affected T032-A2/A3 consumer contract only: bounded entry-specific save continuation or preserved archive/list/mirror behavior.",
+      "contracts": [
+        "#1553 save-creation-cutover.md"
+      ]
+    },
+    {
+      "category": "portable-engine-save-player",
+      "reason": "Affected T032-A2/A3 consumer contract only: bounded entry-specific save continuation or preserved archive/list/mirror behavior.",
+      "contracts": [
+        "#1553 save-creation-cutover.md"
+      ]
+    },
+    {
+      "category": "portable-engine-save-waiting",
+      "reason": "Affected T032-A2/A3 consumer contract only: bounded entry-specific save continuation or preserved archive/list/mirror behavior.",
+      "contracts": [
+        "#1553 save-creation-cutover.md"
+      ]
+    },
+    {
+      "category": "portable-engine-save-late",
+      "reason": "Affected T032-A2/A3 consumer contract only: bounded entry-specific save continuation or preserved archive/list/mirror behavior.",
+      "contracts": [
+        "#1553 save-creation-cutover.md"
+      ]
+    },
+    {
+      "category": "portable-save-consumer-contracts",
+      "reason": "Affected T032-A2/A3 consumer contract only: bounded entry-specific save continuation or preserved archive/list/mirror behavior.",
+      "contracts": [
+        "#1553 save-creation-cutover.md"
+      ]
     }
   ]
 }

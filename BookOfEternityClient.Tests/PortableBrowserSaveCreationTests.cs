@@ -3,6 +3,8 @@ using System.Text.Json;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.WebUi;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
@@ -19,26 +21,39 @@ public sealed class PortableBrowserSaveCreationTests : IDisposable
     /// Proves the actual browser caller creates one image decision and retains exact outcome and identity.
     /// </summary>
     /// <param name="scenario">
-    /// Selects ordinary commit, confirmed rollback, uncertain evidence, committed cleanup or bound-close failure.
+    /// Selects ordinary commit, confirmed rollback, uncertain evidence, committed cleanup, conflicting debt or menu-read failure.
     /// </param>
     [Theory]
     [InlineData("committed")]
     [InlineData("rollback")]
     [InlineData("uncertain")]
     [InlineData("committed-cleanup")]
-    [InlineData("committed-close")]
+    [InlineData("committed-refresh")]
+    [InlineData("committed-debt")]
     public async Task BrowserSaveUsesPreparedImageDecisionAndRetainsExactOutcome(string scenario)
     {
         FileSystemManager? files = null;
         string? target = null;
         var preparingSave = false; var reached = false; var committed = false; var saveCommits = 0; var recorder = false;
+        var unsafeContinuation = false; var laterReads = 0; var laterMutations = 0; var refreshCuts = 0;
         files = new FileSystemManager(_root, NullLogger<FileSystemManager>.Instance,
             PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
             {
                 BeforeCanonicalMutationBoundaryAsync = path =>
                 {
+                    if (unsafeContinuation) laterMutations++;
                     if (path.Replace('\\', '/').StartsWith("saves/manual_saves/", StringComparison.Ordinal) && path.EndsWith(".zip", StringComparison.Ordinal))
                     { target = path.Replace('\\', '/'); preparingSave = true; }
+                    return Task.CompletedTask;
+                },
+                BeforeCanonicalReadOpenAsync = path =>
+                {
+                    if (unsafeContinuation) laterReads++;
+                    if (committed && scenario == "committed-refresh" && path.Replace('\\', '/') == target)
+                    {
+                        refreshCuts++;
+                        throw new CoordinatedStatePublicationUncertainException(new IOException("Deliberate post-commit menu-read failure."));
+                    }
                     return Task.CompletedTask;
                 },
                 LocalPublicationObserver = (phase, _) =>
@@ -53,19 +68,24 @@ public sealed class PortableBrowserSaveCreationTests : IDisposable
                     if (phase == TrustedLocalPublicationPhase.Committed)
                     {
                         saveCommits++; committed = true; preparingSave = false;
+                        if (scenario == "committed-debt")
+                        {
+                            unsafeContinuation = true;
+                            File.WriteAllBytes(files!.ResolvePath(target!), [99]);
+                            throw new InvalidOperationException("Deliberate conflicting committed save debt.");
+                        }
                         if (scenario == "committed-cleanup") throw new InvalidOperationException("Deliberate committed save cleanup debt.");
                     }
                     if (phase == TrustedLocalPublicationPhase.MemberPublished && scenario is "rollback" or "uncertain")
                     {
                         preparingSave = false;
-                        if (scenario == "uncertain") File.WriteAllBytes(files!.ResolvePath(target!), [99]);
+                        if (scenario == "uncertain")
+                        {
+                            unsafeContinuation = true;
+                            File.WriteAllBytes(files!.ResolvePath(target!), [99]);
+                        }
                         throw new InvalidOperationException("Deliberate browser save interruption.");
                     }
-                },
-                SessionOperationClosingAsync = () =>
-                {
-                    if (committed && scenario == "committed-close") throw new IOException("Deliberate save bound-close failure.");
-                    return Task.CompletedTask;
                 }
             });
         var state = PortableSaveFixture.Seed(files);
@@ -78,6 +98,13 @@ public sealed class PortableBrowserSaveCreationTests : IDisposable
             writer.Write(JsonSerializer.Serialize(new { saveName = "same-name", description = "old untouched archive", timestamp = "2099-01-01T00:00:00Z" }));
         }
         var futureBytes = File.ReadAllBytes(future);
+        File.WriteAllBytes(files.ResolvePath("saves/manual_saves/preserved.zip"), futureBytes);
+        File.WriteAllBytes(files.ResolvePath("saves/autosaves/preserved.zip"), futureBytes);
+        var libraryRoot = files.ResolvePath("saves");
+        var libraryBefore = Directory.EnumerateFiles(libraryRoot, "*", SearchOption.AllDirectories)
+            .ToDictionary(path => Path.GetRelativePath(files.GameSessionPath, path).Replace('\\', '/'), File.ReadAllBytes);
+        var outside = Path.Combine(_root, "outside.txt"); File.WriteAllBytes(outside, [77, 0, 255]);
+        var contentBefore = File.ReadAllBytes(files.ResolvePath("game_state/world/test_fixture_state.json"));
         var save = new SaveLoadService(files, state, NullLogger<SaveLoadService>.Instance, new SaveLoadServiceHooks
         {
             BeforeSaveCommitAsync = () =>
@@ -86,17 +113,30 @@ public sealed class PortableBrowserSaveCreationTests : IDisposable
                 return Task.CompletedTask;
             }
         });
+        Assert.Contains(await save.GetAvailableSavesAsync(), slot => slot.FileName == future);
         var coordinator = new BrowserLocalWriteCoordinator(files, new LocalUiSessionLockService(files));
         var session = new LocalWebUiSessionStatusService(files, coordinator);
         var lifecycle = new BrowserLifecycleDashboardService(files, session, new ValidationService(files, NullLogger<ValidationService>.Instance));
         var menu = new LocalWebUiMainMenuService(files, lifecycle, save, state, coordinator);
         var result = await menu.CreateManualSaveAsync(new BrowserCreateSaveRequest("same-name"));
+        await AssertWireResponseAsync(result);
         Assert.True(reached, "The actual browser save did not reach its prepared v2 image intent.");
         Assert.False(recorder);
         Assert.NotNull(target);
         Assert.Equal(generation, File.ReadAllBytes(files.SessionGenerationPath));
         Assert.Equal(futureBytes, File.ReadAllBytes(future));
-        if (scenario is "committed" or "committed-cleanup" or "committed-close")
+        foreach (var old in libraryBefore) Assert.Equal(old.Value, File.ReadAllBytes(files.ResolvePath(old.Key)));
+        var expectedMembers = libraryBefore.Keys.Concat(scenario == "rollback" ? [] : new[] { target! })
+            .OrderBy(path => path, StringComparer.Ordinal).ToArray();
+        Assert.Equal(expectedMembers, Directory.EnumerateFiles(libraryRoot, "*", SearchOption.AllDirectories)
+            .Select(path => Path.GetRelativePath(files.GameSessionPath, path).Replace('\\', '/'))
+            .OrderBy(path => path, StringComparer.Ordinal));
+        Assert.Equal(contentBefore, File.ReadAllBytes(files.ResolvePath("game_state/world/test_fixture_state.json")));
+        Assert.Equal(new byte[] { 77, 0, 255 }, File.ReadAllBytes(outside));
+        // The held-lease bound path has no injectable native lease-close hook.
+        // This row proves a real post-commit listing failure, not lease-close qualification.
+        Assert.Equal(scenario == "committed-refresh" ? 1 : 0, refreshCuts);
+        if (scenario is "committed" or "committed-cleanup" or "committed-refresh" or "committed-debt")
         {
             Assert.True(result.Success, result.Error);
             Assert.Equal(BrowserPreparedWriteDisposition.Committed, result.Disposition);
@@ -105,6 +145,7 @@ public sealed class PortableBrowserSaveCreationTests : IDisposable
             Assert.NotEqual("manual:future-existing.zip", result.CreatedSaveId);
             Assert.True(File.Exists(files.ResolvePath(target!)));
             if (scenario != "committed") Assert.True(result.NeedsFollowUp);
+            if (scenario == "committed-refresh") { Assert.True(result.ContinuationBlocked); Assert.Null(result.Menu); }
         }
         else
         {
@@ -118,8 +159,40 @@ public sealed class PortableBrowserSaveCreationTests : IDisposable
                 Assert.True(File.Exists(Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1/active.json")));
             }
         }
+        if (unsafeContinuation)
+        {
+            Assert.True(result.ContinuationBlocked); Assert.Null(result.Menu);
+            Assert.Equal(0, laterReads); Assert.Equal(0, laterMutations);
+            Assert.Equal(new byte[] { 99 }, File.ReadAllBytes(files.ResolvePath(target!)));
+            Assert.True(File.Exists(Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1/active.json")));
+            Assert.True(File.Exists(files.ResolvePath(LocalUiSessionLockService.LockPath)));
+        }
         Assert.False(Directory.Exists(files.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root)));
         Assert.Empty(Directory.EnumerateFileSystemEntries(Path.Combine(files.RuntimeRootPath, "save-staging")));
+    }
+
+    /// <summary>
+    /// Executes the host endpoint's result renderer and checks the real JSON contract at its actual HTTP status.
+    /// </summary>
+    /// <param name="result">
+    /// The actual service outcome whose transport must preserve every established decision field.
+    /// </param>
+    private static async Task AssertWireResponseAsync(BrowserCreateSaveResultDto result)
+    {
+        using var services = new ServiceCollection().AddLogging().AddOptions().BuildServiceProvider();
+        var context = new DefaultHttpContext { RequestServices = services };
+        await using var body = new MemoryStream();
+        context.Response.Body = body;
+        await LocalWebUiHost.CreateSaveResponse(result).ExecuteAsync(context);
+        Assert.Equal(result.ContinuationBlocked ? StatusCodes.Status409Conflict : result.Success
+            ? StatusCodes.Status200OK : StatusCodes.Status400BadRequest, context.Response.StatusCode);
+        body.Position = 0;
+        using var json = await JsonDocument.ParseAsync(body);
+        Assert.Equal(result.Disposition.ToString(), json.RootElement.GetProperty("disposition").GetString());
+        Assert.Equal(result.Success, json.RootElement.GetProperty("success").GetBoolean());
+        Assert.Equal(result.NeedsFollowUp, json.RootElement.GetProperty("needsFollowUp").GetBoolean());
+        Assert.Equal(result.ContinuationBlocked, json.RootElement.GetProperty("continuationBlocked").GetBoolean());
+        Assert.Equal(result.CreatedSaveId, json.RootElement.GetProperty("createdSaveId").GetString());
     }
 
     /// <summary>

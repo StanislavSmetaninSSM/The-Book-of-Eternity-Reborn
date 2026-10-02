@@ -16,6 +16,7 @@ import { GameLauncher } from './components/GameLauncher';
 import { ShellProvider, useShell, type TabId } from './context/ShellContext';
 import { VignetteOverlay } from './components/decorative';
 import { pageTransition } from './lib/motion';
+import { SaveContinuationBlockedNotice } from './components/SaveContinuationBlockedNotice';
 
 export default function App() {
   return (
@@ -26,7 +27,7 @@ export default function App() {
 }
 
 function AppShell() {
-  const { activeRoute, advancedEnabled, clientSettings, menu, readyState, realmTheme, shellState, activeTab } = useShell();
+  const { activeRoute, advancedEnabled, clientSettings, menu, readyState, realmTheme, shellState, activeTab, saveContinuationNotice } = useShell();
   const isLauncherRoute = activeRoute === 'home' && menu !== null;
   const isPracticeRoute = activeRoute === 'practice';
   const isDarenShowcaseRoute = activeRoute === 'daren-showcase';
@@ -68,6 +69,8 @@ function AppShell() {
     root.classList.toggle('has-game-shell-bg', showGameShellBg);
     return () => root.classList.remove('has-game-shell-bg');
   }, [showGameShellBg]);
+
+  if (saveContinuationNotice) return <SaveContinuationBlockedNotice notice={saveContinuationNotice} />;
 
   return (
     <MotionConfig reducedMotion={reducedMotion ? 'always' : 'never'}>

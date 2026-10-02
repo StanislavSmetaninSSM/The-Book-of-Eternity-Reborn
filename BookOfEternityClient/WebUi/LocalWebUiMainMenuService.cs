@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
@@ -95,26 +96,67 @@ public sealed class LocalWebUiMainMenuService
             Menu: await BuildAsync());
     }
 
+    /// <summary>
+    /// Creates a manual save while retaining its publication decision through browser follow-up and bound close.
+    /// </summary>
+    /// <param name="request">
+    /// The requested display name; a null or empty name uses the current chapter label.
+    /// </param>
+    /// <returns>
+    /// The exact confirmed save identity and a truthful decision, even when later browser work fails.
+    /// </returns>
     public async Task<BrowserCreateSaveResultDto> CreateManualSaveAsync(BrowserCreateSaveRequest request)
     {
+        ArgumentNullException.ThrowIfNull(request);
+        BrowserCreateSaveResultDto? retained = null;
         try
         {
             return await _writeCoordinator.RunBoundTransactionAsync(
-                writeLease => CreateManualSaveBoundAsync(writeLease, request));
+                writeLease => CreateManualSaveBoundAsync(writeLease, request, result => retained = result));
         }
-        catch (SessionReplacedException)
+        catch (Exception failure)
         {
+            if (retained != null)
+                return retained with
+                {
+                    NeedsFollowUp = true,
+                    ContinuationBlocked = true,
+                    Menu = null,
+                    Error = retained.Success
+                        ? "Сохранение создано. Завершение операции требует проверки; следующее действие остановлено."
+                        : retained.Error
+                };
             return new BrowserCreateSaveResultDto(
                 Success: false,
-                Error: "Игровая сессия изменилась во время сохранения. Повторите действие.",
+                Error: "Не удалось безопасно начать сохранение. Проверьте локальное хранилище перед следующим действием.",
                 CreatedSaveId: string.Empty,
-                Menu: await BuildAsync());
+                Menu: null,
+                Disposition: failure is CoordinatedStatePublicationUncertainException
+                    ? BrowserPreparedWriteDisposition.Uncertain : BrowserPreparedWriteDisposition.Blocked,
+                NeedsFollowUp: true,
+                ContinuationBlocked: true);
         }
     }
 
+    /// <summary>
+    /// Prepares and publishes a manual archive on the browser's held lease without nesting publication or acquisition.
+    /// </summary>
+    /// <param name="writeLease">
+    /// The held canonical lease used for admission, snapshot, publication and menu refresh.
+    /// </param>
+    /// <param name="request">
+    /// The requested optional save display name.
+    /// </param>
+    /// <param name="retain">
+    /// Stores the established browser result before later refresh or bound close can fail.
+    /// </param>
+    /// <returns>
+    /// The established decision and an optional safely refreshed menu.
+    /// </returns>
     private async Task<BrowserCreateSaveResultDto> CreateManualSaveBoundAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
-        BrowserCreateSaveRequest request)
+        BrowserCreateSaveRequest request,
+        Action<BrowserCreateSaveResultDto> retain)
     {
         var currentMenu = await BuildBoundAsync(writeLease);
         if (!currentMenu.Session.GameSessionExists || !currentMenu.Session.HasReadableSoul)
@@ -138,40 +180,71 @@ public sealed class LocalWebUiMainMenuService
 
         var saveName = BuildManualSaveName(request.SaveName, currentMenu.Session);
         var description = BuildManualSaveDescription(currentMenu.Session);
-        var saved = false;
-        var writeResult = await _writeCoordinator.ExecuteAtomicWithinTransactionAsync(
+        var result = await _writeCoordinator.ExecutePreparedSaveWithinTransactionAsync(
             writeLease,
             new BrowserLocalWriteRequest(
                 OwnerId: "browser-main-menu-save",
                 OwnerLabel: "Browser main menu",
                 OperationLabel: "browser manual save"),
-            Array.Empty<string>(),
-            async writeLease =>
-            {
-                saved = await _saveLoad.SaveGameAsync(
-                    writeLease,
+            lease => _saveLoad.PrepareSaveArchiveAsync(
+                    lease,
                     saveName,
                     description,
                     "saves/manual_saves",
-                    currentMenu.Session.TurnNumber);
-                if (!saved)
-                    throw new InvalidOperationException("Не удалось создать ручное сохранение.");
-            });
+                    currentMenu.Session.TurnNumber),
+            _saveLoad.PublishPreparedSaveAsync);
 
-        var updatedMenu = await BuildBoundAsync(writeLease);
-        var createdSaveId = updatedMenu.Saves
-            .Where(save => string.Equals(save.Scope, "manual", StringComparison.Ordinal) &&
-                           string.Equals(save.DisplayName, saveName, StringComparison.Ordinal))
-            .OrderByDescending(save => save.TimestampUtc ?? DateTime.MinValue)
-            .FirstOrDefault()?.SaveId ?? string.Empty;
-
-        var success = writeResult.Success && saved;
-        return new BrowserCreateSaveResultDto(
-            Success: success,
-            Error: success ? string.Empty : writeResult.Message,
-            CreatedSaveId: createdSaveId,
-            Menu: updatedMenu);
+        var response = BuildCreateSaveResult(result, null);
+        retain(response);
+        if (result.Disposition == SaveCreationDisposition.Uncertain || result.ContinuationBlocked)
+            return response;
+        try
+        {
+            _fs.ResolveBackupPublicationRecovery(writeLease);
+            response = BuildCreateSaveResult(result, await BuildBoundAsync(writeLease));
+        }
+        catch (Exception failure)
+        {
+            response = BuildCreateSaveResult(result.WithFollowUp(failure, blocksContinuation: true), null);
+        }
+        retain(response);
+        return response;
     }
+
+    /// <summary>
+    /// Projects the established archive decision without inferring identity from a later save list.
+    /// </summary>
+    /// <param name="result">
+    /// The exact archive decision and follow-up state.
+    /// </param>
+    /// <param name="menu">
+    /// A safely refreshed menu, or null when no refresh is available.
+    /// </param>
+    /// <returns>
+    /// The transport decision, exact committed identifier and continuation state.
+    /// </returns>
+    private static BrowserCreateSaveResultDto BuildCreateSaveResult(SaveCreationResult result, BrowserMainMenuDto? menu) => new(
+        Success: result.Committed,
+        Error: result.Disposition switch
+        {
+            SaveCreationDisposition.Committed => result.NeedsFollowUp
+                ? "Сохранение создано. Служебная очистка или обновление интерфейса требуют проверки."
+                : string.Empty,
+            SaveCreationDisposition.RolledBack => "Сохранение не создано: предыдущие файлы восстановлены.",
+            SaveCreationDisposition.Uncertain => "Не удалось подтвердить состояние сохранения. Следующее действие остановлено до проверки хранилища.",
+            _ => "Сохранение не создано: подготовка или локальное право записи заблокированы."
+        },
+        CreatedSaveId: result.Committed ? "manual:" + Path.GetFileName(result.DestinationRelativePath) : string.Empty,
+        Menu: menu,
+        Disposition: result.Disposition switch
+        {
+            SaveCreationDisposition.Committed => BrowserPreparedWriteDisposition.Committed,
+            SaveCreationDisposition.RolledBack => BrowserPreparedWriteDisposition.RolledBack,
+            SaveCreationDisposition.Uncertain => BrowserPreparedWriteDisposition.Uncertain,
+            _ => BrowserPreparedWriteDisposition.Blocked
+        },
+        NeedsFollowUp: result.NeedsFollowUp,
+        ContinuationBlocked: result.ContinuationBlocked);
 
     private async Task<BrowserMainMenuDto> BuildBoundAsync(
         FileSystemManager.CanonicalWriteLease writeLease)
@@ -654,6 +727,7 @@ public sealed record BrowserCreateSaveResultDto(
     string Error,
     string CreatedSaveId,
     BrowserMainMenuDto? Menu,
+    [property: JsonConverter(typeof(JsonStringEnumConverter<BrowserPreparedWriteDisposition>))]
     BrowserPreparedWriteDisposition Disposition = BrowserPreparedWriteDisposition.Blocked,
     bool NeedsFollowUp = false,
     bool ContinuationBlocked = false);

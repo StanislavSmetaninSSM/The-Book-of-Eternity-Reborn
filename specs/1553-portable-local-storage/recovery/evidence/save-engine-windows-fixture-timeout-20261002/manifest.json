@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A3",
+  "sourceCommit": "427afdb534da0368f730e9696c07edd91520f6aa",
+  "status": "Incomplete engine RED: fresh integration build succeeded, category stopped after6min test budget; wall9m06.908. No finalTRX so summary counters0; buffered stdout showed3 autosave rows failed expectedone observed20 boundary. Manual cases not evidenced. Ownedcleanupcomplete; fixturediagnosis required, no acceptance or Linux run.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-engine-save-continuation"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:09:06.9085340",
+  "exitCode": 124,
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 9,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-engine-save-continuation-integration-001"
+    ],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "timedOut": true,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "plan.json",
+      "originalSha256": "51CF76B43282272A8BBB925A506E47115827A18BAE7E5EF8B87A5A3A58E3EAA7",
+      "sha256": "BF20CD58D219B2FF26569B846D94D758789353971269CDC3E25A847810D200A4"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "32052D689F7C8ABA752B666F002CEF022C42C2258C34D013D88EF7B9A687BE1E",
+      "sha256": "51827C48DA165B07FA5C8003C117A58BC1A4100599D9BAA89241C52C5798B84D"
+    },
+    {
+      "path": "Build-integration.log",
+      "originalSha256": "C4E783EDA75562AACDDED8F176692F4442CEAECCF234926A8C0C7010EE557A65",
+      "sha256": "DC5F27DD99FB7D3D87F0748F3081872D82758A215B95291FE4C7EF1156F9094D",
+      "transform": "sanitized paths and LF"
+    },
+    {
+      "path": "dotnet-test.log",
+      "originalSha256": "F1A9619BCBBF6C21026A6C95D2CF5E06FEC942A71BCE1CF17FD81DCAEC763501",
+      "sha256": "A1DBC465BBD8CD730DF7FEC5E289EC66EFDBCB9C4C255376C629645F2549B1CA",
+      "transform": "sanitized paths and LF; execution tail excludes discovery listing"
+    }
+  ]
+}

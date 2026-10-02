@@ -394,6 +394,8 @@ public partial class SaveLoadService
         catch (Exception failure)
         {
             result = result.WithFollowUp(failure, failure is CoordinatedStatePublicationUncertainException or SessionReplacedException);
+            try { _logger.LogWarning(failure, "Автосохранение создано; очистка старых сохранений требует служебной проверки."); }
+            catch (Exception loggingFailure) { result = result.WithFollowUp(loggingFailure); }
         }
         return result;
     }

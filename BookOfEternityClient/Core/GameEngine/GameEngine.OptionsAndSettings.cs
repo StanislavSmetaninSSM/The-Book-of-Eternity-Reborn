@@ -1191,6 +1191,13 @@ public partial class GameEngine
         return false;
     }
 
+    /// <summary>
+    /// Processes the selected in-game option and retains the actual save decision when follow-up is required.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> to keep the current session open, or <see langword="false"/> to return to the main menu.
+    /// Unsafe storage continuation propagates its typed failure to the game loop.
+    /// </returns>
     private async Task<bool> InGameOptionsMenu()
     {
         var choice = ShowSingleChoiceMenu(
@@ -1220,8 +1227,11 @@ public partial class GameEngine
                 allowEmpty: true,
                 preserveNewlines: true);
 
-            var ok = await _saveLoad.SaveGameAsync(saveName, desc, turnNumber: _gameLoop.TurnNumber);
+            var result = await _saveLoad.CreateSaveAsync(saveName, desc, turnNumber: _gameLoop.TurnNumber);
+            var ok = result.ToBoolean();
             AnsiConsole.MarkupLine(ok ? $"[green]{_loc.T("save_success")}[/]" : $"[red]{_loc.T("save_failed")}[/]");
+            if (result.NeedsFollowUp)
+                AnsiConsole.MarkupLine("[yellow]Требуется служебная проверка хранилища сохранений.[/]");
             _inputSource.ReadKey(intercept: true);
             return true;
         }

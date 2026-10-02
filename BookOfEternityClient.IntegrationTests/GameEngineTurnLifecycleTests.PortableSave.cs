@@ -1,4 +1,6 @@
 using System.IO.Compression;
+using System.Buffers.Binary;
+using System.Text.Json;
 using BookOfEternityClient.AgentConsole;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
@@ -36,7 +38,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     if (committed ? phase != TrustedLocalPublicationPhase.Committed :
                         phase != TrustedLocalPublicationPhase.MemberPublished || index != 0) return;
                     reached++;
-                    throw new IOException("synthetic manual save publication cut");
+                    throw new InvalidDataException("synthetic manual save publication cut");
                 }
             });
         PortableSaveFixture.Seed(files);
@@ -88,7 +90,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     if (phase != TrustedLocalPublicationPhase.Committed) return;
                     reached++;
                     File.WriteAllBytes(Assert.Single(Directory.GetFiles(files!.ResolvePath("saves/manual_saves"), "*.zip")), [81, 0, 254]);
-                    throw new IOException("/private/synthetic-save-diagnostic");
+                    throw new InvalidDataException("/private/synthetic-save-diagnostic");
                 }
             });
         var state = PortableSaveFixture.Seed(files);
@@ -112,11 +114,8 @@ public sealed partial class GameEngineTurnLifecycleTests
     }
 
     /// <summary>
-    /// Drives each real accepted-turn autosave caller and stops before terminal cleanup or accepted-state compensation.
+    /// Drives the dispatched player-turn autosave caller and retains its accepted state on blocked save continuation.
     /// </summary>
-    /// <param name="entry">
-    /// Selects a newly dispatched player turn, a waiting turn, or a late terminal continuation.
-    /// </param>
     /// <param name="committed">
     /// Introduces unknown archive bytes after durable commit when true, or before commit otherwise.
     /// </param>
@@ -124,15 +123,59 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// A task completing after the actual save publication cut and retained accepted state are verified.
     /// </returns>
     [Theory]
-    [InlineData("player", false)]
-    [InlineData("waiting", false)]
-    [InlineData("late", false)]
-    [InlineData("player", true)]
-    [InlineData("waiting", true)]
-    [InlineData("late", true)]
-    public async Task PortableAutosave_RealTurnCallerRetainsAcceptedStateAndTerminalEvidence(string entry, bool committed)
+    [InlineData(false)]
+    [InlineData(true)]
+    public Task PortableAutosave_PlayerTurnRetainsAcceptedStateAndTerminalEvidence(bool committed) =>
+        RunPortableAutosaveEngineContinuationAsync("player", committed);
+
+    /// <summary>
+    /// Drives the waiting-turn autosave caller and retains its accepted state on blocked save continuation.
+    /// </summary>
+    /// <param name="committed">
+    /// Introduces unknown archive bytes after durable commit when true, or before commit otherwise.
+    /// </param>
+    /// <returns>
+    /// A task completing after the actual save publication cut and retained accepted state are verified.
+    /// </returns>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public Task PortableAutosave_WaitingTurnRetainsAcceptedStateAndTerminalEvidence(bool committed) =>
+        RunPortableAutosaveEngineContinuationAsync("waiting", committed);
+
+    /// <summary>
+    /// Drives the late-turn autosave caller and retains its accepted state on blocked save continuation.
+    /// </summary>
+    /// <param name="committed">
+    /// Introduces unknown archive bytes after durable commit when true, or before commit otherwise.
+    /// </param>
+    /// <returns>
+    /// A task completing after the actual save publication cut and retained accepted state are verified.
+    /// </returns>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public Task PortableAutosave_LateTurnRetainsAcceptedStateAndTerminalEvidence(bool committed) =>
+        RunPortableAutosaveEngineContinuationAsync("late", committed);
+
+    /// <summary>
+    /// Publishes a real correlated reply and stops the selected engine continuation at its actual archive decision.
+    /// </summary>
+    /// <param name="entry">
+    /// Selects the dispatched player, waiting, or late turn caller.
+    /// </param>
+    /// <param name="committed">
+    /// Selects the committed conflict or uncertain pre-commit conflict boundary.
+    /// </param>
+    /// <returns>
+    /// A task completing after accepted state and terminal evidence preservation are verified.
+    /// </returns>
+    private async Task RunPortableAutosaveEngineContinuationAsync(string entry, bool committed)
     {
         CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
+        using var soul = JsonDocument.Parse(File.ReadAllBytes(_fs.ResolvePath("game_state/meta/soul_state.json")));
+        var storyPath = StoryService.GetStoryPath(soul.RootElement.GetProperty("currentRealm").GetString()!,
+            soul.RootElement.GetProperty("currentIncarnation").GetInt32());
         var reached = 0;
         byte[]? acceptedSoul = null;
         byte[]? acceptedStory = null;
@@ -144,13 +187,13 @@ public sealed partial class GameEngineTurnLifecycleTests
                 {
                     if (committed ? phase != TrustedLocalPublicationPhase.Committed :
                         phase != TrustedLocalPublicationPhase.MemberPublished || index != 0) return;
-                    var archives = Directory.GetFiles(files!.ResolvePath("saves/autosaves"), "*.zip");
-                    if (archives.Length != 1) return; // Only the actual save decision, after all earlier accepted work.
+                    var archive = ReadPortableEngineSaveJournalTarget(files!);
+                    if (archive == null) return; // Earlier accepted-state publications are outside this save decision.
                     reached++;
                     acceptedSoul = File.ReadAllBytes(files.ResolvePath("game_state/meta/soul_state.json"));
-                    acceptedStory = File.ReadAllBytes(files.ResolvePath("stories/chaos_sea.jsonl"));
-                    File.WriteAllBytes(archives[0], [83, 0, 255]);
-                    throw new IOException("synthetic autosave decision conflict");
+                    acceptedStory = File.ReadAllBytes(files.ResolvePath(storyPath));
+                    File.WriteAllBytes(archive, [83, 0, 255]);
+                    throw new InvalidDataException("synthetic autosave decision conflict");
                 }
             });
         var engine = CreateGameEngine(new QueuedConsoleInputSource([]), settings => settings.AutosaveIntervalTurns = 1,
@@ -195,13 +238,46 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.NotNull(acceptedSoul);
         Assert.NotNull(acceptedStory);
         Assert.Equal(acceptedSoul, File.ReadAllBytes(files.ResolvePath("game_state/meta/soul_state.json")));
-        Assert.Equal(acceptedStory, File.ReadAllBytes(files.ResolvePath("stories/chaos_sea.jsonl")));
+        Assert.Equal(acceptedStory, File.ReadAllBytes(files.ResolvePath(storyPath)));
         Assert.Contains("Синтетический ответ принятого хода", System.Text.Encoding.UTF8.GetString(acceptedStory!));
         foreach (var path in new[] { "input/turn_request.json", "ready/turn_complete.json",
             "game_state/control/pending_turn_snapshot.json", "game_state/control/pending_turn_snapshot.authority.json" })
             Assert.True(File.Exists(files.ResolvePath(path)), $"Save continuation must preserve {path}.");
         Assert.True(File.Exists(Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1/active.json")));
         Assert.Equal(new byte[] { 83, 0, 255 }, File.ReadAllBytes(Assert.Single(Directory.GetFiles(files.ResolvePath("saves/autosaves"), "*.zip"))));
+    }
+
+    /// <summary>
+    /// Selects only a stream publication declaring one new autosave archive, ignoring earlier engine decisions.
+    /// </summary>
+    /// <param name="files">
+    /// The synthetic manager whose actual active journal identifies the published member set.
+    /// </param>
+    /// <returns>
+    /// The exact declared autosave destination, or null for a different publication.
+    /// </returns>
+    private static string? ReadPortableEngineSaveJournalTarget(FileSystemManager files)
+    {
+        var journal = Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1/active.json");
+        using var input = File.OpenRead(journal);
+        Span<byte> prefix = stackalloc byte[16];
+        input.ReadExactly(prefix);
+        if (!prefix[..8].SequenceEqual("BOELP2\r\n"u8)) return null;
+        var length = BinaryPrimitives.ReadInt64LittleEndian(prefix[8..]);
+        Assert.InRange(length, 1, 1024 * 1024);
+        var metadata = new byte[(int)length];
+        input.ReadExactly(metadata);
+        using var header = JsonDocument.Parse(metadata);
+        var members = header.RootElement.GetProperty("Members");
+        if (members.GetArrayLength() != 1) return null;
+        var member = members[0];
+        var path = member.GetProperty("Path").GetString()!;
+        if (!string.Equals(Path.GetDirectoryName(path), files.ResolvePath("saves/autosaves"),
+                OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal) ||
+            !Path.GetFileName(path).StartsWith("autosave_turn1_", StringComparison.Ordinal)) return null;
+        Assert.False(member.GetProperty("Before").GetProperty("Exists").GetBoolean());
+        Assert.True(member.GetProperty("After").GetProperty("Exists").GetBoolean());
+        return path;
     }
 
     /// <summary>

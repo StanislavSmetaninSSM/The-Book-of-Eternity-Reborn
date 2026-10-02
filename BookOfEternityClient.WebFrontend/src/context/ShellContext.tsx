@@ -23,6 +23,7 @@ import type {
 } from '../api/contracts';
 import { useShellState } from '../hooks/useShellState';
 import { sanitizeExplorerCommandResultForPlayer } from '../utils/playerCopy';
+import { createSaveContinuationLatch, type SavePersistenceNotice } from '../utils/savePersistenceNotice';
 
 export type TabId = 'scene' | 'practice' | 'status' | 'help' | 'settings';
 
@@ -78,6 +79,10 @@ export interface ShellContextValue {
   executeCommand: (command: string) => Promise<void>;
   clearCommandResult: () => void;
   loadBrowserState: (isCurrent?: () => boolean) => Promise<void>;
+  /** Present in the real shell; optional for independent read-only component hosts. */
+  saveContinuationNotice?: SavePersistenceNotice | null;
+  /** Retains a save-specific stop until this shell is restarted after storage reconciliation. */
+  blockSaveContinuation?: (notice: SavePersistenceNotice) => void;
 }
 
 const fallbackTheme: RealmTheme = {
@@ -146,7 +151,16 @@ export function ShellProvider({ children }: { children: ReactNode }) {
   const [commandResult, setCommandResult] = useState<ExplorerCommandResult | null>(null);
   const [isCommandView, setIsCommandView] = useState(false);
   const composerSubmissionInFlight = useRef(false);
-  const { shellState, loadBrowserState } = useShellState(advancedEnabled);
+  const { shellState, loadBrowserState: loadBrowserStateCore } = useShellState(advancedEnabled);
+  const saveContinuationLatch = useRef(createSaveContinuationLatch());
+  const [saveContinuationNotice, setSaveContinuationNotice] = useState<SavePersistenceNotice | null>(null);
+  const blockSaveContinuation = useCallback((notice: SavePersistenceNotice) => {
+    setSaveContinuationNotice(saveContinuationLatch.current.block(notice));
+  }, []);
+  const loadBrowserState = useCallback(async (isCurrent?: () => boolean) => {
+    await saveContinuationLatch.current.runIfAllowed(() => loadBrowserStateCore(
+      () => !saveContinuationLatch.current.isBlocked() && (isCurrent?.() ?? true)));
+  }, [loadBrowserStateCore]);
 
   useEffect(() => {
     void loadBrowserState();
@@ -164,10 +178,12 @@ export function ShellProvider({ children }: { children: ReactNode }) {
   const activeTab = useMemo(() => routeToTab(activeRoute), [activeRoute]);
 
   const setActiveTab = useCallback((tab: TabId) => {
+    if (saveContinuationLatch.current.isBlocked()) return;
     setActiveRouteState(tabToRoute(tab));
   }, []);
 
   const setActiveRoute = useCallback((route: RouteId) => {
+    if (saveContinuationLatch.current.isBlocked()) return;
     setActiveRouteState(route);
   }, []);
 
@@ -185,6 +201,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const executeCommand = useCallback(async (command: string) => {
+    if (saveContinuationLatch.current.isBlocked()) return;
     setComposerNotice('Выполняю команду…');
     try {
       const result = await browserApi.executeExplorerCommand({ command, advancedEnabled });
@@ -193,7 +210,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
         setIsCommandView(true);
         setActiveRouteState('game');
         const pendingGmAction = result.data.pendingGmAction?.trim();
-        if (pendingGmAction) {
+        if (pendingGmAction && !saveContinuationLatch.current.isBlocked()) {
           setComposerNotice('Запрос отправляется ГМ. Витрина подготавливается…');
           const actionResult = await browserApi.submitPlayerAction({ text: pendingGmAction });
           if (actionResult.ok && actionResult.data.success) {
@@ -217,7 +234,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
 
   const submitComposerText = useCallback((text: string) => {
     const normalized = text.trim();
-    if (!normalized || composerSubmissionInFlight.current) return;
+    if (!normalized || composerSubmissionInFlight.current || saveContinuationLatch.current.isBlocked()) return;
 
     composerSubmissionInFlight.current = true;
 
@@ -277,7 +294,9 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     isCommandView,
     executeCommand,
     clearCommandResult,
-    loadBrowserState
+    loadBrowserState,
+    saveContinuationNotice,
+    blockSaveContinuation
   }), [
     shellState,
     readyState,
@@ -302,7 +321,9 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     isCommandView,
     executeCommand,
     clearCommandResult,
-    loadBrowserState
+    loadBrowserState,
+    saveContinuationNotice,
+    blockSaveContinuation
   ]);
 
   return <ShellContext.Provider value={value}>{children}</ShellContext.Provider>;

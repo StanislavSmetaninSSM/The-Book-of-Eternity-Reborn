@@ -2304,8 +2304,14 @@ public sealed class SaveLoadServiceTests : IDisposable
             await raceFs.ReadFileAsync(markerPath));
     }
 
+    /// <summary>
+    /// Preserves ordinary by-name read semantics when a hard-link alias is added during metadata consumption.
+    /// </summary>
+    /// <returns>
+    /// Completion after the original archive metadata and both exact file images remain unchanged.
+    /// </returns>
     [Fact]
-    public async Task GetAvailableSavesAsync_LinkAddedAfterMetadataInitialValidationSkipsArchiveWithoutRetry()
+    public async Task GetAvailableSavesAsync_OrdinaryMetadataAcceptsHardLinkWithoutRetry()
     {
         if (!OperatingSystem.IsWindows())
             return;
@@ -2322,7 +2328,7 @@ public sealed class SaveLoadServiceTests : IDisposable
                 """
                 {
                   "saveName": "metadata completion race",
-                  "description": "must not be accepted",
+                  "description": "ordinary hard-link input remains readable",
                   "timestamp": "2026-07-29T00:00:00Z",
                   "turnNumber": 12
                 }
@@ -2333,11 +2339,12 @@ public sealed class SaveLoadServiceTests : IDisposable
             _rootPath,
             "metadata-completion-race-alias.zip");
         var openCount = 0;
+        var before = File.ReadAllBytes(archivePath);
         var hooks = FileSystemManagerHookTestHelper.WithPathHook(
-            "AfterExactPhysicalReadInitialValidationAsync",
+            "AfterCanonicalReadInitialValidationAsync",
             path =>
             {
-                if (path.Equals(archivePath, StringComparison.OrdinalIgnoreCase))
+                if (path.Replace('\\', '/').Equals("saves/manual_saves/metadata-completion-race.zip", StringComparison.OrdinalIgnoreCase))
                 {
                     openCount++;
                     if (openCount == 1)
@@ -2363,7 +2370,11 @@ public sealed class SaveLoadServiceTests : IDisposable
             stateManager,
             NullLogger<SaveLoadService>.Instance);
 
-        Assert.Empty(await service.GetAvailableSavesAsync());
+        var save = Assert.Single(await service.GetAvailableSavesAsync());
+        Assert.Equal("metadata completion race", save.Metadata!.SaveName);
+        Assert.Equal(before.LongLength, save.FileSize);
+        Assert.Equal(before, File.ReadAllBytes(archivePath));
+        Assert.Equal(before, File.ReadAllBytes(aliasPath));
         Assert.Equal(1, openCount);
     }
 

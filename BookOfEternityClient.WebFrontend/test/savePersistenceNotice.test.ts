@@ -1,5 +1,8 @@
 import { createBrowserApiClient } from '../src/api/client.js';
-import { toSaveCreationNotice } from '../src/utils/savePersistenceNotice.js';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { SaveContinuationBlockedNotice } from '../src/components/SaveContinuationBlockedNotice.js';
+import { createSaveContinuationLatch, executeBrowserSaveCreation, toSaveCreationNotice } from '../src/utils/savePersistenceNotice.js';
 
 const failures: string[] = [];
 let passed = 0;
@@ -44,6 +47,42 @@ await scenario('a lost response blocks continuation instead of claiming rollback
   const client = createBrowserApiClient({ fetcher: async () => { throw new Error('Response interrupted.'); } });
   const notice = toSaveCreationNotice(await client.createSave({ saveName: null }));
   assert(notice.kind === 'uncertain' && notice.continuationBlocked && !notice.shouldRefresh, 'Missing response falsely established non-creation.');
+});
+
+await scenario('the consuming save handler latches unknown evidence before any refresh or later action', async () => {
+  const latch = createSaveContinuationLatch();
+  const calls: string[] = [];
+  const notice = await executeBrowserSaveCreation(() => response('Uncertain', 409, true, true),
+    () => calls.push('notice'), value => { latch.block(value); calls.push('blocked'); },
+    async () => { calls.push('refresh'); });
+  assert(calls.join(',') === 'notice,blocked' && latch.isBlocked(), 'The actual save handler refreshed or failed to latch uncertainty.');
+  await latch.runIfAllowed(async () => { calls.push('later-write'); });
+  await latch.runIfAllowed(async () => { calls.push('route-refresh'); });
+  assert(calls.length === 2, 'The shell latch admitted later work after the consuming handler stopped continuation.');
+  const html = renderToStaticMarkup(createElement(SaveContinuationBlockedNotice, { notice }));
+  assert(html.includes('Продолжение остановлено') && html.includes('role="alert"'), 'The actual blocked shell surface hid its stop notice.');
+  assert(!html.includes('<button') && !html.includes('<form'), 'The blocked shell surface exposed a retry or action control.');
+});
+
+await scenario('the consuming save handler preserves a commit and identity when its refresh fails', async () => {
+  const latch = createSaveContinuationLatch();
+  const notices: string[] = [];
+  let refreshes = 0;
+  const notice = await executeBrowserSaveCreation(() => response('Committed', 200),
+    value => notices.push(value.kind), value => { latch.block(value); },
+    async () => { refreshes++; throw new Error('Post-save shell request interrupted.'); });
+  assert(refreshes === 1 && notices.join(',') === 'saved,follow-up', 'Refresh failure did not preserve the previously applied commit.');
+  assert(notice.committed && notice.createdSaveId === 'manual:exact-created.zip' && latch.isBlocked(), 'Post-commit failure erased identity or allowed continuation.');
+  const html = renderToStaticMarkup(createElement(SaveContinuationBlockedNotice, { notice }));
+  assert(html.includes('Сохранение создано') && html.includes('manual:exact-created.zip'), 'The actual blocked UI hid the known committed destination.');
+});
+
+await scenario('a lost response still latches after its original settings consumer is gone', async () => {
+  const latch = createSaveContinuationLatch();
+  const notice = await executeBrowserSaveCreation(async () => { throw new Error('Lost response after dispatch.'); },
+    () => { /* The original settings mount no longer owns local notices. */ }, value => { latch.block(value); },
+    async () => { throw new Error('The handler must not refresh an unknown save.'); });
+  assert(notice.kind === 'uncertain' && latch.isBlocked(), 'Unmounted consumer lost the shell-wide continuation stop.');
 });
 
 console.log(`${passed} passed, ${failures.length} failed`);

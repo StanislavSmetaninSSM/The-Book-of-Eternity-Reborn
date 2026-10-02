@@ -1,6 +1,6 @@
 # Implementation Plan: Trusted local storage and cross-platform runtime
 
-**Branch**: `1553-cross-platform-runtime` | **Updated**: 2026-10-02
+**Branch**: `1553-cross-platform-runtime` | **Updated**: 2026-10-03
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
@@ -26,8 +26,21 @@ cases failed causally. The current WIP resolves post-commit debt before returnin
 retains committed status when continuation is blocked, and uses bounded file-image
 deletion for retention rather than whole-ZIP byte arrays. Browser backend RED reached
 **0/5** on its old recorder route; its frontend descriptor was not executed after that
-failure. Backend and presentation now have separate narrow owners. Engine RED and
-joint GREEN remain pending. No new Linux execution or full save acceptance is claimed.
+failure. Backend and presentation now have separate narrow owners.
+The first engine scaffold exceeded its six-minute category budget (9:06.908 including
+build), with no final TRX. Buffered output records three fixture failures, not a completed
+cohort: a wrong literal story path threw before the intended fault, causing twenty
+ordinary I/O rollback retries. The fixture now derives the story path from the seeded
+soul, gates the actual v2 autosave member and uses a non-retryable deliberate fault;
+each of player/waiting/late continuation owns a separate two-case bounded category.
+Manual presentation RED at frozen `427afdb5` completed four cases: the prior uncertainty
+control passed, committed warning/AgentConsole text failed causally, and the old rollback
+fixture still counted twenty retries. Frontend RED compiled and exercised five failing
+notice scenarios (a failed file, not a completed adapter descriptor). Both observations
+are preserved separately. The current C# source implements prepared browser saves,
+actual HTTP outcome serialization and truthful console messages; frontend integration
+is WIP. Corrected caller GREEN and independent review remain pending.
+No new Linux execution or full save acceptance is claimed.
 
 The owner now explicitly authorizes implementing Linux paths locally, marking native
 Linux execution unverified and returning its exact commands to the Linux coordinator.
