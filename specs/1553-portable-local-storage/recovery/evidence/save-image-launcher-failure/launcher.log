@@ -1,0 +1,10 @@
+warning: rejected HEAD because shallow roots are not allowed to be updated
+fatal: ambiguous argument 'FETCH_HEAD': unknown revision or path not in the working tree.
+Use '--' to separate paths from revisions, like this:
+'git <command> [<revision>...] -- [<file>...]'
+Traceback (most recent call last):
+  File "RUN_ROOT/run.py", line 10, in <module>
+    subprocess.run(['git','reset','--hard','FETCH_HEAD'],cwd=work,check=True)
+  File "PYTHON_RUNTIME/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['git', 'reset', '--hard', 'FETCH_HEAD']' returned non-zero exit status 128.

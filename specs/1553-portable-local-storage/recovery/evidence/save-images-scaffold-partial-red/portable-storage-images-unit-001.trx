@@ -1,0 +1,425 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="f801d3bb-3420-43cf-a413-f705a270609d" name="@ff00c3d48a40 2026-10-01 21:16:26" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-01T21:16:26.3894335-04:00" queuing="2026-10-01T21:16:26.3894336-04:00" start="2026-10-01T21:16:24.6501535-04:00" finish="2026-10-01T21:16:26.4977271-04:00" />
+  <TestSettings name="default" id="e7b74f29-37ec-454f-bec4-337ead8b71fd">
+    <Deployment runDeploymentRoot="_ff00c3d48a40_2026-10-01_21_16_26" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="a3d54c8b-157b-4610-bd75-b9dc8fad436c" testId="4c919fcd-6773-85b9-1623-226a82fe4f1b" testName="BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: &quot;same-length&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0004025" startTime="2026-10-01T21:16:26.3347472-04:00" endTime="2026-10-01T21:16:26.3347473-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a3d54c8b-157b-4610-bd75-b9dc8fad436c">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException : Parent traversal is not a local storage path.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFileScope.Normalize(String path) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 177
+   at System.Linq.Enumerable.SelectIListIterator`2.MoveNext()
+   at System.Collections.Generic.HashSet`1.UnionWith(IEnumerable`1 other)
+   at System.Collections.Generic.HashSet`1..ctor(IEnumerable`1 collection, IEqualityComparer`1 comparer)
+   at System.Linq.Enumerable.DistinctIterator`1.ToArray()
+   at BookOfEternityClient.Core.TrustedLocalFileScope..ctor(IEnumerable`1 roots, IEnumerable`1 exactFiles) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 83
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.Scope() in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 11
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(String drift) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 70
+   at InvokeStub_TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d2cd2f03-81e0-4884-b58d-e063208c7eca" testId="139a859f-94ae-155b-7881-5c8b01aa374f" testName="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: &quot;absent&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0004089" startTime="2026-10-01T21:16:26.3328444-04:00" endTime="2026-10-01T21:16:26.3328445-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d2cd2f03-81e0-4884-b58d-e063208c7eca">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException : Parent traversal is not a local storage path.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFileScope.Normalize(String path) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 177
+   at System.Linq.Enumerable.SelectIListIterator`2.MoveNext()
+   at System.Collections.Generic.HashSet`1.UnionWith(IEnumerable`1 other)
+   at System.Collections.Generic.HashSet`1..ctor(IEnumerable`1 collection, IEqualityComparer`1 comparer)
+   at System.Linq.Enumerable.DistinctIterator`1.ToArray()
+   at BookOfEternityClient.Core.TrustedLocalFileScope..ctor(IEnumerable`1 roots, IEnumerable`1 exactFiles) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 83
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.Scope() in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 11
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(String kind) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 51
+   at InvokeStub_TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f6164a42-3a76-4beb-a414-328e3e312c6e" testId="dd972a63-8777-34f2-673e-ae2507d89afd" testName="BookOfEternityClient.Tests.TrustedLocalFileImageTests.ByteImageOwnsAnIndependentSnapshotAndAbsenceDiffersFromEmpty" computerName="ff00c3d48a40" duration="00:00:00.0009951" startTime="2026-10-01T21:16:26.3339847-04:00" endTime="2026-10-01T21:16:26.3339848-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f6164a42-3a76-4beb-a414-328e3e312c6e">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NotImplementedException : T032-A1 image scaffold</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFileImage.FromBytes(Byte[] bytes) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs:line 13
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.ByteImageOwnsAnIndependentSnapshotAndAbsenceDiffersFromEmpty() in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 33
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e5a27eda-29e7-4d4d-a7f7-b6c1d7dbcf5f" testId="305ebdc8-fa56-76e0-7a21-f706946eceeb" testName="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(empty: False)" computerName="ff00c3d48a40" duration="00:00:00.0057560" startTime="2026-10-01T21:16:26.3273460-04:00" endTime="2026-10-01T21:16:26.3273588-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e5a27eda-29e7-4d4d-a7f7-b6c1d7dbcf5f">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException : Parent traversal is not a local storage path.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFileScope.Normalize(String path) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 177
+   at System.Linq.Enumerable.SelectIListIterator`2.MoveNext()
+   at System.Collections.Generic.HashSet`1.UnionWith(IEnumerable`1 other)
+   at System.Collections.Generic.HashSet`1..ctor(IEnumerable`1 collection, IEqualityComparer`1 comparer)
+   at System.Linq.Enumerable.DistinctIterator`1.ToArray()
+   at BookOfEternityClient.Core.TrustedLocalFileScope..ctor(IEnumerable`1 roots, IEnumerable`1 exactFiles) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 83
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.Scope() in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 11
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(Boolean empty) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 19
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a7e9b426-0927-41fc-a347-d305ea475d01" testId="72f7261d-a609-9c8e-8e44-efdffa1bae7d" testName="BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: &quot;shorter&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0003062" startTime="2026-10-01T21:16:26.3593853-04:00" endTime="2026-10-01T21:16:26.3593853-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a7e9b426-0927-41fc-a347-d305ea475d01">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException : Parent traversal is not a local storage path.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFileScope.Normalize(String path) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 177
+   at System.Linq.Enumerable.SelectIListIterator`2.MoveNext()
+   at System.Collections.Generic.HashSet`1.UnionWith(IEnumerable`1 other)
+   at System.Collections.Generic.HashSet`1..ctor(IEnumerable`1 collection, IEqualityComparer`1 comparer)
+   at System.Linq.Enumerable.DistinctIterator`1.ToArray()
+   at BookOfEternityClient.Core.TrustedLocalFileScope..ctor(IEnumerable`1 roots, IEnumerable`1 exactFiles) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 83
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.Scope() in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 11
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(String drift) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 70
+   at InvokeStub_TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b2fc2db0-81ce-4c30-8bf2-9d7957ce5408" testId="b9d12445-68dd-cb7b-ec2c-0f97a4599f38" testName="BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: &quot;deleted&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0007532" startTime="2026-10-01T21:16:26.3343834-04:00" endTime="2026-10-01T21:16:26.3343834-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b2fc2db0-81ce-4c30-8bf2-9d7957ce5408">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException : Parent traversal is not a local storage path.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFileScope.Normalize(String path) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 177
+   at System.Linq.Enumerable.SelectIListIterator`2.MoveNext()
+   at System.Collections.Generic.HashSet`1.UnionWith(IEnumerable`1 other)
+   at System.Collections.Generic.HashSet`1..ctor(IEnumerable`1 collection, IEqualityComparer`1 comparer)
+   at System.Linq.Enumerable.DistinctIterator`1.ToArray()
+   at BookOfEternityClient.Core.TrustedLocalFileScope..ctor(IEnumerable`1 roots, IEnumerable`1 exactFiles) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 83
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.Scope() in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 11
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(String drift) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 70
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7ba41b6c-3a1f-4e45-b52e-8a6e5e10187e" testId="5d65fada-ecfb-91a6-2bee-d354ce78a9ee" testName="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: &quot;link&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0001491" startTime="2026-10-01T21:16:26.3333420-04:00" endTime="2026-10-01T21:16:26.3333420-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7ba41b6c-3a1f-4e45-b52e-8a6e5e10187e">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException : Parent traversal is not a local storage path.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFileScope.Normalize(String path) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 177
+   at System.Linq.Enumerable.SelectIListIterator`2.MoveNext()
+   at System.Collections.Generic.HashSet`1.UnionWith(IEnumerable`1 other)
+   at System.Collections.Generic.HashSet`1..ctor(IEnumerable`1 collection, IEqualityComparer`1 comparer)
+   at System.Linq.Enumerable.DistinctIterator`1.ToArray()
+   at BookOfEternityClient.Core.TrustedLocalFileScope..ctor(IEnumerable`1 roots, IEnumerable`1 exactFiles) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 83
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.Scope() in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 11
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(String kind) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 51
+   at InvokeStub_TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="27c5dc23-ea5e-4d7a-b246-30d32cadb0a7" testId="137f5aa3-1dbe-5eab-3e26-1efad8ea44a3" testName="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: &quot;directory&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0006348" startTime="2026-10-01T21:16:26.3324110-04:00" endTime="2026-10-01T21:16:26.3324110-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="27c5dc23-ea5e-4d7a-b246-30d32cadb0a7">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException : Parent traversal is not a local storage path.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFileScope.Normalize(String path) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 177
+   at System.Linq.Enumerable.SelectIListIterator`2.MoveNext()
+   at System.Collections.Generic.HashSet`1.UnionWith(IEnumerable`1 other)
+   at System.Collections.Generic.HashSet`1..ctor(IEnumerable`1 collection, IEqualityComparer`1 comparer)
+   at System.Linq.Enumerable.DistinctIterator`1.ToArray()
+   at BookOfEternityClient.Core.TrustedLocalFileScope..ctor(IEnumerable`1 roots, IEnumerable`1 exactFiles) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 83
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.Scope() in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 11
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(String kind) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 51
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="121fe2b1-9f98-47fa-83f9-054263cf0294" testId="cc55ab71-38c8-ae98-e283-a30510567d98" testName="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: &quot;outside&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0002675" startTime="2026-10-01T21:16:26.3337255-04:00" endTime="2026-10-01T21:16:26.3337255-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="121fe2b1-9f98-47fa-83f9-054263cf0294">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException : Parent traversal is not a local storage path.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFileScope.Normalize(String path) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 177
+   at System.Linq.Enumerable.SelectIListIterator`2.MoveNext()
+   at System.Collections.Generic.HashSet`1.UnionWith(IEnumerable`1 other)
+   at System.Collections.Generic.HashSet`1..ctor(IEnumerable`1 collection, IEqualityComparer`1 comparer)
+   at System.Linq.Enumerable.DistinctIterator`1.ToArray()
+   at BookOfEternityClient.Core.TrustedLocalFileScope..ctor(IEnumerable`1 roots, IEnumerable`1 exactFiles) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 83
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.Scope() in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 11
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(String kind) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 51
+   at InvokeStub_TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e94bddef-8525-4724-950a-7f1ad015b904" testId="70b277b9-1e87-7194-d542-5f916afe3d60" testName="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(empty: True)" computerName="ff00c3d48a40" duration="00:00:00.0006142" startTime="2026-10-01T21:16:26.3313919-04:00" endTime="2026-10-01T21:16:26.3313920-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e94bddef-8525-4724-950a-7f1ad015b904">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException : Parent traversal is not a local storage path.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFileScope.Normalize(String path) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 177
+   at System.Linq.Enumerable.SelectIListIterator`2.MoveNext()
+   at System.Collections.Generic.HashSet`1.UnionWith(IEnumerable`1 other)
+   at System.Collections.Generic.HashSet`1..ctor(IEnumerable`1 collection, IEqualityComparer`1 comparer)
+   at System.Linq.Enumerable.DistinctIterator`1.ToArray()
+   at BookOfEternityClient.Core.TrustedLocalFileScope..ctor(IEnumerable`1 roots, IEnumerable`1 exactFiles) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 83
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.Scope() in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 11
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(Boolean empty) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 19
+   at InvokeStub_TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6714b1a2-ceeb-4264-9fc2-e0559e9e539e" testId="af5b9db0-9218-987a-6ac6-3dd9aced214e" testName="BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: &quot;longer&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0002416" startTime="2026-10-01T21:16:26.3599620-04:00" endTime="2026-10-01T21:16:26.3599621-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6714b1a2-ceeb-4264-9fc2-e0559e9e539e">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException : Parent traversal is not a local storage path.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFileScope.Normalize(String path) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 177
+   at System.Linq.Enumerable.SelectIListIterator`2.MoveNext()
+   at System.Collections.Generic.HashSet`1.UnionWith(IEnumerable`1 other)
+   at System.Collections.Generic.HashSet`1..ctor(IEnumerable`1 collection, IEqualityComparer`1 comparer)
+   at System.Linq.Enumerable.DistinctIterator`1.ToArray()
+   at BookOfEternityClient.Core.TrustedLocalFileScope..ctor(IEnumerable`1 roots, IEnumerable`1 exactFiles) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 83
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.Scope() in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 11
+   at BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(String drift) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs:line 70
+   at InvokeStub_TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileImageTests.ByteImageOwnsAnIndependentSnapshotAndAbsenceDiffersFromEmpty" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="dd972a63-8777-34f2-673e-ae2507d89afd">
+      <Execution id="f6164a42-3a76-4beb-a414-328e3e312c6e" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileImageTests" name="ByteImageOwnsAnIndependentSnapshotAndAbsenceDiffersFromEmpty" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: &quot;absent&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="139a859f-94ae-155b-7881-5c8b01aa374f">
+      <Execution id="d2cd2f03-81e0-4884-b58d-e063208c7eca" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileImageTests" name="CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: &quot;longer&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="af5b9db0-9218-987a-6ac6-3dd9aced214e">
+      <Execution id="6714b1a2-ceeb-4264-9fc2-e0559e9e539e" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileImageTests" name="FileCopyRejectsDriftAfterCapture" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(empty: False)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="305ebdc8-fa56-76e0-7a21-f706946eceeb">
+      <Execution id="e5a27eda-29e7-4d4d-a7f7-b6c1d7dbcf5f" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileImageTests" name="CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: &quot;directory&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="137f5aa3-1dbe-5eab-3e26-1efad8ea44a3">
+      <Execution id="27c5dc23-ea5e-4d7a-b246-30d32cadb0a7" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileImageTests" name="CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(empty: True)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="70b277b9-1e87-7194-d542-5f916afe3d60">
+      <Execution id="e94bddef-8525-4724-950a-7f1ad015b904" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileImageTests" name="CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: &quot;same-length&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4c919fcd-6773-85b9-1623-226a82fe4f1b">
+      <Execution id="a3d54c8b-157b-4610-bd75-b9dc8fad436c" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileImageTests" name="FileCopyRejectsDriftAfterCapture" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: &quot;shorter&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="72f7261d-a609-9c8e-8e44-efdffa1bae7d">
+      <Execution id="a7e9b426-0927-41fc-a347-d305ea475d01" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileImageTests" name="FileCopyRejectsDriftAfterCapture" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: &quot;link&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5d65fada-ecfb-91a6-2bee-d354ce78a9ee">
+      <Execution id="7ba41b6c-3a1f-4e45-b52e-8a6e5e10187e" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileImageTests" name="CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: &quot;deleted&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b9d12445-68dd-cb7b-ec2c-0f97a4599f38">
+      <Execution id="b2fc2db0-81ce-4c30-8bf2-9d7957ce5408" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileImageTests" name="FileCopyRejectsDriftAfterCapture" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: &quot;outside&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="cc55ab71-38c8-ae98-e283-a30510567d98">
+      <Execution id="121fe2b1-9f98-47fa-83f9-054263cf0294" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileImageTests" name="CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="4c919fcd-6773-85b9-1623-226a82fe4f1b" executionId="a3d54c8b-157b-4610-bd75-b9dc8fad436c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="139a859f-94ae-155b-7881-5c8b01aa374f" executionId="d2cd2f03-81e0-4884-b58d-e063208c7eca" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dd972a63-8777-34f2-673e-ae2507d89afd" executionId="f6164a42-3a76-4beb-a414-328e3e312c6e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="305ebdc8-fa56-76e0-7a21-f706946eceeb" executionId="e5a27eda-29e7-4d4d-a7f7-b6c1d7dbcf5f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="72f7261d-a609-9c8e-8e44-efdffa1bae7d" executionId="a7e9b426-0927-41fc-a347-d305ea475d01" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b9d12445-68dd-cb7b-ec2c-0f97a4599f38" executionId="b2fc2db0-81ce-4c30-8bf2-9d7957ce5408" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5d65fada-ecfb-91a6-2bee-d354ce78a9ee" executionId="7ba41b6c-3a1f-4e45-b52e-8a6e5e10187e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="137f5aa3-1dbe-5eab-3e26-1efad8ea44a3" executionId="27c5dc23-ea5e-4d7a-b246-30d32cadb0a7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cc55ab71-38c8-ae98-e283-a30510567d98" executionId="121fe2b1-9f98-47fa-83f9-054263cf0294" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="70b277b9-1e87-7194-d542-5f916afe3d60" executionId="e94bddef-8525-4724-950a-7f1ad015b904" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="af5b9db0-9218-987a-6ac6-3dd9aced214e" executionId="6714b1a2-ceeb-4264-9fc2-e0559e9e539e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="11" executed="11" passed="0" failed="11" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.15]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.13]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.16]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.24]       System.IO.InvalidDataException : Parent traversal is not a local storage path.
+[xUnit.net 00:00:01.24]       Stack Trace:
+[xUnit.net 00:00:01.24]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs(177,0): at BookOfEternityClient.Core.TrustedLocalFileScope.Normalize(String path)
+[xUnit.net 00:00:01.24]            at System.Linq.Enumerable.SelectIListIterator`2.MoveNext()
+[xUnit.net 00:00:01.24]            at System.Collections.Generic.HashSet`1.UnionWith(IEnumerable`1 other)
+[xUnit.net 00:00:01.24]            at System.Collections.Generic.HashSet`1..ctor(IEnumerable`1 collection, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:01.24]            at System.Linq.Enumerable.DistinctIterator`1.ToArray()
+[xUnit.net 00:00:01.24]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs(83,0): at BookOfEternityClient.Core.TrustedLocalFileScope..ctor(IEnumerable`1 roots, IEnumerable`1 exactFiles)
+[xUnit.net 00:00:01.24]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(11,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.Scope()
+[xUnit.net 00:00:01.24]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(19,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(Boolean empty)
+[xUnit.net 00:00:01.24]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.24]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.25]       System.IO.InvalidDataException : Parent traversal is not a local storage path.
+[xUnit.net 00:00:01.25]       Stack Trace:
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs(177,0): at BookOfEternityClient.Core.TrustedLocalFileScope.Normalize(String path)
+[xUnit.net 00:00:01.25]            at System.Linq.Enumerable.SelectIListIterator`2.MoveNext()
+[xUnit.net 00:00:01.25]            at System.Collections.Generic.HashSet`1.UnionWith(IEnumerable`1 other)
+[xUnit.net 00:00:01.25]            at System.Collections.Generic.HashSet`1..ctor(IEnumerable`1 collection, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:01.25]            at System.Linq.Enumerable.DistinctIterator`1.ToArray()
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs(83,0): at BookOfEternityClient.Core.TrustedLocalFileScope..ctor(IEnumerable`1 roots, IEnumerable`1 exactFiles)
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(11,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.Scope()
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(19,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(Boolean empty)
+[xUnit.net 00:00:01.25]            at InvokeStub_TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(Object, Span`1)
+[xUnit.net 00:00:01.25]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.25]       System.IO.InvalidDataException : Parent traversal is not a local storage path.
+[xUnit.net 00:00:01.25]       Stack Trace:
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs(177,0): at BookOfEternityClient.Core.TrustedLocalFileScope.Normalize(String path)
+[xUnit.net 00:00:01.25]            at System.Linq.Enumerable.SelectIListIterator`2.MoveNext()
+[xUnit.net 00:00:01.25]            at System.Collections.Generic.HashSet`1.UnionWith(IEnumerable`1 other)
+[xUnit.net 00:00:01.25]            at System.Collections.Generic.HashSet`1..ctor(IEnumerable`1 collection, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:01.25]            at System.Linq.Enumerable.DistinctIterator`1.ToArray()
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs(83,0): at BookOfEternityClient.Core.TrustedLocalFileScope..ctor(IEnumerable`1 roots, IEnumerable`1 exactFiles)
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(11,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.Scope()
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(51,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(String kind)
+[xUnit.net 00:00:01.25]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.25]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.25]       System.IO.InvalidDataException : Parent traversal is not a local storage path.
+[xUnit.net 00:00:01.25]       Stack Trace:
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs(177,0): at BookOfEternityClient.Core.TrustedLocalFileScope.Normalize(String path)
+[xUnit.net 00:00:01.25]            at System.Linq.Enumerable.SelectIListIterator`2.MoveNext()
+[xUnit.net 00:00:01.25]            at System.Collections.Generic.HashSet`1.UnionWith(IEnumerable`1 other)
+[xUnit.net 00:00:01.25]            at System.Collections.Generic.HashSet`1..ctor(IEnumerable`1 collection, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:01.25]            at System.Linq.Enumerable.DistinctIterator`1.ToArray()
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs(83,0): at BookOfEternityClient.Core.TrustedLocalFileScope..ctor(IEnumerable`1 roots, IEnumerable`1 exactFiles)
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(11,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.Scope()
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(51,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(String kind)
+[xUnit.net 00:00:01.25]            at InvokeStub_TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(Object, Span`1)
+[xUnit.net 00:00:01.25]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.25]       System.IO.InvalidDataException : Parent traversal is not a local storage path.
+[xUnit.net 00:00:01.25]       Stack Trace:
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs(177,0): at BookOfEternityClient.Core.TrustedLocalFileScope.Normalize(String path)
+[xUnit.net 00:00:01.25]            at System.Linq.Enumerable.SelectIListIterator`2.MoveNext()
+[xUnit.net 00:00:01.25]            at System.Collections.Generic.HashSet`1.UnionWith(IEnumerable`1 other)
+[xUnit.net 00:00:01.25]            at System.Collections.Generic.HashSet`1..ctor(IEnumerable`1 collection, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:01.25]            at System.Linq.Enumerable.DistinctIterator`1.ToArray()
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs(83,0): at BookOfEternityClient.Core.TrustedLocalFileScope..ctor(IEnumerable`1 roots, IEnumerable`1 exactFiles)
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(11,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.Scope()
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(51,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(String kind)
+[xUnit.net 00:00:01.25]            at InvokeStub_TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(Object, Span`1)
+[xUnit.net 00:00:01.25]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.25]       System.IO.InvalidDataException : Parent traversal is not a local storage path.
+[xUnit.net 00:00:01.25]       Stack Trace:
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs(177,0): at BookOfEternityClient.Core.TrustedLocalFileScope.Normalize(String path)
+[xUnit.net 00:00:01.25]            at System.Linq.Enumerable.SelectIListIterator`2.MoveNext()
+[xUnit.net 00:00:01.25]            at System.Collections.Generic.HashSet`1.UnionWith(IEnumerable`1 other)
+[xUnit.net 00:00:01.25]            at System.Collections.Generic.HashSet`1..ctor(IEnumerable`1 collection, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:01.25]            at System.Linq.Enumerable.DistinctIterator`1.ToArray()
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs(83,0): at BookOfEternityClient.Core.TrustedLocalFileScope..ctor(IEnumerable`1 roots, IEnumerable`1 exactFiles)
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(11,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.Scope()
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(51,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(String kind)
+[xUnit.net 00:00:01.25]            at InvokeStub_TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(Object, Span`1)
+[xUnit.net 00:00:01.25]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.25]       System.NotImplementedException : T032-A1 image scaffold
+[xUnit.net 00:00:01.25]       Stack Trace:
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileImage.cs(13,0): at BookOfEternityClient.Core.TrustedLocalFileImage.FromBytes(Byte[] bytes)
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(33,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.ByteImageOwnsAnIndependentSnapshotAndAbsenceDiffersFromEmpty()
+[xUnit.net 00:00:01.25]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.25]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.25]       System.IO.InvalidDataException : Parent traversal is not a local storage path.
+[xUnit.net 00:00:01.25]       Stack Trace:
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs(177,0): at BookOfEternityClient.Core.TrustedLocalFileScope.Normalize(String path)
+[xUnit.net 00:00:01.25]            at System.Linq.Enumerable.SelectIListIterator`2.MoveNext()
+[xUnit.net 00:00:01.25]            at System.Collections.Generic.HashSet`1.UnionWith(IEnumerable`1 other)
+[xUnit.net 00:00:01.25]            at System.Collections.Generic.HashSet`1..ctor(IEnumerable`1 collection, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:01.25]            at System.Linq.Enumerable.DistinctIterator`1.ToArray()
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs(83,0): at BookOfEternityClient.Core.TrustedLocalFileScope..ctor(IEnumerable`1 roots, IEnumerable`1 exactFiles)
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(11,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.Scope()
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(70,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(String drift)
+[xUnit.net 00:00:01.25]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.25]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.25]       System.IO.InvalidDataException : Parent traversal is not a local storage path.
+[xUnit.net 00:00:01.25]       Stack Trace:
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs(177,0): at BookOfEternityClient.Core.TrustedLocalFileScope.Normalize(String path)
+[xUnit.net 00:00:01.25]            at System.Linq.Enumerable.SelectIListIterator`2.MoveNext()
+[xUnit.net 00:00:01.25]            at System.Collections.Generic.HashSet`1.UnionWith(IEnumerable`1 other)
+[xUnit.net 00:00:01.25]            at System.Collections.Generic.HashSet`1..ctor(IEnumerable`1 collection, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:01.25]            at System.Linq.Enumerable.DistinctIterator`1.ToArray()
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs(83,0): at BookOfEternityClient.Core.TrustedLocalFileScope..ctor(IEnumerable`1 roots, IEnumerable`1 exactFiles)
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(11,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.Scope()
+[xUnit.net 00:00:01.25]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(70,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(String drift)
+[xUnit.net 00:00:01.25]            at InvokeStub_TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(Object, Span`1)
+[xUnit.net 00:00:01.25]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.28]       System.IO.InvalidDataException : Parent traversal is not a local storage path.
+[xUnit.net 00:00:01.28]       Stack Trace:
+[xUnit.net 00:00:01.28]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs(177,0): at BookOfEternityClient.Core.TrustedLocalFileScope.Normalize(String path)
+[xUnit.net 00:00:01.28]            at System.Linq.Enumerable.SelectIListIterator`2.MoveNext()
+[xUnit.net 00:00:01.28]            at System.Collections.Generic.HashSet`1.UnionWith(IEnumerable`1 other)
+[xUnit.net 00:00:01.28]            at System.Collections.Generic.HashSet`1..ctor(IEnumerable`1 collection, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:01.28]            at System.Linq.Enumerable.DistinctIterator`1.ToArray()
+[xUnit.net 00:00:01.28]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs(83,0): at BookOfEternityClient.Core.TrustedLocalFileScope..ctor(IEnumerable`1 roots, IEnumerable`1 exactFiles)
+[xUnit.net 00:00:01.28]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(11,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.Scope()
+[xUnit.net 00:00:01.28]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(70,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(String drift)
+[xUnit.net 00:00:01.28]            at InvokeStub_TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(Object, Span`1)
+[xUnit.net 00:00:01.28]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.28]       System.IO.InvalidDataException : Parent traversal is not a local storage path.
+[xUnit.net 00:00:01.28]       Stack Trace:
+[xUnit.net 00:00:01.28]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs(177,0): at BookOfEternityClient.Core.TrustedLocalFileScope.Normalize(String path)
+[xUnit.net 00:00:01.28]            at System.Linq.Enumerable.SelectIListIterator`2.MoveNext()
+[xUnit.net 00:00:01.28]            at System.Collections.Generic.HashSet`1.UnionWith(IEnumerable`1 other)
+[xUnit.net 00:00:01.28]            at System.Collections.Generic.HashSet`1..ctor(IEnumerable`1 collection, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:01.28]            at System.Linq.Enumerable.DistinctIterator`1.ToArray()
+[xUnit.net 00:00:01.28]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFileScope.cs(83,0): at BookOfEternityClient.Core.TrustedLocalFileScope..ctor(IEnumerable`1 roots, IEnumerable`1 exactFiles)
+[xUnit.net 00:00:01.28]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(11,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.Scope()
+[xUnit.net 00:00:01.28]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalFileImageTests.cs(70,0): at BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(String drift)
+[xUnit.net 00:00:01.28]            at InvokeStub_TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(Object, Span`1)
+[xUnit.net 00:00:01.28]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.28]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:16:26.3253165-04:00">
+        <Text>[xUnit.net 00:00:01.24]     BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(empty: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:16:26.3311593-04:00">
+        <Text>[xUnit.net 00:00:01.25]     BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes(empty: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:16:26.3321651-04:00">
+        <Text>[xUnit.net 00:00:01.25]     BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: "directory") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:16:26.3358752-04:00">
+        <Text>[xUnit.net 00:00:01.25]     BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: "absent") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:16:26.3361567-04:00">
+        <Text>[xUnit.net 00:00:01.25]     BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: "link") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:16:26.3364312-04:00">
+        <Text>[xUnit.net 00:00:01.25]     BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource(kind: "outside") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:16:26.3367494-04:00">
+        <Text>[xUnit.net 00:00:01.25]     BookOfEternityClient.Tests.TrustedLocalFileImageTests.ByteImageOwnsAnIndependentSnapshotAndAbsenceDiffersFromEmpty [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:16:26.3369365-04:00">
+        <Text>[xUnit.net 00:00:01.25]     BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: "deleted") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:16:26.3370020-04:00">
+        <Text>[xUnit.net 00:00:01.25]     BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: "same-length") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:16:26.4022572-04:00">
+        <Text>[xUnit.net 00:00:01.28]     BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: "shorter") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:16:26.4022890-04:00">
+        <Text>[xUnit.net 00:00:01.28]     BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture(drift: "longer") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

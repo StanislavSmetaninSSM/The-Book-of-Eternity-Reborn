@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "attemptedSource": "22b486bc5448375f09ba09d27f3bfcd0f236509f",
+  "phase": "Owned disposable test-copy shallow fetch before canonical runner",
+  "command": "python RUN_ROOT/run.py -Category portable-storage-images -Parallelism 1",
+  "exitCode": 1,
+  "buildsStarted": 0,
+  "testsExecuted": 0,
+  "failure": "git fetch rejected updated shallow roots; FETCH_HEAD was not set, so reset failed before the runner could start",
+  "correction": "Allow shallow-root updates only in the owned disposable clone; verify exact source HEAD and applied catalog before subsequent canonical-runner invocations",
+  "retry": "Same narrow category, fresh build, results recorded separately",
+  "artifact": {
+    "file": "launcher.log",
+    "originalSha256": "586f502c5a96309c1d27f19c91f7580246e93f3935612392773a0813fffa7e3b",
+    "sanitizedSha256": "21d01ceaa89094a30b62b88f11f52a02decda87fbaa929124b1343ed1268a842"
+  },
+  "correctedLauncher": {
+    "file": "corrected-launcher.py",
+    "sha256": "fa3f878b977e74e94f8749fe347f5c63f795d037032c323de807ac933ab46a97",
+    "invocation": "BOE_SOURCE_ROOT=<absolute feature checkout> BOE_TOOLCHAIN_ROOT=<existing official binaries> python <absolute fresh owned run root>/corrected-launcher.py -Category portable-storage-images -NoBuild -Parallelism 1",
+    "scope": "Only the owned launcher/run root is normalized; all 11 test bodies and production path rejection stay unchanged. NoBuild reuses the fresh successful unit build at unchanged 22b486bc source; process temp root and exact source/catalog are asserted before canonical runner startup."
+  }
+}
