@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 1,
+  "measurementOnly": true,
+  "rows": [
+    {
+      "mode": "producer",
+      "requestedPayloadBytes": 67043328,
+      "gcAvailableBytes": 805306368,
+      "phases": [
+        "CompletedArchiveBoundary"
+      ],
+      "completed": true,
+      "saveReturned": false,
+      "producerMilliseconds": 6869.702,
+      "producerAllocatedBytes": 136272752,
+      "errors": [
+        "BookOfEternityClient.Tests.PortableSaveResourceProbe+StopAfterArchive",
+        "System.DllNotFoundException"
+      ],
+      "archiveBytes": 67067038,
+      "archiveSha256": "C6210EF504DF44C79A6EE3124A454BFFB28645A2ACE35851D99E8C7DE360EABD",
+      "archiveEntryCount": 9,
+      "expandedBytes": 67052239,
+      "milliseconds": 6925.7081,
+      "allocatedBytes": 136305664,
+      "peakWorkingSetBytes": 209547264,
+      "destinationExists": false,
+      "destinationSha256": null,
+      "journalFiles": [],
+      "parentSampledPeakBytes": 209924096,
+      "parentMilliseconds": 7544.6782,
+      "case": "BookOfEternityClient.Tests.PortableSaveResourceTests.MeasureUnchangedProducerAndB1CandidateWithinDeclaredOwnedBounds(mebibytes: 64)"
+    },
+    {
+      "mode": "b1",
+      "requestedPayloadBytes": 67043328,
+      "gcAvailableBytes": 805306368,
+      "phases": [
+        "BeforeWholeArchiveRead",
+        "WholeArchiveRead",
+        "IntentStaged",
+        "IntentPublished",
+        "MemberStaged",
+        "MemberPublished",
+        "CommitStaged",
+        "Committed"
+      ],
+      "completed": true,
+      "disposition": "Committed",
+      "failure": "BookOfEternityClient.Tests.PortableSaveResourceProbe+RetainCommittedEvidence: Exception of type 'BookOfEternityClient.Tests.PortableSaveResourceProbe+RetainCommittedEvidence' was thrown.\n   at BookOfEternityClient.Tests.PortableSaveResourceProbe.<>c__DisplayClass2_0.<RunAsync>b__4(TrustedLocalPublicationPhase phase, Int32 _) in SOURCE_ROOT/BookOfEternityClient.TestSupport/PortableSaveResourceProbe.cs:line 87\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 390\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer, PublicationAttempt attempt) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 190\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 83",
+      "milliseconds": 1701.1101,
+      "allocatedBytes": 649346576,
+      "peakWorkingSetBytes": 619175936,
+      "destinationExists": true,
+      "destinationSha256": "C6210EF504DF44C79A6EE3124A454BFFB28645A2ACE35851D99E8C7DE360EABD",
+      "journalFiles": [
+        "active.json"
+      ],
+      "parentSampledPeakBytes": 620654592,
+      "parentMilliseconds": 1885.0097,
+      "case": "BookOfEternityClient.Tests.PortableSaveResourceTests.MeasureUnchangedProducerAndB1CandidateWithinDeclaredOwnedBounds(mebibytes: 64)"
+    },
+    {
+      "mode": "recover",
+      "requestedPayloadBytes": 67043328,
+      "gcAvailableBytes": 805306368,
+      "phases": [
+        "BeforeColdCanonicalAcquisition",
+        "ColdCanonicalAcquisitionReturned"
+      ],
+      "completed": true,
+      "milliseconds": 523.9081,
+      "allocatedBytes": 358482760,
+      "peakWorkingSetBytes": 414064640,
+      "destinationExists": true,
+      "destinationSha256": "C6210EF504DF44C79A6EE3124A454BFFB28645A2ACE35851D99E8C7DE360EABD",
+      "journalFiles": [],
+      "parentSampledPeakBytes": 414969856,
+      "parentMilliseconds": 701.7073,
+      "case": "BookOfEternityClient.Tests.PortableSaveResourceTests.MeasureUnchangedProducerAndB1CandidateWithinDeclaredOwnedBounds(mebibytes: 64)"
+    },
+    {
+      "mode": "producer",
+      "requestedPayloadBytes": 134152192,
+      "gcAvailableBytes": 805306368,
+      "phases": [
+        "CompletedArchiveBoundary"
+      ],
+      "completed": true,
+      "saveReturned": false,
+      "producerMilliseconds": 9824.4025,
+      "producerAllocatedBytes": 270671840,
+      "errors": [
+        "BookOfEternityClient.Tests.PortableSaveResourceProbe+StopAfterArchive",
+        "System.DllNotFoundException"
+      ],
+      "archiveBytes": 134196570,
+      "archiveSha256": "BC8ADB9A93C5811BB89DD07330254F28A9103F9A6FB321B2BCF6CD1A24414FB3",
+      "archiveEntryCount": 10,
+      "expandedBytes": 134161278,
+      "milliseconds": 9929.4207,
+      "allocatedBytes": 270705336,
+      "peakWorkingSetBytes": 344866816,
+      "destinationExists": false,
+      "destinationSha256": null,
+      "journalFiles": [],
+      "parentSampledPeakBytes": 345714688,
+      "parentMilliseconds": 10565.5391,
+      "case": "BookOfEternityClient.Tests.PortableSaveResourceTests.MeasureUnchangedProducerAndB1CandidateWithinDeclaredOwnedBounds(mebibytes: 128)"
+    },
+    {
+      "mode": "b1",
+      "requestedPayloadBytes": 134152192,
+      "gcAvailableBytes": 805306368,
+      "phases": [
+        "BeforeWholeArchiveRead",
+        "WholeArchiveRead"
+      ],
+      "completed": false,
+      "disposition": "RolledBack",
+      "failure": "System.OutOfMemoryException: Exception of type 'System.OutOfMemoryException' was thrown.\n   at System.GC.AllocateNewArray(IntPtr typeHandle, Int32 length, GC_ALLOC_FLAGS flags)\n   at System.Buffers.SharedArrayPool`1.Rent(Int32 minimumLength)\n   at System.Text.Json.Utf8JsonWriter.WriteBase64Minimized(ReadOnlySpan`1 bytes)\n   at System.Text.Json.Serialization.Converters.ByteArrayConverter.Write(Utf8JsonWriter writer, Byte[] value, JsonSerializerOptions options)\n   at System.Text.Json.Serialization.JsonConverter`1.TryWrite(Utf8JsonWriter writer, T& value, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.Metadata.JsonPropertyInfo`1.GetMemberAndWriteJson(Object obj, WriteStack& state, Utf8JsonWriter writer)\n   at System.Text.Json.Serialization.Converters.ObjectDefaultConverter`1.OnTryWrite(Utf8JsonWriter writer, T value, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.JsonConverter`1.TryWrite(Utf8JsonWriter writer, T& value, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.Metadata.JsonPropertyInfo`1.GetMemberAndWriteJson(Object obj, WriteStack& state, Utf8JsonWriter writer)\n   at System.Text.Json.Serialization.Converters.ObjectDefaultConverter`1.OnTryWrite(Utf8JsonWriter writer, T value, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.JsonConverter`1.TryWrite(Utf8JsonWriter writer, T& value, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.Converters.ArrayConverter`2.OnWriteResume(Utf8JsonWriter writer, TElement[] array, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.JsonCollectionConverter`2.OnTryWrite(Utf8JsonWriter writer, TCollection value, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.JsonConverter`1.TryWrite(Utf8JsonWriter writer, T& value, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.Metadata.JsonPropertyInfo`1.GetMemberAndWriteJson(Object obj, WriteStack& state, Utf8JsonWriter writer)\n   at System.Text.Json.Serialization.Converters.ObjectDefaultConverter`1.OnTryWrite(Utf8JsonWriter writer, T value, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.JsonConverter`1.TryWrite(Utf8JsonWriter writer, T& value, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.JsonConverter`1.WriteCore(Utf8JsonWriter writer, T& value, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.Metadata.JsonTypeInfo`1.Serialize(Utf8JsonWriter writer, T& rootValue, Object rootValueBoxed)\n   at System.Text.Json.JsonSerializer.WriteBytes[TValue](TValue& value, JsonTypeInfo`1 jsonTypeInfo)\n   at System.Text.Json.JsonSerializer.SerializeToUtf8Bytes[TValue](TValue value, JsonSerializerOptions options)\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer, PublicationAttempt attempt) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 159\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 83",
+      "milliseconds": 362.0644,
+      "allocatedBytes": 537685016,
+      "peakWorkingSetBytes": 328445952,
+      "destinationExists": false,
+      "destinationSha256": null,
+      "journalFiles": [],
+      "parentSampledPeakBytes": 328978432,
+      "parentMilliseconds": 447.8923,
+      "case": "BookOfEternityClient.Tests.PortableSaveResourceTests.MeasureUnchangedProducerAndB1CandidateWithinDeclaredOwnedBounds(mebibytes: 128)"
+    },
+    {
+      "mode": "recover",
+      "requestedPayloadBytes": 134152192,
+      "gcAvailableBytes": 805306368,
+      "phases": [
+        "BeforeColdCanonicalAcquisition",
+        "ColdCanonicalAcquisitionReturned"
+      ],
+      "completed": true,
+      "milliseconds": 29.6529,
+      "allocatedBytes": 239584,
+      "peakWorkingSetBytes": 45572096,
+      "destinationExists": false,
+      "destinationSha256": null,
+      "journalFiles": [],
+      "parentSampledPeakBytes": 50630656,
+      "parentMilliseconds": 139.2246,
+      "case": "BookOfEternityClient.Tests.PortableSaveResourceTests.MeasureUnchangedProducerAndB1CandidateWithinDeclaredOwnedBounds(mebibytes: 128)"
+    },
+    {
+      "mode": "producer",
+      "requestedPayloadBytes": 536805376,
+      "gcAvailableBytes": 805306368,
+      "phases": [
+        "CompletedArchiveBoundary"
+      ],
+      "completed": true,
+      "saveReturned": false,
+      "producerMilliseconds": 47772.9652,
+      "producerAllocatedBytes": 1076420520,
+      "errors": [
+        "BookOfEternityClient.Tests.PortableSaveResourceProbe+StopAfterArchive",
+        "System.DllNotFoundException"
+      ],
+      "archiveBytes": 536973722,
+      "archiveSha256": "52077B05D4D310AFAA6AA34C77A0B3D75DC434ED400F4E1E48D6C183B75B9E70",
+      "archiveEntryCount": 16,
+      "expandedBytes": 536815500,
+      "milliseconds": 48179.6356,
+      "allocatedBytes": 1076458768,
+      "peakWorkingSetBytes": 548077568,
+      "destinationExists": false,
+      "destinationSha256": null,
+      "journalFiles": [],
+      "parentSampledPeakBytes": 548917248,
+      "parentMilliseconds": 50651.4331,
+      "case": "BookOfEternityClient.Tests.PortableSaveResourceTests.MeasureUnchangedProducerAndB1CandidateWithinDeclaredOwnedBounds(mebibytes: 512)"
+    },
+    {
+      "mode": "b1",
+      "requestedPayloadBytes": 536805376,
+      "gcAvailableBytes": 805306368,
+      "phases": [
+        "BeforeWholeArchiveRead",
+        "WholeArchiveRead"
+      ],
+      "completed": false,
+      "disposition": "Uncertain",
+      "failure": "System.OutOfMemoryException: Exception of type 'System.OutOfMemoryException' was thrown.\n   at System.Collections.Generic.EnumerableHelpers.ToArray[T](IEnumerable`1 source)\n   at System.Linq.Enumerable.ToArray[TSource](IEnumerable`1 source)\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.Image.FromBytes(Byte[] bytes) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 416\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.<PublishCore>b__21_0(TrustedLocalFileChange change) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 130\n   at System.Linq.Enumerable.SelectArrayIterator`2.Fill(ReadOnlySpan`1 source, Span`1 destination, Func`2 func)\n   at System.Linq.Enumerable.SelectArrayIterator`2.ToArray()\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer, PublicationAttempt attempt) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 130\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 83",
+      "milliseconds": 514.9935,
+      "allocatedBytes": 537527216,
+      "peakWorkingSetBytes": 592400384,
+      "destinationExists": false,
+      "destinationSha256": null,
+      "journalFiles": [],
+      "parentSampledPeakBytes": 594096128,
+      "parentMilliseconds": 645.4739,
+      "case": "BookOfEternityClient.Tests.PortableSaveResourceTests.MeasureUnchangedProducerAndB1CandidateWithinDeclaredOwnedBounds(mebibytes: 512)"
+    },
+    {
+      "mode": "recover",
+      "requestedPayloadBytes": 536805376,
+      "gcAvailableBytes": 805306368,
+      "phases": [
+        "BeforeColdCanonicalAcquisition",
+        "ColdCanonicalAcquisitionReturned"
+      ],
+      "completed": true,
+      "milliseconds": 45.8213,
+      "allocatedBytes": 245776,
+      "peakWorkingSetBytes": 45068288,
+      "destinationExists": false,
+      "destinationSha256": null,
+      "journalFiles": [],
+      "parentSampledPeakBytes": 48197632,
+      "parentMilliseconds": 222.1825,
+      "case": "BookOfEternityClient.Tests.PortableSaveResourceTests.MeasureUnchangedProducerAndB1CandidateWithinDeclaredOwnedBounds(mebibytes: 512)"
+    }
+  ]
+}

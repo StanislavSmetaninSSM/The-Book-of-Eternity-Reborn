@@ -7,6 +7,13 @@
       "contracts": [
         "#1553 FR-002 through FR-007, T032-A ordinary save creation"
       ]
+    },
+    {
+      "category": "portable-save-resource-qualification",
+      "reason": "T032-A technical gate measures the unchanged producer, whole-archive B1 candidate and separate-process normal recovery under child-only safety bounds. Its measurement assertions are distinct from save capability success.",
+      "contracts": [
+        "#1553 FR-003 through FR-007; preservation of current producer resource behavior, T032-A resource prerequisite"
+      ]
     }
   ]
 }

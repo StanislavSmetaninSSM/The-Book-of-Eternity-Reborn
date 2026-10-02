@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "Head": "a7709934e070825470857c587f1e585811443c70",
+    "WorkingTreeFingerprint": "F52F773C87B6AD45D0A36690DD3AB4D02BC8C78B1B06B64460DE4DAD3FE39F93",
+    "ChangedFiles": 1
+  },
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category portable-save-resource-qualification -NoBuild -Parallelism 1",
+  "summary": {
+    "ExitCode": 0,
+    "WallTime": "00:01:21.1184474",
+    "Tests": {
+      "Total": 3,
+      "Executed": 3,
+      "Passed": 3,
+      "Failed": 0
+    },
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 3,
+      "CompletedCases": 3,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "DuplicateTests": []
+  },
+  "artifacts": [
+    {
+      "file": "summary.json",
+      "originalSha256": "72f58565642b72ff65fe7d94e96fefac69ae302c7ccf1d14401512174f46be0a",
+      "sanitizedSha256": "72f58565642b72ff65fe7d94e96fefac69ae302c7ccf1d14401512174f46be0a"
+    },
+    {
+      "file": "plan.json",
+      "originalSha256": "c39e3ba52c329d89da525e46d2de89f11d4568e64bf2833c3c9c384aba5e79da",
+      "sanitizedSha256": "c39e3ba52c329d89da525e46d2de89f11d4568e64bf2833c3c9c384aba5e79da"
+    },
+    {
+      "file": "portable-save-resource-qualification-unit-001.trx",
+      "originalSha256": "241faa5b2231c76a7e2a4d6360acf37e8d572470d7be209b1ab23d8e84d42863",
+      "sanitizedSha256": "681bd38a991c53edea2121b81322edf8bdf2c0fd6185a232b6dac249a6e6b0fc"
+    }
+  ],
+  "sanitization": "Role-based path tokens without angle brackets; all sanitized TRX parsed as XML before publication. Raw hashes retain original provenance.",
+  "packet": {
+    "schemaVersion": 1,
+    "baseCommit": "1789cd32fc936c2abb7f7906fd782f6c92f7eb83",
+    "patchFile": "save-creation-pending.patch",
+    "patchBytes": 2413,
+    "patchSha256": "dab38c54b198a1b4e14905fae62e67319d45bbf5412f557dcde07446b6524aba",
+    "entries": [
+      {
+        "path": "tests/categories.json",
+        "beforeBlob": "6bbd1c6f0e8a087a7c92df4cce0a6e798bcfa4e5",
+        "afterBlob": "7eb6eecf6dcd88f63a6eaf85b4c617b6bf7bca40",
+        "beforeSha256": "414e68f9da3eb09121c430204bf04f199dba5d27d2b9065ab404d995ad919e08",
+        "afterSha256": "8dae22aff29bfde167011e1d16b817159e211cb1fc126f615a8db5a7d31ebecd"
+      }
+    ],
+    "appliedSourceTree": "26ff3a2dbd5f3df6e5135ff2701c7f94b826d170",
+    "comparisonExcludes": [
+      "specs/1553-portable-local-storage/recovery/save-creation-pending.patch",
+      "specs/1553-portable-local-storage/recovery/save-creation-pending.json"
+    ],
+    "scope": "T032-A ordinary save creation; current plan records exact execution and remaining scope"
+  },
+  "derivedMeasurements": {
+    "file": "measurements.json",
+    "sha256": "c43c749c10500d8b14279b0c9b0bcfda70b9f6f77ec1c994cf836c5a26e5246a",
+    "source": "portable-save-resource-qualification-unit-001.trx StdOut; parsed JSON rows with separate parent samples",
+    "interpretation": "Three successful experiments; B1 publication succeeded only at 64 MiB. Failures at 128/near-512 MiB are recorded evidence, not supported saves."
+  }
+}
