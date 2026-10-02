@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "baseCommit": "92bd725fea22ae54fafb484c17941d13ff87a169",
+  "baseCommit": "068151c6366c96614b02a057b680d82eeebfbbf2",
   "patchFile": "save-creation-pending.patch",
-  "patchBytes": 13992,
-  "patchSha256": "58cb29cc840e99e3c82daa548d91a834dbf5229915017b89e699eab2644bc3e1",
+  "patchBytes": 22086,
+  "patchSha256": "4514a0c9ca2a22bd3d576367ee05218f5a78db1915ab1ebcc788245aec49091d",
   "entries": [
     {
       "path": "BookOfEternityClient/Core/FileSystemManager.cs",
@@ -15,22 +15,22 @@
     {
       "path": "specs/1553-portable-local-storage/plan.md",
       "beforeBlob": "9b24d8884c810acc8596ad5eb716f4cc4ff6ff1c",
-      "afterBlob": "77c7f73039ef5123d2e70fa9d023edbbb647b01c",
+      "afterBlob": "dcf5c058b47ff670a070f3d8809ad87c410350fc",
       "beforeSha256": "972f3de4f65dd2e993f38fa1fd4040dd927462d3d170c945236c5f18dd87e2b7",
-      "afterSha256": "3d8f1495307fde8f86c13bf7ccc14cca2e88a2e016746431a80368430f925f00"
+      "afterSha256": "0134ce0b30ae005723d7fdf30e32c7686efc69005df4f3b2c919662009c8c624"
     },
     {
       "path": "tests/categories.json",
       "beforeBlob": "6bbd1c6f0e8a087a7c92df4cce0a6e798bcfa4e5",
-      "afterBlob": "652aa568f119868ec594921c6e7344207ef30cf4",
+      "afterBlob": "8fe0d7fd7cb35610ce736f637461b4368fd08405",
       "beforeSha256": "414e68f9da3eb09121c430204bf04f199dba5d27d2b9065ab404d995ad919e08",
-      "afterSha256": "e3b30bea23bfbde84276f9a3b40a5b4d1a9026f8662ce88e0c45aeed8dff9e79"
+      "afterSha256": "2b2a212e821199d2f59801f7bbadfc9dd6568c5146e358cdf20c238034a3af06"
     }
   ],
-  "appliedSourceTree": "ece35c4d4ef3bf8e5e912aaf49fdd29f936cb7b3",
+  "appliedSourceTree": "d37e635e085f24248bcc280cb32e45acb3cb429e",
   "comparisonExcludes": [
     "specs/1553-portable-local-storage/recovery/save-creation-pending.patch",
     "specs/1553-portable-local-storage/recovery/save-creation-pending.json"
   ],
-  "scope": "T032-A ordinary save creation; current plan records exact execution and remaining scope"
+  "scope": "T032-A main WIP plus accepted isolated T032-A1-V1 source/evidence integration; preserves original three-path packet and unrun scaffold; no execution"
 }

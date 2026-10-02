@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "branch": "1553-v1-fixture-compatibility",
+  "observationStartedUtc": "2026-10-02T07:25:48Z",
+  "restoredCommit": "bd23ad76b1758c8b268733d6da04c3d2876d12a4",
+  "method": "New empty directory; git clone --depth 1 --single-branch --branch 1553-v1-fixture-compatibility from GitHub HTTPS; no local Git object/source/cache copying",
+  "rawTree": "8952a00e22614eda6f0e326072ad1d68f403b4af",
+  "trackedFiles": 4005,
+  "rawCheckoutClean": true,
+  "connectivityVerified": true,
+  "packetSha256": "9f465b3a529b1a79e32e4541add138c4186642d3bf5d49a275e89a4cdf3c02db",
+  "packetAppliedOnce": true,
+  "packetPaths": [
+    "specs/1553-portable-local-storage/plan.md",
+    "tests/categories.json"
+  ],
+  "packetBeforeAndAfterVerified": true,
+  "fullAppliedTree": "c7013f749a97183aa527ca46addd8d9db97f6c13",
+  "appliedSourceTreeExcludingCurrentCarriers": "281c2bc72f01866d24e5efee00eef88a46f494e8",
+  "immutableFixtureFilesVerified": 4,
+  "sourceIdentityFilesVerified": 7,
+  "productionTreesVerified": 5,
+  "sanitizedEvidenceArtifactsVerified": 10,
+  "manifestSha256": "4f81dd58a3231bb570aa2b5076326f0b41da2468d1ebcc34e6892cf251f91d7b",
+  "requiredInstructionsPresent": true,
+  "buildsExecutedDuringRestore": 0,
+  "testsExecutedDuringRestore": 0,
+  "discoveryExecutionsDuringRestore": 0,
+  "priorLocalLoss": {
+    "failedActionUtc": "2026-10-02T07:22:43Z",
+    "action": "Start a shell in the earlier temporary source checkout to save its already-generated restoration proof and update only status documents",
+    "error": "Failed to create unified exec process: exec-server rejected request (-32603): No such file or directory (os error 2)",
+    "outcome": "No successful process start or mutation was reported. Execution was stopped. A later read-only status check found the parent directory available but the prior source checkout, restoration report, active checkout and toolchain unavailable. The cause of disappearance is unknown.",
+    "classification": "Ordinary infrastructure/filesystem failure; no access-policy denial identified",
+    "oldReportAvailable": false,
+    "recovery": "A new authorized GitHub-only clone regenerated this new observation from the unchanged verified remote checkpoint. No build/test/discovery/install or diagnostic rerun."
+  },
+  "limitations": "Fresh restoration verifies saved sources, exact packet and evidence. It does not rerun behavior or qualify another platform. This new proof does not assert that the missing earlier local report remains available."
+}

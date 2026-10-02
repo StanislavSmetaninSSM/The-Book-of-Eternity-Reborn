@@ -2,24 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-storage-images",
-      "reason": "T032-A1 internal image source transport, exact bytes/absence and source admission/drift; current caller cutover remains outside this prerequisite.",
+      "category": "portable-storage-original-v1-fixtures",
+      "reason": "T032-A1-V1 imports the accepted two immutable original-v1 fixture cases and their exact narrow owner. Saved Linux execution belongs to d4460793 plus its isolated carrier on runtime 26c0327c; the current main integration is source/evidence only, with no build, test or discovery run. Existing interruption/resource diagnostics and the unrun cold scaffold are outside this selection.",
       "contracts": [
-        "#1553 FR-002 through FR-007; T032-A1"
-      ]
-    },
-    {
-      "category": "portable-storage-stream-publication",
-      "reason": "T032-A1 shared B1 image path/codec/canonical adapter, v2 active authority and strict cold admission with original v1 controls. Broader consumers are selected only if their contracts change.",
-      "contracts": [
-        "#1553 FR-002 through FR-007; T032-A1 v1/v2 compatibility and exact-byte recovery"
-      ]
-    },
-    {
-      "category": "portable-storage-stream-dispatch",
-      "reason": "Causal cold-resource regression for nonmatching v2 magic; preserve v1 reordered fields and long leading whitespace before legacy decoding.",
-      "contracts": [
-        "#1553 FR-005/007; T032-A1 bounded format dispatch"
+        "#1553 FR-004/005/007; T032-A1-V1 current-format pending/committed compatibility, exact bytes/absence and BOM-aware generation identity"
       ]
     }
   ]

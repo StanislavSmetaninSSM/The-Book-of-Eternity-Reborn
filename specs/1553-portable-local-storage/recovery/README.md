@@ -1,5 +1,13 @@
 # Source and evidence recovery
 
+## Current T032-A1 / original-v1 integration recovery
+
+The current main feature branch uses exactly one active [save-creation packet](save-creation-pending.json). Freshly clone the verified `1553-cross-platform-runtime` SHA from GitHub into a new directory, verify clean raw HEAD/tree and `git fsck --full`, then verify the packet's size/SHA256 and every named before blob/SHA256. Run `git apply --check` followed by one `git apply` of `save-creation-pending.patch`. Verify every after blob/SHA256 and the carrier-excluded tree, excluding exactly the two names in its manifest. The three paths remain FileSystemManager.cs, the current plan and categories.json; the FileSystemManager hook delta and earlier unrun scaffold are preserved. Do not apply the isolated branch's carrier to main.
+
+The accepted test, exact original-v1 owner and [immutable source/evidence](evidence/original-v1-compatibility/manifest.json) are integrated from `c94469e8c5bb80072020001182085066589d6dd5`. The [historical isolated restore](v1-compatibility-restoration.json) and ten evidence artifacts keep their original hashes. Its referenced carrier is retained at [immutable isolated history](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/tree/c94469e8c5bb80072020001182085066589d6dd5/specs/1553-portable-local-storage/recovery); the tested d4460793 packet is separately available at [the tested source](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/tree/d4460793abbd61ec9e884004c93bf4154f979111/specs/1553-portable-local-storage/recovery). Neither is an additional active main recovery step. [Main integration identities](v1-main-integration.json) distinguish the frozen main baseline and imported source from the isolated tested/evidence commits.
+
+No build/test/discovery/runtime operation runs for this integration or source restoration. The 2/2 Linux result and 174/10461 audit describe only their recorded isolated sources, not the main tip, Windows, or the deliberately unbuilt/unrun/unowned 14-case scaffold. Full T032-A1 and SaveGame/client cutover remain gated; main integration review is pending. Preserve the SDK first-build development-certificate disclosure exactly; its later process-local opt-out is nonretroactive. Existing restoration records below apply only to their named earlier checkpoints.
+
 <a id="active-t030-g-backup-lifecycle-recovery"></a>
 
 ## Accepted T030-G backup lifecycle recovery
