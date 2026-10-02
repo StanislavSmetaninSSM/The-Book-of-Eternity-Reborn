@@ -89,7 +89,9 @@
   "fixtureOrigin": "Independent source-derived transcription from original fc3f8bb9; not historical binary output and no shared Header helper",
   "commands": {
     "plan-only": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-storage-original-v1-fixtures -Parallelism 1 -PlanOnly",
-    "run": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-storage-original-v1-fixtures -Parallelism 1 -NoBuild"
+    "run": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-storage-original-v1-fixtures -Parallelism 1 -NoBuild",
+    "audit": "pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild",
+    "integration-build": "dotnet build BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj --verbosity minimal -p:GenerateDocumentationFile=true -p:NoWarn=1591"
   },
   "buildReuse": "The exact successful fresh Build-unit in PlanOnly built all projects required by the two-case run; test/runtime/catalog unchanged afterward. -NoBuild reused those binaries once.",
   "environment": {
@@ -212,6 +214,62 @@
           "Completed": true
         }
       ]
+    },
+    "audit": {
+      "Revision": {
+        "Head": "fdd1f81b4ac58cff00e1f8ae93d6b16c7eb2606a",
+        "WorkingTreeFingerprint": "C6D08194084A2342AA356B1468FBF23C1D4A61DFC88B7173895DCA4884D351F4",
+        "ChangedFiles": 2
+      },
+      "ExitCode": 0,
+      "WallTime": "00:00:10.0979045",
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "CatalogAudit": {
+        "Valid": true,
+        "Methods": 10461,
+        "Categories": 174,
+        "Unmapped": [],
+        "StaleSelectors": []
+      },
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "PhaseResults": [
+        {
+          "Name": "Revision",
+          "Seconds": 0.0736712,
+          "Completed": true
+        },
+        {
+          "Name": "Changed-paths",
+          "Seconds": 0.0144357,
+          "Completed": true
+        },
+        {
+          "Name": "New-paths",
+          "Seconds": 0.0232434,
+          "Completed": true
+        },
+        {
+          "Name": "Runtime-cleanup",
+          "Seconds": 0.0065226,
+          "Completed": true
+        }
+      ]
     }
   },
   "fixtureCleanup": {
@@ -219,6 +277,13 @@
     "perCaseEvidence": "Both passing TRX outputs confirm zero owned sandbox remainders after exact member/journal/sibling/sentinel assertions."
   },
   "artifacts": [
+    {
+      "file": "audit/Build-integration.log",
+      "originalSha256": "c10e9a91beb8eea32a66c52324e9777565e065fccbd28ec39037c11895f12759",
+      "sanitizedSha256": "91e8104f3c54beae3137e3ba5389f3e459b46e644dc5dbfeb8190563e7d06b84",
+      "originalBytes": 2639,
+      "sanitizedBytes": 1983
+    },
     {
       "file": "source-identity.json",
       "originalSha256": "d5d94e7abd7b31781852ac9c3926d6523c89368c0686411894e0116db8f56c36",
@@ -267,6 +332,20 @@
       "sanitizedSha256": "523f1ca72651366a394804190620a4c7eac60132451187bf7f54c3665bc31808",
       "originalBytes": 6119,
       "sanitizedBytes": 5958
+    },
+    {
+      "file": "audit/summary.json",
+      "originalSha256": "acad5cf07afa16a4ed07e1aa6a628c8bd4df17ca7c1dae442edfb5048a1013fd",
+      "sanitizedSha256": "acad5cf07afa16a4ed07e1aa6a628c8bd4df17ca7c1dae442edfb5048a1013fd",
+      "originalBytes": 1405,
+      "sanitizedBytes": 1405
+    },
+    {
+      "file": "audit/catalog-audit.json",
+      "originalSha256": "bdd35cdfd325e7fb2b67cc441d675a8e2f83ff7210e2da78530e6410ae494f28",
+      "sanitizedSha256": "bdd35cdfd325e7fb2b67cc441d675a8e2f83ff7210e2da78530e6410ae494f28",
+      "originalBytes": 103,
+      "sanitizedBytes": 103
     }
   ],
   "sanitization": "Role tokens REPO_ROOT/RUN_ROOT/TOOLCHAIN_ROOT and Linux host name only; every sanitized JSON and TRX parsed. Original hashes preserve provenance.",
@@ -275,6 +354,28 @@
     "No historical binary was executed.",
     "No production edits; no fabricated RED, broad suite, resource/dispatch/interruption or malformed-evidence run.",
     "T032-A1 remains unaccepted; separate-process v2/large-before/resource/adapter-negative/Windows lifetime proof remains open.",
-    "Independent review and final clean GitHub-only restore are pending."
-  ]
+    "Independent evidence review and final clean GitHub-only restore are pending; source review reported no actionable finding."
+  ],
+  "auditBuild": {
+    "sourceCommit": "fdd1f81b4ac58cff00e1f8ae93d6b16c7eb2606a",
+    "kind": "Additional fresh integration build; existing fresh unit build reused; production/test/catalog identity matched the behavioral source.",
+    "exitCode": 0,
+    "warnings": 3,
+    "warningCodes": [
+      "CS1587"
+    ],
+    "errors": 0,
+    "msbuildElapsed": "00:02:39.15",
+    "testsExecuted": 0
+  },
+  "auditInterpretation": "Catalog validated 174 owners and 10,461 method/file identities with no unmapped/stale selectors and zero tests. Selection.Complete=false is expected for discovery-only work and is not a behavioral pass.",
+  "startupSideEffect": {
+    "phase": "Fresh unit Build-unit during PlanOnly",
+    "evidence": "plan-only/Build-unit.log:31",
+    "observedLogLine": "Installed an ASP.NET Core HTTPS development certificate.",
+    "scope": "SDK first-use output reported installation; certificate/key files, location and trust state were not inspected. No certificate-management command or additional global-security command was invoked by this task. No credential values are included.",
+    "subsequentProcessLocalSetting": "DOTNET_GENERATE_ASPNET_CERTIFICATE=false",
+    "settingAppliedWhen": "After the observed unit build and the integration build had already started; before the discovery-only audit process. Not retroactive.",
+    "documentation": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-environment-variables#dotnet_generate_aspnet_certificate"
+  }
 }
