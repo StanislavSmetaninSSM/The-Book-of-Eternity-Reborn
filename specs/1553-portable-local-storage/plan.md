@@ -6,6 +6,50 @@
 
 <a id="active-t032-a--ordinary-save-creation"></a>
 
+## Linux return WIP — 2026-10-02 16:25 UTC
+
+Tracked scope: **T032-A1 native Linux storage qualification**, on returned branch
+`codex/1553-save-windows` at verified base
+`6161cfd6ad139fe91a3c28ee71bcda1b1e3e7162`, tree
+`e40e3f7cf8467ff691fe40a7b32b628080b3fb76`.
+A fresh GitHub-only checkout restored 4,240 tracked files with a clean worktree
+and successful connectivity integrity check. Source is normal Git content; no
+carrier is active. The older feature branch remains untouched. The inherited
+Windows evidence dates and results below are retained as recorded.
+
+The returned evidence audit checked 105 stored hashes and all 24 source identities;
+independent Astra XHigh accepted the bounded evidence/scope check. No implementation
+change is needed or claimed by this preparation checkpoint. The native Linux runs
+are **unrun**. Official toolchain setup now reports verified package hashes and
+SDK 10.0.401, .NET/ASP.NET 8.0.31, PowerShell 7.6.6 and Spec Kit 1.0.13; ordinary
+network timeouts were resolved by bounded same-source retry. Actual startup
+versions and run-specific mutable paths are checked before runner startup. Setup
+success, build success and runtime success are separate gates.
+
+Run only the canonical `scripts/test-csharp.ps1` entrypoint, serialized with
+`-Parallelism 1`, after a fresh successful PlanOnly build. First select
+`portable-storage-stream-cold-phases,portable-storage-stream-cold-before,portable-storage-stream-cold-conflicts`:
+source defines nine publication phases, two interrupted 256 MiB before-image
+recoveries and five conflict/cleanup cases; actual discovery must confirm 16.
+Preserve that result remotely before selecting
+`portable-storage-stream-generation,portable-storage-image-admission,portable-storage-stream-linux-fifo`:
+six generation ordering, three pre-intent admission and one actual Linux FIFO case.
+The FIFO body asserts Linux and must execute. The six-owner selection records
+only this bounded prerequisite block; the [prior caller selection](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/6161cfd6ad139fe91a3c28ee71bcda1b1e3e7162/tests/selection.json) remains immutable. Reconcile the full intended save-change selection before
+eventual integration; passing this block does not replace caller/resource proof.
+`-NoBuild` may reuse only this fresh
+successful build while selected project source remains unchanged.
+
+Ruling: omit old publication/dispatch/format/V1/create-only reruns because their
+relevant core/runtime/test bytes retain accepted Linux evidence; if the equivalence
+assessment is wrong, those omitted boundaries need new focused qualification.
+Cold and generation/admission/FIFO are the new native prerequisites. Actual
+current-producer resource, caller, engine/frontend and wider client/platform work
+remain separate, open blocks. Full T032-A1/T032-A/T031/T032 remain open. No GM
+payload/gameplay contract changes, new gameplay examples or full-suite execution
+are implied. Next: verify toolchain, run the fresh cold PlanOnly/build, inspect
+selection, then execute the 16-case cold cohort and save its exact sanitized proof.
+
 ## Current Windows/Linux caller checkpoint — 2026-10-03
 
 Implementation source: `36589e5b6935d197ddeb9441c750237d55610956`,

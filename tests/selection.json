@@ -2,114 +2,46 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-storage-stream-cold-phases",
+      "reason": "First native Linux qualification of nine ordinary v2 publication crash phases and separate-process canonical acquisition; exact whole-set decisions and unchanged outside/library bytes.",
       "contracts": [
-        "#1553 FR-002/003/004/005/006/007; approved save-creation-cutover.md"
-      ],
-      "category": "portable-save-read-refresh",
-      "reason": "T032-A2/A3 actual ordinary save caller cutover, typed outcomes, leased listing stream and immediate profile mirror prerequisites; only changed boundaries."
-    },
-    {
-      "contracts": [
-        "#1553 FR-002/003/004/005/006/007; approved save-creation-cutover.md"
-      ],
-      "category": "portable-save-outcomes",
-      "reason": "T032-A2/A3 actual ordinary save caller cutover, typed outcomes, leased listing stream and immediate profile mirror prerequisites; only changed boundaries."
-    },
-    {
-      "contracts": [
-        "#1553 FR-002/003/004/005/006/007; approved save-creation-cutover.md"
-      ],
-      "category": "portable-save-entry",
-      "reason": "T032-A2/A3 actual ordinary save caller cutover, typed outcomes, leased listing stream and immediate profile mirror prerequisites; only changed boundaries."
-    },
-    {
-      "category": "portable-browser-save-creation",
-      "reason": "T032-A3 immediate save callers: causal publication outcome, truthful presentation, exact identity and stop before unsafe post-save continuation.",
-      "contracts": [
-        "#1553 approved save-creation-cutover.md; T032-A2/A3"
+        "#1553 FR-002/003/004/005/006/010/015; specs/1553-portable-local-storage/spec.md; T032-A1 native Linux prerequisite qualification"
       ]
     },
     {
+      "category": "portable-storage-stream-cold-before",
+      "reason": "First native Linux qualification of interrupted staged/restored 256 MiB before-image recovery without caller sources, preserving exact bytes and complete cleanup.",
       "contracts": [
-        "#1553 save-creation-cutover.md"
-      ],
-      "category": "portable-browser-save-presentation",
-      "reason": "T032-A3 truthful immediate browser save transport and response-loss handling."
-    },
-    {
-      "category": "portable-engine-save-presentation",
-      "reason": "Affected T032-A2/A3 consumer contract only: bounded entry-specific save continuation or preserved archive/list/mirror behavior.",
-      "contracts": [
-        "#1553 save-creation-cutover.md"
+        "#1553 FR-002/003/004/005/006/010/015; specs/1553-portable-local-storage/spec.md; T032-A1 native Linux prerequisite qualification"
       ]
     },
     {
-      "category": "portable-engine-save-player",
-      "reason": "Affected T032-A2/A3 consumer contract only: bounded entry-specific save continuation or preserved archive/list/mirror behavior.",
+      "category": "portable-storage-stream-cold-conflicts",
+      "reason": "First native Linux qualification of later-member bytes/type/link and generation conflicts plus interrupted committed cleanup; preserve earlier bytes and journal evidence.",
       "contracts": [
-        "#1553 save-creation-cutover.md"
+        "#1553 FR-002/003/004/005/006/010/015; specs/1553-portable-local-storage/spec.md; T032-A1 native Linux prerequisite qualification"
       ]
     },
     {
-      "category": "portable-engine-save-waiting",
-      "reason": "Affected T032-A2/A3 consumer contract only: bounded entry-specific save continuation or preserved archive/list/mirror behavior.",
+      "category": "portable-storage-stream-generation",
+      "reason": "First native Linux qualification of six fresh/existing generation ordering cuts, including BOM/case/extension bytes, present-empty and absent members.",
       "contracts": [
-        "#1553 save-creation-cutover.md"
+        "#1553 FR-002/003/004/005/006/010/015; specs/1553-portable-local-storage/spec.md; T032-A1 native Linux prerequisite qualification"
       ]
     },
     {
-      "category": "portable-engine-save-late",
-      "reason": "Affected T032-A2/A3 consumer contract only: bounded entry-specific save continuation or preserved archive/list/mirror behavior.",
+      "category": "portable-storage-image-admission",
+      "reason": "First native Linux qualification of pre-intent generation drift and changed/missing captured archive candidates, typed result and zero publication.",
       "contracts": [
-        "#1553 save-creation-cutover.md"
+        "#1553 FR-002/003/004/005/006/010/015; specs/1553-portable-local-storage/spec.md; T032-A1 native Linux prerequisite qualification"
       ]
     },
     {
-      "category": "portable-save-consumer-contracts",
-      "reason": "Affected T032-A2/A3 consumer contract only: bounded entry-specific save continuation or preserved archive/list/mirror behavior.",
+      "category": "portable-storage-stream-linux-fifo",
+      "reason": "Execute the actual Linux FIFO body: reject a later special-file member before open or earlier rollback and preserve exact generation/library/outside/journal bytes.",
       "contracts": [
-        "#1553 save-creation-cutover.md"
+        "#1553 FR-002/003/004/005/006/010/015; specs/1553-portable-local-storage/spec.md; T032-A1 native Linux prerequisite qualification"
       ]
-    },
-    {
-      "category": "portable-save-bound-outcome",
-      "reason": "T032-A2/A3 retain typed primary save outcomes through actual shared session finalization with replacement priority.",
-      "contracts": ["#1553 save-creation-cutover.md; T032-A2/A3"]
-    },
-    {
-      "category": "portable-save-retention-release",
-      "reason": "T032-A3 preserve known committed autosave outcome and block continuation when image-backed retention lease release fails.",
-      "contracts": ["#1553 save-creation-cutover.md; T032-A3"]
-    },
-    {
-      "category": "portable-save-profile-consumers",
-      "reason": "T032-A3 existing profile consumers retain same-lease mirror refresh and no-op behavior through the changed ordinary path.",
-      "contracts": ["#1553 save-creation-cutover.md; T032-A3"]
-    },
-    {
-      "category": "portable-save-original-profile-windows",
-      "reason": "Windows-only preserved original recorder profile refresh must retain its real physical publication receipt without B1 migration.",
-      "contracts": ["#1553 preserved original Load/profile authority; T032-A3"]
-    },
-    {
-      "category": "portable-storage-stream-resource",
-      "reason": "Updated ordinary save producer must retain the original full-size v2 publication/recovery resource workload and per-child bounds.",
-      "contracts": ["#1553 save-resource-gate.md; T032-A1/A2"]
-    },
-    {
-      "category": "portable-settings-notices",
-      "reason": "Affected browser settings save handler preserves shared publication ownership and suppresses unsafe continuation under the save latch.",
-      "contracts": ["#1553 save-creation-cutover.md; preserved settings publication contract"]
-    },
-    {
-      "category": "portable-settings-consumers",
-      "reason": "Affected shared browser refresh and shell continuation boundaries preserve existing settings consumer behavior.",
-      "contracts": ["#1553 save-creation-cutover.md; preserved settings consumer contract"]
-    },
-    {
-      "category": "frontend-shell-types",
-      "reason": "Changed save-only refresh confirmation and shell latch contracts remain compatible with frontend type controls.",
-      "contracts": ["#1553 save-creation-cutover.md; T032-A3 frontend contracts"]
     }
   ]
 }
