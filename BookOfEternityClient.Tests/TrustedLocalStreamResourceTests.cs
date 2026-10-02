@@ -160,8 +160,17 @@ public sealed class TrustedLocalStreamResourceTests(ITestOutputHelper output) : 
         {
             while (!process.HasExited)
             {
-                process.Refresh();
-                peakRss = Math.Max(peakRss, process.WorkingSet64);
+                try
+                {
+                    process.Refresh();
+                    peakRss = Math.Max(peakRss, process.WorkingSet64);
+                }
+                catch (InvalidOperationException) when (process.HasExited)
+                {
+                    // The owned child can exit between the loop guard and the RSS query.
+                    // Its exact exit code and final resource report are still required below.
+                    break;
+                }
                 peakDisk = Math.Max(peakDisk, OwnedDiskBytes());
                 if (peakRss > RssStop || peakDisk > DiskStop || timer.Elapsed > TimeSpan.FromSeconds(120))
                     throw new InvalidOperationException($"Owned image resource safety stop: mode={mode}, RSS={peakRss}, disk={peakDisk}, elapsed={timer.Elapsed}.");

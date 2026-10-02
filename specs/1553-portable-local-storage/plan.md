@@ -6,6 +6,23 @@
 
 <a id="active-t032-a--ordinary-save-creation"></a>
 
+### Resource monitor correction WIP — 2026-10-02 17:36 UTC
+
+The causal2/3 failure is saved at `dcb0d22a552ceda3e8c419154367532bb608ce88`
+before the fixture correction. The monitor now catches only `InvalidOperationException`
+from refresh/RSS sampling when `HasExited` confirms the **same owned process** has
+terminated, then continues through its existing wait, exact exit-code, final disk,
+report/platform/heap/peak-RSS validation and owned cleanup. An unreadable live or
+unknown process still fails; no bound, deadline, workload, RSS/disk sample interval,
+archive assertion or production source is changed. The existing observed failing
+resource test is the causal regression; no unrelated test/category is added.
+
+Fresh unit build is required after this test-source correction. All three resource
+workloads require requalification because they share this monitor in all five child
+modes; the previously passed64/512 cases are repeated for this explicit dependency,
+not for review. Caller5+33 and storage26 are unchanged and are not repeated. This WIP
+is unbuilt/unrun and awaits the same independent review with the complete caller block.
+
 ### Resource sampling fixture failure preserved — 2026-10-02 17:33 UTC
 
 At clean `ce7750daba51859a4cab8632d7ed7472bcb450ab`, the separate resource
