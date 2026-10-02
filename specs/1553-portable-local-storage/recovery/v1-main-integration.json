@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "issue": 1553,
   "task": "T032-A1-V1 main source/evidence integration",
-  "status": "WIP; independent main integration review pending",
+  "status": "Accepted bounded main source/evidence integration by the coordinator on 2026-10-02 after independent GPT-6 Astra XHigh PASS with no actionable findings",
   "baseline": {
     "remoteBase": "068151c6366c96614b02a057b680d82eeebfbbf2",
     "rawTree": "3c58d02c007aafc02f3abe0ef053094b505b3897",
@@ -261,8 +261,17 @@
     "Historical two-case run and 174/10461 audit belong to isolated source only; not a run of integrated main.",
     "No change to active runtime behavior or preexisting CSharp.",
     "No new test cases, cold-scaffold ownership, observer wiring, diagnostic continuation or weakened gate.",
-    "Only T032-A1-V1 is accepted on isolated source; full prerequisite, main integration review and SaveGame/client cutover remain open.",
+    "Only T032-A1-V1 and its bounded main source/evidence integration are accepted; full T032-A1 prerequisite and SaveGame/client cutover remain open.",
     "No second active recovery packet; isolated packet remains at its immutable GitHub source.",
     "Saved SDK certificate-installation disclosure is unchanged; later opt-out was nonretroactive."
-  ]
+  ],
+  "mainIntegrationReview": {
+    "reviewer": "Independent GPT-6 Astra XHigh",
+    "date": "2026-10-02",
+    "disposition": "PASS; coordinator accepted the bounded integration",
+    "actionableFindings": 0,
+    "integrationCommit": "10933f73d0c4b18199b8d87c0ad0cc637950a62a",
+    "proofSupplementCommit": "5504396e808160c8f341ccb01b908a766cef2e68",
+    "scope": "Source/evidence integration and saved restoration proof only; no new runtime execution or wider prerequisite acceptance"
+  }
 }
