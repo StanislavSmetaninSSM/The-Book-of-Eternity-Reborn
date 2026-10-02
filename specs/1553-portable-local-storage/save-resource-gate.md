@@ -4,6 +4,12 @@ Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reb
 
 ## Evidence and decision
 
+Current native continuation: the normal acquisition observer is wired and the owned
+14 cold-process cases passed on Windows at `ecf0a923`. Added type/link cases and actual
+v2 resource qualification are in progress. Linux implementation is authorized, but
+native Linux execution remains unverified. The current plan records exact evidence;
+the later historical import/scaffold paragraphs describe their named earlier sources.
+
 Choose **bounded file-backed images inside the existing B1 decision before save cutover**. Do not adapt SaveGame by reading the whole completed ZIP into `CanonicalLocalFileChange.After`.
 
 The existing producer constructs a disk ZIP and reads one payload at a time. Its ordinary reader temporarily owns a MemoryStream plus `ToArray`, so the producer is not constant-memory with respect to individual entry size. The producer does not apply `TrustedArchiveBudget`: 8,192 entries / 64 MiB per entry / 512 MiB expanded are reader limits, not a producer limit or compressed archive ceiling. README prerequisites, the active spec/plan/quickstart and save/storage code declare no numerical minimum RAM. This inspection does not invent one or claim that unlimited production can succeed on finite resources.

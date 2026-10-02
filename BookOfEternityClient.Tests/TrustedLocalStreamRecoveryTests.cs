@@ -102,6 +102,42 @@ public sealed class TrustedLocalStreamRecoveryTests(ITestOutputHelper output) : 
         Assert.Empty(Directory.EnumerateFileSystemEntries(Path.GetDirectoryName(Active)!));
     }
 
+    /// <summary>
+    /// Rejects a later member's changed type before restoring any earlier publication member.
+    /// </summary>
+    /// <param name="linked">
+    /// Uses a symbolic link when true, or a directory when false, in place of the later regular file.
+    /// </param>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ColdLaterMemberTypeOrLinkConflictPreventsEarlierRollback(bool linked)
+    {
+        Seed();
+        Assert.Equal(73, await Run("stream-publish", "last-member"));
+        var outside = Path.Combine(_root, "outside-type-sentinel.bin");
+        File.WriteAllBytes(outside, [91, 0, 255]);
+        File.Delete(Created);
+        if (linked)
+        {
+            File.CreateSymbolicLink(Created, outside);
+            Assert.True(File.GetAttributes(Created).HasFlag(FileAttributes.ReparsePoint));
+        }
+        else Directory.CreateDirectory(Created);
+        var evidence = Hash(Active);
+
+        Assert.Equal(78, await Run("stream-recover", "unused"));
+
+        Assert.Equal(_afterHash, Hash(Target));
+        Assert.False(File.Exists(Deleted));
+        Assert.Equal(_generation, File.ReadAllBytes(Files.SessionGenerationPath));
+        Assert.Equal(evidence, Hash(Active));
+        Assert.Equal(new byte[] { 91, 0, 255 }, File.ReadAllBytes(outside));
+        if (linked) Assert.Equal(outside, new FileInfo(Created).LinkTarget);
+        else Assert.True(Directory.Exists(Created));
+        AssertSentinels();
+    }
+
     private void AssertDecision(bool committed)
     {
         Assert.Equal(committed ? _afterHash : _beforeHash, Hash(Target));

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="d856dfdf-613b-43b6-adee-c2715ca92234" name="Eja@[HOST] 2026-10-02 22:09:55" runUser="[HOST]\Eja" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-02T22:09:55.0161934+10:00" queuing="2026-10-02T22:09:55.0161937+10:00" start="2026-10-02T22:09:50.2668747+10:00" finish="2026-10-02T22:09:56.8764493+10:00" />
+  <TestSettings name="default" id="bd299a65-7f48-4978-ac81-bf1dd1448987">
+    <Deployment runDeploymentRoot="Eja_[HOST]_2026-10-02_22_09_55" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="bd84c73d-3ae5-4841-a4b7-50d91dfa89d5" testId="611823ed-1864-fa76-b0c3-19db862e064c" testName="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.ColdLaterMemberOrGenerationConflictRetainsEarlierImagesAndEvidence(generation: True)" computerName="[HOST]" duration="00:00:01.0198114" startTime="2026-10-02T22:09:55.4134457+10:00" endTime="2026-10-02T22:09:55.4134459+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bd84c73d-3ae5-4841-a4b7-50d91dfa89d5">
+      <Output>
+        <StdOut>mode=stream-publish; cut=last-member; exit=73; sampledPeakBytes=3846144; {"Phase":"AbruptExit","Cut":"MemberPublished","Index":2,"HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover; cut=unused; exit=78; sampledPeakBytes=4280320; {"Phase":"CanonicalAcquisitionFailed","HeapBytes":805306368,"FailureType":"InvalidDataException","Message":"The journal belongs to a different session generation.","Stack":"   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in [WORKTREE]\\BookOfEternityClient\\Core\\TrustedLocalFilePublication.cs:line 263\r\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action\u00602 observer) in [WORKTREE]\\BookOfEternityClient\\Core\\TrustedLocalFilePublication.cs:line 231\r\n   at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease) in [WORKTREE]\\BookOfEternityClient\\Core\\FileSystemManager.TrustedLocalStorage.cs:line 62\r\n   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3667\r\n   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3675\r\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3574\r\n   at BookOfEternityClient.Tests.TrustedLocalStreamCrashFixture.RunAsync(String[] args) in [WORKTREE]\\BookOfEternityClient.TestSupport\\TrustedLocalStreamCrashFixture.cs:line 40"}</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3d094eb9-7127-40d5-b6e7-59a8e3c1a91c" testId="40a825a5-0b33-d3d9-ada1-13477b6f29ee" testName="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.CommittedColdCleanupCanBeInterruptedWithoutRestoringOldImages" computerName="[HOST]" duration="00:00:01.3692408" startTime="2026-10-02T22:09:56.7859076+10:00" endTime="2026-10-02T22:09:56.7859079+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3d094eb9-7127-40d5-b6e7-59a8e3c1a91c">
+      <Output>
+        <StdOut>mode=stream-publish; cut=Committed; exit=73; sampledPeakBytes=3571712; {"Phase":"AbruptExit","Cut":"Committed","Index":-1,"HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover-cut; cut=CleanupMember; exit=73; sampledPeakBytes=4280320; {"Phase":"AbruptExit","Cut":"CleanupMember","Index":0,"HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover; cut=unused; exit=0; sampledPeakBytes=4280320; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="053683a0-0079-4b1c-8692-9a5a7493d130" testId="740e177b-5bed-e23c-9c45-12c315551809" testName="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.ColdLaterMemberOrGenerationConflictRetainsEarlierImagesAndEvidence(generation: False)" computerName="[HOST]" duration="00:00:01.1760679" startTime="2026-10-02T22:09:54.3931452+10:00" endTime="2026-10-02T22:09:54.3931901+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="053683a0-0079-4b1c-8692-9a5a7493d130">
+      <Output>
+        <StdOut>mode=stream-publish; cut=last-member; exit=73; sampledPeakBytes=5357568; {"Phase":"AbruptExit","Cut":"MemberPublished","Index":2,"HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover; cut=unused; exit=78; sampledPeakBytes=5156864; {"Phase":"CanonicalAcquisitionFailed","HeapBytes":805306368,"FailureType":"InvalidDataException","Message":"A publication member contains unknown bytes; evidence retained.","Stack":"   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in [WORKTREE]\\BookOfEternityClient\\Core\\TrustedLocalFilePublication.cs:line 268\r\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action\u00602 observer) in [WORKTREE]\\BookOfEternityClient\\Core\\TrustedLocalFilePublication.cs:line 231\r\n   at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease) in [WORKTREE]\\BookOfEternityClient\\Core\\FileSystemManager.TrustedLocalStorage.cs:line 62\r\n   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3667\r\n   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3675\r\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3574\r\n   at BookOfEternityClient.Tests.TrustedLocalStreamCrashFixture.RunAsync(String[] args) in [WORKTREE]\\BookOfEternityClient.TestSupport\\TrustedLocalStreamCrashFixture.cs:line 40"}</StdOut>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.CommittedColdCleanupCanBeInterruptedWithoutRestoringOldImages" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="40a825a5-0b33-d3d9-ada1-13477b6f29ee">
+      <Execution id="3d094eb9-7127-40d5-b6e7-59a8e3c1a91c" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests" name="CommittedColdCleanupCanBeInterruptedWithoutRestoringOldImages" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.ColdLaterMemberOrGenerationConflictRetainsEarlierImagesAndEvidence(generation: True)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="611823ed-1864-fa76-b0c3-19db862e064c">
+      <Execution id="bd84c73d-3ae5-4841-a4b7-50d91dfa89d5" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests" name="ColdLaterMemberOrGenerationConflictRetainsEarlierImagesAndEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.ColdLaterMemberOrGenerationConflictRetainsEarlierImagesAndEvidence(generation: False)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="740e177b-5bed-e23c-9c45-12c315551809">
+      <Execution id="053683a0-0079-4b1c-8692-9a5a7493d130" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests" name="ColdLaterMemberOrGenerationConflictRetainsEarlierImagesAndEvidence" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="611823ed-1864-fa76-b0c3-19db862e064c" executionId="bd84c73d-3ae5-4841-a4b7-50d91dfa89d5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="40a825a5-0b33-d3d9-ada1-13477b6f29ee" executionId="3d094eb9-7127-40d5-b6e7-59a8e3c1a91c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="740e177b-5bed-e23c-9c45-12c315551809" executionId="053683a0-0079-4b1c-8692-9a5a7493d130" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="3" executed="3" passed="3" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.27]   Discovering: BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:02.11]   Discovered:  BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:02.14]   Starting:    BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:05.79]   Finished:    BookOfEternityClient.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

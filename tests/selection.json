@@ -2,25 +2,25 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-storage-stream-cold-phases",
-      "reason": "T032-A1-WIN: first native execution of existing v2 recovery scaffold; verify actual crash cuts, exact independent file/library state and cleanup before any SaveGame cutover.",
-      "contracts": [
-        "#1553 FR-004/005/006/007; save-resource-gate.md recovery prerequisite"
-      ]
-    },
-    {
-      "category": "portable-storage-stream-cold-before",
-      "reason": "T032-A1-WIN: first native execution of existing v2 recovery scaffold; verify actual crash cuts, exact independent file/library state and cleanup before any SaveGame cutover.",
-      "contracts": [
-        "#1553 FR-004/005/006/007; save-resource-gate.md recovery prerequisite"
-      ]
-    },
-    {
       "category": "portable-storage-stream-cold-conflicts",
-      "reason": "T032-A1-WIN: first native execution of existing v2 recovery scaffold; verify actual crash cuts, exact independent file/library state and cleanup before any SaveGame cutover.",
       "contracts": [
-        "#1553 FR-004/005/006/007; save-resource-gate.md recovery prerequisite"
-      ]
+        "#1553 FR-004/005/006/007; save-resource-gate.md prerequisite"
+      ],
+      "reason": "T032-A1 native continuation: changed conflict/format fixtures and new full-archive resource proof; unchanged passing cohorts retained at their exact prior sources."
+    },
+    {
+      "category": "portable-storage-stream-publication",
+      "contracts": [
+        "#1553 FR-004/005/006/007; save-resource-gate.md prerequisite"
+      ],
+      "reason": "T032-A1 native continuation: changed conflict/format fixtures and new full-archive resource proof; unchanged passing cohorts retained at their exact prior sources."
+    },
+    {
+      "category": "portable-storage-stream-resource",
+      "contracts": [
+        "#1553 FR-004/005/006/007; save-resource-gate.md prerequisite"
+      ],
+      "reason": "T032-A1 native continuation: changed conflict/format fixtures and new full-archive resource proof; unchanged passing cohorts retained at their exact prior sources."
     }
   ]
 }

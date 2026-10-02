@@ -6,7 +6,46 @@
 
 <a id="active-t032-a--ordinary-save-creation"></a>
 
-## Windows continuation — 2026-10-02
+## Current Windows/Linux implementation checkpoint — 2026-10-02
+
+The owner now explicitly authorizes implementing Linux paths locally, marking native
+Linux execution unverified and returning its exact commands to the Linux coordinator.
+This does not convert Windows evidence into Linux acceptance. Work remains on
+`codex/1553-save-windows`, with normal Git source and no active patch carrier.
+
+- Clean source `ecf0a923` passed **14/14** real cold-process cases on Windows with a fresh
+  XML-documentation build in **3:46.438**, all three owners complete, no timeout and
+  complete owned cleanup. The normal acquisition now forwards the existing recovery
+  observer. [Preserved GREEN](recovery/evidence/stream-windows-green-20261002/manifest.json)
+  and the preceding causal RED retain distinct source identities.
+- Frozen ecf0a923 binaries separately passed image **11/11** and create-only **1/1**.
+  Original-v1 initially failed **2/2** before recovery because Git autocrlf changed
+  immutable fixture bytes. Exact Git bytes restored its **2/2** result; scoped
+  `.gitattributes` now prevents conversion without changing historical artifact bytes.
+- The next format cohort passed **22/29**: seven Windows failures exposed mixed
+  separators in the hand-written journal fixture. Correct the two fixture paths,
+  preserving strict normalized production paths, and rerun the whole 29-case owner.
+  Both failed native cohorts are retained under `recovery/evidence/stream-windows-fixture-*`.
+- Current unverified addition: two later-member directory/symlink preflight cases and
+  three actual 64/128/near-512 MiB archive resource rows. Each resource row uses five
+  sequential owned children, complete file-backed BEFORE/AFTER and fresh canonical
+  acquisitions for pending rollback and committed cleanup. Capture/copy/hash/matches,
+  publication/recovery, generation snapshot and metadata diagnostics are reported
+  separately. Windows and Linux branches are implemented; Linux has not executed here.
+- Resource owner budget: **8 minutes**, exclusive; each child retains the original
+  **120 seconds / 768 MiB managed heap / 1 GiB RSS / 3 GiB owned disk** stop bounds.
+  This accommodates fifteen children with real ZIP production and repeated whole-file
+  hashes; the original three-row Linux experiment took 81 seconds and the Windows
+  two-case large rollback cohort took 45 seconds. Budget is a stop, not an expected
+  duration or product requirement. No full suite, shared mutable cache or smaller
+  supported-archive limit is introduced.
+
+Before acceptance: publish source; run only changed conflict/format/resource owners;
+validate discovery metadata; preserve parsed results; obtain independent Astra XHigh
+review and fresh GitHub recovery. Full T032-A1 and SaveGame caller cutover remain open.
+Storage/test-only work changes no GM-authored game contract, prompt or example.
+
+## Initial Windows restoration — 2026-10-02
 
 Owner authorized local implementation and native Windows verification, with Linux
 execution returned to the original coordinator. Branch: `codex/1553-save-windows`,

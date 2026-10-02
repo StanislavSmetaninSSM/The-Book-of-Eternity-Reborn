@@ -20,8 +20,8 @@ public sealed class TrustedLocalStreamPublicationTests : IDisposable
     private FileSystemManager Manager(FileSystemManagerHooks? hooks = null) =>
         new(_root, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance, hooks);
     private string Active => Path.Combine(_root, ".boe_runtime/trusted-local-publication-v1/active.json");
-    private string Target => Path.Combine(_root, "game_session/game_state/core/replace.bin");
-    private string NewTarget => Path.Combine(_root, "game_session/game_state/core/create.bin");
+    private string Target => Path.Combine(_root, "game_session", "game_state", "core", "replace.bin");
+    private string NewTarget => Path.Combine(_root, "game_session", "game_state", "core", "create.bin");
     private sealed class Cut : Exception { }
 
     public TrustedLocalStreamPublicationTests()

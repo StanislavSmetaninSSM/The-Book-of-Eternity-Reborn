@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="74f919de-d257-4ad9-8c44-711de674011d" name="Eja@[HOST] 2026-10-02 22:10:04" runUser="[HOST]\Eja" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-02T22:10:04.2131443+10:00" queuing="2026-10-02T22:10:04.2131447+10:00" start="2026-10-02T22:09:59.5985091+10:00" finish="2026-10-02T22:10:12.9232565+10:00" />
+  <TestSettings name="default" id="44f72c00-2928-4100-aa2e-2e42557d0db5">
+    <Deployment runDeploymentRoot="Eja_[HOST]_2026-10-02_22_10_04" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="8b684937-b8ba-4724-8300-4e3723e5d6d2" testId="cabe2d7c-e611-b1bd-8d9c-5fe29fc648a9" testName="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition(cut: &quot;MemberStaged&quot;, committed: False)" computerName="[HOST]" duration="00:00:01.0953432" startTime="2026-10-02T22:10:11.8768531+10:00" endTime="2026-10-02T22:10:11.8768535+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8b684937-b8ba-4724-8300-4e3723e5d6d2">
+      <Output>
+        <StdOut>mode=stream-publish; cut=MemberStaged; exit=73; sampledPeakBytes=38604800; {"Phase":"AbruptExit","Cut":"MemberStaged","Index":0,"HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover; cut=unused; exit=0; sampledPeakBytes=38076416; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover; cut=unused; exit=0; sampledPeakBytes=32026624; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e9ca5c61-b042-4d83-a79b-a0517f3f7bc6" testId="b907b542-0521-8f4f-0b14-b9645c7ea5c3" testName="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition(cut: &quot;CleanupMember&quot;, committed: True)" computerName="[HOST]" duration="00:00:01.1684403" startTime="2026-10-02T22:10:10.7806325+10:00" endTime="2026-10-02T22:10:10.7806327+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e9ca5c61-b042-4d83-a79b-a0517f3f7bc6">
+      <Output>
+        <StdOut>mode=stream-publish; cut=CleanupMember; exit=73; sampledPeakBytes=3571712; {"Phase":"AbruptExit","Cut":"CleanupMember","Index":0,"HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover; cut=unused; exit=0; sampledPeakBytes=5111808; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover; cut=unused; exit=0; sampledPeakBytes=3973120; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ab0a8ce4-b9d6-4196-a6c3-9e3fed3743be" testId="d091d102-b20f-f784-b46d-562ef73af78e" testName="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition(cut: &quot;IntentPublished&quot;, committed: False)" computerName="[HOST]" duration="00:00:01.0259370" startTime="2026-10-02T22:10:09.6112126+10:00" endTime="2026-10-02T22:10:09.6112129+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ab0a8ce4-b9d6-4196-a6c3-9e3fed3743be">
+      <Output>
+        <StdOut>mode=stream-publish; cut=IntentPublished; exit=73; sampledPeakBytes=5087232; {"Phase":"AbruptExit","Cut":"IntentPublished","Index":-1,"HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover; cut=unused; exit=0; sampledPeakBytes=4448256; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover; cut=unused; exit=0; sampledPeakBytes=5066752; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4690824c-9b22-4e42-a717-acf5ef706438" testId="152e5751-751e-956b-5f4d-3e37a1f3a024" testName="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition(cut: &quot;IntentStaged&quot;, committed: False)" computerName="[HOST]" duration="00:00:01.0909332" startTime="2026-10-02T22:10:04.8026288+10:00" endTime="2026-10-02T22:10:04.8026289+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4690824c-9b22-4e42-a717-acf5ef706438">
+      <Output>
+        <StdOut>mode=stream-publish; cut=IntentStaged; exit=73; sampledPeakBytes=4255744; {"Phase":"AbruptExit","Cut":"IntentStaged","Index":-1,"HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover; cut=unused; exit=0; sampledPeakBytes=4280320; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover; cut=unused; exit=0; sampledPeakBytes=5169152; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="fdb447af-631c-46a7-93ff-2eb491f9cf65" testId="28bc7456-b004-ede0-96fe-da8e87e8b878" testName="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition(cut: &quot;Committed&quot;, committed: True)" computerName="[HOST]" duration="00:00:00.9490320" startTime="2026-10-02T22:10:12.8264774+10:00" endTime="2026-10-02T22:10:12.8264776+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fdb447af-631c-46a7-93ff-2eb491f9cf65">
+      <Output>
+        <StdOut>mode=stream-publish; cut=Committed; exit=73; sampledPeakBytes=38227968; {"Phase":"AbruptExit","Cut":"Committed","Index":-1,"HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover; cut=unused; exit=0; sampledPeakBytes=4280320; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover; cut=unused; exit=0; sampledPeakBytes=4288512; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0b6ae6ee-8461-4e0e-98c2-e449849c7782" testId="8056d671-947c-b19f-91c4-3ddc069cabc1" testName="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition(cut: &quot;last-member&quot;, committed: False)" computerName="[HOST]" duration="00:00:01.2318540" startTime="2026-10-02T22:10:07.2335629+10:00" endTime="2026-10-02T22:10:07.2335635+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0b6ae6ee-8461-4e0e-98c2-e449849c7782">
+      <Output>
+        <StdOut>mode=stream-publish; cut=last-member; exit=73; sampledPeakBytes=3346432; {"Phase":"AbruptExit","Cut":"MemberPublished","Index":2,"HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover; cut=unused; exit=0; sampledPeakBytes=4329472; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover; cut=unused; exit=0; sampledPeakBytes=4280320; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="33d96536-7185-460a-951f-27a75a15c36c" testId="e3e1a763-9487-5b25-f5c7-313d8d964f10" testName="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition(cut: &quot;CommitStaged&quot;, committed: False)" computerName="[HOST]" duration="00:00:01.3501936" startTime="2026-10-02T22:10:08.5843077+10:00" endTime="2026-10-02T22:10:08.5843078+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="33d96536-7185-460a-951f-27a75a15c36c">
+      <Output>
+        <StdOut>mode=stream-publish; cut=CommitStaged; exit=73; sampledPeakBytes=4280320; {"Phase":"AbruptExit","Cut":"CommitStaged","Index":-1,"HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover; cut=unused; exit=0; sampledPeakBytes=4280320; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover; cut=unused; exit=0; sampledPeakBytes=4280320; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="afe1e2d0-ea14-43eb-a8b2-5bb4340fdf06" testId="13a50cd9-6a76-54cc-16de-e74000363778" testName="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition(cut: &quot;CleanupComplete&quot;, committed: True)" computerName="[HOST]" duration="00:00:01.1975540" startTime="2026-10-02T22:10:06.0009763+10:00" endTime="2026-10-02T22:10:06.0009764+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="afe1e2d0-ea14-43eb-a8b2-5bb4340fdf06">
+      <Output>
+        <StdOut>mode=stream-publish; cut=CleanupComplete; exit=73; sampledPeakBytes=3493888; {"Phase":"AbruptExit","Cut":"CleanupComplete","Index":-1,"HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover; cut=unused; exit=0; sampledPeakBytes=3694592; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover; cut=unused; exit=0; sampledPeakBytes=4534272; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="8bacffc0-018b-40c7-872a-44f415ebe285" testId="0f5f23e5-accb-4228-c5a3-729d41031d6c" testName="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition(cut: &quot;first-member&quot;, committed: False)" computerName="[HOST]" duration="00:00:01.3410384" startTime="2026-10-02T22:10:03.7120606+10:00" endTime="2026-10-02T22:10:03.7121261+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8bacffc0-018b-40c7-872a-44f415ebe285">
+      <Output>
+        <StdOut>mode=stream-publish; cut=first-member; exit=73; sampledPeakBytes=5578752; {"Phase":"AbruptExit","Cut":"MemberPublished","Index":0,"HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover; cut=unused; exit=0; sampledPeakBytes=38490112; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover; cut=unused; exit=0; sampledPeakBytes=3944448; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}</StdOut>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition(cut: &quot;last-member&quot;, committed: False)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="8056d671-947c-b19f-91c4-3ddc069cabc1">
+      <Execution id="0b6ae6ee-8461-4e0e-98c2-e449849c7782" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests" name="AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition(cut: &quot;IntentStaged&quot;, committed: False)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="152e5751-751e-956b-5f4d-3e37a1f3a024">
+      <Execution id="4690824c-9b22-4e42-a717-acf5ef706438" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests" name="AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition(cut: &quot;IntentPublished&quot;, committed: False)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="d091d102-b20f-f784-b46d-562ef73af78e">
+      <Execution id="ab0a8ce4-b9d6-4196-a6c3-9e3fed3743be" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests" name="AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition(cut: &quot;CleanupMember&quot;, committed: True)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="b907b542-0521-8f4f-0b14-b9645c7ea5c3">
+      <Execution id="e9ca5c61-b042-4d83-a79b-a0517f3f7bc6" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests" name="AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition(cut: &quot;first-member&quot;, committed: False)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="0f5f23e5-accb-4228-c5a3-729d41031d6c">
+      <Execution id="8bacffc0-018b-40c7-872a-44f415ebe285" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests" name="AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition(cut: &quot;MemberStaged&quot;, committed: False)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="cabe2d7c-e611-b1bd-8d9c-5fe29fc648a9">
+      <Execution id="8b684937-b8ba-4724-8300-4e3723e5d6d2" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests" name="AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition(cut: &quot;Committed&quot;, committed: True)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="28bc7456-b004-ede0-96fe-da8e87e8b878">
+      <Execution id="fdb447af-631c-46a7-93ff-2eb491f9cf65" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests" name="AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition(cut: &quot;CommitStaged&quot;, committed: False)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="e3e1a763-9487-5b25-f5c7-313d8d964f10">
+      <Execution id="33d96536-7185-460a-951f-27a75a15c36c" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests" name="AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition(cut: &quot;CleanupComplete&quot;, committed: True)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="13a50cd9-6a76-54cc-16de-e74000363778">
+      <Execution id="afe1e2d0-ea14-43eb-a8b2-5bb4340fdf06" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests" name="AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="cabe2d7c-e611-b1bd-8d9c-5fe29fc648a9" executionId="8b684937-b8ba-4724-8300-4e3723e5d6d2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b907b542-0521-8f4f-0b14-b9645c7ea5c3" executionId="e9ca5c61-b042-4d83-a79b-a0517f3f7bc6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d091d102-b20f-f784-b46d-562ef73af78e" executionId="ab0a8ce4-b9d6-4196-a6c3-9e3fed3743be" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="152e5751-751e-956b-5f4d-3e37a1f3a024" executionId="4690824c-9b22-4e42-a717-acf5ef706438" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="28bc7456-b004-ede0-96fe-da8e87e8b878" executionId="fdb447af-631c-46a7-93ff-2eb491f9cf65" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8056d671-947c-b19f-91c4-3ddc069cabc1" executionId="0b6ae6ee-8461-4e0e-98c2-e449849c7782" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e3e1a763-9487-5b25-f5c7-313d8d964f10" executionId="33d96536-7185-460a-951f-27a75a15c36c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="13a50cd9-6a76-54cc-16de-e74000363778" executionId="afe1e2d0-ea14-43eb-a8b2-5bb4340fdf06" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0f5f23e5-accb-4228-c5a3-729d41031d6c" executionId="8bacffc0-018b-40c7-872a-44f415ebe285" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="9" executed="9" passed="9" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.23]   Discovering: BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.94]   Discovered:  BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.97]   Starting:    BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:12.52]   Finished:    BookOfEternityClient.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>
