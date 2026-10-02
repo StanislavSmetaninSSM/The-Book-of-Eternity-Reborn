@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "36589e5b6935d197ddeb9441c750237d55610956",
+  "status": "Discovery-only:196 categories and10498 method/file identities, zero unmapped/stale selectors; zero tests executed. Fresh unit36589 and unchanged integration7c52 discovery identities, current catalog source; no full suite.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    null
+  ],
+  "discoveryOnly": true,
+  "wallTime": "00:00:30.2016688",
+  "exitCode": 0,
+  "selection": {
+    "PlannedDescriptors": 0,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 0,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "catalog-audit.json",
+      "originalSha256": "CFD0F22B96B6659D5F5C637ADF3C6EBCE2C3328BA70BE562EDB35B6CBB949DAB",
+      "sha256": "EAAD3A72B681911A960D718AC7E9E6129556A15A1BE25E5B2169AC3814B6CEA3"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "EBE710FC6206FB8F1137C142B166D944C2429BCAD8509B8D846E1F93EE1B52B9",
+      "sha256": "8F8456443FD212978180EF8D4BB5F87B22986AF52C9F8697B19F82ECDEE663BF"
+    }
+  ]
+}

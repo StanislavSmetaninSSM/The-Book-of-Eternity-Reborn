@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "36589e5b6935d197ddeb9441c750237d55610956",
+  "status": "Frozen36589e5b actual public ordinary SaveGame producer and full BEFORE/AFTER image qualification: all3 Windows cases and15 owned child processes completed within original heap/RSS/disk/120s-child bounds; no Linux claim.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-storage-stream-resource"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:04:29.7563529",
+  "exitCode": 0,
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 3,
+    "CompletedCases": 3,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 3,
+    "Executed": 3,
+    "Passed": 3,
+    "Failed": 0
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "plan.json",
+      "originalSha256": "F1901C6999282FC3448C51AF204140DA0A1C9CC5AEF5AF7B627EB15BACCD6437",
+      "sha256": "42BD412F05ACD9D42F914D4AB46010101CED5BD8C92564555E2071F4FA82CEDE"
+    },
+    {
+      "path": "portable-storage-stream-resource-unit-001.trx",
+      "originalSha256": "FF75A3127A1F235CC96C93A292A48AEB090878A41E7D123422B3878D2AF94B01",
+      "sha256": "ED3D17EB0EEA8480CAD2FD5058D120FA334FDEC936FF22431F9565CC6AD495C3"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "9BABBB4D0E8E5607FAE5CC7D9DF2CDFEB0E1ED7C5D5486FE90CEDFE73DF4AF5C",
+      "sha256": "3A4DA392859D8BF8B7A4FE6EBB9C561B69E734B8161F711E68C680D992A62CDC"
+    }
+  ]
+}

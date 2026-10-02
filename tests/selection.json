@@ -70,6 +70,46 @@
       "contracts": [
         "#1553 save-creation-cutover.md"
       ]
+    },
+    {
+      "category": "portable-save-bound-outcome",
+      "reason": "T032-A2/A3 retain typed primary save outcomes through actual shared session finalization with replacement priority.",
+      "contracts": ["#1553 save-creation-cutover.md; T032-A2/A3"]
+    },
+    {
+      "category": "portable-save-retention-release",
+      "reason": "T032-A3 preserve known committed autosave outcome and block continuation when image-backed retention lease release fails.",
+      "contracts": ["#1553 save-creation-cutover.md; T032-A3"]
+    },
+    {
+      "category": "portable-save-profile-consumers",
+      "reason": "T032-A3 existing profile consumers retain same-lease mirror refresh and no-op behavior through the changed ordinary path.",
+      "contracts": ["#1553 save-creation-cutover.md; T032-A3"]
+    },
+    {
+      "category": "portable-save-original-profile-windows",
+      "reason": "Windows-only preserved original recorder profile refresh must retain its real physical publication receipt without B1 migration.",
+      "contracts": ["#1553 preserved original Load/profile authority; T032-A3"]
+    },
+    {
+      "category": "portable-storage-stream-resource",
+      "reason": "Updated ordinary save producer must retain the original full-size v2 publication/recovery resource workload and per-child bounds.",
+      "contracts": ["#1553 save-resource-gate.md; T032-A1/A2"]
+    },
+    {
+      "category": "portable-settings-notices",
+      "reason": "Affected browser settings save handler preserves shared publication ownership and suppresses unsafe continuation under the save latch.",
+      "contracts": ["#1553 save-creation-cutover.md; preserved settings publication contract"]
+    },
+    {
+      "category": "portable-settings-consumers",
+      "reason": "Affected shared browser refresh and shell continuation boundaries preserve existing settings consumer behavior.",
+      "contracts": ["#1553 save-creation-cutover.md; preserved settings consumer contract"]
+    },
+    {
+      "category": "frontend-shell-types",
+      "reason": "Changed save-only refresh confirmation and shell latch contracts remain compatible with frontend type controls.",
+      "contracts": ["#1553 save-creation-cutover.md; T032-A3 frontend contracts"]
     }
   ]
 }

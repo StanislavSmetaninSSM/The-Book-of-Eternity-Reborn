@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-storage-stream-resource"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "36589e5b6935d197ddeb9441c750237d55610956",
+    "WorkingTreeFingerprint": "F65B9CB7D1F8325E41BE630158D2910F97EA2840AE13E3A6C831E3B4ADE7B3A4",
+    "ChangedFiles": 4
+  },
+  "PreparationSeconds": 6.1399165,
+  "Descriptors": [
+    {
+      "Name": "portable-storage-stream-resource-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-stream-resource",
+      "Categories": [
+        "portable-storage-stream-resource"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamResourceTests.FullArchiveImagesPublishAndRecoverWithinOriginalOwnedBounds",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 8,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamResourceTests.FullArchiveImagesPublishAndRecoverWithinOriginalOwnedBounds",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

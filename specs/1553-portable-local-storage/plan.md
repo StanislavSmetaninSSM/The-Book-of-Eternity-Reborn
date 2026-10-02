@@ -8,86 +8,64 @@
 
 ## Current Windows/Linux caller checkpoint — 2026-10-03
 
-Review corrections checkpoint: fresh `e6506c56` passed all seven bound-outcome
-cases and three existing final-generation/escaped-writer controls. The same run
-causally failed two new actual retention-release controls; correction now preserves
-the typed primary and blocks continuation after unsuccessful release. Frozen
-`b674db67` passed outcome10/retention2 in 29.553 seconds. Real browser refresh
-failures returning normally are now handled through explicit save-only confirmation
-of refreshed surfaces and the exact created archive ID. Its Node8/Vitest8 checks
-passed; the corrected existing settings guard, reconciliation and production
-frontend build also passed at `7c52a5e6`. Final caller review remains pending.
+Implementation source: `36589e5b6935d197ddeb9441c750237d55610956`,
+`codex/1553-save-windows`; publication/readback of the final evidence supplement is pending.
+Restore ordinary Git source, not historical carriers. T032-A2/A3 remain unchecked:
+final independent caller review, fresh GitHub restoration and native Linux qualification
+are pending. [Handoff](save-task-handoff.md) gives restore and split verification commands.
 
-The original Load diagnostic is a pre-existing boundary, not a caller regression:
-the logged failure occurs at acquisition after extraction created private staging,
-before BeginLoadTransaction or refresh. The same acquisition ordering and evidence
-guard exist at `6dc8c218` and `0f4fe247`, already documented in
-[save-load-cutover.md](save-load-cutover.md). Independent review retracted its
-earlier causal attribution. Both speculative load refresh wrappers are reverted;
-the original load body and physical receipts remain unchanged. The two failed
-load controls remain in their separate diagnostic owner and evidence, attached
-to the open load work. A direct Windows recorder/profile control verifies the
-changed original refresh dispatch without bypassing admission or claiming Load
-success. The 23 other integration consumer controls passed at `b674db67`.
+Ordinary creation uses one held snapshot lease, a closed create-only ZIP, one B1 image
+publication and exact destination/outcome retention through owned cleanup, logging,
+retention and UI follow-up. Listing keeps leased seekable streams, raw archive preflight
+and existing limits. Profile refresh preserves byte-exact no-ops and original physical
+receipt dispatch. Finalization retains typed primary save failures with replacement
+priority, and failed retention release blocks continuation. Browser save confirmation
+checks actual required refreshed surfaces and the exact created ID; HTTP/network failure,
+missing ID or lost ownership latches the known commit and stops later actions. Ordinary
+refresh semantics remain unchanged, and already sent requests are not claimed cancelled.
 
-Each two-case engine continuation category now has a four-minute execution guard.
-The previous player row took about 92 seconds, so its two-minute category limit
-necessarily interrupted the second case. This is a measured allowance for the
-unchanged real accepted-turn boundary, not a broad suite or a speed improvement.
-Run player first, then waiting and late separately after it passes. Snapshot file
-timestamps account for less than seven seconds; the rest of the runtime has not
-been attributed reliably. Keep the independent fixtures and all accepted-state,
-generation, journal and library assertions. Fast outcome diagnostics remain separate.
+Native Windows evidence is separated by tested source; these counts are not one run:
 
-Production caller, browser and frontend source is implemented at
-`dafd37e589eaf6fd4e05a996fd3ecf00e74e4a97` on `codex/1553-save-windows`.
-This is normal Git source with no active patch carrier. T032-A2/A3 remain unchecked:
-Windows caller verification and independent caller review are incomplete, native Linux
-execution is deferred under the owner's explicit instruction, and full save/platform
-acceptance remains open. [Current handoff](save-task-handoff.md) gives the remaining
-boundary and native Linux category commands.
+| Source | Evidence and bounded result |
+| --- | --- |
+| `dafd37e5` | [Core](recovery/evidence/save-core-windows-green-20261003/manifest.json): 19/19, 27.566s; [browser/console/entry](recovery/evidence/save-caller-boundaries-windows-green-20261003/manifest.json): 13/13, 1:03.504. |
+| `e6506c56` | [Bound correction](recovery/evidence/save-bound-green-retention-red-20261003/manifest.json): 10 bound controls passed; the same 12-case run had two causal retention-release failures, corrected below. |
+| `b674db67` | [Retention/outcomes](recovery/evidence/save-retention-windows-green-20261003/manifest.json): 12/12, 29.553s. |
+| `b674db67` | [Consumer partial](recovery/evidence/save-consumer-partial-green-20261003/manifest.json): 23/24 integration passed; the original Load failure is pre-existing, unit profile3 unrun in that invocation. Current consumer owner retains the 23 ordinary controls; profile3 has a separate owner. |
+| `b674db67` | [Frontend partial](recovery/evidence/save-frontend-partial-green-20261003/manifest.json): save Node8 and actual handler Vitest8 passed, shell types/settings consumers passed; formal38 passed, 5/7 descriptors complete. The old source guard failed and settings reconciliation was unrun there. |
+| `7c52a5e6` | [Settings controls](recovery/evidence/save-settings-controls-green-20261003/manifest.json): Node22 scenarios plus reconciliation Vitest6, formal7 across two complete descriptors; production frontend build/typecheck passed. |
+| `7c52a5e6` | [Player](recovery/evidence/save-engine-player-green-20261003/manifest.json): 2/2, 3:43.752; [waiting](recovery/evidence/save-engine-waiting-green-20261003/manifest.json): 2/2, 3:16.316; [late response](recovery/evidence/save-engine-late-green-20261003/manifest.json): 2/2, 2:59.541. All three completed selection and owned cleanup. |
+| `36589e5b` | [Profile controls](recovery/evidence/save-profile-controls-green-20261003/manifest.json): actual original Windows receipt1 and existing profile consumers3, all4 passed in 59.152s including fresh XML build. Prior digest-text/BOM fixture failures are preserved; production was unchanged by those corrections. |
+| `36589e5b` | [Current producer/resource](recovery/evidence/save-current-producer-resource-green-20261003/manifest.json): 3/3 passed in 4:29.756, all15 owned children within original bounds. Public SaveGame completed at 64/128/near-512 MiB; full BEFORE/AFTER decisions and cold recovery preserved exact library/generation/sentinels. |
 
-Implemented behavior preserves the approved formats and source-map contracts: one
-continuously held snapshot lease prepares a closed create-only ZIP; one shared B1
-image publication returns its exact destination and typed decision. Owned scratch
-cleanup, bounded image-backed retention, leased seekable metadata listing and ordinary
-Task-only profile repair are implemented. Listing retains raw archive preflight and
-existing bounds; mirror no-ops retain exact bytes. Original LoadGame physical receipts
-and callbacks remain unchanged. Immediate console/browser/autosave callers retain
-known commit through follow-up failure and stop unsafe continuation after uncertainty
-or conflicting committed debt. Browser HTTP/DTO/UI preserve the exact known created
-ID even at an error status; the shell latch survives settings unmount, suppresses
-refresh/actions and requires storage reconciliation before page reload. Already sent
-requests are not claimed cancelled.
+The current near-512 MiB ZIP is 536,973,574 bytes. The producer peaked at 504.69 MiB
+RSS, publication children at 44.15 MiB, and sampled logical disk at 2,684,879,529 bytes.
+Its longest child was the producer at 73.06s sampled wall time, below the unchanged
+120s deadline; heap768 MiB/RSS1 GiB/disk3 GiB guards remain unchanged.
+All required Windows execution cohorts are now complete. Original Windows profile
+verification is Windows-only and must not be included in Linux commands. Engine player,
+waiting and late are separate bounded commands; their measured four-minute category
+budgets preserve the real accepted-state boundary, not a speed improvement. Resource
+qualification is separate and retains its original per-child bounds. No native
+lease-dispose fault proof or live browser GUI acceptance is claimed.
 
-Verified cohorts at frozen `dafd37e5` binaries are separate:
+The original Load diagnostic is a pre-existing extraction-before-acquisition admission
+collision at `6dc8c218` and `0f4fe247`, already documented in
+[save-load-cutover.md](save-load-cutover.md).
+The [logged diagnostic](recovery/evidence/save-original-load-diagnostic-20261003/manifest.json)
+remains 0/2. Independent review retracted the P1 caller-regression attribution after
+counterevidence; both speculative Load refresh wrappers were reverted at `958b4645`.
+Original Load body/receipts remain separate/open. `portable-save-original-load` is a
+retained known-failing diagnostic, not part of save-creation acceptance or selection.
 
-- [Core Windows GREEN](recovery/evidence/save-core-windows-green-20261003/manifest.json):
-  **19/19**, ordinary reads/profile refresh 9 plus save outcomes 10, **27.566 seconds**,
-  both descriptors complete, no timeout and complete owned/runtime cleanup.
-- [Caller boundary Windows GREEN](recovery/evidence/save-caller-boundaries-windows-green-20261003/manifest.json):
-  **13/13**, browser prepared/HTTP/source guard 7, console presentation 4 and public
-  entry 2, **1:03.504**, all three descriptors complete, no timeout and complete cleanup.
-  Browser cases prove actual publication/read cuts and wire outcomes; they do not
-  inject native lease-close failure or establish live browser GUI acceptance.
-
-The separate [player Windows RED](recovery/evidence/save-engine-player-windows-red-20261003/manifest.json)
-at the same named source had successful fresh unit/integration builds, then exceeded
-the **two-minute player category budget**; total command wall time was **4:31.458**.
-Buffered output proves the first actual save cut reached once, followed by unchanged
-bound finalization masking the typed primary outcome with `InvalidDataException`.
-There was no final TRX: formal counts are **0 executed / 0 completed descriptors**.
-Core owners were unrun in that invocation; do not attribute their separate GREEN to it.
-
-A shared `SessionOperationContext` correction is underway. Retain the typed primary
-save outcome through actual unchanged finalization while preserving session-replacement
-priority; a bounded independent Astra consultation is recommended for this concrete
-boundary. Keep the corrected engine continuation owners and caller acceptance pending.
-The four new frontend cases drive the actual SettingsView save handler and continuation
-latch and still await execution. Consumer-contract verification is separate and is not included in these counts.
-Mandatory independent Astra XHigh caller review, native Linux prerequisite/caller
-qualification and full T032-A1/T032-A/T031/T032 acceptance remain open. No GM/gameplay
-contract changed; this client-owned save transport requires no GM prompt/example update.
+Independent review caught real closing, retention-release and browser-refresh defects;
+logged counterevidence corrected the Load hypothesis. No savings or completed overall
+review is inferred. Two direct original-receipt fixture issues (hex text case and BOM
+decoding) required corrections; neither changed production or raw receipt assertions.
+Linux paths are implemented but have not run natively here. Final
+caller review, Linux prerequisite/caller qualification, full T032-A1/T032-A/T031/T032
+and wider game/platform acceptance remain open. No GM/gameplay contract changed, so
+client-owned save transport needs no GM prompt/example capability update.
 
 ### Historical prerequisite and RED evidence
 
@@ -113,6 +91,11 @@ These results belong to their named historical source, not to the caller checkpo
   compiled and exercised five intended failing notice scenarios; the failed Node file's
   adapter counts do not mean no scenarios executed. Earlier engine fixture/timeout
   results remain historical and must not be reclassified as completed GREEN cohorts.
+- [Player timeout RED](recovery/evidence/save-engine-player-windows-red-20261003/manifest.json)
+  at `dafd37e5` reached the actual save cut and exposed primary-outcome masking,
+  then exceeded its former two-minute owner: no final TRX, formal zero cases and
+  core unrun there. [Real-refresh RED](recovery/evidence/save-frontend-refresh-red-20261003/manifest.json)
+  preserves the actual network/HTTP failure assertions before the save-only fix.
 
 The owner authorized Linux source implementation after Windows prerequisite review,
 without waiving native Linux execution or cross-platform acceptance. Linux FIFO is
