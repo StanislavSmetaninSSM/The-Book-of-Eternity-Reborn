@@ -1,11 +1,34 @@
 diff --git a/tests/categories.json b/tests/categories.json
-index 6bbd1c6f..7eb6eecf 100644
+index 6bbd1c6f..abe953ac 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -1,6 +1,54 @@
+@@ -1,6 +1,77 @@
  {
    "schemaVersion": 1,
    "categories": [
++    {
++      "id": "portable-storage-images",
++      "responsibility": "T032-A1 exact internal byte/file image transport: independent byte snapshots, absence versus empty, scoped regular-file capture, bounded copying and source drift.",
++      "excludes": "Journal codec, transaction recovery, save callers and unrelated accepted storage cohorts.",
++      "changeHints": [
++        "BookOfEternityClient/Core/TrustedLocalFileImage.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 3,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.TrustedLocalFileImageTests.*"
++          ]
++        }
++      ]
++    },
 +    {
 +      "id": "portable-save-resource-qualification",
 +      "responsibility": "Exploratory T032-A unchanged ZIP producer and B1 whole-archive candidate resource measurements in separate owned Linux processes; capped heap/RSS/disk/deadline, phase reach, exact archives/generation/library and cold acquisition. A measured bounded failure is not product support.",

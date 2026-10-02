@@ -52,6 +52,8 @@ Spec: [spec.md](spec.md) | Plan/checkpoint: [plan.md](plan.md)
 
 - [ ] T032-A Ordinary save creation and immediate console/browser/autosave callers: causal public-entry RED and producer/B1 resource gate first; then reviewed bounded B1 image prerequisite if needed, create-only publication, owned scratch cleanup, leased stream listing, profile-mirror refresh and truthful outcomes. [Active plan](plan.md#active-t032-a--ordinary-save-creation); [preserved source map](save-creation-cutover.md). Production changes await the coordinator’s independent technical plan review; full T031/T032 remain open
 
+- [ ] T032-A1 Bounded internal image abstraction, strict v2 codec, shared B1 streaming hash/stage/rollback and canonical image-member adapter; preserve v1 authority matrix/generation semantics, prove large before-image cold rollback and resource behavior before caller cutover. Independent technical gate accepted at `7cd1985b`; image tests/scaffold first, capability not yet implemented or accepted
+
 - [ ] T032 Migrate save/load staging and restoration with exact bytes, not required inode identity; add negative staging tests
 - [ ] T033 Execute real file-GM turn and save/load/restart in both Linux clients; run affected categories, update operational docs/examples as applicable, independent review
 
