@@ -1,0 +1,67 @@
+{
+  "Format": 1,
+  "TransactionId": "33333333333333333333333333333333",
+  "Committed": true,
+  "GenerationBefore": {
+    "Exists": true,
+    "Id": "11111111111111111111111111111111"
+  },
+  "GenerationAfter": {
+    "Exists": true,
+    "Id": "22222222222222222222222222222222"
+  },
+  "Members": [
+    {
+      "Path": "/__boe_v1_fixture__/root/replace.bin",
+      "Before": {
+        "Exists": true,
+        "Bytes": "77u/e30=",
+        "Sha256": "AA25E978046D680EF8740D837E6DE5BC1E2A2DC6089DBDA1012544B538D53F65"
+      },
+      "After": {
+        "Exists": true,
+        "Bytes": "/wD+EQ==",
+        "Sha256": "23F53F805E1F92540417E03E8C0906E85D4AA85DB51744FA2814A581669A288F"
+      }
+    },
+    {
+      "Path": "/__boe_v1_fixture__/root/created-empty.bin",
+      "Before": {
+        "Exists": false,
+        "Bytes": null,
+        "Sha256": null
+      },
+      "After": {
+        "Exists": true,
+        "Bytes": "",
+        "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      }
+    },
+    {
+      "Path": "/__boe_v1_fixture__/root/deleted.bin",
+      "Before": {
+        "Exists": true,
+        "Bytes": "AQID",
+        "Sha256": "039058C6F2C0CB492C533B0A4D14EF77CC0F78ABCCCED5287D84A1A2011CFB81"
+      },
+      "After": {
+        "Exists": false,
+        "Bytes": null,
+        "Sha256": null
+      }
+    },
+    {
+      "Path": "/__boe_v1_fixture__/root/.boe_runtime/session-generation/current.json",
+      "Before": {
+        "Exists": true,
+        "Bytes": "77u/eyJzY2hlbWFWZXJzaW9uIjoxLCJnZW5lcmF0aW9uSWQiOiIxMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMSIsImV4dGVuc2lvbiI6dHJ1ZX0=",
+        "Sha256": "B9F7A50750AC340230A9554164976989191AAB50E09AA56C87F03B5227C500CA"
+      },
+      "After": {
+        "Exists": true,
+        "Bytes": "//57ACIAUwBjAGgAZQBtAGEAVgBlAHIAcwBpAG8AbgAiADoAMQAsACIARwBlAG4AZQByAGEAdABpAG8AbgBJAGQAIgA6ACIAMgAyADIAMgAyADIAMgAyADIAMgAyADIAMgAyADIAMgAyADIAMgAyADIAMgAyADIAMgAyADIAMgAyADIAMgAyACIAfQA=",
+        "Sha256": "8F8285BD2755F90A582ACBB7FA64469C7CB8DBA7E7F3C50C74167DB7AA5CB16E"
+      }
+    }
+  ]
+}

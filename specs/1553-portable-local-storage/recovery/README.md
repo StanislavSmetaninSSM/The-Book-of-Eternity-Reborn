@@ -1,5 +1,11 @@
 # Source and evidence recovery
 
+## Active original-v1 compatibility branch
+
+For `1553-v1-fixture-compatibility`, read the [current plan](../plan.md#t032-a1-v1--ordinary-original-v1-compatibility-only) and [v1-compatibility-pending.json](v1-compatibility-pending.json) first. This branch starts at frozen `26c0327c20b41e82e647287a455b7a8018f0796a`, leaving production byte-identical. In a fresh GitHub-only clone, verify the remote SHA and clean checkout, then verify the packet SHA/length and every before-image hash, run `git apply --check` and apply `v1-compatibility-pending.patch` once, and verify every after-image hash. It includes the inherited catalog additions and supersedes the inherited `save-creation-pending.patch`; never apply both. The two immutable fixtures and provenance are copied exactly from `92bd725fea22ae54fafb484c17941d13ff87a169`. Their historical README/provenance describe that source-only checkpoint, not the current execution status. No interruption scaffold or observer is present at this frozen source.
+
+Only `pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-storage-original-v1-fixtures -Parallelism 1` is selected for execution; exactly two ordinary cases. `-PlanOnly` and `-ValidateCatalog` discover without tests. Set the three telemetry opt-outs and `DOTNET_PROCESSOR_COUNT=1` before process startup; use fresh owned temp/cache/CLI/output paths. No broad, dispatch, resource or interruption category. All current checks and review are unrun until the plan records evidence. The historical accepted sections below apply only to their named immutable checkpoints.
+
 <a id="active-t030-g-backup-lifecycle-recovery"></a>
 
 ## Accepted T030-G backup lifecycle recovery

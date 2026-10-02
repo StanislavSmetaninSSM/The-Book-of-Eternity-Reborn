@@ -1,0 +1,292 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A1",
+  "status": "source-derived fixture WIP; no runtime compatibility result",
+  "acceptedSourceCommit": "fc3f8bb9c9e36408c85cf37bbea9f35cb890a972",
+  "acceptedSourceTree": "dbca7b4084aa2a633a4fb4745c9ea133cf5fd0b7",
+  "provenanceKind": "independently transcribed from immutable original-v1 source contract",
+  "emittedByHistoricalBinary": false,
+  "applicationExecutions": 0,
+  "testExecutions": 0,
+  "buildExecutions": 0,
+  "discoveryExecutions": 0,
+  "construction": "Manually specified original-v1 Journal/Member/Image fields; ordinary JSON serialization plus base64 and SHA-256 calculations only. No current or historical application/test/helper was imported or invoked.",
+  "encoding": "UTF-8 without BOM; two-space indentation; LF and one final LF. Valid source-derived JSON, not claimed to reproduce exact JsonSerializer output whitespace.",
+  "sources": [
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "commit": "fc3f8bb9c9e36408c85cf37bbea9f35cb890a972",
+      "gitBlob": "25c191d09ba78ad3008a56e3783f0b4f72ed7db3",
+      "bytes": 22670,
+      "sha256": "39662574d728c11db8310b97ad6c5cc94fc804747e41125aedad1cf16582a074",
+      "url": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/fc3f8bb9c9e36408c85cf37bbea9f35cb890a972/BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "anchors": [
+        {
+          "symbol": "private static readonly JsonSerializerOptions JsonOptions",
+          "line": 36
+        },
+        {
+          "symbol": "private TrustedLocalPublicationResult PublishCore",
+          "line": 118
+        },
+        {
+          "symbol": "internal void Recover",
+          "line": 195
+        },
+        {
+          "symbol": "private void ValidateJournal(",
+          "line": 283
+        },
+        {
+          "symbol": "private static TrustedLocalGeneration ParseGeneration",
+          "line": 339
+        },
+        {
+          "symbol": "private static void ValidateImage",
+          "line": 364
+        },
+        {
+          "symbol": "private static string Hash",
+          "line": 375
+        },
+        {
+          "symbol": "private sealed record Journal",
+          "line": 396
+        },
+        {
+          "symbol": "private sealed record Image",
+          "line": 411
+        }
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "commit": "fc3f8bb9c9e36408c85cf37bbea9f35cb890a972",
+      "gitBlob": "4dc1ce302c9f0db8c167901f61c548513098d296",
+      "bytes": 226775,
+      "sha256": "764e3698d84bdeeffa372e0830b8b643373b14e5e963132fde88562c1ae5805f",
+      "url": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/fc3f8bb9c9e36408c85cf37bbea9f35cb890a972/BookOfEternityClient/Core/FileSystemManager.cs",
+      "anchors": [
+        {
+          "symbol": "internal string RuntimeRootPath",
+          "line": 527
+        },
+        {
+          "symbol": "internal string SessionGenerationPath",
+          "line": 534
+        }
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+      "commit": "fc3f8bb9c9e36408c85cf37bbea9f35cb890a972",
+      "gitBlob": "02ec111871e0905bd15c33abe7ed077a245ff91f",
+      "bytes": 2149,
+      "sha256": "6e4d11e939f4950431443d53d2516d6c8ac12a90ef0fd6046f882889f8676fce",
+      "url": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/fc3f8bb9c9e36408c85cf37bbea9f35cb890a972/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+      "anchors": [
+        {
+          "symbol": "internal LocalSessionGenerationSnapshot ReadLocalGenerationSnapshot",
+          "line": 12
+        },
+        {
+          "symbol": "private static string ParseSessionGenerationText",
+          "line": 29
+        }
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/StrictJsonAuthority.cs",
+      "commit": "fc3f8bb9c9e36408c85cf37bbea9f35cb890a972",
+      "gitBlob": "354773962d3470637847d7bd9687c5b3a9551c9a",
+      "bytes": 2928,
+      "sha256": "fc37727e91dcce1af6d9270d37dba103f3b2ee51bddd1436ca86e548a636a73e",
+      "url": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/fc3f8bb9c9e36408c85cf37bbea9f35cb890a972/BookOfEternityClient/Core/StrictJsonAuthority.cs",
+      "anchors": [
+        {
+          "symbol": "internal static T? Deserialize<T>",
+          "line": 7
+        },
+        {
+          "symbol": "private static void EnsureUniqueProperties",
+          "line": 54
+        }
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+      "commit": "fc3f8bb9c9e36408c85cf37bbea9f35cb890a972",
+      "gitBlob": "e87597b5e92c63a3fc343b2a612b788615039702",
+      "bytes": 11762,
+      "sha256": "a59b830016884e269e9732a26a0d1694d9e2f2b5e0026bdc976b57863afd5b09",
+      "url": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/fc3f8bb9c9e36408c85cf37bbea9f35cb890a972/BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+      "anchors": [
+        {
+          "symbol": "internal string ValidateFile",
+          "line": 99
+        },
+        {
+          "symbol": "internal static string NormalizeWindowsPathSpelling",
+          "line": 26
+        }
+      ]
+    },
+    {
+      "path": "BookOfEternityClient.Tests/TrustedLocalFilePublicationTests.cs",
+      "commit": "fc3f8bb9c9e36408c85cf37bbea9f35cb890a972",
+      "gitBlob": "ee1c471ab245df75985df15e5e95c1c1c207c3aa",
+      "bytes": 29156,
+      "sha256": "2449a765543d8bc0f161a67ad841e021f63d19debccdb5fa0c6ed0b73d0715ae",
+      "url": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/fc3f8bb9c9e36408c85cf37bbea9f35cb890a972/BookOfEternityClient.Tests/TrustedLocalFilePublicationTests.cs",
+      "anchors": [
+        {
+          "symbol": "public async Task Recover_EveryPublishCut",
+          "line": 90
+        },
+        {
+          "symbol": "public async Task Publish_GenerationEncodingPreservesExact",
+          "line": 383
+        },
+        {
+          "symbol": "public async Task Publish_PreservesTheExistingGenerationReadersCurrentSchemaContract",
+          "line": 439
+        }
+      ]
+    }
+  ],
+  "fixtures": [
+    {
+      "file": "pending.json",
+      "bytes": 2066,
+      "sha256": "13fb4c68e26b87107501478a4f302a17e16fa5f25019de3bcac14d528e7167a1",
+      "gitBlob": "58e30e2f8bb593be0d5e22c1beb4acdd2e185d8a",
+      "committed": false,
+      "initialMemberImage": "After",
+      "initialGenerationId": "22222222222222222222222222222222",
+      "expectedMemberImageAfterRecovery": "Before",
+      "expectedGenerationIdAfterRecovery": "11111111111111111111111111111111",
+      "expectedJournalAfterRecovery": "absent",
+      "expectationBasis": "historical source inspection; not executed"
+    },
+    {
+      "file": "committed.json",
+      "bytes": 2065,
+      "sha256": "da0c9fd29ed3d23d8903d42b88691d4d83bc156c1142061595dbdc2bd602ba02",
+      "gitBlob": "2af9b158255e77d55815b63e9e09e7d0825dd6fd",
+      "committed": true,
+      "initialMemberImage": "After",
+      "initialGenerationId": "22222222222222222222222222222222",
+      "expectedMemberImageAfterRecovery": "After",
+      "expectedGenerationIdAfterRecovery": "22222222222222222222222222222222",
+      "expectedJournalAfterRecovery": "absent",
+      "expectationBasis": "historical source inspection; not executed"
+    }
+  ],
+  "pathNormalization": {
+    "sourceRoot": "/__boe_v1_fixture__/root",
+    "journalRelativePath": ".boe_runtime/trusted-local-publication-v1/active.json",
+    "rule": "For a later authorized isolated fixture only, replace this exact root prefix in Members[*].Path with its fresh absolute normalized root, and use native separators for the relative suffix. Do not globally replace text or change any image payload, hash, generation, transaction ID, property set or member order. Record the materialized journal hash separately; it will differ from the immutable source fixture.",
+    "requires": "Fresh confined root with ordinary directory ancestors, no links or wrong types, unique member/scratch paths and a real participating canonical lease. No paths are created by this source-only checkpoint."
+  },
+  "initialState": {
+    "memberBytes": "For both fixtures, each existing member contains its exact After payload; absent After means no member file.",
+    "journalFiles": "Only active.json contains the selected materialized fixture; intent.tmp, commit.tmp and all derived stage/undo names are absent.",
+    "derivation": "All members published but no durable commit for pending; durable committed decision before cleanup for committed. These are source-described states, not observed crash artifacts."
+  },
+  "payloads": [
+    {
+      "relativePath": "replace.bin",
+      "Before": {
+        "exists": true,
+        "bytes": 5,
+        "sha256": "AA25E978046D680EF8740D837E6DE5BC1E2A2DC6089DBDA1012544B538D53F65"
+      },
+      "After": {
+        "exists": true,
+        "bytes": 4,
+        "sha256": "23F53F805E1F92540417E03E8C0906E85D4AA85DB51744FA2814A581669A288F"
+      }
+    },
+    {
+      "relativePath": "created-empty.bin",
+      "Before": {
+        "exists": false,
+        "bytes": null,
+        "sha256": null
+      },
+      "After": {
+        "exists": true,
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      }
+    },
+    {
+      "relativePath": "deleted.bin",
+      "Before": {
+        "exists": true,
+        "bytes": 3,
+        "sha256": "039058C6F2C0CB492C533B0A4D14EF77CC0F78ABCCCED5287D84A1A2011CFB81"
+      },
+      "After": {
+        "exists": false,
+        "bytes": null,
+        "sha256": null
+      }
+    },
+    {
+      "relativePath": ".boe_runtime/session-generation/current.json",
+      "Before": {
+        "exists": true,
+        "bytes": 89,
+        "sha256": "B9F7A50750AC340230A9554164976989191AAB50E09AA56C87F03B5227C500CA"
+      },
+      "After": {
+        "exists": true,
+        "bytes": 140,
+        "sha256": "8F8285BD2755F90A582ACBB7FA64469C7CB8DBA7E7F3C50C74167DB7AA5CB16E"
+      }
+    }
+  ],
+  "generationPayloads": {
+    "Before": {
+      "encoding": "UTF-8 BOM",
+      "json": "{\"schemaVersion\":1,\"generationId\":\"11111111111111111111111111111111\",\"extension\":true}",
+      "id": "11111111111111111111111111111111"
+    },
+    "After": {
+      "encoding": "UTF-16 little-endian BOM",
+      "json": "{\"SchemaVersion\":1,\"GenerationId\":\"22222222222222222222222222222222\"}",
+      "id": "22222222222222222222222222222222"
+    }
+  },
+  "limitations": [
+    "No executable test/fixture wiring or catalog selectors added.",
+    "Source-derived validity is not old/new reader acceptance or compatibility proof.",
+    "Pending and committed fixtures share one four-member transition; they do not cover every generation encoding, bootstrap, unchanged generation, adapter boundary or platform.",
+    "Existing v1 smoke controls use a shared new Header helper and remain separate.",
+    "The 14-case cold scaffold remains unbuilt, unrun and unowned; its observer remains unwired.",
+    "No claim of bounded allocation for whole-document generation decoding or legacy v1 JSON."
+  ],
+  "staticValidation": {
+    "kind": "static JSON/base64/encoding/hash and Git-object identity checks only",
+    "fixtureCount": 2,
+    "membersPerFixture": 4,
+    "presentImageDescriptors": 12,
+    "absentImageDescriptors": 4,
+    "historicalSourceBlobsVerified": 6,
+    "csharpSourceFilesByteIdenticalToEntry": 1615,
+    "catalogSelectorsByteEquivalentAsParsed": true,
+    "unownedColdScaffoldSelectorAdded": false,
+    "passed": [
+      "unique exact original-v1 field sets and GUID-N bindings",
+      "valid base64 plus exact uppercase payload SHA-256 and lengths",
+      "BOM-aware generation text and case-insensitive field binding",
+      "unique normalized placeholder members and nonoverlapping derived scratch names",
+      "pending/committed data differ only in Committed",
+      "fixture/source Git blob, byte length and SHA-256 identities",
+      "existing C# source and all catalog selectors unchanged"
+    ],
+    "runtimeResult": "not run; no old/new reader compatibility acceptance"
+  }
+}

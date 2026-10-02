@@ -1,0 +1,196 @@
+diff --git a/specs/1553-portable-local-storage/plan.md b/specs/1553-portable-local-storage/plan.md
+index 12c68a7..0911cb7 100644
+--- a/specs/1553-portable-local-storage/plan.md
++++ b/specs/1553-portable-local-storage/plan.md
+@@ -1,6 +1,6 @@
+ # Implementation Plan: Trusted local storage and cross-platform runtime
+ 
+-**Branch**: `1553-cross-platform-runtime` | **Updated**: 2026-10-02
++**Branch**: `1553-v1-fixture-compatibility` | **Updated**: 2026-10-02
+ **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
+ **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
+ 
+@@ -21,9 +21,16 @@ Initial clean local/GitHub base was `fc3f8bb9c9e36408c85cf37bbea9f35cb890a972`,
+ 
+ Historical image development evidence stays separate: [zero-build/zero-test shallow-launch failure and corrected portable launcher](recovery/evidence/save-image-launcher-failure/manifest.json); [one causal byte scaffold failure plus ten pre-scaffold dot-segment fixture failures](recovery/evidence/save-images-scaffold-partial-red/manifest.json), tested `22b486bc`; [11 intended scaffold failures](recovery/evidence/save-images-normalized-red/manifest.json), tested `52967dc2` with justified fresh-build reuse and preserved at `f343cac1`; [29-case stream scaffold RED](recovery/evidence/save-stream-scaffold-red/manifest.json), tested `00dc36cd`, 27 intended failures/two original-v1 control passes, preserved at `050306c2`. No failure is silently relabeled GREEN.
+ 
+-**Current next check:** the coordinator's format-dispatch hypothesis is now [causal RED](recovery/evidence/save-stream-dispatch-red/manifest.json), tested `a8a9f300`: three separate cold processes OOM specifically in the fallback ReadAllBytes, while the reordered/long-whitespace v1 control passed; 4/4 executed, 2:18.5245397, complete cleanup. A bounded plausible-v1 prefix check is now implemented but unverified; it retains original v1 decoding and rejects unknown binary prefixes before bulk allocation. The current selection includes the two prerequisite owners plus this exact dispatch owner. Cold interruption/large-before rollback, full new-v2 resource measurements, narrow original-v1/generation/consumer coverage, final discovery and coordinator-owned native proof/review remain unrun or incomplete.
++### T032-A1-V1 — ordinary original-v1 compatibility only
++
++WIP 2026-10-02, [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553). Branch `1553-v1-fixture-compatibility` was published and remotely verified at frozen source `26c0327c20b41e82e647287a455b7a8018f0796a` before changes; an isolated GitHub-only clone restored that SHA. The active `1553-cross-platform-runtime` checkout and branch are untouched. Production files remain identical to this frozen source, which predates the unrun interruption scaffold/observer declaration. The earlier dispatch hypothesis and evidence remain historical; no dispatch/resource/interruption run is selected here.
++
++Plan: copy the exact two source-derived original-v1 journals and provenance from immutable `92bd725fea22ae54fafb484c17941d13ff87a169`; verify hashes before rebinding only member paths into fresh per-case roots. Add two ordinary same-process normal canonical lease acquisitions, pending and committed. Independently known before/after bytes assert replacement, absent-to-empty creation, deletion, generation BOM/casing/extension bytes and identity, all four members, journal/sibling cleanup and separate unchanged sentinels. The fixtures were independently transcribed from accepted `fc3f8bb9`, not emitted by a historical binary or the new Header helper. This is coverage of an existing explicit contract, without production changes or a fabricated RED.
++
++Verification: fresh build; `scripts/test-csharp.ps1 -Category portable-storage-original-v1-fixtures -Parallelism 1`; `-PlanOnly` and `-ValidateCatalog` are distinct zero-test checks. The selection excludes existing dispatch/resource/interruption groups and all broad suites. Preserve source/evidence identities, parsed sanitized summary/TRX, hashes/counts/cleanup, remotely verified checkpoints and a fresh GitHub-only restore. Independent review belongs to the coordinator. All checks and review are currently unrun.
++
++The categories-only base recovery packet was verified and applied once before adding the new owner. The replacement [apply-once packet](recovery/v1-compatibility-pending.json) records this branch's oversized final catalog against its exact raw base. Do not replay the inherited save-creation packet as well. T032-A1 stays unaccepted: separate-process v2 recovery, large before-images, resource envelope, adapter negatives and Windows stream lifetime remain outstanding. No SaveGame/client cutover, GM/provider, browser/audio/clipboard, B4 work or issue closure.
+ 
+-The current [apply-once recovery packet](recovery/save-creation-pending.json) carries the exact oversized after-images named in its manifest; apply and verify its named hashes before testing a raw remote checkout. Keep source/evidence WIP remote before long runs, preserve parsed sanitized TRX/raw hashes and bounded owned cleanup, and distinguish raw/full-applied/carrier-excluded trees. Use only scripts/test-csharp.ps1 selections justified by changed contracts. No full/Fast/PreMerge/all-category sweep, broad canonical/save-load/wound/QTE matrix or repetition of accepted T030-F/T030-G cohorts.
+ 
+ ### Subsequent capability and proof boundary
+ 
+diff --git a/tests/categories.json b/tests/categories.json
+index 6bbd1c6..969a50a 100644
+--- a/tests/categories.json
++++ b/tests/categories.json
+@@ -1,6 +1,129 @@
+ {
+   "schemaVersion": 1,
+   "categories": [
++    {
++      "id": "portable-storage-stream-dispatch",
++      "responsibility": "T032-A1 bounded cold format dispatch: mutated/unknown large framed journals must reject before the v1 whole-file reader; supported reordered/whitespace v1 evidence still recovers in separate owned processes.",
++      "excludes": "Full v2 resource envelope, general cold crash matrix, save callers and unrelated storage cohorts.",
++      "changeHints": [
++        "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": true
++      },
++      "timeoutMinutes": 3,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.TrustedLocalStreamDispatchTests.*"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-storage-stream-publication",
++      "responsibility": "T032-A1 self-contained v2 framed image publication and canonical adapter: complete decision cuts, strict framing/metadata/regions, active/temp authority, preflight conflicts and explicit v1 controls.",
++      "excludes": "Large resource/cold process qualification, SaveGame/browser/profile/listing/autosave cutover, load and unrelated storage cohorts.",
++      "changeHints": [
++        "BookOfEternityClient/Core/TrustedLocalFilePublication*.cs",
++        "BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-storage-images",
++          "when": "Image capture/copy/validation changes with the shared publisher."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 3,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.*"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-storage-images",
++      "responsibility": "T032-A1 exact internal byte/file image transport: independent byte snapshots, absence versus empty, scoped regular-file capture, bounded copying and source drift.",
++      "excludes": "Journal codec, transaction recovery, save callers and unrelated accepted storage cohorts.",
++      "changeHints": [
++        "BookOfEternityClient/Core/TrustedLocalFileImage.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 3,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.TrustedLocalFileImageTests.*"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-save-resource-qualification",
++      "responsibility": "Exploratory T032-A unchanged ZIP producer and B1 whole-archive candidate resource measurements in separate owned Linux processes; capped heap/RSS/disk/deadline, phase reach, exact archives/generation/library and cold acquisition. A measured bounded failure is not product support.",
++      "excludes": "Full save acceptance, Windows measurements, browser/GM/gameplay, load and unbounded host stress.",
++      "changeHints": [
++        "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
++        "BookOfEternityClient/Services/SaveLoadService.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": true
++      },
++      "timeoutMinutes": 8,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableSaveResourceTests.MeasureUnchangedProducerAndB1CandidateWithinDeclaredOwnedBounds"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-save-entry",
++      "responsibility": "Actual public ordinary SaveGame entry, one complete create-only B1 decision and owned runtime save-staging cleanup after preparation failure. Causal T032-A RED and subsequent common-route proof.",
++      "excludes": "Load replacement, browser/autosave consumers, broad canonical storage and B1 resource qualification.",
++      "changeHints": [
++        "BookOfEternityClient/Services/SaveLoadService.cs",
++        "BookOfEternityClient/Core/FileSystemManager.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 3,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableSaveCreationTests.*"
++          ]
++        }
++      ]
++    },
+     {
+       "id": "portable-backup-native-boundaries",
+       "responsibility": "Exact native Windows by-name links, namespace/alias/type and real lease/debt subset; all link fixtures must execute.",
+@@ -9590,6 +9713,30 @@
+           ]
+         }
+       ]
++    },
++    {
++      "id": "portable-storage-original-v1-fixtures",
++      "responsibility": "T032-A1 two immutable source-derived original-v1 journals: same-process normal canonical acquisition restores pending Before or retains committed After, exact four-member bytes/absence and generation BOM/casing/extension/identity, sentinels and cleanup. Linux/Windows-capable ordinary filesystem cases; only Linux execution is assigned here.",
++      "excludes": "Separate-process recovery, interruption/dispatch/resource diagnostics, malformed evidence, adapter negatives, save callers and Windows stream-lifetime qualification.",
++      "changeHints": [
++        "BookOfEternityClient.Tests/TrustedLocalOriginalV1FixtureTests.cs",
++        "specs/1553-portable-local-storage/recovery/fixtures/original-v1-source-derived"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": true
++      },
++      "timeoutMinutes": 2,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests.NormalLeaseRecoversIndependentOriginalV1Decision"
++          ]
++        }
++      ]
+     }
+   ]
+ }

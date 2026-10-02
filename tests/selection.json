@@ -2,24 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-storage-images",
-      "reason": "T032-A1 internal image source transport, exact bytes/absence and source admission/drift; current caller cutover remains outside this prerequisite.",
+      "category": "portable-storage-original-v1-fixtures",
+      "reason": "Exactly two original-v1 immutable fixture cases cover the accepted compatibility contract through normal same-process canonical acquisition. Production is byte-identical to 26c0327c. No dispatch/resource/interruption categories or broad suite is selected.",
       "contracts": [
-        "#1553 FR-002 through FR-007; T032-A1"
-      ]
-    },
-    {
-      "category": "portable-storage-stream-publication",
-      "reason": "T032-A1 shared B1 image path/codec/canonical adapter, v2 active authority and strict cold admission with original v1 controls. Broader consumers are selected only if their contracts change.",
-      "contracts": [
-        "#1553 FR-002 through FR-007; T032-A1 v1/v2 compatibility and exact-byte recovery"
-      ]
-    },
-    {
-      "category": "portable-storage-stream-dispatch",
-      "reason": "Causal cold-resource regression for nonmatching v2 magic; preserve v1 reordered fields and long leading whitespace before legacy decoding.",
-      "contracts": [
-        "#1553 FR-005/007; T032-A1 bounded format dispatch"
+        "#1553 FR-004/005/007; T032-A1 original-v1 source-derived compatibility"
       ]
     }
   ]

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "26c0327c20b41e82e647287a455b7a8018f0796a",
+  "runtimeSourceCommit": "26c0327c20b41e82e647287a455b7a8018f0796a",
+  "branch": "1553-v1-fixture-compatibility",
+  "patchFile": "v1-compatibility-pending.patch",
+  "patchBytes": 12207,
+  "patchSha256": "fa0f4a1da02e812cc07d4a764aa93316da0279a742a1724bcbf92b410e1e95d9",
+  "entries": [
+    {
+      "path": "specs/1553-portable-local-storage/plan.md",
+      "beforeBlob": "12c68a771346d59feefa9f88ffd08b1fd4d6fc27",
+      "afterBlob": "0911cb78c859e425549bf853a5785d498b76b991",
+      "beforeSha256": "45075a0ac42b9887b54ef2c8a4e12eaaf926999e1fc8c0a8eebbb6a1bba68e21",
+      "afterSha256": "b4f343857831deea9edba57231d29a6958ef886ea50363397f33e902b63cef6d"
+    },
+    {
+      "path": "tests/categories.json",
+      "beforeBlob": "6bbd1c6f0e8a087a7c92df4cce0a6e798bcfa4e5",
+      "afterBlob": "969a50a8beb509c2309ea4b4bc52f24e479fc132",
+      "beforeSha256": "414e68f9da3eb09121c430204bf04f199dba5d27d2b9065ab404d995ad919e08",
+      "afterSha256": "d2cda147ce37e78f4b1458e30353f33edeafd53bfab1688097ad9f4d04ce26aa"
+    }
+  ],
+  "appliedSourceTree": "4ac5cdc7ea75b0927feee672ef547a5fb6c306c3",
+  "comparisonExcludes": [
+    "specs/1553-portable-local-storage/recovery/v1-compatibility-pending.patch",
+    "specs/1553-portable-local-storage/recovery/v1-compatibility-pending.json"
+  ],
+  "supersedes": "save-creation-pending.patch (do not apply both)",
+  "scope": "T032-A1-V1 only: two ordinary same-process original-v1 fixture cases; runtime unchanged"
+}
