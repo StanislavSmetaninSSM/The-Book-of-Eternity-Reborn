@@ -1761,36 +1761,58 @@ public partial class SaveLoadService
         try { writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(); }
         catch (SessionReplacedException) { throw; }
         catch (Exception failure) { throw new CoordinatedStatePublicationUncertainException(failure); }
-        await using var ownedLease = writeLease;
-        if (_hooks?.BeforeAutosaveRetentionAsync != null)
-            await _hooks.BeforeAutosaveRetentionAsync(writeLease);
-        _fs.ResolveBackupPublicationRecovery(writeLease);
-        var scope = new TrustedLocalFileScope([_fs.GameSessionPath]);
-        var fullDir = _fs.ResolvePath(saveDir);
-        scope.ValidateDirectory(fullDir);
-        if (!Directory.Exists(fullDir))
-            return;
-
-        var files = Directory.GetFiles(fullDir, "*.zip")
-            .OrderByDescending(f => File.GetCreationTime(f))
-            .Skip(Math.Max(maxSaves, 0))
-            .Select(file => Path.GetRelativePath(_fs.GameSessionPath, file)
-                .Replace('\\', '/'))
-            .ToArray();
-
-        if (_hooks?.BeforeAutosaveDeletionAsync != null)
-            await _hooks.BeforeAutosaveDeletionAsync();
-
-        foreach (var file in files)
+        Exception? retentionFailure = null;
+        try
         {
             _fs.ResolveBackupPublicationRecovery(writeLease);
-            var before = TrustedLocalFileImage.CaptureFile(scope, _fs.ResolvePath(file));
-            var outcome = await _fs.PublishLocalImageFilesAsync(writeLease,
-                [new CanonicalLocalImageChange(file, before, TrustedLocalFileImage.FromBytes(null))]);
-            if (outcome.Disposition == TrustedLocalPublicationDisposition.Uncertain)
-                throw new CoordinatedStatePublicationUncertainException(outcome.Failure);
-            _fs.RequireCommittedLocalPublication(outcome);
-            _fs.ResolveBackupPublicationRecovery(writeLease);
+            if (_hooks?.BeforeAutosaveRetentionAsync != null)
+                await _hooks.BeforeAutosaveRetentionAsync(writeLease);
+            var scope = new TrustedLocalFileScope([_fs.GameSessionPath]);
+            var fullDir = _fs.ResolvePath(saveDir);
+            scope.ValidateDirectory(fullDir);
+            if (!Directory.Exists(fullDir))
+                return;
+
+            var files = Directory.GetFiles(fullDir, "*.zip")
+                .OrderByDescending(f => File.GetCreationTime(f))
+                .Skip(Math.Max(maxSaves, 0))
+                .Select(file => Path.GetRelativePath(_fs.GameSessionPath, file)
+                    .Replace('\\', '/'))
+                .ToArray();
+
+            if (_hooks?.BeforeAutosaveDeletionAsync != null)
+                await _hooks.BeforeAutosaveDeletionAsync();
+
+            foreach (var file in files)
+            {
+                _fs.ResolveBackupPublicationRecovery(writeLease);
+                var before = TrustedLocalFileImage.CaptureFile(scope, _fs.ResolvePath(file));
+                var outcome = await _fs.PublishLocalImageFilesAsync(writeLease,
+                    [new CanonicalLocalImageChange(file, before, TrustedLocalFileImage.FromBytes(null))]);
+                if (outcome.Disposition == TrustedLocalPublicationDisposition.Uncertain)
+                    throw new CoordinatedStatePublicationUncertainException(outcome.Failure);
+                _fs.RequireCommittedLocalPublication(outcome);
+                _fs.ResolveBackupPublicationRecovery(writeLease);
+            }
+        }
+        catch (Exception failure)
+        {
+            retentionFailure = failure;
+            throw;
+        }
+        finally
+        {
+            try { await writeLease.DisposeAsync(); }
+            catch (Exception releaseFailure)
+            {
+                // Preserve a primary stop decision; a failed release also stops
+                // continuation when retention otherwise completed or rolled back.
+                if (retentionFailure is CoordinatedStatePublicationUncertainException or SessionReplacedException)
+                    retentionFailure.Data["AutosaveRetentionLeaseReleaseFailure"] = releaseFailure;
+                else
+                    throw new CoordinatedStatePublicationUncertainException(retentionFailure == null
+                        ? releaseFailure : new AggregateException(retentionFailure, releaseFailure));
+            }
         }
     }
 

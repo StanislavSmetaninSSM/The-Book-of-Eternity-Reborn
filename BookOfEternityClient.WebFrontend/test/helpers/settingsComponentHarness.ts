@@ -74,6 +74,24 @@ export function createSettingsComponentHarness() {
       if (refreshFailure) throw new Error('controlled refresh failure');
       if (isCurrent()) shell.readyState = { settings: ok(persistedSettings), audio: ok({ ...initialAudio, musicVolume: 99 }) };
     },
+    refreshAfterSave: async (createdSaveId: string, isCurrent: () => boolean = () => true) => {
+      if (saveLatch?.isBlocked()) return false;
+      refreshes++;
+      const reply = async (data: unknown) => {
+        if (refreshFailure) throw new Error('controlled refresh response failure');
+        return ok(data);
+      };
+      const client = realRefreshClient ?? {
+        getMainMenu: () => reply({ ...shell.menu, saves: [{ saveId: createdSaveId }] }),
+        getSessionStatus: () => reply({}), getGameScreen: () => reply({}),
+        getAudioSettings: () => reply(initialAudio), getClientSettings: () => reply(persistedSettings),
+        getCommandCoverage: () => reply({})
+      };
+      return module('src/hooks/refreshShellAfterSave.ts').refreshShellAfterSave(client, (next: any) => {
+        realRefreshState = typeof next === 'function' ? next(realRefreshState) : next;
+        shell.readyState = realRefreshState.status === 'ready' ? realRefreshState : null;
+      }, refreshOwner, false, createdSaveId, isCurrent);
+    },
     blockSaveContinuation: (notice: unknown) => {
       saveLatch ??= module('src/utils/savePersistenceNotice.ts').createSaveContinuationLatch();
       shell.saveContinuationNotice = saveLatch.block(notice);
@@ -117,6 +135,7 @@ export function createSettingsComponentHarness() {
       if (id.includes('settingsPersistenceNotice')) return module('src/utils/settingsPersistenceNotice.ts');
       if (id.includes('savePersistenceNotice')) return module('src/utils/savePersistenceNotice.ts');
       if (id.includes('shellStateResult')) return module('src/hooks/shellStateResult.ts');
+      if (id.includes('loadShellState')) return module('src/hooks/loadShellState.ts');
       if (id.includes('playerCopy')) return { toPlayerFacingText: (value: string, fallback: string) => value || fallback };
       if (id.includes('formatters')) return { toLauncherSaveFailureNotice: () => 'load failed', formatSidebarAudioSummary: () => '' };
       if (id === './AudioPanel') return { AudioPanel: () => null };

@@ -83,6 +83,8 @@ export interface ShellContextValue {
   saveContinuationNotice?: SavePersistenceNotice | null;
   /** Retains a save-specific stop until this shell is restarted after storage reconciliation. */
   blockSaveContinuation?: (notice: SavePersistenceNotice) => void;
+  /** Confirms the exact save in required refreshed surfaces; ordinary refresh retains its void contract. */
+  refreshAfterSave?: (createdSaveId: string, isCurrent?: () => boolean) => Promise<boolean>;
 }
 
 const fallbackTheme: RealmTheme = {
@@ -151,7 +153,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
   const [commandResult, setCommandResult] = useState<ExplorerCommandResult | null>(null);
   const [isCommandView, setIsCommandView] = useState(false);
   const composerSubmissionInFlight = useRef(false);
-  const { shellState, loadBrowserState: loadBrowserStateCore } = useShellState(advancedEnabled);
+  const { shellState, loadBrowserState: loadBrowserStateCore, refreshAfterSave: refreshAfterSaveCore } = useShellState(advancedEnabled);
   const saveContinuationLatch = useRef(createSaveContinuationLatch());
   const [saveContinuationNotice, setSaveContinuationNotice] = useState<SavePersistenceNotice | null>(null);
   const blockSaveContinuation = useCallback((notice: SavePersistenceNotice) => {
@@ -161,6 +163,11 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     await saveContinuationLatch.current.runIfAllowed(() => loadBrowserStateCore(
       () => !saveContinuationLatch.current.isBlocked() && (isCurrent?.() ?? true)));
   }, [loadBrowserStateCore]);
+  const refreshAfterSave = useCallback((createdSaveId: string, isCurrent?: () => boolean) => {
+    if (saveContinuationLatch.current.isBlocked()) return Promise.resolve(false);
+    return refreshAfterSaveCore(createdSaveId,
+      () => !saveContinuationLatch.current.isBlocked() && (isCurrent?.() ?? true));
+  }, [refreshAfterSaveCore]);
 
   useEffect(() => {
     void loadBrowserState();
@@ -296,7 +303,8 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     clearCommandResult,
     loadBrowserState,
     saveContinuationNotice,
-    blockSaveContinuation
+    blockSaveContinuation,
+    refreshAfterSave
   }), [
     shellState,
     readyState,
@@ -323,7 +331,8 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     clearCommandResult,
     loadBrowserState,
     saveContinuationNotice,
-    blockSaveContinuation
+    blockSaveContinuation,
+    refreshAfterSave
   ]);
 
   return <ShellContext.Provider value={value}>{children}</ShellContext.Provider>;

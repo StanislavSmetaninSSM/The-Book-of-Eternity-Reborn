@@ -51,7 +51,7 @@ await scenario('the consuming save handler latches unknown evidence before any r
   const calls: string[] = [];
   const notice = await executeBrowserSaveCreation(() => response('Uncertain', 409, true, true),
     () => calls.push('notice'), value => { latch.block(value); calls.push('blocked'); },
-    async () => { calls.push('refresh'); });
+    async () => { calls.push('refresh'); return true; });
   assert(calls.join(',') === 'notice,blocked' && latch.isBlocked(), 'The actual save handler refreshed or failed to latch uncertainty.');
   await latch.runIfAllowed(async () => { calls.push('later-write'); });
   await latch.runIfAllowed(async () => { calls.push('route-refresh'); });

@@ -8,6 +8,25 @@
 
 ## Current Windows/Linux caller checkpoint — 2026-10-03
 
+Review corrections checkpoint: fresh `e6506c56` passed all seven bound-outcome
+cases and three existing final-generation/escaped-writer controls. The same run
+causally failed two new actual retention-release controls; correction now preserves
+the typed primary and blocks continuation after unsuccessful release. Independent
+Astra review also identified the original-load refresh admission regression and
+real browser refresh failures returning normally. The former now uses the existing
+original recovery scope only inside its owning load; the latter has explicit
+save-only confirmation of the refreshed surfaces and exact created archive ID.
+These corrections await their relevant GREEN and independent final review.
+
+Each two-case engine continuation category now has a four-minute execution guard.
+The previous player row took about 92 seconds, so its two-minute category limit
+necessarily interrupted the second case. This is a measured allowance for the
+unchanged real accepted-turn boundary, not a broad suite or a speed improvement.
+Run player first, then waiting and late separately after it passes. Snapshot file
+timestamps account for less than seven seconds; the rest of the runtime has not
+been attributed reliably. Keep the independent fixtures and all accepted-state,
+generation, journal and library assertions. Fast outcome diagnostics remain separate.
+
 Production caller, browser and frontend source is implemented at
 `dafd37e589eaf6fd4e05a996fd3ecf00e74e4a97` on `codex/1553-save-windows`.
 This is normal Git source with no active patch carrier. T032-A2/A3 remain unchecked:

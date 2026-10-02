@@ -1,0 +1,83 @@
+{
+  "Categories": [
+    "portable-save-bound-outcome",
+    "portable-save-retention-release"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "e6506c567f92ce8436a6bddcad038e1b8bceaa94",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 170.2835003,
+  "Descriptors": [
+    {
+      "Name": "portable-save-bound-outcome-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-save-bound-outcome",
+      "Categories": [
+        "portable-save-bound-outcome"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.AlreadyReplacedBindingSurvivesOrdinaryClosingFailure|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.ClosingGenerationReplacementWinsAndRetainsStorageDecision|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.OrdinaryOperationFailureKeepsExistingClosingErrorPrecedence|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.StorageClosingFailureRestoresEnclosingAmbientBinding|FullyQualifiedName=BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter|FullyQualifiedName=BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_EscapedTaskCannotWriteAfterOwningScopeCloses|FullyQualifiedName=BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ReplacementWithoutLaterWrite_FinalCheckStillThrows",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 10,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.AlreadyReplacedBindingSurvivesOrdinaryClosingFailure",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.ClosingGenerationReplacementWinsAndRetainsStorageDecision",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.OrdinaryOperationFailureKeepsExistingClosingErrorPrecedence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.StorageClosingFailureRestoresEnclosingAmbientBinding",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_EscapedTaskCannotWriteAfterOwningScopeCloses",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ReplacementWithoutLaterWrite_FinalCheckStillThrows",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-save-retention-release-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-save-retention-release",
+      "Categories": [
+        "portable-save-retention-release"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveOutcomeTests.RetentionLeaseReleaseFailureBlocksCommittedAutosave",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveOutcomeTests.RetentionLeaseReleaseFailureBlocksCommittedAutosave",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

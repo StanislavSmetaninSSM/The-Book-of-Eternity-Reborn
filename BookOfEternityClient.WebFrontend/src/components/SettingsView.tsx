@@ -9,7 +9,7 @@ import { executeBrowserSaveCreation, type SavePersistenceNotice } from '../utils
 import { AudioPanel } from './AudioPanel';
 
 export function SettingsView() {
-  const { readyState, menu, advancedEnabled, setAdvancedEnabled, setActiveRoute, loadBrowserState, blockSaveContinuation } = useShell();
+  const { readyState, menu, advancedEnabled, setAdvancedEnabled, setActiveRoute, loadBrowserState, blockSaveContinuation, refreshAfterSave } = useShell();
   const [settings, setSettings] = useState<BrowserClientSettingsDto | null>(null);
   const [persistenceNotice, setPersistenceNotice] = useState<SettingsWriteNotice | null>(null);
   const writeScope = useRef({ generation: 0 });
@@ -94,8 +94,9 @@ export function SettingsView() {
       blockSaveContinuation?.(notice);
     };
     try {
-      await executeBrowserSaveCreation(() => browserApi.createSave({ saveName: null }), applyNotice, stopContinuation, async () => {
-        if (isMountedRef.current) await loadBrowserState();
+      await executeBrowserSaveCreation(() => browserApi.createSave({ saveName: null }), applyNotice, stopContinuation, async createdSaveId => {
+        if (!isMountedRef.current || !refreshAfterSave) return false;
+        return refreshAfterSave(createdSaveId, () => isMountedRef.current);
       });
     } finally {
       if (isMountedRef.current) {

@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 import { browserApi } from '../api/client';
 import type { BrowserShellState } from '../context/ShellContext';
 import { loadShellState } from './loadShellState';
+import { refreshShellAfterSave } from './refreshShellAfterSave';
 
 export function useShellState(advancedEnabled: boolean) {
   const [shellState, setShellState] = useState<BrowserShellState>({ status: 'loading' });
@@ -10,5 +11,9 @@ export function useShellState(advancedEnabled: boolean) {
     return loadShellState(browserApi, setShellState, publicationOwner, advancedEnabled, isCurrent);
   }, [advancedEnabled]);
 
-  return { shellState, loadBrowserState };
+  const refreshAfterSave = useCallback((createdSaveId: string, isCurrent: () => boolean = () => true) => {
+    return refreshShellAfterSave(browserApi, setShellState, publicationOwner, advancedEnabled, createdSaveId, isCurrent);
+  }, [advancedEnabled]);
+
+  return { shellState, loadBrowserState, refreshAfterSave };
 }

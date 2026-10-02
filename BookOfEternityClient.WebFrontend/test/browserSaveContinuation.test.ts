@@ -85,4 +85,28 @@ describe('actual browser save handler preserves outcomes and stops continuation'
       });
     });
   }
+
+  for (const hasExactId of [true, false]) {
+    it(`uses real refreshed save identity to ${hasExactId ? 'confirm continuation' : 'stop continuation'}`, async () => {
+      const harness = createSettingsComponentHarness(); const view = harness.settings();
+      const client = createBrowserApiClient({ fetcher: async (url) => {
+        const isMenu = String(url).endsWith('/api/main-menu');
+        // Optional diagnostic coverage failure does not hide confirmed required surfaces.
+        const isCoverage = String(url).endsWith('/api/explorer/command-coverage');
+        const data = isMenu ? { saves: [{ saveId: hasExactId ? 'manual:exact-created.zip' : 'manual:other.zip' }] }
+          : String(url).endsWith('/api/client/settings') ? harness.persistedSettings : {};
+        return new Response(JSON.stringify(data),
+          { status: isCoverage ? 503 : 200, headers: { 'Content-Type': 'application/json' } });
+      } });
+      harness.setRealRefreshClient(client);
+      findSave(view.tree).props.onClick(); harness.save.resolve(ok(outcome('Committed', false)));
+      await flushPromises(); await new Promise(resolve => setImmediate(resolve)); await flushPromises();
+      expect(harness.counts()).toMatchObject({ savePosts: 1, refreshes: 1 });
+      expect(harness.realRefreshState().status).toBe('ready');
+      if (hasExactId) expect(harness.shell.saveContinuationNotice).toBeUndefined();
+      else expect(harness.shell.saveContinuationNotice).toMatchObject({
+        committed: true, kind: 'follow-up', continuationBlocked: true, createdSaveId: 'manual:exact-created.zip'
+      });
+    });
+  }
 });

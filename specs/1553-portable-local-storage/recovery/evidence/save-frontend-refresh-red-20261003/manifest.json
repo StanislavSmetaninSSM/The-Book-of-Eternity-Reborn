@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "e6506c567f92ce8436a6bddcad038e1b8bceaa94",
+  "status": "Frontend source later frozen at e6506c56: Node8 passed; actual-handler Vitest6 had4 pass and2 causal real refresh failures. Completed descriptor1; no timeout, complete owned cleanup. No production frontend refresh correction yet.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-browser-save-presentation"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:00:11.9921510",
+  "exitCode": 1,
+  "selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 2,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [
+      "portable-browser-save-presentation-frontend-002"
+    ],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 1,
+    "Failed": 0
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "plan.json",
+      "originalSha256": "EADE2DB50780395E724FE5631BD431B13C9768FB66F59B5BD469A21582AC3E40",
+      "sha256": "E4F1FD9D571E79BFFBC353EBC5AAFFDE19FC0ABF79CA730027E4431471E4AA35"
+    },
+    {
+      "path": "portable-browser-save-presentation-frontend-001.trx",
+      "originalSha256": "59DB6A2A0C0F8F41157318836D15C116DDC99BE2A8BDF7A5557D26FCC47D1D3D",
+      "sha256": "2E883DD05C7D08204510C4A797FCA586C16284D073E176E9CCE6A7174EC67DB3"
+    },
+    {
+      "path": "portable-browser-save-presentation-frontend-002.vitest.json",
+      "originalSha256": "557E81900028E2D7F404953689043F477D13A4D852013B9536C60E4F10D94ADD",
+      "sha256": "C20C0968BCCC7D6A8CFFA8A53F6CD251DDB2E7A8C755D5314B9807E0B546A613"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "C42C5A2BC33E4FD57077982CCA02B22E1D5701C06ECFE0C6751C0E15E7790614",
+      "sha256": "8BD0E17DCBB514EF18F29DD6C36EE3FFED64FB826F324F1EA2CAB224A02FC975"
+    }
+  ]
+}

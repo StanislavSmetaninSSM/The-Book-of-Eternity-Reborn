@@ -60,14 +60,16 @@ export async function applySaveCreationNotice(
   result: BrowserApiResult<BrowserCreateSaveResultDto> | undefined,
   apply: (notice: SavePersistenceNotice) => void,
   blockContinuation: (notice: SavePersistenceNotice) => void,
-  refresh: () => Promise<void>
+  refresh: (createdSaveId: string) => Promise<boolean>
 ): Promise<SavePersistenceNotice> {
   let notice = toSaveCreationNotice(result);
   apply(notice);
   if (notice.continuationBlocked) blockContinuation(notice);
   if (notice.shouldRefresh) {
-    try { await refresh(); }
-    catch {
+    let confirmed = false;
+    try { confirmed = await refresh(notice.createdSaveId); }
+    catch { /* An interrupted confirmation retains the earlier archive decision. */ }
+    if (!confirmed) {
       notice = { ...notice, kind: 'follow-up', continuationBlocked: true, shouldRefresh: false,
         message: 'Сохранение создано, но обновление текущего интерфейса не подтверждено. Проверьте состояние книги перед следующим действием.' };
       apply(notice);
@@ -82,7 +84,7 @@ export async function executeBrowserSaveCreation(
   createSave: () => Promise<BrowserApiResult<BrowserCreateSaveResultDto>>,
   apply: (notice: SavePersistenceNotice) => void,
   blockContinuation: (notice: SavePersistenceNotice) => void,
-  refresh: () => Promise<void>
+  refresh: (createdSaveId: string) => Promise<boolean>
 ): Promise<SavePersistenceNotice> {
   let result: BrowserApiResult<BrowserCreateSaveResultDto> | undefined;
   try { result = await createSave(); }

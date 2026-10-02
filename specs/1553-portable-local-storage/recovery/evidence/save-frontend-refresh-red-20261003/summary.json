@@ -1,0 +1,88 @@
+{
+  "Categories": [
+    "portable-browser-save-presentation"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "64ff93c0faf4afca96ce839533714139178b1506",
+    "WorkingTreeFingerprint": "FB9F1BB1DFE092CEE753658765C10C6E5EEF17CFEB40D5F6E9D789A95B1BD6C2",
+    "ChangedFiles": 11
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-browser-save-presentation",
+      "Seconds": 6.3268594,
+      "BudgetMinutes": 2,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [
+    {
+      "Descriptor": "portable-browser-save-presentation-frontend-001",
+      "Adapter": "node",
+      "VerificationKind": "tests",
+      "Results": 1,
+      "Seconds": 3.2995167
+    }
+  ],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 1.6922652,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 1.1685434,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 1.245472,
+      "Completed": true
+    },
+    {
+      "Name": "portable-browser-save-presentation-frontend-001-compile",
+      "Seconds": 1.9920924,
+      "Completed": true
+    },
+    {
+      "Name": "portable-browser-save-presentation-frontend-001-savePersistenceNotice.test.js",
+      "Seconds": 1.2526947,
+      "Completed": true
+    },
+    {
+      "Name": "portable-browser-save-presentation-frontend-002",
+      "Seconds": 2.9570371,
+      "Completed": false
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 7,
+  "WallTime": "00:00:11.9921510",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 2,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [
+      "portable-browser-save-presentation-frontend-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 1,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

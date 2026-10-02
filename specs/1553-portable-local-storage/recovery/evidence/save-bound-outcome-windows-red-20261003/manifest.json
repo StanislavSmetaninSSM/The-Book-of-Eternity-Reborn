@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "issue": 1553,
-  "task": "T032-A1-WIN",
+  "task": "T032-A2/A3",
   "sourceCommit": "64ff93c0faf4afca96ce839533714139178b1506",
   "status": "Fresh64ff93:7 executed,1 ordinary-error control passed,6 failed. Four causal closing-mask failures; two closing-generation fixtures wrote invalid generation schema and were corrected later. No completion claim.",
   "platform": "Windows x64",

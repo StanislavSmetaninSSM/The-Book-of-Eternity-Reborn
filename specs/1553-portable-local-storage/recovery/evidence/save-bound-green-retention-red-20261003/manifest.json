@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "e6506c567f92ce8436a6bddcad038e1b8bceaa94",
+  "status": "Fresh e6506c56: bound outcome7 and existing generation/escaped-writer controls3 all passed; two new actual retention release cases causally failed ContinuationBlocked=false. All12 executed, complete cleanup; build included.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-save-bound-outcome",
+    "portable-save-retention-release"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:03:08.1378063",
+  "exitCode": 1,
+  "selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 12,
+    "CompletedCases": 12,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 12,
+    "Executed": 12,
+    "Passed": 10,
+    "Failed": 2
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "Build-unit.log",
+      "originalSha256": "9E29628066C00A8471CB6B09C852BBE13DFE0D55E09103D9100ADDAB24842F38",
+      "sha256": "F8ABAEB4482729D2FA505D2AEFEC7DAE75E06A4039A849D7883DDEBC27401ECE"
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "E578900F3C9F3A014915CA72A31181F68D8E6781ADAB291F07138B867EA1D93B",
+      "sha256": "333132F20962294A1C98F35C6625C6B16596738B157EDD40915CCD36A1879107"
+    },
+    {
+      "path": "portable-save-bound-outcome-unit-001.trx",
+      "originalSha256": "17D44A0404C63B3722DCE6E6E4217079DB509A2F2C0056EBEED59125A856A691",
+      "sha256": "6B48E13B76B03C7FAA94C88E7E41D0D975BD65D25E2ABE49ACF9793E04C8ACDB"
+    },
+    {
+      "path": "portable-save-retention-release-unit-002.trx",
+      "originalSha256": "91BAB198854B6033F84AA2ED8E5EAB640CAB226602A59D7CD04D8C1C56A96239",
+      "sha256": "7FA12FEFE552391235828F401085585DD8874863D9E5BC1A519A997A68096079"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "0F90CB7EF3D262E9C444C1F28B07BC6E1DDE9C6D7F1F4D2284CD420478A1BB06",
+      "sha256": "6991FE9A4D20CEA9A2C026D81918FF1136EE58A0D8E1D171F6018A29F6FF92C0"
+    }
+  ]
+}

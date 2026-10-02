@@ -96,7 +96,7 @@
         "frontendBuild": false,
         "exclusive": true
       },
-      "timeoutMinutes": 2,
+      "timeoutMinutes": 4,
       "expectedSeconds": null,
       "selectors": [
         {
@@ -120,7 +120,7 @@
         "frontendBuild": false,
         "exclusive": true
       },
-      "timeoutMinutes": 2,
+      "timeoutMinutes": 4,
       "expectedSeconds": null,
       "selectors": [
         {
@@ -144,7 +144,7 @@
         "frontendBuild": false,
         "exclusive": true
       },
-      "timeoutMinutes": 2,
+      "timeoutMinutes": 4,
       "expectedSeconds": null,
       "selectors": [
         {
