@@ -2,6 +2,253 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-storage-stream-cold-phases",
+      "responsibility": "T032-A1-WIN nine real publication crash phases and separate-process ordinary canonical acquisition; exact v2 decision, journal-only recovery, library and hard-link sentinels.",
+      "excludes": "Large resource qualification, interrupted rollback, conflict/cleanup cuts, SaveGame callers and full platform acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "BookOfEternityClient.Tests/TrustedLocalStreamRecoveryTests.cs",
+        "BookOfEternityClient.TestSupport/TrustedLocalStreamCrashFixture.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-storage-stream-cold-before",
+      "responsibility": "T032-A1-WIN large file-backed before-image restoration after interrupted rollback staging and replacement; separate owned processes and exact bytes without candidate sources.",
+      "excludes": "Full archive resource envelope, publication phase matrix, save callers and full platform acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "BookOfEternityClient.Tests/TrustedLocalStreamRecoveryTests.cs",
+        "BookOfEternityClient.TestSupport/TrustedLocalStreamCrashFixture.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LargeBeforeRegionSurvivesInterruptedColdRollbackWithoutCallerSources"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-storage-stream-cold-conflicts",
+      "responsibility": "T032-A1-WIN cold later-member/generation preflight conflicts and interrupted committed cleanup; retained authoritative journal and exact library/outside sentinels.",
+      "excludes": "General type/link matrix, resource qualification, SaveGame callers and full platform acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "BookOfEternityClient.Tests/TrustedLocalStreamRecoveryTests.cs",
+        "BookOfEternityClient.TestSupport/TrustedLocalStreamCrashFixture.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.ColdLaterMemberOrGenerationConflictRetainsEarlierImagesAndEvidence",
+            "BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.CommittedColdCleanupCanBeInterruptedWithoutRestoringOldImages"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-save-create-only-adapter",
+      "responsibility": "One ordinary create-only image-adapter save destination: valid closed ZIP first commit, explicit rejection of an identical existing name, exact archive/candidate/generation/manual-autosave-checkpoint library preservation and owned cleanup on Linux or Windows.",
+      "excludes": "SaveGame/archive schema/load/gameplay acceptance, interruption or injected failures, malformed journals, large allocations/resources, remaining adapter/generation boundaries and native stream-lifetime qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs",
+        "BookOfEternityClient.Tests/PortableSaveCreateOnlyAdapterTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableSaveCreateOnlyAdapterTests.SecondCreateOfIdenticalZipRejectsWithoutChangingArchiveGenerationOrLibrary"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-storage-original-v1-fixtures",
+      "responsibility": "T032-A1 two immutable source-derived original-v1 journals: same-process normal canonical acquisition restores pending Before or retains committed After, exact four-member bytes/absence and generation BOM/casing/extension/identity, sentinels and cleanup. Linux/Windows-capable ordinary filesystem cases; only Linux execution is assigned here.",
+      "excludes": "Separate-process recovery, interruption/dispatch/resource diagnostics, malformed evidence, adapter negatives, save callers and Windows stream-lifetime qualification.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/TrustedLocalOriginalV1FixtureTests.cs",
+        "specs/1553-portable-local-storage/recovery/fixtures/original-v1-source-derived"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests.NormalLeaseRecoversIndependentOriginalV1Decision"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-storage-stream-dispatch",
+      "responsibility": "T032-A1 bounded cold format dispatch: mutated/unknown large framed journals must reject before the v1 whole-file reader; supported reordered/whitespace v1 evidence still recovers in separate owned processes.",
+      "excludes": "Full v2 resource envelope, general cold crash matrix, save callers and unrelated storage cohorts.",
+      "changeHints": [
+        "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.TrustedLocalStreamDispatchTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-storage-stream-publication",
+      "responsibility": "T032-A1 self-contained v2 framed image publication and canonical adapter: in-process decision cuts, strict framing/metadata/regions, active/temp authority, preflight conflicts and synthetic v1 smoke controls built with the shared new Header helper.",
+      "excludes": "Independent historical-v1 fixture compatibility, large resource/cold process qualification (the separate 14-case TrustedLocalStreamRecoveryTests scaffold remains unrun and unowned), SaveGame/browser/profile/listing/autosave cutover, load and unrelated storage cohorts.",
+      "changeHints": [
+        "BookOfEternityClient/Core/TrustedLocalFilePublication*.cs",
+        "BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-storage-images",
+          "when": "Image capture/copy/validation changes with the shared publisher."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-storage-images",
+      "responsibility": "T032-A1 exact internal byte/file image transport: independent byte snapshots, absence versus empty, scoped regular-file capture, bounded copying and source drift.",
+      "excludes": "Journal codec, transaction recovery, save callers and unrelated accepted storage cohorts.",
+      "changeHints": [
+        "BookOfEternityClient/Core/TrustedLocalFileImage.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.TrustedLocalFileImageTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-save-resource-qualification",
+      "responsibility": "Exploratory T032-A unchanged ZIP producer and B1 whole-archive candidate resource measurements in separate owned Linux processes; capped heap/RSS/disk/deadline, phase reach, exact archives/generation/library and cold acquisition. A measured bounded failure is not product support.",
+      "excludes": "Full save acceptance, Windows measurements, browser/GM/gameplay, load and unbounded host stress.",
+      "changeHints": [
+        "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "BookOfEternityClient/Services/SaveLoadService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 8,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableSaveResourceTests.MeasureUnchangedProducerAndB1CandidateWithinDeclaredOwnedBounds"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-save-entry",
+      "responsibility": "Actual public ordinary SaveGame entry, one complete create-only B1 decision and owned runtime save-staging cleanup after preparation failure. Causal T032-A RED and subsequent common-route proof.",
+      "excludes": "Load replacement, browser/autosave consumers, broad canonical storage and B1 resource qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SaveLoadService.cs",
+        "BookOfEternityClient/Core/FileSystemManager.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableSaveCreationTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-backup-native-boundaries",
       "responsibility": "Exact native Windows by-name links, namespace/alias/type and real lease/debt subset; all link fixtures must execute.",
       "excludes": "Full storage or gameplay coverage and unrelated accepted cohorts.",

@@ -9,6 +9,7 @@ namespace BookOfEternityClient.Core;
 internal sealed class FileSystemManagerHooks
 {
     internal Action<TrustedLocalPublicationPhase, int>? LocalPublicationObserver { get; init; }
+    internal Action<TrustedLocalPublicationPhase, int>? LocalPublicationRecoveryObserver { get; init; }
     internal Func<Task>? CanonicalWriteLockContendedAsync { get; init; }
     internal Func<Task>? SessionLifecycleLockContendedAsync { get; init; }
     internal Func<Task>? BeforeCanonicalWriteLockOpenAsync { get; init; }
