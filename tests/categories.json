@@ -27,7 +27,7 @@
       "expectedSeconds": null,
       "selectors": [
         { "project": "unit", "tests": ["BookOfEternityClient.Tests.PortableBrowserSaveCreationTests.BrowserSaveUsesPreparedImageDecisionAndRetainsExactOutcome"] },
-        { "project": "frontend", "runner": "node", "files": ["test/savePersistenceNotice.test.ts"] }
+        { "project": "frontend", "runner": "node", "tests": ["BookOfEternityClient.WebFrontend/test/savePersistenceNotice.test.ts"] }
       ]
     },
     {
