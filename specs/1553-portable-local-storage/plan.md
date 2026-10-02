@@ -6,6 +6,24 @@
 
 ## T032-B0 ordinary-load design WIP — 2026-10-02
 
+### Writer-buffer clarification — 2026-10-02
+
+Scoped independent review of `b84f782be10b053a86ba8751f3e3af1f0a81cc4b` closed the three
+admission/settings/source P2 findings and accepted the connected same-shape core direction.
+One precise codec P2 remained: `Utf8JsonWriter(Stream)` holds encoded bytes until Flush.
+The [metadata algorithm](ordinary-load-plan.md#streaming-metadata-algorithm-for-t032-b1)
+now requires header flush, a flush after every completed member on the same writer/JSON
+state, and tail flush before the final length-slot patch. Its causal test observes bytes
+arriving before all members are emitted, zero pending bytes after each flush and peak
+pending encoding independent of total member count for a fixed largest member/token.
+This two-document correction changes no runtime/tests and runs no build/test/audit.
+
+Publish this correction for the same reviewer's focused readback. The reviewed T032-B1
+causal test/core TDD may then begin; implementation of the shared metadata writer stays
+held until that readback arrives. Public bool/client cutover, full topology, cold/resource
+envelope and native/client/provider gates remain open. Work remains cloud-only while the
+owner's Windows computer is offline; no desktop handoff is part of this checkpoint.
+
 ### Scoped design-review correction — 2026-10-02
 
 The initial four-doc WIP is remotely saved at `9edb04afbcd5e713df39c1b2bf31ecd5783f01f2`,
