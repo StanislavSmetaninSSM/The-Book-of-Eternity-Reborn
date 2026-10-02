@@ -27,7 +27,8 @@ dependencies are already installed; unchanged package/lock identities are verifi
 
 | Bounded command group | Current result and scope |
 | --- | --- |
-| consumer-contracts + profile-consumers | [Preserved partial](recovery/evidence/save-linux-consumer-preparation-failure-20261002/manifest.json):22/23 formal pass in20.0089718s =13 real pass +9 Windows-only no-ops;1 fixture-preparation failure, profile3 unrun. Five portable static counterparts already accepted, not repeated. |
+| consumer-contracts + profile-consumers | [Preserved partial](recovery/evidence/save-linux-consumer-preparation-failure-20261002/manifest.json):22/23 formal pass in20.0089718s =13 real pass +9 Windows-only no-ops;1 fixture-preparation failure, [profile3/3 GREEN](recovery/evidence/save-linux-profile-green-20261002/manifest.json) separately in8.7747541s at65f0b219; complete cleanup. Five portable static counterparts already accepted, not repeated. |
+| legacy-residue-admission (one method split from consumer-contracts) | Exact preparation RED preserved; fixture-only direct seed with the same UTF-8 BOM bytes, unchanged SaveGame rejection/session/library assertions; correction WIP, fresh integration build + one-case run pending. |
 | browser-save-creation + engine-save-presentation | Pending; real backend/manual console/agent-console boundary and exact outcomes. |
 | browser-save-presentation + settings-notices + settings-consumers + shell-types | Pending; Node scenarios, adapter cases, Vitest and pure typecheck remain separate; required production frontend build/typecheck included. |
 | engine-save-player | Pending separate command,2 real accepted-state/save-continuation cases. |
@@ -35,7 +36,7 @@ dependencies are already installed; unchanged package/lock identities are verifi
 | engine-save-late | Pending separate command,2 real accepted-state/save-continuation cases. |
 
 The active selection retains the accepted seven caller/resource owners and adds the
-11 remaining consumer/frontend/engine owners with reasons. Execution uses only each
+11 remaining consumer/frontend/engine owners plus the single-method legacy-residue admission split with reasons. Total catalog membership is preserved;13 already-passing real consumer bodies and9 no-ops are not repeated. Execution uses only each
 bounded group above; passing storage/caller/resource cohorts are not replayed. Native
 Windows original-profile and physical/swap controls keep their existing source-specific
 evidence; they supply no Linux proof. Original Load0/2 is separately pre-existing,

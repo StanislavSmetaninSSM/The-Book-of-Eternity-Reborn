@@ -132,8 +132,7 @@
             "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_SelfConsistentUnknownResourceOwnerIsRejected",
             "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_InvalidUtf8CanonicalResourceInputFailsClosed",
             "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ExcludesLocalUiLockNamespaceDescendants",
-            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_RetainedBrowserRollbackEvidenceBlocksOrdinaryAdmission",
-            "BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_RetriesWhenSaveMetadataIsTemporarilyLocked",
+                "BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_RetriesWhenSaveMetadataIsTemporarilyLocked",
             "BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_RejectsOversizedMetadataThroughTrustedBudget",
             "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_WaitsForCanonicalWriteLeaseBeforeReadingSessionSnapshot",
             "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_DoesNotArchiveDirectoryJunctionTarget",
@@ -148,6 +147,31 @@
             "BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_OrdinaryMetadataAcceptsHardLinkWithoutRetry",
             "BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_CompletionRejectsLinkAddedAfterConsumption",
             "BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_RejectsHardLinkedSaveArchive"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-save-legacy-residue-admission",
+      "responsibility": "Actual ordinary SaveGame admission rejects pre-existing original browser rollback residue and preserves its exact bytes, full session snapshot and empty save library. The owned fixture seeds retained evidence directly; it does not invoke or migrate the legacy writer.",
+      "excludes": "Original browser rollback creation/recovery, full Load, accepted-turn migration, Windows-only physical or swap controls, and live client acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SaveLoadService.Creation.cs",
+        "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "BookOfEternityClient.IntegrationTests/SaveLoadServiceTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_RetainedBrowserRollbackEvidenceBlocksOrdinaryAdmission"
           ]
         }
       ]

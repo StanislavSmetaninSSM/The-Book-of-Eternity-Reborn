@@ -126,6 +126,13 @@
       "contracts": [
         "#1553 FR-002/003/004/005/006/010/015; T032-A native Linux consumer qualification"
       ]
+    },
+    {
+      "category": "portable-save-legacy-residue-admission",
+      "reason": "Isolated Linux fixture correction for the actual ordinary SaveGame refusal of retained original browser evidence; unchanged meaningful admission and byte/library assertions.",
+      "contracts": [
+        "#1553 FR-002/005/007/015; T032-A native Linux consumer qualification"
+      ]
     }
   ]
 }

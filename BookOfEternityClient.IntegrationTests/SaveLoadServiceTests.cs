@@ -587,13 +587,19 @@ public sealed class SaveLoadServiceTests : IDisposable
         var stalePath =
             $"{ExplorerLocalTurnRollbackArtifacts.Root}/browser_write/stale_evidence/marker.json";
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{\"currentRealm\":\"Chaos Sea\"}");
-        await _fs.WriteFileAtomicAsync(stalePath, "{\"stale\":true}");
+        // Retained legacy evidence predates ordinary admission; seeding it is not a new legacy publication.
+        var staleFullPath = _fs.ResolvePath(stalePath);
+        Directory.CreateDirectory(Path.GetDirectoryName(staleFullPath)!);
+        await File.WriteAllTextAsync(staleFullPath, "{\"stale\":true}", System.Text.Encoding.UTF8);
 
         var evidence = File.ReadAllBytes(_fs.ResolvePath(stalePath));
         var before = CaptureSessionSnapshot(_fs.GameSessionPath);
-        await Assert.ThrowsAsync<CoordinatedStatePublicationUncertainException>(() => _service.SaveGameAsync(
+        var failure = await Assert.ThrowsAsync<CoordinatedStatePublicationUncertainException>(() => _service.SaveGameAsync(
             "ephemeral_browser_rollback",
             "browser rollback save regression"));
+        var admissionFailure = Assert.IsType<InvalidDataException>(failure.GetBaseException());
+        Assert.Equal("Unresolved legacy storage evidence requires its original supported recovery handler: " +
+            _fs.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root), admissionFailure.Message);
         Assert.Equal(evidence, File.ReadAllBytes(_fs.ResolvePath(stalePath)));
         Assert.Equal(before, CaptureSessionSnapshot(_fs.GameSessionPath));
         Assert.Empty(Directory.GetFiles(_fs.ResolvePath("saves/manual_saves"), "*.zip"));
