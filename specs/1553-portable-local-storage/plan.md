@@ -6,6 +6,26 @@
 
 <a id="active-t032-a--ordinary-save-creation"></a>
 
+### Native Linux affected callers GREEN — 2026-10-02 17:28 UTC
+
+At clean source `4e57bd58d05a6565853cf5f07a7e9b3402551e44`,
+[affected-owner PlanOnly](recovery/evidence/save-linux-affected-plan-20261002/manifest.json)
+confirmed **five descriptors/33 cases** in **4.7829922 seconds**, zero executed.
+The subsequent [runtime cohort](recovery/evidence/save-linux-affected-green-20261002/manifest.json)
+passed **33/33 in 23.3950927 seconds**, exit0: entry2, read/refresh9, outcomes10,
+retention-release2 and bound-outcome10. Every descriptor/body completed without
+failed/skipped/duplicate/unrun cases or timeout; owned/runtime cleanup is complete
+and zero owned synthetic temp remainders remain. The unchanged fresh unit build
+from the preceding five-case PlanOnly is reused; there is no production correction.
+The managed release-seam cases do not claim injected native handle-failure proof.
+
+All five static caller fixtures and their original build/runtime evidence are
+preserved at `4e57bd58`, after catalog normalization at `1d329f70`. Next is the
+separate current-public-producer resource owner under unchanged protective bounds,
+followed by fresh discovery-only ownership audit. These native caller cohorts do
+not include the historical nine guarded Windows bodies, original Load, real
+engine/frontend or live-client acceptance, which remain separate.
+
 ### Five native Linux static caller checks GREEN — 2026-10-02 17:25 UTC
 
 [Fresh PlanOnly/build](recovery/evidence/save-linux-five-plan-20261002/manifest.json)

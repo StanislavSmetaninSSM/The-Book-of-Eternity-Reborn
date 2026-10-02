@@ -1,0 +1,71 @@
+{
+  "Categories": [
+    "portable-save-entry",
+    "portable-save-read-refresh",
+    "portable-save-outcomes",
+    "portable-save-retention-release",
+    "portable-save-bound-outcome"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "4e57bd58d05a6565853cf5f07a7e9b3402551e44",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.096797,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.015224,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0153873,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0089897,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 18,
+  "WallTime": "00:00:04.7829922",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 5,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 33,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-save-bound-outcome-unit-001",
+      "portable-save-entry-unit-002",
+      "portable-save-outcomes-unit-003",
+      "portable-save-read-refresh-unit-004",
+      "portable-save-retention-release-unit-005"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

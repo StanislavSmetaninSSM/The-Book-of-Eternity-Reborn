@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="76f2e30b-2b53-4c9d-afc8-3934e6dd2a66" name="@owned-linux-executor 2026-10-02 13:27:57" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-02T13:27:57.8428167-04:00" queuing="2026-10-02T13:27:57.8428168-04:00" start="2026-10-02T13:27:55.1765572-04:00" finish="2026-10-02T13:27:57.8509856-04:00" />
+  <TestSettings name="default" id="42032d66-94a0-4e83-9c61-6b3f1196be61">
+    <Deployment runDeploymentRoot="_owned-linux-executor_2026-10-02_13_27_57" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="6388a449-57fc-4891-a7ff-38a022c68146" testId="596f16d9-63a7-b203-e78b-feaeac2d5d12" testName="BookOfEternityClient.Tests.PortableSaveOutcomeTests.RetentionLeaseReleaseFailureBlocksCommittedAutosave(uncertainRetention: False)" computerName="owned-linux-executor" duration="00:00:00.4267965" startTime="2026-10-02T13:27:57.6873728-04:00" endTime="2026-10-02T13:27:57.6873984-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6388a449-57fc-4891-a7ff-38a022c68146" />
+    <UnitTestResult executionId="ae39ea36-f9e6-4c2d-9a59-8ede3f38b044" testId="a2a835a8-f8c9-6658-aa14-1ed95985dba2" testName="BookOfEternityClient.Tests.PortableSaveOutcomeTests.RetentionLeaseReleaseFailureBlocksCommittedAutosave(uncertainRetention: True)" computerName="owned-linux-executor" duration="00:00:00.0553391" startTime="2026-10-02T13:27:57.7433103-04:00" endTime="2026-10-02T13:27:57.7433106-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ae39ea36-f9e6-4c2d-9a59-8ede3f38b044" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveOutcomeTests.RetentionLeaseReleaseFailureBlocksCommittedAutosave(uncertainRetention: True)" storage="/repo/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a2a835a8-f8c9-6658-aa14-1ed95985dba2">
+      <Execution id="ae39ea36-f9e6-4c2d-9a59-8ede3f38b044" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveOutcomeTests" name="RetentionLeaseReleaseFailureBlocksCommittedAutosave" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveOutcomeTests.RetentionLeaseReleaseFailureBlocksCommittedAutosave(uncertainRetention: False)" storage="/repo/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="596f16d9-63a7-b203-e78b-feaeac2d5d12">
+      <Execution id="6388a449-57fc-4891-a7ff-38a022c68146" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveOutcomeTests" name="RetentionLeaseReleaseFailureBlocksCommittedAutosave" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="596f16d9-63a7-b203-e78b-feaeac2d5d12" executionId="6388a449-57fc-4891-a7ff-38a022c68146" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a2a835a8-f8c9-6658-aa14-1ed95985dba2" executionId="ae39ea36-f9e6-4c2d-9a59-8ede3f38b044" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="2" executed="2" passed="2" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.21]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.49]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.51]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:02.07]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>
