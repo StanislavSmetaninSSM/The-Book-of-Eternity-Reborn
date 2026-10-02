@@ -96,12 +96,23 @@ earlier rollback; its exact data/generation/journal/library/outside assertions
 passed. Owned process/runtime cleanup completed, with zero `boe-*` temp remainders.
 
 This completes execution of the two bounded Linux storage cohorts, pending the
-coordinator's independent Astra XHigh review and fresh GitHub-only restoration.
+coordinator's independent Astra XHigh review. Fresh GitHub-only restoration is
+verified below.
 No production, test, category or resource-bound change was needed. Native current-
 producer resource qualification and remaining caller/engine/frontend/live-client
 work remain open; T032-A1/T032-A2/A3 and full T032-A are not closed by these results.
-Next: preserve this result, restore the final checkpoint cleanly, and review exact
-source/evidence/counts/selection without repeating passed cohorts.
+Both evidence cohorts are preserved at `10dde95aac5517fbd8e6234e2d8a5cd6c17dd314`,
+tree `6e05bb5b89279be1698705fdc2040495199932b6`. A fresh single-branch shallow
+GitHub clone into a new empty directory restored all **4,263 tracked files**, exact
+HEAD/tree, clean worktree and successful connectivity fsck. All **19 stored artifact
+hashes** and **76 recorded source-identity assertions** across the four bundles
+matched. No runtime tests ran in this restoration. The subsequent proof-only
+supplement records this result; it changes no implementation, test,
+catalog, selection, executed result or acceptance boundary. Source/ref ownership now
+returns to the coordinator for independent review and the next separately bounded
+block. The original hash-bound generated build log retains its terminal blank
+line; that log-only whitespace warning does not affect source/document checks or
+result integrity. Do not repeat passed cohorts for review.
 
 ## Current Windows/Linux caller checkpoint — 2026-10-03
 
