@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "c94469e8c5bb80072020001182085066589d6dd5",
+  "runtimeSourceCommit": "26c0327c20b41e82e647287a455b7a8018f0796a",
+  "branch": "1553-save-create-only-adapter",
+  "patchFile": "create-only-adapter-pending.patch",
+  "patchBytes": 20146,
+  "patchSha256": "1f01a7816301eb97d5d95f2f58e4772200ab2427cfc0a51cecc8bc068a283aa1",
+  "entries": [
+    {
+      "path": "specs/1553-portable-local-storage/plan.md",
+      "beforeBlob": "12c68a771346d59feefa9f88ffd08b1fd4d6fc27",
+      "afterBlob": "d972ee43f8c40d47773b9fab7f7de5a3f4b579ee",
+      "beforeSha256": "45075a0ac42b9887b54ef2c8a4e12eaaf926999e1fc8c0a8eebbb6a1bba68e21",
+      "afterSha256": "b970a7637cb649a6745111403ac3c70cb39019384d27a60483c30e7830d3cc4a"
+    },
+    {
+      "path": "tests/categories.json",
+      "beforeBlob": "6bbd1c6f0e8a087a7c92df4cce0a6e798bcfa4e5",
+      "afterBlob": "e3ffd8cabbd066d44a8d72cebda81e889a766d09",
+      "beforeSha256": "414e68f9da3eb09121c430204bf04f199dba5d27d2b9065ab404d995ad919e08",
+      "afterSha256": "5aacf2e28db2d19c2159f92d7772523528a6a8fc0bf1f37373ca65cbd3465d3b"
+    }
+  ],
+  "appliedSourceTree": "e748bb051252ea2de0ef9a6eb5fe416935b709a3",
+  "comparisonExcludes": [
+    "specs/1553-portable-local-storage/recovery/create-only-adapter-pending.patch",
+    "specs/1553-portable-local-storage/recovery/create-only-adapter-pending.json"
+  ],
+  "supersedes": "v1-compatibility-pending.patch and save-creation-pending.patch for this isolated branch only; never apply multiple packets",
+  "scope": "T032-A1-CREATE one ordinary valid-ZIP identical existing-name rejection through actual canonical image adapter; production unchanged; WIP unbuilt/unrun"
+}

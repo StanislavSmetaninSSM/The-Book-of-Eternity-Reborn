@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-storage-original-v1-fixtures",
-      "reason": "Exactly two original-v1 immutable fixture cases cover the accepted compatibility contract through normal same-process canonical acquisition. Production is byte-identical to 26c0327c. No dispatch/resource/interruption categories or broad suite is selected.",
+      "category": "portable-save-create-only-adapter",
+      "reason": "Exactly one ordinary valid-ZIP scenario exercises the real canonical image adapter create-only contract, including byte-identical destination collision and archive/candidate/generation/library/cleanup invariants. Existing correct behavior needs no artificial RED. No production changes, prior v1 rerun, crash/malformed/resource categories or broad suite are selected.",
       "contracts": [
-        "#1553 FR-004/005/007; T032-A1 original-v1 source-derived compatibility"
+        "#1553 FR-003/004/005/006; T032-A1-CREATE; save-creation-cutover.md create-only existing-identical rejection"
       ]
     }
   ]

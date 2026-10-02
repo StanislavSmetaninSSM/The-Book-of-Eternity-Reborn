@@ -1,5 +1,11 @@
 # Source and evidence recovery
 
+## Current isolated create-only adapter branch
+
+For `1553-save-create-only-adapter`, restore and verify the current exact remote SHA into a new GitHub-only checkout. This branch starts at frozen `c94469e8c5bb80072020001182085066589d6dd5`, retaining production identical to `26c0327c`; do not use main's unrun interruption scaffold for this case. Read [T032-A1-CREATE](../plan.md#t032-a1-create--ordinary-identical-name-adapter-collision) and [create-only-adapter-pending.json](create-only-adapter-pending.json). Verify its patch byte length/SHA256 and all named before-images; `git apply --check` and apply `create-only-adapter-pending.patch` once, then verify every after-image and the carrier-excluded tree. This packet includes all inherited plan/catalog deltas. Never apply the v1 or save-creation historical packets as well. The raw plan/catalog are intentionally before-images; the current applied plan governs this isolated branch. Builds/tests require the preserved WIP and explicit one-case owner, with the task-local toolchain settings in the plan. No accepted historical test is rerun for restoration.
+
+The following v1 recovery instructions apply only to that frozen historical branch, not to this new branch's current packet.
+
 ## Active original-v1 compatibility branch
 
 For `1553-v1-fixture-compatibility`, read the [current plan](../plan.md#t032-a1-v1--ordinary-original-v1-compatibility-only) and [v1-compatibility-pending.json](v1-compatibility-pending.json) first. This branch starts at frozen `26c0327c20b41e82e647287a455b7a8018f0796a`, leaving production byte-identical. In a fresh GitHub-only clone, verify the remote SHA and clean checkout, then verify the packet SHA/length and every before-image hash, run `git apply --check` and apply `v1-compatibility-pending.patch` once, and verify every after-image hash. It includes the inherited catalog additions and supersedes the inherited `save-creation-pending.patch`; never apply both. The two immutable fixtures and provenance are copied exactly from `92bd725fea22ae54fafb484c17941d13ff87a169`. Their historical README/provenance describe that source-only checkpoint, not the current execution status. No interruption scaffold or observer is present at this frozen source.
