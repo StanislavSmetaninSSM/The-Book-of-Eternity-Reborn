@@ -1,17 +1,64 @@
 # Implementation Plan: Trusted local storage and cross-platform runtime
 
-**Branch**: `codex/1553-save-windows` | **Updated**: 2026-10-03
+**Branch**: `codex/1553-save-windows` | **Updated**: 2026-10-02
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
 <a id="active-t032-a--ordinary-save-creation"></a>
+
+## Linux caller/resource handoff WIP — 2026-10-02 17:52 UTC
+
+Bounded execution is complete; **independent review and coordinator acceptance are
+pending**. The five new static caller checks passed 5/5 at `f22ea963` plus its exact
+saved catalog patch; the five existing affected caller owners passed 33/33 at clean
+`4e57bd58`. Both retain exact earlier sources and complete evidence below. No
+ordinary-save production defect or change was needed. The only existing C# source
+change is the narrowly guarded process-exit sampling correction in the resource
+fixture, causally justified by the separately preserved 2/3 result at `ce7750da`.
+All returned Windows source/evidence and the accepted prior Linux storage 26 remain
+intact; no unchanged caller or storage cohort was repeated.
+
+The [corrected resource PlanOnly](recovery/evidence/save-linux-resource-corrected-plan-20261002/manifest.json)
+confirmed 3 cases in **5.4518381 seconds**, zero executed. At clean evidence-containing
+source `cc087195af6fb507d9c9e1edc6612e214a536aec`, the separate
+[current-producer Linux resource command](recovery/evidence/save-linux-resource-green-20261002/manifest.json)
+passed **3/3 in 2:20.9029096**, exit 0, with all **15 actual child reports**: producer,
+pending publication/recovery and committed publication/recovery for 64/128/near-512 MiB.
+It reused the freshly corrected `f331a523` unit build; intervening changes are evidence
+and documentation only. The shared monitor correction is the reason all 3 resource
+cases were requalified. All exact before/after hashes, generation, full library,
+outside sentinel, archive and owned cleanup assertions passed.
+
+The near-512 MiB public SaveGame ZIP was **536,973,730 bytes**, expanded **536,815,510**.
+Maximum child-reported peak working set was **619,077,632 bytes**, parent-sampled RSS
+**619,835,392**, sampled logical disk **2,673,468,064**, and child duration
+**66,889.7966ms**. Original 768 MiB heap/1 GiB RSS/3 GiB disk/120-second bounds remain unchanged.
+The command ran alone with no build/restore/audit overlap. No failure, skip,
+duplicate, unrun case or timeout occurred; complete owned/runtime cleanup and zero
+owned synthetic temp remainders are recorded. The measured limits are this bounded
+native Linux result, not an optimization or whole-platform claim.
+
+Source/case/artifact identities, original/stored hashes and unrounded 15-child
+measurements are preserved in the bundles. The discovery-only audit is197 categories/
+10,503 identities with zero unmapped/stale selectors, not a test run. The active catalog
+is normal Git content; no carrier, outstanding approval or uncertain mutation remains.
+The seven-owner selection is this bounded block only and must be reconciled against
+full intended change before integration. Remaining native consumer/profile, engine,
+frontend and deferred live-client work follows separately. Original physical-read
+controls, historical Windows-only swap behavior and known original Load diagnostic
+retain separate scope. T032-A1/A2/A3/full T032-A and all wider unfinished tasks stay open.
+No GM schema, gameplay contract or prompt/example capability changed.
+
+Next: verify a fresh GitHub-only checkout of the final evidence, freeze the exact diff,
+and return sole source/ref ownership for actual independent GPT-6 Astra XHigh review.
+No passed cohort is repeated solely for review.
 
 ### Fresh ownership audit and corrected build — 2026-10-02 17:46 UTC
 
 At clean corrected source `f331a5231a00823ae33f3fd87b11b349a46aa034`, the
 [discovery-only audit](recovery/evidence/save-linux-catalog-audit-20261002/manifest.json)
 passed **197 categories/10,503 identities**, zero unmapped/stale selectors and
-**zero executed tests**, exit0 in **5:39.3676455**. Fresh integration build
+**zero executed tests**, exit 0 in **5:39.3676455**. Fresh integration build
 **272.3735738 seconds** and unit build **54.7081824 seconds** both completed;
 owned/runtime cleanup is complete. This supplies the fresh corrected unit binaries
 for the separate resource rerun. No unchanged passing caller/storage cohort is repeated.
@@ -22,13 +69,13 @@ failure is preserved in the audit bundle. `-Parallelism` is not in the unchanged
 runner's Audit parameter set. The supported documented `-ValidateCatalog` form
 then ran successfully; all actual runtime commands retain `-Parallelism 1`.
 For fresh integration restore, the prior downloaded packages were copied into this
-block's own NuGet cache before adding the required Roslyn5.3.0 dependency; the
+block's own NuGet cache before adding the required Roslyn 5.3.0 dependency; the
 predecessor cache was not mutated. No resource child ran concurrently with these
 builds, restores or discovery work.
 
 ### Resource monitor correction WIP — 2026-10-02 17:36 UTC
 
-The causal2/3 failure is saved at `dcb0d22a552ceda3e8c419154367532bb608ce88`
+The causal 2/3 failure is saved at `dcb0d22a552ceda3e8c419154367532bb608ce88`
 before the fixture correction. The monitor now catches only `InvalidOperationException`
 from refresh/RSS sampling when `HasExited` confirms the **same owned process** has
 terminated, then continues through its existing wait, exact exit-code, final disk,
@@ -40,22 +87,22 @@ resource test is the causal regression; no unrelated test/category is added.
 Fresh unit build is required after this test-source correction. All three resource
 workloads require requalification because they share this monitor in all five child
 modes; the previously passed64/512 cases are repeated for this explicit dependency,
-not for review. Caller5+33 and storage26 are unchanged and are not repeated. This WIP
+not for review. Caller5+33 and storage 26 are unchanged and are not repeated. This WIP
 is unbuilt/unrun and awaits the same independent review with the complete caller block.
 
 ### Resource sampling fixture failure preserved — 2026-10-02 17:33 UTC
 
 At clean `ce7750daba51859a4cab8632d7ed7472bcb450ab`, the separate resource
 [PlanOnly](recovery/evidence/save-linux-resource-plan-20261002/manifest.json)
-confirmed three cases in4.2004092seconds. The isolated
+confirmed three cases in 4.2004092 seconds. The isolated
 [runtime result](recovery/evidence/save-linux-resource-monitor-failure-20261002/manifest.json)
-completed **three formal cases: two passed, one failed**, exit1 in **2:24.0996788**.
-64MiB and near-512MiB each completed all five child stages. The 128MiB producer
+completed **three formal cases: two passed, one failed**, exit 1 in **2:24.0996788**.
+64 MiB and near-512 MiB each completed all five child stages. The 128 MiB producer
 and pending publication passed; its pending recovery monitor then raised
 `InvalidOperationException: Process has exited, so the requested information is not available`
 at `TrustedLocalStreamResourceTests.Run`, line164, reading `Process.WorkingSet64`
 after the while-loop's separate `HasExited` observation. This is a parent sampling
-lifecycle race, not a demonstrated save/recovery data defect; the remaining128MiB
+lifecycle race, not a demonstrated save/recovery data defect; the remaining128 MiB
 proof is incomplete. Twelve validated child reports are preserved in TRX, not fifteen.
 Command/owner did not time out; owned/runtime cleanup completed with no synthetic
 fixture remainders. Bounds and workload remain unchanged. No full resource pass
@@ -65,7 +112,7 @@ Next: preserve this exact failure before the smallest causal fixture correction;
 prove normal child exit during sampling cannot discard its exit/report validation,
 while active-child sampling failures and all original safety checks still fail.
 Only the affected resource fixture owner requires requalification after that change;
-the already GREEN5+33 ordinary caller cases and storage26 need no repetition.
+the already GREEN5+33 ordinary caller cases and storage 26 need no repetition.
 
 ### Native Linux affected callers GREEN — 2026-10-02 17:28 UTC
 
@@ -73,7 +120,7 @@ At clean source `4e57bd58d05a6565853cf5f07a7e9b3402551e44`,
 [affected-owner PlanOnly](recovery/evidence/save-linux-affected-plan-20261002/manifest.json)
 confirmed **five descriptors/33 cases** in **4.7829922 seconds**, zero executed.
 The subsequent [runtime cohort](recovery/evidence/save-linux-affected-green-20261002/manifest.json)
-passed **33/33 in 23.3950927 seconds**, exit0: entry2, read/refresh9, outcomes10,
+passed **33/33 in 23.3950927 seconds**, exit 0: entry2, read/refresh9, outcomes10,
 retention-release2 and bound-outcome10. Every descriptor/body completed without
 failed/skipped/duplicate/unrun cases or timeout; owned/runtime cleanup is complete
 and zero owned synthetic temp remainders remain. The unchanged fresh unit build
@@ -94,7 +141,7 @@ and [five-case runtime](recovery/evidence/save-linux-five-green-20261002/manifes
 used source `f22ea96354f1f18d5a400db01d7c52579b3425d7` plus the exact remotely
 saved catalog patch. Both summaries record one changed catalog and fingerprint
 `300F1BE329683A1247650BC8482E2EE154BD9739ADE728821C2247C73CFBD2DB`.
-The runtime passed **5/5 in 9.0645892 seconds**, exit0, with all bodies executed,
+The runtime passed **5/5 in 9.0645892 seconds**, exit 0, with all bodies executed,
 no skips/failures/duplicates/unrun cases or timeout, complete owned/runtime cleanup
 and zero owned synthetic temp remainders. Linked expired-member selection was
 asserted at the actual retention boundary; committed archive plus failed follow-up,
@@ -107,7 +154,7 @@ Normal catalog publication is verified at
 `7c96c09fe0f330bc36e6a73201246649d61f0cb3`; catalog and checkpoint bytes match
 fetched remote objects. The original tested source identity is not relabeled by
 this evidence commit. Next: affected five ordinary caller owners, then separately
-current-producer resource3/fifteen children and discovery-only audit. Independent
+current-producer resource 3/fifteen children and discovery-only audit. Independent
 review and complete T032-A1/A2/A3 acceptance remain pending.
 
 ### Caller catalog normal delivery — 2026-10-02 17:23 UTC
@@ -124,7 +171,7 @@ explicitly renewed approval, the same create_blob call was retried exactly once,
 and it returned the exact expected blob. No ref mutation was uncertain.
 
 Fresh canonical PlanOnly/build on `f22ea963` plus that exact verified catalog
-patch completed exit0 in **3:18.6223525**, Build-unit **192.709182 seconds**,
+patch completed exit 0 in **3:18.6223525**, Build-unit **192.709182 seconds**,
 with exactly **five planned cases and zero executed**, no timeout and complete
 owned/runtime cleanup. No runtime or acceptance claim follows from discovery.
 The native five-case runtime cohort uses the same fresh unchanged binaries.
@@ -133,7 +180,7 @@ The native five-case runtime cohort uses the same fresh unchanged binaries.
 
 Issue #1553, T032-A1/A2/A3, same branch at verified entry
 `0d7f6c89d370716cad374e397898f7dedfdd452c`, tree
-`31b4648d1081cbeedb7d386986a386308039f6e2`. The preceding Linux storage26
+`31b4648d1081cbeedb7d386986a386308039f6e2`. The preceding Linux storage 26
 block passed actual independent GPT-6 Astra XHigh spec/quality review without
 findings and was accepted by the coordinator. Its cold16 and generation6/admission3/
 FIFO1 evidence and distinct tested sources below remain unchanged; do not rerun them.
@@ -155,17 +202,17 @@ before long verification. `tests/selection.json` records only this bounded seven
 block, preserving prior selections in Git; eventual integration must reconcile the
 whole intended change. Execute the five new checks first after a fresh PlanOnly build;
 then the five affected ordinary save/read/outcome/retention/bound owners, split by their
-catalog budgets. Run current-producer resource3/fifteen children separately afterward
+catalog budgets. Run current-producer resource 3/fifteen children separately afterward
 with unchanged 64/128/near-512 MiB, 768 MiB heap/1 GiB RSS/3 GiB disk/120-second child
 limits. New ownership requires fresh discovery-only `-ValidateCatalog`, not execution
 of the complete inventory. Every runtime uses canonical `scripts/test-csharp.ps1`
 with `-Parallelism 1`; `-NoBuild` only follows fresh successful required builds.
 
-The official verified toolchain is unchanged: SDK10.0.401, runtime8.0.31,
-PowerShell7.6.6, Spec Kit1.0.13. This block uses new owned mutable CLI/XDG/NuGet
+The official verified toolchain is unchanged: SDK 10.0.401, runtime 8.0.31,
+PowerShell 7.6.6, Spec Kit 1.0.13. This block uses new owned mutable CLI/XDG/NuGet
 HTTP/plugin/scratch/temp state, reusing only the preceding downloaded package cache.
 HOME/CODEX_HOME remain unchanged and all three telemetry opt-outs, certificate=false
-and processor-count1 apply before startup. Spec Kit prerequisite check exit0 resolves
+and processor-count1 apply before startup. Spec Kit prerequisite check exit 0 resolves
 this feature and tasks. Equivalent scoped consistency review found no changed product
 requirement or task gap. Existing isolated checkout is retained under sole writer ownership.
 

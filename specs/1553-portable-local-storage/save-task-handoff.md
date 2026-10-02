@@ -19,16 +19,24 @@ Final execution source `36589e5b6935d197ddeb9441c750237d55610956` adds [profile4
 
 Independent review found actual closing, retention-release and browser-refresh defects. The Load P1 attribution was retracted after logged counterevidence showed the original extraction-before-acquisition admission guard at both `6dc8c218` and `0f4fe247`, already documented in [save-load-cutover.md](save-load-cutover.md), lines 106–114. Both speculative Load wrappers were reverted at `958b4645`. [Original Load diagnostic](recovery/evidence/save-original-load-diagnostic-20261003/manifest.json) remains 0/2; its `portable-save-original-load` category stays preserved as a known-failing diagnostic for open Load migration, outside ordinary save acceptance. Do not delete it or bypass admission to obtain a passing Load result. Process assessment records those findings and the corrected hypothesis, not guessed savings.
 
-## Native Linux return commands
+## Remaining native Linux qualification
 
-Windows/Linux source is implemented under the owner's explicit deferred-native-Linux-verification direction. **No new native Linux execution has occurred here.** Restore current source, read `docs/testing.md`, use PowerShell 7 and split the relevant owners as below. Build before using `-NoBuild`; do not assemble a full-suite command. Execute each engine owner separately and keep full-size resource qualification separate:
+The returned source is normal Git content; no carrier is active. The preceding Linux
+cold16 and generation6/admission3/FIFO1 block passed independent Astra XHigh review
+and coordinator acceptance. The new static filesystem caller 5 and existing affected
+ordinary caller 33 cohorts passed on their distinct sources; current public-producer
+resource 3 passed with all 15children at `cc087195`, after a fixture-only confirmed-child-
+exit sampling correction. This newest caller/resource block awaits independent review
+and coordinator acceptance; read the current [plan](plan.md) and preserved manifests.
+Its discovery-only audit passed197 categories/10,503 identities with zero execution.
+Do not replay these passing groups or the unchanged historical publication/dispatch/
+original-v1/create-only controls without a relevant new change.
+
+The following are separate remaining owners. Use PowerShell 7 and fresh required
+builds before `-NoBuild`; execute each real engine owner separately. Do not assemble
+a full-suite command:
 
 ```powershell
-./scripts/test-csharp.ps1 -Category portable-storage-stream-cold-phases,portable-storage-stream-cold-before,portable-storage-stream-cold-conflicts -Parallelism 1
-./scripts/test-csharp.ps1 -Category portable-storage-stream-generation,portable-storage-image-admission,portable-storage-stream-linux-fifo -Parallelism 1
-./scripts/test-csharp.ps1 -Category portable-storage-stream-publication,portable-storage-stream-dispatch,portable-storage-original-v1-fixtures,portable-save-create-only-adapter -Parallelism 1
-./scripts/test-csharp.ps1 -Category portable-storage-stream-resource -Parallelism 1
-./scripts/test-csharp.ps1 -Category portable-save-entry,portable-save-read-refresh,portable-save-outcomes,portable-save-retention-release,portable-save-bound-outcome -Parallelism 1
 ./scripts/test-csharp.ps1 -Category portable-save-consumer-contracts,portable-save-profile-consumers -Parallelism 1
 ./scripts/test-csharp.ps1 -Category portable-browser-save-creation,portable-engine-save-presentation -Parallelism 1
 ./scripts/test-csharp.ps1 -Category portable-browser-save-presentation,portable-settings-notices,portable-settings-consumers,frontend-shell-types -Parallelism 1
@@ -37,7 +45,16 @@ Windows/Linux source is implemented under the owner's explicit deferred-native-L
 ./scripts/test-csharp.ps1 -Category portable-engine-save-late -Parallelism 1
 ```
 
-The FIFO owner must actually execute on Linux. Do **not** run `portable-save-original-profile-windows` there: its native physical-receipt assertion is Windows-only. Its separate Windows command is `./scripts/test-csharp.ps1 -Category portable-save-original-profile-windows -Parallelism 1`. The historical whole-byte resource experiment is not the current image/resource gate. Preserve exact source/OS, reached boundaries, formal counts, timeouts, cleanup and evidence-source identity on return.
+The 23-method consumer owner contains nine historical Windows-only early returns:
+a formal Linux 23/23 would mean 14 exercised bodies plus 9 no-ops, not 23 native proofs.
+Five agreed static/no-follow/hard-link counterparts now have actual native coverage
+in `portable-save-filesystem-callers`; this does not import Windows physical pinning
+or simultaneous namespace-swap guarantees. The two original physical read controls
+remain distinct. Do **not** run `portable-save-original-profile-windows` on Linux;
+its actual physical-receipt assertion requires Windows. The known original Load
+failure and historical whole-byte resource experiment remain outside this continuation.
+Preserve exact source/OS, reached boundaries, counts, timeouts, cleanup and separate
+Windows versus native Linux evidence. Deferred live GUI remains separate.
 
 Full T032-A1/T032-A, T031/T032, Load, accepted-turn/gameplay, provider, B4/B5 and overall platform acceptance remain open. No GM-authored response, game mechanic, Mortal World or afterlife contract changed; client-owned save transport requires no GM prompt/example capability update.
 
