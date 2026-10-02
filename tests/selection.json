@@ -49,6 +49,83 @@
       "contracts": [
         "#1553 FR-002/003/004/005/006/010/015; T032-A1/A2/A3 bounded native Linux save caller/resource qualification"
       ]
+    },
+    {
+      "category": "portable-save-consumer-contracts",
+      "reason": "Native Linux ZIP/schema/source/lease/listing/retention consumers; report 14 real bodies separately from 9 Windows-only early returns.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/010/015; T032-A native Linux consumer qualification"
+      ]
+    },
+    {
+      "category": "portable-save-profile-consumers",
+      "reason": "Three native leased profile-mirror repair and authority consumers, separate from original Windows-only profile receipt.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/010/015; T032-A native Linux consumer qualification"
+      ]
+    },
+    {
+      "category": "portable-browser-save-creation",
+      "reason": "Actual Linux browser backend save decision and generation binding with exact created identity/outcomes.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/010/015; T032-A native Linux consumer qualification"
+      ]
+    },
+    {
+      "category": "portable-engine-save-presentation",
+      "reason": "Actual manual console save and agent-console outcome presentation.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/010/015; T032-A native Linux consumer qualification"
+      ]
+    },
+    {
+      "category": "portable-browser-save-presentation",
+      "reason": "Save response-loss, uncertainty and required-refresh continuation barriers through Node and actual handler Vitest.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/010/015; T032-A native Linux consumer qualification"
+      ]
+    },
+    {
+      "category": "portable-settings-notices",
+      "reason": "Settings unmount/dispatch ownership and failed-load reconciliation plus production frontend typecheck/build.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/010/015; T032-A native Linux consumer qualification"
+      ]
+    },
+    {
+      "category": "portable-settings-consumers",
+      "reason": "Exact existing mount/audio/copy/settled-refresh consumers shared by save continuation.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/010/015; T032-A native Linux consumer qualification"
+      ]
+    },
+    {
+      "category": "frontend-shell-types",
+      "reason": "Compile-time shell/context contracts affected by browser save continuation; not executable behavior proof.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/010/015; T032-A native Linux consumer qualification"
+      ]
+    },
+    {
+      "category": "portable-engine-save-player",
+      "reason": "Separate bounded actual player accepted-state save cut and retained terminal evidence.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/010/015; T032-A native Linux consumer qualification"
+      ]
+    },
+    {
+      "category": "portable-engine-save-waiting",
+      "reason": "Separate bounded actual waiting accepted-state save cut and retained terminal evidence.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/010/015; T032-A native Linux consumer qualification"
+      ]
+    },
+    {
+      "category": "portable-engine-save-late",
+      "reason": "Separate bounded actual late-response accepted-state save cut and retained terminal evidence.",
+      "contracts": [
+        "#1553 FR-002/003/004/005/006/010/015; T032-A native Linux consumer qualification"
+      ]
     }
   ]
 }

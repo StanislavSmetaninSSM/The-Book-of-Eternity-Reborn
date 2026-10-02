@@ -6,6 +6,49 @@
 
 <a id="active-t032-a--ordinary-save-creation"></a>
 
+
+## Native Linux consumer qualification — current state, 2026-10-02
+
+Issue #1553; sole-writer continuation from clean `24f3a1ad19b8bcbe854dc6643755773ea1c8a1ea`
+(tree `ea546bc3022d06a516127d3c3705cfe6c8d461fd`). The coordinator accepted the
+preceding bounded Linux storage 16+10 and caller/resource 5-new+33-existing+3-resource
+blocks after actual independent GPT-6 Astra XHigh final spec/quality PASS, no remaining
+findings. The three-string evidence sanitization correction at `24f3a1ad` is included.
+These exact historical execution sources and manifests remain authoritative; the
+older pending-review wording below records the historical handoff, not current status.
+
+This continuation changes no runtime, test or catalog. Fresh successful unit/integration
+builds at `f331a523` are source-equivalent through this entry checkpoint; relevant trees,
+runner/catalog and binaries are verified before `-NoBuild` reuse. Debian13 x64,
+.NET SDK10.0.401/runtime8.0.31, PowerShell7.6.6; owned fresh CLI/XDG/HTTP/plugin/scratch/temp
+roots, immutable existing NuGet packages, unchanged HOME/CODEX_HOME, telemetry off,
+certificate generation false, processor count1 before startup. Locked Node24.19.0/npm11.9.0
+dependencies are already installed; unchanged package/lock identities are verified.
+
+| Bounded command group | Current result and scope |
+| --- | --- |
+| consumer-contracts + profile-consumers | Pending; 23 formal integration cases contain14 real bodies +9 Windows-only no-ops; profile3 adds3 real bodies. Five portable static counterparts are already accepted and are not repeated. |
+| browser-save-creation + engine-save-presentation | Pending; real backend/manual console/agent-console boundary and exact outcomes. |
+| browser-save-presentation + settings-notices + settings-consumers + shell-types | Pending; Node scenarios, adapter cases, Vitest and pure typecheck remain separate; required production frontend build/typecheck included. |
+| engine-save-player | Pending separate command,2 real accepted-state/save-continuation cases. |
+| engine-save-waiting | Pending separate command,2 real accepted-state/save-continuation cases. |
+| engine-save-late | Pending separate command,2 real accepted-state/save-continuation cases. |
+
+The active selection retains the accepted seven caller/resource owners and adds the
+11 remaining consumer/frontend/engine owners with reasons. Execution uses only each
+bounded group above; passing storage/caller/resource cohorts are not replayed. Native
+Windows original-profile and physical/swap controls keep their existing source-specific
+evidence; they supply no Linux proof. Original Load0/2 is separately pre-existing,
+regression attribution retracted and wrappers reverted at `958b4645`; it is not rerun.
+No bound relaxation, admission bypass or fake phase reach is permitted. Newly exposed
+separate dependencies are reported before expansion. Required save cut and terminal
+state must be reached for an engine result to qualify.
+
+WIP; remaining consumer qualification and independent review pending. Full T032-A1/A2/A3,
+T032-A/T031/T032, live clients, real GM/gameplay, B4/B5 and full platform acceptance remain
+open. No GM-authored contract change. Next: exact PlanOnly then group1 execution.
+
+
 ### Final GitHub restoration and writer handoff — 2026-10-02 17:58 UTC
 
 Complete bounded source/evidence is published at
