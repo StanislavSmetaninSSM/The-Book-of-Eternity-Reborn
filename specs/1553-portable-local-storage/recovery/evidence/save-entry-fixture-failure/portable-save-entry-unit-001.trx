@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="b67d9778-2585-40d0-ae2e-3eb3a7ddb9a9" name="@ff00c3d48a40 2026-10-01 20:30:40" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-01T20:30:40.0432804-04:00" queuing="2026-10-01T20:30:40.0432804-04:00" start="2026-10-01T20:30:38.1539152-04:00" finish="2026-10-01T20:30:40.0491467-04:00" />
+  <TestSettings name="default" id="3d4ccc08-4ed2-4b6e-b0e4-80af9731802e">
+    <Deployment runDeploymentRoot="_ff00c3d48a40_2026-10-01_20_30_40" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="342dc4c9-20b3-4502-bf6d-6b162a0bd3b6" testId="a9bd1aee-a40f-dca9-2a90-28ffde42fc26" testName="BookOfEternityClient.Tests.PortableSaveCreationTests.FailedPreparationCleansActualOwnedRuntimeSaveScratch" computerName="ff00c3d48a40" duration="00:00:00.0814458" startTime="2026-10-01T20:30:39.9266370-04:00" endTime="2026-10-01T20:30:39.9266521-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="342dc4c9-20b3-4502-bf6d-6b162a0bd3b6">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.DirectoryNotFoundException : Could not find a part of the path 'RUN_ROOT/temp/boe-portable-save-1ecba4f990e7482884c6002c4c53b562/game_session/game_state/resources/resource_definitions.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.File.OpenHandle(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.WriteAllBytes(String path, Byte[] bytes)
+   at BookOfEternityClient.Tests.PortableSaveFixture.Put(FileSystemManager files, String relative, String text) in SOURCE_ROOT/BookOfEternityClient.TestSupport/PortableSaveFixture.cs:line 31
+   at BookOfEternityClient.Tests.PortableSaveFixture.Seed(FileSystemManager files) in SOURCE_ROOT/BookOfEternityClient.TestSupport/PortableSaveFixture.cs:line 19
+   at BookOfEternityClient.Tests.PortableSaveCreationTests.FailedPreparationCleansActualOwnedRuntimeSaveScratch() in SOURCE_ROOT/BookOfEternityClient.Tests/PortableSaveCreationTests.cs:line 53
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c954f6ab-5aba-4741-83ea-db1fee49f1d5" testId="10d8da38-0846-21a4-a4cc-2e564a2b7dba" testName="BookOfEternityClient.Tests.PortableSaveCreationTests.PublicSaveReachesCompletedArchiveAndPublishesOneCreateOnlyDecision" computerName="ff00c3d48a40" duration="00:00:00.0062485" startTime="2026-10-01T20:30:39.9303199-04:00" endTime="2026-10-01T20:30:39.9303200-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c954f6ab-5aba-4741-83ea-db1fee49f1d5">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.DirectoryNotFoundException : Could not find a part of the path 'RUN_ROOT/temp/boe-portable-save-ee12b2ac8c214f4591432434038c470e/game_session/game_state/resources/resource_definitions.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.File.OpenHandle(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.WriteAllBytes(String path, Byte[] bytes)
+   at BookOfEternityClient.Tests.PortableSaveFixture.Put(FileSystemManager files, String relative, String text) in SOURCE_ROOT/BookOfEternityClient.TestSupport/PortableSaveFixture.cs:line 31
+   at BookOfEternityClient.Tests.PortableSaveFixture.Seed(FileSystemManager files) in SOURCE_ROOT/BookOfEternityClient.TestSupport/PortableSaveFixture.cs:line 19
+   at BookOfEternityClient.Tests.PortableSaveCreationTests.PublicSaveReachesCompletedArchiveAndPublishesOneCreateOnlyDecision() in SOURCE_ROOT/BookOfEternityClient.Tests/PortableSaveCreationTests.cs:line 23
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveCreationTests.FailedPreparationCleansActualOwnedRuntimeSaveScratch" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a9bd1aee-a40f-dca9-2a90-28ffde42fc26">
+      <Execution id="342dc4c9-20b3-4502-bf6d-6b162a0bd3b6" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveCreationTests" name="FailedPreparationCleansActualOwnedRuntimeSaveScratch" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveCreationTests.PublicSaveReachesCompletedArchiveAndPublishesOneCreateOnlyDecision" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="10d8da38-0846-21a4-a4cc-2e564a2b7dba">
+      <Execution id="c954f6ab-5aba-4741-83ea-db1fee49f1d5" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveCreationTests" name="PublicSaveReachesCompletedArchiveAndPublishesOneCreateOnlyDecision" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="a9bd1aee-a40f-dca9-2a90-28ffde42fc26" executionId="342dc4c9-20b3-4502-bf6d-6b162a0bd3b6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="10d8da38-0846-21a4-a4cc-2e564a2b7dba" executionId="c954f6ab-5aba-4741-83ea-db1fee49f1d5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="2" executed="2" passed="0" failed="2" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.16]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.15]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.16]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.29]       System.IO.DirectoryNotFoundException : Could not find a part of the path 'RUN_ROOT/temp/boe-portable-save-1ecba4f990e7482884c6002c4c53b562/game_session/game_state/resources/resource_definitions.json'.
+[xUnit.net 00:00:01.29]       Stack Trace:
+[xUnit.net 00:00:01.29]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:01.29]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:01.29]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:01.29]            at System.IO.File.OpenHandle(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:01.29]            at System.IO.File.WriteAllBytes(String path, Byte[] bytes)
+[xUnit.net 00:00:01.29]         SOURCE_ROOT/BookOfEternityClient.TestSupport/PortableSaveFixture.cs(31,0): at BookOfEternityClient.Tests.PortableSaveFixture.Put(FileSystemManager files, String relative, String text)
+[xUnit.net 00:00:01.29]         SOURCE_ROOT/BookOfEternityClient.TestSupport/PortableSaveFixture.cs(19,0): at BookOfEternityClient.Tests.PortableSaveFixture.Seed(FileSystemManager files)
+[xUnit.net 00:00:01.29]         SOURCE_ROOT/BookOfEternityClient.Tests/PortableSaveCreationTests.cs(53,0): at BookOfEternityClient.Tests.PortableSaveCreationTests.FailedPreparationCleansActualOwnedRuntimeSaveScratch()
+[xUnit.net 00:00:01.29]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.30]       System.IO.DirectoryNotFoundException : Could not find a part of the path 'RUN_ROOT/temp/boe-portable-save-ee12b2ac8c214f4591432434038c470e/game_session/game_state/resources/resource_definitions.json'.
+[xUnit.net 00:00:01.30]       Stack Trace:
+[xUnit.net 00:00:01.30]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:01.30]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:01.30]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:01.30]            at System.IO.File.OpenHandle(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:01.30]            at System.IO.File.WriteAllBytes(String path, Byte[] bytes)
+[xUnit.net 00:00:01.30]         SOURCE_ROOT/BookOfEternityClient.TestSupport/PortableSaveFixture.cs(31,0): at BookOfEternityClient.Tests.PortableSaveFixture.Put(FileSystemManager files, String relative, String text)
+[xUnit.net 00:00:01.30]         SOURCE_ROOT/BookOfEternityClient.TestSupport/PortableSaveFixture.cs(19,0): at BookOfEternityClient.Tests.PortableSaveFixture.Seed(FileSystemManager files)
+[xUnit.net 00:00:01.30]         SOURCE_ROOT/BookOfEternityClient.Tests/PortableSaveCreationTests.cs(23,0): at BookOfEternityClient.Tests.PortableSaveCreationTests.PublicSaveReachesCompletedArchiveAndPublishesOneCreateOnlyDecision()
+[xUnit.net 00:00:01.30]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.30]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T20:30:39.9245032-04:00">
+        <Text>[xUnit.net 00:00:01.29]     BookOfEternityClient.Tests.PortableSaveCreationTests.FailedPreparationCleansActualOwnedRuntimeSaveScratch [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T20:30:39.9301523-04:00">
+        <Text>[xUnit.net 00:00:01.30]     BookOfEternityClient.Tests.PortableSaveCreationTests.PublicSaveReachesCompletedArchiveAndPublishesOneCreateOnlyDecision [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

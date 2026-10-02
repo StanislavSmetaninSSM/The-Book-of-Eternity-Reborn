@@ -27,8 +27,12 @@ internal static class PortableSaveFixture
         return new StateManager(files, new GameSettings(), NullLogger<StateManager>.Instance);
     }
 
-    private static void Put(FileSystemManager files, string relative, string text) =>
-        File.WriteAllBytes(files.ResolvePath(relative), Encoding.UTF8.GetBytes(text));
+    private static void Put(FileSystemManager files, string relative, string text)
+    {
+        var path = files.ResolvePath(relative);
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        File.WriteAllBytes(path, Encoding.UTF8.GetBytes(text));
+    }
 
     internal sealed class CaptureLogger : ILogger<SaveLoadService>
     {

@@ -1,11 +1,35 @@
 diff --git a/tests/categories.json b/tests/categories.json
-index 6bbd1c6f..26abe0c0 100644
+index 6bbd1c6f..7eb6eecf 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -1,6 +1,30 @@
+@@ -1,6 +1,54 @@
  {
    "schemaVersion": 1,
    "categories": [
++    {
++      "id": "portable-save-resource-qualification",
++      "responsibility": "Exploratory T032-A unchanged ZIP producer and B1 whole-archive candidate resource measurements in separate owned Linux processes; capped heap/RSS/disk/deadline, phase reach, exact archives/generation/library and cold acquisition. A measured bounded failure is not product support.",
++      "excludes": "Full save acceptance, Windows measurements, browser/GM/gameplay, load and unbounded host stress.",
++      "changeHints": [
++        "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
++        "BookOfEternityClient/Services/SaveLoadService.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": true
++      },
++      "timeoutMinutes": 8,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableSaveResourceTests.MeasureUnchangedProducerAndB1CandidateWithinDeclaredOwnedBounds"
++          ]
++        }
++      ]
++    },
 +    {
 +      "id": "portable-save-entry",
 +      "responsibility": "Actual public ordinary SaveGame entry, one complete create-only B1 decision and owned runtime save-staging cleanup after preparation failure. Causal T032-A RED and subsequent common-route proof.",
