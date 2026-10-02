@@ -9,10 +9,14 @@
 ## Current Windows/Linux caller checkpoint — 2026-10-03
 
 Implementation source: `36589e5b6935d197ddeb9441c750237d55610956`,
-`codex/1553-save-windows`; publication/readback of the final evidence supplement is pending.
-Restore ordinary Git source, not historical carriers. T032-A2/A3 remain unchecked:
-final independent caller review, fresh GitHub restoration and native Linux qualification
-are pending. [Handoff](save-task-handoff.md) gives restore and split verification commands.
+`codex/1553-save-windows`; evidence supplement `a9f04c635610857fe275dd7dee1792d5a5fbb855`
+is published and [restored from GitHub](recovery/save-caller-windows-restoration-20261003.json)
+into a fresh clean checkout: 4,239 tracked files, Git object integrity and 85 artifact
+hashes across 20 evidence bundles verified. No runtime tests were repeated in that clone.
+Independent Astra XHigh accepted the bounded Windows caller block with no remaining
+actionable code/test findings. T032-A2/A3 remain unchecked for native Linux qualification
+and full cross-platform acceptance. Restore ordinary Git source, not historical carriers.
+[Handoff](save-task-handoff.md) gives restore and split verification commands.
 
 Ordinary creation uses one held snapshot lease, a closed create-only ZIP, one B1 image
 publication and exact destination/outcome retention through owned cleanup, logging,
@@ -39,7 +43,8 @@ Native Windows evidence is separated by tested source; these counts are not one 
 | `36589e5b` | [Current producer/resource](recovery/evidence/save-current-producer-resource-green-20261003/manifest.json): 3/3 passed in 4:29.756, all15 owned children within original bounds. Public SaveGame completed at 64/128/near-512 MiB; full BEFORE/AFTER decisions and cold recovery preserved exact library/generation/sentinels. |
 
 The current near-512 MiB ZIP is 536,973,574 bytes. The producer peaked at 504.69 MiB
-RSS, publication children at 44.15 MiB, and sampled logical disk at 2,684,879,529 bytes.
+RSS, publication children at 44.25 MiB (maximum parent-sampled observation; child-reported
+maximum 44.15 MiB), and sampled logical disk at 2,684,879,529 bytes.
 Its longest child was the producer at 73.06s sampled wall time, below the unchanged
 120s deadline; heap768 MiB/RSS1 GiB/disk3 GiB guards remain unchanged.
 All required Windows execution cohorts are now complete. Original Windows profile
@@ -59,11 +64,15 @@ Original Load body/receipts remain separate/open. `portable-save-original-load` 
 retained known-failing diagnostic, not part of save-creation acceptance or selection.
 
 Independent review caught real closing, retention-release and browser-refresh defects;
-logged counterevidence corrected the Load hypothesis. No savings or completed overall
-review is inferred. Two direct original-receipt fixture issues (hex text case and BOM
+logged counterevidence corrected the Load hypothesis. The corrected bounded Windows
+caller block passed final independent Astra XHigh review; no measured savings or wider
+platform acceptance is inferred. Two direct original-receipt fixture issues (hex text case and BOM
 decoding) required corrections; neither changed production or raw receipt assertions.
-Linux paths are implemented but have not run natively here. Final
-caller review, Linux prerequisite/caller qualification, full T032-A1/T032-A/T031/T032
+The [discovery-only audit](recovery/evidence/save-caller-catalog-audit-20261003/manifest.json)
+verified 196 categories and 10,498 identities with zero unmapped/stale cases and zero
+tests executed; the caller selection contains 18 distinct category owners.
+Linux paths are implemented but have not run natively here.
+Linux prerequisite/caller qualification, full T032-A1/T032-A/T031/T032
 and wider game/platform acceptance remain open. No GM/gameplay contract changed, so
 client-owned save transport needs no GM prompt/example capability update.
 
