@@ -1,0 +1,39 @@
+{
+  "ownedCleanup": "complete",
+  "failed": 2,
+  "passed": 0,
+  "sourceCommit": "a340f5f7c8e6acf1d5ea5e1027dee35a54fefff7",
+  "schemaVersion": 1,
+  "executed": 2,
+  "status": "RED: 2 executed cases failed because normal recovery never invoked the configured crash observer; remaining 12 cases did not execute.",
+  "task": "T032-A1-WIN",
+  "skipped": 0,
+  "runtime": "8.0.31",
+  "platform": "Windows x64",
+  "timedOut": false,
+  "artifacts": [
+    {
+      "originalSha256": "80250CC802FA3920FCCFF5319A3A4B818A54EF8FAE8934584C4D54EC7076111F",
+      "path": "summary.json",
+      "sha256": "A02FA5A086D89304138591921230AF8F584FB57F0C3340BFA04B0209102D6113"
+    },
+    {
+      "originalSha256": "5D55758F08B6084067777FF217BFA7B8DEAEFE57F23C41757B22A00799DE67E3",
+      "path": "plan.json",
+      "sha256": "99209A5236D7A4DB74464952DB364C2F6F29AA31CB16948A8603D77E862F156D"
+    },
+    {
+      "originalSha256": "6894B1EA0215D84206565F7F94EA2BC65E55D797DA68F555B5AE1FD225110DFE",
+      "path": "Build-unit.log",
+      "sha256": "275A1B52C7F988B023298ADB845D1490242E01F3F04BB0048C55FE23863477AE"
+    },
+    {
+      "originalSha256": "ED95AC9E9DBEC04C9EF0F408BFD22C79EA5A93756BF162F21C5C70E95B682549",
+      "path": "portable-storage-stream-cold-before-unit-001.trx",
+      "sha256": "4E6E4389B511E0FE8F1661E457A3022AD47DE73CD2EC67AB695DE5831A7CB3CE"
+    }
+  ],
+  "issue": 1553,
+  "sdk": "10.0.401",
+  "expectedCases": 14
+}

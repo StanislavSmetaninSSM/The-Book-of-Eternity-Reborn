@@ -29,9 +29,13 @@ Preflight: recovery hook must reach the existing shared recovery engine; callbac
 must not introduce a second recovery authority. Cold tests prove journal-only
 restoration after candidate removal; resource qualification remains a separate
 workload gate. SaveGame cutover remains gated by full prerequisite acceptance.
-Current status: normalized source and test scaffold preserved; no new build,
-test or independent acceptance yet. Next: observe the narrow recovery cases
-before wiring the unused hook. Linux and full T032-A1/T032-A remain open.
+Native RED ac470723 at a340f5f7: fresh XML build succeeded; both large-before
+cases failed (expected phase exit 73, actual normal return 0), 2 executed of
+14 planned, zero timeout, complete owned cleanup, command 3m14.906s. Evidence:
+recovery/evidence/stream-windows-red-20261002. The missing recovery-observer
+forwarding is now wired; tests also assert exact observed phase/index and full
+library membership. This fix is WIP pending GREEN and independent review.
+Linux and full T032-A1/T032-A remain open.
 
 ## Active T032-A — ordinary save creation
 

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="2147bb39-f393-46d1-8a68-fc11fda06bc4" name="Eja@[HOST] 2026-10-02 22:03:25" runUser="[HOST]\Eja" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-02T22:03:25.6323371+10:00" queuing="2026-10-02T22:03:25.6323375+10:00" start="2026-10-02T22:03:09.3921179+10:00" finish="2026-10-02T22:03:38.3891272+10:00" />
+  <TestSettings name="default" id="b2cea8fd-df39-495c-abf4-bc0542c46841">
+    <Deployment runDeploymentRoot="Eja_[HOST]_2026-10-02_22_03_25" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="ceab5028-860e-437c-955e-f3daefe1bea6" testId="f8ef58b0-44e6-6014-00c8-58e891b7aa20" testName="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LargeBeforeRegionSurvivesInterruptedColdRollbackWithoutCallerSources(recoveryCut: &quot;MemberRestored&quot;)" computerName="[HOST]" duration="00:00:12.7058222" startTime="2026-10-02T22:03:38.2938186+10:00" endTime="2026-10-02T22:03:38.2938189+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ceab5028-860e-437c-955e-f3daefe1bea6">
+      <Output>
+        <StdOut>mode=stream-publish; cut=last-member; exit=73; sampledPeakBytes=39649280; {"Phase":"AbruptExit","Cut":"MemberPublished","Index":2,"HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover-cut; cut=MemberRestored; exit=0; sampledPeakBytes=37838848; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 73&#xD;
+Actual:   0</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LargeBeforeRegionSurvivesInterruptedColdRollbackWithoutCallerSources(String recoveryCut) in [WORKTREE]\BookOfEternityClient.Tests\TrustedLocalStreamRecoveryTests.cs:line 68&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0de68e1a-8076-44a6-be6d-387c174650b9" testId="99cef876-b8d0-9f77-98af-ea6e96ad61fa" testName="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LargeBeforeRegionSurvivesInterruptedColdRollbackWithoutCallerSources(recoveryCut: &quot;RollbackStaged&quot;)" computerName="[HOST]" duration="00:00:13.5368112" startTime="2026-10-02T22:03:25.5900960+10:00" endTime="2026-10-02T22:03:25.5901259+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0de68e1a-8076-44a6-be6d-387c174650b9">
+      <Output>
+        <StdOut>mode=stream-publish; cut=last-member; exit=73; sampledPeakBytes=39272448; {"Phase":"AbruptExit","Cut":"MemberPublished","Index":2,"HeapBytes":805306368}&#xD;
+&#xD;
+mode=stream-recover-cut; cut=RollbackStaged; exit=0; sampledPeakBytes=38285312; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 73&#xD;
+Actual:   0</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LargeBeforeRegionSurvivesInterruptedColdRollbackWithoutCallerSources(String recoveryCut) in [WORKTREE]\BookOfEternityClient.Tests\TrustedLocalStreamRecoveryTests.cs:line 68&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LargeBeforeRegionSurvivesInterruptedColdRollbackWithoutCallerSources(recoveryCut: &quot;MemberRestored&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="f8ef58b0-44e6-6014-00c8-58e891b7aa20">
+      <Execution id="ceab5028-860e-437c-955e-f3daefe1bea6" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests" name="LargeBeforeRegionSurvivesInterruptedColdRollbackWithoutCallerSources" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LargeBeforeRegionSurvivesInterruptedColdRollbackWithoutCallerSources(recoveryCut: &quot;RollbackStaged&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="99cef876-b8d0-9f77-98af-ea6e96ad61fa">
+      <Execution id="0de68e1a-8076-44a6-be6d-387c174650b9" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests" name="LargeBeforeRegionSurvivesInterruptedColdRollbackWithoutCallerSources" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="f8ef58b0-44e6-6014-00c8-58e891b7aa20" executionId="ceab5028-860e-437c-955e-f3daefe1bea6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="99cef876-b8d0-9f77-98af-ea6e96ad61fa" executionId="0de68e1a-8076-44a6-be6d-387c174650b9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="2" executed="2" passed="0" failed="2" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.26]   Discovering: BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.83]   Discovered:  BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.86]   Starting:    BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:15.48]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:15.48]       Expected: 73&#xD;
+[xUnit.net 00:00:15.48]       Actual:   0&#xD;
+[xUnit.net 00:00:15.48]       Stack Trace:&#xD;
+[xUnit.net 00:00:15.48]         [WORKTREE]\BookOfEternityClient.Tests\TrustedLocalStreamRecoveryTests.cs(68,0): at BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LargeBeforeRegionSurvivesInterruptedColdRollbackWithoutCallerSources(String recoveryCut)&#xD;
+[xUnit.net 00:00:15.48]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:15.48]       Output:&#xD;
+[xUnit.net 00:00:15.48]         mode=stream-publish; cut=last-member; exit=73; sampledPeakBytes=39272448; {"Phase":"AbruptExit","Cut":"MemberPublished","Index":2,"HeapBytes":805306368}&#xD;
+[xUnit.net 00:00:15.48]         &#xD;
+[xUnit.net 00:00:15.48]         mode=stream-recover-cut; cut=RollbackStaged; exit=0; sampledPeakBytes=38285312; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}&#xD;
+[xUnit.net 00:00:15.48]         &#xD;
+[xUnit.net 00:00:28.18]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:28.18]       Expected: 73&#xD;
+[xUnit.net 00:00:28.18]       Actual:   0&#xD;
+[xUnit.net 00:00:28.18]       Stack Trace:&#xD;
+[xUnit.net 00:00:28.18]         [WORKTREE]\BookOfEternityClient.Tests\TrustedLocalStreamRecoveryTests.cs(68,0): at BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LargeBeforeRegionSurvivesInterruptedColdRollbackWithoutCallerSources(String recoveryCut)&#xD;
+[xUnit.net 00:00:28.18]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:28.18]       Output:&#xD;
+[xUnit.net 00:00:28.18]         mode=stream-publish; cut=last-member; exit=73; sampledPeakBytes=39649280; {"Phase":"AbruptExit","Cut":"MemberPublished","Index":2,"HeapBytes":805306368}&#xD;
+[xUnit.net 00:00:28.18]         &#xD;
+[xUnit.net 00:00:28.18]         mode=stream-recover-cut; cut=MemberRestored; exit=0; sampledPeakBytes=37838848; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}&#xD;
+[xUnit.net 00:00:28.18]         &#xD;
+[xUnit.net 00:00:28.19]   Finished:    BookOfEternityClient.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="[HOST]" outcome="Error" timestamp="2026-10-02T22:03:25.5871097+10:00">
+        <Text>[xUnit.net 00:00:15.47]     BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LargeBeforeRegionSurvivesInterruptedColdRollbackWithoutCallerSources(recoveryCut: "RollbackStaged") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="[HOST]" outcome="Error" timestamp="2026-10-02T22:03:38.2931482+10:00">
+        <Text>[xUnit.net 00:00:28.18]     BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LargeBeforeRegionSurvivesInterruptedColdRollbackWithoutCallerSources(recoveryCut: "MemberRestored") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

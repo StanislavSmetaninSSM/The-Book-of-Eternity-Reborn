@@ -116,6 +116,10 @@ public sealed class TrustedLocalStreamRecoveryTests(ITestOutputHelper output) : 
         Assert.Equal(_beforeHash, Hash(Alias));
         foreach (var dir in new[] { "manual_saves", "autosaves", "checkpoint_saves" })
             Assert.Equal(new byte[] { 9, 0, 255 }, File.ReadAllBytes(Files.ResolvePath($"saves/{dir}/sentinel.zip")));
+        Assert.Equal(new[] { "autosaves/sentinel.zip", "checkpoint_saves/sentinel.zip", "manual_saves/sentinel.zip" },
+            Directory.GetFiles(Files.ResolvePath("saves"), "*", SearchOption.AllDirectories)
+                .Select(path => Path.GetRelativePath(Files.ResolvePath("saves"), path).Replace('\\', '/'))
+                .Order(StringComparer.Ordinal).ToArray());
     }
     private async Task<int> Run(string mode, string cut)
     {
@@ -140,6 +144,20 @@ public sealed class TrustedLocalStreamRecoveryTests(ITestOutputHelper output) : 
             }
             await process.WaitForExitAsync(); var text = await stdout;
             Assert.True(process.ExitCode is 0 or 73 or 78, text + await stderr);
+            if (process.ExitCode == 73)
+            {
+                using var reached = JsonDocument.Parse(text);
+                Assert.Equal("AbruptExit", reached.RootElement.GetProperty("Phase").GetString());
+                Assert.Equal(cut is "first-member" or "last-member" ? "MemberPublished" : cut,
+                    reached.RootElement.GetProperty("Cut").GetString());
+                var expectedIndex = cut switch
+                {
+                    "last-member" => 2,
+                    "first-member" or "MemberStaged" or "RollbackStaged" or "MemberRestored" or "CleanupMember" => 0,
+                    _ => -1
+                };
+                Assert.Equal(expectedIndex, reached.RootElement.GetProperty("Index").GetInt32());
+            }
             output.WriteLine("mode={0}; cut={1}; exit={2}; sampledPeakBytes={3}; {4}", mode, cut, process.ExitCode, peak, text);
             return process.ExitCode;
         }

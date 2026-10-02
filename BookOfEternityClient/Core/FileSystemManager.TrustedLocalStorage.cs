@@ -59,7 +59,8 @@ public partial class FileSystemManager
     {
         if (!HasStorageEvidence(LocalPublicationRoot)) return;
         var before = ReadExistingSessionGeneration(lease);
-        new TrustedLocalFilePublication(this, new TrustedLocalFileScope([BasePath])).Recover(lease);
+        new TrustedLocalFilePublication(this, new TrustedLocalFileScope([BasePath]))
+            .Recover(lease, _hooks?.LocalPublicationRecoveryObserver);
         if (before != ReadExistingSessionGeneration(lease))
             CanonicalRootAuthorityIdentity.AdvanceSessionGenerationRevision();
     }
