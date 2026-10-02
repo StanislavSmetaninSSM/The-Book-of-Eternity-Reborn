@@ -1,12 +1,12 @@
 diff --git a/specs/1553-portable-local-storage/plan.md b/specs/1553-portable-local-storage/plan.md
-index ce8629d1..01023ea6 100644
+index ce8629d1..39d15e24 100644
 --- a/specs/1553-portable-local-storage/plan.md
 +++ b/specs/1553-portable-local-storage/plan.md
 @@ -33,6 +33,8 @@ Initial image launch failed before runner/build/tests due to an owned shallow-fe
  
  Normalized image RED at `52967dc2`: [11/11 intended scaffold failures](recovery/evidence/save-images-normalized-red/manifest.json), 7.2094515 seconds, complete cleanup, unchanged fresh-built C# reused with NoBuild. The image implementation now uses scoped stream capture/SHA and 64 KiB copy/hash, with unchanged absence/empty and independent byte snapshots; GREEN is unrun at this checkpoint. No current caller has been migrated.
  
-+Image GREEN tested at `f343cac1`: [11/11](recovery/evidence/save-images-green/manifest.json), fresh unit build, exit 0, 2:18.2664284, complete cleanup. This is only the internal image helper, not T032-A1 acceptance. Next saved scaffold adds the image publication/canonical adapter APIs and 29 narrow v2/frame/authority/compatibility cases; codec behavior is still unimplemented and those cases are unrun. Current selection now follows the bounded prerequisite and does not rerun the known SaveGame RED or historical resource probe.
++Image GREEN tested at `f343cac1`: [11/11](recovery/evidence/save-images-green/manifest.json), fresh unit build, exit 0, 2:18.2664284, complete cleanup. This is only the internal image helper, not T032-A1 acceptance. Next saved scaffold adds the image publication/canonical adapter APIs and 29 narrow v2/frame/authority/compatibility cases; codec behavior is still unimplemented. The [29-case RED](recovery/evidence/save-stream-scaffold-red/manifest.json) tested at `00dc36cd` completed in 2:22.8546310 after fresh build: 27 intended missing-v2/adapter failures, two original v1 controls passed, complete cleanup. Current selection now follows the bounded prerequisite and does not rerun the known SaveGame RED or historical resource probe.
 +
  ### Subsequent capability and proof boundary
  
