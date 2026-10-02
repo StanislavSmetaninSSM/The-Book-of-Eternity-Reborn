@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "ae5d1f9ee7063ffa308d38388a96ab903ba4eb15",
+  "status": "Frozen ae5d1f9e C# binaries: browser 0/5 passed, all failed before actual prepared image intent on old recorder route. Frontend descriptor was unrun after C# failure; not a complete category. Linux unexecuted.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-browser-save-creation"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:00:35.8315227",
+  "exitCode": 1,
+  "selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 6,
+    "CompletedCases": 5,
+    "UnderfilledDescriptors": [
+      "portable-browser-save-creation-frontend-001"
+    ],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 5,
+    "Executed": 5,
+    "Passed": 0,
+    "Failed": 5
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "plan.json",
+      "originalSha256": "5392F3B6D7FE4AE6301C94B29B2533B38C88BF5B2643CFAE26BE3EC909284978",
+      "sha256": "FE8EF0ECD60CA5974D847D2FFF0ADE0F6959D6A20B5B7610F80BC50CC325705D"
+    },
+    {
+      "path": "portable-browser-save-creation-unit-002.trx",
+      "originalSha256": "AE0D2B24B5E13B05B302DDF3A82B2DFFFF0E37B0128336A5ADCFC9D625598059",
+      "sha256": "A95B9A509BDEB80D07D15265B51D6EEFB770B7A3288AD9BF08168B42D1E5A14B"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "5872C04C87BBA176675578DB88C2D9653648996D9CDE28E9EEF35CAB55EC7F36",
+      "sha256": "639C05969975039481755A599122DD09864203B36730F20C7ABEAA2397CC9CFD"
+    }
+  ]
+}

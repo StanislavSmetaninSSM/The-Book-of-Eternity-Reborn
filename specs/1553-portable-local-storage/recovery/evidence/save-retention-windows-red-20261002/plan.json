@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "portable-save-outcomes"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "ae5d1f9ee7063ffa308d38388a96ab903ba4eb15",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 5.8711273,
+  "Descriptors": [
+    {
+      "Name": "portable-save-outcomes-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-save-outcomes",
+      "Categories": [
+        "portable-save-outcomes"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveOutcomeTests.ClosedArchiveAndCommittedResultSurviveLoggingFailure|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveRetainsFollowUpWhenDeletionRollsBack|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveWithUnresolvedDebtStopsBeforeRetention|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveOutcomeTests.ClosedArchiveAndCommittedResultSurviveLoggingFailure",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveRetainsFollowUpWhenDeletionRollsBack",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveWithUnresolvedDebtStopsBeforeRetention",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "ae5d1f9ee7063ffa308d38388a96ab903ba4eb15",
+  "status": "Frozen ae5d1f9e binaries: original five outcome tests passed, two new retention cases failed causally (no block on committed conflict; swallowed known deletion failure). 7/7 executed; no Linux execution.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-save-outcomes"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:00:16.9201334",
+  "exitCode": 1,
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 7,
+    "CompletedCases": 7,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 7,
+    "Executed": 7,
+    "Passed": 5,
+    "Failed": 2
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "plan.json",
+      "originalSha256": "873F4F0EE1E3C056BF8989DB5D52CEFDD31BCE1817FC5A6F2FD76A5F7568C6A9",
+      "sha256": "2465F80413A736901F7A614C9A290026D32BE28F6F0E6B79A6810E2B9A724EAA"
+    },
+    {
+      "path": "portable-save-outcomes-unit-001.trx",
+      "originalSha256": "6A53385D81AA460839D788E1EB32333D3451741B8D1E5F71E45A1CF219F178D3",
+      "sha256": "425137B1AB7A2F7BA3EF012341254972EA3DB0AFEC3ED53672EA792F4F92AA48"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "749B513EE703C42CFF0EE4B38922AFA53B368ADC3DB680B5297578DA45FC9C1E",
+      "sha256": "1A16F36FDB63A0DDC63DDC682A61DB60D025E2A4C55978C57CAAE22B2379F39B"
+    }
+  ]
+}

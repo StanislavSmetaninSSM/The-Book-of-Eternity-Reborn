@@ -319,6 +319,13 @@ public partial class SaveLoadService
             try { await candidate.DisposeAsync(); }
             catch (Exception failure) { result = result.WithFollowUp(failure); }
         }
+        if (result.Committed)
+        {
+            // Resolve retained publication debt before the caller can refresh or continue its turn.
+            // A recovery conflict blocks continuation without changing the established archive decision.
+            try { _fs.ResolveBackupPublicationRecovery(lease); }
+            catch (Exception failure) { result = result.WithFollowUp(failure, blocksContinuation: true); }
+        }
         try
         {
             if (result.Committed) _logger.LogInformation("Игра сохранена: {Name}", saveName);

@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "ae5d1f9ee7063ffa308d38388a96ab903ba4eb15",
+  "status": "Fresh XML build: 7/9 passed, 2 fixture failures (Windows junction command quoting, fixture setup lease included in count). Exact source ae5d1f9e; no Linux execution.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-save-read-refresh"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:02:43.5144099",
+  "exitCode": 1,
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 9,
+    "CompletedCases": 9,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 9,
+    "Executed": 9,
+    "Passed": 7,
+    "Failed": 2
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "Build-unit.log",
+      "originalSha256": "F72C08EDA6BDAFAAB58EDD3753AEEEF749530DD3C10CF0B78747DCAA716C4DBE",
+      "sha256": "EAA6F845AA5951449DC2F67C17124FB8E24BF8C315C641472363C3856A270EFD"
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "8DF29E1FB0F8DB404E6615F38CE7183B9A7D99784450E790EC2E41322C387D34",
+      "sha256": "4CF0EF504C7605F8602DB3236D9D5C4F4488654845F173E371036BC8213A9A25"
+    },
+    {
+      "path": "portable-save-read-refresh-unit-001.trx",
+      "originalSha256": "904650BBFCDE5B6EDD529DAD3D8F82D86BB2799646172644695108A26FA52792",
+      "sha256": "60048183B5D6FB35E61CA7BA5C3D82C27245D15E09BDDCC5F8E8452014AB8EBC"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "F6C553D691994B2D2D338C19EEE14C1F2CF46D6E4C79FC3EBE28365A5A17DC20",
+      "sha256": "805B3853D8F37E441698CEDC45EF444B8A373A9C67152A99516FDD8A6FEE2423"
+    }
+  ]
+}

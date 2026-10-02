@@ -81,10 +81,13 @@ public sealed class OrdinarySaveReadAndRefreshTests : IDisposable
         await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
         await using var opened = await files.OpenOrdinaryReadFileAsync(lease, Archive);
         Assert.NotNull(opened); Assert.Equal(1, opened.Stream.ReadByte());
-        File.Delete(path);
-        if (linked) await CreateDirectoryLink(path, outside); else Directory.CreateDirectory(path);
-        Assert.Throws<InvalidDataException>(() => opened.Complete());
-        opened.Abandon();
+        try
+        {
+            File.Delete(path);
+            if (linked) await CreateDirectoryLink(path, outside); else Directory.CreateDirectory(path);
+            Assert.Throws<InvalidDataException>(() => opened.Complete());
+        }
+        finally { opened.Abandon(); }
         Assert.Equal(new byte[] { 7, 0, 255 }, File.ReadAllBytes(Path.Combine(outside, "sentinel.bin")));
         Directory.Delete(path); // Remove only the fixture-created empty directory or link name.
     }
@@ -105,6 +108,8 @@ public sealed class OrdinarySaveReadAndRefreshTests : IDisposable
         SeedProfile(files);
         var generation = File.ReadAllBytes(files.SessionGenerationPath);
         var manager = new StateManager(files, new GameSettings(), NullLogger<StateManager>.Instance);
+        // Exclude the separate lease used by EnsureDirectoryStructure while seeding the fixture.
+        commits = 0; physical = 0; leases = 0;
         await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
         await manager.RefreshGameStateAsync(lease);
         Assert.Equal(1, commits); Assert.Equal(0, physical); Assert.Equal(1, leases);
@@ -233,9 +238,8 @@ public sealed class OrdinarySaveReadAndRefreshTests : IDisposable
     private static async Task CreateDirectoryLink(string path, string target)
     {
         if (!OperatingSystem.IsWindows()) { Directory.CreateSymbolicLink(path, target); return; }
-        var start = new ProcessStartInfo("cmd.exe") { UseShellExecute = false, CreateNoWindow = true,
+        var start = new ProcessStartInfo("cmd.exe", $"/c mklink /J \"{path}\" \"{target}\"") { UseShellExecute = false, CreateNoWindow = true,
             RedirectStandardOutput = true, RedirectStandardError = true };
-        start.ArgumentList.Add("/c"); start.ArgumentList.Add($"mklink /J \"{path}\" \"{target}\"");
         using var process = Process.Start(start) ?? throw new InvalidOperationException("Owned junction fixture did not start.");
         var stdout = process.StandardOutput.ReadToEndAsync(); var stderr = process.StandardError.ReadToEndAsync();
         using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(10));

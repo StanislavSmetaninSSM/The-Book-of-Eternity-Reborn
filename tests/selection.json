@@ -35,6 +35,13 @@
       "contracts": [
         "#1553 approved save-creation-cutover.md; T032-A2/A3"
       ]
+    },
+    {
+      "contracts": [
+        "#1553 save-creation-cutover.md"
+      ],
+      "category": "portable-browser-save-presentation",
+      "reason": "T032-A3 truthful immediate browser save transport and response-loss handling."
     }
   ]
 }

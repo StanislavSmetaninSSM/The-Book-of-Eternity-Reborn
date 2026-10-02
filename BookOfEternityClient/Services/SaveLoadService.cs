@@ -1725,10 +1725,29 @@ public partial class SaveLoadService
         long Length,
         string Sha256);
 
+    /// <summary>
+    /// Applies autosave retention after confirmed creation, stopping on unresolved publication evidence.
+    /// </summary>
+    /// <param name="saveDir">
+    /// The session-relative autosave directory.
+    /// </param>
+    /// <param name="maxSaves">
+    /// The number of newest archives to retain; negative values are treated as zero.
+    /// </param>
+    /// <returns>
+    /// Completion after bounded image deletions, or an explicit failure for the committed save's follow-up.
+    /// </returns>
     private async Task CleanupOldSaves(string saveDir, int maxSaves)
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        FileSystemManager.CanonicalWriteLease writeLease;
+        try { writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(); }
+        catch (SessionReplacedException) { throw; }
+        catch (Exception failure) { throw new CoordinatedStatePublicationUncertainException(failure); }
+        await using var ownedLease = writeLease;
+        _fs.ResolveBackupPublicationRecovery(writeLease);
+        var scope = new TrustedLocalFileScope([_fs.GameSessionPath]);
         var fullDir = _fs.ResolvePath(saveDir);
+        scope.ValidateDirectory(fullDir);
         if (!Directory.Exists(fullDir))
             return;
 
@@ -1744,8 +1763,14 @@ public partial class SaveLoadService
 
         foreach (var file in files)
         {
-            try { _fs.DeleteFile(writeLease, file); }
-            catch { /* ignore cleanup errors */ }
+            _fs.ResolveBackupPublicationRecovery(writeLease);
+            var before = TrustedLocalFileImage.CaptureFile(scope, _fs.ResolvePath(file));
+            var outcome = await _fs.PublishLocalImageFilesAsync(writeLease,
+                [new CanonicalLocalImageChange(file, before, TrustedLocalFileImage.FromBytes(null))]);
+            if (outcome.Disposition == TrustedLocalPublicationDisposition.Uncertain)
+                throw new CoordinatedStatePublicationUncertainException(outcome.Failure);
+            _fs.RequireCommittedLocalPublication(outcome);
+            _fs.ResolveBackupPublicationRecovery(writeLease);
         }
     }
 

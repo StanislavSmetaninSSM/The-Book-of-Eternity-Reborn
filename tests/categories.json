@@ -18,17 +18,27 @@
     },
     {
       "id": "portable-browser-save-creation",
-      "responsibility": "Actual browser manual save through one held lease and prepared v2 image decision; exact created destination, confirmed rollback, uncertainty, committed cleanup/close follow-up and truthful frontend transport notices.",
+      "responsibility": "Actual browser manual save through one held lease and prepared v2 image decision; exact created destination, confirmed rollback, uncertainty and committed cleanup/close follow-up.",
       "excludes": "Load, original browser v6 writes for other consumers, gameplay/provider lifecycle, full browser GUI and native Linux execution.",
       "changeHints": ["BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs", "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs", "BookOfEternityClient.WebFrontend/src/utils/savePersistenceNotice.ts"],
       "related": [],
-      "requirements": { "frontendBuild": true, "exclusive": true },
+      "requirements": { "frontendBuild": false, "exclusive": true },
       "timeoutMinutes": 5,
       "expectedSeconds": null,
       "selectors": [
-        { "project": "unit", "tests": ["BookOfEternityClient.Tests.PortableBrowserSaveCreationTests.BrowserSaveUsesPreparedImageDecisionAndRetainsExactOutcome"] },
-        { "project": "frontend", "runner": "node", "tests": ["BookOfEternityClient.WebFrontend/test/savePersistenceNotice.test.ts"] }
+        { "project": "unit", "tests": ["BookOfEternityClient.Tests.PortableBrowserSaveCreationTests.BrowserSaveUsesPreparedImageDecisionAndRetainsExactOutcome"] }
       ]
+    },
+    {
+      "id": "portable-browser-save-presentation",
+      "responsibility": "Browser save transport notices retain confirmed commit, follow-up, rollback and uncertainty, including HTTP failure payloads and lost responses, without unsafe refresh or false retry promises.",
+      "excludes": "Backend publication, full rendered browser GUI, load and settings publication.",
+      "changeHints": ["BookOfEternityClient.WebFrontend/src/api/contracts.ts", "BookOfEternityClient.WebFrontend/src/utils/savePersistenceNotice.ts"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": false },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "frontend", "runner": "node", "tests": ["BookOfEternityClient.WebFrontend/test/savePersistenceNotice.test.ts"] }]
     },
     {
       "id": "portable-save-read-refresh",

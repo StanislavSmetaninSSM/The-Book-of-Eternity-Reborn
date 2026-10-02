@@ -18,7 +18,16 @@ snapshot lease, one create-only image publication, retained typed save decisions
 ordinary leased streaming metadata and Task-only profile refresh. Original load
 receipts remain unchanged. Two additional retention outcome tests are RED candidates;
 retention, browser and console integration and actual GREEN/review are still open.
-No new Linux execution or full save acceptance is claimed.
+At `ae5d1f9e` the fresh helper cohort passed **7/9**; the two failures were fixture
+setup: a reproduced invalid Windows junction command and counting the separate seed
+lease. Corrections retain production validation and the one-operation-lease assertion.
+Frozen binaries passed the original **5/5** save outcomes while both new retention
+cases failed causally. The current WIP resolves post-commit debt before returning,
+retains committed status when continuation is blocked, and uses bounded file-image
+deletion for retention rather than whole-ZIP byte arrays. Browser backend RED reached
+**0/5** on its old recorder route; its frontend descriptor was not executed after that
+failure. Backend and presentation now have separate narrow owners. Engine RED and
+joint GREEN remain pending. No new Linux execution or full save acceptance is claimed.
 
 The owner now explicitly authorizes implementing Linux paths locally, marking native
 Linux execution unverified and returning its exact commands to the Linux coordinator.
