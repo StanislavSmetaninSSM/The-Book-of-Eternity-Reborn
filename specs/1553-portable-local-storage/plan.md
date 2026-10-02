@@ -6,6 +6,30 @@
 
 <a id="active-t032-a--ordinary-save-creation"></a>
 
+### Resource sampling fixture failure preserved — 2026-10-02 17:33 UTC
+
+At clean `ce7750daba51859a4cab8632d7ed7472bcb450ab`, the separate resource
+[PlanOnly](recovery/evidence/save-linux-resource-plan-20261002/manifest.json)
+confirmed three cases in4.2004092seconds. The isolated
+[runtime result](recovery/evidence/save-linux-resource-monitor-failure-20261002/manifest.json)
+completed **three formal cases: two passed, one failed**, exit1 in **2:24.0996788**.
+64MiB and near-512MiB each completed all five child stages. The 128MiB producer
+and pending publication passed; its pending recovery monitor then raised
+`InvalidOperationException: Process has exited, so the requested information is not available`
+at `TrustedLocalStreamResourceTests.Run`, line164, reading `Process.WorkingSet64`
+after the while-loop's separate `HasExited` observation. This is a parent sampling
+lifecycle race, not a demonstrated save/recovery data defect; the remaining128MiB
+proof is incomplete. Twelve validated child reports are preserved in TRX, not fifteen.
+Command/owner did not time out; owned/runtime cleanup completed with no synthetic
+fixture remainders. Bounds and workload remain unchanged. No full resource pass
+or production correction is claimed.
+
+Next: preserve this exact failure before the smallest causal fixture correction;
+prove normal child exit during sampling cannot discard its exit/report validation,
+while active-child sampling failures and all original safety checks still fail.
+Only the affected resource fixture owner requires requalification after that change;
+the already GREEN5+33 ordinary caller cases and storage26 need no repetition.
+
 ### Native Linux affected callers GREEN — 2026-10-02 17:28 UTC
 
 At clean source `4e57bd58d05a6565853cf5f07a7e9b3402551e44`,
