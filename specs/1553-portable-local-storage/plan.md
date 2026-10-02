@@ -26,7 +26,7 @@ This does not convert Windows evidence into Linux acceptance. Work remains on
   separators in the hand-written journal fixture. Correct the two fixture paths,
   preserving strict normalized production paths, and rerun the whole 29-case owner.
   Both failed native cohorts are retained under `recovery/evidence/stream-windows-fixture-*`.
-- Current unverified addition: two later-member directory/symlink preflight cases and
+- Earlier addition (Windows results now recorded below): two later-member directory/symlink preflight cases and
   three actual 64/128/near-512 MiB archive resource rows. Each resource row uses five
   sequential owned children, complete file-backed BEFORE/AFTER and fresh canonical
   acquisitions for pending rollback and committed cleanup. Capture/copy/hash/matches,
@@ -61,7 +61,50 @@ owner on Windows. The Linux-only owner asserts its OS and is intentionally exclu
 from Windows selection, so it cannot produce a misleading skipped-body pass. Native
 Linux execution remains for the Linux coordinator, as the owner requested.
 
-Before acceptance: publish source; run only changed conflict/format/resource owners;
+Final Windows boundary source `23d94fb7` passed **14/14** with a fresh XML build in
+**3:03.390**: admission 3, corrected negative/cold conflicts 5, generation/empty 6.
+[Boundary evidence](recovery/evidence/stream-windows-boundaries-green-20261002/manifest.json)
+retains exact source, phase reports and cleanup. Discovery-only audit of this source
+validated **182 categories / 10,471 methods or files**, executing zero tests in
+**1:54.527**. The [fresh GitHub restoration](recovery/stream-windows-restoration-20261002.json)
+verified 4,068 files, the source tree and 28 then-published artifact hashes; Windows
+required command-local `core.longpaths=true` for six historical long evidence paths.
+No patch carrier, shared local object store or runtime execution was used for recovery.
+
+The owner explicitly requested Linux implementation here with comments marking native
+Linux verification pending. Accordingly, after independent acceptance of this Windows
+prerequisite slice, continue the already approved ordinary save caller implementation.
+This is a sequencing adjustment, not a changed acceptance criterion: Linux prerequisite
+execution and full T032-A1/T032-A acceptance remain open. The Linux FIFO owner is
+implemented and compiled but has not run. Run the cross-platform cold/resource,
+generation/admission and Linux FIFO owners on the Linux host before Linux acceptance.
+
+Process checkpoint: a single primary developer plus bounded Sol implementation packets
+and Astra XHigh independent review found concrete missing coverage without restarting
+historical suites. Native execution exposed three fixture defects (immutable CRLF,
+mixed separators, resolving a deliberately invalid path during setup); production was
+not relaxed to make them pass. No token/cost savings claim is inferred from these facts.
+
+## Next T032-A caller implementation
+
+Preserve the approved source map and game/archive formats. Prepare one closed/flushed
+owned ZIP under the held snapshot lease; return its exact create-only destination and
+file image with owned cleanup. Direct service orchestration and prepared browser
+orchestration publish that image once; preparation never publishes or acquires a second
+canonical lease. Keep typed not-created/committed/rolled-back/uncertain results through
+cleanup, logging, menu refresh and owner release. Bool compatibility must propagate
+uncertainty rather than returning false; committed follow-up never reverses success.
+
+Add an ordinary validated leased stream for listing, retaining raw archive preflight,
+metadata bounds, retries and explicit original load/physical routes. Add a Task-only
+ordinary profile-mirror refresh with exact no-op bytes and typed uncertainty, preserving
+the original receipt-returning load callback. Thread the held browser lease through
+listing. Adapt console/browser transport and autosave retention/turn continuations so
+uncertainty cannot trigger retention or compensation. Select tests by these concrete
+boundaries, and synchronize player-facing save/recovery guidance; no GM-authored game
+contract is introduced by the storage transport itself.
+
+Prerequisite final acceptance: publish source; run only changed conflict/format/resource owners;
 validate discovery metadata; preserve parsed results; obtain independent Astra XHigh
 review and fresh GitHub recovery. Full T032-A1 and SaveGame caller cutover remain open.
 Storage/test-only work changes no GM-authored game contract, prompt or example.

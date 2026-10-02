@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "sourceCommit": "23d94fb711b262eb024dfa6a028e190fbaa4ec17",
+  "tree": "f1e4db35945c124f0a922731829e53c854cfc6c4",
+  "trackedFiles": 4068,
+  "restore": "Fresh shallow GitHub clone of codex/1553-save-windows; no local object alternates or patch applied.",
+  "checkout": "Initial checkout failed on six long paths; completed same owned clone using command-local core.longpaths=true. No source bytes or OS security settings changed.",
+  "clean": true,
+  "evidenceArtifactHashesVerified": 28,
+  "originalV1FixtureHashesVerified": 2,
+  "runtimeExecution": "None in recovered checkout; tests retain their separately recorded source identities."
+}

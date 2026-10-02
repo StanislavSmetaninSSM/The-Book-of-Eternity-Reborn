@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A1-WIN",
+  "sourceCommit": "23d94fb711b262eb024dfa6a028e190fbaa4ec17",
+  "status": "14/14 with fresh XML build at clean 23d94fb7: admission3, corrected type/link plus prior cold conflicts5, generation/empty cold6. Linux FIFO compiled but deliberately not executed or counted as a pass.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-storage-stream-cold-conflicts",
+    "portable-storage-image-admission",
+    "portable-storage-stream-generation"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:03:03.3904084",
+  "exitCode": 0,
+  "selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 14,
+    "CompletedCases": 14,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 14,
+    "Executed": 14,
+    "Passed": 14,
+    "Failed": 0
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "Build-unit.log",
+      "originalSha256": "A6C4F973704DE1EF72A01A08EC51EFE730F11CC403C58D1FBCB2D1BE84D28769",
+      "sha256": "CCFD0DD18B0039A5848D215136990BC088BFDD42862F88F9546A7A4EEC3F4C22"
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "87FE274FF18914D734FD96F12ABECAC5CD42FF29870BD2414F54D4D96E157FC0",
+      "sha256": "C92DD350E4C66FA0215C46F086D5164B93F4139A14C7847332AA7A25E54B9F11"
+    },
+    {
+      "path": "portable-storage-image-admission-unit-001.trx",
+      "originalSha256": "6922C232AD69AF19DB871FEE75AEBF2BF472192D3BFF59E3B500B1CEF05821E9",
+      "sha256": "67832C86043ACC3ACDFC051E91AE2DC5BC86914FDFA71F4229F82B10F7577253"
+    },
+    {
+      "path": "portable-storage-stream-cold-conflicts-unit-002.trx",
+      "originalSha256": "9EC895E11663535C5B9E8131DE7501B078A92CF390FB3AC76BC7964D66901AA8",
+      "sha256": "8BF6C8BC740867CA7338EEB404FCF91C0DB763BDFDCBDB8768CDC7F7DB1562F6"
+    },
+    {
+      "path": "portable-storage-stream-generation-unit-003.trx",
+      "originalSha256": "01A7D94DEC62AB34939A3DE8C2E6C0B90E7A6433A85F0E908414129B3C96827C",
+      "sha256": "BFE01C6C5E7FA56E73C7177E8C89A456013A69D237DC2A9044AD60672F7C65E6"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "A1110E5ACCE692A07268527F6701F133D92F70A9DB8F62EB91A9B0531FE27126",
+      "sha256": "305BBBA05ABB7D32428721ED731BF08A6F2F94DBD9435DE23A744E6278DC3D33"
+    }
+  ]
+}
