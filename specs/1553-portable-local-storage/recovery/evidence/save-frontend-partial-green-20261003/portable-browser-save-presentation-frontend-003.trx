@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun>
+  <Results>
+    <UnitTestResult testId="B2C401B447E40C5A7A871052792276396D9AE83FF1C8A9B5735CB517659F6008" testName="BookOfEternityClient.WebFrontend/test/browserSaveContinuation.test.ts(actual browser save handler preserves outcomes and stops continuation retains Committed from an HTTP failure and stops further actions and refresh)" outcome="Passed" />
+    <UnitTestResult testId="99089A50638735B32727BD68C7F72D7FACCD10A653DF96FEEC89505DF5AC0D29" testName="BookOfEternityClient.WebFrontend/test/browserSaveContinuation.test.ts(actual browser save handler preserves outcomes and stops continuation retains Uncertain from an HTTP failure and stops further actions and refresh)" outcome="Passed" />
+    <UnitTestResult testId="4011CA201F7B6C6DE29668B0E89D02F60BD7B009582A3E767F5AF6A91B4D5A73" testName="BookOfEternityClient.WebFrontend/test/browserSaveContinuation.test.ts(actual browser save handler preserves outcomes and stops continuation keeps the known created destination when actual post-save refresh fails)" outcome="Passed" />
+    <UnitTestResult testId="6F623857F76256FE1169A04AF18F48BE1E17996FB4D03A40BF6D31315AB9A965" testName="BookOfEternityClient.WebFrontend/test/browserSaveContinuation.test.ts(actual browser save handler preserves outcomes and stops continuation latches a lost save response after the original settings view has unmounted)" outcome="Passed" />
+    <UnitTestResult testId="56592FFE31CF89D646DF5A048BC50FD2701130DD9C646E15A257068AF526774A" testName="BookOfEternityClient.WebFrontend/test/browserSaveContinuation.test.ts(actual browser save handler preserves outcomes and stops continuation preserves the committed identity and stops after real loadShellState all-network results)" outcome="Passed" />
+    <UnitTestResult testId="7429924481FFB808CB677E662DA45FBCC05A02DE408A1B45FD3533AFC46A67AD" testName="BookOfEternityClient.WebFrontend/test/browserSaveContinuation.test.ts(actual browser save handler preserves outcomes and stops continuation preserves the committed identity and stops after real loadShellState menu-http results)" outcome="Passed" />
+    <UnitTestResult testId="7500A4BAF43285060C9E8AB970A8DB64BD2B713E8AD28280B1119D1A91E4309A" testName="BookOfEternityClient.WebFrontend/test/browserSaveContinuation.test.ts(actual browser save handler preserves outcomes and stops continuation uses real refreshed save identity to confirm continuation)" outcome="Passed" />
+    <UnitTestResult testId="53A386C3F58EED10EF1EAE94F04FD46F63E5B6448323D2D3FB7E7130C0249C0A" testName="BookOfEternityClient.WebFrontend/test/browserSaveContinuation.test.ts(actual browser save handler preserves outcomes and stops continuation uses real refreshed save identity to stop continuation)" outcome="Passed" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest id="B2C401B447E40C5A7A871052792276396D9AE83FF1C8A9B5735CB517659F6008" storage="category-vitest" />
+    <UnitTest id="99089A50638735B32727BD68C7F72D7FACCD10A653DF96FEEC89505DF5AC0D29" storage="category-vitest" />
+    <UnitTest id="4011CA201F7B6C6DE29668B0E89D02F60BD7B009582A3E767F5AF6A91B4D5A73" storage="category-vitest" />
+    <UnitTest id="6F623857F76256FE1169A04AF18F48BE1E17996FB4D03A40BF6D31315AB9A965" storage="category-vitest" />
+    <UnitTest id="56592FFE31CF89D646DF5A048BC50FD2701130DD9C646E15A257068AF526774A" storage="category-vitest" />
+    <UnitTest id="7429924481FFB808CB677E662DA45FBCC05A02DE408A1B45FD3533AFC46A67AD" storage="category-vitest" />
+    <UnitTest id="7500A4BAF43285060C9E8AB970A8DB64BD2B713E8AD28280B1119D1A91E4309A" storage="category-vitest" />
+    <UnitTest id="53A386C3F58EED10EF1EAE94F04FD46F63E5B6448323D2D3FB7E7130C0249C0A" storage="category-vitest" />
+  </TestDefinitions>
+  <ResultSummary>
+    <Counters total="8" executed="8" passed="8" failed="0" />
+  </ResultSummary>
+</TestRun>

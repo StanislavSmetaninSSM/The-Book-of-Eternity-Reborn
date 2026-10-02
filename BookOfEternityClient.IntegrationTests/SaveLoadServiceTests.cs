@@ -19,6 +19,7 @@ public sealed class SaveLoadServiceTests : IDisposable
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
     private readonly SaveLoadService _service;
+    private readonly PortableSaveFixture.CaptureLogger _serviceLogger = new();
 
     public SaveLoadServiceTests()
     {
@@ -68,7 +69,7 @@ public sealed class SaveLoadServiceTests : IDisposable
         var settings = new GameSettings();
         var stateManager = new StateManager(_fs, settings, NullLogger<StateManager>.Instance);
         stateManager.RefreshGameStateAsync().GetAwaiter().GetResult();
-        _service = new SaveLoadService(_fs, stateManager, NullLogger<SaveLoadService>.Instance);
+        _service = new SaveLoadService(_fs, stateManager, _serviceLogger);
     }
 
     [Fact]
@@ -2381,6 +2382,12 @@ public sealed class SaveLoadServiceTests : IDisposable
         Assert.Equal(1, openCount);
     }
 
+    /// <summary>
+    /// Verifies that load repairs the client-owned player profile under its held publication authority.
+    /// </summary>
+    /// <returns>
+    /// A task completing after the load decision, repaired profile and bounded completion time are verified.
+    /// </returns>
     [Fact]
     public async Task LoadGameAsync_RepairsClientOwnedProfileMirrorWithoutReacquiringCanonicalLease()
     {
@@ -2389,8 +2396,11 @@ public sealed class SaveLoadServiceTests : IDisposable
             await WriteStalePlayerSoulProfileArchiveAsync(archive);
 
         var stopwatch = Stopwatch.StartNew();
-        Assert.True(await _service.LoadGameAsync(archivePath));
+        var loaded = await _service.LoadGameAsync(archivePath);
         stopwatch.Stop();
+        Assert.True(loaded,
+            $"LoadGameAsync returned {loaded} after {stopwatch.Elapsed}." + Environment.NewLine +
+            string.Join(Environment.NewLine, _serviceLogger.Errors.Select(error => error.ToString())));
 
         Assert.True(stopwatch.Elapsed < TimeSpan.FromSeconds(5), $"Load took {stopwatch.Elapsed}.");
         using var doc = JsonDocument.Parse(

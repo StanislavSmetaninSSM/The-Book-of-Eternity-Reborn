@@ -211,10 +211,18 @@ await scenario('shared refresh checks optional owner after asynchronous reads be
   const hook = readFileSync(join(root, 'src', 'hooks', 'useShellState.ts'), 'utf8');
   const source = readFileSync(join(root, 'src', 'hooks', 'loadShellState.ts'), 'utf8');
   assert(hook.includes('const publicationOwner = useRef(0)') && hook.includes('return loadShellState(browserApi, setShellState, publicationOwner, advancedEnabled, isCurrent)'), 'Hook does not use the tested shared publication owner.');
+  assert(hook.includes('return refreshShellAfterSave(browserApi, setShellState, publicationOwner, advancedEnabled, createdSaveId, isCurrent)'), 'Save confirmation no longer shares the ordinary refresh publication owner.');
   const context = readFileSync(join(root, 'src', 'context', 'ShellContext.tsx'), 'utf8');
   assert(context.includes('loadBrowserState: (isCurrent?: () => boolean) => Promise<void>'), 'Context type drops the optional refresh owner.');
-  assert(context.includes('const { shellState, loadBrowserState } = useShellState(advancedEnabled);') &&
-    context.includes('    loadBrowserState\n  }),'), 'Context no longer directly forwards the owned refresh function.');
+  assert(/loadBrowserState:\s*loadBrowserStateCore/.test(context) && context.includes('= useShellState(advancedEnabled)'), 'Context no longer obtains the tested owned refresh function.');
+  const wrapperStart = context.indexOf('const loadBrowserState = useCallback');
+  const wrapperEnd = context.indexOf('}, [loadBrowserStateCore]);', wrapperStart);
+  assert(wrapperStart >= 0 && wrapperEnd > wrapperStart, 'Context does not retain its owned ordinary refresh wrapper.');
+  const wrapper = context.slice(wrapperStart, wrapperEnd).replace(/\s+/g, ' ');
+  assert(wrapper.includes('await saveContinuationLatch.current.runIfAllowed(() => loadBrowserStateCore('), 'A save continuation stop does not fence ordinary refresh dispatch.');
+  assert(wrapper.includes('() => !saveContinuationLatch.current.isBlocked() && (isCurrent?.() ?? true)'), 'Wrapped refresh drops either caller response ownership or the save stop before publication.');
+  const providedValue = context.slice(context.indexOf('const value = useMemo<ShellContextValue>'), context.indexOf('}), [', context.indexOf('const value = useMemo<ShellContextValue>')));
+  assert(/\bloadBrowserState\s*,/.test(providedValue), 'Context no longer provides the guarded owned refresh wrapper to consumers.');
   assert(hook.includes('isCurrent: () => boolean = () => true'), 'Refresh lacks optional response ownership.');
   const readIndex = source.indexOf('const results = await Promise.allSettled');
   const errorIndex = source.indexOf("status: 'error'");

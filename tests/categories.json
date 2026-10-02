@@ -2,6 +2,35 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-save-original-load",
+      "responsibility": "Preserved original load profile repair succeeds under its own physical transaction and refuses replacement of its exact published file authority after ordinary save refresh cutover.",
+      "excludes": "Full load matrix, portable load implementation, ordinary SaveGame and Linux execution.",
+      "changeHints": ["BookOfEternityClient/Services/SaveLoadService.cs", "BookOfEternityClient/Core/StateManager.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": true },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "integration", "tests": [
+        "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_RepairsClientOwnedProfileMirrorWithoutReacquiringCanonicalLease",
+        "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_ProfileRepairRequiresExactPublishedFileAuthority"
+      ] }]
+    },
+    {
+      "id": "portable-save-profile-consumers",
+      "responsibility": "Existing StateManager consumers retain leased profile-mirror repair, player authority and rejection of an unleased mirror API.",
+      "excludes": "Whole aggregate state, original Load and gameplay lifecycle.",
+      "changeHints": ["BookOfEternityClient/Core/StateManager.cs", "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": true },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "unit", "tests": [
+        "BookOfEternityClient.Tests.StateManagerTests.AfterlifeEntityProfileState_DoesNotExposeUnleasedCanonicalMirrorWrite",
+        "BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_PlayerSoulProfileAuthorityMirror_RepairsStaleAutoProgression",
+        "BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_ProfileMirrorReadModifyWrite_HoldsOneCanonicalLease"
+      ] }]
+    },
+    {
       "id": "portable-engine-save-presentation",
       "responsibility": "Real console manual save outcomes and agent-console diagnostics retain committed follow-up and distinguish existing uncertainty without false non-application or replay promises.",
       "excludes": "Autosave accepted-turn continuation, browser, load and native Linux acceptance.",
