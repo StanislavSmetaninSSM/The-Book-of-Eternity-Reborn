@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "issue": 1553,
   "task": "T032-A1-CREATE",
-  "status": "One ordinary behavior case passed; ownership audit and coordinator-owned independent review pending. Full T032-A1 unaccepted.",
+  "status": "One ordinary behavior case and zero-test ownership audit passed; coordinator-owned independent review/final restoration pending. Full T032-A1 unaccepted.",
   "source": {
     "testedSourceCommit": "2b757469fd3f3596c4e32006be1ecbbdbdc59cb5",
     "baseCommit": "c94469e8c5bb80072020001182085066589d6dd5",
@@ -85,7 +85,9 @@
   },
   "commands": {
     "plan-only": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category portable-save-create-only-adapter -PlanOnly -Parallelism 1",
-    "run": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category portable-save-create-only-adapter -Parallelism 1 -NoBuild"
+    "run": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category portable-save-create-only-adapter -Parallelism 1 -NoBuild",
+    "integration-build": "dotnet build BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj --verbosity minimal -p:GenerateDocumentationFile=true -p:NoWarn=1591",
+    "audit": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild"
   },
   "buildReuse": "Fresh successful unit build in PlanOnly; unchanged source/runtime/catalog/selection reused once for the sole behavior run. Zero tests executed by PlanOnly.",
   "environment": {
@@ -250,6 +252,73 @@
         "Failed": 0
       },
       "DuplicateTests": []
+    },
+    "audit": {
+      "Categories": [
+        null
+      ],
+      "Reasons": [],
+      "DiscoveryOnly": true,
+      "PlanOnly": false,
+      "Revision": {
+        "Head": "4d312a62cff53963ace68385307250620061e321",
+        "WorkingTreeFingerprint": "D4149930A40D5D13257570B3CDC417DC3B00D1172FF39099F552795E4C8E34EA",
+        "ChangedFiles": 2
+      },
+      "CatalogAudit": {
+        "Valid": true,
+        "Methods": 10462,
+        "Categories": 175,
+        "Unmapped": [],
+        "StaleSelectors": []
+      },
+      "CategoryResults": [],
+      "AdapterResults": [],
+      "PhaseResults": [
+        {
+          "Name": "Revision",
+          "Seconds": 0.0501676,
+          "Completed": true
+        },
+        {
+          "Name": "Changed-paths",
+          "Seconds": 0.0087632,
+          "Completed": true
+        },
+        {
+          "Name": "New-paths",
+          "Seconds": 0.0148254,
+          "Completed": true
+        },
+        {
+          "Name": "Runtime-cleanup",
+          "Seconds": 0.0068425,
+          "Completed": true
+        }
+      ],
+      "Strategy": "SelectedCategories",
+      "TimeoutMinutes": 10,
+      "WallTime": "00:00:07.2951308",
+      "ExitCode": 0,
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "RuntimeCleanup": null,
+      "Selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "DuplicateTests": []
     }
   },
   "actualCases": [
@@ -341,6 +410,42 @@
       "sanitizedSha256": "b1e6a3076df9e77c5a6b7dbafd56fe2b7139e47b7fe228dcc9a33d462405964b",
       "originalBytes": 3642,
       "sanitizedBytes": 3513
+    },
+    {
+      "file": "audit/summary.json",
+      "originalSha256": "46569d2984f87f92feddccb97e230ad85cb9d475b09844a53455a0473649068f",
+      "sanitizedSha256": "46569d2984f87f92feddccb97e230ad85cb9d475b09844a53455a0473649068f",
+      "originalBytes": 1405,
+      "sanitizedBytes": 1405
+    },
+    {
+      "file": "audit/catalog-audit.json",
+      "originalSha256": "cc5695541365da96b20c54d5cdb8bd7f1798a9f57195a0fe0ab065eb7f72cfed",
+      "sanitizedSha256": "cc5695541365da96b20c54d5cdb8bd7f1798a9f57195a0fe0ab065eb7f72cfed",
+      "originalBytes": 103,
+      "sanitizedBytes": 103
+    },
+    {
+      "file": "audit/Build-integration.log",
+      "originalSha256": "851bb924ae65900f06a98e6ad4185d5489de69dabd42d6b1651b8fd34becc148",
+      "sanitizedSha256": "baaa0e19262c550b133f1239883cab09ec1762b64fe62717cc624b50e6df4f08",
+      "originalBytes": 2802,
+      "sanitizedBytes": 1986
+    },
+    {
+      "file": "audit/console.log",
+      "originalSha256": "793b9bed85a0c95d873a1cf4200717c8a825d25a2a6c4eebe9e3e18bd83f35c1",
+      "sanitizedSha256": "99337775d87c591e394041d0e599d28d5316b5d2eb75980c0f65554a848a6f86",
+      "originalBytes": 748,
+      "sanitizedBytes": 646
+    },
+    {
+      "file": "audit/dotnet-test.log",
+      "originalSha256": "4f70845b89173e5cf5359f01792e29195f92e5c00e50d5b1af29eec767da8d12",
+      "sanitizedSha256": "d5e51dbf9237ea6aaae42ad836bcf776e49d183d89ab02f120687940ffd30227",
+      "originalBytes": 2893190,
+      "sanitizedBytes": 2892986,
+      "contentNotEmbedded": "Full unit/integration discovery inventories; complete ownership summary, audit JSON and compact console log preserved."
     }
   ],
   "sanitization": "Replace only current repo/toolchain absolute paths and host name with role tokens; preserve original hashes; all stored JSON and XML TRX parsed. Full large discovery-inventory logs have original/sanitized hashes, with compact console logs preserved.",
@@ -349,5 +454,18 @@
     "No production edit, fabricated RED, injected failure, crash/interruption, malformed evidence, resource or memory workload, native stream-lifetime check, browser/provider/audio/clipboard/security probe or broad suite.",
     "Historical v1 two-case source/evidence is unchanged and was not rerun.",
     "Full T032-A1, separate-process v2 interruption, large-before restoration, resource envelope, remaining adapter/generation boundaries, Windows stream lifetime, SaveGame caller cutover and end-to-end game remain open."
-  ]
+  ],
+  "auditBuild": {
+    "sourceCommit": "4d312a62cff53963ace68385307250620061e321",
+    "exitCode": 0,
+    "errors": 0,
+    "warnings": 3,
+    "warningCodes": [
+      "CS1587"
+    ],
+    "msbuildElapsed": "00:02:21.59",
+    "testsExecuted": 0,
+    "reuse": "Built only the missing integration project for catalog discovery; existing fresh unit build reused. Runtime/test/catalog identities equal behavioral source 2b757469."
+  },
+  "auditInterpretation": "175 owners and 10462 method/file identities, no unmapped/stale selectors, zero tests. Selection.Complete=false is expected for discovery only, not a behavioral pass."
 }
