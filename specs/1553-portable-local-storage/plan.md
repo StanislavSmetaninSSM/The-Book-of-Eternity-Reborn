@@ -27,7 +27,7 @@ dependencies are already installed; unchanged package/lock identities are verifi
 
 | Bounded command group | Current result and scope |
 | --- | --- |
-| consumer-contracts + profile-consumers | Pending; 23 formal integration cases contain14 real bodies +9 Windows-only no-ops; profile3 adds3 real bodies. Five portable static counterparts are already accepted and are not repeated. |
+| consumer-contracts + profile-consumers | [Preserved partial](recovery/evidence/save-linux-consumer-preparation-failure-20261002/manifest.json):22/23 formal pass in20.0089718s =13 real pass +9 Windows-only no-ops;1 fixture-preparation failure, profile3 unrun. Five portable static counterparts already accepted, not repeated. |
 | browser-save-creation + engine-save-presentation | Pending; real backend/manual console/agent-console boundary and exact outcomes. |
 | browser-save-presentation + settings-notices + settings-consumers + shell-types | Pending; Node scenarios, adapter cases, Vitest and pure typecheck remain separate; required production frontend build/typecheck included. |
 | engine-save-player | Pending separate command,2 real accepted-state/save-continuation cases. |
@@ -46,7 +46,7 @@ state must be reached for an engine result to qualify.
 
 WIP; remaining consumer qualification and independent review pending. Full T032-A1/A2/A3,
 T032-A/T031/T032, live clients, real GM/gameplay, B4/B5 and full platform acceptance remain
-open. No GM-authored contract change. Next: exact PlanOnly then group1 execution.
+open. No GM-authored contract change. Group1 failure is before the save call: synthetic stale browser marker setup uses the original descriptor-bound create-only writer on Linux (SaveLoadServiceTests.cs:590), raising PlatformNotSupportedException. Ordinary admission is not reached. Exact stack and unchanged source identities are preserved; this does not establish a save regression. Next: bounded fixture correction or separate dependency disposition, then remaining groups.
 
 
 ### Final GitHub restoration and writer handoff — 2026-10-02 17:58 UTC

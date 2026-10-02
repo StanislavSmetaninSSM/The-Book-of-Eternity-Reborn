@@ -1,0 +1,151 @@
+{
+  "Categories": [
+    "portable-save-consumer-contracts",
+    "portable-save-profile-consumers"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "06025c16eb0a48067b12aa63b3b1cf88119b8bc5",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 10.6714517,
+  "Descriptors": [
+    {
+      "Name": "portable-save-consumer-contracts-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-save-consumer-contracts",
+      "Categories": [
+        "portable-save-consumer-contracts"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_CompletionRejectsLinkAddedAfterConsumption|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_RejectsHardLinkedSaveArchive|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.AutosaveAsync_CleanupWaitsForCanonicalWriteLeaseAfterSavePublication|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.AutosaveAsync_DirectoryReplacedAfterEnumerationCannotDeleteOutsideFile|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_OrdinaryMetadataAcceptsHardLinkWithoutRetry|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_RejectsOversizedMetadataThroughTrustedBudget|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_RetriesWhenSaveMetadataIsTemporarilyLocked|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_DoesNotArchiveDirectoryJunctionTarget|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_EmptyMandatoryGameStateRootFailsClosed|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ExcludesLocalUiLockNamespaceDescendants|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_FailureBeforeCommitLeavesNoPartialSaveOrTemporaryFile|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_InvalidSoulStateRootDoesNotPublishArchive|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_InvalidUtf8CanonicalResourceInputFailsClosed|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_MissingMandatoryGameStateRootFailsClosed|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ParentReplacedByJunctionBeforeReadFailsClosed|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_RegularFileAtMandatoryGameStateRootFailsClosed|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ReparsePointAtMandatoryGameStateRootFailsClosed|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_RetainedBrowserRollbackEvidenceBlocksOrdinaryAdmission|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_RuntimeStagingParentSwapCannotCreateExternalArchive|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_SaveDirectoryReplacedAtCommitCannotPublishOutsideSession|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_SelfConsistentUnknownResourceOwnerIsRejected|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_WaitsForCanonicalWriteLeaseBeforeReadingSessionSnapshot|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_WritesIntegrityManifestCoveringEveryPayloadEntry",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 6,
+      "EstimatedCases": 23,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_CompletionRejectsLinkAddedAfterConsumption",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_RejectsHardLinkedSaveArchive",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.AutosaveAsync_CleanupWaitsForCanonicalWriteLeaseAfterSavePublication",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.AutosaveAsync_DirectoryReplacedAfterEnumerationCannotDeleteOutsideFile",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_OrdinaryMetadataAcceptsHardLinkWithoutRetry",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_RejectsOversizedMetadataThroughTrustedBudget",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_RetriesWhenSaveMetadataIsTemporarilyLocked",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_DoesNotArchiveDirectoryJunctionTarget",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_EmptyMandatoryGameStateRootFailsClosed",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ExcludesLocalUiLockNamespaceDescendants",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_FailureBeforeCommitLeavesNoPartialSaveOrTemporaryFile",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_InvalidSoulStateRootDoesNotPublishArchive",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_InvalidUtf8CanonicalResourceInputFailsClosed",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_MissingMandatoryGameStateRootFailsClosed",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ParentReplacedByJunctionBeforeReadFailsClosed",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_RegularFileAtMandatoryGameStateRootFailsClosed",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ReparsePointAtMandatoryGameStateRootFailsClosed",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_RetainedBrowserRollbackEvidenceBlocksOrdinaryAdmission",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_RuntimeStagingParentSwapCannotCreateExternalArchive",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_SaveDirectoryReplacedAtCommitCannotPublishOutsideSession",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_SelfConsistentUnknownResourceOwnerIsRejected",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_WaitsForCanonicalWriteLeaseBeforeReadingSessionSnapshot",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_WritesIntegrityManifestCoveringEveryPayloadEntry",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-save-profile-consumers-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-save-profile-consumers",
+      "Categories": [
+        "portable-save-profile-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.StateManagerTests.AfterlifeEntityProfileState_DoesNotExposeUnleasedCanonicalMirrorWrite|FullyQualifiedName=BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_PlayerSoulProfileAuthorityMirror_RepairsStaleAutoProgression|FullyQualifiedName=BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_ProfileMirrorReadModifyWrite_HoldsOneCanonicalLease",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.StateManagerTests.AfterlifeEntityProfileState_DoesNotExposeUnleasedCanonicalMirrorWrite",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_PlayerSoulProfileAuthorityMirror_RepairsStaleAutoProgression",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_ProfileMirrorReadModifyWrite_HoldsOneCanonicalLease",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
