@@ -19,8 +19,8 @@ Windows evidence dates and results below are retained as recorded.
 
 The returned evidence audit checked 105 stored hashes and all 24 source identities;
 independent Astra XHigh accepted the bounded evidence/scope check. No implementation
-change is needed or claimed by this preparation checkpoint. The native Linux runs
-are **unrun**. Official toolchain setup now reports verified package hashes and
+change is needed or claimed by this preparation checkpoint. At the initial WIP checkpoint the native Linux runs
+were **unrun**; the first completed result is recorded below. Official toolchain setup reports verified package hashes and
 SDK 10.0.401, .NET/ASP.NET 8.0.31, PowerShell 7.6.6 and Spec Kit 1.0.13; ordinary
 network timeouts were resolved by bounded same-source retry. Actual startup
 versions and run-specific mutable paths are checked before runner startup. Setup
@@ -47,8 +47,31 @@ Cold and generation/admission/FIFO are the new native prerequisites. Actual
 current-producer resource, caller, engine/frontend and wider client/platform work
 remain separate, open blocks. Full T032-A1/T032-A/T031/T032 remain open. No GM
 payload/gameplay contract changes, new gameplay examples or full-suite execution
-are implied. Next: verify toolchain, run the fresh cold PlanOnly/build, inspect
-selection, then execute the 16-case cold cohort and save its exact sanitized proof.
+are implied.
+### First native Linux cold result — 2026-10-02 16:35 UTC
+
+Both commands tested clean normal source `e5a009c3078934d7b7cd98d894c1fd4d2d3bab59`,
+tree `b240460251ca3d463c8641a1b4bc27399b4f808f`, with unchanged runtime/tests.
+The [fresh PlanOnly build](recovery/evidence/stream-linux-cold-plan-20261002/manifest.json)
+completed in **4:45.5768465**, exit 0, planning exactly three descriptors/16 cases
+and executing zero. The subsequent [native Linux cold cohort](recovery/evidence/stream-linux-cold-green-20261002/manifest.json)
+used that fresh build with `-NoBuild`, passed **16/16** in **34.1109435 seconds**,
+exit 0: nine publication cuts, two interrupted 256 MiB before-image rollback cuts,
+and five byte/type/link/generation conflict or committed-cleanup cases. All three
+descriptors completed with no failed/skipped/duplicate/unrun cases or timeout.
+
+The three TRX files retain 44 actual child reports: 19 intended abrupt exits at
+asserted phase/member indices, 21 successful canonical acquisitions, and four
+expected evidence-preserving conflict refusals. Exact before/after/absence,
+generation, full library and outside hard-link sentinel assertions passed.
+Owned process/runtime cleanup completed and the run-owned temp root retained zero
+`boe-*` fixture/runtime directories. This is process-crash evidence only.
+Official toolchain provenance, source identities and original/stored artifact
+hashes are in the bundles; mutable CLI/XDG/NuGet/temp state was unique to this block,
+HOME/CODEX_HOME were unchanged. Evidence publication/review remains distinct from
+the tested source. Next: save this result, then qualify the separate native Linux
+generation6/admission3/FIFO1 cohort on unchanged fresh binaries. Resource/callers
+and full T032-A1 acceptance remain open.
 
 ## Current Windows/Linux caller checkpoint — 2026-10-03
 
