@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "issue": 1553,
   "task": "T032-A1-CREATE main source/evidence integration",
-  "status": "WIP; independent main integration review and fresh GitHub-only restoration pending",
+  "status": "Frozen main source/evidence integration passed independent GPT-6 Astra XHigh review; GitHub-only restoration verified. Coordinator accepted the bounded frozen import and factual handoff; this supplement records its proof and broader save gates remain open.",
   "baseline": {
     "remoteBase": "ebd808e93ea60b5434396445b18738ae22f09d05",
     "rawTree": "8a6ce4c65acc2bb8d71b5d017084f4f743652da0",
@@ -283,5 +283,17 @@
     "Only T032-A1-CREATE additionally closes on accepted isolated evidence; T032-A1-V1 remains accepted, full T032-A1/T032-A/T031/T032/caller/cold/resource/native gates remain open.",
     "One active three-path main carrier; no isolated carrier is imported or applied.",
     "No merge, force push, deletion, issue closure or credential/certificate/security-state change."
-  ]
+  ],
+  "mainReview": {
+    "reviewer": "Independent GPT-6 Astra XHigh",
+    "reviewedCommit": "b2111b7cd0f66414d69af3d06751f617d8285948",
+    "specCompliance": "PASS",
+    "quality": "PASS",
+    "actionableFindings": 0,
+    "reviewReportedUtc": "2026-10-02T09:08:48Z",
+    "coordinatorDisposition": "Accepted the bounded main source/evidence import and factual handoff; full save and prerequisite gates remain open.",
+    "scope": "Frozen b2111b7c only. The subsequent proof/status supplement receives its own narrow readback; no runtime rerun."
+  },
+  "restorationProof": "create-only-main-restoration.json",
+  "restorationProofSha256": "8cd0b2fc38f852838806a4ad6acedbc451ac6d66657866f9a52bbd15bf7d176a"
 }
