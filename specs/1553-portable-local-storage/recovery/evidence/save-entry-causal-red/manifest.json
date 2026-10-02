@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "Head": "1789cd32fc936c2abb7f7906fd782f6c92f7eb83",
+    "WorkingTreeFingerprint": "F52F773C87B6AD45D0A36690DD3AB4D02BC8C78B1B06B64460DE4DAD3FE39F93",
+    "ChangedFiles": 1
+  },
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category portable-save-entry -Parallelism 1",
+  "summary": {
+    "ExitCode": 1,
+    "WallTime": "00:02:01.0257523",
+    "Tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 0,
+      "Failed": 2
+    },
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "DuplicateTests": []
+  },
+  "artifacts": [
+    {
+      "file": "summary.json",
+      "originalSha256": "26221a1e95691ee670a7b82858da89e0b7ad196046dadb69616d031ba94b2ffa",
+      "sanitizedSha256": "26221a1e95691ee670a7b82858da89e0b7ad196046dadb69616d031ba94b2ffa"
+    },
+    {
+      "file": "plan.json",
+      "originalSha256": "3d337898a9b34ad25ea7060a000d287704eca02bce5fd042e4343a1937dbaa41",
+      "sanitizedSha256": "3d337898a9b34ad25ea7060a000d287704eca02bce5fd042e4343a1937dbaa41"
+    },
+    {
+      "file": "portable-save-entry-unit-001.trx",
+      "originalSha256": "dc90efa4a0305bc92d048ac47c81415fafc9209a178696a63403e025d5846e30",
+      "sanitizedSha256": "dcd32d9229efc102161262304136c22709ab5bf45f2b1d0b20d6deb13e59db14"
+    }
+  ],
+  "sanitization": "Role-based path tokens without angle brackets; all sanitized TRX parsed as XML before publication. Raw hashes retain original provenance.",
+  "packet": {
+    "schemaVersion": 1,
+    "baseCommit": "5e8a60784f5674c1e4f10e530639850922fc9c74",
+    "patchFile": "save-creation-pending.patch",
+    "patchBytes": 2413,
+    "patchSha256": "dab38c54b198a1b4e14905fae62e67319d45bbf5412f557dcde07446b6524aba",
+    "entries": [
+      {
+        "path": "tests/categories.json",
+        "beforeBlob": "6bbd1c6f0e8a087a7c92df4cce0a6e798bcfa4e5",
+        "afterBlob": "7eb6eecf6dcd88f63a6eaf85b4c617b6bf7bca40",
+        "beforeSha256": "414e68f9da3eb09121c430204bf04f199dba5d27d2b9065ab404d995ad919e08",
+        "afterSha256": "8dae22aff29bfde167011e1d16b817159e211cb1fc126f615a8db5a7d31ebecd"
+      }
+    ],
+    "appliedSourceTree": "52aef6d5a7edd9f0ad0cde42ea0f718d9c4caad4",
+    "comparisonExcludes": [
+      "specs/1553-portable-local-storage/recovery/save-creation-pending.patch",
+      "specs/1553-portable-local-storage/recovery/save-creation-pending.json"
+    ],
+    "scope": "T032-A ordinary save creation; current plan records exact execution and remaining scope"
+  }
+}
