@@ -1,26 +1,26 @@
 {
   "schemaVersion": 1,
-  "baseCommit": "050306c225e1ece45d5547fa55f62e2dfae5aed1",
+  "baseCommit": "fcd71676c13caaf735f48116af658d009448fc40",
   "patchFile": "save-creation-pending.patch",
-  "patchBytes": 7384,
-  "patchSha256": "a17620f49d7da4cc2949c2e50b7d653d938e669146cafd4b39b4ec28fa844826",
+  "patchBytes": 8872,
+  "patchSha256": "fd3f6fdb3f736330d43480dbcb61b9e81790d1275480b7c53d968553f542693c",
   "entries": [
     {
       "path": "specs/1553-portable-local-storage/plan.md",
       "beforeBlob": "ce8629d1c8a8da9a464f082e477b05803cd6b578",
-      "afterBlob": "82e5629879c7ec1dead4e7172039e094b994b1d7",
+      "afterBlob": "ca4a641a158e7a19212e87c4c3ca70eaa6221628",
       "beforeSha256": "4fe9cd4bccd2c85bab4e5cd7a0df47157e1c3d2366b6bd80de085de0c25db4bf",
-      "afterSha256": "709ba982f524abddb24350832097a91969df0eeb61498dc2b4fc2d5f13bd15fb"
+      "afterSha256": "00e9b1734bfd1bc8934938749550a899ef19460e7350302ce36db8ac55148db1"
     },
     {
       "path": "tests/categories.json",
       "beforeBlob": "6bbd1c6f0e8a087a7c92df4cce0a6e798bcfa4e5",
-      "afterBlob": "45029c18688ac755a0293609bb88d34455c07c3e",
+      "afterBlob": "15baf6e54171ec75cba96caceffda864cbbe787a",
       "beforeSha256": "414e68f9da3eb09121c430204bf04f199dba5d27d2b9065ab404d995ad919e08",
-      "afterSha256": "1af0e0402bdb77675ba68a20ca4690e2b33034811d9a7ff68d67c9c19c8ab790"
+      "afterSha256": "67ce98b124c6bee052f099881681f4e8baa7e76084a7016678599f877c949f92"
     }
   ],
-  "appliedSourceTree": "75bca8cf104c33716b55499d8e415b0e9def5519",
+  "appliedSourceTree": "0f7d9699b20a34b5009aa4e64365bc2f7c901acb",
   "comparisonExcludes": [
     "specs/1553-portable-local-storage/recovery/save-creation-pending.patch",
     "specs/1553-portable-local-storage/recovery/save-creation-pending.json"

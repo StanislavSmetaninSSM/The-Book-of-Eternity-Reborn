@@ -1,8 +1,8 @@
 diff --git a/specs/1553-portable-local-storage/plan.md b/specs/1553-portable-local-storage/plan.md
-index ce8629d1..82e56298 100644
+index ce8629d1..ca4a641a 100644
 --- a/specs/1553-portable-local-storage/plan.md
 +++ b/specs/1553-portable-local-storage/plan.md
-@@ -33,6 +33,10 @@ Initial image launch failed before runner/build/tests due to an owned shallow-fe
+@@ -33,6 +33,12 @@ Initial image launch failed before runner/build/tests due to an owned shallow-fe
  
  Normalized image RED at `52967dc2`: [11/11 intended scaffold failures](recovery/evidence/save-images-normalized-red/manifest.json), 7.2094515 seconds, complete cleanup, unchanged fresh-built C# reused with NoBuild. The image implementation now uses scoped stream capture/SHA and 64 KiB copy/hash, with unchanged absence/empty and independent byte snapshots; GREEN is unrun at this checkpoint. No current caller has been migrated.
  
@@ -10,17 +10,42 @@ index ce8629d1..82e56298 100644
 +
 +The 29-case RED is durably saved at `050306c2` (tested at `00dc36cd`). The shared engine/codec/adapter candidate is now implemented but unrun: same B1 decision phases, v1 byte codec retained, self-contained bounded v2 framing and exact source/generation revalidation. The [recorded codec choices](save-resource-gate.md#t032-a1-implementation-decisions) bound metadata independently from 64-bit image sizes. Run the two current narrow prerequisite owners after this checkpoint; no caller cutover or acceptance claim.
 +
++First shared candidate GREEN tested at `fcd71676`: [40/40](recovery/evidence/save-stream-first-green/manifest.json), fresh build, exit 0, 2:39.0260950 and complete cleanup. The coordinator identified a real source edge: nonmatching frame magic still falls into legacy ReadAllBytes. New four-case dispatch scaffold (unrun here) uses separate 64 MiB-GC/512 MiB-RSS/30-second children and 128 MiB sparse frames, plus a reordered/long-whitespace original-v1 control. This tests format rejection before bulk allocation without changing v1 semantics or product limits. No dispatch fix yet.
++
  ### Subsequent capability and proof boundary
  
  After that gate, use TDD in bounded saved blocks: one held snapshot lease; fully closed/flushed disk archive; generation/absence-checked create-only B1 publication; owned private save-scratch cleanup; validated stream save listing under owned/supplied quiescence before archive interpretation; prepared browser save without a zero-member v6 recorder or nested lease/publication; Task-only ordinary profile-mirror repair while original load retains real receipts; exact created destination and committed/rolled-back/uncertain/follow-up outcomes through console, HTTP/frontend and the three actual autosave callers. Separate pre-save mirror repair remains an explicit prior decision unless a complete coupled set is proven. Post-commit cleanup/logging/owner/menu trouble cannot reverse archive success. Retained debt is classified before normal fencing and blocks retention/compensation/later writes when unresolved.
 diff --git a/tests/categories.json b/tests/categories.json
-index 6bbd1c6f..45029c18 100644
+index 6bbd1c6f..15baf6e5 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -1,6 +1,106 @@
+@@ -1,6 +1,129 @@
  {
    "schemaVersion": 1,
    "categories": [
++    {
++      "id": "portable-storage-stream-dispatch",
++      "responsibility": "T032-A1 bounded cold format dispatch: mutated/unknown large framed journals must reject before the v1 whole-file reader; supported reordered/whitespace v1 evidence still recovers in separate owned processes.",
++      "excludes": "Full v2 resource envelope, general cold crash matrix, save callers and unrelated storage cohorts.",
++      "changeHints": [
++        "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": true
++      },
++      "timeoutMinutes": 3,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.TrustedLocalStreamDispatchTests.*"
++          ]
++        }
++      ]
++    },
 +    {
 +      "id": "portable-storage-stream-publication",
 +      "responsibility": "T032-A1 self-contained v2 framed image publication and canonical adapter: complete decision cuts, strict framing/metadata/regions, active/temp authority, preflight conflicts and explicit v1 controls.",
