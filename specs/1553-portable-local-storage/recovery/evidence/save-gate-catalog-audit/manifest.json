@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "Head": "0ebe3910692d2f7ad2164695621bd5070de09864",
+    "WorkingTreeFingerprint": "F52F773C87B6AD45D0A36690DD3AB4D02BC8C78B1B06B64460DE4DAD3FE39F93",
+    "ChangedFiles": 1
+  },
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog",
+  "summary": {
+    "ExitCode": 0,
+    "WallTime": "00:03:34.0700746",
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "Selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "DuplicateTests": []
+  },
+  "artifacts": [
+    {
+      "file": "summary.json",
+      "originalSha256": "5f9e176f5eaf247ce5a09909b30fb682370df3b4c3a78f9974d4ef907bf3280a",
+      "sanitizedSha256": "5f9e176f5eaf247ce5a09909b30fb682370df3b4c3a78f9974d4ef907bf3280a"
+    },
+    {
+      "file": "catalog-audit.json",
+      "originalSha256": "86c0fdf8c194e1965d75569c69a1324c760d8e2171fc3d5088244af00cd42d4d",
+      "sanitizedSha256": "86c0fdf8c194e1965d75569c69a1324c760d8e2171fc3d5088244af00cd42d4d"
+    }
+  ],
+  "sanitization": "Role-based path tokens without angle brackets; all sanitized TRX parsed as XML before publication. Raw hashes retain original provenance.",
+  "packet": {
+    "schemaVersion": 1,
+    "baseCommit": "a7709934e070825470857c587f1e585811443c70",
+    "patchFile": "save-creation-pending.patch",
+    "patchBytes": 2413,
+    "patchSha256": "dab38c54b198a1b4e14905fae62e67319d45bbf5412f557dcde07446b6524aba",
+    "entries": [
+      {
+        "path": "tests/categories.json",
+        "beforeBlob": "6bbd1c6f0e8a087a7c92df4cce0a6e798bcfa4e5",
+        "afterBlob": "7eb6eecf6dcd88f63a6eaf85b4c617b6bf7bca40",
+        "beforeSha256": "414e68f9da3eb09121c430204bf04f199dba5d27d2b9065ab404d995ad919e08",
+        "afterSha256": "8dae22aff29bfde167011e1d16b817159e211cb1fc126f615a8db5a7d31ebecd"
+      }
+    ],
+    "appliedSourceTree": "736434e7ec253e5472f880ef519327f80d6359d7",
+    "comparisonExcludes": [
+      "specs/1553-portable-local-storage/recovery/save-creation-pending.patch",
+      "specs/1553-portable-local-storage/recovery/save-creation-pending.json"
+    ],
+    "scope": "T032-A ordinary save creation; current plan records exact execution and remaining scope"
+  },
+  "interpretation": "Discovery-only ownership audit: 170 categories / 10,446 identities, no unmapped or stale selectors; zero tests. Fresh unit and integration builds succeeded. Selection.Complete false is not a missing behavioral descriptor: no execution selection was requested."
+}

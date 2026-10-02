@@ -1,0 +1,11 @@
+{
+  "commit": "0ebe3910692d2f7ad2164695621bd5070de09864",
+  "rawTree": "e93145082e7abe676dc7ca165083a94f8ed1f9c9",
+  "fullAppliedTree": "e2bb62b0d3ca9dd9cde923e3ce5bc6ec2dd61b06",
+  "carrierExcludedTree": "736434e7ec253e5472f880ef519327f80d6359d7",
+  "trackedFiles": 3947,
+  "checkedEvidenceArtifactsExcludingManifests": 12,
+  "parsedTrx": 3,
+  "productionDiffFromAcceptedBase": "",
+  "method": "Fresh GitHub-only shallow clone; clean raw checkout/connectivity checked before one exact patch apply; patch pre/post identities and full restored bytes compared to active source; no builds/tests in restored copy. Initial proof enumeration stopped on Git quoted Unicode filenames and resumed with ls-files -z, without reapplying the patch."
+}
