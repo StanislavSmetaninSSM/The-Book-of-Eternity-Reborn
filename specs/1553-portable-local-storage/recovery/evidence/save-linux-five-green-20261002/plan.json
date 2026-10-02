@@ -1,0 +1,50 @@
+{
+  "Categories": [
+    "portable-save-filesystem-callers"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "f22ea96354f1f18d5a400db01d7c52579b3425d7",
+    "WorkingTreeFingerprint": "300F1BE329683A1247650BC8482E2EE154BD9739ADE728821C2247C73CFBD2DB",
+    "ChangedFiles": 1
+  },
+  "PreparationSeconds": 4.3488861,
+  "Descriptors": [
+    {
+      "Name": "portable-save-filesystem-callers-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-save-filesystem-callers",
+      "Categories": [
+        "portable-save-filesystem-callers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveFilesystemCallerTests.LinkedMandatorySourceRootRejectsSaveWithoutArchiveOrOutsideChanges|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveFilesystemCallerTests.LinkedSourceDescendantIsExcludedFromSuccessfulSave|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveFilesystemCallerTests.PreexistingLinkedExpiredAutosavePreservesCommittedSaveAndOutsideTarget|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveFilesystemCallerTests.PreexistingLinkedManualDestinationRejectsSaveWithoutOutsidePublication|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveFilesystemCallerTests.PublicListingAcceptsPreexistingHardLinkedArchiveWithOneOpen",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveFilesystemCallerTests.LinkedMandatorySourceRootRejectsSaveWithoutArchiveOrOutsideChanges",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveFilesystemCallerTests.LinkedSourceDescendantIsExcludedFromSuccessfulSave",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveFilesystemCallerTests.PreexistingLinkedExpiredAutosavePreservesCommittedSaveAndOutsideTarget",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveFilesystemCallerTests.PreexistingLinkedManualDestinationRejectsSaveWithoutOutsidePublication",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveFilesystemCallerTests.PublicListingAcceptsPreexistingHardLinkedArchiveWithOneOpen",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

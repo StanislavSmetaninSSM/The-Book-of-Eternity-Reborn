@@ -6,6 +6,29 @@
 
 <a id="active-t032-a--ordinary-save-creation"></a>
 
+### Five native Linux static caller checks GREEN — 2026-10-02 17:25 UTC
+
+[Fresh PlanOnly/build](recovery/evidence/save-linux-five-plan-20261002/manifest.json)
+and [five-case runtime](recovery/evidence/save-linux-five-green-20261002/manifest.json)
+used source `f22ea96354f1f18d5a400db01d7c52579b3425d7` plus the exact remotely
+saved catalog patch. Both summaries record one changed catalog and fingerprint
+`300F1BE329683A1247650BC8482E2EE154BD9739ADE728821C2247C73CFBD2DB`.
+The runtime passed **5/5 in 9.0645892 seconds**, exit0, with all bodies executed,
+no skips/failures/duplicates/unrun cases or timeout, complete owned/runtime cleanup
+and zero owned synthetic temp remainders. Linked expired-member selection was
+asserted at the actual retention boundary; committed archive plus failed follow-up,
+no-follow ZIP contents, exact outside/library/generation bytes, mandatory-root
+outcome and one-open hard-link metadata assertions passed. These tests confirm
+already-implemented behavior: no manufactured RED or production fix was needed.
+
+Normal catalog publication is verified at
+`1d329f70bf680819545a0631442cde41f75c5a2d`, tree
+`7c96c09fe0f330bc36e6a73201246649d61f0cb3`; catalog and checkpoint bytes match
+fetched remote objects. The original tested source identity is not relabeled by
+this evidence commit. Next: affected five ordinary caller owners, then separately
+current-producer resource3/fifteen children and discovery-only audit. Independent
+review and complete T032-A1/A2/A3 acceptance remain pending.
+
 ### Caller catalog normal delivery — 2026-10-02 17:23 UTC
 
 The exact five-caller catalog is now normal `tests/categories.json` Git content:
