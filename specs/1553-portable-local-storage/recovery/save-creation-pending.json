@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "baseCommit": "5504396e808160c8f341ccb01b908a766cef2e68",
+  "baseCommit": "ebd808e93ea60b5434396445b18738ae22f09d05",
   "patchFile": "save-creation-pending.patch",
-  "patchBytes": 23634,
-  "patchSha256": "0ab203348fb0f8a828e35b8f06422eda7a70f3c50326aa2a85f95031bbc41618",
+  "patchBytes": 31472,
+  "patchSha256": "14ada12e8c5cb2219116d3e45697229f93747efa4478b1f817911c33d376cdc5",
   "entries": [
     {
       "path": "BookOfEternityClient/Core/FileSystemManager.cs",
@@ -15,22 +15,22 @@
     {
       "path": "specs/1553-portable-local-storage/plan.md",
       "beforeBlob": "9b24d8884c810acc8596ad5eb716f4cc4ff6ff1c",
-      "afterBlob": "07d9d955efc0f89781ac6b42dd80701321a81466",
+      "afterBlob": "171e26e5fe66f0c5a48dbbba863f1d6061b22ce7",
       "beforeSha256": "972f3de4f65dd2e993f38fa1fd4040dd927462d3d170c945236c5f18dd87e2b7",
-      "afterSha256": "507e666e825ef97d8efe17c559682e41a74153d9d10e1d2ae3d6a5f7e0139c26"
+      "afterSha256": "964bead53d0276f969435d40c3a77c7e4072ebf0bc5de64600c8145f8cb45665"
     },
     {
       "path": "tests/categories.json",
       "beforeBlob": "6bbd1c6f0e8a087a7c92df4cce0a6e798bcfa4e5",
-      "afterBlob": "8fe0d7fd7cb35610ce736f637461b4368fd08405",
+      "afterBlob": "57be17a8ee0b004650f79857db7416471f2a3127",
       "beforeSha256": "414e68f9da3eb09121c430204bf04f199dba5d27d2b9065ab404d995ad919e08",
-      "afterSha256": "2b2a212e821199d2f59801f7bbadfc9dd6568c5146e358cdf20c238034a3af06"
+      "afterSha256": "3fe360aa5819a57daba5b76fc0f8e008243087838fee6fd38fccb6fd943cba95"
     }
   ],
-  "appliedSourceTree": "81373d83a984831dda9ab1edd64b1d9dc41c3c71",
+  "appliedSourceTree": "18f3b03959a4345c563787a17926054b7b3790b2",
   "comparisonExcludes": [
     "specs/1553-portable-local-storage/recovery/save-creation-pending.patch",
     "specs/1553-portable-local-storage/recovery/save-creation-pending.json"
   ],
-  "scope": "T032-A main WIP plus accepted isolated T032-A1-V1 source/evidence integration; preserves original three-path packet and unrun scaffold; no execution"
+  "scope": "Preserved complete main T032-A1 WIP plus accepted isolated v1 and create-only source/evidence imports and save continuation handoff; one three-path carrier, no execution"
 }

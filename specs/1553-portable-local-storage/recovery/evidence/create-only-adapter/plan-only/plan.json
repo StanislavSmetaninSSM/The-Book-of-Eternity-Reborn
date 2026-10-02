@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-save-create-only-adapter"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "2b757469fd3f3596c4e32006be1ecbbdbdc59cb5",
+    "WorkingTreeFingerprint": "5263B75F0F6430843DE37AE1A9EE45377060FEF2A47565C3AE8393B0DAEFAA29",
+    "ChangedFiles": 2
+  },
+  "PreparationSeconds": 230.7387333,
+  "Descriptors": [
+    {
+      "Name": "portable-save-create-only-adapter-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-save-create-only-adapter",
+      "Categories": [
+        "portable-save-create-only-adapter"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveCreateOnlyAdapterTests.SecondCreateOfIdenticalZipRejectsWithoutChangingArchiveGenerationOrLibrary",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveCreateOnlyAdapterTests.SecondCreateOfIdenticalZipRejectsWithoutChangingArchiveGenerationOrLibrary",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

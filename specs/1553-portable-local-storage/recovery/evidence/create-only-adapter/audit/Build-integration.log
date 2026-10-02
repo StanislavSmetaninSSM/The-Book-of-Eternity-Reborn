@@ -1,0 +1,19 @@
+  Determining projects to restore...
+  Restored REPO_ROOT/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj (in 23.59 sec).
+  2 of 3 projects are up-to-date for restore.
+REPO_ROOT/BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs(1095,5): warning CS1587: XML comment is not placed on a valid language element [REPO_ROOT/BookOfEternityClient/BookOfEternityClient.csproj]
+REPO_ROOT/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs(1637,5): warning CS1587: XML comment is not placed on a valid language element [REPO_ROOT/BookOfEternityClient/BookOfEternityClient.csproj]
+REPO_ROOT/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.Trade.cs(756,5): warning CS1587: XML comment is not placed on a valid language element [REPO_ROOT/BookOfEternityClient/BookOfEternityClient.csproj]
+  BookOfEternityClient -> REPO_ROOT/BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll
+  BookOfEternityClient.TestSupport -> REPO_ROOT/BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll
+  BookOfEternityClient.IntegrationTests -> REPO_ROOT/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll
+
+Build succeeded.
+
+REPO_ROOT/BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs(1095,5): warning CS1587: XML comment is not placed on a valid language element [REPO_ROOT/BookOfEternityClient/BookOfEternityClient.csproj]
+REPO_ROOT/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs(1637,5): warning CS1587: XML comment is not placed on a valid language element [REPO_ROOT/BookOfEternityClient/BookOfEternityClient.csproj]
+REPO_ROOT/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.Trade.cs(756,5): warning CS1587: XML comment is not placed on a valid language element [REPO_ROOT/BookOfEternityClient/BookOfEternityClient.csproj]
+    3 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:02:21.59

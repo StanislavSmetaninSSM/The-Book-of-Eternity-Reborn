@@ -1,0 +1,37 @@
+  Determining projects to restore...
+  Restored REPO_ROOT/tests/fixtures/PortableStorageCrashHost/PortableStorageCrashHost.csproj (in 52.78 sec).
+  Restored REPO_ROOT/BookOfEternityClient/BookOfEternityClient.csproj (in 7 ms).
+  Restored REPO_ROOT/BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj (in 1.03 min).
+  Restored REPO_ROOT/BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj (in 7 ms).
+REPO_ROOT/BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs(1095,5): warning CS1587: XML comment is not placed on a valid language element [REPO_ROOT/BookOfEternityClient/BookOfEternityClient.csproj]
+REPO_ROOT/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs(1637,5): warning CS1587: XML comment is not placed on a valid language element [REPO_ROOT/BookOfEternityClient/BookOfEternityClient.csproj]
+REPO_ROOT/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.Trade.cs(756,5): warning CS1587: XML comment is not placed on a valid language element [REPO_ROOT/BookOfEternityClient/BookOfEternityClient.csproj]
+  BookOfEternityClient -> REPO_ROOT/BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll
+  BookOfEternityClient.TestSupport -> REPO_ROOT/BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll
+  PortableStorageCrashHost -> REPO_ROOT/tests/fixtures/PortableStorageCrashHost/bin/Debug/net8.0/PortableStorageCrashHost.dll
+REPO_ROOT/BookOfEternityClient.Tests/PortableSessionRootKeyTests.cs(114,41): warning CS8600: Converting null literal or possible null value to non-nullable type. [REPO_ROOT/BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj]
+  BookOfEternityClient.Tests -> REPO_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll
+
+Build succeeded.
+
+REPO_ROOT/BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs(1095,5): warning CS1587: XML comment is not placed on a valid language element [REPO_ROOT/BookOfEternityClient/BookOfEternityClient.csproj]
+REPO_ROOT/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs(1637,5): warning CS1587: XML comment is not placed on a valid language element [REPO_ROOT/BookOfEternityClient/BookOfEternityClient.csproj]
+REPO_ROOT/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.Trade.cs(756,5): warning CS1587: XML comment is not placed on a valid language element [REPO_ROOT/BookOfEternityClient/BookOfEternityClient.csproj]
+REPO_ROOT/BookOfEternityClient.Tests/PortableSessionRootKeyTests.cs(114,41): warning CS8600: Converting null literal or possible null value to non-nullable type. [REPO_ROOT/BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj]
+    4 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:03:47.51
+
+Welcome to .NET 10.0!
+---------------------
+SDK Version: 10.0.401
+
+----------------
+Write your first app: https://aka.ms/dotnet-hello-world
+Find out what's new: https://aka.ms/dotnet-whats-new
+Explore documentation: https://aka.ms/dotnet-docs
+Report issues and find source on GitHub: https://github.com/dotnet/core
+Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli
+--------------------------------------------------------------------------------------
+
