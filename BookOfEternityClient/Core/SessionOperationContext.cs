@@ -1,3 +1,6 @@
+using System.Runtime.ExceptionServices;
+using BookOfEternityClient.Services;
+
 namespace BookOfEternityClient.Core;
 
 internal class SessionReplacedException : Exception
@@ -62,6 +65,28 @@ internal static class SessionOperationContext
             writeLease);
     }
 
+    /// <summary>
+    /// Runs an operation within its generation binding and closes that binding while preserving typed storage outcomes.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The operation's result type.
+    /// </typeparam>
+    /// <param name="fileSystem">
+    /// The manager whose canonical root and finalization lease establish the binding.
+    /// </param>
+    /// <param name="expectedGeneration">
+    /// The nonempty generation that must remain current throughout the operation.
+    /// </param>
+    /// <param name="operation">
+    /// The action to execute within the active binding.
+    /// </param>
+    /// <param name="writeLease">
+    /// An existing caller-owned lease, or null to acquire a separate finalization lease before closing.
+    /// </param>
+    /// <returns>
+    /// The completed operation result. Established session replacement takes precedence over a storage failure;
+    /// ordinary closing failures retain the original typed storage outcome and a separate diagnostic.
+    /// </returns>
     private static async Task<T> RunBoundCoreAsync<T>(
         FileSystemManager fileSystem,
         string expectedGeneration,
@@ -97,6 +122,7 @@ internal static class SessionOperationContext
         var state = new BindingState(normalizedRoot, expectedGeneration);
         var previous = CurrentFrame.Value;
         CurrentFrame.Value = new Frame(state, previous);
+        Exception? operationFailure = null;
         try
         {
             return await RunWithinBindingAsync(
@@ -105,6 +131,13 @@ internal static class SessionOperationContext
                 operation,
                 writeLease,
                 verifyAfterOperation: writeLease != null);
+        }
+        catch (Exception failure) when (failure is CoordinatedStatePublicationUncertainException or
+            CommittedSaveContinuationException or SessionReplacedException)
+        {
+            // RunWithinBindingAsync has already applied replacement precedence.
+            operationFailure = failure;
+            throw;
         }
         finally
         {
@@ -132,6 +165,22 @@ internal static class SessionOperationContext
 
                     state.Close();
                 }
+                catch (Exception closingFailure) when (operationFailure != null)
+                {
+                    // The finalization lease still acquires, recovers, checks
+                    // generation and disposes normally. Retain replacement even
+                    // if disposal masked the exception raised by its check.
+                    var replacement = closingFailure as SessionReplacedException ??
+                        operationFailure as SessionReplacedException ??
+                        state.GetEstablishedReplacement(operationFailure);
+                    var retained = (Exception?)replacement ?? operationFailure;
+                    if (replacement != null && FindStorageDecisionFailure(operationFailure) is { } storageFailure)
+                        replacement.Data["SessionOperationFailure"] = storageFailure;
+                    if (!ReferenceEquals(retained, closingFailure))
+                        retained.Data["SessionFinalizationFailure"] = closingFailure;
+                    ExceptionDispatchInfo.Capture(retained).Throw();
+                    throw;
+                }
                 finally
                 {
                     state.Close();
@@ -139,6 +188,28 @@ internal static class SessionOperationContext
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// Locates a typed storage decision retained directly or within a session-replacement diagnostic chain.
+    /// </summary>
+    /// <param name="failure">
+    /// The operation failure to inspect, or null when the operation did not fail.
+    /// </param>
+    /// <returns>
+    /// The original uncertain or committed-save failure, or null when the chain contains no such decision.
+    /// </returns>
+    private static Exception? FindStorageDecisionFailure(Exception? failure)
+    {
+        for (var current = failure; current != null; current = current.InnerException)
+        {
+            if (current is CoordinatedStatePublicationUncertainException or CommittedSaveContinuationException)
+                return current;
+            if (current.Data["SessionOperationFailure"] is Exception recorded &&
+                recorded is CoordinatedStatePublicationUncertainException or CommittedSaveContinuationException)
+                return recorded;
+        }
+        return null;
     }
 
     internal static bool TryGetExpectedGeneration(
@@ -273,6 +344,21 @@ internal static class SessionOperationContext
 
                 throw BuildException(innerException);
             }
+        }
+
+        /// <summary>
+        /// Returns only an established replacement, independently of the binding's normal closing or closed state.
+        /// </summary>
+        /// <param name="innerException">
+        /// The earlier operation failure to retain as the replacement cause, or null when no cause is available.
+        /// </param>
+        /// <returns>
+        /// A replacement failure when generation replacement was recorded, or null otherwise.
+        /// </returns>
+        internal SessionReplacedException? GetEstablishedReplacement(Exception? innerException)
+        {
+            lock (_sync)
+                return _replaced ? BuildException(innerException) : null;
         }
 
         internal void BeginClosing()

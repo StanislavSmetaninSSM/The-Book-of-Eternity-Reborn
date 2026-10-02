@@ -48,6 +48,9 @@ export function createSettingsComponentHarness() {
   let refreshFailure = false;
   let savePosts = 0;
   let saveLatch: any;
+  let realRefreshClient: any;
+  let realRefreshState: any = { status: 'loading' };
+  const refreshOwner = { current: 0 };
   const api = {
     updateClientSettings: async () => { settingsPosts++; return ok(persistedSettings); },
     loadSave: () => load.promise,
@@ -61,6 +64,13 @@ export function createSettingsComponentHarness() {
     loadBrowserState: async (isCurrent: () => boolean = () => true) => {
       if (saveLatch?.isBlocked()) return;
       refreshes++;
+      if (realRefreshClient) {
+        await module('src/hooks/loadShellState.ts').loadShellState(realRefreshClient, (next: any) => {
+          realRefreshState = typeof next === 'function' ? next(realRefreshState) : next;
+          shell.readyState = realRefreshState.status === 'ready' ? realRefreshState : null;
+        }, refreshOwner, false);
+        return;
+      }
       if (refreshFailure) throw new Error('controlled refresh failure');
       if (isCurrent()) shell.readyState = { settings: ok(persistedSettings), audio: ok({ ...initialAudio, musicVolume: 99 }) };
     },
@@ -106,6 +116,7 @@ export function createSettingsComponentHarness() {
       if (id.includes('ShellContext')) return { useShell: () => shell, isSuccess: (value: any) => value?.ok === true };
       if (id.includes('settingsPersistenceNotice')) return module('src/utils/settingsPersistenceNotice.ts');
       if (id.includes('savePersistenceNotice')) return module('src/utils/savePersistenceNotice.ts');
+      if (id.includes('shellStateResult')) return module('src/hooks/shellStateResult.ts');
       if (id.includes('playerCopy')) return { toPlayerFacingText: (value: string, fallback: string) => value || fallback };
       if (id.includes('formatters')) return { toLauncherSaveFailureNotice: () => 'load failed', formatSidebarAudioSummary: () => '' };
       if (id === './AudioPanel') return { AudioPanel: () => null };
@@ -131,5 +142,7 @@ export function createSettingsComponentHarness() {
   const audio = (writeScope: { generation: number }) => renderer('src/components/AudioPanel.tsx', 'AudioPanel', { writeScope });
   return { settings, audio, shell, load, save, audioWrite, initialAudio, persistedSettings, timers,
     setRefreshFailure: () => { refreshFailure = true; },
+    setRealRefreshClient: (client: unknown) => { realRefreshClient = client; },
+    realRefreshState: () => realRefreshState,
     counts: () => ({ refreshes, settingsPosts, audioPosts, savePosts }) };
 }

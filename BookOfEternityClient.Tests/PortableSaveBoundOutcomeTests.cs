@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -98,13 +99,15 @@ public sealed class PortableSaveBoundOutcomeTests : IDisposable
     {
         FileSystemManager? files = null;
         var closing = 0;
+        var replacementGeneration = Guid.NewGuid().ToString("N");
         var fixture = CreateBoundFixture(new FileSystemManagerHooks
         {
             SessionOperationClosingAsync = () =>
             {
                 closing++;
-                File.WriteAllBytes(files!.SessionGenerationPath,
-                    JsonSerializer.SerializeToUtf8Bytes(new { schemaVersion = 1, generationId = "closing-replacement" }));
+                var generation = JsonNode.Parse(File.ReadAllBytes(files!.SessionGenerationPath))!.AsObject();
+                generation["generationId"] = replacementGeneration;
+                File.WriteAllText(files.SessionGenerationPath, generation.ToJsonString());
                 return Task.CompletedTask;
             }
         });
@@ -119,7 +122,7 @@ public sealed class PortableSaveBoundOutcomeTests : IDisposable
         Assert.Equal(fixture.Generation, replacement.ExpectedGeneration);
         Assert.Same(primary, replacement.Data["SessionOperationFailure"]);
         Assert.False(SessionOperationContext.TryGetExpectedGeneration(files.BasePath, out _));
-        Assert.Equal("closing-replacement", ReadGeneration(files));
+        Assert.Equal(replacementGeneration, ReadGeneration(files));
     }
 
     /// <summary>

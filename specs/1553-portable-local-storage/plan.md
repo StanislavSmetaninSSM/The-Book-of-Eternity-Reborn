@@ -1,150 +1,94 @@
 # Implementation Plan: Trusted local storage and cross-platform runtime
 
-**Branch**: `1553-cross-platform-runtime` | **Updated**: 2026-10-03
+**Branch**: `codex/1553-save-windows` | **Updated**: 2026-10-03
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
 <a id="active-t032-a--ordinary-save-creation"></a>
 
-## Current Windows/Linux implementation checkpoint — 2026-10-02
+## Current Windows/Linux caller checkpoint — 2026-10-03
 
-Caller implementation checkpoint (T032-A2/A3, WIP): frozen `7499f91f` fresh binaries
-established helper RED **1/9 passed, 8 failed** and outcome RED **0/5 passed** at
-the absent ordinary stream/publication/uncertainty boundaries; neither run timed out.
-Exact manifests are `recovery/evidence/save-helper-windows-red-20261002/manifest.json`
-and `recovery/evidence/save-outcomes-windows-red-20261002/manifest.json`.
-The current unverified source introduces a closed owned candidate tied to its exact
-snapshot lease, one create-only image publication, retained typed save decisions,
-ordinary leased streaming metadata and Task-only profile refresh. Original load
-receipts remain unchanged. Two additional retention outcome tests are RED candidates;
-retention, browser and console integration and actual GREEN/review are still open.
-At `ae5d1f9e` the fresh helper cohort passed **7/9**; the two failures were fixture
-setup: a reproduced invalid Windows junction command and counting the separate seed
-lease. Corrections retain production validation and the one-operation-lease assertion.
-Frozen binaries passed the original **5/5** save outcomes while both new retention
-cases failed causally. The current WIP resolves post-commit debt before returning,
-retains committed status when continuation is blocked, and uses bounded file-image
-deletion for retention rather than whole-ZIP byte arrays. Browser backend RED reached
-**0/5** on its old recorder route; its frontend descriptor was not executed after that
-failure. Backend and presentation now have separate narrow owners.
-The first engine scaffold exceeded its six-minute category budget (9:06.908 including
-build), with no final TRX. Buffered output records three fixture failures, not a completed
-cohort: a wrong literal story path threw before the intended fault, causing twenty
-ordinary I/O rollback retries. The fixture now derives the story path from the seeded
-soul, gates the actual v2 autosave member and uses a non-retryable deliberate fault;
-each of player/waiting/late continuation owns a separate two-case bounded category.
-Manual presentation RED at frozen `427afdb5` completed four cases: the prior uncertainty
-control passed, committed warning/AgentConsole text failed causally, and the old rollback
-fixture still counted twenty retries. Frontend RED compiled and exercised five failing
-notice scenarios (a failed file, not a completed adapter descriptor). Both observations
-are preserved separately. The current C# source implements prepared browser saves,
-actual HTTP outcome serialization and truthful console messages; frontend integration
-is WIP. Corrected caller GREEN and independent review remain pending.
-No new Linux execution or full save acceptance is claimed.
+Production caller, browser and frontend source is implemented at
+`dafd37e589eaf6fd4e05a996fd3ecf00e74e4a97` on `codex/1553-save-windows`.
+This is normal Git source with no active patch carrier. T032-A2/A3 remain unchecked:
+Windows caller verification and independent caller review are incomplete, native Linux
+execution is deferred under the owner's explicit instruction, and full save/platform
+acceptance remains open. [Current handoff](save-task-handoff.md) gives the remaining
+boundary and native Linux category commands.
 
-The owner now explicitly authorizes implementing Linux paths locally, marking native
-Linux execution unverified and returning its exact commands to the Linux coordinator.
-This does not convert Windows evidence into Linux acceptance. Work remains on
-`codex/1553-save-windows`, with normal Git source and no active patch carrier.
+Implemented behavior preserves the approved formats and source-map contracts: one
+continuously held snapshot lease prepares a closed create-only ZIP; one shared B1
+image publication returns its exact destination and typed decision. Owned scratch
+cleanup, bounded image-backed retention, leased seekable metadata listing and ordinary
+Task-only profile repair are implemented. Listing retains raw archive preflight and
+existing bounds; mirror no-ops retain exact bytes. Original LoadGame physical receipts
+and callbacks remain unchanged. Immediate console/browser/autosave callers retain
+known commit through follow-up failure and stop unsafe continuation after uncertainty
+or conflicting committed debt. Browser HTTP/DTO/UI preserve the exact known created
+ID even at an error status; the shell latch survives settings unmount, suppresses
+refresh/actions and requires storage reconciliation before page reload. Already sent
+requests are not claimed cancelled.
 
-- Clean source `ecf0a923` passed **14/14** real cold-process cases on Windows with a fresh
-  XML-documentation build in **3:46.438**, all three owners complete, no timeout and
-  complete owned cleanup. The normal acquisition now forwards the existing recovery
-  observer. [Preserved GREEN](recovery/evidence/stream-windows-green-20261002/manifest.json)
-  and the preceding causal RED retain distinct source identities.
-- Frozen ecf0a923 binaries separately passed image **11/11** and create-only **1/1**.
-  Original-v1 initially failed **2/2** before recovery because Git autocrlf changed
-  immutable fixture bytes. Exact Git bytes restored its **2/2** result; scoped
-  `.gitattributes` now prevents conversion without changing historical artifact bytes.
-- The next format cohort passed **22/29**: seven Windows failures exposed mixed
-  separators in the hand-written journal fixture. Correct the two fixture paths,
-  preserving strict normalized production paths, and rerun the whole 29-case owner.
-  Both failed native cohorts are retained under `recovery/evidence/stream-windows-fixture-*`.
-- Earlier addition (Windows results now recorded below): two later-member directory/symlink preflight cases and
-  three actual 64/128/near-512 MiB archive resource rows. Each resource row uses five
-  sequential owned children, complete file-backed BEFORE/AFTER and fresh canonical
-  acquisitions for pending rollback and committed cleanup. Capture/copy/hash/matches,
-  publication/recovery, generation snapshot and metadata diagnostics are reported
-  separately. Windows and Linux branches are implemented; Linux has not executed here.
-- Resource owner budget: **8 minutes**, exclusive; each child retains the original
-  **120 seconds / 768 MiB managed heap / 1 GiB RSS / 3 GiB owned disk** stop bounds.
-  This accommodates fifteen children with real ZIP production and repeated whole-file
-  hashes; the original three-row Linux experiment took 81 seconds and the Windows
-  two-case large rollback cohort took 45 seconds. Budget is a stop, not an expected
-  duration or product requirement. No full suite, shared mutable cache or smaller
-  supported-archive limit is introduced.
+Verified cohorts at frozen `dafd37e5` binaries are separate:
 
-Latest verified prerequisite evidence: frozen ec5e5ccf binaries passed format **29/29**
-and full archive resource **3/3** in **4:31.750** without rebuilding unchanged source.
-The preceding fresh build's five-case negative cohort passed four and exposed a test
-setup error: resolving the deliberately linked member again reached the ordinary
-reparse guard before cold recovery. Cache its already admitted path before creating
-the link; production remains unchanged. Preserve both outcomes separately.
-[Resource evidence](recovery/evidence/stream-windows-resource-green-20261002/manifest.json)
-includes all fifteen child measurements and independent Astra XHigh hash/result review.
-Near-512 ZIP: **536,973,572 bytes**, BEFORE **536,973,604 bytes**. V2 publication peak
-working set was at most **44.12 MiB**, versus **502.68 MiB** for the unchanged producer;
-maximum sampled logical disk **2,684,879,464 bytes** stayed below 3 GiB. Bulk publication
-allocations stayed approximately 1.16–1.52 MB and cold acquisition 1.00–1.14 MB. Small
-metadata diagnostics do not purport to isolate all codec metadata allocations.
+- [Core Windows GREEN](recovery/evidence/save-core-windows-green-20261003/manifest.json):
+  **19/19**, ordinary reads/profile refresh 9 plus save outcomes 10, **27.566 seconds**,
+  both descriptors complete, no timeout and complete owned/runtime cleanup.
+- [Caller boundary Windows GREEN](recovery/evidence/save-caller-boundaries-windows-green-20261003/manifest.json):
+  **13/13**, browser prepared/HTTP/source guard 7, console presentation 4 and public
+  entry 2, **1:03.504**, all three descriptors complete, no timeout and complete cleanup.
+  Browser cases prove actual publication/read cuts and wire outcomes; they do not
+  inject native lease-close failure or establish live browser GUI acceptance.
 
-Remaining original gate coverage is now explicit: six generation-member/empty-image
-cold cases, three image-adapter pre-intent drift cases and one Linux-only FIFO case.
-Implement these under T032-A1; run the first nine plus the corrected five-case negative
-owner on Windows. The Linux-only owner asserts its OS and is intentionally excluded
-from Windows selection, so it cannot produce a misleading skipped-body pass. Native
-Linux execution remains for the Linux coordinator, as the owner requested.
+The separate [player Windows RED](recovery/evidence/save-engine-player-windows-red-20261003/manifest.json)
+at the same named source had successful fresh unit/integration builds, then exceeded
+the **two-minute player category budget**; total command wall time was **4:31.458**.
+Buffered output proves the first actual save cut reached once, followed by unchanged
+bound finalization masking the typed primary outcome with `InvalidDataException`.
+There was no final TRX: formal counts are **0 executed / 0 completed descriptors**.
+Core owners were unrun in that invocation; do not attribute their separate GREEN to it.
 
-Final Windows boundary source `23d94fb7` passed **14/14** with a fresh XML build in
-**3:03.390**: admission 3, corrected negative/cold conflicts 5, generation/empty 6.
-[Boundary evidence](recovery/evidence/stream-windows-boundaries-green-20261002/manifest.json)
-retains exact source, phase reports and cleanup. Discovery-only audit of this source
-validated **182 categories / 10,471 methods or files**, executing zero tests in
-**1:54.527**. The [fresh GitHub restoration](recovery/stream-windows-restoration-20261002.json)
-verified 4,068 files, the source tree and 28 then-published artifact hashes; Windows
-required command-local `core.longpaths=true` for six historical long evidence paths.
-No patch carrier, shared local object store or runtime execution was used for recovery.
+A shared `SessionOperationContext` correction is underway. Retain the typed primary
+save outcome through actual unchanged finalization while preserving session-replacement
+priority; a bounded independent Astra consultation is recommended for this concrete
+boundary. Keep the corrected engine continuation owners and caller acceptance pending.
+The four new frontend cases drive the actual SettingsView save handler and continuation
+latch and still await execution. Consumer-contract verification is separate and is not included in these counts.
+Mandatory independent Astra XHigh caller review, native Linux prerequisite/caller
+qualification and full T032-A1/T032-A/T031/T032 acceptance remain open. No GM/gameplay
+contract changed; this client-owned save transport requires no GM prompt/example update.
 
-The owner explicitly requested Linux implementation here with comments marking native
-Linux verification pending. Accordingly, after independent acceptance of this Windows
-prerequisite slice, continue the already approved ordinary save caller implementation.
-This is a sequencing adjustment, not a changed acceptance criterion: Linux prerequisite
-execution and full T032-A1/T032-A acceptance remain open. The Linux FIFO owner is
-implemented and compiled but has not run. Run the cross-platform cold/resource,
-generation/admission and Linux FIFO owners on the Linux host before Linux acceptance.
+### Historical prerequisite and RED evidence
 
-Process checkpoint: a single primary developer plus bounded Sol implementation packets
-and Astra XHigh independent review found concrete missing coverage without restarting
-historical suites. Native execution exposed three fixture defects (immutable CRLF,
-mixed separators, resolving a deliberately invalid path during setup); production was
-not relaxed to make them pass. No token/cost savings claim is inferred from these facts.
+These results belong to their named historical source, not to the caller checkpoint:
 
-## Active T032-A caller implementation
+- Windows prerequisite source `23d94fb7` was independently accepted at evidence
+  `0f4fe247`, including fresh 4,080-file/37-artifact readback. [Cold 14/14](recovery/evidence/stream-windows-green-20261002/manifest.json)
+  belongs to `ecf0a923`; [format 29/29/resource 3/3](recovery/evidence/stream-windows-resource-green-20261002/manifest.json)
+  to frozen `ec5e5ccf`; [boundary 14/14](recovery/evidence/stream-windows-boundaries-green-20261002/manifest.json)
+  to `23d94fb7`. The resource rows preserve 15 sequential owned children and full
+  BEFORE/AFTER at 64/128/near-512 MiB. Near-512 ZIP is 536,973,572 bytes and BEFORE
+  536,973,604 bytes; v2 publication peak RSS is at most 44.12 MiB versus the producer's
+  502.68 MiB. Original per-child bounds remain 120 seconds, 768 MiB heap, 1 GiB RSS and
+  3 GiB disk, with an exclusive eight-minute owner. No archive support ceiling changed.
+  [Fresh restoration](recovery/stream-windows-restoration-20261002.json) retains source/artifact identities.
+- [Public-entry RED](recovery/evidence/save-caller-entry-windows-red-20261002/manifest.json)
+  at frozen `23d94fb7` reached completed archive preparation but zero B1 decisions;
+  [helper RED](recovery/evidence/save-helper-windows-red-20261002/manifest.json) and
+  [outcome RED](recovery/evidence/save-outcomes-windows-red-20261002/manifest.json) at
+  `7499f91f` preserve 1/9 and 0/5 respectively. Later corrected core GREEN is separate.
+- [Browser backend RED](recovery/evidence/save-browser-windows-red-20261002/manifest.json)
+  preserves five actual old-recorder-route failures. [Browser presentation RED](recovery/evidence/save-browser-presentation-red-20261002/manifest.json)
+  compiled and exercised five intended failing notice scenarios; the failed Node file's
+  adapter counts do not mean no scenarios executed. Earlier engine fixture/timeout
+  results remain historical and must not be reclassified as completed GREEN cohorts.
 
-The original public-entry Windows baseline at frozen23d94fb7 binaries is preserved in [caller RED](recovery/evidence/save-caller-entry-windows-red-20261002/manifest.json):1pass/1causal failure, completed ZIP and saved=true but zero B1 decisions instead of one. The following five public outcome and nine helper RED cases executed at frozen7499f91f as recorded above. Their source implementation is now WIP; retention and immediate browser/engine callers add their own causal checks. This is not delivered save capability.
+The owner authorized Linux source implementation after Windows prerequisite review,
+without waiving native Linux execution or cross-platform acceptance. Linux FIFO is
+implemented and compiled but has not run here. The native Linux coordinator must run
+cold/resource, generation/admission/FIFO and related caller owners in bounded commands.
 
-
-Preserve the approved source map and game/archive formats. Prepare one closed/flushed
-owned ZIP under the held snapshot lease; return its exact create-only destination and
-file image with owned cleanup. Direct service orchestration and prepared browser
-orchestration publish that image once; preparation never publishes or acquires a second
-canonical lease. Keep typed not-created/committed/rolled-back/uncertain results through
-cleanup, logging, menu refresh and owner release. Bool compatibility must propagate
-uncertainty rather than returning false; committed follow-up never reverses success.
-
-Add an ordinary validated leased stream for listing, retaining raw archive preflight,
-metadata bounds, retries and explicit original load/physical routes. Add a Task-only
-ordinary profile-mirror refresh with exact no-op bytes and typed uncertainty, preserving
-the original receipt-returning load callback. Thread the held browser lease through
-listing. Adapt console/browser transport and autosave retention/turn continuations so
-uncertainty cannot trigger retention or compensation. Select tests by these concrete
-boundaries, and synchronize player-facing save/recovery guidance; no GM-authored game
-contract is introduced by the storage transport itself.
-
-Windows prerequisite accepted by independent Astra XHigh at source23d94fb7/evidence0f4fe247, including fresh4080-file/37-artifact GitHub verification. Full T032-A1 and SaveGame caller cutover remain open.
-Storage/test-only work changes no GM-authored game contract, prompt or example.
-
-## Initial Windows restoration — 2026-10-02
+## Historical initial Windows restoration — 2026-10-02
 
 Owner authorized local implementation and native Windows verification, with Linux
 execution returned to the original coordinator. Branch: `codex/1553-save-windows`,
@@ -175,7 +119,7 @@ forwarding is now wired; tests also assert exact observed phase/index and full
 library membership. This fix is WIP pending GREEN and independent review.
 Linux and full T032-A1/T032-A remain open.
 
-## Active T032-A — ordinary save creation
+## Historical T032-A — ordinary save creation source/evidence chronology
 
 **Continuation:** [save-task-handoff.md](save-task-handoff.md) gives the current restore point, remaining proof gates and ordinary-save completion boundary.
 

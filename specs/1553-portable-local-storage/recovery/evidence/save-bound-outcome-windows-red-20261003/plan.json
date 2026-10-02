@@ -1,0 +1,50 @@
+{
+  "Categories": [
+    "portable-save-bound-outcome"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "64ff93c0faf4afca96ce839533714139178b1506",
+    "WorkingTreeFingerprint": "7EDBFF4BD3A3F0B1D86CFC1B4B04C250C15D112931837770B488A6F8DEDC3A03",
+    "ChangedFiles": 1
+  },
+  "PreparationSeconds": 48.3737445,
+  "Descriptors": [
+    {
+      "Name": "portable-save-bound-outcome-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-save-bound-outcome",
+      "Categories": [
+        "portable-save-bound-outcome"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.AlreadyReplacedBindingSurvivesOrdinaryClosingFailure|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.ClosingGenerationReplacementWinsAndRetainsStorageDecision|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.OrdinaryOperationFailureKeepsExistingClosingErrorPrecedence|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.StorageClosingFailureRestoresEnclosingAmbientBinding",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.AlreadyReplacedBindingSurvivesOrdinaryClosingFailure",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.ClosingGenerationReplacementWinsAndRetainsStorageDecision",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.OrdinaryOperationFailureKeepsExistingClosingErrorPrecedence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.StorageClosingFailureRestoresEnclosingAmbientBinding",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

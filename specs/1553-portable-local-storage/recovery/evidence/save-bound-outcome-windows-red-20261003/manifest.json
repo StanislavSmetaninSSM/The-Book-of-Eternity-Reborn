@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A1-WIN",
+  "sourceCommit": "64ff93c0faf4afca96ce839533714139178b1506",
+  "status": "Fresh64ff93:7 executed,1 ordinary-error control passed,6 failed. Four causal closing-mask failures; two closing-generation fixtures wrote invalid generation schema and were corrected later. No completion claim.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-save-bound-outcome"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:01:00.3845504",
+  "exitCode": 1,
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 7,
+    "CompletedCases": 7,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 7,
+    "Executed": 7,
+    "Passed": 1,
+    "Failed": 6
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "Build-unit.log",
+      "originalSha256": "7219383281161DF4C339C705BF87314B32CDBFF0FA0CFC8A4AB72F3E2AB992E2",
+      "sha256": "3A8784507D0396661A1524EA07699E34BBA239C44D3FB8B57B932F8E5B3C31F6"
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "98B849248B5D996A682EE775945F3E3020646A2BBF3B51DE7BD1BE7B640D9082",
+      "sha256": "09530A685FF866546539DD263326259E9E2958649292C6FD64FF95B138D4ACAC"
+    },
+    {
+      "path": "portable-save-bound-outcome-unit-001.trx",
+      "originalSha256": "3A6086BFF879E205EF4D8561CA7C344D4BE1C8A97E9FFEAB8401BCFD5447A358",
+      "sha256": "3E4C7D8F0AE8EB91DD65E3C946CE9B043FA1CAC3494951E4E59B21FAA11D0509"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "9C77AFA6C5693EFC30742F5C892CFC52EBD66BFFFAA0E9FB4E92072B069CA41B",
+      "sha256": "431F9B1B309B2FBCDC15C093C3464BA9BCF1B0B3FB584BA35537145F0BF2105F"
+    }
+  ]
+}

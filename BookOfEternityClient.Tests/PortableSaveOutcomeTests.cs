@@ -253,6 +253,69 @@ public sealed class PortableSaveOutcomeTests : IDisposable
     }
 
     /// <summary>
+    /// Keeps a committed autosave blocked when its retention lease reports an unsuccessful release.
+    /// </summary>
+    /// <param name="uncertainRetention">
+    /// Adds an earlier unresolved retention failure when true, whose identity must also survive release.
+    /// </param>
+    /// <returns>
+    /// Completion after the archive, retained decision and complete original library are verified.
+    /// </returns>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task RetentionLeaseReleaseFailureBlocksCommittedAutosave(bool uncertainRetention)
+    {
+        var files = new FileSystemManager(_root, NullLogger<FileSystemManager>.Instance);
+        var state = PortableSaveFixture.Seed(files);
+        state.Settings.MaxAutosaves = 20;
+        SeedLibrary(files);
+        var releaseFailure = new IOException("synthetic retention context release failure");
+        var primary = new CoordinatedStatePublicationUncertainException(new IOException("synthetic unresolved retention"));
+        var reached = 0;
+        var service = new SaveLoadService(files, state, NullLogger<SaveLoadService>.Instance, new SaveLoadServiceHooks
+        {
+            BeforeAutosaveRetentionAsync = lease =>
+            {
+                reached++;
+                // This is the actual owned context disposal path, not a simulated native handle failure.
+                lease.ExternalPublicationContext = new ThrowingRetentionContext(releaseFailure);
+                return uncertainRetention ? Task.FromException(primary) : Task.CompletedTask;
+            }
+        });
+
+        var result = await service.CreateAutosaveAsync(12);
+
+        Assert.Equal(1, reached);
+        Assert.True(result.Committed);
+        Assert.True(result.NeedsFollowUp);
+        Assert.True(result.ContinuationBlocked);
+        if (uncertainRetention)
+        {
+            Assert.Same(primary, result.Failure);
+            Assert.Same(releaseFailure, primary.Data["AutosaveRetentionLeaseReleaseFailure"]);
+        }
+        else
+            Assert.Same(releaseFailure, Assert.IsType<CoordinatedStatePublicationUncertainException>(result.Failure).InnerException);
+        AssertLibrary(files, "saves/autosaves", created: true);
+        using var archive = ZipFile.OpenRead(files.ResolvePath(result.DestinationRelativePath!));
+        Assert.NotNull(archive.GetEntry("save_manifest.json"));
+        await using var nextLease = await files.AcquireCanonicalWriteLeaseAsync();
+    }
+
+    /// <summary>
+    /// Supplies a diagnostic failure through the actual owned retention context disposal.
+    /// </summary>
+    /// <param name="failure">
+    /// The exact failure to report when the lease releases this context.
+    /// </param>
+    private sealed class ThrowingRetentionContext(Exception failure) : IDisposable
+    {
+        /// <inheritdoc />
+        public void Dispose() => throw failure;
+    }
+
+    /// <summary>
     /// Seeds one independent member in each save-library scope.
     /// </summary>
     /// <param name="files">

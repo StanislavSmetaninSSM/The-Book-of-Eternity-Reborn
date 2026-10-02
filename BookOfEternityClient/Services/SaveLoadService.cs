@@ -17,6 +17,10 @@ internal sealed class SaveLoadServiceHooks
     internal Func<Task>? AfterLoadPublicationValidatedAsync { get; init; }
     internal Func<Task>? BeforeAutosaveCleanupLeaseAcquisitionAsync { get; init; }
     internal Func<Task>? BeforeAutosaveDeletionAsync { get; init; }
+    /// <summary>
+    /// Observes the held retention lease before deletion; null leaves production behavior unchanged.
+    /// </summary>
+    internal Func<FileSystemManager.CanonicalWriteLease, Task>? BeforeAutosaveRetentionAsync { get; init; }
     internal Func<Task>? BeforeSaveCommitAsync { get; init; }
 }
 
@@ -350,6 +354,16 @@ public partial class SaveLoadService
         }
     }
 
+    /// <summary>
+    /// Loads a validated archive through the original transaction and its retained physical publication authority.
+    /// </summary>
+    /// <param name="saveFilePath">
+    /// The selected archive's absolute path, or a canonical session-relative path to resolve before opening it.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when loading finishes successfully; otherwise, <see langword="false"/>
+    /// when the archive is unavailable, rejected, or a loading failure is handled.
+    /// </returns>
     public async Task<bool> LoadGameAsync(string saveFilePath)
     {
         CanonicalLoadTransactionPaths? transactionPaths = null;
@@ -510,7 +524,10 @@ public partial class SaveLoadService
                         .SealPublishedAuthorityForCanonicalReads(
                             liveSessionPath,
                             "Load publication before canonical reads");
-                    await _stateManager.RefreshGameStateAsync(writeLease);
+                    // This held original load owns the active journal and
+                    // sealed physical receipts until its commit boundary.
+                    await _fs.RunLegacyStorageRecoveryAsync(writeLease,
+                        () => _stateManager.RefreshGameStateAsync(writeLease));
                     await _stateManager.LoadSettingsAsync();
                     stagingAuthorities.EnsureSealedExactBeforeCommit(
                         liveSessionPath,
@@ -524,7 +541,8 @@ public partial class SaveLoadService
                         stagingAuthorities.ReleaseForRecovery();
                         _fs.RecoverInterruptedLoadTransaction(writeLease);
                         _stateManager.RestoreRuntimeSnapshot(runtimeSnapshot);
-                        await _stateManager.RefreshGameStateAsync(writeLease);
+                        await _fs.RunLegacyStorageRecoveryAsync(writeLease,
+                            () => _stateManager.RefreshGameStateAsync(writeLease));
                         await _stateManager.LoadSettingsAsync();
                     }
                     catch (Exception recoveryException)
@@ -1744,6 +1762,8 @@ public partial class SaveLoadService
         catch (SessionReplacedException) { throw; }
         catch (Exception failure) { throw new CoordinatedStatePublicationUncertainException(failure); }
         await using var ownedLease = writeLease;
+        if (_hooks?.BeforeAutosaveRetentionAsync != null)
+            await _hooks.BeforeAutosaveRetentionAsync(writeLease);
         _fs.ResolveBackupPublicationRecovery(writeLease);
         var scope = new TrustedLocalFileScope([_fs.GameSessionPath]);
         var fullDir = _fs.ResolvePath(saveDir);

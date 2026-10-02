@@ -581,20 +581,21 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task SaveGameAsync_ExcludesBrowserRollbackTransactions()
+    public async Task SaveGameAsync_RetainedBrowserRollbackEvidenceBlocksOrdinaryAdmission()
     {
         var stalePath =
             $"{ExplorerLocalTurnRollbackArtifacts.Root}/browser_write/stale_evidence/marker.json";
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{\"currentRealm\":\"Chaos Sea\"}");
         await _fs.WriteFileAtomicAsync(stalePath, "{\"stale\":true}");
 
-        Assert.True(await _service.SaveGameAsync(
+        var evidence = File.ReadAllBytes(_fs.ResolvePath(stalePath));
+        var before = CaptureSessionSnapshot(_fs.GameSessionPath);
+        await Assert.ThrowsAsync<CoordinatedStatePublicationUncertainException>(() => _service.SaveGameAsync(
             "ephemeral_browser_rollback",
             "browser rollback save regression"));
-
-        var savePath = Directory.GetFiles(_fs.ResolvePath("saves/manual_saves"), "*.zip").Single();
-        using var archive = ZipFile.OpenRead(savePath);
-        Assert.Null(archive.GetEntry(stalePath));
+        Assert.Equal(evidence, File.ReadAllBytes(_fs.ResolvePath(stalePath)));
+        Assert.Equal(before, CaptureSessionSnapshot(_fs.GameSessionPath));
+        Assert.Empty(Directory.GetFiles(_fs.ResolvePath("saves/manual_saves"), "*.zip"));
     }
 
     [Fact]
@@ -795,9 +796,10 @@ public sealed class SaveLoadServiceTests : IDisposable
         Directory.Delete(gameStateRoot, recursive: true);
         await File.WriteAllTextAsync(gameStateRoot, "not-a-directory");
 
-        Assert.False(await _service.SaveGameAsync(
+        await Assert.ThrowsAsync<CoordinatedStatePublicationUncertainException>(() => _service.SaveGameAsync(
             "file_game_state",
             "wrong-kind game-state root regression"));
+        Assert.Equal("not-a-directory", await File.ReadAllTextAsync(gameStateRoot));
         Assert.Empty(Directory.GetFiles(
             _fs.ResolvePath("saves/manual_saves"),
             "*.zip"));
@@ -826,9 +828,10 @@ public sealed class SaveLoadServiceTests : IDisposable
         {
             CreateDirectoryJunction(gameStateRoot, outsideRoot);
 
-            Assert.False(await _service.SaveGameAsync(
+            await Assert.ThrowsAsync<CoordinatedStatePublicationUncertainException>(() => _service.SaveGameAsync(
                 "reparse_game_state",
                 "reparse game-state root regression"));
+            Assert.Equal("""{ "mustNotArchive": true }""", await File.ReadAllTextAsync(Path.Combine(outsideRoot, "external-state.json")));
             Assert.Empty(Directory.GetFiles(
                 _fs.ResolvePath("saves/manual_saves"),
                 "*.zip"));

@@ -62,7 +62,7 @@
             "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_SelfConsistentUnknownResourceOwnerIsRejected",
             "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_InvalidUtf8CanonicalResourceInputFailsClosed",
             "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ExcludesLocalUiLockNamespaceDescendants",
-            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ExcludesBrowserRollbackTransactions",
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_RetainedBrowserRollbackEvidenceBlocksOrdinaryAdmission",
             "BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_RetriesWhenSaveMetadataIsTemporarilyLocked",
             "BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_RejectsOversizedMetadataThroughTrustedBudget",
             "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_WaitsForCanonicalWriteLeaseBeforeReadingSessionSnapshot",
@@ -177,7 +177,12 @@
       "requirements": { "frontendBuild": false, "exclusive": true },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.*"] }]
+      "selectors": [{ "project": "unit", "tests": [
+        "BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.*",
+        "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ReplacementWithoutLaterWrite_FinalCheckStillThrows",
+        "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_EscapedTaskCannotWriteAfterOwningScopeCloses",
+        "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter"
+      ] }]
     },
     {
       "id": "portable-browser-save-presentation",
@@ -210,6 +215,17 @@
         "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.UncertainMirrorRepairPropagatesWithoutRefreshingRuntime",
         "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.RetainedDebtBlocksStreamAndRefreshBeforeAnyReadOnTheSameLease"
       ] }]
+    },
+    {
+      "id": "portable-save-retention-release",
+      "responsibility": "Actual autosave retains its known committed archive and blocks continuation if the retention lease reports release failure, including preservation of an earlier typed retention outcome.",
+      "excludes": "Native handle failure injection, broad retention matrix, engine lifecycle and Linux execution.",
+      "changeHints": ["BookOfEternityClient/Services/SaveLoadService.cs", "BookOfEternityClient.Tests/PortableSaveOutcomeTests.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": true },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.PortableSaveOutcomeTests.RetentionLeaseReleaseFailureBlocksCommittedAutosave"] }]
     },
     {
       "id": "portable-save-outcomes",

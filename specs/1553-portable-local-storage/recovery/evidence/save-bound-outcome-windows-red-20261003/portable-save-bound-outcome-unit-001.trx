@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="3fc49541-5e74-4aed-92a9-6a9b2b0e6a06" name="Eja@[HOST] 2026-10-03 00:32:39" runUser="[HOST]\Eja" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-03T00:32:39.9452839+10:00" queuing="2026-10-03T00:32:39.9452844+10:00" start="2026-10-03T00:32:35.9616161+10:00" finish="2026-10-03T00:32:40.0961991+10:00" />
+  <TestSettings name="default" id="e87d67ef-d4dc-43a3-b4f0-d97cc265ddbb">
+    <Deployment runDeploymentRoot="Eja_[HOST]_2026-10-03_00_32_39" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="ab3ea4dc-44ae-480d-8e29-2feee821ba66" testId="8643a382-4b4d-7a11-c5fa-7bf1b891c252" testName="BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.OrdinaryOperationFailureKeepsExistingClosingErrorPrecedence" computerName="[HOST]" duration="00:00:00.0754200" startTime="2026-10-03T00:32:39.9977997+10:00" endTime="2026-10-03T00:32:39.9977999+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ab3ea4dc-44ae-480d-8e29-2feee821ba66" />
+    <UnitTestResult executionId="ec57a846-e9d5-4a09-9c9f-b769ce4afb77" testId="b97acfbe-8205-cb17-874b-336bc299c48e" testName="BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.AlreadyReplacedBindingSurvivesOrdinaryClosingFailure" computerName="[HOST]" duration="00:00:00.0606422" startTime="2026-10-03T00:32:38.7606718+10:00" endTime="2026-10-03T00:32:38.7606720+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ec57a846-e9d5-4a09-9c9f-b769ce4afb77">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.IsType() Failure: Value is not the exact type&#xD;
+Expected: typeof(BookOfEternityClient.Core.SessionReplacedException)&#xD;
+Actual:   typeof(System.IO.IOException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.AlreadyReplacedBindingSurvivesOrdinaryClosingFailure() in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveBoundOutcomeTests.cs:line 147&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a4d8952a-caef-4f27-9fc5-2dec45e19786" testId="f8745d17-0c31-0d91-0b83-1c7b21406040" testName="BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.ClosingGenerationReplacementWinsAndRetainsStorageDecision(committed: True)" computerName="[HOST]" duration="00:00:00.0783309" startTime="2026-10-03T00:32:38.6987057+10:00" endTime="2026-10-03T00:32:38.6987059+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a4d8952a-caef-4f27-9fc5-2dec45e19786">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.IsType() Failure: Value is not the exact type&#xD;
+Expected: typeof(BookOfEternityClient.Core.SessionReplacedException)&#xD;
+Actual:   typeof(System.IO.InvalidDataException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.ClosingGenerationReplacementWinsAndRetainsStorageDecision(Boolean committed) in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveBoundOutcomeTests.cs:line 118&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="49673b8a-0017-4ee9-ab0f-66e7e35d9292" testId="1c825860-2e78-1301-1ecf-cdfc6210e803" testName="BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.ClosingGenerationReplacementWinsAndRetainsStorageDecision(committed: False)" computerName="[HOST]" duration="00:00:00.2178567" startTime="2026-10-03T00:32:38.6241835+10:00" endTime="2026-10-03T00:32:38.6242116+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="49673b8a-0017-4ee9-ab0f-66e7e35d9292">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.IsType() Failure: Value is not the exact type&#xD;
+Expected: typeof(BookOfEternityClient.Core.SessionReplacedException)&#xD;
+Actual:   typeof(System.IO.InvalidDataException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.ClosingGenerationReplacementWinsAndRetainsStorageDecision(Boolean committed) in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveBoundOutcomeTests.cs:line 118&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="81080f37-6e9b-4c69-af79-70ef50fe063e" testId="3da65307-52c5-939d-e000-995639ffc190" testName="BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts(committed: True)" computerName="[HOST]" duration="00:00:00.4067725" startTime="2026-10-03T00:32:39.9225006+10:00" endTime="2026-10-03T00:32:39.9225010+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="81080f37-6e9b-4c69-af79-70ef50fe063e">
+      <Output>
+        <ErrorInfo>
+          <Message>Closing must preserve BookOfEternityClient.Services.CommittedSaveContinuationException. Primary: BookOfEternityClient.Services.CommittedSaveContinuationException: Сохранение создано, но служебное восстановление не завершено. Следующее действие остановлено до проверки хранилища.&#xD;
+ ---&gt; System.AggregateException: One or more errors occurred. (synthetic bound save publication conflict) (Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.)&#xD;
+ ---&gt; System.IO.InvalidDataException: synthetic bound save publication conflict&#xD;
+   at BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.&lt;&gt;c__DisplayClass1_0.&lt;RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts&gt;b__0(TrustedLocalPublicationPhase phase, Int32 index) in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveBoundOutcomeTests.cs:line 46&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 403&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 209&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.&lt;&gt;c__DisplayClass47_0.&lt;PublishImagesWithOutcome&gt;b__0(PublicationAttempt attempt) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.Images.cs:line 18&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 86&#xD;
+   --- End of inner exception stack trace ---&#xD;
+ ---&gt; (Inner Exception #1) BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException: Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.&#xD;
+ ---&gt; System.IO.InvalidDataException: A publication member contains unknown bytes; evidence retained.&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 268&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 231&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.TrustedLocalStorage.cs:line 62&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.BackupLifecycle.cs:line 40&#xD;
+   --- End of inner exception stack trace ---&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.BackupLifecycle.cs:line 41&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.CreateSaveAsync(CanonicalWriteLease lease, String saveName, String description, String saveDir, Int32 turnNumber) in [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs:line 326&lt;---&#xD;
+&#xD;
+   --- End of inner exception stack trace ---&#xD;
+   at BookOfEternityClient.Services.SaveCreationResult.ToBoolean() in [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs:line 68&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.SaveGameAsync(String saveName, String description, String saveDir, Int32 turnNumber) in [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs:line 203&#xD;
+   at BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.&lt;&gt;c__DisplayClass1_0.&lt;&lt;RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts&gt;b__3&gt;d.MoveNext() in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveBoundOutcomeTests.cs:line 58&#xD;
+--- End of stack trace from previous location ---&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.&lt;&gt;c__DisplayClass1_0.&lt;&lt;RunBoundAsync&gt;b__0&gt;d.MoveNext() in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 34&#xD;
+--- End of stack trace from previous location ---&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 187&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 102; outer: System.IO.InvalidDataException: A publication member contains unknown bytes; evidence retained.&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 268&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 231&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.TrustedLocalStorage.cs:line 62&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 3667&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 3675&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 3574&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 122&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 44&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync(FileSystemManager fileSystem, String expectedGeneration, Func`1 operation) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 29&#xD;
+   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts(Boolean committed) in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveBoundOutcomeTests.cs:line 69&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="437ca66c-33fb-452c-9cbc-1cef09b2d10b" testId="61d2fe08-5ff6-bb80-e86a-4afea67e4fca" testName="BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts(committed: False)" computerName="[HOST]" duration="00:00:00.6003064" startTime="2026-10-03T00:32:39.5142495+10:00" endTime="2026-10-03T00:32:39.5142497+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="437ca66c-33fb-452c-9cbc-1cef09b2d10b">
+      <Output>
+        <ErrorInfo>
+          <Message>Closing must preserve BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException. Primary: BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException: Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.&#xD;
+ ---&gt; System.AggregateException: One or more errors occurred. (synthetic bound save publication conflict) (A publication member contains unknown bytes; evidence retained.)&#xD;
+ ---&gt; System.IO.InvalidDataException: synthetic bound save publication conflict&#xD;
+   at BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.&lt;&gt;c__DisplayClass1_0.&lt;RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts&gt;b__0(TrustedLocalPublicationPhase phase, Int32 index) in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveBoundOutcomeTests.cs:line 46&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 403&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 197&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.&lt;&gt;c__DisplayClass47_0.&lt;PublishImagesWithOutcome&gt;b__0(PublicationAttempt attempt) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.Images.cs:line 18&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 86&#xD;
+   --- End of inner exception stack trace ---&#xD;
+ ---&gt; (Inner Exception #1) System.IO.InvalidDataException: A publication member contains unknown bytes; evidence retained.&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 268&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 231&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 97&lt;---&#xD;
+&#xD;
+   --- End of inner exception stack trace ---&#xD;
+   at BookOfEternityClient.Services.SaveCreationResult.ToBoolean() in [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs:line 65&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.SaveGameAsync(String saveName, String description, String saveDir, Int32 turnNumber) in [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs:line 203&#xD;
+   at BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.&lt;&gt;c__DisplayClass1_0.&lt;&lt;RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts&gt;b__3&gt;d.MoveNext() in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveBoundOutcomeTests.cs:line 58&#xD;
+--- End of stack trace from previous location ---&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.&lt;&gt;c__DisplayClass1_0.&lt;&lt;RunBoundAsync&gt;b__0&gt;d.MoveNext() in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 34&#xD;
+--- End of stack trace from previous location ---&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 187&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 102; outer: System.IO.InvalidDataException: A publication member contains unknown bytes; evidence retained.&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 268&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 231&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.TrustedLocalStorage.cs:line 62&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 3667&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 3675&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 3574&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 122&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 44&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync(FileSystemManager fileSystem, String expectedGeneration, Func`1 operation) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 29&#xD;
+   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts(Boolean committed) in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveBoundOutcomeTests.cs:line 69&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="cd010e5a-3c44-4c8c-a6b1-7254b4613990" testId="f597e877-1984-5be0-862d-a22fd9290ebc" testName="BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.StorageClosingFailureRestoresEnclosingAmbientBinding" computerName="[HOST]" duration="00:00:00.1473641" startTime="2026-10-03T00:32:38.9092581+10:00" endTime="2026-10-03T00:32:38.9092583+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cd010e5a-3c44-4c8c-a6b1-7254b4613990">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Same() Failure: Values are not the same instance&#xD;
+Expected: BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException: Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.&#xD;
+ ---&gt; System.IO.IOException: synthetic uncertain publication&#xD;
+   --- End of inner exception stack trace ---&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.&lt;&gt;c__DisplayClass1_0.&lt;&lt;RunBoundAsync&gt;b__0&gt;d.MoveNext() in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 34&#xD;
+--- End of stack trace from previous location ---&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 187&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 102&#xD;
+Actual:   System.IO.IOException: synthetic inner closing failure&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 121&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 44&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync(FileSystemManager fileSystem, String expectedGeneration, Func`1 operation) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 29&#xD;
+   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.&lt;&gt;c__DisplayClass5_0.&lt;&lt;StorageClosingFailureRestoresEnclosingAmbientBinding&gt;b__0&gt;d.MoveNext() in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveBoundOutcomeTests.cs:line 197&#xD;
+--- End of stack trace from previous location ---&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.&lt;&gt;c__DisplayClass1_0.&lt;&lt;RunBoundAsync&gt;b__0&gt;d.MoveNext() in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 34&#xD;
+--- End of stack trace from previous location ---&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 187&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 102&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 141&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 44&#xD;
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync(FileSystemManager fileSystem, String expectedGeneration, Func`1 operation) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 29&#xD;
+   at BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.StorageClosingFailureRestoresEnclosingAmbientBinding() in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveBoundOutcomeTests.cs:line 193&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.OrdinaryOperationFailureKeepsExistingClosingErrorPrecedence" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="8643a382-4b4d-7a11-c5fa-7bf1b891c252">
+      <Execution id="ab3ea4dc-44ae-480d-8e29-2feee821ba66" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests" name="OrdinaryOperationFailureKeepsExistingClosingErrorPrecedence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.AlreadyReplacedBindingSurvivesOrdinaryClosingFailure" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="b97acfbe-8205-cb17-874b-336bc299c48e">
+      <Execution id="ec57a846-e9d5-4a09-9c9f-b769ce4afb77" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests" name="AlreadyReplacedBindingSurvivesOrdinaryClosingFailure" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.ClosingGenerationReplacementWinsAndRetainsStorageDecision(committed: False)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="1c825860-2e78-1301-1ecf-cdfc6210e803">
+      <Execution id="49673b8a-0017-4ee9-ab0f-66e7e35d9292" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests" name="ClosingGenerationReplacementWinsAndRetainsStorageDecision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts(committed: True)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="3da65307-52c5-939d-e000-995639ffc190">
+      <Execution id="81080f37-6e9b-4c69-af79-70ef50fe063e" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests" name="RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.ClosingGenerationReplacementWinsAndRetainsStorageDecision(committed: True)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="f8745d17-0c31-0d91-0b83-1c7b21406040">
+      <Execution id="a4d8952a-caef-4f27-9fc5-2dec45e19786" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests" name="ClosingGenerationReplacementWinsAndRetainsStorageDecision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.StorageClosingFailureRestoresEnclosingAmbientBinding" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="f597e877-1984-5be0-862d-a22fd9290ebc">
+      <Execution id="cd010e5a-3c44-4c8c-a6b1-7254b4613990" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests" name="StorageClosingFailureRestoresEnclosingAmbientBinding" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts(committed: False)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="61d2fe08-5ff6-bb80-e86a-4afea67e4fca">
+      <Execution id="437ca66c-33fb-452c-9cbc-1cef09b2d10b" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests" name="RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="8643a382-4b4d-7a11-c5fa-7bf1b891c252" executionId="ab3ea4dc-44ae-480d-8e29-2feee821ba66" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b97acfbe-8205-cb17-874b-336bc299c48e" executionId="ec57a846-e9d5-4a09-9c9f-b769ce4afb77" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f8745d17-0c31-0d91-0b83-1c7b21406040" executionId="a4d8952a-caef-4f27-9fc5-2dec45e19786" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1c825860-2e78-1301-1ecf-cdfc6210e803" executionId="49673b8a-0017-4ee9-ab0f-66e7e35d9292" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3da65307-52c5-939d-e000-995639ffc190" executionId="81080f37-6e9b-4c69-af79-70ef50fe063e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="61d2fe08-5ff6-bb80-e86a-4afea67e4fca" executionId="437ca66c-33fb-452c-9cbc-1cef09b2d10b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f597e877-1984-5be0-862d-a22fd9290ebc" executionId="cd010e5a-3c44-4c8c-a6b1-7254b4613990" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="7" executed="7" passed="1" failed="6" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.24]   Discovering: BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.74]   Discovered:  BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.76]   Starting:    BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:02.04]       Assert.IsType() Failure: Value is not the exact type&#xD;
+[xUnit.net 00:00:02.04]       Expected: typeof(BookOfEternityClient.Core.SessionReplacedException)&#xD;
+[xUnit.net 00:00:02.04]       Actual:   typeof(System.IO.InvalidDataException)&#xD;
+[xUnit.net 00:00:02.04]       Stack Trace:&#xD;
+[xUnit.net 00:00:02.04]         [WORKTREE]\BookOfEternityClient.Tests\PortableSaveBoundOutcomeTests.cs(118,0): at BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.ClosingGenerationReplacementWinsAndRetainsStorageDecision(Boolean committed)&#xD;
+[xUnit.net 00:00:02.04]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:02.11]       Assert.IsType() Failure: Value is not the exact type&#xD;
+[xUnit.net 00:00:02.11]       Expected: typeof(BookOfEternityClient.Core.SessionReplacedException)&#xD;
+[xUnit.net 00:00:02.11]       Actual:   typeof(System.IO.InvalidDataException)&#xD;
+[xUnit.net 00:00:02.11]       Stack Trace:&#xD;
+[xUnit.net 00:00:02.11]         [WORKTREE]\BookOfEternityClient.Tests\PortableSaveBoundOutcomeTests.cs(118,0): at BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.ClosingGenerationReplacementWinsAndRetainsStorageDecision(Boolean committed)&#xD;
+[xUnit.net 00:00:02.11]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:02.18]       Assert.IsType() Failure: Value is not the exact type&#xD;
+[xUnit.net 00:00:02.18]       Expected: typeof(BookOfEternityClient.Core.SessionReplacedException)&#xD;
+[xUnit.net 00:00:02.18]       Actual:   typeof(System.IO.IOException)&#xD;
+[xUnit.net 00:00:02.18]       Stack Trace:&#xD;
+[xUnit.net 00:00:02.18]         [WORKTREE]\BookOfEternityClient.Tests\PortableSaveBoundOutcomeTests.cs(147,0): at BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.AlreadyReplacedBindingSurvivesOrdinaryClosingFailure()&#xD;
+[xUnit.net 00:00:02.18]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:02.32]       Assert.Same() Failure: Values are not the same instance&#xD;
+[xUnit.net 00:00:02.32]       Expected: BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException: Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.&#xD;
+[xUnit.net 00:00:02.32]        ---&gt; System.IO.IOException: synthetic uncertain publication&#xD;
+[xUnit.net 00:00:02.32]          --- End of inner exception stack trace ---&#xD;
+[xUnit.net 00:00:02.32]          at BookOfEternityClient.Core.SessionOperationContext.&lt;&gt;c__DisplayClass1_0.&lt;&lt;RunBoundAsync&gt;b__0&gt;d.MoveNext() in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 34&#xD;
+[xUnit.net 00:00:02.32]       --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:02.32]          at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 187&#xD;
+[xUnit.net 00:00:02.32]          at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 102&#xD;
+[xUnit.net 00:00:02.32]       Actual:   System.IO.IOException: synthetic inner closing failure&#xD;
+[xUnit.net 00:00:02.32]          at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 121&#xD;
+[xUnit.net 00:00:02.32]          at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 44&#xD;
+[xUnit.net 00:00:02.32]          at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync(FileSystemManager fileSystem, String expectedGeneration, Func`1 operation) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 29&#xD;
+[xUnit.net 00:00:02.32]          at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76&#xD;
+[xUnit.net 00:00:02.32]       Stack Trace:&#xD;
+[xUnit.net 00:00:02.32]         [WORKTREE]\BookOfEternityClient.Tests\PortableSaveBoundOutcomeTests.cs(197,0): at BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.&lt;&gt;c__DisplayClass5_0.&lt;&lt;StorageClosingFailureRestoresEnclosingAmbientBinding&gt;b__0&gt;d.MoveNext()&#xD;
+[xUnit.net 00:00:02.32]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:02.32]         [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs(34,0): at BookOfEternityClient.Core.SessionOperationContext.&lt;&gt;c__DisplayClass1_0.&lt;&lt;RunBoundAsync&gt;b__0&gt;d.MoveNext()&#xD;
+[xUnit.net 00:00:02.32]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:02.32]         [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs(187,0): at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation)&#xD;
+[xUnit.net 00:00:02.32]         [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs(102,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease)&#xD;
+[xUnit.net 00:00:02.32]         [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs(141,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease)&#xD;
+[xUnit.net 00:00:02.32]         [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs(44,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation)&#xD;
+[xUnit.net 00:00:02.32]         [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs(29,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync(FileSystemManager fileSystem, String expectedGeneration, Func`1 operation)&#xD;
+[xUnit.net 00:00:02.32]         [WORKTREE]\BookOfEternityClient.Tests\PortableSaveBoundOutcomeTests.cs(193,0): at BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.StorageClosingFailureRestoresEnclosingAmbientBinding()&#xD;
+[xUnit.net 00:00:02.32]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:02.93]       Closing must preserve BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException. Primary: BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException: Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.&#xD;
+[xUnit.net 00:00:02.93]        ---&gt; System.AggregateException: One or more errors occurred. (synthetic bound save publication conflict) (A publication member contains unknown bytes; evidence retained.)&#xD;
+[xUnit.net 00:00:02.93]        ---&gt; System.IO.InvalidDataException: synthetic bound save publication conflict&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.&lt;&gt;c__DisplayClass1_0.&lt;RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts&gt;b__0(TrustedLocalPublicationPhase phase, Int32 index) in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveBoundOutcomeTests.cs:line 46&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 403&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 197&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Core.TrustedLocalFilePublication.&lt;&gt;c__DisplayClass47_0.&lt;PublishImagesWithOutcome&gt;b__0(PublicationAttempt attempt) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.Images.cs:line 18&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 86&#xD;
+[xUnit.net 00:00:02.93]          --- End of inner exception stack trace ---&#xD;
+[xUnit.net 00:00:02.93]        ---&gt; (Inner Exception #1) System.IO.InvalidDataException: A publication member contains unknown bytes; evidence retained.&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 268&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 231&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 97&lt;---&#xD;
+[xUnit.net 00:00:02.93]       &#xD;
+[xUnit.net 00:00:02.93]          --- End of inner exception stack trace ---&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Services.SaveCreationResult.ToBoolean() in [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs:line 65&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Services.SaveLoadService.SaveGameAsync(String saveName, String description, String saveDir, Int32 turnNumber) in [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs:line 203&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.&lt;&gt;c__DisplayClass1_0.&lt;&lt;RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts&gt;b__3&gt;d.MoveNext() in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveBoundOutcomeTests.cs:line 58&#xD;
+[xUnit.net 00:00:02.93]       --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Core.SessionOperationContext.&lt;&gt;c__DisplayClass1_0.&lt;&lt;RunBoundAsync&gt;b__0&gt;d.MoveNext() in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 34&#xD;
+[xUnit.net 00:00:02.93]       --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 187&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 102; outer: System.IO.InvalidDataException: A publication member contains unknown bytes; evidence retained.&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 268&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 231&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.TrustedLocalStorage.cs:line 62&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 3667&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 3675&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 3574&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 122&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 44&#xD;
+[xUnit.net 00:00:02.93]          at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync(FileSystemManager fileSystem, String expectedGeneration, Func`1 operation) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 29&#xD;
+[xUnit.net 00:00:02.93]          at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76&#xD;
+[xUnit.net 00:00:02.93]       Stack Trace:&#xD;
+[xUnit.net 00:00:02.93]         [WORKTREE]\BookOfEternityClient.Tests\PortableSaveBoundOutcomeTests.cs(69,0): at BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts(Boolean committed)&#xD;
+[xUnit.net 00:00:02.93]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:03.34]       Closing must preserve BookOfEternityClient.Services.CommittedSaveContinuationException. Primary: BookOfEternityClient.Services.CommittedSaveContinuationException: Сохранение создано, но служебное восстановление не завершено. Следующее действие остановлено до проверки хранилища.&#xD;
+[xUnit.net 00:00:03.34]        ---&gt; System.AggregateException: One or more errors occurred. (synthetic bound save publication conflict) (Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.)&#xD;
+[xUnit.net 00:00:03.34]        ---&gt; System.IO.InvalidDataException: synthetic bound save publication conflict&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.&lt;&gt;c__DisplayClass1_0.&lt;RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts&gt;b__0(TrustedLocalPublicationPhase phase, Int32 index) in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveBoundOutcomeTests.cs:line 46&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 403&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 209&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Core.TrustedLocalFilePublication.&lt;&gt;c__DisplayClass47_0.&lt;PublishImagesWithOutcome&gt;b__0(PublicationAttempt attempt) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.Images.cs:line 18&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 86&#xD;
+[xUnit.net 00:00:03.34]          --- End of inner exception stack trace ---&#xD;
+[xUnit.net 00:00:03.34]        ---&gt; (Inner Exception #1) BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException: Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.&#xD;
+[xUnit.net 00:00:03.34]        ---&gt; System.IO.InvalidDataException: A publication member contains unknown bytes; evidence retained.&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 268&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 231&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.TrustedLocalStorage.cs:line 62&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.BackupLifecycle.cs:line 40&#xD;
+[xUnit.net 00:00:03.34]          --- End of inner exception stack trace ---&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.BackupLifecycle.cs:line 41&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Services.SaveLoadService.CreateSaveAsync(CanonicalWriteLease lease, String saveName, String description, String saveDir, Int32 turnNumber) in [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs:line 326&lt;---&#xD;
+[xUnit.net 00:00:03.34]       &#xD;
+[xUnit.net 00:00:03.34]          --- End of inner exception stack trace ---&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Services.SaveCreationResult.ToBoolean() in [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs:line 68&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Services.SaveLoadService.SaveGameAsync(String saveName, String description, String saveDir, Int32 turnNumber) in [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs:line 203&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.&lt;&gt;c__DisplayClass1_0.&lt;&lt;RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts&gt;b__3&gt;d.MoveNext() in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveBoundOutcomeTests.cs:line 58&#xD;
+[xUnit.net 00:00:03.34]       --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Core.SessionOperationContext.&lt;&gt;c__DisplayClass1_0.&lt;&lt;RunBoundAsync&gt;b__0&gt;d.MoveNext() in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 34&#xD;
+[xUnit.net 00:00:03.34]       --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 187&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 102; outer: System.IO.InvalidDataException: A publication member contains unknown bytes; evidence retained.&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 268&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in [WORKTREE]\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 231&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.TrustedLocalStorage.cs:line 62&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 3667&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 3675&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 3574&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 122&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 44&#xD;
+[xUnit.net 00:00:03.34]          at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync(FileSystemManager fileSystem, String expectedGeneration, Func`1 operation) in [WORKTREE]\BookOfEternityClient\Core\SessionOperationContext.cs:line 29&#xD;
+[xUnit.net 00:00:03.34]          at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76&#xD;
+[xUnit.net 00:00:03.34]       Stack Trace:&#xD;
+[xUnit.net 00:00:03.34]         [WORKTREE]\BookOfEternityClient.Tests\PortableSaveBoundOutcomeTests.cs(69,0): at BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts(Boolean committed)&#xD;
+[xUnit.net 00:00:03.34]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:03.42]   Finished:    BookOfEternityClient.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="[HOST]" outcome="Error" timestamp="2026-10-03T00:32:38.6216679+10:00">
+        <Text>[xUnit.net 00:00:02.04]     BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.ClosingGenerationReplacementWinsAndRetainsStorageDecision(committed: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="[HOST]" outcome="Error" timestamp="2026-10-03T00:32:38.6983743+10:00">
+        <Text>[xUnit.net 00:00:02.11]     BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.ClosingGenerationReplacementWinsAndRetainsStorageDecision(committed: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="[HOST]" outcome="Error" timestamp="2026-10-03T00:32:38.7602629+10:00">
+        <Text>[xUnit.net 00:00:02.17]     BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.AlreadyReplacedBindingSurvivesOrdinaryClosingFailure [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="[HOST]" outcome="Error" timestamp="2026-10-03T00:32:38.9080550+10:00">
+        <Text>[xUnit.net 00:00:02.32]     BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.StorageClosingFailureRestoresEnclosingAmbientBinding [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="[HOST]" outcome="Error" timestamp="2026-10-03T00:32:39.5123335+10:00">
+        <Text>[xUnit.net 00:00:02.93]     BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts(committed: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="[HOST]" outcome="Error" timestamp="2026-10-03T00:32:39.9205863+10:00">
+        <Text>[xUnit.net 00:00:03.34]     BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.RealBoundSaveRetainsArchiveDecisionWhenClosingRecoveryConflicts(committed: True) [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

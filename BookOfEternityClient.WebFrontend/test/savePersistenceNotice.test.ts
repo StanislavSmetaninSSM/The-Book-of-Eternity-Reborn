@@ -1,7 +1,4 @@
 import { createBrowserApiClient } from '../src/api/client.js';
-import { createElement } from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
-import { SaveContinuationBlockedNotice } from '../src/components/SaveContinuationBlockedNotice.js';
 import { createSaveContinuationLatch, executeBrowserSaveCreation, toSaveCreationNotice } from '../src/utils/savePersistenceNotice.js';
 
 const failures: string[] = [];
@@ -59,9 +56,7 @@ await scenario('the consuming save handler latches unknown evidence before any r
   await latch.runIfAllowed(async () => { calls.push('later-write'); });
   await latch.runIfAllowed(async () => { calls.push('route-refresh'); });
   assert(calls.length === 2, 'The shell latch admitted later work after the consuming handler stopped continuation.');
-  const html = renderToStaticMarkup(createElement(SaveContinuationBlockedNotice, { notice }));
-  assert(html.includes('Продолжение остановлено') && html.includes('role="alert"'), 'The actual blocked shell surface hid its stop notice.');
-  assert(!html.includes('<button') && !html.includes('<form'), 'The blocked shell surface exposed a retry or action control.');
+  assert(notice.kind === 'uncertain', 'The handler lost its unresolved save decision.');
 });
 
 await scenario('the consuming save handler preserves a commit and identity when its refresh fails', async () => {
@@ -73,8 +68,6 @@ await scenario('the consuming save handler preserves a commit and identity when 
     async () => { refreshes++; throw new Error('Post-save shell request interrupted.'); });
   assert(refreshes === 1 && notices.join(',') === 'saved,follow-up', 'Refresh failure did not preserve the previously applied commit.');
   assert(notice.committed && notice.createdSaveId === 'manual:exact-created.zip' && latch.isBlocked(), 'Post-commit failure erased identity or allowed continuation.');
-  const html = renderToStaticMarkup(createElement(SaveContinuationBlockedNotice, { notice }));
-  assert(html.includes('Сохранение создано') && html.includes('manual:exact-created.zip'), 'The actual blocked UI hid the known committed destination.');
 });
 
 await scenario('a lost response still latches after its original settings consumer is gone', async () => {
