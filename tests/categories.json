@@ -2,6 +2,35 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-save-read-refresh",
+      "responsibility": "Ordinary save-list stream and immediate profile-refresh prerequisites: leased seekable reads, hard-link acceptance, completion type/link rejection, one common mirror publication, byte-exact no-op and typed same-lease uncertainty/debt admission.",
+      "excludes": "SaveLoadService listing integration, original load physical receipts, browser transport, resource envelopes and unrelated aggregate-state readers.",
+      "changeHints": ["BookOfEternityClient/Core/FileSystemManager.OrdinaryReadStreams.cs", "BookOfEternityClient/Core/StateManager.cs", "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs", "BookOfEternityClient.Tests/OrdinarySaveReadAndRefreshTests.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": true },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "unit", "tests": [
+        "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.OrdinaryStreamReadsFullFileAndAcceptsHardLinkedInput",
+        "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.OrdinaryStreamCompletionRejectsLinkedOrWrongTypeName",
+        "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.ProfileRepairPublishesOneCommonDecisionOnTheSuppliedLease",
+        "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.MatchingProfileRefreshPreservesExactBomBytesWithoutPublication",
+        "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.UncertainMirrorRepairPropagatesWithoutRefreshingRuntime",
+        "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.RetainedDebtBlocksStreamAndRefreshBeforeAnyReadOnTheSameLease"
+      ] }]
+    },
+    {
+      "id": "portable-save-outcomes",
+      "responsibility": "Public ordinary SaveGame and immediate autosave outcomes: closed ZIP before publication, actual known rollback, committed cleanup/log follow-up and uncertainty stopping retention while preserving the complete library.",
+      "excludes": "Browser transport, engine turn continuation, archive validation matrix, load and historical resource experiments.",
+      "changeHints": ["BookOfEternityClient/Services/SaveLoadService.cs", "BookOfEternityClient.Tests/PortableSaveOutcomeTests.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": true },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller", "BookOfEternityClient.Tests.PortableSaveOutcomeTests.ClosedArchiveAndCommittedResultSurviveLoggingFailure"] }]
+    },
+    {
       "id": "portable-storage-stream-generation",
       "responsibility": "Six separate-process v2 generation-member ordering cases: fresh adapter generation before/staged/published/commit cuts and existing BOM/case/extension-preserving transitions, with present-empty versus absent members and exact whole-set cold recovery.",
       "excludes": "Full original v1 encoding matrix, generic content phase matrix, resource envelope, Linux FIFO and SaveGame caller cutover.",

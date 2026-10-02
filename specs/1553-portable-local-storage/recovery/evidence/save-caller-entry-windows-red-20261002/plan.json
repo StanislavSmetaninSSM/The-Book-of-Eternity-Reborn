@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "portable-save-entry"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "0f4fe247ca0a53f411a00f116b707b4e1d8d262f",
+    "WorkingTreeFingerprint": "0A5C3F3B0D6F522627A937DEBC3C6236022351FD27C8FDA4CE5154A1F3CD952F",
+    "ChangedFiles": 1
+  },
+  "PreparationSeconds": 6.2836773,
+  "Descriptors": [
+    {
+      "Name": "portable-save-entry-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-save-entry",
+      "Categories": [
+        "portable-save-entry"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveCreationTests.FailedPreparationCleansActualOwnedRuntimeSaveScratch|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveCreationTests.PublicSaveReachesCompletedArchiveAndPublishesOneCreateOnlyDecision",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveCreationTests.FailedPreparationCleansActualOwnedRuntimeSaveScratch",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveCreationTests.PublicSaveReachesCompletedArchiveAndPublishesOneCreateOnlyDecision",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

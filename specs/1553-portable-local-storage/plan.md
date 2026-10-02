@@ -85,7 +85,10 @@ historical suites. Native execution exposed three fixture defects (immutable CRL
 mixed separators, resolving a deliberately invalid path during setup); production was
 not relaxed to make them pass. No token/cost savings claim is inferred from these facts.
 
-## Next T032-A caller implementation
+## Active T032-A caller implementation
+
+The original public-entry Windows baseline at frozen23d94fb7 binaries is preserved in [caller RED](recovery/evidence/save-caller-entry-windows-red-20261002/manifest.json):1pass/1causal failure, completed ZIP and saved=true but zero B1 decisions instead of one. Current new RED scaffolds add five public outcome cases and nine read/refresh helper cases. The ordinary stream API is intentionally stubbed until that scoped RED runs; no production caller uses it yet. This is WIP, not delivered save capability.
+
 
 Preserve the approved source map and game/archive formats. Prepare one closed/flushed
 owned ZIP under the held snapshot lease; return its exact create-only destination and
@@ -104,9 +107,7 @@ uncertainty cannot trigger retention or compensation. Select tests by these conc
 boundaries, and synchronize player-facing save/recovery guidance; no GM-authored game
 contract is introduced by the storage transport itself.
 
-Prerequisite final acceptance: publish source; run only changed conflict/format/resource owners;
-validate discovery metadata; preserve parsed results; obtain independent Astra XHigh
-review and fresh GitHub recovery. Full T032-A1 and SaveGame caller cutover remain open.
+Windows prerequisite accepted by independent Astra XHigh at source23d94fb7/evidence0f4fe247, including fresh4080-file/37-artifact GitHub verification. Full T032-A1 and SaveGame caller cutover remain open.
 Storage/test-only work changes no GM-authored game contract, prompt or example.
 
 ## Initial Windows restoration — 2026-10-02

@@ -9,5 +9,13 @@
   "clean": true,
   "evidenceArtifactHashesVerified": 28,
   "originalV1FixtureHashesVerified": 2,
-  "runtimeExecution": "None in recovered checkout; tests retain their separately recorded source identities."
+  "runtimeExecution": "None in recovered checkout; tests retain their separately recorded source identities.",
+  "evidenceSupplementRecovery": {
+    "trackedFiles": 4080,
+    "tree": "005e06cc70c8d22fa18fd53a3a6aa7b0f15538fa",
+    "artifactHashesVerified": 37,
+    "commit": "0f4fe247ca0a53f411a00f116b707b4e1d8d262f",
+    "clean": true,
+    "method": "Fetched published evidence-only supplement from GitHub into the fresh source checkout; exact remote objects, no local alternates or patch."
+  }
 }

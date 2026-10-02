@@ -3,24 +3,24 @@
   "selections": [
     {
       "contracts": [
-        "#1553 FR-004/005/006/007; save-resource-gate.md prerequisite"
+        "#1553 FR-002/003/004/005/006/007; approved save-creation-cutover.md"
       ],
-      "reason": "T032-A1 remaining bounded prerequisites: corrected negative fixture, actual pre-intent fences and generation/empty cold ordering. Prior format/resource GREEN retained; Linux FIFO has a separate unexecuted owner.",
-      "category": "portable-storage-stream-cold-conflicts"
+      "category": "portable-save-read-refresh",
+      "reason": "T032-A2/A3 actual ordinary save caller cutover, typed outcomes, leased listing stream and immediate profile mirror prerequisites; only changed boundaries."
     },
     {
       "contracts": [
-        "#1553 FR-004/005/006/007; save-resource-gate.md prerequisite"
+        "#1553 FR-002/003/004/005/006/007; approved save-creation-cutover.md"
       ],
-      "reason": "T032-A1 remaining bounded prerequisites: corrected negative fixture, actual pre-intent fences and generation/empty cold ordering. Prior format/resource GREEN retained; Linux FIFO has a separate unexecuted owner.",
-      "category": "portable-storage-image-admission"
+      "category": "portable-save-outcomes",
+      "reason": "T032-A2/A3 actual ordinary save caller cutover, typed outcomes, leased listing stream and immediate profile mirror prerequisites; only changed boundaries."
     },
     {
       "contracts": [
-        "#1553 FR-004/005/006/007; save-resource-gate.md prerequisite"
+        "#1553 FR-002/003/004/005/006/007; approved save-creation-cutover.md"
       ],
-      "reason": "T032-A1 remaining bounded prerequisites: corrected negative fixture, actual pre-intent fences and generation/empty cold ordering. Prior format/resource GREEN retained; Linux FIFO has a separate unexecuted owner.",
-      "category": "portable-storage-stream-generation"
+      "category": "portable-save-entry",
+      "reason": "T032-A2/A3 actual ordinary save caller cutover, typed outcomes, leased listing stream and immediate profile mirror prerequisites; only changed boundaries."
     }
   ]
 }
