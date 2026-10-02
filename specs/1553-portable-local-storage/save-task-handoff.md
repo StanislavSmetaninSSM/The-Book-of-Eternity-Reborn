@@ -19,7 +19,12 @@ are both absent, complete library preservation and one streamed B1 image/generat
 Do not reopen or replay the known original Load 0/2 diagnostic. Full T031/T032, Load,
 T033/live clients/GM, B4/B5 and overall platform acceptance remain open; live browser GUI
 is still deferred. Continue with the coordinator's design-review disposition before
-production/test implementation.
+production/test implementation. Initial design WIP `9edb04af` received three P2 findings;
+the current plan correction protects the selected source outside `saves/`, normalizes every
+config source on a detached fresh receiver, and rejects same-root nested-bound load before
+preparation while preserving actual console/browser paths. A concrete streamed-metadata
+algorithm and narrow proofs are included for the same reviewer's scoped re-review. No
+production/test execution or desktop handoff is part of this correction.
 
 ## Returned Windows caller checkpoint and distinct evidence
 

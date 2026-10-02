@@ -6,6 +6,39 @@
 
 ## T032-B0 ordinary-load design WIP — 2026-10-02
 
+### Scoped design-review correction — 2026-10-02
+
+The initial four-doc WIP is remotely saved at `9edb04afbcd5e713df39c1b2bf31ecd5783f01f2`,
+tree `83eb084b736f046bc08277b22eb7a4b583136189`. Fresh GitHub-only clone restored 4,391
+files, clean HEAD/tree, all four changed blobs and required instructions; connectivity
+check passed. No build/test/audit ran. Sole writer resumed from that verified clean SHA.
+
+Independent Astra XHigh design review found three P2 gaps, no P1 or owner-policy question.
+The [load plan](ordinary-load-plan.md) now source-verifies and defines: (1) protect the
+exact admitted archive path even at `game_session/import.zip`, reject incoming file/topology
+collisions before mutation, and preserve it through rollback/cold recovery; (2) strictly
+decode and normalize both archive and retained-live config on a detached fresh receiver,
+then apply the resolved baseline after commit while preserving exact disk bytes, including
+`consoleFontSize:0` versus preview 28/default 20; (3) reject an existing same-root generation
+binding before load preparation, preserving the stale fence. Actual console main-menu and
+browser replacement call contexts are unbound at load entry, so neither path is disabled.
+A direct nested-bound load case is required separately from the old bound-writer test.
+
+The same correction makes the T032-B1 metadata gate concrete: retain v1 and existing v2
+framing, stream header fields and patch the private length slot, parse the bounded physical
+metadata region with explicit token-memory behavior, preserve arbitrary supported property
+order and decoded strict field checks, then validate the complete descriptors/regions/hashes
+before recovery mutation. The narrow causal/compatibility test list and exact existing
+consumer owners are recorded. This scoped review can clear that algorithm and the connected
+same-shape core without another unspecified codec design loop. Full topology, cold/resource,
+public callers, native Windows and provider/gameplay gates remain required and open.
+
+Status remains **docs-only WIP awaiting the same reviewer's scoped re-review**. This revision
+changes the same four feature documents only; historical maps, production, tests, category
+catalog, selection and evidence are untouched. Source reads and diff/link/consistency checks
+are the only local verification. No runtime/load diagnostic, build, catalog audit, desktop
+handoff or installation ran. Source/ref ownership returns after exact remote verification.
+
 Source/ref ownership resumed on `codex/1553-save-windows` at clean verified
 `2ffb84572d12f2ad47b219e33ee7b50ccf0e5418`, tree
 `4c57bd15eaedf9ba463f2dd4e6c034cd36e287f5`; GitHub ref and `git ls-remote` agreed.
@@ -38,7 +71,7 @@ source/ref identity, documentation diff/links and the Spec Kit consistency pass;
 not prove runtime behavior. The existing task-local toolchain can be reused after reading
 its environment script; no toolchain setup or dependency reinstall was needed here.
 
-**Status:** docs-only WIP, independently unreviewed. Publish and verify this small
+**Initial checkpoint status:** docs-only WIP; the subsequent review/correction status is recorded above. Publish and verify this small
 checkpoint before review; the next action is coordinator-owned independent GPT-6 Astra
 XHigh design review of the connected boundary, streamed metadata semantics, topology gate,
 settings authority and task/test sufficiency. No production/test implementation before
