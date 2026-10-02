@@ -1,10 +1,13 @@
 {
-  "schemaVersion": 1,
-  "baseCommit": "36c2bb2328862f85b9894f66d1a4fe8ea2322742",
-  "patchFile": "save-creation-pending.patch",
+  "head": "36c2bb2328862f85b9894f66d1a4fe8ea2322742",
+  "rawTree": "6afabd603ee9222f5835f8d2c480f575b3aae59e",
+  "trackedFiles": 3992,
+  "initialClean": true,
+  "connectivityOnlyFsck": true,
+  "retrieval": "Fresh depth-one single-branch clone from GitHub; no local source/object copy",
   "patchBytes": 6073,
   "patchSha256": "165a050ccb5a8dcf897818e830bb761875dba9543c6b86fe31b28d993cf84870",
-  "entries": [
+  "afterImages": [
     {
       "path": "BookOfEternityClient/Core/FileSystemManager.cs",
       "beforeBlob": "4dc1ce302c9f0db8c167901f61c548513098d296",
@@ -20,10 +23,12 @@
       "afterSha256": "67ce98b124c6bee052f099881681f4e8baa7e76084a7016678599f877c949f92"
     }
   ],
-  "appliedSourceTree": "2bb5783e88e015761911038a08147b4757f44d96",
-  "comparisonExcludes": [
-    "specs/1553-portable-local-storage/recovery/save-creation-pending.patch",
-    "specs/1553-portable-local-storage/recovery/save-creation-pending.json"
-  ],
-  "scope": "T032-A ordinary save creation; current plan records exact execution and remaining scope"
+  "appliedFullTree": "7ba4e69eedbd6d577561c6cf5ff31ee9c69e3492",
+  "appliedCarrierExcludedTree": "b3b49804dc1a43a1d9d8a9305222d865c055fee3",
+  "evidenceManifestSha256": "334dfbc945464e595435558c5b59180cc521a2b041c914c14787834d143684fc",
+  "evidenceArtifactsVerified": 3,
+  "allSanitizedTrxParsed": true,
+  "diffCheck": true,
+  "runtimeExecutions": 0,
+  "limits": "Restoration and existing artifact readback only; unrun WIP remains unrun and no restricted diagnostic was retried."
 }
