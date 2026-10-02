@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "branch": "1553-save-create-only-adapter",
+  "source": "Fresh GitHub-only clone into a new empty directory; no source or Git objects copied from prior checkout.",
+  "restoredCommit": "9ac5422e666f663d3bb0355f070f9e096a436b44",
+  "rawTree": "629da9b331ff70ebffe5c4c2428e5b7269159526",
+  "rawCheckoutClean": true,
+  "gitConnectivityCheck": "exit 0",
+  "trackedFileCount": 4022,
+  "packet": {
+    "sha256": "5e32e1c52c609b26210f866c70aeb2d51b05dedd4e605b52d83de4ed7c7c84f6",
+    "bytes": 21615,
+    "beforeAndAfterImagesVerified": 2,
+    "appliedExactlyOnce": true
+  },
+  "fullAppliedTree": "2ec314ab522dce30e30162e062ab163848695301",
+  "carrierExcludedTree": "6fe9101eddd11e227dcc5cc4969c90dd964ffe43",
+  "sourceIdentitiesVerified": 7,
+  "productionTreesVerified": 5,
+  "evidenceManifestSha256": "490db55829c6b70d46509888068c87fe406b6d0783cf2fde570a9983520cb535",
+  "storedArtifactsVerified": [
+    "plan-only/summary.json",
+    "plan-only/plan.json",
+    "run/summary.json",
+    "run/plan.json",
+    "plan-only/Build-unit.log",
+    "plan-only/console.log",
+    "run/console.log",
+    "run/portable-save-create-only-adapter-unit-001.trx",
+    "audit/summary.json",
+    "audit/catalog-audit.json",
+    "audit/Build-integration.log",
+    "audit/console.log"
+  ],
+  "parsedJsonArtifacts": 6,
+  "parsedTrxArtifacts": 1,
+  "fullDiscoveryLogHashesOnly": 3,
+  "behavioralExecution": "No build, test or discovery was repeated for this recovery proof. The distinct saved behavior is 1/1 at 2b757469; discovery audit is zero tests at 4d312a62.",
+  "limits": "Source/evidence recovery only. No full T032-A1, SaveGame/game-save schema/load/gameplay or native Windows acceptance; coordinator owns final review."
+}

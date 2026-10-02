@@ -4,15 +4,15 @@
   "runtimeSourceCommit": "26c0327c20b41e82e647287a455b7a8018f0796a",
   "branch": "1553-save-create-only-adapter",
   "patchFile": "create-only-adapter-pending.patch",
-  "patchBytes": 21615,
-  "patchSha256": "5e32e1c52c609b26210f866c70aeb2d51b05dedd4e605b52d83de4ed7c7c84f6",
+  "patchBytes": 22852,
+  "patchSha256": "2505dacfbe08b962267cc8d6473462d8fd1418c1ce32fc2a7150d2a506a6b772",
   "entries": [
     {
       "path": "specs/1553-portable-local-storage/plan.md",
       "beforeBlob": "12c68a771346d59feefa9f88ffd08b1fd4d6fc27",
-      "afterBlob": "1c6c59389a99736ce31d4a95947e24d7c27b45a6",
+      "afterBlob": "a32ba294c3d5db97d592f851c15544e00b33d695",
       "beforeSha256": "45075a0ac42b9887b54ef2c8a4e12eaaf926999e1fc8c0a8eebbb6a1bba68e21",
-      "afterSha256": "95d27329a5417fa83fad703e26a72f860e76fda6d3fb231c5c58bb5b4aa27f80"
+      "afterSha256": "71f7eb34aab88d3fff497cc26ab79d40358d447d3053c0187d1f382a745ae63f"
     },
     {
       "path": "tests/categories.json",
@@ -22,7 +22,7 @@
       "afterSha256": "5aacf2e28db2d19c2159f92d7772523528a6a8fc0bf1f37373ca65cbd3465d3b"
     }
   ],
-  "appliedSourceTree": "6fe9101eddd11e227dcc5cc4969c90dd964ffe43",
+  "appliedSourceTree": "d273c8bc44e2338cbfb2540bc766a21136493fac",
   "comparisonExcludes": [
     "specs/1553-portable-local-storage/recovery/create-only-adapter-pending.patch",
     "specs/1553-portable-local-storage/recovery/create-only-adapter-pending.json"
