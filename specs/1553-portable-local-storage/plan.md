@@ -17,7 +17,7 @@ findings. The three-string evidence sanitization correction at `24f3a1ad` is inc
 These exact historical execution sources and manifests remain authoritative; the
 older pending-review wording below records the historical handoff, not current status.
 
-This continuation changes no runtime, test or catalog. Fresh successful unit/integration
+This continuation leaves runtime unchanged. One fixture now seeds retained legacy residue directly and asserts the exact real admission guard; its existing method moved to one narrow owner without changing catalog membership. Fresh successful unit/integration
 builds at `f331a523` are source-equivalent through this entry checkpoint; relevant trees,
 runner/catalog and binaries are verified before `-NoBuild` reuse. Debian13 x64,
 .NET SDK10.0.401/runtime8.0.31, PowerShell7.6.6; owned fresh CLI/XDG/HTTP/plugin/scratch/temp
@@ -28,7 +28,7 @@ dependencies are already installed; unchanged package/lock identities are verifi
 | Bounded command group | Current result and scope |
 | --- | --- |
 | consumer-contracts + profile-consumers | [Preserved partial](recovery/evidence/save-linux-consumer-preparation-failure-20261002/manifest.json):22/23 formal pass in20.0089718s =13 real pass +9 Windows-only no-ops;1 fixture-preparation failure, [profile3/3 GREEN](recovery/evidence/save-linux-profile-green-20261002/manifest.json) separately in8.7747541s at65f0b219; complete cleanup. Five portable static counterparts already accepted, not repeated. |
-| legacy-residue-admission (one method split from consumer-contracts) | Exact preparation RED preserved; fixture-only direct seed with the same UTF-8 BOM bytes, unchanged SaveGame rejection/session/library assertions; correction WIP, fresh integration build + one-case run pending. |
+| legacy-residue-admission (one method split from consumer-contracts) | [GREEN1/1](recovery/evidence/save-linux-residue-green-20261002/manifest.json) in9.4941779s at cleanced9b540 after [fresh integration build/PlanOnly1](recovery/evidence/save-linux-residue-build-plan-20261002/manifest.json) in4:01.4468040. Exact guard/type/root, evidence/session/library and cleanup passed; no production change. |
 | browser-save-creation + engine-save-presentation | Pending; real backend/manual console/agent-console boundary and exact outcomes. |
 | browser-save-presentation + settings-notices + settings-consumers + shell-types | Pending; Node scenarios, adapter cases, Vitest and pure typecheck remain separate; required production frontend build/typecheck included. |
 | engine-save-player | Pending separate command,2 real accepted-state/save-continuation cases. |
@@ -47,7 +47,7 @@ state must be reached for an engine result to qualify.
 
 WIP; remaining consumer qualification and independent review pending. Full T032-A1/A2/A3,
 T032-A/T031/T032, live clients, real GM/gameplay, B4/B5 and full platform acceptance remain
-open. No GM-authored contract change. Group1 failure is before the save call: synthetic stale browser marker setup uses the original descriptor-bound create-only writer on Linux (SaveLoadServiceTests.cs:590), raising PlatformNotSupportedException. Ordinary admission is not reached. Exact stack and unchanged source identities are preserved; this does not establish a save regression. Next: bounded fixture correction or separate dependency disposition, then remaining groups.
+open. No GM-authored contract change. Group1 failure is before the save call: synthetic stale browser marker setup uses the original descriptor-bound create-only writer on Linux (SaveLoadServiceTests.cs:590), raising PlatformNotSupportedException. Ordinary admission is not reached. Exact stack and unchanged source identities are preserved; this does not establish a save regression. Correction is now GREEN with the exact legacy guard; next: backend/presentation, frontend and three separate engine owners. Independent review remains pending for this consumer block.
 
 
 ### Final GitHub restoration and writer handoff — 2026-10-02 17:58 UTC

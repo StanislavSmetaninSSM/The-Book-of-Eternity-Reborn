@@ -52,7 +52,7 @@
     },
     {
       "category": "portable-save-consumer-contracts",
-      "reason": "Native Linux ZIP/schema/source/lease/listing/retention consumers; report 14 real bodies separately from 9 Windows-only early returns.",
+      "reason": "Native Linux ZIP/schema/source/lease/listing/retention consumers; current owner has13 real bodies separately from9 Windows-only early returns, with retained-residue admission moved to its own owner.",
       "contracts": [
         "#1553 FR-002/003/004/005/006/010/015; T032-A native Linux consumer qualification"
       ]

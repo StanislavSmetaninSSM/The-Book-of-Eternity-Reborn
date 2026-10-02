@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-save-legacy-residue-admission"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "ced9b5401b111553022cac483b42d7e46119ab5d",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 241.1486127,
+  "Descriptors": [
+    {
+      "Name": "portable-save-legacy-residue-admission-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-save-legacy-residue-admission",
+      "Categories": [
+        "portable-save-legacy-residue-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_RetainedBrowserRollbackEvidenceBlocksOrdinaryAdmission",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_RetainedBrowserRollbackEvidenceBlocksOrdinaryAdmission",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

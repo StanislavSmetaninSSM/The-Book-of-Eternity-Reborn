@@ -26,18 +26,19 @@ cold16 and generation6/admission3/FIFO1 block passed independent Astra XHigh rev
 and coordinator acceptance. The new static filesystem caller 5 and existing affected
 ordinary caller 33 cohorts passed on their distinct sources; current public-producer
 resource 3 passed with all 15children at `cc087195`, after a fixture-only confirmed-child-
-exit sampling correction. This newest caller/resource block awaits independent review
-and coordinator acceptance; read the current [plan](plan.md) and preserved manifests.
+exit sampling correction. This caller/resource block is accepted by the coordinator after final independent
+Astra XHigh spec/quality PASS at24f3a1ad, with no remaining findings; read the current [plan](plan.md) and preserved manifests.
 Its discovery-only audit passed197 categories/10,503 identities with zero execution.
 Do not replay these passing groups or the unchanged historical publication/dispatch/
 original-v1/create-only controls without a relevant new change.
+
+Consumer/profile qualification is now complete in separate evidence:13 real consumer bodies passed in the initial partial run at06025c16 (plus9 Windows no-ops); profile3 passed at65f0b219. The retained-legacy-evidence fixture failed during setup, was corrected by directly seeding the same marker bytes, and its isolated owner passed1/1 atced9b540 with the exact real legacy-admission guard assertion and unchanged session/library preservation. See the current plan/manifests; do not repeat those passing bodies. Independent review of this new consumer continuation remains pending.
 
 The following are separate remaining owners. Use PowerShell 7 and fresh required
 builds before `-NoBuild`; execute each real engine owner separately. Do not assemble
 a full-suite command:
 
 ```powershell
-./scripts/test-csharp.ps1 -Category portable-save-consumer-contracts,portable-save-profile-consumers -Parallelism 1
 ./scripts/test-csharp.ps1 -Category portable-browser-save-creation,portable-engine-save-presentation -Parallelism 1
 ./scripts/test-csharp.ps1 -Category portable-browser-save-presentation,portable-settings-notices,portable-settings-consumers,frontend-shell-types -Parallelism 1
 ./scripts/test-csharp.ps1 -Category portable-engine-save-player -Parallelism 1
@@ -45,8 +46,9 @@ a full-suite command:
 ./scripts/test-csharp.ps1 -Category portable-engine-save-late -Parallelism 1
 ```
 
-The 23-method consumer owner contains nine historical Windows-only early returns:
-a formal Linux 23/23 would mean 14 exercised bodies plus 9 no-ops, not 23 native proofs.
+The historical23-method consumer owner contained nine Windows-only early returns.
+After its single-method residue-admission split, the current consumer owner has22:
+13 real bodies plus9 no-ops; the new residue owner adds1 real body. These no-ops are not native Linux proof.
 Five agreed static/no-follow/hard-link counterparts now have actual native coverage
 in `portable-save-filesystem-callers`; this does not import Windows physical pinning
 or simultaneous namespace-swap guarantees. The two original physical read controls
