@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "baseCommit": "36c2bb2328862f85b9894f66d1a4fe8ea2322742",
+  "baseCommit": "c991f4820242bd552a6d3f4ed977139c6e94ae6c",
   "patchFile": "save-creation-pending.patch",
-  "patchBytes": 6073,
-  "patchSha256": "165a050ccb5a8dcf897818e830bb761875dba9543c6b86fe31b28d993cf84870",
+  "patchBytes": 9680,
+  "patchSha256": "0f97a30535c842825348013cca52558573ba335033decc044d81f8aec5ac7d7b",
   "entries": [
     {
       "path": "BookOfEternityClient/Core/FileSystemManager.cs",
@@ -13,6 +13,13 @@
       "afterSha256": "84384b25adaec172244296671706837217e815d7df19abf04c432d53b4250d0f"
     },
     {
+      "path": "specs/1553-portable-local-storage/plan.md",
+      "beforeBlob": "9b24d8884c810acc8596ad5eb716f4cc4ff6ff1c",
+      "afterBlob": "f391d77f025017105dd5ada367163305ab48852c",
+      "beforeSha256": "972f3de4f65dd2e993f38fa1fd4040dd927462d3d170c945236c5f18dd87e2b7",
+      "afterSha256": "5f77a426ef7f5d74e623c21b4aff0eff8744f4f89ac03d0ff828532885db6821"
+    },
+    {
       "path": "tests/categories.json",
       "beforeBlob": "6bbd1c6f0e8a087a7c92df4cce0a6e798bcfa4e5",
       "afterBlob": "15baf6e54171ec75cba96caceffda864cbbe787a",
@@ -20,7 +27,7 @@
       "afterSha256": "67ce98b124c6bee052f099881681f4e8baa7e76084a7016678599f877c949f92"
     }
   ],
-  "appliedSourceTree": "2bb5783e88e015761911038a08147b4757f44d96",
+  "appliedSourceTree": "4966ce61918a0cdae78405ecfa6571ae88b83207",
   "comparisonExcludes": [
     "specs/1553-portable-local-storage/recovery/save-creation-pending.patch",
     "specs/1553-portable-local-storage/recovery/save-creation-pending.json"
