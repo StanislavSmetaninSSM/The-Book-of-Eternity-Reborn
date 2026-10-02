@@ -6,6 +6,26 @@
 
 <a id="active-t032-a--ordinary-save-creation"></a>
 
+### Fresh ownership audit and corrected build — 2026-10-02 17:46 UTC
+
+At clean corrected source `f331a5231a00823ae33f3fd87b11b349a46aa034`, the
+[discovery-only audit](recovery/evidence/save-linux-catalog-audit-20261002/manifest.json)
+passed **197 categories/10,503 identities**, zero unmapped/stale selectors and
+**zero executed tests**, exit0 in **5:39.3676455**. Fresh integration build
+**272.3735738 seconds** and unit build **54.7081824 seconds** both completed;
+owned/runtime cleanup is complete. This supplies the fresh corrected unit binaries
+for the separate resource rerun. No unchanged passing caller/storage cohort is repeated.
+
+The preceding invocation with `-ValidateCatalog -Parallelism 1` was rejected by
+PowerShell parameter binding before any setup/build/discovery/test; its exact
+failure is preserved in the audit bundle. `-Parallelism` is not in the unchanged
+runner's Audit parameter set. The supported documented `-ValidateCatalog` form
+then ran successfully; all actual runtime commands retain `-Parallelism 1`.
+For fresh integration restore, the prior downloaded packages were copied into this
+block's own NuGet cache before adding the required Roslyn5.3.0 dependency; the
+predecessor cache was not mutated. No resource child ran concurrently with these
+builds, restores or discovery work.
+
 ### Resource monitor correction WIP — 2026-10-02 17:36 UTC
 
 The causal2/3 failure is saved at `dcb0d22a552ceda3e8c419154367532bb608ce88`

@@ -1,0 +1,276 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A1/A2/A3 bounded native Linux save caller/resource qualification",
+  "sourceCommit": "f331a5231a00823ae33f3fd87b11b349a46aa034",
+  "sourceTree": "0f365fa55b4d286bfd5ff464c6035878803ec51c",
+  "entryCommit": "0d7f6c89d370716cad374e397898f7dedfdd452c",
+  "sourceWorkingTree": {
+    "Head": "f331a5231a00823ae33f3fd87b11b349a46aa034",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "catalogCheckpoint": {
+    "baseCommit": "0d7f6c89d370716cad374e397898f7dedfdd452c",
+    "path": "tests/categories.json",
+    "beforeGitBlob": "17afadcd03badce4e5b4a78f322f1e4be4b6a2eb",
+    "afterGitBlob": "1dd6d00b183e7aba02e5655173dab545f11dbb15",
+    "afterSha256": "320c752159ab1a93093e08ef72a34be4700c020ebe334446579479040b8e3aaf",
+    "afterBytes": 904946,
+    "patchSha256": "dd5a2c9cd1c627f3837d9499c29badf8478e01afd3ae54a040befbf0bc681331",
+    "purpose": "Exact bounded checkpoint before normal full catalog publication; no runner/schema change. Apply only to the stated base catalog and verify the after identity."
+  },
+  "command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -ValidateCatalog'",
+  "workingDirectory": "/repo",
+  "platform": {
+    "system": "Linux",
+    "architecture": "x86_64",
+    "kernel": "6.18.44"
+  },
+  "toolchain": {
+    "sdk": "10.0.401",
+    "runtime": "8.0.31",
+    "powershell": "7.6.6",
+    "specify": "1.0.13",
+    "versionEvidence": "Actual run preflight output in toolchain-provenance.txt; Spec Kit prerequisite separately passed"
+  },
+  "environment": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1",
+    "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+    "DOTNET_PROCESSOR_COUNT": "1",
+    "HOME_CODEX_HOME": "unchanged",
+    "mutableState": "Unique /owned-run CLI/XDG/NuGet HTTP/plugin/scratch/temp and private copied package cache for fresh audit/build; shared official binaries"
+  },
+  "categories": [
+    null
+  ],
+  "planOnly": false,
+  "discoveryOnly": true,
+  "catalogAudit": {
+    "Valid": true,
+    "Methods": 10503,
+    "Categories": 197,
+    "Unmapped": [],
+    "StaleSelectors": []
+  },
+  "wallTime": "00:05:39.3676455",
+  "exitCode": 0,
+  "selection": {
+    "PlannedDescriptors": 0,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 0,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "syntheticFixtureRemainders": [],
+  "sourceIdentities": [
+    {
+      "path": "scripts/test-csharp.ps1",
+      "sha256": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1",
+      "gitBlob": "0576b2e34e5c0c5d164c173a9961a67c965c5509"
+    },
+    {
+      "path": "scripts/testing/TestCategoryCatalog.psm1",
+      "sha256": "865b7e528b48bca008524865abe6186d5c61f3e623f73f785ce1f41c3da53112",
+      "gitBlob": "eaee76832cb5fb99ea20598862ed6b4822532bcc"
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "320c752159ab1a93093e08ef72a34be4700c020ebe334446579479040b8e3aaf",
+      "gitBlob": "1dd6d00b183e7aba02e5655173dab545f11dbb15"
+    },
+    {
+      "path": "tests/selection.json",
+      "sha256": "4121c3a91f769dac66cd8eb6284a29cc177487b27de8b75f5112e6b42a2cf650",
+      "gitBlob": "0f5f43a13fd5ecae4b3e871f1408e74dac6761ce"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "sha256": "a59d50fe221ee6dc170231551b6e5bb1652ae4575c9608a2a1dd08737a0436e0",
+      "gitBlob": "8f2cfc1eaed78460455f87c7e34620e6034acc40"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs",
+      "sha256": "ae147b09feb7152aa7a7dfed8b0fc801119f5f7d366524bf1bdccd6825e55a94",
+      "gitBlob": "a8fe1ec081a6fcbf5a05170a8386e9fb7ee5a273"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+      "sha256": "6e4d11e939f4950431443d53d2516d6c8ac12a90ef0fd6046f882889f8676fce",
+      "gitBlob": "02ec111871e0905bd15c33abe7ed077a245ff91f"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReadStreams.cs",
+      "sha256": "323d61e2ef12ff77662712d5ce199a2ca0dfe6211544ff8e19cd60e984b93cd1",
+      "gitBlob": "982b17545fa2e83e78627c54ac607a9abd87dbef"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+      "sha256": "a59b830016884e269e9732a26a0d1694d9e2f2b5e0026bdc976b57863afd5b09",
+      "gitBlob": "e87597b5e92c63a3fc343b2a612b788615039702"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFileImage.cs",
+      "sha256": "920f142683a8152f80c6a79810b87841e2786ae074df5c809562a00bd6f3aec9",
+      "gitBlob": "34bb94a325381be80eac63fee5caab9cbf128624"
+    },
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "sha256": "f1dcc2a8169631bcd4c06a9631e7fe0fc6e623f2891c2c042e17cb5050efec55",
+      "gitBlob": "9957f602122a08a414ca225c84f7f36de77348ab"
+    },
+    {
+      "path": "BookOfEternityClient/Core/StateManager.cs",
+      "sha256": "550b288beb5332efa75c98a6774c200418bf2447a39e049cfefc80294c3063e6",
+      "gitBlob": "4c4582b40c2eb969a6806085062b1dad34b44235"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+      "sha256": "ccdfa372877c5ddc2eaaa1dd77d063dc8c5a5e5b9ea5763db2724fd29c47c47e",
+      "gitBlob": "e5572e627d4caacce9872a1a50c20a8016418af2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.Creation.cs",
+      "sha256": "881559a5e20ce76489f16a2fecda55dc5a7c932bceccd6eee3ad6d0cd6161982",
+      "gitBlob": "460dffbea3364bbc98e2f6011668554b40bd907d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs",
+      "sha256": "9563ffcbf64e7469d2a964cc6f6ae590b56467914e0a014466b4820a372b182b",
+      "gitBlob": "d8092aefabce9b0e7079774f285b2f9fc544bea3"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "sha256": "07579b520a85952ec04e5df5b2a88a794ebaa8f318f2c10aa962bf821c02d1bd",
+      "gitBlob": "0edc3ca15878b1b879fdcaf1aaf90642718d4d76"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "sha256": "9788117b2081320c7df37fa79114ccc876b2e4e16cca45d933197c99a663bba8",
+      "gitBlob": "913fb07886ccbd776a2b0011740f24dc334eef0e"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PortableSaveFilesystemCallerTests.cs",
+      "sha256": "09f33bc4826ec0e52144f9d0c7802cc6df80173c4332d2ebe9e17035910f9276",
+      "gitBlob": "e23b62fb6bf1fcedbaf0c2cadd2c188cca840afd"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PortableSaveCreationTests.cs",
+      "sha256": "1bd82ca66ef1a850e64c10ad011435209502eab475d7d3f3104792bdceaa4b75",
+      "gitBlob": "d47c247b26ecf8a134d57243f125965b24c2f21a"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PortableSaveOutcomeTests.cs",
+      "sha256": "568a181cd302b27b3ce7fb9a88509d6682dfb640a2be0af98b0728f024c97efc",
+      "gitBlob": "cd041e1ea4fb33ff5b4ba1f0c1220421bd13d1c1"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PortableSaveBoundOutcomeTests.cs",
+      "sha256": "45c0fd6b184b9d931b333292f1b74600be8fdc66bab7530f85332022ca10ac69",
+      "gitBlob": "556372f56cd4b2977108bef0c4033f47f96293c4"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/OrdinarySaveReadAndRefreshTests.cs",
+      "sha256": "74a56840044a9e4ec19dc5feb344c90204754f0ef9675b65c2c24c8f55f851cc",
+      "gitBlob": "05316cc0ccafbebfdb8425e26c26c454ef090b66"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/TrustedLocalStreamResourceTests.cs",
+      "sha256": "9b82dcbe80e4cdd8d1134b1763cc521faa56213aa9fdabd9a2b34b4f6c427cb8",
+      "gitBlob": "5b68663a2aa90decb0cb948e41773e8c84675768"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/PortableSaveFixture.cs",
+      "sha256": "7c05b769b4342ccad9692599eab0f37d35e4dea4077631ab213a62680a81e2b6",
+      "gitBlob": "eea32080e458e653c1beb8c56ba21280cbd7e569"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/TrustedLocalStreamResourceProbe.cs",
+      "sha256": "e2033ee9213a4eebcb2ce7b7b199f5b4ee6dfcbda40cf6afb30dce9d8fbeb0c3",
+      "gitBlob": "126cbb7888525360a0926385fd32acb69324ec53"
+    },
+    {
+      "path": "tests/fixtures/PortableStorageCrashHost/Program.cs",
+      "sha256": "40cec505ac7d15172c37c4c5bfcb1f633c8878db7e568928b61d1bd9e215cc55",
+      "gitBlob": "8ba1acb12206f99bdc3df471a9cc2673c5569e0a"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "sha256": "a6d53b803f384018856f0ffe42b58fbfe335d954f474986ac9696e738739bbf7",
+      "gitBlob": "48fde8733d2f210c624adde08a068f414b7e0afd"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Images.cs",
+      "sha256": "7eceabdf8d76c6d0e7be69b3c6b715b9f53d1bada133e5e868bc8ce9045773c7",
+      "gitBlob": "c50cb063ebcb007fd25656a35e08c5ae4e9cb02c"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+      "sha256": "158838814f3d55c1669538e9bc0e4d2593b3d4adf356901007609d779fc68d9d",
+      "gitBlob": "69d480b2cc10c640dcf79cd906f8a59263eba4e3"
+    }
+  ],
+  "cases": [],
+  "artifacts": [
+    {
+      "path": "summary.json",
+      "originalSha256": "43553d9acc6f1dae0a80683787b021858b6e6b59e139873975070d93c17d4256",
+      "sha256": "43553d9acc6f1dae0a80683787b021858b6e6b59e139873975070d93c17d4256",
+      "originalBytes": 1601,
+      "storedBytes": 1601
+    },
+    {
+      "path": "catalog-audit.json",
+      "originalSha256": "8832bbfda894bfb257e71353fcdd86613f91fca91aa26844afb5e36021e40547",
+      "sha256": "8832bbfda894bfb257e71353fcdd86613f91fca91aa26844afb5e36021e40547",
+      "originalBytes": 103,
+      "storedBytes": 103
+    },
+    {
+      "path": "Build-integration.log",
+      "originalSha256": "5d865b9c65d8a14bcb5b3447e7a9306002cb0141186493e7a6f2a66a81d3f2f1",
+      "sha256": "938c8965b0e40ba32f6eb29accfa25dec116662207c58176ae15037f5a711b16",
+      "originalBytes": 3718,
+      "storedBytes": 2552
+    },
+    {
+      "path": "Build-unit.log",
+      "originalSha256": "61c52b8a8dcc2de7698717e11b3ea1364685e1223ed022a564eec5afa64bc099",
+      "sha256": "9642576b2e8bcae4e3b5fb1ce1aaa8a9aa6f6861b35aa3784a72f1061efd84de",
+      "originalBytes": 8132,
+      "storedBytes": 6118
+    },
+    {
+      "path": "toolchain-provenance.txt",
+      "originalSha256": "4b19dcf41b46a56ceddea24c5aeda629b481a8de5bdfcca05091cd70de33a1d3",
+      "sha256": "3a40f75f3cb6ec23522cec5280d9ab3dbb35106dc2a04fe8d27e4c9f74ec38c6",
+      "originalBytes": 717,
+      "storedBytes": 476
+    },
+    {
+      "path": "prior-parameter-rejection.log",
+      "originalSha256": "506703131a454eae9df19b77bbd99563424d4f4ffbec0130c0f4fbd69e5ec26d",
+      "sha256": "506703131a454eae9df19b77bbd99563424d4f4ffbec0130c0f4fbd69e5ec26d",
+      "originalBytes": 197,
+      "storedBytes": 197
+    }
+  ],
+  "limits": "Bounded synthetic native Linux caller/resource evidence only. No full T032-A1/A2/A3 acceptance or engine/frontend/live-client/GM/Load/wider platform claim.",
+  "priorInvocationRejectedBeforeSetup": {
+    "command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -ValidateCatalog -Parallelism 1'",
+    "exitCode": 1,
+    "reason": "Parallelism belongs to runtime category/selection parameter sets, not discovery-only Audit. No setup/build/discovery/test began in this rejected invocation. The supported documented -ValidateCatalog command above succeeded."
+  }
+}
