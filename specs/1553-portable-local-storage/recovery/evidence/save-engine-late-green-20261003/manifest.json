@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "7c52a5e6bc2165a0a1cc1179f89f43e6749dac56",
+  "status": "Frozen7c52 integration binaries: actual late-response turn uncertain and committed-debt autosave2/2 passed, complete selection and owned cleanup; no Linux execution.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-engine-save-late"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:02:59.5408184",
+  "exitCode": 0,
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 2,
+    "CompletedCases": 2,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 2,
+    "Failed": 0
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "plan.json",
+      "originalSha256": "7E742872FBE9CDE669F9EE9FE707633CEFB40CB58DC138506C3323E5567B3640",
+      "sha256": "05077A115B4F2EA1F308B6D5FD08074797E0CADBD6860118E6A73A72751D39B6"
+    },
+    {
+      "path": "portable-engine-save-late-integration-001.trx",
+      "originalSha256": "C6AF1889E08F05252D51D0E4B8C3B77F2AEAAF0D7E8400072706FBA75C9B3812",
+      "sha256": "F44EEF16C8031BD6040422877F9FB07C7E9FFA29549DBB9016A2D06D87F2CD82"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "305FDFE2DE82A3839D167E03FC96FFC2D4B5F18400FEB989DC0E641CB810E65B",
+      "sha256": "87FD30F0D943AEB4E3EC0B5B53A5DA5D88739C9A3F3AAC121F8C064C6C3037A3"
+    }
+  ]
+}

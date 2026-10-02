@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="870d838a-11c5-4ca6-82c3-2a46c5d3d868" name="Eja@[HOST] 2026-10-03 01:14:21" runUser="[HOST]\Eja" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-03T01:14:21.6820095+10:00" queuing="2026-10-03T01:14:21.6820098+10:00" start="2026-10-03T01:14:18.6132497+10:00" finish="2026-10-03T01:14:21.6896017+10:00" />
+  <TestSettings name="default" id="0fdefc9b-8f0d-41b9-be85-eb28eafa4be7">
+    <Deployment runDeploymentRoot="Eja_[HOST]_2026-10-03_01_14_21" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="628e2370-0ce8-4602-89fa-86bc38107d14" testId="f97bf408-d7ce-42b9-63c4-667e44ffa340" testName="BookOfEternityClient.Tests.OriginalSaveProfileRefreshTests.WindowsOriginalRecorderRefreshRetainsPhysicalPublicationReceipt" computerName="[HOST]" duration="00:00:00.5699978" startTime="2026-10-03T01:14:21.5710856+10:00" endTime="2026-10-03T01:14:21.5711115+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="628e2370-0ce8-4602-89fa-86bc38107d14">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ&#xD;
+            ↓ (pos 1)&#xD;
+Expected: "4F3BDAEBAF80E167EF75D0997C6BF33B8B058498F"···&#xD;
+Actual:   "4f3bdaebaf80e167ef75d0997c6bf33b8b058498f"···&#xD;
+            ↑ (pos 1)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.OriginalSaveProfileRefreshTests.WindowsOriginalRecorderRefreshRetainsPhysicalPublicationReceipt() in [WORKTREE]\BookOfEternityClient.Tests\OriginalSaveProfileRefreshTests.cs:line 89&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.OriginalSaveProfileRefreshTests.WindowsOriginalRecorderRefreshRetainsPhysicalPublicationReceipt" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="f97bf408-d7ce-42b9-63c4-667e44ffa340">
+      <Execution id="628e2370-0ce8-4602-89fa-86bc38107d14" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.OriginalSaveProfileRefreshTests" name="WindowsOriginalRecorderRefreshRetainsPhysicalPublicationReceipt" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="f97bf408-d7ce-42b9-63c4-667e44ffa340" executionId="628e2370-0ce8-4602-89fa-86bc38107d14" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" passed="0" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.23]   Discovering: BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.67]   Discovered:  BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.69]   Starting:    BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:02.32]       Assert.Equal() Failure: Strings differ&#xD;
+[xUnit.net 00:00:02.32]                   ↓ (pos 1)&#xD;
+[xUnit.net 00:00:02.32]       Expected: "4F3BDAEBAF80E167EF75D0997C6BF33B8B058498F"···&#xD;
+[xUnit.net 00:00:02.32]       Actual:   "4f3bdaebaf80e167ef75d0997c6bf33b8b058498f"···&#xD;
+[xUnit.net 00:00:02.32]                   ↑ (pos 1)&#xD;
+[xUnit.net 00:00:02.32]       Stack Trace:&#xD;
+[xUnit.net 00:00:02.32]         [WORKTREE]\BookOfEternityClient.Tests\OriginalSaveProfileRefreshTests.cs(89,0): at BookOfEternityClient.Tests.OriginalSaveProfileRefreshTests.WindowsOriginalRecorderRefreshRetainsPhysicalPublicationReceipt()&#xD;
+[xUnit.net 00:00:02.32]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:02.32]   Finished:    BookOfEternityClient.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="[HOST]" outcome="Error" timestamp="2026-10-03T01:14:21.5688151+10:00">
+        <Text>[xUnit.net 00:00:02.32]     BookOfEternityClient.Tests.OriginalSaveProfileRefreshTests.WindowsOriginalRecorderRefreshRetainsPhysicalPublicationReceipt [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

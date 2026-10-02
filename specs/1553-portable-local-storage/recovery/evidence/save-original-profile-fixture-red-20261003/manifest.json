@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "958b4645880df717a74eb517e199923925ed1244",
+  "status": "Fresh958b4645 direct original publication was reached, but one test assertion compared uppercase computed SHA text against legacy lowercase text. Corrected fixture compares digest bytes; no production change. Profileconsumer3 unrun after failure.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-save-original-profile-windows",
+    "portable-save-profile-consumers"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:00:50.6257785",
+  "exitCode": 1,
+  "selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 4,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [
+      "portable-save-profile-consumers-unit-002"
+    ],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "Build-unit.log",
+      "originalSha256": "AEC22D765E2CD4794B2C569C0BE7C0AB447A284D9A00B3A52F841682BE1F3EA7",
+      "sha256": "6ACBBDBB1DE76E8C04746EF9FF57470C64BA84BBEBC2329BDDBFDF55D5A39FCD"
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "DE2ABABF8CA537803ACBEB1397693E73F2E2EF068E219136C0CC9103EF5A060C",
+      "sha256": "79EE160C6312A08C28A4BEE861FE14C3B82D496B60110247BFB58590B87C919D"
+    },
+    {
+      "path": "portable-save-original-profile-windows-unit-001.trx",
+      "originalSha256": "D347F7822F0C13F32C3E6C332A3154150FA7F8164C3A724381860C60D970F7B3",
+      "sha256": "F160C7E9E4B11E8629F2C910A29BE15D684F032F0F85641C3466AF523207696C"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "2049041AB7067C54ACCEE6C4ACBB8D3C0D1F23BFC4B9EB3ADB58E8C7F30591B2",
+      "sha256": "CDAFD9FBD78FD52DE3670BEF417338626DF0AF1954A484F04FAA00E565614CDF"
+    }
+  ]
+}

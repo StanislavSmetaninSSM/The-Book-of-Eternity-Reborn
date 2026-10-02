@@ -85,14 +85,6 @@
       "expectedSeconds": null,
       "selectors": [
         {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.StateManagerTests.AfterlifeEntityProfileState_DoesNotExposeUnleasedCanonicalMirrorWrite",
-            "BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_PlayerSoulProfileAuthorityMirror_RepairsStaleAutoProgression",
-            "BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_ProfileMirrorReadModifyWrite_HoldsOneCanonicalLease"
-          ]
-        },
-        {
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_FailureBeforeCommitLeavesNoPartialSaveOrTemporaryFile",

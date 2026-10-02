@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "7c52a5e6bc2165a0a1cc1179f89f43e6749dac56",
+  "status": "Frozen7c52 integration binaries: actual waiting-turn uncertain and committed-debt autosave2/2 passed, complete selection and owned cleanup; no Linux execution.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-engine-save-waiting"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:03:16.3165952",
+  "exitCode": 0,
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 2,
+    "CompletedCases": 2,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 2,
+    "Failed": 0
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "plan.json",
+      "originalSha256": "94F2E62A05506B6DC9EA230A5147C66FB7DCE64AF7698B87FDEA21CEC0C7D4BD",
+      "sha256": "9332DE71CB20F65D75D1043928D7C336B2CECE26C8E1BF2BF743072C677E4A35"
+    },
+    {
+      "path": "portable-engine-save-waiting-integration-001.trx",
+      "originalSha256": "645BE113255B155A45BDCE03A3098B35255F2126BDF4182BB38B039571F83313",
+      "sha256": "2755C27D2B9C89900F4BF2AB435418ADB26821FDA7C21D8E3FC0DABD5D8EFF11"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "86013D28813ED9F2D11859B8C07C6B1C1C9A38F050F1788AC688E0FCAA8672D6",
+      "sha256": "0C015C24905493B4735FB087378BE11DF6A440D93258D439ACDC5DF9E5E16A26"
+    }
+  ]
+}

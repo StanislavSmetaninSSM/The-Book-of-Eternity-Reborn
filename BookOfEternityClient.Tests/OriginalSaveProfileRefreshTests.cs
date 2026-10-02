@@ -86,7 +86,7 @@ public sealed class OriginalSaveProfileRefreshTests : IDisposable
         var intent = Assert.Single(recorder.Intents);
         Assert.Equal(AfterlifeEntityProfileState.StatePath, intent.Path);
         Assert.Equal(afterProfile, intent.Desired);
-        Assert.Equal(Convert.ToHexString(SHA256.HashData(afterProfile)), publication.Receipt.Sha256);
+        Assert.Equal(SHA256.HashData(afterProfile), Convert.FromHexString(publication.Receipt.Sha256));
         using (var handle = File.OpenHandle(profilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
             Assert.Equal(PhysicalFileAuthority.CaptureFileIdentity(handle, "original profile test result"),
                 publication.Receipt.PhysicalIdentity);
