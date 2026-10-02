@@ -6,6 +6,25 @@
 
 <a id="active-t032-a--ordinary-save-creation"></a>
 
+### Caller catalog normal delivery — 2026-10-02 17:23 UTC
+
+The exact five-caller catalog is now normal `tests/categories.json` Git content:
+blob `1dd6d00b183e7aba02e5655173dab545f11dbb15`, 904,946 bytes,
+SHA256 `320c752159ab1a93093e08ef72a34be4700c020ebe334446579479040b8e3aaf`.
+The [exact patch and identity packet at f22ea963](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/tree/f22ea96354f1f18d5a400db01d7c52579b3425d7/specs/1553-portable-local-storage/recovery)
+remain immutable historical provenance; the active packet is retired and must not
+be reapplied. No runner/schema change, full catalog reformat, desktop transfer or
+new credentials were used. The first immutable blob request lost its approval
+window without creating the expected object; ref stayed at f22ea963. The owner
+explicitly renewed approval, the same create_blob call was retried exactly once,
+and it returned the exact expected blob. No ref mutation was uncertain.
+
+Fresh canonical PlanOnly/build on `f22ea963` plus that exact verified catalog
+patch completed exit0 in **3:18.6223525**, Build-unit **192.709182 seconds**,
+with exactly **five planned cases and zero executed**, no timeout and complete
+owned/runtime cleanup. No runtime or acceptance claim follows from discovery.
+The native five-case runtime cohort uses the same fresh unchanged binaries.
+
 ## Linux save caller WIP — 2026-10-02 17:07 UTC
 
 Issue #1553, T032-A1/A2/A3, same branch at verified entry
