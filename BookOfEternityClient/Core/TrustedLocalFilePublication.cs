@@ -1,4 +1,3 @@
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -75,12 +74,16 @@ internal sealed partial class TrustedLocalFilePublication
     internal TrustedLocalPublicationOutcome PublishWithOutcome(FileSystemManager.CanonicalWriteLease lease,
         TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes,
         Action<TrustedLocalPublicationPhase, int>? observer = null)
+        => PublishWithOutcome(lease, attempt => PublishCore(lease, generation, changes, observer, attempt));
+
+    private TrustedLocalPublicationOutcome PublishWithOutcome(FileSystemManager.CanonicalWriteLease lease,
+        Func<PublicationAttempt, TrustedLocalPublicationResult> publish)
     {
         _files.EnsureCanonicalWriteLeaseActive(lease);
         var attempt = new PublicationAttempt();
         try
         {
-            var result = PublishCore(lease, generation, changes, observer, attempt);
+            var result = publish(attempt);
             return new(TrustedLocalPublicationDisposition.Committed, result, null);
         }
         catch (Exception failure)
@@ -119,31 +122,42 @@ internal sealed partial class TrustedLocalFilePublication
         TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes,
         Action<TrustedLocalPublicationPhase, int>? observer, PublicationAttempt? attempt)
     {
+        BeginPublication(lease, generation, changes.Count);
+        var members = changes.Select(change => new Member
+        {
+            Path = ValidateMemberPath(change.Path),
+            Before = TrustedLocalFileImage.FromBytes(change.Before),
+            After = TrustedLocalFileImage.FromBytes(change.After)
+        }).ToArray();
+        return PublishMembers(lease, generation, members, 1, observer, attempt);
+    }
+
+    private void BeginPublication(FileSystemManager.CanonicalWriteLease lease, TrustedLocalGeneration generation, int changeCount)
+    {
         _files.EnsureCanonicalWriteLeaseActive(lease);
         Recover(lease);
         ValidateGeneration(generation);
         if (ReadGeneration(lease) != generation)
             throw Conflict("The expected session generation is not current.");
-        if (changes.Count == 0)
+        if (changeCount == 0)
             throw Conflict("A publication must declare at least one member.");
+    }
 
-        var members = changes.Select(change => new Member
-        {
-            Path = ValidateMemberPath(change.Path),
-            Before = Image.FromBytes(change.Before),
-            After = Image.FromBytes(change.After)
-        }).ToArray();
+    private TrustedLocalPublicationResult PublishMembers(FileSystemManager.CanonicalWriteLease lease,
+        TrustedLocalGeneration generation, Member[] members, int format,
+        Action<TrustedLocalPublicationPhase, int>? observer, PublicationAttempt? attempt)
+    {
         if (members.Select(member => member.Path).Distinct(MemberComparer).Count() != members.Length)
             throw Conflict("A publication contains duplicate members.");
         var generationMember = members.SingleOrDefault(member => MemberComparer.Equals(member.Path, _generationPath));
-        var afterGeneration = generationMember == null ? generation : ParseGeneration(generationMember.After.Bytes);
-        if (generationMember != null && ParseGeneration(generationMember.Before.Bytes) != generation)
+        var afterGeneration = generationMember == null ? generation : ParseGeneration(generationMember.After);
+        if (generationMember != null && ParseGeneration(generationMember.Before) != generation)
             throw Conflict("The generation member does not match its binding.");
         if (!afterGeneration.Exists)
             throw Conflict("A publication must retain or establish a session generation.");
         var journal = new Journal
         {
-            Format = 1, TransactionId = Guid.NewGuid().ToString("N"), Committed = false,
+            Format = format, TransactionId = Guid.NewGuid().ToString("N"), Committed = false,
             GenerationBefore = generation, GenerationAfter = afterGeneration, Members = members
         };
         ValidateJournal(journal);
@@ -156,16 +170,19 @@ internal sealed partial class TrustedLocalFilePublication
             if (File.Exists(scratch.ValidateFile(path)))
                 throw Conflict("A publication scratch name already exists.");
 
-        WriteNew(_journalScope, IntentStage, JsonSerializer.SerializeToUtf8Bytes(journal, JsonOptions));
+        journal = WriteJournal(IntentStage, journal);
         Observe(lease, observer, TrustedLocalPublicationPhase.IntentStaged);
         File.Move(_journalScope.ValidateFile(IntentStage, false), _journalScope.ValidateFile(Active), overwrite: false);
+        journal = RebindJournal(journal, Active);
+        members = journal.Members;
+        if (attempt != null) attempt.Prepared = journal;
         Observe(lease, observer, TrustedLocalPublicationPhase.IntentPublished);
         for (var index = 0; index < members.Length; index++)
         {
             var member = members[index];
             if (member.After.Exists)
             {
-                WriteNew(scratch, ScratchPath(journal, index, rollback: false), member.After.Bytes!);
+                WriteNew(scratch, ScratchPath(journal, index, rollback: false), member.After);
                 Observe(lease, observer, TrustedLocalPublicationPhase.MemberStaged, index);
             }
             // Detect accidental changes before replacing a name. The canonical
@@ -181,9 +198,11 @@ internal sealed partial class TrustedLocalFilePublication
         }
         Preflight(lease, journal, requireAfter: true);
         journal = journal with { Committed = true };
-        WriteNew(_journalScope, CommitStage, JsonSerializer.SerializeToUtf8Bytes(journal, JsonOptions));
+        journal = WriteJournal(CommitStage, journal);
         Observe(lease, observer, TrustedLocalPublicationPhase.CommitStaged);
         File.Move(_journalScope.ValidateFile(CommitStage, false), _journalScope.ValidateFile(Active, false), overwrite: true);
+        journal = RebindJournal(journal, Active);
+        members = journal.Members;
         var result = new TrustedLocalPublicationResult(journal.TransactionId, afterGeneration,
             members.Select(member => new TrustedLocalPublishedMember(member.Path, member.After.Exists, member.After.Sha256)).ToArray());
         if (attempt != null) attempt.Committed = result;
@@ -208,14 +227,7 @@ internal sealed partial class TrustedLocalFilePublication
             return;
         }
 
-        Journal journal;
-        try
-        {
-            journal = StrictJsonAuthority.Deserialize<Journal>(File.ReadAllBytes(Active), JsonOptions, "Trusted-local publication")
-                ?? throw Conflict("The publication journal is null.");
-        }
-        catch (JsonException ex) { throw new InvalidDataException("The publication journal is invalid; evidence retained.", ex); }
-        ValidateJournal(journal);
+        var journal = ReadJournal(Active);
         Preflight(lease, journal, requireAfter: journal.Committed);
         if (!journal.Committed)
         {
@@ -229,7 +241,7 @@ internal sealed partial class TrustedLocalFilePublication
                     {
                         var stage = ScratchPath(journal, index, rollback: true);
                         scratch.DeleteOwnedFile(stage);
-                        WriteNew(scratch, stage, member.Before.Bytes!);
+                        WriteNew(scratch, stage, member.Before);
                         Observe(lease, observer, TrustedLocalPublicationPhase.RollbackStaged, index);
                         File.Move(scratch.ValidateFile(stage, false), _scope.ValidateFile(member.Path), overwrite: member.After.Exists);
                     }
@@ -282,7 +294,7 @@ internal sealed partial class TrustedLocalFilePublication
 
     private void ValidateJournal(Journal journal)
     {
-        if (journal.Format != 1 || !ValidId(journal.TransactionId) || journal.Members is not { Length: > 0 })
+        if (journal.Format is not (1 or 2) || !ValidId(journal.TransactionId) || journal.Members is not { Length: > 0 })
             throw Conflict("Unknown or invalid publication format; evidence retained.");
         ValidateGeneration(journal.GenerationBefore);
         ValidateGeneration(journal.GenerationAfter);
@@ -302,8 +314,8 @@ internal sealed partial class TrustedLocalFilePublication
             if (journal.GenerationBefore != journal.GenerationAfter)
                 throw Conflict("A generation transition must be a declared member.");
         }
-        else if (ParseGeneration(generationMember.Before.Bytes) != journal.GenerationBefore ||
-                 ParseGeneration(generationMember.After.Bytes) != journal.GenerationAfter)
+        else if (ParseGeneration(generationMember.Before) != journal.GenerationBefore ||
+                 ParseGeneration(generationMember.After) != journal.GenerationAfter)
             throw Conflict("The generation images do not match the journal binding.");
         foreach (var path in ScratchPaths(journal))
             if (!paths.Add(path)) throw Conflict("Publication member/scratch names overlap.");
@@ -336,15 +348,15 @@ internal sealed partial class TrustedLocalFilePublication
         return id == null ? TrustedLocalGeneration.Absent : TrustedLocalGeneration.Existing(id);
     }
 
-    private static TrustedLocalGeneration ParseGeneration(byte[]? bytes)
+    private static TrustedLocalGeneration ParseGeneration(TrustedLocalFileImage image)
     {
-        if (bytes == null) return TrustedLocalGeneration.Absent;
+        if (!image.Exists) return TrustedLocalGeneration.Absent;
         try
         {
             // Decode exactly like FileSystemManager.ReadRuntimeText. The image
             // remains byte-exact in the journal; only its generation semantics
             // are read through the existing BOM-aware text contract.
-            using var stream = new MemoryStream(bytes, writable: false);
+            using var stream = image.OpenRead();
             using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true);
             var value = StrictJsonAuthority.Deserialize<GenerationDocument>(reader.ReadToEnd(), GenerationReadOptions, "Publication generation");
             if (value == null || value.SchemaVersion != 1 || !ValidId(value.GenerationId))
@@ -361,18 +373,12 @@ internal sealed partial class TrustedLocalFilePublication
     }
 
     private static bool ValidId(string? value) => Guid.TryParseExact(value, "N", out var id) && value == id.ToString("N");
-    private static void ValidateImage(Image image)
+    private static void ValidateImage(TrustedLocalFileImage image)
     {
-        if (image == null || image.Exists != (image.Bytes != null) ||
-            image.Sha256 != (image.Bytes == null ? null : Hash(image.Bytes)))
-            throw Conflict("A publication image is invalid; evidence retained.");
+        if (image == null) throw Conflict("A publication image is null; evidence retained.");
+        image.Validate();
     }
-    private bool Matches(string path, Image image)
-    {
-        var exists = File.Exists(_scope.ValidateFile(path));
-        return exists == image.Exists && (!exists || Hash(File.ReadAllBytes(path)) == image.Sha256);
-    }
-    private static string Hash(byte[] bytes) => Convert.ToHexString(SHA256.HashData(bytes));
+    private bool Matches(string path, TrustedLocalFileImage image) => image.MatchesFile(_scope, path);
     private static string ScratchPath(Journal journal, int index, bool rollback) => Path.Combine(
         Path.GetDirectoryName(journal.Members[index].Path)!, $".boe-local-{journal.TransactionId}-{index}.{(rollback ? "undo" : "stage")}");
     private static IEnumerable<string> ScratchPaths(Journal journal) => Enumerable.Range(0, journal.Members.Length)
@@ -384,6 +390,13 @@ internal sealed partial class TrustedLocalFilePublication
         stream.Write(bytes);
         stream.Flush(flushToDisk: true);
     }
+    private static void WriteNew(TrustedLocalFileScope scope, string path, TrustedLocalFileImage image)
+    {
+        using var stream = new FileStream(scope.ValidateFile(path), FileMode.CreateNew, FileAccess.Write, FileShare.None);
+        image.CopyTo(stream);
+        stream.Flush(flushToDisk: true);
+    }
+
     private void Observe(FileSystemManager.CanonicalWriteLease lease, Action<TrustedLocalPublicationPhase, int>? observer,
         TrustedLocalPublicationPhase phase, int index = -1)
     {
@@ -405,17 +418,7 @@ internal sealed partial class TrustedLocalFilePublication
     private sealed record Member
     {
         public required string Path { get; init; }
-        public required Image Before { get; init; }
-        public required Image After { get; init; }
-    }
-    private sealed record Image
-    {
-        public required bool Exists { get; init; }
-        public required byte[]? Bytes { get; init; }
-        public required string? Sha256 { get; init; }
-        internal static Image FromBytes(byte[]? bytes) => new()
-        {
-            Exists = bytes != null, Bytes = bytes?.ToArray(), Sha256 = bytes == null ? null : Hash(bytes)
-        };
+        public required TrustedLocalFileImage Before { get; init; }
+        public required TrustedLocalFileImage After { get; init; }
     }
 }

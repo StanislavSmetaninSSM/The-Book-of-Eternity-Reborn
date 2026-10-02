@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "baseCommit": "00dc36cdf387f3bdb7190f65fc1a92cdccbcc3a0",
+  "baseCommit": "050306c225e1ece45d5547fa55f62e2dfae5aed1",
   "patchFile": "save-creation-pending.patch",
-  "patchBytes": 6864,
-  "patchSha256": "10e18afa3c7f3354f3ea94ee347f0193e0f6ad171b8e39f7d42f1a8e818303b7",
+  "patchBytes": 7384,
+  "patchSha256": "a17620f49d7da4cc2949c2e50b7d653d938e669146cafd4b39b4ec28fa844826",
   "entries": [
     {
       "path": "specs/1553-portable-local-storage/plan.md",
       "beforeBlob": "ce8629d1c8a8da9a464f082e477b05803cd6b578",
-      "afterBlob": "39d15e24c0cfe27cbedd5302338d37c2c4727b58",
+      "afterBlob": "82e5629879c7ec1dead4e7172039e094b994b1d7",
       "beforeSha256": "4fe9cd4bccd2c85bab4e5cd7a0df47157e1c3d2366b6bd80de085de0c25db4bf",
-      "afterSha256": "2d75c5cadb4e3a80705e69619aef38682401aac632fc5da0e4f0d7686bcd3e72"
+      "afterSha256": "709ba982f524abddb24350832097a91969df0eeb61498dc2b4fc2d5f13bd15fb"
     },
     {
       "path": "tests/categories.json",
@@ -20,7 +20,7 @@
       "afterSha256": "1af0e0402bdb77675ba68a20ca4690e2b33034811d9a7ff68d67c9c19c8ab790"
     }
   ],
-  "appliedSourceTree": "b7f2917f5a54a72bf7cc67264a8b712675f1c1ab",
+  "appliedSourceTree": "75bca8cf104c33716b55499d8e415b0e9def5519",
   "comparisonExcludes": [
     "specs/1553-portable-local-storage/recovery/save-creation-pending.patch",
     "specs/1553-portable-local-storage/recovery/save-creation-pending.json"
