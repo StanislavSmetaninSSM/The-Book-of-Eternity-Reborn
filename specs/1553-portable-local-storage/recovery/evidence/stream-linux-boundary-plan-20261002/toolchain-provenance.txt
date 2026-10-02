@@ -1,0 +1,27 @@
+Linux x86_64 task-local toolchain, verified 2026-10-02 UTC
+Task root: /toolchain
+Activate in each task shell before tool startup: source /toolchain/env.sh
+
+Official distributions and verified archive hashes:
+- .NET SDK 10.0.401: https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.401/dotnet-sdk-10.0.401-linux-x64.tar.gz
+  SHA-512: 51c8b999af9e8dd9998c9edc5944e19a90788862068acd38694e098889054ce8c23d4f0c5cccfa16bf187d044562359e5ee69a9f8ad0bbe913ba90311fbce25b
+  Hash source: https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/10.0/releases.json
+- ASP.NET Core runtime 8.0.31 (includes .NET runtime 8.0.31): https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/8.0.31/aspnetcore-runtime-8.0.31-linux-x64.tar.gz
+  SHA-512: d870c948d54609939886725e29d8b9c235277e9d63b2d77adefcf38563b66932c480f1b980f1f183e2b2ac1c09fc066730ea080adf1148efdd654b1503e69ec0
+  Hash source: https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/8.0/releases.json
+- PowerShell 7.6.6: https://github.com/PowerShell/PowerShell/releases/download/v7.6.6/powershell-7.6.6-linux-x64.tar.gz
+  SHA-256: ddbc4a2d113bbd46d283cfedcbcd117a70caefd7673f41f2b4e0000badf103bc
+  Hash source: https://github.com/PowerShell/PowerShell/releases/tag/v7.6.6
+- Spec Kit CLI 1.0.13 wheel: https://files.pythonhosted.org/packages/4c/b6/e2108ebc904583847af0ef405eff568cf3b4da59066e7919c645e1740408/specify_cli-1.0.13-py3-none-any.whl
+  SHA-256: 7a7f7bfed39cfa36ce7d33a059af53381d9a84f98f0263a5c3a93b06383c0adb
+  Hash source: https://pypi.org/pypi/specify-cli/1.0.13/json
+
+All four local archive hashes matched their stated official source before execution or extraction. The .NET archives were extracted to task-root/dotnet, PowerShell to task-root/powershell, and the wheel was installed with uv into task-root/uv-tools, exposing task-root/bin/specify. No privileged or global installation was made.
+
+Actual completed version-command observations: dotnet --list-sdks showed 10.0.401. dotnet --list-runtimes showed Microsoft.NETCore.App and Microsoft.AspNetCore.App 8.0.31, plus 10.0.12 from the SDK. pwsh -NoLogo -NoProfile reported 7.6.6. specify version reported CLI 1.0.13 and Python 3.12.14. Version output was observed in completed tool calls, not saved to a separate file.
+
+The env.sh file sets process-local DOTNET_CLI_TELEMETRY_OPTOUT=1, POWERSHELL_TELEMETRY_OPTOUT=1, TESTINGPLATFORM_TELEMETRY_OPTOUT=1, DOTNET_GENERATE_ASPNET_CERTIFICATE=false, DOTNET_PROCESSOR_COUNT=1, DOTNET_ROOT, writable CLI/XDG/NuGet/uv paths, and PATH. It leaves HOME and CODEX_HOME unchanged.
+
+Connectivity: the initial dot.net installer HEAD returned HTTP 301, then curl exit 28 at the redirected builds host. The initial PowerShell asset HEAD returned HTTP 302, then curl exit 28 at GitHub's release asset host. Direct official SDK and PowerShell GETs succeeded with curl -fsSL --connect-timeout 8 --max-time 45. The first ASP.NET runtime GET timed out at 8 seconds; one retry with --connect-timeout 10 --max-time 45 succeeded. There was no explicit access denial. All download and tool processes completed.
+
+No repository edit, Git write, game application run, build, or runtime test was performed for this setup task.

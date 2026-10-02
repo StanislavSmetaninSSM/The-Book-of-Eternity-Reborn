@@ -1,0 +1,278 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A1 Linux prerequisite qualification",
+  "sourceCommit": "6322cb31d766571b63e3054fcecca89aa9f3ec24",
+  "sourceTree": "f9d585ce4c7b086ce987cce33d7bd4577d6ccf1a",
+  "entryCommit": "6161cfd6ad139fe91a3c28ee71bcda1b1e3e7162",
+  "command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"portable-storage-stream-generation\",\"portable-storage-image-admission\",\"portable-storage-stream-linux-fifo\") -Parallelism 1 -NoBuild'",
+  "workingDirectory": "/repo",
+  "platform": {
+    "system": "Linux",
+    "architecture": "x86_64",
+    "kernel": "6.18.44"
+  },
+  "toolchain": {
+    "sdk": "10.0.401",
+    "runtime": "8.0.31",
+    "powershell": "7.6.6",
+    "specify": "1.0.13",
+    "versionEvidence": "Completed setup-worker tool observations, described in toolchain-provenance.txt"
+  },
+  "environment": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1",
+    "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+    "DOTNET_PROCESSOR_COUNT": "1",
+    "HOME_CODEX_HOME": "unchanged",
+    "mutableState": "Unique /owned-run CLI/XDG/NuGet/temp, shared official binaries only"
+  },
+  "categories": [
+    "portable-storage-stream-generation",
+    "portable-storage-image-admission",
+    "portable-storage-stream-linux-fifo"
+  ],
+  "planOnly": false,
+  "wallTime": "00:00:17.5154694",
+  "exitCode": 0,
+  "selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 10,
+    "CompletedCases": 10,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 10,
+    "Executed": 10,
+    "Passed": 10,
+    "Failed": 0
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "syntheticFixtureRemainders": [],
+  "sourceIdentities": [
+    {
+      "path": "scripts/test-csharp.ps1",
+      "sha256": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1",
+      "gitBlob": "0576b2e34e5c0c5d164c173a9961a67c965c5509"
+    },
+    {
+      "path": "scripts/testing/TestCategoryCatalog.psm1",
+      "sha256": "865b7e528b48bca008524865abe6186d5c61f3e623f73f785ce1f41c3da53112",
+      "gitBlob": "eaee76832cb5fb99ea20598862ed6b4822532bcc"
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "3b105a41c921a684c263eed826356c2b4fc954ab7149a9274f90372d05c53675",
+      "gitBlob": "17afadcd03badce4e5b4a78f322f1e4be4b6a2eb"
+    },
+    {
+      "path": "tests/selection.json",
+      "sha256": "73d7acb334a8eb1143f405ff38d218d4a6a7a68b79c51d35416f3a386a9ce2ea",
+      "gitBlob": "b28f52be6288204486fdedaca5c036f77f330b24"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "sha256": "a59d50fe221ee6dc170231551b6e5bb1652ae4575c9608a2a1dd08737a0436e0",
+      "gitBlob": "8f2cfc1eaed78460455f87c7e34620e6034acc40"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs",
+      "sha256": "ae147b09feb7152aa7a7dfed8b0fc801119f5f7d366524bf1bdccd6825e55a94",
+      "gitBlob": "a8fe1ec081a6fcbf5a05170a8386e9fb7ee5a273"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+      "sha256": "6e4d11e939f4950431443d53d2516d6c8ac12a90ef0fd6046f882889f8676fce",
+      "gitBlob": "02ec111871e0905bd15c33abe7ed077a245ff91f"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+      "sha256": "a59b830016884e269e9732a26a0d1694d9e2f2b5e0026bdc976b57863afd5b09",
+      "gitBlob": "e87597b5e92c63a3fc343b2a612b788615039702"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFileImage.cs",
+      "sha256": "920f142683a8152f80c6a79810b87841e2786ae074df5c809562a00bd6f3aec9",
+      "gitBlob": "34bb94a325381be80eac63fee5caab9cbf128624"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "sha256": "07579b520a85952ec04e5df5b2a88a794ebaa8f318f2c10aa962bf821c02d1bd",
+      "gitBlob": "0edc3ca15878b1b879fdcaf1aaf90642718d4d76"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/TrustedLocalStreamRecoveryTests.cs",
+      "sha256": "fcb5b042f2e2c0f6342453ca5b63db3bea36c21111c3928c08459802e04ac4ba",
+      "gitBlob": "d9f81f801b4a816fbd189bf6b25c0187a50d6f3d"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/TrustedLocalStreamGenerationRecoveryTests.cs",
+      "sha256": "3a540dbe51bd40d8df3273ee66605a0334245582336fbefef6e10b3d94d06170",
+      "gitBlob": "fefab9acbf80fc517730b71f44390f1b1ca326bb"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/TrustedLocalImageAdapterAdmissionTests.cs",
+      "sha256": "247da2112fa72bdd7ada5247c8390af93aee87b6ad2b27991490d4c12fa65656",
+      "gitBlob": "a800aae46ecd264db9da4f351ec66be211161e9c"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/TrustedLocalStreamCrashFixture.cs",
+      "sha256": "be3c2a5e0f1465ffd5f21d92d8ae1bf36aafe89b4f43cdc73fcd5110e6a9211f",
+      "gitBlob": "24a28c1ce616d71d25e37b913dfcf797832a89c5"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/TrustedLocalStreamGenerationCrashFixture.cs",
+      "sha256": "6373951b50452e2fe8f3b5113a928ea59e16b0cad158d1f8d4375e7d9106fc76",
+      "gitBlob": "d3a84499735085d89796f9f712d597f8fa4f0c19"
+    },
+    {
+      "path": "tests/fixtures/PortableStorageCrashHost/Program.cs",
+      "sha256": "40cec505ac7d15172c37c4c5bfcb1f633c8878db7e568928b61d1bd9e215cc55",
+      "gitBlob": "8ba1acb12206f99bdc3df471a9cc2673c5569e0a"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "sha256": "a6d53b803f384018856f0ffe42b58fbfe335d954f474986ac9696e738739bbf7",
+      "gitBlob": "48fde8733d2f210c624adde08a068f414b7e0afd"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Images.cs",
+      "sha256": "7eceabdf8d76c6d0e7be69b3c6b715b9f53d1bada133e5e868bc8ce9045773c7",
+      "gitBlob": "c50cb063ebcb007fd25656a35e08c5ae4e9cb02c"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+      "sha256": "158838814f3d55c1669538e9bc0e4d2593b3d4adf356901007609d779fc68d9d",
+      "gitBlob": "69d480b2cc10c640dcf79cd906f8a59263eba4e3"
+    }
+  ],
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.TrustedLocalImageAdapterAdmissionTests.PreIntentDriftCannotPublishCapturedArchive(drift: \"candidate-missing\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0254298",
+      "artifact": "portable-storage-image-admission-unit-001.trx",
+      "outputPresent": false
+    },
+    {
+      "name": "BookOfEternityClient.Tests.TrustedLocalImageAdapterAdmissionTests.PreIntentDriftCannotPublishCapturedArchive(drift: \"generation\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.1111751",
+      "artifact": "portable-storage-image-admission-unit-001.trx",
+      "outputPresent": false
+    },
+    {
+      "name": "BookOfEternityClient.Tests.TrustedLocalImageAdapterAdmissionTests.PreIntentDriftCannotPublishCapturedArchive(drift: \"candidate-bytes\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0119523",
+      "artifact": "portable-storage-image-admission-unit-001.trx",
+      "outputPresent": false
+    },
+    {
+      "name": "BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages(fresh: False, cut: \"generation-published\", committed: False)",
+      "outcome": "Passed",
+      "duration": "00:00:00.4844397",
+      "artifact": "portable-storage-stream-generation-unit-002.trx",
+      "outputPresent": true
+    },
+    {
+      "name": "BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages(fresh: True, cut: \"before-generation\", committed: False)",
+      "outcome": "Passed",
+      "duration": "00:00:01.1027107",
+      "artifact": "portable-storage-stream-generation-unit-002.trx",
+      "outputPresent": true
+    },
+    {
+      "name": "BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages(fresh: True, cut: \"generation-staged\", committed: False)",
+      "outcome": "Passed",
+      "duration": "00:00:00.4832389",
+      "artifact": "portable-storage-stream-generation-unit-002.trx",
+      "outputPresent": true
+    },
+    {
+      "name": "BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages(fresh: True, cut: \"Committed\", committed: True)",
+      "outcome": "Passed",
+      "duration": "00:00:00.4830351",
+      "artifact": "portable-storage-stream-generation-unit-002.trx",
+      "outputPresent": true
+    },
+    {
+      "name": "BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages(fresh: True, cut: \"generation-published\", committed: False)",
+      "outcome": "Passed",
+      "duration": "00:00:00.5264548",
+      "artifact": "portable-storage-stream-generation-unit-002.trx",
+      "outputPresent": true
+    },
+    {
+      "name": "BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages(fresh: False, cut: \"Committed\", committed: True)",
+      "outcome": "Passed",
+      "duration": "00:00:00.5849591",
+      "artifact": "portable-storage-stream-generation-unit-002.trx",
+      "outputPresent": true
+    },
+    {
+      "name": "BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LinuxFifoLaterMemberPreventsEarlierColdRollback",
+      "outcome": "Passed",
+      "duration": "00:00:00.5527005",
+      "artifact": "portable-storage-stream-linux-fifo-unit-003.trx",
+      "outputPresent": true
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "summary.json",
+      "originalSha256": "fd646827bf341ae292d63a8fde93b72f49f94a292d441081d8223634809f4e11",
+      "sha256": "fd646827bf341ae292d63a8fde93b72f49f94a292d441081d8223634809f4e11",
+      "originalBytes": 1855,
+      "storedBytes": 1855
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "66b9a8e7d197e69dc83785d1b11cfbafa7a4af146c06f49d46eb03bb055015b1",
+      "sha256": "66b9a8e7d197e69dc83785d1b11cfbafa7a4af146c06f49d46eb03bb055015b1",
+      "originalBytes": 2791,
+      "storedBytes": 2791
+    },
+    {
+      "path": "portable-storage-image-admission-unit-001.trx",
+      "originalSha256": "027ff6e3715c4226cd34177526ca2d104bf3e955555d9bbb47095db2b3fadbbf",
+      "sha256": "050e89fb7a5e039bc923c03c0f528d3b15c231f9ca3545a07d3c9908766675ec",
+      "originalBytes": 6207,
+      "storedBytes": 5926
+    },
+    {
+      "path": "portable-storage-stream-generation-unit-002.trx",
+      "originalSha256": "5d3468129112e3d9f9079177ed11ab5d09a2f77039484834142055f0cf2d668a",
+      "sha256": "4e179b05bb5134f1743e3ac5100cbc04f9e24345724bfcac99af816fc503e9b8",
+      "originalBytes": 17652,
+      "storedBytes": 17077
+    },
+    {
+      "path": "portable-storage-stream-linux-fifo-unit-003.trx",
+      "originalSha256": "00fb22c36fec10e366f4cc027506863b8ecdccb0fe782bb0d325eedb90ef5fac",
+      "sha256": "43b23dfc6705369e5f0a1b0b317a32f3fa21705308105cad59a65c1a7b68f9ff",
+      "originalBytes": 5323,
+      "storedBytes": 4867
+    },
+    {
+      "path": "toolchain-provenance.txt",
+      "originalSha256": "f95a2af63b70928fe65954af7eafcd88bd4f4e5ad7f24cd95f4d5ff026271e58",
+      "sha256": "14a42350818b00736f400a745e13b9a1395bf8b30211f88123f6c4ba0a54b4d7",
+      "originalBytes": 3287,
+      "storedBytes": 3189
+    }
+  ],
+  "limits": "Synthetic native Linux storage prerequisites only. No full T032-A1 acceptance, caller/resource/live-client/GM/Load or wider platform claim.",
+  "freshBuildEvidence": "../stream-linux-cold-plan-20261002/manifest.json",
+  "sourceEquivalence": "Only plan and evidence changed between e5a009c3 fresh build and 6322cb31 execution; all selected project/runtime/test/runner/catalog bytes unchanged.",
+  "observedBoundaryReports": {
+    "AbruptExit": 7,
+    "CanonicalAcquisitionReturned": 6,
+    "CanonicalAcquisitionFailed": 1
+  }
+}

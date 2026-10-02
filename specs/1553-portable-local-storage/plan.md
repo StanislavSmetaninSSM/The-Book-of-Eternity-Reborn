@@ -73,6 +73,36 @@ the tested source. Next: save this result, then qualify the separate native Linu
 generation6/admission3/FIFO1 cohort on unchanged fresh binaries. Resource/callers
 and full T032-A1 acceptance remain open.
 
+### Native Linux generation/admission/FIFO result — 2026-10-02 16:41 UTC
+
+The first cold evidence was preserved at `6322cb31d766571b63e3054fcecca89aa9f3ec24`
+and all 13 saved files matched remote Git objects before this second block.
+At that clean evidence-containing source, [boundary PlanOnly](recovery/evidence/stream-linux-boundary-plan-20261002/manifest.json)
+confirmed three descriptors/10 cases in **4.3449383 seconds**, zero executed.
+The [boundary runtime cohort](recovery/evidence/stream-linux-boundary-green-20261002/manifest.json)
+passed **10/10** in **17.5154694 seconds**, exit 0: generation ordering six,
+pre-intent image admission three and actual native FIFO one. Both reused the fresh
+`e5a009c3` unit build; runtime/test/project/runner/catalog bytes were unchanged.
+
+All bodies executed, all three descriptors completed, with no skips, failures,
+duplicates, underfilled descriptors or timeout. Six generation cases asserted
+actual publication phase/member ordering, separate cold acquisition, exact fresh
+or BOM/case/extension-preserving generation bytes, and present-empty versus absent
+members. Three admission cases asserted the boundary was reached exactly once,
+zero publication phases and exact typed generation/candidate rejection plus retained
+library/sentinels. The FIFO body asserted Linux, successfully created the FIFO,
+reached last-member index 2 and observed cold `InvalidDataException` refusal before
+earlier rollback; its exact data/generation/journal/library/outside assertions
+passed. Owned process/runtime cleanup completed, with zero `boe-*` temp remainders.
+
+This completes execution of the two bounded Linux storage cohorts, pending the
+coordinator's independent Astra XHigh review and fresh GitHub-only restoration.
+No production, test, category or resource-bound change was needed. Native current-
+producer resource qualification and remaining caller/engine/frontend/live-client
+work remain open; T032-A1/T032-A2/A3 and full T032-A are not closed by these results.
+Next: preserve this result, restore the final checkpoint cleanly, and review exact
+source/evidence/counts/selection without repeating passed cohorts.
+
 ## Current Windows/Linux caller checkpoint — 2026-10-03
 
 Implementation source: `36589e5b6935d197ddeb9441c750237d55610956`,
