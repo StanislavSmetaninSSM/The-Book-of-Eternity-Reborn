@@ -31,7 +31,7 @@ internal enum TrustedLocalPublicationPhase
 /// an existing canonical lease; it is not protection against concurrent owner edits.
 /// File flushes do not establish power-loss durability of directory renames.
 /// </summary>
-internal sealed class TrustedLocalFilePublication
+internal sealed partial class TrustedLocalFilePublication
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {

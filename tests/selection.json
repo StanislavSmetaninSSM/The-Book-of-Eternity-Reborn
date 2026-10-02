@@ -2,17 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-save-entry",
-      "reason": "T032-A first gate: causal actual SaveGame-entry publication and real private scratch cleanup RED before production changes. No load or accepted backup cohort selected.",
+      "category": "portable-storage-images",
+      "reason": "T032-A1 internal image source transport, exact bytes/absence and source admission/drift; current caller cutover remains outside this prerequisite.",
       "contracts": [
-        "#1553 FR-002 through FR-007, T032-A ordinary save creation"
+        "#1553 FR-002 through FR-007; T032-A1"
       ]
     },
     {
-      "category": "portable-save-resource-qualification",
-      "reason": "T032-A technical gate measures the unchanged producer, whole-archive B1 candidate and separate-process normal recovery under child-only safety bounds. Its measurement assertions are distinct from save capability success.",
+      "category": "portable-storage-stream-publication",
+      "reason": "T032-A1 shared B1 image path/codec/canonical adapter, v2 active authority and strict cold admission with original v1 controls. Broader consumers are selected only if their contracts change.",
       "contracts": [
-        "#1553 FR-003 through FR-007; preservation of current producer resource behavior, T032-A resource prerequisite"
+        "#1553 FR-002 through FR-007; T032-A1 v1/v2 compatibility and exact-byte recovery"
       ]
     }
   ]

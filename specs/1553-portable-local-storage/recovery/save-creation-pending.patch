@@ -1,11 +1,53 @@
+diff --git a/specs/1553-portable-local-storage/plan.md b/specs/1553-portable-local-storage/plan.md
+index ce8629d1..01023ea6 100644
+--- a/specs/1553-portable-local-storage/plan.md
++++ b/specs/1553-portable-local-storage/plan.md
+@@ -33,6 +33,8 @@ Initial image launch failed before runner/build/tests due to an owned shallow-fe
+ 
+ Normalized image RED at `52967dc2`: [11/11 intended scaffold failures](recovery/evidence/save-images-normalized-red/manifest.json), 7.2094515 seconds, complete cleanup, unchanged fresh-built C# reused with NoBuild. The image implementation now uses scoped stream capture/SHA and 64 KiB copy/hash, with unchanged absence/empty and independent byte snapshots; GREEN is unrun at this checkpoint. No current caller has been migrated.
+ 
++Image GREEN tested at `f343cac1`: [11/11](recovery/evidence/save-images-green/manifest.json), fresh unit build, exit 0, 2:18.2664284, complete cleanup. This is only the internal image helper, not T032-A1 acceptance. Next saved scaffold adds the image publication/canonical adapter APIs and 29 narrow v2/frame/authority/compatibility cases; codec behavior is still unimplemented and those cases are unrun. Current selection now follows the bounded prerequisite and does not rerun the known SaveGame RED or historical resource probe.
++
+ ### Subsequent capability and proof boundary
+ 
+ After that gate, use TDD in bounded saved blocks: one held snapshot lease; fully closed/flushed disk archive; generation/absence-checked create-only B1 publication; owned private save-scratch cleanup; validated stream save listing under owned/supplied quiescence before archive interpretation; prepared browser save without a zero-member v6 recorder or nested lease/publication; Task-only ordinary profile-mirror repair while original load retains real receipts; exact created destination and committed/rolled-back/uncertain/follow-up outcomes through console, HTTP/frontend and the three actual autosave callers. Separate pre-save mirror repair remains an explicit prior decision unless a complete coupled set is proven. Post-commit cleanup/logging/owner/menu trouble cannot reverse archive success. Retained debt is classified before normal fencing and blocks retention/compensation/later writes when unresolved.
 diff --git a/tests/categories.json b/tests/categories.json
-index 6bbd1c6f..abe953ac 100644
+index 6bbd1c6f..45029c18 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -1,6 +1,77 @@
+@@ -1,6 +1,106 @@
  {
    "schemaVersion": 1,
    "categories": [
++    {
++      "id": "portable-storage-stream-publication",
++      "responsibility": "T032-A1 self-contained v2 framed image publication and canonical adapter: complete decision cuts, strict framing/metadata/regions, active/temp authority, preflight conflicts and explicit v1 controls.",
++      "excludes": "Large resource/cold process qualification, SaveGame/browser/profile/listing/autosave cutover, load and unrelated storage cohorts.",
++      "changeHints": [
++        "BookOfEternityClient/Core/TrustedLocalFilePublication*.cs",
++        "BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-storage-images",
++          "when": "Image capture/copy/validation changes with the shared publisher."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 3,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.*"
++          ]
++        }
++      ]
++    },
 +    {
 +      "id": "portable-storage-images",
 +      "responsibility": "T032-A1 exact internal byte/file image transport: independent byte snapshots, absence versus empty, scoped regular-file capture, bounded copying and source drift.",
