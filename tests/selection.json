@@ -2,101 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-backup-api",
-      "reason": "Public ordinary sync/async backup creation, independently seeded restore and cleanup with exact bytes and B1 decision semantics on Linux/Windows.",
+      "category": "portable-save-entry",
+      "reason": "T032-A first gate: causal actual SaveGame-entry publication and real private scratch cleanup RED before production changes. No load or accepted backup cohort selected.",
       "contracts": [
-        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
-      ]
-    },
-    {
-      "category": "portable-backup-boundaries",
-      "reason": "Ordinary backup path/type/link, exact absence/empty/hard-link, real lease/generation and same-lease recovery boundaries. Each test has isolated mutable state.",
-      "contracts": [
-        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
-      ]
-    },
-    {
-      "category": "portable-backup-publication",
-      "reason": "Nontransient warm backup lifecycle faults, complete restore membership, exact rollback/committed outcomes, unknown bytes and postcommit logger failure.",
-      "contracts": [
-        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
-      ]
-    },
-    {
-      "category": "portable-backup-consumers",
-      "reason": "Actual StateDistributor backup capture, reverse restoration and accepted cleanup uncertainty; no later compensation or diagnostic reversal.",
-      "contracts": [
-        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
-      ]
-    },
-    {
-      "category": "portable-backup-qte",
-      "reason": "Actual QTE backup publication and same-lease debt reach its immediate distributor boundary; uncertainty excludes wider baseline compensation and later writes.",
-      "contracts": [
-        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
-      ]
-    },
-    {
-      "category": "portable-backup-treatment-claims",
-      "reason": "Actual StateDistributor accepted wound input and real held treatment/resource/item claim retention across unresolved backup and same-lease committed debt.",
-      "contracts": [
-        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
-      ]
-    },
-    {
-      "category": "portable-backup-recovery",
-      "reason": "Actual public backup APIs interrupted in owned processes, normal separate-process lease recovery, exact complete decisions, conflicts, hard links and unchanged synthetic save ZIPs.",
-      "contracts": [
-        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
-      ]
-    },
-    {
-      "category": "portable-backup-linux-special",
-      "reason": "Required Linux FIFO source/target/backup rejection through public APIs in bounded owned processes; no Windows early return.",
-      "contracts": [
-        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
-      ]
-    },
-    {
-      "category": "portable-backup-routing",
-      "reason": "Backup source-link revalidation and explicit original recorder/recovery/evidence routes. Linux verifies original blocking; native bodies verify original publication and unchanged recorder bypass.",
-      "contracts": [
-        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
-      ]
-    },
-    {
-      "category": "portable-backup-linux-case",
-      "reason": "Actual Linux case-distinct backup/target names remain independent.",
-      "contracts": [
-        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
-      ]
-    },
-    {
-      "category": "portable-backup-existing-consumers",
-      "reason": "Existing actual distributor known-failure compensation, writer contention, accepted cleanup and malformed JSON controls; waits observe task failures as well as reached hooks.",
-      "contracts": [
-        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
-      ]
-    },
-    {
-      "category": "portable-backup-existing-api",
-      "reason": "Existing actual backup API contention and outside/missing evidence controls.",
-      "contracts": [
-        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
-      ]
-    },
-    {
-      "category": "portable-directory-backup-prerequisite",
-      "reason": "Exact real quarantine consumer previously blocked at StateDistributor CreateBackupCore on Linux; T030-G now reaches and passes its assertions. Preserve the real preparation/distribution fixture as a bounded end-to-end prerequisite check.",
-      "contracts": [
-        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
-      ]
-    },
-    {
-      "category": "portable-backup-generation-debt",
-      "reason": "Actual bound StateDistributor generation conflict after a committed backup retains journal uncertainty before compensation; outer SessionOperationContext finalization remains separate.",
-      "contracts": [
-        "FR-002 through FR-007; bounded backup lifecycle"
+        "#1553 FR-002 through FR-007, T032-A ordinary save creation"
       ]
     }
   ]

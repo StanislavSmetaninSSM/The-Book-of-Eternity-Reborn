@@ -1,0 +1,35 @@
+diff --git a/tests/categories.json b/tests/categories.json
+index 6bbd1c6f..26abe0c0 100644
+--- a/tests/categories.json
++++ b/tests/categories.json
+@@ -1,6 +1,30 @@
+ {
+   "schemaVersion": 1,
+   "categories": [
++    {
++      "id": "portable-save-entry",
++      "responsibility": "Actual public ordinary SaveGame entry, one complete create-only B1 decision and owned runtime save-staging cleanup after preparation failure. Causal T032-A RED and subsequent common-route proof.",
++      "excludes": "Load replacement, browser/autosave consumers, broad canonical storage and B1 resource qualification.",
++      "changeHints": [
++        "BookOfEternityClient/Services/SaveLoadService.cs",
++        "BookOfEternityClient/Core/FileSystemManager.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 3,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableSaveCreationTests.*"
++          ]
++        }
++      ]
++    },
+     {
+       "id": "portable-backup-native-boundaries",
+       "responsibility": "Exact native Windows by-name links, namespace/alias/type and real lease/debt subset; all link fixtures must execute.",

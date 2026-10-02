@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "3329bfd4ee0b1f6cc83d230aac86b447fcd161e5",
+  "patchFile": "save-creation-pending.patch",
+  "patchBytes": 1327,
+  "patchSha256": "59b4facce357340fbd309a0f5dfdbb42c6ca25d7826e800b7a99c152c449ed81",
+  "entries": [
+    {
+      "path": "tests/categories.json",
+      "beforeBlob": "6bbd1c6f0e8a087a7c92df4cce0a6e798bcfa4e5",
+      "afterBlob": "26abe0c0c8ec0f5e33a5d77f6384a4159bf598f6",
+      "beforeSha256": "414e68f9da3eb09121c430204bf04f199dba5d27d2b9065ab404d995ad919e08",
+      "afterSha256": "6709aa50dacd6a73547706135d1e82d5496cf14c84ed5c52b36e1ee6ef755c55"
+    }
+  ],
+  "appliedSourceTree": "d3c44562bff1b32d4849f928b68e93db467f85c0",
+  "comparisonExcludes": [
+    "specs/1553-portable-local-storage/recovery/save-creation-pending.patch",
+    "specs/1553-portable-local-storage/recovery/save-creation-pending.json"
+  ],
+  "scope": "T032-A ordinary save creation; current plan records exact execution and remaining scope"
+}
