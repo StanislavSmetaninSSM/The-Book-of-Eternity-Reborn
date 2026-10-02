@@ -1,6 +1,6 @@
 # Original-v1 source-derived compatibility fixtures
 
-Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), T032-A1. **Data-only WIP; compatibility execution and independent review remain open.**
+Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), T032-A1. **Data/provenance independently accepted at `92bd725f`; compatibility execution remains open.**
 
 `pending.json` and `committed.json` are independently transcribed from the original byte-only contract at accepted [fc3f8bb9c9e36408c85cf37bbea9f35cb890a972](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/commit/fc3f8bb9c9e36408c85cf37bbea9f35cb890a972). They were not emitted by an executed historical binary and were not built through the new shared `Header` helper. Ordinary static JSON/base64/hash calculations produced them. The two files differ only in `Committed`.
 
