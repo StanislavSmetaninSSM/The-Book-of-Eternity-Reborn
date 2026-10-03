@@ -1,6 +1,7 @@
 {
   "schemaVersion": 1,
   "selections": [
+    {"category": "portable-load-metadata-transport", "reason": "New observer controls qualify actual per-member flush and incomplete-token buffer behavior independently from large-header/schema acceptance; run only these new controls for the scaffold RED.", "contracts": ["#1553 LOAD-FS-005/006/008"]},
     {"category": "portable-load-metadata", "reason": "T032-B1-METADATA changes the shared v2 metadata codec; actual large-header and strict late-damage tests precede implementation. Per-member flush and actual-token carry observations qualify transport without claiming constant memory for arbitrary tokens.", "contracts": ["#1553 LOAD-FS-005/006/008"]},
     {"category": "portable-storage-stream-publication", "reason": "The same WriteJournal/ReadJournal and region binding serve existing v2 image publication and canonical adapters; retain their actual decision/admission controls.", "contracts": ["#1553 preserved ordinary-save v2 authority"]},
     {"category": "portable-storage-stream-dispatch", "reason": "Metadata length and journal dispatch must reject unknown frames before v1 whole-file decoding and preserve supported reordered/whitespace v1 evidence.", "contracts": ["#1553 preserved version dispatch"]},

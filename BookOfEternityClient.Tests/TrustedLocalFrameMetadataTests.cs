@@ -85,6 +85,69 @@ public sealed class TrustedLocalFrameMetadataTests : IDisposable
     }
 
     /// <summary>
+    /// Requires every member to reach the real output with no pending encoding and no aggregate retention.
+    /// </summary>
+    /// <returns>
+    /// A task that completes after comparing two real intents with the same largest member encoding.
+    /// </returns>
+    [Fact]
+    public async Task WriterFlushesEachMemberWithoutWholeHeaderRetention()
+    {
+        // Mutation caught: delaying Flush until the array closes retains all encoded members.
+        var files = Manager();
+        var scope = new TrustedLocalFileScope([_root]);
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        var smaller = ObserveWriterIntent(files, scope, lease, 100);
+        var larger = ObserveWriterIntent(files, scope, lease, 1000);
+        Assert.Equal(smaller.Max(value => value.BytesPendingBeforeFlush),
+            larger.Max(value => value.BytesPendingBeforeFlush));
+        Assert.True(larger[^1].DestinationPosition > smaller[^1].DestinationPosition);
+        Assert.Equal(Before, File.ReadAllBytes(Target));
+    }
+
+    /// <summary>
+    /// Proves actual oversized-token growth and release separately from the existing path authority refusal.
+    /// </summary>
+    /// <returns>
+    /// A task that completes after transport observations and preserved recovery evidence are checked.
+    /// </returns>
+    [Fact]
+    public async Task LongEscapedTokenReleasesCarryBeforeLaterPathRefusal()
+    {
+        // This token is valid JSON transport, deliberately relative and therefore not a supported authority path.
+        // Mutation caught: allocating the whole header or keeping oversized carry after the long token completes.
+        var files = Manager();
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        var header = Header(false);
+        header["Members"]![1]!["Path"] = new string('\u0416', 12000);
+        var json = header.ToJsonString();
+        Assert.Contains("\\u0416", json, StringComparison.Ordinal);
+        Assert.True(Encoding.UTF8.GetByteCount(JsonSerializer.Serialize(new string('\u0416', 12000))) > 65536);
+        var evidence = Frame(json);
+        PutActive(evidence);
+        File.WriteAllBytes(Target, After);
+        var observations = new List<TrustedLocalFrameMetadataObservation>();
+        var publication = new TrustedLocalFilePublication(files, new TrustedLocalFileScope([_root]), observations.Add);
+        Assert.Throws<InvalidDataException>(() => publication.Recover(lease));
+
+        Assert.Contains(observations, value => value.Kind == TrustedLocalFrameMetadataObservationKind.ReaderBufferGrown &&
+            value.BufferCapacity > 65536 && value.EncodedTokenBytes > 0);
+        var completed = observations.FindIndex(value => value.Kind == TrustedLocalFrameMetadataObservationKind.ReaderTokenCompleted &&
+            value.EncodedTokenBytes > 65536);
+        Assert.True(completed >= 0, "The actual oversized escaped token must be decoded before path admission refuses it.");
+        var released = observations.FindIndex(completed + 1, value =>
+            value.Kind == TrustedLocalFrameMetadataObservationKind.ReaderBufferReleased && value.BufferCapacity == 65536);
+        Assert.True(released > completed, "Oversized carry must be released after decoding its token.");
+        Assert.Contains(observations.Skip(released + 1), value =>
+            value.Kind == TrustedLocalFrameMetadataObservationKind.ReaderTokenCompleted &&
+            value.BufferCapacity == 65536 && value.EncodedTokenBytes < 65536);
+        Assert.Equal(After, File.ReadAllBytes(Target));
+        Assert.Equal(evidence, File.ReadAllBytes(Active));
+        using var generation = JsonDocument.Parse(File.ReadAllBytes(files.SessionGenerationPath));
+        Assert.Equal(Generation, generation.RootElement.GetProperty("generationId").GetString());
+    }
+
+    /// <summary>
     /// Recovers an independently encoded large metadata frame without imposing a total header limit.
     /// </summary>
     /// <param name="committed">
@@ -276,6 +339,68 @@ public sealed class TrustedLocalFrameMetadataTests : IDisposable
             new JsonObject { ["Path"] = Target, ["Before"] = PresentImage(Before, 0), ["After"] = PresentImage(After, 5) },
             new JsonObject { ["Path"] = AbsentPath(1), ["Before"] = AbsentImage(), ["After"] = PresentImage([], 8) })
     };
+
+    /// <summary>
+    /// Captures per-member writer observations from one actual publication stopped at its complete private intent.
+    /// </summary>
+    /// <param name="files">
+    /// The fixture manager owning the active lease.
+    /// </param>
+    /// <param name="scope">
+    /// The fixture's explicit local member scope.
+    /// </param>
+    /// <param name="lease">
+    /// The active canonical write lease.
+    /// </param>
+    /// <param name="count">
+    /// The complete member count, including the replacement followed by absent members.
+    /// </param>
+    /// <returns>
+    /// The ordered complete-member flush measurements after exact frame and rollback checks.
+    /// </returns>
+    private List<TrustedLocalFrameMetadataObservation> ObserveWriterIntent(FileSystemManager files,
+        TrustedLocalFileScope scope, FileSystemManager.CanonicalWriteLease lease, int count)
+    {
+        var changes = new List<TrustedLocalImageChange>
+        { new(Target, TrustedLocalFileImage.CaptureFile(scope, Target), TrustedLocalFileImage.FromBytes(After)) };
+        for (var index = 1; index < count; index++)
+            changes.Add(new(AbsentPath(index), TrustedLocalFileImage.FromBytes(null), TrustedLocalFileImage.FromBytes(null)));
+        var observations = new List<TrustedLocalFrameMetadataObservation>();
+        var publication = new TrustedLocalFilePublication(files, scope, observations.Add);
+        var outcome = publication.PublishImagesWithOutcome(lease, TrustedLocalGeneration.Existing(Generation), changes,
+            (phase, _) =>
+            {
+                if (phase != TrustedLocalPublicationPhase.IntentStaged) return;
+                var frame = File.ReadAllBytes(Path.Combine(Path.GetDirectoryName(Active)!, "intent.tmp"));
+                var length = BinaryPrimitives.ReadInt64LittleEndian(frame.AsSpan(8, 8));
+                Assert.Equal(16 + length + Before.Length + After.Length, frame.LongLength);
+                using var metadata = JsonDocument.Parse(frame.AsMemory(16, checked((int)length)));
+                Assert.Equal(count, metadata.RootElement.GetProperty("Members").GetArrayLength());
+                Assert.Equal(Before, frame.AsSpan(checked(16 + (int)length), Before.Length).ToArray());
+                Assert.Equal(After, frame.AsSpan(checked(16 + (int)length + Before.Length)).ToArray());
+                throw new IntentCut();
+            });
+        Assert.Equal(TrustedLocalPublicationDisposition.RolledBack, outcome.Disposition);
+        Assert.IsType<IntentCut>(outcome.Failure);
+        var flushed = observations.Where(value => value.Kind == TrustedLocalFrameMetadataObservationKind.WriterFlushed).ToList();
+        Assert.Equal(count + 1, flushed.Count);
+        Assert.Equal(-1, flushed[0].MemberIndex);
+        Assert.True(flushed[0].BytesPendingBeforeFlush > 0);
+        Assert.Equal(0, flushed[0].BytesPendingAfterFlush);
+        Assert.True(flushed[0].DestinationPosition > 16);
+        long previous = flushed[0].DestinationPosition;
+        for (var index = 1; index < flushed.Count; index++)
+        {
+            var value = flushed[index];
+            Assert.Equal(index - 1, value.MemberIndex);
+            Assert.True(value.BytesPendingBeforeFlush > 0);
+            Assert.Equal(0, value.BytesPendingAfterFlush);
+            Assert.True(value.DestinationPosition > previous);
+            previous = value.DestinationPosition;
+        }
+        Assert.False(File.Exists(Active));
+        return flushed.Skip(1).ToList();
+    }
 
     /// <summary>
     /// Encodes an absent image with every required nullable field.

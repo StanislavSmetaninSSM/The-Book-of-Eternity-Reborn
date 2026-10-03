@@ -75,6 +75,23 @@ followed by independent path refusal, not native long-path acceptance. After cau
 one Sol 6.1 High codec implementer owns Journal/FrameMetadata plus its narrow observer
 and tests; the parent owns catalog, execution, integration and acceptance. Separate
 Sol 6.1 XHigh reviews the completed codec block. No parallel builds/tests or public cutover.
+At clean `4a9da995c34482a363521c560f59490102441d11`, initial native Windows metadata
+verification executed 33/33, 30 passed/3 causal failures, no skips/duplicates, complete
+cleanup, 3:04.086. Exact [artifacts](recovery/evidence/load-metadata-red/summary.json)
+are retained. The real 4,096-member producer fails the existing 1 MiB writer budget;
+both independently encoded >1 MiB pending/committed frames fail the reader budget.
+All small independent/reordered/schema/region controls pass. Next: observer scaffolding
+and causal flush/carry tests before implementing the streamed codec. The parent also
+prepared four real-entry namespace conversion/empty-directory tests only in ignored
+scratch for the later B2 block; they do not enter this compile/run or establish B2 evidence.
+
+The optional constructor-owned observation seam and two transport tests are now
+scaffolded without codec behavior changes. `portable-load-metadata-transport` owns
+only these two causal measurements; the existing 33 authority cases retain explicit
+method ownership in `portable-load-metadata`. The next fresh run selects only the
+two new controls, avoiding a repeated unchanged cap/schema baseline. No observer
+callback occurs in the neutral scaffold, so both missing-observation assertions must
+fail before the codec implementation is released.
 
 Process checkpoint: independent review found the real mixed-directory inventory defect,
 but initially missed the admission fixture's persisted-root mismatch; the real typed

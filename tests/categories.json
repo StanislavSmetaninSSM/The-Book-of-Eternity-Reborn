@@ -10225,8 +10225,8 @@
     },
     {
       "id": "portable-load-metadata",
-      "responsibility": "Incremental v2 frame metadata: per-member writer flushing, physically bounded token carry, headers beyond the former aggregate cap, strict decoded schema/contiguous regions and complete preflight before exact pending/committed recovery.",
-      "excludes": "Namespace v3 conversions, load archive/resource envelopes, full save acceptance and public-client cutover. Long relative-token cases prove transport and separate path refusal, not native long-path acceptance.",
+      "responsibility": "V2 metadata authority: headers beyond the former aggregate cap, independent pending/committed bytes, reordered/escaped fields, strict decoded schema/contiguous regions and complete preflight before exact recovery.",
+      "excludes": "Per-member encoding and token-carry observations belong to portable-load-metadata-transport. Namespace v3 conversions, load archive/resource envelopes, full save acceptance and public-client cutover.",
       "changeHints": ["BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs", "BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs", "BookOfEternityClient.Tests/TrustedLocalFrameMetadataTests.cs"],
       "related": [
         {"id": "portable-storage-stream-publication", "when": "Changing v2 metadata encoding, strict schema or region rebinding."},
@@ -10237,7 +10237,27 @@
       "requirements": {"frontendBuild": false, "exclusive": true},
       "timeoutMinutes": 5,
       "expectedSeconds": null,
-      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.*"]}]
+      "selectors": [{"project": "unit", "tests": [
+        "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.LargeMetadataWriterReachesCompleteIntentWithoutAggregateCap",
+        "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.LargeMetadataRoundTripsWithoutAggregateCap",
+        "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.ReorderedAndEscapedFieldsKeepExistingMeaning",
+        "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.IndependentSmallV2FrameKeepsExactDecision",
+        "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.StrictMetadataRejectsLateInvalidMemberBeforeRecoveryMutation"
+      ]}]
+    },
+    {
+      "id": "portable-load-metadata-transport",
+      "responsibility": "Causal v2 transport measurements: real opening/per-member output advancement and zero pending encoding for equal largest-member workloads; actual oversized escaped token carry growth, completion and immediate release before later path refusal.",
+      "excludes": "Strict schema/large complete-frame acceptance is owned by portable-load-metadata. A long relative token proves parser transport plus separate authority refusal, not legal native long-path acceptance or a complete resource envelope.",
+      "changeHints": ["BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs", "BookOfEternityClient.Tests/TrustedLocalFrameMetadataTests.cs"],
+      "related": [{"id": "portable-load-metadata", "when": "Changing writer flush or incremental reader buffering used by the same v2 codec."}],
+      "requirements": {"frontendBuild": false, "exclusive": true},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": [
+        "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.WriterFlushesEachMemberWithoutWholeHeaderRetention",
+        "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.LongEscapedTokenReleasesCarryBeforeLaterPathRefusal"
+      ]}]
     },
     {
       "id": "portable-load-original-admission",

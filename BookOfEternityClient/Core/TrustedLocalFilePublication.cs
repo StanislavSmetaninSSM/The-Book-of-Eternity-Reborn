@@ -26,6 +26,58 @@ internal enum TrustedLocalPublicationPhase
 }
 
 /// <summary>
+/// Identifies a narrow metadata transport observation made by the owned frame codec.
+/// </summary>
+internal enum TrustedLocalFrameMetadataObservationKind
+{
+    /// <summary>
+    /// The opening header or one complete member has been flushed to the output stream.
+    /// </summary>
+    WriterFlushed,
+    /// <summary>
+    /// An actual incomplete token has required a larger carry buffer.
+    /// </summary>
+    ReaderBufferGrown,
+    /// <summary>
+    /// One complete JSON token has been decoded.
+    /// </summary>
+    ReaderTokenCompleted,
+    /// <summary>
+    /// Oversized token carry storage has been released after token completion.
+    /// </summary>
+    ReaderBufferReleased
+}
+
+/// <summary>
+/// Carries metadata encoding or token-buffer measurements without exposing authority paths or payload bytes.
+/// </summary>
+/// <param name="Kind">
+/// The actual codec action being observed.
+/// </param>
+/// <param name="MemberIndex">
+/// The flushed member index, or minus one for the header opening or a reader observation.
+/// </param>
+/// <param name="BytesPendingBeforeFlush">
+/// The writer's pending encoded bytes before flushing; zero for reader observations.
+/// </param>
+/// <param name="BytesPendingAfterFlush">
+/// The writer's pending encoded bytes after flushing; zero for reader observations.
+/// </param>
+/// <param name="DestinationPosition">
+/// The output stream position after flushing; zero for reader observations.
+/// </param>
+/// <param name="BufferCapacity">
+/// The reader's current token-buffer capacity; zero for writer observations.
+/// </param>
+/// <param name="EncodedTokenBytes">
+/// The actual retained or completed encoded token length; zero for writer observations.
+/// </param>
+internal readonly record struct TrustedLocalFrameMetadataObservation(
+    TrustedLocalFrameMetadataObservationKind Kind, int MemberIndex,
+    long BytesPendingBeforeFlush, long BytesPendingAfterFlush, long DestinationPosition,
+    int BufferCapacity, long EncodedTokenBytes);
+
+/// <summary>
 /// One process-crash journal for exact-byte single/member-set publication. Requires
 /// an existing canonical lease; it is not protection against concurrent owner edits.
 /// File flushes do not establish power-loss durability of directory renames.
@@ -51,6 +103,7 @@ internal sealed partial class TrustedLocalFilePublication
     private readonly string _generationPath;
     private readonly string _canonicalWriteLockPath;
     private readonly string _sessionLifecycleLockPath;
+    private readonly Action<TrustedLocalFrameMetadataObservation>? _metadataObserver;
     private string Active => Path.Combine(_journalRoot, "active.json");
     private string IntentStage => Path.Combine(_journalRoot, "intent.tmp");
     private string CommitStage => Path.Combine(_journalRoot, "commit.tmp");
@@ -59,10 +112,24 @@ internal sealed partial class TrustedLocalFilePublication
     internal static string NormalizeAuthorityPath(string path, bool windows) =>
         windows ? TrustedLocalFileScope.NormalizeWindowsPathSpelling(path) : path;
 
-    internal TrustedLocalFilePublication(FileSystemManager files, TrustedLocalFileScope scope)
+    /// <summary>
+    /// Creates publication and recovery authority for the supplied local scope and runtime journal.
+    /// </summary>
+    /// <param name="files">
+    /// The owner of the active canonical lease and runtime generation paths.
+    /// </param>
+    /// <param name="scope">
+    /// The explicit local member scope to validate before publication or recovery.
+    /// </param>
+    /// <param name="metadataObserver">
+    /// An optional owned diagnostic callback for metadata transport measurements; null disables observations.
+    /// </param>
+    internal TrustedLocalFilePublication(FileSystemManager files, TrustedLocalFileScope scope,
+        Action<TrustedLocalFrameMetadataObservation>? metadataObserver = null)
     {
         _files = files;
         _scope = scope;
+        _metadataObserver = metadataObserver;
         var windows = OperatingSystem.IsWindows();
         _journalRoot = NormalizeAuthorityPath(Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1"), windows);
         _generationPath = NormalizeAuthorityPath(files.SessionGenerationPath, windows);

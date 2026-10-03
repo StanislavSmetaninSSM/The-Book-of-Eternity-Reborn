@@ -1,0 +1,50 @@
+{
+  "Categories": [
+    "portable-load-metadata"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "4a9da995c34482a363521c560f59490102441d11",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 157.4149342,
+  "Descriptors": [
+    {
+      "Name": "portable-load-metadata-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-load-metadata",
+      "Categories": [
+        "portable-load-metadata"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.IndependentSmallV2FrameKeepsExactDecision|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.LargeMetadataRoundTripsWithoutAggregateCap|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.LargeMetadataWriterReachesCompleteIntentWithoutAggregateCap|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.ReorderedAndEscapedFieldsKeepExistingMeaning|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.StrictMetadataRejectsLateInvalidMemberBeforeRecoveryMutation",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 33,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.IndependentSmallV2FrameKeepsExactDecision",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.LargeMetadataRoundTripsWithoutAggregateCap",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.LargeMetadataWriterReachesCompleteIntentWithoutAggregateCap",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.ReorderedAndEscapedFieldsKeepExistingMeaning",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.StrictMetadataRejectsLateInvalidMemberBeforeRecoveryMutation",
+          "Cases": 26
+        }
+      ]
+    }
+  ]
+}
