@@ -12,7 +12,7 @@ Execution plan revision 1 and its concrete v3 schema are therefore authorized.
 Independent Sol 6.1 XHigh design review passed `8ca3fbca`; its scoped proof readback
 also passed `532a0f36`. This accepts the design/tracking gate only, not load code.
 
-Current task: T032-B3-COLD; T032-B1-FIX, T032-B1-METADATA and T032-B2-NAMESPACE are cleared for code/native Windows,
+Current task: T032-B3-RESOURCE; T032-B1-FIX, T032-B1-METADATA, T032-B2-NAMESPACE and T032-B3-COLD are cleared for code/native Windows,
 while the separate native Linux gate remains open. Original baseline was `5d2aa2ce`.
 Five-fix candidate source is now written after the recorded causal baseline:
 Trim rejection and immutable declared-path canonicalization precede extraction/classification;
@@ -250,7 +250,8 @@ needed no source/test correction. Same-source NoBuild discovery-only
 0:20.997. Four compiled [XML documents](recovery/evidence/load-cold-catalog/xml.json)
 parse, with no touched-file reference warning and the same three unrelated CS1587.
 Independent Sol 6.1 XHigh source/contract review found no actionable issue; final
-actual-evidence review remains pending. Resource probes are drafted only in ignored
+actual-evidence review cleared B3-COLD code/native Windows through `3d20be0a`, with
+no remaining findings. Resource probes are drafted only in ignored
 scratch while this immutable source qualifies; no bulk/native Linux result is claimed.
 Process checkpoint: independent review caught a real generation-absence rollback
 defect. Runtime exposed a transient-fault expectation error and the now-obsolete v3
