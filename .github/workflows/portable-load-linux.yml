@@ -25,9 +25,13 @@ jobs:
     timeout-minutes: 25
     env:
       DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      POWERSHELL_TELEMETRY_OPTOUT: '1'
+      TESTINGPLATFORM_TELEMETRY_OPTOUT: '1'
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: '1'
       DOTNET_GENERATE_ASPNET_CERTIFICATE: 'false'
       DOTNET_PROCESSOR_COUNT: '1'
+      GenerateDocumentationFile: 'true'
+      NoWarn: '1591'
 
     steps:
       - name: Checkout exact source
