@@ -4,6 +4,34 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## Native Linux filesystem qualification WIP — 2026-10-03 UTC
+
+Tracked block **T032-B5-FS**, branch `codex/1553-load-filesystem`. Restored a new,
+clean native Debian 13 x64 checkout from GitHub and verified full remote/source SHA
+`07d354e16ce06796dee435003bd5fd2a023be62e`. All C# files remain byte-identical to
+`e593bcfa5e45502de9eb6d6b3949565f7c7881b2`; accepted Windows evidence is retained.
+Official task-local PowerShell 7.6.6 (release SHA256 checked), SDK 10.0.401 and
+ASP.NET/.NET runtime 8.0.31 were installed without system changes. All three
+telemetry opt-outs were set before startup/install; `DOTNET_PROCESSOR_COUNT=1`,
+XML documentation and isolated writable CLI/NuGet/XDG/temp state are used.
+HOME and CODEX_HOME remain unchanged. Spec Kit prerequisite resolution succeeds
+for this feature; the existing constitution/spec/plan/tasks and LOAD-FS-001–008
+remain consistent with the bounded Linux qualification scope.
+
+The exact initial `1553-load-linux.json` selection first receives fresh build and
+PlanOnly discovery, then actual native execution. Subsequent separate commands
+select metadata + metadata transport, batch admission + paths, and the explicit
+`1553-load-admission-consumers.json` for namespace/native/cold/v1/v2 boundaries.
+The five resource categories run separately with their existing 10/12-minute
+category and 15-minute command bounds, independent mutable roots and unchanged
+heap/RSS/disk/child controls. No full/Fast/PreMerge sweep or repeated Windows run.
+Source-bound artifacts, actual counts, native-body distinctions and cleanup will
+be recorded after each bounded block. No Linux test is yet reported as passed.
+Independent separate **gpt-6.1-sol / xhigh** review, final GitHub restoration and
+Linux acceptance are pending. Public/console/browser B4 and T033/live/full B5
+remain open. This client-owned filesystem qualification changes no GM-authored
+field, mechanic, prompt or example contract.
+
 ## Authorized local filesystem execution checkpoint
 
 The owner is leaving autonomous execution running and explicitly authorized all
