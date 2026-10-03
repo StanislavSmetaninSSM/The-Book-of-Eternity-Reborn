@@ -13,6 +13,10 @@ Independent Sol 6.1 XHigh design review passed `8ca3fbca`; its scoped proof read
 also passed `532a0f36`. This accepts the design/tracking gate only, not load code.
 
 Current task: T032-B1-FIX, baseline production/tests still `5d2aa2ce`.
+WIP infrastructure: the new branch-push Linux workflow and explicit alias/outcome
+selection are prepared. The first Linux job is a causal baseline, expected to expose
+unfixed regressions; build/CI/catalog/native acceptance are not yet claimed. A fresh
+Windows PlanOnly build of the same two owners is in progress at `e5ac0174`.
 Next: fresh Windows alias/outcome discovery and causal runtime baseline, then five
 fixes and affected consumers. No native Linux load result is inferred; install
 the explicitly selected Linux CI with this block. Parent implements; separate

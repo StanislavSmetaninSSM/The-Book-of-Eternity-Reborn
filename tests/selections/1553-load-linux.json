@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "portable-load-alias-admission",
+      "reason": "Native Linux causal baseline for T032-B1-FIX at the restored source, including the saved Shining Abode fixture correction. Original archive admission, finite fixed-path names and exact source/library protection; this initial run is expected to expose the unresolved reviewed defects.",
+      "contracts": ["#1553 LOAD-FS-001/002/004/008; actual typed load admission"]
+    },
+    {
+      "category": "portable-load-outcomes",
+      "reason": "Native Linux causal baseline for the three unresolved outcome regressions plus the confirmed-commit control. Actual acquisition, preparation cleanup and post-generation decision cuts, with retained identity/evidence.",
+      "contracts": ["#1553 LOAD-FS-003/008; truthful load outcomes"]
+    }
+  ]
+}
