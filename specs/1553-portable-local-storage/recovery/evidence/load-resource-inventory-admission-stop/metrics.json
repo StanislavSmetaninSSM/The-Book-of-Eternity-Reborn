@@ -1,0 +1,61 @@
+{
+  "Source": "405f7fdd3d26c3400563ee61f56e0c17150393e1",
+  "Tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1
+  },
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 1,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Measurements": [
+    {
+      "Case": "BookOfEternityClient.Tests.PortableLoadResourceTests.ActualManyMemberPublicationFitsDeclaredLoadResourceEnvelope",
+      "Outcome": "Failed",
+      "Child": {
+        "Operation": "seed",
+        "Workload": "many",
+        "HeapBytes": 805306368,
+        "Completed": true,
+        "Os": "Microsoft Windows 10.0.26200",
+        "BaselineEntryCount": 13,
+        "AdditionalIncomingCount": 8179,
+        "ArchiveEntries": 8192,
+        "ArchiveNameBytes": 2096128,
+        "ExpandedBytes": 4297369,
+        "ManifestBytes": 3242911,
+        "ArchiveBytes": 6293210,
+        "IncomingFileCount": 8191,
+        "RequestedBulkPayloadBytes": 0,
+        "OldAdditionalFileCount": 9216,
+        "OldAdditionalBytes": 1179648,
+        "PredictedPayloadFootprintBytes": 89833125,
+        "PhaseMilliseconds": 94753.5748,
+        "PhaseAllocatedBytes": 1704000920,
+        "ProcessPeakWorkingSetBytes": 122126336,
+        "Phase": "SeedCompleted"
+      },
+      "Parent": {
+        "Operation": "seed",
+        "Workload": "many",
+        "ParentTerminated": false,
+        "SampleCount": 588,
+        "SampledPeakWorkingSetBytes": 122126336,
+        "OwnedDiskPeakBytes": 13641179,
+        "PhaseSampleCount": 586,
+        "SampledPhasePeakWorkingSetBytes": 121028608,
+        "OwnedPhaseDiskPeakBytes": 13641179,
+        "ParentMilliseconds": 95693.9083,
+        "OwnedProcessExited": true,
+        "Progress": []
+      },
+      "Stderr": ""
+    }
+  ]
+}

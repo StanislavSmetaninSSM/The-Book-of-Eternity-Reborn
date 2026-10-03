@@ -172,17 +172,27 @@ public partial class SaveLoadService
             candidate = await PrepareLoadArchiveAsync(saveFilePath, cancellationToken);
             if (_hooks?.BeforeLoadLeaseAcquisitionAsync != null)
                 await _hooks.BeforeLoadLeaseAcquisitionAsync();
+            _fs.ObserveLoadOperation("PreparedRevalidationBeforeLeaseStarted");
             candidate.Revalidate();
+            _fs.ObserveLoadOperation("PreparedRevalidationBeforeLeaseCompleted");
+            _fs.ObserveLoadOperation("LeaseAcquisitionStarted");
             lifecycleLease = await _fs.AcquireSessionLifecycleLeaseAsync();
             writeLease = await _fs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease, cancellationToken);
+            _fs.ObserveLoadOperation("LeaseAcquisitionCompleted");
             _fs.ResolveBackupPublicationRecovery(writeLease);
+            _fs.ObserveLoadOperation("PreparedRevalidationAfterLeaseStarted");
             candidate.Revalidate();
+            _fs.ObserveLoadOperation("PreparedRevalidationAfterLeaseCompleted");
             var generation = _fs.ReadLocalGenerationSnapshot(writeLease);
+            _fs.ObserveLoadOperation("LiveCaptureStarted");
             var live = _fs.CaptureLoadReplacementNamespace(writeLease, candidate.SourcePath);
+            _fs.ObserveLoadOperation("LiveCaptureCompleted");
             var settings = candidate.ArchiveSettings ?? StateManager.PrepareLocalLoadSettings(
                 await _fs.ReadLocalFileBytesAsync(writeLease, "config.json"));
+            _fs.ObserveLoadOperation("PlanCreationStarted");
             var namespacePlan = _fs.CreateLoadReplacementNamespacePlan(live, candidate.Images,
                 preserveConfiguration: candidate.ArchiveSettings == null);
+            _fs.ObserveLoadOperation("PlanCreationCompleted");
 
             var replacement = Guid.NewGuid().ToString("N");
             var outcome = await _fs.PublishLoadReplacementNamespaceAsync(writeLease, generation, namespacePlan, replacement,

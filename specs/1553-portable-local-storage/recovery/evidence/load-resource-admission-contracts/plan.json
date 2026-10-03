@@ -1,0 +1,182 @@
+{
+  "Categories": [
+    "portable-storage-batch-admission",
+    "portable-storage-paths"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-storage-batch-admission",
+      "reason": "The measured pre-mutation cost motivates fresh-call parent deduplication; qualify every new batch grant/leaf/type/native parent replacement contract before the unchanged many-member performance row.",
+      "contracts": [
+        "LOAD-FS-005/007/008"
+      ]
+    },
+    {
+      "category": "portable-storage-paths",
+      "reason": "The shared scope constructor and scalar leaf helper changed; preserve native path spelling, exact grants, absent/type/link refusal and non-following cleanup consumers.",
+      "contracts": [
+        "LOAD-FS-001/006/008"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "405f7fdd3d26c3400563ee61f56e0c17150393e1",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 166.089235,
+  "Descriptors": [
+    {
+      "Name": "portable-storage-batch-admission-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-batch-admission",
+      "Categories": [
+        "portable-storage-batch-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_ChecksAllGrantsBeforeRequiredLeafAdmission|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_ExactGrantDoesNotAdmitSiblingDirectoryOrCaseAlias|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_FreshCallRefusesParentReplacedByRegularFile|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_FreshCallsRefuseParentReplacedByNativeDirectoryLink|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_LateDirectoryLeafRetainsEarlierBytes|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_LateFileBlockerRetainsEarlierAndBlockerBytes|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_LateNonRegularLeafRetainsEarlierBytes|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_MaterializesRequestBeforePhysicalAdmission|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_OptionalAbsenceDoesNotCreateDirectoriesOrFiles|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_RequiredLateAbsenceRetainsEarlierBytes",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 11,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_ChecksAllGrantsBeforeRequiredLeafAdmission",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_ExactGrantDoesNotAdmitSiblingDirectoryOrCaseAlias",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_FreshCallRefusesParentReplacedByRegularFile",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_FreshCallsRefuseParentReplacedByNativeDirectoryLink",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_LateDirectoryLeafRetainsEarlierBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_LateFileBlockerRetainsEarlierAndBlockerBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_LateNonRegularLeafRetainsEarlierBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_MaterializesRequestBeforePhysicalAdmission",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_OptionalAbsenceDoesNotCreateDirectoriesOrFiles",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_RequiredLateAbsenceRetainsEarlierBytes",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-paths-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-paths",
+      "Categories": [
+        "portable-storage-paths"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeTests.Constructor_AllowsNewRootOnlyWithExistingSafeParent|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeTests.DeleteOwnedFile_DeletesOnlyValidatedFileAndAllowsAbsence|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeTests.DeleteOwnedFile_RejectsDirectoryRootReplacedByRegularFile|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeTests.DeleteOwnedTree_DeletesValidatedContentsOnly|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeTests.DeleteOwnedTree_PreflightsLinksBeforeDeletingAnyEntry|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeTests.DirectoryGrant_UsesExactSpellingAndSeparatorBoundary|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeTests.EnsureDirectory_CreatesOnlyInsideGrantedRoot|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_AllowsMissingOrRegularFileInsideRoot|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_ExactExternalGrantDoesNotGrantSiblingsOrDirectory|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_RejectsAbsentDeclaredDirectoryRoot|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_RejectsDirectoryLeafAndFileAncestor|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_RejectsExistingAndDanglingSymbolicLinks|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_RejectsLinkedAncestor|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_RejectsNonRegularEntryWithoutOpeningIt|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_RejectsTraversalAndRelativePaths|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_RequiredAbsenceIsNotSilentlyAccepted|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_RequiresExactDirectoryGrantSpelling|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_RevalidatesRootAfterConstruction|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeTests.WindowsPathSpelling_AllowsUnambiguousDiskPaths|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileScopeTests.WindowsPathSpelling_RejectsAmbiguousOrDeviceComponents",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 35,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.Constructor_AllowsNewRootOnlyWithExistingSafeParent",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.DeleteOwnedFile_DeletesOnlyValidatedFileAndAllowsAbsence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.DeleteOwnedFile_RejectsDirectoryRootReplacedByRegularFile",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.DeleteOwnedTree_DeletesValidatedContentsOnly",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.DeleteOwnedTree_PreflightsLinksBeforeDeletingAnyEntry",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.DirectoryGrant_UsesExactSpellingAndSeparatorBoundary",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.EnsureDirectory_CreatesOnlyInsideGrantedRoot",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_AllowsMissingOrRegularFileInsideRoot",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_ExactExternalGrantDoesNotGrantSiblingsOrDirectory",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_RejectsAbsentDeclaredDirectoryRoot",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_RejectsDirectoryLeafAndFileAncestor",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_RejectsExistingAndDanglingSymbolicLinks",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_RejectsLinkedAncestor",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_RejectsNonRegularEntryWithoutOpeningIt",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_RejectsTraversalAndRelativePaths",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_RequiredAbsenceIsNotSilentlyAccepted",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_RequiresExactDirectoryGrantSpelling",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_RevalidatesRootAfterConstruction",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.WindowsPathSpelling_AllowsUnambiguousDiskPaths",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.WindowsPathSpelling_RejectsAmbiguousOrDeviceComponents",
+          "Cases": 12
+        }
+      ]
+    }
+  ]
+}

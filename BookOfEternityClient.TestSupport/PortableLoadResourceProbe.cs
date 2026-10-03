@@ -49,6 +49,7 @@ public static class PortableLoadResourceProbe
             ["Os"] = System.Runtime.InteropServices.RuntimeInformation.OSDescription
         };
         var timer = Stopwatch.StartNew();
+        var progressTimer = Stopwatch.StartNew();
         var allocated = GC.GetTotalAllocatedBytes(true);
         var measured = false;
         try
@@ -79,7 +80,7 @@ public static class PortableLoadResourceProbe
             {
                 observed++;
                 if (!prepared) return;
-                if (index < 0 || index % 1000 == 0) WriteProgress(report, phase.ToString(), index);
+                if (index < 0 || index % 1000 == 0) WriteProgress(report, phase.ToString(), index, progressTimer.Elapsed.TotalMilliseconds);
                 if (phase == TrustedLocalPublicationPhase.IntentPublished) DescribeFrame(files!, report);
                 if (phase == TrustedLocalPublicationPhase.Committed) committed++;
                 var cut = parts[0] == "cut" && (parts[1] == "many"
@@ -107,16 +108,20 @@ public static class PortableLoadResourceProbe
             files = new FileSystemManager(args[0], NullLogger<FileSystemManager>.Instance,
                 PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
                 {
+                    LoadOperationObserver = stage =>
+                    {
+                        if (prepared) WriteProgress(report, stage, 0, progressTimer.Elapsed.TotalMilliseconds);
+                    },
                     LocalPublicationObserver = observe,
                     AfterCanonicalWriteLockOpenedAsync = () =>
                     {
-                        if (prepared) WriteProgress(report, "CanonicalLockOpened", 0);
+                        if (prepared) WriteProgress(report, "CanonicalLockOpened", 0, progressTimer.Elapsed.TotalMilliseconds);
                         return Task.CompletedTask;
                     },
                     BeforeCanonicalMutationBoundaryAsync = _ =>
                     {
                         if (prepared && (++mutationBoundaries == 1 || mutationBoundaries % 1000 == 0))
-                            WriteProgress(report, "MutationAdmission", mutationBoundaries);
+                            WriteProgress(report, "MutationAdmission", mutationBoundaries, progressTimer.Elapsed.TotalMilliseconds);
                         return Task.CompletedTask;
                     }
                 });
@@ -551,12 +556,15 @@ public static class PortableLoadResourceProbe
     /// <param name="index">
     /// The callback's actual member index or admission count; zero represents the lock boundary.
     /// </param>
-    private static void WriteProgress(Dictionary<string, object?> report, string boundary, int index)
+    /// <param name="childMilliseconds">
+    /// Monotonic child elapsed time since this operation began, independent of parent disk-scan and stdout latency.
+    /// </param>
+    private static void WriteProgress(Dictionary<string, object?> report, string boundary, int index, double childMilliseconds)
     {
         Console.WriteLine(JsonSerializer.Serialize(new
         {
             Phase = "OperationProgress", Operation = report["Operation"], HeapBytes = report["HeapBytes"],
-            Boundary = boundary, Index = index
+            Boundary = boundary, Index = index, ChildMilliseconds = childMilliseconds
         }));
         Console.Out.Flush();
     }

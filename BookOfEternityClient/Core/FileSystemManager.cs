@@ -8,6 +8,11 @@ namespace BookOfEternityClient.Core;
 
 internal sealed class FileSystemManagerHooks
 {
+    /// <summary>
+    /// Receives owned read-only load stage observations; null disables diagnostics.
+    /// The callback must not mutate files, authority, settings or session state.
+    /// </summary>
+    internal Action<string>? LoadOperationObserver { get; init; }
     internal Action<TrustedLocalPublicationPhase, int>? LocalPublicationObserver { get; init; }
     /// <summary>
     /// Observes completed recovery boundaries while the canonical lease is held.

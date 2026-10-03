@@ -279,6 +279,49 @@ LOAD-FS-001–008, v1/v2/v3 authority, archive limits or the public client bound
 Canonical spec/plan/tasks remain aligned; the autonomous review waiver covers the
 written recommended revision, while independent review and measured acceptance remain.
 
+### T032-B3-RESOURCE-TRACE — separate bounded full-pipeline investigation
+
+At `405f7fdd`, the fresh path/batch cohort passed46/46 including11 new native/batch
+cases. The unchanged many publication still stopped at180.059 seconds: lock opened
+at73.996 seconds, first mutation admission at166.734 and index17000 at170.225;
+no intent was staged. These are parent whole-child timestamps, including setup,
+not phase-only timings. Evidence is retained in `load-resource-admission-contracts/`
+and `load-resource-inventory-admission-stop/`. Scratch batching is not sufficient
+to establish the original performance qualification.
+
+Before another algorithm change, collect causal stage timings from the same real
+typed load. Source analysis counts approximately4I+3B full file hash opens before
+the first mutation admission and a further3I+4B before journal writing (I incoming
+files, B old files), plus source archive reads. These are source-derived counts,
+not measured time attribution. The parent monitor also walks the owned disk tree
+every100ms; its overhead is a hypothesis to inspect, not an excuse for a pass.
+
+Add a private, optional, strictly read-only diagnostic hook with entry/completion
+observations around candidate revalidation, live capture, plan/member mapping,
+namespace image validation and namespace preflight. No callbacks inside the reused
+parent enumeration; no physical observation crosses a mutation or callback. The
+owned probe forwards only stage names and timestamps, without bytes or authority
+paths. Missing observers leave normal execution unchanged. This is client-owned
+diagnostic infrastructure; no GM-authored or public load contract changes.
+
+Run exactly one separate `portable-load-resource-inventory-diagnosis` case using
+the unchanged8192-entry/name/9216-old-file workload and complete independent
+state/generation/library/source checks. Its temporary whole-child ceiling is
+**600seconds**, owner budget **12minutes**, command **15minutes**, unchanged768MiB
+heap/1GiB RSS/5GiB disk. This larger *investigation* bound permits actual remaining
+stages to be observed after two180-second stops; it does not alter the ordinary
+qualification's180-second ceiling or turn its failures into passes. The diagnostic
+report records its bound and actual measurement-start/stop parent timestamps.
+Guard stops remain non-passes even for this investigation. Preserve the result,
+then choose a measured optimization or explicitly justified qualification-budget
+revision; do not repeat the same unsuccessful hypothesis or silently relax controls.
+
+The owner's autonomous revision waiver covers this written investigation. The
+existing spec acceptance criteria remain unchanged and T032-B3-RESOURCE stays open.
+Canonical spec/plan/tasks consistency is checked before installation. Independent
+review covers the coherent diagnostic/correction and exact evidence; this does not
+authorize unrelated save/gameplay/client work or native Linux acceptance.
+
 ### T032-B5-FS — native Linux CI and durable downstream handback
 
 **Files:** bounded workflow/selection, feature quickstart/recovery docs/checkpoint/handoff; affected catalog contracts if runner integration changes. **Consumes:** accepted blocks above. **Produces:** Windows+Linux filesystem qualification and verified callable handoff, not public-client acceptance.

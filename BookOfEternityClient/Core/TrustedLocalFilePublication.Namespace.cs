@@ -110,7 +110,9 @@ internal sealed partial class TrustedLocalFilePublication
         scratch.ValidateFiles(scratchPaths);
         foreach (var path in scratchPaths)
             if (File.Exists(path)) throw Conflict("A namespace scratch name already exists.");
+        _files.ObserveLoadOperation("IntentFrameWriteStarted");
         journal = WriteNamespaceJournal(IntentStage, journal);
+        _files.ObserveLoadOperation("IntentFrameWriteCompleted");
         Observe(lease, observer, TrustedLocalPublicationPhase.IntentStaged);
         File.Move(_journalScope.ValidateFile(IntentStage, false), _journalScope.ValidateFile(Active), overwrite: false);
         journal = RebindNamespaceJournal(journal, Active);
@@ -142,6 +144,7 @@ internal sealed partial class TrustedLocalFilePublication
     /// </param>
     private void ValidateNamespaceJournal(NamespaceJournal journal)
     {
+        _files.ObserveLoadOperation("NamespaceJournalValidationStarted");
         var root = NormalizeAuthorityPath(_files.GameSessionPath, OperatingSystem.IsWindows());
         if (journal.Format != 3 || !ValidId(journal.TransactionId) || journal.Members is not { Length: > 0 } ||
             journal.Boundaries == null || journal.NamespaceRoot != root || _scope.ValidateNamespacePath(root) != root)
@@ -218,6 +221,7 @@ internal sealed partial class TrustedLocalFilePublication
                 throw Conflict("Namespace scratch conflicts with recorded authority.");
             _scope.ValidateNamespacePath(path);
         }
+        _files.ObserveLoadOperation("NamespaceJournalValidationCompleted");
     }
 
     /// <summary>
@@ -304,6 +308,7 @@ internal sealed partial class TrustedLocalFilePublication
     private void PreflightNamespace(FileSystemManager.CanonicalWriteLease lease, NamespaceJournal journal,
         bool exactAfter, bool exactBefore)
     {
+        _files.ObserveLoadOperation("NamespacePreflightStarted");
         _files.EnsureCanonicalWriteLeaseActive(lease);
         ValidateJournalDirectory();
         var generation = ReadGeneration(lease);
@@ -337,6 +342,7 @@ internal sealed partial class TrustedLocalFilePublication
                     throw Conflict("An unknown namespace child would be lost during recovery; evidence retained.");
             }
         }
+        _files.ObserveLoadOperation("NamespacePreflightCompleted");
     }
 
     /// <summary>

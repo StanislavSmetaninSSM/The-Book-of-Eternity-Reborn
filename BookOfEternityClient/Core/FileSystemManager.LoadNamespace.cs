@@ -8,6 +8,14 @@ public partial class FileSystemManager
     private static readonly TrustedLocalNamespaceImage LoadNamespaceDirectory = new(TrustedLocalNamespaceKind.Directory, null);
 
     /// <summary>
+    /// Emits an optional owned read-only diagnostic outside synchronous admission batches.
+    /// </summary>
+    /// <param name="stage">
+    /// The stable stage label without payload bytes or authority paths.
+    /// </param>
+    internal void ObserveLoadOperation(string stage) => _hooks?.LoadOperationObserver?.Invoke(stage);
+
+    /// <summary>
     /// Resolves an exact load inventory name without discarding native payload spelling.
     /// </summary>
     /// <param name="relative">
@@ -199,8 +207,10 @@ public partial class FileSystemManager
             throw new InvalidOperationException("Ordinary load cannot use a legacy transaction lease.");
         if (!Guid.TryParseExact(replacementGeneration, "N", out var parsed) || parsed.ToString("N") != replacementGeneration)
             throw new InvalidDataException("The replacement generation is invalid.");
+        ObserveLoadOperation("MemberMappingStarted");
         var members = plan.Changes.Select(change => new TrustedLocalNamespaceChange(ResolveLoadNamespacePath(change.RelativePath),
             change.Before, change.After)).ToList();
+        ObserveLoadOperation("MemberMappingCompleted");
         members.Add(new(SessionGenerationPath,
             expectedGeneration.Bytes == null ? LoadNamespaceMissing : new(TrustedLocalNamespaceKind.File, TrustedLocalFileImage.FromBytes(expectedGeneration.Bytes)),
             new(TrustedLocalNamespaceKind.File, TrustedLocalFileImage.FromBytes(
@@ -209,12 +219,15 @@ public partial class FileSystemManager
         var publisher = new TrustedLocalFilePublication(this, new TrustedLocalFileScope([BasePath]));
         void Revalidate()
         {
+            ObserveLoadOperation("ManagerRevalidationStarted");
             ResolveBackupPublicationRecovery(lease);
             var generation = ReadLocalGenerationSnapshot(lease);
             if (generation.Binding != expectedGeneration.Binding || !ExactBytesEqual(generation.Bytes, expectedGeneration.Bytes))
                 throw new InvalidDataException("The generation changed during namespace preparation.");
             validatePreparedNamespace();
+            ObserveLoadOperation("ManagerCandidateRevalidated");
             publisher.ValidateNamespaceBeforePublication(lease, expectedGeneration.Binding, namespacePlan);
+            ObserveLoadOperation("ManagerAdmissionCompleted");
         }
         var registrations = new List<InProcessMutationRegistration>();
         try

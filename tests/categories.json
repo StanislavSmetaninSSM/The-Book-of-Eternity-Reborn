@@ -10615,6 +10615,17 @@
       "timeoutMinutes": 3,
       "expectedSeconds": null,
       "selectors": [{"project":"unit", "tests":["BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.*"]}]
+    },
+    {
+      "id": "portable-load-resource-inventory-diagnosis",
+      "responsibility": "One separately bounded full-pipeline investigation of the unchanged8192-entry/name/9216-old-file typed load with private read-only stage timings, actual parent disk-scan cost and complete independent publication oracle. The600-second child and12-minute owner are diagnostic only; original180-second resource qualification remains separately owned and open.",
+      "excludes": "Ordinary resource acceptance, other resource rows, preparation/recovery, public clients, gameplay, unrelated sweeps or archive/grant/schema changes.",
+      "changeHints": ["BookOfEternityClient.TestSupport/PortableLoadResourceProbe.cs", "BookOfEternityClient.Tests/PortableLoadResourceTests.cs", "BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs", "BookOfEternityClient/Services/SaveLoadService.Loading.cs"],
+      "related": [],
+      "requirements": {"frontendBuild":false, "exclusive":true},
+      "timeoutMinutes": 12,
+      "expectedSeconds": null,
+      "selectors": [{"project":"unit", "tests":["BookOfEternityClient.Tests.PortableLoadResourceTests.DiagnoseManyMemberPublicationThroughCompletePipeline"]}]
     }
   ]
 }

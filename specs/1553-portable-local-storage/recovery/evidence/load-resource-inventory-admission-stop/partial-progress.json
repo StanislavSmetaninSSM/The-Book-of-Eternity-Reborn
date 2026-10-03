@@ -1,0 +1,207 @@
+{
+  "Source": "405f7fdd3d26c3400563ee61f56e0c17150393e1",
+  "Case": "BookOfEternityClient.Tests.PortableLoadResourceTests.ActualManyMemberPublicationFitsDeclaredLoadResourceEnvelope",
+  "Outcome": "Failed",
+  "Partial": {
+    "Operation": "publication",
+    "Workload": "many",
+    "PhaseStarted": true,
+    "PhaseStopped": false,
+    "ParentMilliseconds": 180059.1843,
+    "SampledPeakWorkingSetBytes": 150921216,
+    "OwnedDiskPeakBytes": 13956818,
+    "Progress": [
+      {
+        "ParentMilliseconds": 73996.1906,
+        "Event": {
+          "Phase": "OperationProgress",
+          "Operation": "publication",
+          "HeapBytes": 805306368,
+          "Boundary": "CanonicalLockOpened",
+          "Index": 0
+        }
+      },
+      {
+        "ParentMilliseconds": 166733.9505,
+        "Event": {
+          "Phase": "OperationProgress",
+          "Operation": "publication",
+          "HeapBytes": 805306368,
+          "Boundary": "MutationAdmission",
+          "Index": 1
+        }
+      },
+      {
+        "ParentMilliseconds": 166949.5046,
+        "Event": {
+          "Phase": "OperationProgress",
+          "Operation": "publication",
+          "HeapBytes": 805306368,
+          "Boundary": "MutationAdmission",
+          "Index": 1000
+        }
+      },
+      {
+        "ParentMilliseconds": 167135.6665,
+        "Event": {
+          "Phase": "OperationProgress",
+          "Operation": "publication",
+          "HeapBytes": 805306368,
+          "Boundary": "MutationAdmission",
+          "Index": 2000
+        }
+      },
+      {
+        "ParentMilliseconds": 167319.4465,
+        "Event": {
+          "Phase": "OperationProgress",
+          "Operation": "publication",
+          "HeapBytes": 805306368,
+          "Boundary": "MutationAdmission",
+          "Index": 3000
+        }
+      },
+      {
+        "ParentMilliseconds": 167505.3079,
+        "Event": {
+          "Phase": "OperationProgress",
+          "Operation": "publication",
+          "HeapBytes": 805306368,
+          "Boundary": "MutationAdmission",
+          "Index": 4000
+        }
+      },
+      {
+        "ParentMilliseconds": 167862.2299,
+        "Event": {
+          "Phase": "OperationProgress",
+          "Operation": "publication",
+          "HeapBytes": 805306368,
+          "Boundary": "MutationAdmission",
+          "Index": 5000
+        }
+      },
+      {
+        "ParentMilliseconds": 168048.1693,
+        "Event": {
+          "Phase": "OperationProgress",
+          "Operation": "publication",
+          "HeapBytes": 805306368,
+          "Boundary": "MutationAdmission",
+          "Index": 6000
+        }
+      },
+      {
+        "ParentMilliseconds": 168220.5707,
+        "Event": {
+          "Phase": "OperationProgress",
+          "Operation": "publication",
+          "HeapBytes": 805306368,
+          "Boundary": "MutationAdmission",
+          "Index": 7000
+        }
+      },
+      {
+        "ParentMilliseconds": 168407.6836,
+        "Event": {
+          "Phase": "OperationProgress",
+          "Operation": "publication",
+          "HeapBytes": 805306368,
+          "Boundary": "MutationAdmission",
+          "Index": 8000
+        }
+      },
+      {
+        "ParentMilliseconds": 168593.6688,
+        "Event": {
+          "Phase": "OperationProgress",
+          "Operation": "publication",
+          "HeapBytes": 805306368,
+          "Boundary": "MutationAdmission",
+          "Index": 9000
+        }
+      },
+      {
+        "ParentMilliseconds": 168780.7244,
+        "Event": {
+          "Phase": "OperationProgress",
+          "Operation": "publication",
+          "HeapBytes": 805306368,
+          "Boundary": "MutationAdmission",
+          "Index": 10000
+        }
+      },
+      {
+        "ParentMilliseconds": 168964.705,
+        "Event": {
+          "Phase": "OperationProgress",
+          "Operation": "publication",
+          "HeapBytes": 805306368,
+          "Boundary": "MutationAdmission",
+          "Index": 11000
+        }
+      },
+      {
+        "ParentMilliseconds": 169151.109,
+        "Event": {
+          "Phase": "OperationProgress",
+          "Operation": "publication",
+          "HeapBytes": 805306368,
+          "Boundary": "MutationAdmission",
+          "Index": 12000
+        }
+      },
+      {
+        "ParentMilliseconds": 169339.0555,
+        "Event": {
+          "Phase": "OperationProgress",
+          "Operation": "publication",
+          "HeapBytes": 805306368,
+          "Boundary": "MutationAdmission",
+          "Index": 13000
+        }
+      },
+      {
+        "ParentMilliseconds": 169585.9571,
+        "Event": {
+          "Phase": "OperationProgress",
+          "Operation": "publication",
+          "HeapBytes": 805306368,
+          "Boundary": "MutationAdmission",
+          "Index": 14000
+        }
+      },
+      {
+        "ParentMilliseconds": 169851.2648,
+        "Event": {
+          "Phase": "OperationProgress",
+          "Operation": "publication",
+          "HeapBytes": 805306368,
+          "Boundary": "MutationAdmission",
+          "Index": 15000
+        }
+      },
+      {
+        "ParentMilliseconds": 170037.0788,
+        "Event": {
+          "Phase": "OperationProgress",
+          "Operation": "publication",
+          "HeapBytes": 805306368,
+          "Boundary": "MutationAdmission",
+          "Index": 16000
+        }
+      },
+      {
+        "ParentMilliseconds": 170225.2051,
+        "Event": {
+          "Phase": "OperationProgress",
+          "Operation": "publication",
+          "HeapBytes": 805306368,
+          "Boundary": "MutationAdmission",
+          "Index": 17000
+        }
+      }
+    ],
+    "Failure": "Owned load-resource guard stop: RSS=150921216; disk=13956818; elapsed=00:03:00.0582043."
+  }
+}
