@@ -10224,6 +10224,28 @@
       ]
     },
     {
+      "id": "portable-load-lease-consumers",
+      "responsibility": "Exact affected acquisition consumers when ordinary load classifies trusted-local recovery failure: replacement requires active lifecycle authority, mutation cannot rotate, ordinary unbound recovery keeps its established decision and original recovery callbacks restore lease mode on both success and failure.",
+      "excludes": "Full clear/storage/bootstrap/gameplay sweeps, public load cutover, topology and resource qualification.",
+      "changeHints": ["BookOfEternityClient/Core/FileSystemManager.cs"],
+      "related": [{"id": "portable-load-outcomes", "when": "Replacement acquisition or recovery exception classification changes."}],
+      "requirements": {"frontendBuild": false, "exclusive": false},
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {"project": "integration", "tests": [
+          "BookOfEternityClient.Tests.FileSystemManagerTests.SessionMutationLease_CannotRotateSessionGeneration",
+          "BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_RequiresActiveLifecycleAuthority",
+          "BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_CanRotateGenerationWhileLifecycleAuthorityIsActive"
+        ]},
+        {"project": "unit", "tests": [
+          "BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes",
+          "BookOfEternityClient.Tests.PortableClientStorageTests.OriginalRecoveryCallbackDoesNotCreatePortableJournalOrGenerationAndRestoresLeaseMode",
+          "BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterRejectsStaleBoundGenerationWithoutChangingContent"
+        ]}
+      ]
+    },
+    {
       "id": "portable-load-entry",
       "responsibility": "T032-B1 actual typed ordinary-load entry using current public-producer archives: connected same-shape replacement and late-member rollback, preserved complete library and selected source outside saves, receiver-independent archive/live/absent settings, and direct nested-bound admission. Each case owns its mutable root and asserts its exact preparation, decision or refusal boundary.",
       "excludes": "Public bool/console/browser cutover, full file-directory conversion, cold/resource envelope, original physical Load diagnostic, provider/live gameplay, and accepted save-only or shared-codec regression sweeps.",
@@ -10282,8 +10304,8 @@
             "BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState",
             "BookOfEternityClient.Tests.PortableLoadReplacementTests.InvalidCaseAliasedConfigRejectsBeforeLifecycleMutation",
             "BookOfEternityClient.Tests.PortableLoadReplacementTests.CanonicalizedAuthorityCannotReplaceTheSelectedArchive",
-          "BookOfEternityClient.Tests.PortableLoadReplacementTests.OriginalManifestHashRejectsBeforeCanonicalizedLoadPreparation",
-          "BookOfEternityClient.Tests.PortableLoadReplacementTests.PreparedInventoryUsesDeclaredFixedNamesAndPreservesArbitraryNames"
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.OriginalManifestHashRejectsBeforeCanonicalizedLoadPreparation",
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.PreparedInventoryUsesDeclaredFixedNamesAndPreservesArbitraryNames"
           ]
         }
       ]

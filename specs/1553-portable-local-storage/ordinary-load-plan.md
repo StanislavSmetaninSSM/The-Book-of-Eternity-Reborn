@@ -74,6 +74,30 @@ New internal namespace interfaces, defined by T032-B2-NAMESPACE:
 - Canonical snapshot/plan use session-relative keys/changes plus exact absolute protected boundaries; manager resolves them and appends the sole exact runtime-generation file. Their types are defined alongside the namespace descriptors, not in client DTOs.
 - Narrow `LoadPreparationCleanupException` retains preparation and cleanup causes plus owned staging root. It is not canonical uncertainty by itself.
 
+### Fixed-path inventory clarification (T032-B1-FIX)
+
+The source audit found that the eight handoff paths are insufficient even before
+public B4 cutover: committed internal load immediately refreshes fixed player,
+world and history paths. Use one immutable whole-file lookup composed from
+`FileMapping.FieldToFile`/`OutputFiles`, normalizer rollback paths, afterlife
+surface declarations and QTE rollback paths. Explicit supplements are config,
+chat history, soul/resources/profiles, active world directives, difficulty,
+pending dice and resource resolution constants. Repeated identical declarations
+are harmless; contradictory case spellings fail. No reflection, global directory
+folding, gameplay change or import permission follows from this registry.
+Original archive/schema/manifest/hash validation and ephemeral exclusions retain
+authority. Original outer whitespace is checked before platform resolution,
+because Windows `GetFullPath` can erase trailing spaces. These implement existing
+LOAD-FS-001/004, authorized under the owner's review waiver.
+
+Four real-producer manifested preparation cases cover player status, world time,
+codex and directives plus unchanged arbitrary `lore/MyCustom.JSON` bytes/key. At
+`9a54dd23`, Windows reached preparation and rejected its mismatched complete
+staging inventory before the ordinal assertion; all four were causal RED. The
+existing trailing-config case also remained RED because resolution had erased
+the space. This is not native Linux acceptance. Select the eight exact affected
+lease/recovery consumers separately from broad storage/bootstrap categories.
+
 ## Streamed metadata design
 
 Keep the already reviewed T032-B0 v2 encoding/order/region design below. Reuse the incremental machinery for v3; do not replace strictness with a permissive general JSON DOM.

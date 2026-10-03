@@ -12,16 +12,25 @@ Execution plan revision 1 and its concrete v3 schema are therefore authorized.
 Independent Sol 6.1 XHigh design review passed `8ca3fbca`; its scoped proof readback
 also passed `532a0f36`. This accepts the design/tracking gate only, not load code.
 
-Current task: T032-B1-FIX, baseline production/tests still `5d2aa2ce`.
+Current task: T032-B1-FIX; original baseline was `5d2aa2ce`.
 Five-fix candidate source is now written after the recorded causal baseline:
-Trim rejection and finite eight-path canonicalization precede extraction/classification;
+Trim rejection and immutable declared-path canonicalization precede extraction/classification;
 acquisition wraps only ordinary recovery at SessionReplacement and preserves coordinated
 uncertainty through release failure; private preparation/cleanup carries both causes,
 source and owned residue; Uncertain never claims an established generation and always
 needs follow-up. Four directory-alias controls and original-manifest-hash refusal extend
-alias ownership to 19 cases; outcomes remain 4, entry 9. Current candidate is unbuilt
-and unverified; the next bounded fresh-build call selects these 32 load cases.
-The fixed-path consumer audit and affected acquisition consumers remain before acceptance.
+alias ownership to 19 cases; outcomes remain 4, entry 9. First fresh candidate run
+at `2b0ab01c` built and executed 19 aliases: 18 passed, trailing-config whitespace
+remained causal RED because Windows resolution erased the space. Its fail-fast
+selection did not execute outcomes/entry; no combined pass is claimed.
+The bounded source consultation confirmed eight paths miss immediate refresh
+consumers. Four manifested inventory cases at `9a54dd23` were causal RED at complete
+staging admission on Windows (23/23 executed, 18 passed/5 failed, 3:22.138,
+cleanup complete). Exact [artifacts](recovery/evidence/load-red/registry/summary.json)
+are saved. The next candidate checks original spelling before resolution and
+composes fixed path authorities without changing arbitrary names. The planned
+selection is 23 alias + 4 outcome + 9 entry + 8 exact acquisition consumer cases;
+fresh build/runtime, catalog completeness and independent code review remain open.
 
 The first selection-only push after Actions enablement produced no registered run/check
 suite; workflow lookup still showed only the disabled general workflow. A meaningful

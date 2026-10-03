@@ -1,4 +1,5 @@
 using System.Buffers;
+using System.Collections.Frozen;
 using System.IO.Compression;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
@@ -280,6 +281,10 @@ public partial class SaveLoadService
                 foreach (var entry in archive.Entries)
                 {
                     if (string.IsNullOrEmpty(entry.Name)) continue;
+                    // Windows GetFullPath can erase trailing spaces. Check original
+                    // spelling after original manifest/hash admission, before resolution.
+                    if (!entry.FullName.Equals(entry.FullName.Trim(), StringComparison.Ordinal))
+                        throw new InvalidDataException($"Load payload '{entry.FullName}' does not use canonical spelling.");
                     var relative = NormalizeArchiveEntryPath(stagingRoot, entry.FullName);
                     if (!relative.Equals(relative.Trim(), StringComparison.Ordinal))
                         throw new InvalidDataException($"Load payload '{relative}' does not use canonical spelling.");
@@ -372,8 +377,20 @@ public partial class SaveLoadService
     /// The fixed canonical path when matched ignoring case; otherwise the unchanged payload path.
     /// </returns>
     private static string CanonicalizeFixedLoadStatePath(string relative)
+        => FixedLoadStatePaths.TryGetValue(relative, out var canonical) ? canonical : relative;
+
+    private static readonly FrozenDictionary<string, string> FixedLoadStatePaths = CreateFixedLoadStatePaths();
+
+    /// <summary>
+    /// Captures existing explicit runtime path authorities without granting import or write authority.
+    /// </summary>
+    /// <returns>
+    /// An immutable lookup from case aliases to each declared whole-file spelling.
+    /// Contradictory declarations fail rather than choosing a spelling implicitly.
+    /// </returns>
+    private static FrozenDictionary<string, string> CreateFixedLoadStatePaths()
     {
-        string[] fixedPaths =
+        string[] supplements =
         [
             SoulStateArchivePath,
             ResourceMaterializationContract.DefinitionsPath,
@@ -381,13 +398,27 @@ public partial class SaveLoadService
             ResourceMaterializationContract.HistoryPath,
             CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
             "config.json",
+            "game_state/history/chat_log.json",
             AfterlifeEntityProfileState.StatePath,
-            ShiningAbodeState.StatePath
+            ShiningAbodeState.StatePath,
+            WorldDirectiveService.ActiveDirectivesPath,
+            AfterlifeSpiritualConflictState.DifficultySettingsPath,
+            PendingTurnStateService.PendingDiceStatePath,
+            ResourcePendingResolutionState.PendingPath
         ];
-        foreach (var canonical in fixedPaths)
-            if (relative.Equals(canonical, StringComparison.OrdinalIgnoreCase))
-                return canonical;
-        return relative;
+        var declarations = FileMapping.FieldToFile.Values.Concat(FileMapping.OutputFiles.Values)
+            .Concat(CanonicalStateNormalizer.NormalizerRollbackTrackedFiles)
+            .Concat(AfterlifeContractRegistry.All.Select(surface => surface.Path))
+            .Concat(QteSceneService.BrowserTransactionRollbackPaths)
+            .Concat(supplements);
+        var paths = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var path in declarations)
+        {
+            if (paths.TryGetValue(path, out var existing) && !existing.Equals(path, StringComparison.Ordinal))
+                throw new InvalidOperationException($"Conflicting fixed load path declarations: '{existing}' and '{path}'.");
+            paths[path] = path;
+        }
+        return paths.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
     }
 
     private static void ValidateLoadSourceCollision(string destination, string source)
