@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "portable-storage-stream-dispatch"
+  ],
+  "Reasons": [
+    {
+      "reason": "BOELP3 is now intentionally recognized. Correct the unknown-version fixture to unsupported BOELP4 and retain bounded unknown/partial/JSON-looking rejection plus original v1 dispatch. Production unchanged; other53-cohort passes retained.",
+      "category": "portable-storage-stream-dispatch",
+      "contracts": [
+        "Preserved v1/v2/v3 dispatch authority; unknown format refuses before allocation/mutation"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "5a222cfaeccaa3afe493780b9eb6f6f5d7de5c80",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 161.6497452,
+  "Descriptors": [
+    {
+      "Name": "portable-storage-stream-dispatch-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-stream-dispatch",
+      "Categories": [
+        "portable-storage-stream-dispatch"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamDispatchTests.PlausibleV1PreservesReorderedPropertiesAndLongLeadingWhitespace|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamDispatchTests.UnknownLargeFrameRejectsBeforeLegacyWholeFileAllocation",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamDispatchTests.PlausibleV1PreservesReorderedPropertiesAndLongLeadingWhitespace",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamDispatchTests.UnknownLargeFrameRejectsBeforeLegacyWholeFileAllocation",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

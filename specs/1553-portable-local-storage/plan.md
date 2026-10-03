@@ -211,7 +211,20 @@ ReadJournal stack assertion was obsolete. The fixture now uses unsupported BOELP
 retaining the same 128 MiB file/64 MiB child bound and all evidence/session assertions.
 No production decoder or rejection policy changes. Only dispatch reruns after this
 test correction, then discovery-only catalog/XML checks; no 53-case pass is claimed.
-This is the scoped review correction, not an accepted B2 outcome yet.
+Fresh XML-enabled native Windows at clean `5a222cfaeccaa3afe493780b9eb6f6f5d7de5c80`
+passed corrected dispatch 4/4, complete selection/cleanup, no skips/duplicates,
+3:00.180; exact [artifacts](recovery/evidence/load-namespace-dispatch-green/summary.json)
+are retained. Same-source NoBuild discovery-only [audit](recovery/evidence/load-namespace-catalog/catalog-audit.json)
+passed 210 categories/10,545 methods, no unmapped/stale selectors, no tests executed,
+complete cleanup, 0:19.849. Four compiled XML documents parse; no touched-file XML
+reference warning occurred, with the same three unrelated existing CS1587 warnings;
+[verification](recovery/evidence/load-namespace-catalog/xml.json) is recorded.
+Independent Sol 6.1 XHigh cleared source, generation and fixture corrections with
+no remaining findings; final evidence clearance is pending. All runtime results remain
+source-specific separate cohorts, not a fabricated combined pass. GM prompts/examples
+need no update for these client-owned local filesystem internals; no GM-authored
+gameplay/state schema or public caller changed. Cold/resource/native Linux/public
+acceptance is not established by this B2 evidence.
 The parent owns namespace observation/preflight/reconciliation and load integration;
 the retained Sol 6.1 High codec implementer may own only the separate v3 descriptor/frame
 files after release. This bounded delegation reuses known cursor machinery without
