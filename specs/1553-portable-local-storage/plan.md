@@ -83,6 +83,31 @@ admission/fixed-alias/entry/outcome consumers; prior unrelated lease checks need
 repeat. Remaining metadata/path/native/cold/resource qualification follows on the
 fixed source. Independent review and native filesystem gate remain open.
 
+### Native original-name correction GREEN — 2026-10-03 UTC
+
+At clean `2da4d545c9398ab1db019609d14429f9480574c2`, fresh XML-enabled
+integration build and selected execution passed **52/52** in 2:35.976: native
+names **8** (two exact Linux pair decisions plus six original-identity refusals),
+fixed aliases **24**, original admission **7**, entry **9**, outcomes **4**.
+All five descriptors completed, no skipped/failed/duplicate cases, owned-tree and
+runtime cleanup complete. Exact parsed TRX/plan/summary/build evidence is under
+`recovery/evidence/load-linux-native-names-green-20261003`; large generated runner
+logs are explicitly hash-recorded rather than implied embedded. This is distinct
+from the earlier 53-case baseline; these overlapping totals are not added.
+The earlier causal native-name run had seven cases; the eighth added guard preserves
+the original multiple-manifest refusal after ordinal inventory admission.
+Separate Sol 6.1 XHigh source review of the frozen candidate found no remaining
+actionable source defect; final evidence review and full filesystem gate remain open.
+
+The targeted correction leaves save production and all Windows/legacy reader path
+comparisons unchanged. Windows duplicate inventories are still rejected before
+lookup; new exact-entry claims and duplicate-manifest checks are redundant for that
+existing case-folded dictionary. Typed Linux original-name behavior is the changed
+native branch. Metadata qualification next performs a fresh unit build because the
+integration-only correction build cannot authorize stale unit `-NoBuild` use.
+Subsequent path/batch and explicit namespace/native/cold/v1/v2 consumers plus all five
+separate resource owners remain required. Public B4/T033/full B5 remain open.
+
 ## Authorized local filesystem execution checkpoint
 
 The owner is leaving autonomous execution running and explicitly authorized all
