@@ -10497,6 +10497,87 @@
           ]
         }
       ]
+    },
+{
+  "id": "portable-load-resource-preparation",
+  "responsibility": "Actual original-manifest typed load preparation stops at the prepared/lease boundary with complete old namespace, generation, history, config, source and library unchanged; separate streamed seed and phase resource measurements. Four independent rows:64/128/near512MiB and8192 entries/near2MiB UTF8 names/9216 disjoint old files. Guard/setup/cleanup/missing sampling is a non-pass.",
+  "excludes": "Other resource phases, save-only resource controls, public client integration, live gameplay and unrelated test sweeps.",
+  "changeHints": [
+    "BookOfEternityClient.TestSupport/PortableLoadResourceProbe.cs",
+    "BookOfEternityClient.TestSupport/PortableLoadFixture.cs",
+    "BookOfEternityClient.Tests/PortableLoadResourceTests.cs",
+    "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 10,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope"
+      ]
     }
+  ]
+},
+{
+  "id": "portable-load-resource-publication",
+  "responsibility": "Actual typed load from its prepared boundary through exactly one committed v3 replacement; complete archive-derived target and exact generation, history, config, source and library verified under sampled and OS resource controls. Four independent rows:64/128/near512MiB and8192 entries/near2MiB UTF8 names/9216 disjoint old files. Guard/setup/cleanup/missing sampling is a non-pass.",
+  "excludes": "Other resource phases, save-only resource controls, public client integration, live gameplay and unrelated test sweeps.",
+  "changeHints": [
+    "BookOfEternityClient.TestSupport/PortableLoadResourceProbe.cs",
+    "BookOfEternityClient.TestSupport/PortableLoadFixture.cs",
+    "BookOfEternityClient.Tests/PortableLoadResourceTests.cs",
+    "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 10,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPublicationFitsDeclaredLoadResourceEnvelope"
+      ]
+    }
+  ]
+},
+{
+  "id": "portable-load-resource-recovery",
+  "responsibility": "Actual pending-generation or committed load process cuts followed by fresh ordinary acquisition without extraction sources; journal-only exact old restoration or committed cleanup and independently measured resource limits. Four independent rows:64/128/near512MiB and8192 entries/near2MiB UTF8 names/9216 disjoint old files. Guard/setup/cleanup/missing sampling is a non-pass.",
+  "excludes": "Other resource phases, save-only resource controls, public client integration, live gameplay and unrelated test sweeps.",
+  "changeHints": [
+    "BookOfEternityClient.TestSupport/PortableLoadResourceProbe.cs",
+    "BookOfEternityClient.TestSupport/PortableLoadFixture.cs",
+    "BookOfEternityClient.Tests/PortableLoadResourceTests.cs",
+    "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 10,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PortableLoadResourceTests.ActualColdRecoveryFitsDeclaredLoadResourceEnvelope"
+      ]
+    }
+  ]
+}
   ]
 }

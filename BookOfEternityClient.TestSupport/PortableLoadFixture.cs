@@ -37,18 +37,32 @@ internal static class PortableLoadFixture
     /// Removes the producer's generation before load when <see langword="true"/>.
     /// </param>
     /// <param name="incomingFiles">
-    /// Additional small incoming file names and exact bytes; null selects only the cold fixture.
+    /// Additional small incoming file names and exact bytes; <see langword="null"/> selects only the cold fixture.
     /// Future bulk probes can stream authored files at the insertion point before the current producer closes its archive.
     /// </param>
     /// <param name="oldFiles">
-    /// Additional small old file names and bytes, authored after archive close; null adds none.
+    /// Additional small old file names and bytes, authored after archive close; <see langword="null"/> adds none.
     /// Future bulk probes can remove additional incoming live files and stream disjoint old files at this insertion point.
+    /// </param>
+    /// <param name="beforeProducer">
+    /// Optional streamed incoming authoring after small fixture setup and before final current archive production.
+    /// Receives the isolated manager and real producer; <see langword="null"/> preserves the small cold scenario.
+    /// </param>
+    /// <param name="afterArchiveClosed">
+    /// Optional streamed old-live authoring after original archive hashes and small old-state mutations are complete.
+    /// Null adds no bulk or many-file old state.
+    /// </param>
+    /// <param name="moveProducedToSource">
+    /// Moves only the fixture's newly produced archive to the selected name when <see langword="true"/>, avoiding a duplicate large ZIP.
+    /// False preserves the existing cold fixture's copy behavior.
     /// </param>
     /// <returns>
     /// Independent namespace hashes, exact old generation and protected library/source expectations.
     /// </returns>
     internal static async Task<PortableLoadFixtureState> CreateAsync(string root, bool absentGeneration = false,
-        IReadOnlyDictionary<string, byte[]>? incomingFiles = null, IReadOnlyDictionary<string, byte[]>? oldFiles = null)
+        IReadOnlyDictionary<string, byte[]>? incomingFiles = null, IReadOnlyDictionary<string, byte[]>? oldFiles = null,
+        Func<FileSystemManager, SaveLoadService, Task>? beforeProducer = null,
+        Func<FileSystemManager, Task>? afterArchiveClosed = null, bool moveProducedToSource = false)
     {
         if (Directory.Exists(root)) throw new InvalidOperationException("Cold fixture root must be absent.");
         var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
@@ -64,11 +78,13 @@ internal static class PortableLoadFixture
         Put(files, "lore/cold-late.bin", [4, 0, 0xFE]);
         if (incomingFiles != null) foreach (var (name, bytes) in incomingFiles) Put(files, name, bytes);
         var service = new SaveLoadService(files, state, NullLogger<SaveLoadService>.Instance);
+        if (beforeProducer != null) await beforeProducer(files, service);
         if (!await service.SaveGameAsync("cold-source", "actual current producer cold-load fixture"))
             throw new InvalidOperationException("Current producer failed to create the cold archive.");
         var produced = Directory.GetFiles(files.ResolvePath("saves/manual_saves"), "*.zip").Single();
         var source = files.ResolvePath(SourceRelative);
-        File.Copy(produced, source);
+        if (moveProducedToSource) File.Move(produced, source);
+        else File.Copy(produced, source);
         var incoming = ReadArchiveHashes(source);
         // Canonical fixture names have no ephemeral inputs or profile projection.
         Directory.Delete(files.ResolvePath(FileToDirectory), recursive: true);
@@ -86,6 +102,7 @@ internal static class PortableLoadFixture
         File.AppendAllText(historyPath, "\n\n", new UTF8Encoding(false));
         File.AppendAllText(files.ResolvePath(ResourceMaterializationContract.StatePath), "\n  ", new UTF8Encoding(false));
         if (oldFiles != null) foreach (var (name, bytes) in oldFiles) Put(files, name, bytes);
+        if (afterArchiveClosed != null) await afterArchiveClosed(files);
         foreach (var name in new[] { "manual_saves", "autosaves", "checkpoint_saves" })
             Put(files, $"saves/{name}/cold-sentinel.zip", [0xFF, 0, 31]);
         Directory.CreateDirectory(files.ResolvePath("saves/manual_saves/opaque-empty"));

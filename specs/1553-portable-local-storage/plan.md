@@ -253,6 +253,7 @@ Independent Sol 6.1 XHigh source/contract review found no actionable issue; fina
 actual-evidence review cleared B3-COLD code/native Windows through `3d20be0a`, with
 no remaining findings. Resource probes are drafted only in ignored
 scratch while this immutable source qualifies; no bulk/native Linux result is claimed.
+Resource harness is now installed for first qualification:12 independent rows in three separate ten-minute owners, actual current-producer seed and prepared/decision/acquisition phases. Parent inspected drafts; no production/archive policy changed. Start/stop sampling uses owned-child acknowledgements; whole-child guards include instrumentation/verification. Fresh XML-enabled preparation owner runs first with a15-minute command cap. No passing resource or Linux claim follows installation.
 Process checkpoint: independent review caught a real generation-absence rollback
 defect. Runtime exposed a transient-fault expectation error and the now-obsolete v3
 unknown-version fixture; each received a scoped correction with original requirements

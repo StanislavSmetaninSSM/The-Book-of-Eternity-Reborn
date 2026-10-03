@@ -2,25 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-load-resource-preparation",
+      "reason": "Current resource block begins with preparation only: four independently seeded current-producer archives under unchanged legal limits; later publication and recovery run as separate bounded commands.",
       "contracts": [
-        "LOAD-FS-002/003/004/006/007"
-      ],
-      "reason": "New actual current-producer typed-load process cuts and independent journal-only decisions/conflicts/scratch:19 isolatedcases, no extraction atfreshacquisition.",
-      "category": "portable-load-cold-decision"
-    },
-    {
-      "contracts": [
-        "LOAD-FS-002/003/006/007"
-      ],
-      "reason": "New actual forward and rollback structural/file/generation cuts followedbyfresh/repeated canonicalacquisition:10 isolatedcases.",
-      "category": "portable-load-cold-topology"
-    },
-    {
-      "contracts": [
-        "Preserved existing ownedhostdispatch and oldreaderauthority"
-      ],
-      "reason": "Owned child host dispatch adds distinct load modes; retain exact old stream-recover and bounded v1/v2/unknown framing consumers, without save/resource sweep.",
-      "category": "portable-storage-stream-dispatch"
+        "LOAD-FS-005/007/008"
+      ]
     }
   ]
 }

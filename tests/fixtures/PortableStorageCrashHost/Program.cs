@@ -15,7 +15,9 @@ public static class Program
     /// The selected fixture's ordinary, deliberate crash or recorded failure exit code.
     /// </returns>
     public static Task<int> Main(string[] args) =>
-        args.Length == 4 && args[2] == "save-resource"
+        args.Length == 4 && args[2] == "load-resource"
+            ? BookOfEternityClient.Tests.PortableLoadResourceProbe.RunAsync(args)
+            : args.Length == 4 && args[2] == "save-resource"
             ? BookOfEternityClient.Tests.PortableSaveResourceProbe.RunAsync(args)
             : args.Length == 4 && args[2] == "stream-resource"
                 ? BookOfEternityClient.Tests.TrustedLocalStreamResourceProbe.RunAsync(args)
