@@ -27,8 +27,9 @@ and [data-model.md](data-model.md) contain the concrete pending execution design
   No merge, remote gameplay dependency, all-category matrix or screening probe is needed.
 
 The read-only Astra High consultation established the topology invariants; it did not
-implement or test them. Separate Sol 6.1 XHigh design review and written plan approval
-remain required. No runtime result or exact platform-flag cause is inferred here.
+implement or test them. Separate Sol 6.1 XHigh cleared the full design block at
+`8ca3fbca` without actionable findings; written plan/v3 approval remains pending.
+No runtime result or exact platform-flag cause is inferred here.
 
 ## Historical persistent interactive GM proposal
 
