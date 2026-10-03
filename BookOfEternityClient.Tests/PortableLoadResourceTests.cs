@@ -525,8 +525,9 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
     /// </returns>
     private bool IsExpectedDirectoryMutation(string path, FileSystemManager files)
     {
-        AssertOwnedPath(path);
         var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        if (Path.GetFullPath(path).Equals(Path.GetFullPath(_root), comparison)) return false;
+        AssertOwnedPath(path);
         foreach (var root in new[] { files.ResolvePath(PortableLoadFixture.FileToDirectory), files.ResolvePath(PortableLoadFixture.DirectoryToFile),
                      Path.Combine(files.RuntimeRootPath, "load-staging"), Path.Combine(files.RuntimeRootPath, "save-staging") })
             if (path.Equals(root, comparison) || path.StartsWith(root + Path.DirectorySeparatorChar, comparison)) return true;
