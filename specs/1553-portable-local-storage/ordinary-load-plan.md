@@ -95,7 +95,7 @@ codex and directives plus unchanged arbitrary `lore/MyCustom.JSON` bytes/key. At
 `9a54dd23`, Windows reached preparation and rejected its mismatched complete
 staging inventory before the ordinal assertion; all four were causal RED. The
 existing trailing-config case also remained RED because resolution had erased
-the space. This is not native Linux acceptance. Select the eight exact affected
+the space. This is not native Linux acceptance. Select the nine exact affected
 lease/recovery consumers separately from broad storage/bootstrap categories.
 
 ## Streamed metadata design

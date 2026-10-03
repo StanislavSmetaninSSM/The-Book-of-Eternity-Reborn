@@ -123,19 +123,23 @@ public sealed partial class PortableLoadReplacementTests
     }
 
     [Theory]
-    [InlineData("game_state/core/player_status.json")]
-    [InlineData("game_state/world/world_time.json")]
-    [InlineData("lore/codex_entries.json")]
-    [InlineData(WorldDirectiveService.ActiveDirectivesPath)]
-    public async Task PreparedInventoryUsesDeclaredFixedNamesAndPreservesArbitraryNames(string canonical)
+    [InlineData("game_state/core/player_status.json", false)]
+    [InlineData("game_state/world/world_time.json", false)]
+    [InlineData("lore/codex_entries.json", false)]
+    [InlineData(WorldDirectiveService.ActiveDirectivesPath, false)]
+    [InlineData("lore/codex_entries.json", true)]
+    public async Task PreparedInventoryUsesDeclaredFixedNamesAndPreservesArbitraryNames(string canonical,
+        bool arbitraryDirectoryAlias)
     {
         var fixedBytes = Encoding.UTF8.GetBytes("{}\n");
-        const string arbitrary = "lore/MyCustom.JSON";
+        var arbitrary = arbitraryDirectoryAlias ? "LORE/MyCustom.JSON" : "lore/MyCustom.JSON";
         byte[] arbitraryBytes = [41, 0, 42, 255];
         Put(canonical, fixedBytes);
-        Put(arbitrary, arbitraryBytes);
+        Put("lore/MyCustom.JSON", arbitraryBytes);
         var source = await PrepareCurrentArchiveAsync();
         RenameArchiveEntry(source, canonical, canonical.ToUpperInvariant(), preserveManifest: true);
+        if (arbitraryDirectoryAlias)
+            RenameArchiveEntry(source, "lore/MyCustom.JSON", arbitrary, preserveManifest: true);
         var protectedFiles = SnapshotLibraryAndSource(source);
 
         await using (var candidate = await _service.PrepareLoadArchiveAsync(source))

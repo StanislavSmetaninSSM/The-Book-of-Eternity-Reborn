@@ -29,7 +29,7 @@ staging admission on Windows (23/23 executed, 18 passed/5 failed, 3:22.138,
 cleanup complete). Exact [artifacts](recovery/evidence/load-red/registry/summary.json)
 are saved. The next candidate checks original spelling before resolution and
 composes fixed path authorities without changing arbitrary names. The planned
-selection is 23 alias + 4 outcome + 9 entry + 8 exact acquisition consumer cases;
+selection is 23 alias + 4 outcome + 9 entry + 9 exact acquisition consumer cases;
 fresh build/runtime, catalog completeness and independent code review remain open.
 
 The first selection-only push after Actions enablement produced no registered run/check

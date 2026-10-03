@@ -24,7 +24,7 @@
     },
     {
       "category": "portable-load-lease-consumers",
-      "reason": "Eight exact affected lifecycle/replacement/mutation/ordinary recovery cases verify that replacement-specific uncertainty does not change other writer/recovery contracts. No general storage/bootstrap sweep.",
+      "reason": "Nine exact affected lifecycle/replacement/mutation/ordinary recovery cases verify that replacement-specific uncertainty does not change other writer/recovery contracts. No general storage/bootstrap sweep.",
       "contracts": [
         "#1553 LOAD-FS-003/008"
       ]
