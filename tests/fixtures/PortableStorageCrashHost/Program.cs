@@ -23,5 +23,7 @@ public static class Program
                 ? BookOfEternityClient.Tests.TrustedLocalStreamGenerationCrashFixture.RunAsync(args)
             : args.Length == 4 && args[2] is "stream-recover" or "stream-publish" or "stream-recover-cut"
                 ? BookOfEternityClient.Tests.TrustedLocalStreamCrashFixture.RunAsync(args)
+            : args.Length == 4 && args[2] is "load-publish" or "load-recover" or "load-recover-cut"
+                ? BookOfEternityClient.Tests.PortableLoadColdHost.RunAsync(args)
             : BookOfEternityClient.Tests.TrustedLocalPublicationCrashFixture.RunAsync(args);
 }

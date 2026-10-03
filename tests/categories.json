@@ -10376,6 +10376,32 @@
       ]
     },
     {
+      "id": "portable-load-cold-decision",
+      "responsibility": "Actual current-producer manifested typed load is terminated by its owning parent at durable intent, first/late/generation stage/publication, commit and cleanup boundaries. Fresh normal canonical acquisition with extraction absent proves exact Before/After namespace and generation including initial absence; pending/committed unknown file/empty-directory conflicts retain every earlier byte/evidence, and incomplete exact owned stage/undo safely recovers.",
+      "excludes": "Structural forward/rollback cuts belong to portable-load-cold-topology. No resource envelope, native Linux claim from Windows execution, public caller/GM/game acceptance or synthetic helper-only recovery.",
+      "changeHints": ["BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs", "BookOfEternityClient.TestSupport/PortableLoadColdHost.cs", "BookOfEternityClient.Tests/PortableLoadColdRecoveryTests.cs"],
+      "related": [{"id": "portable-load-cold-topology", "when": "Shared namespace reconciliation or crash host cut authority changes."}],
+      "requirements": {"frontendBuild": false, "exclusive": true},
+      "timeoutMinutes": 8,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": [
+        "BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.FreshAcquisitionRecoversActualLoadWithoutExtractionSources",
+        "BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.ColdUnknownLaterMemberRetainsAllEarlierStateAndEvidence",
+        "BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.IncompleteExactOwnedScratchRecoversCompleteBeforeDecision"
+      ]}]
+    },
+    {
+      "id": "portable-load-cold-topology",
+      "responsibility": "Actual typed-load cold interruption exercises file-to-directory and nonempty-directory-to-file removal/creation/file operations plus interrupted rollback directory removal/creation/file/generation restoration. A fresh process without extraction and another repeated acquisition converge to complete independent Before expectations, including empty directories, opaque library/source and exact generation bytes.",
+      "excludes": "Durable decision/conflict/scratch admission cases belong to portable-load-cold-decision. No resource envelope or public/Linux/live acceptance follows from Windows cases.",
+      "changeHints": ["BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs", "BookOfEternityClient.TestSupport/PortableLoadFixture.cs", "BookOfEternityClient.Tests/PortableLoadColdRecoveryTests.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": true},
+      "timeoutMinutes": 8,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.InterruptedTopologyRecoveryConvergesWithoutExtraction"]}]
+    },
+    {
       "id": "portable-load-native-boundaries",
       "responsibility": "Actual typed load protects a selected archive inside the opaque library, replaces a hard-linked canonical file by name without changing its outside-session alias, and refuses native directory links at target, ancestor, source and library before publication. Windows junction/hard-link and Linux symlink/hard-link bodies must actually execute on their native platform.",
       "excludes": "Journal-only restart, full resource envelope, public caller cutover and cleanup debt; no early-return OS pass.",
