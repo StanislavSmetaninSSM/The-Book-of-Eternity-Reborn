@@ -10554,7 +10554,7 @@
 },
 {
   "id": "portable-load-resource-recovery",
-  "responsibility": "Actual pending-generation or committed load process cuts followed by fresh ordinary acquisition without extraction sources; journal-only exact old restoration or committed cleanup and independently measured resource limits. Four independent rows:64/128/near512MiB and8192 entries/near2MiB UTF8 names/9216 disjoint old files. Guard/setup/cleanup/missing sampling is a non-pass.",
+  "responsibility": "Three bulk64/128/near512MiB rows only; maximum-inventory recovery is separately owned by portable-load-resource-inventory-recovery. Actual pending-generation or committed load process cuts followed by fresh ordinary acquisition without extraction sources; journal-only exact old restoration or committed cleanup and independently measured resource limits. Four independent rows:64/128/near512MiB and8192 entries/near2MiB UTF8 names/9216 disjoint old files. Guard/setup/cleanup/missing sampling is a non-pass.",
   "excludes": "Other resource phases, save-only resource controls, public client integration, live gameplay and unrelated test sweeps.",
   "changeHints": [
     "BookOfEternityClient.TestSupport/PortableLoadResourceProbe.cs",
@@ -10581,7 +10581,7 @@
 },
 {
   "id": "portable-load-resource-inventory-publication",
-  "responsibility": "Actual typed load publication with exactly8192 original manifested ZIP entries, near2MiB UTF8 names and9216 disjoint old files; complete independent namespace/generation/history/config/source/library oracle and actual large metadata. Fixed heap/RSS/disk/time guards, boundary sampling and owned cleanup; stops are non-passes.",
+  "responsibility": "Actual typed load publication with exactly8192 original manifested ZIP entries, near2MiB UTF8 names and9216 disjoint old files; complete independent namespace/generation/history/config/source/library oracle and actual large metadata. Measured600-second publication child guard; fixed768MiB heap/1GiB RSS/5GiB disk,100ms RSS and1000ms plus durable-boundary disk sampling and owned cleanup; stops are non-passes.",
   "excludes": "Bulk payload publication, preparation/recovery, save-only resource controls, public client/gameplay and unrelated sweeps.",
   "changeHints": [
     "BookOfEternityClient.TestSupport/PortableLoadResourceProbe.cs",
@@ -10594,7 +10594,7 @@
     "frontendBuild": false,
     "exclusive": true
   },
-  "timeoutMinutes": 8,
+  "timeoutMinutes": 12,
   "expectedSeconds": null,
   "selectors": [
     {
@@ -10626,6 +10626,17 @@
       "timeoutMinutes": 12,
       "expectedSeconds": null,
       "selectors": [{"project":"unit", "tests":["BookOfEternityClient.Tests.PortableLoadResourceTests.DiagnoseManyMemberPublicationThroughCompletePipeline"]}]
+    },
+    {
+      "id": "portable-load-resource-inventory-recovery",
+      "responsibility": "One actual maximum-inventory typed-load committed cut then fresh journal-only canonical acquisition without extraction:8192 entries/near2MiB names/>1MiB metadata/9216 disjoint old files, complete independent namespace/generation/source/library oracle.600-second publication cut,180-second seed/recovery, actual RSS and forced/cadenced disk observations, fixed heap/RSS/disk stops and owned cleanup.",
+      "excludes": "Bulk recovery rows, preparation/publication-only acceptance, diagnostic-only tracing, public clients/gameplay and broad sweeps.",
+      "changeHints": ["BookOfEternityClient.Tests/PortableLoadResourceTests.cs", "BookOfEternityClient.TestSupport/PortableLoadResourceProbe.cs", "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs"],
+      "related": [],
+      "requirements": {"frontendBuild":false, "exclusive":true},
+      "timeoutMinutes": 12,
+      "expectedSeconds": null,
+      "selectors": [{"project":"unit", "tests":["BookOfEternityClient.Tests.PortableLoadResourceTests.ActualManyMemberColdRecoveryFitsDeclaredLoadResourceEnvelope"]}]
     }
   ]
 }

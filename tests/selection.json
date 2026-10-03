@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-load-resource-inventory-diagnosis",
-      "reason": "Two actual180-second stops left remaining stages unobserved. Execute one separately declared600-second full-pipeline investigation with unchanged input and memory/disk controls, read-only stage timings and full independent oracle; a diagnostic pass cannot accept the original resource envelope.",
+      "category": "portable-load-resource-inventory-publication",
+      "reason": "Requalify the unchanged8192-entry/name/9216-old-file ordinary typed publication under the written actual486.530s-based600s child bound and optimized1000ms plus durable-boundary disk sampling. Keep full oracle,180s seed, heap/RSS/disk and original historical failures; diagnostic-only result is not acceptance.",
       "contracts": [
-        "T032-B3-RESOURCE-TRACE",
+        "T032-B3-RESOURCE-MONITOR",
         "LOAD-FS-005/007/008"
       ]
     }

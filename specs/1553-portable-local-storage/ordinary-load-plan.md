@@ -322,6 +322,60 @@ Canonical spec/plan/tasks consistency is checked before installation. Independen
 review covers the coherent diagnostic/correction and exact evidence; this does not
 authorize unrelated save/gameplay/client work or native Linux acceptance.
 
+### T032-B3-RESOURCE-MONITOR — measured probe cost and inventory budget
+
+**Owner-authorized amendment based on actual1466980c trace, 2026-10-04.** The
+separate diagnostic completed1/1 with exact state/library/source/generation and
+cleanup:12:40.170 including fresh build, selected runtime9:47. Publication measured
+353.618seconds to commit, whole child486.530seconds including52.646-second preparation
+and postcommit cleanup/verification. Peak child RSS257871872bytes, sampled owned
+disk36697183bytes, unchanged768MiB heap. Cumulative managed phase allocation
+20120557568bytes is allocation traffic, not resident/live heap. Retain exact TRX and
+derived measurements under `load-resource-pipeline-trace/`; its DiagnosticOnly flag
+and original180-second failures remain unchanged and are not retroactive acceptance.
+
+Child timings identify repeated candidate revalidation (~15–23seconds/pass), namespace
+image validation (~15–16seconds/pass), complete preflight (~17–21seconds/pass), real
+reconciliation (~71seconds), and cleanup (~66seconds). Parent disk scans consumed
+207.475seconds in2423samples, maximum477.582ms each. This is measured monitor work,
+not proof that removing it saves the same amount of child elapsed time.
+
+- Optimize the probe rather than weaken production admission: keep RSS/time checks
+  every100ms and the final actual OS peak, sample owned disk every1000ms, and force
+  fresh disk samples at measurement start/stop, intent/commit durable boundaries,
+  live cut and stable final completion. Durable-boundary acknowledgements hold the
+  owned child at closed staged evidence until its parent actually samples it; merely
+  receiving a delayed progress line is insufficient. Record actual RSS versus disk
+  counts, phase disk counts and scan cost separately. No cached disk observation is labelled fresh;
+  links/unexpected I/O, missing samples, guard stops and incomplete cleanup still fail.
+- All independent fixture data, byte/hash/type/namespace checks and fixed heap/RSS/disk
+  stops remain. Reuse no mutable prepared fixture between cases. Keep scalar mutation
+  validation and fresh admission after callbacks; no further production read-cache or
+  hash-batching change is justified solely by this diagnostic.
+- The initial180-second whole-child estimate cannot cover this maximum-inventory
+  workload's measured valid work. Set **600seconds only for many publication and its
+  actual publication cut**, ~23percent headroom over486.530seconds; all seed,
+  preparation, bulk publication/cut and cold recovery children remain180seconds.
+  This bounded worst-inventory qualification is selected only for its relevant
+  boundary, not every development edit. Heap768MiB/RSS1GiB/disk5GiB are unchanged.
+- Split resource recovery into three bulk rows in its existing10-minute owner and
+  one maximum-inventory recovery row in a new12-minute owner. Inventory publication
+  gets12minutes; preparation4/bulk publication3/bulk recovery3 retain10minutes each.
+  Every resource command remains15minutes; current fresh build precedes NoBuild runs.
+  No aggregate all-resource or all-test run is introduced.
+- New ordinary qualification must execute under this written amendment and report
+  its600-second declared bound distinctly from the historical original180 and the
+  investigation. A diagnostic pass alone cannot close T032-B3-RESOURCE. Compare the
+  actual monitor cadence results without claiming an unmeasured speedup, then run
+  affected native/namespace/cold/compatibility and resource controls and independent
+  Sol6.1XHigh review. Native Linux remains separately open.
+
+Acceptance still requires the same complete legal envelope and preserved contracts.
+Canonical spec explicitly requires reviewed, justified resource-bound adjustments;
+spec/plan/tasks are consistent and the owner's review waiver covers this written
+recommended revision. This is a narrow measured budget/probe correction, not an
+archive limit change, test deletion or public-client/gameplay scope expansion.
+
 ### T032-B5-FS — native Linux CI and durable downstream handback
 
 **Files:** bounded workflow/selection, feature quickstart/recovery docs/checkpoint/handoff; affected catalog contracts if runner integration changes. **Consumes:** accepted blocks above. **Produces:** Windows+Linux filesystem qualification and verified callable handoff, not public-client acceptance.

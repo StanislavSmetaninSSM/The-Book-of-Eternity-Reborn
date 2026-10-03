@@ -23,6 +23,9 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
     private const long DiskStop = 5L * 1024 * MiB;
     private double _diskSampleMilliseconds;
     private double _maximumDiskSampleMilliseconds;
+    private double _lastDiskSampleMilliseconds;
+    private int _diskSamples;
+    private int _phaseDiskSamples;
     private readonly string _root = Path.Combine(Path.GetTempPath(), "boe-load-resource-" + Guid.NewGuid().ToString("N"));
 
     /// <summary>
@@ -79,7 +82,7 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
     [InlineData("128")]
     [InlineData("512")]
     public Task ActualPublicationFitsDeclaredLoadResourceEnvelope(string workload) =>
-        VerifyPublicationAsync(workload, childSeconds: 180);
+        VerifyPublicationAsync(workload, PublicationChildSeconds(workload), diagnosticOnly: false);
 
     /// <summary>
     /// Investigates the unchanged many-member pipeline under a separate bound without accepting ordinary qualification.
@@ -89,7 +92,7 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
     /// </returns>
     [Fact]
     public Task DiagnoseManyMemberPublicationThroughCompletePipeline() =>
-        VerifyPublicationAsync("many", childSeconds: 600);
+        VerifyPublicationAsync("many", childSeconds: 600, diagnosticOnly: true);
 
     /// <summary>
     /// Executes the real publication and all independent state assertions using the explicitly selected child ceiling.
@@ -98,17 +101,20 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
     /// The unchanged legal bulk or many-member workload in this test's isolated root.
     /// </param>
     /// <param name="childSeconds">
-    /// The publication child ceiling; 180 qualifies the original envelope and 600 is investigation only.
+    /// The explicitly declared publication ceiling: 600 for maximum inventory and 180 for bulk.
+    /// </param>
+    /// <param name="diagnosticOnly">
+    /// Keeps the separately owned investigation labelled when true; ordinary qualification uses false.
     /// </param>
     /// <returns>
     /// Completion after full publication verification; a guard or incomplete measurement fails either mode.
     /// </returns>
-    private async Task VerifyPublicationAsync(string workload, int childSeconds)
+    private async Task VerifyPublicationAsync(string workload, int childSeconds, bool diagnosticOnly)
     {
         var seed = await RunChildAsync("seed", workload);
         AssertSeed(seed, workload);
         var expected = PortableLoadFixture.Read(_root);
-        var published = await RunChildAsync("publication", workload, childSeconds: childSeconds);
+        var published = await RunChildAsync("publication", workload, childSeconds: childSeconds, diagnosticOnly: diagnosticOnly);
         AssertPhase(published, "TypedLoadCommitted");
         Assert.Equal("Committed", published.GetProperty("Disposition").GetString());
         Assert.Equal(1, published.GetProperty("CommittedObserverCount").GetInt32());
@@ -120,7 +126,7 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
         AssertMetadata(published, workload);
         AssertExplicitBytes(expected, published, after: true);
         AssertOwnedScratchEmpty();
-        if (childSeconds != 180)
+        if (diagnosticOnly)
             output.WriteLine("DiagnosticOnly={0}", JsonSerializer.Serialize(new
             {
                 OriginalQualificationSeconds = 180, DiagnosticChildSeconds = childSeconds,
@@ -152,13 +158,12 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
     [InlineData("64")]
     [InlineData("128")]
     [InlineData("512")]
-    [InlineData("many")]
     public async Task ActualColdRecoveryFitsDeclaredLoadResourceEnvelope(string workload)
     {
         var seed = await RunChildAsync("seed", workload);
         AssertSeed(seed, workload);
         var expected = PortableLoadFixture.Read(_root);
-        var cut = await RunChildAsync("cut", workload, terminateAtCut: true);
+        var cut = await RunChildAsync("cut", workload, terminateAtCut: true, childSeconds: PublicationChildSeconds(workload));
         AssertPhase(cut, "CutReady");
         var committed = workload == "many";
         Assert.Equal(committed ? "Committed" : "MemberPublished", cut.GetProperty("Cut").GetString());
@@ -178,6 +183,27 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
         AssertExplicitBytes(expected, recovered, committed);
         AssertOwnedScratchEmpty();
     }
+
+    /// <summary>
+    /// Qualifies maximum-inventory cold recovery independently from bulk so its real publication setup has its own bounded owner.
+    /// </summary>
+    /// <returns>
+    /// Completion after the unchanged journal-only recovery and complete exact namespace/protected-state assertions.
+    /// </returns>
+    [Fact]
+    public Task ActualManyMemberColdRecoveryFitsDeclaredLoadResourceEnvelope() =>
+        ActualColdRecoveryFitsDeclaredLoadResourceEnvelope("many");
+
+    /// <summary>
+    /// Selects the measured maximum-inventory publication bound while retaining the original bulk bound.
+    /// </summary>
+    /// <param name="workload">
+    /// The exact workload label; only many selects 600 seconds.
+    /// </param>
+    /// <returns>
+    /// 600 for many-member publication or its cut, otherwise 180 seconds.
+    /// </returns>
+    private static int PublicationChildSeconds(string workload) => workload == "many" ? 600 : 180;
 
     /// <summary>
     /// Requires actual original archive counts and the declared old-live workload before accepting a phase measurement.
@@ -357,18 +383,25 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
     /// Requires an actual live CutReady announcement and kills only that owned process when <see langword="true"/>.
     /// </param>
     /// <param name="childSeconds">
-    /// The declared whole-child ceiling; 600 is allowed only for the separately labelled many-publication investigation.
+    /// The declared whole-child ceiling; 600 is allowed only for many publication or its actual cut.
+    /// </param>
+    /// <param name="diagnosticOnly">
+    /// Labels the separately owned publication investigation; false requests declared ordinary qualification.
     /// </param>
     /// <returns>
     /// The verified child report after its process has exited, with independent parent measurements retained separately.
     /// </returns>
     private async Task<JsonElement> RunChildAsync(string operation, string workload, bool terminateAtCut = false,
-        int childSeconds = 180)
+        int childSeconds = 180, bool diagnosticOnly = false)
     {
-        Assert.True(childSeconds == 180 || (childSeconds == 600 && workload == "many" && operation == "publication"),
-            "Only the separately declared many-publication investigation may use its diagnostic ceiling.");
+        Assert.True(childSeconds == 180 || (childSeconds == 600 && workload == "many" && (operation is "publication" or "cut")),
+            "Only the explicitly declared maximum-inventory publication or cut may use 600 seconds.");
+        Assert.False(diagnosticOnly && (operation != "publication" || workload != "many" || childSeconds != 600));
         _diskSampleMilliseconds = 0;
         _maximumDiskSampleMilliseconds = 0;
+        _lastDiskSampleMilliseconds = -1000;
+        _diskSamples = 0;
+        _phaseDiskSamples = 0;
         var assembly = typeof(PortableLoadResourceTests).Assembly.Location;
         var start = new ProcessStartInfo(Environment.GetEnvironmentVariable("DOTNET_HOST_PATH") ?? "dotnet")
         { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true, RedirectStandardInput = true };
@@ -408,6 +441,16 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
                 {
                     Assert.Equal(operation, document.RootElement.GetProperty("Operation").GetString());
                     progress.Add(new { ParentMilliseconds = timer.Elapsed.TotalMilliseconds, Event = document.RootElement.Clone() });
+                    if (document.RootElement.GetProperty("Boundary").GetString() is
+                        "IntentStaged" or "IntentPublished" or "CommitStaged" or "Committed" or "CleanupComplete")
+                    {
+                        Assert.True(document.RootElement.GetProperty("RequiresDiskSample").GetBoolean());
+                        SampleChild(process, timer, ref rssPeak, ref diskPeak, phaseStarted && !phaseStopped,
+                            ref phaseRssPeak, ref phaseDiskPeak, ref phaseSamples, childSeconds, forceDisk: true);
+                        samples++;
+                        await process.StandardInput.WriteLineAsync("operation-sampled");
+                        await process.StandardInput.FlushAsync();
+                    }
                     line = process.StandardOutput.ReadLineAsync();
                     continue;
                 }
@@ -417,7 +460,7 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
                     Assert.Equal(operation, document.RootElement.GetProperty("Operation").GetString());
                     phaseStarted = true;
                     phaseStartedParentMilliseconds = timer.Elapsed.TotalMilliseconds;
-                    SampleChild(process, timer, ref rssPeak, ref diskPeak, measuring: true, ref phaseRssPeak, ref phaseDiskPeak, ref phaseSamples, childSeconds); samples++;
+                    SampleChild(process, timer, ref rssPeak, ref diskPeak, measuring: true, ref phaseRssPeak, ref phaseDiskPeak, ref phaseSamples, childSeconds, forceDisk: true); samples++;
                     await process.StandardInput.WriteLineAsync("measurement-start");
                     await process.StandardInput.FlushAsync();
                     line = process.StandardOutput.ReadLineAsync();
@@ -427,7 +470,7 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
                 {
                     Assert.True(phaseStarted && !phaseStopped, "Actual measurement stop has no unique matching start.");
                     Assert.Equal(operation, document.RootElement.GetProperty("Operation").GetString());
-                    SampleChild(process, timer, ref rssPeak, ref diskPeak, measuring: true, ref phaseRssPeak, ref phaseDiskPeak, ref phaseSamples, childSeconds); samples++;
+                    SampleChild(process, timer, ref rssPeak, ref diskPeak, measuring: true, ref phaseRssPeak, ref phaseDiskPeak, ref phaseSamples, childSeconds, forceDisk: true); samples++;
                     phaseStopped = true;
                     phaseStoppedParentMilliseconds = timer.Elapsed.TotalMilliseconds;
                     await process.StandardInput.WriteLineAsync("measurement-stop");
@@ -444,7 +487,7 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
             {
                 Assert.Equal("CutReady", report.GetProperty("Phase").GetString());
                 Assert.False(process.HasExited, "The actual cut must be waiting for parent termination.");
-                SampleChild(process, timer, ref rssPeak, ref diskPeak, phaseStarted && !phaseStopped, ref phaseRssPeak, ref phaseDiskPeak, ref phaseSamples, childSeconds); samples++;
+                SampleChild(process, timer, ref rssPeak, ref diskPeak, phaseStarted && !phaseStopped, ref phaseRssPeak, ref phaseDiskPeak, ref phaseSamples, childSeconds, forceDisk: true); samples++;
                 process.Kill(entireProcessTree: true);
             }
             while (!process.HasExited)
@@ -458,9 +501,11 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
             Assert.True(string.IsNullOrWhiteSpace(remainder), text + remainder + error);
             if (!terminateAtCut) Assert.True(process.ExitCode == 0, text + error);
             Assert.True(samples > 0 && rssPeak > 0, "Missing owned-process sampling is not qualification.");
-            Assert.True(phaseStarted && phaseStopped && phaseSamples > 0 && phaseRssPeak > 0 && phaseDiskPeak > 0,
+            Assert.True(phaseStarted && phaseStopped && phaseSamples > 0 && _phaseDiskSamples >= 2 && phaseRssPeak > 0 && phaseDiskPeak > 0,
                 "Missing actual phase sampling is not qualification.");
-            diskPeak = Math.Max(diskPeak, MeasureOwnedDisk(allowPublicationRace: false));
+            SampleChild(process, timer, ref rssPeak, ref diskPeak, measuring: false,
+                ref phaseRssPeak, ref phaseDiskPeak, ref phaseSamples, childSeconds, forceDisk: true);
+            samples++;
             Assert.InRange(diskPeak, 1, DiskStop);
             Assert.InRange(rssPeak, 1, RssStop);
             Assert.True(timer.Elapsed <= TimeSpan.FromSeconds(childSeconds), $"Child exceeded its declared {childSeconds}-second bound.");
@@ -471,6 +516,8 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
                 PhaseSampleCount = phaseSamples, SampledPhasePeakWorkingSetBytes = phaseRssPeak, OwnedPhaseDiskPeakBytes = phaseDiskPeak,
                 ParentMilliseconds = timer.Elapsed.TotalMilliseconds, OwnedProcessExited = process.HasExited, Progress = progress,
                 ChildCeilingSeconds = childSeconds, OriginalQualification = childSeconds == 180,
+                DeclaredResourceQualification = !diagnosticOnly, DiagnosticOnly = diagnosticOnly,
+                DiskSamplingIntervalMilliseconds = 1000, DiskSampleCount = _diskSamples, PhaseDiskSampleCount = _phaseDiskSamples,
                 PhaseStartedParentMilliseconds = phaseStartedParentMilliseconds, PhaseStoppedParentMilliseconds = phaseStoppedParentMilliseconds,
                 DiskSampleMilliseconds = _diskSampleMilliseconds, MaximumDiskSampleMilliseconds = _maximumDiskSampleMilliseconds
             };
@@ -486,6 +533,8 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
                 ParentMilliseconds = timer.Elapsed.TotalMilliseconds, SampledPeakWorkingSetBytes = rssPeak,
                 OwnedDiskPeakBytes = diskPeak, Progress = progress, Failure = failure.Message,
                 ChildCeilingSeconds = childSeconds, OriginalQualification = childSeconds == 180,
+                DeclaredResourceQualification = !diagnosticOnly, DiagnosticOnly = diagnosticOnly,
+                DiskSamplingIntervalMilliseconds = 1000, DiskSampleCount = _diskSamples, PhaseDiskSampleCount = _phaseDiskSamples,
                 PhaseStartedParentMilliseconds = phaseStartedParentMilliseconds, PhaseStoppedParentMilliseconds = phaseStoppedParentMilliseconds,
                 DiskSampleMilliseconds = _diskSampleMilliseconds, MaximumDiskSampleMilliseconds = _maximumDiskSampleMilliseconds
             }));
@@ -527,8 +576,12 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
     /// <param name="childSeconds">
     /// The explicit whole-child ceiling supplied by its runner; the normal qualification default is 180 seconds.
     /// </param>
+    /// <param name="forceDisk">
+    /// Requests a fresh disk observation at an actual start/stop/durable/cut boundary when true; otherwise observes disk every second.
+    /// </param>
     private void SampleChild(Process process, Stopwatch timer, ref long rssPeak, ref long diskPeak,
-        bool measuring, ref long phaseRssPeak, ref long phaseDiskPeak, ref int phaseSamples, int childSeconds = 180)
+        bool measuring, ref long phaseRssPeak, ref long phaseDiskPeak, ref int phaseSamples, int childSeconds = 180,
+        bool forceDisk = false)
     {
         long rss = 0;
         if (!process.HasExited)
@@ -536,15 +589,26 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
             try { process.Refresh(); if (!process.HasExited) rss = process.WorkingSet64; }
             catch (InvalidOperationException) when (process.HasExited) { }
         }
-        var diskStarted = Stopwatch.GetTimestamp();
-        var disk = MeasureOwnedDisk(allowPublicationRace: !process.HasExited);
-        var diskElapsed = Stopwatch.GetElapsedTime(diskStarted).TotalMilliseconds;
-        _diskSampleMilliseconds += diskElapsed;
-        _maximumDiskSampleMilliseconds = Math.Max(_maximumDiskSampleMilliseconds, diskElapsed);
-        rssPeak = Math.Max(rssPeak, rss); diskPeak = Math.Max(diskPeak, disk);
+        if (forceDisk || timer.Elapsed.TotalMilliseconds - _lastDiskSampleMilliseconds >= 1000)
+        {
+            var diskStarted = Stopwatch.GetTimestamp();
+            var disk = MeasureOwnedDisk(allowPublicationRace: !process.HasExited);
+            var diskElapsed = Stopwatch.GetElapsedTime(diskStarted).TotalMilliseconds;
+            _diskSampleMilliseconds += diskElapsed;
+            _maximumDiskSampleMilliseconds = Math.Max(_maximumDiskSampleMilliseconds, diskElapsed);
+            _lastDiskSampleMilliseconds = timer.Elapsed.TotalMilliseconds;
+            _diskSamples++;
+            diskPeak = Math.Max(diskPeak, disk);
+            if (measuring)
+            {
+                _phaseDiskSamples++;
+                phaseDiskPeak = Math.Max(phaseDiskPeak, disk);
+            }
+        }
+        rssPeak = Math.Max(rssPeak, rss);
         if (measuring)
         {
-            phaseSamples++; phaseRssPeak = Math.Max(phaseRssPeak, rss); phaseDiskPeak = Math.Max(phaseDiskPeak, disk);
+            phaseSamples++; phaseRssPeak = Math.Max(phaseRssPeak, rss);
         }
         if (rssPeak > RssStop || diskPeak > DiskStop || timer.Elapsed > TimeSpan.FromSeconds(childSeconds))
             throw new InvalidOperationException($"Owned load-resource guard stop: RSS={rssPeak}; disk={diskPeak}; elapsed={timer.Elapsed}.");

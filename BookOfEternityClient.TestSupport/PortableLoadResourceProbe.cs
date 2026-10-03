@@ -545,13 +545,13 @@ public static class PortableLoadResourceProbe
     }
 
     /// <summary>
-    /// Announces an existing load operation boundary without changing its work or durable decision.
+    /// Announces a load diagnostic boundary, holding closed durable evidence until its owned disk sample is acknowledged.
     /// </summary>
     /// <param name="report">
     /// Supplies the actual operation and inherited heap for the owning parent.
     /// </param>
     /// <param name="boundary">
-    /// The observed canonical lock, mutation admission or publication callback.
+    /// The observed read-only stage, canonical lock, mutation admission or publication callback.
     /// </param>
     /// <param name="index">
     /// The callback's actual member index or admission count; zero represents the lock boundary.
@@ -561,12 +561,15 @@ public static class PortableLoadResourceProbe
     /// </param>
     private static void WriteProgress(Dictionary<string, object?> report, string boundary, int index, double childMilliseconds)
     {
+        var requiresDiskSample = boundary is "IntentStaged" or "IntentPublished" or "CommitStaged" or "Committed" or "CleanupComplete";
         Console.WriteLine(JsonSerializer.Serialize(new
         {
             Phase = "OperationProgress", Operation = report["Operation"], HeapBytes = report["HeapBytes"],
-            Boundary = boundary, Index = index, ChildMilliseconds = childMilliseconds
+            Boundary = boundary, Index = index, ChildMilliseconds = childMilliseconds, RequiresDiskSample = requiresDiskSample
         }));
         Console.Out.Flush();
+        if (requiresDiskSample && Console.ReadLine() != "operation-sampled")
+            throw new InvalidOperationException("The owning parent did not acknowledge the actual durable-boundary sample.");
     }
 
     /// <summary>
