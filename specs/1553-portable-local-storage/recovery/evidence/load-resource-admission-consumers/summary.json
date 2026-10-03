@@ -1,0 +1,226 @@
+{
+  "Categories": [
+    "portable-storage-namespace",
+    "portable-storage-namespace-generation",
+    "portable-load-topology",
+    "portable-load-native-boundaries",
+    "portable-load-cleanup-debt",
+    "portable-load-cold-decision",
+    "portable-load-cold-topology",
+    "portable-storage-stream-dispatch",
+    "portable-storage-original-v1-fixtures",
+    "portable-storage-stream-publication",
+    "portable-storage-stream-generation"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-storage-namespace",
+      "reason": "Scratch admission and namespace parent validation changed; strict v3 authority/full preflight must retain all prior cases.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-storage-namespace-generation",
+      "reason": "Shared namespace admission retains exact missing-generation restoration and committed generation.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-load-topology",
+      "reason": "Connected load consumes the new batch admission across file/directory shapes.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-load-native-boundaries",
+      "reason": "Fresh admission must preserve native junction/link/hard-link and protected source/library boundaries.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-load-cleanup-debt",
+      "reason": "Batch admission cannot loosen scratch conflict or committed cleanup decisions.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-load-cold-decision",
+      "reason": "Pending/committed restart consumes changed namespace validation with extraction absent.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-load-cold-topology",
+      "reason": "Interrupted structural rollback consumes changed namespace validation; exact repeated recovery required.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-storage-stream-dispatch",
+      "reason": "Shared crash-host dispatch gained a resource-only mode; preserve previous v1/v2 format dispatch.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-storage-original-v1-fixtures",
+      "reason": "Shared TrustedLocalFileScope changed; source-derived original v1 admission remains exact.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-storage-stream-publication",
+      "reason": "Shared scalar/batch scope leaf implementation must preserve existing v2 publication consumers.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-storage-stream-generation",
+      "reason": "Shared host and scope retain existing v2 cold generation ordering.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "88df401032163aebc5eb95c2eb50c13fc4407f85",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-load-cleanup-debt",
+      "Seconds": 13.4830066,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-load-cold-decision",
+      "Seconds": 64.0394103,
+      "BudgetMinutes": 8,
+      "Completed": true
+    },
+    {
+      "Category": "portable-load-cold-topology",
+      "Seconds": 35.5852006,
+      "BudgetMinutes": 8,
+      "Completed": true
+    },
+    {
+      "Category": "portable-load-native-boundaries",
+      "Seconds": 11.4210802,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-load-topology",
+      "Seconds": 26.2491152,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-storage-namespace",
+      "Seconds": 12.9949055,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-storage-namespace-generation",
+      "Seconds": 5.8112985,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-storage-original-v1-fixtures",
+      "Seconds": 4.9150403,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "portable-storage-stream-dispatch",
+      "Seconds": 11.8481868,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-storage-stream-generation",
+      "Seconds": 10.180665,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-storage-stream-publication",
+      "Seconds": 8.3621256,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 1.6236368,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 1.1126047,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 1.1817707,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 177.0765816,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 55.1617106,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0040774,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 15,
+  "WallTime": "00:07:39.0046669",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 11,
+    "CompletedDescriptors": 11,
+    "PlannedCases": 128,
+    "CompletedCases": 128,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 128,
+    "Executed": 128,
+    "Passed": 128,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

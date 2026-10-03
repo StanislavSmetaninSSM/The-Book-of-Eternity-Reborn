@@ -26,8 +26,14 @@ failures and the separate diagnostic pass remain unchanged. Parent disk work fel
 from207.475seconds/2423 scans to42.974seconds/459 scans, but whole child increased
 from486.530 to530.955seconds: do not claim an observed load speedup from reduced
 monitor work.100ms is a polling delay, not a guaranteed sampling frequency.
-Next selected control is `tests/selections/1553-load-admission-consumers.json`:
-only changed scope/namespace/native/cold and affected v1/v2/host consumers.
+The fresh selected control at clean `88df401032163aebc5eb95c2eb50c13fc4407f85`,
+`tests/selections/1553-load-admission-consumers.json`, passed128/128 across11 complete
+descriptors in7:39.005, no skips/duplicates and complete cleanup. Exact
+[artifacts](recovery/evidence/load-resource-admission-consumers/summary.json) cover
+only changed scope/namespace/native/cold and affected v1/v2/host consumers;
+fresh integration/unit builds preserve the unchanged e593 C# source closure.
+Separate Sol6.1XHigh review cleared the actual ordinary many-publication evidence
+with no findings. Its bounded acceptance does not close remaining resource phases.
 Remaining separate resource phases and final scoped independent review are open;
 native Linux/public-client acceptance is not established by this Windows result.
 

@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="0358144b-f8fc-4a27-bd34-5eff360b1e3d" name="Eja@HOME-PC 2026-10-04 07:26:22" runUser="HOME-PC\Eja" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-04T07:26:22.0543008+10:00" queuing="2026-10-04T07:26:22.0543011+10:00" start="2026-10-04T07:26:19.3479537+10:00" finish="2026-10-04T07:26:22.0625004+10:00" />
+  <TestSettings name="default" id="ba03581f-f822-473d-8e35-ed95c59404e6">
+    <Deployment runDeploymentRoot="Eja_HOME-PC_2026-10-04_07_26_22" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="d8636777-dfaf-4f63-a1cf-f5a3e74ae8b5" testId="785f10a4-c38f-3c1c-ded1-6271a4a0ccfa" testName="BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests.NormalLeaseRecoversIndependentOriginalV1Decision(committed: False, fixtureName: &quot;pending.json&quot;, fixtureLength: 2066, fixtureSha256: &quot;13fb4c68e26b87107501478a4f302a17e16fa5f25019de3bca&quot;···)" computerName="HOME-PC" duration="00:00:00.0682182" startTime="2026-10-04T07:26:21.9500550+10:00" endTime="2026-10-04T07:26:21.9500550+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d8636777-dfaf-4f63-a1cf-f5a3e74ae8b5">
+      <Output>
+        <StdOut>Fixture pending.json: immutable SHA256 13fb4c68e26b87107501478a4f302a17e16fa5f25019de3bcac14d528e7167a1; materialized SHA256 CCC32F310F3EB5135E8F3A77EA673FD7BF1E1A8932A64F3031A62A1AB0A80F19; four After members seeded.&#xD;
+Normal lease recovered pending Before; exact four-member decision, generation, two sentinels and journal/sibling cleanup verified.&#xD;
+Owned fixture cleanup verified: zero sandbox remainders.</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b0aa1369-9ac8-4690-8212-b211495edc1f" testId="e1ea57c9-cf17-211a-6ad0-5f7aba0b587e" testName="BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests.NormalLeaseRecoversIndependentOriginalV1Decision(committed: True, fixtureName: &quot;committed.json&quot;, fixtureLength: 2065, fixtureSha256: &quot;da0c9fd29ed3d23d8903d42b88691d4d83bc156c1142061595&quot;···)" computerName="HOME-PC" duration="00:00:00.1806988" startTime="2026-10-04T07:26:21.8824198+10:00" endTime="2026-10-04T07:26:21.8824471+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b0aa1369-9ac8-4690-8212-b211495edc1f">
+      <Output>
+        <StdOut>Fixture committed.json: immutable SHA256 da0c9fd29ed3d23d8903d42b88691d4d83bc156c1142061595dbdc2bd602ba02; materialized SHA256 69BACF0FA29161CA5E6A3B1E9C9C073115E00725A29399CF81E1A5DDA63BB2F5; four After members seeded.&#xD;
+Normal lease recovered committed After; exact four-member decision, generation, two sentinels and journal/sibling cleanup verified.&#xD;
+Owned fixture cleanup verified: zero sandbox remainders.</StdOut>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests.NormalLeaseRecoversIndependentOriginalV1Decision(committed: True, fixtureName: &quot;committed.json&quot;, fixtureLength: 2065, fixtureSha256: &quot;da0c9fd29ed3d23d8903d42b88691d4d83bc156c1142061595&quot;···)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="e1ea57c9-cf17-211a-6ad0-5f7aba0b587e">
+      <Execution id="b0aa1369-9ac8-4690-8212-b211495edc1f" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests" name="NormalLeaseRecoversIndependentOriginalV1Decision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests.NormalLeaseRecoversIndependentOriginalV1Decision(committed: False, fixtureName: &quot;pending.json&quot;, fixtureLength: 2066, fixtureSha256: &quot;13fb4c68e26b87107501478a4f302a17e16fa5f25019de3bca&quot;···)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="785f10a4-c38f-3c1c-ded1-6271a4a0ccfa">
+      <Execution id="d8636777-dfaf-4f63-a1cf-f5a3e74ae8b5" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests" name="NormalLeaseRecoversIndependentOriginalV1Decision" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="785f10a4-c38f-3c1c-ded1-6271a4a0ccfa" executionId="d8636777-dfaf-4f63-a1cf-f5a3e74ae8b5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e1ea57c9-cf17-211a-6ad0-5f7aba0b587e" executionId="b0aa1369-9ac8-4690-8212-b211495edc1f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="2" executed="2" passed="2" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.22]   Discovering: BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.72]   Discovered:  BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.75]   Starting:    BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:02.05]   Finished:    BookOfEternityClient.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>
