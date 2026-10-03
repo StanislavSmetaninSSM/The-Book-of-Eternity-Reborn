@@ -90,8 +90,15 @@ scaffolded without codec behavior changes. `portable-load-metadata-transport` ow
 only these two causal measurements; the existing 33 authority cases retain explicit
 method ownership in `portable-load-metadata`. The next fresh run selects only the
 two new controls, avoiding a repeated unchanged cap/schema baseline. No observer
-callback occurs in the neutral scaffold, so both missing-observation assertions must
-fail before the codec implementation is released.
+callback occurs in the neutral scaffold. At clean `a0cda0aa06f0d7b1e1265eff60c0e162c9135f47`,
+fresh native Windows verification executed both selected transport controls and
+produced the expected two causal failures: zero writer flush observations versus 101
+required opening/member events, and no reader carry observations. No skips/duplicates,
+cleanup complete, 2:47.976; exact
+[artifacts](recovery/evidence/load-transport-red/summary.json) are saved. Codec implementation
+is now released to the bounded Sol 6.1 High owner; no implementation/build/green/review
+claim is made by this transport baseline. Full required-field omission coverage will
+join the strict metadata owner with independently reset evidence and exact preservation.
 
 Process checkpoint: independent review found the real mixed-directory inventory defect,
 but initially missed the admission fixture's persisted-root mismatch; the real typed
