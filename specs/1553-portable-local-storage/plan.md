@@ -163,6 +163,24 @@ directory and narrowed root/library/required-directory admission. The older late
 test now cuts the second actual file publication, rather than assuming a pre-v3 node
 index. First selected compilation/runtime and review are pending; no topology pass or
 native Linux/cold/resource/public acceptance is claimed.
+At clean `e343e19c1f5c8e366307a9996fe62b6c01ab7604`, fresh native Windows compilation
+succeeded. The first selection ran 12 topology cases: four conversion/preservation
+positives passed, eight one-shot IOException cuts rolled back then correctly retried
+to commit under the preserved transient policy, so their terminal-rollback assertions
+failed. This is a fault-fixture error; use InvalidOperationException without changing
+retry policy. Fail-fast did not execute the unit owner; no 45-case pass is claimed.
+The separately selected same fresh closure passed all 33 independent namespace cases,
+no skips/duplicates, complete selection/cleanup, 0:30.312; exact
+[mixed candidate](recovery/evidence/load-namespace-candidate/summary.json) and
+[independent artifacts](recovery/evidence/load-namespace-independent/summary.json) are retained.
+Independent Sol 6.1 XHigh found a valid pending absent-before-generation defect: the
+generation-last file pass does not delete the new generation on rollback to Missing.
+The new `portable-storage-namespace-generation` owner selects independent pending/
+committed frames to establish causal RED before correction; the real generation-published
+interruption joins the connected topology owner. These are exact original authority
+requirements, not added scope. Missing helper/enum/attempt XML comments reported by
+review are corrected for the fresh XML-enabled build; no runtime is repeated solely
+for those documentation corrections.
 The parent owns namespace observation/preflight/reconciliation and load integration;
 the retained Sol 6.1 High codec implementer may own only the separate v3 descriptor/frame
 files after release. This bounded delegation reuses known cursor machinery without

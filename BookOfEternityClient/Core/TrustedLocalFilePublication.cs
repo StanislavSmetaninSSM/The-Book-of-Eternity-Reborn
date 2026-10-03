@@ -23,7 +23,22 @@ internal enum TrustedLocalPublicationPhase
 {
     IntentStaged, IntentPublished, MemberStaged, MemberPublished, CommitStaged, Committed,
     RollbackStaged, MemberRestored, CleanupMember, CleanupComplete,
-    DirectoryRemoved, DirectoryCreated, RollbackDirectoryRemoved, RollbackDirectoryCreated
+    /// <summary>
+    /// Forward reconciliation removed a declared ordinary empty directory.
+    /// </summary>
+    DirectoryRemoved,
+    /// <summary>
+    /// Forward reconciliation created a declared ordinary directory after intent publication.
+    /// </summary>
+    DirectoryCreated,
+    /// <summary>
+    /// Rollback removed a declared ordinary empty directory absent from the before namespace.
+    /// </summary>
+    RollbackDirectoryRemoved,
+    /// <summary>
+    /// Rollback recreated a declared ordinary directory present in the before namespace.
+    /// </summary>
+    RollbackDirectoryCreated
 }
 
 /// <summary>
@@ -181,6 +196,9 @@ internal sealed partial class TrustedLocalFilePublication
     private sealed class PublicationAttempt
     {
         internal Journal? Prepared { get; set; }
+        /// <summary>
+        /// Retains completely prepared v3 evidence for exact before-namespace outcome confirmation.
+        /// </summary>
         internal NamespaceJournal? NamespacePrepared { get; set; }
         internal TrustedLocalPublicationResult? Committed { get; set; }
     }

@@ -27,13 +27,37 @@ public sealed class TrustedLocalNamespaceJournalTests : IDisposable
         "{\"SchemaVersion\":1,\"GenerationId\":\"" + AfterId + "\"}")];
     private readonly string _sandbox = Path.Combine(Path.GetTempPath(), "boe-v3-journal-" + Guid.NewGuid().ToString("N"));
     private readonly string _root;
+    /// <summary>
+    /// Names the covered replacement whose exact bytes prove earlier recovery ordering.
+    /// </summary>
     private string Target => Path.Combine(_root, "game_session", "game_state", "core", "v3-replace.bin");
+    /// <summary>
+    /// Names the valid zero-length after-state-only file.
+    /// </summary>
     private string Created => Path.Combine(Path.GetDirectoryName(Target)!, "v3-created-empty.bin");
+    /// <summary>
+    /// Names the before-state-only file restored during pending recovery.
+    /// </summary>
     private string Deleted => Path.Combine(Path.GetDirectoryName(Target)!, "v3-deleted.bin");
+    /// <summary>
+    /// Names the unchanged exact-byte member within the covered namespace.
+    /// </summary>
     private string SessionSentinel => Path.Combine(_root, "game_session", "v3-unchanged-sentinel.bin");
+    /// <summary>
+    /// Names owned fixture bytes outside the publication grant.
+    /// </summary>
     private string OutsideSentinel => Path.Combine(_sandbox, "outside-sentinel.bin");
+    /// <summary>
+    /// Names the single existing publication authority file.
+    /// </summary>
     private string Active => Path.Combine(_root, ".boe_runtime", "trusted-local-publication-v1", "active.json");
+    /// <summary>
+    /// Names the canonical opaque library boundary.
+    /// </summary>
     private string Library => Manager().ResolvePath("saves");
+    /// <summary>
+    /// Names the immutable selected-source fixture nested inside the opaque library.
+    /// </summary>
     private string Source => Path.Combine(Library, "manual_saves", "selected-source.zip");
 
     /// <summary>
@@ -259,10 +283,14 @@ public sealed class TrustedLocalNamespaceJournalTests : IDisposable
     /// <param name="sourceBoundary">
     /// Adds the exact immutable file boundary inside the opaque library.
     /// </param>
+    /// <param name="beforeGenerationAbsent">
+    /// Uses an exact missing generation before-image when true; the default retains the independent BOM-bearing old bytes.
+    /// </param>
     /// <returns>
     /// The independent JSON header and its contiguous member-before-after payload.
     /// </returns>
-    private (JsonObject Header, byte[] Payload) Header(bool committed, bool reordered, bool libraryPresent, bool sourceBoundary)
+    private (JsonObject Header, byte[] Payload) Header(bool committed, bool reordered, bool libraryPresent, bool sourceBoundary,
+        bool beforeGenerationAbsent = false)
     {
         var files = Manager();
         using var payload = new MemoryStream();
@@ -286,7 +314,8 @@ public sealed class TrustedLocalNamespaceJournalTests : IDisposable
             else throw new InvalidOperationException("Unexpected file in the independent fixture: " + path);
         }
         members.Add(LiteralMember(payload, reordered, Deleted, "File", DeletedBefore, "Missing", null));
-        members.Add(LiteralMember(payload, reordered, files.SessionGenerationPath, "File", BeforeGeneration, "File", AfterGeneration));
+        members.Add(LiteralMember(payload, reordered, files.SessionGenerationPath,
+            beforeGenerationAbsent ? "Missing" : "File", beforeGenerationAbsent ? null : BeforeGeneration, "File", AfterGeneration));
         var boundaries = new JsonArray(new JsonObject
         {
             ["Path"] = Library, ["Kind"] = libraryPresent ? "Directory" : "Missing", ["Length"] = 0, ["Sha256"] = null
@@ -298,7 +327,7 @@ public sealed class TrustedLocalNamespaceJournalTests : IDisposable
         root["Format"] = 3;
         root["TransactionId"] = Transaction;
         root["Committed"] = committed;
-        root["GenerationBefore"] = new JsonObject { ["Id"] = BeforeId, ["Exists"] = true };
+        root["GenerationBefore"] = new JsonObject { ["Id"] = beforeGenerationAbsent ? null : BeforeId, ["Exists"] = !beforeGenerationAbsent };
         root["GenerationAfter"] = new JsonObject { ["Id"] = AfterId, ["Exists"] = true };
         root["NamespaceRoot"] = files.GameSessionPath;
         if (!reordered) root["Members"] = members;
@@ -431,6 +460,38 @@ public sealed class TrustedLocalNamespaceJournalTests : IDisposable
             Assert.Equal(Sentinel, File.ReadAllBytes(Source));
             Assert.Equal(Sentinel, File.ReadAllBytes(Path.Combine(Library, "library-sentinel.bin")));
         }
+    }
+
+    /// <summary>
+    /// Recovers an independent new-generation frame to exact prior absence or committed presence.
+    /// </summary>
+    /// <param name="committed">
+    /// Retains the new generation when true; otherwise removes it after all original namespace files are restored.
+    /// </param>
+    /// <returns>
+    /// Completion after normal fresh acquisition and exact generation bytes or absence.
+    /// </returns>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task IndependentNewGenerationFramePreservesExactAbsence(bool committed)
+    {
+        var (header, payload) = Header(committed, true, true, true, beforeGenerationAbsent: true);
+        PutActive(Frame(header.ToJsonString(), payload));
+        var files = Manager();
+
+        await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+            Assert.Equal(committed ? AfterId : null, files.ReadExistingSessionGeneration(lease));
+
+        Assert.Equal(committed ? After : Before, File.ReadAllBytes(Target));
+        Assert.Equal(committed, File.Exists(Created));
+        Assert.Equal(!committed, File.Exists(Deleted));
+        Assert.Equal(committed, File.Exists(files.SessionGenerationPath));
+        if (committed) Assert.Equal(AfterGeneration, File.ReadAllBytes(files.SessionGenerationPath));
+        Assert.Equal(Sentinel, File.ReadAllBytes(Source));
+        Assert.Equal(Sentinel, File.ReadAllBytes(OutsideSentinel));
+        Assert.False(File.Exists(Active));
+        Assert.Empty(Directory.EnumerateFileSystemEntries(Path.GetDirectoryName(Active)!));
     }
 
     /// <summary>

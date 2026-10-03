@@ -10234,8 +10234,22 @@
       "expectedSeconds": null,
       "selectors": [{"project": "integration", "tests": [
         "BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace",
-        "BookOfEternityClient.Tests.PortableLoadReplacementTests.InterruptedTopologyRestoresExactBeforeNamespace"
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.InterruptedTopologyRestoresExactBeforeNamespace",
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.FreshGenerationInterruptionRestoresExactAbsence"
       ]}]
+    },
+    {
+      "id": "portable-storage-namespace-generation",
+      "responsibility": "V3 new-generation authority: independent pending/committed frames must restore exact prior generation absence last or retain exact committed generation bytes.",
+      "excludes": "V2 generation compatibility and full namespace/topology/resource/client acceptance.",
+      "changeHints": ["BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs", "BookOfEternityClient.Tests/TrustedLocalNamespaceJournalTests.cs", "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.Topology.cs"],
+      "related": [{"id":"portable-storage-namespace","when":"Changing v3 generation-last reconciliation or exact rollback confirmation."},{"id":"portable-load-topology","when":"Changing the typed namespace publication outcome."}],
+      "requirements": {"frontendBuild":false,"exclusive":true},
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {"project":"unit","tests":["BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentNewGenerationFramePreservesExactAbsence"]}
+      ]
     },
     {
       "id": "portable-storage-namespace",

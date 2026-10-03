@@ -126,7 +126,7 @@ public sealed partial class PortableLoadReplacementTests
                 if (relative != expected) return;
             }
             observed = true;
-            throw new IOException("Owned topology interruption");
+            throw new InvalidOperationException("Owned topology interruption");
         };
 
         var result = await _service.LoadGameWithOutcomeAsync(source);
@@ -196,7 +196,7 @@ public sealed partial class PortableLoadReplacementTests
     /// The nonnegative stable member index announced by publication.
     /// </param>
     /// <returns>
-    /// The exact session-relative path encoded by that member.
+    /// The exact session-relative path, or the generation marker for the sole runtime member.
     /// </returns>
     private string ReadNamespaceMemberRelativePath(int index)
     {
@@ -206,6 +206,40 @@ public sealed partial class PortableLoadReplacementTests
         var length = checked((int)BinaryPrimitives.ReadInt64LittleEndian(frame.AsSpan(8, 8)));
         using var header = JsonDocument.Parse(frame.AsMemory(16, length));
         var path = header.RootElement.GetProperty("Members")[index].GetProperty("Path").GetString()!;
+        if (path == _files.SessionGenerationPath) return "@generation";
         return FileSystemManager.GetLocalRelativePath(_files.GameSessionPath, path, OperatingSystem.IsWindows());
+    }
+
+    /// <summary>
+    /// Rolls back a real new-generation publication to exact prior generation absence.
+    /// </summary>
+    /// <returns>
+    /// Completion after one real generation-published cut, full namespace restoration and generation-file deletion.
+    /// </returns>
+    [Fact]
+    public async Task FreshGenerationInterruptionRestoresExactAbsence()
+    {
+        var source = await PrepareCurrentArchiveAsync();
+        File.Delete(_files.SessionGenerationPath);
+        var before = SnapshotCompleteNamespace();
+        var observed = false;
+        _fault = (phase, index) =>
+        {
+            if (observed || phase != TrustedLocalPublicationPhase.MemberPublished || ReadNamespaceMemberRelativePath(index) != "@generation") return;
+            observed = true;
+            throw new InvalidOperationException("Owned new-generation interruption");
+        };
+
+        var result = await _service.LoadGameWithOutcomeAsync(source);
+
+        Report(result);
+        Assert.True(observed);
+        Assert.Equal(LoadReplacementDisposition.RolledBack, result.Disposition);
+        Assert.Null(result.EstablishedGeneration);
+        Assert.False(result.ContinuationBlocked);
+        Assert.True(result.NeedsFollowUp);
+        Assert.False(File.Exists(_files.SessionGenerationPath));
+        Assert.Equal(before.OrderBy(pair => pair.Key).ToArray(), SnapshotCompleteNamespace().OrderBy(pair => pair.Key).ToArray());
+        AssertOwnedScratchEmpty();
     }
 }
