@@ -10224,6 +10224,22 @@
       ]
     },
     {
+      "id": "portable-load-metadata",
+      "responsibility": "Incremental v2 frame metadata: per-member writer flushing, physically bounded token carry, headers beyond the former aggregate cap, strict decoded schema/contiguous regions and complete preflight before exact pending/committed recovery.",
+      "excludes": "Namespace v3 conversions, load archive/resource envelopes, full save acceptance and public-client cutover. Long relative-token cases prove transport and separate path refusal, not native long-path acceptance.",
+      "changeHints": ["BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs", "BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs", "BookOfEternityClient.Tests/TrustedLocalFrameMetadataTests.cs"],
+      "related": [
+        {"id": "portable-storage-stream-publication", "when": "Changing v2 metadata encoding, strict schema or region rebinding."},
+        {"id": "portable-storage-stream-dispatch", "when": "Changing journal dispatch or physical metadata length admission."},
+        {"id": "portable-storage-original-v1-fixtures", "when": "Changing shared journal dispatch while retaining v1 authority."},
+        {"id": "portable-storage-stream-generation", "when": "Changing generation descriptor parsing or complete frame binding."}
+      ],
+      "requirements": {"frontendBuild": false, "exclusive": true},
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.*"]}]
+    },
+    {
       "id": "portable-load-original-admission",
       "responsibility": "Original admission controls retained by the portable load entry: actual corrupt ZIP, missing resource root and self-consistent unknown resource owner reject before leases; existing raw central-directory budget, exact descriptor limits and stream-position controls remain unchanged.",
       "excludes": "Original public physical-load acceptance, resource-size qualification, save-only performance sweeps and all gameplay validation.",

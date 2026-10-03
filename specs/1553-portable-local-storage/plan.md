@@ -63,6 +63,19 @@ enter the compile tree under its new narrow owner for causal RED before producti
 Native Linux remains unexecuted; metadata, topology/cold/resources and public-client
 acceptance are not implied by this B1 correction gate.
 
+Metadata WIP: the parent inspected the independently drafted current-API tests and
+installed `TrustedLocalFrameMetadataTests.cs` with explicit `portable-load-metadata`
+ownership. The initial 33 cases cover real >1 MiB writer/reader decisions, independently
+encoded small v2 compatibility, reordered/escaped boundary tokens and 26 late corrupt
+schema/region cases preserving earlier state/evidence/generation. The production codec
+is unchanged; only this new category runs first to establish causal cap failures.
+The future optional internal observer will prove actual per-member encoding flush and
+actual-token carry growth/release; a >64 KiB escaped relative token proves transport
+followed by independent path refusal, not native long-path acceptance. After causal RED,
+one Sol 6.1 High codec implementer owns Journal/FrameMetadata plus its narrow observer
+and tests; the parent owns catalog, execution, integration and acceptance. Separate
+Sol 6.1 XHigh reviews the completed codec block. No parallel builds/tests or public cutover.
+
 Process checkpoint: independent review found the real mixed-directory inventory defect,
 but initially missed the admission fixture's persisted-root mismatch; the real typed
 runtime exposed it and one fixture correction rerun resolved it. No other correctness
