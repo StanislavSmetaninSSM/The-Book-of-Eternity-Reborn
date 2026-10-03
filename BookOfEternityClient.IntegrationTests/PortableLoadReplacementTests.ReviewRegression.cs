@@ -1,5 +1,6 @@
 using System.IO.Compression;
 using System.Text;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Xunit;
@@ -8,6 +9,18 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class PortableLoadReplacementTests
 {
+    /// <summary>
+    /// Loads admitted fixed-path case aliases at canonical names while preserving exact protected bytes.
+    /// </summary>
+    /// <param name="canonical">
+    /// The declared fixed path present in the producer archive.
+    /// </param>
+    /// <param name="includeDirectoryCase">
+    /// Whether the case alias changes directory components as well as the file name.
+    /// </param>
+    /// <returns>
+    /// Completion after the real typed load and its decision, state and cleanup assertions.
+    /// </returns>
     [Theory]
     [InlineData(SoulPath, false)]
     [InlineData(ResourceMaterializationContract.DefinitionsPath, false)]
@@ -97,6 +110,12 @@ public sealed partial class PortableLoadReplacementTests
         AssertOwnedScratchEmpty();
     }
 
+    /// <summary>
+    /// Rejects a same-length modified payload against its original manifest before alias mapping can hide damage.
+    /// </summary>
+    /// <returns>
+    /// Completion after refusal and exact live-session, source and generation preservation are verified.
+    /// </returns>
     [Fact]
     public async Task OriginalManifestHashRejectsBeforeCanonicalizedLoadPreparation()
     {
@@ -122,6 +141,18 @@ public sealed partial class PortableLoadReplacementTests
         AssertOwnedScratchEmpty();
     }
 
+    /// <summary>
+    /// Prepares declared fixed names without changing arbitrary path keys or bytes on the native platform.
+    /// </summary>
+    /// <param name="canonical">
+    /// A fixed runtime path to import with changed case and an unchanged manifest hash.
+    /// </param>
+    /// <param name="arbitraryDirectoryAlias">
+    /// Whether the arbitrary lore file uses a directory-case alias shared with a mapped fixed path.
+    /// </param>
+    /// <returns>
+    /// Completion after exact prepared keys, bytes, protected files and owned cleanup are verified.
+    /// </returns>
     [Theory]
     [InlineData("game_state/core/player_status.json", false)]
     [InlineData("game_state/world/world_time.json", false)]
@@ -163,6 +194,93 @@ public sealed partial class PortableLoadReplacementTests
         AssertOwnedScratchEmpty();
     }
 
+    /// <summary>
+    /// Verifies that the portable entry preserves original corrupt-archive and resource-authority refusals.
+    /// </summary>
+    /// <param name="corruption">
+    /// The corrupt ZIP, missing required resource root or self-consistent unknown-owner fixture to admit.
+    /// </param>
+    /// <returns>
+    /// Completion after original admission rejects before lifecycle mutation and preserves exact live state.
+    /// </returns>
+    [Theory]
+    [InlineData("corrupt-zip")]
+    [InlineData("missing-resource")]
+    [InlineData("unknown-owner")]
+    public async Task OriginalArchiveAndResourceAdmissionRejectsBeforePortableDecision(string corruption)
+    {
+        var source = await PrepareCurrentArchiveAsync();
+        if (corruption == "corrupt-zip")
+            File.WriteAllBytes(source, Encoding.UTF8.GetBytes("not a ZIP archive"));
+        else
+        {
+            using var archive = ZipFile.Open(source, ZipArchiveMode.Update);
+            archive.GetEntry("save_manifest.json")!.Delete();
+            if (corruption == "missing-resource")
+                archive.GetEntry(ResourceMaterializationContract.DefinitionsPath)!.Delete();
+            else
+            {
+                var bootstrap = ResourceBootstrapStateBuilder.BuildMortalPlayer(1, 42, 10, 20, 30, 40, 50);
+                Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
+                var state = JsonNode.Parse(bootstrap.State!.ToCanonicalJson())!.AsObject();
+                var history = JsonNode.Parse(bootstrap.History!.ToCanonicalJson())!.AsObject();
+                foreach (var entry in state["entries"]!.AsArray()) entry!["resourceOwnerId"] = "player_forged";
+                foreach (var entry in history["entries"]!.AsArray()) entry!["coordinate"]!["resourceOwnerId"] = "player_forged";
+                foreach (var (path, json) in new[]
+                {
+                    (ResourceMaterializationContract.DefinitionsPath, bootstrap.Definitions!.ToCanonicalJson()),
+                    (ResourceMaterializationContract.StatePath, state.ToJsonString()),
+                    (ResourceMaterializationContract.HistoryPath, history.ToJsonString())
+                })
+                {
+                    archive.GetEntry(path)!.Delete();
+                    using var payload = archive.CreateEntry(path, CompressionLevel.NoCompression).Open();
+                    payload.Write(Encoding.UTF8.GetBytes(json));
+                }
+            }
+        }
+        var before = Snapshot(_files.GameSessionPath);
+        var generation = File.ReadAllBytes(_files.SessionGenerationPath);
+
+        var result = await _service.LoadGameWithOutcomeAsync(source);
+
+        Report(result);
+        Assert.Equal(LoadReplacementDisposition.NotLoaded, result.Disposition);
+        var failure = Assert.IsType<InvalidDataException>(result.Failure);
+        if (corruption != "corrupt-zip") Assert.Contains("resource", failure.Message, StringComparison.OrdinalIgnoreCase);
+        if (corruption == "unknown-owner") Assert.Contains("player_forged", failure.Message, StringComparison.Ordinal);
+        Assert.False(result.NeedsFollowUp);
+        Assert.False(result.ContinuationBlocked);
+        Assert.Equal(0, _prepared);
+        Assert.Equal(0, _lifecycleOpen);
+        Assert.Empty(_phases);
+        AssertPreserved(before);
+        Assert.Equal(generation, File.ReadAllBytes(_files.SessionGenerationPath));
+        Assert.Equal("Old live soul", _state.CurrentState.SoulName);
+        AssertOwnedScratchEmpty();
+    }
+
+    /// <summary>
+    /// Changes one owned fixture entry while optionally retaining its original manifest as an admission oracle.
+    /// </summary>
+    /// <param name="source">
+    /// The existing owned producer archive to update.
+    /// </param>
+    /// <param name="canonical">
+    /// The exact existing archive entry name.
+    /// </param>
+    /// <param name="alias">
+    /// The replacement entry name.
+    /// </param>
+    /// <param name="replacement">
+    /// Replacement bytes, or <see langword="null"/> to retain the original payload.
+    /// </param>
+    /// <param name="preserveManifest">
+    /// Whether to retain original manifest bytes; the default removes it for existing optional-manifest fixtures.
+    /// </param>
+    /// <returns>
+    /// The exact bytes written under <paramref name="alias"/>.
+    /// </returns>
     private static byte[] RenameArchiveEntry(string source, string canonical, string alias,
         byte[]? replacement = null, bool preserveManifest = false)
     {

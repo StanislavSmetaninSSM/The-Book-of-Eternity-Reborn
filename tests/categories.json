@@ -10224,6 +10224,22 @@
       ]
     },
     {
+      "id": "portable-load-original-admission",
+      "responsibility": "Original admission controls retained by the portable load entry: actual corrupt ZIP, missing resource root and self-consistent unknown resource owner reject before leases; existing raw central-directory budget, exact descriptor limits and stream-position controls remain unchanged.",
+      "excludes": "Original public physical-load acceptance, resource-size qualification, save-only performance sweeps and all gameplay validation.",
+      "changeHints": ["BookOfEternityClient/Services/SaveLoadService.Loading.cs", "BookOfEternityClient/Services/SaveLoadService.cs"],
+      "related": [{"id": "portable-load-alias-admission", "when": "Changing path interpretation after original archive admission."}],
+      "requirements": {"frontendBuild": false, "exclusive": false},
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [{"project": "integration", "tests": [
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.OriginalArchiveAndResourceAdmissionRejectsBeforePortableDecision",
+        "BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchivePreflight_RejectsCentralDirectoryMetadataBeforeZipArchiveMaterialization",
+        "BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchivePreflight_AcceptsBoundedArchiveAndRestoresStreamPosition",
+        "BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchiveBudgets_AcceptExactLimitsAndRejectOverByOne"
+      ]}]
+    },
+    {
       "id": "portable-load-lease-consumers",
       "responsibility": "Exact affected acquisition consumers when ordinary load classifies trusted-local recovery failure: replacement requires active lifecycle authority, mutation cannot rotate, ordinary unbound recovery keeps its established decision and original recovery callbacks restore lease mode on both success and failure.",
       "excludes": "Full clear/storage/bootstrap/gameplay sweeps, public load cutover, topology and resource qualification.",

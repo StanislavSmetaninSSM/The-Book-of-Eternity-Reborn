@@ -54,7 +54,14 @@ internal sealed class LoadPreparationCleanupException : InvalidOperationExceptio
         StagingRoot = stagingRoot;
     }
 
+    /// <summary>
+    /// Gets the admitted archive path, which remains read-only during preparation.
+    /// </summary>
     internal string SourcePath { get; }
+
+    /// <summary>
+    /// Gets the owned private directory retained after its cleanup failed.
+    /// </summary>
     internal string StagingRoot { get; }
 }
 
@@ -101,8 +108,9 @@ internal sealed class PreparedLoadArchive : IAsyncDisposable
 
     private (HashSet<string> Files, HashSet<string> Directories) EnumerateScratch()
     {
-        var files = new HashSet<string>(StringComparer.Ordinal);
-        var directories = new HashSet<string>(StringComparer.Ordinal);
+        var comparer = OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+        var files = new HashSet<string>(comparer);
+        var directories = new HashSet<string>(comparer);
         var pending = new Queue<string>();
         pending.Enqueue(_stagingRoot);
         while (pending.TryDequeue(out var directory))
@@ -132,7 +140,21 @@ internal sealed class PreparedLoadArchive : IAsyncDisposable
 
 public partial class SaveLoadService
 {
-    /// <summary>Ordinary portable load entry; public callers stay original until all cutover gates pass.</summary>
+    /// <summary>
+    /// Prepares and publishes an ordinary portable load while retaining its decision and follow-up failures.
+    /// Public callers remain on their original implementation until the downstream cutover gates pass.
+    /// </summary>
+    /// <param name="saveFilePath">
+    /// The selected archive's absolute path or session-relative file path.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancels preparation or authority acquisition before an established publication decision.
+    /// The default token does not request cancellation.
+    /// </param>
+    /// <returns>
+    /// The confirmed committed or rolled-back generation, or an admission refusal or uncertain decision.
+    /// Follow-up failures retain any decision already established; uncertainty blocks continuation.
+    /// </returns>
     internal async Task<LoadReplacementResult> LoadGameWithOutcomeAsync(string saveFilePath,
         CancellationToken cancellationToken = default)
     {
@@ -255,6 +277,19 @@ public partial class SaveLoadService
         return result!;
     }
 
+    /// <summary>
+    /// Validates the original archive and captures closed private images without changing the live session.
+    /// </summary>
+    /// <param name="saveFilePath">
+    /// The selected archive's absolute path or session-relative file path, which must identify an existing file.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancels preparation; the default token does not request cancellation.
+    /// </param>
+    /// <returns>
+    /// The admitted source, detached settings and captured images. The caller owns disposal of the private
+    /// extraction directory and must revalidate the candidate before publication.
+    /// </returns>
     internal async Task<PreparedLoadArchive> PrepareLoadArchiveAsync(string saveFilePath,
         CancellationToken cancellationToken = default)
     {

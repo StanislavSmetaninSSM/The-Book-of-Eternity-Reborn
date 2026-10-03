@@ -27,15 +27,30 @@ The bounded source consultation confirmed eight paths miss immediate refresh
 consumers. Four manifested inventory cases at `9a54dd23` were causal RED at complete
 staging admission on Windows (23/23 executed, 18 passed/5 failed, 3:22.138,
 cleanup complete). Exact [artifacts](recovery/evidence/load-red/registry/summary.json)
-are saved. The next candidate checks original spelling before resolution and
-composes fixed path authorities without changing arbitrary names. The planned
-selection is 23 alias + 4 outcome + 9 entry + 9 exact acquisition consumer cases;
-fresh build/runtime, catalog completeness and independent code review remain open.
+are saved. At `ee573765`, fresh native Windows verification passed 45/45 cases:
+23 alias + 4 outcome + 9 entry + 9 exact acquisition consumers, five descriptors,
+no skips/duplicates, cleanup complete, 5:33.898. Exact [artifacts](recovery/evidence/load-fix-green/summary.json)
+are saved. Independent Sol 6.1 XHigh source review found one P2 mixed-directory-case
+inventory refusal and one documentation finding, with no other actionable findings.
+The new manifested `LORE/MyCustom.JSON` row at `a3e55f0c` reproduced that P2 on Windows:
+24/24 executed, 23 passed/1 failed at complete staging revalidation, 3:39.623,
+cleanup complete. The correction uses native comparison only for observed inventory;
+archive keys/bytes remain unchanged and Linux still uses ordinal equality.
+Changed APIs now have multiline XML documentation. Original admission controls
+add three typed corrupt/missing-resource/unknown-owner cases and four existing raw
+budget/stream-position cases. The next fresh XML-enabled run selects only changed
+aliases/entry plus original admission (40 cases); unchanged outcome/lease evidence
+above remains valid. Catalog completeness and scoped independent correction review
+remain open. Native Linux remains unexecuted.
 
 The first selection-only push after Actions enablement produced no registered run/check
-suite; workflow lookup still showed only the disabled general workflow. A meaningful
-workflow-file update plus selected candidate push will check registration once; no
-Linux qualification is claimed. This is CI activation diagnosis, not archive screening.
+suite; workflow lookup still showed only the disabled general workflow. The meaningful
+workflow-file update and later targeted selection push also registered no run/check.
+Explicit enable of the new workflow returned 404; repository API still confirms
+Actions enabled with only the three selected actions. A read-only settings-page
+attempt was unauthenticated and provided no diagnostic evidence. The reason remains
+unknown; no default-branch merge, general-workflow enable or native Linux pass follows.
+This is CI activation diagnosis, not archive screening.
 WIP infrastructure: the new branch-push Linux workflow and explicit alias/outcome
 selection are prepared. The first Linux job is a causal baseline, expected to expose
 unfixed regressions; build/CI/catalog/native acceptance are not yet claimed. A fresh

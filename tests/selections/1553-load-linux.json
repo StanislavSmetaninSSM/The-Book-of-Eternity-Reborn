@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-load-alias-admission",
-      "reason": "Original manifest/hash admission precedes Trim rejection and immutable whole-file mapping from explicit runtime registries. Select 23 alias/prepared-inventory cases, preserving arbitrary mixed-case lore names; native Linux remains a separate acceptance gate.",
+      "reason": "Original manifest/hash admission precedes Trim rejection and immutable whole-file mapping from explicit runtime registries. Select 24 alias/prepared-inventory cases, preserving arbitrary mixed-case lore names; native Linux remains a separate acceptance gate.",
       "contracts": [
         "#1553 LOAD-FS-001/002/004/008"
       ]
@@ -27,6 +27,13 @@
       "reason": "Nine exact affected lifecycle/replacement/mutation/ordinary recovery cases verify that replacement-specific uncertainty does not change other writer/recovery contracts. No general storage/bootstrap sweep.",
       "contracts": [
         "#1553 LOAD-FS-003/008"
+      ]
+    },
+    {
+      "category": "portable-load-original-admission",
+      "reason": "Preserve original validator boundaries: three real typed corrupt ZIP/missing-root/unknown-owner refusals and four unchanged raw budget/stream-position controls. Existing public physical Load refusal is not used as portable admission proof.",
+      "contracts": [
+        "#1553 LOAD-FS-001/004/008"
       ]
     }
   ]
