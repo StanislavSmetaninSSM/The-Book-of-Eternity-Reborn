@@ -12,7 +12,7 @@ Execution plan revision 1 and its concrete v3 schema are therefore authorized.
 Independent Sol 6.1 XHigh design review passed `8ca3fbca`; its scoped proof readback
 also passed `532a0f36`. This accepts the design/tracking gate only, not load code.
 
-Current task: T032-B1-METADATA; T032-B1-FIX is cleared for code/native Windows,
+Current task: T032-B2-NAMESPACE; T032-B1-FIX and T032-B1-METADATA are cleared for code/native Windows,
 while the separate native Linux gate remains open. Original baseline was `5d2aa2ce`.
 Five-fix candidate source is now written after the recorded causal baseline:
 Trim rejection and immutable declared-path canonicalization precede extraction/classification;
@@ -124,14 +124,30 @@ no skips/duplicates, cleanup complete, 0:51.505; exact
 [artifacts](recovery/evidence/load-metadata-consumers/summary.json) are retained.
 Independent Sol 6.1 XHigh source/contract review found no production findings and
 confirmed the actual 39-case evidence; its four small test-helper XML comments are now
-corrected. Final fresh discovery/XML compilation and scoped evidence clearance remain
-open. Runtime is not repeated solely for comments. Observed assertions establish
+corrected. Final fresh XML-enabled discovery at clean `f822ef9337b862451351447b4b4add13bb5538d6`
+passed 205 categories/10,530 methods, no unmapped/stale selectors, no test execution,
+complete cleanup, 4:32.777; exact [catalog artifacts](recovery/evidence/load-metadata-catalog/catalog-audit.json)
+are retained. Client/unit/integration XML parsed; only three pre-existing unrelated CS1587
+warnings remain. Separate Sol 6.1 XHigh inspected source and actual artifacts and cleared
+metadata code/native Windows with no remaining findings. Runtime is not repeated solely
+for comments. Observed assertions establish
 opening plus each member advance/zero pending bytes for 100/1,000 members with equal
 largest-member pending peaks, actual >64 KiB token growth bounded by twice its filled
 carry and immediate return to 64 KiB before subsequent tokens, and real >1 MiB
 4,096-member producer/reader decisions. These are measured transport/count bounds,
 not full legal-entry/name/live-deletion or process resource qualification; B3 retains
 that separate envelope. No native Linux or public-client pass is claimed.
+
+B2 begins with four connected real-producer tests covering both conversion directions,
+empty/nonempty directory replacement and harmless old empty-directory preservation.
+The new `portable-load-topology` owner selects only these cases for the unchanged
+same-shape adapter's causal baseline. No v3 production implementation precedes this RED.
+The parent owns namespace observation/preflight/reconciliation and load integration;
+the retained Sol 6.1 High codec implementer may own only the separate v3 descriptor/frame
+files after release. This bounded delegation reuses known cursor machinery without
+duplicating namespace investigation or sharing edits. Independent Sol 6.1 XHigh reviews
+the completed topology block. The final metadata discovery spent 247.362 seconds building
+its two projects; selected runtime controls remain retained rather than repeated.
 
 Process checkpoint: independent review found the real mixed-directory inventory defect,
 but initially missed the admission fixture's persisted-root mismatch; the real typed

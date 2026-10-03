@@ -10224,6 +10224,17 @@
       ]
     },
     {
+      "id": "portable-load-topology",
+      "responsibility": "Connected current-producer ordinary load across complete file/directory shapes and harmless old empty-directory preservation, with one decision, exact generation and protected source/library bytes.",
+      "excludes": "Independent malformed-v3 preflight, cold process termination, resource envelopes, public-client cutover and unrelated gameplay.",
+      "changeHints": ["BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs", "BookOfEternityClient/Core/FileSystemManager.LoadReplacement.cs", "BookOfEternityClient/Services/SaveLoadService.Loading.cs", "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.Topology.cs"],
+      "related": [{"id": "portable-load-entry", "when": "Changing the internal typed-load namespace publication adapter."}],
+      "requirements": {"frontendBuild": false, "exclusive": true},
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace"]}]
+    },
+    {
       "id": "portable-load-metadata",
       "responsibility": "V2 metadata authority: headers beyond the former aggregate cap, independent pending/committed bytes, reordered/escaped fields, strict decoded schema/contiguous regions and complete preflight before exact recovery.",
       "excludes": "Per-member encoding and token-carry observations belong to portable-load-metadata-transport. Namespace v3 conversions, load archive/resource envelopes, full save acceptance and public-client cutover.",

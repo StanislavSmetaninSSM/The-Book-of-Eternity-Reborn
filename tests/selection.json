@@ -1,11 +1,6 @@
 {
   "schemaVersion": 1,
   "selections": [
-    {"category": "portable-load-metadata-transport", "reason": "New observer controls qualify actual per-member flush and incomplete-token buffer behavior independently from large-header/schema acceptance; run only these new controls for the scaffold RED.", "contracts": ["#1553 LOAD-FS-005/006/008"]},
-    {"category": "portable-load-metadata", "reason": "T032-B1-METADATA changes the shared v2 metadata codec; actual large-header and strict late-damage tests precede implementation. Per-member flush and actual-token carry observations qualify transport without claiming constant memory for arbitrary tokens.", "contracts": ["#1553 LOAD-FS-005/006/008"]},
-    {"category": "portable-storage-stream-publication", "reason": "The same WriteJournal/ReadJournal and region binding serve existing v2 image publication and canonical adapters; retain their actual decision/admission controls.", "contracts": ["#1553 preserved ordinary-save v2 authority"]},
-    {"category": "portable-storage-stream-dispatch", "reason": "Metadata length and journal dispatch must reject unknown frames before v1 whole-file decoding and preserve supported reordered/whitespace v1 evidence.", "contracts": ["#1553 preserved version dispatch"]},
-    {"category": "portable-storage-original-v1-fixtures", "reason": "Two immutable source-derived v1 frames are independent compatibility oracles for the changed shared journal dispatcher; Windows execution is explicitly separate from earlier Linux evidence.", "contracts": ["#1553 original v1 recovery semantics"]},
-    {"category": "portable-storage-stream-generation", "reason": "Generation descriptors and region order change in the shared codec; six actual cold-generation cuts preserve exact generation bytes/absence and one decision.", "contracts": ["#1553 preserved generation/recovery authority"]}
+    {"category": "portable-load-topology", "reason": "T032-B2-NAMESPACE begins with four connected current-producer topology cases on the unchanged same-shape adapter, establishing causal conversion failures before v3 production implementation.", "contracts": ["#1553 LOAD-FS-001/002/003/004/006"]}
   ]
 }
