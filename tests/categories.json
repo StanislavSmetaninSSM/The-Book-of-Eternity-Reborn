@@ -10603,7 +10603,9 @@
         "BookOfEternityClient.Tests.PortableLoadResourceTests.ActualManyMemberPublicationFitsDeclaredLoadResourceEnvelope"
       ]
     }
-    ,{
+  ]
+},
+    {
       "id": "portable-storage-batch-admission",
       "responsibility": "Fresh read-only batch admission with existing exact ordinal file grants: complete request/grant materialization, every required or optional leaf, late type/blocker refusal, and actual Windows junction or Linux link replacement between calls without shared physical cache.",
       "excludes": "Namespace journals, publication mutation, resource timing, public clients and hostile concurrent owner races. Native Linux execution is a separate qualification; unsupported native setup is not a pass.",
@@ -10614,7 +10616,5 @@
       "expectedSeconds": null,
       "selectors": [{"project":"unit", "tests":["BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.*"]}]
     }
-  ]
-}
   ]
 }
