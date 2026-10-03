@@ -1,0 +1,89 @@
+{
+  "Categories": [
+    "portable-storage-stream-publication",
+    "portable-storage-stream-dispatch",
+    "portable-storage-original-v1-fixtures",
+    "portable-storage-stream-generation"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "3b3e9a7c6671406f1416182a5c9fcf84a773e30e",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-storage-original-v1-fixtures",
+      "Seconds": 5.4623984,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "portable-storage-stream-dispatch",
+      "Seconds": 12.8258467,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-storage-stream-generation",
+      "Seconds": 11.5595403,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-storage-stream-publication",
+      "Seconds": 10.217207,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 1.5346384,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.9703184,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 1.0941262,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0061758,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 15,
+  "WallTime": "00:00:51.5045588",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 4,
+    "PlannedCases": 41,
+    "CompletedCases": 41,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 41,
+    "Executed": 41,
+    "Passed": 41,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

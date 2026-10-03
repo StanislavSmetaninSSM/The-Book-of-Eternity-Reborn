@@ -22,9 +22,27 @@ public sealed class TrustedLocalFrameMetadataTests : IDisposable
     private static readonly byte[] Before = [0xEF, 0xBB, 0xBF, 0xFF, 0];
     private static readonly byte[] After = [0xFE, 42, 0];
     private static readonly byte[] Magic = Encoding.ASCII.GetBytes("BOELP2\r\n");
+    /// <summary>
+    /// Identifies the isolated regular-file member whose exact before and after bytes are checked.
+    /// </summary>
     private string Target => Path.Combine(_root, "game_session", "game_state", "core", "metadata-target.bin");
+
+    /// <summary>
+    /// Identifies this fixture's existing trusted-publication authority file.
+    /// </summary>
     private string Active => Path.Combine(_root, ".boe_runtime", "trusted-local-publication-v1", "active.json");
+
+    /// <summary>
+    /// Creates a fresh manager bound only to this test instance's owned storage root.
+    /// </summary>
+    /// <returns>
+    /// The manager used for ordinary canonical acquisition and journal recovery.
+    /// </returns>
     private FileSystemManager Manager() => new(_root, NullLogger<FileSystemManager>.Instance);
+
+    /// <summary>
+    /// Stops publication at its complete private intent before any member mutation is authorized.
+    /// </summary>
     private sealed class IntentCut : Exception { }
 
     /// <summary>

@@ -113,6 +113,25 @@ The metadata owners now select 39 cases: transport 2, authority 37, including on
 test changes; no build, passing runtime, completed review, native Linux or resource
 claim follows yet. Next: fresh two-owner verification, then unchanged-source bounded
 v1/v2 publication/dispatch/generation consumers and discovery-only catalog audit.
+At clean `3b3e9a7c6671406f1416182a5c9fcf84a773e30e`, fresh native Windows metadata
+verification passed 39/39 cases, two complete descriptors, no skips/duplicates,
+cleanup complete, 4:07.426; exact
+[artifacts](recovery/evidence/load-metadata-green/summary.json) are retained. The same
+fresh unit/host closure then passed 41/41 selected compatibility cases without rebuild:
+two immutable original-v1 decisions, four bounded format-dispatch cases, six actual
+cold generation cuts and 29 v2 publication/adapter controls. Four complete descriptors,
+no skips/duplicates, cleanup complete, 0:51.505; exact
+[artifacts](recovery/evidence/load-metadata-consumers/summary.json) are retained.
+Independent Sol 6.1 XHigh source/contract review found no production findings and
+confirmed the actual 39-case evidence; its four small test-helper XML comments are now
+corrected. Final fresh discovery/XML compilation and scoped evidence clearance remain
+open. Runtime is not repeated solely for comments. Observed assertions establish
+opening plus each member advance/zero pending bytes for 100/1,000 members with equal
+largest-member pending peaks, actual >64 KiB token growth bounded by twice its filled
+carry and immediate return to 64 KiB before subsequent tokens, and real >1 MiB
+4,096-member producer/reader decisions. These are measured transport/count bounds,
+not full legal-entry/name/live-deletion or process resource qualification; B3 retains
+that separate envelope. No native Linux or public-client pass is claimed.
 
 Process checkpoint: independent review found the real mixed-directory inventory defect,
 but initially missed the admission fixture's persisted-root mismatch; the real typed
