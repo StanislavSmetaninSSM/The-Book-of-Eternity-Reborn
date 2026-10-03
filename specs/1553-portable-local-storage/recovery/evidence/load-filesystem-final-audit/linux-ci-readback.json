@@ -13,5 +13,21 @@
     }
   ],
   "NativeLinuxAcceptance": false,
-  "Conclusion": "No actual branch run or new workflow registration was returned; cause unknown. Prepared configuration is not Linux execution. No default-branch merge or screening-policy change performed."
+  "Conclusion": "No actual branch run or new workflow registration was returned; cause unknown. Prepared configuration is not Linux execution. No default-branch merge or screening-policy change performed.",
+  "PermissionsReadUtc": "2026-10-03T22:13:45.8645720Z",
+  "RepositoryActionsPermissions": {
+    "enabled": true,
+    "allowed_actions": "selected",
+    "selected_actions_url": "https://api.github.com/repositories/1183140277/actions/permissions/selected-actions",
+    "sha_pinning_required": false
+  },
+  "SelectedActions": {
+    "github_owned_allowed": false,
+    "patterns_allowed": [
+      "actions/checkout@v4",
+      "actions/setup-dotnet@v4",
+      "actions/upload-artifact@v4"
+    ],
+    "verified_allowed": false
+  }
 }

@@ -41,8 +41,9 @@ bulk journal-only recovery3/3 in5:05.053; maximum-inventory committed recovery1/
 in10:29.286. Exact sources/measurements are consolidated in
 [Windows qualification](recovery/load-filesystem-windows-qualification.json).
 Many recovery measured94.770seconds/whole99.345 under180, following the real committed
-cut at409.037seconds under600; extraction was absent, fresh/repeated normal acquisition
-and complete independent state/generation/source/library checks passed.
+cut at409.037seconds under600; extraction was absent, one fresh normal acquisition
+and complete independent state/generation/source/library checks passed. Repeated
+acquisition is separately proved by the affected cold controls, not this resource case.
 Final clean discovery audit at9a8f8cdf passed219categories/10565methods/files with
 zero executed tests in25.077seconds; five generated XML assemblies parsed,
 24changed C# files/2613introduced XML lines have no compressed blocks or touched-file

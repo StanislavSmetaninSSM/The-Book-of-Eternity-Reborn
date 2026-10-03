@@ -61,6 +61,14 @@ $env:NoWarn = '1591'
 
 Это первая когорта допуска/исходов/затронутых lease consumers. Для первого native Linux допуска нового файлового контура также нужны metadata, fresh path/batch и [явная когорта namespace/native/cold/v1/v2](../../tests/selections/1553-load-admission-consumers.json). Это ещё не выполненная Linux-проверка и не инструкция обходить весь каталог. Выбирать и документировать владельцев по изменённой границе; при необходимости создавать новую категорию. После первого допуска неизменённые группы не повторяются при каждой правке.
 
+```powershell
+# Отдельные ещё не квалифицированные native Linux границы. После свежей сборки
+# initial selection выше и при неизменённых compile inputs:
+./scripts/test-csharp.ps1 -Category portable-load-metadata,portable-load-metadata-transport -NoBuild -Parallelism 1 -TimeoutMinutes 15
+./scripts/test-csharp.ps1 -Category portable-storage-batch-admission,portable-storage-paths -NoBuild -Parallelism 1 -TimeoutMinutes 15
+./scripts/test-csharp.ps1 -SelectionFile tests/selections/1553-load-admission-consumers.json -NoBuild -Parallelism 1 -TimeoutMinutes 15
+```
+
 Ресурсные фазы запускаются **отдельными командами**; таблица — реальные Windows результаты, а не Linux PASS. Каждый случай создаёт независимый mutable root. Общего кэша подготовленных фикстур нет.
 
 | Категория | Случаи | Время команды Windows | Бюджет категории |
