@@ -1,6 +1,6 @@
 # Implementation Plan: Trusted local storage and cross-platform runtime
 
-**Branch**: `codex/1553-load-filesystem` | **Updated**: 2026-10-03
+**Branch**: `codex/1553-load-filesystem` | **Updated**: 2026-10-04
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
@@ -34,8 +34,37 @@ only changed scope/namespace/native/cold and affected v1/v2/host consumers;
 fresh integration/unit builds preserve the unchanged e593 C# source closure.
 Separate Sol6.1XHigh review cleared the actual ordinary many-publication evidence
 with no findings. Its bounded acceptance does not close remaining resource phases.
-Remaining separate resource phases and final scoped independent review are open;
-native Linux/public-client acceptance is not established by this Windows result.
+All five separate current resource commands now passed12/12 with28 measured children:
+preparation4/4 in5:19.202; bulk publication3/3 in4:42.302;
+maximum-inventory publication1/1 in13:24.803 including fresh build;
+bulk journal-only recovery3/3 in5:05.053; maximum-inventory committed recovery1/1
+in10:29.286. Exact sources/measurements are consolidated in
+[Windows qualification](recovery/load-filesystem-windows-qualification.json).
+Many recovery measured94.770seconds/whole99.345 under180, following the real committed
+cut at409.037seconds under600; extraction was absent, fresh/repeated normal acquisition
+and complete independent state/generation/source/library checks passed.
+Final clean discovery audit at9a8f8cdf passed219categories/10565methods/files with
+zero executed tests in25.077seconds; five generated XML assemblies parsed,
+24changed C# files/2613introduced XML lines have no compressed blocks or touched-file
+XML compiler warnings. Three unrelated existing CS1587 warnings are retained.
+Exact [audit artifacts](recovery/evidence/load-filesystem-final-audit/summary.json)
+and [XML diagnostics](recovery/evidence/load-filesystem-final-audit/xml-audit.json)
+are saved. Later resource sources differ only in docs/evidence/CI settings from e593;
+the required fresh build closure is preserved before NoBuild. Final independent
+review and GitHub-only readback remain open. Native Linux/public-client acceptance
+is not established by Windows results; the Linux workflow now carries all three
+telemetry opt-outs and XML compiler settings but no actual run has been obtained.
+
+Observed workflow checkpoint: one implementation owner and bounded read-only
+assistance preserved ownership. Independent review found the B1 mixed-directory-case
+defect and resource-monitor wording; both were corrected with specific evidence.
+The missing-using, root sampler and catalog-placement failures were harness/build
+rework, retained as non-passes. Fresh phase measurements disproved the initial180-second
+maximum-inventory estimate; private stage tracing enabled a narrow justified amendment.
+Reduced monitor work did not prove faster load elapsed time. No model cost/speedup
+percentage or routing improvement is inferred from these observations. Future public
+UI changes select their affected caller contracts and do not repeat unchanged filesystem
+resource qualification; preserve mandatory independent Sol6.1XHigh review.
 
 Current task: T032-B3-RESOURCE; T032-B1-FIX, T032-B1-METADATA, T032-B2-NAMESPACE and T032-B3-COLD are cleared for code/native Windows,
 while the separate native Linux gate remains open. Original baseline was `5d2aa2ce`.

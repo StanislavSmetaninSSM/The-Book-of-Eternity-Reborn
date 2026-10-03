@@ -1,6 +1,31 @@
 # Source and evidence recovery
 
-## Current T032-A1 main integration recovery
+## Current ordinary-load filesystem recovery
+
+Continue **codex/1553-load-filesystem**, not the historical save-only or bd5cb827
+checkpoint. Get the current full remote SHA and a clean checkout as described in
+[the handoff](../load-five-fixes-handoff.md) and [quickstart](../quickstart.md).
+All source/catalog/selection/evidence files are normal Git blobs; no historical
+patch or local-only fixture cache is required.
+
+The current C# closure is e593bcfa5e45502de9eb6d6b3949565f7c7881b2. Source-bound Windows
+proofs cover five fixes, strict streamed metadata, file/directory replacement and
+actual process-crash journal-only recovery. [Resource verification](load-filesystem-windows-qualification.json)
+passed12/12 across five commands and28 measured children; [affected consumers](evidence/load-resource-admission-consumers/summary.json)
+passed128/128. [Final discovery/XML audit](evidence/load-filesystem-final-audit/summary.json)
+executed zero tests. Final independent resource review and GitHub readback are pending.
+Native Linux of the new contour and public-client/full-game acceptance remain open.
+
+Never erase unknown journal/scratch blockers to obtain a green recovery. Retained
+legacy v1/v2 and current v3 journals use their existing authority. Normal canonical
+acquisition resolves a proven pending Before or committed After decision without
+private extraction. Byte/source restoration is not an additional behavioral test,
+Linux pass or power-loss durability promise. Historical sections below retain their
+original sources and accepted scopes.
+
+<a id="current-t032-a1-main-integration-recovery"></a>
+
+## Historical T032-A1 main integration recovery
 
 Current continuation is codex/1553-save-windows from 6dc8c218. Its [historical packet](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/6dc8c218c99cff0e4934ca3476544cda12882e48/specs/1553-portable-local-storage/recovery/save-creation-pending.json) was verified and applied once: 32,388 bytes, SHA256 27f8ea2d9ce753b04311723b5ae1be3cd443e9aa69be2e0eeecc921ad73c4d0c, all three before/after identities and carrier-excluded tree 24ca7470571f740f9d920a1a49d05e637b717bc7 matched. Both carriers are retired. Restore the current continuation SHA into a clean checkout; source/catalog/plan are normal Git blobs and require no patch application. Earlier restoration records below describe their immutable historical commits, not current instructions.
 

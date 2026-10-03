@@ -1,0 +1,17 @@
+{
+  "Source": "9a8f8cdf63cef845d7536ecb7d1c96c898988f4a",
+  "ReadUtc": "2026-10-03T22:07:01.1748853Z",
+  "Branch": "codex/1553-load-filesystem",
+  "MeaningfulChange": "Added PowerShell/testing-platform telemetry opt-outs and XML compiler environment to existing bounded Linux workflow.",
+  "TotalBranchRuns": 0,
+  "Runs": [],
+  "RegisteredWorkflows": [
+    {
+      "id": 280957256,
+      "path": ".github/workflows/dotnet-ci.yml",
+      "state": "disabled_manually"
+    }
+  ],
+  "NativeLinuxAcceptance": false,
+  "Conclusion": "No actual branch run or new workflow registration was returned; cause unknown. Prepared configuration is not Linux execution. No default-branch merge or screening-policy change performed."
+}

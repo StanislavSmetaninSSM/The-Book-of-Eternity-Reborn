@@ -5,32 +5,61 @@ Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reb
 ## Current local load-filesystem continuation
 
 Branch: `codex/1553-load-filesystem`, based on `5d2aa2ceadd8f4424e3ccaf0249a8bb164f32fae`.
-Approved scope: [spec revision 1](spec.md#local-load-filesystem-continuation--revision-1-2026-10-03).
-The [execution plan](ordinary-load-plan.md) and v3 design are authorized by the owner's
-subsequent explicit waiver of further spec/plan/revision review.
-Production/test/CI implementation has not changed in this local planning block.
+Approved scope: [spec revision 1](spec.md#local-load-filesystem-continuation--revision-1-2026-10-03),
+[execution plan](ordinary-load-plan.md) and v3 design; the owner waived further
+spec/plan/revision approval during autonomous work.
 
-For the authorized first block, use PowerShell 7, SDK 10 and runtime 8 from the worktree root:
+The five fixes, streaming v2/v3 metadata, complete namespace replacement and actual
+cold recovery have source-bound native Windows evidence. Current resource verification
+passed12/12 across five separate commands and28 measured children; affected current
+consumers passed128/128. See [current handoff](load-five-fixes-handoff.md),
+[Windows resource proof](recovery/load-filesystem-windows-qualification.json) and
+[checkpoint](plan.md). Final independent review/readback is pending. Native Linux of
+this new load contour remains unexecuted; public load/console/browser cutover remains
+B4. Earlier Linux save acceptance is not new load qualification.
+
+Restore the current branch into a fresh directory and compare complete SHAs:
+
+```sh
+git clone --single-branch --branch codex/1553-load-filesystem https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git boe
+cd boe
+git rev-parse HEAD
+git ls-remote origin refs/heads/codex/1553-load-filesystem
+git status --short
+```
+
+Read AGENTS.md, docs/development-workflow.md, docs/testing.md and this feature's
+spec/plan/tasks. Use PowerShell7, SDK10 and runtime8. Set supported telemetry opt-outs
+before starting tools; also set the recorded compiler/environment controls:
 
 ```powershell
 $env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
+$env:POWERSHELL_TELEMETRY_OPTOUT = '1'
+$env:TESTINGPLATFORM_TELEMETRY_OPTOUT = '1'
 $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = '1'
 $env:DOTNET_GENERATE_ASPNET_CERTIFICATE = 'false'
 $env:DOTNET_PROCESSOR_COUNT = '1'
-./scripts/test-csharp.ps1 -Category portable-load-alias-admission,portable-load-outcomes -PlanOnly
-./scripts/test-csharp.ps1 -Category portable-load-alias-admission,portable-load-outcomes
+$env:GenerateDocumentationFile = 'true'
+$env:NoWarn = '1591'
+./scripts/test-csharp.ps1 -SelectionFile tests/selections/1553-load-linux.json -Parallelism 1 -TimeoutMinutes 15
 ```
 
-These are existing causal owners, not a full regression run. Require a fresh build;
-record Windows/Linux differences rather than treating case-insensitive positives or
-OS early returns as the same evidence. New topology/cold/resource owners and Linux CI
-are planned, not installed or executed. Their selected commands and measured artifacts
-will be recorded here/recovery docs after implementation. Public load callers and full
-client/GM acceptance remain downstream.
+That existing initial Linux selection contains only admission/outcomes/entry/lease
+consumers. First native qualification also needs affected metadata, fresh path/batch,
+namespace/native/cold and compatibility evidence; the [handoff](load-five-fixes-handoff.md)
+identifies current owners and five separately bounded resource commands. Do not select
+all categories or repeat unchanged qualified Windows groups solely for handback.
+Use `-NoBuild` only after a fresh required build with unchanged compile inputs.
+The limited Linux workflow is prepared, with exact-source checks and retained artifacts;
+no actual Linux run has been obtained, so its gate stays open.
+
+The remaining sections preserve source-specific historical setup and evidence.
 
 Bounded T030-G backup lifecycle is accepted with normal Git source, a verified 94-case Linux union across separate 43/50/19 cohorts and one actual 30/30 Windows run. Follow the [accepted plan](plan.md#accepted-t030-g--ordinary-backup-lifecycle) and [normal recovery recipe](recovery/README.md#accepted-t030-g-backup-lifecycle-recovery); no active packet is needed. Its real Linux quarantine body passed in the 50-case continuation. Native quarantine was not selected in the T030-G Windows subset. These bounded results do not establish full gameplay, whole-preparation/accepted-turn atomicity, save/load or remaining B4/B5 portability. Earlier T030-F/B2/B3 evidence below remains historical and tied to its named source.
 
-## Restore source first
+<a id="restore-source-first"></a>
+
+## Historical source restoration (T030/T031)
 
 ```sh
 git clone --single-branch --branch 1553-cross-platform-runtime https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git boe
