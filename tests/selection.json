@@ -1,6 +1,7 @@
 {
   "schemaVersion": 1,
   "selections": [
-    {"category": "portable-load-topology", "reason": "T032-B2-NAMESPACE begins with four connected current-producer topology cases on the unchanged same-shape adapter, establishing causal conversion failures before v3 production implementation.", "contracts": ["#1553 LOAD-FS-001/002/003/004/006"]}
+    {"category":"portable-load-topology","reason":"T032-B2 connects complete namespace replacement to actual ordinary load: conversion directions, retained empty directories and structural/file/commit-stage rollback.","contracts":["#1553 LOAD-FS-001/002/003/004/006"]},
+    {"category":"portable-storage-namespace","reason":"New v3 evidence must admit independent pending/committed decisions, reject strict late damage and unknown children/authority grants before any earlier restoration.","contracts":["#1553 LOAD-FS-002/003/005/006"]}
   ]
 }

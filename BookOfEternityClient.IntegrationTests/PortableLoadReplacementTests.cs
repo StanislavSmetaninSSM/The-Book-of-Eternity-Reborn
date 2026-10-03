@@ -100,9 +100,10 @@ public sealed partial class PortableLoadReplacementTests : IDisposable
         var before = Snapshot(_files.GameSessionPath);
         var generation = File.ReadAllBytes(_files.SessionGenerationPath);
         var cuts = 0;
+        var publishedFiles = 0;
         _fault = (phase, index) =>
         {
-            if (phase != TrustedLocalPublicationPhase.MemberPublished || index != 1) return;
+            if (phase != TrustedLocalPublicationPhase.MemberPublished || ++publishedFiles != 2) return;
             cuts++;
             throw new InvalidOperationException("load later-member cut");
         };

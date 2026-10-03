@@ -4,6 +4,18 @@ using System.Runtime.InteropServices;
 namespace BookOfEternityClient.Core;
 
 /// <summary>
+/// Reports a non-following namespace kind and any regular-file ancestor that prevents reaching the name.
+/// </summary>
+/// <param name="Kind">
+/// The observed kind, or Missing when a validated ancestor prevents access to the name.
+/// </param>
+/// <param name="BlockingFileAncestor">
+/// The exact regular-file ancestor, or null when no regular file blocks the name.
+/// </param>
+internal readonly record struct TrustedLocalNamespaceObservation(
+    TrustedLocalNamespaceKind Kind, string? BlockingFileAncestor);
+
+/// <summary>
 /// Constrains ordinary application file operations in a trusted local namespace.
 /// Checks do not promise protection against a hostile concurrent computer owner.
 /// </summary>
@@ -156,6 +168,54 @@ internal sealed class TrustedLocalFileScope
         EnsureAllowed(normalized, file: false);
         ValidateDirectories(normalized, allowMissing);
         return normalized;
+    }
+
+    /// <summary>
+    /// Validates spelling and the explicit grant without assuming the current name is a file or directory.
+    /// </summary>
+    /// <param name="path">
+    /// The fully qualified namespace name; traversal and ambiguous native spellings are refused.
+    /// </param>
+    /// <returns>
+    /// The normalized granted name, without granting permission to follow a link or mutate a scope root.
+    /// </returns>
+    internal string ValidateNamespacePath(string path)
+    {
+        var normalized = Normalize(path);
+        EnsureAllowed(normalized, file: !_roots.Contains(normalized, PathComparer));
+        return normalized;
+    }
+
+    /// <summary>
+    /// Walks ancestors before probing the name, refusing links and special entries without following them.
+    /// </summary>
+    /// <param name="path">
+    /// The granted namespace name to observe. A file blocker is reported rather than treated as authority for absence.
+    /// </param>
+    /// <returns>
+    /// The ordinary kind and optional file blocker; the caller must match any blocker against admitted evidence.
+    /// </returns>
+    internal TrustedLocalNamespaceObservation ObserveNamespace(string path)
+    {
+        var normalized = ValidateNamespacePath(path);
+        var ancestors = new Stack<string>();
+        for (var ancestor = Path.GetDirectoryName(normalized); ancestor != null; ancestor = Path.GetDirectoryName(ancestor))
+            ancestors.Push(ancestor);
+        foreach (var ancestor in ancestors)
+        {
+            var kind = Probe(ancestor);
+            if (kind == EntryKind.Missing) return new(TrustedLocalNamespaceKind.Missing, null);
+            if (kind == EntryKind.RegularFile) return new(TrustedLocalNamespaceKind.Missing, ancestor);
+            if (kind != EntryKind.Directory)
+                throw new InvalidDataException("A namespace ancestor is linked or not an ordinary entry: " + ancestor);
+        }
+        return Probe(normalized) switch
+        {
+            EntryKind.Missing => new(TrustedLocalNamespaceKind.Missing, null),
+            EntryKind.RegularFile => new(TrustedLocalNamespaceKind.File, null),
+            EntryKind.Directory => new(TrustedLocalNamespaceKind.Directory, null),
+            _ => throw new InvalidDataException("A namespace entry is linked or not ordinary: " + normalized)
+        };
     }
 
     private void EnsureAllowed(string path, bool file)

@@ -22,7 +22,8 @@ internal sealed record TrustedLocalPublicationOutcome(TrustedLocalPublicationDis
 internal enum TrustedLocalPublicationPhase
 {
     IntentStaged, IntentPublished, MemberStaged, MemberPublished, CommitStaged, Committed,
-    RollbackStaged, MemberRestored, CleanupMember, CleanupComplete
+    RollbackStaged, MemberRestored, CleanupMember, CleanupComplete,
+    DirectoryRemoved, DirectoryCreated, RollbackDirectoryRemoved, RollbackDirectoryCreated
 }
 
 /// <summary>
@@ -165,6 +166,9 @@ internal sealed partial class TrustedLocalFilePublication
                 if (attempt.Prepared != null && ReadGeneration(lease) == attempt.Prepared.GenerationBefore &&
                     attempt.Prepared.Members.All(member => Matches(member.Path, member.Before)))
                     return new(TrustedLocalPublicationDisposition.RolledBack, null, failure);
+                if (attempt.NamespacePrepared != null &&
+                    NamespaceMatchesExact(lease, attempt.NamespacePrepared, after: false))
+                    return new(TrustedLocalPublicationDisposition.RolledBack, null, failure);
             }
             catch (Exception recoveryFailure)
             {
@@ -177,6 +181,7 @@ internal sealed partial class TrustedLocalFilePublication
     private sealed class PublicationAttempt
     {
         internal Journal? Prepared { get; set; }
+        internal NamespaceJournal? NamespacePrepared { get; set; }
         internal TrustedLocalPublicationResult? Committed { get; set; }
     }
 
@@ -294,6 +299,11 @@ internal sealed partial class TrustedLocalFilePublication
             return;
         }
 
+        if (HasNamespaceJournalMagic(Active))
+        {
+            RecoverNamespace(lease, ReadNamespaceJournal(Active), observer);
+            return;
+        }
         var journal = ReadJournal(Active);
         Preflight(lease, journal, requireAfter: journal.Committed);
         if (!journal.Committed)

@@ -151,6 +151,18 @@ the real lease/prepublication adapter and causally failed its strict file/ancest
 same-shape checks (NotLoaded, no publication phases). Complete selection, no skips/
 duplicates, complete cleanup, 3:09.080; exact [artifacts](recovery/evidence/load-topology-red/summary.json)
 are retained. This releases the reviewed B2 v3 implementation; it is not a B2 pass.
+The first integrated candidate adds separate streamed v3 evidence/model files, narrow
+non-following namespace observations, complete child/boundary/shape preflight, stable
+transaction scratch anchors, nonrecursive conversion reconciliation and generation-last
+publication/recovery. `FileSystemManager.LoadNamespace.cs` contains the complete capture,
+plan construction and manager adapter; the older file-only adapter remains unchanged.
+Typed load now consumes this namespace adapter, retaining old public callers for B4.
+Twelve connected topology cases include eight actual structural/file/commit-stage cuts;
+33 independent v3 cases include 94 required-field mutations and unknown late file/empty
+directory and narrowed root/library/required-directory admission. The older later-member
+test now cuts the second actual file publication, rather than assuming a pre-v3 node
+index. First selected compilation/runtime and review are pending; no topology pass or
+native Linux/cold/resource/public acceptance is claimed.
 The parent owns namespace observation/preflight/reconciliation and load integration;
 the retained Sol 6.1 High codec implementer may own only the separate v3 descriptor/frame
 files after release. This bounded delegation reuses known cursor machinery without

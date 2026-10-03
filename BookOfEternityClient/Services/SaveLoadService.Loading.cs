@@ -178,38 +178,15 @@ public partial class SaveLoadService
             _fs.ResolveBackupPublicationRecovery(writeLease);
             candidate.Revalidate();
             var generation = _fs.ReadLocalGenerationSnapshot(writeLease);
-            var scope = new TrustedLocalFileScope([_fs.BasePath]);
-            var comparer = OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
-            var live = _fs.EnumerateLoadReplacementFiles(writeLease, candidate.SourcePath)
-                .ToDictionary(path => FileSystemManager.GetLocalRelativePath(_fs.GameSessionPath, path,
-                    OperatingSystem.IsWindows()), path => TrustedLocalFileImage.CaptureFile(scope, path), comparer);
+            var live = _fs.CaptureLoadReplacementNamespace(writeLease, candidate.SourcePath);
             var settings = candidate.ArchiveSettings ?? StateManager.PrepareLocalLoadSettings(
                 await _fs.ReadLocalFileBytesAsync(writeLease, "config.json"));
-            var changes = new List<CanonicalLocalImageChange>();
-            foreach (var relative in live.Keys.Union(candidate.Images.Keys, comparer).OrderBy(path => path, StringComparer.Ordinal))
-            {
-                if (comparer.Equals(relative, "config.json") && candidate.ArchiveSettings == null)
-                    continue; // Preserve exact live config bytes or true absence when the archive has none.
-                live.TryGetValue(relative, out var before);
-                candidate.Images.TryGetValue(relative, out var after);
-                changes.Add(new(relative, before ?? TrustedLocalFileImage.FromBytes(null), after ?? TrustedLocalFileImage.FromBytes(null)));
-            }
-            void RevalidateNamespace()
-            {
-                candidate.Revalidate();
-                var current = _fs.EnumerateLoadReplacementFiles(writeLease, candidate.SourcePath)
-                    .Select(path => FileSystemManager.GetLocalRelativePath(_fs.GameSessionPath, path, OperatingSystem.IsWindows()));
-                if (!live.Keys.ToHashSet(comparer).SetEquals(current))
-                    throw new InvalidDataException("The complete live load namespace changed before publication.");
-                // Includes retained live config, which deliberately is not a publication member.
-                foreach (var (relative, before) in live)
-                    if (!before.MatchesFile(scope, _fs.ResolvePath(relative)))
-                        throw new InvalidDataException("A live load image changed before publication.");
-            }
+            var namespacePlan = _fs.CreateLoadReplacementNamespacePlan(live, candidate.Images,
+                preserveConfiguration: candidate.ArchiveSettings == null);
 
             var replacement = Guid.NewGuid().ToString("N");
-            var outcome = await _fs.PublishLoadReplacementImagesAsync(writeLease, generation, changes, replacement,
-                RevalidateNamespace, cancellationToken);
+            var outcome = await _fs.PublishLoadReplacementNamespaceAsync(writeLease, generation, namespacePlan, replacement,
+                candidate.Revalidate, cancellationToken);
             result = new(outcome.Disposition switch
             {
                 TrustedLocalPublicationDisposition.Committed => LoadReplacementDisposition.Committed,

@@ -10232,7 +10232,27 @@
       "requirements": {"frontendBuild": false, "exclusive": true},
       "timeoutMinutes": 5,
       "expectedSeconds": null,
-      "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace"]}]
+      "selectors": [{"project": "integration", "tests": [
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace",
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.InterruptedTopologyRestoresExactBeforeNamespace"
+      ]}]
+    },
+    {
+      "id": "portable-storage-namespace",
+      "responsibility": "V3 namespace authority through real lease/recovery: independent pending/committed frames, strict decoded schema and exact regions, immutable boundaries, required/root grants, complete unknown-file/empty-directory preflight before earlier restoration.",
+      "excludes": "Connected ZIP load belongs to portable-load-topology. Native link/special-file mechanisms, cold termination and resource envelopes receive their own bounded owners when added.",
+      "changeHints": ["BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs", "BookOfEternityClient/Core/TrustedLocalFilePublication.NamespaceJournal.cs", "BookOfEternityClient/Core/TrustedLocalFileScope.cs", "BookOfEternityClient.Tests/TrustedLocalNamespaceJournalTests.cs"],
+      "related": [{"id": "portable-storage-stream-dispatch", "when": "Changing the shared recovery version dispatcher."}, {"id": "portable-storage-original-v1-fixtures", "when": "Changing the shared recovery entry while preserving original v1 authority."}],
+      "requirements": {"frontendBuild": false, "exclusive": true},
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": [
+        "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentV3FrameKeepsCompletePendingOrCommittedDecision",
+        "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.LateInvalidV3MetadataRetainsEveryEarlierMemberAndEvidence",
+        "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.EveryV3FieldRejectsOmissionWrongTypeAndForbiddenNull",
+        "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.UnknownLaterChildRetainsEveryEarlierAfterImage",
+        "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.UnsupportedNamespaceAuthorityRetainsExactEvidence"
+      ]}]
     },
     {
       "id": "portable-load-metadata",

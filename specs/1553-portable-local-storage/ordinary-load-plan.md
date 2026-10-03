@@ -137,6 +137,11 @@ region primitives from B1 metadata. Do not append ignored namespace properties t
 legacy serializer models, where recognizing a formerly unknown property could weaken
 the preserved strict v1/v2 schema. The outcome attempt may hold either typed prepared
 evidence; v3 rollback confirmation checks complete Before namespace and generation.
+Implementation separation uses new `TrustedLocalFilePublication.NamespaceJournal.cs`
+for the private v3 schema/codec and `FileSystemManager.LoadNamespace.cs` for complete
+capture/plan/manager publication. The original file-only load adapter is retained;
+the internal typed load uses v3. Observer indices are stable namespace-node indices,
+so the existing later-member regression cuts the second actual file publication.
 
 ## Dependency-ordered execution
 
