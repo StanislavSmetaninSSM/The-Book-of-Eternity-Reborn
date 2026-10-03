@@ -24,6 +24,14 @@ public partial class StateManager
         return Encoding.UTF8.GetPreamble().Concat(JsonSerializer.SerializeToUtf8Bytes(settings, JsonOpts)).ToArray();
     }
 
+    // Load authority is independent of a menu preview or the injected mutable receiver.
+    internal static GameSettings PrepareLocalLoadSettings(byte[]? bytes)
+    {
+        var candidate = new GameSettings();
+        if (bytes != null) candidate.ApplyLoadedValues(DecodeLocalSettings(bytes));
+        return candidate;
+    }
+
     private static GameSettings DecodeLocalSettings(byte[] bytes)
     {
         try

@@ -1,0 +1,300 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="c02f5620-4dc8-4ff1-b46b-4feb4226d740" name="@8578fe379cc9 2026-10-03 02:39:11" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-03T02:39:11.1348677-04:00" queuing="2026-10-03T02:39:11.1348678-04:00" start="2026-10-03T02:39:08.0358994-04:00" finish="2026-10-03T02:39:11.1445780-04:00" />
+  <TestSettings name="default" id="15534a81-e5c1-41e5-8d84-7d72f241084e">
+    <Deployment runDeploymentRoot="_8578fe379cc9_2026-10-03_02_39_11" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="de72dce7-0497-4c18-ab1c-26f38ec2bebc" testId="ae804b56-01e7-71fa-5e15-32a5e54a72af" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes(archiveHasConfig: True)" computerName="8578fe379cc9" duration="00:00:00.0381471" startTime="2026-10-03T02:39:10.9512456-04:00" endTime="2026-10-03T02:39:10.9512457-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="de72dce7-0497-4c18-ab1c-26f38ec2bebc">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+System.NotImplementedException: Ordinary portable load is not implemented.</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes(Boolean archiveHasConfig) in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs:line 134
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b673413e-1456-48f6-bc0c-3aae7db7abad" testId="c703f2b0-227e-0a0a-fa14-25ad9f6c9cdf" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes(archiveHasConfig: False)" computerName="8578fe379cc9" duration="00:00:00.0378959" startTime="2026-10-03T02:39:10.9119651-04:00" endTime="2026-10-03T02:39:10.9119653-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b673413e-1456-48f6-bc0c-3aae7db7abad">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+System.NotImplementedException: Ordinary portable load is not implemented.</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes(Boolean archiveHasConfig) in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs:line 134
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="26fc39b5-16a1-493f-93f5-676d5469282c" testId="7e97b08c-e19c-ed37-4af5-826ce137edc7" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.BothConfigsAbsentUsesFreshDefaultsWithoutPersistingConfiguration" computerName="8578fe379cc9" duration="00:00:00.0422401" startTime="2026-10-03T02:39:10.8729693-04:00" endTime="2026-10-03T02:39:10.8729694-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="26fc39b5-16a1-493f-93f5-676d5469282c">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+System.NotImplementedException: Ordinary portable load is not implemented.</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.BothConfigsAbsentUsesFreshDefaultsWithoutPersistingConfiguration() in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs:line 154
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="37aff973-55b3-40e5-89c3-4ea40c87d53f" testId="53c5700b-de16-15dd-fd22-f361386a00fa" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology(incomingPath: &quot;imports/source.zip&quot;)" computerName="8578fe379cc9" duration="00:00:00.0538921" startTime="2026-10-03T02:39:10.7407293-04:00" endTime="2026-10-03T02:39:10.7407295-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="37aff973-55b3-40e5-89c3-4ea40c87d53f">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+System.NotImplementedException: Ordinary portable load is not implemented.</StdOut>
+        <ErrorInfo>
+          <Message>Assert.IsType() Failure: Value is not the exact type
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology(String incomingPath) in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs:line 213
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6e19f13e-fbb7-45b2-9091-5e980ac878c6" testId="d80228d1-42ea-8a89-c08d-aec6ca415137" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.LaterMemberFailureRestoresCompleteSessionSourceLibraryAndGeneration" computerName="8578fe379cc9" duration="00:00:00.0396007" startTime="2026-10-03T02:39:11.0404670-04:00" endTime="2026-10-03T02:39:11.0404671-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6e19f13e-fbb7-45b2-9091-5e980ac878c6">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+System.NotImplementedException: Ordinary portable load is not implemented.</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.LaterMemberFailureRestoresCompleteSessionSourceLibraryAndGeneration() in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs:line 107
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="11b73d0c-cfea-4bc5-8c93-4d0825682981" testId="2d173328-1221-1490-a510-fb8bfcc21494" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology(incomingPath: &quot;imports&quot;)" computerName="8578fe379cc9" duration="00:00:00.0446788" startTime="2026-10-03T02:39:10.8298072-04:00" endTime="2026-10-03T02:39:10.8298074-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="11b73d0c-cfea-4bc5-8c93-4d0825682981">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+System.NotImplementedException: Ordinary portable load is not implemented.</StdOut>
+        <ErrorInfo>
+          <Message>Assert.IsType() Failure: Value is not the exact type
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology(String incomingPath) in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs:line 213
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="36f6a56f-2a8f-4ef5-a732-a3cbe0bb8b86" testId="2e151fa4-4617-a9de-31cd-cfc492204dd1" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.BoundInvocationRejectsBeforePreparationAndUnboundLoadRemainsAvailable" computerName="8578fe379cc9" duration="00:00:00.0450485" startTime="2026-10-03T02:39:10.9978561-04:00" endTime="2026-10-03T02:39:10.9978562-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="36f6a56f-2a8f-4ef5-a732-a3cbe0bb8b86">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+System.NotImplementedException: Ordinary portable load is not implemented.</StdOut>
+        <ErrorInfo>
+          <Message>Assert.IsType() Failure: Value is not the exact type
+Expected: typeof(System.InvalidOperationException)
+Actual:   typeof(System.NotImplementedException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.BoundInvocationRejectsBeforePreparationAndUnboundLoadRemainsAvailable() in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs:line 179
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="bc6d6d0a-863d-474b-ada4-aabf47225584" testId="566bbab1-4fe9-0b9f-5dac-595e834a54a7" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology(incomingPath: &quot;imports/source.zip/child.bin&quot;)" computerName="8578fe379cc9" duration="00:00:00.0435763" startTime="2026-10-03T02:39:10.7846641-04:00" endTime="2026-10-03T02:39:10.7846643-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bc6d6d0a-863d-474b-ada4-aabf47225584">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+System.NotImplementedException: Ordinary portable load is not implemented.</StdOut>
+        <ErrorInfo>
+          <Message>Assert.IsType() Failure: Value is not the exact type
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology(String incomingPath) in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs:line 213
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="85e35011-d82e-49e0-a361-19987c4515b2" testId="9ee973c1-20e0-18e2-04d9-5c0940562b0e" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadPublishesOneReplacementAndPreservesSelectedRootArchive" computerName="8578fe379cc9" duration="00:00:00.4140530" startTime="2026-10-03T02:39:10.6896228-04:00" endTime="2026-10-03T02:39:10.6896524-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="85e35011-d82e-49e0-a361-19987c4515b2">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+System.NotImplementedException: Ordinary portable load is not implemented.</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadPublishesOneReplacementAndPreservesSelectedRootArchive() in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs:line 71
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology(incomingPath: &quot;imports&quot;)" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="2d173328-1221-1490-a510-fb8bfcc21494">
+      <Execution id="11b73d0c-cfea-4bc5-8c93-4d0825682981" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.BoundInvocationRejectsBeforePreparationAndUnboundLoadRemainsAvailable" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="2e151fa4-4617-a9de-31cd-cfc492204dd1">
+      <Execution id="36f6a56f-2a8f-4ef5-a732-a3cbe0bb8b86" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="BoundInvocationRejectsBeforePreparationAndUnboundLoadRemainsAvailable" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology(incomingPath: &quot;imports/source.zip&quot;)" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="53c5700b-de16-15dd-fd22-f361386a00fa">
+      <Execution id="37aff973-55b3-40e5-89c3-4ea40c87d53f" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.LaterMemberFailureRestoresCompleteSessionSourceLibraryAndGeneration" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d80228d1-42ea-8a89-c08d-aec6ca415137">
+      <Execution id="6e19f13e-fbb7-45b2-9091-5e980ac878c6" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="LaterMemberFailureRestoresCompleteSessionSourceLibraryAndGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes(archiveHasConfig: True)" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ae804b56-01e7-71fa-5e15-32a5e54a72af">
+      <Execution id="de72dce7-0497-4c18-ab1c-26f38ec2bebc" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes(archiveHasConfig: False)" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c703f2b0-227e-0a0a-fa14-25ad9f6c9cdf">
+      <Execution id="b673413e-1456-48f6-bc0c-3aae7db7abad" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.BothConfigsAbsentUsesFreshDefaultsWithoutPersistingConfiguration" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="7e97b08c-e19c-ed37-4af5-826ce137edc7">
+      <Execution id="26fc39b5-16a1-493f-93f5-676d5469282c" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="BothConfigsAbsentUsesFreshDefaultsWithoutPersistingConfiguration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadPublishesOneReplacementAndPreservesSelectedRootArchive" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="9ee973c1-20e0-18e2-04d9-5c0940562b0e">
+      <Execution id="85e35011-d82e-49e0-a361-19987c4515b2" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="CurrentProducerLoadPublishesOneReplacementAndPreservesSelectedRootArchive" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology(incomingPath: &quot;imports/source.zip/child.bin&quot;)" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="566bbab1-4fe9-0b9f-5dac-595e834a54a7">
+      <Execution id="bc6d6d0a-863d-474b-ada4-aabf47225584" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="ae804b56-01e7-71fa-5e15-32a5e54a72af" executionId="de72dce7-0497-4c18-ab1c-26f38ec2bebc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c703f2b0-227e-0a0a-fa14-25ad9f6c9cdf" executionId="b673413e-1456-48f6-bc0c-3aae7db7abad" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7e97b08c-e19c-ed37-4af5-826ce137edc7" executionId="26fc39b5-16a1-493f-93f5-676d5469282c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="53c5700b-de16-15dd-fd22-f361386a00fa" executionId="37aff973-55b3-40e5-89c3-4ea40c87d53f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d80228d1-42ea-8a89-c08d-aec6ca415137" executionId="6e19f13e-fbb7-45b2-9091-5e980ac878c6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2d173328-1221-1490-a510-fb8bfcc21494" executionId="11b73d0c-cfea-4bc5-8c93-4d0825682981" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2e151fa4-4617-a9de-31cd-cfc492204dd1" executionId="36f6a56f-2a8f-4ef5-a732-a3cbe0bb8b86" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="566bbab1-4fe9-0b9f-5dac-595e834a54a7" executionId="bc6d6d0a-863d-474b-ada4-aabf47225584" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9ee973c1-20e0-18e2-04d9-5c0940562b0e" executionId="85e35011-d82e-49e0-a361-19987c4515b2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="9" executed="9" passed="0" failed="9" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.35]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.68]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.70]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.18]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:02.18]       Expected: 1
+[xUnit.net 00:00:02.18]       Actual:   0
+[xUnit.net 00:00:02.18]       Stack Trace:
+[xUnit.net 00:00:02.18]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs(71,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadPublishesOneReplacementAndPreservesSelectedRootArchive()
+[xUnit.net 00:00:02.18]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.18]       Output:
+[xUnit.net 00:00:02.18]         Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+[xUnit.net 00:00:02.18]         System.NotImplementedException: Ordinary portable load is not implemented.
+[xUnit.net 00:00:02.23]       Assert.IsType() Failure: Value is not the exact type
+[xUnit.net 00:00:02.23]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.23]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:02.23]       Stack Trace:
+[xUnit.net 00:00:02.23]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs(213,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology(String incomingPath)
+[xUnit.net 00:00:02.23]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.23]       Output:
+[xUnit.net 00:00:02.23]         Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+[xUnit.net 00:00:02.23]         System.NotImplementedException: Ordinary portable load is not implemented.
+[xUnit.net 00:00:02.28]       Assert.IsType() Failure: Value is not the exact type
+[xUnit.net 00:00:02.28]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.28]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:02.28]       Stack Trace:
+[xUnit.net 00:00:02.28]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs(213,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology(String incomingPath)
+[xUnit.net 00:00:02.28]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.28]       Output:
+[xUnit.net 00:00:02.28]         Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+[xUnit.net 00:00:02.28]         System.NotImplementedException: Ordinary portable load is not implemented.
+[xUnit.net 00:00:02.32]       Assert.IsType() Failure: Value is not the exact type
+[xUnit.net 00:00:02.32]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.32]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:02.32]       Stack Trace:
+[xUnit.net 00:00:02.32]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs(213,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology(String incomingPath)
+[xUnit.net 00:00:02.32]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.32]       Output:
+[xUnit.net 00:00:02.32]         Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+[xUnit.net 00:00:02.32]         System.NotImplementedException: Ordinary portable load is not implemented.
+[xUnit.net 00:00:02.37]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:02.37]       Expected: 1
+[xUnit.net 00:00:02.37]       Actual:   0
+[xUnit.net 00:00:02.37]       Stack Trace:
+[xUnit.net 00:00:02.37]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs(154,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.BothConfigsAbsentUsesFreshDefaultsWithoutPersistingConfiguration()
+[xUnit.net 00:00:02.37]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.37]       Output:
+[xUnit.net 00:00:02.37]         Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+[xUnit.net 00:00:02.37]         System.NotImplementedException: Ordinary portable load is not implemented.
+[xUnit.net 00:00:02.41]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:02.41]       Expected: 1
+[xUnit.net 00:00:02.41]       Actual:   0
+[xUnit.net 00:00:02.41]       Stack Trace:
+[xUnit.net 00:00:02.41]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs(134,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes(Boolean archiveHasConfig)
+[xUnit.net 00:00:02.41]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.41]       Output:
+[xUnit.net 00:00:02.41]         Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+[xUnit.net 00:00:02.41]         System.NotImplementedException: Ordinary portable load is not implemented.
+[xUnit.net 00:00:02.44]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:02.44]       Expected: 1
+[xUnit.net 00:00:02.44]       Actual:   0
+[xUnit.net 00:00:02.44]       Stack Trace:
+[xUnit.net 00:00:02.45]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs(134,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes(Boolean archiveHasConfig)
+[xUnit.net 00:00:02.45]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.45]       Output:
+[xUnit.net 00:00:02.45]         Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+[xUnit.net 00:00:02.45]         System.NotImplementedException: Ordinary portable load is not implemented.
+[xUnit.net 00:00:02.49]       Assert.IsType() Failure: Value is not the exact type
+[xUnit.net 00:00:02.49]       Expected: typeof(System.InvalidOperationException)
+[xUnit.net 00:00:02.49]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:02.49]       Stack Trace:
+[xUnit.net 00:00:02.49]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs(179,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.BoundInvocationRejectsBeforePreparationAndUnboundLoadRemainsAvailable()
+[xUnit.net 00:00:02.49]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.49]       Output:
+[xUnit.net 00:00:02.49]         Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+[xUnit.net 00:00:02.49]         System.NotImplementedException: Ordinary portable load is not implemented.
+[xUnit.net 00:00:02.53]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:02.53]       Expected: 1
+[xUnit.net 00:00:02.53]       Actual:   0
+[xUnit.net 00:00:02.53]       Stack Trace:
+[xUnit.net 00:00:02.53]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs(107,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.LaterMemberFailureRestoresCompleteSessionSourceLibraryAndGeneration()
+[xUnit.net 00:00:02.53]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.53]       Output:
+[xUnit.net 00:00:02.53]         Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+[xUnit.net 00:00:02.53]         System.NotImplementedException: Ordinary portable load is not implemented.
+[xUnit.net 00:00:02.54]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T02:39:10.6875694-04:00">
+        <Text>[xUnit.net 00:00:02.18]     BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadPublishesOneReplacementAndPreservesSelectedRootArchive [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T02:39:10.7409178-04:00">
+        <Text>[xUnit.net 00:00:02.23]     BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology(incomingPath: "imports/source.zip") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T02:39:10.7843186-04:00">
+        <Text>[xUnit.net 00:00:02.28]     BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology(incomingPath: "imports/source.zip/child.bin") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T02:39:10.8320331-04:00">
+        <Text>[xUnit.net 00:00:02.32]     BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology(incomingPath: "imports") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T02:39:10.8748675-04:00">
+        <Text>[xUnit.net 00:00:02.37]     BookOfEternityClient.Tests.PortableLoadReplacementTests.BothConfigsAbsentUsesFreshDefaultsWithoutPersistingConfiguration [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T02:39:10.9124800-04:00">
+        <Text>[xUnit.net 00:00:02.41]     BookOfEternityClient.Tests.PortableLoadReplacementTests.PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes(archiveHasConfig: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T02:39:10.9522036-04:00">
+        <Text>[xUnit.net 00:00:02.44]     BookOfEternityClient.Tests.PortableLoadReplacementTests.PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes(archiveHasConfig: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T02:39:10.9979218-04:00">
+        <Text>[xUnit.net 00:00:02.49]     BookOfEternityClient.Tests.PortableLoadReplacementTests.BoundInvocationRejectsBeforePreparationAndUnboundLoadRemainsAvailable [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T02:39:11.0405880-04:00">
+        <Text>[xUnit.net 00:00:02.53]     BookOfEternityClient.Tests.PortableLoadReplacementTests.LaterMemberFailureRestoresCompleteSessionSourceLibraryAndGeneration [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

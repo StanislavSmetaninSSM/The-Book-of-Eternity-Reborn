@@ -1,3 +1,10 @@
+using System.Buffers;
+using System.IO.Compression;
+using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
+using Microsoft.Extensions.Logging;
+
 namespace BookOfEternityClient.Services;
 
 /// <summary>Distinguishes load admission from a committed, restored or unresolved replacement.</summary>
@@ -6,20 +13,328 @@ internal enum LoadReplacementDisposition { NotLoaded, Committed, RolledBack, Unc
 /// <summary>Retains selected source and generation authority through replacement follow-up.</summary>
 internal sealed record LoadReplacementResult(LoadReplacementDisposition Disposition,
     string? SelectedSourcePath, string? EstablishedGeneration, bool NeedsFollowUp,
-    Exception? Failure, bool ContinuationBlocked = false);
+    Exception? Failure, bool ContinuationBlocked = false)
+{
+    internal LoadReplacementResult WithFollowUp(Exception failure, bool blocksContinuation = false) => this with
+    {
+        NeedsFollowUp = true,
+        ContinuationBlocked = ContinuationBlocked || blocksContinuation,
+        Failure = Failure == null ? failure : new AggregateException(Failure, failure)
+    };
+}
+
+/// <summary>Owns closed incoming images and the exact selected read-only archive until one decision.</summary>
+internal sealed class PreparedLoadArchive : IAsyncDisposable
+{
+    private readonly string _stagingRoot;
+    private readonly TrustedLocalFileScope _sourceScope;
+    private readonly TrustedLocalFileImage _sourceImage;
+    private readonly TrustedLocalFileScope _scratchScope;
+    private readonly HashSet<string> _directories;
+    private bool _disposed;
+
+    internal PreparedLoadArchive(string sourcePath, TrustedLocalFileScope sourceScope,
+        TrustedLocalFileImage sourceImage, string stagingRoot, IReadOnlyDictionary<string, TrustedLocalFileImage> images,
+        GameSettings? archiveSettings)
+    {
+        SourcePath = sourcePath;
+        _sourceScope = sourceScope;
+        _sourceImage = sourceImage;
+        _stagingRoot = stagingRoot;
+        _scratchScope = new TrustedLocalFileScope([stagingRoot]);
+        Images = images;
+        ArchiveSettings = archiveSettings;
+        _directories = EnumerateScratch().Directories;
+    }
+
+    internal string SourcePath { get; }
+    internal IReadOnlyDictionary<string, TrustedLocalFileImage> Images { get; }
+    internal GameSettings? ArchiveSettings { get; }
+
+    internal void Revalidate()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (!_sourceImage.MatchesFile(_sourceScope, SourcePath))
+            throw new InvalidDataException("The selected archive changed after admission.");
+        var actual = EnumerateScratch();
+        if (!_directories.SetEquals(actual.Directories) || !actual.Files.SetEquals(Images.Keys))
+            throw new InvalidDataException("The complete load staging namespace changed after preparation.");
+        foreach (var (relative, image) in Images)
+            if (!image.MatchesFile(_scratchScope, Path.Combine(_stagingRoot, relative.Replace('/', Path.DirectorySeparatorChar))))
+                throw new InvalidDataException("A load staging image changed after preparation.");
+    }
+
+    private (HashSet<string> Files, HashSet<string> Directories) EnumerateScratch()
+    {
+        var files = new HashSet<string>(StringComparer.Ordinal);
+        var directories = new HashSet<string>(StringComparer.Ordinal);
+        var pending = new Queue<string>();
+        pending.Enqueue(_stagingRoot);
+        while (pending.TryDequeue(out var directory))
+        {
+            directory = _scratchScope.ValidateDirectory(directory, allowMissing: false);
+            directories.Add(directory);
+            foreach (var entry in Directory.EnumerateFileSystemEntries(directory))
+            {
+                if ((File.GetAttributes(entry) & FileAttributes.Directory) != 0)
+                    pending.Enqueue(_scratchScope.ValidateDirectory(entry, allowMissing: false));
+                else
+                    files.Add(FileSystemManager.GetLocalRelativePath(_stagingRoot,
+                        _scratchScope.ValidateFile(entry, allowMissing: false), OperatingSystem.IsWindows()));
+            }
+        }
+        return (files, directories);
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        if (_disposed) return ValueTask.CompletedTask;
+        _scratchScope.DeleteOwnedTree(_stagingRoot);
+        _disposed = true;
+        return ValueTask.CompletedTask;
+    }
+}
 
 public partial class SaveLoadService
 {
-    /// <summary>Ordinary portable load entry; public callers remain on the original route until cutover.</summary>
-    /// <param name="saveFilePath">The exact selected archive or canonical relative archive name.</param>
-    /// <param name="cancellationToken">Cancellation before an established replacement decision.</param>
-    /// <returns>The established replacement decision and any separate follow-up diagnostic.</returns>
-    internal Task<LoadReplacementResult> LoadGameWithOutcomeAsync(string saveFilePath,
+    /// <summary>Ordinary portable load entry; public callers stay original until all cutover gates pass.</summary>
+    internal async Task<LoadReplacementResult> LoadGameWithOutcomeAsync(string saveFilePath,
         CancellationToken cancellationToken = default)
     {
-        // T032-B1 RED scaffolding only. This explicitly missing behavior cannot
-        // satisfy the specific admission guards or publication-cut assertions.
-        return Task.FromResult(new LoadReplacementResult(LoadReplacementDisposition.NotLoaded,
-            null, null, false, new NotImplementedException("Ordinary portable load is not implemented.")));
+        // Invalid/closing contexts retain their thrown fence. A valid binding is a known admission refusal.
+        if (SessionOperationContext.TryGetExpectedGeneration(_fs.BasePath, out _))
+            return new(LoadReplacementDisposition.NotLoaded, null, null, false,
+                new InvalidOperationException("Load cannot run inside a generation-bound session operation."));
+
+        PreparedLoadArchive? candidate = null;
+        FileSystemManager.SessionLifecycleLease? lifecycleLease = null;
+        FileSystemManager.CanonicalWriteLease? writeLease = null;
+        LoadReplacementResult? result = null;
+        try
+        {
+            candidate = await PrepareLoadArchiveAsync(saveFilePath, cancellationToken);
+            if (_hooks?.BeforeLoadLeaseAcquisitionAsync != null)
+                await _hooks.BeforeLoadLeaseAcquisitionAsync();
+            candidate.Revalidate();
+            lifecycleLease = await _fs.AcquireSessionLifecycleLeaseAsync();
+            writeLease = await _fs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease, cancellationToken);
+            _fs.ResolveBackupPublicationRecovery(writeLease);
+            candidate.Revalidate();
+            var generation = _fs.ReadLocalGenerationSnapshot(writeLease);
+            var scope = new TrustedLocalFileScope([_fs.BasePath]);
+            var comparer = OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+            var live = _fs.EnumerateLoadReplacementFiles(writeLease, candidate.SourcePath)
+                .ToDictionary(path => FileSystemManager.GetLocalRelativePath(_fs.GameSessionPath, path,
+                    OperatingSystem.IsWindows()), path => TrustedLocalFileImage.CaptureFile(scope, path), comparer);
+            var settings = candidate.ArchiveSettings ?? StateManager.PrepareLocalLoadSettings(
+                await _fs.ReadLocalFileBytesAsync(writeLease, "config.json"));
+            var changes = new List<CanonicalLocalImageChange>();
+            foreach (var relative in live.Keys.Union(candidate.Images.Keys, comparer).OrderBy(path => path, StringComparer.Ordinal))
+            {
+                if (comparer.Equals(relative, "config.json") && candidate.ArchiveSettings == null)
+                    continue; // Preserve exact live config bytes or true absence when the archive has none.
+                live.TryGetValue(relative, out var before);
+                candidate.Images.TryGetValue(relative, out var after);
+                changes.Add(new(relative, before ?? TrustedLocalFileImage.FromBytes(null), after ?? TrustedLocalFileImage.FromBytes(null)));
+            }
+            void RevalidateNamespace()
+            {
+                candidate.Revalidate();
+                var current = _fs.EnumerateLoadReplacementFiles(writeLease, candidate.SourcePath)
+                    .Select(path => FileSystemManager.GetLocalRelativePath(_fs.GameSessionPath, path, OperatingSystem.IsWindows()));
+                if (!live.Keys.ToHashSet(comparer).SetEquals(current))
+                    throw new InvalidDataException("The complete live load namespace changed before publication.");
+                // Includes retained live config, which deliberately is not a publication member.
+                foreach (var (relative, before) in live)
+                    if (!before.MatchesFile(scope, _fs.ResolvePath(relative)))
+                        throw new InvalidDataException("A live load image changed before publication.");
+            }
+
+            var replacement = Guid.NewGuid().ToString("N");
+            var outcome = await _fs.PublishLoadReplacementImagesAsync(writeLease, generation, changes, replacement,
+                RevalidateNamespace, cancellationToken);
+            result = new(outcome.Disposition switch
+            {
+                TrustedLocalPublicationDisposition.Committed => LoadReplacementDisposition.Committed,
+                TrustedLocalPublicationDisposition.RolledBack => LoadReplacementDisposition.RolledBack,
+                _ => LoadReplacementDisposition.Uncertain
+            }, candidate.SourcePath,
+                outcome.Disposition == TrustedLocalPublicationDisposition.Committed ? replacement : generation.Binding.Id,
+                outcome.Failure != null, outcome.Failure,
+                outcome.Disposition == TrustedLocalPublicationDisposition.Uncertain);
+
+            if (result.Disposition == LoadReplacementDisposition.Committed)
+            {
+                // From this point every failure is follow-up to the established replacement.
+                _fs.ResolveBackupPublicationRecovery(writeLease);
+                if (_hooks?.AfterLoadPublicationValidatedAsync != null)
+                    await _hooks.AfterLoadPublicationValidatedAsync();
+                await _stateManager.RefreshGameStateAsync(writeLease);
+                _stateManager.Settings.ApplyLoadedValues(settings);
+            }
+        }
+        catch (Exception failure)
+        {
+            if (result != null) result = result.WithFollowUp(failure, blocksContinuation: true);
+            else
+            {
+                var uncertain = failure is CoordinatedStatePublicationUncertainException;
+                result = new(uncertain ? LoadReplacementDisposition.Uncertain : LoadReplacementDisposition.NotLoaded,
+                    candidate?.SourcePath, null, uncertain, failure, uncertain || failure is SessionReplacedException);
+            }
+        }
+        finally
+        {
+            // Unresolved decisions retain their private source as well as authoritative B1 evidence.
+            if (candidate != null && result?.Disposition != LoadReplacementDisposition.Uncertain)
+            {
+                try { await candidate.DisposeAsync(); }
+                catch (Exception failure) { result = result!.WithFollowUp(failure); }
+            }
+            if (writeLease != null)
+            {
+                try { await writeLease.DisposeAsync(); }
+                catch (Exception failure) { result = result!.WithFollowUp(failure, blocksContinuation: true); }
+            }
+            if (lifecycleLease != null)
+            {
+                try { await lifecycleLease.DisposeAsync(); }
+                catch (Exception failure) { result = result!.WithFollowUp(failure, blocksContinuation: true); }
+            }
+        }
+        try
+        {
+            if (result!.Disposition == LoadReplacementDisposition.Committed)
+                _logger.LogInformation("Игра загружена: {Path}", result.SelectedSourcePath);
+            else _logger.LogError(result.Failure, "Ошибка загрузки: {Path}", saveFilePath);
+        }
+        catch (Exception failure) { result = result!.WithFollowUp(failure); }
+        return result!;
+    }
+
+    internal async Task<PreparedLoadArchive> PrepareLoadArchiveAsync(string saveFilePath,
+        CancellationToken cancellationToken = default)
+    {
+        if (SessionOperationContext.TryGetExpectedGeneration(_fs.BasePath, out _))
+            throw new InvalidOperationException("Load cannot run inside a generation-bound session operation.");
+        cancellationToken.ThrowIfCancellationRequested();
+        var fullPath = Path.IsPathRooted(saveFilePath) ? saveFilePath : _fs.ResolvePath(saveFilePath);
+        fullPath = Path.GetFullPath(fullPath);
+        var sourceScope = new TrustedLocalFileScope([], [fullPath]);
+        fullPath = sourceScope.ValidateFile(fullPath, allowMissing: false);
+        var sourceImage = TrustedLocalFileImage.CaptureFile(sourceScope, fullPath);
+        string? stagingRoot = null;
+        try
+        {
+            stagingRoot = _fs.CreateRuntimeLoadStagingRoot();
+            var scratch = new TrustedLocalFileScope([stagingRoot]);
+            var entries = new Dictionary<string, ZipArchiveEntry>(OperatingSystem.IsWindows()
+                ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
+            using (var source = sourceImage.OpenRead())
+            {
+                ValidateTrustedArchiveBeforeMaterialization(source);
+                using var archive = new ZipArchive(source, ZipArchiveMode.Read, leaveOpen: true);
+                await ValidateArchiveStructureAsync(archive, stagingRoot);
+                foreach (var entry in archive.Entries)
+                {
+                    if (string.IsNullOrEmpty(entry.Name)) continue;
+                    var relative = NormalizeArchiveEntryPath(stagingRoot, entry.FullName);
+                    if (relative.Equals("saves", StringComparison.OrdinalIgnoreCase) ||
+                        relative.StartsWith("saves/", StringComparison.OrdinalIgnoreCase))
+                        throw new InvalidDataException("A save archive cannot replace the live saves library.");
+                    if (relative.Equals(SaveManifestArchivePath, StringComparison.OrdinalIgnoreCase) || IsEphemeralArchivePath(relative)) continue;
+                    ValidateLoadSourceCollision(_fs.ResolvePath(relative), fullPath);
+                    entries.Add(relative, entry);
+                }
+                // Validate every destination topology before creating any extraction file.
+                foreach (var relative in entries.Keys)
+                {
+                    var parent = Path.GetDirectoryName(relative.Replace('/', Path.DirectorySeparatorChar));
+                    while (!string.IsNullOrEmpty(parent))
+                    {
+                        if (entries.ContainsKey(parent.Replace(Path.DirectorySeparatorChar, '/')))
+                            throw new InvalidDataException("A save archive contains conflicting file and directory payloads.");
+                        parent = Path.GetDirectoryName(parent);
+                    }
+                }
+                foreach (var (relative, entry) in entries)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    var target = Path.Combine(stagingRoot, relative.Replace('/', Path.DirectorySeparatorChar));
+                    scratch.EnsureDirectory(Path.GetDirectoryName(target)!);
+                    using var input = entry.Open();
+                    using var output = new FileStream(scratch.ValidateFile(target), FileMode.CreateNew,
+                        FileAccess.Write, FileShare.None, TrustedLocalFileImage.CopyBufferSize, FileOptions.SequentialScan);
+                    var buffer = ArrayPool<byte>.Shared.Rent(TrustedLocalFileImage.CopyBufferSize);
+                    try
+                    {
+                        long count = 0;
+                        int read;
+                        while ((read = await input.ReadAsync(buffer.AsMemory(0, TrustedLocalFileImage.CopyBufferSize), cancellationToken)) != 0)
+                        {
+                            if (read > entry.Length - count) throw new InvalidDataException("A load entry exceeded its declared size.");
+                            await output.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
+                            count += read;
+                        }
+                        if (count != entry.Length) throw new InvalidDataException("A load entry was truncated.");
+                        output.Flush(flushToDisk: true);
+                    }
+                    finally { ArrayPool<byte>.Shared.Return(buffer, clearArray: true); }
+                }
+            }
+            if (!sourceImage.MatchesFile(sourceScope, fullPath))
+                throw new InvalidDataException("The selected archive changed during preparation.");
+            PrepareDetachedLoadProfile(stagingRoot, entries.Keys);
+            var images = entries.Keys.ToDictionary(relative => relative,
+                relative => TrustedLocalFileImage.CaptureFile(scratch,
+                    Path.Combine(stagingRoot, relative.Replace('/', Path.DirectorySeparatorChar))),
+                OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
+            var config = Path.Combine(stagingRoot, "config.json");
+            var settings = images.ContainsKey("config.json") ? StateManager.PrepareLocalLoadSettings(File.ReadAllBytes(config)) : null;
+            var candidate = new PreparedLoadArchive(fullPath, sourceScope, sourceImage, stagingRoot, images, settings);
+            candidate.Revalidate();
+            stagingRoot = null;
+            return candidate;
+        }
+        catch (Exception failure)
+        {
+            if (stagingRoot != null)
+            {
+                try { new TrustedLocalFileScope([stagingRoot]).DeleteOwnedTree(stagingRoot); }
+                catch (Exception cleanup) { throw new AggregateException("Load preparation failed and private scratch requires follow-up.", failure, cleanup); }
+            }
+            throw;
+        }
+    }
+
+    private static void ValidateLoadSourceCollision(string destination, string source)
+    {
+        var windows = OperatingSystem.IsWindows();
+        var comparison = windows ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        destination = TrustedLocalFilePublication.NormalizeAuthorityPath(destination, windows);
+        source = TrustedLocalFilePublication.NormalizeAuthorityPath(source, windows);
+        if (destination.Equals(source, comparison) || destination.StartsWith(source + Path.DirectorySeparatorChar, comparison) ||
+            source.StartsWith(destination + Path.DirectorySeparatorChar, comparison))
+            throw new InvalidDataException("Incoming payload collides with the selected archive or its topology.");
+    }
+
+    private static void PrepareDetachedLoadProfile(string stagingRoot, IEnumerable<string> paths)
+    {
+        var set = paths.ToHashSet(OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
+        byte[]? Read(string relative) => set.Contains(relative)
+            ? File.ReadAllBytes(Path.Combine(stagingRoot, relative.Replace('/', Path.DirectorySeparatorChar))) : null;
+        var original = AfterlifeEntityProfileState.DecodeMirrorObject(Read(AfterlifeEntityProfileState.StatePath));
+        if (original == null) return;
+        var projected = original.DeepClone().AsObject();
+        AfterlifeEntityProfileState.ApplyPlayerSoulProfileClientAuthority(projected,
+            AfterlifeEntityProfileState.DecodeMirrorObject(Read(SoulStateArchivePath)),
+            AfterlifeEntityProfileState.DecodeMirrorObject(Read(ShiningAbodeState.StatePath)));
+        if (!JsonNode.DeepEquals(original, projected))
+        {
+            var path = Path.Combine(stagingRoot, AfterlifeEntityProfileState.StatePath.Replace('/', Path.DirectorySeparatorChar));
+            using var output = new FileStream(path, FileMode.Truncate, FileAccess.Write, FileShare.None);
+            output.Write(FileSystemManager.EncodeUtf8WithPreamble(projected.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)));
+            output.Flush(flushToDisk: true);
+        }
     }
 }

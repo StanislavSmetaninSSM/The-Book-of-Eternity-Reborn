@@ -1,0 +1,54 @@
+{
+  "Categories": [
+    "portable-load-entry"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "3e07eabdf6c7ad5710745531016d52b42684d321",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 201.3400803,
+  "Descriptors": [
+    {
+      "Name": "portable-load-entry-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-entry",
+      "Categories": [
+        "portable-load-entry"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.BothConfigsAbsentUsesFreshDefaultsWithoutPersistingConfiguration|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.BoundInvocationRejectsBeforePreparationAndUnboundLoadRemainsAvailable|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadPublishesOneReplacementAndPreservesSelectedRootArchive|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.LaterMemberFailureRestoresCompleteSessionSourceLibraryAndGeneration|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 9,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.BothConfigsAbsentUsesFreshDefaultsWithoutPersistingConfiguration",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.BoundInvocationRejectsBeforePreparationAndUnboundLoadRemainsAvailable",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadPublishesOneReplacementAndPreservesSelectedRootArchive",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.LaterMemberFailureRestoresCompleteSessionSourceLibraryAndGeneration",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

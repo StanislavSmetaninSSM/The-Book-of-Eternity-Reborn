@@ -493,7 +493,7 @@ internal static class AfterlifeEntityProfileState
     /// <returns>
     /// The object root, or <see langword="null"/> when the existing optional projection policy has no usable object.
     /// </returns>
-    private static JsonObject? DecodeMirrorObject(byte[]? bytes)
+    internal static JsonObject? DecodeMirrorObject(byte[]? bytes)
     {
         if (bytes == null) return null;
         using var stream = new MemoryStream(bytes, writable: false);

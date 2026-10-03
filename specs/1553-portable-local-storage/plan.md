@@ -4,6 +4,47 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T032-B1 causal RED and first same-shape implementation WIP — 2026-10-03
+
+The frozen first source checkpoint `3e07eabdf6c7ad5710745531016d52b42684d321`
+(tree `8beed8d2704a36e15b1747903910966da39f3d00`) is remotely verified and
+[restored from GitHub](recovery/load-entry-restoration-20261003.json) in a fresh
+empty clone: 4,393 tracked files, exact HEAD/tree, clean checkout, connectivity
+fsck and all six changed files byte-identical. No test ran in that restore.
+
+On that exact clean source, [fresh integration build/PlanOnly](recovery/evidence/load-entry-build-plan-20261003/manifest.json)
+passed in 3:21.6191168 and selected exactly six methods/nine cases. The
+[causal RED](recovery/evidence/load-entry-red-20261003/manifest.json) completed
+9/9 cases in 8.2643732 seconds: 0 passed, 9 failed, no skips, complete owned
+cleanup. All fixtures produced valid current saves and reached the explicit
+NotImplemented entry; positive/rollback cases missed preparation/B1 cuts and
+negative cases required their precise collision or generation-bound guard.
+This is the intended RED, not the historical original Load diagnostic.
+Environment: Debian 13 x64, .NET SDK 10.0.401/runtime 8.0.31, PowerShell 7.6.6;
+fresh owned CLI/XDG/HTTP/plugin/scratch/temp, unchanged HOME/CODEX_HOME, reused
+immutable packages, processor count 1, telemetry off, certificate generation false.
+The exact commands, hashes, build log, plans, summaries and causal TRX are linked.
+Oversized discovery logs are hash-recorded rather than embedded.
+
+The next source WIP connects owned non-legacy extraction, selected-source/type/hash
+validation, detached profile/settings preparation, complete live/incoming file images
+and deletions, one replacement-generation B1 decision, and typed post-commit follow-up.
+The library and selected ZIP are excluded from all replacement writes; source topology
+collisions and nested-bound loads reject before lifecycle acquisition. Existing live
+config is retained exactly when absent from the archive; both absent uses detached
+standard defaults without persistence. Public bool/client load and the shared codec
+are unchanged. This first same-shape source deliberately still refuses destination
+topology conversions; required T032-B2 remains open.
+
+**Not yet run on this implementation:** build/GREEN, wider admission/outcome tests,
+metadata/resource/cold/native/client checks or independent review. The shared v2
+metadata 1 MiB producer limit is still present and must be replaced/qualified within
+T032-B1. The nine entry cases are a bounded first causal slice, not complete T032-B1
+acceptance. Next: preserve this source/evidence WIP remotely, build and run only the
+same nine changed cases, then expand the connected admission/outcome and metadata proof.
+No complete suite, accepted-save sweep, application/provider or installation ran.
+No GM-authored contract change; T032-B1 through B5, full T032/T033/B4/B5 remain open.
+
 ## T032-B1 first causal entry WIP — 2026-10-02
 
 Independent Astra XHigh design review and coordinator acceptance completed at
