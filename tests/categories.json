@@ -10252,6 +10252,69 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-load-alias-admission",
+      "responsibility": "T032-B1 archive spelling review regressions: normalized ZIP names must agree exactly with canonical resolution, and fixed soul/resource/config/profile authority names must retain their declared casing. Reject before preparation completion or lifecycle/B1 mutation; preserve exact Linux names rather than case-folding arbitrary files.",
+      "excludes": "Same-shape success/rollback and settings baseline are owned by portable-load-entry. No metadata/topology/cold/resource/public/native/full-suite sweep.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+        "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs",
+        "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-load-entry",
+          "when": "Changing preparation spelling rules or canonical member construction; prior passing entry selection is repeated only after that production change."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation",
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesRejectBeforeCanonicalReplacement"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-load-outcomes",
+      "responsibility": "T032-B1 actual typed load outcomes at prior-journal acquisition conflict, combined preparation and owned-cleanup failure, after-generation commit-stage conflict, and required refresh failure after a confirmed commit. Preserve evidence, established identity and safe continuation classification through real named cuts. Each case owns all mutable state.",
+      "excludes": "Public bool/console/browser projection, topology/cold/resource/native acceptance, metadata transport and accepted-save-only sweeps.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+        "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-load-entry",
+          "when": "Changing typed load orchestration or outcome handling after causal RED."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.PriorJournalConflictDuringAcquisitionIsUncertainAndBlocksContinuation",
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.PreparationAndCleanupFailureRetainsKnownPrivateDebt",
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.ConflictAfterGenerationPublicationDoesNotClaimAnEstablishedGeneration",
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.ConfirmedCommitRetainsIdentityWhenRequiredRefreshFails"
+          ]
+        }
+      ]
     }
   ]
 }

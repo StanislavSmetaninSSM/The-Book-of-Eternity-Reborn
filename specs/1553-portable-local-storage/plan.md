@@ -4,6 +4,41 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T032-B1 initial GREEN and alias regression WIP — 2026-10-03
+
+The held fourteen-file source/evidence checkpoint was published after explicit user
+approval as `fc9c551113d94014d155aa4b35d511b1d3d29f8d`, tree
+`5933920f918a69196afb41ad8ef917df95f03dd0`; GitHub ref, ls-remote and clean local
+HEAD agree. The [fresh first GREEN](recovery/evidence/load-entry-first-green-20261003/manifest.json)
+passed all nine entry cases with no skips, complete selection/owned cleanup in
+3:45.7517312 including build. Exact initial RED remains linked below. This is a
+bounded first slice, not acceptance of full T032-B1 or public Load.
+
+Independent GPT-6 Astra XHigh review found a concrete archive/canonical spelling
+mismatch: ZIP normalization retains leading/trailing spaces, while `ResolvePath`
+trims the complete relative name. Consequently an imported ` config.json` can bypass
+settings decoding, a leading-space saves prefix can add a previously absent library
+member, and an ephemeral alias can bypass omission. Exact selected-source aliases
+already reject through resolved collision checks; existing canonical library files
+also fail the absent-before preflight rather than being overwritten.
+
+The completed independent review found five P2s. In addition to Trim aliases, Linux
+case aliases can pass case-insensitive archive validation and then omit exact canonical
+soul/resource/config/profile paths; prior B1 recovery failure during lease acquisition
+can be mislabeled a safe NotLoaded result; combined failed preparation/cleanup loses
+its follow-up flag; and Uncertain after generation publication incorrectly claims the
+old generation as established. These are current-path defects, distinct from later gates.
+
+Twelve isolated archive spelling/casing cases and four actual outcome cases are now
+owned by narrow `portable-load-alias-admission` and `portable-load-outcomes` categories.
+The committed-refresh case is an unchanged passing control. Null-by-default hooks after
+closed archive extraction and before failed-preparation cleanup enable causal fault
+injection; no outcome/admission bug has been fixed yet. No already-passing nine-case
+repeat belongs to this RED. Next: publish this test/evidence WIP, fresh build/PlanOnly
+and the sixteen-case causal run, then fix the five demonstrated boundaries and run
+affected entry/alias/outcome owners. Broader metadata/topology/cold/resource/client/native
+gates remain open. These new cases have not run at this source checkpoint.
+
 ## T032-B1 causal RED and first same-shape implementation WIP — 2026-10-03
 
 The frozen first source checkpoint `3e07eabdf6c7ad5710745531016d52b42684d321`

@@ -2,10 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-load-entry",
-      "reason": "T032-B1 first causal RED: six integration methods/nine cases use current public-producer archives and the new typed load entry. Every positive/rollback case must reach preparation or its named B1 cut; negatives require their specific source collision or nested-bound guard. Compile scaffolding is explicitly missing behavior. No public caller cutover or shared-codec change is included in this invocation.",
+      "category": "portable-load-alias-admission",
+      "reason": "Twelve new causal review-regression cases test Trim naming aliases and fixed-authority casing before mutation. The initial nine passing entry cases are not repeated for RED.",
       "contracts": [
-        "#1553 FR-002/004/005/006/008/015; T032-B1 owned preparation, complete replacement and typed load outcomes; ordinary-load-plan.md reviewed at 05105d58"
+        "#1553 FR-002/004/006/015; canonical settings/resource/soul authority, protected library and ephemeral omission"
+      ]
+    },
+    {
+      "category": "portable-load-outcomes",
+      "reason": "Four new actual entry outcome cases exercise prior recovery conflict, owned preparation cleanup debt, unknown state after generation publication, and committed refresh failure. The last is an unchanged passing control, not a claimed new regression. Only null-by-default preparation fault seams were added; the five reviewed bugs remain unfixed for RED.",
+      "contracts": [
+        "#1553 FR-004/005/006/015; established decision and generation identity, retained evidence, cleanup debt, blocked continuation"
       ]
     }
   ]

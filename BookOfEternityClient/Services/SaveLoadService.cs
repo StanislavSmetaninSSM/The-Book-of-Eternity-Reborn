@@ -14,6 +14,8 @@ namespace BookOfEternityClient.Services;
 internal sealed class SaveLoadServiceHooks
 {
     internal Func<Task>? BeforeLoadLeaseAcquisitionAsync { get; init; }
+    internal Func<string, Task>? AfterLoadArchiveExtractedAsync { get; init; }
+    internal Func<string, Task>? BeforeLoadPreparationCleanupAsync { get; init; }
     internal Func<Task>? AfterLoadPublicationValidatedAsync { get; init; }
     internal Func<Task>? BeforeAutosaveCleanupLeaseAcquisitionAsync { get; init; }
     internal Func<Task>? BeforeAutosaveDeletionAsync { get; init; }

@@ -284,6 +284,8 @@ public partial class SaveLoadService
             }
             if (!sourceImage.MatchesFile(sourceScope, fullPath))
                 throw new InvalidDataException("The selected archive changed during preparation.");
+            if (_hooks?.AfterLoadArchiveExtractedAsync != null)
+                await _hooks.AfterLoadArchiveExtractedAsync(stagingRoot);
             PrepareDetachedLoadProfile(stagingRoot, entries.Keys);
             var images = entries.Keys.ToDictionary(relative => relative,
                 relative => TrustedLocalFileImage.CaptureFile(scratch,
@@ -300,7 +302,12 @@ public partial class SaveLoadService
         {
             if (stagingRoot != null)
             {
-                try { new TrustedLocalFileScope([stagingRoot]).DeleteOwnedTree(stagingRoot); }
+                try
+                {
+                    if (_hooks?.BeforeLoadPreparationCleanupAsync != null)
+                        await _hooks.BeforeLoadPreparationCleanupAsync(stagingRoot);
+                    new TrustedLocalFileScope([stagingRoot]).DeleteOwnedTree(stagingRoot);
+                }
                 catch (Exception cleanup) { throw new AggregateException("Load preparation failed and private scratch requires follow-up.", failure, cleanup); }
             }
             throw;

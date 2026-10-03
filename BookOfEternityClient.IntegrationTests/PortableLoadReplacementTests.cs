@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class PortableLoadReplacementTests : IDisposable
+public sealed partial class PortableLoadReplacementTests : IDisposable
 {
     private const string SoulPath = "game_state/meta/soul_state.json";
     private const string MarkerPath = "lore/load-marker.bin";
@@ -24,6 +24,9 @@ public sealed class PortableLoadReplacementTests : IDisposable
     private readonly byte[] _loadedSoul = Encoding.UTF8.GetBytes("""{"soulName":"Loaded soul","currentRealm":"Mortal World","currentIncarnation":1}""");
     private readonly byte[] _loadedMarker = [0xEF, 0xBB, 0xBF, 0, 0xFF, 7];
     private readonly byte[] _config = [.. Encoding.UTF8.GetPreamble(), .. Encoding.UTF8.GetBytes("""{"language":"en","consoleFontSize":0,"musicVolume":31}""")];
+    private Action<string>? _afterExtraction;
+    private Action<string>? _beforePreparationCleanup;
+    private Action? _afterPublication;
     private bool _observeLoad;
     private int _prepared;
     private int _lifecycleOpen;
@@ -50,7 +53,10 @@ public sealed class PortableLoadReplacementTests : IDisposable
         _state = PortableSaveFixture.Seed(_files);
         _service = new SaveLoadService(_files, _state, _logger, new SaveLoadServiceHooks
         {
-            BeforeLoadLeaseAcquisitionAsync = () => { _prepared++; return Task.CompletedTask; }
+            BeforeLoadLeaseAcquisitionAsync = () => { _prepared++; return Task.CompletedTask; },
+            AfterLoadArchiveExtractedAsync = path => { _afterExtraction?.Invoke(path); return Task.CompletedTask; },
+            BeforeLoadPreparationCleanupAsync = path => { _beforePreparationCleanup?.Invoke(path); return Task.CompletedTask; },
+            AfterLoadPublicationValidatedAsync = () => { _afterPublication?.Invoke(); return Task.CompletedTask; }
         });
     }
 
@@ -219,6 +225,34 @@ public sealed class PortableLoadReplacementTests : IDisposable
         AssertPreserved(before);
         Assert.Equal(generation, File.ReadAllBytes(_files.SessionGenerationPath));
         Assert.Equal("Old live soul", _state.CurrentState.SoulName);
+        AssertOwnedScratchEmpty();
+    }
+
+    [Theory]
+    [InlineData(" config.json")]
+    [InlineData("config.json ")]
+    [InlineData(" saves/manual_saves/new.zip")]
+    [InlineData(" game_state/control/pending_turn_snapshot.json")]
+    public async Task PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(string incomingPath)
+    {
+        var source = await PrepareCurrentArchiveAsync(collision: incomingPath);
+        var before = Snapshot(_files.GameSessionPath);
+        var generation = File.ReadAllBytes(_files.SessionGenerationPath);
+
+        var result = await _service.LoadGameWithOutcomeAsync(source);
+
+        Report(result);
+        Assert.Equal(LoadReplacementDisposition.NotLoaded, result.Disposition);
+        var failure = Assert.IsType<InvalidDataException>(result.Failure);
+        Assert.Contains("canonical spelling", failure.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(0, _prepared);
+        Assert.Equal(0, _lifecycleOpen);
+        Assert.Empty(_phases);
+        Assert.Equal(before.Keys.Order(), Snapshot(_files.GameSessionPath).Keys.Order());
+        AssertPreserved(before);
+        Assert.Equal(generation, File.ReadAllBytes(_files.SessionGenerationPath));
+        Assert.Equal("Old live soul", _state.CurrentState.SoulName);
+        Assert.Equal(28, _state.Settings.ConsoleFontSize);
         AssertOwnedScratchEmpty();
     }
 
