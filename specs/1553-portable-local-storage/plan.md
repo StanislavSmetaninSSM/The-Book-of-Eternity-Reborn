@@ -254,6 +254,7 @@ actual-evidence review cleared B3-COLD code/native Windows through `3d20be0a`, w
 no remaining findings. Resource probes are drafted only in ignored
 scratch while this immutable source qualifies; no bulk/native Linux result is claimed.
 Resource harness is now installed for first qualification:12 independent rows in three separate ten-minute owners, actual current-producer seed and prepared/decision/acquisition phases. Parent inspected drafts; no production/archive policy changed. Start/stop sampling uses owned-child acknowledgements; whole-child guards include instrumentation/verification. Fresh XML-enabled preparation owner runs first with a15-minute command cap. No passing resource or Linux claim follows installation.
+First fresh PlanOnly at ea32f5f2 failed build-unit after2:30.753: missing Services import for ResourceMaterializationContract in the new test, zero discovery/runtime cases, cleanup complete. Saved build-failure evidence is not a causal product RED. Parent adds the exact missing namespace and equivalent StartsWith assertions to remove three new analyzer warnings before a fresh retry; no production change.
 Process checkpoint: independent review caught a real generation-absence rollback
 defect. Runtime exposed a transient-fault expectation error and the now-obsolete v3
 unknown-version fixture; each received a scoped correction with original requirements

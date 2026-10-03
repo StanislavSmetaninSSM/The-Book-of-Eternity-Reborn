@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 using Xunit.Abstractions;
@@ -284,8 +285,8 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
         var path = report.GetProperty("ExtractionRoot").GetString()!;
         AssertOwnedPath(path);
         var staging = Path.GetFullPath(Path.Combine(Files.RuntimeRootPath, "load-staging")) + Path.DirectorySeparatorChar;
-        Assert.True(Path.GetFullPath(path).StartsWith(staging,
-            OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal));
+        Assert.StartsWith(staging, Path.GetFullPath(path),
+            OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
         for (var current = path; Path.GetFullPath(current) != Path.GetFullPath(_root);
              current = Path.GetDirectoryName(current) ?? throw new InvalidDataException("Extraction lacks owned root ancestor."))
         {
@@ -552,9 +553,9 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
     /// <param name="path">
     /// The exact absolute fixture or child-announced path.
     /// </param>
-    private void AssertOwnedPath(string path) => Assert.True(Path.GetFullPath(path).StartsWith(
-        Path.GetFullPath(_root) + Path.DirectorySeparatorChar,
-        OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal));
+    private void AssertOwnedPath(string path) => Assert.StartsWith(
+        Path.GetFullPath(_root) + Path.DirectorySeparatorChar, Path.GetFullPath(path),
+        OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
 
     /// <summary>
     /// Deletes only this isolated owned root after all sequential child runners have stopped their exact processes.
@@ -563,7 +564,7 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
     {
         var resolved = Path.GetFullPath(_root);
         Assert.Equal(Path.GetFullPath(Path.Combine(Path.GetTempPath(), Path.GetFileName(_root))), resolved);
-        Assert.True(Path.GetFileName(resolved).StartsWith("boe-load-resource-", StringComparison.Ordinal));
+        Assert.StartsWith("boe-load-resource-", Path.GetFileName(resolved), StringComparison.Ordinal);
         Assert.True(Guid.TryParseExact(Path.GetFileName(resolved)["boe-load-resource-".Length..], "N", out _));
         if (Directory.Exists(resolved))
         {
