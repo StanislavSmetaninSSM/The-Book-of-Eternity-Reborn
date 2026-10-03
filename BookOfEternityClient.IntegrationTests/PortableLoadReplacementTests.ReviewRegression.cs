@@ -226,11 +226,33 @@ public sealed partial class PortableLoadReplacementTests
                 var history = JsonNode.Parse(bootstrap.History!.ToCanonicalJson())!.AsObject();
                 foreach (var entry in state["entries"]!.AsArray()) entry!["resourceOwnerId"] = "player_forged";
                 foreach (var entry in history["entries"]!.AsArray()) entry!["coordinate"]!["resourceOwnerId"] = "player_forged";
+                var forgedState = ResourceStateContract.ParseCanonical(
+                    state.ToJsonString(), bootstrap.Definitions!, allowMissingPristine: false);
+                var forgedHistory = ResourceHistoryState.ParseCanonical(
+                    history.ToJsonString(), bootstrap.Definitions!, allowMissingPristine: false);
+                Assert.NotNull(forgedState.Ledger);
+                Assert.NotNull(forgedHistory.History);
+                Assert.Empty(forgedHistory.History.ValidateStateAgreement(forgedState.Ledger));
+                var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+                    bootstrap.Definitions!, async path =>
+                    {
+                        var entry = archive.GetEntry(path);
+                        if (entry == null) return null;
+                        using var input = entry.Open();
+                        using var reader = new StreamReader(input, Encoding.UTF8, detectEncodingFromByteOrderMarks: true);
+                        return await reader.ReadToEndAsync();
+                    }, forgedState.Ledger, forgedHistory.History,
+                    CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);
+                Assert.True(authority.IsValid, string.Join(Environment.NewLine, authority.Issues));
+                Assert.NotNull(authority.CanonicalAuthorityJson);
+                Assert.Contains(authority.Authority!.ValidateCanonicalAgreement(
+                    forgedState.Ledger, forgedHistory.History), issue => issue.Code == "resource_owner_unresolved");
                 foreach (var (path, json) in new[]
                 {
                     (ResourceMaterializationContract.DefinitionsPath, bootstrap.Definitions!.ToCanonicalJson()),
                     (ResourceMaterializationContract.StatePath, state.ToJsonString()),
-                    (ResourceMaterializationContract.HistoryPath, history.ToJsonString())
+                    (ResourceMaterializationContract.HistoryPath, history.ToJsonString()),
+                    (CanonicalResourceOwnerAuthorityComposer.AuthorityPath, authority.CanonicalAuthorityJson)
                 })
                 {
                     archive.GetEntry(path)!.Delete();
@@ -248,7 +270,11 @@ public sealed partial class PortableLoadReplacementTests
         Assert.Equal(LoadReplacementDisposition.NotLoaded, result.Disposition);
         var failure = Assert.IsType<InvalidDataException>(result.Failure);
         if (corruption != "corrupt-zip") Assert.Contains("resource", failure.Message, StringComparison.OrdinalIgnoreCase);
-        if (corruption == "unknown-owner") Assert.Contains("player_forged", failure.Message, StringComparison.Ordinal);
+        if (corruption == "unknown-owner")
+        {
+            Assert.Contains("resource_owner_unresolved", failure.Message, StringComparison.Ordinal);
+            Assert.DoesNotContain("resource_owner_authority_root_stale", failure.Message, StringComparison.Ordinal);
+        }
         Assert.False(result.NeedsFollowUp);
         Assert.False(result.ContinuationBlocked);
         Assert.Equal(0, _prepared);
@@ -334,6 +360,12 @@ public sealed partial class PortableLoadReplacementTests
         Assert.Equal("Old live soul", _state.CurrentState.SoulName);
     }
 
+    /// <summary>
+    /// Verifies that failed detached preparation and cleanup retain the exact private residue and both causes.
+    /// </summary>
+    /// <returns>
+    /// Completion after the result requests cleanup follow-up without claiming a canonical publication or blocking continuation.
+    /// </returns>
     [Fact]
     public async Task PreparationAndCleanupFailureRetainsKnownPrivateDebt()
     {

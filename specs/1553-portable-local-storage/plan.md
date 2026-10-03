@@ -38,10 +38,19 @@ cleanup complete. The correction uses native comparison only for observed invent
 archive keys/bytes remain unchanged and Linux still uses ordinal equality.
 Changed APIs now have multiline XML documentation. Original admission controls
 add three typed corrupt/missing-resource/unknown-owner cases and four existing raw
-budget/stream-position cases. The next fresh XML-enabled run selects only changed
-aliases/entry plus original admission (40 cases); unchanged outcome/lease evidence
+budget/stream-position cases. Fresh XML-enabled native Windows verification at
+`7f610a3165a095b55fed1f30ca9f37df9834dbd3` executed 40/40: aliases 24/24 and entry
+9/9 passed, original admission 6/7 passed, complete cleanup, 4:20.138. Exact
+[artifacts](recovery/evidence/load-fix-review/summary.json) are retained. The unknown-owner
+test fixture had a stale persisted authority root and incorrectly expected an owner ID
+where production reports issue codes; this was a fixture defect, not a production regression.
+The correction establishes ledger/history agreement, composes and persists matching
+authority, and asserts `resource_owner_unresolved` while excluding `root_stale`.
+The remaining cleanup test XML comment is corrected. Only the seven original-admission
+cases need a fresh runtime check; unchanged passing alias/entry/outcome/lease evidence
 above remains valid. Catalog completeness and scoped independent correction review
-remain open. Native Linux remains unexecuted.
+remain open. Native Linux remains unexecuted. Metadata assistance has prepared tests
+only in ignored scratch and awaits the B1/catalog gate before entering the compile tree.
 
 The first selection-only push after Actions enablement produced no registered run/check
 suite; workflow lookup still showed only the disabled general workflow. The meaningful
