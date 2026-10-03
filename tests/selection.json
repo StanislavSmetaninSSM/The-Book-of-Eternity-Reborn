@@ -2,11 +2,16 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-load-resource-inventory-publication",
-      "reason": "Only the actual many-member publication exceeded180 seconds; select its unchanged legal workload alone with existing boundary diagnostics to locate the cost, without replaying three passing bulk rows or extending controls.",
+      "category": "portable-storage-batch-admission",
+      "reason": "The measured pre-mutation cost motivates fresh-call parent deduplication; qualify every new batch grant/leaf/type/native parent replacement contract before the unchanged many-member performance row.",
       "contracts": [
         "LOAD-FS-005/007/008"
       ]
+    },
+    {
+      "category": "portable-storage-paths",
+      "reason": "The shared scope constructor and scalar leaf helper changed; preserve native path spelling, exact grants, absent/type/link refusal and non-following cleanup consumers.",
+      "contracts": ["LOAD-FS-001/006/008"]
     }
   ]
 }

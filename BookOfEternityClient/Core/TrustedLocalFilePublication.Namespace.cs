@@ -104,9 +104,12 @@ internal sealed partial class TrustedLocalFilePublication
         ValidateNamespaceJournal(journal);
         PreflightNamespace(lease, journal, exactAfter: false, exactBefore: true);
         attempt.NamespacePrepared = journal;
-        var scratch = NamespaceScratchScope(journal);
-        foreach (var path in NamespaceScratchPaths(journal))
-            if (File.Exists(scratch.ValidateFile(path))) throw Conflict("A namespace scratch name already exists.");
+        var nodes = journal.Members.ToDictionary(member => member.Path, MemberComparer);
+        var scratchPaths = NamespaceScratchPaths(journal, nodes).ToArray();
+        var scratch = NamespaceScratchScope(scratchPaths);
+        scratch.ValidateFiles(scratchPaths);
+        foreach (var path in scratchPaths)
+            if (File.Exists(path)) throw Conflict("A namespace scratch name already exists.");
         journal = WriteNamespaceJournal(IntentStage, journal);
         Observe(lease, observer, TrustedLocalPublicationPhase.IntentStaged);
         File.Move(_journalScope.ValidateFile(IntentStage, false), _journalScope.ValidateFile(Active), overwrite: false);
@@ -208,7 +211,7 @@ internal sealed partial class TrustedLocalFilePublication
                 throw Conflict("A protected boundary lacks its immutable covered ancestor.");
         }
         var occupied = nodes.Keys.Concat(boundaries.Keys).ToHashSet(MemberComparer);
-        foreach (var path in NamespaceScratchPaths(journal))
+        foreach (var path in NamespaceScratchPaths(journal, nodes))
         {
             if (!occupied.Add(path) || boundaries.Keys.Any(boundary =>
                 MemberComparer.Equals(path, boundary) || NamespaceWithin(path, boundary)))
@@ -309,9 +312,10 @@ internal sealed partial class TrustedLocalFilePublication
             throw Conflict("Namespace evidence belongs to another generation.");
         var nodes = journal.Members.ToDictionary(member => member.Path, MemberComparer);
         var boundaries = journal.Boundaries.ToDictionary(boundary => boundary.Path, MemberComparer);
-        var scratchPaths = NamespaceScratchPaths(journal).ToHashSet(MemberComparer);
-        var scratch = NamespaceScratchScope(journal);
-        foreach (var path in scratchPaths) scratch.ValidateFile(path);
+        var scratchNames = NamespaceScratchPaths(journal, nodes).ToArray();
+        var scratchPaths = scratchNames.ToHashSet(MemberComparer);
+        var scratch = NamespaceScratchScope(scratchNames);
+        scratch.ValidateFiles(scratchNames);
         foreach (var boundary in journal.Boundaries)
             if (!MatchesNamespaceBoundary(boundary)) throw Conflict("A protected namespace boundary changed.");
         foreach (var member in journal.Members.OrderBy(member => NamespaceDepth(member.Path)))
@@ -476,11 +480,15 @@ internal sealed partial class TrustedLocalFilePublication
     /// <param name="nodes">
     /// The one admitted node index reused for all names in this operation.
     /// </param>
+    /// <param name="validatedParents">
+    /// Optional ordinary parent names checked only during this synchronous enumeration. A <see langword="null"/>
+    /// value performs a fresh parent check for this individual staging or cleanup operation.
+    /// </param>
     /// <returns>
     /// An exact reserved scratch name outside convertible or protected subtrees.
     /// </returns>
     private string NamespaceScratchPath(NamespaceJournal journal, int index, bool rollback,
-        IReadOnlyDictionary<string, TrustedLocalNamespaceChange> nodes)
+        IReadOnlyDictionary<string, TrustedLocalNamespaceChange> nodes, ISet<string>? validatedParents = null)
     {
         var path = journal.Members[index].Path;
         var parent = Path.GetDirectoryName(path)!;
@@ -490,7 +498,8 @@ internal sealed partial class TrustedLocalFilePublication
                    anchor.After.Kind != TrustedLocalNamespaceKind.Directory)
                 parent = Path.GetDirectoryName(parent) ?? throw Conflict("A namespace file lacks a stable scratch anchor.");
         }
-        _scope.ValidateDirectory(parent, false);
+        if (validatedParents == null || validatedParents.Add(parent))
+            _scope.ValidateDirectory(parent, false);
         return Path.Combine(parent, $".boe-local-{journal.TransactionId}-{index}.{(rollback ? "undo" : "stage")}");
     }
 
@@ -500,30 +509,34 @@ internal sealed partial class TrustedLocalFilePublication
     /// <param name="journal">
     /// The admitted namespace inventory.
     /// </param>
+    /// <param name="nodes">
+    /// The node index already materialized for this admission or reconciliation operation.
+    /// </param>
     /// <returns>
     /// Exact names derived from the transaction and stable node indices.
     /// </returns>
-    private IEnumerable<string> NamespaceScratchPaths(NamespaceJournal journal)
+    private IEnumerable<string> NamespaceScratchPaths(NamespaceJournal journal,
+        IReadOnlyDictionary<string, TrustedLocalNamespaceChange> nodes)
     {
-        var nodes = journal.Members.ToDictionary(member => member.Path, MemberComparer);
+        var validatedParents = new HashSet<string>(StringComparer.Ordinal);
         for (var index = 0; index < journal.Members.Length; index++)
             if (journal.Members[index].Before.Kind == TrustedLocalNamespaceKind.File || journal.Members[index].After.Kind == TrustedLocalNamespaceKind.File)
             {
-                yield return NamespaceScratchPath(journal, index, false, nodes);
-                yield return NamespaceScratchPath(journal, index, true, nodes);
+                yield return NamespaceScratchPath(journal, index, false, nodes, validatedParents);
+                yield return NamespaceScratchPath(journal, index, true, nodes, validatedParents);
             }
     }
 
     /// <summary>
     /// Constrains scratch cleanup to the exact names declared by this transaction.
     /// </summary>
-    /// <param name="journal">
-    /// The validated namespace evidence.
+    /// <param name="scratchPaths">
+    /// The exact scratch names already materialized for this operation from admitted namespace evidence.
     /// </param>
     /// <returns>
     /// An exact-file-only grant, with stable existing parents checked.
     /// </returns>
-    private TrustedLocalFileScope NamespaceScratchScope(NamespaceJournal journal) => new([], NamespaceScratchPaths(journal));
+    private static TrustedLocalFileScope NamespaceScratchScope(IReadOnlyCollection<string> scratchPaths) => new([], scratchPaths);
 
     /// <summary>
     /// Reconciles known ordinary nodes nonrecursively, then publishes the generation file last.
@@ -545,7 +558,7 @@ internal sealed partial class TrustedLocalFilePublication
     {
         var nodes = journal.Members.ToDictionary(member => member.Path, MemberComparer);
         var indexed = journal.Members.Select((member, index) => (Member: member, Index: index)).ToArray();
-        var scratch = NamespaceScratchScope(journal);
+        var scratch = NamespaceScratchScope(NamespaceScratchPaths(journal, nodes).ToArray());
         TrustedLocalNamespaceImage Target(TrustedLocalNamespaceChange member) => after ? member.After : member.Before;
         TrustedLocalNamespaceObservation Recheck(TrustedLocalNamespaceChange member)
         {
@@ -625,7 +638,7 @@ internal sealed partial class TrustedLocalFilePublication
     {
         PreflightNamespace(lease, journal, exactAfter: journal.Committed, exactBefore: !journal.Committed);
         var nodes = journal.Members.ToDictionary(member => member.Path, MemberComparer);
-        var scratch = NamespaceScratchScope(journal);
+        var scratch = NamespaceScratchScope(NamespaceScratchPaths(journal, nodes).ToArray());
         for (var index = 0; index < journal.Members.Length; index++)
         {
             var member = journal.Members[index];

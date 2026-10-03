@@ -89,6 +89,16 @@ internal sealed class TrustedLocalFileScope
         }
     }
 
+    /// <summary>
+    /// Normalizes explicit grants and checks their ordinary directory ancestors for this construction.
+    /// </summary>
+    /// <param name="roots">
+    /// Explicit directory roots; the sequence must not be <see langword="null"/>. Each root must have an existing
+    /// safe parent, while the root itself may be absent.
+    /// </param>
+    /// <param name="exactFiles">
+    /// Optional exact file names with existing safe parents. A <see langword="null"/> sequence adds no exact grants.
+    /// </param>
     internal TrustedLocalFileScope(IEnumerable<string> roots, IEnumerable<string>? exactFiles = null)
     {
         ArgumentNullException.ThrowIfNull(roots);
@@ -104,21 +114,72 @@ internal sealed class TrustedLocalFileScope
             ValidateDirectories(parent, allowMissing: false);
             ValidateDirectories(root, allowMissing: true);
         }
-        foreach (var file in _exactFiles)
-            ValidateDirectories(Path.GetDirectoryName(file)!, allowMissing: false);
+        foreach (var parent in _exactFiles.Select(file => Path.GetDirectoryName(file)!).Distinct(PathComparer))
+            ValidateDirectories(parent, allowMissing: false);
     }
 
+    /// <summary>
+    /// Freshly checks one granted file's ancestors and ordinary or missing leaf without opening it.
+    /// </summary>
+    /// <param name="path">
+    /// The absolute granted file name to normalize and inspect.
+    /// </param>
+    /// <param name="allowMissing">
+    /// Whether an absent leaf is accepted. A required absent file throws <see cref="FileNotFoundException"/>.
+    /// </param>
+    /// <returns>
+    /// The normalized granted name after all ancestor and leaf checks succeed.
+    /// </returns>
     internal string ValidateFile(string path, bool allowMissing = true)
     {
         var normalized = Normalize(path);
         EnsureAllowed(normalized, file: true);
         ValidateDirectories(Path.GetDirectoryName(normalized)!, allowMissing: true);
+        ValidateFileLeaf(normalized, allowMissing);
+        return normalized;
+    }
+
+    /// <summary>
+    /// Admits a complete read-only file request with fresh parent checks shared only within this call.
+    /// </summary>
+    /// <param name="paths">
+    /// Absolute file names to materialize, normalize and check against the existing grants before physical admission.
+    /// The sequence must not be <see langword="null"/>; an empty sequence returns an empty result.
+    /// </param>
+    /// <param name="allowMissing">
+    /// Whether absent leaves are accepted. Links, special entries and regular-file ancestors are always refused.
+    /// </param>
+    /// <returns>
+    /// Normalized admitted names in request order, including duplicates. This call creates no files or directories;
+    /// later operations must perform their own fresh validation.
+    /// </returns>
+    internal string[] ValidateFiles(IEnumerable<string> paths, bool allowMissing = true)
+    {
+        ArgumentNullException.ThrowIfNull(paths);
+        var normalized = paths.Select(Normalize).ToArray();
+        foreach (var path in normalized) EnsureAllowed(path, file: true);
+        foreach (var parent in normalized.Select(path => Path.GetDirectoryName(path)!).Distinct(PathComparer))
+            ValidateDirectories(parent, allowMissing: true);
+        foreach (var path in normalized) ValidateFileLeaf(path, allowMissing);
+        return normalized;
+    }
+
+    /// <summary>
+    /// Checks a normalized leaf after its grant and ancestors have been admitted by the current operation.
+    /// </summary>
+    /// <param name="normalized">
+    /// The normalized granted file name with freshly validated ancestors.
+    /// </param>
+    /// <param name="allowMissing">
+    /// Whether a missing leaf is accepted instead of throwing <see cref="FileNotFoundException"/>.
+    /// </param>
+    private static void ValidateFileLeaf(string normalized, bool allowMissing)
+    {
         var kind = Probe(normalized);
         if (kind == EntryKind.Missing && !allowMissing)
             throw new FileNotFoundException("The required local file is absent.", normalized);
         if (kind is not (EntryKind.RegularFile or EntryKind.Missing))
             throw new InvalidDataException("The local file path is not a regular file: " + normalized);
-        return normalized;
     }
 
     internal string EnsureDirectory(string path)

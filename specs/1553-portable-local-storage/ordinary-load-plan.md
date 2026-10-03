@@ -238,6 +238,47 @@ No production change or resource-limit extension precedes this causal diagnosis.
 Preparation results remain independently established; changed production will select
 its affected consumers and resource rows, not unrelated accepted save/client suites.
 
+### T032-B3-RESOURCE-ADMISSION — measured repeated-parent work
+
+**Owner-authorized plan amendment, 2026-10-04.** At `97d68378`, the unchanged
+8,192-entry publication again reached its 180-second child guard. Its retained
+progress places canonical lock opening at 76.60 seconds and shows no first mutation
+admission before termination. This establishes the expensive pre-mutation interval;
+it does not separately time each helper. Actual evidence is retained under
+`recovery/evidence/load-resource-inventory-diagnosis/`. Cleanup and selection completed.
+
+The source investigation found repeated full ancestor probes for thousands of
+transaction scratch names sharing the same stable parents. Implement one bounded
+optimization in `TrustedLocalFileScope.cs` and `TrustedLocalFilePublication.Namespace.cs`:
+
+- Deduplicate exact-file parent validation with the existing ordinal comparer inside
+  each fresh constructor. Add a synchronous read-only batch file admission that first
+  normalizes/checks every explicit grant, validates each distinct parent within that
+  call, and still probes every leaf with the scalar missing/type/link rules.
+- Derive namespace scratch names and its node index once per admission enumeration;
+  validate distinct stable anchors within that enumeration. Reuse the materialized
+  exact names for its exact-file scope and fresh batch leaf preflight.
+- Do not cache physical observations across calls, callbacks or mutations. Keep
+  per-file staging, rename and cleanup checks, complete node/hash/generation/boundary
+  admission, direct-child inventory, native spelling and missing/type behavior.
+  Keep `ResolveLoadNamespacePath` and its per-hook behavior unchanged in this block.
+- Add focused batch contracts for exact grants, late invalid leaves and changed
+  parents, plus actual native link admission. Native Linux remains explicitly unrun.
+  Existing actual many publication is the measured performance RED; an absent new
+  API/compilation failure is not a product RED.
+- Run the narrow path/batch contracts, then fresh many publication with the original
+  workload and unchanged 768 MiB heap/1 GiB RSS/5 GiB disk/180-second child controls.
+  Inspect the actual reached boundaries. If insufficient, diagnose the next measured
+  bottleneck rather than repeating this hypothesis or silently extending controls.
+  Select affected namespace/cold/compatibility and resource owners after the change;
+  do not run unrelated accepted save/client suites. Independent Sol 6.1 XHigh reviews
+  the coherent correction, original requirements, actual diff and retained evidence.
+
+This refines the already authorized resource implementation without changing
+LOAD-FS-001–008, v1/v2/v3 authority, archive limits or the public client boundary.
+Canonical spec/plan/tasks remain aligned; the autonomous review waiver covers the
+written recommended revision, while independent review and measured acceptance remain.
+
 ### T032-B5-FS — native Linux CI and durable downstream handback
 
 **Files:** bounded workflow/selection, feature quickstart/recovery docs/checkpoint/handoff; affected catalog contracts if runner integration changes. **Consumes:** accepted blocks above. **Produces:** Windows+Linux filesystem qualification and verified callable handoff, not public-client acceptance.
