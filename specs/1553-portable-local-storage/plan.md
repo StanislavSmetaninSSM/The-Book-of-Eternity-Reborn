@@ -238,6 +238,20 @@ directories/library, never the implementation's namespace plan. Every announced 
 waits for parent termination; fresh normal acquisition runs without exact private
 extraction. Generation regions/bytes, source/library, complete names and repeated
 decisions are asserted. No native Linux, envelope or public-client result is implied.
+At clean `e25591edea072aeeb65628718bf815f56e7dc06f`, fresh XML-enabled native Windows
+passed all 33 selected cases: 19 cold decision/conflict/scratch, 10 cold topology and
+four preserved host/reader dispatch controls, no skips/duplicates, complete selection/
+cleanup, 4:57.690. Exact [artifacts](recovery/evidence/load-cold-green/summary.json)
+retain child cut/OS/path/frame/generation/RSS/time reports. Category wall times are
+77.138/45.217/12.985 seconds; fresh build took 149.635 seconds. The first actual run
+needed no source/test correction. Same-source NoBuild discovery-only
+[audit](recovery/evidence/load-cold-catalog/catalog-audit.json) passed 212 categories/
+10,549 methods with no unmapped/stale selectors and no execution, complete cleanup,
+0:20.997. Four compiled [XML documents](recovery/evidence/load-cold-catalog/xml.json)
+parse, with no touched-file reference warning and the same three unrelated CS1587.
+Independent Sol 6.1 XHigh source/contract review found no actionable issue; final
+actual-evidence review remains pending. Resource probes are drafted only in ignored
+scratch while this immutable source qualifies; no bulk/native Linux result is claimed.
 Process checkpoint: independent review caught a real generation-absence rollback
 defect. Runtime exposed a transient-fault expectation error and the now-obsolete v3
 unknown-version fixture; each received a scoped correction with original requirements

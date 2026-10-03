@@ -1,0 +1,110 @@
+{
+  "Categories": [
+    "portable-load-cold-decision",
+    "portable-load-cold-topology",
+    "portable-storage-stream-dispatch"
+  ],
+  "Reasons": [
+    {
+      "contracts": [
+        "LOAD-FS-002/003/004/006/007"
+      ],
+      "reason": "New actual current-producer typed-load process cuts and independent journal-only decisions/conflicts/scratch:19 isolatedcases, no extraction atfreshacquisition.",
+      "category": "portable-load-cold-decision"
+    },
+    {
+      "contracts": [
+        "LOAD-FS-002/003/006/007"
+      ],
+      "reason": "New actual forward and rollback structural/file/generation cuts followedbyfresh/repeated canonicalacquisition:10 isolatedcases.",
+      "category": "portable-load-cold-topology"
+    },
+    {
+      "contracts": [
+        "Preserved existing ownedhostdispatch and oldreaderauthority"
+      ],
+      "reason": "Owned child host dispatch adds distinct load modes; retain exact old stream-recover and bounded v1/v2/unknown framing consumers, without save/resource sweep.",
+      "category": "portable-storage-stream-dispatch"
+    }
+  ],
+  "Revision": {
+    "Head": "e25591edea072aeeb65628718bf815f56e7dc06f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 156.6961434,
+  "Descriptors": [
+    {
+      "Name": "portable-load-cold-decision-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-load-cold-decision",
+      "Categories": [
+        "portable-load-cold-decision"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.ColdUnknownLaterMemberRetainsAllEarlierStateAndEvidence|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.FreshAcquisitionRecoversActualLoadWithoutExtractionSources|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.IncompleteExactOwnedScratchRecoversCompleteBeforeDecision",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 8,
+      "EstimatedCases": 19,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.ColdUnknownLaterMemberRetainsAllEarlierStateAndEvidence",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.FreshAcquisitionRecoversActualLoadWithoutExtractionSources",
+          "Cases": 13
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.IncompleteExactOwnedScratchRecoversCompleteBeforeDecision",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-load-cold-topology-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-load-cold-topology",
+      "Categories": [
+        "portable-load-cold-topology"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.InterruptedTopologyRecoveryConvergesWithoutExtraction",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 8,
+      "EstimatedCases": 10,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.InterruptedTopologyRecoveryConvergesWithoutExtraction",
+          "Cases": 10
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-stream-dispatch-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-stream-dispatch",
+      "Categories": [
+        "portable-storage-stream-dispatch"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamDispatchTests.PlausibleV1PreservesReorderedPropertiesAndLongLeadingWhitespace|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamDispatchTests.UnknownLargeFrameRejectsBeforeLegacyWholeFileAllocation",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamDispatchTests.PlausibleV1PreservesReorderedPropertiesAndLongLeadingWhitespace",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamDispatchTests.UnknownLargeFrameRejectsBeforeLegacyWholeFileAllocation",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}
