@@ -4,6 +4,41 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T032-B1 first causal entry WIP — 2026-10-02
+
+Independent Astra XHigh design review and coordinator acceptance completed at
+`05105d58d9a4167bb96c446ea3c26eefabe47122`, tree `302c240a57120a836b34906429345c61ac2d60b4`.
+All three admission/source/settings P2s and the final per-member writer-flush P2 are closed.
+T032-B0 is complete; T032-B1 implementation remains open. The approved [load plan](ordinary-load-plan.md)
+and source/ref branch remain unchanged. Work is cloud-only; no desktop/native handoff.
+
+This first source/test WIP adds `Services/SaveLoadService.Loading.cs` with only the typed
+result and an explicitly unimplemented internal entry returning NotLoaded plus
+NotImplementedException. Public `LoadGameAsync`, actual callers and the shared codec are
+unchanged. `PortableLoadReplacementTests.cs` adds six integration methods/nine cases:
+current-producer connected replacement preserving the complete library and root import.zip;
+named second-member rollback; archive/retained-live config normalization (two); both-absent
+defaults without persistence; direct same-root bound refusal followed by an allowed unbound
+load; exact/ancestor/descendant selected-source collisions (three). Each fixture owns its
+mutable root, uses the real public save producer and validates its soul/resource archive
+before the load call. Negative cases assert precise guard type/message; generic missing
+behavior cannot pass them. Positive/rollback cases require actual preparation and B1 cuts.
+
+The new `portable-load-entry` owner explicitly selects those six methods; `tests/selection.json`
+now describes only this nine-case causal block. Three-minute category bound, no frontend build,
+no shared fixtures. No accepted-save owner, shared-codec runtime repeat, old Load diagnostic or
+whole-suite run belongs to this invocation. Cold/resource, full topology, actual clients and
+native proof remain later gates; these tests do not imply them.
+
+**Not run at this source checkpoint:** fresh build, PlanOnly, behavioral RED, catalog audit
+or any application/provider. Preserve this exact WIP remotely before execution. Next commands,
+from the checkout with task-local supported toolchain/telemetry opt-outs and fresh mutable
+CLI/XDG/HTTP/plugin/scratch/temp directories (HOME/CODEX_HOME unchanged, existing immutable
+NuGet packages reused): `pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-load-entry -PlanOnly -Parallelism 1`,
+then the same category with `-NoBuild` only after the successful fresh selected build.
+Record expected/completed counts and fixture/setup/compiler failures separately from genuine
+missing-behavior RED. Publish exact evidence before the connected implementation continues.
+
 ## T032-B0 ordinary-load design WIP — 2026-10-02
 
 ### Writer-buffer clarification — 2026-10-02

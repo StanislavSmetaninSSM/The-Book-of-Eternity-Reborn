@@ -10222,6 +10222,36 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-load-entry",
+      "responsibility": "T032-B1 actual typed ordinary-load entry using current public-producer archives: connected same-shape replacement and late-member rollback, preserved complete library and selected source outside saves, receiver-independent archive/live/absent settings, and direct nested-bound admission. Each case owns its mutable root and asserts its exact preparation, decision or refusal boundary.",
+      "excludes": "Public bool/console/browser cutover, full file-directory conversion, cold/resource envelope, original physical Load diagnostic, provider/live gameplay, and accepted save-only or shared-codec regression sweeps.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+        "BookOfEternityClient/Core/FileSystemManager.LoadReplacement.cs",
+        "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadPublishesOneReplacementAndPreservesSelectedRootArchive",
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.LaterMemberFailureRestoresCompleteSessionSourceLibraryAndGeneration",
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes",
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.BothConfigsAbsentUsesFreshDefaultsWithoutPersistingConfiguration",
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.BoundInvocationRejectsBeforePreparationAndUnboundLoadRemainsAvailable",
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology"
+          ]
+        }
+      ]
     }
   ]
 }
