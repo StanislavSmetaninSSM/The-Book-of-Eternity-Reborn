@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="35781de0-3b69-4a06-add2-0869ecca41f3" name="Eja@HOME-PC 2026-10-04 02:21:36" runUser="HOME-PC\Eja" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-04T02:21:37.0104662+10:00" queuing="2026-10-04T02:21:37.0104666+10:00" start="2026-10-04T02:21:31.5132621+10:00" finish="2026-10-04T02:21:41.8759967+10:00" />
+  <TestSettings name="default" id="60a3c616-ac24-4138-b9c2-f6554c71d710">
+    <Deployment runDeploymentRoot="Eja_HOME-PC_2026-10-04_02_21_36" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="59fc5ac3-18c3-44fc-b53c-41eb7a0a542b" testId="94b5a529-6c03-937e-2af6-1826828022f6" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.OriginalArchiveAndResourceAdmissionRejectsBeforePortableDecision(corruption: &quot;corrupt-zip&quot;)" computerName="HOME-PC" duration="00:00:00.7036391" startTime="2026-10-04T02:21:38.2292950+10:00" endTime="2026-10-04T02:21:38.2292953+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="59fc5ac3-18c3-44fc-b53c-41eb7a0a542b">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=&#xD;
+System.IO.InvalidDataException: Save archive is missing its end-of-central-directory record.&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.ValidateTrustedArchiveBeforeMaterialization(Stream archiveStream) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.cs:line 975&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 313&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 401&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 172&#xD;
+System.IO.InvalidDataException: Save archive is missing its end-of-central-directory record.&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.ValidateTrustedArchiveBeforeMaterialization(Stream archiveStream) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.cs:line 975&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 313&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 401&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 172</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5c8c61c1-c360-4746-be82-a500e3698b88" testId="91809033-8c18-597a-35d1-b91834ddf18c" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchivePreflight_RejectsCentralDirectoryMetadataBeforeZipArchiveMaterialization(attack: &quot;entry-name-metadata&quot;)" computerName="HOME-PC" duration="00:00:00.9107239" startTime="2026-10-04T02:21:40.2167322+10:00" endTime="2026-10-04T02:21:40.2167324+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5c8c61c1-c360-4746-be82-a500e3698b88" />
+    <UnitTestResult executionId="cd21d315-1a69-4d22-9cc5-20b6d860c4c7" testId="91460508-1af5-f781-56b5-3f125b0c629a" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.OriginalArchiveAndResourceAdmissionRejectsBeforePortableDecision(corruption: &quot;missing-resource&quot;)" computerName="HOME-PC" duration="00:00:01.2113822" startTime="2026-10-04T02:21:36.6734654+10:00" endTime="2026-10-04T02:21:36.6735358+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cd21d315-1a69-4d22-9cc5-20b6d860c4c7">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=&#xD;
+System.IO.InvalidDataException: Save archive is missing mandatory canonical state 'game_state/resources/resource_definitions.json'.&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.ReadRequiredResourceEntryAsync(IReadOnlyDictionary`2 payloadEntries, String path) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.cs:line 1462&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.ValidateArchivedResourceStateAsync(IReadOnlyDictionary`2 payloadEntries) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.cs:line 1438&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.ValidateArchiveStructureAsync(ZipArchive archive, String stagingSessionRoot) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.cs:line 1273&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 315&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 401&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 172&#xD;
+System.IO.InvalidDataException: Save archive is missing mandatory canonical state 'game_state/resources/resource_definitions.json'.&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.ReadRequiredResourceEntryAsync(IReadOnlyDictionary`2 payloadEntries, String path) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.cs:line 1462&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.ValidateArchivedResourceStateAsync(IReadOnlyDictionary`2 payloadEntries) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.cs:line 1438&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.ValidateArchiveStructureAsync(ZipArchive archive, String stagingSessionRoot) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.cs:line 1273&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 315&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 401&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 172</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="60279865-ad2a-450f-8781-5d3865862163" testId="28f2ae9f-85b1-7e5f-5518-cb2d0a90faef" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchivePreflight_AcceptsBoundedArchiveAndRestoresStreamPosition" computerName="HOME-PC" duration="00:00:00.6961963" startTime="2026-10-04T02:21:41.7385344+10:00" endTime="2026-10-04T02:21:41.7385346+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="60279865-ad2a-450f-8781-5d3865862163" />
+    <UnitTestResult executionId="2b015100-5f38-47e7-86a7-6ff39c6c4cad" testId="934db5be-90b6-9a5e-6bc9-b668fc8030f6" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchivePreflight_RejectsCentralDirectoryMetadataBeforeZipArchiveMaterialization(attack: &quot;entry-count&quot;)" computerName="HOME-PC" duration="00:00:00.8243556" startTime="2026-10-04T02:21:41.0413257+10:00" endTime="2026-10-04T02:21:41.0413260+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2b015100-5f38-47e7-86a7-6ff39c6c4cad" />
+    <UnitTestResult executionId="0dfbccae-efa9-4340-b3d7-1c87951c5c4a" testId="a70238b2-f22c-53ce-d753-e777a65289dc" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.OriginalArchiveAndResourceAdmissionRejectsBeforePortableDecision(corruption: &quot;unknown-owner&quot;)" computerName="HOME-PC" duration="00:00:00.8503885" startTime="2026-10-04T02:21:37.5250010+10:00" endTime="2026-10-04T02:21:37.5250011+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0dfbccae-efa9-4340-b3d7-1c87951c5c4a">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=&#xD;
+System.IO.InvalidDataException: Save archive resource authority is incompatible: resource_owner_unresolved.&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.ThrowInvalidResourceAuthority(String authorityName, IReadOnlyList`1 issues) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.cs:line 1574&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.ValidateResourceDocumentsAsync(String definitionsJson, String stateJson, String historyJson, String authorityName, Func`2 readOwnerDocumentAsync, Boolean requirePersistedAuthorityRoot) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.cs:line 1540&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.ValidateArchivedResourceStateAsync(IReadOnlyDictionary`2 payloadEntries) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.cs:line 1447&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.ValidateArchiveStructureAsync(ZipArchive archive, String stagingSessionRoot) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.cs:line 1273&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 315&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 401&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 172&#xD;
+System.IO.InvalidDataException: Save archive resource authority is incompatible: resource_owner_unresolved.&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.ThrowInvalidResourceAuthority(String authorityName, IReadOnlyList`1 issues) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.cs:line 1574&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.ValidateResourceDocumentsAsync(String definitionsJson, String stateJson, String historyJson, String authorityName, Func`2 readOwnerDocumentAsync, Boolean requirePersistedAuthorityRoot) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.cs:line 1540&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.ValidateArchivedResourceStateAsync(IReadOnlyDictionary`2 payloadEntries) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.cs:line 1447&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.ValidateArchiveStructureAsync(ZipArchive archive, String stagingSessionRoot) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.cs:line 1273&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 315&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 401&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 172</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="75e7e147-751a-442a-8c13-d201a5ea29f5" testId="60fa49fa-9418-0475-fc36-f52cd5d5f3f1" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchiveBudgets_AcceptExactLimitsAndRejectOverByOne" computerName="HOME-PC" duration="00:00:01.0682469" startTime="2026-10-04T02:21:39.3058261+10:00" endTime="2026-10-04T02:21:39.3058263+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="75e7e147-751a-442a-8c13-d201a5ea29f5" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchivePreflight_RejectsCentralDirectoryMetadataBeforeZipArchiveMaterialization(attack: &quot;entry-name-metadata&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="91809033-8c18-597a-35d1-b91834ddf18c">
+      <Execution id="5c8c61c1-c360-4746-be82-a500e3698b88" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="TrustedArchivePreflight_RejectsCentralDirectoryMetadataBeforeZipArchiveMaterialization" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.OriginalArchiveAndResourceAdmissionRejectsBeforePortableDecision(corruption: &quot;unknown-owner&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="a70238b2-f22c-53ce-d753-e777a65289dc">
+      <Execution id="0dfbccae-efa9-4340-b3d7-1c87951c5c4a" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="OriginalArchiveAndResourceAdmissionRejectsBeforePortableDecision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchivePreflight_RejectsCentralDirectoryMetadataBeforeZipArchiveMaterialization(attack: &quot;entry-count&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="934db5be-90b6-9a5e-6bc9-b668fc8030f6">
+      <Execution id="2b015100-5f38-47e7-86a7-6ff39c6c4cad" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="TrustedArchivePreflight_RejectsCentralDirectoryMetadataBeforeZipArchiveMaterialization" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.OriginalArchiveAndResourceAdmissionRejectsBeforePortableDecision(corruption: &quot;corrupt-zip&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="94b5a529-6c03-937e-2af6-1826828022f6">
+      <Execution id="59fc5ac3-18c3-44fc-b53c-41eb7a0a542b" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="OriginalArchiveAndResourceAdmissionRejectsBeforePortableDecision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchivePreflight_AcceptsBoundedArchiveAndRestoresStreamPosition" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="28f2ae9f-85b1-7e5f-5518-cb2d0a90faef">
+      <Execution id="60279865-ad2a-450f-8781-5d3865862163" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="TrustedArchivePreflight_AcceptsBoundedArchiveAndRestoresStreamPosition" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchiveBudgets_AcceptExactLimitsAndRejectOverByOne" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="60fa49fa-9418-0475-fc36-f52cd5d5f3f1">
+      <Execution id="75e7e147-751a-442a-8c13-d201a5ea29f5" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="TrustedArchiveBudgets_AcceptExactLimitsAndRejectOverByOne" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.OriginalArchiveAndResourceAdmissionRejectsBeforePortableDecision(corruption: &quot;missing-resource&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="91460508-1af5-f781-56b5-3f125b0c629a">
+      <Execution id="cd21d315-1a69-4d22-9cc5-20b6d860c4c7" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="OriginalArchiveAndResourceAdmissionRejectsBeforePortableDecision" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="94b5a529-6c03-937e-2af6-1826828022f6" executionId="59fc5ac3-18c3-44fc-b53c-41eb7a0a542b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="91809033-8c18-597a-35d1-b91834ddf18c" executionId="5c8c61c1-c360-4746-be82-a500e3698b88" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="91460508-1af5-f781-56b5-3f125b0c629a" executionId="cd21d315-1a69-4d22-9cc5-20b6d860c4c7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="28f2ae9f-85b1-7e5f-5518-cb2d0a90faef" executionId="60279865-ad2a-450f-8781-5d3865862163" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="934db5be-90b6-9a5e-6bc9-b668fc8030f6" executionId="2b015100-5f38-47e7-86a7-6ff39c6c4cad" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a70238b2-f22c-53ce-d753-e777a65289dc" executionId="0dfbccae-efa9-4340-b3d7-1c87951c5c4a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="60fa49fa-9418-0475-fc36-f52cd5d5f3f1" executionId="75e7e147-751a-442a-8c13-d201a5ea29f5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="7" executed="7" passed="7" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.68]   Discovering: BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:00:03.13]   Discovered:  BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:00:03.16]   Starting:    BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:00:09.52]   Finished:    BookOfEternityClient.IntegrationTests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

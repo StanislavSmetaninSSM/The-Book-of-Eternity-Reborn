@@ -12,7 +12,8 @@ Execution plan revision 1 and its concrete v3 schema are therefore authorized.
 Independent Sol 6.1 XHigh design review passed `8ca3fbca`; its scoped proof readback
 also passed `532a0f36`. This accepts the design/tracking gate only, not load code.
 
-Current task: T032-B1-FIX; original baseline was `5d2aa2ce`.
+Current task: T032-B1-METADATA; T032-B1-FIX is cleared for code/native Windows,
+while the separate native Linux gate remains open. Original baseline was `5d2aa2ce`.
 Five-fix candidate source is now written after the recorded causal baseline:
 Trim rejection and immutable declared-path canonicalization precede extraction/classification;
 acquisition wraps only ordinary recovery at SessionReplacement and preserves coordinated
@@ -46,11 +47,30 @@ test fixture had a stale persisted authority root and incorrectly expected an ow
 where production reports issue codes; this was a fixture defect, not a production regression.
 The correction establishes ledger/history agreement, composes and persists matching
 authority, and asserts `resource_owner_unresolved` while excluding `root_stale`.
-The remaining cleanup test XML comment is corrected. Only the seven original-admission
-cases need a fresh runtime check; unchanged passing alias/entry/outcome/lease evidence
-above remains valid. Catalog completeness and scoped independent correction review
-remain open. Native Linux remains unexecuted. Metadata assistance has prepared tests
-only in ignored scratch and awaits the B1/catalog gate before entering the compile tree.
+The remaining cleanup test XML comment is corrected. Fresh XML-enabled native Windows
+verification at `60e539cf49fefb2d20edc2065aa3b8eb374f82e2` passed 7/7 original-admission
+cases, no skips/duplicates, cleanup complete, 3:19.990; exact
+[artifacts](recovery/evidence/load-original-green/summary.json) are saved. Client/integration
+XML documentation parsed; no touched-file XML reference warning occurred (three existing
+unrelated CS1587 warnings remain). The same clean source's discovery-only
+[catalog audit](recovery/evidence/load-fix-catalog/catalog-audit.json) passed 203 categories,
+10,520 methods/files, no unmapped/stale selectors, no test execution, cleanup complete,
+1:29.822. Independent Sol 6.1 XHigh inspected source and actual evidence and cleared
+B1 code/native Windows with all findings resolved. Distinct retained evidence covers
+aliases 24, entry 9, admission 7, outcomes 4 and lease consumers 9; this is not a new
+combined 53-case run. Metadata assistance prepared tests in ignored scratch and may now
+enter the compile tree under its new narrow owner for causal RED before production.
+Native Linux remains unexecuted; metadata, topology/cold/resources and public-client
+acceptance are not implied by this B1 correction gate.
+
+Process checkpoint: independent review found the real mixed-directory inventory defect,
+but initially missed the admission fixture's persisted-root mismatch; the real typed
+runtime exposed it and one fixture correction rerun resolved it. No other correctness
+findings were reported. The 40-case run spent 185.283 seconds building versus about
+62 seconds executing selected categories; the seven-case correction run took 3:19.990.
+Build/preparation dominates these cohorts, so unchanged passing controls are retained
+and future work uses one coherent codec owner plus separate review, not per-helper
+review cycles. No token/cost savings or overall model-quality improvement is inferred.
 
 The first selection-only push after Actions enablement produced no registered run/check
 suite; workflow lookup still showed only the disabled general workflow. The meaningful
