@@ -142,6 +142,9 @@ B2 begins with four connected real-producer tests covering both conversion direc
 empty/nonempty directory replacement and harmless old empty-directory preservation.
 The new `portable-load-topology` owner selects only these cases for the unchanged
 same-shape adapter's causal baseline. No v3 production implementation precedes this RED.
+The first build at `24006de6` exposed a missing Services using in the newly installed
+test partial. No tests executed, so this is a preparation failure rather than causal
+RED. The import is corrected before the fresh selected rerun; production is unchanged.
 The parent owns namespace observation/preflight/reconciliation and load integration;
 the retained Sol 6.1 High codec implementer may own only the separate v3 descriptor/frame
 files after release. This bounded delegation reuses known cursor machinery without

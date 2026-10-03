@@ -1,5 +1,6 @@
 using System.IO.Compression;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
