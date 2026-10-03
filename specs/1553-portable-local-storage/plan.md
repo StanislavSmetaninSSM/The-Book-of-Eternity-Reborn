@@ -13,6 +13,20 @@ Independent Sol 6.1 XHigh design review passed `8ca3fbca`; its scoped proof read
 also passed `532a0f36`. This accepts the design/tracking gate only, not load code.
 
 Current task: T032-B1-FIX, baseline production/tests still `5d2aa2ce`.
+Five-fix candidate source is now written after the recorded causal baseline:
+Trim rejection and finite eight-path canonicalization precede extraction/classification;
+acquisition wraps only ordinary recovery at SessionReplacement and preserves coordinated
+uncertainty through release failure; private preparation/cleanup carries both causes,
+source and owned residue; Uncertain never claims an established generation and always
+needs follow-up. Four directory-alias controls and original-manifest-hash refusal extend
+alias ownership to 19 cases; outcomes remain 4, entry 9. Current candidate is unbuilt
+and unverified; the next bounded fresh-build call selects these 32 load cases.
+The fixed-path consumer audit and affected acquisition consumers remain before acceptance.
+
+The first selection-only push after Actions enablement produced no registered run/check
+suite; workflow lookup still showed only the disabled general workflow. A meaningful
+workflow-file update plus selected candidate push will check registration once; no
+Linux qualification is claimed. This is CI activation diagnosis, not archive screening.
 WIP infrastructure: the new branch-push Linux workflow and explicit alias/outcome
 selection are prepared. The first Linux job is a causal baseline, expected to expose
 unfixed regressions; build/CI/catalog/native acceptance are not yet claimed. A fresh

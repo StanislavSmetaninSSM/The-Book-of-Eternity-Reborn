@@ -23,6 +23,40 @@ internal sealed record LoadReplacementResult(LoadReplacementDisposition Disposit
     };
 }
 
+/// <summary>
+/// Retains the two failures and the owned private residue when load preparation cannot clean up.
+/// This exception does not itself represent a canonical publication decision.
+/// </summary>
+internal sealed class LoadPreparationCleanupException : InvalidOperationException
+{
+    /// <summary>
+    /// Records the admitted source, owned staging directory and both preparation failures.
+    /// </summary>
+    /// <param name="sourcePath">
+    /// The exact admitted read-only archive path.
+    /// </param>
+    /// <param name="stagingRoot">
+    /// The owned private staging directory that could not be cleaned up.
+    /// </param>
+    /// <param name="preparationFailure">
+    /// The primary failure before publication authority was acquired.
+    /// </param>
+    /// <param name="cleanupFailure">
+    /// The additional failure while cleaning the private staging directory.
+    /// </param>
+    internal LoadPreparationCleanupException(string sourcePath, string stagingRoot,
+        Exception preparationFailure, Exception cleanupFailure)
+        : base("Load preparation failed and its private staging directory requires follow-up.",
+            new AggregateException(preparationFailure, cleanupFailure))
+    {
+        SourcePath = sourcePath;
+        StagingRoot = stagingRoot;
+    }
+
+    internal string SourcePath { get; }
+    internal string StagingRoot { get; }
+}
+
 /// <summary>Owns closed incoming images and the exact selected read-only archive until one decision.</summary>
 internal sealed class PreparedLoadArchive : IAsyncDisposable
 {
@@ -159,8 +193,14 @@ public partial class SaveLoadService
                 TrustedLocalPublicationDisposition.RolledBack => LoadReplacementDisposition.RolledBack,
                 _ => LoadReplacementDisposition.Uncertain
             }, candidate.SourcePath,
-                outcome.Disposition == TrustedLocalPublicationDisposition.Committed ? replacement : generation.Binding.Id,
-                outcome.Failure != null, outcome.Failure,
+                outcome.Disposition switch
+                {
+                    TrustedLocalPublicationDisposition.Committed => replacement,
+                    TrustedLocalPublicationDisposition.RolledBack => generation.Binding.Id,
+                    _ => null
+                },
+                outcome.Failure != null || outcome.Disposition == TrustedLocalPublicationDisposition.Uncertain,
+                outcome.Failure,
                 outcome.Disposition == TrustedLocalPublicationDisposition.Uncertain);
 
             if (result.Disposition == LoadReplacementDisposition.Committed)
@@ -179,8 +219,10 @@ public partial class SaveLoadService
             else
             {
                 var uncertain = failure is CoordinatedStatePublicationUncertainException;
+                var preparationDebt = failure as LoadPreparationCleanupException;
                 result = new(uncertain ? LoadReplacementDisposition.Uncertain : LoadReplacementDisposition.NotLoaded,
-                    candidate?.SourcePath, null, uncertain, failure, uncertain || failure is SessionReplacedException);
+                    candidate?.SourcePath ?? preparationDebt?.SourcePath, null,
+                    uncertain || preparationDebt != null, failure, uncertain || failure is SessionReplacedException);
             }
         }
         finally
@@ -239,6 +281,9 @@ public partial class SaveLoadService
                 {
                     if (string.IsNullOrEmpty(entry.Name)) continue;
                     var relative = NormalizeArchiveEntryPath(stagingRoot, entry.FullName);
+                    if (!relative.Equals(relative.Trim(), StringComparison.Ordinal))
+                        throw new InvalidDataException($"Load payload '{relative}' does not use canonical spelling.");
+                    relative = CanonicalizeFixedLoadStatePath(relative);
                     if (relative.Equals("saves", StringComparison.OrdinalIgnoreCase) ||
                         relative.StartsWith("saves/", StringComparison.OrdinalIgnoreCase))
                         throw new InvalidDataException("A save archive cannot replace the live saves library.");
@@ -308,10 +353,41 @@ public partial class SaveLoadService
                         await _hooks.BeforeLoadPreparationCleanupAsync(stagingRoot);
                     new TrustedLocalFileScope([stagingRoot]).DeleteOwnedTree(stagingRoot);
                 }
-                catch (Exception cleanup) { throw new AggregateException("Load preparation failed and private scratch requires follow-up.", failure, cleanup); }
+                catch (Exception cleanup)
+                {
+                    throw new LoadPreparationCleanupException(fullPath, stagingRoot, failure, cleanup);
+                }
             }
             throw;
         }
+    }
+
+    /// <summary>
+    /// Maps only the fixed runtime-consumed state paths after original archive validation.
+    /// </summary>
+    /// <param name="relative">
+    /// The normalized, canonically spaced relative payload path.
+    /// </param>
+    /// <returns>
+    /// The fixed canonical path when matched ignoring case; otherwise the unchanged payload path.
+    /// </returns>
+    private static string CanonicalizeFixedLoadStatePath(string relative)
+    {
+        string[] fixedPaths =
+        [
+            SoulStateArchivePath,
+            ResourceMaterializationContract.DefinitionsPath,
+            ResourceMaterializationContract.StatePath,
+            ResourceMaterializationContract.HistoryPath,
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            "config.json",
+            AfterlifeEntityProfileState.StatePath,
+            ShiningAbodeState.StatePath
+        ];
+        foreach (var canonical in fixedPaths)
+            if (relative.Equals(canonical, StringComparison.OrdinalIgnoreCase))
+                return canonical;
+        return relative;
     }
 
     private static void ValidateLoadSourceCollision(string destination, string source)

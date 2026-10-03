@@ -1,5 +1,8 @@
 name: Portable load selected Linux qualification
 
+# Deliberately trigger only an edited filesystem selection or this workflow.
+# The repository permits only the three actions referenced below.
+
 on:
   push:
     branches:

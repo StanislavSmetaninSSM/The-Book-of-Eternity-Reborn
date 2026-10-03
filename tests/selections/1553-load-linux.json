@@ -3,13 +3,24 @@
   "selections": [
     {
       "category": "portable-load-alias-admission",
-      "reason": "Deliberate native Linux causal baseline after enabling only the three required Actions patterns. Production/tests remain 5d2aa2ce; Windows reached the corrected Shining Abode fixture, aliases were 10 GREEN/4 causal RED at 37e2b87c evidence. Linux must exercise actual case-sensitive fixed-name behavior; unresolved reviewed defects are expected in this baseline.",
-      "contracts": ["#1553 LOAD-FS-001/002/004/008; actual typed load admission"]
+      "reason": "Five-fix block changes Trim admission and finite runtime path mapping after original archive validation. Select leaf/directory aliases, config/source collisions and original manifest-hash refusal; 19 current cases. Native Linux must exercise case-sensitive behavior rather than count Windows positives.",
+      "contracts": [
+        "#1553 LOAD-FS-001/002/004/008"
+      ]
     },
     {
       "category": "portable-load-outcomes",
-      "reason": "Native Linux causal baseline for the three unresolved outcome regressions plus the confirmed-commit control. Actual acquisition, preparation cleanup and post-generation decision cuts, with retained identity/evidence.",
-      "contracts": ["#1553 LOAD-FS-003/008; truthful load outcomes"]
+      "reason": "Recovery acquisition, failed private preparation cleanup, post-generation uncertainty and confirmed-commit refresh retain truthful typed outcomes. Four actual cuts; Windows baseline reproduced three RED plus one GREEN control.",
+      "contracts": [
+        "#1553 LOAD-FS-003/008"
+      ]
+    },
+    {
+      "category": "portable-load-entry",
+      "reason": "Changed orchestration retains nine actual current-producer complete replacement/rollback/library/source/settings/binding controls. No public-client cutover or save-only sweep.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/008"
+      ]
     }
   ]
 }

@@ -3,9 +3,23 @@
   "selections": [
     {
       "category": "portable-load-alias-admission",
-      "reason": "Fourteen newly qualified archive naming cases: Trim aliases refuse before mutation; valid finite authority case variants materialize canonically; invalid aliased config and post-mapping selected-source collision refuse. Current Windows producer preserves some on-disk casing, so blanket case rejection was corrected before runtime execution. Four outcome cases already have distinct causal evidence and are not repeated for this RED.",
+      "reason": "Five-fix block changes Trim admission and finite runtime path mapping after original archive validation. Select leaf/directory aliases, config/source collisions and original manifest-hash refusal; 19 current cases. Native Linux must exercise case-sensitive behavior rather than count Windows positives.",
       "contracts": [
-        "#1553 FR-002/004/006/008/015; current-produced archive support, canonical settings/resource/soul authority, protected library/source and ephemeral omission"
+        "#1553 LOAD-FS-001/002/004/008"
+      ]
+    },
+    {
+      "category": "portable-load-outcomes",
+      "reason": "Recovery acquisition, failed private preparation cleanup, post-generation uncertainty and confirmed-commit refresh retain truthful typed outcomes. Four actual cuts; Windows baseline reproduced three RED plus one GREEN control.",
+      "contracts": [
+        "#1553 LOAD-FS-003/008"
+      ]
+    },
+    {
+      "category": "portable-load-entry",
+      "reason": "Changed orchestration retains nine actual current-producer complete replacement/rollback/library/source/settings/binding controls. No public-client cutover or save-only sweep.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/008"
       ]
     }
   ]

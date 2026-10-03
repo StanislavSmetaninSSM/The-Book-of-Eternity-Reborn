@@ -9,22 +9,28 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class PortableLoadReplacementTests
 {
     [Theory]
-    [InlineData(SoulPath)]
-    [InlineData(ResourceMaterializationContract.DefinitionsPath)]
-    [InlineData(ResourceMaterializationContract.StatePath)]
-    [InlineData(ResourceMaterializationContract.HistoryPath)]
-    [InlineData(CanonicalResourceOwnerAuthorityComposer.AuthorityPath)]
-    [InlineData("config.json")]
-    [InlineData(AfterlifeEntityProfileState.StatePath)]
-    [InlineData(ShiningAbodeState.StatePath)]
-    public async Task FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(string canonical)
+    [InlineData(SoulPath, false)]
+    [InlineData(ResourceMaterializationContract.DefinitionsPath, false)]
+    [InlineData(ResourceMaterializationContract.StatePath, false)]
+    [InlineData(ResourceMaterializationContract.HistoryPath, false)]
+    [InlineData(CanonicalResourceOwnerAuthorityComposer.AuthorityPath, false)]
+    [InlineData("config.json", false)]
+    [InlineData(AfterlifeEntityProfileState.StatePath, false)]
+    [InlineData(ShiningAbodeState.StatePath, false)]
+    [InlineData(SoulPath, true)]
+    [InlineData(ResourceMaterializationContract.StatePath, true)]
+    [InlineData(AfterlifeEntityProfileState.StatePath, true)]
+    [InlineData(ShiningAbodeState.StatePath, true)]
+    public async Task FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(string canonical,
+        bool includeDirectoryCase)
     {
         if (canonical == AfterlifeEntityProfileState.StatePath)
             Put(canonical, Encoding.UTF8.GetBytes("""{"profiles":[]}"""));
         if (canonical == ShiningAbodeState.StatePath)
             Put(canonical, Encoding.UTF8.GetBytes(ShiningAbodeState.CreateDefaultState().ToJsonString()));
         var source = await PrepareCurrentArchiveAsync(archiveHasConfig: canonical == "config.json");
-        var alias = canonical[..(canonical.LastIndexOf('/') + 1)] + Path.GetFileName(canonical).ToUpperInvariant();
+        var alias = includeDirectoryCase ? canonical.ToUpperInvariant() :
+            canonical[..(canonical.LastIndexOf('/') + 1)] + Path.GetFileName(canonical).ToUpperInvariant();
         var saved = RenameArchiveEntry(source, canonical, alias);
         var protectedFiles = SnapshotLibraryAndSource(source);
 
@@ -91,10 +97,36 @@ public sealed partial class PortableLoadReplacementTests
         AssertOwnedScratchEmpty();
     }
 
-    private static byte[] RenameArchiveEntry(string source, string canonical, string alias, byte[]? replacement = null)
+    [Fact]
+    public async Task OriginalManifestHashRejectsBeforeCanonicalizedLoadPreparation()
+    {
+        var source = await PrepareCurrentArchiveAsync();
+        var modifiedSoul = Encoding.UTF8.GetBytes(
+            Encoding.UTF8.GetString(_loadedSoul).Replace("Loaded soul", "Altered one", StringComparison.Ordinal));
+        Assert.Equal(_loadedSoul.Length, modifiedSoul.Length);
+        RenameArchiveEntry(source, SoulPath, SoulPath.ToUpperInvariant(), modifiedSoul, preserveManifest: true);
+        var before = Snapshot(_files.GameSessionPath);
+        var generation = File.ReadAllBytes(_files.SessionGenerationPath);
+
+        var result = await _service.LoadGameWithOutcomeAsync(source);
+
+        Report(result);
+        Assert.Equal(LoadReplacementDisposition.NotLoaded, result.Disposition);
+        Assert.Contains("SHA-256", Assert.IsType<InvalidDataException>(result.Failure).Message);
+        Assert.Equal(0, _prepared);
+        Assert.Equal(0, _lifecycleOpen);
+        Assert.Empty(_phases);
+        AssertPreserved(before);
+        Assert.Equal(generation, File.ReadAllBytes(_files.SessionGenerationPath));
+        Assert.Equal("Old live soul", _state.CurrentState.SoulName);
+        AssertOwnedScratchEmpty();
+    }
+
+    private static byte[] RenameArchiveEntry(string source, string canonical, string alias,
+        byte[]? replacement = null, bool preserveManifest = false)
     {
         using var archive = ZipFile.Open(source, ZipArchiveMode.Update);
-        archive.GetEntry("save_manifest.json")!.Delete();
+        if (!preserveManifest) archive.GetEntry("save_manifest.json")!.Delete();
         var original = Assert.IsType<ZipArchiveEntry>(archive.GetEntry(canonical));
         using var content = new MemoryStream();
         using (var input = original.Open()) input.CopyTo(content);
@@ -175,6 +207,10 @@ public sealed partial class PortableLoadReplacementTests
         Assert.False(result.ContinuationBlocked);
         Assert.Contains("detached preparation cut", result.Failure!.ToString());
         Assert.Contains("owned preparation cleanup cut", result.Failure.ToString());
+        var debt = Assert.IsType<LoadPreparationCleanupException>(result.Failure);
+        Assert.Equal(retainedRoot, debt.StagingRoot);
+        Assert.Equal(source, debt.SourcePath);
+        Assert.Equal(source, result.SelectedSourcePath);
         Assert.True(Directory.Exists(retainedRoot));
         Assert.NotEmpty(Directory.GetFiles(retainedRoot!, "*", SearchOption.AllDirectories));
         Assert.Equal(0, _prepared);

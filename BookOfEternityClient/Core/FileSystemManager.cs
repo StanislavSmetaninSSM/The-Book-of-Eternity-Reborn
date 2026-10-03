@@ -3664,10 +3664,30 @@ public partial class FileSystemManager
                     }
                 });
                 EnsureNoLegacyStorageEvidence();
-                RecoverTrustedLocalStorage(writeLease);
+                try
+                {
+                    RecoverTrustedLocalStorage(writeLease);
+                }
+                catch (Exception failure) when (purpose == CanonicalWritePurpose.SessionReplacement)
+                {
+                    // Recovery reached retained decision evidence; an admission refusal is not a safe retry.
+                    throw new CoordinatedStatePublicationUncertainException(failure);
+                }
                 if (purpose == CanonicalWritePurpose.SessionMutation)
                     EnsureBoundSessionOperationCanWrite(writeLease);
                 return writeLease;
+            }
+            catch (CoordinatedStatePublicationUncertainException failure)
+            {
+                try
+                {
+                    await writeLease.DisposeAsync();
+                }
+                catch (Exception cleanup)
+                {
+                    throw new CoordinatedStatePublicationUncertainException(new AggregateException(failure, cleanup));
+                }
+                throw;
             }
             catch
             {

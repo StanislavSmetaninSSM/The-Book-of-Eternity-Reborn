@@ -10255,7 +10255,7 @@
     },
     {
       "id": "portable-load-alias-admission",
-      "responsibility": "T032-B1 archive spelling review regressions: reject Trim/resolver aliases before mutation; materialize current-producer fixed soul/resource/config/profile case variants at canonical names with exact bytes and runtime state. Validate aliased config and protect the selected source after mapping. Preserve arbitrary Linux names without global case folding.",
+      "responsibility": "T032-B1 archive spelling review regressions: reject Trim/resolver aliases before mutation; materialize current-producer fixed soul/resource/config/profile case variants at canonical names with exact bytes and runtime state. Validate aliased config, original manifest hashes before mapping, full fixed-directory spelling and protected selected source after mapping. Preserve arbitrary Linux names without global case folding.",
       "excludes": "Same-shape success/rollback and settings baseline are owned by portable-load-entry. No metadata/topology/cold/resource/public/native/full-suite sweep.",
       "changeHints": [
         "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
@@ -10281,7 +10281,8 @@
             "BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation",
             "BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState",
             "BookOfEternityClient.Tests.PortableLoadReplacementTests.InvalidCaseAliasedConfigRejectsBeforeLifecycleMutation",
-            "BookOfEternityClient.Tests.PortableLoadReplacementTests.CanonicalizedAuthorityCannotReplaceTheSelectedArchive"
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.CanonicalizedAuthorityCannotReplaceTheSelectedArchive",
+          "BookOfEternityClient.Tests.PortableLoadReplacementTests.OriginalManifestHashRejectsBeforeCanonicalizedLoadPreparation"
           ]
         }
       ]
