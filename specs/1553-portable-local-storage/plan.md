@@ -82,7 +82,7 @@ are retained. The real 4,096-member producer fails the existing 1 MiB writer bud
 both independently encoded >1 MiB pending/committed frames fail the reader budget.
 All small independent/reordered/schema/region controls pass. Next: observer scaffolding
 and causal flush/carry tests before implementing the streamed codec. The parent also
-prepared four real-entry namespace conversion/empty-directory tests only in ignored
+prepared four real-entry namespace conversion/harmless empty-directory preservation tests only in ignored
 scratch for the later B2 block; they do not enter this compile/run or establish B2 evidence.
 
 The optional constructor-owned observation seam and two transport tests are now
@@ -99,6 +99,20 @@ cleanup complete, 2:47.976; exact
 is now released to the bounded Sol 6.1 High owner; no implementation/build/green/review
 claim is made by this transport baseline. Full required-field omission coverage will
 join the strict metadata owner with independently reset evidence and exact preservation.
+
+The inspected codec candidate now directly writes existing logical members with
+opening/per-member flush, patches the checked length slot and rebinds a closed,
+self-contained frame. Its reader uses physical-region-limited 64 KiB token carry,
+grows from actual incomplete bytes and releases oversized storage after completion;
+strict decoded field bitsets and checked contiguous regions feed unchanged complete
+path/hash/generation validation. The whole encoded header, duplicate header graph
+and 1 MiB aggregate cap are removed; v1 dispatch/serialization remain unchanged.
+The metadata owners now select 39 cases: transport 2, authority 37, including one
+61-mutation required-field/type/null fact, two raw UTF-8 split cases and one
+10-mutation syntax/numeric/invalid-UTF-8 fact. The parent inspected source and
+test changes; no build, passing runtime, completed review, native Linux or resource
+claim follows yet. Next: fresh two-owner verification, then unchanged-source bounded
+v1/v2 publication/dispatch/generation consumers and discovery-only catalog audit.
 
 Process checkpoint: independent review found the real mixed-directory inventory defect,
 but initially missed the admission fixture's persisted-root mismatch; the real typed

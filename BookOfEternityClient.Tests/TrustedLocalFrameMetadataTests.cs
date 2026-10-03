@@ -1,6 +1,7 @@
 using System.Buffers.Binary;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
@@ -132,6 +133,11 @@ public sealed class TrustedLocalFrameMetadataTests : IDisposable
 
         Assert.Contains(observations, value => value.Kind == TrustedLocalFrameMetadataObservationKind.ReaderBufferGrown &&
             value.BufferCapacity > 65536 && value.EncodedTokenBytes > 0);
+        Assert.All(observations.Where(value => value.Kind == TrustedLocalFrameMetadataObservationKind.ReaderBufferGrown), value =>
+        {
+            Assert.True(value.EncodedTokenBytes >= 65536);
+            Assert.InRange(value.BufferCapacity, value.EncodedTokenBytes + 1, value.EncodedTokenBytes * 2);
+        });
         var completed = observations.FindIndex(value => value.Kind == TrustedLocalFrameMetadataObservationKind.ReaderTokenCompleted &&
             value.EncodedTokenBytes > 65536);
         Assert.True(completed >= 0, "The actual oversized escaped token must be decoded before path admission refuses it.");
@@ -319,6 +325,152 @@ public sealed class TrustedLocalFrameMetadataTests : IDisposable
         Assert.Equal(bytes, File.ReadAllBytes(Active));
         using var generation = JsonDocument.Parse(File.ReadAllBytes(Manager().SessionGenerationPath));
         Assert.Equal(Generation, generation.RootElement.GetProperty("generationId").GetString());
+    }
+
+    /// <summary>
+    /// Requires every root, generation, member and image field while enforcing its exact value type and null contract.
+    /// </summary>
+    /// <returns>
+    /// A task that completes after every isolated mutation has retained all earlier bytes and authority evidence.
+    /// </returns>
+    [Fact]
+    public async Task EveryMetadataFieldRejectsOmissionWrongTypeAndForbiddenNull()
+    {
+        var fields = new (string Shape, string Field)[]
+        {
+            ("root", "Format"), ("root", "TransactionId"), ("root", "Committed"),
+            ("root", "GenerationBefore"), ("root", "GenerationAfter"), ("root", "Members"),
+            ("generation-before", "Exists"), ("generation-before", "Id"),
+            ("generation-after", "Exists"), ("generation-after", "Id"),
+            ("member", "Path"), ("member", "Before"), ("member", "After"),
+            ("absent-image", "Exists"), ("absent-image", "Length"),
+            ("absent-image", "Sha256"), ("absent-image", "Offset"),
+            ("present-image", "Exists"), ("present-image", "Length"),
+            ("present-image", "Sha256"), ("present-image", "Offset")
+        };
+        var files = Manager();
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        var publication = new TrustedLocalFilePublication(files, new TrustedLocalFileScope([_root]));
+        var generation = File.ReadAllBytes(files.SessionGenerationPath);
+        foreach (var (shape, field) in fields)
+        foreach (var mutation in new[] { "missing", "wrong-type", "null" })
+        {
+            if (mutation == "null" && shape == "absent-image" && (field is "Sha256" or "Offset")) continue;
+            var header = Header(false);
+            var late = header["Members"]![1]!.AsObject();
+            var target = shape switch
+            {
+                "root" => header,
+                "generation-before" => header["GenerationBefore"]!.AsObject(),
+                "generation-after" => header["GenerationAfter"]!.AsObject(),
+                "member" => late,
+                "absent-image" => late["Before"]!.AsObject(),
+                "present-image" => late["After"]!.AsObject(),
+                _ => throw new InvalidOperationException("Unknown independent fixture shape.")
+            };
+            if (mutation == "missing") target.Remove(field);
+            else if (mutation == "null") target[field] = null;
+            else target[field] = field switch
+            {
+                "Format" or "Length" or "Offset" or "Exists" or "Committed" => JsonValue.Create("wrong-type"),
+                "TransactionId" or "Path" or "Id" or "Sha256" => JsonValue.Create(0),
+                "Members" => new JsonObject(),
+                _ => new JsonArray()
+            };
+            var evidence = Frame(header.ToJsonString());
+            File.WriteAllBytes(Target, After);
+            PutActive(evidence);
+            var failure = Record.Exception(() => publication.Recover(lease));
+            Assert.True(failure is InvalidDataException, $"{shape}.{field}/{mutation}: {failure}");
+            Assert.Equal(After, File.ReadAllBytes(Target));
+            Assert.False(File.Exists(AbsentPath(1)));
+            Assert.Equal(generation, File.ReadAllBytes(files.SessionGenerationPath));
+            Assert.Equal(evidence, File.ReadAllBytes(Active));
+        }
+    }
+
+    /// <summary>
+    /// Decodes actual multi-byte UTF-8 split across the base I/O boundary without changing exact path meaning.
+    /// </summary>
+    /// <param name="splitText">
+    /// The two-byte or four-byte Unicode sequence whose first encoded byte ends the first buffer.
+    /// </param>
+    /// <returns>
+    /// A task that completes after normal recovery restores the exact Unicode-named member.
+    /// </returns>
+    [Theory]
+    [InlineData("Ж")]
+    [InlineData("🐾")]
+    public async Task SplitUtf8PathTokenKeepsExactMemberMeaning(string splitText)
+    {
+        var unicodePath = Path.Combine(Path.GetDirectoryName(Target)!, "Ж🐾.bin");
+        File.WriteAllBytes(unicodePath, After);
+        var header = Header(false);
+        header["Members"]![0]!["Path"] = unicodePath;
+        var json = header.ToJsonString(new JsonSerializerOptions { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
+        json = json.Replace("\\u0416", "Ж", StringComparison.OrdinalIgnoreCase)
+            .Replace("\\uD83D\\uDC3E", "🐾", StringComparison.OrdinalIgnoreCase);
+        var splitAt = json.IndexOf(splitText, StringComparison.Ordinal);
+        Assert.True(splitAt > 0);
+        var padding = 65535 - Encoding.UTF8.GetByteCount(json.AsSpan(0, splitAt));
+        Assert.True(padding > 0);
+        json = json.Insert(1, new string(' ', padding));
+        Assert.Equal(65535, Encoding.UTF8.GetByteCount(json.AsSpan(0, json.IndexOf(splitText, StringComparison.Ordinal))));
+        PutActive(Frame(json));
+        await using (var lease = await Manager().AcquireCanonicalWriteLeaseAsync()) { }
+        Assert.Equal(Before, File.ReadAllBytes(unicodePath));
+        Assert.Equal(Before, File.ReadAllBytes(Target));
+        Assert.False(File.Exists(Active));
+    }
+
+    /// <summary>
+    /// Refuses malformed JSON transport and unsupported numeric spellings before any recovery mutation.
+    /// </summary>
+    /// <returns>
+    /// A task that completes after each independently corrupted frame preserves earlier bytes and exact evidence.
+    /// </returns>
+    [Fact]
+    public async Task InvalidMetadataSyntaxAndNumericTokensRetainExactEvidence()
+    {
+        var files = Manager();
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        var publication = new TrustedLocalFilePublication(files, new TrustedLocalFileScope([_root]));
+        var generation = File.ReadAllBytes(files.SessionGenerationPath);
+        foreach (var mutation in new[] { "format-fraction", "length-fraction", "offset-fraction", "number-overflow",
+            "comment", "trailing-comma", "root-null", "root-array", "wrong-property-case", "invalid-utf8" })
+        {
+            var header = Header(false);
+            var lateImage = header["Members"]![1]!["After"]!.AsObject();
+            if (mutation == "length-fraction") lateImage["Length"] = JsonNode.Parse("0.5");
+            if (mutation == "offset-fraction") lateImage["Offset"] = JsonNode.Parse("8.0");
+            var json = header.ToJsonString();
+            json = mutation switch
+            {
+                "format-fraction" => json.Replace("\"Format\":2", "\"Format\":2.0", StringComparison.Ordinal),
+                "number-overflow" => json.Replace("\"Offset\":8", "\"Offset\":9223372036854775808", StringComparison.Ordinal),
+                "comment" => json.Insert(json.Length - 1, "/* unsupported */"),
+                "trailing-comma" => json.Insert(json.Length - 1, ","),
+                "root-null" => "null",
+                "root-array" => "[]",
+                "wrong-property-case" => json.Replace("\"Offset\":8", "\"offset\":8", StringComparison.Ordinal),
+                _ => json
+            };
+            var evidence = Frame(json);
+            if (mutation == "invalid-utf8")
+            {
+                var pathStart = json.LastIndexOf("\"Path\":", StringComparison.Ordinal);
+                var character = json.IndexOf('x', pathStart);
+                Assert.True(character > pathStart);
+                evidence[16 + Encoding.UTF8.GetByteCount(json.AsSpan(0, character))] = 0xFF;
+            }
+            PutActive(evidence);
+            File.WriteAllBytes(Target, After);
+            var failure = Record.Exception(() => publication.Recover(lease));
+            Assert.True(failure is InvalidDataException, $"{mutation}: {failure}");
+            Assert.Equal(After, File.ReadAllBytes(Target));
+            Assert.Equal(generation, File.ReadAllBytes(files.SessionGenerationPath));
+            Assert.Equal(evidence, File.ReadAllBytes(Active));
+        }
     }
 
     /// <summary>

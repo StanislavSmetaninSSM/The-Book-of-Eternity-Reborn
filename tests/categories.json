@@ -10242,7 +10242,10 @@
         "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.LargeMetadataRoundTripsWithoutAggregateCap",
         "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.ReorderedAndEscapedFieldsKeepExistingMeaning",
         "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.IndependentSmallV2FrameKeepsExactDecision",
-        "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.StrictMetadataRejectsLateInvalidMemberBeforeRecoveryMutation"
+        "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.StrictMetadataRejectsLateInvalidMemberBeforeRecoveryMutation",
+        "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.EveryMetadataFieldRejectsOmissionWrongTypeAndForbiddenNull",
+        "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.SplitUtf8PathTokenKeepsExactMemberMeaning",
+        "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.InvalidMetadataSyntaxAndNumericTokensRetainExactEvidence"
       ]}]
     },
     {

@@ -7,13 +7,18 @@ namespace BookOfEternityClient.Core;
 internal sealed partial class TrustedLocalFilePublication
 {
     private static readonly byte[] FrameMagic = Encoding.ASCII.GetBytes("BOELP2\r\n");
-    // Only metadata is bounded here, never image/ZIP bytes. The ordinary save
-    // producer has one archive member plus at most one generation member. Even
-    // two 32,767-character Windows paths with six-byte JSON escaping fit well
-    // below this budget. A larger future member-set producer needs its own
-    // metadata qualification; existing v1 producers keep their original codec.
-    internal const int MaximumFrameMetadataBytes = 1024 * 1024;
-
+    /// <summary>
+    /// Writes one complete self-contained journal before its private stage can become authority.
+    /// </summary>
+    /// <param name="path">
+    /// The absent private journal stage in the runtime scope.
+    /// </param>
+    /// <param name="journal">
+    /// The validated logical member inventory and decision to encode.
+    /// </param>
+    /// <returns>
+    /// The original v1 journal or a v2 journal whose images reopen the completed frame.
+    /// </returns>
     private Journal WriteJournal(string path, Journal journal)
     {
         if (journal.Format == 1)
@@ -22,22 +27,7 @@ internal sealed partial class TrustedLocalFilePublication
             return journal;
         }
 
-        long offset = 0;
-        FrameImage Describe(TrustedLocalFileImage image)
-        {
-            var value = new FrameImage { Exists = image.Exists, Length = image.Length,
-                Sha256 = image.Sha256, Offset = image.Exists ? offset : null };
-            if (image.Exists) offset = checked(offset + image.Length);
-            return value;
-        }
-        var header = new FrameHeader
-        {
-            Format = 2, TransactionId = journal.TransactionId, Committed = journal.Committed,
-            GenerationBefore = journal.GenerationBefore, GenerationAfter = journal.GenerationAfter,
-            Members = journal.Members.Select(member => new FrameMember
-            { Path = member.Path, Before = Describe(member.Before), After = Describe(member.After) }).ToArray()
-        };
-
+        long offset;
         long payloadStart;
         long fileLength;
         using (var output = new FileStream(_journalScope.ValidateFile(path), FileMode.CreateNew,
@@ -46,10 +36,9 @@ internal sealed partial class TrustedLocalFilePublication
             output.Write(FrameMagic);
             Span<byte> lengthBytes = stackalloc byte[8];
             lengthBytes.Clear(); output.Write(lengthBytes);
-            using (var metadata = new BoundedMetadataWriter(output, MaximumFrameMetadataBytes))
-                JsonSerializer.Serialize(metadata, header, JsonOptions);
+            offset = WriteFrameMetadata(output, journal);
             payloadStart = output.Position;
-            BinaryPrimitives.WriteInt64LittleEndian(lengthBytes, payloadStart - 16);
+            BinaryPrimitives.WriteInt64LittleEndian(lengthBytes, checked(payloadStart - 16));
             output.Position = 8; output.Write(lengthBytes); output.Position = payloadStart;
             foreach (var member in journal.Members)
             {
@@ -60,9 +49,28 @@ internal sealed partial class TrustedLocalFilePublication
             if (output.Position != fileLength) throw Conflict("The v2 publication payload length is inconsistent.");
             output.Flush(flushToDisk: true);
         }
-        return BindFrame(header, path, payloadStart, fileLength);
+        var regions = new FrameRegionBinder(_journalScope, path, payloadStart, fileLength);
+        var rebound = journal with
+        {
+            Members = journal.Members.Select(member => new Member
+            {
+                Path = member.Path, Before = regions.BindWrittenImage(member.Before),
+                After = regions.BindWrittenImage(member.After)
+            }).ToArray()
+        };
+        regions.EnsureComplete();
+        return rebound;
     }
 
+    /// <summary>
+    /// Dispatches supported authority formats and validates the complete journal before recovery.
+    /// </summary>
+    /// <param name="path">
+    /// The existing owned authority journal to read.
+    /// </param>
+    /// <returns>
+    /// A fully admitted v1 or v2 journal with exact image sources.
+    /// </returns>
     private Journal ReadJournal(string path)
     {
         using var stream = new FileStream(_journalScope.ValidateFile(path, allowMissing: false),
@@ -94,12 +102,9 @@ internal sealed partial class TrustedLocalFilePublication
             stream.Position = FrameMagic.Length;
             Span<byte> lengthBytes = stackalloc byte[8]; stream.ReadExactly(lengthBytes);
             var length = BinaryPrimitives.ReadInt64LittleEndian(lengthBytes);
-            if (length <= 0 || length > MaximumFrameMetadataBytes || length > stream.Length - 16)
+            if (length <= 0 || length > stream.Length - 16)
                 throw Conflict("The v2 metadata length is invalid.");
-            var bytes = new byte[(int)length]; stream.ReadExactly(bytes);
-            var header = StrictJsonAuthority.Deserialize<FrameHeader>(bytes, JsonOptions, "Trusted-local publication v2")
-                ?? throw Conflict("The v2 metadata is null.");
-            var journal = BindFrame(header, path, stream.Position, stream.Length);
+            var journal = ReadFrameMetadata(stream, length, path, checked(16 + length), stream.Length);
             ValidateJournal(journal); // Every exact region hash/path validates before member recovery.
             return journal;
         }
@@ -152,84 +157,10 @@ internal sealed partial class TrustedLocalFilePublication
         };
     }
 
-    private Journal BindFrame(FrameHeader header, string path, long payloadStart, long fileLength)
-    {
-        if (header.Format != 2 || header.Members is not { Length: > 0 } || payloadStart > fileLength)
-            throw Conflict("The v2 frame shape is invalid.");
-        long offset = 0;
-        TrustedLocalFileImage Bind(FrameImage image)
-        {
-            if (image == null || image.Length < 0) throw Conflict("The v2 image metadata is invalid.");
-            if (!image.Exists)
-            {
-                if (image.Length != 0 || image.Offset != null || image.Sha256 != null)
-                    throw Conflict("An absent v2 image has a region.");
-                return TrustedLocalFileImage.FromBytes(null);
-            }
-            if (image.Offset != offset || image.Sha256 == null || image.Length > fileLength - payloadStart - offset)
-                throw Conflict("The v2 image regions do not exactly cover their payload.");
-            var result = TrustedLocalFileImage.FromRegion(_journalScope, path, checked(payloadStart + offset),
-                image.Length, fileLength, image.Sha256);
-            offset = checked(offset + image.Length);
-            return result;
-        }
-        var members = header.Members.Select(member => member == null
-            ? throw Conflict("A v2 member is null.")
-            : new Member { Path = member.Path, Before = Bind(member.Before), After = Bind(member.After) }).ToArray();
-        if (offset != fileLength - payloadStart) throw Conflict("The v2 frame has missing or trailing image bytes.");
-        return new Journal
-        {
-            Format = 2, TransactionId = header.TransactionId, Committed = header.Committed,
-            GenerationBefore = header.GenerationBefore, GenerationAfter = header.GenerationAfter, Members = members
-        };
-    }
-
     private static Journal RebindJournal(Journal journal, string path) => journal.Format == 1 ? journal : journal with
     {
         Members = journal.Members.Select(member => member with
         { Before = member.Before.RebindJournal(path), After = member.After.RebindJournal(path) }).ToArray()
     };
 
-    private sealed record FrameHeader
-    {
-        public required int Format { get; init; }
-        public required string TransactionId { get; init; }
-        public required bool Committed { get; init; }
-        public required TrustedLocalGeneration GenerationBefore { get; init; }
-        public required TrustedLocalGeneration GenerationAfter { get; init; }
-        public required FrameMember[] Members { get; init; }
-    }
-    private sealed record FrameMember
-    {
-        public required string Path { get; init; }
-        public required FrameImage Before { get; init; }
-        public required FrameImage After { get; init; }
-    }
-    private sealed record FrameImage
-    {
-        public required bool Exists { get; init; }
-        public required long Length { get; init; }
-        public required string? Sha256 { get; init; }
-        public required long? Offset { get; init; }
-    }
-
-    private sealed class BoundedMetadataWriter(Stream destination, long limit) : Stream
-    {
-        private long _written;
-        public override bool CanRead => false;
-        public override bool CanSeek => false;
-        public override bool CanWrite => true;
-        public override long Length => _written;
-        public override long Position { get => _written; set => throw new NotSupportedException(); }
-        public override void Write(byte[] buffer, int offset, int count) => Write(buffer.AsSpan(offset, count));
-        public override void Write(ReadOnlySpan<byte> buffer)
-        {
-            if (buffer.Length > limit - _written) throw new InvalidDataException("The v2 publication metadata exceeds its supported producer budget.");
-            destination.Write(buffer); _written += buffer.Length;
-        }
-        public override void Flush() => destination.Flush();
-        public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
-        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
-        public override void SetLength(long value) => throw new NotSupportedException();
-    }
 }

@@ -128,6 +128,16 @@ The concrete versioned format is presented for approval with this plan. [data-mo
 9. Do not create live directories or member scratch before active intent publication. Only private load extraction and private journal staging precede the decision. Revalidate the complete target before writing/replacing committed evidence and again before cleanup after observer callbacks. Each active/commit frame independently owns all before/after payloads; cold recovery needs no extraction source. Keep active evidence until other owned cleanup succeeds. Cleanup failure preserves the established outcome.
 10. Extend observer phases with `DirectoryRemoved`, `DirectoryCreated`, `RollbackDirectoryRemoved`, `RollbackDirectoryCreated`. Cut index is the stable namespace-node index. Existing file/generation/commit/cleanup cuts remain. Outcome recovery confirmation must be namespace-aware; a file-only match is insufficient to report RolledBack.
 
+Implementation seam: keep the legacy v1/v2 serialized `Journal` shapes unchanged.
+Use a separate in-memory namespace evidence type for v3 and dispatch its eight-byte
+magic inside the existing single `Recover` entry before legacy decoding. Both types
+use the same active/intent/commit paths and decision matrix; this is format dispatch,
+not another journal or authority. Reuse the incremental token cursor and generation/
+region primitives from B1 metadata. Do not append ignored namespace properties to
+legacy serializer models, where recognizing a formerly unknown property could weaken
+the preserved strict v1/v2 schema. The outcome attempt may hold either typed prepared
+evidence; v3 rollback confirmation checks complete Before namespace and generation.
+
 ## Dependency-ordered execution
 
 ### T032-B1-FIX — five demonstrated defects and current entry baseline

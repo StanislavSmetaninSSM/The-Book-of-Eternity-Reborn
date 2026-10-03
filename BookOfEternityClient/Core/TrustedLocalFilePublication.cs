@@ -122,7 +122,7 @@ internal sealed partial class TrustedLocalFilePublication
     /// The explicit local member scope to validate before publication or recovery.
     /// </param>
     /// <param name="metadataObserver">
-    /// An optional owned diagnostic callback for metadata transport measurements; null disables observations.
+    /// An optional owned diagnostic callback for metadata transport measurements; <see langword="null"/> disables observations.
     /// </param>
     internal TrustedLocalFilePublication(FileSystemManager files, TrustedLocalFileScope scope,
         Action<TrustedLocalFrameMetadataObservation>? metadataObserver = null)
