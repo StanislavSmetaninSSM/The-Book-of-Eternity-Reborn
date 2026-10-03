@@ -1,6 +1,26 @@
 {
-  "schemaVersion":1,
-  "selections":[
-    {"category":"portable-storage-namespace-generation","reason":"Independent review found that pending v3 rollback does not remove a generation file whose original state was absent. Two independent decisions establish the causal baseline before production correction; the connected generation-published cut belongs to portable-load-topology.","contracts":["#1553 preserved exact generation absence; LOAD-FS-002/003/006"]}
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "contracts": [
+        "LOAD-FS-002/003/006 exact generation absence"
+      ],
+      "reason": "Causal pending absent-generation failure is corrected by generation-last exact deletion; retain the committed decision control.",
+      "category": "portable-storage-namespace-generation"
+    },
+    {
+      "contracts": [
+        "LOAD-FS-001/002/003/006"
+      ],
+      "reason": "Connected real-producer conversions, actual nontransient warm cuts and first-generation publication rollback exercise the changed reconciliation.",
+      "category": "portable-load-topology"
+    },
+    {
+      "contracts": [
+        "LOAD-FS-002/003/004/006"
+      ],
+      "reason": "Shared v3 reconciliation changed: retain independent decisions, complete schema/admission preflight and unknown late contents refusal.",
+      "category": "portable-storage-namespace"
+    }
   ]
 }

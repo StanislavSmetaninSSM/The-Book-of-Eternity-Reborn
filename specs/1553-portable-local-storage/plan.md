@@ -181,6 +181,16 @@ interruption joins the connected topology owner. These are exact original author
 requirements, not added scope. Missing helper/enum/attempt XML comments reported by
 review are corrected for the fresh XML-enabled build; no runtime is repeated solely
 for those documentation corrections.
+At clean `a8ec943d2abe9be772b684f7df8a71376baf5ea2`, fresh XML-enabled native Windows
+ran both independent generation decisions: committed passed, pending causally failed
+after restoring members because the new generation file remained present. Both cases
+executed, no skips/duplicates, complete cleanup, 2:41.474; exact
+[artifacts](recovery/evidence/load-namespace-generation-red/summary.json) are retained.
+The correction deletes the exact generation name last when rollback targets Missing,
+after ordinary members/directories have been restored, preserving generation-last
+authority and by-name publication. The connected real generation cut and corrected
+nontransient warm cuts now run with the independent namespace admission consumers.
+This is the scoped review correction, not an accepted B2 outcome yet.
 The parent owns namespace observation/preflight/reconciliation and load integration;
 the retained Sol 6.1 High codec implementer may own only the separate v3 descriptor/frame
 files after release. This bounded delegation reuses known cursor machinery without

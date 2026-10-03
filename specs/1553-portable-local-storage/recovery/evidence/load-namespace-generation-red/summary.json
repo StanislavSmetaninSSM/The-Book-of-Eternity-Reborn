@@ -1,0 +1,76 @@
+{
+  "Categories": [
+    "portable-storage-namespace-generation"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-storage-namespace-generation",
+      "reason": "Independent review found that pending v3 rollback does not remove a generation file whose original state was absent. Two independent decisions establish the causal baseline before production correction; the connected generation-published cut belongs to portable-load-topology.",
+      "contracts": [
+        "#1553 preserved exact generation absence; LOAD-FS-002/003/006"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "a8ec943d2abe9be772b684f7df8a71376baf5ea2",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-storage-namespace-generation",
+      "Seconds": 6.2177162,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 1.4586352,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 1.0203463,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 1.0620494,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 143.5174234,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 15,
+  "WallTime": "00:02:41.4735324",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 2,
+    "CompletedCases": 2,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 1,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

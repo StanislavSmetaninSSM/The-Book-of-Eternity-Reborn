@@ -93,6 +93,12 @@ public sealed partial class PortableLoadReplacementTests : IDisposable
         AssertOwnedScratchEmpty();
     }
 
+    /// <summary>
+    /// Verifies that a failure after the second actual file publication restores the complete original session.
+    /// </summary>
+    /// <returns>
+    /// The asynchronous verification of original session bytes, source, library, generation and refreshed state.
+    /// </returns>
     [Fact]
     public async Task LaterMemberFailureRestoresCompleteSessionSourceLibraryAndGeneration()
     {

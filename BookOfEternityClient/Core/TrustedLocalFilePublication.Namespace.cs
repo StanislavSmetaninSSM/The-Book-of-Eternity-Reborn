@@ -582,6 +582,13 @@ internal sealed partial class TrustedLocalFilePublication
         foreach (var (member, index) in indexed.OrderBy(value => MemberComparer.Equals(value.Member.Path, _generationPath) ? 1 : 0))
         {
             var target = Target(member);
+            if (MemberComparer.Equals(member.Path, _generationPath) && target.Kind == TrustedLocalNamespaceKind.Missing)
+            {
+                if (Recheck(member).Kind == TrustedLocalNamespaceKind.File)
+                    _scope.DeleteOwnedFile(member.Path);
+                Observe(lease, observer, TrustedLocalPublicationPhase.MemberRestored, index);
+                continue;
+            }
             if (target.Kind != TrustedLocalNamespaceKind.File) continue;
             var actual = Recheck(member);
             if (!after && NamespaceImageMatches(member.Path, target, actual))
