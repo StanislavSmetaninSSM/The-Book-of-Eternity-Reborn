@@ -1,0 +1,68 @@
+{
+  "Categories": [
+    "portable-load-resource-inventory-recovery"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "8ffa3bf1e1a5a89c50adb4dc5969c4ed31d50df3",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-load-resource-inventory-recovery",
+      "Seconds": 618.5919913,
+      "BudgetMinutes": 12,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 1.4404691,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 1.0601838,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 1.0138006,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0048452,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 15,
+  "WallTime": "00:10:29.2855297",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 1,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 1,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
