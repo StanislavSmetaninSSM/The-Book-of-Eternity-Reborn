@@ -4,6 +4,27 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T032-B1 admission RED fixture correction WIP — 2026-10-03
+
+Corrected-casing tests and earlier outcome evidence are remotely verified at
+`39a3e9245ee2de4f9d12e645eed94bb830b7959f`, tree `52067fa0e9928cfada08f895fe190354289f96f0`.
+The [alias build/plan](recovery/evidence/load-alias-build-plan-20261003/manifest.json)
+passed in 4:13.1540426. The [first fourteen-case run](recovery/evidence/load-alias-first-red-20261003/manifest.json)
+completed all fourteen with no skips and complete cleanup in 12.3553662 seconds.
+Thirteen fail at the intended new load boundary: actual committed aliases, missing
+canonical imported authorities, invalid aliased config, or the too-late selected-source
+collision guard. One is a **noncausal fixture preparation failure**, before Load:
+`shining_abode_state.json` was seeded as `{}`, which the current public save producer
+refuses. This must not be counted as a Shining load RED.
+
+The fixture now uses `ShiningAbodeState.CreateDefaultState()`, the same supported
+fallback already used by the resource-owner composer for absent Shining state. Failed
+producer diagnostics are also printed before the fixture assertion. Production,
+selectors, category membership and all outcome semantics are unchanged. Next: publish
+this bounded fixture/evidence correction, fresh build and rerun the unresolved alias
+owner only to establish its complete causal RED before the five production corrections.
+No passing entry or outcome cohort is repeated; all wider gates remain open.
+
 ## T032-B1 outcome RED and casing-contract correction WIP — 2026-10-03
 
 The regression checkpoint is remotely saved at `654a1bdcc9e63d4ab036b5d70cc32951c54d4052`,

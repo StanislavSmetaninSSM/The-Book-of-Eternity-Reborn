@@ -1,0 +1,71 @@
+{
+  "Categories": [
+    "portable-load-alias-admission"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-load-alias-admission",
+      "reason": "Fourteen newly qualified archive naming cases: Trim aliases refuse before mutation; valid finite authority case variants materialize canonically; invalid aliased config and post-mapping selected-source collision refuse. Current Windows producer preserves some on-disk casing, so blanket case rejection was corrected before runtime execution. Four outcome cases already have distinct causal evidence and are not repeated for this RED.",
+      "contracts": [
+        "#1553 FR-002/004/006/008/015; current-produced archive support, canonical settings/resource/soul authority, protected library/source and ephemeral omission"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "39a3e9245ee2de4f9d12e645eed94bb830b7959f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-load-alias-admission",
+      "Seconds": 6.7466995,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0801492,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0210389,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0298095,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 8,
+  "WallTime": "00:00:12.3553662",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 14,
+    "CompletedCases": 14,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 14,
+    "Executed": 14,
+    "Passed": 0,
+    "Failed": 14
+  },
+  "DuplicateTests": []
+}

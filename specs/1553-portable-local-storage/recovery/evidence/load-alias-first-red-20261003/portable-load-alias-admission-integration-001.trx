@@ -1,0 +1,521 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="e224d8a2-9d2e-49d2-9bb0-06fbe672b4ba" name="@8578fe379cc9 2026-10-03 05:16:12" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-03T05:16:12.9966419-04:00" queuing="2026-10-03T05:16:12.9966419-04:00" start="2026-10-03T05:16:08.7975768-04:00" finish="2026-10-03T05:16:14.2644047-04:00" />
+  <TestSettings name="default" id="fe8ce973-f096-41cc-bcbc-1f20c235c6b1">
+    <Deployment runDeploymentRoot="_8578fe379cc9_2026-10-03_05_16_12" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="fa993cb8-98ff-4e84-97e0-213529a1d705" testId="47991eb5-e77e-4004-7799-7ab66da052d1" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/resources/resource_owner_authority.json&quot;)" computerName="8578fe379cc9" duration="00:00:00.1282390" startTime="2026-10-03T05:16:13.1927650-04:00" endTime="2026-10-03T05:16:13.1927652-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fa993cb8-98ff-4e84-97e0-213529a1d705">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)</StdOut>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/owned-run/temp/boe-portable-load-22b5686481a340b2b7400990ae0dccb6/game_session/game_state/resources/resource_owner_authority.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.File.OpenHandle(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.ReadAllBytes(String path)
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(String canonical) in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs:line 39
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1677505b-08a4-4e48-aadd-0ba34441739a" testId="88836c16-75cc-5dfc-74a3-d4992e0dfd0b" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/meta/soul_state.json&quot;)" computerName="8578fe379cc9" duration="00:00:00.1234214" startTime="2026-10-03T05:16:12.3705769-04:00" endTime="2026-10-03T05:16:12.3705770-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1677505b-08a4-4e48-aadd-0ba34441739a">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)</StdOut>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/owned-run/temp/boe-portable-load-59103695a4054600b9860cce81017f6f/game_session/game_state/meta/soul_state.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.File.OpenHandle(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.ReadAllBytes(String path)
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(String canonical) in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs:line 39
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="eb1d23e0-27c1-4cc5-bec1-2ab6f63166c2" testId="ef38a7c3-a933-c262-9712-2814f1813d35" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/resources/resource_history.json&quot;)" computerName="8578fe379cc9" duration="00:00:00.6470751" startTime="2026-10-03T05:16:12.1161855-04:00" endTime="2026-10-03T05:16:12.1162022-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eb1d23e0-27c1-4cc5-bec1-2ab6f63166c2">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)</StdOut>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/owned-run/temp/boe-portable-load-00f1a4680ef34e25a10e3ded43a235ce/game_session/game_state/resources/resource_history.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.File.OpenHandle(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.ReadAllBytes(String path)
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(String canonical) in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs:line 39
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d63bba16-5f2c-49ec-8510-e799f1b1588c" testId="b42a6ee7-b53e-c5f7-0b78-8c5b343b5c74" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.CanonicalizedAuthorityCannotReplaceTheSelectedArchive" computerName="8578fe379cc9" duration="00:00:00.0829951" startTime="2026-10-03T05:16:14.0314031-04:00" endTime="2026-10-03T05:16:14.0314033-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d63bba16-5f2c-49ec-8510-e799f1b1588c">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=1; lifecycle opens=1; B1 phases=
+System.IO.InvalidDataException: config.json is invalid; its existing bytes have been preserved.
+ ---&gt; System.Text.Json.JsonReaderException: 'P' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.
+   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader&amp; json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)
+   at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)
+   at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)
+   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()
+   at System.Text.Json.Utf8JsonReader.Read()
+   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb&amp; database, StackRowStack&amp; stack)
+   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)
+   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 json, JsonDocumentOptions options)
+   at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](String json, JsonSerializerOptions options, String authorityName) in /repo/BookOfEternityClient/Core/StrictJsonAuthority.cs:line 12
+   at BookOfEternityClient.Core.StateManager.DecodeLocalSettings(Byte[] bytes) in /repo/BookOfEternityClient/Core/StateManager.LocalSettings.cs:line 41
+   --- End of inner exception stack trace ---
+   at BookOfEternityClient.Core.StateManager.DecodeLocalSettings(Byte[] bytes) in /repo/BookOfEternityClient/Core/StateManager.LocalSettings.cs:line 46
+   at BookOfEternityClient.Core.StateManager.PrepareLocalLoadSettings(Byte[] bytes) in /repo/BookOfEternityClient/Core/StateManager.LocalSettings.cs:line 31
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in /repo/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 129
+System.IO.InvalidDataException: config.json is invalid; its existing bytes have been preserved.
+ ---&gt; System.Text.Json.JsonReaderException: 'P' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.
+   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader&amp; json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)
+   at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)
+   at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)
+   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()
+   at System.Text.Json.Utf8JsonReader.Read()
+   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb&amp; database, StackRowStack&amp; stack)
+   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)
+   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 json, JsonDocumentOptions options)
+   at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](String json, JsonSerializerOptions options, String authorityName) in /repo/BookOfEternityClient/Core/StrictJsonAuthority.cs:line 12
+   at BookOfEternityClient.Core.StateManager.DecodeLocalSettings(Byte[] bytes) in /repo/BookOfEternityClient/Core/StateManager.LocalSettings.cs:line 41
+   --- End of inner exception stack trace ---
+   at BookOfEternityClient.Core.StateManager.DecodeLocalSettings(Byte[] bytes) in /repo/BookOfEternityClient/Core/StateManager.LocalSettings.cs:line 46
+   at BookOfEternityClient.Core.StateManager.PrepareLocalLoadSettings(Byte[] bytes) in /repo/BookOfEternityClient/Core/StateManager.LocalSettings.cs:line 31
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in /repo/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 129</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Sub-string not found
+String:    "config.json is invalid; its existing byte"···
+Not found: "selected archive"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.CanonicalizedAuthorityCannotReplaceTheSelectedArchive() in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs:line 84
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="759b464f-80f6-4913-8b09-064e87f725ad" testId="f9970e13-f7ea-7c97-26dc-8a906e43c045" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.InvalidCaseAliasedConfigRejectsBeforeLifecycleMutation" computerName="8578fe379cc9" duration="00:00:00.1194686" startTime="2026-10-03T05:16:14.1512394-04:00" endTime="2026-10-03T05:16:14.1512396-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="759b464f-80f6-4913-8b09-064e87f725ad">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: NotLoaded
+Actual:   Committed</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.InvalidCaseAliasedConfigRejectsBeforeLifecycleMutation() in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs:line 59
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="aa4210f1-3919-491e-9af4-8452e470abcd" testId="3f34d368-eec3-cefb-3f26-236fe9da2def" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/meta/afterlife_entity_profiles.json&quot;)" computerName="8578fe379cc9" duration="00:00:00.1236719" startTime="2026-10-03T05:16:13.4366894-04:00" endTime="2026-10-03T05:16:13.4366896-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aa4210f1-3919-491e-9af4-8452e470abcd">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberStaged, 6),(MemberPublished, 6),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(MemberStaged, 11),(MemberPublished, 11),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupMember, 11),(CleanupComplete, -1)</StdOut>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/owned-run/temp/boe-portable-load-1683381cac9f4147aec9495c22d95608/game_session/game_state/meta/afterlife_entity_profiles.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.File.OpenHandle(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.ReadAllBytes(String path)
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(String canonical) in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs:line 39
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b099fb89-473e-42eb-8535-83d7fb05be5e" testId="328f2b40-4a22-c150-aa4d-562df1e00b1a" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: &quot; game_state/control/pending_turn_snapshot.json&quot;)" computerName="8578fe379cc9" duration="00:00:00.1059220" startTime="2026-10-03T05:16:13.8288679-04:00" endTime="2026-10-03T05:16:13.8288681-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b099fb89-473e-42eb-8535-83d7fb05be5e">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: NotLoaded
+Actual:   Committed</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(String incomingPath) in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs:line 245
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f1ea5836-61ed-4914-aa5f-28c5d3efa0a8" testId="d3e14e7a-2f4b-6946-0ad3-bfee5f25fa46" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/meta/shining_abode_state.json&quot;)" computerName="8578fe379cc9" duration="00:00:00.0230198" startTime="2026-10-03T05:16:13.4609332-04:00" endTime="2026-10-03T05:16:13.4609334-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f1ea5836-61ed-4914-aa5f-28c5d3efa0a8">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.True() Failure
+Expected: True
+Actual:   False</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.PrepareCurrentArchiveAsync(Boolean archiveHasConfig, String selectedRelativePath, String collision) in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs:line 265
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(String canonical) in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs:line 26
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="17e05054-95bc-4e16-a4f1-deb4ff3abdbd" testId="e98bac96-79e4-a049-f5e2-f6181507229f" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/resources/resource_definitions.json&quot;)" computerName="8578fe379cc9" duration="00:00:00.1320755" startTime="2026-10-03T05:16:12.2457142-04:00" endTime="2026-10-03T05:16:12.2457143-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="17e05054-95bc-4e16-a4f1-deb4ff3abdbd">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)</StdOut>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/owned-run/temp/boe-portable-load-df86892b877d4dbe8da960de619a55e8/game_session/game_state/resources/resource_definitions.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.File.OpenHandle(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.ReadAllBytes(String path)
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(String canonical) in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs:line 39
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="360e5668-9385-416d-8652-b083d3b52e45" testId="d4e3322b-6aef-d52c-a465-e09036866bbd" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: &quot;config.json &quot;)" computerName="8578fe379cc9" duration="00:00:00.1255975" startTime="2026-10-03T05:16:13.7217404-04:00" endTime="2026-10-03T05:16:13.7217406-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="360e5668-9385-416d-8652-b083d3b52e45">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: NotLoaded
+Actual:   Committed</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(String incomingPath) in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs:line 245
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="31dd9aa3-1a5b-48c8-8d94-0eec719ef421" testId="7feee987-e5d2-487a-8ba0-1a548ffaae0c" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: &quot; config.json&quot;)" computerName="8578fe379cc9" duration="00:00:00.1305974" startTime="2026-10-03T05:16:13.5941049-04:00" endTime="2026-10-03T05:16:13.5941051-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="31dd9aa3-1a5b-48c8-8d94-0eec719ef421">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: NotLoaded
+Actual:   Committed</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(String incomingPath) in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs:line 245
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="8b380510-0175-4919-b4cb-9729e85396c9" testId="648fff16-de0f-68d8-fcfe-d13a380b2541" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/resources/resource_state.json&quot;)" computerName="8578fe379cc9" duration="00:00:00.1169751" startTime="2026-10-03T05:16:13.3116640-04:00" endTime="2026-10-03T05:16:13.3116641-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8b380510-0175-4919-b4cb-9729e85396c9">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)</StdOut>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/owned-run/temp/boe-portable-load-88e673ce79b74cfc8316f29f18c3d975/game_session/game_state/resources/resource_state.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.File.OpenHandle(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.ReadAllBytes(String path)
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(String canonical) in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs:line 39
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="91251d95-74ce-4022-91be-8185c139837b" testId="c2d3e10d-03d0-be3e-d252-644c5437f1cc" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: &quot; saves/manual_saves/new.zip&quot;)" computerName="8578fe379cc9" duration="00:00:00.1164134" startTime="2026-10-03T05:16:13.9463214-04:00" endTime="2026-10-03T05:16:13.9463216-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="91251d95-74ce-4022-91be-8185c139837b">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: NotLoaded
+Actual:   Committed</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(String incomingPath) in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs:line 245
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0a18ec55-51f6-4b20-abb0-27d315ea9334" testId="75a0003d-fac7-1358-fdcf-21808e023351" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;config.json&quot;)" computerName="8578fe379cc9" duration="00:00:00.6895257" startTime="2026-10-03T05:16:13.0618863-04:00" endTime="2026-10-03T05:16:13.0618865-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0a18ec55-51f6-4b20-abb0-27d315ea9334">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)</StdOut>
+        <ErrorInfo>
+          <Message>Assert.DoesNotContain() Failure: Filter matched in collection
+                                                                      ↓ (pos 1)
+Collection: ["/task/boe-linux-load-run"···, "/task/boe-linux-load-run"···, "/task/boe-linux-load-run"···, "/task/boe-linux-load-run"···]</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(String canonical) in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs:line 40
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: &quot; config.json&quot;)" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="7feee987-e5d2-487a-8ba0-1a548ffaae0c">
+      <Execution id="31dd9aa3-1a5b-48c8-8d94-0eec719ef421" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/resources/resource_owner_authority.json&quot;)" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="47991eb5-e77e-4004-7799-7ab66da052d1">
+      <Execution id="fa993cb8-98ff-4e84-97e0-213529a1d705" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/resources/resource_definitions.json&quot;)" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e98bac96-79e4-a049-f5e2-f6181507229f">
+      <Execution id="17e05054-95bc-4e16-a4f1-deb4ff3abdbd" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.InvalidCaseAliasedConfigRejectsBeforeLifecycleMutation" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="f9970e13-f7ea-7c97-26dc-8a906e43c045">
+      <Execution id="759b464f-80f6-4913-8b09-064e87f725ad" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="InvalidCaseAliasedConfigRejectsBeforeLifecycleMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/meta/afterlife_entity_profiles.json&quot;)" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="3f34d368-eec3-cefb-3f26-236fe9da2def">
+      <Execution id="aa4210f1-3919-491e-9af4-8452e470abcd" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/meta/shining_abode_state.json&quot;)" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d3e14e7a-2f4b-6946-0ad3-bfee5f25fa46">
+      <Execution id="f1ea5836-61ed-4914-aa5f-28c5d3efa0a8" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.CanonicalizedAuthorityCannotReplaceTheSelectedArchive" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b42a6ee7-b53e-c5f7-0b78-8c5b343b5c74">
+      <Execution id="d63bba16-5f2c-49ec-8510-e799f1b1588c" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="CanonicalizedAuthorityCannotReplaceTheSelectedArchive" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: &quot; game_state/control/pending_turn_snapshot.json&quot;)" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="328f2b40-4a22-c150-aa4d-562df1e00b1a">
+      <Execution id="b099fb89-473e-42eb-8535-83d7fb05be5e" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: &quot;config.json &quot;)" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d4e3322b-6aef-d52c-a465-e09036866bbd">
+      <Execution id="360e5668-9385-416d-8652-b083d3b52e45" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/resources/resource_state.json&quot;)" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="648fff16-de0f-68d8-fcfe-d13a380b2541">
+      <Execution id="8b380510-0175-4919-b4cb-9729e85396c9" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;config.json&quot;)" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="75a0003d-fac7-1358-fdcf-21808e023351">
+      <Execution id="0a18ec55-51f6-4b20-abb0-27d315ea9334" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/meta/soul_state.json&quot;)" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="88836c16-75cc-5dfc-74a3-d4992e0dfd0b">
+      <Execution id="1677505b-08a4-4e48-aadd-0ba34441739a" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/resources/resource_history.json&quot;)" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ef38a7c3-a933-c262-9712-2814f1813d35">
+      <Execution id="eb1d23e0-27c1-4cc5-bec1-2ab6f63166c2" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: &quot; saves/manual_saves/new.zip&quot;)" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c2d3e10d-03d0-be3e-d252-644c5437f1cc">
+      <Execution id="91251d95-74ce-4022-91be-8185c139837b" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="47991eb5-e77e-4004-7799-7ab66da052d1" executionId="fa993cb8-98ff-4e84-97e0-213529a1d705" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="88836c16-75cc-5dfc-74a3-d4992e0dfd0b" executionId="1677505b-08a4-4e48-aadd-0ba34441739a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ef38a7c3-a933-c262-9712-2814f1813d35" executionId="eb1d23e0-27c1-4cc5-bec1-2ab6f63166c2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b42a6ee7-b53e-c5f7-0b78-8c5b343b5c74" executionId="d63bba16-5f2c-49ec-8510-e799f1b1588c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f9970e13-f7ea-7c97-26dc-8a906e43c045" executionId="759b464f-80f6-4913-8b09-064e87f725ad" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3f34d368-eec3-cefb-3f26-236fe9da2def" executionId="aa4210f1-3919-491e-9af4-8452e470abcd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="328f2b40-4a22-c150-aa4d-562df1e00b1a" executionId="b099fb89-473e-42eb-8535-83d7fb05be5e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d3e14e7a-2f4b-6946-0ad3-bfee5f25fa46" executionId="f1ea5836-61ed-4914-aa5f-28c5d3efa0a8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e98bac96-79e4-a049-f5e2-f6181507229f" executionId="17e05054-95bc-4e16-a4f1-deb4ff3abdbd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d4e3322b-6aef-d52c-a465-e09036866bbd" executionId="360e5668-9385-416d-8652-b083d3b52e45" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7feee987-e5d2-487a-8ba0-1a548ffaae0c" executionId="31dd9aa3-1a5b-48c8-8d94-0eec719ef421" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="648fff16-de0f-68d8-fcfe-d13a380b2541" executionId="8b380510-0175-4919-b4cb-9729e85396c9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c2d3e10d-03d0-be3e-d252-644c5437f1cc" executionId="91251d95-74ce-4022-91be-8185c139837b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="75a0003d-fac7-1358-fdcf-21808e023351" executionId="0a18ec55-51f6-4b20-abb0-27d315ea9334" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="14" executed="14" passed="0" failed="14" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.41]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.02]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.05]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.77]       System.IO.FileNotFoundException : Could not find file '/owned-run/temp/boe-portable-load-00f1a4680ef34e25a10e3ded43a235ce/game_session/game_state/resources/resource_history.json'.
+[xUnit.net 00:00:02.78]       Stack Trace:
+[xUnit.net 00:00:02.78]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:02.78]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:02.78]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:02.78]            at System.IO.File.OpenHandle(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:02.78]            at System.IO.File.ReadAllBytes(String path)
+[xUnit.net 00:00:02.78]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs(39,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(String canonical)
+[xUnit.net 00:00:02.78]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.78]       Output:
+[xUnit.net 00:00:02.78]         Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)
+[xUnit.net 00:00:02.91]       System.IO.FileNotFoundException : Could not find file '/owned-run/temp/boe-portable-load-df86892b877d4dbe8da960de619a55e8/game_session/game_state/resources/resource_definitions.json'.
+[xUnit.net 00:00:02.91]       Stack Trace:
+[xUnit.net 00:00:02.91]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:02.91]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:02.91]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:02.91]            at System.IO.File.OpenHandle(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:02.91]            at System.IO.File.ReadAllBytes(String path)
+[xUnit.net 00:00:02.91]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs(39,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(String canonical)
+[xUnit.net 00:00:02.91]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.91]       Output:
+[xUnit.net 00:00:02.91]         Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)
+[xUnit.net 00:00:03.03]       System.IO.FileNotFoundException : Could not find file '/owned-run/temp/boe-portable-load-59103695a4054600b9860cce81017f6f/game_session/game_state/meta/soul_state.json'.
+[xUnit.net 00:00:03.03]       Stack Trace:
+[xUnit.net 00:00:03.03]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:03.03]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:03.03]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:03.03]            at System.IO.File.OpenHandle(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:03.03]            at System.IO.File.ReadAllBytes(String path)
+[xUnit.net 00:00:03.03]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs(39,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(String canonical)
+[xUnit.net 00:00:03.03]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.03]       Output:
+[xUnit.net 00:00:03.03]         Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)
+[xUnit.net 00:00:03.72]       Assert.DoesNotContain() Failure: Filter matched in collection
+[xUnit.net 00:00:03.72]                                                                             ↓ (pos 1)
+[xUnit.net 00:00:03.72]       Collection: ["/task/boe-linux-load-run"···, "/task/boe-linux-load-run"···, "/task/boe-linux-load-run"···, "/task/boe-linux-load-run"···]
+[xUnit.net 00:00:03.72]       Stack Trace:
+[xUnit.net 00:00:03.72]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs(40,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(String canonical)
+[xUnit.net 00:00:03.72]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.72]       Output:
+[xUnit.net 00:00:03.72]         Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)
+[xUnit.net 00:00:03.85]       System.IO.FileNotFoundException : Could not find file '/owned-run/temp/boe-portable-load-22b5686481a340b2b7400990ae0dccb6/game_session/game_state/resources/resource_owner_authority.json'.
+[xUnit.net 00:00:03.85]       Stack Trace:
+[xUnit.net 00:00:03.85]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:03.85]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:03.85]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:03.85]            at System.IO.File.OpenHandle(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:03.85]            at System.IO.File.ReadAllBytes(String path)
+[xUnit.net 00:00:03.85]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs(39,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(String canonical)
+[xUnit.net 00:00:03.85]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.85]       Output:
+[xUnit.net 00:00:03.85]         Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)
+[xUnit.net 00:00:03.97]       System.IO.FileNotFoundException : Could not find file '/owned-run/temp/boe-portable-load-88e673ce79b74cfc8316f29f18c3d975/game_session/game_state/resources/resource_state.json'.
+[xUnit.net 00:00:03.97]       Stack Trace:
+[xUnit.net 00:00:03.97]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:03.97]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:03.97]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:03.97]            at System.IO.File.OpenHandle(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:03.97]            at System.IO.File.ReadAllBytes(String path)
+[xUnit.net 00:00:03.97]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs(39,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(String canonical)
+[xUnit.net 00:00:03.97]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.97]       Output:
+[xUnit.net 00:00:03.97]         Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)
+[xUnit.net 00:00:04.10]       System.IO.FileNotFoundException : Could not find file '/owned-run/temp/boe-portable-load-1683381cac9f4147aec9495c22d95608/game_session/game_state/meta/afterlife_entity_profiles.json'.
+[xUnit.net 00:00:04.10]       Stack Trace:
+[xUnit.net 00:00:04.10]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:04.10]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:04.10]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:04.10]            at System.IO.File.OpenHandle(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:04.10]            at System.IO.File.ReadAllBytes(String path)
+[xUnit.net 00:00:04.10]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs(39,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(String canonical)
+[xUnit.net 00:00:04.10]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.10]       Output:
+[xUnit.net 00:00:04.10]         Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberStaged, 6),(MemberPublished, 6),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(MemberStaged, 11),(MemberPublished, 11),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupMember, 11),(CleanupComplete, -1)
+[xUnit.net 00:00:04.12]       Assert.True() Failure
+[xUnit.net 00:00:04.12]       Expected: True
+[xUnit.net 00:00:04.12]       Actual:   False
+[xUnit.net 00:00:04.12]       Stack Trace:
+[xUnit.net 00:00:04.12]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs(265,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.PrepareCurrentArchiveAsync(Boolean archiveHasConfig, String selectedRelativePath, String collision)
+[xUnit.net 00:00:04.12]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs(26,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(String canonical)
+[xUnit.net 00:00:04.12]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.26]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:04.26]       Expected: NotLoaded
+[xUnit.net 00:00:04.26]       Actual:   Committed
+[xUnit.net 00:00:04.26]       Stack Trace:
+[xUnit.net 00:00:04.26]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs(245,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(String incomingPath)
+[xUnit.net 00:00:04.26]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.26]       Output:
+[xUnit.net 00:00:04.26]         Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)
+[xUnit.net 00:00:04.38]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:04.38]       Expected: NotLoaded
+[xUnit.net 00:00:04.38]       Actual:   Committed
+[xUnit.net 00:00:04.38]       Stack Trace:
+[xUnit.net 00:00:04.38]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs(245,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(String incomingPath)
+[xUnit.net 00:00:04.38]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.38]       Output:
+[xUnit.net 00:00:04.38]         Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)
+[xUnit.net 00:00:04.49]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:04.49]       Expected: NotLoaded
+[xUnit.net 00:00:04.49]       Actual:   Committed
+[xUnit.net 00:00:04.49]       Stack Trace:
+[xUnit.net 00:00:04.49]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs(245,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(String incomingPath)
+[xUnit.net 00:00:04.49]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.49]       Output:
+[xUnit.net 00:00:04.49]         Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)
+[xUnit.net 00:00:04.61]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:04.61]       Expected: NotLoaded
+[xUnit.net 00:00:04.61]       Actual:   Committed
+[xUnit.net 00:00:04.61]       Stack Trace:
+[xUnit.net 00:00:04.61]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs(245,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(String incomingPath)
+[xUnit.net 00:00:04.61]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.61]       Output:
+[xUnit.net 00:00:04.61]         Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)
+[xUnit.net 00:00:04.69]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:04.69]       String:    "config.json is invalid; its existing byte"···
+[xUnit.net 00:00:04.69]       Not found: "selected archive"
+[xUnit.net 00:00:04.69]       Stack Trace:
+[xUnit.net 00:00:04.69]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs(84,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.CanonicalizedAuthorityCannotReplaceTheSelectedArchive()
+[xUnit.net 00:00:04.69]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.69]       Output:
+[xUnit.net 00:00:04.69]         Disposition=NotLoaded; preparation=1; lifecycle opens=1; B1 phases=
+[xUnit.net 00:00:04.69]         System.IO.InvalidDataException: config.json is invalid; its existing bytes have been preserved.
+[xUnit.net 00:00:04.69]          ---&gt; System.Text.Json.JsonReaderException: 'P' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.
+[xUnit.net 00:00:04.69]            at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader&amp; json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)
+[xUnit.net 00:00:04.69]            at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)
+[xUnit.net 00:00:04.69]            at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)
+[xUnit.net 00:00:04.69]            at System.Text.Json.Utf8JsonReader.ReadSingleSegment()
+[xUnit.net 00:00:04.69]            at System.Text.Json.Utf8JsonReader.Read()
+[xUnit.net 00:00:04.69]            at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb&amp; database, StackRowStack&amp; stack)
+[xUnit.net 00:00:04.69]            at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)
+[xUnit.net 00:00:04.69]            at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 json, JsonDocumentOptions options)
+[xUnit.net 00:00:04.69]            at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](String json, JsonSerializerOptions options, String authorityName) in /repo/BookOfEternityClient/Core/StrictJsonAuthority.cs:line 12
+[xUnit.net 00:00:04.69]            at BookOfEternityClient.Core.StateManager.DecodeLocalSettings(Byte[] bytes) in /repo/BookOfEternityClient/Core/StateManager.LocalSettings.cs:line 41
+[xUnit.net 00:00:04.69]            --- End of inner exception stack trace ---
+[xUnit.net 00:00:04.69]            at BookOfEternityClient.Core.StateManager.DecodeLocalSettings(Byte[] bytes) in /repo/BookOfEternityClient/Core/StateManager.LocalSettings.cs:line 46
+[xUnit.net 00:00:04.69]            at BookOfEternityClient.Core.StateManager.PrepareLocalLoadSettings(Byte[] bytes) in /repo/BookOfEternityClient/Core/StateManager.LocalSettings.cs:line 31
+[xUnit.net 00:00:04.69]            at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in /repo/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 129
+[xUnit.net 00:00:04.69]         System.IO.InvalidDataException: config.json is invalid; its existing bytes have been preserved.
+[xUnit.net 00:00:04.69]          ---&gt; System.Text.Json.JsonReaderException: 'P' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.
+[xUnit.net 00:00:04.69]            at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader&amp; json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)
+[xUnit.net 00:00:04.69]            at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)
+[xUnit.net 00:00:04.69]            at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)
+[xUnit.net 00:00:04.69]            at System.Text.Json.Utf8JsonReader.ReadSingleSegment()
+[xUnit.net 00:00:04.69]            at System.Text.Json.Utf8JsonReader.Read()
+[xUnit.net 00:00:04.69]            at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb&amp; database, StackRowStack&amp; stack)
+[xUnit.net 00:00:04.69]            at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)
+[xUnit.net 00:00:04.69]            at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 json, JsonDocumentOptions options)
+[xUnit.net 00:00:04.69]            at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](String json, JsonSerializerOptions options, String authorityName) in /repo/BookOfEternityClient/Core/StrictJsonAuthority.cs:line 12
+[xUnit.net 00:00:04.69]            at BookOfEternityClient.Core.StateManager.DecodeLocalSettings(Byte[] bytes) in /repo/BookOfEternityClient/Core/StateManager.LocalSettings.cs:line 41
+[xUnit.net 00:00:04.69]            --- End of inner exception stack trace ---
+[xUnit.net 00:00:04.69]            at BookOfEternityClient.Core.StateManager.DecodeLocalSettings(Byte[] bytes) in /repo/BookOfEternityClient/Core/StateManager.LocalSettings.cs:line 46
+[xUnit.net 00:00:04.69]            at BookOfEternityClient.Core.StateManager.PrepareLocalLoadSettings(Byte[] bytes) in /repo/BookOfEternityClient/Core/StateManager.LocalSettings.cs:line 31
+[xUnit.net 00:00:04.69]            at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in /repo/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 129
+[xUnit.net 00:00:04.81]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:04.81]       Expected: NotLoaded
+[xUnit.net 00:00:04.81]       Actual:   Committed
+[xUnit.net 00:00:04.81]       Stack Trace:
+[xUnit.net 00:00:04.81]         /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs(59,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.InvalidCaseAliasedConfigRejectsBeforeLifecycleMutation()
+[xUnit.net 00:00:04.81]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.81]       Output:
+[xUnit.net 00:00:04.81]         Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)
+[xUnit.net 00:00:04.82]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T05:16:12.1135310-04:00">
+        <Text>[xUnit.net 00:00:02.77]     BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: "game_state/resources/resource_history.json") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T05:16:12.2455967-04:00">
+        <Text>[xUnit.net 00:00:02.91]     BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: "game_state/resources/resource_definitions.json") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T05:16:12.3707483-04:00">
+        <Text>[xUnit.net 00:00:03.03]     BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: "game_state/meta/soul_state.json") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T05:16:13.0620943-04:00">
+        <Text>[xUnit.net 00:00:03.72]     BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: "config.json") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T05:16:13.1928883-04:00">
+        <Text>[xUnit.net 00:00:03.85]     BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: "game_state/resources/resource_owner_authority.json") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T05:16:13.3118100-04:00">
+        <Text>[xUnit.net 00:00:03.97]     BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: "game_state/resources/resource_state.json") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T05:16:13.4375943-04:00">
+        <Text>[xUnit.net 00:00:04.10]     BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: "game_state/meta/afterlife_entity_profiles.json") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T05:16:13.4610208-04:00">
+        <Text>[xUnit.net 00:00:04.12]     BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: "game_state/meta/shining_abode_state.json") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T05:16:13.5942537-04:00">
+        <Text>[xUnit.net 00:00:04.25]     BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: " config.json") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T05:16:13.7219873-04:00">
+        <Text>[xUnit.net 00:00:04.38]     BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: "config.json ") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T05:16:13.8290338-04:00">
+        <Text>[xUnit.net 00:00:04.49]     BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: " game_state/control/pending_turn_snapshot.json") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T05:16:13.9464559-04:00">
+        <Text>[xUnit.net 00:00:04.61]     BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: " saves/manual_saves/new.zip") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T05:16:14.0317980-04:00">
+        <Text>[xUnit.net 00:00:04.69]     BookOfEternityClient.Tests.PortableLoadReplacementTests.CanonicalizedAuthorityCannotReplaceTheSelectedArchive [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="8578fe379cc9" outcome="Error" timestamp="2026-10-03T05:16:14.1515656-04:00">
+        <Text>[xUnit.net 00:00:04.81]     BookOfEternityClient.Tests.PortableLoadReplacementTests.InvalidCaseAliasedConfigRejectsBeforeLifecycleMutation [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

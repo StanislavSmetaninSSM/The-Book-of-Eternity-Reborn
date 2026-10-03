@@ -262,7 +262,9 @@ public sealed partial class PortableLoadReplacementTests : IDisposable
         Put(SoulPath, _loadedSoul);
         Put(MarkerPath, _loadedMarker);
         if (archiveHasConfig) Put("config.json", _config);
-        Assert.True(await _service.SaveGameAsync("load-source", "current public producer for load"));
+        var created = await _service.SaveGameAsync("load-source", "current public producer for load");
+        if (!created) foreach (var failure in _logger.Errors) _output.WriteLine(failure.ToString());
+        Assert.True(created);
         var produced = Assert.Single(Directory.GetFiles(_files.ResolvePath("saves/manual_saves"), "*.zip"));
         var source = _files.ResolvePath(selectedRelativePath);
         Directory.CreateDirectory(Path.GetDirectoryName(source)!);

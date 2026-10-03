@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-B1 connected ordinary load entry",
+  "sourceCommit": "39a3e9245ee2de4f9d12e645eed94bb830b7959f",
+  "sourceTree": "52067fa0e9928cfada08f895fe190354289f96f0",
+  "sourceWorkingTree": {
+    "Head": "39a3e9245ee2de4f9d12e645eed94bb830b7959f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -NoBuild",
+  "workingDirectory": "/repo",
+  "platform": {
+    "os": "Debian 13 Linux",
+    "architecture": "x64",
+    "dotnetSdk": "10.0.401",
+    "targetRuntime": "8.0.31",
+    "pwsh": "7.6.6"
+  },
+  "environment": {
+    "telemetry": "off",
+    "certificateGeneration": false,
+    "DOTNET_PROCESSOR_COUNT": 1,
+    "HOME_CODEX_HOME": "unchanged",
+    "mutableState": "owned CLI/XDG/HTTP/plugin/scratch/temp, reused immutable package cache"
+  },
+  "planOnly": false,
+  "wallTime": "00:00:12.3553662",
+  "exitCode": 1,
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 14,
+    "CompletedCases": 14,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 14,
+    "Executed": 14,
+    "Passed": 0,
+    "Failed": 14
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: \"game_state/resources/resource_owner_authority.json\")",
+      "outcome": "Failed",
+      "duration": "00:00:00.1282390"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: \"game_state/meta/soul_state.json\")",
+      "outcome": "Failed",
+      "duration": "00:00:00.1234214"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: \"game_state/resources/resource_history.json\")",
+      "outcome": "Failed",
+      "duration": "00:00:00.6470751"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.CanonicalizedAuthorityCannotReplaceTheSelectedArchive",
+      "outcome": "Failed",
+      "duration": "00:00:00.0829951"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.InvalidCaseAliasedConfigRejectsBeforeLifecycleMutation",
+      "outcome": "Failed",
+      "duration": "00:00:00.1194686"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: \"game_state/meta/afterlife_entity_profiles.json\")",
+      "outcome": "Failed",
+      "duration": "00:00:00.1236719"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: \" game_state/control/pending_turn_snapshot.json\")",
+      "outcome": "Failed",
+      "duration": "00:00:00.1059220"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: \"game_state/meta/shining_abode_state.json\")",
+      "outcome": "Failed",
+      "duration": "00:00:00.0230198"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: \"game_state/resources/resource_definitions.json\")",
+      "outcome": "Failed",
+      "duration": "00:00:00.1320755"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: \"config.json \")",
+      "outcome": "Failed",
+      "duration": "00:00:00.1255975"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: \" config.json\")",
+      "outcome": "Failed",
+      "duration": "00:00:00.1305974"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: \"game_state/resources/resource_state.json\")",
+      "outcome": "Failed",
+      "duration": "00:00:00.1169751"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: \" saves/manual_saves/new.zip\")",
+      "outcome": "Failed",
+      "duration": "00:00:00.1164134"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: \"config.json\")",
+      "outcome": "Failed",
+      "duration": "00:00:00.6895257"
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs",
+      "sha256": "eb8dfdffe41b857daf09e9323b5cde7cfc931afbf88e608069570bfa76489032",
+      "gitBlob": "fc2779db3dce872dcfabeb35fa1093cdf6f2eef8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+      "sha256": "2fb12e210050bbd7293b9abbd1ec0e45fbd0a916648e526abff5def43a40a7fa",
+      "gitBlob": "8c2e799c07e4e17bab8d8d2fb62f7f79400adec4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+      "sha256": "30f0446f53bd74e385f712909e3253737ff30c3a63cbf881b7118fcca2ef0c5a",
+      "gitBlob": "b174e752492c12cdeb4cee1bdb144692d27dd815"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.LoadReplacement.cs",
+      "sha256": "a3c3125953985a95996c7eb21295f3e9f1daa8156e4b97150860854aa5e85941",
+      "gitBlob": "f55330f7d0b68f17585c8912c90054520e8e5b7c"
+    },
+    {
+      "path": "BookOfEternityClient/Core/StateManager.LocalSettings.cs",
+      "sha256": "4c8b6defec4d8ba56be1e78769c72da9706ef6fdf437f5d44adfe469dd782403",
+      "gitBlob": "111ff18c46a5d0613db57545f191896ca4f4e710"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs",
+      "sha256": "13b716101e4f111435e5a7bf5fe5fa0083b4904b60a0cec920d9512b6efcc885",
+      "gitBlob": "86c82a62e138164a7e8158b9aa7adef0fe742916"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+      "sha256": "158838814f3d55c1669538e9bc0e4d2593b3d4adf356901007609d779fc68d9d",
+      "gitBlob": "69d480b2cc10c640dcf79cd906f8a59263eba4e3"
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "135571d9d984ed595a9d76dacb32373f29390c23e285c0807d6e3280228a71ed",
+      "gitBlob": "e9021e1fa697166d8ca4fd36755f6cddf1cadc98"
+    },
+    {
+      "path": "tests/selection.json",
+      "sha256": "791e0f11700f0d8e707f9e6992e6a84e24d4e28af5330c6c0e15cb1712b6ab3b",
+      "gitBlob": "d23533659c02005e9dee33cb58182059f18f7d1d"
+    },
+    {
+      "path": "scripts/test-csharp.ps1",
+      "sha256": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1",
+      "gitBlob": "0576b2e34e5c0c5d164c173a9961a67c965c5509"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "dotnet-test.log",
+      "originalSha256": "fa0a4ec516b27ad1ce99ba24e8965f23a390384a1d178789fcb2d9816239e141",
+      "originalBytes": 1506384,
+      "embedded": false,
+      "reason": "Oversized discovery log; exact hash retained, causal TRX, build, plan and summary embedded"
+    },
+    {
+      "name": "plan.json",
+      "originalSha256": "5888856c4adcfca5527d4de6f6aefc9c9f49fc992b8b1890dd456dbfe58aed31",
+      "originalBytes": 2783,
+      "embedded": true,
+      "sha256": "5888856c4adcfca5527d4de6f6aefc9c9f49fc992b8b1890dd456dbfe58aed31"
+    },
+    {
+      "name": "portable-load-alias-admission-integration-001.trx",
+      "originalSha256": "116e5bba8cb352fc1cd71f8d64035d3bb712789bf7583c898806b840949d4a51",
+      "originalBytes": 89200,
+      "embedded": true,
+      "sha256": "c2f1376a38ba936b9e41f585be03ee2c47eae0e8601d7fcb58af90aca71893ac"
+    },
+    {
+      "name": "summary.json",
+      "originalSha256": "e5343599c49ed1cdc48c52b44fdbbeef6c97ec5f8ac7a2e890edbaf640226fb3",
+      "originalBytes": 2087,
+      "embedded": true,
+      "sha256": "e5343599c49ed1cdc48c52b44fdbbeef6c97ec5f8ac7a2e890edbaf640226fb3"
+    }
+  ],
+  "interpretation": "Fourteen failures: thirteen causal admission/materialization failures reach typed load; one noncausal Shining Abode setup failure at public SaveGame because the fixture supplied an empty object instead of the supported default state. This is not fourteen-case causal RED and proves no Shining load result. Exact failure is retained; fixture-only correction follows without a production fix."
+}

@@ -22,7 +22,7 @@ public sealed partial class PortableLoadReplacementTests
         if (canonical == AfterlifeEntityProfileState.StatePath)
             Put(canonical, Encoding.UTF8.GetBytes("""{"profiles":[]}"""));
         if (canonical == ShiningAbodeState.StatePath)
-            Put(canonical, Encoding.UTF8.GetBytes("{}"));
+            Put(canonical, Encoding.UTF8.GetBytes(ShiningAbodeState.CreateDefaultState().ToJsonString()));
         var source = await PrepareCurrentArchiveAsync(archiveHasConfig: canonical == "config.json");
         var alias = canonical[..(canonical.LastIndexOf('/') + 1)] + Path.GetFileName(canonical).ToUpperInvariant();
         var saved = RenameArchiveEntry(source, canonical, alias);
