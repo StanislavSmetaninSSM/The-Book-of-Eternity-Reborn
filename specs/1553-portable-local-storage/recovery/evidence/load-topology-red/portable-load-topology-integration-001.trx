@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="a952985f-8ac4-4600-a5a8-887406f465f8" name="Eja@HOME-PC 2026-10-04 03:35:13" runUser="HOME-PC\Eja" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-04T03:35:13.2358314+10:00" queuing="2026-10-04T03:35:13.2358317+10:00" start="2026-10-04T03:35:08.1336319+10:00" finish="2026-10-04T03:35:15.7534021+10:00" />
+  <TestSettings name="default" id="2ee3d2c3-6780-4544-bc88-4354a1e10b5c">
+    <Deployment runDeploymentRoot="Eja_HOME-PC_2026-10-04_03_35_13" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="9dc8b319-e561-4f0b-badb-d62f703a4c25" testId="82995d90-073a-f14d-b960-ed9dd964371d" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace(shape: &quot;empty-directory-file&quot;)" computerName="HOME-PC" duration="00:00:00.8412661" startTime="2026-10-04T03:35:15.6535285+10:00" endTime="2026-10-04T03:35:15.6535288+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9dc8b319-e561-4f0b-badb-d62f703a4c25">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=1; lifecycle opens=1; B1 phases=&#xD;
+System.IO.InvalidDataException: The local file path is not a regular file: C:\Temp\boe-portable-load-cf05cccf0a7f4cc69e6a9efbc9928bca\game_session\lore\namespace-switch&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateFile(String path, Boolean allowMissing) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileScope.cs:line 108&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFileImage.MatchesFile(TrustedLocalFileScope scope, String path) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileImage.cs:line 52&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.&lt;&gt;c__DisplayClass273_0.&lt;PublishLoadReplacementImagesAsync&gt;g__Revalidate|1() in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 60&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.PublishLoadReplacementImagesAsync(CanonicalWriteLease lease, LocalSessionGenerationSnapshot expectedGeneration, IReadOnlyList`1 completeChanges, String replacementGeneration, Action validatePreparedNamespace, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 69&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 211&#xD;
+System.IO.InvalidDataException: The local file path is not a regular file: C:\Temp\boe-portable-load-cf05cccf0a7f4cc69e6a9efbc9928bca\game_session\lore\namespace-switch&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateFile(String path, Boolean allowMissing) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileScope.cs:line 108&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFileImage.MatchesFile(TrustedLocalFileScope scope, String path) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileImage.cs:line 52&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.&lt;&gt;c__DisplayClass273_0.&lt;PublishLoadReplacementImagesAsync&gt;g__Revalidate|1() in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 60&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.PublishLoadReplacementImagesAsync(CanonicalWriteLease lease, LocalSessionGenerationSnapshot expectedGeneration, IReadOnlyList`1 completeChanges, String replacementGeneration, Action validatePreparedNamespace, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 69&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 211</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Committed&#xD;
+Actual:   NotLoaded</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace(String shape) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.Topology.cs:line 57&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b025ba92-296f-4054-83c5-4153fc9e3c16" testId="7d01c122-c5d5-3316-500d-ee80101927fb" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace(shape: &quot;nonempty-directory-file&quot;)" computerName="HOME-PC" duration="00:00:00.6599537" startTime="2026-10-04T03:35:13.5505550+10:00" endTime="2026-10-04T03:35:13.5505551+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b025ba92-296f-4054-83c5-4153fc9e3c16">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=1; lifecycle opens=1; B1 phases=&#xD;
+System.IO.InvalidDataException: The local file path is not a regular file: C:\Temp\boe-portable-load-16c708c839bf49e788e9ffb2ded29acc\game_session\lore\namespace-switch&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateFile(String path, Boolean allowMissing) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileScope.cs:line 108&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFileImage.MatchesFile(TrustedLocalFileScope scope, String path) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileImage.cs:line 52&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.&lt;&gt;c__DisplayClass273_0.&lt;PublishLoadReplacementImagesAsync&gt;g__Revalidate|1() in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 60&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.PublishLoadReplacementImagesAsync(CanonicalWriteLease lease, LocalSessionGenerationSnapshot expectedGeneration, IReadOnlyList`1 completeChanges, String replacementGeneration, Action validatePreparedNamespace, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 69&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 211&#xD;
+System.IO.InvalidDataException: The local file path is not a regular file: C:\Temp\boe-portable-load-16c708c839bf49e788e9ffb2ded29acc\game_session\lore\namespace-switch&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateFile(String path, Boolean allowMissing) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileScope.cs:line 108&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFileImage.MatchesFile(TrustedLocalFileScope scope, String path) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileImage.cs:line 52&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.&lt;&gt;c__DisplayClass273_0.&lt;PublishLoadReplacementImagesAsync&gt;g__Revalidate|1() in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 60&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.PublishLoadReplacementImagesAsync(CanonicalWriteLease lease, LocalSessionGenerationSnapshot expectedGeneration, IReadOnlyList`1 completeChanges, String replacementGeneration, Action validatePreparedNamespace, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 69&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 211</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Committed&#xD;
+Actual:   NotLoaded</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace(String shape) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.Topology.cs:line 57&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e600f5f5-ba7a-4dd5-9074-dccbd309679c" testId="5bd16072-ffcc-986c-b22b-8d9f0defe466" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace(shape: &quot;file-directory&quot;)" computerName="HOME-PC" duration="00:00:01.1845157" startTime="2026-10-04T03:35:12.8923929+10:00" endTime="2026-10-04T03:35:12.8924169+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e600f5f5-ba7a-4dd5-9074-dccbd309679c">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=1; lifecycle opens=1; B1 phases=&#xD;
+System.IO.InvalidDataException: A local storage ancestor is missing, linked or not a directory: C:\Temp\boe-portable-load-5dd8e6a8c87149c9a71882067e548f7c\game_session\lore\namespace-switch&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateDirectories(String path, Boolean allowMissing) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileScope.cs:line 195&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateDirectory(String path, Boolean allowMissing) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileScope.cs:line 157&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.&lt;&gt;c__DisplayClass273_0.&lt;PublishLoadReplacementImagesAsync&gt;g__Revalidate|1() in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 59&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.PublishLoadReplacementImagesAsync(CanonicalWriteLease lease, LocalSessionGenerationSnapshot expectedGeneration, IReadOnlyList`1 completeChanges, String replacementGeneration, Action validatePreparedNamespace, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 69&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 211&#xD;
+System.IO.InvalidDataException: A local storage ancestor is missing, linked or not a directory: C:\Temp\boe-portable-load-5dd8e6a8c87149c9a71882067e548f7c\game_session\lore\namespace-switch&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateDirectories(String path, Boolean allowMissing) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileScope.cs:line 195&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateDirectory(String path, Boolean allowMissing) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileScope.cs:line 157&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.&lt;&gt;c__DisplayClass273_0.&lt;PublishLoadReplacementImagesAsync&gt;g__Revalidate|1() in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 59&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.PublishLoadReplacementImagesAsync(CanonicalWriteLease lease, LocalSessionGenerationSnapshot expectedGeneration, IReadOnlyList`1 completeChanges, String replacementGeneration, Action validatePreparedNamespace, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 69&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 211</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Committed&#xD;
+Actual:   NotLoaded</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace(String shape) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.Topology.cs:line 57&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9df9bf3c-0ca9-4d1e-9198-8f23049c4250" testId="5facf49f-2f82-ba94-b53c-8432744ce0ed" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace(shape: &quot;preserve-empty-directory&quot;)" computerName="HOME-PC" duration="00:00:01.2598469" startTime="2026-10-04T03:35:14.8107208+10:00" endTime="2026-10-04T03:35:14.8107211+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9df9bf3c-0ca9-4d1e-9198-8f23049c4250">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberPublished, 5),(MemberStaged, 6),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupComplete, -1)</StdOut>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace(shape: &quot;preserve-empty-directory&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="5facf49f-2f82-ba94-b53c-8432744ce0ed">
+      <Execution id="9df9bf3c-0ca9-4d1e-9198-8f23049c4250" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="CurrentProducerLoadReconcilesCompleteNamespace" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace(shape: &quot;file-directory&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="5bd16072-ffcc-986c-b22b-8d9f0defe466">
+      <Execution id="e600f5f5-ba7a-4dd5-9074-dccbd309679c" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="CurrentProducerLoadReconcilesCompleteNamespace" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace(shape: &quot;empty-directory-file&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="82995d90-073a-f14d-b960-ed9dd964371d">
+      <Execution id="9dc8b319-e561-4f0b-badb-d62f703a4c25" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="CurrentProducerLoadReconcilesCompleteNamespace" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace(shape: &quot;nonempty-directory-file&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="7d01c122-c5d5-3316-500d-ee80101927fb">
+      <Execution id="b025ba92-296f-4054-83c5-4153fc9e3c16" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="CurrentProducerLoadReconcilesCompleteNamespace" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="82995d90-073a-f14d-b960-ed9dd964371d" executionId="9dc8b319-e561-4f0b-badb-d62f703a4c25" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7d01c122-c5d5-3316-500d-ee80101927fb" executionId="b025ba92-296f-4054-83c5-4153fc9e3c16" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5bd16072-ffcc-986c-b22b-8d9f0defe466" executionId="e600f5f5-ba7a-4dd5-9074-dccbd309679c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5facf49f-2f82-ba94-b53c-8432744ce0ed" executionId="9df9bf3c-0ca9-4d1e-9198-8f23049c4250" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="4" executed="4" passed="1" failed="3" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.61]   Discovering: BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:00:02.69]   Discovered:  BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:00:02.72]   Starting:    BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:00:03.96]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:03.96]       Expected: Committed&#xD;
+[xUnit.net 00:00:03.96]       Actual:   NotLoaded&#xD;
+[xUnit.net 00:00:03.96]       Stack Trace:&#xD;
+[xUnit.net 00:00:03.96]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.Topology.cs(57,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace(String shape)&#xD;
+[xUnit.net 00:00:03.96]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:03.96]       Output:&#xD;
+[xUnit.net 00:00:03.96]         Disposition=NotLoaded; preparation=1; lifecycle opens=1; B1 phases=&#xD;
+[xUnit.net 00:00:03.96]         System.IO.InvalidDataException: A local storage ancestor is missing, linked or not a directory: C:\Temp\boe-portable-load-5dd8e6a8c87149c9a71882067e548f7c\game_session\lore\namespace-switch&#xD;
+[xUnit.net 00:00:03.96]            at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateDirectories(String path, Boolean allowMissing) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileScope.cs:line 195&#xD;
+[xUnit.net 00:00:03.96]            at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateDirectory(String path, Boolean allowMissing) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileScope.cs:line 157&#xD;
+[xUnit.net 00:00:03.96]            at BookOfEternityClient.Core.FileSystemManager.&lt;&gt;c__DisplayClass273_0.&lt;PublishLoadReplacementImagesAsync&gt;g__Revalidate|1() in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 59&#xD;
+[xUnit.net 00:00:03.96]            at BookOfEternityClient.Core.FileSystemManager.PublishLoadReplacementImagesAsync(CanonicalWriteLease lease, LocalSessionGenerationSnapshot expectedGeneration, IReadOnlyList`1 completeChanges, String replacementGeneration, Action validatePreparedNamespace, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 69&#xD;
+[xUnit.net 00:00:03.96]            at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 211&#xD;
+[xUnit.net 00:00:03.96]         System.IO.InvalidDataException: A local storage ancestor is missing, linked or not a directory: C:\Temp\boe-portable-load-5dd8e6a8c87149c9a71882067e548f7c\game_session\lore\namespace-switch&#xD;
+[xUnit.net 00:00:03.96]            at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateDirectories(String path, Boolean allowMissing) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileScope.cs:line 195&#xD;
+[xUnit.net 00:00:03.96]            at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateDirectory(String path, Boolean allowMissing) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileScope.cs:line 157&#xD;
+[xUnit.net 00:00:03.96]            at BookOfEternityClient.Core.FileSystemManager.&lt;&gt;c__DisplayClass273_0.&lt;PublishLoadReplacementImagesAsync&gt;g__Revalidate|1() in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 59&#xD;
+[xUnit.net 00:00:03.96]            at BookOfEternityClient.Core.FileSystemManager.PublishLoadReplacementImagesAsync(CanonicalWriteLease lease, LocalSessionGenerationSnapshot expectedGeneration, IReadOnlyList`1 completeChanges, String replacementGeneration, Action validatePreparedNamespace, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 69&#xD;
+[xUnit.net 00:00:03.96]            at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 211&#xD;
+[xUnit.net 00:00:04.62]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:04.62]       Expected: Committed&#xD;
+[xUnit.net 00:00:04.62]       Actual:   NotLoaded&#xD;
+[xUnit.net 00:00:04.62]       Stack Trace:&#xD;
+[xUnit.net 00:00:04.62]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.Topology.cs(57,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace(String shape)&#xD;
+[xUnit.net 00:00:04.62]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:04.62]       Output:&#xD;
+[xUnit.net 00:00:04.62]         Disposition=NotLoaded; preparation=1; lifecycle opens=1; B1 phases=&#xD;
+[xUnit.net 00:00:04.62]         System.IO.InvalidDataException: The local file path is not a regular file: C:\Temp\boe-portable-load-16c708c839bf49e788e9ffb2ded29acc\game_session\lore\namespace-switch&#xD;
+[xUnit.net 00:00:04.62]            at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateFile(String path, Boolean allowMissing) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileScope.cs:line 108&#xD;
+[xUnit.net 00:00:04.62]            at BookOfEternityClient.Core.TrustedLocalFileImage.MatchesFile(TrustedLocalFileScope scope, String path) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileImage.cs:line 52&#xD;
+[xUnit.net 00:00:04.62]            at BookOfEternityClient.Core.FileSystemManager.&lt;&gt;c__DisplayClass273_0.&lt;PublishLoadReplacementImagesAsync&gt;g__Revalidate|1() in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 60&#xD;
+[xUnit.net 00:00:04.62]            at BookOfEternityClient.Core.FileSystemManager.PublishLoadReplacementImagesAsync(CanonicalWriteLease lease, LocalSessionGenerationSnapshot expectedGeneration, IReadOnlyList`1 completeChanges, String replacementGeneration, Action validatePreparedNamespace, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 69&#xD;
+[xUnit.net 00:00:04.62]            at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 211&#xD;
+[xUnit.net 00:00:04.62]         System.IO.InvalidDataException: The local file path is not a regular file: C:\Temp\boe-portable-load-16c708c839bf49e788e9ffb2ded29acc\game_session\lore\namespace-switch&#xD;
+[xUnit.net 00:00:04.62]            at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateFile(String path, Boolean allowMissing) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileScope.cs:line 108&#xD;
+[xUnit.net 00:00:04.62]            at BookOfEternityClient.Core.TrustedLocalFileImage.MatchesFile(TrustedLocalFileScope scope, String path) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileImage.cs:line 52&#xD;
+[xUnit.net 00:00:04.62]            at BookOfEternityClient.Core.FileSystemManager.&lt;&gt;c__DisplayClass273_0.&lt;PublishLoadReplacementImagesAsync&gt;g__Revalidate|1() in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 60&#xD;
+[xUnit.net 00:00:04.62]            at BookOfEternityClient.Core.FileSystemManager.PublishLoadReplacementImagesAsync(CanonicalWriteLease lease, LocalSessionGenerationSnapshot expectedGeneration, IReadOnlyList`1 completeChanges, String replacementGeneration, Action validatePreparedNamespace, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 69&#xD;
+[xUnit.net 00:00:04.62]            at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 211&#xD;
+[xUnit.net 00:00:06.72]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:06.72]       Expected: Committed&#xD;
+[xUnit.net 00:00:06.72]       Actual:   NotLoaded&#xD;
+[xUnit.net 00:00:06.72]       Stack Trace:&#xD;
+[xUnit.net 00:00:06.72]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.Topology.cs(57,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace(String shape)&#xD;
+[xUnit.net 00:00:06.72]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:06.72]       Output:&#xD;
+[xUnit.net 00:00:06.72]         Disposition=NotLoaded; preparation=1; lifecycle opens=1; B1 phases=&#xD;
+[xUnit.net 00:00:06.72]         System.IO.InvalidDataException: The local file path is not a regular file: C:\Temp\boe-portable-load-cf05cccf0a7f4cc69e6a9efbc9928bca\game_session\lore\namespace-switch&#xD;
+[xUnit.net 00:00:06.72]            at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateFile(String path, Boolean allowMissing) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileScope.cs:line 108&#xD;
+[xUnit.net 00:00:06.72]            at BookOfEternityClient.Core.TrustedLocalFileImage.MatchesFile(TrustedLocalFileScope scope, String path) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileImage.cs:line 52&#xD;
+[xUnit.net 00:00:06.72]            at BookOfEternityClient.Core.FileSystemManager.&lt;&gt;c__DisplayClass273_0.&lt;PublishLoadReplacementImagesAsync&gt;g__Revalidate|1() in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 60&#xD;
+[xUnit.net 00:00:06.72]            at BookOfEternityClient.Core.FileSystemManager.PublishLoadReplacementImagesAsync(CanonicalWriteLease lease, LocalSessionGenerationSnapshot expectedGeneration, IReadOnlyList`1 completeChanges, String replacementGeneration, Action validatePreparedNamespace, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 69&#xD;
+[xUnit.net 00:00:06.72]            at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 211&#xD;
+[xUnit.net 00:00:06.72]         System.IO.InvalidDataException: The local file path is not a regular file: C:\Temp\boe-portable-load-cf05cccf0a7f4cc69e6a9efbc9928bca\game_session\lore\namespace-switch&#xD;
+[xUnit.net 00:00:06.72]            at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateFile(String path, Boolean allowMissing) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileScope.cs:line 108&#xD;
+[xUnit.net 00:00:06.72]            at BookOfEternityClient.Core.TrustedLocalFileImage.MatchesFile(TrustedLocalFileScope scope, String path) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFileImage.cs:line 52&#xD;
+[xUnit.net 00:00:06.72]            at BookOfEternityClient.Core.FileSystemManager.&lt;&gt;c__DisplayClass273_0.&lt;PublishLoadReplacementImagesAsync&gt;g__Revalidate|1() in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 60&#xD;
+[xUnit.net 00:00:06.72]            at BookOfEternityClient.Core.FileSystemManager.PublishLoadReplacementImagesAsync(CanonicalWriteLease lease, LocalSessionGenerationSnapshot expectedGeneration, IReadOnlyList`1 completeChanges, String replacementGeneration, Action validatePreparedNamespace, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.LoadReplacement.cs:line 69&#xD;
+[xUnit.net 00:00:06.72]            at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 211&#xD;
+[xUnit.net 00:00:06.74]   Finished:    BookOfEternityClient.IntegrationTests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="HOME-PC" outcome="Error" timestamp="2026-10-04T03:35:12.8898635+10:00">
+        <Text>[xUnit.net 00:00:03.96]     BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace(shape: "file-directory") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="HOME-PC" outcome="Error" timestamp="2026-10-04T03:35:13.5495817+10:00">
+        <Text>[xUnit.net 00:00:04.62]     BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace(shape: "nonempty-directory-file") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="HOME-PC" outcome="Error" timestamp="2026-10-04T03:35:15.6525682+10:00">
+        <Text>[xUnit.net 00:00:06.72]     BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace(shape: "empty-directory-file") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

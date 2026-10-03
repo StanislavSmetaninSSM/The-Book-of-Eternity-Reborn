@@ -1,0 +1,76 @@
+{
+  "Categories": [
+    "portable-load-topology"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-load-topology",
+      "reason": "T032-B2-NAMESPACE begins with four connected current-producer topology cases on the unchanged same-shape adapter, establishing causal conversion failures before v3 production implementation.",
+      "contracts": [
+        "#1553 LOAD-FS-001/002/003/004/006"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "dfc40c5d399daba74fb0c53ec83784a75fffa485",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-load-topology",
+      "Seconds": 10.2326375,
+      "BudgetMinutes": 5,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 1.3441414,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 1.0812385,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.9937952,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 166.7625154,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 15,
+  "WallTime": "00:03:09.0804137",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 4,
+    "CompletedCases": 4,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 4,
+    "Executed": 4,
+    "Passed": 1,
+    "Failed": 3
+  },
+  "DuplicateTests": []
+}

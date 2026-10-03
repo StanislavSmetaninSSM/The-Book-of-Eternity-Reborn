@@ -145,6 +145,12 @@ same-shape adapter's causal baseline. No v3 production implementation precedes t
 The first build at `24006de6` exposed a missing Services using in the newly installed
 test partial. No tests executed, so this is a preparation failure rather than causal
 RED. The import is corrected before the fresh selected rerun; production is unchanged.
+At clean `dfc40c5d399daba74fb0c53ec83784a75fffa485`, native Windows ran all four
+cases: harmless empty-directory preservation passed, all three conversions reached
+the real lease/prepublication adapter and causally failed its strict file/ancestor
+same-shape checks (NotLoaded, no publication phases). Complete selection, no skips/
+duplicates, complete cleanup, 3:09.080; exact [artifacts](recovery/evidence/load-topology-red/summary.json)
+are retained. This releases the reviewed B2 v3 implementation; it is not a B2 pass.
 The parent owns namespace observation/preflight/reconciliation and load integration;
 the retained Sol 6.1 High codec implementer may own only the separate v3 descriptor/frame
 files after release. This bounded delegation reuses known cursor machinery without

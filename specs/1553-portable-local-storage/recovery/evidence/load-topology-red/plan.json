@@ -1,0 +1,42 @@
+{
+  "Categories": [
+    "portable-load-topology"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-load-topology",
+      "reason": "T032-B2-NAMESPACE begins with four connected current-producer topology cases on the unchanged same-shape adapter, establishing causal conversion failures before v3 production implementation.",
+      "contracts": [
+        "#1553 LOAD-FS-001/002/003/004/006"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "dfc40c5d399daba74fb0c53ec83784a75fffa485",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 174.3673135,
+  "Descriptors": [
+    {
+      "Name": "portable-load-topology-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-topology",
+      "Categories": [
+        "portable-load-topology"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}
