@@ -49,7 +49,13 @@ this LOAD-FS-001 requirement. A narrow native-names owner now adds two actual ty
 commit/rollback rows plus exact duplicate/fixed alias/false digest refusals. The
 valid manifested case pair is appended to a current-producer archive independently;
 the existing save producer itself rejects case pairs and is not changed by this
-load-only block. New tests are unrun; production remains unchanged for causal RED.
+load-only block. The first attempted causal run at `cbd5c81b` stopped during the
+fresh build with four CS0103 errors from a missing Services namespace import in the
+new test file; zero tests ran, cleanup completed in 2:10.092. The build failure is
+retained in `load-linux-native-names-build-failure-20261003` and is not behavioral RED.
+The import is corrected; two additional original-manifest ambiguity/double-claim
+controls bring the narrow owner to seven cases. Production remains unchanged for
+causal RED.
 The approved spec already requires this behavior; no new game or GM contract.
 
 ## Authorized local filesystem execution checkpoint

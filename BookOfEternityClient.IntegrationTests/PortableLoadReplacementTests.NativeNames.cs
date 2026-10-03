@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -72,7 +73,7 @@ public sealed partial class PortableLoadReplacementTests
                 Assert.Equal(upper, File.ReadAllBytes(_files.ResolvePath("lore/Pair.bin")));
                 Assert.Equal(lower, File.ReadAllBytes(_files.ResolvePath("lore/pair.bin")));
                 Assert.NotEqual(generation, File.ReadAllBytes(_files.SessionGenerationPath));
-                Assert.Single(_phases.Where(value => value.Phase == TrustedLocalPublicationPhase.Committed));
+                Assert.Single(_phases, value => value.Phase == TrustedLocalPublicationPhase.Committed);
             }
         }
         if (OperatingSystem.IsWindows() || rollback)
@@ -99,16 +100,37 @@ public sealed partial class PortableLoadReplacementTests
     [InlineData("exact-duplicate")]
     [InlineData("fixed-alias")]
     [InlineData("case-pair-hash")]
+    [InlineData("ambiguous-manifest-alias")]
+    [InlineData("double-claimed-entry")]
     public async Task NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash(string kind)
     {
         var source = await PrepareCurrentArchiveAsync();
         if (kind == "fixed-alias")
             AppendManifestedPayload(source, SoulPath.ToUpperInvariant(), _loadedSoul);
+        else if (kind == "double-claimed-entry")
+        {
+            AppendManifestedPayload(source, "lore/alpha.bin", [1, 0, 255, 2]);
+            AppendManifestedPayload(source, "lore/beta.bin", [1, 0, 255, 2]);
+        }
         else
         {
             AppendManifestedPayload(source, "lore/Pair.bin", [1, 0, 255, 2]);
             AppendManifestedPayload(source, kind == "exact-duplicate" ? "lore/Pair.bin" : "lore/pair.bin",
                 [3, 0, 254, 4], invalidHash: kind == "case-pair-hash");
+        }
+        if (kind is "ambiguous-manifest-alias" or "double-claimed-entry")
+        {
+            using var archive = ZipFile.Open(source, ZipArchiveMode.Update);
+            var entry = Assert.IsType<ZipArchiveEntry>(archive.GetEntry("save_manifest.json"));
+            JsonObject manifest;
+            using (var input = entry.Open()) manifest = Assert.IsType<JsonObject>(JsonNode.Parse(input));
+            entry.Delete();
+            var members = Assert.IsType<JsonArray>(manifest["entries"]);
+            var original = kind == "double-claimed-entry" ? "lore/beta.bin" : "lore/Pair.bin";
+            var alias = kind == "double-claimed-entry" ? "lore/ALPHA.bin" : "lore/PAIR.bin";
+            Assert.Single(members, member => member!["path"]!.GetValue<string>() == original)!["path"] = alias;
+            using var output = archive.CreateEntry("save_manifest.json", CompressionLevel.NoCompression).Open();
+            output.Write(Encoding.UTF8.GetBytes(manifest.ToJsonString()));
         }
         var before = Snapshot(_files.GameSessionPath);
         var generation = File.ReadAllBytes(_files.SessionGenerationPath);
