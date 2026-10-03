@@ -2,25 +2,53 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "reason": "New actual native boundary/source-library and outside hard-link controls qualify B2 grants.",
       "contracts": [
-        "LOAD-FS-002/003/006 exact generation absence"
+        "LOAD-FS-002/004/008"
       ],
-      "reason": "Causal pending absent-generation failure is corrected by generation-last exact deletion; retain the committed decision control.",
-      "category": "portable-storage-namespace-generation"
+      "category": "portable-load-native-boundaries"
     },
     {
+      "reason": "New exact-stage native-link and committed cleanup-debt controls qualify preserved authority and continuation.",
       "contracts": [
-        "LOAD-FS-001/002/003/006"
+        "LOAD-FS-003/004/006"
       ],
-      "reason": "Connected real-producer conversions, actual nontransient warm cuts and first-generation publication rollback exercise the changed reconciliation.",
-      "category": "portable-load-topology"
+      "category": "portable-load-cleanup-debt"
     },
     {
+      "reason": "Typed load changed from file-only adapter to complete v3 namespace; retain exact connected source/library/config/late rollback consumers.",
       "contracts": [
-        "LOAD-FS-002/003/004/006"
+        "LOAD-FS-002/003/004"
       ],
-      "reason": "Shared v3 reconciliation changed: retain independent decisions, complete schema/admission preflight and unknown late contents refusal.",
-      "category": "portable-storage-namespace"
+      "category": "portable-load-entry"
+    },
+    {
+      "reason": "Complete namespace capture/revalidation now consumes prepared case spelling and protected-source topology decisions.",
+      "contracts": [
+        "LOAD-FS-001/004"
+      ],
+      "category": "portable-load-alias-admission"
+    },
+    {
+      "reason": "New v3 publication/recovery is consumed by typed disposition/cleanup and blocked-uncertainty orchestration.",
+      "contracts": [
+        "LOAD-FS-003/006"
+      ],
+      "category": "portable-load-outcomes"
+    },
+    {
+      "reason": "Recover adds v3 dispatch; retain strict original v1/v2 dispatch controls.",
+      "contracts": [
+        "Preserved v1/v2 reader authority"
+      ],
+      "category": "portable-storage-stream-dispatch"
+    },
+    {
+      "reason": "New v3 normal acquisition dispatch must preserve independent historical v1 pending/committed fixtures.",
+      "contracts": [
+        "Preserved original-v1 exact bytes and generation"
+      ],
+      "category": "portable-storage-original-v1-fixtures"
     }
   ]
 }

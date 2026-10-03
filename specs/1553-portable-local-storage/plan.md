@@ -190,6 +190,16 @@ The correction deletes the exact generation name last when rollback targets Miss
 after ordinary members/directories have been restored, preserving generation-last
 authority and by-name publication. The connected real generation cut and corrected
 nontransient warm cuts now run with the independent namespace admission consumers.
+Independent Sol 6.1 XHigh scoped correction review found no further finding.
+At clean `9c43fb9eb5da239fade03757573de0e69dc3c3ec`, fresh native Windows
+passed all 48 selected cases: topology 13, independent namespace 33 and exact
+generation 2, no skips/duplicates, complete selection/cleanup, 5:18.804 including
+build; exact [artifacts](recovery/evidence/load-namespace-green/summary.json) are retained.
+Ten independently drafted actual boundary/cleanup cases now join two narrow owners:
+`portable-load-native-boundaries` (6) and `portable-load-cleanup-debt` (4).
+The parent inspected the entire draft before installation; no production change
+is made merely to satisfy these unexecuted cases. Affected typed entry/alias/outcome
+and old version-dispatch/fixture consumers run in the same fresh build closure.
 This is the scoped review correction, not an accepted B2 outcome yet.
 The parent owns namespace observation/preflight/reconciliation and load integration;
 the retained Sol 6.1 High codec implementer may own only the separate v3 descriptor/frame

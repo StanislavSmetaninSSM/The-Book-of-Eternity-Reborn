@@ -1,0 +1,122 @@
+{
+  "Categories": [
+    "portable-storage-namespace-generation",
+    "portable-load-topology",
+    "portable-storage-namespace"
+  ],
+  "Reasons": [
+    {
+      "contracts": [
+        "LOAD-FS-002/003/006 exact generation absence"
+      ],
+      "reason": "Causal pending absent-generation failure is corrected by generation-last exact deletion; retain the committed decision control.",
+      "category": "portable-storage-namespace-generation"
+    },
+    {
+      "contracts": [
+        "LOAD-FS-001/002/003/006"
+      ],
+      "reason": "Connected real-producer conversions, actual nontransient warm cuts and first-generation publication rollback exercise the changed reconciliation.",
+      "category": "portable-load-topology"
+    },
+    {
+      "contracts": [
+        "LOAD-FS-002/003/004/006"
+      ],
+      "reason": "Shared v3 reconciliation changed: retain independent decisions, complete schema/admission preflight and unknown late contents refusal.",
+      "category": "portable-storage-namespace"
+    }
+  ],
+  "Revision": {
+    "Head": "9c43fb9eb5da239fade03757573de0e69dc3c3ec",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 256.2728284,
+  "Descriptors": [
+    {
+      "Name": "portable-load-topology-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-topology",
+      "Categories": [
+        "portable-load-topology"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.FreshGenerationInterruptionRestoresExactAbsence|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.InterruptedTopologyRestoresExactBeforeNamespace",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 13,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.FreshGenerationInterruptionRestoresExactAbsence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.InterruptedTopologyRestoresExactBeforeNamespace",
+          "Cases": 8
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-namespace-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-namespace",
+      "Categories": [
+        "portable-storage-namespace"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.EveryV3FieldRejectsOmissionWrongTypeAndForbiddenNull|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentV3FrameKeepsCompletePendingOrCommittedDecision|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.LateInvalidV3MetadataRetainsEveryEarlierMemberAndEvidence|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.UnknownLaterChildRetainsEveryEarlierAfterImage|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.UnsupportedNamespaceAuthorityRetainsExactEvidence",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 33,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.EveryV3FieldRejectsOmissionWrongTypeAndForbiddenNull",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentV3FrameKeepsCompletePendingOrCommittedDecision",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.LateInvalidV3MetadataRetainsEveryEarlierMemberAndEvidence",
+          "Cases": 18
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.UnknownLaterChildRetainsEveryEarlierAfterImage",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.UnsupportedNamespaceAuthorityRetainsExactEvidence",
+          "Cases": 6
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-namespace-generation-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-namespace-generation",
+      "Categories": [
+        "portable-storage-namespace-generation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentNewGenerationFramePreservesExactAbsence",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentNewGenerationFramePreservesExactAbsence",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

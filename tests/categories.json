@@ -10376,6 +10376,36 @@
       ]
     },
     {
+      "id": "portable-load-native-boundaries",
+      "responsibility": "Actual typed load protects a selected archive inside the opaque library, replaces a hard-linked canonical file by name without changing its outside-session alias, and refuses native directory links at target, ancestor, source and library before publication. Windows junction/hard-link and Linux symlink/hard-link bodies must actually execute on their native platform.",
+      "excludes": "Journal-only restart, full resource envelope, public caller cutover and cleanup debt; no early-return OS pass.",
+      "changeHints": ["BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs", "BookOfEternityClient/Core/TrustedLocalFileScope.cs", "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeBoundaries.cs"],
+      "related": [{"id": "portable-load-cleanup-debt", "when": "Transaction scratch ownership or committed cleanup admission changes."}],
+      "requirements": {"frontendBuild": false, "exclusive": true},
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [{"project": "integration", "tests": [
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.LibrarySelectedSourceCommitsWithoutChangingOpaqueLibrary",
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeHardLinkedMarkerReplacementPreservesOutsideSessionAlias",
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeDirectoryLinkBoundaryRefusesBeforeSessionPublication"
+      ]}]
+    },
+    {
+      "id": "portable-load-cleanup-debt",
+      "responsibility": "Actual v3 load retains pending evidence and exact before state when a native link occupies an exact owned stage, and retains committed files/generation when an unknown empty child or callback failure interrupts cleanup. Fresh normal acquisition refuses conflict then completes the same decision after exact conflict removal.",
+      "excludes": "Full cold process interruption/resource envelope, public caller integration and unrelated cleanup sweeps.",
+      "changeHints": ["BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs", "BookOfEternityClient/Services/SaveLoadService.Loading.cs", "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeBoundaries.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": true},
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [{"project": "integration", "tests": [
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeExactStageJunctionRetainsIntentUntilRemovedAndFreshlyRecovered",
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.CommittedUnknownEmptyDirectoryDebtPreservesDecisionUntilFreshCleanup",
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.PlainCommittedCallbackFailureKeepsEstablishedLoadDecision"
+      ]}]
+    },
+    {
       "id": "portable-load-alias-admission",
       "responsibility": "T032-B1 archive spelling review regressions: reject Trim/resolver aliases before mutation; materialize current-producer fixed soul/resource/config/profile case variants at canonical names with exact bytes and runtime state. Validate aliased config, original manifest hashes before mapping, full fixed-directory spelling and protected selected source after mapping. Preserve arbitrary Linux names without global case folding.",
       "excludes": "Same-shape success/rollback and settings baseline are owned by portable-load-entry. No metadata/topology/cold/resource/public/native/full-suite sweep.",
