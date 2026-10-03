@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "portable-storage-namespace",
+      "reason": "Scratch admission and namespace parent validation changed; strict v3 authority/full preflight must retain all prior cases.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-storage-namespace-generation",
+      "reason": "Shared namespace admission retains exact missing-generation restoration and committed generation.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-load-topology",
+      "reason": "Connected load consumes the new batch admission across file/directory shapes.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-load-native-boundaries",
+      "reason": "Fresh admission must preserve native junction/link/hard-link and protected source/library boundaries.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-load-cleanup-debt",
+      "reason": "Batch admission cannot loosen scratch conflict or committed cleanup decisions.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-load-cold-decision",
+      "reason": "Pending/committed restart consumes changed namespace validation with extraction absent.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-load-cold-topology",
+      "reason": "Interrupted structural rollback consumes changed namespace validation; exact repeated recovery required.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-storage-stream-dispatch",
+      "reason": "Shared crash-host dispatch gained a resource-only mode; preserve previous v1/v2 format dispatch.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-storage-original-v1-fixtures",
+      "reason": "Shared TrustedLocalFileScope changed; source-derived original v1 admission remains exact.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-storage-stream-publication",
+      "reason": "Shared scalar/batch scope leaf implementation must preserve existing v2 publication consumers.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-storage-stream-generation",
+      "reason": "Shared host and scope retain existing v2 cold generation ordering.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    }
+  ]
+}

@@ -340,13 +340,15 @@ reconciliation (~71seconds), and cleanup (~66seconds). Parent disk scans consume
 207.475seconds in2423samples, maximum477.582ms each. This is measured monitor work,
 not proof that removing it saves the same amount of child elapsed time.
 
-- Optimize the probe rather than weaken production admission: keep RSS/time checks
-  every100ms and the final actual OS peak, sample owned disk every1000ms, and force
+- Optimize the probe rather than weaken production admission: keep a100ms RSS/time
+  polling delay and the final actual OS peak, sample owned disk every1000ms, and force
   fresh disk samples at measurement start/stop, intent/commit durable boundaries,
   live cut and stable final completion. Durable-boundary acknowledgements hold the
   owned child at closed staged evidence until its parent actually samples it; merely
   receiving a delayed progress line is insufficient. Record actual RSS versus disk
-  counts, phase disk counts and scan cost separately. No cached disk observation is labelled fresh;
+  counts, phase disk counts and scan cost separately. Synchronous disk scans extend
+  actual polling intervals;100ms is not a guaranteed sampling frequency.
+  No cached disk observation is labelled fresh;
   links/unexpected I/O, missing samples, guard stops and incomplete cleanup still fail.
 - All independent fixture data, byte/hash/type/namespace checks and fixed heap/RSS/disk
   stops remain. Reuse no mutable prepared fixture between cases. Keep scalar mutation

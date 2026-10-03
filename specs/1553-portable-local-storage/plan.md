@@ -12,6 +12,25 @@ Execution plan revision 1 and its concrete v3 schema are therefore authorized.
 Independent Sol 6.1 XHigh design review passed `8ca3fbca`; its scoped proof readback
 also passed `532a0f36`. This accepts the design/tracking gate only, not load code.
 
+Latest resource checkpoint: ordinary maximum-inventory publication at clean
+`e593bcfa5e45502de9eb6d6b3949565f7c7881b2` passed1/1 with two measured children,
+complete selection and owned/runtime cleanup, command13:24.803 including fresh
+XML-enabled build. Exact [evidence](recovery/evidence/load-resource-inventory-green/summary.json)
+and [measurements](recovery/evidence/load-resource-inventory-green/metrics.json)
+record8192 original ZIP entries,2096128 UTF8 name bytes,9194739-byte v3 metadata
+and17441 members. Actual publication phase393.583seconds, whole child530.955seconds
+under the amended600-second bound; seed101.802seconds under180. Peak child
+RSS260673536bytes and owned disk36697323bytes retain fixed heap/RSS/disk controls.
+This is declared ordinary qualification, DiagnosticOnly=false; original180-second
+failures and the separate diagnostic pass remain unchanged. Parent disk work fell
+from207.475seconds/2423 scans to42.974seconds/459 scans, but whole child increased
+from486.530 to530.955seconds: do not claim an observed load speedup from reduced
+monitor work.100ms is a polling delay, not a guaranteed sampling frequency.
+Next selected control is `tests/selections/1553-load-admission-consumers.json`:
+only changed scope/namespace/native/cold and affected v1/v2/host consumers.
+Remaining separate resource phases and final scoped independent review are open;
+native Linux/public-client acceptance is not established by this Windows result.
+
 Current task: T032-B3-RESOURCE; T032-B1-FIX, T032-B1-METADATA, T032-B2-NAMESPACE and T032-B3-COLD are cleared for code/native Windows,
 while the separate native Linux gate remains open. Original baseline was `5d2aa2ce`.
 Five-fix candidate source is now written after the recorded causal baseline:
