@@ -36,6 +36,12 @@ repository Actions narrowly for checkout@v4/setup-dotnet@v4/upload-artifact@v4 o
 while keeping the old general workflow manually disabled. Record API readback before
 triggering the selected branch cohort. This is development infrastructure, not a change
 to cloud screening or OS security; missing actual Linux execution remains a non-pass.
+API readback now confirms enabled=true, allowed_actions=selected, github_owned_allowed=false,
+verified_allowed=false and exactly the three required @v4 patterns. Initial requests
+with allowed_actions while disabled were rejected 409 without mutation; the supported
+enable-then-select sequence succeeded. The old general workflow remains manually disabled.
+The explicit selection update triggers the native causal baseline; no Linux test result
+is claimed until the actual run/artifacts are inspected.
 Next: fresh Windows alias/outcome discovery and causal runtime baseline, then five
 fixes and affected consumers. No native Linux load result is inferred; install
 the explicitly selected Linux CI with this block. Parent implements; separate

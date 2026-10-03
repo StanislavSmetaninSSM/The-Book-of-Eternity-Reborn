@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-load-alias-admission",
-      "reason": "Native Linux causal baseline for T032-B1-FIX at the restored source, including the saved Shining Abode fixture correction. Original archive admission, finite fixed-path names and exact source/library protection; this initial run is expected to expose the unresolved reviewed defects.",
+      "reason": "Deliberate native Linux causal baseline after enabling only the three required Actions patterns. Production/tests remain 5d2aa2ce; Windows reached the corrected Shining Abode fixture, aliases were 10 GREEN/4 causal RED at 37e2b87c evidence. Linux must exercise actual case-sensitive fixed-name behavior; unresolved reviewed defects are expected in this baseline.",
       "contracts": ["#1553 LOAD-FS-001/002/004/008; actual typed load admission"]
     },
     {
