@@ -17,6 +17,25 @@ WIP infrastructure: the new branch-push Linux workflow and explicit alias/outcom
 selection are prepared. The first Linux job is a causal baseline, expected to expose
 unfixed regressions; build/CI/catalog/native acceptance are not yet claimed. A fresh
 Windows PlanOnly build of the same two owners is in progress at `e5ac0174`.
+Windows baseline is now complete for the intended methods across two bounded calls:
+PlanOnly at `e5ac0174` built fresh in 3:19.938, discovered 14 alias and 4 outcome cases,
+executed none and completed owned cleanup. At `4df443db` (identical production/tests),
+the combined NoBuild call ran aliases 14/14: 10 GREEN, 4 causal RED in 35.621 seconds;
+fail-fast did not run outcomes. The separate outcome NoBuild call ran 4/4: 1 GREEN,
+3 causal RED in 22.046 seconds, complete cleanup. No skips. Alias failures show
+three unexpected Committed results and one wrong failure classification; outcomes
+show prior recovery misclassified NotLoaded, a fabricated old established generation,
+and missing private-cleanup follow-up. The corrected Shining Abode fixture reached
+real load and passed on Windows. Native Linux fixed-name positives still need proof.
+Safe source-bound artifacts: recovery/evidence/load-red/.
+
+CI bootstrap ruling: GitHub API showed repository Actions enabled=false and the old
+`.NET CI` state disabled_manually; no branch run existed. The approved native Linux
+CI deliverable plus owner's autonomous recommended-choice authorization covers enabling
+repository Actions narrowly for checkout@v4/setup-dotnet@v4/upload-artifact@v4 only,
+while keeping the old general workflow manually disabled. Record API readback before
+triggering the selected branch cohort. This is development infrastructure, not a change
+to cloud screening or OS security; missing actual Linux execution remains a non-pass.
 Next: fresh Windows alias/outcome discovery and causal runtime baseline, then five
 fixes and affected consumers. No native Linux load result is inferred; install
 the explicitly selected Linux CI with this block. Parent implements; separate

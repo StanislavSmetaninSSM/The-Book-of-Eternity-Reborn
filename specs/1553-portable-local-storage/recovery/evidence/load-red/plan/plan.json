@@ -1,0 +1,79 @@
+{
+  "Categories": [
+    "portable-load-alias-admission",
+    "portable-load-outcomes"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "e5ac017440fd017a7aff3986721b9efae56ca21b",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 194.5979503,
+  "Descriptors": [
+    {
+      "Name": "portable-load-alias-admission-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-alias-admission",
+      "Categories": [
+        "portable-load-alias-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.CanonicalizedAuthorityCannotReplaceTheSelectedArchive|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.InvalidCaseAliasedConfigRejectsBeforeLifecycleMutation|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 14,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.CanonicalizedAuthorityCannotReplaceTheSelectedArchive",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState",
+          "Cases": 8
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.InvalidCaseAliasedConfigRejectsBeforeLifecycleMutation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation",
+          "Cases": 4
+        }
+      ]
+    },
+    {
+      "Name": "portable-load-outcomes-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-outcomes",
+      "Categories": [
+        "portable-load-outcomes"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.ConfirmedCommitRetainsIdentityWhenRequiredRefreshFails|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.ConflictAfterGenerationPublicationDoesNotClaimAnEstablishedGeneration|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.PreparationAndCleanupFailureRetainsKnownPrivateDebt|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.PriorJournalConflictDuringAcquisitionIsUncertainAndBlocksContinuation",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.ConfirmedCommitRetainsIdentityWhenRequiredRefreshFails",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.ConflictAfterGenerationPublicationDoesNotClaimAnEstablishedGeneration",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PreparationAndCleanupFailureRetainsKnownPrivateDebt",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PriorJournalConflictDuringAcquisitionIsUncertainAndBlocksContinuation",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
