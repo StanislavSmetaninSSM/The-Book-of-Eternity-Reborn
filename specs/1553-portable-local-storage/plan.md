@@ -12,7 +12,7 @@ Execution plan revision 1 and its concrete v3 schema are therefore authorized.
 Independent Sol 6.1 XHigh design review passed `8ca3fbca`; its scoped proof readback
 also passed `532a0f36`. This accepts the design/tracking gate only, not load code.
 
-Current task: T032-B2-NAMESPACE; T032-B1-FIX and T032-B1-METADATA are cleared for code/native Windows,
+Current task: T032-B3-COLD; T032-B1-FIX, T032-B1-METADATA and T032-B2-NAMESPACE are cleared for code/native Windows,
 while the separate native Linux gate remains open. Original baseline was `5d2aa2ce`.
 Five-fix candidate source is now written after the recorded causal baseline:
 Trim rejection and immutable declared-path canonicalization precede extraction/classification;
@@ -220,11 +220,30 @@ complete cleanup, 0:19.849. Four compiled XML documents parse; no touched-file X
 reference warning occurred, with the same three unrelated existing CS1587 warnings;
 [verification](recovery/evidence/load-namespace-catalog/xml.json) is recorded.
 Independent Sol 6.1 XHigh cleared source, generation and fixture corrections with
-no remaining findings; final evidence clearance is pending. All runtime results remain
+no remaining findings; final actual-evidence review cleared B2 code/native Windows
+through `d229823a`. All runtime results remain
 source-specific separate cohorts, not a fabricated combined pass. GM prompts/examples
 need no update for these client-owned local filesystem internals; no GM-authored
 gameplay/state schema or public caller changed. Cold/resource/native Linux/public
 acceptance is not established by this B2 evidence.
+B3 cold scaffolding was drafted in ignored scratch while B2 verification ran, with
+no compile-tree edits or runtime claims. The completed B2 gate now releases actual
+cold harness/test installation. One retained Sol 6.1 High owns this coherent harness
+draft; parent inspects/installs/qualifies it, separate Sol 6.1 XHigh reviews the block.
+The draft has 29 isolated cases: 13 durable-decision cuts, 10 forward/rollback topology
+cuts, four pending/committed unknown file/empty-directory refusals and two incomplete
+exact scratch controls. Source is the real manifested current producer inside the
+opaque library; complete After expectations derive ZIP hashes plus explicit preserved
+directories/library, never the implementation's namespace plan. Every announced child
+waits for parent termination; fresh normal acquisition runs without exact private
+extraction. Generation regions/bytes, source/library, complete names and repeated
+decisions are asserted. No native Linux, envelope or public-client result is implied.
+Process checkpoint: independent review caught a real generation-absence rollback
+defect. Runtime exposed a transient-fault expectation error and the now-obsolete v3
+unknown-version fixture; each received a scoped correction with original requirements
+preserved. B2 consumer build preparation took 248.817 seconds versus selected runtime
+about 82 seconds; passing unchanged controls were retained after the fixture correction.
+No measured token savings or broad quality ranking is inferred from these observations.
 The parent owns namespace observation/preflight/reconciliation and load integration;
 the retained Sol 6.1 High codec implementer may own only the separate v3 descriptor/frame
 files after release. This bounded delegation reuses known cursor machinery without

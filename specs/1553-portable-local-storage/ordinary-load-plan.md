@@ -198,6 +198,34 @@ so the existing later-member regression cuts the second actual file publication.
 - [ ] Use separate `portable-load-resource-preparation`, `portable-load-resource-publication`, `portable-load-resource-recovery` owners, initial category budgets **10 minutes each**, each command **15 minutes** including build/cleanup. A guard stop, incomplete sampling/cleanup or safe resource rejection is a non-pass. Record a justified plan/budget amendment before any changed control; never silently extend time or reduce the legal envelope.
 - [ ] Run phase owners separately on Windows and native Linux, record observations rather than claiming a premeasured speedup, publish and independently review the qualification block.
 
+**Concrete fixture/phase decisions (owner review waiver, 2026-10-04):** Use four
+independent roots per phase: 64 MiB, 128 MiB and near-512 MiB expanded payloads with
+64 KiB reserved for mandatory producer documents, plus the many-member/name case.
+The largest bulk root authors near-512 MiB distinct old live bytes after production.
+Write bulk data through 64 KiB buffers into files, never byte-array dictionaries.
+Extend the isolated cold fixture with before-producer and after-archive-close streaming
+callbacks; reuse fixture code, never mutable prepared state between tests. The
+many-member root uses exactly 8,192 actual ZIP entries, including current mandatory
+documents and manifest, near-2 MiB actual UTF-8 entry names, and 9,216 disjoint old
+files. Fixed CJK/ASCII leaf names keep each Linux component at most 255 UTF-8 bytes
+while staying short in Windows UTF-16; the producer's existing relaxed manifest
+encoder remains unchanged. Inspect actual count/name/manifest/expanded totals before
+loading and record them; do not subtract a guessed required-file count or remove the
+original manifest to make limits pass.
+
+Each phase enters actual typed load. Preparation stops at the actual prepared/lease
+boundary with a diagnostic exception and proves no publication/session change;
+publication measures from that boundary through one committed decision; recovery
+stops an actual pending/committed load child on a named operation, removes only its
+owned private extraction after termination, then measures fresh normal acquisition
+using self-contained journal regions. Independent ZIP/before expectations prove all
+namespace/hash/generation/history/config/source/library results. Seed and phase
+measurements are reported separately. RSS/time/disk observations and exact heap
+inheritance are required; incomplete sampling, failed setup, guard termination,
+missing phase or cleanup failure is a non-pass. The existing load-only controls and
+phase budgets above remain unchanged; no save-only policy or archive capability limit
+is changed by this qualification.
+
 ### T032-B5-FS — native Linux CI and durable downstream handback
 
 **Files:** bounded workflow/selection, feature quickstart/recovery docs/checkpoint/handoff; affected catalog contracts if runner integration changes. **Consumes:** accepted blocks above. **Produces:** Windows+Linux filesystem qualification and verified callable handoff, not public-client acceptance.
