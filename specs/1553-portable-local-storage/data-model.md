@@ -2,7 +2,7 @@
 
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
 Requirements: [spec.md](spec.md). Algorithms/interfaces: [ordinary-load-plan.md](ordinary-load-plan.md).
-Status: proposed concrete v3 model pending written plan/design review; no implementation claim.
+Status: concrete v3 model cleared by independent design review and authorized by the owner's subsequent explicit spec/plan/revision review waiver; no implementation claim.
 
 ## In-memory descriptors
 

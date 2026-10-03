@@ -4,7 +4,31 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
-## Local load-filesystem scope checkpoint — revision 1, 2026-10-03
+## Authorized local filesystem execution checkpoint
+
+The owner is leaving autonomous execution running and explicitly authorized all
+recommended choices/specs/plans/revisions, waiving further written review.
+Execution plan revision 1 and its concrete v3 schema are therefore authorized.
+Independent Sol 6.1 XHigh design review passed `8ca3fbca`; its scoped proof readback
+also passed `532a0f36`. This accepts the design/tracking gate only, not load code.
+
+Current task: T032-B1-FIX, baseline production/tests still `5d2aa2ce`.
+Next: fresh Windows alias/outcome discovery and causal runtime baseline, then five
+fixes and affected consumers. No native Linux load result is inferred; install
+the explicitly selected Linux CI with this block. Parent implements; separate
+Sol 6.1 XHigh reviews the completed code/tests/docs before block acceptance.
+
+Execution ledger uses existing Spec Kit task IDs and this canonical checkpoint;
+local Superpowers workspace is `.superpowers/sdd/ordinary-load-plan/`. Ruling:
+adapt numeric task-start/task-done bookkeeping to existing task IDs and runner
+evidence rather than creating a competing plan or repeating a passing run solely
+to append a ledger line. User category/checkpoint rules take precedence.
+Pre-flight: B1 fixes preserve the typed boundary consumed by metadata/topology;
+v2 streamed regions are reused by v3; v3 is the load/cold host dependency; resource
+probes consume that same real load; final native handback waits for every gate.
+No interface conflict was found.
+
+## Historical local load-filesystem planning checkpoint — revision 1, 2026-10-03
 
 Task #1553, T032-B-LOCAL-DESIGN; source base and published branch starting point
 `5d2aa2ceadd8f4424e3ccaf0249a8bb164f32fae`. The owner requested locally completing

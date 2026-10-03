@@ -8,11 +8,12 @@
 
 **Tech stack:** Existing C#/.NET 8 application, .NET SDK 10 compiler, PowerShell 7 category runner, xUnit, owned child-process probes and GitHub Actions; no new production package or remote gameplay dependency.
 
-**Spec:** [spec.md, Local load-filesystem continuation revision 1](spec.md#local-load-filesystem-continuation--revision-1-2026-10-03), approved by the owner. [tasks.md](tasks.md) tracks work; [plan.md](plan.md) holds evidence/checkpoints. This execution plan revision 1 and its v3 design await written plan review.
+**Spec:** [spec.md, Local load-filesystem continuation revision 1](spec.md#local-load-filesystem-continuation--revision-1-2026-10-03), approved by the owner. [tasks.md](tasks.md) tracks work; [plan.md](plan.md) holds evidence/checkpoints. The owner's subsequent explicit spec/plan/revision review waiver authorizes this execution plan revision 1 and its v3 design.
 
 **Design review:** independent Sol 6.1 XHigh cleared the eight-document block
 `6dd0dbeb..8ca3fbca` and related implementation source with no actionable finding.
-This clears the proposed design only; written plan/v3 approval and all implementation,
+This clears the design only. The owner subsequently authorized autonomous recommended
+spec/plan/revision decisions and waived further written review. Implementation,
 runtime/resource/native qualification remain pending.
 
 **Source:** `codex/1553-load-filesystem`, based on published `5d2aa2ceadd8f4424e3ccaf0249a8bb164f32fae`. The nine entry GREEN cases are a first slice; five review fixes and the saved Shining Abode fixture correction are not yet verified. Ordinary-save acceptance at `ddaade72ae44936f6cf61970afb2bc80225b7731` and earlier T032-B0 design acceptance at `05105d58` retain their historical evidence.
@@ -193,6 +194,6 @@ For each coherent block:
 | LOAD-FS-007 | B3-COLD, B3-RESOURCE, B5-FS | Process crash; both native OS. |
 | LOAD-FS-008 | Every block's selection/review/checkpoint, B5-FS | B4/T033/whole #1553 remain open. |
 
-Order: written plan/design approval → B1-FIX → B1-METADATA → B2-NAMESPACE → B3-COLD → B3-RESOURCE → final B5-FS handback. B5-FS CI infrastructure is installed after plan approval with B1 so each implementation block can obtain actual Linux evidence; its final acceptance waits for all filesystem gates. One implementation writer; optional read-only consultation only for a concrete unresolved problem.
+Order: authorized plan/design (owner's explicit review waiver) → B1-FIX → B1-METADATA → B2-NAMESPACE → B3-COLD → B3-RESOURCE → final B5-FS handback. B5-FS CI infrastructure is installed after plan approval with B1 so each implementation block can obtain actual Linux evidence; its final acceptance waits for all filesystem gates. One implementation writer; optional read-only consultation only for a concrete unresolved problem.
 
 Current policy reassessment: the remote source proves nine first-slice entry cases and five unresolved reviewed defects, but no comparable execution/resource-cost measurements for model routing. This plan consolidates codec/topology ownership and selects causal affected checks; no speedup or token-saving percentage is asserted. At each accepted coherent block record substantive review corrections, rework, test/build elapsed time and observed missed requirements in plan.md; propose routing changes only from evidence.

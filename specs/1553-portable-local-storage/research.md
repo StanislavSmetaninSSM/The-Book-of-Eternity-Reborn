@@ -4,7 +4,7 @@
 
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
 The owner approved the filesystem scope; [ordinary-load-plan.md](ordinary-load-plan.md)
-and [data-model.md](data-model.md) contain the concrete pending execution design.
+and [data-model.md](data-model.md) contain the concrete execution design.
 
 - **Decision:** use streamed v2 metadata and a distinct v3 namespace frame within the
   same B1 authority. **Rationale:** the current file-only model cannot describe empty
@@ -28,7 +28,8 @@ and [data-model.md](data-model.md) contain the concrete pending execution design
 
 The read-only Astra High consultation established the topology invariants; it did not
 implement or test them. Separate Sol 6.1 XHigh cleared the full design block at
-`8ca3fbca` without actionable findings; written plan/v3 approval remains pending.
+`8ca3fbca` without actionable findings; the owner subsequently waived further written
+spec/plan/revision review and authorized autonomous recommended decisions.
 No runtime result or exact platform-flag cause is inferred here.
 
 ## Historical persistent interactive GM proposal

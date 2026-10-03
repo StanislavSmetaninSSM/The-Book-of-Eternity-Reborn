@@ -6,10 +6,11 @@ Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reb
 
 Branch: `codex/1553-load-filesystem`, based on `5d2aa2ceadd8f4424e3ccaf0249a8bb164f32fae`.
 Approved scope: [spec revision 1](spec.md#local-load-filesystem-continuation--revision-1-2026-10-03).
-The [execution plan](ordinary-load-plan.md) and v3 design await written review.
+The [execution plan](ordinary-load-plan.md) and v3 design are authorized by the owner's
+subsequent explicit waiver of further spec/plan/revision review.
 Production/test/CI implementation has not changed in this local planning block.
 
-After plan approval, use PowerShell 7, SDK 10 and runtime 8 from the worktree root:
+For the authorized first block, use PowerShell 7, SDK 10 and runtime 8 from the worktree root:
 
 ```powershell
 $env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'

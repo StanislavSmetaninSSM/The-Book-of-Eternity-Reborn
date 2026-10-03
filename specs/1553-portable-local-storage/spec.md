@@ -2,7 +2,7 @@
 
 **Feature Branch**: `codex/1553-load-filesystem` (local continuation from `codex/1553-save-windows`)
 **Created**: 2026-09-30
-**Status**: Original feature approved; ordinary-save capability accepted at `ddaade72`. The owner approved the exact local load-filesystem specification revision 1 below. Execution plan revision 1 and its namespace-frame design addendum await written review; full Load and remaining B3/B4/B5/platform acceptance remain open.
+**Status**: Original feature approved; ordinary-save capability accepted at `ddaade72`. The owner approved the exact local load-filesystem specification revision 1 below. The owner subsequently waived further written spec/plan/revision review and authorized recommended autonomous decisions; execution plan revision 1 and its namespace-frame design addendum are authorized; full Load and remaining B3/B4/B5/platform acceptance remain open.
 
 ## Source Issues & Scope
 
@@ -141,8 +141,8 @@ Protected library/source ancestors cannot be converted or removed. The library i
 opaque; an in-session selected source is checked by length/hash without storing
 another archive payload. External source access never becomes a cold-recovery grant.
 Committed cleanup validates and preserves the complete after namespace; rollback
-confirmation validates the complete before namespace. This addendum is pending
-with execution plan revision 1, not already covered by the recorded spec approval.
+confirmation validates the complete before namespace. This addendum and execution plan revision 1 are authorized by the owner's later explicit
+waiver of spec/plan/revision review; the earlier exact spec approval alone did not cover it.
 
 ## User Scenarios & Testing
 

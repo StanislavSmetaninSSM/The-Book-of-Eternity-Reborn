@@ -24,6 +24,6 @@
 - [x] Current Sol 6.1 XHigh independent-review strategy is distinguished from historical Astra review identities.
 - [x] Scope contains no guessed screening cause or screening experiment; no GM-authored mechanic changes are proposed.
 - [x] User has reviewed and approved this exact written specification revision 1 through the explicit approval reply.
-- [x] Incremental detailed plan/tasks phases and read-only cross-artifact consistency completed: 8/8 local requirements map to six dependency-ordered execution owners; implementation remains gated by written plan/design approval and independent review.
-- [ ] User has reviewed execution plan revision 1 and its explicit v3 namespace design addendum.
+- [x] Incremental detailed plan/tasks phases and read-only cross-artifact consistency completed: 8/8 local requirements map to six dependency-ordered execution owners; implementation/design are authorized by the owner's subsequent review waiver; independent development review remains mandatory.
+- [x] Owner explicitly waived further written spec/plan/revision review and authorized recommended autonomous decisions, covering execution plan revision 1 and its explicit v3 namespace addendum.
 - [x] Independent Sol 6.1 XHigh review cleared the complete eight-document design block at `8ca3fbcab5ba92f0ffe2db1c109229246e589eac` with no actionable finding; this is design clearance, not implementation/native acceptance.
