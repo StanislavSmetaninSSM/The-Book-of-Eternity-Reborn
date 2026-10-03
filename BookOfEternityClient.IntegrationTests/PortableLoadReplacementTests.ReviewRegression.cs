@@ -122,6 +122,43 @@ public sealed partial class PortableLoadReplacementTests
         AssertOwnedScratchEmpty();
     }
 
+    [Theory]
+    [InlineData("game_state/core/player_status.json")]
+    [InlineData("game_state/world/world_time.json")]
+    [InlineData("lore/codex_entries.json")]
+    [InlineData(WorldDirectiveService.ActiveDirectivesPath)]
+    public async Task PreparedInventoryUsesDeclaredFixedNamesAndPreservesArbitraryNames(string canonical)
+    {
+        var fixedBytes = Encoding.UTF8.GetBytes("{}\n");
+        const string arbitrary = "lore/MyCustom.JSON";
+        byte[] arbitraryBytes = [41, 0, 42, 255];
+        Put(canonical, fixedBytes);
+        Put(arbitrary, arbitraryBytes);
+        var source = await PrepareCurrentArchiveAsync();
+        RenameArchiveEntry(source, canonical, canonical.ToUpperInvariant(), preserveManifest: true);
+        var protectedFiles = SnapshotLibraryAndSource(source);
+
+        await using (var candidate = await _service.PrepareLoadArchiveAsync(source))
+        {
+            Assert.Contains(candidate.Images.Keys, path => path.Equals(canonical, StringComparison.Ordinal));
+            Assert.DoesNotContain(candidate.Images.Keys, path => path.Equals(canonical.ToUpperInvariant(), StringComparison.Ordinal));
+            Assert.Contains(candidate.Images.Keys, path => path.Equals(arbitrary, StringComparison.Ordinal));
+            using var fixedInput = candidate.Images[canonical].OpenRead();
+            using var fixedContent = new MemoryStream();
+            fixedInput.CopyTo(fixedContent);
+            Assert.Equal(fixedBytes, fixedContent.ToArray());
+            using var arbitraryInput = candidate.Images[arbitrary].OpenRead();
+            using var arbitraryContent = new MemoryStream();
+            arbitraryInput.CopyTo(arbitraryContent);
+            Assert.Equal(arbitraryBytes, arbitraryContent.ToArray());
+        }
+
+        AssertPreserved(protectedFiles);
+        Assert.Equal(0, _lifecycleOpen);
+        Assert.Empty(_phases);
+        AssertOwnedScratchEmpty();
+    }
+
     private static byte[] RenameArchiveEntry(string source, string canonical, string alias,
         byte[]? replacement = null, bool preserveManifest = false)
     {

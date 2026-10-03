@@ -10282,7 +10282,8 @@
             "BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState",
             "BookOfEternityClient.Tests.PortableLoadReplacementTests.InvalidCaseAliasedConfigRejectsBeforeLifecycleMutation",
             "BookOfEternityClient.Tests.PortableLoadReplacementTests.CanonicalizedAuthorityCannotReplaceTheSelectedArchive",
-          "BookOfEternityClient.Tests.PortableLoadReplacementTests.OriginalManifestHashRejectsBeforeCanonicalizedLoadPreparation"
+          "BookOfEternityClient.Tests.PortableLoadReplacementTests.OriginalManifestHashRejectsBeforeCanonicalizedLoadPreparation",
+          "BookOfEternityClient.Tests.PortableLoadReplacementTests.PreparedInventoryUsesDeclaredFixedNamesAndPreservesArbitraryNames"
           ]
         }
       ]
