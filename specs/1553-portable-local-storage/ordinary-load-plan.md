@@ -226,6 +226,18 @@ missing phase or cleanup failure is a non-pass. The existing load-only controls 
 phase budgets above remain unchanged; no save-only policy or archive capability limit
 is changed by this qualification.
 
+**Measured inventory-publication diagnosis (owner review waiver, 2026-10-04):**
+The first four-row publication run passed all three bulk workloads but stopped the
+many row at the unchanged180-second child bound (RSS153456640/disk13956804 bytes).
+It is not accepted. Split the existing publication owner into its three bulk rows
+and a separate `portable-load-resource-inventory-publication` one-case owner with an
+8-minute category/15-minute command ceiling. This is category ownership, not a legal
+fixture reduction. Existing observer/lock/mutation-admission callbacks now emit
+bounded progress, and parent failure reports retain the actual last reached boundary.
+No production change or resource-limit extension precedes this causal diagnosis.
+Preparation results remain independently established; changed production will select
+its affected consumers and resource rows, not unrelated accepted save/client suites.
+
 ### T032-B5-FS — native Linux CI and durable downstream handback
 
 **Files:** bounded workflow/selection, feature quickstart/recovery docs/checkpoint/handoff; affected catalog contracts if runner integration changes. **Consumes:** accepted blocks above. **Produces:** Windows+Linux filesystem qualification and verified callable handoff, not public-client acceptance.

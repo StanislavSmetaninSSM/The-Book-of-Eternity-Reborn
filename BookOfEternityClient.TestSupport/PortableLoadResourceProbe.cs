@@ -72,12 +72,14 @@ public static class PortableLoadResourceProbe
             FileSystemManager? files = null;
             var committed = 0;
             var observed = 0;
+            var mutationBoundaries = 0;
             var prepared = false;
             string? extraction = null;
             Action<TrustedLocalPublicationPhase, int> observe = (phase, index) =>
             {
                 observed++;
                 if (!prepared) return;
+                if (index < 0 || index % 1000 == 0) WriteProgress(report, phase.ToString(), index);
                 if (phase == TrustedLocalPublicationPhase.IntentPublished) DescribeFrame(files!, report);
                 if (phase == TrustedLocalPublicationPhase.Committed) committed++;
                 var cut = parts[0] == "cut" && (parts[1] == "many"
@@ -103,7 +105,21 @@ public static class PortableLoadResourceProbe
                 Thread.Sleep(Timeout.Infinite);
             };
             files = new FileSystemManager(args[0], NullLogger<FileSystemManager>.Instance,
-                PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks { LocalPublicationObserver = observe });
+                PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+                {
+                    LocalPublicationObserver = observe,
+                    AfterCanonicalWriteLockOpenedAsync = () =>
+                    {
+                        if (prepared) WriteProgress(report, "CanonicalLockOpened", 0);
+                        return Task.CompletedTask;
+                    },
+                    BeforeCanonicalMutationBoundaryAsync = _ =>
+                    {
+                        if (prepared && (++mutationBoundaries == 1 || mutationBoundaries % 1000 == 0))
+                            WriteProgress(report, "MutationAdmission", mutationBoundaries);
+                        return Task.CompletedTask;
+                    }
+                });
             if (parts[0] == "recovery")
             {
                 var staging = Path.Combine(files.RuntimeRootPath, "load-staging");
@@ -521,6 +537,28 @@ public static class PortableLoadResourceProbe
         if (peak > 1024 * MiB && (bool)report["Completed"]!)
             throw new InvalidOperationException("Actual OS peak RSS exceeded the unchanged owned 1GiB stop.");
         Console.WriteLine(JsonSerializer.Serialize(report)); Console.Out.Flush();
+    }
+
+    /// <summary>
+    /// Announces an existing load operation boundary without changing its work or durable decision.
+    /// </summary>
+    /// <param name="report">
+    /// Supplies the actual operation and inherited heap for the owning parent.
+    /// </param>
+    /// <param name="boundary">
+    /// The observed canonical lock, mutation admission or publication callback.
+    /// </param>
+    /// <param name="index">
+    /// The callback's actual member index or admission count; zero represents the lock boundary.
+    /// </param>
+    private static void WriteProgress(Dictionary<string, object?> report, string boundary, int index)
+    {
+        Console.WriteLine(JsonSerializer.Serialize(new
+        {
+            Phase = "OperationProgress", Operation = report["Operation"], HeapBytes = report["HeapBytes"],
+            Boundary = boundary, Index = index
+        }));
+        Console.Out.Flush();
     }
 
     /// <summary>

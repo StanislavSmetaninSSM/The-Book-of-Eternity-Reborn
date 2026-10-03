@@ -76,7 +76,6 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
     [InlineData("64")]
     [InlineData("128")]
     [InlineData("512")]
-    [InlineData("many")]
     public async Task ActualPublicationFitsDeclaredLoadResourceEnvelope(string workload)
     {
         var seed = await RunChildAsync("seed", workload);
@@ -95,6 +94,16 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
         AssertExplicitBytes(expected, published, after: true);
         AssertOwnedScratchEmpty();
     }
+
+    /// <summary>
+    /// Qualifies the many-member publication separately from bulk payloads so diagnosis does not replay passing bulk cases.
+    /// </summary>
+    /// <returns>
+    /// Completion after the same actual typed publication and complete independent resource/state assertions.
+    /// </returns>
+    [Fact]
+    public Task ActualManyMemberPublicationFitsDeclaredLoadResourceEnvelope() =>
+        ActualPublicationFitsDeclaredLoadResourceEnvelope("many");
 
     /// <summary>
     /// Measures fresh ordinary acquisition after an actual load cut with private extraction removed.
@@ -335,6 +344,7 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
         var phaseStopped = false;
         var phaseSamples = 0;
         var samples = 0;
+        var progress = new List<object>();
         try
         {
             JsonElement report;
@@ -350,6 +360,13 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
                 Assert.False(string.IsNullOrEmpty(text), "Owned resource child returned without its complete phase report.");
                 using var document = JsonDocument.Parse(text!);
                 Assert.Equal(HeapBytes, document.RootElement.GetProperty("HeapBytes").GetInt64());
+                if (document.RootElement.GetProperty("Phase").GetString() == "OperationProgress")
+                {
+                    Assert.Equal(operation, document.RootElement.GetProperty("Operation").GetString());
+                    progress.Add(new { ParentMilliseconds = timer.Elapsed.TotalMilliseconds, Event = document.RootElement.Clone() });
+                    line = process.StandardOutput.ReadLineAsync();
+                    continue;
+                }
                 if (document.RootElement.GetProperty("Phase").GetString() == "MeasurementStarted")
                 {
                     Assert.False(phaseStarted, "The child announced its measured starting boundary twice.");
@@ -406,11 +423,21 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
                 Operation = operation, Workload = workload, ParentTerminated = terminateAtCut,
                 SampleCount = samples, SampledPeakWorkingSetBytes = rssPeak, OwnedDiskPeakBytes = diskPeak,
                 PhaseSampleCount = phaseSamples, SampledPhasePeakWorkingSetBytes = phaseRssPeak, OwnedPhaseDiskPeakBytes = phaseDiskPeak,
-                ParentMilliseconds = timer.Elapsed.TotalMilliseconds, OwnedProcessExited = process.HasExited
+                ParentMilliseconds = timer.Elapsed.TotalMilliseconds, OwnedProcessExited = process.HasExited, Progress = progress
             };
             File.WriteAllText(Path.Combine(_root, $"resource-parent-{operation}-{workload}.json"), JsonSerializer.Serialize(parent));
             output.WriteLine("Child={0}; parent={1}; stderr={2}", text, JsonSerializer.Serialize(parent), error);
             return report;
+        }
+        catch (Exception failure)
+        {
+            output.WriteLine("Partial={0}", JsonSerializer.Serialize(new
+            {
+                Operation = operation, Workload = workload, PhaseStarted = phaseStarted, PhaseStopped = phaseStopped,
+                ParentMilliseconds = timer.Elapsed.TotalMilliseconds, SampledPeakWorkingSetBytes = rssPeak,
+                OwnedDiskPeakBytes = diskPeak, Progress = progress, Failure = failure.Message
+            }));
+            throw;
         }
         finally
         {

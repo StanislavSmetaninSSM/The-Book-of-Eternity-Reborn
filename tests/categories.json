@@ -10527,8 +10527,8 @@
 },
 {
   "id": "portable-load-resource-publication",
-  "responsibility": "Actual typed load from its prepared boundary through exactly one committed v3 replacement; complete archive-derived target and exact generation, history, config, source and library verified under sampled and OS resource controls. Four independent rows:64/128/near512MiB and8192 entries/near2MiB UTF8 names/9216 disjoint old files. Guard/setup/cleanup/missing sampling is a non-pass.",
-  "excludes": "Other resource phases, save-only resource controls, public client integration, live gameplay and unrelated test sweeps.",
+  "responsibility": "Actual typed load from its prepared boundary through exactly one committed v3 replacement; complete archive-derived target and exact generation, history, config, source and library verified under sampled and OS resource controls. Three independent bulk rows:64/128/near512MiB. Many-member/name publication is owned by portable-load-resource-inventory-publication. Guard/setup/cleanup/missing sampling is a non-pass.",
+  "excludes": "Many-member inventory publication, other resource phases, save-only controls, public client integration and unrelated sweeps.",
   "changeHints": [
     "BookOfEternityClient.TestSupport/PortableLoadResourceProbe.cs",
     "BookOfEternityClient.TestSupport/PortableLoadFixture.cs",
@@ -10575,6 +10575,32 @@
       "project": "unit",
       "tests": [
         "BookOfEternityClient.Tests.PortableLoadResourceTests.ActualColdRecoveryFitsDeclaredLoadResourceEnvelope"
+      ]
+    }
+  ]
+},
+{
+  "id": "portable-load-resource-inventory-publication",
+  "responsibility": "Actual typed load publication with exactly8192 original manifested ZIP entries, near2MiB UTF8 names and9216 disjoint old files; complete independent namespace/generation/history/config/source/library oracle and actual large metadata. Fixed heap/RSS/disk/time guards, boundary sampling and owned cleanup; stops are non-passes.",
+  "excludes": "Bulk payload publication, preparation/recovery, save-only resource controls, public client/gameplay and unrelated sweeps.",
+  "changeHints": [
+    "BookOfEternityClient.TestSupport/PortableLoadResourceProbe.cs",
+    "BookOfEternityClient.Tests/PortableLoadResourceTests.cs",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs",
+    "BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 8,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PortableLoadResourceTests.ActualManyMemberPublicationFitsDeclaredLoadResourceEnvelope"
       ]
     }
   ]

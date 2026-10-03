@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-load-resource-preparation",
-      "reason": "Current resource block begins with preparation only: four independently seeded current-producer archives under unchanged legal limits; later publication and recovery run as separate bounded commands.",
+      "category": "portable-load-resource-inventory-publication",
+      "reason": "Only the actual many-member publication exceeded180 seconds; select its unchanged legal workload alone with existing boundary diagnostics to locate the cost, without replaying three passing bulk rows or extending controls.",
       "contracts": [
         "LOAD-FS-005/007/008"
       ]
