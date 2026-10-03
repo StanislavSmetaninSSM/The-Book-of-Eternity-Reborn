@@ -11,9 +11,9 @@ patch or local-only fixture cache is required.
 The current C# closure is e593bcfa5e45502de9eb6d6b3949565f7c7881b2. Source-bound Windows
 proofs cover five fixes, strict streamed metadata, file/directory replacement and
 actual process-crash journal-only recovery. [Resource verification](load-filesystem-windows-qualification.json)
-passed12/12 across five commands and28 measured children; [affected consumers](evidence/load-resource-admission-consumers/summary.json)
-passed128/128. [Final discovery/XML audit](evidence/load-filesystem-final-audit/summary.json)
-executed zero tests. Final independent resource review and GitHub readback are pending.
+passed 12/12 across five commands and 28 measured children; [affected consumers](evidence/load-resource-admission-consumers/summary.json)
+passed 128/128. [Final discovery/XML audit](evidence/load-filesystem-final-audit/summary.json)
+executed zero tests. Separate Sol 6.1 XHigh cleared code/native Windows. [GitHub readback](load-filesystem-github-readback.json) independently verified 204 changed files at84419ff0,101 JSON / 63 TRX, exact Git blobs/SHA256 and clean sparse checkout/connectivity. This proof pins its named source; later status/proof carriers do not alter C# and are verified separately.
 Native Linux of the new contour and public-client/full-game acceptance remain open.
 
 Never erase unknown journal/scratch blockers to obtain a green recovery. Retained

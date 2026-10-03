@@ -11,10 +11,10 @@ spec/plan/revision approval during autonomous work.
 
 The five fixes, streaming v2/v3 metadata, complete namespace replacement and actual
 cold recovery have source-bound native Windows evidence. Current resource verification
-passed12/12 across five separate commands and28 measured children; affected current
-consumers passed128/128. See [current handoff](load-five-fixes-handoff.md),
+passed 12/12 across five separate commands and 28 measured children; affected current
+consumers passed 128/128. See [current handoff](load-five-fixes-handoff.md),
 [Windows resource proof](recovery/load-filesystem-windows-qualification.json) and
-[checkpoint](plan.md). Final independent review/readback is pending. Native Linux of
+[checkpoint](plan.md). Separate Sol 6.1 XHigh cleared code/native Windows; [GitHub-only sparse readback](recovery/load-filesystem-github-readback.json) verified 204 changed source/evidence files at84419ff0. Subsequent proof/status carrier changes do not alter the C# closure. Native Linux of
 this new load contour remains unexecuted; public load/console/browser cutover remains
 B4. Earlier Linux save acceptance is not new load qualification.
 
@@ -29,7 +29,7 @@ git status --short
 ```
 
 Read AGENTS.md, docs/development-workflow.md, docs/testing.md and this feature's
-spec/plan/tasks. Use PowerShell7, SDK10 and runtime8. Set supported telemetry opt-outs
+spec/plan/tasks. Use PowerShell 7, SDK 10 and runtime 8. Set supported telemetry opt-outs
 before starting tools; also set the recorded compiler/environment controls:
 
 ```powershell

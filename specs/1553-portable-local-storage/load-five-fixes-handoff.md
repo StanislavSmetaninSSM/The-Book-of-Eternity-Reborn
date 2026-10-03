@@ -24,11 +24,13 @@ git status --short
 | T032-B1-METADATA | Потоковый v2 codec без общего лимита 1 МиБ; строгие поля/области и проверка всего frame до записи; v1 сохранён | [39 metadata](recovery/evidence/load-metadata-green/summary.json), [41 compatibility](recovery/evidence/load-metadata-consumers/summary.json), [каталог/XML](recovery/evidence/load-metadata-catalog/summary.json); независимый PASS через `f822ef93` |
 | T032-B2-NAMESPACE | Подключённый v3: файл ↔ каталог, точные защищённые границы, полный preflight, восстановление/удаление generation последним, cleanup без отката commit | [48 namespace](recovery/evidence/load-namespace-green/summary.json), [native/consumer](recovery/evidence/load-namespace-consumers/summary.json), [исправленный dispatch 4](recovery/evidence/load-namespace-dispatch-green/summary.json), [каталог/XML](recovery/evidence/load-namespace-catalog/summary.json); независимый PASS через `d229823a` |
 | T032-B3-COLD | Реальные process cuts и journal-only restart без распаковки, обе конверсии, неизвестный поздний файл/пустой каталог, неполный scratch, повторное восстановление | [33 cases: new 29 + dispatch 4](recovery/evidence/load-cold-green/summary.json), [каталог/XML](recovery/evidence/load-cold-catalog/summary.json); независимый PASS через `3d20be0a` |
-| T032-B3-RESOURCE | Все 12 ресурсных случаев Windows прошли в пяти отдельных категориях, 28 измеренных дочерних процессов; итоговое независимое ревью ещё ожидается | [Сводное доказательство с SHA и замерами](recovery/load-filesystem-windows-qualification.json), [каталог/XML](recovery/evidence/load-filesystem-final-audit/summary.json) |
+| T032-B3-RESOURCE | Все 12 ресурсных случаев Windows прошли в пяти отдельных категориях, 28 измеренных дочерних процессов; отдельный Sol 6.1 XHigh очистил код/native Windows через `84419ff0` | [Сводное доказательство с SHA и замерами](recovery/load-filesystem-windows-qualification.json), [каталог/XML](recovery/evidence/load-filesystem-final-audit/summary.json) |
 
 Сохранённые результаты относятся к указанным источникам и отдельным выбранным когортам, не к одному общему прогону. Не повторять успешные неизменённые Windows-когорты только для передачи. **Native Linux нового load-контура ещё не проверен.** Ранее принятые Linux-сохранения не заменяют эту проверку.
 
 Текущий C#-контур — `e593bcfa5e45502de9eb6d6b3949565f7c7881b2`; последующие публикации добавляют документацию, CI-настройку и доказательства. Свежие сборки и [128 затронутых случаев](recovery/evidence/load-resource-admission-consumers/summary.json) подтвердили namespace/native/cold и v1/v2/host consumers за 7:39.005. [46 path/batch случаев](recovery/evidence/load-resource-admission-contracts/summary.json) проверили свежие границы родителей и каждый leaf. Оптимизация повторных проверок действует только внутри одного синхронного вызова; физическое состояние не кэшируется между callback, мутациями или тестами. Финальный discovery-only аудит: 219 категорий, 10 565 методов/файлов, ни одного выполненного теста; пять XML сборок читаются, в изменённых файлах XML-предупреждений нет.
+
+Итоговое отдельное **gpt-6.1-sol / xhigh** ревью подтвердило RESOURCE/ADMISSION/MONITOR код и native Windows. Исправлены две неточности документации; новые прогоны не требовались. [GitHub-only readback](recovery/load-filesystem-github-readback.json) восстановил `84419ff0`: 204 изменённых файла, точные Git blobs/SHA256, 101 JSON / 63 TRX, чистый sparse checkout и connectivity. Это проверка доставки, не повторный тест и не Linux acceptance. Небольшие последующие status/proof commits не меняют C# closure; финальный carrier проверяется отдельно.
 
 ## Callable boundary для подключения клиентов
 
@@ -90,9 +92,8 @@ Bounded Linux workflow и selection уже опубликованы. Repository 
 
 ## Что остаётся
 
-1. Итоговое независимое ревью локального блока и контрольное восстановление GitHub: пока открыты.
-2. Native Linux filesystem qualification и закрытие соответствующей части T032-B5-FS.
-3. B4: public/console/browser load integration и affected caller tests, затем T033/live/full B5 и остальные открытые задачи #1553.
+1. Native Linux filesystem qualification и закрытие соответствующей части T032-B5-FS.
+2. B4: public/console/browser load integration и affected caller tests, затем T033/live/full B5 и остальные открытые задачи #1553.
 
 Материализация ран #1536 не возобновлялась. Client-owned filesystem changes не добавляют GM-authored поле/команду/механику: игровые prompts/examples не менялись, no-update rationale записан в плане. Вся #1553 и вся загрузка пока не объявляются завершёнными.
 

@@ -13,46 +13,58 @@ Independent Sol 6.1 XHigh design review passed `8ca3fbca`; its scoped proof read
 also passed `532a0f36`. This accepts the design/tracking gate only, not load code.
 
 Latest resource checkpoint: ordinary maximum-inventory publication at clean
-`e593bcfa5e45502de9eb6d6b3949565f7c7881b2` passed1/1 with two measured children,
+`e593bcfa5e45502de9eb6d6b3949565f7c7881b2` passed 1/1 with two measured children,
 complete selection and owned/runtime cleanup, command13:24.803 including fresh
 XML-enabled build. Exact [evidence](recovery/evidence/load-resource-inventory-green/summary.json)
 and [measurements](recovery/evidence/load-resource-inventory-green/metrics.json)
-record8192 original ZIP entries,2096128 UTF8 name bytes,9194739-byte v3 metadata
-and17441 members. Actual publication phase393.583seconds, whole child530.955seconds
-under the amended600-second bound; seed101.802seconds under180. Peak child
-RSS260673536bytes and owned disk36697323bytes retain fixed heap/RSS/disk controls.
+record 8192 original ZIP entries, 2096128 UTF8 name bytes, 9194739-byte v3 metadata
+and 17441 members. Actual publication phase 393.583seconds, whole child 530.955seconds
+under the amended 600-second bound; seed 101.802seconds under 180. Peak child
+RSS 260673536 bytes and owned disk 36697323 bytes retain fixed heap/RSS/disk controls.
 This is declared ordinary qualification, DiagnosticOnly=false; original180-second
 failures and the separate diagnostic pass remain unchanged. Parent disk work fell
-from207.475seconds/2423 scans to42.974seconds/459 scans, but whole child increased
-from486.530 to530.955seconds: do not claim an observed load speedup from reduced
+from 207.475 seconds / 2423 scans to 42.974 seconds / 459 scans, but whole child increased
+from 486.530 to 530.955 seconds: do not claim an observed load speedup from reduced
 monitor work.100ms is a polling delay, not a guaranteed sampling frequency.
 The fresh selected control at clean `88df401032163aebc5eb95c2eb50c13fc4407f85`,
-`tests/selections/1553-load-admission-consumers.json`, passed128/128 across11 complete
-descriptors in7:39.005, no skips/duplicates and complete cleanup. Exact
+`tests/selections/1553-load-admission-consumers.json`, passed 128/128 across 11 complete
+descriptors in 7:39.005, no skips/duplicates and complete cleanup. Exact
 [artifacts](recovery/evidence/load-resource-admission-consumers/summary.json) cover
 only changed scope/namespace/native/cold and affected v1/v2/host consumers;
 fresh integration/unit builds preserve the unchanged e593 C# source closure.
-Separate Sol6.1XHigh review cleared the actual ordinary many-publication evidence
+Separate Sol 6.1 XHigh review cleared the actual ordinary many-publication evidence
 with no findings. Its bounded acceptance does not close remaining resource phases.
-All five separate current resource commands now passed12/12 with28 measured children:
-preparation4/4 in5:19.202; bulk publication3/3 in4:42.302;
-maximum-inventory publication1/1 in13:24.803 including fresh build;
-bulk journal-only recovery3/3 in5:05.053; maximum-inventory committed recovery1/1
-in10:29.286. Exact sources/measurements are consolidated in
+All five separate current resource commands now passed 12/12 with 28 measured children:
+preparation 4/4 in 5:19.202; bulk publication 3/3 in 4:42.302;
+maximum-inventory publication 1/1 in 13:24.803 including fresh build;
+bulk journal-only recovery 3/3 in 5:05.053; maximum-inventory committed recovery 1/1
+in 10:29.286. Exact sources/measurements are consolidated in
 [Windows qualification](recovery/load-filesystem-windows-qualification.json).
-Many recovery measured94.770seconds/whole99.345 under180, following the real committed
-cut at409.037seconds under600; extraction was absent, one fresh normal acquisition
+Many recovery measured 94.770 seconds / whole 99.345 under 180, following the real committed
+cut at 409.037 seconds under 600; extraction was absent, one fresh normal acquisition
 and complete independent state/generation/source/library checks passed. Repeated
 acquisition is separately proved by the affected cold controls, not this resource case.
-Final clean discovery audit at9a8f8cdf passed219categories/10565methods/files with
-zero executed tests in25.077seconds; five generated XML assemblies parsed,
-24changed C# files/2613introduced XML lines have no compressed blocks or touched-file
+Final clean discovery audit at 9a8f8cdf passed 219 categories / 10565 methods/files with
+zero executed tests in 25.077 seconds; five generated XML assemblies parsed,
+24 changed C# files / 2613 introduced XML lines have no compressed blocks or touched-file
 XML compiler warnings. Three unrelated existing CS1587 warnings are retained.
 Exact [audit artifacts](recovery/evidence/load-filesystem-final-audit/summary.json)
 and [XML diagnostics](recovery/evidence/load-filesystem-final-audit/xml-audit.json)
 are saved. Later resource sources differ only in docs/evidence/CI settings from e593;
-the required fresh build closure is preserved before NoBuild. Final independent
-review and GitHub-only readback remain open. Native Linux/public-client acceptance
+the required fresh build closure is preserved before NoBuild. Separate Sol 6.1 XHigh
+cleared RESOURCE/ADMISSION/MONITOR code/native Windows through 84419ff0 after independently
+checking every raw report and affected case, actual XML and source equivalence.
+Two narrow documentation findings were corrected: attribute repeated acquisition
+to cold controls instead of the one-lease resource host; include both metadata
+authority and transport owners in the still-unqualified Linux command. No new
+runtime or design revision was necessary.
+[GitHub-only readback](recovery/load-filesystem-github-readback.json) restored 84419ff0
+in a fresh owned sparse checkout: 204 current changed source/evidence files relative
+to 5d2aa2ce, all exact physical Git blobs/SHA256, 101 JSON / 63 TRX parsed, clean status and
+connectivity. The reviewer independently reproduced its counts/identities from the
+actual restoration. This is scoped source/evidence delivery proof, not a full checkout
+or behavioral rerun. Later proof/status commits leave e593 C# unchanged; final carrier
+readback is verified separately. Native Linux/public-client acceptance
 is not established by Windows results; the Linux workflow now carries all three
 telemetry opt-outs and XML compiler settings but no actual run has been obtained.
 
@@ -60,14 +72,14 @@ Observed workflow checkpoint: one implementation owner and bounded read-only
 assistance preserved ownership. Independent review found the B1 mixed-directory-case
 defect and resource-monitor wording; both were corrected with specific evidence.
 The missing-using, root sampler and catalog-placement failures were harness/build
-rework, retained as non-passes. Fresh phase measurements disproved the initial180-second
+rework, retained as non-passes. Fresh phase measurements disproved the initial 180-second
 maximum-inventory estimate; private stage tracing enabled a narrow justified amendment.
 Reduced monitor work did not prove faster load elapsed time. No model cost/speedup
 percentage or routing improvement is inferred from these observations. Future public
 UI changes select their affected caller contracts and do not repeat unchanged filesystem
-resource qualification; preserve mandatory independent Sol6.1XHigh review.
+resource qualification; preserve mandatory independent Sol 6.1 XHigh review.
 
-Current task: T032-B3-RESOURCE; T032-B1-FIX, T032-B1-METADATA, T032-B2-NAMESPACE and T032-B3-COLD are cleared for code/native Windows,
+Current task: T032-B5-FS handback. T032-B1-FIX, T032-B1-METADATA, T032-B2-NAMESPACE, T032-B3-COLD and RESOURCE/ADMISSION/MONITOR are cleared for code/native Windows,
 while the separate native Linux gate remains open. Original baseline was `5d2aa2ce`.
 Five-fix candidate source is now written after the recorded causal baseline:
 Trim rejection and immutable declared-path canonicalization precede extraction/classification;
