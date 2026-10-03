@@ -200,6 +200,17 @@ Ten independently drafted actual boundary/cleanup cases now join two narrow owne
 The parent inspected the entire draft before installation; no production change
 is made merely to satisfy these unexecuted cases. Affected typed entry/alias/outcome
 and old version-dispatch/fixture consumers run in the same fresh build closure.
+At clean `2746f1c1bee5bb3853240c9202c12bda5026c8de`, fresh XML-enabled Windows
+executed all 53 selected cases: native boundary 6, cleanup debt 4, entry 9, aliases 24,
+outcomes 4 and independent v1 fixtures 2 passed; dispatch passed 3/4. Complete selection,
+no skips/duplicates, complete cleanup, 6:30.256; exact
+[artifacts](recovery/evidence/load-namespace-consumers/summary.json) are retained.
+The sole dispatch failure used BOELP3 as an unknown version, which v3 now intentionally
+recognizes and safely rejects as the mismatched v2-shaped body. Its expected legacy
+ReadJournal stack assertion was obsolete. The fixture now uses unsupported BOELP4,
+retaining the same 128 MiB file/64 MiB child bound and all evidence/session assertions.
+No production decoder or rejection policy changes. Only dispatch reruns after this
+test correction, then discovery-only catalog/XML checks; no 53-case pass is claimed.
 This is the scoped review correction, not an accepted B2 outcome yet.
 The parent owns namespace observation/preflight/reconciliation and load integration;
 the retained Sol 6.1 High codec implementer may own only the separate v3 descriptor/frame

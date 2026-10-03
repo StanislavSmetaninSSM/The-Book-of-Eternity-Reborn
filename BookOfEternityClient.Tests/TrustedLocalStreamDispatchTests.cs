@@ -27,6 +27,15 @@ public sealed class TrustedLocalStreamDispatchTests(ITestOutputHelper output) : 
         return files;
     }
 
+    /// <summary>
+    /// Rejects unrecognized frame prefixes without allocating the large file as a legacy JSON document.
+    /// </summary>
+    /// <param name="corruption">
+    /// Selects an unsupported future version, partial magic or misleading JSON-looking prefix.
+    /// </param>
+    /// <returns>
+    /// Completion after bounded fresh acquisition refuses the frame and preserves all evidence and session bytes.
+    /// </returns>
     [Theory]
     [InlineData("unknown-version")]
     [InlineData("partial-magic")]
@@ -48,7 +57,7 @@ public sealed class TrustedLocalStreamDispatchTests(ITestOutputHelper output) : 
         });
         byte[] magic = corruption switch
         {
-            "unknown-version" => Encoding.ASCII.GetBytes("BOELP3\r\n"),
+            "unknown-version" => Encoding.ASCII.GetBytes("BOELP4\r\n"),
             "partial-magic" => [(byte)'B', (byte)'O', (byte)'E', 0, 0, 0, 0, 0],
             _ => Encoding.ASCII.GetBytes("{OELP2\r\n")
         };

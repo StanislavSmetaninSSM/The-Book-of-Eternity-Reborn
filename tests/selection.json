@@ -2,53 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "reason": "New actual native boundary/source-library and outside hard-link controls qualify B2 grants.",
+      "reason": "BOELP3 is now intentionally recognized. Correct the unknown-version fixture to unsupported BOELP4 and retain bounded unknown/partial/JSON-looking rejection plus original v1 dispatch. Production unchanged; other53-cohort passes retained.",
+      "category": "portable-storage-stream-dispatch",
       "contracts": [
-        "LOAD-FS-002/004/008"
-      ],
-      "category": "portable-load-native-boundaries"
-    },
-    {
-      "reason": "New exact-stage native-link and committed cleanup-debt controls qualify preserved authority and continuation.",
-      "contracts": [
-        "LOAD-FS-003/004/006"
-      ],
-      "category": "portable-load-cleanup-debt"
-    },
-    {
-      "reason": "Typed load changed from file-only adapter to complete v3 namespace; retain exact connected source/library/config/late rollback consumers.",
-      "contracts": [
-        "LOAD-FS-002/003/004"
-      ],
-      "category": "portable-load-entry"
-    },
-    {
-      "reason": "Complete namespace capture/revalidation now consumes prepared case spelling and protected-source topology decisions.",
-      "contracts": [
-        "LOAD-FS-001/004"
-      ],
-      "category": "portable-load-alias-admission"
-    },
-    {
-      "reason": "New v3 publication/recovery is consumed by typed disposition/cleanup and blocked-uncertainty orchestration.",
-      "contracts": [
-        "LOAD-FS-003/006"
-      ],
-      "category": "portable-load-outcomes"
-    },
-    {
-      "reason": "Recover adds v3 dispatch; retain strict original v1/v2 dispatch controls.",
-      "contracts": [
-        "Preserved v1/v2 reader authority"
-      ],
-      "category": "portable-storage-stream-dispatch"
-    },
-    {
-      "reason": "New v3 normal acquisition dispatch must preserve independent historical v1 pending/committed fixtures.",
-      "contracts": [
-        "Preserved original-v1 exact bytes and generation"
-      ],
-      "category": "portable-storage-original-v1-fixtures"
+        "Preserved v1/v2/v3 dispatch authority; unknown format refuses before allocation/mutation"
+      ]
     }
   ]
 }
