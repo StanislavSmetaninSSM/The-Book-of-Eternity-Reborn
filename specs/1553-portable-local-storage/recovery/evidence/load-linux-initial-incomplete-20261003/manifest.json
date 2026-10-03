@@ -1,0 +1,31 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "e73f1d60c4f9be6d82d43bfc47d127b937eac92c",
+  "SourceResultDirectory": "20261003-183850-403-2-7be28426a852490aaa279e82f8691117-categories",
+  "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Runtime": "native Linux x64",
+  "Toolchain": {
+    "PowerShell": "7.6.6",
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31"
+  },
+  "TelemetryOptOuts": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1"
+  },
+  "DOTNET_PROCESSOR_COUNT": "1",
+  "PathSanitization": "Absolute checkout/run-root/toolchain paths replaced; raw and stored hashes retained",
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 1139,
+      "OriginalSha256": "29c2f060e4817a11b1916d6918d84af9991847277691fcce8855ae3c467dd218",
+      "Embedded": true,
+      "StoredPath": "dotnet-test.log",
+      "StoredBytes": 1139,
+      "StoredSha256": "29c2f060e4817a11b1916d6918d84af9991847277691fcce8855ae3c467dd218"
+    }
+  ],
+  "MeasuredChildren": 0
+}

@@ -1,0 +1,118 @@
+{
+  "Categories": [
+    "portable-load-alias-admission",
+    "portable-load-outcomes",
+    "portable-load-entry",
+    "portable-load-lease-consumers",
+    "portable-load-original-admission"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-load-alias-admission",
+      "reason": "Original manifest/hash admission precedes Trim rejection and immutable whole-file mapping from explicit runtime registries. Select 24 alias/prepared-inventory cases, preserving arbitrary mixed-case lore names; native Linux remains a separate acceptance gate.",
+      "contracts": [
+        "#1553 LOAD-FS-001/002/004/008"
+      ]
+    },
+    {
+      "category": "portable-load-outcomes",
+      "reason": "Recovery acquisition, failed private preparation cleanup, post-generation uncertainty and confirmed-commit refresh retain truthful typed outcomes. Four actual cuts; Windows baseline reproduced three RED plus one GREEN control.",
+      "contracts": [
+        "#1553 LOAD-FS-003/008"
+      ]
+    },
+    {
+      "category": "portable-load-entry",
+      "reason": "Changed orchestration retains nine actual current-producer complete replacement/rollback/library/source/settings/binding controls. No public-client cutover or save-only sweep.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/008"
+      ]
+    },
+    {
+      "category": "portable-load-lease-consumers",
+      "reason": "Nine exact affected lifecycle/replacement/mutation/ordinary recovery cases verify that replacement-specific uncertainty does not change other writer/recovery contracts. No general storage/bootstrap sweep.",
+      "contracts": [
+        "#1553 LOAD-FS-003/008"
+      ]
+    },
+    {
+      "category": "portable-load-original-admission",
+      "reason": "Preserve original validator boundaries: three real typed corrupt ZIP/missing-root/unknown-owner refusals and four unchanged raw budget/stream-position controls. Existing public physical Load refusal is not used as portable admission proof.",
+      "contracts": [
+        "#1553 LOAD-FS-001/004/008"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "e73f1d60c4f9be6d82d43bfc47d127b937eac92c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0481656,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0091108,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0175255,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 215.2703376,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 36.5276774,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0051221,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 15,
+  "WallTime": "00:04:17.3630733",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 6,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 53,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-load-alias-admission-integration-001",
+      "portable-load-entry-integration-002",
+      "portable-load-lease-consumers-integration-003",
+      "portable-load-lease-consumers-unit-004",
+      "portable-load-original-admission-integration-005",
+      "portable-load-outcomes-integration-006"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

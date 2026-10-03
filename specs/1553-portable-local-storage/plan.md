@@ -32,6 +32,26 @@ Linux acceptance are pending. Public/console/browser B4 and T033/live/full B5
 remain open. This client-owned filesystem qualification changes no GM-authored
 field, mechanic, prompt or example contract.
 
+### Initial native Linux result and case-identity regression — WIP
+
+At clean `e73f1d60c4f9be6d82d43bfc47d127b937eac92c`, fresh XML-enabled
+PlanOnly built both selected projects and planned 53 cases across six descriptors
+in 4:17.363; actual native execution then passed **53/53** in 26.307 seconds with
+complete selection and owned/runtime cleanup. See `recovery/evidence/load-linux-initial-plan-20261003`
+and `load-linux-initial-green-20261003`. An earlier PlanOnly process returned an
+approval-review cancellation after build launch with no result/cleanup summary;
+its incomplete log is retained separately and is not a test/build pass.
+
+The separate Sol 6.1 XHigh review identified missing simultaneous case-distinct
+Linux payload coverage: original archive payload/manifest inventories currently use
+OrdinalIgnoreCase even for arbitrary names. Existing mixed-case rows do not prove
+this LOAD-FS-001 requirement. A narrow native-names owner now adds two actual typed
+commit/rollback rows plus exact duplicate/fixed alias/false digest refusals. The
+valid manifested case pair is appended to a current-producer archive independently;
+the existing save producer itself rejects case pairs and is not changed by this
+load-only block. New tests are unrun; production remains unchanged for causal RED.
+The approved spec already requires this behavior; no new game or GM contract.
+
 ## Authorized local filesystem execution checkpoint
 
 The owner is leaving autonomous execution running and explicitly authorized all

@@ -2,6 +2,41 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-load-native-names",
+      "responsibility": "LOAD-FS-001 native original archive identity: simultaneous arbitrary case-distinct Linux payloads commit and roll back with exact independent bytes; native Windows collisions, exact duplicates, fixed-state alias collisions and wrong original hashes refuse before mutation.",
+      "excludes": "Save producer changes, public physical Load cutover, general resource/schema sweeps and already owned fixed-name alias matrix.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SaveLoadService.cs",
+        "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+        "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeNames.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-load-alias-admission",
+          "when": "Original identity validation or fixed-state lookup changes."
+        },
+        {
+          "id": "portable-load-original-admission",
+          "when": "Original schema/manifest/hash validation changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeCaseDistinctPayloadsKeepExactCommittedOrRolledBackDecision",
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-save-filesystem-callers",
       "responsibility": "Static ordinary SaveGame, autosave retention and public listing boundaries on Windows/Linux: linked destination rejection, deterministically selected expired linked member refusal with committed follow-up, source descendant exclusion, mandatory linked root refusal and pre-existing hard-linked ZIP metadata through one stream.",
       "excludes": "Concurrent external namespace swaps, retained Win32 identity, original physical readers, full Load, engine/frontend flows and full-size resource qualification.",

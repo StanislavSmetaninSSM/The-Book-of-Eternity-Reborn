@@ -2,11 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-load-resource-inventory-publication",
-      "reason": "Requalify the unchanged8192-entry/name/9216-old-file ordinary typed publication under the written actual486.530s-based600s child bound and optimized1000ms plus durable-boundary disk sampling. Keep full oracle,180s seed, heap/RSS/disk and original historical failures; diagnostic-only result is not acceptance.",
+      "category": "portable-load-native-names",
+      "reason": "Causal LOAD-FS-001 Linux pair correction; current selection lacks simultaneous arbitrary names distinct only by case. Native decision and exact original hash/collision refusals.",
       "contracts": [
-        "T032-B3-RESOURCE-MONITOR",
-        "LOAD-FS-005/007/008"
+        "#1553 LOAD-FS-001/002/003/008; T032-B5-FS"
       ]
     }
   ]
