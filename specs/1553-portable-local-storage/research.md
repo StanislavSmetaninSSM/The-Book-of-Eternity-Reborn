@@ -1,4 +1,36 @@
-# Persistent interactive GM runtime: research and bounded proposal
+# Feature research: portable local storage and interactive GM
+
+## Local load-filesystem design research — execution revision 1
+
+Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
+The owner approved the filesystem scope; [ordinary-load-plan.md](ordinary-load-plan.md)
+and [data-model.md](data-model.md) contain the concrete pending execution design.
+
+- **Decision:** use streamed v2 metadata and a distinct v3 namespace frame within the
+  same B1 authority. **Rationale:** the current file-only model cannot describe empty
+  directories or a conversion's temporary absence, and its 1 MiB metadata cap cannot
+  cover a legal incoming set plus a larger old deletion set. **Alternatives rejected:**
+  another arbitrary cap, rejection of valid conversions, split transactions or a
+  second topology journal would violate approved outcomes.
+- **Decision:** use a full node trie, declared direct-child inventories and stable
+  scratch ancestors. **Rationale:** interrupted conversions are recoverable from the
+  same before/after evidence, and unknown late empty directories cannot cause earlier
+  restore/pruning. **Alternatives rejected:** recursive deletion or scratch inside
+  a convertible parent loses the required evidence.
+- **Decision:** explicit opaque library and immutable selected-source read boundaries.
+  **Rationale:** protect both ordinary library archives and a selected session-root ZIP,
+  while an external archive never becomes a cold-recovery write/read grant. A source
+  within the library is the sole permitted nested exact read boundary.
+- **Decision:** native Linux via narrowly selected branch-push CI, separate resource
+  phases and the standard runner. **Rationale:** there is no local Linux; a new
+  workflow_dispatch-only file is not executable before default-branch registration.
+  No merge, remote gameplay dependency, all-category matrix or screening probe is needed.
+
+The read-only Astra High consultation established the topology invariants; it did not
+implement or test them. Separate Sol 6.1 XHigh design review and written plan approval
+remain required. No runtime result or exact platform-flag cause is inferred here.
+
+## Historical persistent interactive GM proposal
 
 Research for [issue #1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), 2026-09-30. Status: read-only architecture investigation, **not an approved specification, implementation, compatibility certification, or test result**. This document preserves research for the current feature; the implementation and acceptance status remains in plan.md.
 

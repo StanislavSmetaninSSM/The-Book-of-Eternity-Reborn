@@ -23,5 +23,7 @@
 - [x] Category selection, isolated mutable fixtures, causal proof and verified remote restoration remain required.
 - [x] Current Sol 6.1 XHigh independent-review strategy is distinguished from historical Astra review identities.
 - [x] Scope contains no guessed screening cause or screening experiment; no GM-authored mechanic changes are proposed.
-- [ ] User has reviewed and approved this exact written revision.
-- [ ] Detailed plan/tasks phases and cross-artifact consistency have completed before dependent implementation.
+- [x] User has reviewed and approved this exact written specification revision 1 through the explicit approval reply.
+- [x] Incremental detailed plan/tasks phases and read-only cross-artifact consistency completed: 8/8 local requirements map to six dependency-ordered execution owners; implementation remains gated by written plan/design approval and independent review.
+- [ ] User has reviewed execution plan revision 1 and its explicit v3 namespace design addendum.
+- [ ] Independent Sol 6.1 XHigh review has cleared the concrete metadata/topology plan and preserved contracts.

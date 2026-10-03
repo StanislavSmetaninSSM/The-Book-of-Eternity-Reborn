@@ -2,6 +2,31 @@
 
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 
+## Current local load-filesystem continuation
+
+Branch: `codex/1553-load-filesystem`, based on `5d2aa2ceadd8f4424e3ccaf0249a8bb164f32fae`.
+Approved scope: [spec revision 1](spec.md#local-load-filesystem-continuation--revision-1-2026-10-03).
+The [execution plan](ordinary-load-plan.md) and v3 design await written review.
+Production/test/CI implementation has not changed in this local planning block.
+
+After plan approval, use PowerShell 7, SDK 10 and runtime 8 from the worktree root:
+
+```powershell
+$env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
+$env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = '1'
+$env:DOTNET_GENERATE_ASPNET_CERTIFICATE = 'false'
+$env:DOTNET_PROCESSOR_COUNT = '1'
+./scripts/test-csharp.ps1 -Category portable-load-alias-admission,portable-load-outcomes -PlanOnly
+./scripts/test-csharp.ps1 -Category portable-load-alias-admission,portable-load-outcomes
+```
+
+These are existing causal owners, not a full regression run. Require a fresh build;
+record Windows/Linux differences rather than treating case-insensitive positives or
+OS early returns as the same evidence. New topology/cold/resource owners and Linux CI
+are planned, not installed or executed. Their selected commands and measured artifacts
+will be recorded here/recovery docs after implementation. Public load callers and full
+client/GM acceptance remain downstream.
+
 Bounded T030-G backup lifecycle is accepted with normal Git source, a verified 94-case Linux union across separate 43/50/19 cohorts and one actual 30/30 Windows run. Follow the [accepted plan](plan.md#accepted-t030-g--ordinary-backup-lifecycle) and [normal recovery recipe](recovery/README.md#accepted-t030-g-backup-lifecycle-recovery); no active packet is needed. Its real Linux quarantine body passed in the 50-case continuation. Native quarantine was not selected in the T030-G Windows subset. These bounded results do not establish full gameplay, whole-preparation/accepted-turn atomicity, save/load or remaining B4/B5 portability. Earlier T030-F/B2/B3 evidence below remains historical and tied to its named source.
 
 ## Restore source first

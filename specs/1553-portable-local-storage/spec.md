@@ -2,7 +2,7 @@
 
 **Feature Branch**: `codex/1553-load-filesystem` (local continuation from `codex/1553-save-windows`)
 **Created**: 2026-09-30
-**Status**: Original feature approved; ordinary-save capability accepted at `ddaade72`. Local load-filesystem continuation, revision 1 below, awaits written-specification approval; full Load and remaining B3/B4/B5/platform acceptance remain open.
+**Status**: Original feature approved; ordinary-save capability accepted at `ddaade72`. The owner approved the exact local load-filesystem specification revision 1 below. Execution plan revision 1 and its namespace-frame design addendum await written review; full Load and remaining B3/B4/B5/platform acceptance remain open.
 
 ## Source Issues & Scope
 
@@ -119,6 +119,30 @@ topology changes and streaming metadata needs concrete design/consistency checks
 the existing approved outcomes. If it requires a material format/contract change beyond
 those outcomes, present that change for review before dependent implementation. Native
 Linux acceptance requires actual execution; inability to run CI leaves that gate open.
+
+## Local namespace design addendum — execution revision 1
+
+This concrete engineering design implements approved LOAD-FS-005/006 and is presented
+with [ordinary-load-plan.md](ordinary-load-plan.md) for written review before code.
+It does not change archive, GM-authored state or public-client contracts.
+
+New internal load publication uses a distinct v3 namespace frame in the existing
+single B1 journal authority: the same intent, committed decision, generation and
+recovery entry point. Existing v1/v2 evidence remains readable and existing publishers
+retain their formats. v3 adds explicit Missing/Directory/File before/after nodes and
+preserved library/source boundaries so a file-to-directory interruption is represented
+without a second journal or destructive tree pruning. Exact schema, confinement and
+stable scratch anchors are in [data-model.md](data-model.md) and the written plan.
+
+Whole covered child inventories, including empty directories, must validate before
+mutation. Pending recovery accepts declared before/after states and a missing gap
+only for a recorded file/directory conversion; unknown contents retain evidence.
+Protected library/source ancestors cannot be converted or removed. The library is
+opaque; an in-session selected source is checked by length/hash without storing
+another archive payload. External source access never becomes a cold-recovery grant.
+Committed cleanup validates and preserves the complete after namespace; rollback
+confirmation validates the complete before namespace. This addendum is pending
+with execution plan revision 1, not already covered by the recorded spec approval.
 
 ## User Scenarios & Testing
 

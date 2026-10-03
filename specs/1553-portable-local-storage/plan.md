@@ -19,18 +19,47 @@ one B1 decision, exact library/source/history/config preservation, original lega
 recovery and truthful typed outcomes. Current source is still the initial Load slice:
 nine GREEN entry cases, five unfixed review defects and one saved/unverified fixture fix.
 
-Status: scope/specification WIP awaiting written-spec review. No production, tests,
-catalog, CI or runtime changed or executed by this continuation. Next: written-spec
-approval, then update the existing [load implementation plan](ordinary-load-plan.md),
-decompose the tracked tasks and run Spec Kit cross-artifact consistency before executing
-TDD. The local parent owns implementation; an independent Sol 6.1 XHigh reviewer is
-required by the owner's latest instructions, overriding the older Astra routing text
-in historical documents. Metadata/topology design is checked before dependent code.
+Status: the owner explicitly approved exact specification revision 1. The updated
+[execution plan revision 1](ordinary-load-plan.md), [namespace data model](data-model.md),
+research decisions and dependency-ordered tasks describe the entire authorized module.
+The new v3 schema is an explicit pending design addendum; no production, tests, catalog,
+CI or runtime changed or executed by this local planning block. Next: cross-artifact
+consistency, independent concrete-design review and written plan/design approval, then
+the causal five-fix block. The local parent owns implementation; an independent
+Sol 6.1 XHigh reviewer is required by the owner's latest instructions, overriding
+older Astra routing in historical documents. The read-only Astra High consultation
+resolved the concrete topology problem (complete trie, stable scratch anchors and
+protected boundaries); it is not implementation/native evidence.
+
+The incremental Spec Kit planning phase reuses this existing feature and load plan
+instead of overwriting the accepted historical checkpoint with setup-plan's template.
+It adds the concrete namespace data model, updates existing research/quickstart and
+maps LOAD-FS-001–008 to B1-FIX, B1-METADATA, B2-NAMESPACE, B3-COLD, B3-RESOURCE and
+B5-FS. CI is installed with B1 for bounded native evidence; final B5-FS acceptance
+waits for all filesystem gates. Existing B1/B2/B3/B5 aggregate tasks remain open.
+Optional commit hooks are fulfilled by the reviewed documentation checkpoint;
+no unrelated global agent-context rewrite is required for this existing feature.
+
+Resource controls are proposed and reviewed with the written plan: load children
+768 MiB heap/1 GiB RSS/5 GiB owned disk/180 seconds, separate 10-minute phase owners
+and 15-minute runner commands. These account for source/extraction/live bytes and
+two full before/after journals; they do not change save-probe bounds or certify
+arbitrary larger old trees. Safe resource refusal and missing native execution are
+explicit non-passes. No latency or model-cost saving has been measured for this plan.
 
 No exact platform-flag cause is known; successful archive/filesystem checks before the
 flag and later GitHub publication do not identify a triggering operation. No screening
 experiment is proposed. Windows execution is local; Linux needs actual CI results.
 Whole Load/client/live-GM/overall acceptance remains open.
+
+Planning checks: Spec Kit prerequisites resolved the exact feature and existing tasks,
+research, new data-model and quickstart. The read-only equivalent consistency pass
+mapped 8/8 local requirements to six dependency-ordered execution owners, with no
+unmapped local work or identified critical/contract inconsistency. It checked preserved
+constitution/TDD/authority/GM boundaries, concrete types, budget/dependency/approval
+states and native evidence limits. Local Markdown file links and git diff --check
+passed. This is document verification; no build, category discovery, runtime test or
+CI ran. Independent design review and written execution-plan/v3 approval remain open.
 
 ## Historical T032-B1 admission RED fixture correction WIP — 2026-10-03
 
