@@ -1,0 +1,68 @@
+{
+  "Categories": [
+    "portable-load-native-names"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "95a61076d84b255649b06ce8e42cacf6f8beaaf3",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-load-native-names",
+      "Seconds": 3.2633216,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0482213,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0090971,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0116943,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 114.5956845,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 15,
+  "WallTime": "00:02:01.2626904",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 7,
+    "CompletedCases": 7,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 7,
+    "Executed": 7,
+    "Passed": 4,
+    "Failed": 3
+  },
+  "DuplicateTests": []
+}

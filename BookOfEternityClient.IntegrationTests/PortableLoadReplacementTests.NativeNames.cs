@@ -102,10 +102,20 @@ public sealed partial class PortableLoadReplacementTests
     [InlineData("case-pair-hash")]
     [InlineData("ambiguous-manifest-alias")]
     [InlineData("double-claimed-entry")]
+    [InlineData("duplicate-manifest")]
     public async Task NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash(string kind)
     {
         var source = await PrepareCurrentArchiveAsync();
-        if (kind == "fixed-alias")
+        if (kind == "duplicate-manifest")
+        {
+            using var archive = ZipFile.Open(source, ZipArchiveMode.Update);
+            var original = Assert.IsType<ZipArchiveEntry>(archive.GetEntry("save_manifest.json"));
+            using var bytes = new MemoryStream();
+            using (var input = original.Open()) input.CopyTo(bytes);
+            using var output = archive.CreateEntry("SAVE_MANIFEST.JSON", CompressionLevel.NoCompression).Open();
+            output.Write(bytes.ToArray());
+        }
+        else if (kind == "fixed-alias")
             AppendManifestedPayload(source, SoulPath.ToUpperInvariant(), _loadedSoul);
         else if (kind == "double-claimed-entry")
         {

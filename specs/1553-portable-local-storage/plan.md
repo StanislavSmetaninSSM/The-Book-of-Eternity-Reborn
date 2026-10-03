@@ -58,6 +58,31 @@ controls bring the narrow owner to seven cases. Production remains unchanged for
 causal RED.
 The approved spec already requires this behavior; no new game or GM contract.
 
+### Native original-name correction — causal RED and candidate WIP
+
+At clean `95a61076d84b255649b06ce8e42cacf6f8beaaf3`, the fresh native-name
+run completed seven cases: four controls passed and three failed causally at the
+unconditional original case-folded inventory (valid commit, exact pair rollback,
+and independently wrong pair hash). No setup error or skip; selection and cleanup
+complete, 2:01.263 including fresh build. Exact evidence is retained in
+`load-linux-native-names-red-20261003`.
+
+Candidate correction opts only typed Linux load into ordinal original payload and
+manifest inventories. The unchanged original public reader and Windows still use
+their existing comparer. Schema/manifest lookup selects an exact original entry
+first, or one unambiguous original case alias; it never renames payloads. Each
+manifest claim must bind a distinct original entry, retaining count/length/hash
+coverage and rejecting ambiguous alias or double-claim attempts. A dedicated
+multiple-manifest guard and eighth regression row retain the original refusal
+when two manifest entries differ only by case. Only after all
+original validation does the existing finite fixed-path materialization run;
+a mapped collision now produces InvalidDataException before extraction. Save
+production, ZIP limits, publication/recovery and all resource controls are unchanged.
+Candidate has not yet been built/tested. Rerun native names plus changed original
+admission/fixed-alias/entry/outcome consumers; prior unrelated lease checks need no
+repeat. Remaining metadata/path/native/cold/resource qualification follows on the
+fixed source. Independent review and native filesystem gate remain open.
+
 ## Authorized local filesystem execution checkpoint
 
 The owner is leaving autonomous execution running and explicitly authorized all

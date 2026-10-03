@@ -7,6 +7,34 @@
       "contracts": [
         "#1553 LOAD-FS-001/002/003/008; T032-B5-FS"
       ]
+    },
+    {
+      "category": "portable-load-alias-admission",
+      "reason": "Original inventory comparer and original lookup changed; preserve fixed-name aliases and independent original hashes before materialization.",
+      "contracts": [
+        "#1553 LOAD-FS-001/003/004/008; T032-B5-FS native original-name correction"
+      ]
+    },
+    {
+      "category": "portable-load-original-admission",
+      "reason": "Original schema/manifest/hash and raw archive admission remain strict under typed native-name handling.",
+      "contracts": [
+        "#1553 LOAD-FS-001/003/004/008; T032-B5-FS native original-name correction"
+      ]
+    },
+    {
+      "category": "portable-load-entry",
+      "reason": "Actual typed-load producer entry, exact rollback, source/library/config and binding consume changed preparation.",
+      "contracts": [
+        "#1553 LOAD-FS-001/003/004/008; T032-B5-FS native original-name correction"
+      ]
+    },
+    {
+      "category": "portable-load-outcomes",
+      "reason": "Preparation failures and the established typed outcomes must remain truthful after original name admission changes.",
+      "contracts": [
+        "#1553 LOAD-FS-001/003/004/008; T032-B5-FS native original-name correction"
+      ]
     }
   ]
 }

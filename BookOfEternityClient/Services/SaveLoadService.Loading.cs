@@ -299,7 +299,7 @@ public partial class SaveLoadService
             {
                 ValidateTrustedArchiveBeforeMaterialization(source);
                 using var archive = new ZipArchive(source, ZipArchiveMode.Read, leaveOpen: true);
-                await ValidateArchiveStructureAsync(archive, stagingRoot);
+                await ValidateArchiveStructureAsync(archive, stagingRoot, preserveNativePayloadNames: true);
                 foreach (var entry in archive.Entries)
                 {
                     if (string.IsNullOrEmpty(entry.Name)) continue;
@@ -316,7 +316,8 @@ public partial class SaveLoadService
                         throw new InvalidDataException("A save archive cannot replace the live saves library.");
                     if (relative.Equals(SaveManifestArchivePath, StringComparison.OrdinalIgnoreCase) || IsEphemeralArchivePath(relative)) continue;
                     ValidateLoadSourceCollision(_fs.ResolvePath(relative), fullPath);
-                    entries.Add(relative, entry);
+                    if (!entries.TryAdd(relative, entry))
+                        throw new InvalidDataException($"Load payload '{relative}' collides with a canonical fixed-state path.");
                 }
                 // Validate every destination topology before creating any extraction file.
                 foreach (var relative in entries.Keys)

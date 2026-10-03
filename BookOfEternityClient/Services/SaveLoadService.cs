@@ -1237,15 +1237,32 @@ public partial class SaveLoadService
         return true;
     }
 
+    /// <summary>
+    /// Validates original archive schema, inventory and hashes before portable fixed-path materialization.
+    /// </summary>
+    /// <param name="archive">
+    /// The admitted original ZIP, whose entry keys and payload bytes remain unchanged during validation.
+    /// </param>
+    /// <param name="stagingSessionRoot">
+    /// The owned future extraction root used only for normalized path admission.
+    /// </param>
+    /// <param name="preserveNativePayloadNames">
+    /// Enables distinct original Linux payload names for typed load while retaining the original public reader contract.
+    /// </param>
+    /// <returns>
+    /// Completion only after each original durable payload has a unique validated manifest claim when a manifest exists.
+    /// </returns>
     private static async Task ValidateArchiveStructureAsync(
         ZipArchive archive,
-        string stagingSessionRoot)
+        string stagingSessionRoot,
+        bool preserveNativePayloadNames = false)
     {
         ValidateTrustedArchiveBudget(archive);
 
+        var originalNameComparer = preserveNativePayloadNames && OperatingSystem.IsLinux()
+            ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
         var payloadEntries =
-            new Dictionary<string, ZipArchiveEntry>(
-                StringComparer.OrdinalIgnoreCase);
+            new Dictionary<string, ZipArchiveEntry>(originalNameComparer);
         foreach (var entry in archive.Entries)
         {
             if (string.IsNullOrEmpty(entry.Name))
@@ -1261,9 +1278,11 @@ public partial class SaveLoadService
             }
         }
 
-        if (!payloadEntries.TryGetValue(
-                SoulStateArchivePath,
-                out var soulStateEntry))
+        if (payloadEntries.Keys.Count(path => path.Equals(SaveManifestArchivePath, StringComparison.OrdinalIgnoreCase)) > 1)
+            throw new InvalidDataException("Save archive contains duplicate integrity manifests.");
+
+        var soulStateEntry = FindOriginalArchiveEntry(payloadEntries, SoulStateArchivePath);
+        if (soulStateEntry == null)
         {
             throw new InvalidDataException(
                 $"Save archive is missing mandatory canonical state '{SoulStateArchivePath}'.");
@@ -1272,9 +1291,8 @@ public partial class SaveLoadService
         await ValidateSoulStateEntryAsync(soulStateEntry);
         await ValidateArchivedResourceStateAsync(payloadEntries);
 
-        if (!payloadEntries.TryGetValue(
-                SaveManifestArchivePath,
-                out var manifestEntry))
+        var manifestEntry = FindOriginalArchiveEntry(payloadEntries, SaveManifestArchivePath);
+        if (manifestEntry == null)
         {
             return;
         }
@@ -1302,8 +1320,7 @@ public partial class SaveLoadService
         }
 
         var expectedEntries =
-            new Dictionary<string, SaveIntegrityManifestEntry>(
-                StringComparer.OrdinalIgnoreCase);
+            new Dictionary<string, SaveIntegrityManifestEntry>(originalNameComparer);
         foreach (var manifestPayload in manifest.Entries)
         {
             var normalizedPath = NormalizeArchiveEntryPath(
@@ -1333,21 +1350,25 @@ public partial class SaveLoadService
             .ToDictionary(
                 pair => pair.Key,
                 pair => pair.Value,
-                StringComparer.OrdinalIgnoreCase);
+                originalNameComparer);
         if (expectedEntries.Count != durablePayloadEntries.Count)
         {
             throw new InvalidDataException(
                 "Save integrity manifest does not cover every archive payload.");
         }
 
+        var claimedPayloads = new HashSet<ZipArchiveEntry>(ReferenceEqualityComparer.Instance);
         foreach (var (path, expected) in expectedEntries)
         {
-            if (!durablePayloadEntries.TryGetValue(path, out var actualEntry) ||
-                actualEntry.Length != expected.Length)
+            var actualEntry = FindOriginalArchiveEntry(durablePayloadEntries, path);
+            if (actualEntry == null || actualEntry.Length != expected.Length)
             {
                 throw new InvalidDataException(
                     $"Save payload '{path}' does not match its manifested length.");
             }
+
+            if (!claimedPayloads.Add(actualEntry))
+                throw new InvalidDataException("Save integrity manifest claims one original payload more than once.");
 
             var digest = await ComputeArchiveEntrySha256Async(
                 actualEntry,
@@ -1432,6 +1453,34 @@ public partial class SaveLoadService
             requirePersistedAuthorityRoot: true);
     }
 
+    /// <summary>
+    /// Resolves original entry identity exactly first, preserving an existing single case alias without folding distinct payloads.
+    /// </summary>
+    /// <param name="entries">
+    /// The original inventory; typed Linux admission keeps its ordinal keys, while the original reader retains its comparer.
+    /// </param>
+    /// <param name="path">
+    /// The original manifest or schema reference to resolve without renaming an entry.
+    /// </param>
+    /// <returns>
+    /// The exact original entry, its sole case alias, or null when absent; ambiguous aliases are invalid evidence.
+    /// </returns>
+    private static ZipArchiveEntry? FindOriginalArchiveEntry(
+        IReadOnlyDictionary<string, ZipArchiveEntry> entries,
+        string path)
+    {
+        if (entries.TryGetValue(path, out var exact)) return exact;
+        ZipArchiveEntry? alias = null;
+        foreach (var (candidate, entry) in entries)
+        {
+            if (!candidate.Equals(path, StringComparison.OrdinalIgnoreCase)) continue;
+            if (alias != null)
+                throw new InvalidDataException($"Save original reference '{path}' has ambiguous case aliases.");
+            alias = entry;
+        }
+        return alias;
+    }
+
     private static async Task ValidateArchivedResourceStateAsync(
         IReadOnlyDictionary<string, ZipArchiveEntry> payloadEntries)
     {
@@ -1457,7 +1506,7 @@ public partial class SaveLoadService
         IReadOnlyDictionary<string, ZipArchiveEntry> payloadEntries,
         string path)
     {
-        if (!payloadEntries.TryGetValue(path, out var entry))
+        if (FindOriginalArchiveEntry(payloadEntries, path) == null)
         {
             throw new InvalidDataException(
                 $"Save archive is missing mandatory canonical state '{path}'.");
@@ -1472,7 +1521,8 @@ public partial class SaveLoadService
         IReadOnlyDictionary<string, ZipArchiveEntry> payloadEntries,
         string path)
     {
-        if (!payloadEntries.TryGetValue(path, out var entry))
+        var entry = FindOriginalArchiveEntry(payloadEntries, path);
+        if (entry == null)
             return null;
 
         var bytes = await ReadArchiveEntryBytesAsync(
