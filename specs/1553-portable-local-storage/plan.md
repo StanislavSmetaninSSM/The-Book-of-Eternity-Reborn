@@ -4,6 +4,41 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T032-B1 outcome RED and casing-contract correction WIP — 2026-10-03
+
+The regression checkpoint is remotely saved at `654a1bdcc9e63d4ab036b5d70cc32951c54d4052`,
+tree `c800a5dcb5f7a866fb262e699fe5a62e09680bab`. Its updated catalog blob
+`6793a786382513f3940ff5f2c389f8f1e5116ea7` and tree/commit/ref completed normally;
+remote SHA was read back. [Fresh build/PlanOnly](recovery/evidence/load-review-initial-build-plan-20261003/manifest.json)
+passed in 3:49.4131828 and discovered sixteen cases, with zero executed.
+The separate [outcome RED](recovery/evidence/load-outcomes-red-20261003/manifest.json)
+completed 4/4 cases in 10.8518025 seconds: three intended outcome failures and one
+unchanged committed-refresh control pass, no skips, complete owned cleanup. Each
+failure reaches its named actual recovery/preparation/after-generation boundary.
+
+Scoped source re-review corrected an initial review assumption before running the
+case-name tests: the current Windows producer can emit case-renamed fixed authorities,
+because AddDirectoryToArchive preserves actual enumerated relative spelling. Therefore
+blanket case refusal would narrow current-produced saves. The accepted narrow correction
+is to validate the original archive/manifest/hashes first, reject Trim/resolver mismatch,
+then map only a finite explicit authority set to canonical constants before collision,
+required-path, extraction and image planning. Preserve exact payload bytes except the
+already-approved detached profile projection; arbitrary Linux names stay ordinal.
+
+Eight corrected positive cases require canonical materialization, bytes and runtime
+state. Together with four Trim refusal cases, invalid aliased config and a selected-source
+collision caused by authority mapping, the alias owner now has fourteen cases. The old
+eight refusal expectations were only compiled/discovered, never executed. Current
+production remains unchanged from 654a1bdc; none of the five P2s is fixed yet. Next:
+publish this corrected test/evidence WIP, fresh build/PlanOnly, then only alias RED.
+The already-recorded outcome RED and initial nine GREEN are not repeated at this step.
+
+The finite preparation-authority set is not a claim of a complete registry of every
+runtime-consumed fixed path. Broader fixed-path casing coverage remains a required
+B1/cross-platform qualification question before full-load acceptance; do not silently
+case-fold arbitrary payload names. Wider admission/type/history/outcome tests, streamed
+metadata, full topology, cold/resource, public clients and native/live gates remain open.
+
 ## T032-B1 initial GREEN and alias regression WIP — 2026-10-03
 
 The held fourteen-file source/evidence checkpoint was published after explicit user

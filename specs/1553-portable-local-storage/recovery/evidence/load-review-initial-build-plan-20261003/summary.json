@@ -1,0 +1,85 @@
+{
+  "Categories": [
+    "portable-load-alias-admission",
+    "portable-load-outcomes"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-load-alias-admission",
+      "reason": "Twelve new causal review-regression cases test Trim naming aliases and fixed-authority casing before mutation. The initial nine passing entry cases are not repeated for RED.",
+      "contracts": [
+        "#1553 FR-002/004/006/015; canonical settings/resource/soul authority, protected library and ephemeral omission"
+      ]
+    },
+    {
+      "category": "portable-load-outcomes",
+      "reason": "Four new actual entry outcome cases exercise prior recovery conflict, owned preparation cleanup debt, unknown state after generation publication, and committed refresh failure. The last is an unchanged passing control, not a claimed new regression. Only null-by-default preparation fault seams were added; the five reviewed bugs remain unfixed for RED.",
+      "contracts": [
+        "#1553 FR-004/005/006/015; established decision and generation identity, retained evidence, cleanup debt, blocked continuation"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "654a1bdcc9e63d4ab036b5d70cc32951c54d4052",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0961159,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0178305,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0264632,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 223.7739596,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0091364,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:03:49.4131828",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 16,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-load-alias-admission-integration-001",
+      "portable-load-outcomes-integration-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

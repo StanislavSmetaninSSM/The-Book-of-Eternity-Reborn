@@ -17,24 +17,39 @@ public sealed partial class PortableLoadReplacementTests
     [InlineData("config.json")]
     [InlineData(AfterlifeEntityProfileState.StatePath)]
     [InlineData(ShiningAbodeState.StatePath)]
-    public async Task FixedAuthorityCaseAliasesRejectBeforeCanonicalReplacement(string canonical)
+    public async Task FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(string canonical)
     {
         if (canonical == AfterlifeEntityProfileState.StatePath)
             Put(canonical, Encoding.UTF8.GetBytes("""{"profiles":[]}"""));
         if (canonical == ShiningAbodeState.StatePath)
             Put(canonical, Encoding.UTF8.GetBytes("{}"));
         var source = await PrepareCurrentArchiveAsync(archiveHasConfig: canonical == "config.json");
-        using (var archive = ZipFile.Open(source, ZipArchiveMode.Update))
-        {
-            archive.GetEntry("save_manifest.json")!.Delete();
-            var original = Assert.IsType<ZipArchiveEntry>(archive.GetEntry(canonical));
-            using var content = new MemoryStream();
-            using (var input = original.Open()) input.CopyTo(content);
-            original.Delete();
-            var alias = canonical[..(canonical.LastIndexOf('/') + 1)] + Path.GetFileName(canonical).ToUpperInvariant();
-            using var output = archive.CreateEntry(alias, CompressionLevel.NoCompression).Open();
-            output.Write(content.ToArray());
-        }
+        var alias = canonical[..(canonical.LastIndexOf('/') + 1)] + Path.GetFileName(canonical).ToUpperInvariant();
+        var saved = RenameArchiveEntry(source, canonical, alias);
+        var protectedFiles = SnapshotLibraryAndSource(source);
+
+        var result = await _service.LoadGameWithOutcomeAsync(source);
+
+        Report(result);
+        Assert.Equal(LoadReplacementDisposition.Committed, result.Disposition);
+        Assert.False(result.ContinuationBlocked);
+        Assert.False(result.NeedsFollowUp);
+        Assert.Equal(1, _prepared);
+        Assert.Single(_phases.Where(value => value.Phase == TrustedLocalPublicationPhase.Committed));
+        Assert.Equal(saved, File.ReadAllBytes(_files.ResolvePath(canonical)));
+        Assert.DoesNotContain(Directory.EnumerateFiles(Path.GetDirectoryName(_files.ResolvePath(canonical))!),
+            path => Path.GetFileName(path).Equals(Path.GetFileName(alias), StringComparison.Ordinal));
+        Assert.Equal("Loaded soul", _state.CurrentState.SoulName);
+        Assert.Equal(20, _state.Settings.ConsoleFontSize);
+        AssertPreserved(protectedFiles);
+        AssertOwnedScratchEmpty();
+    }
+
+    [Fact]
+    public async Task InvalidCaseAliasedConfigRejectsBeforeLifecycleMutation()
+    {
+        var source = await PrepareCurrentArchiveAsync(archiveHasConfig: true);
+        RenameArchiveEntry(source, "config.json", "CONFIG.JSON", Encoding.UTF8.GetBytes("null"));
         var before = Snapshot(_files.GameSessionPath);
         var generation = File.ReadAllBytes(_files.SessionGenerationPath);
 
@@ -43,16 +58,51 @@ public sealed partial class PortableLoadReplacementTests
         Report(result);
         Assert.Equal(LoadReplacementDisposition.NotLoaded, result.Disposition);
         var failure = Assert.IsType<InvalidDataException>(result.Failure);
-        Assert.Contains("canonical spelling", failure.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("config.json", failure.Message, StringComparison.Ordinal);
         Assert.Equal(0, _prepared);
         Assert.Equal(0, _lifecycleOpen);
         Assert.Empty(_phases);
         Assert.Equal(before.Keys.Order(), Snapshot(_files.GameSessionPath).Keys.Order());
         AssertPreserved(before);
         Assert.Equal(generation, File.ReadAllBytes(_files.SessionGenerationPath));
-        Assert.Equal("Old live soul", _state.CurrentState.SoulName);
         Assert.Equal(28, _state.Settings.ConsoleFontSize);
         AssertOwnedScratchEmpty();
+    }
+
+    [Fact]
+    public async Task CanonicalizedAuthorityCannotReplaceTheSelectedArchive()
+    {
+        var source = await PrepareCurrentArchiveAsync(selectedRelativePath: "config.json", collision: "CONFIG.JSON");
+        var before = Snapshot(_files.GameSessionPath);
+        var generation = File.ReadAllBytes(_files.SessionGenerationPath);
+
+        var result = await _service.LoadGameWithOutcomeAsync(source);
+
+        Report(result);
+        Assert.Equal(LoadReplacementDisposition.NotLoaded, result.Disposition);
+        var failure = Assert.IsType<InvalidDataException>(result.Failure);
+        Assert.Contains("selected archive", failure.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(0, _prepared);
+        Assert.Equal(0, _lifecycleOpen);
+        Assert.Empty(_phases);
+        Assert.Equal(before.Keys.Order(), Snapshot(_files.GameSessionPath).Keys.Order());
+        AssertPreserved(before);
+        Assert.Equal(generation, File.ReadAllBytes(_files.SessionGenerationPath));
+        AssertOwnedScratchEmpty();
+    }
+
+    private static byte[] RenameArchiveEntry(string source, string canonical, string alias, byte[]? replacement = null)
+    {
+        using var archive = ZipFile.Open(source, ZipArchiveMode.Update);
+        archive.GetEntry("save_manifest.json")!.Delete();
+        var original = Assert.IsType<ZipArchiveEntry>(archive.GetEntry(canonical));
+        using var content = new MemoryStream();
+        using (var input = original.Open()) input.CopyTo(content);
+        original.Delete();
+        var bytes = replacement ?? content.ToArray();
+        using var output = archive.CreateEntry(alias, CompressionLevel.NoCompression).Open();
+        output.Write(bytes);
+        return bytes;
     }
 
     [Fact]

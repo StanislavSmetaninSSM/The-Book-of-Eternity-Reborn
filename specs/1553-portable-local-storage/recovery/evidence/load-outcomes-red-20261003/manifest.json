@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-B1 connected ordinary load entry",
+  "sourceCommit": "654a1bdcc9e63d4ab036b5d70cc32951c54d4052",
+  "sourceTree": "c800a5dcb5f7a866fb262e699fe5a62e09680bab",
+  "sourceWorkingTree": {
+    "Head": "654a1bdcc9e63d4ab036b5d70cc32951c54d4052",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-load-outcomes -NoBuild",
+  "workingDirectory": "/repo",
+  "platform": {
+    "os": "Debian 13 Linux",
+    "architecture": "x64",
+    "dotnetSdk": "10.0.401",
+    "targetRuntime": "8.0.31",
+    "pwsh": "7.6.6"
+  },
+  "environment": {
+    "telemetry": "off",
+    "certificateGeneration": false,
+    "DOTNET_PROCESSOR_COUNT": 1,
+    "HOME_CODEX_HOME": "unchanged",
+    "mutableState": "owned CLI/XDG/HTTP/plugin/scratch/temp, reused immutable package cache"
+  },
+  "planOnly": false,
+  "wallTime": "00:00:10.8518025",
+  "exitCode": 1,
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 4,
+    "CompletedCases": 4,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 4,
+    "Executed": 4,
+    "Passed": 1,
+    "Failed": 3
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PriorJournalConflictDuringAcquisitionIsUncertainAndBlocksContinuation",
+      "outcome": "Failed",
+      "duration": "00:00:00.0917709"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.ConfirmedCommitRetainsIdentityWhenRequiredRefreshFails",
+      "outcome": "Passed",
+      "duration": "00:00:00.7147623"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PreparationAndCleanupFailureRetainsKnownPrivateDebt",
+      "outcome": "Failed",
+      "duration": "00:00:00.0676242"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.ConflictAfterGenerationPublicationDoesNotClaimAnEstablishedGeneration",
+      "outcome": "Failed",
+      "duration": "00:00:00.1315442"
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs",
+      "sha256": "eb8dfdffe41b857daf09e9323b5cde7cfc931afbf88e608069570bfa76489032",
+      "gitBlob": "fc2779db3dce872dcfabeb35fa1093cdf6f2eef8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+      "sha256": "2fb12e210050bbd7293b9abbd1ec0e45fbd0a916648e526abff5def43a40a7fa",
+      "gitBlob": "8c2e799c07e4e17bab8d8d2fb62f7f79400adec4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+      "sha256": "30f0446f53bd74e385f712909e3253737ff30c3a63cbf881b7118fcca2ef0c5a",
+      "gitBlob": "b174e752492c12cdeb4cee1bdb144692d27dd815"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.LoadReplacement.cs",
+      "sha256": "a3c3125953985a95996c7eb21295f3e9f1daa8156e4b97150860854aa5e85941",
+      "gitBlob": "f55330f7d0b68f17585c8912c90054520e8e5b7c"
+    },
+    {
+      "path": "BookOfEternityClient/Core/StateManager.LocalSettings.cs",
+      "sha256": "4c8b6defec4d8ba56be1e78769c72da9706ef6fdf437f5d44adfe469dd782403",
+      "gitBlob": "111ff18c46a5d0613db57545f191896ca4f4e710"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs",
+      "sha256": "13b716101e4f111435e5a7bf5fe5fa0083b4904b60a0cec920d9512b6efcc885",
+      "gitBlob": "86c82a62e138164a7e8158b9aa7adef0fe742916"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+      "sha256": "158838814f3d55c1669538e9bc0e4d2593b3d4adf356901007609d779fc68d9d",
+      "gitBlob": "69d480b2cc10c640dcf79cd906f8a59263eba4e3"
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "ad100bb828af55c77244b883f59dc5d1b060b419943d1e2280fc533b7e3e673b",
+      "gitBlob": "6793a786382513f3940ff5f2c389f8f1e5116ea7"
+    },
+    {
+      "path": "tests/selection.json",
+      "sha256": "c2851b69e81a1bc2ed54451b5654278944f441c8dba99950daf3a245de936356",
+      "gitBlob": "7d4d0bd2727493f07be976560ceb78e156d63771"
+    },
+    {
+      "path": "scripts/test-csharp.ps1",
+      "sha256": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1",
+      "gitBlob": "0576b2e34e5c0c5d164c173a9961a67c965c5509"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "dotnet-test.log",
+      "originalSha256": "ca03dc4400079861f621af0701b6202484674955ee84e3ead80255074f174070",
+      "originalBytes": 1491934,
+      "embedded": false,
+      "reason": "Oversized discovery log; exact hash retained, causal TRX, build, plan and summary embedded"
+    },
+    {
+      "name": "plan.json",
+      "originalSha256": "dcb1c72ebe93a6f95f363312bbb65c4e7e6b84ab0358eefea9e7950ebd357d5d",
+      "originalBytes": 2076,
+      "embedded": true,
+      "sha256": "dcb1c72ebe93a6f95f363312bbb65c4e7e6b84ab0358eefea9e7950ebd357d5d"
+    },
+    {
+      "name": "portable-load-outcomes-integration-001.trx",
+      "originalSha256": "4225fade8015e7faf061fa428f7442ed0ba5eb2cc37d3037587e3b65691c9e00",
+      "originalBytes": 47737,
+      "embedded": true,
+      "sha256": "171d069dfd79f0847b617521f8e2d04d96e8a6daf429bf80a333d24da65b018e"
+    },
+    {
+      "name": "summary.json",
+      "originalSha256": "69039c5ba550994c1b7e4464ab7b4c0d6ef4e168202c7b6d2cca32b4dfb08f67",
+      "originalBytes": 1354,
+      "embedded": true,
+      "sha256": "69039c5ba550994c1b7e4464ab7b4c0d6ef4e168202c7b6d2cca32b4dfb08f67"
+    }
+  ],
+  "interpretation": "Causal three P2 outcome regressions: prior recovery conflict returns NotLoaded; after-generation conflict claims old generation; actual preparation+cleanup faults lose NeedsFollowUp. All intended cuts reached. One unchanged committed-refresh control passed; four cases completed, no skips."
+}

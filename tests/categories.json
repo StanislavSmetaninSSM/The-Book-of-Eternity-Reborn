@@ -10255,7 +10255,7 @@
     },
     {
       "id": "portable-load-alias-admission",
-      "responsibility": "T032-B1 archive spelling review regressions: normalized ZIP names must agree exactly with canonical resolution, and fixed soul/resource/config/profile authority names must retain their declared casing. Reject before preparation completion or lifecycle/B1 mutation; preserve exact Linux names rather than case-folding arbitrary files.",
+      "responsibility": "T032-B1 archive spelling review regressions: reject Trim/resolver aliases before mutation; materialize current-producer fixed soul/resource/config/profile case variants at canonical names with exact bytes and runtime state. Validate aliased config and protect the selected source after mapping. Preserve arbitrary Linux names without global case folding.",
       "excludes": "Same-shape success/rollback and settings baseline are owned by portable-load-entry. No metadata/topology/cold/resource/public/native/full-suite sweep.",
       "changeHints": [
         "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
@@ -10279,7 +10279,9 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation",
-            "BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesRejectBeforeCanonicalReplacement"
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState",
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.InvalidCaseAliasedConfigRejectsBeforeLifecycleMutation",
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.CanonicalizedAuthorityCannotReplaceTheSelectedArchive"
           ]
         }
       ]
