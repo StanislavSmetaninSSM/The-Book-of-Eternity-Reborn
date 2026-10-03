@@ -1,8 +1,8 @@
 # Feature Specification: Trusted local storage and cross-platform runtime
 
-**Feature Branch**: `1553-cross-platform-runtime`
+**Feature Branch**: `codex/1553-load-filesystem` (local continuation from `codex/1553-save-windows`)
 **Created**: 2026-09-30
-**Status**: Approved; B1 foundations, B2 ordinary startup/settings, B3a generation readers, bounded B3b replacement/residue/root keys and T030-E ordinary canonical readers accepted; remaining B3/B4/B5 and full-platform acceptance pending
+**Status**: Original feature approved; ordinary-save capability accepted at `ddaade72`. Local load-filesystem continuation, revision 1 below, awaits written-specification approval; full Load and remaining B3/B4/B5/platform acceptance remain open.
 
 ## Source Issues & Scope
 
@@ -13,6 +13,112 @@
 - Approved source: “Поддержка Linux и Windows”, revision 2, four pages, 2026-09-30; owner approved at 02:27 UTC and requested autonomous execution
 - Latest direction, 18:26 UTC: replace Windows-only mechanisms, remove protection against the owner editing their own saves, demonstrate complete Linux behavior; the owner will execute Windows checks
 - Wound implementation was merged by explicit owner request in [PR #1554](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/pull/1554). Its unfinished acceptance remains deferred under #1536, not declared complete by this feature
+
+## Local load-filesystem continuation — revision 1, 2026-10-03
+
+The owner requested completing the entire ordinary-load filesystem contour locally,
+then returning a verified module to the cloud developer for the remaining game work.
+Continue the existing implementation at `5d2aa2ceadd8f4424e3ccaf0249a8bb164f32fae`;
+retain the accepted ordinary-save implementation and all source-specific evidence.
+The current nine passing Load entry cases cover a first internal slice only. The
+five review defects and unverified Shining Abode fixture correction remain open.
+
+### Result and scope
+
+Deliver the portable internal load operation together with its filesystem publication,
+recovery and verification. This covers T032-B1, B2 and B3, plus the filesystem-specific
+Windows/Linux qualification portion of B5. Add an explicitly selected native Linux
+CI job so qualification does not depend on a Linux installation on the owner's PC.
+CI is development infrastructure; local gameplay gains no remote dependency.
+
+The downstream developer receives an operation with an explicit disposition, selected
+source, established generation or absence of that knowledge, follow-up requirement,
+continuation block and failure details. The downstream work is T032-B4 console/browser
+integration and later live game/GM acceptance. Public Load cutover stays gated by the
+filesystem prerequisites; this block does not itself close B4, full B5, T033 or #1553.
+
+The earlier platform flag does not establish that archives or any specific operation
+caused it. This task implements ordinary app-owned save processing and records test
+results; finding or changing the platform's screening behavior is outside its scope.
+
+### Preserved contracts and requirements
+
+- **LOAD-FS-001 — Admission and names:** Validate the original ZIP, schema, manifest
+  and hashes before applying the documented fixed-state-path mapping. Reject relative
+  names that differ from their ordinal Trim; canonicalize only a finite, documented
+  set of fixed runtime-consumed state paths, before destination collision, topology,
+  extraction and settings/profile preparation. Qualify the eight paths named in the
+  five-fix handoff and inspect other fixed-path consumers before full acceptance.
+  Arbitrary payload names and bytes retain their meaning, including case-distinct
+  Linux names. Retain current archive limits: 8,192 entries, 2 MiB total UTF-8 names,
+  4 MiB manifest, 8 MiB Soul state, 64 MiB individual expanded payload and 512 MiB total
+  expanded payload, plus the existing compression checks.
+- **LOAD-FS-002 — Complete replacement:** Prepare private closed images outside the
+  legacy load-transactions namespace. Publish the complete incoming/live replacement
+  and generation through one B1 decision under lifecycle then replacement leases.
+  Preserve the entire save library and the exact selected archive, including a source
+  outside `saves/`; reject file and ancestor/descendant collisions with that source.
+  Preserve generation fencing, accepted history, player choices and participating
+  writer ownership. Resolve old evidence with its original handler or retain/block it.
+- **LOAD-FS-003 — Truthful outcomes:** A recovery failure specifically encountered
+  while acquiring replacement authority yields Uncertain with follow-up, blocked
+  continuation and no established generation. A failed private preparation plus
+  failed cleanup yields NotLoaded with follow-up; that private cleanup failure alone
+  does not block canonical continuation. Preserve both causes and the owned residue.
+  Committed establishes the replacement generation; RolledBack establishes the previous
+  generation; Uncertain establishes neither. Uncertain always needs follow-up. Ordinary
+  cancellation, lock competition and invalid input are not automatically uncertainty.
+  Late refresh/release failures retain an already established publication outcome.
+- **LOAD-FS-004 — Settings and runtime:** Decode and normalize archive or retained-live
+  settings against a detached fresh baseline. If config is absent from the archive,
+  preserve exact live config bytes; if both are absent, use standard defaults without
+  creating config. Prepare canonical profile projection before publication. Refresh
+  runtime only after confirmed commit; refuse same-root nested generation binding.
+- **LOAD-FS-005 — Metadata capacity:** Remove the load-blocking aggregate 1 MiB v2
+  metadata bottleneck while retaining strict frame, schema, duplicate, region and hash
+  validation and existing v1/v2 readability. Stream encoded/decoded metadata with bounded
+  per-token/member buffers; retain the logical inventory needed for complete validation,
+  rather than accumulating a second whole encoded header. The old deletion inventory
+  may be larger than the incoming archive and is not limited by its entry/name budget.
+  Complete validation precedes recovery mutation.
+- **LOAD-FS-006 — Files and directories:** Support valid file-to-directory and
+  directory-to-file replacement, including empty and nonempty directory cases, within
+  the same publication/recovery decision. Preserve exact prior files/absence and required
+  directory structure on rollback; preserve committed replacements after interruption.
+  Do not add an independent journal or perform unjournaled destructive pruning. Existing
+  type/link checks and confinement protect outside data and source/library ancestors.
+- **LOAD-FS-007 — Crash and resource proof:** Qualify actual preparation/publication/
+  generation/commit/rollback/cleanup cuts and cold restart without private extraction
+  sources. Unknown contents retain evidence and block unsafe continuation. Exercise
+  64/128/near-512 MiB inputs, maximum entry/name metadata and independently larger old
+  deletion inventories. Measure and record memory, disk, time and owned child cleanup;
+  review category/resource bounds before launch and justify any adjustments. The promise
+  is process-crash recovery, with no additional power-loss durability claim.
+- **LOAD-FS-008 — Verification and delivery:** Run only affected, documented categories
+  through the existing PowerShell 7 runner, with independent mutable fixtures and
+  discovery-only catalog validation. Preserve causal RED/GREEN, exact source, OS,
+  toolchain, counts and cleanup. Require native Windows and Linux filesystem evidence;
+  an early-return OS guard is not native qualification. CI uses explicit category
+  selections and uploads results. A separately configured Sol 6.1 XHigh reviewer checks
+  each completed coherent block under the owner's 2026-10-03 strategy. Publish verified
+  commits and restore final source/evidence from GitHub before handback.
+
+### Acceptance and remaining decisions
+
+The five demonstrated defects and corrected fixture have passing causal checks; the
+connected operation satisfies LOAD-FS-001–008 on Windows and native Linux at recorded
+revisions. Cold recovery preserves exact supported state/history/config and the complete
+library/source; full-size and metadata envelopes pass their documented resource bounds.
+Independent review has no remaining actionable correctness or missing-contract finding.
+The handoff identifies the verified callable boundary and all remaining public-client,
+live-GM and overall platform gates. No GM-authored game field or mechanic changes here;
+storage/recovery documentation is updated, with no GM prompt/example capability change.
+
+No new player-policy choice is required by this revision. The implementation of journaled
+topology changes and streaming metadata needs concrete design/consistency checks under
+the existing approved outcomes. If it requires a material format/contract change beyond
+those outcomes, present that change for review before dependent implementation. Native
+Linux acceptance requires actual execution; inability to run CI leaves that gate open.
 
 ## User Scenarios & Testing
 
@@ -101,7 +207,7 @@ Approved LOCAL-FR-01 replaces physical-identity/adversarial-swap requirements in
 - **SC-003**: Both Linux clients complete the selected core game/GM/save/load path with inspected visible results and persisted accepted state
 - **SC-004**: Real interactive CLI receives multiple automatic requests in one retained bridge session and has tested termination/uncertainty behavior
 - **SC-005**: Each converted system capability has Linux evidence and a Windows owner-run check; no unimplemented Windows-only mechanism is presented as converted
-- **SC-006**: Every completed block has a verified remote SHA, required targeted checks and independent Astra XHigh review; a fresh GitHub checkout restores source and instructions
+- **SC-006**: Every completed block has a verified remote SHA, required targeted checks and independent review under the current owner-approved model strategy (Sol 6.1 XHigh from 2026-10-03); a fresh GitHub checkout restores source and instructions
 
 ## Verification Plan
 

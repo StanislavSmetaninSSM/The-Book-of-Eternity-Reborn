@@ -1,10 +1,38 @@
 # Implementation Plan: Trusted local storage and cross-platform runtime
 
-**Branch**: `codex/1553-save-windows` | **Updated**: 2026-10-02
+**Branch**: `codex/1553-load-filesystem` | **Updated**: 2026-10-03
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
-## T032-B1 admission RED fixture correction WIP — 2026-10-03
+## Local load-filesystem scope checkpoint — revision 1, 2026-10-03
+
+Task #1553, T032-B-LOCAL-DESIGN; source base and published branch starting point
+`5d2aa2ceadd8f4424e3ccaf0249a8bb164f32fae`. The owner requested locally completing
+the whole filesystem load module before returning public-client/game work to the cloud.
+The existing managed Windows worktree is reused on `codex/1553-load-filesystem`, created
+from the verified remote checkpoint and immediately published; cloud source is preserved.
+
+The [specification revision](spec.md#local-load-filesystem-continuation--revision-1-2026-10-03)
+covers T032-B1/B2/B3 and the filesystem qualification part of B5, including native Linux
+CI. It preserves accepted ordinary-save results, current archive/type/schema limits,
+one B1 decision, exact library/source/history/config preservation, original legacy
+recovery and truthful typed outcomes. Current source is still the initial Load slice:
+nine GREEN entry cases, five unfixed review defects and one saved/unverified fixture fix.
+
+Status: scope/specification WIP awaiting written-spec review. No production, tests,
+catalog, CI or runtime changed or executed by this continuation. Next: written-spec
+approval, then update the existing [load implementation plan](ordinary-load-plan.md),
+decompose the tracked tasks and run Spec Kit cross-artifact consistency before executing
+TDD. The local parent owns implementation; an independent Sol 6.1 XHigh reviewer is
+required by the owner's latest instructions, overriding the older Astra routing text
+in historical documents. Metadata/topology design is checked before dependent code.
+
+No exact platform-flag cause is known; successful archive/filesystem checks before the
+flag and later GitHub publication do not identify a triggering operation. No screening
+experiment is proposed. Windows execution is local; Linux needs actual CI results.
+Whole Load/client/live-GM/overall acceptance remains open.
+
+## Historical T032-B1 admission RED fixture correction WIP — 2026-10-03
 
 Corrected-casing tests and earlier outcome evidence are remotely verified at
 `39a3e9245ee2de4f9d12e645eed94bb830b7959f`, tree `52067fa0e9928cfada08f895fe190354289f96f0`.
