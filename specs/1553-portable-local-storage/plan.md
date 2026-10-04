@@ -109,6 +109,34 @@ skip the body. The revised six-case public-consumer owner excludes this explicit
 retained separate precondition. No worker production change or filesystem/resource
 rerun is authorized by this diagnostic; full worker/platform gates remain open.
 
+### Public-entry verification complete; independent final review pending
+
+At `b72d07b7`, the one-case worker diagnostic failed before load in 2:07.274 including
+fresh unit build, zero skips and complete cleanup. It exposes DllNotFoundException
+for kernel32.dll from PhysicalFileAuthority.TryDeleteEntry → TryDeleteDirectoryTree
+→ FileSystemManager.DeleteRuntimeDirectory → BeginWorkerApplyTransactionAsync.
+The observed cleanup exception does not establish the earlier initiating failure.
+These production files are byte-identical to `7deb7c3e`; no load dispatch is reached.
+Preserve `load-public-worker-blocker` and track **T031-WORKER-PORTABLE** explicitly;
+never convert it to PASS or delete its positive test. It blocks full worker/game
+qualification, while the bounded public-entry result is separately reviewed.
+
+Final discovery-only audit at `b72d07b7`: **223 categories / 10,565 methods-files**,
+zero tests executed, exit 0, 6.762 seconds, complete cleanup. Parsed generated XML
+assemblies and exact operation/error classifications are in
+`load-public-entry-audit/operation-incidents.json`; no generic cybersecurity flag
+was observed. Existing compiler/analyzer warnings remain reported in build logs;
+the new public-entry test has an xUnit2031 style warning (filtered Assert.Single),
+not an XML warning or runtime failure. No source/guard/resource failure is hidden.
+
+The public code has one complete six-case GREEN plus six distinct passing consumers
+inside the explicitly retained partial run, not a 13/13 command. Separate Sol 6.1
+XHigh source/correction/evidence review finds no remaining public-entry defect and
+agrees that unchanged pre-load worker cleanup is a separate unmet prerequisite;
+final audit/evidence readback is pending. T032-B4 remains open: actual console and
+browser still use the bool compatibility path and must switch to typed outcomes
+before any player-facing B4 acceptance. No live client/GM or new Windows claim.
+
 ## Accepted native filesystem handback — 2026-10-04
 
 All runtime/resource/audit proof is published at

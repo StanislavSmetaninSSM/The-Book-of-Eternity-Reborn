@@ -1,6 +1,6 @@
 # Передача файлового контура загрузки — #1553
 
-Обновлено: 2026-10-04. Задача [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), ветка **`codex/1553-load-filesystem`**. Файловые B1/B2/B3 и B5-FS приняты: native Linux proof, полный GitHub readback и финальное независимое gpt-6.1-sol / xhigh ревью `6133bfed117d1cbc0d28d5a7e0ea6146b081e8e2` прошли без открытых замечаний. Следующая работа — публичный B4; он пока не завершён.
+Обновлено: 2026-10-04. Задача [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), ветка **`codex/1553-load-filesystem`**. Файловые B1/B2/B3 и B5-FS приняты: native Linux proof, полный GitHub readback и финальное независимое gpt-6.1-sol / xhigh ревью `6133bfed117d1cbc0d28d5a7e0ea6146b081e8e2` прошли без открытых замечаний. Публичный B4 продолжается и пока не завершён; текущий public-entry checkpoint и отдельный worker blocker описаны в начале plan.md.
 
 ## Восстановление и текущие источники
 
@@ -40,7 +40,7 @@ git status --short
 
 ## Callable boundary для B4
 
-Внутренний `SaveLoadService.LoadGameWithOutcomeAsync(string, CancellationToken)` возвращает `LoadReplacementResult`. Публичный старый `LoadGameAsync` и console/browser ещё не переключены.
+`SaveLoadService.LoadGameWithOutcomeAsync(string, CancellationToken)` и `LoadReplacementResult` теперь публичны. Старый `LoadGameAsync` использует этот же portable loader и возвращает только факт commit: true сохраняется даже при поздней ошибке и blocked continuation. Его bool не разрешает продолжение или безопасный повтор. Console/browser ещё должны перейти на полный typed result; это остаётся открытым B4. Public-entry проверки: отдельные 6/6 и шесть прямых consumers в сохранённом partial run; весь 13-case selection не прошёл из-за pre-load worker blocker.
 
 - `NotLoaded`: замена не начата; приватная cleanup-проблема может требовать follow-up, сама по себе не блокирует каноническое продолжение
 - `Committed`: новый generation подтверждён; поздние refresh/log/release/cleanup ошибки не отменяют commit
@@ -55,7 +55,7 @@ Runtime обновляется только после подтверждённ�
 
 ## Следующая работа и явные открытые границы
 
-1. Файловые B5-FS и точно сопоставленные B1/B2/B3 закрыты. Продолжить **B4 public/console/browser integration** на этой же ветке: typed outcome/committed identity, generation rebind, pending/UI owner guards, required refresh failure и blocked uncertainty, affected caller tests
+1. Файловые B5-FS и точно сопоставленные B1/B2/B3 закрыты. Отдельный T031-WORKER-PORTABLE отслеживает фактический Linux kernel32.dll отказ в старой worker-transaction cleanup до вызова Load; worker/full-game qualification остаётся заблокированной. Продолжить **B4 public/console/browser integration** на этой же ветке: typed outcome/committed identity, generation rebind, pending/UI owner guards, required refresh failure и blocked uncertainty, affected caller tests
 2. **T032-A4-NATIVE-NAMES остаётся открытым:** существующий save producer по исходникам отвергает произвольную Linux case-distinct пару. Loader проверен на корректном независимо дополненном manifested archive; полный producer → load → save round trip такой пары пока не принят. Исправить producer узким отдельным блоком, сохранив Windows collision policy и все manifest/format/budget контракты
 3. T033/live console/browser/real GM, полный B5/T032, остальные platform-helper/interactive-GM задачи и вся #1553 остаются открытыми. Материализация ран #1536 не возобновлялась
 

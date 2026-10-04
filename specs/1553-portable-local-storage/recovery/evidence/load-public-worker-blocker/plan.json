@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-load-worker-ordering"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "b72d07b7fc37a8ed546e3b43fa1a22412f2911c0",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 124.0091801,
+  "Descriptors": [
+    {
+      "Name": "portable-load-worker-ordering-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-load-worker-ordering",
+      "Categories": [
+        "portable-load-worker-ordering"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

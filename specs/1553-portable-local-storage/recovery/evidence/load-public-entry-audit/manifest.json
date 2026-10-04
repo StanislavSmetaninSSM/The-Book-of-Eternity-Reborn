@@ -1,0 +1,47 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "b72d07b7fc37a8ed546e3b43fa1a22412f2911c0",
+  "SourceResultDirectory": "20261003-222059-593-2-d85058951ffb4320b0848bb165f687a2-categories",
+  "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Runtime": "native Linux x64",
+  "Toolchain": {
+    "PowerShell": "7.6.6",
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31"
+  },
+  "TelemetryOptOuts": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1"
+  },
+  "DOTNET_PROCESSOR_COUNT": "1",
+  "PathSanitization": "Absolute checkout/run-root/toolchain paths replaced; raw and stored hashes retained",
+  "Artifacts": [
+    {
+      "Path": "catalog-audit.json",
+      "OriginalBytes": 103,
+      "OriginalSha256": "5d16971b610ad998fe5c1a48433b1b6c102d913679a72afb636f59f68a1e9a42",
+      "Embedded": true,
+      "StoredPath": "catalog-audit.json",
+      "StoredBytes": 103,
+      "StoredSha256": "5d16971b610ad998fe5c1a48433b1b6c102d913679a72afb636f59f68a1e9a42"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 2935949,
+      "OriginalSha256": "21c941c004025ce1c9fc6bb479038fb10601b411d8b2c341b136b6a0cf269256",
+      "Embedded": false,
+      "Reason": "Oversized generated runner log; causal TRX and structured/build reports are embedded"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1403,
+      "OriginalSha256": "fcf8a59ef0f59a4f3ba9e72c9ef5480f6c532dcd71537292c80494ab4327907c",
+      "Embedded": true,
+      "StoredPath": "summary.json",
+      "StoredBytes": 1403,
+      "StoredSha256": "fcf8a59ef0f59a4f3ba9e72c9ef5480f6c532dcd71537292c80494ab4327907c"
+    }
+  ],
+  "MeasuredChildren": 0
+}
