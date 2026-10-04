@@ -9,14 +9,15 @@ Approved scope: [spec revision 1](spec.md#local-load-filesystem-continuation--re
 [execution plan](ordinary-load-plan.md) and v3 design; the owner waived further
 spec/plan/revision approval during autonomous work.
 
-The five fixes, streaming v2/v3 metadata, complete namespace replacement and actual
-cold recovery have source-bound native Windows evidence. Current resource verification
-passed 12/12 across five separate commands and 28 measured children; affected current
-consumers passed 128/128. See [current handoff](load-five-fixes-handoff.md),
-[Windows resource proof](recovery/load-filesystem-windows-qualification.json) and
-[checkpoint](plan.md). Separate Sol 6.1 XHigh cleared code/native Windows; [GitHub-only sparse readback](recovery/load-filesystem-github-readback.json) verified 204 changed source/evidence files at84419ff0. Subsequent proof/status carrier changes do not alter the C# closure. Native Linux of
-this new load contour remains unexecuted; public load/console/browser cutover remains
-B4. Earlier Linux save acceptance is not new load qualification.
+The returned native Windows proof retains its exact sources. Native Linux now has
+actual bounded admission/metadata/path/namespace/cold/resource evidence, including
+the causal original-name and sampler corrections. All five current-probe resource
+commands passed 12/12 with 28 measured children; catalog 221/10570 discovery and five XML
+assemblies passed. See the [current handoff](load-five-fixes-handoff.md),
+[Linux qualification](recovery/load-filesystem-linux-qualification.json) and
+[full GitHub readback](recovery/load-filesystem-linux-github-readback.json).
+Final frozen carrier review remains pending in the current plan; public B4,
+A4 producer case-pair follow-up, T033/live/fullB5 and whole #1553 remain open.
 
 Restore the current branch into a fresh directory and compare complete SHAs:
 
@@ -44,14 +45,17 @@ $env:NoWarn = '1591'
 ./scripts/test-csharp.ps1 -SelectionFile tests/selections/1553-load-linux.json -Parallelism 1 -TimeoutMinutes 15
 ```
 
-That existing initial Linux selection contains only admission/outcomes/entry/lease
-consumers. First native qualification also needs affected metadata, fresh path/batch,
-namespace/native/cold and compatibility evidence; the [handoff](load-five-fixes-handoff.md)
-identifies current owners and five separately bounded resource commands. Do not select
-all categories or repeat unchanged qualified Windows groups solely for handback.
+That small Linux selection now has 71 cases: entry/admission/outcomes/lease/native
+name controls plus the narrow sampler controls. Its evidence is a source-specific
+union of separate runs, not a new 71-case run. Metadata, fresh path/batch,
+namespace/native/cold, compatibility and five separate resource phases now have
+native Linux evidence in the [handoff](load-five-fixes-handoff.md). Select only
+actually affected owners for a future change; do not replay qualified groups solely
+for handback or unchanged B4 UI work.
 Use `-NoBuild` only after a fresh required build with unchanged compile inputs.
-The limited Linux workflow is prepared, with exact-source checks and retained artifacts;
-no actual Linux run has been obtained, so its gate stays open.
+The limited Linux workflow is prepared with exact-source checks and retained artifacts.
+The current native evidence was obtained directly on the cloud Linux executor;
+no GitHub Actions execution is claimed or required as a substitute for those runs.
 
 The remaining sections preserve source-specific historical setup and evidence.
 

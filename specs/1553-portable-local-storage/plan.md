@@ -4,18 +4,47 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## Final native filesystem handback candidate — 2026-10-04
+
+All runtime/resource/audit proof is published at
+`f72830d5f66a3131ab0bb7c77c82280856439357` / tree `a2a7c94323faccc86922e8a395046f90a07e08be`.
+[Fresh full GitHub restoration](recovery/load-filesystem-linux-github-readback.json)
+verified 4,727 physical tracked files against exact Git blobs, clean checkout and
+connectivity, all 123 changed files since 07d354e1, 71 JSON and 37 TRX parses. No build or
+test was repeated during restoration. This proof names f72830d5; the subsequent
+status/handoff carrier is separately verified after final independent review.
+
+Separate **gpt-6.1-sol / xhigh** independently verified all twelve current resource
+cases and 28 raw child reports, exact metrics/TRX/artifact hashes, 221/10570 discovery and
+five actual XML assemblies. It explicitly approved the requirement map below,
+conditional on final durable handoff/readback. Final frozen carrier review remains
+pending; task completion flags are intentionally not reconciled yet.
+
+| Generic task | Exact accepted requirement evidence |
+| --- | --- |
+| T032-B1 | FIX entry 9, aliases 24, admission 7, outcomes 4 and leases 9; METADATA 37 + transport 2; native-name 8. Actual internal entry, complete source/library/config preservation, detached profile/settings, same-root binding refusal, original-handler fences and exact typed generation outcomes. See `load-linux-initial-green-20261003`, `load-linux-native-names-green-20261003`, `load-linux-metadata-green-20261003` and returned Windows proof. |
+| T032-B2 | Namespace 33, generation 2, connected topology 13, native 6, cleanup 4 and cold structural 10 in `load-linux-admission-consumers-green-20261003`; retained v1/v2 dispatch/publication/generation/original fixtures. One v3 decision supports both conversions, exact absence/bytes/directories, protected boundaries, whole-inventory preflight, generation-last rollback and unknown-evidence retention. |
+| T032-B3 | Cold decision 19 + structural 10 and five separately bounded resource owners 12 cases / 28 children in `load-filesystem-linux-qualification.json`; actual cuts and journal-only fresh recovery, 64/128/near-512 MiB, 8192 entries / 2096128 name bytes / 9216 old files, exact state/source/library/generation and owned cleanup. |
+
+The save producer pair limitation is explicitly tracked as open **T032-A4-NATIVE-NAMES**.
+The reviewer confirmed it is outside LOAD-FS-001–008's internal load boundary;
+valid independently authored manifested pairs and current-producer legal envelopes
+are both proven. This does not assert a complete save/load round trip for that pair.
+Public B4, full B5/T033/full T032 and whole #1553 remain open. No merge, force-push,
+branch deletion or issue closure has occurred.
+
 ## Native Linux filesystem runtime proof complete — final review WIP, 2026-10-04
 
 Production closure `2da4d545`; corrected test-probe closure `eed0ca99`.
 All required native Linux cohorts and five separate current-probe resource commands
 are GREEN. [Qualification](recovery/load-filesystem-linux-qualification.json) links
-source-specific evidence: initial baseline53 with nine unchanged lease consumers,
-corrected original-name52 (overlapping44baseline rows), metadata39, path/batch46,
-namespace/native/cold/v1/v2 consumers128, sampler10. Do not add overlapping totals.
+source-specific evidence: initial baseline 53 with nine unchanged lease consumers,
+corrected original-name 52 (overlapping 44 baseline rows), metadata 39, path/batch 46,
+namespace/native/cold/v1/v2 consumers 128, sampler 10. Do not add overlapping totals.
 
 Current resource proof is **12/12 cases and 28 measured children**, not an aggregate
-run: preparation4 1:35.334; bulk publication3 1:25.260; maximum-inventory publication1
-1:02.958; bulk journal-only recovery3 1:28.207; maximum-inventory committed recovery1
+run: preparation 4 at 1:35.334; bulk publication 3 at 1:25.260; maximum-inventory publication 1 at
+1:02.958; bulk journal-only recovery 3 at 1:28.207; maximum-inventory committed recovery 1 at
 1:06.617. All descriptors, required samples, independent full-state/protected bytes,
 owned exits and cleanup completed under unchanged heap/RSS/disk/child/category bounds.
 Earlier source-specific passes, the real inventory non-pass and both causal RED
@@ -29,9 +58,9 @@ separate approval/network interruptions, unavailable terminal Git authentication
 unconfirmed object writes and ordinary test failures. No generic cybersecurity flag
 was observed during these runs, and no screening-trigger probe was performed.
 
-The small future Linux workflow selection now includes71cases (61entry/identity/lease
-plus10native sampler controls); the actual proof is the separately recorded union,
-not a new71case execution. Current `tests/selection.json` owns the narrow sampler
+The small future Linux workflow selection now includes 71 cases (61 entry/identity/lease
+plus 10 native sampler controls); the actual proof is the separately recorded union,
+not a new 71-case execution. Current `tests/selection.json` owns the narrow sampler
 correction; resource envelopes remain separate explicit category commands.
 The returned native Windows proof remains bound to its original source. Independent
 source review confirms the Linux-only name change and redundant Windows lookup guards;
@@ -41,7 +70,7 @@ no GitHub Actions execution is used as evidence in this continuation.
 
 Final independent review, fresh full GitHub restoration and final carrier verification
 are pending. B5-FS and generic B1/B2/B3 task reconciliation wait for those gates.
-Public/console/browser B4, fullB5/T033/fullT032 and whole#1553 remain open. An adjacent
+Public/console/browser B4, full B5/T033/full T032 and whole #1553 remain open. An adjacent
 known limitation is unchanged: the save producer rejects arbitrary case-distinct pairs;
 this load-only block now preserves a valid externally authored manifested pair. Full
 end-to-end round-trip acceptance of that pair needs a separate narrow producer fix.

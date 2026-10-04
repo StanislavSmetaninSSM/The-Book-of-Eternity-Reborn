@@ -1,0 +1,756 @@
+{
+  "SchemaVersion": 1,
+  "RecordedUtc": "2026-10-04T01:14:21.252795+00:00",
+  "Source": "f72830d5f66a3131ab0bb7c77c82280856439357",
+  "Tree": "a2a7c94323faccc86922e8a395046f90a07e08be",
+  "Restoration": "Fresh full single-branch clone from GitHub into a new empty directory; no local Git object/source reuse. No build or behavioral test executed in restoration.",
+  "CleanCheckout": true,
+  "GitConnectivityFsckExitCode": 0,
+  "TrackedPhysicalFilesVerifiedAgainstGitBlobs": 4727,
+  "SymbolicLinks": 0,
+  "Gitlinks": [],
+  "ChangedSinceHandoff": "07d354e16ce06796dee435003bd5fd2a023be62e",
+  "ChangedFilesVerified": 123,
+  "ChangedJsonParsed": 71,
+  "ChangedTrxParsed": 37,
+  "Identities": [
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeNames.cs",
+      "Bytes": 9706,
+      "GitBlob": "8c7f668dc2cafac6447998a1cc1bafb9ae94b807",
+      "Sha256": "60434627e6bedd561e3c79069c7400fd09a6df3cf3763c8508b9614a9ad8c685"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/PortableLoadResourceTests.cs",
+      "Bytes": 45442,
+      "GitBlob": "5f73f2625efc69e83b4cf40cf0b599daf473204c",
+      "Sha256": "f281f0e43a3256c4990ec64023ab6e4ce02802f09c5578ea5536cc0704bb0f4f"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+      "Bytes": 25969,
+      "GitBlob": "76d4ef9be0b3bc2876ca31185040c6ce57b0afdd",
+      "Sha256": "32ad336f0680414953b3573197a9cda3addbe4c3bd34b37ecf697f32811386d4"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/SaveLoadService.cs",
+      "Bytes": 76096,
+      "GitBlob": "04e4ac75cc798380a36e11b1e4763be206d75239",
+      "Sha256": "9799abc564eff5a5c7dfa1709d0f7fcfa7137d7efa5b010747fcd09d297438b9"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 205458,
+      "GitBlob": "3908181ea8113aa21ff4776dada93661bb4f0b7e",
+      "Sha256": "56bf5083309e8ae00e1e11170e77d4d3b973b00ea3d25a2f17f8a4553879b941"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-admission-consumers-green-20261003/manifest.json",
+      "Bytes": 6180,
+      "GitBlob": "ee9a47e544f3593576c374da40944c4679478090",
+      "Sha256": "d8d9d2e550504457aed4baac3e125df742aab1a66516c7c72e17621c0e412e4f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-admission-consumers-green-20261003/plan.json",
+      "Bytes": 18836,
+      "GitBlob": "2a1409321b69018b8d2a3a48935d8b69f0ad1f07",
+      "Sha256": "346e702cdeaa96b70be9da0d1951e06d3495eb2414d5d94ff4e9dddfd629fe95"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-admission-consumers-green-20261003/portable-load-cleanup-debt-integration-001.trx",
+      "Bytes": 26571,
+      "GitBlob": "5b9599301516b602cfd0d2773440f1f3b22ebd71",
+      "Sha256": "70fd2c06aa8553c71c4932650a0315e0cf770869d06343d20267a42ab476c38c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-admission-consumers-green-20261003/portable-load-cold-decision-unit-002.trx",
+      "Bytes": 86038,
+      "GitBlob": "538600257b7c7187c7bf33790736f263adfba4eb",
+      "Sha256": "8e0cde84e467a5c3c4e99685b98f8a01f2de3b7aeb3e2f8a281c8fe15bd78e14"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-admission-consumers-green-20261003/portable-load-cold-topology-unit-003.trx",
+      "Bytes": 52496,
+      "GitBlob": "7bab8da869b1683fc16597626c59e6b05c94a42e",
+      "Sha256": "4a88d5588d49f3cb976479a8e6fb6e2b1a9db437fb73c039ad2b39e464b2f2c2"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-admission-consumers-green-20261003/portable-load-native-boundaries-integration-004.trx",
+      "Bytes": 22533,
+      "GitBlob": "90b2c960535974afe974069184b19229b59cdedf",
+      "Sha256": "e8af91dbf02c0b909be6b95153a1630f518fce09c4b623f695621dc8cee1d303"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-admission-consumers-green-20261003/portable-load-topology-integration-005.trx",
+      "Bytes": 61965,
+      "GitBlob": "71c32b7bb0efe7d6f82d4ce4d2de9dd4b620ce54",
+      "Sha256": "9e88c281b317472b78a1a36b6e33d296c1292145d48e21b3aa00d9ede90d9a91"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-admission-consumers-green-20261003/portable-storage-namespace-generation-unit-007.trx",
+      "Bytes": 4411,
+      "GitBlob": "9323d9e968547f1cef05a542b3eaff9b647f07c6",
+      "Sha256": "b225ec6b73bdca90516324ca03be48a557f5a4df3c8a3cc27ee8d60d9514dd21"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-admission-consumers-green-20261003/portable-storage-namespace-unit-006.trx",
+      "Bytes": 50920,
+      "GitBlob": "2760391db7482f3319cf73580bbbd2d2bbcd45f3",
+      "Sha256": "d0724245b4ab6682ef6693e87abffd6684d7e301634f7c1541c67e3caaadd9e7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-admission-consumers-green-20261003/portable-storage-original-v1-fixtures-unit-008.trx",
+      "Bytes": 5956,
+      "GitBlob": "6b899929472ae41283a5a892806baec94ea50a20",
+      "Sha256": "2510749df095aba414c07a9fb83777337a1470ddd2aa517ddfeceba42c99a953"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-admission-consumers-green-20261003/portable-storage-stream-dispatch-unit-009.trx",
+      "Bytes": 12874,
+      "GitBlob": "5a8ce0d053f238b52e085e606be2ea2c4b29eb9e",
+      "Sha256": "2ec8aab8be8330dc99a069010db80303d1ec21657c0f13a4b52200fc8f40691b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-admission-consumers-green-20261003/portable-storage-stream-generation-unit-010.trx",
+      "Bytes": 17073,
+      "GitBlob": "35d7cd7cad9a03a2b8d4f28826f1c9c32d572ae2",
+      "Sha256": "df64fb043c481f4063c1b0dd8b7cb0bcc14f08bae04be7ebdd108be617310c09"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-admission-consumers-green-20261003/portable-storage-stream-publication-unit-011.trx",
+      "Bytes": 44199,
+      "GitBlob": "3c648c3328631a3f8988bce4515f5f6049cd8352",
+      "Sha256": "ba8bc8c850d0c135d662705cd51dc5a39725dbe313d29c7e0fb93142c5b309d2"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-admission-consumers-green-20261003/summary.json",
+      "Bytes": 6405,
+      "GitBlob": "4ec1d93325d29a352fa037d9a03ac8e94cd4a3d9",
+      "Sha256": "932c21e64bc8804ecbfba7379de24096619613a3d364b994f48aa66044b328ef"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-final-audit-20261004/catalog-audit.json",
+      "Bytes": 103,
+      "GitBlob": "292b9421c9ad1bff843e1d9b31ae234740499e4a",
+      "Sha256": "ae27c209d0d2a8e6623adcd659983bf0daccde235a2bffa296e19287deb1ec9a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-final-audit-20261004/environment.txt",
+      "Bytes": 2090,
+      "GitBlob": "c31ec11d622e5323cec66828292fa4381745c110",
+      "Sha256": "48b2113e1586f9b5b38cfe4b09560db6cbb43c8eec88d7aa6fb19a213add4725"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-final-audit-20261004/manifest.json",
+      "Bytes": 1704,
+      "GitBlob": "c193f30a63edafb1dc255c0de3b0eff9b9f100cc",
+      "Sha256": "b9f2817b42664679b102abf72bf2fc078c1c14661e99a8e2693544f1043c46f5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-final-audit-20261004/operation-incidents.json",
+      "Bytes": 12836,
+      "GitBlob": "d443938c3750cafa6ca6ae241222737f1c677f08",
+      "Sha256": "278fe4a8bbdd7c3aee4faa9dc3bf45dfc988c78dbe7249e1c6997cfba137ff70"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-final-audit-20261004/summary.json",
+      "Bytes": 1405,
+      "GitBlob": "e7d4b8c270ec157aae98db2bd710b226edd08a6b",
+      "Sha256": "6983c103509aff7ec5a1443495057548184d04953901527281f9b3660b4ea5f3"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-final-audit-20261004/xml-audit.json",
+      "Bytes": 3045,
+      "GitBlob": "7119829a12a2ee8b2ebf27866ea8445972e5d947",
+      "Sha256": "5777aa32cd272f5fb66cee0c732120b6d826dea236a38556dfcbd28c46780daf"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-initial-green-20261003/manifest.json",
+      "Bytes": 4142,
+      "GitBlob": "67a83607a1b2b64a82e92ff0164f7bb1e2259b4c",
+      "Sha256": "a9b21009604ced2637dd02a35b79b14cae11f6d90fc9221cea00f9335182570e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-initial-green-20261003/plan.json",
+      "Bytes": 13549,
+      "GitBlob": "fd120f82587688ebedf919fd8497aee23fa95bae",
+      "Sha256": "69dbc4b7193e97f1d6147269c2cb818c52719c56c2205fcafc7f30eea150e00c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-initial-green-20261003/portable-load-alias-admission-integration-001.trx",
+      "Bytes": 63073,
+      "GitBlob": "774e31d60771856d2b01d7aa0ded7118086f17a0",
+      "Sha256": "613fa4000db4d5fc699eb284d051942d63874f4dd0bf95c3af9053743ee0ed75"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-initial-green-20261003/portable-load-entry-integration-002.trx",
+      "Bytes": 29602,
+      "GitBlob": "6cba69a2f8b73a11bc9e6384757b6832b96ba6a9",
+      "Sha256": "3fedfd3a2efe1e26472fcbd9f91e958c444b64387041567b6221a4323c98e858"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-initial-green-20261003/portable-load-lease-consumers-integration-003.trx",
+      "Bytes": 5900,
+      "GitBlob": "54daa6a144c4bd59fbc49416c2ba4d106e968ebc",
+      "Sha256": "8283a0f51b94a2da2e272b35f15c54ae395f86175965aedcc69553945603de69"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-initial-green-20261003/portable-load-lease-consumers-unit-004.trx",
+      "Bytes": 10382,
+      "GitBlob": "a162a4372e59684d5c5dc48feca1a66a601a3040",
+      "Sha256": "53033d65442ea736644ca6d465fd3a594a987769330bc7ee0880896d0f203422"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-initial-green-20261003/portable-load-original-admission-integration-005.trx",
+      "Bytes": 20631,
+      "GitBlob": "7a84d89d3ccb6796a5ea752335c72dcfe0a45c87",
+      "Sha256": "8086a8b9f88834a1e37fa10152b41fd90e0e7d4017dccefc0db04f7b3ab55747"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-initial-green-20261003/portable-load-outcomes-integration-006.trx",
+      "Bytes": 24638,
+      "GitBlob": "458eafaa9ad07f29a1658758c86755126096d2b0",
+      "Sha256": "59be4b8cac094a893060ad08164e4ecebac005cd80697c0b64c87d0451681f96"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-initial-green-20261003/summary.json",
+      "Bytes": 3992,
+      "GitBlob": "53cd264f82d9bb91bb3eaf67002d7c68ea9a76a9",
+      "Sha256": "163dc0b0a8656fd81df0d9079da8890636570626b478cdeb5d4d262b00049ac7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-initial-incomplete-20261003/dotnet-test.log",
+      "Bytes": 1139,
+      "GitBlob": "cad8c937df9ed80039ed3b0b29a425413402bb03",
+      "Sha256": "29c2f060e4817a11b1916d6918d84af9991847277691fcce8855ae3c467dd218"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-initial-incomplete-20261003/manifest.json",
+      "Bytes": 1062,
+      "GitBlob": "518d7eccd06f23c3cbd826d0f3693c3c84a2d13e",
+      "Sha256": "36dbf4e4419ed1c2ecfc488fc3af194364bff982b0cf3d39eb63140d12e0253b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-initial-plan-20261003/Build-integration.log",
+      "Bytes": 7366,
+      "GitBlob": "e958703a140edea73893dae45bf1325224f2648e",
+      "Sha256": "8e68e7895014d0b760b3928d0e603b5b0ce022949cb6e0622b6d49511bd59cc6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-initial-plan-20261003/Build-unit.log",
+      "Bytes": 7531,
+      "GitBlob": "009786a577cc6c1adb9ff7edfb8e0582a598c4c2",
+      "Sha256": "8ac59c34edeb30757c913e2168cc5e5e18118c26d36c101c306575f07115b07a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-initial-plan-20261003/manifest.json",
+      "Bytes": 2392,
+      "GitBlob": "4534fe208ba40dc1d15a1dc0ffdcb006663fb90a",
+      "Sha256": "30795fdffd0d2ebdd518596ddca70ddfc43ffdcfa6d8842a35930e3c54f23b6c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-initial-plan-20261003/plan.json",
+      "Bytes": 13550,
+      "GitBlob": "fe0402744a736c00286cdb42bc4e5e1e4a0a1d90",
+      "Sha256": "6ac876b58f9123c3f4bd22b1fb476656fa9f01cb78968a7dde018673390694c9"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-initial-plan-20261003/summary.json",
+      "Bytes": 3801,
+      "GitBlob": "d8f2f21ba201f9d3649c77372ffdc515c2dad19f",
+      "Sha256": "5e614bb8b489c22f2ce61763e5f6541dcbd71bf7666a7cf6b10bc20f885caf28"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-metadata-green-20261003/Build-unit.log",
+      "Bytes": 7326,
+      "GitBlob": "e27aa4fef7df9046aef7ae7ce527ec9ef2c55911",
+      "Sha256": "f4f86afc28fab7ee3aa5632661ceae68c242c73865f4bef8abacc2d791af9958"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-metadata-green-20261003/manifest.json",
+      "Bytes": 2826,
+      "GitBlob": "d6f3bc837e11f5644cb461f64f3df60b7e436626",
+      "Sha256": "01ea2d6fa44e0b26aa1d2de9747e5af0402580acabc58505fb5bdd77db442608"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-metadata-green-20261003/plan.json",
+      "Bytes": 4288,
+      "GitBlob": "08a8382c58021414d46656f611b124be6b8ce2a9",
+      "Sha256": "0b4e38aa658ded96a35860c1dcd450b64eabd2fe1f3768ad611b35bd3b363647"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-metadata-green-20261003/portable-load-metadata-transport-unit-002.trx",
+      "Bytes": 4326,
+      "GitBlob": "b89d9ea1ee1a52f40e883e81540ad96c868a400e",
+      "Sha256": "f304d9655a1e7f6167880c40edcb204efd296c3f8750bd457eb46ca7046ead7a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-metadata-green-20261003/portable-load-metadata-unit-001.trx",
+      "Bytes": 55990,
+      "GitBlob": "47ad02f1e29e8d2c2120d99cca0c532f19a393ae",
+      "Sha256": "482e6c3c5e81c33d50bcf563365603d2e5949905e1526f2129d23f7cd6eceb49"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-metadata-green-20261003/summary.json",
+      "Bytes": 1735,
+      "GitBlob": "fc9b4f2c049dcf0f3d35ca2c6436470b20b44c0a",
+      "Sha256": "71a1d0ba1a564cc3077f5fd1e43ccff51f3bcdc7f84faf93d230e0f9ee3afdcc"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-native-names-build-failure-20261003/dotnet-test.log",
+      "Bytes": 11958,
+      "GitBlob": "48575c1face07392f07b142ebd52d2b5044d6acc",
+      "Sha256": "ed843333f3b420702f484821192966efe6188510efdd178efa68f1af37214b58"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-native-names-build-failure-20261003/manifest.json",
+      "Bytes": 1404,
+      "GitBlob": "bb4e06e82d5747f871b3d2806e0b1c02ab897e2c",
+      "Sha256": "37b0f456be8c33f72e30f7fa04cfe9ce5d6126be4e343f9414463eaefbc2a01f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-native-names-build-failure-20261003/summary.json",
+      "Bytes": 1325,
+      "GitBlob": "b818cf6302e2ab2bc00195c13c0edb07a81b0c03",
+      "Sha256": "0592525240d76fc35e2819217589754f0fe0609e632d0a554357fdf25e0ac2d5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-native-names-green-20261003/Build-integration.log",
+      "Bytes": 7094,
+      "GitBlob": "913316a08c3f1c797114055aa63ca6c2a0fb976d",
+      "Sha256": "ad99040ed589da94c5e1885d3a9d5b07d25d52accc4718bfbd88acf99982da96"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-native-names-green-20261003/manifest.json",
+      "Bytes": 4094,
+      "GitBlob": "1addd7bd749ccfb290a2bb992121e83f56f3c609",
+      "Sha256": "92d20b82e4b199a449b6a97d4d7c5cbfbd48fc999907c987c875dd62c5b8994d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-native-names-green-20261003/plan.json",
+      "Bytes": 11553,
+      "GitBlob": "de5d0d93b6053e58e3835fb1a8bfb103a69d0723",
+      "Sha256": "b47ccca406a65410ef9bc982426f9dbafa77ba2b084a6a65e065658eb1ca7bdd"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-native-names-green-20261003/portable-load-alias-admission-integration-001.trx",
+      "Bytes": 63145,
+      "GitBlob": "a688ac55773d9e81c48a6ff3aebb616bf209e1d7",
+      "Sha256": "6e720d08b9c1b641c7f150ff948a8152137344650abcd76c5553469e768af883"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-native-names-green-20261003/portable-load-entry-integration-002.trx",
+      "Bytes": 29602,
+      "GitBlob": "c41e6507d2a31b00e793b1575cc97f0f97e8f8e6",
+      "Sha256": "c657505ca2645e37878f6ff525d6b1adb79f1975e6af5bfac7c29851c57e3dcd"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-native-names-green-20261003/portable-load-native-names-integration-003.trx",
+      "Bytes": 31601,
+      "GitBlob": "4b1d3e77079b949389636c37b1b458515c58c282",
+      "Sha256": "54543b6650a440e267e0f2a78ba6c4af378c7ea378253340ad3b9abafce5ab5c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-native-names-green-20261003/portable-load-original-admission-integration-004.trx",
+      "Bytes": 20775,
+      "GitBlob": "bc7feddbdaffab0e63be1a8d69372fd4cb142e28",
+      "Sha256": "b21bf3d00a9a095a9d8073917b0ef3f017e96a29c3c86707031a55330b8f7236"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-native-names-green-20261003/portable-load-outcomes-integration-005.trx",
+      "Bytes": 24638,
+      "GitBlob": "368044749eb9028bc1fac28e4d4a3623245bb7ac",
+      "Sha256": "b38fd8facc257e3aacb7efdc317a0f5ef40416a119673922ae71d8c2093fa0e7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-native-names-green-20261003/summary.json",
+      "Bytes": 3838,
+      "GitBlob": "7d0f9c5555d5a2fe88fe9ea11f40e377118ffcfd",
+      "Sha256": "4aecf3daee666542f3af3b7399279ff8f4d1625a04e255a007f08800eccb0e57"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-native-names-red-20261003/Build-integration.log",
+      "Bytes": 7094,
+      "GitBlob": "a713a7a763de5c508bb24a08531c225f4f592527",
+      "Sha256": "6d6d0f7af31a9f0f692e84a42fd75c9953e15ab0ccefcd223f5030153415aa64"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-native-names-red-20261003/manifest.json",
+      "Bytes": 2456,
+      "GitBlob": "ad7e763b8f76352597bbe706e732da8199621585",
+      "Sha256": "fc65ec6817a658d77ab08b1ec64a2076cfe65327be445607acad847a847234ca"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-native-names-red-20261003/plan.json",
+      "Bytes": 1466,
+      "GitBlob": "211d84df5567e0efeaeb9e0d99209f8ccc1ff361",
+      "Sha256": "eebcca5fba7be90f4fdabd7041c1fc222aee71d2b13e48e0a701ef71d588e02a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-native-names-red-20261003/portable-load-native-names-integration-001.trx",
+      "Bytes": 37736,
+      "GitBlob": "fc9217174365b277428b892e6e8239be5bc7360f",
+      "Sha256": "4ecb0766bba242bd4bed0773eaa7b5d099862ac3569dcc5ff9e965afdec0149a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-native-names-red-20261003/summary.json",
+      "Bytes": 1465,
+      "GitBlob": "09ffe9225e9f7597c82958b5914a8e20b0f78e31",
+      "Sha256": "81514e41b40b2c66e393244ee5d7dbc45a4fa870b0e2f1db5a75f445516ba55f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-path-batch-green-20261003/manifest.json",
+      "Bytes": 2486,
+      "GitBlob": "fb6f2454d2497518c603a653c6b134b700ec020d",
+      "Sha256": "5fb866049f31ec406bf441465a87649e561ce1056a880338b22225eb3b2dae90"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-path-batch-green-20261003/plan.json",
+      "Bytes": 10255,
+      "GitBlob": "f826b7ca31b173e4a24c6bdf4161169c4ba91bbd",
+      "Sha256": "ecc886c5456f010fc50e55394b7036bb0f1a1326a3a243777439ff5a10747af0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-path-batch-green-20261003/portable-storage-batch-admission-unit-001.trx",
+      "Bytes": 17133,
+      "GitBlob": "9d2ff885c0cf1065be3e64b8882fd4388a4eab8f",
+      "Sha256": "610a0773772c7f5f416a4772d7ab35b30de7b490e1cbc5d8c3db85e2bee42def"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-path-batch-green-20261003/portable-storage-paths-unit-002.trx",
+      "Bytes": 51606,
+      "GitBlob": "4860fc1a4197819095f30d0bff82ac9409b73cd8",
+      "Sha256": "f757ae8228740c7aa485311d9cfab5b5442d1b5c4ba514b559dd88953109c3b7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-path-batch-green-20261003/summary.json",
+      "Bytes": 1640,
+      "GitBlob": "47eb2b1c4784337ced804451a6106aecdc1a331e",
+      "Sha256": "a8a40df2249b7bd9d30bb7eacb30bf7e8f7ac428cfe28b10c4e2a6075d4bc1d1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-inventory-publication-failed-20261004/manifest.json",
+      "Bytes": 2120,
+      "GitBlob": "b1767e9ddce9b82b16d49e732e5c37b7e1cec615",
+      "Sha256": "552ce76c731edfea8a98d7f080b297e5322649384bc74a5b6df8753573352c29"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-inventory-publication-failed-20261004/metrics.json",
+      "Bytes": 1679,
+      "GitBlob": "ad75a5bc41d1cbb1f414a8e994f59f4de0bae7ef",
+      "Sha256": "a64b90d110b6bcfb88a1e7b6b3d3a5724192e7959685070426f96b937087e36c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-inventory-publication-failed-20261004/plan.json",
+      "Bytes": 1166,
+      "GitBlob": "07acf4d008bff525728fa9f9e2480772fbf5a88a",
+      "Sha256": "b1d8e5804a0150f7d86a59534d81a478ec662646e7cbe72526d55f9b63541502"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-inventory-publication-failed-20261004/portable-load-resource-inventory-publication-unit-001.trx",
+      "Bytes": 36905,
+      "GitBlob": "e4daf06e0c1cf82b6dae12b99a47e7ce665b0913",
+      "Sha256": "5348f7ebdb432cf85d4e1845acc48d6c6aafbc23fd5336c6fa6c9f7f5c41be26"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-inventory-publication-failed-20261004/summary.json",
+      "Bytes": 1400,
+      "GitBlob": "44acf98084569df48d089b84d34e24b7cdeaa8f4",
+      "Sha256": "56ec340d7bf35b87d1fec72e3aaa8135f7e4f75ffcb0d1c6400d8d243960b004"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-inventory-publication-green-20261004/manifest.json",
+      "Bytes": 2120,
+      "GitBlob": "9595bd2754e90692c4d4eb96f756dc7cfcfcca4d",
+      "Sha256": "5f7598ced82df844631052453ad9c2ea0d9ca307eb9253aef6537a892e285644"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-inventory-publication-green-20261004/metrics.json",
+      "Bytes": 45724,
+      "GitBlob": "e75a4fe9583201ef876553b15ee537af6a5788fe",
+      "Sha256": "3058c5f01a1058ae8f9e6fad550f77c3fb277844f571cc52eb0c221a09309179"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-inventory-publication-green-20261004/plan.json",
+      "Bytes": 1165,
+      "GitBlob": "f12efe3cac3a1e8d60b494301cdc78d8dbf460e8",
+      "Sha256": "c2d72e38e8771ee874b61cc0d86d310ab18e15fce77c70cb51e1b4e197da48f4"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-inventory-publication-green-20261004/portable-load-resource-inventory-publication-unit-001.trx",
+      "Bytes": 31310,
+      "GitBlob": "1bcc53bb2b3f1abc6d5d09c16661dd98b89a73f2",
+      "Sha256": "ed32ae5d54b9338060a56172e2f99654e29dd9622985ad90f348a1cd6e4a0182"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-inventory-publication-green-20261004/summary.json",
+      "Bytes": 1497,
+      "GitBlob": "3a130494c1316341a468a357d7d5afbbc2932847",
+      "Sha256": "7d4796783fb479f485a7190ce069cfb8f2850503893e8498064bb060136add55"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-inventory-recovery-final-20261004/manifest.json",
+      "Bytes": 2114,
+      "GitBlob": "4d9cd7d4f23eb758d925146d0bce4d5dfd338873",
+      "Sha256": "b1515ecd5dfc4ebdc77203d91b0de329ce4dc58199c3453700f9381603166e14"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-inventory-recovery-final-20261004/metrics.json",
+      "Bytes": 40554,
+      "GitBlob": "4e45a76c6b1c91734d52aaa29c8689dad62054e5",
+      "Sha256": "08a62b62612c0b466ae453b65df8cf831e8c95c1386f3f92a34f20d350775964"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-inventory-recovery-final-20261004/plan.json",
+      "Bytes": 1156,
+      "GitBlob": "e5109118f5cf8f64a67f36b60eaa49e5db506190",
+      "Sha256": "dafde3a6618db9bee50fd3c46ceb3c6dfd054c9a2801f918c9fc7099ed016be6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-inventory-recovery-final-20261004/portable-load-resource-inventory-recovery-unit-001.trx",
+      "Bytes": 28774,
+      "GitBlob": "557efc1acb5dd29b00a87476ccf39e00c592202e",
+      "Sha256": "eb1e8551f5de8b4fcef086063d55dba4a8e333a585043155d9f68286ccd3ea4d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-inventory-recovery-final-20261004/summary.json",
+      "Bytes": 1492,
+      "GitBlob": "678f0c619fab580bcc5e1c69498943d47050c2b7",
+      "Sha256": "bf831e7138cf5218f93ade1fc9aa39fc832043c33279338c0376182809ac8530"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-preparation-20261004/manifest.json",
+      "Bytes": 2100,
+      "GitBlob": "c78208777c8a908db30408dae0ca4009a65ced71",
+      "Sha256": "e584ebd9b7027e62910e9519e87dc64c1b8f3a89f9d7301b1fe67150ba14b6dd"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-preparation-20261004/metrics.json",
+      "Bytes": 19294,
+      "GitBlob": "8f25bfb5968ef626c9875096ef95562e95ae582b",
+      "Sha256": "5826917a7cbec9416cb948cd5f1030529860193ce77e88b45f32400025e93f47"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-preparation-20261004/plan.json",
+      "Bytes": 1107,
+      "GitBlob": "09b979d86cbeff50f180f1904936e2732fccc813",
+      "Sha256": "cd54e5d397264cd7315092f775c39c3f77ed778e03b38854bece799e80ce7188"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-preparation-20261004/portable-load-resource-preparation-unit-001.trx",
+      "Bytes": 22596,
+      "GitBlob": "e4848e8dfa6c46db8f4bccf9c0646be92eea7b10",
+      "Sha256": "b307073e45f4145010c9e9acbebbb01e13257dfd20ebae8a661dd4ad67fd6c04"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-preparation-20261004/summary.json",
+      "Bytes": 1480,
+      "GitBlob": "fba4635ff4e5d85bf7a08742f2a7461e0177e70c",
+      "Sha256": "52bad4c19cb7c9f5ac8d2b02e216e0108eed5677fd38ec32b6b4ea0e1c50e800"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-preparation-final-20261004/manifest.json",
+      "Bytes": 2100,
+      "GitBlob": "bd0b5e9d61d72107fb44c8ba7f9ca0959eb4c9de",
+      "Sha256": "6e0ec8d2d654b33a31ac34a26aad92f5b2ae5b18473f8e0d5793973e3f5d4bb8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-preparation-final-20261004/metrics.json",
+      "Bytes": 19271,
+      "GitBlob": "e9e6e28e96b5a0596ce486c4397db817af047395",
+      "Sha256": "2a6923cfbd6f0562561b13b666ca4ebd405c4cf59db1de62d8cc0b6c04b9c324"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-preparation-final-20261004/plan.json",
+      "Bytes": 1104,
+      "GitBlob": "809016d1855b71c732b76cd4091c7fbce593b39e",
+      "Sha256": "adf24c3b2a3a462c81f1a30b1a97fb4441f8a33b4b85586191a73dfe75876ccc"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-preparation-final-20261004/portable-load-resource-preparation-unit-001.trx",
+      "Bytes": 22574,
+      "GitBlob": "911e55395e903b1220034157042bf9eb4595fae6",
+      "Sha256": "8950d79f8fe6ecd09fafea1356c0ddb38a6db6b7c533a9326cb505ed00565d03"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-preparation-final-20261004/summary.json",
+      "Bytes": 1477,
+      "GitBlob": "87e85dcd26c594ee7ee372dd57090346f9125e0f",
+      "Sha256": "32469d48c314ec3e9a145bb9ad4dff7d3b8367cce673c908d84662e0e15bab6f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-publication-20261004/manifest.json",
+      "Bytes": 2100,
+      "GitBlob": "db99dd42e42e5100de235a55aacf24ffbe20088d",
+      "Sha256": "ed52e0ad9b1a6a785657b495300fa3a289e5981d35a60258b47a66801e4fa39f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-publication-20261004/metrics.json",
+      "Bytes": 70922,
+      "GitBlob": "0de7cd392cbe1359bd876e2a5dbe6b8eda6f0e49",
+      "Sha256": "f0c4acb9cdd22746dfcbd09c898f46ce5edf2979502b6d43fc9f509072280661"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-publication-20261004/plan.json",
+      "Bytes": 1106,
+      "GitBlob": "c0fd7ed6456653da59fb8e3d5b404b76bd6e34ff",
+      "Sha256": "19cb931fc1f6321c8635140d41fecf45aac5ce28c4c7e67e217e99104f19e16f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-publication-20261004/portable-load-resource-publication-unit-001.trx",
+      "Bytes": 51474,
+      "GitBlob": "0d480cb327b9e4fa997243f35c8ac4d20e29cd04",
+      "Sha256": "50f3c41870176272dcaf5a6976f69912abead94c32371514916c8656fa92cac1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-publication-20261004/summary.json",
+      "Bytes": 1478,
+      "GitBlob": "c1105b9bc7df8ccf17127eaf8528aa79ffa4e566",
+      "Sha256": "45c998e3e18049991e22645ca0a258dc107e2a43c9d4de36da3cb795afb63888"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-publication-final-20261004/manifest.json",
+      "Bytes": 2100,
+      "GitBlob": "00936018e103c39827e0f9f68a49cb4f8dfbf33a",
+      "Sha256": "1e60000ef055bbef3f96648605e6901798a5ff9e4d8f3cb07940732f054dfdcb"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-publication-final-20261004/metrics.json",
+      "Bytes": 70919,
+      "GitBlob": "b763b5c6adfabf229652a402ef0269cf209c6d41",
+      "Sha256": "7477b3356546d35fbb399458a8039df6fb9d92ea5d3af9beb40dcf975417ed47"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-publication-final-20261004/plan.json",
+      "Bytes": 1106,
+      "GitBlob": "80f801c39cc8fe365618957e11e3298a5741bb0d",
+      "Sha256": "0d158d0491e3eff13ec1e87e320e331133dad03e8410c1f6680046d0c9065305"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-publication-final-20261004/portable-load-resource-publication-unit-001.trx",
+      "Bytes": 51472,
+      "GitBlob": "d27f5320e40134abcad77177362fd7dfb8487d1f",
+      "Sha256": "9d8c7e3c86594ee8b7bea1eb2d97756160aad223028098f08e1dcd5edca75e62"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-publication-final-20261004/summary.json",
+      "Bytes": 1478,
+      "GitBlob": "e71c3be8eaddeb9f4cb0a69cae144ec94b1474df",
+      "Sha256": "194a2469704a8be345fefdda9ed4abc9655c08f93becc318a21ea32e37e659cc"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-recovery-final-20261004/manifest.json",
+      "Bytes": 2094,
+      "GitBlob": "eb2e9ca2da49c6e399988929f8f3552c7b35380f",
+      "Sha256": "6ad51b755faf239f00ee9c1447e537df460439d426e8e1bbd1580404dc98f067"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-recovery-final-20261004/metrics.json",
+      "Bytes": 69022,
+      "GitBlob": "bd1826259bd2c123f41a0d52564a071689fb2230",
+      "Sha256": "ccbab7d9522e238112735ee7b806c89a782ad6cac749435caf0e54358ac71fcc"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-recovery-final-20261004/plan.json",
+      "Bytes": 1096,
+      "GitBlob": "b558b50542b54a5abaec7ae118566e9e99edfebb",
+      "Sha256": "499daac962aed0021deb551e0ec14634a01da44a58dd1a894c0470e989b0ee61"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-recovery-final-20261004/portable-load-resource-recovery-unit-001.trx",
+      "Bytes": 52554,
+      "GitBlob": "0dc844028400810c4235a797246198e7eec86084",
+      "Sha256": "dbe7eb5dc5e8e75df348a62482e605f5c4805db6acac41efe0a681d6bc801ae9"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-recovery-final-20261004/summary.json",
+      "Bytes": 1471,
+      "GitBlob": "0e82263c84bce0724ef3d7582f9b4688f319cc1d",
+      "Sha256": "6229a6def9c620f29c9ab6cab6a6b7793112647932e49160f0480d2a870f80ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-sampling-green-20261004/Build-unit.log",
+      "Bytes": 8659,
+      "GitBlob": "6e7cb23b82d91560204f49284a72f7d177d17b20",
+      "Sha256": "d140818a266835eb210efb100fa4d5af5b32f784d68a2c65241dfcfe69a4ed7f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-sampling-green-20261004/manifest.json",
+      "Bytes": 2439,
+      "GitBlob": "f19331415ed6d719178f81e76337c8e35d497f8e",
+      "Sha256": "cc5639aa8df59b469228d58d4f0aa37007848aeed75cd6f05777eb92e792d7cd"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-sampling-green-20261004/plan.json",
+      "Bytes": 1647,
+      "GitBlob": "41cd158df4f9636a5786917e967799da8971361f",
+      "Sha256": "ebf4f3065240d5b1b33b641bf9a810e08b29a7d899efa9f4815554709f8210a0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-sampling-green-20261004/portable-load-resource-sampling-unit-001.trx",
+      "Bytes": 16797,
+      "GitBlob": "3055fe7a6ab5b34452473678fdfe38a0fa5b825b",
+      "Sha256": "29b233ca3cdd3c74851837dad82c1d78c296b551bc3fa3376ccd73e14645180c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-sampling-green-20261004/summary.json",
+      "Bytes": 1570,
+      "GitBlob": "241eb4758be8ea29783aa7836a83be86eb3d5c35",
+      "Sha256": "3580bdd6ac90913342457b5669bdd12bb59c68b9a80bdc4960b05bda3a046a79"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-sampling-red-20261004/Build-unit.log",
+      "Bytes": 8659,
+      "GitBlob": "c30ea09b45843d9550cfdd09e73163f0ab032e7d",
+      "Sha256": "3531b54bc96b68947c036384cf02a96507333baceb5debe0cee38028f722ff80"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-sampling-red-20261004/manifest.json",
+      "Bytes": 2439,
+      "GitBlob": "8fc78990f795db8d85cc3022f136de2ac071ac00",
+      "Sha256": "cd21bf1669d7f0cdae0c47e39726980b0b8a8274df76b944ff72a191e73e410f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-sampling-red-20261004/plan.json",
+      "Bytes": 1647,
+      "GitBlob": "cbc36ffd80083c01e29de06dee48af695b01c402",
+      "Sha256": "8f1237bc44705ddf711561851b8187edd4e477f0e64c9640871ba7c99707dc7d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-sampling-red-20261004/portable-load-resource-sampling-unit-001.trx",
+      "Bytes": 34576,
+      "GitBlob": "18eb6fc89520357ddf374c1ffa4222b12d5e4ce4",
+      "Sha256": "7016bc6dcef74b4dcd3d56cf044eee6a33ad91963926f999daca285668c54363"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/load-linux-resource-sampling-red-20261004/summary.json",
+      "Bytes": 1471,
+      "GitBlob": "dec650dbb6867434612f961f6b3e7f9a3cc1aed1",
+      "Sha256": "66721ee0aa930ed89c49ca480608790924c31b6c89575b3afc785ad85663c429"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/load-filesystem-linux-qualification.json",
+      "Bytes": 29806,
+      "GitBlob": "81d2a5297185f9025379c45e1264f52366da5c81",
+      "Sha256": "1feabea42e85bfabc60c379e0945bafb60bbd50f77bfc0fe8a75b2404d77689f"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 941251,
+      "GitBlob": "12a881c18a8eeacbda6633ea8a266fe440c60ee0",
+      "Sha256": "231126f556180edc63f02222e4da19fbce5a5a1c6ebd6d9ee2b68a9c97709d87"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 478,
+      "GitBlob": "4c232953b41843cb50e7799f28bcfd94f16c9d3b",
+      "Sha256": "60406b188e0e471228761ceaba8c9ecdc08e37803c3f03fd6fff9a8a644886af"
+    },
+    {
+      "Path": "tests/selections/1553-load-linux.json",
+      "Bytes": 2611,
+      "GitBlob": "468a38ae6d53208e23cbd3f0ad8638ff0e31b6c2",
+      "Sha256": "77b8ae85f9152b03fffe9d64fb3e42e2ff1f9066c5ce15542f8ee56695ff2345"
+    }
+  ]
+}

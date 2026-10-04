@@ -1,10 +1,10 @@
-# Передача файлового контура обычной загрузки — #1553
+# Передача файлового контура загрузки — #1553
 
-Дата: 2026-10-04. Репозиторий: [The Book of Eternity Reborn](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn), задача [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
+Обновлено: 2026-10-04. Задача [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), ветка **`codex/1553-load-filesystem`**. Native Linux runtime-проверки завершены; финальное ревью и сверка carrier этой передачи ещё ожидаются. Публичный B4 пока не объявлен завершённым.
 
-Рабочая ветка: **`codex/1553-load-filesystem`**. База — `5d2aa2ceadd8f4424e3ccaf0249a8bb164f32fae`; принятые сохранения — `ddaade72ae44936f6cf61970afb2bc80225b7731`. Изменения не влиты в default branch. Для продолжения получить актуальный полный SHA ветки, сравнить удалённый ref и чистоту checkout; не начинать от старого `bd5cb827` или применять исторические пакеты.
+## Восстановление и текущие источники
 
-## Прочитать и восстановить
+Получить актуальный полный SHA ветки и новый чистый checkout, сравнить удалённый ref:
 
 ```sh
 git clone --single-branch --branch codex/1553-load-filesystem https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git boe
@@ -14,89 +14,49 @@ git ls-remote origin refs/heads/codex/1553-load-filesystem
 git status --short
 ```
 
-Исходники, каталог и доказательства — обычные Git blobs. Сверить SHA, затем прочитать AGENTS.md, docs/development-workflow.md, docs/testing.md, [spec.md](spec.md), [ordinary-load-plan.md](ordinary-load-plan.md), текущий checkpoint [plan.md](plan.md) и [tasks.md](tasks.md). Спецификация LOAD-FS-001…008 и v3 согласованы; владелец прямо разрешил автономные рекомендуемые ревизии и отменил дальнейшее ожидание утверждения. Независимое ревью остаётся обязательным: отдельный **gpt-6.1-sol / xhigh**, согласно актуальному правилу владельца.
+Прочитать AGENTS.md, docs/development-workflow.md, docs/testing.md, [spec.md](spec.md), [ordinary-load-plan.md](ordinary-load-plan.md), актуальные [plan.md](plan.md) и [tasks.md](tasks.md). Владелец разрешил автономные рекомендуемые ревизии; обязательное независимое ревью — отдельный **gpt-6.1-sol / xhigh**. Не начинать от старых `bd5cb827`/`codex/1553-save-windows` и не применять архивные пакеты.
 
-## Что готово и чем подтверждено
+- Возвращённая Windows-передача: `07d354e16ce06796dee435003bd5fd2a023be62e`; её C# closure — `e593bcfa5e45502de9eb6d6b3949565f7c7881b2`
+- Текущий production closure после причинного Linux case-pair исправления — `2da4d545c9398ab1db019609d14429f9480574c2`
+- Текущий исправленный resource probe и его тесты — `eed0ca99e7ad8ef8306c6f4758ed55cce722fd46`
+- Все runtime/resource/audit доказательства опубликованы в `f72830d5f66a3131ab0bb7c77c82280856439357`; [новый полный GitHub readback](recovery/load-filesystem-linux-github-readback.json) проверил 4 727 файлов, 123 изменения, 71 JSON и 37 TRX, чистоту и connectivity. Поздний документальный carrier сверяется отдельно
 
-| Блок | Код и native Windows | Сохранённые доказательства |
-| --- | --- | --- |
-| T032-B1-FIX | Пять исходных исправлений; корректная фикстура Shining Abode; фиксированные пути взяты из явных runtime-реестров, произвольные имена не приводятся к одному регистру | [План](plan.md), отдельные 24 alias / 9 entry / 7 admission / 4 outcome / 9 lease case результатов; независимый PASS через `60e539cf` |
-| T032-B1-METADATA | Потоковый v2 codec без общего лимита 1 МиБ; строгие поля/области и проверка всего frame до записи; v1 сохранён | [39 metadata](recovery/evidence/load-metadata-green/summary.json), [41 compatibility](recovery/evidence/load-metadata-consumers/summary.json), [каталог/XML](recovery/evidence/load-metadata-catalog/summary.json); независимый PASS через `f822ef93` |
-| T032-B2-NAMESPACE | Подключённый v3: файл ↔ каталог, точные защищённые границы, полный preflight, восстановление/удаление generation последним, cleanup без отката commit | [48 namespace](recovery/evidence/load-namespace-green/summary.json), [native/consumer](recovery/evidence/load-namespace-consumers/summary.json), [исправленный dispatch 4](recovery/evidence/load-namespace-dispatch-green/summary.json), [каталог/XML](recovery/evidence/load-namespace-catalog/summary.json); независимый PASS через `d229823a` |
-| T032-B3-COLD | Реальные process cuts и journal-only restart без распаковки, обе конверсии, неизвестный поздний файл/пустой каталог, неполный scratch, повторное восстановление | [33 cases: new 29 + dispatch 4](recovery/evidence/load-cold-green/summary.json), [каталог/XML](recovery/evidence/load-cold-catalog/summary.json); независимый PASS через `3d20be0a` |
-| T032-B3-RESOURCE | Все 12 ресурсных случаев Windows прошли в пяти отдельных категориях, 28 измеренных дочерних процессов; отдельный Sol 6.1 XHigh очистил код/native Windows через `84419ff0` | [Сводное доказательство с SHA и замерами](recovery/load-filesystem-windows-qualification.json), [каталог/XML](recovery/evidence/load-filesystem-final-audit/summary.json) |
+## Проверенные границы
 
-Сохранённые результаты относятся к указанным источникам и отдельным выбранным когортам, не к одному общему прогону. Не повторять успешные неизменённые Windows-когорты только для передачи. **Native Linux нового load-контура ещё не проверен.** Ранее принятые Linux-сохранения не заменяют эту проверку.
+[Windows proof](recovery/load-filesystem-windows-qualification.json) сохраняет свои точные исходники и отдельные результаты FIX, metadata, namespace, cold и 12 ресурсных случаев / 28 измеренных процессов. Повторные неизменённые Windows-прогоны не выполнялись. Ревью подтвердило сохранение Windows-поведения: новое различение исходных имён включается только для typed Linux load; дополнительные проверки Windows-словарей избыточны после прежнего отказа дубликатов. Старые результаты не выдаются за новое Windows-исполнение.
 
-Текущий C#-контур — `e593bcfa5e45502de9eb6d6b3949565f7c7881b2`; последующие публикации добавляют документацию, CI-настройку и доказательства. Свежие сборки и [128 затронутых случаев](recovery/evidence/load-resource-admission-consumers/summary.json) подтвердили namespace/native/cold и v1/v2/host consumers за 7:39.005. [46 path/batch случаев](recovery/evidence/load-resource-admission-contracts/summary.json) проверили свежие границы родителей и каждый leaf. Оптимизация повторных проверок действует только внутри одного синхронного вызова; физическое состояние не кэшируется между callback, мутациями или тестами. Финальный discovery-only аудит: 219 категорий, 10 565 методов/файлов, ни одного выполненного теста; пять XML сборок читаются, в изменённых файлах XML-предупреждений нет.
+[Native Linux proof](recovery/load-filesystem-linux-qualification.json): Debian 13 x64, PowerShell 7.6.6, SDK 10.0.401, runtime 8.0.31, process-local telemetry opt-outs, DOTNET_PROCESSOR_COUNT=1 и XML-документация. Отдельные когорты:
 
-Итоговое отдельное **gpt-6.1-sol / xhigh** ревью подтвердило RESOURCE/ADMISSION/MONITOR код и native Windows. Исправлены две неточности документации; новые прогоны не требовались. [GitHub-only readback](recovery/load-filesystem-github-readback.json) восстановил `84419ff0`: 204 изменённых файла, точные Git blobs/SHA256, 101 JSON / 63 TRX, чистый sparse checkout и connectivity. Это проверка доставки, не повторный тест и не Linux acceptance. Небольшие последующие status/proof commits не меняют C# closure; финальный carrier проверяется отдельно.
+- Первый baseline 53/53; девять неизменённых lease consumers сохраняются отдельно
+- Исправленные names/aliases/admission/entry/outcomes 52/52, включая восемь новых проверок исходной идентичности; 44 строки перекрываются с baseline, суммы не складываются
+- Metadata + transport 39/39; fresh path/batch 46/46; namespace/native/cold/v1/v2 consumers 128/128
+- Native sampler 10/10 после причинного RED: Unix cached attributes=-1 больше не считаются реальной ссылкой; настоящие ссылки и stable/unknown missing остаются отказами
+- Пять отдельных resource-команд: preparation 4/4 (1:35.334), bulk publication 3/3 (1:25.260), maximum inventory publication 1/1 (1:02.958), bulk recovery 3/3 (1:28.207), maximum inventory committed recovery 1/1 (1:06.617). Всего 12/12 и 28 измеренных детей, полные независимые state/source/library/generation проверки и cleanup
+- Discovery-only аудит 221 категорий / 10 570 методов-файлов, ноль исполненных тестов; пять XML сборок читаются, в изменённых файлах нет XML compiler warnings
 
-## Callable boundary для подключения клиентов
+Все resource-пределы сохранены: heap 768 МиБ, RSS 1 ГиБ, owned disk 5 ГиБ, 180 секунд на child; 600 секунд только для maximum-inventory publication/cut. Category 10 минут для preparation/bulk и 12 для inventory, команда 15 минут. Polling delay 100 мс не обещает такой частоты при синхронном disk scan. Forced closed-boundary disk samples и финальный OS RSS peak сохранены. Guard stop, partial phase и cleanup failure — не PASS. Первые source-specific resource-проходы, реальный inventory non-pass и причинные RED сохранены отдельно.
 
-Подготовленный контур вызывается внутренним `SaveLoadService.LoadGameWithOutcomeAsync(string, CancellationToken)`, возвращающим `LoadReplacementResult`. Публичный старый `LoadGameAsync` ещё не переведён на него. Следующая работа Астры — согласованный B4 после необходимых filesystem gates: подключить публичную загрузку и её console/browser-потребителей к типизированному результату, сохранив существующие caller contracts.
+Это actual native cloud Linux qualification через обычный runner; GitHub Actions execution не используется как доказательство. Ограниченная workflow/selection установлена, никаких merge ради CI не сделано. Не повторять весь набор или неизменённые resource-фазы при последующих B4 UI-правках. Команды и среда — [quickstart.md](quickstart.md); ответственность и бюджеты — tests/categories.json. Полные/Fast/PreMerge прогоны запрещены.
 
-- `NotLoaded`: замена не начата; приватная ошибка подготовки/очистки может требовать follow-up, сама по себе не блокирует каноническую работу.
-- `Committed`: новый generation подтверждён. Поздняя ошибка refresh/log/release/cleanup не отменяет состоявшуюся загрузку.
-- `RolledBack`: точные старые bytes/absence и прежний generation подтверждены.
-- `Uncertain`: established generation отсутствует, follow-up обязателен, продолжение канонической работы заблокировано до разрешения evidence.
+## Callable boundary для B4
 
-Runtime обновляется только после подтверждённого commit. Связанный с тем же root вызов запрещён до подготовки; detached settings/profile preparation не публикует runtime заранее. Полная библиотека, выбранный исходный ZIP и его предки защищены, в том числе source вне saves. Отсутствующий config сохраняет согласованную семантику. Не подменять результат исключением/boolean, которое стирает установленное решение.
+Внутренний `SaveLoadService.LoadGameWithOutcomeAsync(string, CancellationToken)` возвращает `LoadReplacementResult`. Публичный старый `LoadGameAsync` и console/browser ещё не переключены.
 
-`TrustedLocalFilePublication` читает прежние v1/v2 file-image и новые v3 namespace frames; старые handler/authority boundaries сохранены. Новый typed load пишет v3 в существующий private checkpoint. Нормальный `FileSystemManager.AcquireCanonicalWriteLeaseAsync` завершает pending rollback или committed cleanup по самодостаточному журналу. Не удалять неизвестный blocker/journal и не расширять grants, чтобы восстановление «прошло». Для нового UI-кода обычно не требуется править ZIP/parser/reconcile/recovery-модуль; подтверждённый дефект в нём оформляется отдельным узким изменением.
+- `NotLoaded`: замена не начата; приватная cleanup-проблема может требовать follow-up, сама по себе не блокирует каноническое продолжение
+- `Committed`: новый generation подтверждён; поздние refresh/log/release/cleanup ошибки не отменяют commit
+- `RolledBack`: подтверждены точные прежние bytes/absence и прежний generation
+- `Uncertain`: established generation отсутствует, follow-up обязателен, каноническое продолжение блокируется до разрешения evidence
 
-## Linux qualification и пределы
+Runtime обновляется только после подтверждённого commit. Связанный с тем же root вызов запрещён до подготовки; detached settings/profile не публикует runtime заранее. Сохраняются полная библиотека и выбранный исходный ZIP, включая source вне saves и его предков; отсутствующий config имеет согласованную семантику. Не стирать установленное решение boolean или исключением при поздней ошибке.
 
-Использовать native Linux, PowerShell 7, SDK 10 и runtime 8. Инструкции среды — [quickstart.md](quickstart.md). До запуска инструментов выставить process-local telemetry opt-outs; `DOTNET_PROCESSOR_COUNT=1` — записанная настройка сборки. Никаких полных прогонов или Fast/PreMerge. Свежая сборка нужна перед `-NoBuild`.
+Новая Linux original-name проверка хранит точные исходные ключи, проверяет схему/hash до finite fixed-path materialization, выбирает точный original entry или единственный case alias и требует one-to-one manifest claims. Одновременные произвольные `Pair.bin`/`pair.bin` сохраняются и точно откатываются; fixed/manifest collisions, ambiguous aliases и double claims отвергаются.
 
-```powershell
-$env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
-$env:POWERSHELL_TELEMETRY_OPTOUT = '1'
-$env:TESTINGPLATFORM_TELEMETRY_OPTOUT = '1'
-$env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = '1'
-$env:DOTNET_GENERATE_ASPNET_CERTIFICATE = 'false'
-$env:DOTNET_PROCESSOR_COUNT = '1'
-$env:GenerateDocumentationFile = 'true'
-$env:NoWarn = '1591'
-./scripts/test-csharp.ps1 -SelectionFile tests/selections/1553-load-linux.json -Parallelism 1 -TimeoutMinutes 15
-```
+`TrustedLocalFilePublication` читает прежние v1/v2 и новые v3 namespace frames в одном private checkpoint. Нормальный `FileSystemManager.AcquireCanonicalWriteLeaseAsync` завершает pending rollback или committed cleanup только по самодостаточному журналу. Не удалять неизвестный blocker/journal и не расширять grants. Повторная recovery отдельно доказана cold controls; один resource restart сам по себе не доказывает повторную acquisition. Обещается process-crash recovery, не дополнительная power-loss durability.
 
-Это первая когорта допуска/исходов/затронутых lease consumers. Для первого native Linux допуска нового файлового контура также нужны metadata, fresh path/batch и [явная когорта namespace/native/cold/v1/v2](../../tests/selections/1553-load-admission-consumers.json). Это ещё не выполненная Linux-проверка и не инструкция обходить весь каталог. Выбирать и документировать владельцев по изменённой границе; при необходимости создавать новую категорию. После первого допуска неизменённые группы не повторяются при каждой правке.
+## Следующая работа и явные открытые границы
 
-```powershell
-# Отдельные ещё не квалифицированные native Linux границы. После свежей сборки
-# initial selection выше и при неизменённых compile inputs:
-./scripts/test-csharp.ps1 -Category portable-load-metadata,portable-load-metadata-transport -NoBuild -Parallelism 1 -TimeoutMinutes 15
-./scripts/test-csharp.ps1 -Category portable-storage-batch-admission,portable-storage-paths -NoBuild -Parallelism 1 -TimeoutMinutes 15
-./scripts/test-csharp.ps1 -SelectionFile tests/selections/1553-load-admission-consumers.json -NoBuild -Parallelism 1 -TimeoutMinutes 15
-```
+1. После финального ревью/readback закрыть filesystem B5-FS и точно сопоставленные B1/B2/B3; продолжить **B4 public/console/browser integration** на этой же ветке: typed outcome/committed identity, generation rebind, pending/UI owner guards, required refresh failure и blocked uncertainty, affected caller tests
+2. **T032-A4-NATIVE-NAMES остаётся открытым:** существующий save producer по исходникам отвергает произвольную Linux case-distinct пару. Loader проверен на корректном независимо дополненном manifested archive; полный producer → load → save round trip такой пары пока не принят. Исправить producer узким отдельным блоком, сохранив Windows collision policy и все manifest/format/budget контракты
+3. T033/live console/browser/real GM, полный B5/T032, остальные platform-helper/interactive-GM задачи и вся #1553 остаются открытыми. Материализация ран #1536 не возобновлялась
 
-Ресурсные фазы запускаются **отдельными командами**; таблица — реальные Windows результаты, а не Linux PASS. Каждый случай создаёт независимый mutable root. Общего кэша подготовленных фикстур нет.
-
-| Категория | Случаи | Время команды Windows | Бюджет категории |
-| --- | --- | --- | --- |
-| `portable-load-resource-preparation` | 4: 64/128/почти 512 МиБ и maximum inventory | 5:19.202 | 10 минут |
-| `portable-load-resource-publication` | 3 bulk | 4:42.302 | 10 минут |
-| `portable-load-resource-inventory-publication` | 1: 8192 записи / почти 2 МиБ UTF-8 имён / 9216 старых файлов | 13:24.803 со свежей сборкой | 12 минут |
-| `portable-load-resource-recovery` | 3 bulk, pending generation cut | 5:05.053 | 10 минут |
-| `portable-load-resource-inventory-recovery` | 1, committed cut / journal-only restart | 10:29.286 | 12 минут |
-
-```powershell
-# После свежей сборки текущего C# closure; одна выбранная фаза за команду.
-./scripts/test-csharp.ps1 -Category portable-load-resource-preparation -NoBuild -Parallelism 1 -TimeoutMinutes 15
-```
-
-Бюджет категории ограничивает выполнение выбранных тестов; время команды со свежей сборкой включает также сборку. Подставлять только категорию необходимой фазы из таблицы. Для будущих B4 UI-правок неизменённый resource-контур повторно не квалифицировать. Load-only envelope: 768 МиБ heap, 1 ГиБ RSS, 5 ГиБ owned disk, 180 секунд на child; **600 секунд только для maximum-inventory publication/cut**, обоснование и измерения — [MONITOR revision](ordinary-load-plan.md#t032-b3-resource-monitor--measured-probe-cost-and-inventory-budget). Команда ограничена 15 минутами. Финальный OS RSS peak и принудительные дисковые замеры на закрытых границах остаются; 100 мс — задержка polling, синхронные дисковые обходы удлиняют фактический интервал. После оптимизации работа монитора снизилась 207→43 секунды, но ускорение самой загрузки не доказано. Save-only лимиты и архивные ceilings не изменены. Guard stop, неполная фаза, OS early return, setup/cleanup failure не являются PASS. Сохранять ОС/SHA/toolchain/actual counts/cleanup и probe reports.
-
-Bounded Linux workflow и selection уже опубликованы. Repository Actions разрешены только для трёх необходимых actions; прежний general workflow остался disabled. Новая workflow не зарегистрировалась и actual run отсутствует; причина не установлена. Не делать merge solely для активации CI. Если обычный Linux executor недоступен, native gate остаётся открытым; не выдавать исходники или Windows execution за Linux PASS.
-
-## Что остаётся
-
-1. Native Linux filesystem qualification и закрытие соответствующей части T032-B5-FS.
-2. B4: public/console/browser load integration и affected caller tests, затем T033/live/full B5 и остальные открытые задачи #1553.
-
-Материализация ран #1536 не возобновлялась. Client-owned filesystem changes не добавляют GM-authored поле/команду/механику: игровые prompts/examples не менялись, no-update rationale записан в плане. Вся #1553 и вся загрузка пока не объявляются завершёнными.
-
-## Историческая точка остановки
-
-`bd5cb827318e849681a848a57016d62740a6e5ea` содержал первые 9 GREEN, пять ещё не внесённых исправлений и поправленную, но не проверенную Shining Abode fixture. Это исторический baseline. Сообщение платформы «possible cybersecurity risk» не назвало конкретную операцию; архивная работа остаётся гипотезой, причинной связи не установлено. Текущий модуль разработан и проверяется обычными локальными средствами.
+Файловые изменения принадлежат клиенту и не добавляют GM-authored команду/поле/механику; no-update rationale для prompts/examples записан в плане. [Запись фактических операций и ошибок](recovery/evidence/load-linux-final-audit-20261004/operation-incidents.json) отделяет approval/network cancellations, git authentication и обычные test failures. Generic cybersecurity flag в этих запусках не наблюдался; причинная связь с историческим неопределённым сообщением не установлена, специальных screening-проб не выполнялось.
