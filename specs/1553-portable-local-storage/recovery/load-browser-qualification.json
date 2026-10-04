@@ -1,7 +1,7 @@
 {
   "SchemaVersion": 1,
   "Scope": "T032-B4 bounded native Linux browser typed load/backend and automated actual frontend client integration",
-  "Status": "Verified candidate; independent final artifact/readback verdict pending",
+  "Status": "Accepted bounded native Linux browser typed-load integration",
   "CodeCommit": "cff44debfd7c0e091c6bbc7ec608c3fae2a8a46c",
   "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
   "Toolchain": {
@@ -28,7 +28,7 @@
       "Cases": 11,
       "Passed": 11,
       "Evidence": "evidence/load-browser-review-candidate/portable-load-browser-unit-001.trx",
-      "Limit": "The companion HTTP owner in that run failed fixture preparation; it is not an overall pass. These eleven source/test files are unchanged through CodeCommit."
+      "Limit": "The companion HTTP owner in that run failed fixture preparation; it is not an overall pass. Source/test files for these eleven cases are unchanged through CodeCommit."
     },
     {
       "Category": "portable-load-browser-refresh",
@@ -127,7 +127,12 @@
   "Review": {
     "Model": "gpt-6.1-sol",
     "ReasoningEffort": "xhigh",
-    "Status": "All reported runtime issues corrected; final evidence/restoration verdict pending"
+    "Verdict": "PASS",
+    "ReviewedCarrier": "bf58f0a44121e432f1ca1d6f57dd6b24fe3ce319",
+    "RuntimeCodeCommit": "cff44debfd7c0e091c6bbc7ec608c3fae2a8a46c",
+    "ReportedUtc": "2026-10-04T17:56:05Z",
+    "OpenActionableFindings": 0,
+    "Scope": "Bounded browser integration only; full B4/#1553 and stated platform/live gates remain open"
   },
   "ProductionFileBlobs": {
     "BookOfEternityClient.WebFrontend/src/App.tsx": "e9a573a3b5c53b7353478ccb1d3e50a7fcf95d42",
@@ -153,5 +158,6 @@
     "Full B4/B5/T032/T033 and whole #1553 remain open",
     "Unchanged filesystem/resource/console cohorts not repeated"
   ],
-  "Incidents": "load-browser-operation-incidents.json"
+  "Incidents": "load-browser-operation-incidents.json",
+  "GitHubReadback": "load-browser-github-readback.json"
 }

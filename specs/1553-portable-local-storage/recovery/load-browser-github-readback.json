@@ -1,0 +1,16 @@
+{
+  "Commit": "bf58f0a44121e432f1ca1d6f57dd6b24fe3ce319",
+  "Tree": "0b0998e2c42a3126ddccf3f57751f7ccc908aeb6",
+  "TrackedFiles": 4939,
+  "CleanCheckout": true,
+  "AllPhysicalGitBlobHashesMatch": true,
+  "BrowserEvidenceJsonParsed": 81,
+  "BrowserEvidenceTrxParsed": 24,
+  "EmbeddedArtifactsVerified": 105,
+  "QualifiedProductionBlobsVerified": 14,
+  "Method": "Fresh depth1 single-branch GitHub clone in a new empty directory; no local objects or source cache copied",
+  "Connectivity": "git fsck --connectivity-only exit0",
+  "BuildOrTestsRepeated": false,
+  "Limit": "Source/evidence restoration only; not another runtime execution, full history clone or whole #1553 acceptance.",
+  "JsonCountScope": "Every JSON recursively under recovery/evidence/load-browser-* (including manifests, tsconfig and build metadata)"
+}

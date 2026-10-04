@@ -4,6 +4,47 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## Accepted T032-B4 browser integration — 2026-10-04
+
+Separate **gpt-6.1-sol / xhigh** final review **PASS** at evidence carrier
+`bf58f0a44121e432f1ca1d6f57dd6b24fe3ce319` found no remaining actionable correctness,
+coverage, scope or selection finding. Runtime source is
+`cff44debfd7c0e091c6bbc7ec608c3fae2a8a46c`. The browser now retains all four typed
+load decisions and committed identity across service/coordinator/HTTP and both actual
+handlers. Pending state and the exact UI token/generation are rechecked on the held
+replacement lease without creating absent authority. Required settings/audio/menu/
+session/game refresh is complete and bound to the exact generation through final close.
+Duplicate dispatch, lost replies, unmount, newer navigation, stale command/action
+responses and failed required refresh cannot resume unsafe continuation. Nonblocking
+follow-up remains visible as a historical load obligation without falsely blocking play.
+
+Verified cohorts (separate source/count units, not an aggregate sum): native browser
+11/11 at fd9ff1af; actual HTTP14/14 at cff44deb; actual TSX handlers/provider/refresh/
+render45/45 at8e99d677; affected settings consumers27/27 at cff44deb; supporting62-case
+frontend selection with overlaps and compile-only/file cases recorded in the
+[qualification](recovery/load-browser-qualification.json). Inventory audit227 categories /
+10,578 method-or-file identities executed zero tests. Final production frontend
+build/typecheck and four XML parses passed; existing unrelated warnings remain.
+
+[Fresh full GitHub restoration](recovery/load-browser-github-readback.json) verified
+all4,939 physical blobs, exact clean bf58 HEAD/tree,81 JSON under the documented broad
+browser-evidence scope,24TRX,105 embedded artifact hashes and14 production blob hashes.
+The independent reviewer also verified a narrower JSON subset and the full tree. No
+build/tests were repeated merely to prove restoration. This acceptance supplement
+changes only status/docs/evidence metadata and is separately read back after publishing.
+Historical WIP/failure entries below retain their original source-specific meanings.
+
+The public-entry, bounded console and bounded browser code slices are now accepted.
+Full B4, applicable native Windows public-client qualification, live console/real GM,
+full gameplay/restart, T031-WORKER-PORTABLE, A4 producer case-pair roundtrip and whole
+#1553 remain open. No known Linux browser typed-load code defect remains. Next concrete
+independent block is T031-WORKER-PORTABLE: diagnose the initiating worker failure without
+letting its old kernel32 cleanup mask it, then migrate that worker lifecycle under its
+own contracts/tests. A4 producer names remain a separate save → load → save task.
+Unchanged accepted filesystem/resource/console/browser cohorts are not rerun without
+an affected contract or platform qualification. Client-owned lifecycle only; no new
+GM-authored field/mechanic/prompt/example change is required.
+
 ## T032-B4 browser RED source checkpoint — 2026-10-04
 
 Base/ref verified `49b1b3649881d2f44322ecef14220e61686c42ae`, clean tree
