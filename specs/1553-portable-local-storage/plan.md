@@ -12,6 +12,12 @@ spec/plan/tasks consistency check confirms the approved B4 browser slice. Initia
 causal tests exercise real menu load decisions, late pending/token changes, required
 menu/service refresh and stale generation; implementation and execution are pending.
 
+The first RED carrier `5dde11f8` was fully restored into a new GitHub checkout:
+4,806 physical blobs matched its exact tree and the checkout was clean. PlanOnly
+then failed before build/discovery: the new category was accidentally nested in the
+last category's selectors. This is a catalog authoring failure, not product RED;
+fixed by appending at the actual top-level categories boundary. No tests ran.
+
 Ruling: add one generation-bound required refresh bundle rather than tag independent
 partial DTOs. Its menu/session/game/settings/audio are built inside the exact committed
 SessionOperationContext and finalization fence, with no partial bundle on failure.
