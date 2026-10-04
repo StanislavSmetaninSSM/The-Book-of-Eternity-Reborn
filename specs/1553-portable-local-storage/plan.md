@@ -26,8 +26,12 @@ PowerShell 7.6.6, SDK 10.0.401, runtime 8.0.31 and DOTNET_PROCESSOR_COUNT=1 rema
 [GREEN evidence](recovery/evidence/load-console-green/summary.json) and
 [fresh full GitHub restoration](recovery/load-console-github-readback.json) are retained.
 Separate Sol 6.1 XHigh code review identified and confirmed the absent-authority fix;
-final independent verdict and discovery-only inventory remain pending in this carrier.
-Operational continuation/restart/no-blind-retry guidance is now in quickstart.md.
+final independent verdict remains pending in this carrier. Fresh discovery-only audit
+at `4f916e10` validated **224 categories / 10,573 method-or-file identities**, no
+unmapped or stale selectors, in 3:03.147. Zero tests executed during that audit;
+this does not add runtime coverage. All four freshly built project XML files parse,
+and changed source files have no XML compiler warning. Operational continuation/
+restart/no-blind-retry guidance is now in quickstart.md.
 This remains client-owned; GM-authored fields/mechanics/prompts/examples are unchanged.
 
 Next bounded block is browser typed load. Existing required browser refresh DTOs expose

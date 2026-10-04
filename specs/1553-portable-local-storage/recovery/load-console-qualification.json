@@ -17,7 +17,17 @@
   "RuntimeCleanupSucceeded": true,
   "Evidence": "evidence/load-console-green/summary.json",
   "Review": "Final separate gpt-6.1-sol xhigh verdict pending; code correction reviewed",
-  "Discovery": "Pending discovery-only audit",
+  "Discovery": {
+    "SourceCommit": "4f916e10b81c0f63b525d66e39eaf9b23481c69f",
+    "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -TimeoutMinutes 10",
+    "Categories": 224,
+    "MethodsOrFiles": 10573,
+    "Executed": 0,
+    "Unmapped": [],
+    "StaleSelectors": [],
+    "WallTime": "00:03:03.1474817",
+    "Evidence": "evidence/load-console-audit/summary.json"
+  },
   "Limits": [
     "No new native Windows execution",
     "Browser transport/handlers remain open",
@@ -25,5 +35,32 @@
     "Unchanged filesystem/resource cohorts not repeated",
     "T031-WORKER-PORTABLE pre-load failure remains open",
     "T032-A4-NATIVE-NAMES producer roundtrip remains open"
-  ]
+  ],
+  "XmlDocumentation": [
+    {
+      "Path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.xml",
+      "Bytes": 1524838,
+      "Sha256": "20caf5fb5e656ac4f7f85112d61d1c1b5c8683fb08c5783880d5e03ab4c9896c",
+      "Parsed": true
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+      "Bytes": 31405,
+      "Sha256": "c60876c29c87549f498a32462baa096a570faeefe471a90b36eb1e1d49df5f5a",
+      "Parsed": true
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.xml",
+      "Bytes": 573763,
+      "Sha256": "8787bc2c1b7b9b8291b1b54ca19352d899506fecd0f8b53fdf96a9b9233961e7",
+      "Parsed": true
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.xml",
+      "Bytes": 332257,
+      "Sha256": "a2e14261356e51b2ab34b85103df3ab4527bd1932f8ab90d4a824443ba99d4e3",
+      "Parsed": true
+    }
+  ],
+  "ChangedSourceXmlWarnings": []
 }

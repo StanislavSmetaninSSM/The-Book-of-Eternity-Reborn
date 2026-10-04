@@ -27,7 +27,7 @@ Reproduce only the affected console category from the verified branch:
 Native Linux component/menu-handler proof is recorded at the start of [plan.md](plan.md).
 It does not establish a live interactive console/GM scenario or new Windows execution.
 Browser typed transport/handlers and full B4/T033/B5 remain open. Do not repeat the
-unchanged filesystem/resource cohorts for this client-only block. All written output
+unchanged filesystem/resource cohorts for this client-only block. GM-authored output
 and game schema are unchanged; this is client-owned continuation and admission.
 
 ## Current local load-filesystem continuation

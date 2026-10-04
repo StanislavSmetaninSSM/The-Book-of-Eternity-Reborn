@@ -1,0 +1,65 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "4f916e10b81c0f63b525d66e39eaf9b23481c69f",
+  "SourceResultDirectory": "20261004-114058-998-2-92ed048c42a84f30a1b12d8482f0706c-categories",
+  "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Runtime": "native Linux x64",
+  "Toolchain": {
+    "PowerShell": "7.6.6",
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31"
+  },
+  "TelemetryOptOuts": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1"
+  },
+  "DOTNET_PROCESSOR_COUNT": "1",
+  "PathSanitization": "Absolute checkout/run-root/toolchain paths replaced; raw and stored hashes retained",
+  "Artifacts": [
+    {
+      "Path": "Build-integration.log",
+      "OriginalBytes": 9590,
+      "OriginalSha256": "5800a4e8fac4212275591b0c243a9e5031d441ba6245fdf1f22831606d56a084",
+      "Embedded": true,
+      "StoredPath": "Build-integration.log",
+      "StoredBytes": 7897,
+      "StoredSha256": "28777f0eb6f10c4aa764a99f35a53b1590d55ab69bb90e5d3a26883b4ba6b55f"
+    },
+    {
+      "Path": "Build-unit.log",
+      "OriginalBytes": 8910,
+      "OriginalSha256": "e9bb8796692d78f213ad4658e1552701b892f9653a548f18c8a16ef44a03e294",
+      "Embedded": true,
+      "StoredPath": "Build-unit.log",
+      "StoredBytes": 7325,
+      "StoredSha256": "44020ef3db0250e209abbca25819ff9f25f9438b6905faaa48cfe77fa034c4cc"
+    },
+    {
+      "Path": "catalog-audit.json",
+      "OriginalBytes": 103,
+      "OriginalSha256": "5ee38b1f13683bcdb19e0d2a40c005ad399b486db6ac1076bbfab4168106b0c7",
+      "Embedded": true,
+      "StoredPath": "catalog-audit.json",
+      "StoredBytes": 103,
+      "StoredSha256": "5ee38b1f13683bcdb19e0d2a40c005ad399b486db6ac1076bbfab4168106b0c7"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 2956839,
+      "OriginalSha256": "a93d0bf74f1607c8fcc9b50937ec9e34753709a7753a84828298bef7fb1b62f1",
+      "Embedded": false,
+      "Reason": "Oversized generated runner log; causal TRX and structured/build reports are embedded"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1600,
+      "OriginalSha256": "8fee8198555bf7188f1522c2713828e8862d375b9fc1c77c54c332a5db0c60d6",
+      "Embedded": true,
+      "StoredPath": "summary.json",
+      "StoredBytes": 1600,
+      "StoredSha256": "8fee8198555bf7188f1522c2713828e8862d375b9fc1c77c54c332a5db0c60d6"
+    }
+  ],
+  "MeasuredChildren": 0
+}
