@@ -2,6 +2,34 @@
 
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 
+## Console typed-load continuation (T032-B4)
+
+The console carries the loader's four-state decision through runtime and required
+settings/UI refresh. `Сохранение загружено` means the replacement was committed;
+a later warning does not undo it. `Загрузка отменена. Прежняя глава восстановлена`
+means exact rollback, while a refused load leaves the chapter unreplaced.
+
+If the console says `Продолжение остановлено`, leave the game and restart normally
+so ordinary storage recovery and session validation can reconcile retained evidence.
+The current process stops its existing loop, refuses a new loop or repeated load,
+and offers only **About** and **Exit** in the main menu. Do not blindly repeat the
+load, delete a retained journal, or infer safe retry from the legacy bool API. An
+unresolved outcome has no confirmed replacement generation. If restart still blocks,
+retain the original error/evidence and investigate it before a new canonical action.
+
+Reproduce only the affected console category from the verified branch:
+
+```powershell
+./scripts/test-csharp.ps1 -Category portable-load-console -PlanOnly
+./scripts/test-csharp.ps1 -Category portable-load-console
+```
+
+Native Linux component/menu-handler proof is recorded at the start of [plan.md](plan.md).
+It does not establish a live interactive console/GM scenario or new Windows execution.
+Browser typed transport/handlers and full B4/T033/B5 remain open. Do not repeat the
+unchanged filesystem/resource cohorts for this client-only block. All written output
+and game schema are unchanged; this is client-owned continuation and admission.
+
 ## Current local load-filesystem continuation
 
 Branch: `codex/1553-load-filesystem`, based on `5d2aa2ceadd8f4424e3ccaf0249a8bb164f32fae`.

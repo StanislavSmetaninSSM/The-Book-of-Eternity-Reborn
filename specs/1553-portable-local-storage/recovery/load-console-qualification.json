@@ -1,0 +1,29 @@
+{
+  "SchemaVersion": 1,
+  "RecordedUtc": "2026-10-04T15:39:37.061268+00:00",
+  "SourceCommit": "e813ad8438a25d7882810a241bd51d0be9ad3f42",
+  "SourceTree": "c033c4a246aa86548639eb793ed447f1d5e76321",
+  "Category": "portable-load-console",
+  "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-load-console -TimeoutMinutes 8",
+  "Runtime": "Native Debian Linux x64",
+  "PlannedCases": 16,
+  "Executed": 16,
+  "Passed": 16,
+  "Failed": 0,
+  "Skipped": 0,
+  "Duplicates": 0,
+  "WallTime": "00:02:27.7135254",
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "Evidence": "evidence/load-console-green/summary.json",
+  "Review": "Final separate gpt-6.1-sol xhigh verdict pending; code correction reviewed",
+  "Discovery": "Pending discovery-only audit",
+  "Limits": [
+    "No new native Windows execution",
+    "Browser transport/handlers remain open",
+    "No live console/browser/GM acceptance",
+    "Unchanged filesystem/resource cohorts not repeated",
+    "T031-WORKER-PORTABLE pre-load failure remains open",
+    "T032-A4-NATIVE-NAMES producer roundtrip remains open"
+  ]
+}

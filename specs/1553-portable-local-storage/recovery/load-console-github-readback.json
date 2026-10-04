@@ -1,0 +1,13 @@
+{
+  "SchemaVersion": 1,
+  "VerifiedUtc": "2026-10-04T15:38:52.231670+00:00",
+  "SourceCommit": "e813ad8438a25d7882810a241bd51d0be9ad3f42",
+  "SourceTree": "c033c4a246aa86548639eb793ed447f1d5e76321",
+  "Method": "Fresh depth-1 single-branch HTTPS clone from GitHub into a new empty directory; no old local objects/source copy. NUL-delimited Git inventory and independent physical Git blob hashes.",
+  "TrackedFiles": 4793,
+  "AllPhysicalGitBlobHashesMatch": true,
+  "CleanCheckout": true,
+  "ConnectivityCheck": "git fsck --connectivity-only exit0; shallow snapshot",
+  "BuildOrTestsRepeated": false,
+  "Limit": "Subsequent evidence/acceptance carriers need separate readback. Does not establish live gameplay, browser integration or Windows execution."
+}

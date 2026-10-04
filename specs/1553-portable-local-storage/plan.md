@@ -4,6 +4,41 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T032-B4 console verified candidate — 2026-10-04
+
+Source `e813ad8438a25d7882810a241bd51d0be9ad3f42` passed **16/16** native Linux
+`portable-load-console` cases in **2:27.714** including a fresh selected build.
+One descriptor and all 16 planned rows completed, with zero skips/duplicates and
+complete owned-tree/runtime cleanup. Actual in-game options → Spectre save selection
+→ required settings/UI refresh succeeds; committed refresh cuts retain truthful text
+and stop the existing loop. Exact established-generation fencing, late pending/UI
+owner refusal, absence-preserving refusal/rollback, all four decisions, old runtime
+consumers, blocked menu keys and repeated-load suppression are covered.
+
+The production correction is limited to typed console orchestration, optional client
+admission on the loader's actual replacement lease, non-creating lock inspection and
+safe loop/menu routing. No public filesystem/resource algorithm changed. Historical
+RED, first-candidate, absent-authority, harness-build and redirected-surface failures
+remain in source-specific evidence directories below. Their overlapping cases are
+not added together or presented as a combined pass. Native Linux telemetry opt-outs,
+PowerShell 7.6.6, SDK 10.0.401, runtime 8.0.31 and DOTNET_PROCESSOR_COUNT=1 remain as recorded.
+
+[GREEN evidence](recovery/evidence/load-console-green/summary.json) and
+[fresh full GitHub restoration](recovery/load-console-github-readback.json) are retained.
+Separate Sol 6.1 XHigh code review identified and confirmed the absent-authority fix;
+final independent verdict and discovery-only inventory remain pending in this carrier.
+Operational continuation/restart/no-blind-retry guidance is now in quickstart.md.
+This remains client-owned; GM-authored fields/mechanics/prompts/examples are unchanged.
+
+Next bounded block is browser typed load. Existing required browser refresh DTOs expose
+no replacement generation, and loadBrowserState swallows partial failures. Use an
+exact-generation-bound required refresh bundle (or equivalently proven per-surface
+bindings), preserve typed result/identity on every HTTP status, revalidate the acquired
+UI lease token plus pending state under LoadGameWithAdmissionAsync's held lease, and
+latch unsafe continuation shell-wide even after unmount or newer navigation. Do not
+use archive-list presence as load confirmation. Browser/live clients/GM, native Windows
+public-client, T031-WORKER-PORTABLE, A4 producer case-pair roundtrip and whole #1553 remain open.
+
 ## T032-B4 console integration WIP — 2026-10-04
 
 Base and GitHub ref verified clean at `6c8b91d5bbf513a8896cce5d79661a2f9548137d`.
