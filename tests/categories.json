@@ -10702,6 +10702,39 @@
       "timeoutMinutes": 12,
       "expectedSeconds": null,
       "selectors": [{"project":"unit", "tests":["BookOfEternityClient.Tests.PortableLoadResourceTests.ActualManyMemberColdRecoveryFitsDeclaredLoadResourceEnvelope"]}]
+    },
+{
+  "id": "portable-load-public-entry",
+  "responsibility": "T032-B4 public typed result accessibility and actual ordinary public load compatibility wrapper: confirmed commit including required-refresh failure, exact rollback, retained uncertainty and pre-publication refusal. Bool is commitment-only, never continuation permission; all player-facing consumers use the typed API. Each case owns an isolated current-producer root.",
+  "excludes": "Console/browser integration, unchanged internal filesystem/resource/native qualification, historical anti-owner load implementation tests and unrelated save/gameplay cohorts.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SaveLoadService.cs",
+    "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+    "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.PublicEntry.cs"
+  ],
+  "related": [
+    {
+      "id": "portable-load-outcomes",
+      "when": "Changing the internal typed decision or late-failure mapping, rather than only the public wrapper."
     }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityReportsCommitEvenWhenRequiredRefreshFails",
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityDoesNotReportRollbackOrUncertaintyAsCommit",
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityRejectsInvalidInputWithoutPublication",
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.TypedLoadContractIsPublicAndRetainsFourDistinctDecisions"
+      ]
+    }
+  ]
+}
   ]
 }

@@ -144,6 +144,33 @@ Committed cleanup validates and preserves the complete after namespace; rollback
 confirmation validates the complete before namespace. This addendum and execution plan revision 1 are authorized by the owner's later explicit
 waiver of spec/plan/revision review; the earlier exact spec approval alone did not cover it.
 
+## Public load integration — T032-B4 execution revision 1, 2026-10-04
+
+Filesystem prerequisites are accepted at `7deb7c3e`. Expose the existing typed
+`LoadGameWithOutcomeAsync` and its four-state result publicly, preserving the exact
+selected source, established generation, follow-up and continuation flags. Replace
+old `LoadGameAsync` internals with a thin commitment-only compatibility wrapper:
+true for Committed even when follow-up blocks continuation; false for NotLoaded,
+RolledBack or Uncertain. This bool is deliberately lossy and is never a safe-retry
+or continuation decision. Console and browser player-facing consumers must use the
+typed API exclusively; no active original Windows-only loading route remains.
+
+The console binds refresh to the established replacement generation. Browser
+replacement preserves pending-turn/UI-owner admission, exact typed transport on all
+HTTP statuses, and confirmed identity through menu/required refresh failures. Both
+frontend handlers distinguish non-loading, rollback, commit and uncertain/lost
+responses, suppress repeated dispatch and stale/unmounted navigation, and stop
+continuation until required reconciliation succeeds. No early runtime publication,
+committed-to-failed rewriting or blind automatic load retry is permitted.
+
+Implement in bounded public-entry, console and browser/handler blocks with causal
+and affected consumer tests. Unchanged accepted filesystem/resource cohorts are not
+repeated. Actual live console/browser/GM remains T033; service/component proof alone
+does not close those gates. This is client-owned lifecycle transport; GM-authored
+fields/mechanics/examples are unchanged, while operational load guidance is updated.
+The owner-authorized autonomous design/revision waiver applies; separate Sol 6.1
+XHigh review remains mandatory. T032-A4-NATIVE-NAMES stays separately open.
+
 ## User Scenarios & Testing
 
 ### US1 — Open either client and retain settings (P1)

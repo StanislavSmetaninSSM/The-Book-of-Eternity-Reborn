@@ -4,6 +4,27 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T032-B4 public typed entry WIP — 2026-10-04
+
+Base/remote verified clean: `7deb7c3e9fd5262d0750f3abefddc57d6e941892`, branch
+`codex/1553-load-filesystem`. Current constitution/spec/tasks and Spec Kit prerequisite
+resolution checked. The existing execution plan is extended by the spec's B4
+revision; no second implementation plan is introduced. Sole-writer ownership retained.
+
+First bounded result: public typed contract plus commitment-only old bool wrapper,
+removing its active physical Windows-only loader. The wrapper must return true after
+a confirmed commit even if required refresh failed, so false never disguises commit
+as rollback. Player-facing callers will use typed truth in the subsequent console
+and browser blocks; B4 stays open until those cuts are implemented and reviewed.
+
+Test-first source: six public-entry cases in a dedicated category, current producer
+and isolated mutable fixtures. Tests cover commit/late refresh, exact rollback,
+retained uncertain journal, rejected input and actual public API visibility. Runtime
+code is unchanged in this RED checkpoint. PlanOnly, causal RED, GREEN, discovery,
+independent review and later clients remain unrun. No prior resource/native cohort
+will be replayed for a public wrapper-only change. No GM-authored schema/mechanic
+changes; operational guidance will describe the completed client cutover.
+
 ## Accepted native filesystem handback — 2026-10-04
 
 All runtime/resource/audit proof is published at

@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-load-resource-sampling",
-      "reason": "Current bounded correction changes only the owned disk sampler: prove active/stable/declared missing-entry decisions, real native links and stable byte count. The actual five resource envelopes are deliberately separate commands recorded in the feature qualification JSON.",
+      "category": "portable-load-public-entry",
+      "reason": "T032-B4 public typed result accessibility and actual ordinary public load compatibility wrapper: confirmed commit including required-refresh failure, exact rollback, retained uncertainty and pre-publication refusal. Bool is commitment-only, never continuation permission; all player-facing consumers use the typed API. Each case owns an isolated current-producer root.",
       "contracts": [
-        "#1553 LOAD-FS-007/008; T032-B5-FS"
+        "#1553 T032-B4; LOAD-FS-003/004 public decision preservation"
       ]
     }
   ]
