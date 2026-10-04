@@ -42,6 +42,13 @@
       "contracts": [
         "#1553 LOAD-FS-001/002/003/008"
       ]
+    },
+    {
+      "category": "portable-load-resource-sampling",
+      "reason": "Retain the causal native Linux missing-attribute sentinel, stable/unknown disappearance and real-link sampler guards without repeating resource envelopes in each small CI cohort.",
+      "contracts": [
+        "#1553 LOAD-FS-007/008; T032-B5-FS"
+      ]
     }
   ]
 }

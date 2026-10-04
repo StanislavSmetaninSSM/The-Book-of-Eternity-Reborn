@@ -4,6 +4,52 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## Native Linux filesystem runtime proof complete — final review WIP, 2026-10-04
+
+Production closure `2da4d545`; corrected test-probe closure `eed0ca99`.
+All required native Linux cohorts and five separate current-probe resource commands
+are GREEN. [Qualification](recovery/load-filesystem-linux-qualification.json) links
+source-specific evidence: initial baseline53 with nine unchanged lease consumers,
+corrected original-name52 (overlapping44baseline rows), metadata39, path/batch46,
+namespace/native/cold/v1/v2 consumers128, sampler10. Do not add overlapping totals.
+
+Current resource proof is **12/12 cases and 28 measured children**, not an aggregate
+run: preparation4 1:35.334; bulk publication3 1:25.260; maximum-inventory publication1
+1:02.958; bulk journal-only recovery3 1:28.207; maximum-inventory committed recovery1
+1:06.617. All descriptors, required samples, independent full-state/protected bytes,
+owned exits and cleanup completed under unchanged heap/RSS/disk/child/category bounds.
+Earlier source-specific passes, the real inventory non-pass and both causal RED
+sequences remain separately retained. No source/Windows pass is relabelled Linux.
+
+The [final discovery/XML audit](recovery/evidence/load-linux-final-audit-20261004)
+validated **221 categories / 10,570 methods or files**, executing zero tests, in
+6.961 seconds. Five actual generated XML assemblies parse; changed files have no
+XML compiler warnings. Exact environment and [operation incidents](recovery/evidence/load-linux-final-audit-20261004/operation-incidents.json)
+separate approval/network interruptions, unavailable terminal Git authentication,
+unconfirmed object writes and ordinary test failures. No generic cybersecurity flag
+was observed during these runs, and no screening-trigger probe was performed.
+
+The small future Linux workflow selection now includes71cases (61entry/identity/lease
+plus10native sampler controls); the actual proof is the separately recorded union,
+not a new71case execution. Current `tests/selection.json` owns the narrow sampler
+correction; resource envelopes remain separate explicit category commands.
+The returned native Windows proof remains bound to its original source. Independent
+source review confirms the Linux-only name change and redundant Windows lookup guards;
+ordinary successful cached sampler paths retain their prior behavior. No new Windows
+runtime execution is claimed. Direct native Debian qualification supplies this gate;
+no GitHub Actions execution is used as evidence in this continuation.
+
+Final independent review, fresh full GitHub restoration and final carrier verification
+are pending. B5-FS and generic B1/B2/B3 task reconciliation wait for those gates.
+Public/console/browser B4, fullB5/T033/fullT032 and whole#1553 remain open. An adjacent
+known limitation is unchanged: the save producer rejects arbitrary case-distinct pairs;
+this load-only block now preserves a valid externally authored manifested pair. Full
+end-to-end round-trip acceptance of that pair needs a separate narrow producer fix.
+No GM-authored field, mechanic or prompt/example contract changed.
+
+Earlier dated sections below retain chronological checkpoints, including historical
+pending states; they do not override this current runtime-proof summary.
+
 ## Native Linux filesystem qualification WIP — 2026-10-03 UTC
 
 Tracked block **T032-B5-FS**, branch `codex/1553-load-filesystem`. Restored a new,
