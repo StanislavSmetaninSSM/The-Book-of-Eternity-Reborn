@@ -181,7 +181,7 @@ public partial class GameEngine
         await _progressionSchedule.EnsureInitializedAsync();
     }
 
-    private async Task RebindRuntimeAfterSessionReplacementAsync()
+    private async Task RebindRuntimeAfterSessionReplacementAsync(string? establishedGeneration = null)
     {
         _lastResponse = null;
         _acceptedTurnWoundNotifications = Array.Empty<WoundPlayerNotification>();
@@ -194,7 +194,7 @@ public partial class GameEngine
         _lastKnownLevel = 1;
         _explorer.ForgetSessionTransientState();
 
-        var replacementGeneration = await CaptureCurrentSessionGenerationAsync();
+        var replacementGeneration = establishedGeneration ?? await CaptureCurrentSessionGenerationAsync();
         await SessionOperationContext.RunBoundAsync(_fs, replacementGeneration, async () =>
         {
             await RefreshRuntimeStateAsync();

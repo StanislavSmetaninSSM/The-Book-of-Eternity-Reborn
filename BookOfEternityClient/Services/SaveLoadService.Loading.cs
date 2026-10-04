@@ -164,7 +164,17 @@ public partial class SaveLoadService
     /// <exception cref="SessionReplacedException">
     /// The ambient session-operation binding is stale or closing; its fence propagates before preparation.
     /// </exception>
-    public async Task<LoadReplacementResult> LoadGameWithOutcomeAsync(string saveFilePath,
+    public Task<LoadReplacementResult> LoadGameWithOutcomeAsync(string saveFilePath,
+        CancellationToken cancellationToken = default) =>
+        LoadGameWithAdmissionAsync(saveFilePath, null, cancellationToken);
+
+    /// <summary>Repeats client admission on the actual replacement lease before capturing or changing live state.</summary>
+    /// <param name="saveFilePath">The exact selected archive.</param>
+    /// <param name="ensureAdmissionAsync">Optional client guard; throwing refuses replacement before publication.</param>
+    /// <param name="cancellationToken">Cancels before an established publication decision.</param>
+    /// <returns>The unchanged four-state load decision, including subsequent failures.</returns>
+    internal async Task<LoadReplacementResult> LoadGameWithAdmissionAsync(string saveFilePath,
+        Func<FileSystemManager.CanonicalWriteLease, Task>? ensureAdmissionAsync,
         CancellationToken cancellationToken = default)
     {
         // Invalid/closing contexts retain their thrown fence. A valid binding is a known admission refusal.
@@ -189,6 +199,7 @@ public partial class SaveLoadService
             writeLease = await _fs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease, cancellationToken);
             _fs.ObserveLoadOperation("LeaseAcquisitionCompleted");
             _fs.ResolveBackupPublicationRecovery(writeLease);
+            if (ensureAdmissionAsync != null) await ensureAdmissionAsync(writeLease);
             _fs.ObserveLoadOperation("PreparedRevalidationAfterLeaseStarted");
             candidate.Revalidate();
             _fs.ObserveLoadOperation("PreparedRevalidationAfterLeaseCompleted");

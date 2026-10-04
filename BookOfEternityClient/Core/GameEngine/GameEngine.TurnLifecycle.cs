@@ -1034,6 +1034,7 @@ public partial class GameEngine
     /// </returns>
     private async Task EnterGameLoop()
     {
+        if (_blockedLoadContinuation != null) return;
         _inGame = true;
         await _audioService.PlayInGameMusicAsync();
         await NormalizePendingRepairArtifactsAsync();
@@ -1045,7 +1046,7 @@ public partial class GameEngine
             await RefreshRuntimeStateAsync();
         }
 
-        while (_inGame)
+        while (_inGame && _blockedLoadContinuation == null)
         {
             try
             {

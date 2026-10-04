@@ -83,6 +83,7 @@ public partial class GameEngine
     private int _lastKnownLevel = 1;
     private bool _pendingMemoryLegacyAwaitingConsumption;
     private string? _mainMenuSessionWarning;
+    private LoadReplacementResult? _blockedLoadContinuation;
 
     private const string PendingTurnSnapshotManifestPath = "game_state/control/pending_turn_snapshot.json";
     private const string PendingTurnSnapshotDirectory = "game_state/control/pending_turn_snapshot";

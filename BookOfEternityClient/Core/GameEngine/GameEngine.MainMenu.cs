@@ -10,6 +10,7 @@ using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.Services.GmWorkers;
 using BookOfEternityClient.UI;
+using BookOfEternityClient.WebUi;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
 
@@ -372,6 +373,15 @@ public partial class GameEngine
 
     private async Task<List<MainMenuOption>> BuildMainMenuOptionsAsync()
     {
+        if (_blockedLoadContinuation is { } blocked)
+        {
+            _mainMenuSessionWarning = DescribeConsoleLoadOutcome(blocked);
+            return
+            [
+                new MainMenuOption("about", _loc.T("about"), _loc.T("main_menu_about_desc"), "blue", 1),
+                new MainMenuOption("exit", _loc.T("exit"), _loc.T("main_menu_exit_desc"), "red", 2)
+            ];
+        }
         _mainMenuSessionWarning = null;
         var options = new List<MainMenuOption>();
         var nextIndex = 1;
@@ -402,6 +412,11 @@ public partial class GameEngine
 
     private async Task<bool> HasCurrentSessionAsync()
     {
+        if (_blockedLoadContinuation is { } blocked)
+        {
+            _mainMenuSessionWarning = DescribeConsoleLoadOutcome(blocked);
+            return false;
+        }
         if (!_fs.FileExists("game_state/meta/soul_state.json"))
             return false;
 
@@ -3274,18 +3289,94 @@ public partial class GameEngine
         return 0;
     }
 
-    /// <summary>
-    /// Builds a GameResponse by reading from the individual output files that the GM daemon writes.
-    /// Reads: output/narrative_response.json, output/interface_updates.json, output/debug_logs.json
-    /// </summary>
-
-    private async Task<bool> LoadSelectedSaveAndRebindRuntimeAsync(string saveFilePath)
+    /// <summary>Preserves the load decision while rebinding only its established generation.</summary>
+    /// <param name="saveFilePath">The selected archive, independent of save-list summary metadata.</param>
+    /// <returns>The typed decision; blocked continuation is retained for this process until restart.</returns>
+    private async Task<LoadReplacementResult> LoadSelectedSaveAndRebindRuntimeAsync(string saveFilePath)
     {
-        if (!await _saveLoad.LoadGameAsync(saveFilePath))
-            return false;
+        if (_blockedLoadContinuation is { } blocked) return blocked;
+        LoadReplacementResult result;
+        try
+        {
+            result = await _saveLoad.LoadGameWithAdmissionAsync(saveFilePath, async writeLease =>
+            {
+                if (BrowserPendingTurnInspector.Build(_fs, writeLease).HasActiveGmTurn)
+                    throw new InvalidOperationException("Загрузка недоступна до завершения текущего хода.");
+                var owner = await new LocalUiSessionLockService(_fs).InspectAsync(writeLease);
+                if (owner is { IsStale: false })
+                    throw new InvalidOperationException("Другой интерфейс занят текущей главой.");
+            });
+        }
+        catch (Exception failure)
+        {
+            result = new(LoadReplacementDisposition.Uncertain, null, null, true, failure, true);
+        }
+        if (result.Disposition == LoadReplacementDisposition.Committed && !result.ContinuationBlocked)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(result.EstablishedGeneration))
+                    throw new InvalidDataException("Committed load did not establish a generation.");
+                await RebindRuntimeAfterSessionReplacementAsync(result.EstablishedGeneration);
+            }
+            catch (Exception failure) { result = result.WithFollowUp(failure, blocksContinuation: true); }
+        }
+        RetainConsoleLoadBlock(result);
+        return result;
+    }
 
-        await RebindRuntimeAfterSessionReplacementAsync();
-        return true;
+    /// <summary>Stops both an existing loop and every new continuation after unresolved load follow-up.</summary>
+    /// <param name="result">The load decision whose identity must remain intact.</param>
+    private void RetainConsoleLoadBlock(LoadReplacementResult result)
+    {
+        if (!result.ContinuationBlocked && result.Disposition != LoadReplacementDisposition.Uncertain) return;
+        _blockedLoadContinuation = result;
+        _inGame = false;
+        _gameLoop.SetSession(string.Empty, 0);
+        _lastResponse = null;
+        _pendingImagePrompt = null;
+        _explorer.ForgetSessionTransientState();
+        _mainMenuSessionWarning = DescribeConsoleLoadOutcome(result);
+    }
+
+    /// <summary>Completes required console refresh without erasing an already confirmed replacement.</summary>
+    /// <param name="result">The established typed result after runtime rebind.</param>
+    /// <returns>The same decision with additional blocked follow-up if required refresh fails.</returns>
+    private async Task<LoadReplacementResult> PrepareLoadedConsoleContinuationAsync(LoadReplacementResult result)
+    {
+        if (result.Disposition != LoadReplacementDisposition.Committed || result.ContinuationBlocked) return result;
+        try
+        {
+            await SessionOperationContext.RunBoundAsync(_fs, result.EstablishedGeneration!, async () =>
+            {
+                if (!await WriteGameSettingsForGm())
+                    throw new InvalidOperationException("Loaded settings require follow-up.");
+                await NormalizeRuntimeUiArtifactsAsync();
+                _lastResponse = await BuildGameResponseFromFiles();
+                if (!await ValidateCurrentGameStateOrShowErrorsAsync("загрузки сохранения"))
+                    throw new InvalidOperationException("Loaded state requires follow-up.");
+            });
+        }
+        catch (Exception failure) { result = result.WithFollowUp(failure, blocksContinuation: true); }
+        RetainConsoleLoadBlock(result);
+        return result;
+    }
+
+    /// <summary>Describes commitment separately from safe continuation, without exposing diagnostic paths.</summary>
+    /// <param name="result">The exact load decision.</param>
+    /// <returns>Player-facing text that never promises a blind repeat of an uncertain load.</returns>
+    private static string DescribeConsoleLoadOutcome(LoadReplacementResult result)
+    {
+        var message = result.Disposition switch
+        {
+            LoadReplacementDisposition.Committed => "Сохранение загружено.",
+            LoadReplacementDisposition.RolledBack => "Загрузка отменена. Прежняя глава восстановлена.",
+            LoadReplacementDisposition.Uncertain => "Исход загрузки пока не подтверждён.",
+            _ => "Сохранение не загружено. Текущая глава не заменена."
+        };
+        if (result.ContinuationBlocked || result.Disposition == LoadReplacementDisposition.Uncertain)
+            return message + " Продолжение остановлено. Перезапустите игру для проверки состояния; не повторяйте загрузку вслепую.";
+        return result.NeedsFollowUp ? message + " Требуется служебная проверка завершения операции." : message;
     }
 
     private async Task LoadGameFlow()
@@ -3335,29 +3426,18 @@ public partial class GameEngine
 
         var saveInfo = allSaves[idx];
 
-        var success = await LoadSelectedSaveAndRebindRuntimeAsync(saveInfo.FileName);
-        if (success)
+        var result = await LoadSelectedSaveAndRebindRuntimeAsync(saveInfo.FileName);
+        result = await PrepareLoadedConsoleContinuationAsync(result);
+        var color = result.ContinuationBlocked ? "yellow" :
+            result.Disposition == LoadReplacementDisposition.Committed ? "green" : "red";
+        AnsiConsole.MarkupLine($"[{color}]{Markup.Escape(DescribeConsoleLoadOutcome(result))}[/]");
+        if (result.Disposition == LoadReplacementDisposition.Committed && !result.ContinuationBlocked)
         {
-            AnsiConsole.MarkupLine($"[green]{_loc.T("load_success")}[/]");
-
             await Task.Delay(1000);
-
-            // Ensure game settings (difficulty) are synced to game_state for GM
-            if (!await WriteGameSettingsForGm()) return;
-            await NormalizeRuntimeUiArtifactsAsync();
-
-            // Build response from saved output files for initial display
-            _lastResponse = await BuildGameResponseFromFiles();
-            if (!await ValidateCurrentGameStateOrShowErrorsAsync("загрузки сохранения"))
-                return;
-
-            await EnterGameLoop();
+            // An in-game load resumes its existing loop, rather than nesting a second loop.
+            if (!_inGame) await EnterGameLoop();
         }
-        else
-        {
-            AnsiConsole.MarkupLine($"[red]{_loc.T("load_failed")}[/]");
-            _inputSource.ReadKey(intercept: true);
-        }
+        else _inputSource.ReadKey(intercept: true);
     }
 
 }

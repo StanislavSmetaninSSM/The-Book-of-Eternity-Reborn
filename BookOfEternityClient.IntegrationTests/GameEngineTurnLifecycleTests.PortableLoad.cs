@@ -127,6 +127,86 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal("old-session", loop.SessionId);
     }
 
+    /// <summary>Distinguishes exact rollback from retained uncertainty in the actual console caller.</summary>
+    /// <param name="conflict">Changes a declared member to unknown bytes after publication when true.</param>
+    /// <returns>A task completing after decision, generation and continuation assertions.</returns>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task PortableLoadConsole_RollbackAndUncertaintyKeepDistinctContinuation(bool conflict)
+    {
+        var armed = false;
+        var cuts = 0;
+        FileSystemManager? files = null;
+        const string marker = "lore/console-load.bin";
+        files = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            {
+                LocalPublicationObserver = (phase, _) =>
+                {
+                    if (!armed || phase != TrustedLocalPublicationPhase.CommitStaged) return;
+                    cuts++;
+                    if (conflict) File.WriteAllBytes(files!.ResolvePath(marker), [90, 91, 92]);
+                    throw new InvalidOperationException("console precommit cut");
+                }
+            });
+        var state = PortableSaveFixture.Seed(files);
+        await files.WriteFileAtomicBytesAsync(marker, [1, 2, 3]);
+        var save = new SaveLoadService(files, state, NullLogger<SaveLoadService>.Instance);
+        Assert.True(await save.SaveGameAsync("console-cut", "typed console cut"));
+        var path = Assert.Single(Directory.GetFiles(files.ResolvePath("saves/manual_saves"), "*.zip"));
+        await files.WriteFileAtomicBytesAsync(marker, [4, 5, 6]);
+        var generation = File.ReadAllBytes(files.SessionGenerationPath);
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]), fileSystem: files);
+        var loop = GetPrivateField<GameLoop>(engine, "_gameLoop");
+        loop.SetSession("old-session", 99);
+        SetPrivateField(engine, "_inGame", true);
+        armed = true;
+
+        var result = Assert.IsType<LoadReplacementResult>(await InvokeConsoleLoadResultAsync(engine, path));
+
+        Assert.Equal(1, cuts);
+        Assert.Equal(conflict ? LoadReplacementDisposition.Uncertain : LoadReplacementDisposition.RolledBack, result.Disposition);
+        Assert.Equal(conflict, result.ContinuationBlocked);
+        Assert.Equal(path, result.SelectedSourcePath);
+        Assert.Equal(!conflict, GetPrivateFieldValue<bool>(engine, "_inGame"));
+        Assert.Equal(conflict ? string.Empty : "old-session", loop.SessionId);
+        if (conflict)
+        {
+            Assert.Null(result.EstablishedGeneration);
+            Assert.True(File.Exists(Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1/active.json")));
+            Assert.Equal(new byte[] { 90, 91, 92 }, File.ReadAllBytes(files.ResolvePath(marker)));
+        }
+        else
+        {
+            Assert.NotNull(result.EstablishedGeneration);
+            Assert.Equal(generation, File.ReadAllBytes(files.SessionGenerationPath));
+            Assert.Equal(new byte[] { 4, 5, 6 }, File.ReadAllBytes(files.ResolvePath(marker)));
+        }
+    }
+
+    /// <summary>Retains commitment when the real required settings/UI refresh cannot complete.</summary>
+    /// <returns>A task completing after the continuation stage returns a committed blocked decision.</returns>
+    [Fact]
+    public async Task PortableLoadConsole_RequiredUiRefreshFailureCannotEraseCommit()
+    {
+        var path = await CreateConsoleLoadArchiveAsync();
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+        var loaded = Assert.IsType<LoadReplacementResult>(await InvokeConsoleLoadResultAsync(engine, path));
+        Assert.Equal(LoadReplacementDisposition.Committed, loaded.Disposition);
+        Assert.False(loaded.ContinuationBlocked);
+        ArmCanonicalWriteFailure("game_state/core/game_settings.json");
+        var result = await InvokePrivateAsync<LoadReplacementResult>(engine, "PrepareLoadedConsoleContinuationAsync", loaded);
+        Assert.Null(_armedCanonicalWriteFailurePath);
+        Assert.Equal(loaded.Disposition, result.Disposition);
+        Assert.Equal(loaded.SelectedSourcePath, result.SelectedSourcePath);
+        Assert.Equal(loaded.EstablishedGeneration, result.EstablishedGeneration);
+        Assert.True(result.NeedsFollowUp);
+        Assert.True(result.ContinuationBlocked);
+        Assert.False(GetPrivateFieldValue<bool>(engine, "_inGame"));
+        Assert.Equal(string.Empty, GetPrivateField<GameLoop>(engine, "_gameLoop").SessionId);
+    }
+
     /// <summary>Waits for the actual operation before asserting the revised typed return contract.</summary>
     /// <param name="engine">The actual console engine.</param>
     /// <param name="path">The selected source path.</param>

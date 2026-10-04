@@ -24,6 +24,35 @@ current capture behavior. This is client-owned; GM-authored schema/mechanics and
 examples need no change. Browser, native Windows public-client and live clients/GM,
 worker portability, A4 native producer names and full #1553 remain open.
 
+### Console causal RED and candidate
+
+Published RED source `f5cd839e26571ad0d43de5980d09f2ffbddb3028` was restored
+from GitHub into a new clean checkout; all 4,767 physical blob hashes matched tree
+`64badb92098eb803ed92f2bac2c12d0418d2f0f8`. Fresh PlanOnly build completed in
+2:17.309, nine planned/zero executed. Actual RED executed 9/9 in 7.992 seconds:
+seven intended failures and two existing runtime-rebind controls passed, no skips,
+duplicates or cleanup debt. Five causal failures expose late pending/owner mutation,
+wrong generation adoption, uncaught console refresh and continued old loop after
+service refresh failure; two typed-return assertions are contract-scaffold failures.
+Evidence: recovery/evidence/load-console-plan and load-console-red.
+
+Candidate uses the typed loader with held-replacement-lease admission, exact
+established-generation rebind and preserved commit through required console refresh.
+An unresolved result latches the process closed, stops existing/new game loops and
+removes mutating main-menu choices until restart reconciliation. Successful in-game
+load resumes its existing loop, avoiding nested loops. GREEN, extra rollback/uncertain
+and required late-UI tests, discovery and independent review remain pending.
+
+Publication incident chronology (UTC): first fetch_commit schema error 02:44:38
+corrected to documented required argument names; no state change. Large catalog
+create_blob awaited user approval and completed with exact local hash at15:03:17.
+create_tree returned `user cancelled MCP tool call` at15:03:38; stopped further
+implementation and reported exact operation. User explicitly approved retry; the
+single same-call retry succeeded at15:05:15, followed by non-force ref publication.
+Readback verifier initially mishandled Git-quoted Unicode paths at15:06:29; using
+NUL-delimited ls-tree corrected the verifier and all hashes passed. No generic
+cybersecurity flag was observed or inferred; no bypass/probe was attempted.
+
 ## Accepted T032-B4 public entry — 2026-10-04
 
 Separate **gpt-6.1-sol / xhigh** final review passed the bounded public API through

@@ -1239,7 +1239,7 @@ public partial class GameEngine
         if (choice.Key == "load")
         {
             await LoadGameFlow();
-            return true;
+            return _blockedLoadContinuation == null;
         }
 
         if (choice.Key == "options")
