@@ -545,7 +545,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         load.EnsureSuccessStatusCode();
         var loaded = JsonNode.Parse(await load.Content.ReadAsStringAsync())!;
         var generation = loaded["establishedGeneration"]!.GetValue<string>();
-        if (scenario == "settings-failure") File.WriteAllText(Path.Combine(_rootPath, "config.json"), "{");
+        if (scenario == "settings-failure") File.WriteAllText(Path.Combine(_rootPath, "game_session", "config.json"), "{");
         using var refresh = await client.PostAsJsonAsync("/api/saves/load-state", new
         { establishedGeneration = scenario == "stale" ? Guid.NewGuid().ToString("N") : scenario == "missing" ? "" : generation });
         Assert.Equal(scenario == "current" ? HttpStatusCode.OK : HttpStatusCode.Conflict, refresh.StatusCode);

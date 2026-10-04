@@ -76,6 +76,7 @@ public static class LocalWebUiHost
         builder.Services.AddSingleton<BrowserGameScreenService>();
         builder.Services.AddSingleton<BrowserLifecycleDashboardService>();
         builder.Services.AddSingleton<LocalWebUiMainMenuService>();
+        builder.Services.AddSingleton<BrowserLoadStateService>();
         builder.Services.AddSingleton<ExplorerWebPromptSessionService>();
         builder.Services.AddSingleton<ExplorerWebCommandService>();
         builder.Services.AddSingleton<BrowserPlayerActionService>();
@@ -112,6 +113,15 @@ public static class LocalWebUiHost
         {
             var result = await menu.LoadSaveAsync(request);
             return LoadSaveResponse(result);
+        });
+        app.MapPost("/api/saves/load-state", async (BrowserLoadStateRequest request, BrowserLoadStateService state) =>
+        {
+            try { return Results.Json(await state.BuildAsync(request), WebJsonOptions); }
+            catch (Exception)
+            {
+                return Results.Json(new { error = "Обновление текущего состояния книги не подтверждено. Продолжение остановлено." },
+                    WebJsonOptions, statusCode: StatusCodes.Status409Conflict);
+            }
         });
         // The unified map viewer is a single self-contained bundle (React + MapAtlas
         // + inlined CSS). It is the SAME renderer used by the standalone

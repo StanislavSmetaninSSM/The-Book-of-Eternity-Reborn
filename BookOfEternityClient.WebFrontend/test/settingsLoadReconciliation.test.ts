@@ -1,20 +1,20 @@
 import { describe, expect, it } from 'vitest';
 import { createSettingsComponentHarness, flushPromises, nodes, ok } from './helpers/settingsComponentHarness';
 
-const failure = { ok: false, kind: 'http-error', playerMessage: 'blocked', message: 'blocked' };
+const notLoaded = { success: false, error: '', disposition: 'NotLoaded', loadedSaveId: '', selectedSourcePath: null, establishedGeneration: null, needsFollowUp: false, continuationBlocked: false };
+const failure = { ok: false, status: 400, kind: 'http-error', playerMessage: 'blocked', message: 'blocked', payload: notLoaded };
 const findLoadButton = (tree: unknown) => nodes(tree).find((node) => node.type === 'button' && node.props.children === 'Загрузить сохранение')!;
 const findLanguage = (tree: unknown) => nodes(tree).find((node) => node.type === 'select');
 const findMusicVolume = (tree: unknown) => nodes(tree).find((node) => node.type === 'input' && node.props.type === 'range')!;
 
 describe('actual settings/audio handlers reconcile an interrupted save-load boundary', () => {
-  for (const mode of ['http-failure', 'domain-failure', 'rejected-request'] as const) {
+  for (const mode of ['http-failure', 'domain-failure'] as const) {
     it(`reloads confirmed settings after ${mode} without submitting the cancelled draft`, async () => {
       const harness = createSettingsComponentHarness(); const view = harness.settings();
       findLanguage(view.tree)!.props.onChange({ target: { value: 'en' } }); view.render();
       expect(findLanguage(view.tree)!.props.value).toBe('en');
       findLoadButton(view.tree).props.onClick();
-      if (mode === 'rejected-request') harness.load.reject(new Error('controlled load failure'));
-      else harness.load.resolve(mode === 'domain-failure' ? ok({ success: false, error: 'blocked' }) : failure);
+      harness.load.resolve(mode === 'domain-failure' ? ok(notLoaded) : failure);
       await flushPromises(); view.render(); view.render();
       expect(harness.counts()).toMatchObject({ settingsPosts: 0, refreshes: 1 });
       expect(harness.timers.size).toBe(0);

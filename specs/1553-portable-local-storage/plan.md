@@ -59,6 +59,38 @@ not a runtime test result. Actual GameLauncher/SettingsView handler tests now co
 production. Their isolated harness was extended, not shared across cases. No new
 frontend behavior, required bundle implementation or acceptance is claimed yet.
 
+### Browser connected candidate — 2026-10-04 17:01 UTC
+
+At `e681ff23`, selected C# build passed; combined runtime stopped after first owner:
+9/9 executed, 6 passed/3 failed (3:04.288 including build), later descriptors unrun.
+Two cut rows still observed the admission heartbeat's v2 write; corrected to recognize
+actual BOELP3 intent before cutting replacement. The token fixture read BOM bytes via
+JsonNode.Parse; it now uses BOM-aware text. These fixture corrections are not counted
+as previously demonstrated loader defects. Native frontend RED separately exercised
+17 actual handler assertions, all failed as intended (duplicate dispatch 2 versus 1,
+missing retained stop, unsafe navigation and collapsed copy). Its file adapter reports
+0/1 completed file cases on failure; raw Vitest 17/17 failures are retained distinctly.
+The separate HTTP cohort executed 7/7: three existing consumers passed, four new bundle
+requests failed with the expected absent-endpoint response. Cleanup complete, no skips.
+Evidence is under load-browser-first-candidate, load-browser-handlers-red and
+load-browser-bundle-red; overlapping results are not summed.
+
+Candidate now implements the generation-bound required bundle and both actual frontend
+handlers, synchronous shell-owned admission, shared refresh invalidation, navigation
+ownership and a retained shell-wide stop. Known committed identity survives failure or
+unmount. Unknown replies cannot enter current reconciliation. Explicit safe NotLoaded
+can capture existing current generation without creation, then require the same complete
+bound bundle. Recognized no-active-chapter absence is explicit, accepted only for known
+non-loading/restored state; committed navigation requires a playable game surface. All
+other required read failures discard the bundle. This is an approved-scope engineering
+ruling, preserving prior absence rather than accepting arbitrary partial refresh.
+
+Added absent-generation browser admission tests are still unverified and may require a
+narrow non-creating guard correction. Required bundle finalization/rotation coverage,
+frontend type/build/affected consumers, discovery and separate Sol 6.1 XHigh review are
+pending. New current-source tests, source guards and exact evidence remain mandatory;
+no B4/browser acceptance is claimed by this WIP checkpoint.
+
 ## Current verification scope — owner decision, 2026-10-04 15:45 UTC
 
 Browser verification is now exclusively test-based at the code level, including

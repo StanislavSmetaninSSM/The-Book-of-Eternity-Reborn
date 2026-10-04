@@ -131,10 +131,31 @@ export interface BrowserLoadSaveRequest {
 }
 
 export interface BrowserLoadSaveResultDto {
+  /** Commitment only; continuation requires the typed fields and confirmed refresh. */
   success: boolean;
   error: string;
   loadedSaveId: string;
+  menu: BrowserMainMenuDto | null;
+  disposition: 'NotLoaded' | 'Committed' | 'RolledBack' | 'Uncertain';
+  selectedSourcePath: string | null;
+  establishedGeneration: string | null;
+  needsFollowUp: boolean;
+  continuationBlocked: boolean;
+}
+
+export interface BrowserLoadStateRequest {
+  establishedGeneration: string | null;
+  reconcileCurrent: boolean;
+}
+
+export interface BrowserLoadStateDto {
+  establishedGeneration: string;
   menu: BrowserMainMenuDto;
+  session: LocalWebUiSessionStatus;
+  game: BrowserGameScreenDto | null;
+  noActiveSession: boolean;
+  settings: BrowserClientSettingsDto;
+  audio: BrowserAudioSettingsDto;
 }
 
 export interface BrowserCreateSaveRequest {

@@ -27,9 +27,11 @@ public sealed class PortableBrowserLoadTests : IDisposable
     [InlineData("late-pending")]
     [InlineData("late-token")]
     [InlineData("missing-source")]
+    [InlineData("absent-generation")]
+    [InlineData("late-absent-generation")]
     public async Task BrowserLoadRetainsTypedDecisionAndAdmission(string scenario)
     {
-        var armed = false; var loading = false; var published = false; var cuts = 0; var unsafeReads = 0;
+        var armed = false; var loading = false; var replacing = false; var published = false; var cuts = 0; var unsafeReads = 0;
         FileSystemManager? files = null;
         const string marker = "lore/browser-load.bin";
         files = new FileSystemManager(_root, NullLogger<FileSystemManager>.Instance,
@@ -38,6 +40,13 @@ public sealed class PortableBrowserLoadTests : IDisposable
                 LocalPublicationObserver = (phase, _) =>
                 {
                     if (!armed || !loading) return;
+                    if (phase == TrustedLocalPublicationPhase.IntentPublished)
+                    {
+                        using var journal = File.OpenRead(Path.Combine(files!.RuntimeRootPath, "trusted-local-publication-v1/active.json"));
+                        Span<byte> magic = stackalloc byte[8]; journal.ReadExactly(magic);
+                        replacing = magic.SequenceEqual("BOELP3\r\n"u8);
+                    }
+                    if (!replacing) return;
                     if (phase == TrustedLocalPublicationPhase.CommitStaged && scenario is "rollback" or "uncertain")
                     {
                         cuts++;
@@ -73,10 +82,11 @@ public sealed class PortableBrowserLoadTests : IDisposable
             BeforeLoadLeaseAcquisitionAsync = async () =>
             {
                 loading = true;
+                if (scenario == "late-absent-generation") File.Delete(files.SessionGenerationPath);
                 if (scenario == "late-pending") await files.WriteFileAtomicAsync("input/turn_request.json", "{}");
                 if (scenario == "late-token")
                 {
-                    var node = JsonNode.Parse(File.ReadAllBytes(files.ResolvePath(LocalUiSessionLockService.LockPath)))!.AsObject();
+                    var node = JsonNode.Parse(File.ReadAllText(files.ResolvePath(LocalUiSessionLockService.LockPath)))!.AsObject();
                     node["leaseToken"] = Guid.NewGuid().ToString("N");
                     replacementLockBytes = JsonSerializer.SerializeToUtf8Bytes(node);
                     File.WriteAllBytes(files.ResolvePath(LocalUiSessionLockService.LockPath), replacementLockBytes);
@@ -95,6 +105,7 @@ public sealed class PortableBrowserLoadTests : IDisposable
         var lifecycle = new BrowserLifecycleDashboardService(files, session, new ValidationService(files, NullLogger<ValidationService>.Instance));
         var menu = new LocalWebUiMainMenuService(files, lifecycle, save, state, coordinator);
         var saveId = "manual:" + Path.GetFileName(path);
+        if (scenario == "absent-generation") File.Delete(files.SessionGenerationPath);
         armed = true;
         var result = await menu.LoadSaveAsync(new BrowserLoadSaveRequest(scenario == "missing-source" ? "missing" : saveId));
         using var services = new ServiceCollection().AddLogging().AddOptions().BuildServiceProvider();
@@ -105,7 +116,7 @@ public sealed class PortableBrowserLoadTests : IDisposable
         var json = await JsonNode.ParseAsync(body);
         Assert.NotNull(json);
         Assert.Equal(result.ContinuationBlocked ? 409 : result.Success ? 200 : 400, context.Response.StatusCode);
-        var expected = scenario is "late-pending" or "late-token" or "missing-source" ? "NotLoaded"
+        var expected = scenario is "late-pending" or "late-token" or "missing-source" or "absent-generation" or "late-absent-generation" ? "NotLoaded"
             : scenario == "rollback" ? "RolledBack" : scenario == "uncertain" ? "Uncertain" : "Committed";
         Assert.Equal(expected, json["disposition"]?.GetValue<string>());
         Assert.Equal(expected == "Committed", result.Success);
@@ -129,7 +140,8 @@ public sealed class PortableBrowserLoadTests : IDisposable
         }
         else
         {
-            Assert.Equal(generationBytes, File.ReadAllBytes(files.SessionGenerationPath));
+            if (scenario is "absent-generation" or "late-absent-generation") Assert.False(File.Exists(files.SessionGenerationPath));
+            else Assert.Equal(generationBytes, File.ReadAllBytes(files.SessionGenerationPath));
             Assert.Equal(new byte[] { 3, 4 }, File.ReadAllBytes(files.ResolvePath(marker)));
             if (expected == "RolledBack") Assert.Equal(oldGeneration, json["establishedGeneration"]!.GetValue<string>());
         }

@@ -10883,7 +10883,8 @@
       "project": "frontend",
       "runner": "vitest",
       "tests": [
-        "BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts"
+        "BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts",
+        "BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts"
       ]
     }
   ]

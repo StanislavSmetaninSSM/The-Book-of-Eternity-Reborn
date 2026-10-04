@@ -2,14 +2,14 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { browserApi } from '../api/client';
 import type { BrowserClientSettingsDto, BrowserClientSettingsUpdateRequest, BrowserMainMenuDto } from '../api/contracts';
 import { isSuccess, useShell } from '../context/ShellContext';
-import { toLauncherSaveFailureNotice } from '../utils/formatters';
 import { toPlayerFacingText } from '../utils/playerCopy';
 import { createSettingsWriteNoticeTracker, mergeSettingsPatch, type SettingsWriteNotice } from '../utils/settingsPersistenceNotice';
 import { executeBrowserSaveCreation, type SavePersistenceNotice } from '../utils/savePersistenceNotice';
+import { executeBrowserLoad } from '../utils/loadPersistenceNotice';
 import { AudioPanel } from './AudioPanel';
 
 export function SettingsView() {
-  const { readyState, menu, advancedEnabled, setAdvancedEnabled, setActiveRoute, loadBrowserState, blockSaveContinuation, refreshAfterSave } = useShell();
+  const { readyState, menu, advancedEnabled, setAdvancedEnabled, setActiveRoute, loadBrowserState, blockSaveContinuation, refreshAfterSave, beginLoad, isLoadCurrent, finishLoad, isLoadInProgress, refreshAfterLoad, blockLoadContinuation } = useShell();
   const [settings, setSettings] = useState<BrowserClientSettingsDto | null>(null);
   const [persistenceNotice, setPersistenceNotice] = useState<SettingsWriteNotice | null>(null);
   const writeScope = useRef({ generation: 0 });
@@ -81,7 +81,7 @@ export function SettingsView() {
   }, [loadBrowserState]);
 
   async function createManualSave() {
-    if (saveContinuationBlocked.current || creatingSave || loadingSaveId !== null) return;
+    if (saveContinuationBlocked.current || isLoadInProgress?.() || creatingSave || loadingSaveId !== null) return;
     setCreatingSave(true);
     setSaveNotice('Создаём ручное сохранение…');
     const applyNotice = (notice: SavePersistenceNotice) => {
@@ -107,45 +107,26 @@ export function SettingsView() {
 
   async function loadSaveSlot(slot: BrowserMainMenuDto['saves'][number]) {
     if (saveContinuationBlocked.current || creatingSave) return;
+    const owner = beginLoad?.();
+    if (!owner) return;
     invalidatePendingSettings();
-    const loadGeneration = writeScope.current.generation;
-    const ownsLoad = () => isMountedRef.current && writeScope.current.generation === loadGeneration;
-    let loaded = false;
-    // The cancelled optimistic draft is no longer a confirmed settings view.
-    // A failed load must reload current storage too; it may have changed generation.
+    const generation = writeScope.current.generation;
+    const ownsLoad = () => isMountedRef.current && writeScope.current.generation === generation && Boolean(isLoadCurrent?.(owner));
     setSettings(null);
     setLoadingSaveId(slot.saveId);
     setSaveNotice('Загружаем выбранное сохранение…');
     try {
-      const result = await browserApi.loadSave({ saveId: slot.saveId });
-      if (!ownsLoad()) return;
-      if (isSuccess(result) && result.data.success) {
-        loaded = true;
-        setSaveNotice(`Сохранение «${toPlayerFacingText(slot.displayName, 'выбранная запись')}» загружено. Открываем главу…`);
-        setActiveRoute('game');
-        await loadBrowserState();
-        return;
-      }
-      if (isSuccess(result)) {
-        setSaveNotice(toLauncherSaveFailureNotice(result.data.error));
-        return;
-      }
-      setSaveNotice(toLauncherSaveFailureNotice(result.playerMessage));
-    } catch {
-      if (!ownsLoad()) return;
-      setSaveNotice(loaded
-        ? 'Сохранение загружено, но обновление текущего интерфейса требует повторной проверки.'
-        : 'Сохранение не удалось загрузить. Проверьте, что книга запущена, и попробуйте ещё раз.');
+      await executeBrowserLoad(() => browserApi.loadSave({ saveId: slot.saveId }), ownsLoad,
+        notice => setSaveNotice(notice.message), notice => {
+          saveContinuationBlocked.current = true;
+          invalidatePendingSettings();
+          blockLoadContinuation?.(notice);
+        },
+        (established, allowNoActive) => refreshAfterLoad?.(established, ownsLoad, allowNoActive) ?? Promise.resolve(false),
+        () => setActiveRoute('game'));
     } finally {
-      if (!loaded && ownsLoad()) {
-        setSettings(null);
-        try {
-          await loadBrowserState(ownsLoad);
-        } catch {
-          if (ownsLoad()) setSaveNotice((previous) => `${previous} Текущие настройки не подтверждены. Обновите состояние книги перед изменениями.`);
-        }
-      }
-      if (ownsLoad()) setLoadingSaveId(null);
+      if (isMountedRef.current && writeScope.current.generation === generation) setLoadingSaveId(null);
+      finishLoad?.(owner);
     }
   }
 

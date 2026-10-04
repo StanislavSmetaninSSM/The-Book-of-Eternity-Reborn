@@ -35,6 +35,7 @@ export function createSettingsComponentHarness() {
   const load = deferred<any>();
   const save = deferred<any>();
   const audioWrite = deferred<any>();
+  const command = deferred<any>();
   const persistedSettings = {
     language: { value: 'ru', choices: [] }, difficulty: { value: 'normal', choices: [] },
     showGmThoughts: false, accessibility: { fontScalePercent: 100, uiScalePercent: 100, reducedMotion: false },
@@ -48,6 +49,9 @@ export function createSettingsComponentHarness() {
   let refreshFailure = false;
   let savePosts = 0;
   let loadPosts = 0;
+  let ordinaryReads = 0;
+  let commandPosts = 0;
+  let actionPosts = 0;
   let navigations = 0;
   let loadOwner: any = null;
   let navigation = 0;
@@ -56,6 +60,12 @@ export function createSettingsComponentHarness() {
   let realRefreshState: any = { status: 'loading' };
   const refreshOwner = { current: 0 };
   const api = {
+    getMainMenu: async () => { ordinaryReads++; return ok(shell.menu); },
+    getSessionStatus: async () => ok({}), getGameScreen: async () => ok({}),
+    getAudioSettings: async () => ok(initialAudio), getClientSettings: async () => ok(persistedSettings),
+    getCommandCoverage: async () => ok({}),
+    executeExplorerCommand: () => { commandPosts++; return command.promise; },
+    submitPlayerAction: async () => { actionPosts++; return ok({ success: true, playerMessage: '' }); },
     updateClientSettings: async () => { settingsPosts++; return ok(persistedSettings); },
     loadSave: () => { loadPosts++; return load.promise; },
     createSave: () => { savePosts++; return save.promise; },
@@ -70,6 +80,7 @@ export function createSettingsComponentHarness() {
       if (loadOwner || shell.loadContinuationNotice || saveLatch?.isBlocked()) return null;
       loadOwner = { navigation }; return loadOwner;
     },
+    isLoadInProgress: () => loadOwner !== null,
     isLoadCurrent: (owner: any) => loadOwner === owner && owner.navigation === navigation && !shell.loadContinuationNotice,
     finishLoad: (owner: any) => { if (loadOwner === owner) loadOwner = null; },
     blockLoadContinuation: (notice: any) => { shell.loadContinuationNotice ??= notice; },
@@ -119,6 +130,7 @@ export function createSettingsComponentHarness() {
     { id: 'about', enabled: true, label: 'Сведения', description: '', disabledReason: '' }];
   shell.menu.options = { guidance: '' }; shell.menu.about = { title: 'Книга', body: '' };
   const react = {
+    createContext: () => ({ Provider: "provider" }),
     useMemo(factory: any, _dependencies: unknown[]) { return factory(); },
     useState(initial: any) {
       const owner = current; const index = owner.index++;
@@ -166,7 +178,10 @@ export function createSettingsComponentHarness() {
 
       if (id.includes('shellStateResult')) return module('src/hooks/shellStateResult.ts');
       if (id.includes('loadShellState')) return module('src/hooks/loadShellState.ts');
-      if (id.includes('playerCopy')) return { toPlayerFacingText: (value: string, fallback: string) => value || fallback };
+      if (id.includes('useShellState')) return module('src/hooks/useShellState.ts');
+      if (id.includes('refreshShellAfterSave')) return module('src/hooks/refreshShellAfterSave.ts');
+      if (id.includes('refreshShellAfterLoad')) return module('src/hooks/refreshShellAfterLoad.ts');
+      if (id.includes('playerCopy')) return { toPlayerFacingText: (value: string, fallback: string) => value || fallback, sanitizeExplorerCommandResultForPlayer: (v: unknown) => v, playerLauncherAboutText: (v: string) => v };
       if (id.includes('formatters')) return { toLauncherSaveFailureNotice: () => 'load failed', formatSidebarAudioSummary: () => '' };
       if (id === './AudioPanel') return { AudioPanel: () => null };
       if (id === './ErrorNotice') return { EmptyOrFailure: () => null };
@@ -187,12 +202,13 @@ export function createSettingsComponentHarness() {
     instance.render(); instance.render();
     return instance;
   }
+  const provider = () => renderer('src/context/ShellContext.tsx', 'ShellProvider', { children: null });
   const launcher = () => renderer('src/components/GameLauncher.tsx', 'GameLauncher', { menu: shell.menu });
   const settings = () => renderer('src/components/SettingsView.tsx', 'SettingsView');
   const audio = (writeScope: { generation: number }) => renderer('src/components/AudioPanel.tsx', 'AudioPanel', { writeScope });
-  return { settings, launcher, audio, shell, load, save, audioWrite, initialAudio, persistedSettings, timers,
+  return { settings, launcher, provider, audio, shell, load, save, command, audioWrite, initialAudio, persistedSettings, timers,
     setRefreshFailure: () => { refreshFailure = true; },
     setRealRefreshClient: (client: unknown) => { realRefreshClient = client; },
     realRefreshState: () => realRefreshState,
-    counts: () => ({ refreshes, settingsPosts, audioPosts, savePosts, loadPosts, navigations }) };
+    counts: () => ({ refreshes, settingsPosts, audioPosts, savePosts, loadPosts, navigations, ordinaryReads, commandPosts, actionPosts }) };
 }

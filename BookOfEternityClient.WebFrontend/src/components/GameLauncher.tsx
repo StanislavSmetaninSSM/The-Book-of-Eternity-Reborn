@@ -4,12 +4,13 @@ import { browserApi } from '../api/client';
 import type { BrowserApiResult, BrowserMainMenuDto, ExplorerCommandResult } from '../api/contracts';
 import { isSuccess, useShell } from '../context/ShellContext';
 import { sanitizePlayerDefaultCommandResult } from '../playerFacingCommandResult';
-import { toCommandNotice, toLauncherSaveFailureNotice } from '../utils/formatters';
+import { toCommandNotice } from '../utils/formatters';
 import { playerLauncherAboutText, toPlayerFacingText } from '../utils/playerCopy';
 import { ActionCommandResult } from './CommandResult';
 import { buildDefaultPromptAnswers, type PromptAnswers } from './PromptForm';
 import { OrnamentBorder } from './decorative';
 import { staggerContainer, fadeUp } from '../lib/motion';
+import { executeBrowserLoad } from '../utils/loadPersistenceNotice';
 
 type LauncherMode = 'continue' | 'daren-showcase' | 'practice' | 'load' | 'new-game' | 'settings' | 'about';
 interface LauncherPrimaryAction { mode: LauncherMode; label: string; description: string; enabled: boolean; disabledReason: string; }
@@ -29,12 +30,13 @@ const launcherModeDetails: Record<LauncherMode, { label: string; description: st
 };
 
 export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
-  const { loadBrowserState: onStateRefresh, setActiveRoute: onActiveRouteChange } = useShell();
+  const { setActiveRoute: onActiveRouteChange, beginLoad, isLoadCurrent, finishLoad, refreshAfterLoad, blockLoadContinuation } = useShell();
   const primaryAction = useMemo(() => selectPrimaryLauncherAction(menu), [menu]);
   const [activeMode, setActiveMode] = useState<LauncherMode>(primaryAction.mode);
   const [launcherNotice, setLauncherNotice] = useState('');
   const [loadingSaveId, setLoadingSaveId] = useState<string | null>(null);
   const isLauncherMountedRef = useRef(true);
+  const loadEpoch = useRef(0);
   const sessionWarningText = launcherSessionWarningText(menu.session.validationLabel);
 
   useEffect(() => {
@@ -45,6 +47,7 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
   }, []);
 
   function activateLauncherMode(mode: LauncherMode) {
+    loadEpoch.current++;
     setLauncherNotice('');
     if (mode === 'continue') {
       onActiveRouteChange('game');
@@ -66,33 +69,20 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
   }
 
   async function loadSaveSlot(slot: BrowserMainMenuDto['saves'][number]) {
+    const owner = beginLoad?.();
+    if (!owner) return;
+    const epoch = ++loadEpoch.current;
+    const ownsLoad = () => isLauncherMountedRef.current && loadEpoch.current === epoch && Boolean(isLoadCurrent?.(owner));
     setLoadingSaveId(slot.saveId);
     setLauncherNotice('Загружаем выбранное сохранение…');
     try {
-      const result = await browserApi.loadSave({ saveId: slot.saveId });
-      if (!isLauncherMountedRef.current) {
-        return;
-      }
-      if (isSuccess(result) && result.data.success) {
-        setLauncherNotice(`Сохранение «${toPlayerFacingText(slot.displayName, 'выбранная запись')}» загружено. Открываем главу…`);
-        onActiveRouteChange('game');
-        await onStateRefresh();
-        return;
-      }
-      if (isSuccess(result)) {
-        setLauncherNotice(toLauncherSaveFailureNotice(result.data.error));
-        return;
-      }
-      setLauncherNotice(toLauncherSaveFailureNotice(result.playerMessage));
-    } catch {
-      if (!isLauncherMountedRef.current) {
-        return;
-      }
-      setLauncherNotice('Сохранение не удалось загрузить. Проверьте, что книга запущена, и попробуйте ещё раз.');
+      await executeBrowserLoad(() => browserApi.loadSave({ saveId: slot.saveId }), ownsLoad,
+        notice => setLauncherNotice(notice.message), notice => blockLoadContinuation?.(notice),
+        (generation, allowNoActive) => refreshAfterLoad?.(generation, ownsLoad, allowNoActive) ?? Promise.resolve(false),
+        () => onActiveRouteChange('game'));
     } finally {
-      if (isLauncherMountedRef.current) {
-        setLoadingSaveId(null);
-      }
+      if (isLauncherMountedRef.current && loadEpoch.current === epoch) setLoadingSaveId(null);
+      finishLoad?.(owner);
     }
   }
 

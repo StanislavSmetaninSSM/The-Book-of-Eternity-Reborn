@@ -24,6 +24,7 @@ import type {
 import { useShellState } from '../hooks/useShellState';
 import { sanitizeExplorerCommandResultForPlayer } from '../utils/playerCopy';
 import { createSaveContinuationLatch, type SavePersistenceNotice } from '../utils/savePersistenceNotice';
+import { createBrowserLoadController, type BrowserLoadOwner, type LoadPersistenceNotice } from '../utils/loadPersistenceNotice';
 
 export type TabId = 'scene' | 'practice' | 'status' | 'help' | 'settings';
 
@@ -79,6 +80,15 @@ export interface ShellContextValue {
   executeCommand: (command: string) => Promise<void>;
   clearCommandResult: () => void;
   loadBrowserState: (isCurrent?: () => boolean) => Promise<void>;
+  /** The real shell owns synchronous load admission and retained interruption evidence. */
+  beginLoad?: () => BrowserLoadOwner | null;
+  isLoadCurrent?: (owner: BrowserLoadOwner) => boolean;
+  finishLoad?: (owner: BrowserLoadOwner) => void;
+  isLoadInProgress?: () => boolean;
+  loadInProgress?: boolean;
+  loadContinuationNotice?: LoadPersistenceNotice | null;
+  blockLoadContinuation?: (notice: LoadPersistenceNotice) => void;
+  refreshAfterLoad?: (generation: string | null, isCurrent: () => boolean, allowNoActiveSession?: boolean) => Promise<boolean>;
   /** Present in the real shell; optional for independent read-only component hosts. */
   saveContinuationNotice?: SavePersistenceNotice | null;
   /** Retains a save-specific stop until this shell is restarted after storage reconciliation. */
@@ -153,21 +163,45 @@ export function ShellProvider({ children }: { children: ReactNode }) {
   const [commandResult, setCommandResult] = useState<ExplorerCommandResult | null>(null);
   const [isCommandView, setIsCommandView] = useState(false);
   const composerSubmissionInFlight = useRef(false);
-  const { shellState, loadBrowserState: loadBrowserStateCore, refreshAfterSave: refreshAfterSaveCore } = useShellState(advancedEnabled);
+  const { shellState, loadBrowserState: loadBrowserStateCore, refreshAfterSave: refreshAfterSaveCore,
+    refreshAfterLoad: refreshAfterLoadCore, invalidateRefresh } = useShellState(advancedEnabled);
   const saveContinuationLatch = useRef(createSaveContinuationLatch());
   const [saveContinuationNotice, setSaveContinuationNotice] = useState<SavePersistenceNotice | null>(null);
   const blockSaveContinuation = useCallback((notice: SavePersistenceNotice) => {
     setSaveContinuationNotice(saveContinuationLatch.current.block(notice));
   }, []);
+  const loadController = useRef(createBrowserLoadController());
+  const [loadInProgress, setLoadInProgress] = useState(false);
+  const [loadContinuationNotice, setLoadContinuationNotice] = useState<LoadPersistenceNotice | null>(null);
+  const continuationBlocked = useCallback(() => saveContinuationLatch.current.isBlocked() || loadController.current.isBlocked(), []);
+  const isLoadInProgress = useCallback(() => loadController.current.isInFlight(), []);
+  const beginLoad = useCallback(() => {
+    if (continuationBlocked()) return null;
+    const owner = loadController.current.begin();
+    if (owner) { invalidateRefresh(); setLoadInProgress(true); }
+    return owner;
+  }, [continuationBlocked, invalidateRefresh]);
+  const isLoadCurrent = useCallback((owner: BrowserLoadOwner) =>
+    !continuationBlocked() && loadController.current.isCurrent(owner), [continuationBlocked]);
+  const finishLoad = useCallback((owner: BrowserLoadOwner) => {
+    loadController.current.finish(owner); setLoadInProgress(loadController.current.isInFlight());
+  }, []);
+  const blockLoadContinuation = useCallback((notice: LoadPersistenceNotice) => {
+    setLoadContinuationNotice(loadController.current.block(notice)); invalidateRefresh();
+  }, [invalidateRefresh]);
+  const refreshAfterLoad = useCallback((generation: string | null, isCurrent: () => boolean, allowNoActiveSession = false) => {
+    if (continuationBlocked()) return Promise.resolve(false);
+    return refreshAfterLoadCore(generation, () => !continuationBlocked() && isCurrent(), allowNoActiveSession);
+  }, [continuationBlocked, refreshAfterLoadCore]);
   const loadBrowserState = useCallback(async (isCurrent?: () => boolean) => {
-    await saveContinuationLatch.current.runIfAllowed(() => loadBrowserStateCore(
-      () => !saveContinuationLatch.current.isBlocked() && (isCurrent?.() ?? true)));
-  }, [loadBrowserStateCore]);
+    if (continuationBlocked() || isLoadInProgress()) return;
+    await loadBrowserStateCore(() => !continuationBlocked() && !isLoadInProgress() && (isCurrent?.() ?? true));
+  }, [loadBrowserStateCore, continuationBlocked, isLoadInProgress]);
   const refreshAfterSave = useCallback((createdSaveId: string, isCurrent?: () => boolean) => {
-    if (saveContinuationLatch.current.isBlocked()) return Promise.resolve(false);
+    if (continuationBlocked() || isLoadInProgress()) return Promise.resolve(false);
     return refreshAfterSaveCore(createdSaveId,
-      () => !saveContinuationLatch.current.isBlocked() && (isCurrent?.() ?? true));
-  }, [refreshAfterSaveCore]);
+      () => !continuationBlocked() && !isLoadInProgress() && (isCurrent?.() ?? true));
+  }, [refreshAfterSaveCore, continuationBlocked, isLoadInProgress]);
 
   useEffect(() => {
     void loadBrowserState();
@@ -185,12 +219,14 @@ export function ShellProvider({ children }: { children: ReactNode }) {
   const activeTab = useMemo(() => routeToTab(activeRoute), [activeRoute]);
 
   const setActiveTab = useCallback((tab: TabId) => {
-    if (saveContinuationLatch.current.isBlocked()) return;
+    if (continuationBlocked()) return;
+    loadController.current.navigate();
     setActiveRouteState(tabToRoute(tab));
   }, []);
 
   const setActiveRoute = useCallback((route: RouteId) => {
-    if (saveContinuationLatch.current.isBlocked()) return;
+    if (continuationBlocked()) return;
+    loadController.current.navigate();
     setActiveRouteState(route);
   }, []);
 
@@ -208,16 +244,17 @@ export function ShellProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const executeCommand = useCallback(async (command: string) => {
-    if (saveContinuationLatch.current.isBlocked()) return;
+    if (continuationBlocked() || isLoadInProgress()) return;
     setComposerNotice('Выполняю команду…');
     try {
       const result = await browserApi.executeExplorerCommand({ command, advancedEnabled });
+      if (continuationBlocked() || isLoadInProgress()) return;
       if (result.ok) {
         setCommandResult(advancedEnabled ? result.data : sanitizeExplorerCommandResultForPlayer(result.data));
         setIsCommandView(true);
         setActiveRouteState('game');
         const pendingGmAction = result.data.pendingGmAction?.trim();
-        if (pendingGmAction && !saveContinuationLatch.current.isBlocked()) {
+        if (pendingGmAction && !continuationBlocked()) {
           setComposerNotice('Запрос отправляется ГМ. Витрина подготавливается…');
           const actionResult = await browserApi.submitPlayerAction({ text: pendingGmAction });
           if (actionResult.ok && actionResult.data.success) {
@@ -241,7 +278,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
 
   const submitComposerText = useCallback((text: string) => {
     const normalized = text.trim();
-    if (!normalized || composerSubmissionInFlight.current || saveContinuationLatch.current.isBlocked()) return;
+    if (!normalized || composerSubmissionInFlight.current || continuationBlocked() || isLoadInProgress()) return;
 
     composerSubmissionInFlight.current = true;
 
@@ -255,6 +292,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
 
     setComposerNotice('Отправляем действие…');
     void browserApi.submitPlayerAction({ text: normalized }).then((result) => {
+      if (continuationBlocked() || isLoadInProgress()) return;
       if (result.ok && result.data.success) {
         setComposerNotice(result.data.playerMessage);
         setComposerTextState('');
@@ -304,7 +342,9 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     loadBrowserState,
     saveContinuationNotice,
     blockSaveContinuation,
-    refreshAfterSave
+    refreshAfterSave,
+    beginLoad, isLoadCurrent, finishLoad, isLoadInProgress, loadInProgress,
+    loadContinuationNotice, blockLoadContinuation, refreshAfterLoad
   }), [
     shellState,
     readyState,
@@ -332,7 +372,9 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     loadBrowserState,
     saveContinuationNotice,
     blockSaveContinuation,
-    refreshAfterSave
+    refreshAfterSave,
+    beginLoad, isLoadCurrent, finishLoad, isLoadInProgress, loadInProgress,
+    loadContinuationNotice, blockLoadContinuation, refreshAfterLoad
   ]);
 
   return <ShellContext.Provider value={value}>{children}</ShellContext.Provider>;
