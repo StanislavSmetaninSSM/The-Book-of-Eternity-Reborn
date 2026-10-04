@@ -16,8 +16,9 @@ commands passed 12/12 with 28 measured children; catalog 221/10570 discovery and
 assemblies passed. See the [current handoff](load-five-fixes-handoff.md),
 [Linux qualification](recovery/load-filesystem-linux-qualification.json) and
 [full GitHub readback](recovery/load-filesystem-linux-github-readback.json).
-Final frozen carrier review remains pending in the current plan; public B4,
-A4 producer case-pair follow-up, T033/live/fullB5 and whole #1553 remain open.
+Final separate Sol 6.1 XHigh review passed at `6133bfed`; the scoped filesystem
+B1/B2/B3/B5-FS gate is accepted after complete proof and fresh GitHub restoration.
+Public B4, A4 producer case-pair follow-up, T033/live/full B5 and whole #1553 remain open.
 
 Restore the current branch into a fresh directory and compare complete SHAs:
 

@@ -8,13 +8,22 @@
     "Sdk": "10.0.401",
     "NetRuntime": "8.0.31"
   },
-  "NativeLinuxQualified": false,
+  "NativeLinuxQualified": true,
   "IndependentFinalReview": {
-    "Status": "runtime_resource_audit_review_passed_final_carrier_pending",
+    "Status": "passed",
     "Reviewer": "separate gpt-6.1-sol/xhigh",
     "ResourceProbeSource": "eed0ca99e7ad8ef8306c6f4758ed55cce722fd46",
     "RuntimeEvidenceSource": "f72830d5f66a3131ab0bb7c77c82280856439357",
-    "RequirementMapping": "B1/FIX+METADATA+native-names; B2/NAMESPACE+native+topology+cold; B3/cold+five resource owners; A4 producer pair remains open."
+    "RequirementMapping": "B1/FIX+METADATA+native-names; B2/NAMESPACE+native+topology+cold; B3/cold+five resource owners; A4 producer pair remains open.",
+    "ReviewedSource": "6133bfed117d1cbc0d28d5a7e0ea6146b081e8e2",
+    "ActionableFindings": 0,
+    "AcceptedTasks": [
+      "T032-B1",
+      "T032-B2",
+      "T032-B3",
+      "T032-B5-FS"
+    ],
+    "FreshRestorationIndependentlyVerified": true
   },
   "PublicClientCutoverQualified": false,
   "HeapBytes": 805306368,
@@ -805,8 +814,8 @@
     "SourceReview": "Separate Sol6.1XHigh confirmed unchanged original/Windows case-folded admission behavior; added guards are redundant on its original dictionaries. Resource monitor only resolves the previously-failing missing sentinel, with identical ordinary cached fast path and declared sampling/bounds. Returned Windows execution retains its exact historical source and probe attribution."
   },
   "RemainingGates": [
-    "Final frozen handoff/status review and carrier verification",
-    "Open A4 producer case-pair follow-up; public/console/browserB4, fullB5, T033/fullT032 and whole#1553 remain separate"
+    "Open T032-A4-NATIVE-NAMES producer case-pair follow-up",
+    "Public/console/browser B4, full B5, T033/full T032 and whole #1553 remain open"
   ],
   "FreshReadback": {
     "Evidence": "load-filesystem-linux-github-readback.json",
@@ -817,5 +826,6 @@
     "TrxParsed": 37,
     "Clean": true,
     "ConnectivityVerified": true
-  }
+  },
+  "FinalCarrierRule": "The acceptance-only carrier changes no compile input and is checked by full remote SHA and clean physical Git-blob readback before handback. Persisted full-source restoration proof remains explicitly bound to f72830d5."
 }

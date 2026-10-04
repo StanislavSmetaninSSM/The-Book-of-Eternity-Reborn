@@ -4,7 +4,7 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
-## Final native filesystem handback candidate — 2026-10-04
+## Accepted native filesystem handback — 2026-10-04
 
 All runtime/resource/audit proof is published at
 `f72830d5f66a3131ab0bb7c77c82280856439357` / tree `a2a7c94323faccc86922e8a395046f90a07e08be`.
@@ -17,8 +17,12 @@ status/handoff carrier is separately verified after final independent review.
 Separate **gpt-6.1-sol / xhigh** independently verified all twelve current resource
 cases and 28 raw child reports, exact metrics/TRX/artifact hashes, 221/10570 discovery and
 five actual XML assemblies. It explicitly approved the requirement map below,
-conditional on final durable handoff/readback. Final frozen carrier review remains
-pending; task completion flags are intentionally not reconciled yet.
+and final frozen documentation/readback review passed at
+`6133bfed117d1cbc0d28d5a7e0ea6146b081e8e2` with no actionable findings. The reviewer
+independently reproduced the fresh restoration and explicitly approved scoped
+T032-B1/B2/B3 and T032-B5-FS closure through this exact requirement map. Those four
+flags are now reconciled. This acceptance-only carrier changes no compile input;
+its final remote SHA and physical Git-blob readback are checked before handback.
 
 | Generic task | Exact accepted requirement evidence |
 | --- | --- |
@@ -33,7 +37,7 @@ are both proven. This does not assert a complete save/load round trip for that p
 Public B4, full B5/T033/full T032 and whole #1553 remain open. No merge, force-push,
 branch deletion or issue closure has occurred.
 
-## Native Linux filesystem runtime proof complete — final review WIP, 2026-10-04
+## Native Linux filesystem runtime proof complete — accepted, 2026-10-04
 
 Production closure `2da4d545`; corrected test-probe closure `eed0ca99`.
 All required native Linux cohorts and five separate current-probe resource commands
@@ -68,8 +72,9 @@ ordinary successful cached sampler paths retain their prior behavior. No new Win
 runtime execution is claimed. Direct native Debian qualification supplies this gate;
 no GitHub Actions execution is used as evidence in this continuation.
 
-Final independent review, fresh full GitHub restoration and final carrier verification
-are pending. B5-FS and generic B1/B2/B3 task reconciliation wait for those gates.
+Final independent review and fresh full GitHub restoration passed as recorded above.
+Scoped B5-FS and generic B1/B2/B3 are accepted through the verified requirement map;
+final carrier SHA/readback verification precedes handback.
 Public/console/browser B4, full B5/T033/full T032 and whole #1553 remain open. An adjacent
 known limitation is unchanged: the save producer rejects arbitrary case-distinct pairs;
 this load-only block now preserves a valid externally authored manifested pair. Full

@@ -1,6 +1,6 @@
 # Передача файлового контура загрузки — #1553
 
-Обновлено: 2026-10-04. Задача [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), ветка **`codex/1553-load-filesystem`**. Native Linux runtime-проверки завершены; финальное ревью и сверка carrier этой передачи ещё ожидаются. Публичный B4 пока не объявлен завершённым.
+Обновлено: 2026-10-04. Задача [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), ветка **`codex/1553-load-filesystem`**. Файловые B1/B2/B3 и B5-FS приняты: native Linux proof, полный GitHub readback и финальное независимое gpt-6.1-sol / xhigh ревью `6133bfed117d1cbc0d28d5a7e0ea6146b081e8e2` прошли без открытых замечаний. Следующая работа — публичный B4; он пока не завершён.
 
 ## Восстановление и текущие источники
 
@@ -55,7 +55,7 @@ Runtime обновляется только после подтверждённ�
 
 ## Следующая работа и явные открытые границы
 
-1. После финального ревью/readback закрыть filesystem B5-FS и точно сопоставленные B1/B2/B3; продолжить **B4 public/console/browser integration** на этой же ветке: typed outcome/committed identity, generation rebind, pending/UI owner guards, required refresh failure и blocked uncertainty, affected caller tests
+1. Файловые B5-FS и точно сопоставленные B1/B2/B3 закрыты. Продолжить **B4 public/console/browser integration** на этой же ветке: typed outcome/committed identity, generation rebind, pending/UI owner guards, required refresh failure и blocked uncertainty, affected caller tests
 2. **T032-A4-NATIVE-NAMES остаётся открытым:** существующий save producer по исходникам отвергает произвольную Linux case-distinct пару. Loader проверен на корректном независимо дополненном manifested archive; полный producer → load → save round trip такой пары пока не принят. Исправить producer узким отдельным блоком, сохранив Windows collision policy и все manifest/format/budget контракты
 3. T033/live console/browser/real GM, полный B5/T032, остальные platform-helper/interactive-GM задачи и вся #1553 остаются открытыми. Материализация ран #1536 не возобновлялась
 
