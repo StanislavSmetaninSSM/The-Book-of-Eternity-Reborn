@@ -9,7 +9,7 @@ import { executeBrowserLoad } from '../utils/loadPersistenceNotice';
 import { AudioPanel } from './AudioPanel';
 
 export function SettingsView() {
-  const { readyState, menu, advancedEnabled, setAdvancedEnabled, setActiveRoute, loadBrowserState, blockSaveContinuation, refreshAfterSave, beginLoad, isLoadCurrent, finishLoad, isLoadInProgress, refreshAfterLoad, blockLoadContinuation } = useShell();
+  const { readyState, menu, advancedEnabled, setAdvancedEnabled, setActiveRoute, loadBrowserState, blockSaveContinuation, refreshAfterSave, beginLoad, isLoadCurrent, finishLoad, isLoadInProgress, refreshAfterLoad, blockLoadContinuation, reportLoadNotice } = useShell();
   const [settings, setSettings] = useState<BrowserClientSettingsDto | null>(null);
   const [persistenceNotice, setPersistenceNotice] = useState<SettingsWriteNotice | null>(null);
   const writeScope = useRef({ generation: 0 });
@@ -123,7 +123,7 @@ export function SettingsView() {
           blockLoadContinuation?.(notice);
         },
         (established, allowNoActive) => refreshAfterLoad?.(established, ownsLoad, allowNoActive) ?? Promise.resolve(false),
-        () => setActiveRoute('game'));
+        () => setActiveRoute('game'), notice => reportLoadNotice?.(notice));
     } finally {
       if (isMountedRef.current && writeScope.current.generation === generation) setLoadingSaveId(null);
       finishLoad?.(owner);

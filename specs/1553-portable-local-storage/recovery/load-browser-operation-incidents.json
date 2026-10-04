@@ -1,12 +1,26 @@
 {
-  "TimestampUtc": "2026-10-04T16:36:45Z",
-  "Tool": "mcp__codex_apps__github_create_tree",
-  "Operation": "Create tree for four browser causal RED source/test/checkpoint blobs",
-  "Repository": "StanislavSmetaninSSM/The-Book-of-Eternity-Reborn",
-  "Branch": "codex/1553-load-filesystem",
-  "BaseTree": "8dc8b639790c9efe76dbbe93e2f6ded3933b0322",
-  "LastVerifiedRemoteCommit": "49b1b3649881d2f44322ecef14220e61686c42ae",
-  "Error": "user cancelled MCP tool call",
-  "Status": "One explicitly authorized exact retry succeeded at 16:38:12Z; commit5dde11f8 verified remotely. Later checkpoints succeeded without further cancellation through0491944.",
-  "Classification": "Tool-returned cancellation label; owner reports not cancelling. Root cause unknown. Not evidence of a cybersecurity flag or authorization loss."
+  "Incidents": [
+    {
+      "TimestampUtc": "2026-10-04T16:36:45Z",
+      "Tool": "mcp__codex_apps__github_create_tree",
+      "Operation": "Create tree for four browser causal RED source/test/checkpoint blobs",
+      "Repository": "StanislavSmetaninSSM/The-Book-of-Eternity-Reborn",
+      "Branch": "codex/1553-load-filesystem",
+      "BaseTree": "8dc8b639790c9efe76dbbe93e2f6ded3933b0322",
+      "LastVerifiedRemoteCommit": "49b1b3649881d2f44322ecef14220e61686c42ae",
+      "Error": "user cancelled MCP tool call",
+      "Status": "One explicitly authorized exact retry succeeded at 16:38:12Z; commit5dde11f8 verified remotely. Later checkpoints succeeded without further cancellation through0491944.",
+      "Classification": "Tool-returned cancellation label; owner reports not cancelling. Root cause unknown. Not evidence of a cybersecurity flag or authorization loss."
+    },
+    {
+      "TimestampUtc": "2026-10-04T17:16:29Z",
+      "Tool": "mcp__codex_apps__github_create_blob",
+      "Operation": "Publish generated frontend evidence log",
+      "Status": "Successful tool call; local SHA verification rejected normalized bytes before tree/ref publication. Exact UTF-8 re-read and same blob operation restored publication at fd9ff1af0464ae5886473045bc64c739d2fa7409.",
+      "RawBlob": "cb6b2dac54c2a71e7290428f7d81a939a3c9cf75",
+      "NormalizedAndReturnedBlob": "677aaa73406eec453a5ec5ee8ca81176dde0a4f9",
+      "Cause": "One carriage return was normalized by the local text reader; raw and normalized hashes independently reproduced.",
+      "Classification": "Local serialization error, not authorization or cybersecurity denial."
+    }
+  ]
 }

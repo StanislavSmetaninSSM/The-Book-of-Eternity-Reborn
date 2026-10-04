@@ -1,0 +1,70 @@
+{
+  "Categories": [
+    "portable-load-browser-handlers"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "fd9ff1af0464ae5886473045bc64c739d2fa7409",
+    "WorkingTreeFingerprint": "B9C9394E18319F55DA1053D7F15F57615830CF8FB12CB71102C159AA1B7D9D60",
+    "ChangedFiles": 2
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-load-browser-handlers",
+      "Seconds": 1.6608463,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0463898,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0117676,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0125035,
+      "Completed": true
+    },
+    {
+      "Name": "portable-load-browser-handlers-frontend-001",
+      "Seconds": 1.650399,
+      "Completed": false
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 5,
+  "WallTime": "00:00:01.9607314",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 2,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-load-browser-handlers-frontend-001"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

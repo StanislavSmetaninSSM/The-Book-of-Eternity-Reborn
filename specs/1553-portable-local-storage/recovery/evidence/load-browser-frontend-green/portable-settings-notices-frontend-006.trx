@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun>
+  <Results>
+    <UnitTestResult testId="F58ECD202E50D2091C9907279B8A31B88095C47F90761D4B2A5F75D65CD168ED" testName="BookOfEternityClient.WebFrontend/test/settingsLoadReconciliation.test.ts(actual settings/audio handlers reconcile an interrupted save-load boundary reloads confirmed settings after http-failure without submitting the cancelled draft)" outcome="Passed" />
+    <UnitTestResult testId="BC81443E759F058A57E92E295E116AD82C6640C6AB5184F257782CC2C3B56694" testName="BookOfEternityClient.WebFrontend/test/settingsLoadReconciliation.test.ts(actual settings/audio handlers reconcile an interrupted save-load boundary reloads confirmed settings after domain-failure without submitting the cancelled draft)" outcome="Passed" />
+    <UnitTestResult testId="B4B744451257A2E2965F17866F67B0B0D6B52A05B9977EE24A21CA2ABF3C6641" testName="BookOfEternityClient.WebFrontend/test/settingsLoadReconciliation.test.ts(actual settings/audio handlers reconcile an interrupted save-load boundary accepts a confirmed audio refresh after the shared load scope invalidates an in-flight update)" outcome="Passed" />
+    <UnitTestResult testId="3029A84807E65414DDDD2FD509F0D1945EC8E0461F5D18D6A480C67D93366FA8" testName="BookOfEternityClient.WebFrontend/test/settingsLoadReconciliation.test.ts(actual settings/audio handlers reconcile an interrupted save-load boundary does not refresh an unmounted view after a failed load response)" outcome="Passed" />
+    <UnitTestResult testId="3431BBDE7122C3E361C4A22622658106CE642A42B50D9E77CC0E2BE00B14EDBA" testName="BookOfEternityClient.WebFrontend/test/settingsLoadReconciliation.test.ts(actual settings/audio handlers reconcile an interrupted save-load boundary does not present a cancelled optimistic value as confirmed when reconciliation also fails)" outcome="Passed" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest id="F58ECD202E50D2091C9907279B8A31B88095C47F90761D4B2A5F75D65CD168ED" storage="category-vitest" />
+    <UnitTest id="BC81443E759F058A57E92E295E116AD82C6640C6AB5184F257782CC2C3B56694" storage="category-vitest" />
+    <UnitTest id="B4B744451257A2E2965F17866F67B0B0D6B52A05B9977EE24A21CA2ABF3C6641" storage="category-vitest" />
+    <UnitTest id="3029A84807E65414DDDD2FD509F0D1945EC8E0461F5D18D6A480C67D93366FA8" storage="category-vitest" />
+    <UnitTest id="3431BBDE7122C3E361C4A22622658106CE642A42B50D9E77CC0E2BE00B14EDBA" storage="category-vitest" />
+  </TestDefinitions>
+  <ResultSummary>
+    <Counters total="5" executed="5" passed="5" failed="0" />
+  </ResultSummary>
+</TestRun>

@@ -126,6 +126,39 @@ not a production regression. Independent review remains open; no accepted browse
 claim. Publication incident evidence distinguishes returned cancellation text from the
 owner's reported intent and from generic security flags; no bypass or reconnect occurred.
 
+### Browser review candidate results and follow-up visibility — 2026-10-04 17:25 UTC
+
+Saved review carrier `fd9ff1af` is verified remotely at tree `1ec4c52d`.
+Native combined run completed25/25 in3:00.054: browser owner11/11 passed, including
+both absence regressions; HTTP14 completed6passed/8failed. Seven new HTTP rows failed
+before dispatch because the fixture read lowercase generationId from a Pascal-case
+bootstrap document; the old same-owner-token fixture lacked explicit initial browser
+authority. Neither failure is product RED. Fixtures now read admitted existing authority
+and explicitly bootstrap the old-token root. The cached-options ordering remains
+intentionally unfixed until that corrected causal HTTP test runs. Prior unchanged
+browser11 evidence is not repeated for bundle-only changes.
+
+Both actual frontend handlers reproduced lost nonblocking follow-up visibility:
+raw44 cases42passed/2causal failures. Shell-owned follow-up retention and truthful
+message are now implemented independently of the blocking latch. A confirmed identity
+and unresolved cleanup obligation survive navigation while ordinary commands remain
+allowed. A later healthy load does not erase earlier debt; its banner explicitly
+identifies that historical load, never claiming it is the current loaded archive.
+A same-shell successive-outcome and actual rendered status/alert assertion cover it.
+
+The corrected frontend selection passed **62/62** in12.757seconds:45 actual load
+handler/provider/refresh/render assertions,8 existing save assertions,5 settings-load
+assertions and4 Node/typecheck file cases; the Node settings file also records22/22
+internal scenarios. All6 descriptors completed, no skips/duplicates, cleanup complete;
+production frontend typecheck/build passed. The final historical-label refinement is
+still awaiting its narrow rerun. Existing separate settings consumer27 evidence remains
+unchanged. Stored evidence: load-browser-review-candidate, load-browser-followup-red,
+load-browser-frontend-green. These overlapping cohorts are not summed.
+
+Independent Sol6.1XHigh review confirms the authority/epoch/old-command-view corrections
+by source inspection and validated the evidence meanings. Final corrected HTTP tests,
+cache ordering fix, discovery audit, final readback and review verdict remain open.
+
 ## Current verification scope — owner decision, 2026-10-04 15:45 UTC
 
 Browser verification is now exclusively test-based at the code level, including

@@ -17,7 +17,7 @@ import { ShellProvider, useShell, type TabId } from './context/ShellContext';
 import { VignetteOverlay } from './components/decorative';
 import { pageTransition } from './lib/motion';
 import { SaveContinuationBlockedNotice } from './components/SaveContinuationBlockedNotice';
-import { LoadContinuationBlockedNotice } from './components/LoadContinuationBlockedNotice';
+import { LoadContinuationBlockedNotice, LoadFollowUpNotice } from './components/LoadContinuationBlockedNotice';
 
 export default function App() {
   return (
@@ -28,7 +28,7 @@ export default function App() {
 }
 
 function AppShell() {
-  const { activeRoute, advancedEnabled, clientSettings, menu, readyState, realmTheme, shellState, activeTab, saveContinuationNotice, loadContinuationNotice, loadInProgress } = useShell();
+  const { activeRoute, advancedEnabled, clientSettings, menu, readyState, realmTheme, shellState, activeTab, saveContinuationNotice, loadContinuationNotice, loadInProgress, loadFollowUpNotice } = useShell();
   const isLauncherRoute = activeRoute === 'home' && menu !== null;
   const isPracticeRoute = activeRoute === 'practice';
   const isDarenShowcaseRoute = activeRoute === 'daren-showcase';
@@ -104,6 +104,7 @@ function AppShell() {
         )}
         <main className={browserShellClassName} inert={loadInProgress || undefined} data-active-tab={!isLauncherRoute && !isDarenShowcaseRoute ? activeTab : undefined} data-theme-key={realmTheme.key} style={browserShellStyle}>
           <ConnectionBanner />
+          {loadFollowUpNotice && <LoadFollowUpNotice notice={loadFollowUpNotice} />}
           {!isLauncherRoute && <TabBar />}
           <section className={`content-area${isLauncherRoute ? ' content-area--launcher' : ''}`} aria-live="polite">
             <AnimatePresence mode="wait">

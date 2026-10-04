@@ -30,7 +30,7 @@ const launcherModeDetails: Record<LauncherMode, { label: string; description: st
 };
 
 export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
-  const { setActiveRoute: onActiveRouteChange, beginLoad, isLoadCurrent, finishLoad, refreshAfterLoad, blockLoadContinuation } = useShell();
+  const { setActiveRoute: onActiveRouteChange, beginLoad, isLoadCurrent, finishLoad, refreshAfterLoad, blockLoadContinuation, reportLoadNotice } = useShell();
   const primaryAction = useMemo(() => selectPrimaryLauncherAction(menu), [menu]);
   const [activeMode, setActiveMode] = useState<LauncherMode>(primaryAction.mode);
   const [launcherNotice, setLauncherNotice] = useState('');
@@ -79,7 +79,7 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
       await executeBrowserLoad(() => browserApi.loadSave({ saveId: slot.saveId }), ownsLoad,
         notice => setLauncherNotice(notice.message), notice => blockLoadContinuation?.(notice),
         (generation, allowNoActive) => refreshAfterLoad?.(generation, ownsLoad, allowNoActive) ?? Promise.resolve(false),
-        () => onActiveRouteChange('game'));
+        () => onActiveRouteChange('game'), notice => reportLoadNotice?.(notice));
     } finally {
       if (isLauncherMountedRef.current && loadEpoch.current === epoch) setLoadingSaveId(null);
       finishLoad?.(owner);

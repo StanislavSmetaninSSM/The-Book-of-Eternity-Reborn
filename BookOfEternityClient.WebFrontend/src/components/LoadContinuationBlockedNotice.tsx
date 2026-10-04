@@ -8,3 +8,13 @@ export function LoadContinuationBlockedNotice({ notice }: { notice: LoadPersiste
     <p>Проверьте локальное хранилище и завершите восстановление книги. Затем перезагрузите это окно. Не повторяйте загрузку до проверки её результата.</p>
   </section></main>;
 }
+
+/** Keeps a nonblocking load follow-up visible after its original component navigates away. */
+export function LoadFollowUpNotice({ notice }: { notice: LoadPersistenceNotice }) {
+  return <section className="composer-notice" role="status" aria-live="polite">
+    <p>Служебное завершение попытки загрузки требует проверки.</p>
+    {notice.disposition === 'Committed' && notice.loadedSaveId
+      ? <p>Подтверждённая запись той загрузки: <strong>{notice.loadedSaveId}</strong></p>
+      : <p>{notice.message}</p>}
+  </section>;
+}

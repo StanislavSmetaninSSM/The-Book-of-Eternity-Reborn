@@ -84,6 +84,7 @@ export function createSettingsComponentHarness() {
     isLoadInProgress: () => loadOwner !== null,
     isLoadCurrent: (owner: any) => loadOwner === owner && owner.navigation === navigation && !shell.loadContinuationNotice,
     finishLoad: (owner: any) => { if (loadOwner === owner) loadOwner = null; },
+    reportLoadNotice: (notice: any) => { if (notice.needsFollowUp && !notice.continuationBlocked) shell.loadFollowUpNotice = notice; },
     blockLoadContinuation: (notice: any) => { shell.loadContinuationNotice ??= notice; },
     refreshAfterLoad: async (_generation: string, isCurrent: () => boolean = () => true) => {
       refreshes++;

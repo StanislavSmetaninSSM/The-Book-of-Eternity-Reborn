@@ -87,6 +87,8 @@ export interface ShellContextValue {
   isLoadInProgress?: () => boolean;
   loadInProgress?: boolean;
   loadContinuationNotice?: LoadPersistenceNotice | null;
+  loadFollowUpNotice?: LoadPersistenceNotice | null;
+  reportLoadNotice?: (notice: LoadPersistenceNotice) => void;
   blockLoadContinuation?: (notice: LoadPersistenceNotice) => void;
   refreshAfterLoad?: (generation: string | null, isCurrent: () => boolean, allowNoActiveSession?: boolean) => Promise<boolean>;
   /** Present in the real shell; optional for independent read-only component hosts. */
@@ -174,6 +176,10 @@ export function ShellProvider({ children }: { children: ReactNode }) {
   const loadController = useRef(createBrowserLoadController());
   const [loadInProgress, setLoadInProgress] = useState(false);
   const [loadContinuationNotice, setLoadContinuationNotice] = useState<LoadPersistenceNotice | null>(null);
+  const [loadFollowUpNotice, setLoadFollowUpNotice] = useState<LoadPersistenceNotice | null>(null);
+  const reportLoadNotice = useCallback((notice: LoadPersistenceNotice) => {
+    if (notice.needsFollowUp && !notice.continuationBlocked) setLoadFollowUpNotice(notice);
+  }, []);
   const continuationBlocked = useCallback(() => saveContinuationLatch.current.isBlocked() || loadController.current.isBlocked(), []);
   const isLoadInProgress = useCallback(() => loadController.current.isInFlight(), []);
   const beginLoad = useCallback(() => {
@@ -355,7 +361,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     blockSaveContinuation,
     refreshAfterSave,
     beginLoad, isLoadCurrent, finishLoad, isLoadInProgress, loadInProgress,
-    loadContinuationNotice, blockLoadContinuation, refreshAfterLoad
+    loadContinuationNotice, blockLoadContinuation, refreshAfterLoad, loadFollowUpNotice, reportLoadNotice
   }), [
     shellState,
     readyState,
@@ -385,7 +391,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     blockSaveContinuation,
     refreshAfterSave,
     beginLoad, isLoadCurrent, finishLoad, isLoadInProgress, loadInProgress,
-    loadContinuationNotice, blockLoadContinuation, refreshAfterLoad
+    loadContinuationNotice, blockLoadContinuation, refreshAfterLoad, loadFollowUpNotice, reportLoadNotice
   ]);
 
   return <ShellContext.Provider value={value}>{children}</ShellContext.Provider>;

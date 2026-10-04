@@ -29,10 +29,11 @@ export function toLoadNotice(result: BrowserApiResult<BrowserLoadSaveResultDto> 
     disposition, loadedSaveId, establishedGeneration, selectedSourcePath,
     needsFollowUp: continuationBlocked || data.needsFollowUp === true,
     continuationBlocked,
-    message: committed ? 'Сохранение загружено.'
+    message: (committed ? 'Сохранение загружено.'
       : disposition === 'RolledBack' ? 'Загрузка отменена: прежнее состояние книги восстановлено.'
         : disposition === 'NotLoaded' ? 'Сохранение не загружено.'
-          : 'Состояние загрузки не подтверждено. Продолжение остановлено до восстановления книги.'
+          : 'Состояние загрузки не подтверждено. Продолжение остановлено до восстановления книги.')
+      + (data.needsFollowUp === true ? ' Служебное завершение операции требует проверки.' : '')
   };
 }
 
@@ -43,16 +44,18 @@ export async function executeBrowserLoad(
   apply: (notice: LoadPersistenceNotice) => void,
   block: (notice: LoadPersistenceNotice) => void,
   refresh: (generation: string | null, allowNoActiveSession: boolean) => Promise<boolean>,
-  navigate: () => void
+  navigate: () => void,
+  retain: (notice: LoadPersistenceNotice) => void = () => {}
 ): Promise<LoadPersistenceNotice> {
   let result: BrowserApiResult<BrowserLoadSaveResultDto> | undefined;
   try { result = await load(); } catch { /* A dispatched request can commit without its response. */ }
   let notice = toLoadNotice(result);
+  retain(notice);
   const publish = () => { if (isCurrent()) apply(notice); };
   const stop = () => {
     notice = { ...notice, needsFollowUp: true, continuationBlocked: true,
       message: `${notice.message} Обновление текущего состояния не подтверждено. Продолжение остановлено до проверки книги.` };
-    publish(); block(notice);
+    retain(notice); publish(); block(notice);
   };
   publish();
   if (notice.continuationBlocked) { block(notice); return notice; }

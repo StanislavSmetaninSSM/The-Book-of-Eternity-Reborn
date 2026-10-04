@@ -1,4 +1,8 @@
 import { describe, expect, it } from 'vitest';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { LoadContinuationBlockedNotice, LoadFollowUpNotice } from '../src/components/LoadContinuationBlockedNotice';
+import { toLoadNotice } from '../src/utils/loadPersistenceNotice';
 import type { BrowserApiClient } from '../src/api/client';
 import { createBrowserApiClient } from '../src/api/client';
 import { refreshShellAfterLoad } from '../src/hooks/refreshShellAfterLoad';
@@ -75,6 +79,28 @@ describe('actual ShellProvider owns load admission and blocked continuation', ()
     view.render(); expect(shell().activeRoute).toBe('settings');
     expect(shell().loadContinuationNotice.disposition).toBe('Uncertain');
     expect(h.counts()).toMatchObject({ commandPosts: 0, actionPosts: 0, ordinaryReads: baseline });
+  });
+  it('retains nonblocking follow-up after navigation without stopping commands', async () => {
+    const h = createSettingsComponentHarness(); const view = h.provider(); await flushPromises(); view.render();
+    const shell = () => view.tree.props.value;
+    const notice = toLoadNotice({ ok: true, status: 200, data: { disposition: 'Committed', success: true, error: '',
+      loadedSaveId: 'manual:confirmed.zip', selectedSourcePath: '/private/not-for-display', establishedGeneration: 'exact',
+      needsFollowUp: true, continuationBlocked: false, menu: null } });
+    shell().reportLoadNotice(notice); shell().setActiveRoute('game'); view.render();
+    expect(shell().loadFollowUpNotice).toEqual(notice); expect(shell().loadContinuationNotice).toBeNull();
+    const work = shell().executeCommand('/help'); expect(h.counts().commandPosts).toBe(1);
+    h.command.resolve({ ok: true, status: 200, data: { state: 'Completed', blocks: [] } }); await work;
+    // A later healthy replacement does not erase unresolved earlier cleanup debt or relabel it as current.
+    shell().reportLoadNotice({ ...notice, loadedSaveId: 'manual:new-current.zip', establishedGeneration: 'new-current', needsFollowUp: false });
+    view.render(); expect(shell().loadFollowUpNotice.loadedSaveId).toBe('manual:confirmed.zip');
+    const html = renderToStaticMarkup(createElement(LoadFollowUpNotice, { notice: shell().loadFollowUpNotice }));
+    expect(html).toContain('той загрузки'); expect(html).not.toContain('manual:new-current.zip');
+    expect(html).toContain('role="status"'); expect(html).toContain('manual:confirmed.zip');
+    expect(html).toContain('требует проверки'); expect(html).not.toContain('/private/');
+    const blocked = renderToStaticMarkup(createElement(LoadContinuationBlockedNotice,
+      { notice: { ...notice, continuationBlocked: true } }));
+    expect(blocked).toContain('role="alert"'); expect(blocked).toContain('manual:confirmed.zip');
+    expect(blocked).not.toContain('<button'); expect(blocked).not.toContain('/private/');
   });
   it('clears an already-present command view when load takes ownership', async () => {
     const h = createSettingsComponentHarness(); const view = h.provider(); await flushPromises(); view.render();

@@ -1,0 +1,294 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "fd9ff1af0464ae5886473045bc64c739d2fa7409",
+  "SourceResultDirectory": "20261004-132336-590-17-fe7b9d9640f74ff59db6eda2d3c7d363-categories",
+  "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Runtime": "native Linux x64",
+  "Toolchain": {
+    "PowerShell": "7.6.6",
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31"
+  },
+  "TelemetryOptOuts": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1"
+  },
+  "DOTNET_PROCESSOR_COUNT": "1",
+  "PathSanitization": "Absolute checkout/run-root/toolchain paths replaced; raw and stored hashes retained",
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 18606,
+      "OriginalSha256": "65dbdd7bc560a45fed3e6ed4130183f8c3fb059c31ced3476424e90995553a96",
+      "Embedded": true,
+      "StoredPath": "dotnet-test.log",
+      "StoredBytes": 18426,
+      "StoredSha256": "41568fb489c79b513516cc0278506a811d4374cf0d9712a4ca3c6317d0ff1286"
+    },
+    {
+      "Path": "frontend-shell-types-frontend-001.trx",
+      "OriginalBytes": 862,
+      "OriginalSha256": "75f1beec48a1777912dd2806931c27cb2e64f360ba2001179b6c0beaa55dfa3d",
+      "Embedded": true,
+      "StoredPath": "frontend-shell-types-frontend-001.trx",
+      "StoredBytes": 863,
+      "StoredSha256": "df23dbcd4837b83f65f9440b85c7233faf3b0766fdea96710a57b31427f3f203"
+    },
+    {
+      "Path": "frontend-shell-types-frontend-001.tsconfig.json",
+      "OriginalBytes": 758,
+      "OriginalSha256": "7a591a2563ffc7b97801483478abc30ad3913bb08cf75a5ccd6794d8569d5f02",
+      "Embedded": true,
+      "StoredPath": "frontend-shell-types-frontend-001.tsconfig.json",
+      "StoredBytes": 578,
+      "StoredSha256": "e7d779690946ee2635e449c61388c3d9beb1c95a0cf8b23c55573656cd19444e"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 3998,
+      "OriginalSha256": "8656338c3c7184fa1b45cb6c21d7933600e9eb8d16d0ac329ef71e735bb2ea04",
+      "Embedded": true,
+      "StoredPath": "plan.json",
+      "StoredBytes": 3998,
+      "StoredSha256": "8656338c3c7184fa1b45cb6c21d7933600e9eb8d16d0ac329ef71e735bb2ea04"
+    },
+    {
+      "Path": "portable-browser-save-presentation-frontend-002-compiled/package.json",
+      "OriginalBytes": 18,
+      "OriginalSha256": "1239d4d885dcad42201a27ed9324f8f0f760b78700d8db9ced39a511cffe7eae",
+      "Embedded": true,
+      "StoredPath": "portable-browser-save-presentation-frontend-002-compiled/package.json",
+      "StoredBytes": 18,
+      "StoredSha256": "1239d4d885dcad42201a27ed9324f8f0f760b78700d8db9ced39a511cffe7eae"
+    },
+    {
+      "Path": "portable-browser-save-presentation-frontend-002-compiled/src/api/client.js",
+      "OriginalBytes": 14068,
+      "OriginalSha256": "2e4fdf9da336fce35c2182ec20df116a852a21d521c5a18ca3a0d6dce09ef346",
+      "Embedded": false,
+      "Reason": "Non-text runtime/build artifact"
+    },
+    {
+      "Path": "portable-browser-save-presentation-frontend-002-compiled/src/api/contracts.js",
+      "OriginalBytes": 11,
+      "OriginalSha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "Embedded": false,
+      "Reason": "Non-text runtime/build artifact"
+    },
+    {
+      "Path": "portable-browser-save-presentation-frontend-002-compiled/src/utils/savePersistenceNotice.js",
+      "OriginalBytes": 4440,
+      "OriginalSha256": "49f226d02f15570e50837397a03f474069ec49ea4378f6e4426f17af64e03511",
+      "Embedded": false,
+      "Reason": "Non-text runtime/build artifact"
+    },
+    {
+      "Path": "portable-browser-save-presentation-frontend-002-compiled/test/savePersistenceNotice.test.js",
+      "OriginalBytes": 5875,
+      "OriginalSha256": "7645ea39cdfd80aa3cef233cf583eafcec0fd997fc7d09af19b046b5b4c3b2a5",
+      "Embedded": false,
+      "Reason": "Non-text runtime/build artifact"
+    },
+    {
+      "Path": "portable-browser-save-presentation-frontend-002.trx",
+      "OriginalBytes": 534,
+      "OriginalSha256": "0a8309870b6201314af8f82dff52c12c2ce0f3ceb4282983d5ad9571c68e0448",
+      "Embedded": true,
+      "StoredPath": "portable-browser-save-presentation-frontend-002.trx",
+      "StoredBytes": 535,
+      "StoredSha256": "2e883dd05c7d08204510c4a797fca586c16284d073e176e9cce6a7174ec67db3"
+    },
+    {
+      "Path": "portable-browser-save-presentation-frontend-002.tsconfig.json",
+      "OriginalBytes": 653,
+      "OriginalSha256": "0fe83a9f5eccb3286ac74ed54248f5b54a216ad5cb4d26784bdfeeac98f5dae2",
+      "Embedded": true,
+      "StoredPath": "portable-browser-save-presentation-frontend-002.tsconfig.json",
+      "StoredBytes": 509,
+      "StoredSha256": "933ab756f52955024125366e1b560ea0c4ea12b4a3ea3f3586639a625503cf5a"
+    },
+    {
+      "Path": "portable-browser-save-presentation-frontend-003.trx",
+      "OriginalBytes": 3847,
+      "OriginalSha256": "15c6aa9e130e6bcbaf272bba35ff6f627d57964c889f989177db9be5884758d5",
+      "Embedded": true,
+      "StoredPath": "portable-browser-save-presentation-frontend-003.trx",
+      "StoredBytes": 3848,
+      "StoredSha256": "01bb40b319214c3c91d4207e63aed696500db0f46ddef401ca70d2c07737c300"
+    },
+    {
+      "Path": "portable-browser-save-presentation-frontend-003.vitest.json",
+      "OriginalBytes": 4085,
+      "OriginalSha256": "3e3e88238862780adbf63a5826254d94c61111193e7339c3a997f7a14bbf5d0a",
+      "Embedded": true,
+      "StoredPath": "portable-browser-save-presentation-frontend-003.vitest.json",
+      "StoredBytes": 4050,
+      "StoredSha256": "0c5739e12f6b5fd51e1b9d809b5643199885ff9615e73f2780739e9c8e6fc1be"
+    },
+    {
+      "Path": "portable-load-browser-handlers-frontend-004.trx",
+      "OriginalBytes": 20258,
+      "OriginalSha256": "94b569786ce94dd12b776ef56600b0f88e1bf593a7f6667292aedc3b250372a7",
+      "Embedded": true,
+      "StoredPath": "portable-load-browser-handlers-frontend-004.trx",
+      "StoredBytes": 20259,
+      "StoredSha256": "5c53a3358b4d915278d1c95bf95591d96f80d5a65a5dce96d41e75def9c42da4"
+    },
+    {
+      "Path": "portable-load-browser-handlers-frontend-004.vitest.json",
+      "OriginalBytes": 19537,
+      "OriginalSha256": "3818225b62dcf4ee4dccff262ece1cedf6c842ea7283f57e0a4ba0976373439c",
+      "Embedded": true,
+      "StoredPath": "portable-load-browser-handlers-frontend-004.vitest.json",
+      "StoredBytes": 19466,
+      "StoredSha256": "cbfaecd3e9a9f41fb8be4134b2e6d0445e503809d59acf6e850f05ac0000a166"
+    },
+    {
+      "Path": "portable-settings-notices-frontend-005-compiled/package.json",
+      "OriginalBytes": 18,
+      "OriginalSha256": "1239d4d885dcad42201a27ed9324f8f0f760b78700d8db9ced39a511cffe7eae",
+      "Embedded": true,
+      "StoredPath": "portable-settings-notices-frontend-005-compiled/package.json",
+      "StoredBytes": 18,
+      "StoredSha256": "1239d4d885dcad42201a27ed9324f8f0f760b78700d8db9ced39a511cffe7eae"
+    },
+    {
+      "Path": "portable-settings-notices-frontend-005-compiled/src/api/client.js",
+      "OriginalBytes": 14068,
+      "OriginalSha256": "2e4fdf9da336fce35c2182ec20df116a852a21d521c5a18ca3a0d6dce09ef346",
+      "Embedded": false,
+      "Reason": "Non-text runtime/build artifact"
+    },
+    {
+      "Path": "portable-settings-notices-frontend-005-compiled/src/api/contracts.js",
+      "OriginalBytes": 11,
+      "OriginalSha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "Embedded": false,
+      "Reason": "Non-text runtime/build artifact"
+    },
+    {
+      "Path": "portable-settings-notices-frontend-005-compiled/src/context/ShellContext.js",
+      "OriginalBytes": 13433,
+      "OriginalSha256": "b7c7e6a433f12a53580d6f4000b1e8d83bab18f8e38a8084491b968e1c07857f",
+      "Embedded": false,
+      "Reason": "Non-text runtime/build artifact"
+    },
+    {
+      "Path": "portable-settings-notices-frontend-005-compiled/src/hooks/loadShellState.js",
+      "OriginalBytes": 2311,
+      "OriginalSha256": "28cb0a3e745a130fba31f421bab344845f3d64f668bda1614d960481e981ad92",
+      "Embedded": false,
+      "Reason": "Non-text runtime/build artifact"
+    },
+    {
+      "Path": "portable-settings-notices-frontend-005-compiled/src/hooks/refreshShellAfterLoad.js",
+      "OriginalBytes": 1678,
+      "OriginalSha256": "16248bce6463c73ee48615be89a51afac4ba4b77b10fb03b2a3beda8539ab758",
+      "Embedded": false,
+      "Reason": "Non-text runtime/build artifact"
+    },
+    {
+      "Path": "portable-settings-notices-frontend-005-compiled/src/hooks/refreshShellAfterSave.js",
+      "OriginalBytes": 1294,
+      "OriginalSha256": "59fae635c6418d838ca95d4b9d69529a280bf00f2231b5ef34adfd0e3f7918a8",
+      "Embedded": false,
+      "Reason": "Non-text runtime/build artifact"
+    },
+    {
+      "Path": "portable-settings-notices-frontend-005-compiled/src/hooks/shellStateResult.js",
+      "OriginalBytes": 463,
+      "OriginalSha256": "7402e7990dfa38ae3b325b885cf4e7481d0c1dd935d3635463f6a16a0988e639",
+      "Embedded": false,
+      "Reason": "Non-text runtime/build artifact"
+    },
+    {
+      "Path": "portable-settings-notices-frontend-005-compiled/src/hooks/useShellState.js",
+      "OriginalBytes": 1287,
+      "OriginalSha256": "648132e00f588da167317cc42fc2c603f04f18b8a475c00a21b61c5877ef90d8",
+      "Embedded": false,
+      "Reason": "Non-text runtime/build artifact"
+    },
+    {
+      "Path": "portable-settings-notices-frontend-005-compiled/src/utils/loadPersistenceNotice.js",
+      "OriginalBytes": 4526,
+      "OriginalSha256": "7229fe8f7116710163f79e4496b61cb6cf66da2b656230cf3499dc43f0728fc2",
+      "Embedded": false,
+      "Reason": "Non-text runtime/build artifact"
+    },
+    {
+      "Path": "portable-settings-notices-frontend-005-compiled/src/utils/playerCopy.js",
+      "OriginalBytes": 17170,
+      "OriginalSha256": "67a439e20088f65b9b5874cd5a90d69d11b3dae77d5a551e1cae4f5ea59ef01a",
+      "Embedded": false,
+      "Reason": "Non-text runtime/build artifact"
+    },
+    {
+      "Path": "portable-settings-notices-frontend-005-compiled/src/utils/savePersistenceNotice.js",
+      "OriginalBytes": 4440,
+      "OriginalSha256": "49f226d02f15570e50837397a03f474069ec49ea4378f6e4426f17af64e03511",
+      "Embedded": false,
+      "Reason": "Non-text runtime/build artifact"
+    },
+    {
+      "Path": "portable-settings-notices-frontend-005-compiled/src/utils/settingsPersistenceNotice.js",
+      "OriginalBytes": 4004,
+      "OriginalSha256": "960b7169e86d4f713cba54fb5b612c6d2b5a03bca7d2f29fb69ef9cdfa3387d2",
+      "Embedded": false,
+      "Reason": "Non-text runtime/build artifact"
+    },
+    {
+      "Path": "portable-settings-notices-frontend-005-compiled/test/settingsPersistenceNotice.test.js",
+      "OriginalBytes": 17913,
+      "OriginalSha256": "9acb3f968698ac3b34966a4c3c2b6f57ed3850f6ce721967be0f2d50557289b1",
+      "Embedded": false,
+      "Reason": "Non-text runtime/build artifact"
+    },
+    {
+      "Path": "portable-settings-notices-frontend-005.trx",
+      "OriginalBytes": 538,
+      "OriginalSha256": "911a3eaa5b44afa2b3d20a04b02fdd8a422a8a5f57ee1c6f3347a1d5ad50faa1",
+      "Embedded": true,
+      "StoredPath": "portable-settings-notices-frontend-005.trx",
+      "StoredBytes": 539,
+      "StoredSha256": "d3eb73103aa9ee848963e9afeb362e4243e16b888d587ed466b804de9cdedd0d"
+    },
+    {
+      "Path": "portable-settings-notices-frontend-005.tsconfig.json",
+      "OriginalBytes": 648,
+      "OriginalSha256": "a2d47249aafc696ed3b0f5ce026f46d1a1faa090d732e720c3167142c30119e8",
+      "Embedded": true,
+      "StoredPath": "portable-settings-notices-frontend-005.tsconfig.json",
+      "StoredBytes": 504,
+      "StoredSha256": "6e09f4fe83d9d39525dba56db1e556837940da4fa66ceff7b31141005434f142"
+    },
+    {
+      "Path": "portable-settings-notices-frontend-006.trx",
+      "OriginalBytes": 2579,
+      "OriginalSha256": "efa637465e1853be8363ab850114d306d8c8cbc979df0690dbd71ca46f31336f",
+      "Embedded": true,
+      "StoredPath": "portable-settings-notices-frontend-006.trx",
+      "StoredBytes": 2580,
+      "StoredSha256": "afb9834edbb9ef2d89b6cd0394c831378141c5e043930a67b72f7093a258b636"
+    },
+    {
+      "Path": "portable-settings-notices-frontend-006.vitest.json",
+      "OriginalBytes": 2973,
+      "OriginalSha256": "13a9b45192fa0d4895d0c7e6379449fa1acfeaac0742a11c901b952927d3c8eb",
+      "Embedded": true,
+      "StoredPath": "portable-settings-notices-frontend-006.vitest.json",
+      "StoredBytes": 2938,
+      "StoredSha256": "afee3f246ea731c17612eee8b98fc0cad65d8424b7492ac74db1a284026b2557"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 4305,
+      "OriginalSha256": "ac3843a7fe3314d51dc679915b109278b10a83aaee8b4a879f1d3f957b5d44b7",
+      "Embedded": true,
+      "StoredPath": "summary.json",
+      "StoredBytes": 4305,
+      "StoredSha256": "ac3843a7fe3314d51dc679915b109278b10a83aaee8b4a879f1d3f957b5d44b7"
+    }
+  ],
+  "MeasuredChildren": 0
+}

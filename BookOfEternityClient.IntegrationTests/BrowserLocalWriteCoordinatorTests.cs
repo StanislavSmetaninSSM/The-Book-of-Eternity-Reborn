@@ -1237,6 +1237,8 @@ public sealed partial class BrowserLocalWriteCoordinatorTests : IDisposable
     [Fact]
     public async Task ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock()
     {
+        await using (var bootstrapLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            _fs.GetOrCreateSessionGeneration(bootstrapLease);
         var lockService = new LocalUiSessionLockService(_fs, _timeProvider);
         var coordinator = CreateCoordinator(lockService);
         var replacementOwner = Owner(

@@ -17,6 +17,17 @@ describe('actual launcher/settings load handlers retain decisions through interr
       expect(h.counts().loadPosts).toBe(1);
       h.load.resolve(ok(outcome('NotLoaded'))); await flushPromises();
     });
+    it(`${component}: retains a nonblocking committed follow-up after successful navigation`, async () => {
+      const h = createSettingsComponentHarness(); const view = h[component]();
+      findLoad(view.tree).props.onClick();
+      h.load.resolve(ok({ ...outcome('Committed'), needsFollowUp: true })); await flushPromises(); view.render();
+      expect(h.counts().navigations).toBe(1);
+      expect(h.shell.loadContinuationNotice).toBeUndefined();
+      expect(h.shell.loadFollowUpNotice).toMatchObject({ disposition: 'Committed', loadedSaveId: 'save',
+        establishedGeneration: 'exact-generation', needsFollowUp: true, continuationBlocked: false });
+      expect(h.shell.loadFollowUpNotice.message).toContain('проверки');
+      expect(h.shell.beginLoad()).not.toBeNull();
+    });
     for (const interruption of ['none', 'unmount'] as const) {
       it(`${component}: waits for required refresh before navigation (${interruption})`, async () => {
         const h = createSettingsComponentHarness(); const view = h[component](); const refresh = deferred<boolean>();

@@ -609,7 +609,10 @@ public sealed class LocalWebUiHostTests : IDisposable
         files = app.Services.GetRequiredService<FileSystemManager>();
         await app.StartAsync();
         using var client = new HttpClient { BaseAddress = new Uri(url) };
-        var generation = JsonNode.Parse(File.ReadAllText(files.SessionGenerationPath))!["generationId"]!.GetValue<string>();
+        string generation;
+        await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+            generation = files.ReadExistingSessionGeneration(lease)!;
+        Assert.False(string.IsNullOrWhiteSpace(generation));
         if (scenario == "absent-authority") File.Delete(files.SessionGenerationPath);
         if (scenario == "cached-settings")
         {
