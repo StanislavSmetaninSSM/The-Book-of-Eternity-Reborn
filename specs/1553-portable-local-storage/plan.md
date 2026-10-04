@@ -135,6 +135,27 @@ resource commands follow; heap 768 MiB/RSS 1 GiB/disk 5 GiB, 180 seconds per chi
 except maximum-inventory publication/cut 600 seconds, 10/12-minute category and
 15-minute command controls are unchanged. No aggregate sweep or Windows replay.
 
+### Native Linux resource qualification in progress — 2026-10-04 UTC
+
+The source-bound [Linux qualification record](recovery/load-filesystem-linux-qualification.json)
+tracks each separately executed resource category and all measured children. First
+preparation command passed **4/4**, eight measured children, 1:45.197, complete
+selection and owned/runtime cleanup. Actual 64/128/near-512 MiB and maximum inventory
+preparation ran under unchanged controls; all eight children exited without guard
+stops. Near-512 seed OS peak RSS was 556,322,816 bytes; every child stayed within
+180 seconds. Separate bulk publication passed **3/3**, six measured children,
+1:31.586 at clean `fd83927c`, exact committed After/source/library/generation and
+complete cleanup. No claim is made for the three still-pending resource owners.
+
+This preparation run transparently records HEAD `46414e4f` plus 27 modified/untracked
+documentation/evidence/selection files during delayed publication. Those exact bytes
+are now the verified `fd83927c` tree; all runtime/test C# and fresh binary inputs
+remained the tested `2da4d545` closure. This is not described as a clean-source run.
+The completed 39/46/128 non-resource bundles were separately reviewed and saved at
+`fd83927c`; the source-only name correction/evidence was accepted narrowly by the
+separate Sol 6.1 XHigh reviewer at `46414e4f`. Overall filesystem acceptance remains
+pending final resource proof, catalog/XML audit, final review and fresh restoration.
+
 ## Authorized local filesystem execution checkpoint
 
 The owner is leaving autonomous execution running and explicitly authorized all
