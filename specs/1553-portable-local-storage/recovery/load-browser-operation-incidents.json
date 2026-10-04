@@ -1,7 +1,7 @@
 {
   "Incidents": [
     {
-      "TimestampUtc": "2026-10-04T16:36:45Z",
+      "TimestampUtc": "2026-10-04T16:36:47Z",
       "Tool": "mcp__codex_apps__github_create_tree",
       "Operation": "Create tree for four browser causal RED source/test/checkpoint blobs",
       "Repository": "StanislavSmetaninSSM/The-Book-of-Eternity-Reborn",
@@ -10,7 +10,8 @@
       "LastVerifiedRemoteCommit": "49b1b3649881d2f44322ecef14220e61686c42ae",
       "Error": "user cancelled MCP tool call",
       "Status": "One explicitly authorized exact retry succeeded at 16:38:12Z; commit5dde11f8 verified remotely. Later checkpoints succeeded without further cancellation through0491944.",
-      "Classification": "Tool-returned cancellation label; owner reports not cancelling. Root cause unknown. Not evidence of a cybersecurity flag or authorization loss."
+      "Classification": "Tool-returned cancellation label; owner reports not cancelling. Root cause unknown. Not evidence of a cybersecurity flag or authorization loss.",
+      "CallStartedUtc": "2026-10-04T16:36:36Z"
     },
     {
       "TimestampUtc": "2026-10-04T17:16:29Z",
@@ -22,5 +23,6 @@
       "Cause": "One carriage return was normalized by the local text reader; raw and normalized hashes independently reproduced.",
       "Classification": "Local serialization error, not authorization or cybersecurity denial."
     }
-  ]
+  ],
+  "TimestampMeaning": "UTC observations of tool results; connector did not supply an internal occurrence timestamp."
 }

@@ -1,0 +1,70 @@
+RequestedLane: Categories
+EffectiveLane: Categories
+Filter: <pending validation>
+TimeoutMinutes: 5
+StartedUtc: 2026-10-04T17:45:17.5743644Z
+Owned process 'Revision': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== Revision: stdout =====
+cff44debfd7c0e091c6bbc7ec608c3fae2a8a46c
+
+===== Revision: stderr =====
+
+===== Revision: exit 0 =====
+Owned process 'Changed-paths': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== Changed-paths: stdout =====
+
+===== Changed-paths: stderr =====
+
+===== Changed-paths: exit 0 =====
+Owned process 'New-paths': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== New-paths: stdout =====
+
+===== New-paths: stderr =====
+
+===== New-paths: exit 0 =====
+Owned process 'portable-settings-consumers-frontend-001-compile': FileName=node; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=node
+
+===== portable-settings-consumers-frontend-001-compile: stdout =====
+
+===== portable-settings-consumers-frontend-001-compile: stderr =====
+
+===== portable-settings-consumers-frontend-001-compile: exit 0 =====
+Owned process 'portable-settings-consumers-frontend-001-audioPanelCatalogVisibility.test.js': FileName=node; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=node
+
+===== portable-settings-consumers-frontend-001-audioPanelCatalogVisibility.test.js: stdout =====
+
+===== portable-settings-consumers-frontend-001-audioPanelCatalogVisibility.test.js: stderr =====
+
+===== portable-settings-consumers-frontend-001-audioPanelCatalogVisibility.test.js: exit 0 =====
+Owned process 'portable-settings-consumers-frontend-001-gracefulDegradation.test.js': FileName=node; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=node
+
+===== portable-settings-consumers-frontend-001-gracefulDegradation.test.js: stdout =====
+
+===== portable-settings-consumers-frontend-001-gracefulDegradation.test.js: stderr =====
+
+===== portable-settings-consumers-frontend-001-gracefulDegradation.test.js: exit 0 =====
+Owned process 'portable-settings-consumers-frontend-002': FileName=node; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=node
+
+===== portable-settings-consumers-frontend-002: stdout =====
+JSON report written to [checkout]/TestResults/test-categories/20261004-134517-563-6-faddf8b0dd1448b08751104063711fdc-categories/portable-settings-consumers-frontend-002.vitest.json
+
+===== portable-settings-consumers-frontend-002: stderr =====
+
+===== portable-settings-consumers-frontend-002: exit 0 =====
+
+Category result
+  Categories: portable-settings-consumers
+  Filter: <none>
+  Timeout: 5 minute(s)
+  Wall time: 00:00:01.6109750
+  Exit code: 0
+  Timed out: False
+  Owned-tree cleanup: complete
+  Planned selection: descriptors=2, cases=4; completed descriptors=2, cases=27, complete=True
+  Tests: total=27, executed=27, passed=27, failed=0
+  Duplicate test IDs: 0
+  Results: [checkout]/TestResults/test-categories/20261004-134517-563-6-faddf8b0dd1448b08751104063711fdc-categories
+  Log: [checkout]/TestResults/test-categories/20261004-134517-563-6-faddf8b0dd1448b08751104063711fdc-categories/dotnet-test.log

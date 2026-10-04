@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="cf94ff20-88a5-4efa-bef2-d18f37607461" name="@95e438a3e5cb 2026-10-04 13:39:29" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-04T13:39:29.4747938-04:00" queuing="2026-10-04T13:39:29.4747939-04:00" start="2026-10-04T13:39:24.7390477-04:00" finish="2026-10-04T13:39:36.4513902-04:00" />
+  <TestSettings name="default" id="5fd4ca89-f565-4345-80a0-b48aa7986d49">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-04_13_39_29" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="1a55022e-0d25-4462-8f64-410b2f862071" testId="66ce26cb-8ba4-5464-4cf3-51f0748216cc" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;game-read-failure&quot;)" computerName="95e438a3e5cb" duration="00:00:00.6580556" startTime="2026-10-04T13:39:33.2647622-04:00" endTime="2026-10-04T13:39:33.2647624-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1a55022e-0d25-4462-8f64-410b2f862071" />
+    <UnitTestResult executionId="468f595e-9854-40d1-a72b-91e65d409378" testId="b0ba79f8-3854-dfe8-2daa-99d1d0d8ae87" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;settings-failure&quot;)" computerName="95e438a3e5cb" duration="00:00:00.7146509" startTime="2026-10-04T13:39:31.6623089-04:00" endTime="2026-10-04T13:39:31.6623091-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="468f595e-9854-40d1-a72b-91e65d409378" />
+    <UnitTestResult executionId="5998ab06-d8f3-4378-b8c5-ac3acc087de1" testId="e51d6f89-6558-59ac-c5d9-dfd56c9539b6" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;stale&quot;)" computerName="95e438a3e5cb" duration="00:00:00.7312791" startTime="2026-10-04T13:39:30.1765800-04:00" endTime="2026-10-04T13:39:30.1765802-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5998ab06-d8f3-4378-b8c5-ac3acc087de1" />
+    <UnitTestResult executionId="6f7bc6e2-304c-4902-b5c9-ab4746480e84" testId="25dbd173-4106-8812-1996-8dce4e25b433" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;cached-settings&quot;)" computerName="95e438a3e5cb" duration="00:00:00.6817261" startTime="2026-10-04T13:39:33.9469453-04:00" endTime="2026-10-04T13:39:33.9469455-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6f7bc6e2-304c-4902-b5c9-ab4746480e84" />
+    <UnitTestResult executionId="3575cbf5-1e2d-4958-8e15-31260a386864" testId="e71050f7-cdd4-e283-3993-2d811e1d9515" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;rotate-close&quot;)" computerName="95e438a3e5cb" duration="00:00:00.6171951" startTime="2026-10-04T13:39:34.5646062-04:00" endTime="2026-10-04T13:39:34.5646064-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3575cbf5-1e2d-4958-8e15-31260a386864" />
+    <UnitTestResult executionId="b8397c65-6369-46dc-90b0-3557119f2c13" testId="b8e13f8c-bfed-b566-63c5-bd79e33a7aa9" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;missing&quot;)" computerName="95e438a3e5cb" duration="00:00:00.7701002" startTime="2026-10-04T13:39:30.9471605-04:00" endTime="2026-10-04T13:39:30.9471607-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b8397c65-6369-46dc-90b0-3557119f2c13" />
+    <UnitTestResult executionId="7621b6a5-fdde-48a6-87fc-917412ea1a12" testId="a8b54232-1c37-b614-b8c3-41f37c6d7471" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;current&quot;)" computerName="95e438a3e5cb" duration="00:00:02.9617210" startTime="2026-10-04T13:39:29.4447437-04:00" endTime="2026-10-04T13:39:29.4447577-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7621b6a5-fdde-48a6-87fc-917412ea1a12" />
+    <UnitTestResult executionId="825940d9-fa2f-4b01-884d-4cafe5a4afa8" testId="c2abbe74-fc25-0d70-bfbc-76b23d9a78d6" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;mixed-request&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0879884" startTime="2026-10-04T13:39:34.6531846-04:00" endTime="2026-10-04T13:39:34.6531848-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="825940d9-fa2f-4b01-884d-4cafe5a4afa8" />
+    <UnitTestResult executionId="cd136dfd-284e-4008-a9a7-9eda9e774729" testId="cdde866c-d2cc-110e-eba2-25c5fc8268be" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked" computerName="95e438a3e5cb" duration="00:00:01.0852833" startTime="2026-10-04T13:39:36.3435139-04:00" endTime="2026-10-04T13:39:36.3435141-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cd136dfd-284e-4008-a9a7-9eda9e774729" />
+    <UnitTestResult executionId="c73ee763-e12b-4325-b864-4e6c3088cf65" testId="c23ceb08-071e-d327-073d-7acd5441986f" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds" computerName="95e438a3e5cb" duration="00:00:00.7263398" startTime="2026-10-04T13:39:32.3901315-04:00" endTime="2026-10-04T13:39:32.3901317-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c73ee763-e12b-4325-b864-4e6c3088cf65" />
+    <UnitTestResult executionId="2ac72c5d-a59e-4876-8582-3074ac3b3a47" testId="501fb15d-f298-9461-b36b-944e7aab3ddd" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;no-active&quot;)" computerName="95e438a3e5cb" duration="00:00:00.6010422" startTime="2026-10-04T13:39:35.2547309-04:00" endTime="2026-10-04T13:39:35.2547311-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2ac72c5d-a59e-4876-8582-3074ac3b3a47" />
+    <UnitTestResult executionId="e06ea9a0-ca53-47f8-bd0c-e7c9587c40df" testId="f2be7987-7f2a-5278-6122-e1b3eec93ac8" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;rotate-read&quot;)" computerName="95e438a3e5cb" duration="00:00:00.1159647" startTime="2026-10-04T13:39:32.5069517-04:00" endTime="2026-10-04T13:39:32.5069519-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e06ea9a0-ca53-47f8-bd0c-e7c9587c40df" />
+    <UnitTestResult executionId="41824346-fc69-46c6-9b39-fbedb847cd01" testId="7ba741b3-4afc-0e31-206e-631b5be9624d" testName="BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock" computerName="95e438a3e5cb" duration="00:00:00.0401953" startTime="2026-10-04T13:39:36.3881726-04:00" endTime="2026-10-04T13:39:36.3881727-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="41824346-fc69-46c6-9b39-fbedb847cd01" />
+    <UnitTestResult executionId="0f396fae-6ce0-4f0b-9e8c-b6f6ec152da3" testId="a3597419-6371-cfda-cddf-735f1a4007e5" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;absent-authority&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0990652" startTime="2026-10-04T13:39:32.6061599-04:00" endTime="2026-10-04T13:39:32.6061601-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0f396fae-6ce0-4f0b-9e8c-b6f6ec152da3" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;stale&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e51d6f89-6558-59ac-c5d9-dfd56c9539b6">
+      <Execution id="5998ab06-d8f3-4378-b8c5-ac3acc087de1" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_RequiresCompleteEstablishedGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;settings-failure&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b0ba79f8-3854-dfe8-2daa-99d1d0d8ae87">
+      <Execution id="468f595e-9854-40d1-a72b-91e65d409378" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_RequiresCompleteEstablishedGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;absent-authority&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="a3597419-6371-cfda-cddf-735f1a4007e5">
+      <Execution id="0f396fae-6ce0-4f0b-9e8c-b6f6ec152da3" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;cached-settings&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="25dbd173-4106-8812-1996-8dce4e25b433">
+      <Execution id="6f7bc6e2-304c-4902-b5c9-ab4746480e84" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;missing&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b8e13f8c-bfed-b566-63c5-bd79e33a7aa9">
+      <Execution id="b8397c65-6369-46dc-90b0-3557119f2c13" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_RequiresCompleteEstablishedGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c23ceb08-071e-d327-073d-7acd5441986f">
+      <Execution id="c73ee763-e12b-4325-b864-4e6c3088cf65" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;rotate-close&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e71050f7-cdd4-e283-3993-2d811e1d9515">
+      <Execution id="3575cbf5-1e2d-4958-8e15-31260a386864" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="7ba741b3-4afc-0e31-206e-631b5be9624d">
+      <Execution id="41824346-fc69-46c6-9b39-fbedb847cd01" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests" name="ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;no-active&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="501fb15d-f298-9461-b36b-944e7aab3ddd">
+      <Execution id="2ac72c5d-a59e-4876-8582-3074ac3b3a47" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;mixed-request&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c2abbe74-fc25-0d70-bfbc-76b23d9a78d6">
+      <Execution id="825940d9-fa2f-4b01-884d-4cafe5a4afa8" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="cdde866c-d2cc-110e-eba2-25c5fc8268be">
+      <Execution id="cd136dfd-284e-4008-a9a7-9eda9e774729" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;current&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="a8b54232-1c37-b614-b8c3-41f37c6d7471">
+      <Execution id="7621b6a5-fdde-48a6-87fc-917412ea1a12" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_RequiresCompleteEstablishedGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;game-read-failure&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="66ce26cb-8ba4-5464-4cf3-51f0748216cc">
+      <Execution id="1a55022e-0d25-4462-8f64-410b2f862071" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;rotate-read&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="f2be7987-7f2a-5278-6122-e1b3eec93ac8">
+      <Execution id="e06ea9a0-ca53-47f8-bd0c-e7c9587c40df" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="66ce26cb-8ba4-5464-4cf3-51f0748216cc" executionId="1a55022e-0d25-4462-8f64-410b2f862071" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b0ba79f8-3854-dfe8-2daa-99d1d0d8ae87" executionId="468f595e-9854-40d1-a72b-91e65d409378" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e51d6f89-6558-59ac-c5d9-dfd56c9539b6" executionId="5998ab06-d8f3-4378-b8c5-ac3acc087de1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="25dbd173-4106-8812-1996-8dce4e25b433" executionId="6f7bc6e2-304c-4902-b5c9-ab4746480e84" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e71050f7-cdd4-e283-3993-2d811e1d9515" executionId="3575cbf5-1e2d-4958-8e15-31260a386864" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b8e13f8c-bfed-b566-63c5-bd79e33a7aa9" executionId="b8397c65-6369-46dc-90b0-3557119f2c13" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a8b54232-1c37-b614-b8c3-41f37c6d7471" executionId="7621b6a5-fdde-48a6-87fc-917412ea1a12" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c2abbe74-fc25-0d70-bfbc-76b23d9a78d6" executionId="825940d9-fa2f-4b01-884d-4cafe5a4afa8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cdde866c-d2cc-110e-eba2-25c5fc8268be" executionId="cd136dfd-284e-4008-a9a7-9eda9e774729" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c23ceb08-071e-d327-073d-7acd5441986f" executionId="c73ee763-e12b-4325-b864-4e6c3088cf65" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="501fb15d-f298-9461-b36b-944e7aab3ddd" executionId="2ac72c5d-a59e-4876-8582-3074ac3b3a47" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f2be7987-7f2a-5278-6122-e1b3eec93ac8" executionId="e06ea9a0-ca53-47f8-bd0c-e7c9587c40df" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7ba741b3-4afc-0e31-206e-631b5be9624d" executionId="41824346-fc69-46c6-9b39-fbedb847cd01" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a3597419-6371-cfda-cddf-735f1a4007e5" executionId="0f396fae-6ce0-4f0b-9e8c-b6f6ec152da3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="14" executed="14" passed="14" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.32]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.33]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.36]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:11.30]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

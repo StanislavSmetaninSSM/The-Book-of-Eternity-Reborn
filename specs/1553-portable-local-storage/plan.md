@@ -177,6 +177,31 @@ Evidence: load-browser-handlers-final and load-browser-cache-red. Unchanged nati
 browser11, previous save/settings consumers and filesystem/resource/console cohorts
 are not repeated solely for this required-bundle ordering change.
 
+### Browser verified candidate — final runtime evidence, 2026-10-04
+
+Clean code `cff44debfd7c0e091c6bbc7ec608c3fae2a8a46c` passed the corrected
+required HTTP cohort14/14 in2:28.537 including fresh build, no skips/duplicates and
+complete owned cleanup. Cached menu options now match the admitted settings/audio.
+Unchanged native browser11 and final browser45 retain their exact earlier sources.
+The final follow-up callback changed SettingsView after the older generic consumer
+run, so that one affected owner was checked once on clean cff44:27/27 in1.611seconds.
+Previously passing browser45/save/settings/type owners were not repeated for the
+backend-only reorder. Full source-specific map and count units are in
+[load-browser-qualification.json](recovery/load-browser-qualification.json).
+
+Fresh discovery-only audit at cff44 validated227 categories /10,578 method-or-file
+identities in51.315seconds, zero executed tests and no unmapped/stale selectors.
+Four project XML files parse; no compiler warnings name changed browser/load C#
+source files. Existing unrelated compiler/package/platform warnings and Vite's
+chunk-size warning remain, so this is not an overall zero-warning claim. Separate
+final production frontend typecheck/build succeeded. Source/docs whitespace checks
+exclude byte-preserved generated evidence logs, whose original formatting is retained.
+
+All reported source correctness issues are corrected. Final independent artifact/
+restoration verdict, acceptance status reconciliation and full GitHub readback are
+still pending in this carrier. Native Windows public clients, live console/GM,
+worker portability, native save-producer case pairs and whole #1553 stay open.
+
 ## Current verification scope — owner decision, 2026-10-04 15:45 UTC
 
 Browser verification is now exclusively test-based at the code level, including

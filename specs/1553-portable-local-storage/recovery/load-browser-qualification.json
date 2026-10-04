@@ -1,0 +1,157 @@
+{
+  "SchemaVersion": 1,
+  "Scope": "T032-B4 bounded native Linux browser typed load/backend and automated actual frontend client integration",
+  "Status": "Verified candidate; independent final artifact/readback verdict pending",
+  "CodeCommit": "cff44debfd7c0e091c6bbc7ec608c3fae2a8a46c",
+  "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Toolchain": {
+    "PowerShell": "7.6.6",
+    "SDK": "10.0.401",
+    "Runtime": "8.0.31",
+    "Node": "24.19.0",
+    "npm": "11.9.0",
+    "React": "19.2.6",
+    "Vite": "8.0.14",
+    "Vitest": "4.1.7",
+    "TypeScript": "6.0.3"
+  },
+  "ProcessLocalControls": {
+    "DOTNET_PROCESSOR_COUNT": "1",
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1"
+  },
+  "Cohorts": [
+    {
+      "Category": "portable-load-browser",
+      "SourceCommit": "fd9ff1af0464ae5886473045bc64c739d2fa7409",
+      "Cases": 11,
+      "Passed": 11,
+      "Evidence": "evidence/load-browser-review-candidate/portable-load-browser-unit-001.trx",
+      "Limit": "The companion HTTP owner in that run failed fixture preparation; it is not an overall pass. These eleven source/test files are unchanged through CodeCommit."
+    },
+    {
+      "Category": "portable-load-browser-refresh",
+      "SourceCommit": "cff44debfd7c0e091c6bbc7ec608c3fae2a8a46c",
+      "Cases": 14,
+      "Passed": 14,
+      "Seconds": 148.5369933,
+      "Evidence": "evidence/load-browser-http-green/summary.json"
+    },
+    {
+      "Category": "portable-load-browser-handlers",
+      "SourceCommit": "8e99d67702e9f6965e66722629aa72913f4e0b67",
+      "VitestAssertions": 45,
+      "Passed": 45,
+      "DescriptorFiles": 2,
+      "Seconds": 2.0240647,
+      "Evidence": "evidence/load-browser-handlers-final/summary.json",
+      "UnchangedFrontendSourceThroughCodeCommit": true
+    },
+    {
+      "Categories": [
+        "frontend-shell-types",
+        "portable-browser-save-presentation",
+        "portable-settings-notices",
+        "portable-load-browser-handlers"
+      ],
+      "ExecutedHead": "fd9ff1af0464ae5886473045bc64c739d2fa7409",
+      "WorkingTreeFingerprint": "7B4C30261098049499A946F68F732CB1CA51BA0A961A855558AF98C639F68FC7",
+      "SavedCarrier": "8e99d67702e9f6965e66722629aa72913f4e0b67",
+      "RunnerCompletedCases": 62,
+      "Passed": 62,
+      "Breakdown": {
+        "BrowserVitestAssertions": 45,
+        "ExistingSaveVitestAssertions": 8,
+        "SettingsLoadVitestAssertions": 5,
+        "NodeAndTypecheckFileCases": 4,
+        "SettingsNodeInternalScenariosWithinOneFileCase": 22
+      },
+      "Seconds": 12.7573999,
+      "Evidence": "evidence/load-browser-frontend-green/summary.json",
+      "Limit": "Overlaps final browser45; do not add counts. Historical banner wording was subsequently verified by final45 and final production build."
+    },
+    {
+      "Category": "portable-settings-consumers",
+      "SourceCommit": "cff44debfd7c0e091c6bbc7ec608c3fae2a8a46c",
+      "RunnerCompletedCases": 27,
+      "Passed": 27,
+      "Breakdown": {
+        "VitestAssertions": 25,
+        "NodeFileCases": 2
+      },
+      "Seconds": 1.610975,
+      "Evidence": "evidence/load-browser-settings-consumers-final/summary.json",
+      "Rationale": "Final follow-up callback changed SettingsView after prior consumer run; checked once on final source."
+    }
+  ],
+  "Discovery": {
+    "SourceCommit": "cff44debfd7c0e091c6bbc7ec608c3fae2a8a46c",
+    "Categories": 227,
+    "MethodOrFileIdentities": 10578,
+    "TestsExecuted": 0,
+    "Seconds": 51.3150603,
+    "Evidence": "evidence/load-browser-final-audit/catalog-audit.json"
+  },
+  "FrontendProductionBuild": {
+    "SourceCommit": "cff44debfd7c0e091c6bbc7ec608c3fae2a8a46c",
+    "Command": "npm run build --prefix BookOfEternityClient.WebFrontend",
+    "ExitCode": 0,
+    "TypecheckPassed": true,
+    "Evidence": "evidence/load-browser-final-audit/frontend-build.log",
+    "Warnings": "Vite emitted existing chunk-size warning; npm printed update notice. No blanket warning-free claim."
+  },
+  "CompiledXml": [
+    {
+      "Path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.xml",
+      "Parsed": true,
+      "Sha256": "8de5d1854c7f0ed3cc82d0da4829354a819994a37ca6f330d1957ef7b0114100"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.xml",
+      "Parsed": true,
+      "Sha256": "e91bf83c00f13157defa3bd335724b5e09f607263c1418d43dbdfed6e4054404"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.xml",
+      "Parsed": true,
+      "Sha256": "c36e3bda2774be391f44f8114013e4dcc2e8bf3d1c4513d41506fae087e28a00"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+      "Parsed": true,
+      "Sha256": "c60876c29c87549f498a32462baa096a570faeefe471a90b36eb1e1d49df5f5a"
+    }
+  ],
+  "ChangedCSharpSourceWarnings": [],
+  "Review": {
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "Status": "All reported runtime issues corrected; final evidence/restoration verdict pending"
+  },
+  "ProductionFileBlobs": {
+    "BookOfEternityClient.WebFrontend/src/App.tsx": "e9a573a3b5c53b7353478ccb1d3e50a7fcf95d42",
+    "BookOfEternityClient.WebFrontend/src/api/client.ts": "e11a067553b0202268ee37ce35a44b454de0eade",
+    "BookOfEternityClient.WebFrontend/src/api/contracts.ts": "6517b8c88d8701b159180480aa74f83634b28076",
+    "BookOfEternityClient.WebFrontend/src/components/GameLauncher.tsx": "f301254f752c43d657b675b65a2af5acdc6080b7",
+    "BookOfEternityClient.WebFrontend/src/components/LoadContinuationBlockedNotice.tsx": "a4bf4c286b2ab00b08fdf918a60a3eb6bf9f6537",
+    "BookOfEternityClient.WebFrontend/src/components/SettingsView.tsx": "38ec111b6243376aab7bad6bc5fa53909220e8cd",
+    "BookOfEternityClient.WebFrontend/src/context/ShellContext.tsx": "378930b82df39163559182fa14f1c418a1c5857a",
+    "BookOfEternityClient.WebFrontend/src/hooks/refreshShellAfterLoad.ts": "a8f116f993107e42bddcf5c4f9b42e3b25613a16",
+    "BookOfEternityClient.WebFrontend/src/hooks/useShellState.ts": "a6e2897c3ffb86908af9d06d2666bc2ca4167a79",
+    "BookOfEternityClient.WebFrontend/src/utils/loadPersistenceNotice.ts": "b1e9579d5ef09e2f95e327df342398ff495070ba",
+    "BookOfEternityClient/WebUi/BrowserLoadStateService.cs": "34500b71ddd3d1c281dd076016c5d0bd4b1c6f0c",
+    "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs": "231dec61faf3b56e2c1928296587a9106dc45c83",
+    "BookOfEternityClient/WebUi/LocalWebUiHost.cs": "e3f22a560775909e569b75ee7952db9ec0b965f5",
+    "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs": "e2cc437859319e87eaae92c1e42bfd6c0605daf3"
+  },
+  "Limits": [
+    "Automated browser code/handler/component/backend proof, not visual QA or live browser execution",
+    "No new native Windows public-client execution",
+    "Live console/real GM and full gameplay/restart remain open",
+    "T031-WORKER-PORTABLE and T032-A4-NATIVE-NAMES remain open",
+    "Full B4/B5/T032/T033 and whole #1553 remain open",
+    "Unchanged filesystem/resource/console cohorts not repeated"
+  ],
+  "Incidents": "load-browser-operation-incidents.json"
+}

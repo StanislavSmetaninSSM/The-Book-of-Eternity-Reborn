@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun>
+  <Results>
+    <UnitTestResult testId="C13BFC9678849BAED0F5EF4103C9924A67C1D1D1A9878618CC7ED02D854F31E0" testName="BookOfEternityClient.WebFrontend/test/audioPanelCatalogVisibility.test.ts(node)" outcome="Passed" />
+    <UnitTestResult testId="E167EAD58F055161829C9AF8586C96AF6F598CAAE9311DD231B3A721B481AC7D" testName="BookOfEternityClient.WebFrontend/test/gracefulDegradation.test.ts(node)" outcome="Passed" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest id="C13BFC9678849BAED0F5EF4103C9924A67C1D1D1A9878618CC7ED02D854F31E0" storage="category-node" />
+    <UnitTest id="E167EAD58F055161829C9AF8586C96AF6F598CAAE9311DD231B3A721B481AC7D" storage="category-node" />
+  </TestDefinitions>
+  <ResultSummary>
+    <Counters total="2" executed="2" passed="2" failed="0" />
+  </ResultSummary>
+</TestRun>
