@@ -35,6 +35,13 @@
       "contracts": [
         "#1553 LOAD-FS-001/004/008"
       ]
+    },
+    {
+      "category": "portable-load-native-names",
+      "reason": "Linux LOAD-FS-001 must preserve simultaneous arbitrary case-distinct payloads; exact original hashes, unique manifest claims and fixed/manifest collisions remain strict. This adds eight bounded native identity cases after the causal correction.",
+      "contracts": [
+        "#1553 LOAD-FS-001/002/003/008"
+      ]
     }
   ]
 }

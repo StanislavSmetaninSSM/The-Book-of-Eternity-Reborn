@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="a4701c80-8da5-44d8-abb0-be9161ace85c" name="@95e438a3e5cb 2026-10-03 19:49:45" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-03T19:49:45.3825762-04:00" queuing="2026-10-03T19:49:45.3825762-04:00" start="2026-10-03T19:49:43.6753409-04:00" finish="2026-10-03T19:49:45.4087699-04:00" />
+  <TestSettings name="default" id="3a4a3f5f-b15b-43bb-93dc-78951c156b6d">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-03_19_49_45" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="1a0ca178-0483-4f69-b1f6-01ee244f6091" testId="d7dca19a-012a-818b-f722-5266797b76cb" testName="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_FreshCallsRefuseParentReplacedByNativeDirectoryLink(replaceRoot: False)" computerName="95e438a3e5cb" duration="00:00:00.0123033" startTime="2026-10-03T19:49:45.3209531-04:00" endTime="2026-10-03T19:49:45.3209533-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1a0ca178-0483-4f69-b1f6-01ee244f6091" />
+    <UnitTestResult executionId="5945e976-c0d3-49e2-874f-5493e3d31d1d" testId="67432073-947f-3cce-e6ba-99426a81f017" testName="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_RequiredLateAbsenceRetainsEarlierBytes" computerName="95e438a3e5cb" duration="00:00:00.0010136" startTime="2026-10-03T19:49:45.3248327-04:00" endTime="2026-10-03T19:49:45.3248328-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5945e976-c0d3-49e2-874f-5493e3d31d1d" />
+    <UnitTestResult executionId="3f94f45f-1f12-4980-8546-b5b112507d3e" testId="c27d6d5a-353e-4373-6df4-ee3723d68b43" testName="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_OptionalAbsenceDoesNotCreateDirectoriesOrFiles" computerName="95e438a3e5cb" duration="00:00:00.0008014" startTime="2026-10-03T19:49:45.3278049-04:00" endTime="2026-10-03T19:49:45.3278049-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3f94f45f-1f12-4980-8546-b5b112507d3e" />
+    <UnitTestResult executionId="2fa17465-7e88-4072-ad2d-4001849963fa" testId="9e84a15a-4d48-c1a8-94c4-5dee41017d7e" testName="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_LateFileBlockerRetainsEarlierAndBlockerBytes" computerName="95e438a3e5cb" duration="00:00:00.0095648" startTime="2026-10-03T19:49:45.3089234-04:00" endTime="2026-10-03T19:49:45.3089363-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2fa17465-7e88-4072-ad2d-4001849963fa" />
+    <UnitTestResult executionId="8993ca16-0526-42ae-abe0-057dd3db8618" testId="5b06a9c1-75d6-d4b4-ec7a-61b9b07cd3a5" testName="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_LateNonRegularLeafRetainsEarlierBytes" computerName="95e438a3e5cb" duration="00:00:00.0031660" startTime="2026-10-03T19:49:45.3567697-04:00" endTime="2026-10-03T19:49:45.3567698-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8993ca16-0526-42ae-abe0-057dd3db8618" />
+    <UnitTestResult executionId="f9939c6d-d995-4669-8b32-3afa73eb1f08" testId="8aad0305-c86d-dc59-84b2-d1fc970468c2" testName="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_MaterializesRequestBeforePhysicalAdmission" computerName="95e438a3e5cb" duration="00:00:00.0010125" startTime="2026-10-03T19:49:45.3229260-04:00" endTime="2026-10-03T19:49:45.3229261-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f9939c6d-d995-4669-8b32-3afa73eb1f08" />
+    <UnitTestResult executionId="42e0e248-3249-4815-b361-324bd1aa82d0" testId="ab723c25-f732-f8ff-1849-7f3be5623708" testName="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_FreshCallsRefuseParentReplacedByNativeDirectoryLink(replaceRoot: True)" computerName="95e438a3e5cb" duration="00:00:00.0009240" startTime="2026-10-03T19:49:45.3218337-04:00" endTime="2026-10-03T19:49:45.3218338-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="42e0e248-3249-4815-b361-324bd1aa82d0" />
+    <UnitTestResult executionId="13f8435a-4a73-41de-872e-d428ce241fc1" testId="a302abbb-b218-ea71-e68b-d7ea1b8e3d39" testName="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_ExactGrantDoesNotAdmitSiblingDirectoryOrCaseAlias" computerName="95e438a3e5cb" duration="00:00:00.0008689" startTime="2026-10-03T19:49:45.3269340-04:00" endTime="2026-10-03T19:49:45.3269341-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="13f8435a-4a73-41de-872e-d428ce241fc1" />
+    <UnitTestResult executionId="180f623e-f61a-47c6-a6a2-88d88f264680" testId="5b90d3a9-2262-681f-e4f3-6a3393c6a061" testName="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_FreshCallRefusesParentReplacedByRegularFile" computerName="95e438a3e5cb" duration="00:00:00.0010298" startTime="2026-10-03T19:49:45.3566069-04:00" endTime="2026-10-03T19:49:45.3566070-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="180f623e-f61a-47c6-a6a2-88d88f264680" />
+    <UnitTestResult executionId="0ec65309-ee7b-47e4-a206-4f5519de54d6" testId="67a6e5f5-945c-5f7b-ec2a-8c8c2062edda" testName="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_LateDirectoryLeafRetainsEarlierBytes" computerName="95e438a3e5cb" duration="00:00:00.0008905" startTime="2026-10-03T19:49:45.3259877-04:00" endTime="2026-10-03T19:49:45.3259878-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0ec65309-ee7b-47e4-a206-4f5519de54d6" />
+    <UnitTestResult executionId="c4875536-9db5-447c-88a7-f8d96752ebd7" testId="bfb1bedf-d161-0f3c-b7de-d585b12f9ae9" testName="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_ChecksAllGrantsBeforeRequiredLeafAdmission" computerName="95e438a3e5cb" duration="00:00:00.0007279" startTime="2026-10-03T19:49:45.3237474-04:00" endTime="2026-10-03T19:49:45.3237475-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c4875536-9db5-447c-88a7-f8d96752ebd7" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_MaterializesRequestBeforePhysicalAdmission" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8aad0305-c86d-dc59-84b2-d1fc970468c2">
+      <Execution id="f9939c6d-d995-4669-8b32-3afa73eb1f08" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests" name="ValidateFiles_MaterializesRequestBeforePhysicalAdmission" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_FreshCallsRefuseParentReplacedByNativeDirectoryLink(replaceRoot: True)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ab723c25-f732-f8ff-1849-7f3be5623708">
+      <Execution id="42e0e248-3249-4815-b361-324bd1aa82d0" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests" name="ValidateFiles_FreshCallsRefuseParentReplacedByNativeDirectoryLink" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_LateNonRegularLeafRetainsEarlierBytes" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5b06a9c1-75d6-d4b4-ec7a-61b9b07cd3a5">
+      <Execution id="8993ca16-0526-42ae-abe0-057dd3db8618" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests" name="ValidateFiles_LateNonRegularLeafRetainsEarlierBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_ExactGrantDoesNotAdmitSiblingDirectoryOrCaseAlias" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a302abbb-b218-ea71-e68b-d7ea1b8e3d39">
+      <Execution id="13f8435a-4a73-41de-872e-d428ce241fc1" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests" name="ValidateFiles_ExactGrantDoesNotAdmitSiblingDirectoryOrCaseAlias" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_RequiredLateAbsenceRetainsEarlierBytes" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="67432073-947f-3cce-e6ba-99426a81f017">
+      <Execution id="5945e976-c0d3-49e2-874f-5493e3d31d1d" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests" name="ValidateFiles_RequiredLateAbsenceRetainsEarlierBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_FreshCallRefusesParentReplacedByRegularFile" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5b90d3a9-2262-681f-e4f3-6a3393c6a061">
+      <Execution id="180f623e-f61a-47c6-a6a2-88d88f264680" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests" name="ValidateFiles_FreshCallRefusesParentReplacedByRegularFile" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_FreshCallsRefuseParentReplacedByNativeDirectoryLink(replaceRoot: False)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d7dca19a-012a-818b-f722-5266797b76cb">
+      <Execution id="1a0ca178-0483-4f69-b1f6-01ee244f6091" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests" name="ValidateFiles_FreshCallsRefuseParentReplacedByNativeDirectoryLink" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_OptionalAbsenceDoesNotCreateDirectoriesOrFiles" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c27d6d5a-353e-4373-6df4-ee3723d68b43">
+      <Execution id="3f94f45f-1f12-4980-8546-b5b112507d3e" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests" name="ValidateFiles_OptionalAbsenceDoesNotCreateDirectoriesOrFiles" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_LateDirectoryLeafRetainsEarlierBytes" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="67a6e5f5-945c-5f7b-ec2a-8c8c2062edda">
+      <Execution id="0ec65309-ee7b-47e4-a206-4f5519de54d6" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests" name="ValidateFiles_LateDirectoryLeafRetainsEarlierBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_ChecksAllGrantsBeforeRequiredLeafAdmission" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="bfb1bedf-d161-0f3c-b7de-d585b12f9ae9">
+      <Execution id="c4875536-9db5-447c-88a7-f8d96752ebd7" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests" name="ValidateFiles_ChecksAllGrantsBeforeRequiredLeafAdmission" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.ValidateFiles_LateFileBlockerRetainsEarlierAndBlockerBytes" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9e84a15a-4d48-c1a8-94c4-5dee41017d7e">
+      <Execution id="2fa17465-7e88-4072-ad2d-4001849963fa" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests" name="ValidateFiles_LateFileBlockerRetainsEarlierAndBlockerBytes" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="d7dca19a-012a-818b-f722-5266797b76cb" executionId="1a0ca178-0483-4f69-b1f6-01ee244f6091" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="67432073-947f-3cce-e6ba-99426a81f017" executionId="5945e976-c0d3-49e2-874f-5493e3d31d1d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c27d6d5a-353e-4373-6df4-ee3723d68b43" executionId="3f94f45f-1f12-4980-8546-b5b112507d3e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9e84a15a-4d48-c1a8-94c4-5dee41017d7e" executionId="2fa17465-7e88-4072-ad2d-4001849963fa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5b06a9c1-75d6-d4b4-ec7a-61b9b07cd3a5" executionId="8993ca16-0526-42ae-abe0-057dd3db8618" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8aad0305-c86d-dc59-84b2-d1fc970468c2" executionId="f9939c6d-d995-4669-8b32-3afa73eb1f08" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ab723c25-f732-f8ff-1849-7f3be5623708" executionId="42e0e248-3249-4815-b361-324bd1aa82d0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a302abbb-b218-ea71-e68b-d7ea1b8e3d39" executionId="13f8435a-4a73-41de-872e-d428ce241fc1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5b90d3a9-2262-681f-e4f3-6a3393c6a061" executionId="180f623e-f61a-47c6-a6a2-88d88f264680" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="67a6e5f5-945c-5f7b-ec2a-8c8c2062edda" executionId="0ec65309-ee7b-47e4-a206-4f5519de54d6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bfb1bedf-d161-0f3c-b7de-d585b12f9ae9" executionId="c4875536-9db5-447c-88a7-f8d96752ebd7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="11" executed="11" passed="11" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.15]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:00.99]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.01]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.33]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="69938726-794f-4552-9df4-950cee6bca5b" name="@95e438a3e5cb 2026-10-03 19:50:56" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-03T19:50:56.2464871-04:00" queuing="2026-10-03T19:50:56.2464872-04:00" start="2026-10-03T19:50:53.6957998-04:00" finish="2026-10-03T19:50:56.2511431-04:00" />
+  <TestSettings name="default" id="1807602b-b75a-4356-9f54-04743ce24b89">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-03_19_50_56" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="a89a19c3-7259-454a-9961-02764ab80c6c" testId="dfca8978-990d-c2f6-d1ca-43d8ed36d69f" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.PlainCommittedCallbackFailureKeepsEstablishedLoadDecision" computerName="95e438a3e5cb" duration="00:00:00.1001103" startTime="2026-10-03T19:50:56.1688886-04:00" endTime="2026-10-03T19:50:56.1688888-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a89a19c3-7259-454a-9961-02764ab80c6c">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberPublished, 21),(MemberStaged, 10),(MemberPublished, 10),(MemberStaged, 16),(MemberPublished, 16),(MemberStaged, 17),(MemberPublished, 17),(MemberStaged, 18),(MemberPublished, 18),(MemberStaged, 19),(MemberPublished, 19),(MemberStaged, 22),(MemberPublished, 22),(MemberStaged, 28),(MemberPublished, 28),(MemberStaged, 33),(MemberPublished, 33),(MemberStaged, 36),(MemberPublished, 36),(CommitStaged, -1),(Committed, -1)
+System.InvalidOperationException: Owned committed callback debt
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;&gt;c__DisplayClass42_0.&lt;PlainCommittedCallbackFailureKeepsEstablishedLoadDecision&gt;b__0(TrustedLocalPublicationPhase phase, Int32 _) in [checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeBoundaries.cs:line 293
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;.ctor&gt;b__20_0(TrustedLocalPublicationPhase phase, Int32 index) in [checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs:line 45
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 498
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishNamespaceCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, TrustedLocalNamespacePlan plan, Action`2 observer, PublicationAttempt attempt) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 134
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.&lt;&gt;c__DisplayClass74_0.&lt;PublishNamespaceWithOutcome&gt;b__0(PublicationAttempt attempt) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 28
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 169</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2b41ca37-0420-48ca-ac9b-a0cb951d860f" testId="85b9386f-de75-7272-e8da-401c1e40c167" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.CommittedUnknownEmptyDirectoryDebtPreservesDecisionUntilFreshCleanup(cut: &quot;Committed&quot;)" computerName="95e438a3e5cb" duration="00:00:00.1025421" startTime="2026-10-03T19:50:55.9635828-04:00" endTime="2026-10-03T19:50:55.9635830-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2b41ca37-0420-48ca-ac9b-a0cb951d860f">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberPublished, 21),(MemberStaged, 10),(MemberPublished, 10),(MemberStaged, 16),(MemberPublished, 16),(MemberStaged, 17),(MemberPublished, 17),(MemberStaged, 18),(MemberPublished, 18),(MemberStaged, 19),(MemberPublished, 19),(MemberStaged, 22),(MemberPublished, 22),(MemberStaged, 28),(MemberPublished, 28),(MemberStaged, 33),(MemberPublished, 33),(MemberStaged, 36),(MemberPublished, 36),(CommitStaged, -1),(Committed, -1)
+System.AggregateException: One or more errors occurred. (An unknown namespace child would be lost during recovery; evidence retained.) (Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.)
+ ---&gt; System.IO.InvalidDataException: An unknown namespace child would be lost during recovery; evidence retained.
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PreflightNamespace(CanonicalWriteLease lease, NamespaceJournal journal, Boolean exactAfter, Boolean exactBefore) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 342
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.CleanupNamespace(CanonicalWriteLease lease, NamespaceJournal journal, Action`2 observer) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 645
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishNamespaceCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, TrustedLocalNamespacePlan plan, Action`2 observer, PublicationAttempt attempt) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 135
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.&lt;&gt;c__DisplayClass74_0.&lt;PublishNamespaceWithOutcome&gt;b__0(PublicationAttempt attempt) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 28
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 169
+   --- End of inner exception stack trace ---
+ ---&gt; (Inner Exception #1) BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException: Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.
+ ---&gt; System.IO.InvalidDataException: An unknown namespace child would be lost during recovery; evidence retained.
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PreflightNamespace(CanonicalWriteLease lease, NamespaceJournal journal, Boolean exactAfter, Boolean exactBefore) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 342
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.RecoverNamespace(CanonicalWriteLease lease, NamespaceJournal journal, Action`2 observer) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 454
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 322
+   at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease) in [checkout]/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 62
+   at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease) in [checkout]/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs:line 40
+   --- End of inner exception stack trace ---
+   at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease) in [checkout]/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs:line 41
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 219&lt;---</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3c14dc54-1439-4509-be9b-3739f98b7553" testId="0bce5d02-9911-4104-730b-a3d33e5d2d14" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.CommittedUnknownEmptyDirectoryDebtPreservesDecisionUntilFreshCleanup(cut: &quot;CleanupMember&quot;)" computerName="95e438a3e5cb" duration="00:00:00.4432014" startTime="2026-10-03T19:50:55.8602403-04:00" endTime="2026-10-03T19:50:55.8602529-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3c14dc54-1439-4509-be9b-3739f98b7553">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberPublished, 21),(MemberStaged, 10),(MemberPublished, 10),(MemberStaged, 16),(MemberPublished, 16),(MemberStaged, 17),(MemberPublished, 17),(MemberStaged, 18),(MemberPublished, 18),(MemberStaged, 19),(MemberPublished, 19),(MemberStaged, 22),(MemberPublished, 22),(MemberStaged, 28),(MemberPublished, 28),(MemberStaged, 33),(MemberPublished, 33),(MemberStaged, 36),(MemberPublished, 36),(CommitStaged, -1),(Committed, -1),(CleanupMember, 10),(CleanupMember, 16),(CleanupMember, 17),(CleanupMember, 18),(CleanupMember, 19),(CleanupMember, 21),(CleanupMember, 22),(CleanupMember, 28),(CleanupMember, 33),(CleanupMember, 36)
+System.AggregateException: One or more errors occurred. (An unknown namespace child would be lost during recovery; evidence retained.) (Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.)
+ ---&gt; System.IO.InvalidDataException: An unknown namespace child would be lost during recovery; evidence retained.
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PreflightNamespace(CanonicalWriteLease lease, NamespaceJournal journal, Boolean exactAfter, Boolean exactBefore) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 342
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.CleanupNamespace(CanonicalWriteLease lease, NamespaceJournal journal, Action`2 observer) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 658
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishNamespaceCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, TrustedLocalNamespacePlan plan, Action`2 observer, PublicationAttempt attempt) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 135
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.&lt;&gt;c__DisplayClass74_0.&lt;PublishNamespaceWithOutcome&gt;b__0(PublicationAttempt attempt) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 28
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 169
+   --- End of inner exception stack trace ---
+ ---&gt; (Inner Exception #1) BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException: Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.
+ ---&gt; System.IO.InvalidDataException: An unknown namespace child would be lost during recovery; evidence retained.
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PreflightNamespace(CanonicalWriteLease lease, NamespaceJournal journal, Boolean exactAfter, Boolean exactBefore) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 342
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.RecoverNamespace(CanonicalWriteLease lease, NamespaceJournal journal, Action`2 observer) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 454
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 322
+   at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease) in [checkout]/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 62
+   at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease) in [checkout]/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs:line 40
+   --- End of inner exception stack trace ---
+   at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease) in [checkout]/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs:line 41
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 219&lt;---</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5c1143e3-d02a-4720-be18-ec43271be9e9" testId="3bcbbe8c-c290-3ad5-9122-530918ca98cc" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeExactStageJunctionRetainsIntentUntilRemovedAndFreshlyRecovered" computerName="95e438a3e5cb" duration="00:00:00.1030139" startTime="2026-10-03T19:50:56.0681898-04:00" endTime="2026-10-03T19:50:56.0681900-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5c1143e3-d02a-4720-be18-ec43271be9e9">
+      <Output>
+        <StdOut>Actual native directory link created: OS=Linux/symlink; name=[checkout]-run-20261003/temp/boe-portable-load-e62b5967fdc649b7adc61ba3e42c1352/game_session/lore/.boe-local-10f958824e1d4dc382b6f272d317cf18-28.stage; ownedTarget=[checkout]-run-20261003/temp/boe-portable-load-e62b5967fdc649b7adc61ba3e42c1352/native-boundaries/exact-stage/outside
+Disposition=Uncertain; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1)
+System.AggregateException: One or more errors occurred. (The local file path is not a regular file: [checkout]-run-20261003/temp/boe-portable-load-e62b5967fdc649b7adc61ba3e42c1352/game_session/lore/.boe-local-10f958824e1d4dc382b6f272d317cf18-28.stage) (The local file path is not a regular file: [checkout]-run-20261003/temp/boe-portable-load-e62b5967fdc649b7adc61ba3e42c1352/game_session/lore/.boe-local-10f958824e1d4dc382b6f272d317cf18-28.stage)
+ ---&gt; System.IO.InvalidDataException: The local file path is not a regular file: [checkout]-run-20261003/temp/boe-portable-load-e62b5967fdc649b7adc61ba3e42c1352/game_session/lore/.boe-local-10f958824e1d4dc382b6f272d317cf18-28.stage
+   at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateFileLeaf(String normalized, Boolean allowMissing) in [checkout]/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 182
+   at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateFiles(IEnumerable`1 paths, Boolean allowMissing) in [checkout]/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 163
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PreflightNamespace(CanonicalWriteLease lease, NamespaceJournal journal, Boolean exactAfter, Boolean exactBefore) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 323
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishNamespaceCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, TrustedLocalNamespacePlan plan, Action`2 observer, PublicationAttempt attempt) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 121
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.&lt;&gt;c__DisplayClass74_0.&lt;PublishNamespaceWithOutcome&gt;b__0(PublicationAttempt attempt) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 28
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 169
+   --- End of inner exception stack trace ---
+ ---&gt; (Inner Exception #1) System.IO.InvalidDataException: The local file path is not a regular file: [checkout]-run-20261003/temp/boe-portable-load-e62b5967fdc649b7adc61ba3e42c1352/game_session/lore/.boe-local-10f958824e1d4dc382b6f272d317cf18-28.stage
+   at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateFileLeaf(String normalized, Boolean allowMissing) in [checkout]/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 182
+   at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateFiles(IEnumerable`1 paths, Boolean allowMissing) in [checkout]/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 163
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PreflightNamespace(CanonicalWriteLease lease, NamespaceJournal journal, Boolean exactAfter, Boolean exactBefore) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 323
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.RecoverNamespace(CanonicalWriteLease lease, NamespaceJournal journal, Action`2 observer) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 454
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 322
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 180&lt;---
+
+System.AggregateException: One or more errors occurred. (The local file path is not a regular file: [checkout]-run-20261003/temp/boe-portable-load-e62b5967fdc649b7adc61ba3e42c1352/game_session/lore/.boe-local-10f958824e1d4dc382b6f272d317cf18-28.stage) (The local file path is not a regular file: [checkout]-run-20261003/temp/boe-portable-load-e62b5967fdc649b7adc61ba3e42c1352/game_session/lore/.boe-local-10f958824e1d4dc382b6f272d317cf18-28.stage)
+ ---&gt; System.IO.InvalidDataException: The local file path is not a regular file: [checkout]-run-20261003/temp/boe-portable-load-e62b5967fdc649b7adc61ba3e42c1352/game_session/lore/.boe-local-10f958824e1d4dc382b6f272d317cf18-28.stage
+   at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateFileLeaf(String normalized, Boolean allowMissing) in [checkout]/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 182
+   at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateFiles(IEnumerable`1 paths, Boolean allowMissing) in [checkout]/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 163
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PreflightNamespace(CanonicalWriteLease lease, NamespaceJournal journal, Boolean exactAfter, Boolean exactBefore) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 323
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishNamespaceCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, TrustedLocalNamespacePlan plan, Action`2 observer, PublicationAttempt attempt) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 121
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.&lt;&gt;c__DisplayClass74_0.&lt;PublishNamespaceWithOutcome&gt;b__0(PublicationAttempt attempt) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 28
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 169
+   --- End of inner exception stack trace ---
+ ---&gt; (Inner Exception #1) System.IO.InvalidDataException: The local file path is not a regular file: [checkout]-run-20261003/temp/boe-portable-load-e62b5967fdc649b7adc61ba3e42c1352/game_session/lore/.boe-local-10f958824e1d4dc382b6f272d317cf18-28.stage
+   at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateFileLeaf(String normalized, Boolean allowMissing) in [checkout]/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 182
+   at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateFiles(IEnumerable`1 paths, Boolean allowMissing) in [checkout]/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 163
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PreflightNamespace(CanonicalWriteLease lease, NamespaceJournal journal, Boolean exactAfter, Boolean exactBefore) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 323
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.RecoverNamespace(CanonicalWriteLease lease, NamespaceJournal journal, Action`2 observer) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 454
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 322
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 180&lt;---</StdOut>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.CommittedUnknownEmptyDirectoryDebtPreservesDecisionUntilFreshCleanup(cut: &quot;Committed&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="85b9386f-de75-7272-e8da-401c1e40c167">
+      <Execution id="2b41ca37-0420-48ca-ac9b-a0cb951d860f" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="CommittedUnknownEmptyDirectoryDebtPreservesDecisionUntilFreshCleanup" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.PlainCommittedCallbackFailureKeepsEstablishedLoadDecision" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="dfca8978-990d-c2f6-d1ca-43d8ed36d69f">
+      <Execution id="a89a19c3-7259-454a-9961-02764ab80c6c" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="PlainCommittedCallbackFailureKeepsEstablishedLoadDecision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.CommittedUnknownEmptyDirectoryDebtPreservesDecisionUntilFreshCleanup(cut: &quot;CleanupMember&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="0bce5d02-9911-4104-730b-a3d33e5d2d14">
+      <Execution id="3c14dc54-1439-4509-be9b-3739f98b7553" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="CommittedUnknownEmptyDirectoryDebtPreservesDecisionUntilFreshCleanup" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeExactStageJunctionRetainsIntentUntilRemovedAndFreshlyRecovered" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="3bcbbe8c-c290-3ad5-9122-530918ca98cc">
+      <Execution id="5c1143e3-d02a-4720-be18-ec43271be9e9" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="NativeExactStageJunctionRetainsIntentUntilRemovedAndFreshlyRecovered" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="dfca8978-990d-c2f6-d1ca-43d8ed36d69f" executionId="a89a19c3-7259-454a-9961-02764ab80c6c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="85b9386f-de75-7272-e8da-401c1e40c167" executionId="2b41ca37-0420-48ca-ac9b-a0cb951d860f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0bce5d02-9911-4104-730b-a3d33e5d2d14" executionId="3c14dc54-1439-4509-be9b-3739f98b7553" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3bcbbe8c-c290-3ad5-9122-530918ca98cc" executionId="5c1143e3-d02a-4720-be18-ec43271be9e9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="4" executed="4" passed="4" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.29]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.32]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.34]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.14]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

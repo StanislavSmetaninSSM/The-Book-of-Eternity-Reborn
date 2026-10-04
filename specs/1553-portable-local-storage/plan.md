@@ -108,6 +108,33 @@ integration-only correction build cannot authorize stale unit `-NoBuild` use.
 Subsequent path/batch and explicit namespace/native/cold/v1/v2 consumers plus all five
 separate resource owners remain required. Public B4/T033/full B5 remain open.
 
+### Native Linux non-resource filesystem cohorts GREEN — 2026-10-03 UTC
+
+Separate native Linux commands completed on the unchanged `2da4d545` C# closure:
+
+- Metadata plus transport **39/39**, two descriptors, 52.131 seconds including
+  fresh unit build at `2da4d545`; `load-linux-metadata-green-20261003`
+- Fresh path/batch **46/46**, two descriptors, 7.868 seconds at docs/evidence-only
+  `46414e4f`; `load-linux-path-batch-green-20261003`
+- Explicit namespace/native/cold/v1/v2 consumers **128/128**, eleven descriptors,
+  1:06.690 at `46414e4f`; `load-linux-admission-consumers-green-20261003`
+
+All have complete selections, zero failed/skipped/duplicate cases and complete
+owned/runtime cleanup. Native symlink, hard-link and FIFO bodies executed;
+Windows-spelling rows are pure comparison-contract checks, not Windows filesystem
+execution. The cold bodies use actual owned process cuts and journal-only fresh
+recovery with extraction absent, retaining all independent namespace/protected
+state assertions. Separate Sol 6.1 XHigh cleared the scoped name correction and
+52-case evidence at `46414e4f`; no wider gate is inferred from that narrow review.
+
+The explicit initial Linux selection now includes the eight native-name rows for
+future affected runs. Its 61-case union is backed by separately named initial and
+corrected cohorts, not a fabricated single 61-case execution. Existing category
+budgets remain unchanged. Catalog discovery-only audit and five separately bounded
+resource commands follow; heap 768 MiB/RSS 1 GiB/disk 5 GiB, 180 seconds per child
+except maximum-inventory publication/cut 600 seconds, 10/12-minute category and
+15-minute command controls are unchanged. No aggregate sweep or Windows replay.
+
 ## Authorized local filesystem execution checkpoint
 
 The owner is leaving autonomous execution running and explicitly authorized all
