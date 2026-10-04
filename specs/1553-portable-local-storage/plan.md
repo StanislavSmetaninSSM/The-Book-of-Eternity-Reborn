@@ -4,6 +4,26 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T032-B4 console integration WIP — 2026-10-04
+
+Base and GitHub ref verified clean at `6c8b91d5bbf513a8896cce5d79661a2f9548137d`.
+Spec/plan/tasks consistency check preserves the approved B4 revision: first console,
+then browser transport and handlers. Console tests precede implementation: actual
+four-state result, required service/console refresh failures retaining commit,
+exact established-generation binding, late pending/UI-owner admission, existing
+loop and menu refusal and repeat-load suppression after blocked continuation.
+Three existing runtime consumers remain selected. Category `portable-load-console`
+owns this bounded change; unchanged filesystem/resource cohorts are not repeated.
+
+This RED source checkpoint has no implementation or test-execution claim. PlanOnly,
+causal RED/GREEN, discovery and independent Sol 6.1 XHigh review remain pending.
+The console will retain blocked evidence for the process and require restart for
+reconciliation; no automatic load retry. Required generation-bound post-load UI
+refresh cannot rewrite commit. Existing new-game rebind consumers retain their
+current capture behavior. This is client-owned; GM-authored schema/mechanics and
+examples need no change. Browser, native Windows public-client and live clients/GM,
+worker portability, A4 native producer names and full #1553 remain open.
+
 ## Accepted T032-B4 public entry — 2026-10-04
 
 Separate **gpt-6.1-sol / xhigh** final review passed the bounded public API through

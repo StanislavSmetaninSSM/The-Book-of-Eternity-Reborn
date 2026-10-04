@@ -10783,6 +10783,34 @@
       ]
     }
   ]
-}
+},
+{
+  "id": "portable-load-console",
+  "responsibility": "T032-B4 actual console load typed decisions, established-generation rebind, required refresh and persistent same-process continuation block, late pending/UI-owner admission under replacement lease; existing active/empty runtime consumers. Each test owns mutable state.",
+  "excludes": "Browser transport/handlers, unchanged filesystem and resource cohorts, worker portability and live clients/GM.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 4,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_*",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LoadSelectedSaveAndRebindRuntime_UsesLoadedCanonicalStateInsteadOfSaveListMetadata",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RebindRuntimeAfterSessionReplacement_ActiveReplacementRebindsLoopAndClearsTransientState",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RebindRuntimeAfterSessionReplacement_EmptyReplacementReturnsToMenu"
+      ]
+    }
   ]
+}
+]
 }
