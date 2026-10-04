@@ -1,6 +1,6 @@
 # Передача файлового контура загрузки — #1553
 
-Обновлено: 2026-10-04. Задача [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), ветка **`codex/1553-load-filesystem`**. Файловые B1/B2/B3 и B5-FS приняты: native Linux proof, полный GitHub readback и финальное независимое gpt-6.1-sol / xhigh ревью `6133bfed117d1cbc0d28d5a7e0ea6146b081e8e2` прошли без открытых замечаний. Публичный B4 продолжается и пока не завершён; текущий public-entry checkpoint и отдельный worker blocker описаны в начале plan.md.
+Обновлено: 2026-10-04. Задача [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), ветка **`codex/1553-load-filesystem`**. Файловые B1/B2/B3 и B5-FS приняты: native Linux proof, полный GitHub readback и финальное независимое gpt-6.1-sol / xhigh ревью `6133bfed117d1cbc0d28d5a7e0ea6146b081e8e2` прошли без открытых замечаний. Публичный B4 продолжается и пока не завершён. Узкий public-entry блок принят после отдельного Sol 6.1 XHigh PASS по `59f1317952106150275bb2815ba6fc3ab247822b`; console/browser и worker blocker остаются открытыми (начало plan.md).
 
 ## Восстановление и текущие источники
 

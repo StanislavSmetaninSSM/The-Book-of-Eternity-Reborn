@@ -1,0 +1,16 @@
+{
+  "SchemaVersion": 1,
+  "VerifiedUtc": "2026-10-04T02:34:39.007178+00:00",
+  "SourceCommit": "59f1317952106150275bb2815ba6fc3ab247822b",
+  "SourceTree": "2c82c7e042a280a06b76ddfdae76439b3dbd71f8",
+  "Method": "Fresh depth-1 single-branch HTTPS clone from GitHub into a new empty directory; no old local objects/source copy. Physical tracked bytes independently hashed using Git blob framing.",
+  "TrackedFiles": 4765,
+  "AllPhysicalGitBlobHashesMatch": true,
+  "CleanCheckout": true,
+  "ConnectivityCheck": "git fsck --connectivity-only exit0; shallow snapshot, not full history",
+  "PublicEvidenceJsonParsed": 25,
+  "PublicEvidenceTrxParsed": 6,
+  "BuildOrTestsRepeated": false,
+  "Limit": "Subsequent acceptance-only carrier and three-line stored TRX normalization require separate exact remote readback; this source snapshot does not prove live game/client behavior.",
+  "ReadbackHelperCorrection": "Initial evidence filter matched the readback-directory name and inspected an unrelated historical TRX, raising ParseError before proof creation. Corrected to relative evidence-directory prefix; all six public TRX parse."
+}

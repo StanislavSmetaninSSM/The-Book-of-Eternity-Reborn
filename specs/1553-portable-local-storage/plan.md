@@ -4,6 +4,47 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## Accepted T032-B4 public entry — 2026-10-04
+
+Separate **gpt-6.1-sol / xhigh** final review passed the bounded public API through
+`59f1317952106150275bb2815ba6fc3ab247822b`, with no actionable public-entry defect.
+Public `LoadGameWithOutcomeAsync` exposes the established four-state result; the
+old bool wrapper delegates to it and means commitment only, even when postcommit
+follow-up blocks continuation. It never authorizes retry or continuation. The active
+original physical loader body is removed. Exact superseded tests are retired with
+replacement proof; profile conflict and source preflight guards are migrated.
+
+Evidence remains source-specific: public entry **6/6** at `d0a8be96`, six distinct
+direct consumers passing within its retained partial 7/13 command, and final
+**223-category/10,565-identity discovery**, zero execution, at `b72d07b7`. The separate
+worker diagnostic is **0/1**, before Load dispatch in unchanged runtime code; earlier
+initiating failure is unknown beneath the observed kernel32 cleanup exception.
+**T031-WORKER-PORTABLE remains open**, with test and evidence retained. There is no
+combined 13/13 pass, worker acceptance, new Windows execution or full B4 closure.
+
+Final review also found three generated TRX trailing-whitespace lines. Only stored
+TRX whitespace is normalized in this carrier; its stored length/hash is updated and
+original bytes/hash remain preserved. No runtime, tests, catalog or selection changes
+follow the reviewed source. Dates and metrics in earlier WIP notes retain
+their historical meanings. [Fresh GitHub restoration](recovery/load-public-entry-github-readback.json) of
+`59f1317952106150275bb2815ba6fc3ab247822b` verified all 4,765 physical tracked-file blob hashes,
+clean checkout/connectivity, 25 public-evidence JSON and 6 TRX parses. No build
+or test was repeated. This final acceptance/whitespace carrier is separately read
+back from GitHub before handoff; neither restoration qualifies live gameplay.
+
+Next: actual console and browser typed consumers. Bind console required runtime
+refresh to the established generation and preserve commit on late failure; stop
+unsafe same-process continuation. Recheck pending-turn/UI-owner admission under the
+held replacement lease before mutation, retaining exact owner token release and
+uncertain evidence. The existing browser replacement coordinator currently converts
+all outcomes to success/failure; preserve typed disposition/source ID/generation,
+follow-up and continuation flags through its DTO and every HTTP status. Both
+GameLauncher and SettingsView must handle repeat dispatch, unmount/newer navigation,
+lost response and required-refresh failure without automatic retry or erased commit.
+The existing B4 spec is authoritative; refine this source-backed approach in the
+same plan as needed. No repeated unchanged filesystem/resource cohort. A4 producer
+case pairs, actual live clients/GM, full T032/B4/B5 and #1553 stay open.
+
 ## T032-B4 public typed entry WIP — 2026-10-04
 
 Base/remote verified clean: `7deb7c3e9fd5262d0750f3abefddc57d6e941892`, branch

@@ -48,8 +48,9 @@
       "OriginalSha256": "c625f5f662fc65dfd5a33063f953c8167fb46e7b87149d451e4093500ef054f0",
       "Embedded": true,
       "StoredPath": "portable-load-worker-ordering-unit-001.trx",
-      "StoredBytes": 12730,
-      "StoredSha256": "b77aaa8985c5ef0185f7ce6ef51797b311b3a652603ce096740669a0dec2e69f"
+      "StoredBytes": 12721,
+      "StoredSha256": "5b513fa6bf72c2c9bb96a50060463de8cc7cffc65cf8986a5e11bba109a27b67",
+      "AdditionalSanitization": "Trailing horizontal whitespace removed from generated TRX; original raw length/hash unchanged."
     },
     {
       "Path": "summary.json",
