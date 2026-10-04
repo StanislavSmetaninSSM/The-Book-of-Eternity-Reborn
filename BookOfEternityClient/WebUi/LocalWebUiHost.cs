@@ -25,7 +25,10 @@ public static class LocalWebUiHost
         WriteIndented = true
     };
 
-    public static WebApplication Build(string[] args, LocalWebUiHostOptions options)
+    public static WebApplication Build(string[] args, LocalWebUiHostOptions options) => Build(args, options, hooks: null);
+
+    /// <summary>Builds the same host with controlled filesystem boundaries for isolated contract tests.</summary>
+    internal static WebApplication Build(string[] args, LocalWebUiHostOptions options, FileSystemManagerHooks? hooks)
     {
         if (!IsLocalUrl(options.Url))
             throw new InvalidOperationException("Local Web UI can only bind to localhost/loopback URLs.");
@@ -47,7 +50,8 @@ public static class LocalWebUiHost
         });
 
         builder.Services.AddSingleton(sp =>
-            new FileSystemManager(options.BasePath, sp.GetRequiredService<ILogger<FileSystemManager>>()));
+            new FileSystemManager(options.BasePath, sp.GetRequiredService<ILogger<FileSystemManager>>(),
+                PhysicalLoadTransactionOperations.Instance, hooks));
         builder.Services.AddSingleton(new GameSettings());
         builder.Services.AddSingleton(sp =>
             new StateManager(

@@ -36,6 +36,7 @@ export function createSettingsComponentHarness() {
   const save = deferred<any>();
   const audioWrite = deferred<any>();
   const command = deferred<any>();
+  const action = deferred<any>();
   const persistedSettings = {
     language: { value: 'ru', choices: [] }, difficulty: { value: 'normal', choices: [] },
     showGmThoughts: false, accessibility: { fontScalePercent: 100, uiScalePercent: 100, reducedMotion: false },
@@ -61,11 +62,11 @@ export function createSettingsComponentHarness() {
   const refreshOwner = { current: 0 };
   const api = {
     getMainMenu: async () => { ordinaryReads++; return ok(shell.menu); },
-    getSessionStatus: async () => ok({}), getGameScreen: async () => ok({}),
+    getSessionStatus: async () => ok({}), getGameScreen: async () => ok({ theme: { key: 'mortal-world', label: 'Мир', icon: 'book', accent: '#fff' } }),
     getAudioSettings: async () => ok(initialAudio), getClientSettings: async () => ok(persistedSettings),
     getCommandCoverage: async () => ok({}),
     executeExplorerCommand: () => { commandPosts++; return command.promise; },
-    submitPlayerAction: async () => { actionPosts++; return ok({ success: true, playerMessage: '' }); },
+    submitPlayerAction: () => { actionPosts++; return action.promise; },
     updateClientSettings: async () => { settingsPosts++; return ok(persistedSettings); },
     loadSave: () => { loadPosts++; return load.promise; },
     createSave: () => { savePosts++; return save.promise; },
@@ -206,7 +207,7 @@ export function createSettingsComponentHarness() {
   const launcher = () => renderer('src/components/GameLauncher.tsx', 'GameLauncher', { menu: shell.menu });
   const settings = () => renderer('src/components/SettingsView.tsx', 'SettingsView');
   const audio = (writeScope: { generation: number }) => renderer('src/components/AudioPanel.tsx', 'AudioPanel', { writeScope });
-  return { settings, launcher, provider, audio, shell, load, save, command, audioWrite, initialAudio, persistedSettings, timers,
+  return { settings, launcher, provider, audio, shell, load, save, command, action, audioWrite, initialAudio, persistedSettings, timers,
     setRefreshFailure: () => { refreshFailure = true; },
     setRealRefreshClient: (client: unknown) => { realRefreshClient = client; },
     realRefreshState: () => realRefreshState,

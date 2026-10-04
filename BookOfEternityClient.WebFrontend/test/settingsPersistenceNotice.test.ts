@@ -168,7 +168,7 @@ await scenario('actual consumers fence dispatch and cancel settings before save 
   }
   const settings = readFileSync(join(root, 'src', 'components', 'SettingsView.tsx'), 'utf8');
   const load = settings.slice(settings.indexOf('async function loadSaveSlot'), settings.indexOf('if (!settings)'));
-  assert(load.indexOf('invalidatePendingSettings()') >= 0 && load.indexOf('invalidatePendingSettings()') < load.indexOf('await browserApi.loadSave'), 'Save load begins before pending settings lose ownership.');
+  assert(load.indexOf('invalidatePendingSettings()') >= 0 && load.indexOf('invalidatePendingSettings()') < load.indexOf('browserApi.loadSave'), 'Save load begins before pending settings lose ownership.');
   assert(settings.includes('clearTimeout(updateQueue.current)') && settings.includes('writeScope.current.generation++'), 'Unmount/load does not invalidate the shared settings/audio scope.');
 });
 
@@ -216,11 +216,11 @@ await scenario('shared refresh checks optional owner after asynchronous reads be
   assert(context.includes('loadBrowserState: (isCurrent?: () => boolean) => Promise<void>'), 'Context type drops the optional refresh owner.');
   assert(/loadBrowserState:\s*loadBrowserStateCore/.test(context) && context.includes('= useShellState(advancedEnabled)'), 'Context no longer obtains the tested owned refresh function.');
   const wrapperStart = context.indexOf('const loadBrowserState = useCallback');
-  const wrapperEnd = context.indexOf('}, [loadBrowserStateCore]);', wrapperStart);
+  const wrapperEnd = context.indexOf('const refreshAfterSave = useCallback', wrapperStart);
   assert(wrapperStart >= 0 && wrapperEnd > wrapperStart, 'Context does not retain its owned ordinary refresh wrapper.');
   const wrapper = context.slice(wrapperStart, wrapperEnd).replace(/\s+/g, ' ');
-  assert(wrapper.includes('await saveContinuationLatch.current.runIfAllowed(() => loadBrowserStateCore('), 'A save continuation stop does not fence ordinary refresh dispatch.');
-  assert(wrapper.includes('() => !saveContinuationLatch.current.isBlocked() && (isCurrent?.() ?? true)'), 'Wrapped refresh drops either caller response ownership or the save stop before publication.');
+  assert(context.includes('saveContinuationLatch.current.isBlocked() || loadController.current.isBlocked()') && wrapper.includes('if (continuationBlocked() || isLoadInProgress()) return;'), 'A save/load continuation stop does not fence ordinary refresh dispatch.');
+  assert(wrapper.includes('() => !continuationBlocked() && !isLoadInProgress() && (isCurrent?.() ?? true)'), 'Wrapped refresh drops caller ownership or the save/load stop before publication.');
   const providedValue = context.slice(context.indexOf('const value = useMemo<ShellContextValue>'), context.indexOf('}), [', context.indexOf('const value = useMemo<ShellContextValue>')));
   assert(/\bloadBrowserState\s*,/.test(providedValue), 'Context no longer provides the guarded owned refresh wrapper to consumers.');
   assert(hook.includes('isCurrent: () => boolean = () => true'), 'Refresh lacks optional response ownership.');

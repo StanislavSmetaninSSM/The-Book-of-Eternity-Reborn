@@ -91,6 +91,41 @@ frontend type/build/affected consumers, discovery and separate Sol 6.1 XHigh rev
 pending. New current-source tests, source guards and exact evidence remain mandatory;
 no B4/browser acceptance is claimed by this WIP checkpoint.
 
+### Browser independent review corrections — WIP, 2026-10-04 17:12 UTC
+
+Separate **gpt-6.1-sol / xhigh** review of `49b1b364..0491944` identified:
+1. Existing UI lock helpers create absent generation during initial admission,
+   revalidation and release. Fresh native tests executed 11/11: prior 9 passed and
+   both new absence cases failed causally. Candidate now guards all three boundaries
+   using ReadExistingSessionGeneration on held leases; current corrected C# is unrun.
+2. A pre-load command/action response arriving after healthy load finish could publish
+   old UI or send pendingGmAction to the new session. Three actual-provider cases failed
+   causally. Candidate now retains an operation epoch through every response/catch/
+   finally, invalidates it at load admission and clears old command presentation.
+3. Required menu options could read cached pre-reconciliation settings. A new actual
+   HTTP cached-settings assertion is written; its causal run and ordering correction
+   are pending. Additional actual read/final-close rotation, tagged absence, missing
+   authority and game-read failure cases were added with isolated host filesystem hooks.
+
+At `0491944`, bundle/affected HTTP independently passed 7/7 in 15.503 seconds.
+Initial frontend run passed its type and save consumers, then raw browser Vitest
+30/33 (three provider fixtures lacked theme). Corrected provider fixtures and expanded
+ownership coverage subsequently passed 42 browser assertions; selected unchanged
+settings consumers also passed, for 69 completed assertions/file cases before the
+next Node source-guard file failed two obsolete implementation-string expectations
+(20/22 raw scenarios). Those guards now assert the new common handler ordering and
+combined save/load continuation fence without dropping their prior requirement.
+The later settings-reconciliation file was unrun in that partial command. Production
+frontend typecheck/build completed in preparation. Exact overlaps are kept separately
+in load-browser-frontend-candidate, load-browser-absence-red, load-browser-epoch-red,
+load-browser-bundle-candidate and load-browser-frontend-consumers-partial.
+
+Four deferred-refresh handler fixtures initially retained a stale test callback; they
+now rerender after injecting the controlled refresh and pass. This is harness evidence,
+not a production regression. Independent review remains open; no accepted browser/B4
+claim. Publication incident evidence distinguishes returned cancellation text from the
+owner's reported intent and from generic security flags; no bypass or reconnect occurred.
+
 ## Current verification scope — owner decision, 2026-10-04 15:45 UTC
 
 Browser verification is now exclusively test-based at the code level, including

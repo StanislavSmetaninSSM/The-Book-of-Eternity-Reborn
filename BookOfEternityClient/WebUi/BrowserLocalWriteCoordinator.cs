@@ -89,6 +89,9 @@ public sealed partial class BrowserLocalWriteCoordinator
                 if (BrowserPendingTurnInspector.Build(_fs, writeLease).HasActiveGmTurn)
                     return new(LoadReplacementDisposition.NotLoaded, null, null, false,
                         new InvalidOperationException("Load admission refused an active turn."));
+                if (_fs.ReadExistingSessionGeneration(writeLease) == null)
+                    return new(LoadReplacementDisposition.NotLoaded, null, null, false,
+                        new InvalidOperationException("Load admission requires existing browser session authority."));
                 var acquisition = await _lockService.AcquireOrRefreshAsync(writeLease,
                     BuildOwner(request), request.OperationLabel);
                 if (!acquisition.Acquired || acquisition.Lease == null)
@@ -102,6 +105,8 @@ public sealed partial class BrowserLocalWriteCoordinator
             {
                 if (BrowserPendingTurnInspector.Build(_fs, writeLease).HasActiveGmTurn)
                     throw new InvalidOperationException("Load admission refused a late active turn.");
+                if (!string.Equals(_fs.ReadExistingSessionGeneration(writeLease), replacementGuard.SessionGeneration, StringComparison.Ordinal))
+                    throw new InvalidOperationException("Load admission no longer owns the original generation.");
                 var refreshed = await _lockService.RefreshAsync(writeLease, replacementGuard, request.OperationLabel);
                 if (!refreshed.Acquired)
                     throw new InvalidOperationException("Load admission no longer owns the exact UI lease.");
@@ -120,7 +125,12 @@ public sealed partial class BrowserLocalWriteCoordinator
         if (replacementGuard != null && !retained.ContinuationBlocked &&
             retained.Disposition is LoadReplacementDisposition.NotLoaded or LoadReplacementDisposition.RolledBack)
         {
-            try { await _lockService.ReleaseAsync(replacementGuard); }
+            try
+            {
+                await using var releaseLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                if (string.Equals(_fs.ReadExistingSessionGeneration(releaseLease), replacementGuard.SessionGeneration, StringComparison.Ordinal))
+                    await _lockService.ReleaseAsync(releaseLease, replacementGuard);
+            }
             catch (Exception failure) { retained = retained.WithFollowUp(failure, blocksContinuation: true); }
         }
         return retained;

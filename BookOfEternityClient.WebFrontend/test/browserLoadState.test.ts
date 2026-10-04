@@ -76,6 +76,40 @@ describe('actual ShellProvider owns load admission and blocked continuation', ()
     expect(shell().loadContinuationNotice.disposition).toBe('Uncertain');
     expect(h.counts()).toMatchObject({ commandPosts: 0, actionPosts: 0, ordinaryReads: baseline });
   });
+  it('clears an already-present command view when load takes ownership', async () => {
+    const h = createSettingsComponentHarness(); const view = h.provider(); await flushPromises(); view.render();
+    const shell = () => view.tree.props.value; const work = shell().executeCommand('/old');
+    h.command.resolve({ ok: true, status: 200, data: { state: 'Completed', blocks: [] } }); await work; view.render();
+    expect(shell().isCommandView).toBe(true);
+    const owner = shell().beginLoad(); shell().finishLoad(owner); view.render();
+    expect(shell().commandResult).toBeNull(); expect(shell().isCommandView).toBe(false);
+  });
+  it('a command reply cannot publish or dispatch an old GM action after a healthy load has finished', async () => {
+    const h = createSettingsComponentHarness(); const view = h.provider(); await flushPromises(); view.render();
+    const shell = () => view.tree.props.value; const command = shell().executeCommand('/old');
+    const owner = shell().beginLoad(); shell().finishLoad(owner); shell().setActiveRoute('settings');
+    h.command.resolve({ ok: true, status: 200, data: { state: 'Completed', blocks: [], pendingGmAction: 'old action' } });
+    await flushPromises(); view.render();
+    expect(shell().activeRoute).toBe('settings'); expect(shell().commandResult).toBeNull();
+    expect(h.counts().actionPosts).toBe(0);
+    await command;
+  });
+  for (const source of ['direct-action', 'command-follow-up'] as const) {
+    it(`${source}: discards an old action response after successful load finish`, async () => {
+      const h = createSettingsComponentHarness(); const view = h.provider(); await flushPromises(); view.render();
+      const shell = () => view.tree.props.value;
+      if (source === 'direct-action') shell().submitComposerText('old action');
+      else {
+        void shell().executeCommand('/old');
+        h.command.resolve({ ok: true, status: 200, data: { state: 'Completed', blocks: [], pendingGmAction: 'old action' } });
+        await flushPromises();
+      }
+      expect(h.counts().actionPosts).toBe(1);
+      const owner = shell().beginLoad(); shell().finishLoad(owner);
+      h.action.resolve({ ok: true, status: 200, data: { success: true, playerMessage: 'OLD RESPONSE' } });
+      await flushPromises(); view.render(); expect(shell().composerNotice).not.toBe('OLD RESPONSE');
+    });
+  }
   it('a command dispatched earlier cannot navigate after load stops continuation', async () => {
     const h = createSettingsComponentHarness(); const view = h.provider(); await flushPromises(); view.render();
     const shell = () => view.tree.props.value; const command = shell().executeCommand('/help');

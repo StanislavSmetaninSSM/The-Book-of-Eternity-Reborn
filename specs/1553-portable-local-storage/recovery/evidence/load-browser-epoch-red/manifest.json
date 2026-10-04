@@ -1,0 +1,58 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "0491944c3a2873984decfedb1d063bf6515cd830",
+  "SourceResultDirectory": "20261004-130731-387-6-46ce634e7a1c427a92b8cabae0239c20-categories",
+  "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Runtime": "native Linux x64",
+  "Toolchain": {
+    "PowerShell": "7.6.6",
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31"
+  },
+  "TelemetryOptOuts": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1"
+  },
+  "DOTNET_PROCESSOR_COUNT": "1",
+  "PathSanitization": "Absolute checkout/run-root/toolchain paths replaced; raw and stored hashes retained",
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 2542,
+      "OriginalSha256": "d2410fcadadef13dd9437964c48bb793664bf782c9434b90688ffffc095018ba",
+      "Embedded": true,
+      "StoredPath": "dotnet-test.log",
+      "StoredBytes": 2434,
+      "StoredSha256": "f4459f659c20fc2887eb3bec383fbc553468c48cf0998396bd796a239a45173a"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 1018,
+      "OriginalSha256": "d543b9b6a7ddb7aac5f7e6bd2e8b0073305195b3fd647208417450ef9b86e98e",
+      "Embedded": true,
+      "StoredPath": "plan.json",
+      "StoredBytes": 1018,
+      "StoredSha256": "d543b9b6a7ddb7aac5f7e6bd2e8b0073305195b3fd647208417450ef9b86e98e"
+    },
+    {
+      "Path": "portable-load-browser-handlers-frontend-001.vitest.json",
+      "OriginalBytes": 20901,
+      "OriginalSha256": "048dd213b0b2285ba5b5952702d1ce11d164693025b909e2f949715ec08ee47d",
+      "Embedded": true,
+      "StoredPath": "portable-load-browser-handlers-frontend-001.vitest.json",
+      "StoredBytes": 20326,
+      "StoredSha256": "394f3b59d45f12c822ba67f1782828614639cb56da2f3103d841dc3f3464261b"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1555,
+      "OriginalSha256": "69ac7687bb192e80bce80ee4dda04ab5915caf3d87c290157bcde7349aad961f",
+      "Embedded": true,
+      "StoredPath": "summary.json",
+      "StoredBytes": 1555,
+      "StoredSha256": "69ac7687bb192e80bce80ee4dda04ab5915caf3d87c290157bcde7349aad961f"
+    }
+  ],
+  "MeasuredChildren": 0
+}

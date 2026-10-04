@@ -563,6 +563,93 @@ public sealed class LocalWebUiHostTests : IDisposable
         }
     }
 
+    /// <summary>Rejects partial bundle publication at live read/final-close cuts and preserves recognized prior absence.</summary>
+    /// <param name="scenario">Selects rotation, required read failure, absent chapter/authority or stale cached options.</param>
+    [Theory]
+    [InlineData("rotate-read")]
+    [InlineData("rotate-close")]
+    [InlineData("game-read-failure")]
+    [InlineData("no-active")]
+    [InlineData("absent-authority")]
+    [InlineData("cached-settings")]
+    [InlineData("mixed-request")]
+    public async Task LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(string scenario)
+    {
+        if (scenario != "no-active")
+            WriteSessionFile("game_state/meta/soul_state.json", """{"soulName":"Bound Soul","currentRealm":"Mortal World","currentIncarnation":1}""");
+        await InitializeCanonicalResourceAuthorityAsync();
+        if (scenario == "game-read-failure") WriteSessionFile(QteSceneService.QteOfferPath, "{}");
+        FileSystemManager? files = null;
+        var armed = false; var cuts = 0;
+        var newer = Guid.NewGuid().ToString("N");
+        void Rotate()
+        {
+            cuts++;
+            File.WriteAllBytes(files!.SessionGenerationPath,
+                JsonSerializer.SerializeToUtf8Bytes(new { schemaVersion = 1, generationId = newer }));
+        }
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalReadOpenAsync = path =>
+            {
+                if (!armed) return Task.CompletedTask;
+                if (scenario == "rotate-read" && path == "config.json" && cuts == 0) Rotate();
+                if (scenario == "game-read-failure" && path == QteSceneService.QteOfferPath)
+                { cuts++; throw new IOException("private required game read cut"); }
+                return Task.CompletedTask;
+            },
+            SessionOperationClosingAsync = () =>
+            {
+                if (armed && scenario == "rotate-close" && cuts == 0) Rotate();
+                return Task.CompletedTask;
+            }
+        };
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url), hooks);
+        files = app.Services.GetRequiredService<FileSystemManager>();
+        await app.StartAsync();
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var generation = JsonNode.Parse(File.ReadAllText(files.SessionGenerationPath))!["generationId"]!.GetValue<string>();
+        if (scenario == "absent-authority") File.Delete(files.SessionGenerationPath);
+        if (scenario == "cached-settings")
+        {
+            var state = app.Services.GetRequiredService<StateManager>();
+            state.Settings.MusicEnabled = true; state.Settings.SoundEnabled = true;
+            var configuration = JsonNode.Parse(File.ReadAllText(files.ResolvePath("config.json")))!;
+            configuration["musicEnabled"] = false; configuration["soundEnabled"] = false; configuration["language"] = "en";
+            await files.WriteFileAtomicAsync("config.json", configuration.ToJsonString());
+        }
+        armed = true;
+        var current = scenario is "no-active" or "absent-authority" or "cached-settings";
+        using var response = await client.PostAsJsonAsync("/api/saves/load-state", new
+        { establishedGeneration = current ? null : generation, reconcileCurrent = current || scenario == "mixed-request" });
+        var text = await response.Content.ReadAsStringAsync();
+        var bundle = JsonNode.Parse(text)!;
+        Assert.DoesNotContain("private", text);
+        var success = scenario is "no-active" or "cached-settings";
+        Assert.Equal(success ? HttpStatusCode.OK : HttpStatusCode.Conflict, response.StatusCode);
+        if (success)
+        {
+            Assert.Equal(generation, bundle["establishedGeneration"]!.GetValue<string>());
+            if (scenario == "no-active")
+            {
+                Assert.True(bundle["noActiveSession"]!.GetValue<bool>()); Assert.Null(bundle["game"]);
+                foreach (var required in new[] { "menu", "session", "settings", "audio" }) Assert.NotNull(bundle[required]);
+            }
+            else
+            {
+                Assert.False(bundle["menu"]!["options"]!["musicEnabled"]!.GetValue<bool>());
+                Assert.False(bundle["menu"]!["options"]!["soundEnabled"]!.GetValue<bool>());
+                Assert.False(bundle["audio"]!["musicEnabled"]!.GetValue<bool>());
+                Assert.False(bundle["audio"]!["soundEnabled"]!.GetValue<bool>());
+                Assert.Equal("en", bundle["settings"]!["language"]!["value"]!.GetValue<string>());
+            }
+        }
+        else foreach (var required in new[] { "menu", "session", "game", "settings", "audio" }) Assert.Null(bundle[required]);
+        if (scenario == "absent-authority") Assert.False(File.Exists(files.SessionGenerationPath));
+        if (scenario is "rotate-read" or "rotate-close" or "game-read-failure") Assert.True(cuts > 0);
+    }
+
     [Fact]
     public async Task SaveCreateEndpoint_CreatesManualSaveVisibleInMenu()
     {

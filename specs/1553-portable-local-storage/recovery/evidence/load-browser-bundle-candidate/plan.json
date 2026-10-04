@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "portable-load-browser-refresh"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "0491944c3a2873984decfedb1d063bf6515cd830",
+    "WorkingTreeFingerprint": "B3C1CCB6D54CFF101D5B64EFE2263BBA92955DB135C445B52B6CD7F189953A13",
+    "ChangedFiles": 3
+  },
+  "PreparationSeconds": 3.1708391,
+  "Descriptors": [
+    {
+      "Name": "portable-load-browser-refresh-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-browser-refresh",
+      "Categories": [
+        "portable-load-browser-refresh"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock|FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration|FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked|FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

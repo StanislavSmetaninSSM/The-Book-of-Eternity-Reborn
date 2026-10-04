@@ -1,0 +1,142 @@
+{
+  "Categories": [
+    "portable-load-browser-handlers",
+    "portable-settings-consumers",
+    "portable-settings-notices"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "0491944c3a2873984decfedb1d063bf6515cd830",
+    "WorkingTreeFingerprint": "C831AB8522BB0ACB84B0217A4C236CADEFC0862103159E500D44FE265756F9FC",
+    "ChangedFiles": 8
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-load-browser-handlers",
+      "Seconds": 1.7739064,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-settings-consumers",
+      "Seconds": 1.2048645,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-settings-notices",
+      "Seconds": 0.9926704,
+      "BudgetMinutes": 4,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [
+    {
+      "Descriptor": "portable-load-browser-handlers-frontend-001",
+      "Adapter": "vitest",
+      "VerificationKind": "tests",
+      "Results": 42,
+      "Seconds": 1.7599057
+    },
+    {
+      "Descriptor": "portable-settings-consumers-frontend-002",
+      "Adapter": "node",
+      "VerificationKind": "tests",
+      "Results": 2,
+      "Seconds": 0.6756838
+    },
+    {
+      "Descriptor": "portable-settings-consumers-frontend-003",
+      "Adapter": "vitest",
+      "VerificationKind": "tests",
+      "Results": 25,
+      "Seconds": 0.5280748
+    }
+  ],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0569072,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0119257,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0116148,
+      "Completed": true
+    },
+    {
+      "Name": "Frontend-build",
+      "Seconds": 4.728995,
+      "Completed": true
+    },
+    {
+      "Name": "portable-load-browser-handlers-frontend-001",
+      "Seconds": 1.7158211,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-consumers-frontend-002-compile",
+      "Seconds": 0.5497314,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-consumers-frontend-002-audioPanelCatalogVisibility.test.js",
+      "Seconds": 0.0581029,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-consumers-frontend-002-gracefulDegradation.test.js",
+      "Seconds": 0.0566905,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-consumers-frontend-003",
+      "Seconds": 0.5198355,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-notices-frontend-004-compile",
+      "Seconds": 0.9172947,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-notices-frontend-004-settingsPersistenceNotice.test.js",
+      "Seconds": 0.0694107,
+      "Completed": false
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 8,
+  "WallTime": "00:00:09.0943755",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 5,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 8,
+    "CompletedCases": 69,
+    "UnderfilledDescriptors": [
+      "portable-settings-notices-frontend-004",
+      "portable-settings-notices-frontend-005"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 69,
+    "Executed": 69,
+    "Passed": 69,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

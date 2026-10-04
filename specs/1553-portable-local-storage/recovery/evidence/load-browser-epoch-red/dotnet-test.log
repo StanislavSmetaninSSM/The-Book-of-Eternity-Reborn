@@ -1,0 +1,53 @@
+RequestedLane: Categories
+EffectiveLane: Categories
+Filter: <pending validation>
+TimeoutMinutes: 5
+StartedUtc: 2026-10-04T17:07:31.3988625Z
+Owned process 'Revision': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== Revision: stdout =====
+0491944c3a2873984decfedb1d063bf6515cd830
+
+===== Revision: stderr =====
+
+===== Revision: exit 0 =====
+Owned process 'Changed-paths': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== Changed-paths: stdout =====
+BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts
+BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts
+BookOfEternityClient.WebFrontend/test/helpers/settingsComponentHarness.ts
+
+===== Changed-paths: stderr =====
+
+===== Changed-paths: exit 0 =====
+Owned process 'New-paths': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== New-paths: stdout =====
+
+===== New-paths: stderr =====
+
+===== New-paths: exit 0 =====
+Owned process 'portable-load-browser-handlers-frontend-001': FileName=node; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=node
+
+===== portable-load-browser-handlers-frontend-001: stdout =====
+JSON report written to [checkout]/TestResults/test-categories/20261004-130731-387-6-46ce634e7a1c427a92b8cabae0239c20-categories/portable-load-browser-handlers-frontend-001.vitest.json
+
+===== portable-load-browser-handlers-frontend-001: stderr =====
+
+===== portable-load-browser-handlers-frontend-001: exit 1 =====
+
+Category result
+  Categories: portable-load-browser-handlers
+  Filter: <none>
+  Timeout: 5 minute(s)
+  Wall time: 00:00:01.8858675
+  Exit code: 1
+  Timed out: False
+  Owned-tree cleanup: complete
+  Planned selection: descriptors=1, cases=2; completed descriptors=0, cases=0, complete=False
+  Tests: total=0, executed=0, passed=0, failed=0
+  Duplicate test IDs: 0
+  Results: [checkout]/TestResults/test-categories/20261004-130731-387-6-46ce634e7a1c427a92b8cabae0239c20-categories
+  Log: [checkout]/TestResults/test-categories/20261004-130731-387-6-46ce634e7a1c427a92b8cabae0239c20-categories/dotnet-test.log
+  Failure: portable-load-browser-handlers-frontend-001 failed with exit code 1.

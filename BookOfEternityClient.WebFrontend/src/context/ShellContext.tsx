@@ -163,6 +163,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
   const [commandResult, setCommandResult] = useState<ExplorerCommandResult | null>(null);
   const [isCommandView, setIsCommandView] = useState(false);
   const composerSubmissionInFlight = useRef(false);
+  const operationEpoch = useRef(0);
   const { shellState, loadBrowserState: loadBrowserStateCore, refreshAfterSave: refreshAfterSaveCore,
     refreshAfterLoad: refreshAfterLoadCore, invalidateRefresh } = useShellState(advancedEnabled);
   const saveContinuationLatch = useRef(createSaveContinuationLatch());
@@ -178,7 +179,12 @@ export function ShellProvider({ children }: { children: ReactNode }) {
   const beginLoad = useCallback(() => {
     if (continuationBlocked()) return null;
     const owner = loadController.current.begin();
-    if (owner) { invalidateRefresh(); setLoadInProgress(true); }
+    if (owner) {
+      operationEpoch.current++;
+      composerSubmissionInFlight.current = false;
+      setCommandResult(null); setIsCommandView(false); setComposerNotice(null);
+      invalidateRefresh(); setLoadInProgress(true);
+    }
     return owner;
   }, [continuationBlocked, invalidateRefresh]);
   const isLoadCurrent = useCallback((owner: BrowserLoadOwner) =>
@@ -245,10 +251,12 @@ export function ShellProvider({ children }: { children: ReactNode }) {
 
   const executeCommand = useCallback(async (command: string) => {
     if (continuationBlocked() || isLoadInProgress()) return;
+    const epoch = operationEpoch.current;
+    const isCurrent = () => epoch === operationEpoch.current && !continuationBlocked() && !isLoadInProgress();
     setComposerNotice('Выполняю команду…');
     try {
       const result = await browserApi.executeExplorerCommand({ command, advancedEnabled });
-      if (continuationBlocked() || isLoadInProgress()) return;
+      if (!isCurrent()) return;
       if (result.ok) {
         setCommandResult(advancedEnabled ? result.data : sanitizeExplorerCommandResultForPlayer(result.data));
         setIsCommandView(true);
@@ -257,6 +265,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
         if (pendingGmAction && !continuationBlocked()) {
           setComposerNotice('Запрос отправляется ГМ. Витрина подготавливается…');
           const actionResult = await browserApi.submitPlayerAction({ text: pendingGmAction });
+          if (!isCurrent()) return;
           if (actionResult.ok && actionResult.data.success) {
             setComposerNotice(actionResult.data.playerMessage || 'Запрос отправлен ГМ. Дождитесь обновления витрины.');
           } else if (actionResult.ok) {
@@ -271,28 +280,30 @@ export function ShellProvider({ children }: { children: ReactNode }) {
         setComposerNotice(result.playerMessage);
       }
     } catch {
-      setComposerNotice('Ошибка соединения при выполнении команды.');
+      if (isCurrent()) setComposerNotice('Ошибка соединения при выполнении команды.');
     }
-    void loadBrowserState();
-  }, [advancedEnabled, loadBrowserState]);
+    if (isCurrent()) void loadBrowserState();
+  }, [advancedEnabled, loadBrowserState, continuationBlocked, isLoadInProgress]);
 
   const submitComposerText = useCallback((text: string) => {
     const normalized = text.trim();
     if (!normalized || composerSubmissionInFlight.current || continuationBlocked() || isLoadInProgress()) return;
 
+    const epoch = operationEpoch.current;
+    const isCurrent = () => epoch === operationEpoch.current && !continuationBlocked() && !isLoadInProgress();
     composerSubmissionInFlight.current = true;
 
     if (normalized.startsWith('/')) {
       setComposerTextState('');
       void executeCommand(normalized).finally(() => {
-        composerSubmissionInFlight.current = false;
+        if (epoch === operationEpoch.current) composerSubmissionInFlight.current = false;
       });
       return;
     }
 
     setComposerNotice('Отправляем действие…');
     void browserApi.submitPlayerAction({ text: normalized }).then((result) => {
-      if (continuationBlocked() || isLoadInProgress()) return;
+      if (!isCurrent()) return;
       if (result.ok && result.data.success) {
         setComposerNotice(result.data.playerMessage);
         setComposerTextState('');
@@ -304,11 +315,11 @@ export function ShellProvider({ children }: { children: ReactNode }) {
         setComposerNotice('Не удалось отправить действие. Попробуйте ещё раз.');
       }
     }).catch(() => {
-      setComposerNotice('Ошибка соединения. Убедитесь, что игра запущена.');
+      if (isCurrent()) setComposerNotice('Ошибка соединения. Убедитесь, что игра запущена.');
     }).finally(() => {
-      composerSubmissionInFlight.current = false;
+      if (epoch === operationEpoch.current) composerSubmissionInFlight.current = false;
     });
-  }, [executeCommand, clearCommandResult, loadBrowserState]);
+  }, [executeCommand, clearCommandResult, loadBrowserState, continuationBlocked, isLoadInProgress]);
 
   const submitComposer = useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

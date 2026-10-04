@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createSettingsComponentHarness, flushPromises, nodes, ok } from './helpers/settingsComponentHarness';
+import { createSettingsComponentHarness, deferred, flushPromises, nodes, ok } from './helpers/settingsComponentHarness';
 
 const findLoad = (tree: unknown) => nodes(tree).find(node => node.type === 'button' && node.props.children === 'Загрузить сохранение')!;
 const outcome = (disposition: string, blocked = false) => ({
@@ -17,6 +17,22 @@ describe('actual launcher/settings load handlers retain decisions through interr
       expect(h.counts().loadPosts).toBe(1);
       h.load.resolve(ok(outcome('NotLoaded'))); await flushPromises();
     });
+    for (const interruption of ['none', 'unmount'] as const) {
+      it(`${component}: waits for required refresh before navigation (${interruption})`, async () => {
+        const h = createSettingsComponentHarness(); const view = h[component](); const refresh = deferred<boolean>();
+        let requestedGeneration: string | null = null;
+        h.shell.refreshAfterLoad = async (generation: string) => { requestedGeneration = generation; return refresh.promise; };
+        view.render();
+        const button = findLoad(view.tree); button.props.onClick();
+        h.load.resolve(ok(outcome('Committed'))); await flushPromises();
+        expect(requestedGeneration).toBe('exact-generation'); expect(h.counts().navigations).toBe(0);
+        button.props.onClick(); expect(h.counts().loadPosts).toBe(1);
+        if (interruption === 'unmount') view.unmount();
+        refresh.resolve(true); await flushPromises();
+        expect(h.counts().navigations).toBe(interruption === 'none' ? 1 : 0);
+        if (interruption === 'unmount') expect(h.shell.loadContinuationNotice).toMatchObject({ disposition: 'Committed', continuationBlocked: true });
+      });
+    }
     for (const disposition of ['Committed', 'Uncertain']) {
       it(`${component}: retains ${disposition} from HTTP409 and blocks even after unmount`, async () => {
         const h = createSettingsComponentHarness(); const view = h[component]();
@@ -66,6 +82,13 @@ describe('actual launcher/settings load handlers retain decisions through interr
       expect(JSON.stringify(view.tree)).toContain('не загружено');
     });
   }
+  it('shares synchronous admission between both mounted consuming handlers', async () => {
+    const h = createSettingsComponentHarness(); const settings = h.settings(); const launcher = h.launcher();
+    findLoad(settings.tree).props.onClick(); findLoad(launcher.tree).props.onClick();
+    expect(h.counts().loadPosts).toBe(1);
+    h.load.resolve(ok(outcome('Uncertain', true))); await flushPromises();
+    expect(h.shell.loadContinuationNotice.disposition).toBe('Uncertain');
+  });
   it('same-mount launcher mode change invalidates late committed navigation', async () => {
     const h = createSettingsComponentHarness(); const view = h.launcher(); findLoad(view.tree).props.onClick();
     nodes(view.tree).find(n => n.props['data-launcher-mode'] === 'about')!.props.onClick();

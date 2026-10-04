@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "portable-load-browser-handlers"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "0491944c3a2873984decfedb1d063bf6515cd830",
+    "WorkingTreeFingerprint": "B3C1CCB6D54CFF101D5B64EFE2263BBA92955DB135C445B52B6CD7F189953A13",
+    "ChangedFiles": 3
+  },
+  "PreparationSeconds": 0.1346281,
+  "Descriptors": [
+    {
+      "Name": "portable-load-browser-handlers-frontend-001",
+      "Project": "frontend",
+      "Category": "portable-load-browser-handlers",
+      "Categories": [
+        "portable-load-browser-handlers"
+      ],
+      "Filter": null,
+      "Adapter": "vitest",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
