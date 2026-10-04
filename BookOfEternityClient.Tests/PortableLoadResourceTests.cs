@@ -708,10 +708,12 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
     }
 
     /// <summary>
-    /// Measures only this root's ordinary file bytes, tolerating a vanished exact enumerated file only while its child mutates.
+    /// Measures owned ordinary bytes, resolving the Unix missing-attribute sentinel before link classification.
+    /// Only an exact enumerated regular file or declared directory may disappear while the child mutates.
     /// </summary>
     /// <param name="allowPublicationRace">
-    /// Permits FileNotFound for a just-enumerated owned ordinary file during active publication/recovery; <see langword="false"/> requires a stable root.
+    /// Permits FileNotFound for a just-enumerated owned ordinary file or expected directory during an active operation.
+    /// A stable root and unexpected directories retain all missing-entry failures.
     /// </param>
     /// <param name="beforeObserve">
     /// Test-only deterministic boundary after owned enumeration and before observing one entry; normal probes leave this null.
@@ -745,13 +747,17 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
                 beforeObserve?.Invoke(entry);
                 try
                 {
-                    if (entry.Attributes.HasFlag(FileAttributes.ReparsePoint)) throw new InvalidDataException("Owned disk sampling encountered a link.");
+                    var attributes = entry.Attributes;
+                    if ((int)attributes == -1)
+                        attributes = File.GetAttributes(entry.FullName);
+                    if (attributes.HasFlag(FileAttributes.ReparsePoint)) throw new InvalidDataException("Owned disk sampling encountered a link.");
                     if (entry is DirectoryInfo child) pending.Push(child);
                     else count = checked(count + ((FileInfo)entry).Length);
                 }
-                catch (FileNotFoundException) when (allowPublicationRace && !File.Exists(entry.FullName))
+                catch (FileNotFoundException) when (allowPublicationRace && !File.Exists(entry.FullName) &&
+                    (entry is FileInfo || IsExpectedDirectoryMutation(entry.FullName, files)))
                 {
-                    // Only this exact already-enumerated fixture-owned regular file disappeared during its operation.
+                    // Only this exact enumerated regular file or declared directory disappeared during the owned operation.
                 }
             }
         }

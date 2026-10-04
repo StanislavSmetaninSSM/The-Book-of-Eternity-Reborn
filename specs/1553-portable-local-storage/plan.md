@@ -174,6 +174,24 @@ and check exact stable byte counting. New `portable-load-resource-sampling` owns
 ten cases. Only a test observation seam is added; the sampler is unchanged for
 causal RED. No product code, limits, polling cadence or required samples change.
 
+### Native sampler sentinel — causal RED and candidate WIP
+
+At clean `8b77c357`, native .NET **8.0.31** executed all ten monitor controls:
+**six causal failures and four passes**, 1:44.000 with fresh unit build and complete
+cleanup. Every missing row logged actual cached attributes **-1**; existing file,
+directory and dangling native links still refused, and stable byte counting passed.
+Exact artifacts: `load-linux-resource-sampling-red-20261004`.
+
+The candidate resolves only that missing sentinel through File.GetAttributes before
+checking the link bit. Ordinary cached entries retain the original fast path.
+FileNotFound tolerance is restricted to an active child's exact enumerated FileInfo
+or an explicitly declared convertible/private directory; stable and unknown-directory
+failures still propagate. Real links, all other errors, disk/RSS/time limits, final
+OS peak and forced closed-boundary samples remain unchanged. No product code changes.
+The ten controls must turn GREEN, then the actual failed inventory phase is rerun.
+All five resource owners will be measured separately on the corrected probe; prior
+preparation/bulk passes remain historical source-specific evidence, never erased.
+
 ## Authorized local filesystem execution checkpoint
 
 The owner is leaving autonomous execution running and explicitly authorized all

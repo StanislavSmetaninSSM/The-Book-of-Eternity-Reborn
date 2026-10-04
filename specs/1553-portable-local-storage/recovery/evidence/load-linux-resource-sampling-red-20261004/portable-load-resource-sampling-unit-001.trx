@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="a03717a0-111d-401b-967b-b5991ee4ae9c" name="@95e438a3e5cb 2026-10-03 20:35:19" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-03T20:35:19.8178259-04:00" queuing="2026-10-03T20:35:19.8178259-04:00" start="2026-10-03T20:35:18.1070845-04:00" finish="2026-10-03T20:35:19.8535079-04:00" />
+  <TestSettings name="default" id="656b8859-81be-4012-b479-5707803e0483">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-03_20_35_19" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="4fc414be-c620-42a9-a358-f5b6ad9e011a" testId="94c148f0-05c0-52b3-0ef6-abd005f26c82" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerStillRejectsNativeLinks(kind: &quot;dangling&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0015428" startTime="2026-10-03T20:35:19.7685878-04:00" endTime="2026-10-03T20:35:19.7685879-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4fc414be-c620-42a9-a358-f5b6ad9e011a" />
+    <UnitTestResult executionId="dda5bc14-171e-4862-bceb-b85cd6c3a4bb" testId="5205aa7a-e287-3357-1332-02bd5e115157" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerStillRejectsNativeLinks(kind: &quot;file&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0012696" startTime="2026-10-03T20:35:19.7692805-04:00" endTime="2026-10-03T20:35:19.7692805-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dda5bc14-171e-4862-bceb-b85cd6c3a4bb" />
+    <UnitTestResult executionId="85ef7545-24c9-4597-b8f6-d3fd44bbe46b" testId="10a2fcf1-8886-8c17-207a-ae1b24d1ee51" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;unexpected-directory&quot;, active: True)" computerName="95e438a3e5cb" duration="00:00:00.0003730" startTime="2026-10-03T20:35:19.7623323-04:00" endTime="2026-10-03T20:35:19.7623323-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="85ef7545-24c9-4597-b8f6-d3fd44bbe46b">
+      <Output>
+        <StdOut>Actual missing cached attributes: -1; kind=DirectoryInfo; framework=8.0.31</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.FileNotFoundException)
+Actual:   typeof(System.IO.InvalidDataException)
+---- System.IO.InvalidDataException : Owned disk sampling encountered a link.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(String kind, Boolean active) in [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs:line 227
+   at InvokeStub_PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.MeasureOwnedDisk(Boolean allowPublicationRace, Action`1 beforeObserve) in [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs:line 748
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.&lt;&gt;c__DisplayClass20_0.&lt;OwnedDiskSamplerDistinguishesMissingCachedAttributes&gt;b__1() in [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs:line 227</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d3e19eb0-be03-4d5b-a3f6-c2b379557e84" testId="4a11db80-14c0-3f52-0e2f-0c5f33fd80c8" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;expected-directory&quot;, active: True)" computerName="95e438a3e5cb" duration="00:00:00.0176280" startTime="2026-10-03T20:35:19.7580984-04:00" endTime="2026-10-03T20:35:19.7581114-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d3e19eb0-be03-4d5b-a3f6-c2b379557e84">
+      <Output>
+        <StdOut>Actual missing cached attributes: -1; kind=DirectoryInfo; framework=8.0.31</StdOut>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException : Owned disk sampling encountered a link.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadResourceTests.MeasureOwnedDisk(Boolean allowPublicationRace, Action`1 beforeObserve) in [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs:line 748
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(String kind, Boolean active) in [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs:line 225
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7180a9a7-8387-4e06-8e20-63cc90e73f0c" testId="a416b21f-4a08-e2f3-efa0-4c3f30e4705c" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerRetainsExactStableByteCount" computerName="95e438a3e5cb" duration="00:00:00.0031022" startTime="2026-10-03T20:35:19.7938869-04:00" endTime="2026-10-03T20:35:19.7938871-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7180a9a7-8387-4e06-8e20-63cc90e73f0c" />
+    <UnitTestResult executionId="56edc38e-9861-4551-83c7-9f42fcdef8c2" testId="d432dab0-257c-62c3-db5c-ccaae52ad44a" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;file&quot;, active: True)" computerName="95e438a3e5cb" duration="00:00:00.0021507" startTime="2026-10-03T20:35:19.7659416-04:00" endTime="2026-10-03T20:35:19.7659417-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="56edc38e-9861-4551-83c7-9f42fcdef8c2">
+      <Output>
+        <StdOut>Actual missing cached attributes: -1; kind=FileInfo; framework=8.0.31</StdOut>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException : Owned disk sampling encountered a link.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadResourceTests.MeasureOwnedDisk(Boolean allowPublicationRace, Action`1 beforeObserve) in [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs:line 748
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(String kind, Boolean active) in [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs:line 225
+   at InvokeStub_PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="660e55f7-7107-46bb-af10-e592b124a9a4" testId="433416df-95b1-39b5-e90d-1ab5ae22f5d1" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;file&quot;, active: False)" computerName="95e438a3e5cb" duration="00:00:00.0010680" startTime="2026-10-03T20:35:19.7629367-04:00" endTime="2026-10-03T20:35:19.7629368-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="660e55f7-7107-46bb-af10-e592b124a9a4">
+      <Output>
+        <StdOut>Actual missing cached attributes: -1; kind=FileInfo; framework=8.0.31</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.FileNotFoundException)
+Actual:   typeof(System.IO.InvalidDataException)
+---- System.IO.InvalidDataException : Owned disk sampling encountered a link.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(String kind, Boolean active) in [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs:line 227
+   at InvokeStub_PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.MeasureOwnedDisk(Boolean allowPublicationRace, Action`1 beforeObserve) in [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs:line 748
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.&lt;&gt;c__DisplayClass20_0.&lt;OwnedDiskSamplerDistinguishesMissingCachedAttributes&gt;b__1() in [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs:line 227</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="67475a4c-3b12-45c5-95b0-a11478f242ed" testId="5be67e42-bdeb-a31b-234f-c1ee59d9d5c7" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerStillRejectsNativeLinks(kind: &quot;directory&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0015922" startTime="2026-10-03T20:35:19.7709472-04:00" endTime="2026-10-03T20:35:19.7709473-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="67475a4c-3b12-45c5-95b0-a11478f242ed" />
+    <UnitTestResult executionId="bea3eb16-009b-4eff-a00f-9e29cc09e12f" testId="53d46daf-93bb-e021-2dfb-1b2a688c8860" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;unexpected-directory&quot;, active: False)" computerName="95e438a3e5cb" duration="00:00:00.0004660" startTime="2026-10-03T20:35:19.7636680-04:00" endTime="2026-10-03T20:35:19.7636680-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bea3eb16-009b-4eff-a00f-9e29cc09e12f">
+      <Output>
+        <StdOut>Actual missing cached attributes: -1; kind=DirectoryInfo; framework=8.0.31</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.FileNotFoundException)
+Actual:   typeof(System.IO.InvalidDataException)
+---- System.IO.InvalidDataException : Owned disk sampling encountered a link.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(String kind, Boolean active) in [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs:line 227
+   at InvokeStub_PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.MeasureOwnedDisk(Boolean allowPublicationRace, Action`1 beforeObserve) in [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs:line 748
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.&lt;&gt;c__DisplayClass20_0.&lt;OwnedDiskSamplerDistinguishesMissingCachedAttributes&gt;b__1() in [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs:line 227</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="fb0210d1-3f0d-46db-a900-2fed4d5b53b8" testId="e9a4b508-1159-b4a2-9212-6b62239f1fa5" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;expected-directory&quot;, active: False)" computerName="95e438a3e5cb" duration="00:00:00.0027158" startTime="2026-10-03T20:35:19.7616631-04:00" endTime="2026-10-03T20:35:19.7616632-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fb0210d1-3f0d-46db-a900-2fed4d5b53b8">
+      <Output>
+        <StdOut>Actual missing cached attributes: -1; kind=DirectoryInfo; framework=8.0.31</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.FileNotFoundException)
+Actual:   typeof(System.IO.InvalidDataException)
+---- System.IO.InvalidDataException : Owned disk sampling encountered a link.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(String kind, Boolean active) in [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs:line 227
+   at InvokeStub_PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.MeasureOwnedDisk(Boolean allowPublicationRace, Action`1 beforeObserve) in [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs:line 748
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.&lt;&gt;c__DisplayClass20_0.&lt;OwnedDiskSamplerDistinguishesMissingCachedAttributes&gt;b__1() in [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs:line 227</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;file&quot;, active: False)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="433416df-95b1-39b5-e90d-1ab5ae22f5d1">
+      <Execution id="660e55f7-7107-46bb-af10-e592b124a9a4" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="OwnedDiskSamplerDistinguishesMissingCachedAttributes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;expected-directory&quot;, active: False)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e9a4b508-1159-b4a2-9212-6b62239f1fa5">
+      <Execution id="fb0210d1-3f0d-46db-a900-2fed4d5b53b8" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="OwnedDiskSamplerDistinguishesMissingCachedAttributes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;unexpected-directory&quot;, active: False)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="53d46daf-93bb-e021-2dfb-1b2a688c8860">
+      <Execution id="bea3eb16-009b-4eff-a00f-9e29cc09e12f" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="OwnedDiskSamplerDistinguishesMissingCachedAttributes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;file&quot;, active: True)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d432dab0-257c-62c3-db5c-ccaae52ad44a">
+      <Execution id="56edc38e-9861-4551-83c7-9f42fcdef8c2" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="OwnedDiskSamplerDistinguishesMissingCachedAttributes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;unexpected-directory&quot;, active: True)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="10a2fcf1-8886-8c17-207a-ae1b24d1ee51">
+      <Execution id="85ef7545-24c9-4597-b8f6-d3fd44bbe46b" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="OwnedDiskSamplerDistinguishesMissingCachedAttributes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;expected-directory&quot;, active: True)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4a11db80-14c0-3f52-0e2f-0c5f33fd80c8">
+      <Execution id="d3e19eb0-be03-4d5b-a3f6-c2b379557e84" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="OwnedDiskSamplerDistinguishesMissingCachedAttributes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerStillRejectsNativeLinks(kind: &quot;dangling&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="94c148f0-05c0-52b3-0ef6-abd005f26c82">
+      <Execution id="4fc414be-c620-42a9-a358-f5b6ad9e011a" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="OwnedDiskSamplerStillRejectsNativeLinks" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerStillRejectsNativeLinks(kind: &quot;file&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5205aa7a-e287-3357-1332-02bd5e115157">
+      <Execution id="dda5bc14-171e-4862-bceb-b85cd6c3a4bb" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="OwnedDiskSamplerStillRejectsNativeLinks" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerRetainsExactStableByteCount" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a416b21f-4a08-e2f3-efa0-4c3f30e4705c">
+      <Execution id="7180a9a7-8387-4e06-8e20-63cc90e73f0c" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="OwnedDiskSamplerRetainsExactStableByteCount" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerStillRejectsNativeLinks(kind: &quot;directory&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5be67e42-bdeb-a31b-234f-c1ee59d9d5c7">
+      <Execution id="67475a4c-3b12-45c5-95b0-a11478f242ed" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="OwnedDiskSamplerStillRejectsNativeLinks" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="94c148f0-05c0-52b3-0ef6-abd005f26c82" executionId="4fc414be-c620-42a9-a358-f5b6ad9e011a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5205aa7a-e287-3357-1332-02bd5e115157" executionId="dda5bc14-171e-4862-bceb-b85cd6c3a4bb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="10a2fcf1-8886-8c17-207a-ae1b24d1ee51" executionId="85ef7545-24c9-4597-b8f6-d3fd44bbe46b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4a11db80-14c0-3f52-0e2f-0c5f33fd80c8" executionId="d3e19eb0-be03-4d5b-a3f6-c2b379557e84" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a416b21f-4a08-e2f3-efa0-4c3f30e4705c" executionId="7180a9a7-8387-4e06-8e20-63cc90e73f0c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d432dab0-257c-62c3-db5c-ccaae52ad44a" executionId="56edc38e-9861-4551-83c7-9f42fcdef8c2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="433416df-95b1-39b5-e90d-1ab5ae22f5d1" executionId="660e55f7-7107-46bb-af10-e592b124a9a4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5be67e42-bdeb-a31b-234f-c1ee59d9d5c7" executionId="67475a4c-3b12-45c5-95b0-a11478f242ed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="53d46daf-93bb-e021-2dfb-1b2a688c8860" executionId="bea3eb16-009b-4eff-a00f-9e29cc09e12f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e9a4b508-1159-b4a2-9212-6b62239f1fa5" executionId="fb0210d1-3f0d-46db-a900-2fed4d5b53b8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="10" executed="10" passed="4" failed="6" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.13]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:00.97]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:00.99]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.32]       System.IO.InvalidDataException : Owned disk sampling encountered a link.
+[xUnit.net 00:00:01.32]       Stack Trace:
+[xUnit.net 00:00:01.32]         [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs(748,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.MeasureOwnedDisk(Boolean allowPublicationRace, Action`1 beforeObserve)
+[xUnit.net 00:00:01.32]         [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs(225,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(String kind, Boolean active)
+[xUnit.net 00:00:01.32]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.32]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.32]       Output:
+[xUnit.net 00:00:01.32]         Actual missing cached attributes: -1; kind=DirectoryInfo; framework=8.0.31
+[xUnit.net 00:00:01.33]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.33]       Expected: typeof(System.IO.FileNotFoundException)
+[xUnit.net 00:00:01.33]       Actual:   typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.33]       ---- System.IO.InvalidDataException : Owned disk sampling encountered a link.
+[xUnit.net 00:00:01.33]       Stack Trace:
+[xUnit.net 00:00:01.33]         [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs(227,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(String kind, Boolean active)
+[xUnit.net 00:00:01.33]            at InvokeStub_PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(Object, Span`1)
+[xUnit.net 00:00:01.33]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.33]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.33]         [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs(748,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.MeasureOwnedDisk(Boolean allowPublicationRace, Action`1 beforeObserve)
+[xUnit.net 00:00:01.33]         [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs(227,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.&lt;&gt;c__DisplayClass20_0.&lt;OwnedDiskSamplerDistinguishesMissingCachedAttributes&gt;b__1()
+[xUnit.net 00:00:01.33]       Output:
+[xUnit.net 00:00:01.33]         Actual missing cached attributes: -1; kind=DirectoryInfo; framework=8.0.31
+[xUnit.net 00:00:01.33]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.33]       Expected: typeof(System.IO.FileNotFoundException)
+[xUnit.net 00:00:01.33]       Actual:   typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.33]       ---- System.IO.InvalidDataException : Owned disk sampling encountered a link.
+[xUnit.net 00:00:01.33]       Stack Trace:
+[xUnit.net 00:00:01.33]         [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs(227,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(String kind, Boolean active)
+[xUnit.net 00:00:01.33]            at InvokeStub_PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(Object, Span`1)
+[xUnit.net 00:00:01.33]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.33]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.33]         [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs(748,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.MeasureOwnedDisk(Boolean allowPublicationRace, Action`1 beforeObserve)
+[xUnit.net 00:00:01.33]         [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs(227,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.&lt;&gt;c__DisplayClass20_0.&lt;OwnedDiskSamplerDistinguishesMissingCachedAttributes&gt;b__1()
+[xUnit.net 00:00:01.33]       Output:
+[xUnit.net 00:00:01.33]         Actual missing cached attributes: -1; kind=DirectoryInfo; framework=8.0.31
+[xUnit.net 00:00:01.33]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.33]       Expected: typeof(System.IO.FileNotFoundException)
+[xUnit.net 00:00:01.33]       Actual:   typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.33]       ---- System.IO.InvalidDataException : Owned disk sampling encountered a link.
+[xUnit.net 00:00:01.33]       Stack Trace:
+[xUnit.net 00:00:01.33]         [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs(227,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(String kind, Boolean active)
+[xUnit.net 00:00:01.33]            at InvokeStub_PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(Object, Span`1)
+[xUnit.net 00:00:01.33]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.33]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.33]         [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs(748,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.MeasureOwnedDisk(Boolean allowPublicationRace, Action`1 beforeObserve)
+[xUnit.net 00:00:01.33]         [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs(227,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.&lt;&gt;c__DisplayClass20_0.&lt;OwnedDiskSamplerDistinguishesMissingCachedAttributes&gt;b__1()
+[xUnit.net 00:00:01.33]       Output:
+[xUnit.net 00:00:01.33]         Actual missing cached attributes: -1; kind=FileInfo; framework=8.0.31
+[xUnit.net 00:00:01.33]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.33]       Expected: typeof(System.IO.FileNotFoundException)
+[xUnit.net 00:00:01.33]       Actual:   typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.33]       ---- System.IO.InvalidDataException : Owned disk sampling encountered a link.
+[xUnit.net 00:00:01.33]       Stack Trace:
+[xUnit.net 00:00:01.33]         [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs(227,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(String kind, Boolean active)
+[xUnit.net 00:00:01.33]            at InvokeStub_PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(Object, Span`1)
+[xUnit.net 00:00:01.33]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.33]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.33]         [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs(748,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.MeasureOwnedDisk(Boolean allowPublicationRace, Action`1 beforeObserve)
+[xUnit.net 00:00:01.33]         [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs(227,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.&lt;&gt;c__DisplayClass20_0.&lt;OwnedDiskSamplerDistinguishesMissingCachedAttributes&gt;b__1()
+[xUnit.net 00:00:01.33]       Output:
+[xUnit.net 00:00:01.33]         Actual missing cached attributes: -1; kind=DirectoryInfo; framework=8.0.31
+[xUnit.net 00:00:01.33]       System.IO.InvalidDataException : Owned disk sampling encountered a link.
+[xUnit.net 00:00:01.33]       Stack Trace:
+[xUnit.net 00:00:01.33]         [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs(748,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.MeasureOwnedDisk(Boolean allowPublicationRace, Action`1 beforeObserve)
+[xUnit.net 00:00:01.33]         [checkout]/BookOfEternityClient.Tests/PortableLoadResourceTests.cs(225,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(String kind, Boolean active)
+[xUnit.net 00:00:01.33]            at InvokeStub_PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(Object, Span`1)
+[xUnit.net 00:00:01.33]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.33]       Output:
+[xUnit.net 00:00:01.33]         Actual missing cached attributes: -1; kind=FileInfo; framework=8.0.31
+[xUnit.net 00:00:01.36]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-03T20:35:19.7568078-04:00">
+        <Text>[xUnit.net 00:00:01.32]     BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: "expected-directory", active: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-03T20:35:19.7615830-04:00">
+        <Text>[xUnit.net 00:00:01.33]     BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: "expected-directory", active: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-03T20:35:19.7622405-04:00">
+        <Text>[xUnit.net 00:00:01.33]     BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: "unexpected-directory", active: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-03T20:35:19.7651381-04:00">
+        <Text>[xUnit.net 00:00:01.33]     BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: "file", active: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-03T20:35:19.7653526-04:00">
+        <Text>[xUnit.net 00:00:01.33]     BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: "unexpected-directory", active: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-03T20:35:19.7658855-04:00">
+        <Text>[xUnit.net 00:00:01.33]     BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: "file", active: True) [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>
