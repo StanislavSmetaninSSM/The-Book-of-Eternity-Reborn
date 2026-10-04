@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-load-console",
-      "reason": "T032-B4 console integration changes typed caller, exact-generation refresh, late replacement admission and loop/menu continuation. Browser stays next block; unchanged filesystem/resource cohorts are not repeated.",
+      "category": "portable-load-browser",
+      "reason": "B4 browser typed load caller/admission/transport; accepted filesystem/resource/console cohorts unchanged.",
       "contracts": [
         "#1553 T032-B4 public load integration revision 1"
       ]

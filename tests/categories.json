@@ -10809,6 +10809,30 @@
         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RebindRuntimeAfterSessionReplacement_ActiveReplacementRebindsLoopAndClearsTransientState",
         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RebindRuntimeAfterSessionReplacement_EmptyReplacementReturnsToMenu"
       ]
+    },
+    {
+      "id": "portable-load-browser",
+      "responsibility": "T032-B4 actual browser load four-state transport, exact committed identity, late pending/UI lease token admission and required generation-bound continuation. Independent per-case state.",
+      "excludes": "Unchanged filesystem/resource and console cohorts, live console/GM and native Windows public-client acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs",
+        "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableBrowserLoadTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

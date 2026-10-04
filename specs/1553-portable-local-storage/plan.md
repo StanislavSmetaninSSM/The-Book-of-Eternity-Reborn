@@ -4,6 +4,29 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T032-B4 browser RED source checkpoint — 2026-10-04
+
+Base/ref verified `49b1b3649881d2f44322ecef14220e61686c42ae`, clean tree
+`8dc8b639790c9efe76dbbe93e2f6ded3933b0322`. Spec Kit prerequisite and
+spec/plan/tasks consistency check confirms the approved B4 browser slice. Initial
+causal tests exercise real menu load decisions, late pending/token changes, required
+menu/service refresh and stale generation; implementation and execution are pending.
+
+Ruling: add one generation-bound required refresh bundle rather than tag independent
+partial DTOs. Its menu/session/game/settings/audio are built inside the exact committed
+SessionOperationContext and finalization fence, with no partial bundle on failure.
+This avoids archive-list inference and does not change ordinary optional refresh.
+Retain four typed outcomes and committed identity on all HTTP statuses. Revalidate
+pending state and the exact pre-acquired UI lease in loader admission under the held
+replacement lease. Both actual frontend handlers will use shell-owned dispatch and
+continuation ownership; unmount/navigation/lost response cannot clear a required stop.
+
+No new game/GM-authored capability or schema is added; prompts/examples need no change.
+New browser-only owners, causal RED/GREEN, required frontend consumers, discovery-only
+catalog audit, separate Sol 6.1 XHigh review and GitHub restoration remain pending.
+T031-WORKER-PORTABLE, A4 native save-producer names, live console/GM, Windows public
+clients and full #1553 remain open. No live browser attempt is part of this work.
+
 ## Current verification scope — owner decision, 2026-10-04 15:45 UTC
 
 Browser verification is now exclusively test-based at the code level, including
