@@ -25,6 +25,24 @@ independent review and later clients remain unrun. No prior resource/native coho
 will be replayed for a public wrapper-only change. No GM-authored schema/mechanic
 changes; operational guidance will describe the completed client cutover.
 
+### Public-entry causal RED and candidate
+
+At published `44a3eb6911556bbe0c71fbf466cafc1cd099712d`, fresh selected build and
+PlanOnly completed in 2:23.151 (six planned, zero executed). Actual six-case RED
+completed in 6.278 seconds: five intended failures and one rejected-input control
+pass, no skips or duplicates, all selection and owned cleanup complete. The original
+public Linux load cannot reach portable commit/rollback/uncertain cuts; the typed API
+is internal. Source-specific evidence is retained in `load-public-entry-plan` and
+`load-public-entry-red` under recovery/evidence. Reflection visibility is scaffold
+proof, separately from four actual behavior failures.
+
+Candidate removes the active physical loader body, delegates its bool entry to the
+single typed implementation and exposes the existing result/operation publicly.
+Bool true means confirmed commit, including blocked follow-up; false says nothing
+about retry safety. No typed orchestration, journal/recovery/settings/runtime ordering
+changes. GREEN, catalog audit and separate Sol 6.1 XHigh review remain pending.
+The still-unconverted player-facing consumers are the next B4 block, not acceptance.
+
 ## Accepted native filesystem handback — 2026-10-04
 
 All runtime/resource/audit proof is published at

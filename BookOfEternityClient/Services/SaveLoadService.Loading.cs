@@ -9,10 +9,16 @@ using Microsoft.Extensions.Logging;
 namespace BookOfEternityClient.Services;
 
 /// <summary>Distinguishes load admission from a committed, restored or unresolved replacement.</summary>
-internal enum LoadReplacementDisposition { NotLoaded, Committed, RolledBack, Uncertain }
+public enum LoadReplacementDisposition { NotLoaded, Committed, RolledBack, Uncertain }
 
 /// <summary>Retains selected source and generation authority through replacement follow-up.</summary>
-internal sealed record LoadReplacementResult(LoadReplacementDisposition Disposition,
+/// <param name="Disposition">The established decision, which follow-up errors never overwrite.</param>
+/// <param name="SelectedSourcePath">The admitted archive path, or null when source admission did not complete.</param>
+/// <param name="EstablishedGeneration">The committed or restored generation, or null when none is established.</param>
+/// <param name="NeedsFollowUp">Whether retained failure or cleanup evidence requires attention.</param>
+/// <param name="Failure">The original and any additional failures; null for ordinary success.</param>
+/// <param name="ContinuationBlocked">Whether canonical continuation must stop until evidence is resolved.</param>
+public sealed record LoadReplacementResult(LoadReplacementDisposition Disposition,
     string? SelectedSourcePath, string? EstablishedGeneration, bool NeedsFollowUp,
     Exception? Failure, bool ContinuationBlocked = false)
 {
@@ -142,7 +148,7 @@ public partial class SaveLoadService
 {
     /// <summary>
     /// Prepares and publishes an ordinary portable load while retaining its decision and follow-up failures.
-    /// Public callers remain on their original implementation until the downstream cutover gates pass.
+    /// Callers must preserve the decision and check continuation before using the refreshed session.
     /// </summary>
     /// <param name="saveFilePath">
     /// The selected archive's absolute path or session-relative file path.
@@ -155,7 +161,7 @@ public partial class SaveLoadService
     /// The confirmed committed or rolled-back generation, or an admission refusal or uncertain decision.
     /// Follow-up failures retain any decision already established; uncertainty blocks continuation.
     /// </returns>
-    internal async Task<LoadReplacementResult> LoadGameWithOutcomeAsync(string saveFilePath,
+    public async Task<LoadReplacementResult> LoadGameWithOutcomeAsync(string saveFilePath,
         CancellationToken cancellationToken = default)
     {
         // Invalid/closing contexts retain their thrown fence. A valid binding is a known admission refusal.
