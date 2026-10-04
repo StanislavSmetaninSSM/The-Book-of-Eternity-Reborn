@@ -2,6 +2,36 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-load-resource-sampling",
+      "responsibility": "Native Linux load-resource disk monitor: cached missing-attribute sentinel after exact owned enumeration, active regular/declared directory disappearance versus stable/unknown missing refusal, real file/directory/dangling link refusal, exact stable bytes.",
+      "excludes": "Actual bulk/inventory envelope categories, production publication or recovery changes, Windows runtime execution and synthetic successful OS returns.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/PortableLoadResourceTests.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-load-resource-inventory-publication",
+          "when": "Changing the common owned disk sampler used during many-member publication."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes",
+            "BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerStillRejectsNativeLinks",
+            "BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerRetainsExactStableByteCount"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-load-native-names",
       "responsibility": "LOAD-FS-001 native original archive identity: simultaneous arbitrary case-distinct Linux payloads commit and roll back with exact independent bytes; native Windows collisions, exact duplicates, fixed-state alias collisions and wrong original hashes refuse before mutation.",
       "excludes": "Save producer changes, public physical Load cutover, general resource/schema sweeps and already owned fixed-name alias matrix.",

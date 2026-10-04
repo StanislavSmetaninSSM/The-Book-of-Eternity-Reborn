@@ -156,6 +156,24 @@ The completed 39/46/128 non-resource bundles were separately reviewed and saved 
 separate Sol 6.1 XHigh reviewer at `46414e4f`. Overall filesystem acceptance remains
 pending final resource proof, catalog/XML audit, final review and fresh restoration.
 
+### Native inventory publication monitor failure — causal investigation WIP
+
+At clean `ff0dce30`, maximum-inventory publication completed **1/1 failed** in
+50.183 seconds, with owned/runtime cleanup complete. The seed finished under its
+180-second bound; publication reached actual member 12000 but its disk sampler
+raised `Owned disk sampling encountered a link`. Phase completion, commit and
+resource acceptance are not claimed. Exact partial measurements and TRX are kept
+in `load-linux-resource-inventory-publication-failed-20261004`.
+
+The Unix FileSystemInfo missing-attribute sentinel is -1, which also contains the
+ReparsePoint bit. An independently refreshed missing entry can therefore be
+misclassified before the existing FileNotFound handler. Deterministic native Linux
+monitor controls now reproduce that boundary for regular and declared/unexpected
+directories, retain stable-missing refusal and real existing/dangling link refusal,
+and check exact stable byte counting. New `portable-load-resource-sampling` owns
+ten cases. Only a test observation seam is added; the sampler is unchanged for
+causal RED. No product code, limits, polling cadence or required samples change.
+
 ## Authorized local filesystem execution checkpoint
 
 The owner is leaving autonomous execution running and explicitly authorized all

@@ -185,6 +185,99 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
     }
 
     /// <summary>
+    /// Reproduces missing cached Unix attributes without confusing their sentinel with a real link.
+    /// </summary>
+    /// <param name="kind">
+    /// An already enumerated regular file, declared conversion directory or unrelated directory.
+    /// </param>
+    /// <param name="active">
+    /// Whether the child is active and only its explicitly permitted disappearance can be tolerated.
+    /// </param>
+    [Theory]
+    [InlineData("file", true)]
+    [InlineData("file", false)]
+    [InlineData("expected-directory", true)]
+    [InlineData("expected-directory", false)]
+    [InlineData("unexpected-directory", true)]
+    [InlineData("unexpected-directory", false)]
+    public void OwnedDiskSamplerDistinguishesMissingCachedAttributes(string kind, bool active)
+    {
+        Assert.True(OperatingSystem.IsLinux(), "This causal owner requires native Linux attributes.");
+        Directory.CreateDirectory(_root);
+        var path = kind == "expected-directory" ? Files.ResolvePath(PortableLoadFixture.FileToDirectory)
+            : Path.Combine(_root, "observed");
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        if (kind == "file") File.WriteAllBytes(path, [1, 2, 3]);
+        else Directory.CreateDirectory(path);
+        var reached = 0;
+        void Disappear(FileSystemInfo entry)
+        {
+            if (entry.FullName != path) return;
+            reached++;
+            if (kind == "file") File.Delete(path);
+            else Directory.Delete(path);
+            entry.Refresh();
+            output.WriteLine("Actual missing cached attributes: {0}; kind={1}; framework={2}",
+                (int)entry.Attributes, entry.GetType().Name, Environment.Version);
+            Assert.Equal(-1, (int)entry.Attributes);
+        }
+        if (active && kind != "unexpected-directory")
+            Assert.Equal(0, MeasureOwnedDisk(active, Disappear));
+        else
+            Assert.Throws<FileNotFoundException>(() => MeasureOwnedDisk(active, Disappear));
+        Assert.Equal(1, reached);
+        Assert.False(File.Exists(path));
+        Assert.False(Directory.Exists(path));
+    }
+
+    /// <summary>
+    /// Requires existing file, directory and dangling native links to fail disk sampling without following their targets.
+    /// </summary>
+    /// <param name="kind">
+    /// The independent native link shape to inspect in an otherwise owned ordinary root.
+    /// </param>
+    [Theory]
+    [InlineData("file")]
+    [InlineData("directory")]
+    [InlineData("dangling")]
+    public void OwnedDiskSamplerStillRejectsNativeLinks(string kind)
+    {
+        Assert.True(OperatingSystem.IsLinux(), "This causal owner requires native Linux links.");
+        Directory.CreateDirectory(_root);
+        var link = Path.Combine(_root, "link");
+        var target = Path.Combine(_root, "target");
+        if (kind == "directory")
+        {
+            Directory.CreateDirectory(target);
+            Directory.CreateSymbolicLink(link, target);
+        }
+        else
+        {
+            if (kind == "file") File.WriteAllBytes(target, [1, 2, 3]);
+            File.CreateSymbolicLink(link, target);
+        }
+        var error = Assert.Throws<InvalidDataException>(() => MeasureOwnedDisk(allowPublicationRace: true));
+        Assert.Contains("link", error.Message);
+        Assert.True(File.GetAttributes(link).HasFlag(FileAttributes.ReparsePoint));
+        if (kind == "file") Assert.Equal(new byte[] { 1, 2, 3 }, File.ReadAllBytes(target));
+        if (kind == "directory") Assert.Empty(Directory.EnumerateFileSystemEntries(target));
+        if (kind == "dangling") Assert.False(File.Exists(target));
+    }
+
+    /// <summary>
+    /// Measures exact ordinary bytes at a stable boundary without relaxing the owned disk guard.
+    /// </summary>
+    [Fact]
+    public void OwnedDiskSamplerRetainsExactStableByteCount()
+    {
+        Directory.CreateDirectory(_root);
+        File.WriteAllBytes(Path.Combine(_root, "one.bin"), [1, 2, 3]);
+        Directory.CreateDirectory(Path.Combine(_root, "nested"));
+        File.WriteAllBytes(Path.Combine(_root, "nested", "two.bin"), [4, 5, 6, 7]);
+        Assert.Equal(7, MeasureOwnedDisk(allowPublicationRace: false));
+    }
+
+    /// <summary>
     /// Qualifies maximum-inventory cold recovery independently from bulk so its real publication setup has its own bounded owner.
     /// </summary>
     /// <returns>
@@ -620,10 +713,13 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
     /// <param name="allowPublicationRace">
     /// Permits FileNotFound for a just-enumerated owned ordinary file during active publication/recovery; <see langword="false"/> requires a stable root.
     /// </param>
+    /// <param name="beforeObserve">
+    /// Test-only deterministic boundary after owned enumeration and before observing one entry; normal probes leave this null.
+    /// </param>
     /// <returns>
     /// The sampled total; links and all other access or I/O failures propagate as non-passes.
     /// </returns>
-    private long MeasureOwnedDisk(bool allowPublicationRace)
+    private long MeasureOwnedDisk(bool allowPublicationRace, Action<FileSystemInfo>? beforeObserve = null)
     {
         if (!Directory.Exists(_root)) return 0;
         long count = 0;
@@ -646,6 +742,7 @@ public sealed class PortableLoadResourceTests(ITestOutputHelper output) : IDispo
             foreach (var entry in entries)
             {
                 AssertOwnedPath(entry.FullName);
+                beforeObserve?.Invoke(entry);
                 try
                 {
                     if (entry.Attributes.HasFlag(FileAttributes.ReparsePoint)) throw new InvalidDataException("Owned disk sampling encountered a link.");
