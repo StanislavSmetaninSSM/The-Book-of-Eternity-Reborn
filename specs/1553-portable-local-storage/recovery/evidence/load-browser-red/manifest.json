@@ -1,0 +1,56 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "67212bd9f8ae398c755914734936ea9dee40cc40",
+  "SourceResultDirectory": "20261004-124304-320-6-9141e24c52664947b54d95a4d7d63705-categories",
+  "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Runtime": "native Linux x64",
+  "Toolchain": {
+    "PowerShell": "7.6.6",
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31"
+  },
+  "TelemetryOptOuts": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1"
+  },
+  "DOTNET_PROCESSOR_COUNT": "1",
+  "PathSanitization": "Absolute checkout/run-root/toolchain paths replaced; raw and stored hashes retained",
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 1476554,
+      "OriginalSha256": "091d7e147601910d6c549550d0dcde542689da1a0c7d88fa8caa38838b7c73d1",
+      "Embedded": false,
+      "Reason": "Oversized generated runner log; causal TRX and structured/build reports are embedded"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 1039,
+      "OriginalSha256": "8b21afa0d23d371d7a2344068aa771ae2495747d12b153210cbd592937d21831",
+      "Embedded": true,
+      "StoredPath": "plan.json",
+      "StoredBytes": 1039,
+      "StoredSha256": "8b21afa0d23d371d7a2344068aa771ae2495747d12b153210cbd592937d21831"
+    },
+    {
+      "Path": "portable-load-browser-unit-001.trx",
+      "OriginalBytes": 49648,
+      "OriginalSha256": "0c7b343087ec19c24e2a44849ed78c9fd3082217d8ed4cba5901409633bd6ff8",
+      "Embedded": true,
+      "StoredPath": "portable-load-browser-unit-001.trx",
+      "StoredBytes": 45614,
+      "StoredSha256": "7ab786524437138bb63f0738c2aab6148ad5d72449e98213b842e90be5e97b5b"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1353,
+      "OriginalSha256": "b082b682d4a46288be7b6eb0c430c1bfd11fbfa58ebeb2392ec3c12a1cc70c65",
+      "Embedded": true,
+      "StoredPath": "summary.json",
+      "StoredBytes": 1353,
+      "StoredSha256": "b082b682d4a46288be7b6eb0c430c1bfd11fbfa58ebeb2392ec3c12a1cc70c65"
+    }
+  ],
+  "MeasuredChildren": 0
+}

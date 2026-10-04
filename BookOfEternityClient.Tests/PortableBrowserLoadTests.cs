@@ -4,6 +4,8 @@ using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.WebUi;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -27,7 +29,7 @@ public sealed class PortableBrowserLoadTests : IDisposable
     [InlineData("missing-source")]
     public async Task BrowserLoadRetainsTypedDecisionAndAdmission(string scenario)
     {
-        var armed = false; var published = false; var cuts = 0; var unsafeReads = 0;
+        var armed = false; var loading = false; var published = false; var cuts = 0; var unsafeReads = 0;
         FileSystemManager? files = null;
         const string marker = "lore/browser-load.bin";
         files = new FileSystemManager(_root, NullLogger<FileSystemManager>.Instance,
@@ -35,7 +37,7 @@ public sealed class PortableBrowserLoadTests : IDisposable
             {
                 LocalPublicationObserver = (phase, _) =>
                 {
-                    if (!armed) return;
+                    if (!armed || !loading) return;
                     if (phase == TrustedLocalPublicationPhase.CommitStaged && scenario is "rollback" or "uncertain")
                     {
                         cuts++;
@@ -44,11 +46,14 @@ public sealed class PortableBrowserLoadTests : IDisposable
                     }
                     if (phase == TrustedLocalPublicationPhase.Committed) published = true;
                 },
+                BeforeCanonicalWriteLockOpenAsync = () =>
+                {
+                    if (published && scenario == "menu-refresh") { cuts++; throw new IOException("private menu refresh detail"); }
+                    return Task.CompletedTask;
+                },
                 BeforeCanonicalReadOpenAsync = path =>
                 {
                     if (cuts > 0 && scenario == "uncertain") unsafeReads++;
-                    if (published && scenario == "menu-refresh" && path.EndsWith(".zip", StringComparison.Ordinal))
-                    { cuts++; throw new IOException("private path must not leak"); }
                     return Task.CompletedTask;
                 }
             });
@@ -67,6 +72,7 @@ public sealed class PortableBrowserLoadTests : IDisposable
         {
             BeforeLoadLeaseAcquisitionAsync = async () =>
             {
+                loading = true;
                 if (scenario == "late-pending") await files.WriteFileAtomicAsync("input/turn_request.json", "{}");
                 if (scenario == "late-token")
                 {
@@ -91,7 +97,14 @@ public sealed class PortableBrowserLoadTests : IDisposable
         var saveId = "manual:" + Path.GetFileName(path);
         armed = true;
         var result = await menu.LoadSaveAsync(new BrowserLoadSaveRequest(scenario == "missing-source" ? "missing" : saveId));
-        var json = JsonSerializer.SerializeToNode(result, new JsonSerializerOptions(JsonSerializerDefaults.Web))!;
+        using var services = new ServiceCollection().AddLogging().AddOptions().BuildServiceProvider();
+        var context = new DefaultHttpContext { RequestServices = services };
+        await using var body = new MemoryStream(); context.Response.Body = body;
+        await LocalWebUiHost.LoadSaveResponse(result).ExecuteAsync(context);
+        body.Position = 0;
+        var json = await JsonNode.ParseAsync(body);
+        Assert.NotNull(json);
+        Assert.Equal(result.ContinuationBlocked ? 409 : result.Success ? 200 : 400, context.Response.StatusCode);
         var expected = scenario is "late-pending" or "late-token" or "missing-source" ? "NotLoaded"
             : scenario == "rollback" ? "RolledBack" : scenario == "uncertain" ? "Uncertain" : "Committed";
         Assert.Equal(expected, json["disposition"]?.GetValue<string>());

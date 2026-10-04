@@ -1249,7 +1249,7 @@ public sealed partial class BrowserLocalWriteCoordinatorTests : IDisposable
                 replacementOwner.OwnerId,
                 replacementOwner.OwnerLabel,
                 "browser save load"),
-            async () =>
+            async admission =>
             {
                 await SessionReplacementTestHarness.RotateGenerationAsync(_fs);
                 var replacementLock = await lockService.AcquireOrRefreshAsync(
@@ -1264,7 +1264,8 @@ public sealed partial class BrowserLocalWriteCoordinatorTests : IDisposable
                     "deterministic replacement failure");
             });
 
-        Assert.False(result.Success);
+        Assert.Equal(LoadReplacementDisposition.Uncertain, result.Disposition);
+        Assert.True(result.ContinuationBlocked);
         Assert.NotNull(replacementLockBytes);
         Assert.Equal(
             replacementLockBytes,

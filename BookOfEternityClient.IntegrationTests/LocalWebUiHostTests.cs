@@ -524,6 +524,45 @@ public sealed class LocalWebUiHostTests : IDisposable
         Assert.Contains("не найден", invalid["error"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
     }
 
+    /// <summary>Requires the actual HTTP refresh endpoint to return only a complete exact-generation bundle.</summary>
+    /// <param name="scenario">Selects a valid generation, stale generation, malformed request or failed required settings read.</param>
+    [Theory]
+    [InlineData("current")]
+    [InlineData("stale")]
+    [InlineData("missing")]
+    [InlineData("settings-failure")]
+    public async Task LoadStateEndpoint_RequiresCompleteEstablishedGeneration(string scenario)
+    {
+        WriteSessionFile("game_state/meta/soul_state.json", """{"soulName":"Bundle Soul","currentRealm":"Mortal World","currentIncarnation":1}""");
+        await CreateManualSaveAsync("bundle-save");
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
+        await app.StartAsync();
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var menu = JsonNode.Parse(await client.GetStringAsync("/api/main-menu"))!;
+        var saveId = menu["saves"]!.AsArray()[0]!["saveId"]!.GetValue<string>();
+        using var load = await client.PostAsJsonAsync("/api/saves/load", new { saveId });
+        load.EnsureSuccessStatusCode();
+        var loaded = JsonNode.Parse(await load.Content.ReadAsStringAsync())!;
+        var generation = loaded["establishedGeneration"]!.GetValue<string>();
+        if (scenario == "settings-failure") File.WriteAllText(Path.Combine(_rootPath, "config.json"), "{");
+        using var refresh = await client.PostAsJsonAsync("/api/saves/load-state", new
+        { establishedGeneration = scenario == "stale" ? Guid.NewGuid().ToString("N") : scenario == "missing" ? "" : generation });
+        Assert.Equal(scenario == "current" ? HttpStatusCode.OK : HttpStatusCode.Conflict, refresh.StatusCode);
+        var bundle = JsonNode.Parse(await refresh.Content.ReadAsStringAsync())!;
+        if (scenario == "current")
+        {
+            Assert.Equal(generation, bundle["establishedGeneration"]!.GetValue<string>());
+            foreach (var required in new[] { "menu", "session", "game", "settings", "audio" }) Assert.NotNull(bundle[required]);
+            Assert.Equal("Bundle Soul", bundle["game"]!["soul"]!["name"]!.GetValue<string>());
+        }
+        else
+        {
+            Assert.NotNull(bundle["error"]);
+            foreach (var required in new[] { "menu", "session", "game", "settings", "audio" }) Assert.Null(bundle[required]);
+        }
+    }
+
     [Fact]
     public async Task SaveCreateEndpoint_CreatesManualSaveVisibleInMenu()
     {

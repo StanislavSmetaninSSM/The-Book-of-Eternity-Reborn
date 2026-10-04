@@ -51,49 +51,57 @@ public sealed class LocalWebUiMainMenuService
                 InitiallyExpanded: false));
     }
 
+    /// <summary>Loads a menu-issued archive without losing its decision during required menu refresh.</summary>
     public async Task<BrowserLoadSaveResultDto> LoadSaveAsync(BrowserLoadSaveRequest request)
     {
+        ArgumentNullException.ThrowIfNull(request);
+        LoadReplacementResult? retained = null;
         var saveId = request.SaveId?.Trim() ?? string.Empty;
-        var saves = await BuildSaveSlotsWithPathsAsync();
-        var match = saves.FirstOrDefault(save => string.Equals(save.Dto.SaveId, saveId, StringComparison.Ordinal));
-        if (match is null || string.IsNullOrWhiteSpace(match.FullPath))
+        BrowserMainMenuDto? menu = null;
+        var missing = false;
+        try
         {
-            return new BrowserLoadSaveResultDto(
-                Success: false,
-                Error: "Сохранение не найдено в текущем списке загрузки.",
-                LoadedSaveId: saveId,
-                Menu: await BuildAsync());
-        }
-
-        var writeStatus = await _writeCoordinator.BuildStatusAsync();
-        if (!writeStatus.CanStartBrowserWrite)
-        {
-            return new BrowserLoadSaveResultDto(
-                Success: false,
-                Error: BuildBrowserWriteBlockedMessage(writeStatus),
-                LoadedSaveId: saveId,
-                Menu: await BuildAsync());
-        }
-
-        var loaded = false;
-        var writeResult = await _writeCoordinator.ExecuteSessionReplacementAsync(
-            new BrowserLocalWriteRequest(
-                OwnerId: "browser-main-menu-load",
-                OwnerLabel: "Browser main menu",
-                OperationLabel: "browser save load"),
-            async () =>
+            var saves = await BuildSaveSlotsWithPathsAsync();
+            var match = saves.FirstOrDefault(save => string.Equals(save.Dto.SaveId, saveId, StringComparison.Ordinal));
+            if (match is null || string.IsNullOrWhiteSpace(match.FullPath))
             {
-                loaded = await _saveLoad.LoadGameAsync(match.FullPath);
-                if (!loaded)
-                    throw new InvalidOperationException("Не удалось загрузить выбранное сохранение.");
-            });
-
-        var success = writeResult.Success && loaded;
-        return new BrowserLoadSaveResultDto(
-            Success: success,
-            Error: success ? string.Empty : writeResult.Message,
-            LoadedSaveId: saveId,
-            Menu: await BuildAsync());
+                missing = true;
+                retained = new(LoadReplacementDisposition.NotLoaded, null, null, false, null);
+            }
+            else
+            {
+                retained = await _writeCoordinator.ExecuteSessionReplacementAsync(
+                    new BrowserLocalWriteRequest("browser-main-menu-load", "Browser main menu", "browser save load"),
+                    admission => _saveLoad.LoadGameWithAdmissionAsync(match.FullPath, admission));
+            }
+            if (!retained.ContinuationBlocked && retained.Disposition == LoadReplacementDisposition.Committed)
+            {
+                if (string.IsNullOrWhiteSpace(retained.EstablishedGeneration))
+                    throw new InvalidOperationException("Committed load did not establish a generation.");
+                menu = await SessionOperationContext.RunBoundAsync(_fs, retained.EstablishedGeneration, BuildAsync);
+            }
+        }
+        catch (Exception failure)
+        {
+            retained = retained?.WithFollowUp(failure, blocksContinuation: true)
+                ?? new(failure is CoordinatedStatePublicationUncertainException
+                    ? LoadReplacementDisposition.Uncertain : LoadReplacementDisposition.NotLoaded,
+                    null, null, true, failure, true);
+        }
+        var committed = retained.Disposition == LoadReplacementDisposition.Committed;
+        var message = retained.Disposition switch
+        {
+            LoadReplacementDisposition.Committed => retained.NeedsFollowUp
+                ? "Сохранение загружено. Завершение операции или обновление книги требуют проверки."
+                : string.Empty,
+            LoadReplacementDisposition.RolledBack => "Загрузка отменена: прежнее состояние книги восстановлено.",
+            LoadReplacementDisposition.Uncertain => "Состояние загрузки не подтверждено. Продолжение остановлено до восстановления книги.",
+            _ => missing ? "Сохранение не найдено в текущем списке загрузки."
+                : "Сохранение не загружено. Книга занята текущим ходом или локальной операцией, либо запись недоступна."
+        };
+        return new(committed, message, committed ? saveId : string.Empty,
+            retained.ContinuationBlocked ? null : menu, retained.Disposition, retained.SelectedSourcePath,
+            retained.EstablishedGeneration, retained.NeedsFollowUp, retained.ContinuationBlocked);
     }
 
     /// <summary>
@@ -694,7 +702,13 @@ public sealed record BrowserLoadSaveResultDto(
     bool Success,
     string Error,
     string LoadedSaveId,
-    BrowserMainMenuDto Menu);
+    BrowserMainMenuDto? Menu,
+    [property: JsonConverter(typeof(JsonStringEnumConverter<LoadReplacementDisposition>))]
+    LoadReplacementDisposition Disposition,
+    string? SelectedSourcePath,
+    string? EstablishedGeneration,
+    bool NeedsFollowUp,
+    bool ContinuationBlocked);
 
 public sealed record BrowserCreateSaveRequest(string? SaveName);
 

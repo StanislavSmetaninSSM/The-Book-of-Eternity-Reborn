@@ -72,55 +72,58 @@ public sealed partial class BrowserLocalWriteCoordinator
             writeOperation);
     }
 
-    internal async Task<BrowserLocalWriteResult> ExecuteSessionReplacementAsync(
+    /// <summary>Retains load decisions and revalidates the acquired UI token on the loader's actual replacement lease.</summary>
+    internal async Task<LoadReplacementResult> ExecuteSessionReplacementAsync(
         BrowserLocalWriteRequest request,
-        Func<Task> replacementOperation)
+        Func<Func<FileSystemManager.CanonicalWriteLease, Task>, Task<LoadReplacementResult>> replacementOperation)
     {
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(replacementOperation);
-
-        LocalUiSessionLockLease replacementGuard;
-        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
-        {
-            var generation = _fs.GetOrCreateSessionGeneration(writeLease);
-            var acquisition = await SessionOperationContext.RunBoundAsync(
-                _fs,
-                generation,
-                writeLease,
-                async () =>
-                {
-                    var pending = BrowserPendingTurnInspector.Build(
-                        _fs,
-                        writeLease);
-                    if (pending.HasActiveGmTurn)
-                    {
-                        return LocalUiSessionLockResult.BlockedBy(
-                            snapshot: null,
-                            "Browser-write заблокирован: активный GM-turn или rollback/snapshot artifact должен быть завершён до локальной записи.");
-                    }
-
-                    return await _lockService.AcquireOrRefreshAsync(
-                        writeLease,
-                        BuildOwner(request),
-                        request.OperationLabel);
-                });
-            if (!acquisition.Acquired || acquisition.Lease == null)
-                return BrowserLocalWriteResult.Blocked(acquisition.BlockerMessage);
-
-            replacementGuard = acquisition.Lease;
-        }
-
+        LocalUiSessionLockLease? replacementGuard = null;
+        LoadReplacementResult? retained = null;
+        var dispatched = false;
         try
         {
-            await replacementOperation();
-            return BrowserLocalWriteResult.Completed("Browser-write завершён.");
+            await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            {
+                if (BrowserPendingTurnInspector.Build(_fs, writeLease).HasActiveGmTurn)
+                    return new(LoadReplacementDisposition.NotLoaded, null, null, false,
+                        new InvalidOperationException("Load admission refused an active turn."));
+                var acquisition = await _lockService.AcquireOrRefreshAsync(writeLease,
+                    BuildOwner(request), request.OperationLabel);
+                if (!acquisition.Acquired || acquisition.Lease == null)
+                    return new(LoadReplacementDisposition.NotLoaded, null, null, false,
+                        new InvalidOperationException("Load admission refused another UI owner."));
+                replacementGuard = acquisition.Lease;
+            }
+
+            dispatched = true;
+            retained = await replacementOperation(async writeLease =>
+            {
+                if (BrowserPendingTurnInspector.Build(_fs, writeLease).HasActiveGmTurn)
+                    throw new InvalidOperationException("Load admission refused a late active turn.");
+                var refreshed = await _lockService.RefreshAsync(writeLease, replacementGuard, request.OperationLabel);
+                if (!refreshed.Acquired)
+                    throw new InvalidOperationException("Load admission no longer owns the exact UI lease.");
+            });
         }
-        catch (Exception ex)
+        catch (Exception failure)
         {
-            await TryReleaseAsync(replacementGuard);
-            return BrowserLocalWriteResult.Failed(
-                $"Browser-write отменён до завершения замены сессии: {ex.Message}");
+            retained = retained?.WithFollowUp(failure, blocksContinuation: true)
+                ?? new(dispatched || failure is CoordinatedStatePublicationUncertainException
+                    ? LoadReplacementDisposition.Uncertain : LoadReplacementDisposition.NotLoaded,
+                    null, null, true, failure, true);
         }
+
+        // A commit replaces the old lock; uncertainty must not trigger recovery through a release.
+        // Refusal/rollback may release only the exact old token, never a newer same-owner lock.
+        if (replacementGuard != null && !retained.ContinuationBlocked &&
+            retained.Disposition is LoadReplacementDisposition.NotLoaded or LoadReplacementDisposition.RolledBack)
+        {
+            try { await _lockService.ReleaseAsync(replacementGuard); }
+            catch (Exception failure) { retained = retained.WithFollowUp(failure, blocksContinuation: true); }
+        }
+        return retained;
     }
 
     internal async Task<BrowserLocalWriteResult> ExecuteAtomicAsync(

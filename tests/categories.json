@@ -10835,6 +10835,33 @@
       ]
     }
   ]
+},
+{
+  "id": "portable-load-browser-refresh",
+  "responsibility": "Actual browser HTTP typed load identity and complete exact-generation required refresh bundle; failure returns no partial surfaces. Uses per-test owned roots.",
+  "excludes": "Live browser access/visual QA, unchanged filesystem/resource/console cohorts, unrelated browser routes.",
+  "changeHints": [
+    "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
+    "BookOfEternityClient/WebUi/BrowserLoadStateService.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration",
+        "BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds",
+        "BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked",
+        "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock"
+      ]
+    }
+  ]
 }
 ]
 }

@@ -33,6 +33,21 @@ catalog audit, separate Sol 6.1 XHigh review and GitHub restoration remain pendi
 T031-WORKER-PORTABLE, A4 native save-producer names, live console/GM, Windows public
 clients and full #1553 remain open. No live browser attempt is part of this work.
 
+### Browser first RED and typed transport candidate
+
+At `67212bd9` the fresh selected build/discovery planned 9 cases in 1:48.036;
+actual run completed 9/9 in 9.511 seconds, 0 passed/9 failed, no skips/duplicates,
+owned cleanup complete. Seven missing-disposition failures are causal transport RED.
+Two cut rows accidentally interrupted initial UI-lock publication and are fixture
+failures, not load RED; the observer is now armed only after real load preparation.
+Their corrected outcomes are unverified. Evidence: `recovery/evidence/load-browser-red`.
+
+Candidate preserves typed load decisions through coordinator/menu/HTTP, repeats
+pending/token admission under the actual replacement lease, and uses the exact
+committed generation for required menu refresh. Required bundle endpoint tests are
+written next and still RED/unimplemented. Candidate build/runtime and independent
+review remain pending; frontend handlers are unchanged and B4 remains open.
+
 ## Current verification scope — owner decision, 2026-10-04 15:45 UTC
 
 Browser verification is now exclusively test-based at the code level, including

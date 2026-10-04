@@ -111,9 +111,7 @@ public static class LocalWebUiHost
         app.MapPost("/api/saves/load", async (BrowserLoadSaveRequest request, LocalWebUiMainMenuService menu) =>
         {
             var result = await menu.LoadSaveAsync(request);
-            return result.Success
-                ? Results.Json(result, WebJsonOptions)
-                : Results.BadRequest(new { result.Error, result.LoadedSaveId, result.Menu });
+            return LoadSaveResponse(result);
         });
         // The unified map viewer is a single self-contained bundle (React + MapAtlas
         // + inlined CSS). It is the SAME renderer used by the standalone
@@ -243,6 +241,12 @@ public static class LocalWebUiHost
     /// A JSON response preserving disposition, exact identity and continuation fields at every status.
     /// </returns>
     internal static IResult CreateSaveResponse(BrowserCreateSaveResultDto result) =>
+        Results.Json(result, WebJsonOptions, statusCode: result.ContinuationBlocked
+            ? StatusCodes.Status409Conflict
+            : result.Success ? StatusCodes.Status200OK : StatusCodes.Status400BadRequest);
+
+    /// <summary>Preserves the complete typed replacement result on successful and unsuccessful HTTP responses.</summary>
+    internal static IResult LoadSaveResponse(BrowserLoadSaveResultDto result) =>
         Results.Json(result, WebJsonOptions, statusCode: result.ContinuationBlocked
             ? StatusCodes.Status409Conflict
             : result.Success ? StatusCodes.Status200OK : StatusCodes.Status400BadRequest);
