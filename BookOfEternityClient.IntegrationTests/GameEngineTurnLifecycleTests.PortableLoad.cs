@@ -1,7 +1,13 @@
+using System.Collections;
 using System.Reflection;
 using System.Text.Json;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.UI;
+using Spectre.Console;
+using Spectre.Console.Rendering;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.Models;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
@@ -39,6 +45,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.False(GetPrivateFieldValue<bool>(engine, "_inGame"));
         Assert.Equal(string.Empty, loop.SessionId);
         Assert.False(await InvokePrivateAsync<bool>(engine, "HasCurrentSessionAsync"));
+        var menu = Assert.IsAssignableFrom<IEnumerable>(await InvokePrivateTaskResultAsync(engine, "BuildMainMenuOptionsAsync"));
+        Assert.Equal(new[] { "about", "exit" }, menu.Cast<object>().Select(item => item.GetType().GetProperty("Key")!.GetValue(item)));
         await InvokePrivateTaskAsync(engine, "EnterGameLoop");
         Assert.False(GetPrivateFieldValue<bool>(engine, "_inGame"));
         var generation = File.ReadAllBytes(_fs.SessionGenerationPath);
@@ -190,7 +198,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     [Fact]
     public async Task PortableLoadConsole_RequiredUiRefreshFailureCannotEraseCommit()
     {
-        var path = await CreateConsoleLoadArchiveAsync();
+        var path = await CreateConsoleLoadArchiveAsync(bootstrapSettings: true);
         var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
         var loaded = Assert.IsType<LoadReplacementResult>(await InvokeConsoleLoadResultAsync(engine, path));
         Assert.Equal(LoadReplacementDisposition.Committed, loaded.Disposition);
@@ -237,6 +245,103 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Null(result.EstablishedGeneration);
     }
 
+    /// <summary>Runs the actual in-game load menu and full required refresh, retaining or stopping its existing loop.</summary>
+    /// <param name="failRefresh">Cuts the confirmed service refresh when true; otherwise executes healthy required continuation.</param>
+    /// <returns>A task completing after actual menu output, generation and loop disposition are verified.</returns>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task PortableLoadConsole_InGameMenuReportsCommitAndResumesOnlyAfterRequiredRefresh(bool failRefresh)
+    {
+        CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
+        var input = new LoadMenuConsoleInput([Key(ConsoleKey.DownArrow), Key(ConsoleKey.Enter)]);
+        var engine = CreateGameEngine(input, loadHooks: failRefresh
+            ? new SaveLoadServiceHooks { AfterLoadPublicationValidatedAsync = () => throw new InvalidOperationException("/private/console-refresh-cut") }
+            : null);
+        input.UnexpectedRead = () => SetPrivateField(engine, "_inGame", false);
+        var state = GetPrivateField<StateManager>(engine, "_stateManager");
+        state.Settings.MusicEnabled = false;
+        state.Settings.SoundEnabled = false;
+        await state.BootstrapLocalStorageAsync();
+        await state.RefreshGameStateAsync();
+        var save = GetPrivateField<SaveLoadService>(engine, "_saveLoad");
+        Assert.True(await save.SaveGameAsync("menu-load", "real console menu fixture"));
+        var generation = File.ReadAllBytes(_fs.SessionGenerationPath);
+        SetPrivateField(engine, "_inGame", true);
+        var original = AnsiConsole.Console;
+        using var console = new LoadMenuAnsiConsole();
+        AnsiConsole.Console = console;
+        bool continued;
+        try { continued = await InvokePrivateAsync<bool>(engine, "InGameOptionsMenu"); }
+        finally { AnsiConsole.Console = original; }
+
+        Assert.Equal(!failRefresh, continued);
+        Assert.Equal(!failRefresh, GetPrivateFieldValue<bool>(engine, "_inGame"));
+        Assert.NotEqual(generation, File.ReadAllBytes(_fs.SessionGenerationPath));
+        Assert.Contains("Сохранение загружено.", console.Output);
+        Assert.DoesNotContain("/private/console-refresh-cut", console.Output);
+        Assert.DoesNotContain("Сохранение не загружено", console.Output);
+        Assert.Equal(failRefresh ? 3 : 2, input.Reads);
+        Assert.Equal(1, console.Reads);
+        if (failRefresh)
+        {
+            Assert.Contains("Продолжение остановлено", console.Output);
+            Assert.True(GetPrivateField<LoadReplacementResult>(engine, "_blockedLoadContinuation").ContinuationBlocked);
+        }
+        else
+        {
+            Assert.Null(GetPrivateFieldValue<LoadReplacementResult?>(engine, "_blockedLoadContinuation"));
+            Assert.NotNull(GetPrivateFieldValue<GameResponse?>(engine, "_lastResponse"));
+        }
+    }
+
+    private sealed class LoadMenuConsoleInput(IEnumerable<ConsoleKeyInfo> keys) : IConsoleInputSource
+    {
+        private readonly Queue<ConsoleKeyInfo> _keys = new(keys);
+        internal Action? UnexpectedRead { get; set; }
+        internal int Reads { get; private set; }
+        public bool IsScripted => true;
+        public bool KeyAvailable => true;
+        public ConsoleKeyInfo ReadKey(bool intercept = true)
+        {
+            Reads++;
+            if (_keys.TryDequeue(out var key)) return key;
+            UnexpectedRead?.Invoke();
+            return Key(ConsoleKey.Enter);
+        }
+        public string ReadLine() { Reads++; UnexpectedRead?.Invoke(); return string.Empty; }
+    }
+
+    private sealed class LoadMenuAnsiConsole : IAnsiConsole, IAnsiConsoleInput, IDisposable
+    {
+        private readonly StringWriter _writer = new();
+        private readonly IAnsiConsole _inner;
+        internal int Reads { get; private set; }
+        internal string Output => _writer.ToString();
+        internal LoadMenuAnsiConsole() => _inner = AnsiConsole.Create(new AnsiConsoleSettings
+        {
+            Ansi = AnsiSupport.Yes,
+            ColorSystem = ColorSystemSupport.NoColors,
+            Interactive = InteractionSupport.Yes,
+            Out = new AnsiConsoleOutput(_writer)
+        });
+        public Profile Profile => _inner.Profile;
+        public IAnsiConsoleCursor Cursor => _inner.Cursor;
+        public IAnsiConsoleInput Input => this;
+        public RenderPipeline Pipeline => _inner.Pipeline;
+        public IExclusivityMode ExclusivityMode => _inner.ExclusivityMode;
+        public void Clear(bool home) { }
+        public void Write(IRenderable renderable) => _inner.Write(renderable);
+        public bool IsKeyAvailable() => true;
+        public ConsoleKeyInfo? ReadKey(bool intercept)
+        {
+            Assert.Equal(0, Reads++);
+            return Key(ConsoleKey.Enter);
+        }
+        public Task<ConsoleKeyInfo?> ReadKeyAsync(bool intercept, CancellationToken cancellationToken) => Task.FromResult(ReadKey(intercept));
+        public void Dispose() => _writer.Dispose();
+    }
+
     /// <summary>Waits for the actual operation before asserting the revised typed return contract.</summary>
     /// <param name="engine">The actual console engine.</param>
     /// <param name="path">The selected source path.</param>
@@ -250,10 +355,12 @@ public sealed partial class GameEngineTurnLifecycleTests
     }
 
     /// <summary>Creates one independent current-producer archive for console load tests.</summary>
+    /// <param name="bootstrapSettings">Prepares the actual console settings prerequisites when requested.</param>
     /// <returns>The exact closed archive path.</returns>
-    private async Task<string> CreateConsoleLoadArchiveAsync()
+    private async Task<string> CreateConsoleLoadArchiveAsync(bool bootstrapSettings = false)
     {
         var state = PortableSaveFixture.Seed(_fs);
+        if (bootstrapSettings) await state.BootstrapLocalStorageAsync();
         var save = new SaveLoadService(_fs, state, NullLogger<SaveLoadService>.Instance);
         Assert.True(await save.SaveGameAsync("console-load", "typed console test"));
         return Assert.Single(Directory.GetFiles(_fs.ResolvePath("saves/manual_saves"), "*.zip"));

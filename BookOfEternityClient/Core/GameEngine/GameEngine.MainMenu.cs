@@ -3302,7 +3302,7 @@ public partial class GameEngine
             {
                 if (BrowserPendingTurnInspector.Build(_fs, writeLease).HasActiveGmTurn)
                     throw new InvalidOperationException("Загрузка недоступна до завершения текущего хода.");
-                var owner = await new LocalUiSessionLockService(_fs).InspectAsync(writeLease);
+                var owner = await new LocalUiSessionLockService(_fs).InspectForSessionReplacementAsync(writeLease);
                 if (owner is { IsStale: false })
                     throw new InvalidOperationException("Другой интерфейс занят текущей главой.");
             });

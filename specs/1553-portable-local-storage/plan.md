@@ -70,6 +70,25 @@ publication rollback cases assert preservation of prior generation absence. Thes
 cases and an enriched UI-refresh diagnostic are now added before the correction;
 review and overall GREEN remain open. No filesystem/resource cohort is repeated.
 
+### Console absent-authority RED and bounded correction
+
+At published `e2f9b33b3487dd5fa29651860d9e2603f7ffc73b`, fresh selected run
+executed 14/14 in 2:39.325: 11 passed and 3 failed, no skips or duplicates, cleanup
+complete. The two new failures causally hit the unwanted generation-creation
+publication before the load itself. The retained UI exception explicitly confirms
+`config.json is absent` in ReadLocalSettingsAsync; no injection was reached.
+Evidence is retained in recovery/evidence/load-console-absence-red.
+
+Correction adds a dedicated non-creating lock inspection only for replacement
+admission, leaving ordinary lock acquisition/refresh unchanged. The late-settings
+fixture now uses real local bootstrap before producing its archive. Additional
+actual in-game options → load-menu cases use an independent full current session,
+real Spectre selection and required refresh; they assert commitment text, private
+error redaction, resumed versus stopped existing loop, and no nested loop input.
+Blocked menu keys are asserted exactly. New source remains WIP until GREEN and
+focused independent re-review; healthy full-stage proof is not assumed from the
+minimal load fixture. Browser and all previously listed open gates remain open.
+
 ## Accepted T032-B4 public entry — 2026-10-04
 
 Separate **gpt-6.1-sol / xhigh** final review passed the bounded public API through
