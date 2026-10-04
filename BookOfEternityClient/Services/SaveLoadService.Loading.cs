@@ -161,6 +161,9 @@ public partial class SaveLoadService
     /// The confirmed committed or rolled-back generation, or an admission refusal or uncertain decision.
     /// Follow-up failures retain any decision already established; uncertainty blocks continuation.
     /// </returns>
+    /// <exception cref="SessionReplacedException">
+    /// The ambient session-operation binding is stale or closing; its fence propagates before preparation.
+    /// </exception>
     public async Task<LoadReplacementResult> LoadGameWithOutcomeAsync(string saveFilePath,
         CancellationToken cancellationToken = default)
     {

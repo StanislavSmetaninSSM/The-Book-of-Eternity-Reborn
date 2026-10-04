@@ -43,6 +43,52 @@ about retry safety. No typed orchestration, journal/recovery/settings/runtime or
 changes. GREEN, catalog audit and separate Sol 6.1 XHigh review remain pending.
 The still-unconverted player-facing consumers are the next B4 block, not acceptance.
 
+### Public-entry review correction and evidence mapping
+
+First candidate at `5645c6e1` completed six cases in 2:19.009 including fresh build:
+five passed and one fixture assertion failed. The rollback fault used IOException;
+the established transient retry loop correctly repeated it twenty times. Use the
+existing deterministic InvalidOperationException cut instead. The failed result is
+retained in `load-public-entry-fixture-failure`; no production retry rule is changed.
+
+Independent Sol 6.1 XHigh review found active tests asserting removed physical-loader
+behavior. Retire these nine SaveLoadServiceTests methods, retaining original evidence
+and direct original-handler recovery coverage:
+
+- LateStagingHardLinkFailsBeforeLifecycleAndPreservesLiveSession,
+  StagingReplacementAtMoveBoundaryIsBlockedAndPreservesExactLiveSession,
+  PostMoveHardLinkRestoresExactLiveSession, PostPublicationHardLinkBeforeActivationRestoresExactLiveSession,
+  PostPublicationUnmanifestedConfigBeforeActivationRestoresExactLiveSession and
+  LinkAddedAfterArchiveInitialValidationPreservesLiveSession (all prefixed LoadGameAsync_).
+  Retained-inode/anti-owner/directory-move guarantees are superseded; actual confinement
+  and permitted hard-link preservation are covered by NativeDirectoryLinkBoundaryRefusesBeforeSessionPublication
+  and NativeHardLinkedMarkerReplacementPreservesOutsideSessionAlias. Exact namespace
+  rollback and source/library/generation/runtime are covered by LaterMemberFailureRestoresCompleteSessionSourceLibraryAndGeneration,
+  InterruptedTopologyRestoresExactBeforeNamespace and FreshGenerationInterruptionRestoresExactAbsence.
+- LoadGameAsync_WhenCommitJournalWriteFails_RestoresDiskAndRuntimeSnapshot,
+  LoadGameAsync_WhenRollbackMoveFails_PreservesBackupForStartupRecovery and
+  UnresolvedLoadRollback_FencesCanonicalWritersUntilRecoverySucceeds create their
+  faults solely through the removed ordinary loader. The unused test-only ILoadTransactionOperations
+  adapter is removed. Current authority is covered by PriorJournalConflictDuringAcquisitionIsUncertainAndBlocksContinuation,
+  ConflictAfterGenerationPublicationDoesNotClaimAnEstablishedGeneration, NativeExactStageJunctionRetainsIntentUntilRemovedAndFreshlyRecovered,
+  FreshAcquisitionRecoversActualLoadWithoutExtractionSources and InterruptedTopologyRecoveryConvergesWithoutExtraction.
+  ConfirmedCommitRetainsIdentityWhenRequiredRefreshFails and CommittedUnknownEmptyDirectoryDebtPreservesDecisionUntilFreshCleanup
+  preserve postcommit truth. Those accepted source-specific runs are not replayed.
+
+The old ProfileRepairRequiresExactPublishedFileAuthority is replaced by a real
+pre-publication foreign-live-byte conflict test, with zero B1 publication, unchanged
+other files/generation/runtime and preservation of the foreign edit. Its positive
+profile repair remains. The existing preflight source guard now bounds checks to
+actual PrepareLoadArchiveAsync and ReadSaveMetadataStreamAsync rather than searching
+past a method into unrelated code; explicit original-handler helper checks remain.
+
+`portable-save-original-load` becomes `portable-load-public-consumers` (seven exact
+cases: profile pair, two leases, bound stale writer, real worker-decision/load ordering
+and source guard). Historical 0/2 diagnostic bytes remain immutable and are not
+relabeled successful. New consumer runtime and discovery remain pending; no Linux
+worker-backend success is presumed. Public type docs also describe the pre-preparation
+thrown stale/closing ambient fence. Full B4 and A4 producer work remain open.
+
 ## Accepted native filesystem handback — 2026-10-04
 
 All runtime/resource/audit proof is published at

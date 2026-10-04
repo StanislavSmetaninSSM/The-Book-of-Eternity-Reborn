@@ -115,20 +115,44 @@
       "expectedSeconds": null,
       "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.OriginalSaveProfileRefreshTests.WindowsOriginalRecorderRefreshRetainsPhysicalPublicationReceipt"] }]
     },
+{
+  "id": "portable-load-public-consumers",
+  "responsibility": "T032-B4 affected public-load consumers: detached profile repair and pre-publication foreign-byte refusal, canonical/lifecycle contention, stale bound writer fencing, in-progress real worker decision ordering, and bounded original ZIP preflight source guard. Retires only the superseded active original-load profile category; immutable historical diagnostic evidence stays unchanged.",
+  "excludes": "Console/browser cutover, original-handler recovery internals, unrelated storage/worker/validation wildcard owners and unchanged filesystem/resource cohorts.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SaveLoadService.cs",
+    "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+    "BookOfEternityClient.IntegrationTests/SaveLoadServiceTests.cs",
+    "BookOfEternityClient.Tests/ValidationSourceGuardTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
     {
-      "id": "portable-save-original-load",
-      "responsibility": "Preserved original load profile repair succeeds under its own physical transaction and refuses replacement of its exact published file authority after ordinary save refresh cutover.",
-      "excludes": "Full load matrix, portable load implementation, ordinary SaveGame and Linux execution.",
-      "changeHints": ["BookOfEternityClient/Services/SaveLoadService.cs", "BookOfEternityClient/Core/StateManager.cs"],
-      "related": [],
-      "requirements": { "frontendBuild": false, "exclusive": true },
-      "timeoutMinutes": 3,
-      "expectedSeconds": null,
-      "selectors": [{ "project": "integration", "tests": [
+      "project": "integration",
+      "tests": [
         "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_RepairsClientOwnedProfileMirrorWithoutReacquiringCanonicalLease",
-        "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_ProfileRepairRequiresExactPublishedFileAuthority"
-      ] }]
+        "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameWithOutcomeAsync_ProfilePreparationRefusesChangedLiveBytesBeforePublication",
+        "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_WaitsForCanonicalWriteLeaseBeforeReplacingLiveSession",
+        "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_WaitsForSessionLifecycleLeaseBeforeReplacingLiveSession"
+      ]
     },
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_LoadRotatesGeneration_ThrowsBeforeReplacementMutation",
+        "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock",
+        "BookOfEternityClient.Tests.ValidationSourceGuardTests.ResourceAuthorityBoundaries_MustPreflightZipAndRetainLoadLeavesThroughPublication"
+      ]
+    }
+  ]
+},
+
     {
       "id": "portable-save-profile-consumers",
       "responsibility": "Existing StateManager consumers retain leased profile-mirror repair, player authority and rejection of an unleased mirror API.",

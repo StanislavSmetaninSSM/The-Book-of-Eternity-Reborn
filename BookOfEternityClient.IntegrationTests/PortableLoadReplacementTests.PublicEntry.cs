@@ -47,7 +47,7 @@ public sealed partial class PortableLoadReplacementTests
             if (phase != TrustedLocalPublicationPhase.CommitStaged) return;
             cuts++;
             if (conflict) Put(MarkerPath, [91, 92, 93]);
-            throw new IOException("public load precommit cut");
+            throw new InvalidOperationException("public load precommit cut");
         };
 
         Assert.False(await _service.LoadGameAsync(source));

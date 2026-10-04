@@ -7,6 +7,13 @@
       "contracts": [
         "#1553 T032-B4; LOAD-FS-003/004 public decision preservation"
       ]
+    },
+    {
+      "category": "portable-load-public-consumers",
+      "reason": "T032-B4 affected public-load consumers: detached profile repair and pre-publication foreign-byte refusal, canonical/lifecycle contention, stale bound writer fencing, in-progress real worker decision ordering, and bounded original ZIP preflight source guard. Retires only the superseded active original-load profile category; immutable historical diagnostic evidence stays unchanged.",
+      "contracts": [
+        "#1553 T032-B4 public API consumers; LOAD-FS-002/003/004"
+      ]
     }
   ]
 }

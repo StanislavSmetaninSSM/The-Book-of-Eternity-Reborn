@@ -1459,352 +1459,10 @@ public sealed class SaveLoadServiceTests : IDisposable
         Assert.False(File.Exists(_fs.ActiveLoadTransactionJournalPath));
     }
 
-    [Fact]
-    public async Task LoadGameAsync_LateStagingHardLinkFailsBeforeLifecycleAndPreservesLiveSession()
-    {
-        if (!OperatingSystem.IsWindows())
-            return;
 
-        const string markerPath =
-            "game_state/world/late-staging-hard-link.json";
-        const string liveState = """{"state":"live"}""";
-        await _fs.WriteFileAtomicAsync(markerPath, liveState);
-        var archivePath = Path.Combine(
-            _rootPath,
-            "late-staging-hard-link.zip");
-        using (var archive = ZipFile.Open(
-                   archivePath,
-                   ZipArchiveMode.Create))
-        {
-            await WriteLegacySoulStateAsync(archive);
-            await WriteArchiveEntryAsync(
-                archive,
-                markerPath,
-                """{"state":"replacement"}""");
-        }
 
-        var lifecycleBoundaryReached = false;
-        var linked = false;
-        var aliasPath = Path.Combine(
-            _rootPath,
-            "late-staging-hard-link.alias");
-        var raceFs = new FileSystemManager(
-            _rootPath,
-            NullLogger<FileSystemManager>.Instance,
-            PhysicalLoadTransactionOperations.Instance,
-            new FileSystemManagerHooks
-            {
-                BeforeSessionLifecycleLockOpenAsync = () =>
-                {
-                    lifecycleBoundaryReached = true;
-                    return Task.CompletedTask;
-                }
-            });
-        var stateManager = new StateManager(
-            raceFs,
-            new GameSettings(),
-            NullLogger<StateManager>.Instance);
-        await stateManager.RefreshGameStateAsync();
-        var service = new SaveLoadService(
-            raceFs,
-            stateManager,
-            NullLogger<SaveLoadService>.Instance,
-            new SaveLoadServiceHooks
-            {
-                BeforeLoadLeaseAcquisitionAsync = () =>
-                {
-                    var stagedPath = Assert.Single(
-                        Directory.GetFiles(
-                            Path.Combine(
-                                raceFs.RuntimeRootPath,
-                                "load-transactions"),
-                            Path.GetFileName(markerPath),
-                            SearchOption.AllDirectories));
-                    WindowsHardLinkTestHelper.Create(
-                        aliasPath,
-                        stagedPath);
-                    linked = true;
-                    return Task.CompletedTask;
-                }
-            });
 
-        Assert.False(await service.LoadGameAsync(archivePath));
-        Assert.True(linked);
-        Assert.False(lifecycleBoundaryReached);
-        Assert.Equal(liveState, await raceFs.ReadFileAsync(markerPath));
-        Assert.False(File.Exists(raceFs.ActiveLoadTransactionJournalPath));
-    }
 
-    [Fact]
-    public async Task LoadGameAsync_StagingReplacementAtMoveBoundaryIsBlockedAndPreservesExactLiveSession()
-    {
-        if (!OperatingSystem.IsWindows())
-            return;
-
-        const string markerPath =
-            "game_state/world/staging-replacement-at-move.json";
-        const string liveState = """{"state":"live"}""";
-        await _fs.WriteFileAtomicAsync(markerPath, liveState);
-        var archivePath = Path.Combine(
-            _rootPath,
-            "staging-replacement-at-move.zip");
-        using (var archive = ZipFile.Open(
-                   archivePath,
-                   ZipArchiveMode.Create))
-        {
-            await WriteLegacySoulStateAsync(archive);
-            await WriteArchiveEntryAsync(
-                archive,
-                markerPath,
-                """{"state":"replacement"}""");
-        }
-
-        var replacementAttempted = false;
-        var replacementBlocked = false;
-        var hooks = new FileSystemManagerHooks
-        {
-            BeforeLoadDirectoryMoveAsync = (source, destination) =>
-            {
-                if (replacementAttempted ||
-                    !source.Contains(
-                        $"{Path.DirectorySeparatorChar}stage{Path.DirectorySeparatorChar}",
-                        StringComparison.OrdinalIgnoreCase) ||
-                    !destination.Equals(
-                        _fs.GameSessionPath,
-                        StringComparison.OrdinalIgnoreCase))
-                {
-                    return Task.CompletedTask;
-                }
-
-                var stagedPath = Path.Combine(
-                    source,
-                    markerPath.Replace(
-                        '/',
-                        Path.DirectorySeparatorChar));
-                var foreignPath = stagedPath + ".foreign";
-                replacementAttempted = true;
-                try
-                {
-                    File.WriteAllText(
-                        foreignPath,
-                        """{"state":"foreign"}""");
-                    File.Delete(stagedPath);
-                    File.Move(foreignPath, stagedPath);
-                }
-                catch (Exception ex) when (
-                    ex is IOException or
-                    UnauthorizedAccessException)
-                {
-                    replacementBlocked = true;
-                    throw;
-                }
-
-                return Task.CompletedTask;
-            }
-        };
-        var raceFs = new FileSystemManager(
-            _rootPath,
-            NullLogger<FileSystemManager>.Instance,
-            PhysicalLoadTransactionOperations.Instance,
-            hooks);
-        var stateManager = new StateManager(
-            raceFs,
-            new GameSettings(),
-            NullLogger<StateManager>.Instance);
-        await stateManager.RefreshGameStateAsync();
-        var service = new SaveLoadService(
-            raceFs,
-            stateManager,
-            NullLogger<SaveLoadService>.Instance);
-
-        Assert.False(await service.LoadGameAsync(archivePath));
-        Assert.True(replacementAttempted);
-        Assert.True(replacementBlocked);
-        Assert.Equal(liveState, await raceFs.ReadFileAsync(markerPath));
-    }
-
-    [Fact]
-    public async Task LoadGameAsync_PostMoveHardLinkRestoresExactLiveSession()
-    {
-        if (!OperatingSystem.IsWindows())
-            return;
-
-        const string markerPath =
-            "game_state/world/post-move-hard-link.json";
-        const string liveState = """{"state":"live"}""";
-        await _fs.WriteFileAtomicAsync(markerPath, liveState);
-        var archivePath = Path.Combine(
-            _rootPath,
-            "post-move-hard-link.zip");
-        using (var archive = ZipFile.Open(
-                   archivePath,
-                   ZipArchiveMode.Create))
-        {
-            await WriteLegacySoulStateAsync(archive);
-            await WriteArchiveEntryAsync(
-                archive,
-                markerPath,
-                """{"state":"replacement"}""");
-        }
-
-        var linked = false;
-        var aliasPath = Path.Combine(
-            _rootPath,
-            "post-move-hard-link.alias");
-        var raceFs = new FileSystemManager(
-            _rootPath,
-            NullLogger<FileSystemManager>.Instance,
-            PhysicalLoadTransactionOperations.Instance,
-            new FileSystemManagerHooks
-            {
-                AfterLoadDirectoryMoveAsync = (source, destination) =>
-                {
-                    if (linked ||
-                        !source.Contains(
-                            $"{Path.DirectorySeparatorChar}stage{Path.DirectorySeparatorChar}",
-                            StringComparison.OrdinalIgnoreCase) ||
-                        !destination.Equals(
-                            _fs.GameSessionPath,
-                            StringComparison.OrdinalIgnoreCase))
-                    {
-                        return Task.CompletedTask;
-                    }
-
-                    WindowsHardLinkTestHelper.Create(
-                        aliasPath,
-                        Path.Combine(
-                            destination,
-                            markerPath.Replace(
-                                '/',
-                                Path.DirectorySeparatorChar)));
-                    linked = true;
-                    return Task.CompletedTask;
-                }
-            });
-        var stateManager = new StateManager(
-            raceFs,
-            new GameSettings(),
-            NullLogger<StateManager>.Instance);
-        await stateManager.RefreshGameStateAsync();
-        var service = new SaveLoadService(
-            raceFs,
-            stateManager,
-            NullLogger<SaveLoadService>.Instance);
-
-        Assert.False(await service.LoadGameAsync(archivePath));
-        Assert.True(linked);
-        Assert.Equal(liveState, await raceFs.ReadFileAsync(markerPath));
-    }
-
-    [Fact]
-    public async Task LoadGameAsync_PostPublicationHardLinkBeforeActivationRestoresExactLiveSession()
-    {
-        if (!OperatingSystem.IsWindows())
-            return;
-
-        const string markerPath =
-            "game_state/world/post-publication-hard-link.json";
-        const string liveState = """{"state":"live"}""";
-        await _fs.WriteFileAtomicAsync(markerPath, liveState);
-        var archivePath = Path.Combine(
-            _rootPath,
-            "post-publication-hard-link.zip");
-        using (var archive = ZipFile.Open(
-                   archivePath,
-                   ZipArchiveMode.Create))
-        {
-            await WriteLegacySoulStateAsync(archive);
-            await WriteArchiveEntryAsync(
-                archive,
-                markerPath,
-                """{"state":"replacement"}""");
-        }
-
-        var linked = false;
-        var aliasPath = Path.Combine(
-            _rootPath,
-            "post-publication-hard-link.alias");
-        var raceFs = new FileSystemManager(
-            _rootPath,
-            NullLogger<FileSystemManager>.Instance);
-        var stateManager = new StateManager(
-            raceFs,
-            new GameSettings(),
-            NullLogger<StateManager>.Instance);
-        await stateManager.RefreshGameStateAsync();
-        var service = new SaveLoadService(
-            raceFs,
-            stateManager,
-            NullLogger<SaveLoadService>.Instance,
-            new SaveLoadServiceHooks
-            {
-                AfterLoadPublicationValidatedAsync = () =>
-                {
-                    WindowsHardLinkTestHelper.Create(
-                        aliasPath,
-                        raceFs.ResolvePath(markerPath));
-                    linked = true;
-                    return Task.CompletedTask;
-                }
-            });
-
-        Assert.False(await service.LoadGameAsync(archivePath));
-        Assert.True(linked);
-        Assert.Equal(liveState, await raceFs.ReadFileAsync(markerPath));
-        Assert.False(File.Exists(raceFs.ActiveLoadTransactionJournalPath));
-    }
-
-    [Fact]
-    public async Task LoadGameAsync_PostPublicationUnmanifestedConfigBeforeActivationRestoresExactLiveSession()
-    {
-        const string markerPath =
-            "game_state/world/post-publication-unmanifested-config.json";
-        const string liveState = """{"state":"live"}""";
-        await _fs.WriteFileAtomicAsync(markerPath, liveState);
-        var before = CaptureSessionSnapshot(_fs.GameSessionPath);
-        var archivePath = Path.Combine(
-            _rootPath,
-            "post-publication-unmanifested-config.zip");
-        using (var archive = ZipFile.Open(
-                   archivePath,
-                   ZipArchiveMode.Create))
-        {
-            await WriteLegacySoulStateAsync(archive);
-            await WriteArchiveEntryAsync(
-                archive,
-                markerPath,
-                """{"state":"replacement"}""");
-        }
-
-        var injected = false;
-        var raceFs = new FileSystemManager(
-            _rootPath,
-            NullLogger<FileSystemManager>.Instance);
-        var stateManager = new StateManager(
-            raceFs,
-            new GameSettings(),
-            NullLogger<StateManager>.Instance);
-        await stateManager.RefreshGameStateAsync();
-        var service = new SaveLoadService(
-            raceFs,
-            stateManager,
-            NullLogger<SaveLoadService>.Instance,
-            new SaveLoadServiceHooks
-            {
-                AfterLoadPublicationValidatedAsync = async () =>
-                {
-                    await File.WriteAllTextAsync(
-                        raceFs.ResolvePath("config.json"),
-                        """{"language":"en"}""");
-                    injected = true;
-                }
-            });
-
-        Assert.False(await service.LoadGameAsync(archivePath));
-        Assert.True(injected);
-        Assert.Equal(before, CaptureSessionSnapshot(raceFs.GameSessionPath));
-        Assert.False(File.Exists(raceFs.ActiveLoadTransactionJournalPath));
-    }
 
     [Fact]
     public async Task LoadGameAsync_MetadataOnlyArchiveIsRejectedBeforeLifecycleLease()
@@ -2256,63 +1914,6 @@ public sealed class SaveLoadServiceTests : IDisposable
         Assert.Equal(liveState, await _fs.ReadFileAsync(liveStatePath));
     }
 
-    [Fact]
-    public async Task LoadGameAsync_LinkAddedAfterArchiveInitialValidationPreservesLiveSession()
-    {
-        if (!OperatingSystem.IsWindows())
-            return;
-
-        const string markerPath = "game_state/world/archive-completion-marker.json";
-        await _fs.WriteFileAtomicAsync(markerPath, """{ "state": "live" }""");
-        var archivePath = Path.Combine(
-            _rootPath,
-            "archive-completion-race.zip");
-        using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create))
-        {
-            await WriteArchiveEntryAsync(
-                archive,
-                markerPath,
-                """{ "state": "replacement" }""");
-        }
-
-        var aliasPath = Path.Combine(
-            _rootPath,
-            "archive-completion-race-alias.zip");
-        var linked = false;
-        var hooks = FileSystemManagerHookTestHelper.WithPathHook(
-            "AfterExactPhysicalReadInitialValidationAsync",
-            path =>
-            {
-                if (!linked &&
-                    path.Equals(archivePath, StringComparison.OrdinalIgnoreCase))
-                {
-                    WindowsHardLinkTestHelper.Create(aliasPath, archivePath);
-                    linked = true;
-                }
-
-                return Task.CompletedTask;
-            });
-        var raceFs = new FileSystemManager(
-            _rootPath,
-            NullLogger<FileSystemManager>.Instance,
-            PhysicalLoadTransactionOperations.Instance,
-            hooks);
-        var stateManager = new StateManager(
-            raceFs,
-            new GameSettings(),
-            NullLogger<StateManager>.Instance);
-        await stateManager.RefreshGameStateAsync();
-        var service = new SaveLoadService(
-            raceFs,
-            stateManager,
-            NullLogger<SaveLoadService>.Instance);
-
-        Assert.False(await service.LoadGameAsync(archivePath));
-        Assert.True(linked);
-        Assert.Equal(
-            """{ "state": "live" }""",
-            await raceFs.ReadFileAsync(markerPath));
-    }
 
     /// <summary>
     /// Preserves ordinary by-name read semantics when a hard-link alias is added during metadata consumption.
@@ -2389,7 +1990,7 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     /// <summary>
-    /// Verifies that load repairs the client-owned player profile under its held publication authority.
+    /// Verifies that detached load preparation repairs the client-owned player profile before publication.
     /// </summary>
     /// <returns>
     /// A task completing after the load decision, repaired profile and bounded completion time are verified.
@@ -2423,210 +2024,53 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task LoadGameAsync_ProfileRepairRequiresExactPublishedFileAuthority()
+    public async Task LoadGameWithOutcomeAsync_ProfilePreparationRefusesChangedLiveBytesBeforePublication()
     {
-        if (!OperatingSystem.IsWindows())
-            return;
-
-        var archivePath = Path.Combine(
-            _rootPath,
-            "stale-player-soul-mirror-race.zip");
-        using (var archive = ZipFile.Open(
-                   archivePath,
-                   ZipArchiveMode.Create))
-        {
+        var archivePath = Path.Combine(_rootPath, "stale-player-soul-mirror-conflict.zip");
+        using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create))
             await WriteStalePlayerSoulProfileArchiveAsync(archive);
-        }
-
+        var generation = File.ReadAllBytes(_fs.SessionGenerationPath);
         var before = CaptureSessionSnapshot(_fs.GameSessionPath);
-        var displacedPath = Path.Combine(
-            _rootPath,
-            "displaced-player-soul-profile.json");
-        var replaced = false;
-        var raceFs = new FileSystemManager(
-            _rootPath,
-            NullLogger<FileSystemManager>.Instance,
-            PhysicalLoadTransactionOperations.Instance,
-            new FileSystemManagerHooks
+        const string foreignProfile = """{"schemaVersion":1,"profiles":[],"marker":"foreign-live"}""";
+        var changed = 0;
+        var publications = 0;
+        var raceFs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
             {
                 BeforeCanonicalMutationBoundaryAsync = relativePath =>
                 {
-                    if (replaced ||
-                        !relativePath.Equals(
-                            AfterlifeEntityProfileState.StatePath,
-                            StringComparison.OrdinalIgnoreCase))
+                    if (changed == 0 && relativePath == AfterlifeEntityProfileState.StatePath)
                     {
-                        return Task.CompletedTask;
+                        File.WriteAllText(_fs.ResolvePath(relativePath), foreignProfile);
+                        changed++;
                     }
-
-                    var profilePath = _fs.ResolvePath(relativePath);
-                    File.Move(profilePath, displacedPath);
-                    File.WriteAllText(
-                        profilePath,
-                        """{"schemaVersion":1,"profiles":[]}""");
-                    replaced = true;
                     return Task.CompletedTask;
-                }
+                },
+                LocalPublicationObserver = (_, _) => publications++
             });
-        var stateManager = new StateManager(
-            raceFs,
-            new GameSettings(),
-            NullLogger<StateManager>.Instance);
+        var stateManager = new StateManager(raceFs, new GameSettings(), NullLogger<StateManager>.Instance);
         await stateManager.RefreshGameStateAsync();
-        var service = new SaveLoadService(
-            raceFs,
-            stateManager,
-            NullLogger<SaveLoadService>.Instance);
+        var oldSoul = stateManager.CurrentState.SoulName;
+        var service = new SaveLoadService(raceFs, stateManager, NullLogger<SaveLoadService>.Instance);
 
-        Assert.False(await service.LoadGameAsync(archivePath));
-        Assert.True(replaced);
-        Assert.Equal(before, CaptureSessionSnapshot(raceFs.GameSessionPath));
-        Assert.False(File.Exists(raceFs.ActiveLoadTransactionJournalPath));
-        Assert.Empty(
-            Directory.EnumerateFiles(
-                _rootPath,
-                ".boe-prior-*.quarantine",
-                SearchOption.AllDirectories));
+        var result = await service.LoadGameWithOutcomeAsync(archivePath);
+
+        Assert.Equal(LoadReplacementDisposition.NotLoaded, result.Disposition);
+        Assert.Equal(1, changed);
+        Assert.Equal(0, publications);
+        Assert.Null(result.EstablishedGeneration);
+        Assert.NotNull(result.Failure);
+        Assert.Equal(generation, File.ReadAllBytes(_fs.SessionGenerationPath));
+        Assert.Equal(oldSoul, stateManager.CurrentState.SoulName);
+        Assert.Equal(foreignProfile, File.ReadAllText(_fs.ResolvePath(AfterlifeEntityProfileState.StatePath)));
+        var profilePrefix = AfterlifeEntityProfileState.StatePath + ":";
+        Assert.Equal(before.Where(line => !line.StartsWith(profilePrefix, StringComparison.Ordinal)),
+            CaptureSessionSnapshot(_fs.GameSessionPath).Where(line => !line.StartsWith(profilePrefix, StringComparison.Ordinal)));
+        Assert.False(File.Exists(Path.Combine(raceFs.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));
     }
 
-    [Fact]
-    public async Task LoadGameAsync_WhenCommitJournalWriteFails_RestoresDiskAndRuntimeSnapshot()
-    {
-        var root = Path.Combine(_rootPath, "commit-journal-failure");
-        Directory.CreateDirectory(root);
-        var operations = new FaultInjectingLoadTransactionOperations();
-        var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance, operations);
-        fs.EnsureDirectoryStructure();
-        var settings = new GameSettings { Language = "ru" };
-        var stateManager = new StateManager(fs, settings, NullLogger<StateManager>.Instance);
-        await fs.WriteFileAtomicAsync("game_state/core/player_status.json", """
-        { "characterName": "Старый герой" }
-        """);
-        await fs.WriteFileAtomicAsync("config.json", """
-        { "language": "ru" }
-        """);
-        const string workerTaskPath = "worker_tasks/actor-materialization/task.json";
-        const string workerProposalPath = "worker_proposals/actor-materialization/proposal.json";
-        await fs.WriteFileAtomicAsync(workerTaskPath, "{\"owner\":\"old-session\"}");
-        await fs.WriteFileAtomicAsync(workerProposalPath, "{\"owner\":\"old-session\"}");
-        string previousGeneration;
-        await using (var generationLease = await fs.AcquireCanonicalWriteLeaseAsync())
-            previousGeneration = fs.GetOrCreateSessionGeneration(generationLease);
-        await stateManager.RefreshGameStateAsync();
-        await stateManager.LoadSettingsAsync();
 
-        var archivePath = Path.Combine(root, "new-session.zip");
-        using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create))
-        {
-            await WriteLegacySoulStateAsync(archive);
-            await WriteArchiveEntryAsync(archive, "game_state/core/player_status.json", """
-            { "characterName": "Новый герой" }
-            """);
-            await WriteArchiveEntryAsync(archive, "config.json", """
-            { "language": "en" }
-            """);
-        }
 
-        operations.FailCommittedJournalWrites = true;
-        var service = new SaveLoadService(fs, stateManager, NullLogger<SaveLoadService>.Instance);
-
-        Assert.False(await service.LoadGameAsync(archivePath));
-        Assert.Equal("Старый герой", stateManager.CurrentState.CharacterName);
-        Assert.Equal("ru", stateManager.Settings.Language);
-        Assert.Contains("Старый герой", await fs.ReadFileAsync("game_state/core/player_status.json"));
-        Assert.Equal("{\"owner\":\"old-session\"}", await fs.ReadFileAsync(workerTaskPath));
-        Assert.Equal("{\"owner\":\"old-session\"}", await fs.ReadFileAsync(workerProposalPath));
-        await using (var generationLease = await fs.AcquireCanonicalWriteLeaseAsync())
-            Assert.True(fs.IsCurrentSessionGeneration(generationLease, previousGeneration));
-        Assert.False(File.Exists(fs.ActiveLoadTransactionJournalPath));
-    }
-
-    [Fact]
-    public async Task LoadGameAsync_WhenRollbackMoveFails_PreservesBackupForStartupRecovery()
-    {
-        var root = Path.Combine(_rootPath, "rollback-move-failure");
-        Directory.CreateDirectory(root);
-        var operations = new FaultInjectingLoadTransactionOperations();
-        var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance, operations);
-        fs.EnsureDirectoryStructure();
-        const string markerPath = "game_state/world/recovery_marker.json";
-        await fs.WriteFileAtomicAsync(markerPath, "{\"state\":\"last-valid\"}");
-        var stateManager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
-        await stateManager.RefreshGameStateAsync();
-
-        var archivePath = Path.Combine(root, "activation-failure.zip");
-        using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create))
-        {
-            await WriteLegacySoulStateAsync(archive);
-            await WriteArchiveEntryAsync(archive, markerPath, "{\"state\":\"replacement\"}");
-        }
-
-        operations.FailStagedActivationMove = true;
-        operations.FailBackupRestoreMove = true;
-        var service = new SaveLoadService(fs, stateManager, NullLogger<SaveLoadService>.Instance);
-
-        Assert.False(await service.LoadGameAsync(archivePath));
-        Assert.True(File.Exists(fs.ActiveLoadTransactionJournalPath));
-        var backupMarker = Directory.GetFiles(
-                Path.Combine(root, ".boe_runtime", "load-transactions"),
-                "recovery_marker.json",
-                SearchOption.AllDirectories)
-            .Single(path => path.Contains($"{Path.DirectorySeparatorChar}backup{Path.DirectorySeparatorChar}"));
-        Assert.Equal("{\"state\":\"last-valid\"}", await File.ReadAllTextAsync(backupMarker));
-
-        operations.FailStagedActivationMove = false;
-        operations.FailBackupRestoreMove = false;
-        fs.EnsureDirectoryStructure();
-
-        Assert.Equal("{\"state\":\"last-valid\"}", await fs.ReadFileAsync(markerPath));
-        Assert.False(File.Exists(fs.ActiveLoadTransactionJournalPath));
-    }
-
-    [Fact]
-    public async Task UnresolvedLoadRollback_FencesCanonicalWritersUntilRecoverySucceeds()
-    {
-        var root = Path.Combine(_rootPath, "rollback-writer-fence");
-        Directory.CreateDirectory(root);
-        var operations = new FaultInjectingLoadTransactionOperations();
-        var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance, operations);
-        fs.EnsureDirectoryStructure();
-        const string markerPath = "game_state/world/recovery_marker.json";
-        const string laterWritePath = "game_state/world/later_write.json";
-        await fs.WriteFileAtomicAsync(markerPath, "{\"state\":\"last-valid\"}");
-        var stateManager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
-        await stateManager.RefreshGameStateAsync();
-
-        var archivePath = Path.Combine(root, "activation-failure.zip");
-        using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create))
-        {
-            await WriteLegacySoulStateAsync(archive);
-            await WriteArchiveEntryAsync(archive, markerPath, "{\"state\":\"replacement\"}");
-        }
-
-        operations.FailStagedActivationMove = true;
-        operations.FailBackupRestoreMove = true;
-        var service = new SaveLoadService(fs, stateManager, NullLogger<SaveLoadService>.Instance);
-
-        Assert.False(await service.LoadGameAsync(archivePath));
-        Assert.True(File.Exists(fs.ActiveLoadTransactionJournalPath));
-
-        await Assert.ThrowsAsync<IOException>(() =>
-            fs.WriteFileAtomicAsync(laterWritePath, "{\"state\":\"must-not-commit\"}"));
-        await Assert.ThrowsAsync<IOException>(() => fs.ClearGameStateAsync());
-        Assert.False(await service.SaveGameAsync("must-not-save", "unresolved rollback fence"));
-        Assert.False(fs.FileExists(laterWritePath));
-        var saveDirectory = fs.ResolvePath("saves/manual_saves");
-        Assert.True(!Directory.Exists(saveDirectory) || Directory.GetFiles(saveDirectory, "*.zip").Length == 0);
-        Assert.True(File.Exists(fs.ActiveLoadTransactionJournalPath));
-
-        operations.FailStagedActivationMove = false;
-        operations.FailBackupRestoreMove = false;
-        await fs.WriteFileAtomicAsync(laterWritePath, "{\"state\":\"after-recovery\"}");
-
-        Assert.Equal("{\"state\":\"last-valid\"}", await fs.ReadFileAsync(markerPath));
-        Assert.Equal("{\"state\":\"after-recovery\"}", await fs.ReadFileAsync(laterWritePath));
-        Assert.False(File.Exists(fs.ActiveLoadTransactionJournalPath));
-    }
 
     [Fact]
     public async Task SaveGameAsync_ExcludesLifecycleTriggers_AndLoadRemovesLegacyTriggerFiles()
@@ -3095,39 +2539,4 @@ public sealed class SaveLoadServiceTests : IDisposable
                 }));
     }
 
-    private sealed class FaultInjectingLoadTransactionOperations : ILoadTransactionOperations
-    {
-        public bool FailCommittedJournalWrites { get; set; }
-        public bool FailStagedActivationMove { get; set; }
-        public bool FailBackupRestoreMove { get; set; }
-
-        public bool DirectoryExists(string path) => Directory.Exists(path);
-        public bool FileExists(string path) => File.Exists(path);
-
-        public void BeforeMoveDirectory(
-            string sourcePath,
-            string destinationPath)
-        {
-            if (FailStagedActivationMove &&
-                sourcePath.Contains($"{Path.DirectorySeparatorChar}stage{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
-            {
-                throw new IOException("Injected staged-session activation failure.");
-            }
-
-            if (FailBackupRestoreMove &&
-                sourcePath.Contains($"{Path.DirectorySeparatorChar}backup{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
-            {
-                throw new IOException("Injected backup restore failure.");
-            }
-        }
-
-        public void BeforeWriteAllTextAtomic(string path, string content)
-        {
-            if (FailCommittedJournalWrites &&
-                content.Contains("\"Committed\":true", StringComparison.Ordinal))
-            {
-                throw new IOException("Injected committed-journal write failure.");
-            }
-        }
-    }
 }

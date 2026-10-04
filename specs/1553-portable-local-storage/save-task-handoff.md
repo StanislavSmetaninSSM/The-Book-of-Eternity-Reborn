@@ -1,3 +1,9 @@
+> Current continuation note (2026-10-04, T032-B4): the historical original-load
+> diagnostic below remains immutable. Its active physical-loader tests/category
+> are superseded only by the reviewed public portable-load migration and explicit
+> test/evidence map in plan.md. This does not rewrite the prior 0/2 result or
+> grant ordinary-save acceptance to the later load work.
+
 # Ordinary save accepted — continue with ordinary load
 
 ## Current accepted checkpoint and next capability
