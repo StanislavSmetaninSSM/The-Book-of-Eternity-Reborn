@@ -99,6 +99,18 @@ harness build failure, not GREEN. Add the missing assertion method and retain th
 full failed build log in recovery/evidence/load-console-menu-build-failure. Runtime
 code is unchanged by this correction. Separate earlier failures remain retained.
 
+### Console redirected-surface fixture correction
+
+At `f10b72a4eb897ff4e688ba4e3560477391974816`, 16/16 cases executed in 2:25.491:
+14 passed, two actual menu cases failed in Spectre LiveRenderable.RemoveRange before
+load dispatch. All absence/required-settings cases now passed, including the actual
+configured mutation cut. A minimal reflection diagnostic of the shipped Spectre
+assembly and identical StringWriter output established Width=80, Height=-1 in this
+redirected Linux executor. The interactive test surface now explicitly owns a
+120×40 profile; production rendering and validation are unchanged. Failed16-case
+evidence is retained at recovery/evidence/load-console-menu-surface-failure.
+Healthy menu/required-refresh acceptance still awaits a complete run and review.
+
 ## Accepted T032-B4 public entry — 2026-10-04
 
 Separate **gpt-6.1-sol / xhigh** final review passed the bounded public API through

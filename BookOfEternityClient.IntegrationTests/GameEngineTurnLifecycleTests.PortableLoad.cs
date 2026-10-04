@@ -319,13 +319,19 @@ public sealed partial class GameEngineTurnLifecycleTests
         private readonly IAnsiConsole _inner;
         internal int Reads { get; private set; }
         internal string Output => _writer.ToString();
-        internal LoadMenuAnsiConsole() => _inner = AnsiConsole.Create(new AnsiConsoleSettings
+        internal LoadMenuAnsiConsole()
         {
-            Ansi = AnsiSupport.Yes,
-            ColorSystem = ColorSystemSupport.NoColors,
-            Interactive = InteractionSupport.Yes,
-            Out = new AnsiConsoleOutput(_writer)
-        });
+            _inner = AnsiConsole.Create(new AnsiConsoleSettings
+            {
+                Ansi = AnsiSupport.Yes,
+                ColorSystem = ColorSystemSupport.NoColors,
+                Interactive = InteractionSupport.Yes,
+                Out = new AnsiConsoleOutput(_writer)
+            });
+            // Redirected Linux output reports Height=-1; the interactive test surface owns its dimensions.
+            _inner.Profile.Width = 120;
+            _inner.Profile.Height = 40;
+        }
         public Profile Profile => _inner.Profile;
         public IAnsiConsoleCursor Cursor => _inner.Cursor;
         public IAnsiConsoleInput Input => this;
