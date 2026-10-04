@@ -1,0 +1,56 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "eed0ca99e7ad8ef8306c6f4758ed55cce722fd46",
+  "SourceResultDirectory": "20261003-204204-151-2-21b29eebfcf74238aa3714f71ddab433-categories",
+  "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Runtime": "native Linux x64",
+  "Toolchain": {
+    "PowerShell": "7.6.6",
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31"
+  },
+  "TelemetryOptOuts": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1"
+  },
+  "DOTNET_PROCESSOR_COUNT": "1",
+  "PathSanitization": "Absolute checkout/run-root/toolchain paths replaced; raw and stored hashes retained",
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 1458628,
+      "OriginalSha256": "117d347a51ff5035c1dd08e51dfa8f76711a22279a49cbc79e66eb4226a3e4ab",
+      "Embedded": false,
+      "Reason": "Oversized generated runner log; causal TRX and structured/build reports are embedded"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 1165,
+      "OriginalSha256": "c2d72e38e8771ee874b61cc0d86d310ab18e15fce77c70cb51e1b4e197da48f4",
+      "Embedded": true,
+      "StoredPath": "plan.json",
+      "StoredBytes": 1165,
+      "StoredSha256": "c2d72e38e8771ee874b61cc0d86d310ab18e15fce77c70cb51e1b4e197da48f4"
+    },
+    {
+      "Path": "portable-load-resource-inventory-publication-unit-001.trx",
+      "OriginalBytes": 31384,
+      "OriginalSha256": "7ddebe10dddb29a25e4a879f67913a93f1bae9b8ba489a53c3c7e23cec2fb7f9",
+      "Embedded": true,
+      "StoredPath": "portable-load-resource-inventory-publication-unit-001.trx",
+      "StoredBytes": 31310,
+      "StoredSha256": "ed32ae5d54b9338060a56172e2f99654e29dd9622985ad90f348a1cd6e4a0182"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1497,
+      "OriginalSha256": "7d4796783fb479f485a7190ce069cfb8f2850503893e8498064bb060136add55",
+      "Embedded": true,
+      "StoredPath": "summary.json",
+      "StoredBytes": 1497,
+      "StoredSha256": "7d4796783fb479f485a7190ce069cfb8f2850503893e8498064bb060136add55"
+    }
+  ],
+  "MeasuredChildren": 2
+}

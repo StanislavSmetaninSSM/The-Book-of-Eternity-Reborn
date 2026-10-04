@@ -192,6 +192,24 @@ The ten controls must turn GREEN, then the actual failed inventory phase is reru
 All five resource owners will be measured separately on the corrected probe; prior
 preparation/bulk passes remain historical source-specific evidence, never erased.
 
+### Native sampler correction GREEN — 2026-10-04 UTC
+
+At clean `eed0ca99e7ad8ef8306c6f4758ed55cce722fd46`, fresh unit build and
+`portable-load-resource-sampling` passed **10/10**, complete descriptor and cleanup,
+1:51.078. All six formerly causal missing-sentinel rows now have their intended
+active/stable/declared behavior; three real native link shapes still reject and
+exact stable bytes remain measured. Separate Sol 6.1 XHigh source review found no
+actionable candidate defect. Exact proof is in `load-linux-resource-sampling-green-20261004`.
+The corrected-probe C# closure is `eed0ca99`; production remains `2da4d545` unchanged.
+The qualification record preserves the two previous phase passes separately and
+requires all five current-probe phases; no old pass or failed attempt is relabelled.
+The failed maximum-inventory publication was the first actual envelope rerun and
+now passed **1/1**, two measured children, 1:02.958 at clean `eed0ca99`, with
+complete state/source/library/generation oracle and owned/runtime cleanup. Exact
+ordinary (not diagnostic) proof is in `load-linux-resource-inventory-publication-green-20261004`.
+Remaining preparation/bulk publication and both recovery categories will execute
+separately on this corrected probe without another code change.
+
 ## Authorized local filesystem execution checkpoint
 
 The owner is leaving autonomous execution running and explicitly authorized all

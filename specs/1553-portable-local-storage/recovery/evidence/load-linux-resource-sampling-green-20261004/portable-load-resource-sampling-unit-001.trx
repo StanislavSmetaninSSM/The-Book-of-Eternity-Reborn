@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="20e7f789-a4d4-45d3-bdc4-1ece5e5f6d89" name="@95e438a3e5cb 2026-10-03 20:41:03" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-03T20:41:03.9943635-04:00" queuing="2026-10-03T20:41:03.9943635-04:00" start="2026-10-03T20:41:02.2972989-04:00" finish="2026-10-03T20:41:04.0266954-04:00" />
+  <TestSettings name="default" id="17560105-caa2-4afa-ae5a-56800495dfa0">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-03_20_41_03" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="2454a3b3-5b96-4da3-9556-382c95bc247c" testId="5be67e42-bdeb-a31b-234f-c1ee59d9d5c7" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerStillRejectsNativeLinks(kind: &quot;directory&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0014387" startTime="2026-10-03T20:41:03.9425131-04:00" endTime="2026-10-03T20:41:03.9425132-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2454a3b3-5b96-4da3-9556-382c95bc247c" />
+    <UnitTestResult executionId="6d0f611f-6389-4d95-bc73-e7b86fe5c721" testId="5205aa7a-e287-3357-1332-02bd5e115157" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerStillRejectsNativeLinks(kind: &quot;file&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0005959" startTime="2026-10-03T20:41:03.9409698-04:00" endTime="2026-10-03T20:41:03.9409699-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6d0f611f-6389-4d95-bc73-e7b86fe5c721" />
+    <UnitTestResult executionId="7a0af357-1f4a-46ef-84c7-ed8864a6f525" testId="d432dab0-257c-62c3-db5c-ccaae52ad44a" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;file&quot;, active: True)" computerName="95e438a3e5cb" duration="00:00:00.0004522" startTime="2026-10-03T20:41:03.9402552-04:00" endTime="2026-10-03T20:41:03.9402553-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7a0af357-1f4a-46ef-84c7-ed8864a6f525">
+      <Output>
+        <StdOut>Actual missing cached attributes: -1; kind=FileInfo; framework=8.0.31</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="806d9d99-e275-486d-95be-facf1f4d593f" testId="10a2fcf1-8886-8c17-207a-ae1b24d1ee51" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;unexpected-directory&quot;, active: True)" computerName="95e438a3e5cb" duration="00:00:00.0002009" startTime="2026-10-03T20:41:03.9401417-04:00" endTime="2026-10-03T20:41:03.9401417-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="806d9d99-e275-486d-95be-facf1f4d593f">
+      <Output>
+        <StdOut>Actual missing cached attributes: -1; kind=DirectoryInfo; framework=8.0.31</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="842c5a16-cafc-48f8-be79-4a9afee7ba4c" testId="4a11db80-14c0-3f52-0e2f-0c5f33fd80c8" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;expected-directory&quot;, active: True)" computerName="95e438a3e5cb" duration="00:00:00.0134588" startTime="2026-10-03T20:41:03.9370949-04:00" endTime="2026-10-03T20:41:03.9371079-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="842c5a16-cafc-48f8-be79-4a9afee7ba4c">
+      <Output>
+        <StdOut>Actual missing cached attributes: -1; kind=DirectoryInfo; framework=8.0.31</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="393f983e-7200-466f-b2f8-97823e153c31" testId="433416df-95b1-39b5-e90d-1ab5ae22f5d1" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;file&quot;, active: False)" computerName="95e438a3e5cb" duration="00:00:00.0008290" startTime="2026-10-03T20:41:03.9401851-04:00" endTime="2026-10-03T20:41:03.9401851-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="393f983e-7200-466f-b2f8-97823e153c31">
+      <Output>
+        <StdOut>Actual missing cached attributes: -1; kind=FileInfo; framework=8.0.31</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="dd01865d-716b-41e6-85dd-5481507759c3" testId="94c148f0-05c0-52b3-0ef6-abd005f26c82" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerStillRejectsNativeLinks(kind: &quot;dangling&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0006634" startTime="2026-10-03T20:41:03.9403074-04:00" endTime="2026-10-03T20:41:03.9403075-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dd01865d-716b-41e6-85dd-5481507759c3" />
+    <UnitTestResult executionId="88c9344d-4654-4322-808e-077da0a19b07" testId="e9a4b508-1159-b4a2-9212-6b62239f1fa5" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;expected-directory&quot;, active: False)" computerName="95e438a3e5cb" duration="00:00:00.0011925" startTime="2026-10-03T20:41:03.9398877-04:00" endTime="2026-10-03T20:41:03.9398878-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="88c9344d-4654-4322-808e-077da0a19b07">
+      <Output>
+        <StdOut>Actual missing cached attributes: -1; kind=DirectoryInfo; framework=8.0.31</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="15022a73-720c-4cd5-9f72-8d572ebd5466" testId="53d46daf-93bb-e021-2dfb-1b2a688c8860" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;unexpected-directory&quot;, active: False)" computerName="95e438a3e5cb" duration="00:00:00.0002088" startTime="2026-10-03T20:41:03.9402220-04:00" endTime="2026-10-03T20:41:03.9402221-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="15022a73-720c-4cd5-9f72-8d572ebd5466">
+      <Output>
+        <StdOut>Actual missing cached attributes: -1; kind=DirectoryInfo; framework=8.0.31</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ace1ef9e-d70b-4273-a844-1c23f3bf7a3a" testId="a416b21f-4a08-e2f3-efa0-4c3f30e4705c" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerRetainsExactStableByteCount" computerName="95e438a3e5cb" duration="00:00:00.0005813" startTime="2026-10-03T20:41:03.9678249-04:00" endTime="2026-10-03T20:41:03.9678251-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ace1ef9e-d70b-4273-a844-1c23f3bf7a3a" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;file&quot;, active: False)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="433416df-95b1-39b5-e90d-1ab5ae22f5d1">
+      <Execution id="393f983e-7200-466f-b2f8-97823e153c31" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="OwnedDiskSamplerDistinguishesMissingCachedAttributes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;expected-directory&quot;, active: False)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e9a4b508-1159-b4a2-9212-6b62239f1fa5">
+      <Execution id="88c9344d-4654-4322-808e-077da0a19b07" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="OwnedDiskSamplerDistinguishesMissingCachedAttributes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;unexpected-directory&quot;, active: False)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="53d46daf-93bb-e021-2dfb-1b2a688c8860">
+      <Execution id="15022a73-720c-4cd5-9f72-8d572ebd5466" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="OwnedDiskSamplerDistinguishesMissingCachedAttributes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;file&quot;, active: True)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d432dab0-257c-62c3-db5c-ccaae52ad44a">
+      <Execution id="7a0af357-1f4a-46ef-84c7-ed8864a6f525" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="OwnedDiskSamplerDistinguishesMissingCachedAttributes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;unexpected-directory&quot;, active: True)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="10a2fcf1-8886-8c17-207a-ae1b24d1ee51">
+      <Execution id="806d9d99-e275-486d-95be-facf1f4d593f" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="OwnedDiskSamplerDistinguishesMissingCachedAttributes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: &quot;expected-directory&quot;, active: True)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4a11db80-14c0-3f52-0e2f-0c5f33fd80c8">
+      <Execution id="842c5a16-cafc-48f8-be79-4a9afee7ba4c" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="OwnedDiskSamplerDistinguishesMissingCachedAttributes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerStillRejectsNativeLinks(kind: &quot;dangling&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="94c148f0-05c0-52b3-0ef6-abd005f26c82">
+      <Execution id="dd01865d-716b-41e6-85dd-5481507759c3" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="OwnedDiskSamplerStillRejectsNativeLinks" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerStillRejectsNativeLinks(kind: &quot;file&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5205aa7a-e287-3357-1332-02bd5e115157">
+      <Execution id="6d0f611f-6389-4d95-bc73-e7b86fe5c721" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="OwnedDiskSamplerStillRejectsNativeLinks" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerRetainsExactStableByteCount" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a416b21f-4a08-e2f3-efa0-4c3f30e4705c">
+      <Execution id="ace1ef9e-d70b-4273-a844-1c23f3bf7a3a" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="OwnedDiskSamplerRetainsExactStableByteCount" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerStillRejectsNativeLinks(kind: &quot;directory&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5be67e42-bdeb-a31b-234f-c1ee59d9d5c7">
+      <Execution id="2454a3b3-5b96-4da3-9556-382c95bc247c" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="OwnedDiskSamplerStillRejectsNativeLinks" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="5be67e42-bdeb-a31b-234f-c1ee59d9d5c7" executionId="2454a3b3-5b96-4da3-9556-382c95bc247c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5205aa7a-e287-3357-1332-02bd5e115157" executionId="6d0f611f-6389-4d95-bc73-e7b86fe5c721" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d432dab0-257c-62c3-db5c-ccaae52ad44a" executionId="7a0af357-1f4a-46ef-84c7-ed8864a6f525" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="10a2fcf1-8886-8c17-207a-ae1b24d1ee51" executionId="806d9d99-e275-486d-95be-facf1f4d593f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4a11db80-14c0-3f52-0e2f-0c5f33fd80c8" executionId="842c5a16-cafc-48f8-be79-4a9afee7ba4c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="433416df-95b1-39b5-e90d-1ab5ae22f5d1" executionId="393f983e-7200-466f-b2f8-97823e153c31" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="94c148f0-05c0-52b3-0ef6-abd005f26c82" executionId="dd01865d-716b-41e6-85dd-5481507759c3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e9a4b508-1159-b4a2-9212-6b62239f1fa5" executionId="88c9344d-4654-4322-808e-077da0a19b07" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="53d46daf-93bb-e021-2dfb-1b2a688c8860" executionId="15022a73-720c-4cd5-9f72-8d572ebd5466" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a416b21f-4a08-e2f3-efa0-4c3f30e4705c" executionId="ace1ef9e-d70b-4273-a844-1c23f3bf7a3a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="10" executed="10" passed="10" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.12]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:00.94]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:00.95]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.35]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

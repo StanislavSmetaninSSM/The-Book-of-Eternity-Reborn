@@ -1,7 +1,7 @@
 {
   "SchemaVersion": 1,
   "Scope": "Native Linux filesystem qualification, exact selected cohorts and separately bounded resource phases. Public/console/browser/live acceptance remains separate.",
-  "CSharpSourceClosure": "2da4d545c9398ab1db019609d14429f9480574c2",
+  "CSharpSourceClosure": "eed0ca99e7ad8ef8306c6f4758ed55cce722fd46",
   "OperatingSystem": "Debian GNU/Linux 13 x64",
   "Toolchain": {
     "PowerShell": "7.6.6",
@@ -17,6 +17,62 @@
   "DefaultChildSeconds": 180,
   "ManyPublicationAndCutSeconds": 600,
   "Categories": [
+    {
+      "Category": "portable-load-resource-inventory-publication",
+      "Evidence": "load-linux-resource-inventory-publication-green-20261004",
+      "RunRevision": {
+        "Head": "eed0ca99e7ad8ef8306c6f4758ed55cce722fd46",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "Cases": 1,
+      "MeasuredChildren": 2,
+      "CommandWallTime": "00:01:02.9578378",
+      "CategorySeconds": 60.1899797,
+      "CategoryBudgetMinutes": 12,
+      "SelectionComplete": true,
+      "CleanupComplete": true,
+      "Measurements": [
+        {
+          "Operation": "seed",
+          "Workload": "many",
+          "PhaseMilliseconds": 21967.6336,
+          "WholeChildMilliseconds": 22300.0342,
+          "ChildCeilingSeconds": 180,
+          "OsPeakWorkingSetBytes": 162729984,
+          "SampledPeakWorkingSetBytes": 162439168,
+          "OwnedDiskPeakBytes": 12881303,
+          "ParentTerminated": false,
+          "OwnedProcessExited": true,
+          "DeclaredResourceQualification": true,
+          "DiagnosticOnly": false
+        },
+        {
+          "Operation": "publication",
+          "Workload": "many",
+          "PhaseMilliseconds": 26456.8803,
+          "WholeChildMilliseconds": 35110.0676,
+          "ChildCeilingSeconds": 600,
+          "OsPeakWorkingSetBytes": 305745920,
+          "SampledPeakWorkingSetBytes": 295321600,
+          "OwnedDiskPeakBytes": 38455939,
+          "ParentTerminated": false,
+          "OwnedProcessExited": true,
+          "DeclaredResourceQualification": true,
+          "DiagnosticOnly": false
+        }
+      ]
+    }
+  ],
+  "RemainingResourceCategories": [
+    "portable-load-resource-preparation",
+    "portable-load-resource-publication",
+    "portable-load-resource-recovery",
+    "portable-load-resource-inventory-recovery"
+  ],
+  "ResourceCasesCompleted": 1,
+  "MeasuredChildrenCompleted": 2,
+  "EarlierProbeResourcePasses": [
     {
       "Category": "portable-load-resource-preparation",
       "Evidence": "load-linux-resource-preparation-20261004",
@@ -252,11 +308,15 @@
       ]
     }
   ],
-  "RemainingResourceCategories": [
-    "portable-load-resource-inventory-publication",
-    "portable-load-resource-recovery",
-    "portable-load-resource-inventory-recovery"
-  ],
-  "ResourceCasesCompleted": 7,
-  "MeasuredChildrenCompleted": 14
+  "ProductionSourceClosure": "2da4d545c9398ab1db019609d14429f9480574c2",
+  "ResourceProbeSourceClosure": "eed0ca99e7ad8ef8306c6f4758ed55cce722fd46",
+  "SamplerCorrection": {
+    "TestedSource": "eed0ca99e7ad8ef8306c6f4758ed55cce722fd46",
+    "Evidence": "load-linux-resource-sampling-green-20261004",
+    "Cases": 10,
+    "Passed": 10,
+    "CausalRedEvidence": "load-linux-resource-sampling-red-20261004",
+    "InitialEnvelopeFailure": "load-linux-resource-inventory-publication-failed-20261004",
+    "Scope": "Only a missing cached-attribute sentinel reaches a fresh query; all ordinary cached paths, native link refusal, stable/unknown missing refusal, resource controls and required sampling remain."
+  }
 }
