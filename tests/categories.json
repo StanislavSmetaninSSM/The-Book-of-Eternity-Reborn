@@ -117,7 +117,7 @@
     },
 {
   "id": "portable-load-public-consumers",
-  "responsibility": "T032-B4 affected public-load consumers: detached profile repair and pre-publication foreign-byte refusal, canonical/lifecycle contention, stale bound writer fencing, in-progress real worker decision ordering, and bounded original ZIP preflight source guard. Retires only the superseded active original-load profile category; immutable historical diagnostic evidence stays unchanged.",
+  "responsibility": "T032-B4 affected public-load consumers: detached profile repair and pre-publication foreign-byte refusal, canonical/lifecycle contention, stale bound writer fencing, bounded original ZIP preflight source guard. Retires only the superseded active original-load profile category; immutable historical diagnostic evidence stays unchanged.",
   "excludes": "Console/browser cutover, original-handler recovery internals, unrelated storage/worker/validation wildcard owners and unchanged filesystem/resource cohorts.",
   "changeHints": [
     "BookOfEternityClient/Services/SaveLoadService.cs",
@@ -146,7 +146,6 @@
       "project": "unit",
       "tests": [
         "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_LoadRotatesGeneration_ThrowsBeforeReplacementMutation",
-        "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock",
         "BookOfEternityClient.Tests.ValidationSourceGuardTests.ResourceAuthorityBoundaries_MustPreflightZipAndRetainLoadLeavesThroughPublication"
       ]
     }
@@ -10756,6 +10755,31 @@
         "BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityDoesNotReportRollbackOrUncertaintyAsCommit",
         "BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityRejectsInvalidInputWithoutPublication",
         "BookOfEternityClient.Tests.PortableLoadReplacementTests.TypedLoadContractIsPublicAndRetainsFourDistinctDecisions"
+      ]
+    }
+  ]
+},
+{
+  "id": "portable-load-worker-ordering",
+  "responsibility": "One actual public load competing with a held real worker-apply decision. Diagnostic boundary distinguishes early worker failure before load dispatch from a timeout; original positive acceptance, applied bytes and exact load ordering remain required. Linux worker backend is not presumed portable.",
+  "excludes": "Public entry/profile/lease contract cases, unrelated worker owners, actual GM/provider and full platform qualification.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/GmWorkerApplyGateTests.cs",
+    "BookOfEternityClient/Services/SaveLoadService.cs",
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock"
       ]
     }
   ]

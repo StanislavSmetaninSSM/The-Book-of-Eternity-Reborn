@@ -89,6 +89,26 @@ relabeled successful. New consumer runtime and discovery remain pending; no Linu
 worker-backend success is presumed. Public type docs also describe the pre-preparation
 thrown stale/closing ambient fence. Full B4 and A4 producer work remain open.
 
+### Public-entry GREEN; separate worker pre-load diagnostic WIP
+
+At `d0a8be96`, fresh two-project PlanOnly built/discovered 13 cases in 2:41.363,
+executing zero. Runtime completed only seven cases before fail-fast: four integration
+consumers plus two unit controls passed; worker ordering timed out at line 365 while
+waiting for worker validation, **before Load dispatch at line 367**. Six public-entry
+cases were unrun in that partial command. Complete cleanup, exit 1, 19.123 seconds;
+retain `load-public-consumers-plan` and `load-public-consumers-partial` unchanged.
+A separate command then ran the missing public-entry owner: **6/6 passed**, no skips
+or duplicates, complete selection/cleanup, exit 0, 6.943 seconds. This is separate
+source-specific GREEN, not a claimed 13/13 run.
+
+Split only the worker method into `portable-load-worker-ordering` (two-minute budget)
+to inspect its actual early result without repeating six passing unrelated consumers.
+A Task.WhenAny diagnostic now exposes completed worker failure before the validation
+barrier; all original positive assertions remain. Do not guess a platform cause or
+skip the body. The revised six-case public-consumer owner excludes this explicitly
+retained separate precondition. No worker production change or filesystem/resource
+rerun is authorized by this diagnostic; full worker/platform gates remain open.
+
 ## Accepted native filesystem handback — 2026-10-04
 
 All runtime/resource/audit proof is published at

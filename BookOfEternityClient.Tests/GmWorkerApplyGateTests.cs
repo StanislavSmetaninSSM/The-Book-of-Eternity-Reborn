@@ -362,6 +362,14 @@ public sealed class GmWorkerApplyGateTests
                 proposal,
                 profile,
                 task.SessionGeneration);
+            var firstBoundary = await Task.WhenAny(validationEntered.Task, applyTask)
+                .WaitAsync(TimeSpan.FromSeconds(5));
+            if (ReferenceEquals(firstBoundary, applyTask))
+            {
+                var earlyDecision = await applyTask;
+                Assert.Fail($"Worker ended before validation/load dispatch: {earlyDecision.Result}; " +
+                    string.Join("; ", earlyDecision.RejectionReasons));
+            }
             await validationEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
             Assert.False(fs.FileExists("game_state/control/gm_worker_apply.lock"));
             var loadTask = saveLoad.LoadGameAsync(savePath);

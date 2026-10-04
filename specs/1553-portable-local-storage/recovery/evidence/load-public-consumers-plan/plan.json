@@ -1,0 +1,122 @@
+{
+  "Categories": [
+    "portable-load-public-entry",
+    "portable-load-public-consumers"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-load-public-entry",
+      "reason": "T032-B4 public typed result accessibility and actual ordinary public load compatibility wrapper: confirmed commit including required-refresh failure, exact rollback, retained uncertainty and pre-publication refusal. Bool is commitment-only, never continuation permission; all player-facing consumers use the typed API. Each case owns an isolated current-producer root.",
+      "contracts": [
+        "#1553 T032-B4; LOAD-FS-003/004 public decision preservation"
+      ]
+    },
+    {
+      "category": "portable-load-public-consumers",
+      "reason": "T032-B4 affected public-load consumers: detached profile repair and pre-publication foreign-byte refusal, canonical/lifecycle contention, stale bound writer fencing, in-progress real worker decision ordering, and bounded original ZIP preflight source guard. Retires only the superseded active original-load profile category; immutable historical diagnostic evidence stays unchanged.",
+      "contracts": [
+        "#1553 T032-B4 public API consumers; LOAD-FS-002/003/004"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "d0a8be96bb788aa38e2b1e834fdac95ab5331d57",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 161.1997407,
+  "Descriptors": [
+    {
+      "Name": "portable-load-public-consumers-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-public-consumers",
+      "Categories": [
+        "portable-load-public-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_RepairsClientOwnedProfileMirrorWithoutReacquiringCanonicalLease|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_WaitsForCanonicalWriteLeaseBeforeReplacingLiveSession|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_WaitsForSessionLifecycleLeaseBeforeReplacingLiveSession|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameWithOutcomeAsync_ProfilePreparationRefusesChangedLiveBytesBeforePublication",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_RepairsClientOwnedProfileMirrorWithoutReacquiringCanonicalLease",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_WaitsForCanonicalWriteLeaseBeforeReplacingLiveSession",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_WaitsForSessionLifecycleLeaseBeforeReplacingLiveSession",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameWithOutcomeAsync_ProfilePreparationRefusesChangedLiveBytesBeforePublication",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-load-public-consumers-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-load-public-consumers",
+      "Categories": [
+        "portable-load-public-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock|FullyQualifiedName=BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_LoadRotatesGeneration_ThrowsBeforeReplacementMutation|FullyQualifiedName=BookOfEternityClient.Tests.ValidationSourceGuardTests.ResourceAuthorityBoundaries_MustPreflightZipAndRetainLoadLeavesThroughPublication",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_LoadRotatesGeneration_ThrowsBeforeReplacementMutation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ValidationSourceGuardTests.ResourceAuthorityBoundaries_MustPreflightZipAndRetainLoadLeavesThroughPublication",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-load-public-entry-integration-003",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-public-entry",
+      "Categories": [
+        "portable-load-public-entry"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityDoesNotReportRollbackOrUncertaintyAsCommit|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityRejectsInvalidInputWithoutPublication|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityReportsCommitEvenWhenRequiredRefreshFails|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.TypedLoadContractIsPublicAndRetainsFourDistinctDecisions",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityDoesNotReportRollbackOrUncertaintyAsCommit",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityRejectsInvalidInputWithoutPublication",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityReportsCommitEvenWhenRequiredRefreshFails",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.TypedLoadContractIsPublicAndRetainsFourDistinctDecisions",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
