@@ -9,5 +9,16 @@
   "CleanCheckout": true,
   "ConnectivityCheck": "git fsck --connectivity-only exit0; shallow snapshot",
   "BuildOrTestsRepeated": false,
-  "Limit": "Subsequent evidence/acceptance carriers need separate readback. Does not establish live gameplay, browser integration or Windows execution."
+  "Limit": "Subsequent evidence/acceptance carriers need separate readback. Does not establish live gameplay, browser integration or Windows execution.",
+  "ReviewedEvidenceCarrier": {
+    "Commit": "68b24ae660dfaeb251ed3728816ea789bd6f4289",
+    "Tree": "d1d681796e30a86500e0698981b4b0aac91543db",
+    "TrackedFiles": 4805,
+    "AllPhysicalGitBlobHashesMatch": true,
+    "CleanCheckout": true,
+    "ConsoleEvidenceJsonParsed": 23,
+    "AdditionalConsoleQualificationReadbackJsonParsed": 2,
+    "ConsoleTrxParsed": 5,
+    "Method": "Separate fresh GitHub clone; NUL-delimited inventory, physical blob hashes and connectivity verified by implementer and independent reviewer; no tests repeated."
+  }
 }

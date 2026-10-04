@@ -26,7 +26,10 @@ Reproduce only the affected console category from the verified branch:
 
 Native Linux component/menu-handler proof is recorded at the start of [plan.md](plan.md).
 It does not establish a live interactive console/GM scenario or new Windows execution.
-Browser typed transport/handlers and full B4/T033/B5 remain open. Do not repeat the
+Browser typed transport/handlers and full B4/T033/B5 remain open. Per the owner’s
+2026-10-04 decision, browser verification is through automated actual client/backend
+tests only; live runs use the console client. No live-browser/visual-QA gate or cloud
+access workaround is required, and automated checks are not described as visual QA. Do not repeat the
 unchanged filesystem/resource cohorts for this client-only block. GM-authored output
 and game schema are unchanged; this is client-owned continuation and admission.
 

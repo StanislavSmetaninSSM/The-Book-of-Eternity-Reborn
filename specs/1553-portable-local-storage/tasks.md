@@ -3,6 +3,14 @@
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 Spec: [spec.md](spec.md) | Plan/checkpoint: [plan.md](plan.md)
 
+
+Active verification scope (owner decision, 2026-10-04 15:45 UTC): browser behavior is
+verified through automated actual client/backend tests; live runs use the console
+client. This supersedes older deferred/live-browser text in historical completed
+entries. No browser visual-QA/live-access gate or workaround is required. Live
+console/GM, full gameplay/restart and applicable native Windows gates remain open.
+See the verification-scope amendment in spec.md.
+
 ## R0 — Reconstruct approved requirements
 
 - [x] T001 Verify published main-based `1553-cross-platform-runtime` and adopt reviewed remote-persistence instructions
@@ -85,11 +93,12 @@ Current ordinary-save acceptance is `ddaade72`; historical WIN/V1/CREATE entries
 - [x] T032-B2 [US2] Design/review and implement valid destination file↔directory conversion inside the same B1 decision/recovery protocol in `Core/TrustedLocalFilePublication*` and the load replacement adapter; causal success, rollback, conflict and cold proofs must cover both directions and empty/nonempty directories. Preserve v1/v2 readability and protected-source ancestors; no unjournaled pruning or second journal. Required before public load cutover and complete acceptance, not an owner-choice waiver. Bounded filesystem acceptance: final separate Sol 6.1 XHigh PASS at `6133bfed117d1cbc0d28d5a7e0ea6146b081e8e2`, exact requirement map in [plan.md](plan.md#accepted-native-filesystem-handback--2026-10-04), complete Linux proof and fresh full `f72830d5` restoration. Public B4/full B5/T033/full T032, A4 producer pair and whole #1553 remain open.
 - [x] T032-B3 [US2] Qualify the real typed load entry through `BookOfEternityClient.TestSupport` cold/resource infrastructure: extraction sources unavailable at recovery, all material member/generation/commit/rollback cuts, 64/128/near-512 MiB inputs, 8,192-entry/name bounds and independently larger old deletion sets, exact library/selected-source/history/config outcomes and owned cleanup. Review footprint/budgets before launch; preserve full-envelope and no-op/guard/runtime distinctions. Bounded filesystem acceptance: final separate Sol 6.1 XHigh PASS at `6133bfed117d1cbc0d28d5a7e0ea6146b081e8e2`, exact requirement map in [plan.md](plan.md#accepted-native-filesystem-handback--2026-10-04), complete Linux proof and fresh full `f72830d5` restoration. Public B4/full B5/T033/full T032, A4 producer pair and whole #1553 remain open.
 - [x] T032-B4-PUBLIC [US3] Expose the existing portable typed load API/result and replace the old bool body with a documented commitment-only delegate; retire precisely superseded original-loader assertions with replacement proof, migrate current profile/preflight consumers and preserve causal/partial evidence. Separate Sol 6.1 XHigh final PASS through `59f1317952106150275bb2815ba6fc3ab247822b`; actual entry6/6 and six distinct direct consumers passed, audit223/10565. The pre-load worker diagnostic0/1 remains explicitly unqualified under T031-WORKER-PORTABLE. This does not close actual console/browser typed integration, native Windows public-client, live GM or full B4.
+- [x] T032-B4-CONSOLE [US3] Preserve all four load outcomes through console runtime and required settings/UI refresh, bind the exact established generation, repeat pending/UI-owner admission on the held replacement lease without creating absent authority, and stop existing/new loops plus mutating menu actions on unresolved continuation. Actual in-game options → load-menu healthy/blocked paths, redacted truthful commitment text, no nested loop and isolated causal negative tests pass **16/16** at `e813ad8438a25d7882810a241bd51d0be9ad3f42`. Discovery **224/10,573**, zero execution; separate **gpt-6.1-sol / xhigh PASS** through `68b24ae660dfaeb251ed3728816ea789bd6f4289`, full clean GitHub restoration verified. This closes only bounded console code/component/menu handlers; browser integration, live console/GM, native Windows public-client and full B4 remain open.
 - [ ] T032-B4 [US3] Carry typed load outcomes and committed identity through actual `Core/GameEngine`, `WebUi/LocalWebUiMainMenuService`, replacement coordinator/host DTO and `BookOfEternityClient.WebFrontend` callers. Test real console/HTTP/both frontend handler cuts, generation rebind, pending/UI-owner guards, failed required refresh and blocked uncertainty; public cutover depends on B2 and B3.
-- [ ] T032-B5 [US2] Complete bounded ordinary-load Linux/native-Windows source-specific qualification and independent review; update current plan/operational recovery docs and restore the final GitHub checkpoint. Keep actual console/browser interaction, real GM/provider confirmed-stop and full gameplay/restart evidence under T033/B4/B5; service/component proof alone does not close them.
+- [ ] T032-B5 [US2] Complete bounded ordinary-load Linux/native-Windows source-specific qualification and independent review; update current plan/operational recovery docs and restore the final GitHub checkpoint. Keep actual live console interaction, real GM/provider confirmed-stop and full gameplay/restart evidence under T033/B4/B5; browser interaction is verified through automated client/backend tests under the owner amendment. Service-only proof does not close the client gates.
 
 - [ ] T032 Migrate save/load staging and restoration with exact bytes, not required inode identity; add negative staging tests
-- [ ] T033 Execute real file-GM turn and save/load/restart in both Linux clients; run affected categories, update operational docs/examples as applicable, independent review
+- [ ] T033 Execute live file-GM turn and save/load/restart in the Linux console client, and automated browser client/backend equivalents; run affected categories, update operational docs/examples as applicable, independent review. No live-browser or visual-QA gate under the owner decision of 2026-10-04.
 
 ## B4 — US4 persistent GM/session lifecycle
 
@@ -102,7 +111,7 @@ Current ordinary-save acceptance is `ddaade72`; historical WIN/V1/CREATE entries
 
 - [ ] T050 Audit and convert remaining Windows-only audio/clipboard/launcher/system mechanisms with common behavior
 - [ ] T051 Address narrow QTE source newline contract if reproduced; no inventory weakening or broad normalization
-- [ ] T052 Audit complete Linux console/browser/GM/gameplay/save-load scope; collect end-to-end evidence and independent review
+- [ ] T052 Audit complete Linux console/browser/GM/gameplay/save-load scope; collect live console/GM and automated browser end-to-end evidence and independent review, without adding a live-browser gate
 - [ ] T053 Deliver reproducible Windows owner-run checklist, explicit unverified items and verified remote recovery checkpoint
 
 Dependencies: R0 before B1; B1 before B2; B2 before B3; B4 investigation may run in parallel, but shared-state edits are serialized. Every bounded code block uses RED/GREEN, current category selection, remote WIP before lengthy tests/review, independent review and verified publication. A checked task requires inspected implementation/evidence, not an agent report alone.

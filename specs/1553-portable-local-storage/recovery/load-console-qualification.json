@@ -16,7 +16,16 @@
   "OwnedTreeCleanupSucceeded": true,
   "RuntimeCleanupSucceeded": true,
   "Evidence": "evidence/load-console-green/summary.json",
-  "Review": "Final separate gpt-6.1-sol xhigh verdict pending; code correction reviewed",
+  "Review": {
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "Verdict": "PASS for bounded console code/component/menu handlers",
+    "ReviewedCarrierCommit": "68b24ae660dfaeb251ed3728816ea789bd6f4289",
+    "TestedSourceCommit": "e813ad8438a25d7882810a241bd51d0be9ad3f42",
+    "ReportedUtc": "2026-10-04T15:48:30Z",
+    "OpenActionableFindings": 0,
+    "Correction": "Generation-creating admission replaced by non-creating inspection; exact absence refusal/rollback and actual healthy/blocked menu paths verified."
+  },
   "Discovery": {
     "SourceCommit": "4f916e10b81c0f63b525d66e39eaf9b23481c69f",
     "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -TimeoutMinutes 10",
@@ -31,7 +40,7 @@
   "Limits": [
     "No new native Windows execution",
     "Browser transport/handlers remain open",
-    "No live console/browser/GM acceptance",
+    "No live console/GM acceptance; browser verification is automated under the owner decision of 2026-10-04",
     "Unchanged filesystem/resource cohorts not repeated",
     "T031-WORKER-PORTABLE pre-load failure remains open",
     "T032-A4-NATIVE-NAMES producer roundtrip remains open"
@@ -62,5 +71,6 @@
       "Parsed": true
     }
   ],
-  "ChangedSourceXmlWarnings": []
+  "ChangedSourceXmlWarnings": [],
+  "Acceptance": "Bounded T032-B4-CONSOLE only; no whole B4 or #1553 closure"
 }

@@ -4,7 +4,18 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
-## T032-B4 console verified candidate — 2026-10-04
+## Current verification scope — owner decision, 2026-10-04 15:45 UTC
+
+Browser verification is now exclusively test-based at the code level, including
+actual handlers/components and backend integration. Live runs use the console client.
+This supersedes older live-browser/deferred-access entries below; do not add a cloud
+browser, alternate hostname/tunnel or later browser visual run as a gate. Automated
+checks are not described as visual QA. Live console/real GM, full gameplay/restart,
+applicable Windows qualification and all other unchanged requirements remain open.
+The latest saved source/checkpoint remains the starting point; no runtime code was
+changed for this verification-scope decision.
+
+## Accepted T032-B4 console integration — 2026-10-04
 
 Source `e813ad8438a25d7882810a241bd51d0be9ad3f42` passed **16/16** native Linux
 `portable-load-console` cases in **2:27.714** including a fresh selected build.
@@ -25,8 +36,14 @@ PowerShell 7.6.6, SDK 10.0.401, runtime 8.0.31 and DOTNET_PROCESSOR_COUNT=1 rema
 
 [GREEN evidence](recovery/evidence/load-console-green/summary.json) and
 [fresh full GitHub restoration](recovery/load-console-github-readback.json) are retained.
-Separate Sol 6.1 XHigh code review identified and confirmed the absent-authority fix;
-final independent verdict remains pending in this carrier. Fresh discovery-only audit
+Separate **gpt-6.1-sol / xhigh** final review **PASS** at
+`68b24ae660dfaeb251ed3728816ea789bd6f4289` found no remaining actionable correctness,
+selection or missing-contract issue. The reviewer independently verified the actual
+GREEN artifacts and fresh 4,805-file evidence-carrier restoration, including 23 evidence
+JSON, two qualification/readback JSON and five TRX files. The absent-authority defect
+and required-menu coverage gap are closed. This acceptance/scope-only carrier is
+read back separately before handoff; no runtime/test/catalog/selection changes follow
+its tested source. Fresh discovery-only audit
 at `4f916e10` validated **224 categories / 10,573 method-or-file identities**, no
 unmapped or stale selectors, in 3:03.147. Zero tests executed during that audit;
 this does not add runtime coverage. All four freshly built project XML files parse,
@@ -40,7 +57,7 @@ exact-generation-bound required refresh bundle (or equivalently proven per-surfa
 bindings), preserve typed result/identity on every HTTP status, revalidate the acquired
 UI lease token plus pending state under LoadGameWithAdmissionAsync's held lease, and
 latch unsafe continuation shell-wide even after unmount or newer navigation. Do not
-use archive-list presence as load confirmation. Browser/live clients/GM, native Windows
+use archive-list presence as load confirmation. Browser automated integration, live console/GM, native Windows
 public-client, T031-WORKER-PORTABLE, A4 producer case-pair roundtrip and whole #1553 remain open.
 
 ## T032-B4 console integration WIP — 2026-10-04

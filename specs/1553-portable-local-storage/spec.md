@@ -165,11 +165,24 @@ committed-to-failed rewriting or blind automatic load retry is permitted.
 
 Implement in bounded public-entry, console and browser/handler blocks with causal
 and affected consumer tests. Unchanged accepted filesystem/resource cohorts are not
-repeated. Actual live console/browser/GM remains T033; service/component proof alone
-does not close those gates. This is client-owned lifecycle transport; GM-authored
+repeated. Actual live console/GM remains T033; service/component proof alone
+does not close those gates. Browser verification uses automated code-level client tests
+under the owner amendment below, without a live-browser or visual-QA gate. This is client-owned lifecycle transport; GM-authored
 fields/mechanics/examples are unchanged, while operational load guidance is updated.
 The owner-authorized autonomous design/revision waiver applies; separate Sol 6.1
 XHigh review remains mandatory. T032-A4-NATIVE-NAMES stays separately open.
+
+## Verification-scope amendment — owner decision, 2026-10-04 15:45 UTC
+
+The owner explicitly directed: browser verification is code-based through automated
+tests; live runs will use the console client. This supersedes earlier live-browser
+or deferred-browser-access requirements throughout this feature's active artifacts.
+Do not make cloud live-browser access, another hostname/tunnel or a later browser
+visual run an acceptance gate. Automated browser handler/component/transport tests
+must still exercise the actual client paths, outcome text/state and interruption
+boundaries; they are not claimed as visual QA or a live browser run. Live console,
+real GM/provider, full gameplay/restart and applicable native Windows requirements
+remain in force. Historical evidence keeps its original source and scope.
 
 ## User Scenarios & Testing
 
@@ -196,10 +209,10 @@ Acceptance:
 
 ### US3 — Play and save through the actual GM workflow (P2)
 
-Both Linux clients complete the main game path with real GM input, then save/load and restart without losing accepted state.
+The Linux console completes the main game path with real GM input, then save/load and restart without losing accepted state. Equivalent browser actions and state transitions are verified through automated client/backend tests under the owner amendment above.
 
 Acceptance:
-1. Real console and browser actions produce visible results and accepted state; a build, static page, HTTP 200 or service-only test is insufficient
+1. Live console actions and automated actual browser-handler/component actions produce the expected player-visible results and accepted state; a build, static page, HTTP 200 or service-only test is insufficient. Browser test evidence is not visual QA or a live-browser claim.
 2. Accepted-turn history, player choices, generation fencing and exactly-once resources/results are preserved
 3. Save/load validates the complete staging set and restores the previous logical session on failure
 

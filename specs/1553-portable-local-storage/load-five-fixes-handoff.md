@@ -1,6 +1,16 @@
 # Передача файлового контура загрузки — #1553
 
-Обновлено: 2026-10-04. Задача [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), ветка **`codex/1553-load-filesystem`**. Файловые B1/B2/B3 и B5-FS приняты: native Linux proof, полный GitHub readback и финальное независимое gpt-6.1-sol / xhigh ревью `6133bfed117d1cbc0d28d5a7e0ea6146b081e8e2` прошли без открытых замечаний. Публичный B4 продолжается и пока не завершён. Узкий public-entry блок принят после отдельного Sol 6.1 XHigh PASS по `59f1317952106150275bb2815ba6fc3ab247822b`; console/browser и worker blocker остаются открытыми (начало plan.md).
+Обновлено: 2026-10-04. Задача [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), ветка **`codex/1553-load-filesystem`**. Файловые B1/B2/B3 и B5-FS приняты: native Linux proof, полный GitHub readback и финальное независимое gpt-6.1-sol / xhigh ревью `6133bfed117d1cbc0d28d5a7e0ea6146b081e8e2` прошли без открытых замечаний. Публичный B4 продолжается и пока не завершён. Узкий public-entry блок принят после отдельного Sol 6.1 XHigh PASS по `59f1317952106150275bb2815ba6fc3ab247822b`; Ограниченный console-блок принят: **16/16** native Linux, отдельный **gpt-6.1-sol / xhigh PASS** по `68b24ae660dfaeb251ed3728816ea789bd6f4289`. Browser typed integration, live console/GM, Windows public-client и worker blocker остаются открытыми (начало plan.md).
+
+## Актуальная граница проверок — решение владельца 2026-10-04 15:45 UTC
+
+Браузерный клиент проверяем кодом: автоматизированными проверками реальных
+обработчиков/компонентов и backend. Живые прогоны выполняем в консольном клиенте.
+Это заменяет прежние отложенные требования live browser; не добавлять доступ к
+cloud browser, другой hostname/tunnel или визуальный прогон браузера как gate.
+Автоматизированные проверки не называются visual QA. Живой console/GM, полный
+игровой сценарий/restart, применимые Windows-проверки и остальные открытые границы
+сохраняются. Исторические доказательства ниже не меняют своего исходного смысла.
 
 ## Восстановление и текущие источники
 
@@ -40,7 +50,7 @@ git status --short
 
 ## Callable boundary для B4
 
-`SaveLoadService.LoadGameWithOutcomeAsync(string, CancellationToken)` и `LoadReplacementResult` теперь публичны. Старый `LoadGameAsync` использует этот же portable loader и возвращает только факт commit: true сохраняется даже при поздней ошибке и blocked continuation. Его bool не разрешает продолжение или безопасный повтор. Console/browser ещё должны перейти на полный typed result; это остаётся открытым B4. Public-entry проверки: отдельные 6/6 и шесть прямых consumers в сохранённом partial run; весь 13-case selection не прошёл из-за pre-load worker blocker.
+`SaveLoadService.LoadGameWithOutcomeAsync(string, CancellationToken)` и `LoadReplacementResult` теперь публичны. Старый `LoadGameAsync` использует этот же portable loader и возвращает только факт commit: true сохраняется даже при поздней ошибке и blocked continuation. Его bool не разрешает продолжение или безопасный повтор. Console уже использует полный typed result: точный established generation, pending/UI-owner guard под replacement lease, сохранение commit при required refresh failure и остановка текущего/нового game loop. Заблокированный процесс предлагает только About/Exit; обычный restart выполняет reconciliation, blind retry не допускается. Browser ещё должен перейти на typed result; весь B4 остаётся открытым. Public-entry проверки: отдельные 6/6 и шесть прямых consumers в сохранённом partial run; весь 13-case selection не прошёл из-за pre-load worker blocker.
 
 - `NotLoaded`: замена не начата; приватная cleanup-проблема может требовать follow-up, сама по себе не блокирует каноническое продолжение
 - `Committed`: новый generation подтверждён; поздние refresh/log/release/cleanup ошибки не отменяют commit
@@ -55,8 +65,8 @@ Runtime обновляется только после подтверждённ�
 
 ## Следующая работа и явные открытые границы
 
-1. Файловые B5-FS и точно сопоставленные B1/B2/B3 закрыты. Отдельный T031-WORKER-PORTABLE отслеживает фактический Linux kernel32.dll отказ в старой worker-transaction cleanup до вызова Load; worker/full-game qualification остаётся заблокированной. Продолжить **B4 public/console/browser integration** на этой же ветке: typed outcome/committed identity, generation rebind, pending/UI owner guards, required refresh failure и blocked uncertainty, affected caller tests
+1. Файловые B5-FS и точно сопоставленные B1/B2/B3 закрыты. Отдельный T031-WORKER-PORTABLE отслеживает фактический Linux kernel32.dll отказ в старой worker-transaction cleanup до вызова Load; worker/full-game qualification остаётся заблокированной. Public entry и ограниченный console-блок приняты. Продолжить **B4 browser typed integration** на этой же ветке: typed outcome/committed identity на каждом HTTP status, revalidation точного UI lease token и pending state через LoadGameWithAdmissionAsync под held replacement lease, generation-bound required refresh и общий запрет небезопасного продолжения при unmount/new navigation/lost response. Проверять реальные frontend handlers и backend кодом; наличие архива в списке не подтверждает loaded generation
 2. **T032-A4-NATIVE-NAMES остаётся открытым:** существующий save producer по исходникам отвергает произвольную Linux case-distinct пару. Loader проверен на корректном независимо дополненном manifested archive; полный producer → load → save round trip такой пары пока не принят. Исправить producer узким отдельным блоком, сохранив Windows collision policy и все manifest/format/budget контракты
-3. T033/live console/browser/real GM, полный B5/T032, остальные platform-helper/interactive-GM задачи и вся #1553 остаются открытыми. Материализация ран #1536 не возобновлялась
+3. T033/live console/real GM и автоматизированные browser integration tests, полный B5/T032, остальные platform-helper/interactive-GM задачи и вся #1553 остаются открытыми. Материализация ран #1536 не возобновлялась
 
 Файловые изменения принадлежат клиенту и не добавляют GM-authored команду/поле/механику; no-update rationale для prompts/examples записан в плане. [Запись фактических операций и ошибок](recovery/evidence/load-linux-final-audit-20261004/operation-incidents.json) отделяет approval/network cancellations, git authentication и обычные test failures. Generic cybersecurity flag в этих запусках не наблюдался; причинная связь с историческим неопределённым сообщением не установлена, специальных screening-проб не выполнялось.
