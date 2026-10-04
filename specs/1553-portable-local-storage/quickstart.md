@@ -1,5 +1,31 @@
 # Reproduce the cross-platform development environment
 
+## Browser load continuation (T032-B4)
+
+Browser loading uses the typed four-state result on every business HTTP outcome.
+`success` means commitment only. After Committed, both actual browser load handlers
+request `/api/saves/load-state` for its exact `establishedGeneration`; only one complete
+menu/session/game/settings/audio bundle permits navigation. Unknown/lost responses,
+stale ownership or failed required refresh stop the whole shell without automatic retry.
+A known safe NotLoaded may explicitly reconcile current existing authority; a confirmed
+rollback binds its restored generation. A recognized empty chapter is explicit, never
+a substitute for a failed required read. Nonblocking follow-up remains visible across
+navigation and names its historical load rather than a later current save.
+
+After a stop, preserve the source archive and retained storage evidence. Resolve the
+reported local storage/recovery problem, then restart/reload the client to inspect the
+reconciled state. Do not retry load merely because a response was lost or HTTP was not200.
+No manual journal deletion or generation recreation is part of this procedure.
+
+Focused browser owners are `portable-load-browser` (coordinator/menu/typed transport),
+`portable-load-browser-refresh` (actual HTTP required bundle) and
+`portable-load-browser-handlers` (actual TSX handlers/provider and refresh publication).
+Use PowerShell7 with the existing runner and the selected owner, or the current explicit
+`tests/selection.json` when qualifying all changed client consumers. Browser proof is
+code-level automated testing only; live runs use the console. Native Windows public
+clients, live console/GM and whole-platform acceptance remain separate open gates.
+
+
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 
 ## Console typed-load continuation (T032-B4)
@@ -165,7 +191,7 @@ In this restricted executor, the default parallel MSBuild restore failed without
 
 Read docs/testing.md and select categories for the actual block. Use scripts/test-csharp.ps1. The B1 categories `portable-storage-paths` and `portable-storage-publication` already exist; later cutover categories and the actual reviewed selection are recorded in tests/categories.json and tests/selection.json. `-ValidateCatalog` discovers ownership without executing tests. Never use a full-suite/aggregate/all-category run. Store meaningful result counts and source SHA remotely in plan.md, not only ignored TestResults.
 
-Current user-approved acceptance uses real console process/menu/settings/restart checks and automated browser-client checks. A later live browser run will use a server/access supplied by the user; it is not a current-phase blocker. Use separate fresh roots for eventual console/web live checks. Change one ordinary setting, stop the full client process, restart and inspect the retained value; then verify real GM turn, save/load and failure/conflict recovery. Exact accepted command/scenario evidence is added as each block becomes runnable; automated checks are never relabelled live browser execution.
+Current user-approved acceptance uses real console process/menu/settings/restart checks and automated browser-client checks. Under the 2026-10-04 owner decision, browser behavior is verified through automated actual handler/component/backend tests; no live-browser access or visual-QA gate is required. Use separate fresh roots for live console checks and automated browser checks. Change one ordinary setting, stop the full client process, restart and inspect the retained value; then verify real GM turn, save/load and failure/conflict recovery. Exact accepted command/scenario evidence is added as each block becomes runnable; automated checks are never relabelled live browser execution.
 
 ## Windows owner handoff
 

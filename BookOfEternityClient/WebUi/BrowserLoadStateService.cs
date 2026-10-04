@@ -27,14 +27,15 @@ public sealed class BrowserLoadStateService(
         // read and the final close must still match this exact binding; a rotation discards the bundle.
         return await SessionOperationContext.RunBoundAsync(files, generation, async () =>
         {
+            // Menu options read the shared settings receiver, so refresh that receiver first.
+            var settingsState = await settings.BuildAsync();
+            var audioState = await audio.BuildSettingsAsync();
             var menuState = await menu.BuildAsync();
             var sessionState = await session.BuildStatusAsync();
             BrowserGameScreenDto? gameState = null;
             var noActiveSession = false;
             try { gameState = await game.BuildAsync(); }
             catch (BrowserNoActiveSessionException) { noActiveSession = true; }
-            var settingsState = await settings.BuildAsync();
-            var audioState = await audio.BuildSettingsAsync();
             return new BrowserLoadStateDto(generation, menuState, sessionState, gameState,
                 noActiveSession, settingsState, audioState);
         });

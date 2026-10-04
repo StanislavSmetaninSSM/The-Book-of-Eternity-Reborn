@@ -159,6 +159,24 @@ Independent Sol6.1XHigh review confirms the authority/epoch/old-command-view cor
 by source inspection and validated the evidence meanings. Final corrected HTTP tests,
 cache ordering fix, discovery audit, final readback and review verdict remain open.
 
+### Browser cached-settings causal result — 2026-10-04 17:33 UTC
+
+Clean saved `8e99d677` passed the final actual browser handler/provider/refresh/render
+cohort45/45 in2.024seconds. It includes truthful historical follow-up identity after
+later healthy replacement, and no blocked continuation for that nonblocking debt.
+The corrected actual HTTP cohort completed14/14 in2:27.352 including fresh build:
+13passed and exactly the cached-settings case failed (expected musicEnabled=false,
+menu reported true). Read/final-close rotation, explicit no-active absence, missing
+authority/non-creation, mixed request, game-read failure and existing consumers passed.
+This is causal product RED; no fixture failures remain in that run.
+
+The narrow correction now builds required settings and audio before menu options,
+inside the unchanged exact-generation binding/final-close fence. Final14-case GREEN,
+production frontend rebuild, inventory audit and reviewer acceptance are pending.
+Evidence: load-browser-handlers-final and load-browser-cache-red. Unchanged native
+browser11, previous save/settings consumers and filesystem/resource/console cohorts
+are not repeated solely for this required-bundle ordering change.
+
 ## Current verification scope — owner decision, 2026-10-04 15:45 UTC
 
 Browser verification is now exclusively test-based at the code level, including

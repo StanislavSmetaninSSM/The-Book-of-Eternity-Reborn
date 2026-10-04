@@ -1,0 +1,49 @@
+RequestedLane: Categories
+EffectiveLane: Categories
+Filter: <pending validation>
+TimeoutMinutes: 5
+StartedUtc: 2026-10-04T17:29:13.7857052Z
+Owned process 'Revision': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== Revision: stdout =====
+8e99d67702e9f6965e66722629aa72913f4e0b67
+
+===== Revision: stderr =====
+
+===== Revision: exit 0 =====
+Owned process 'Changed-paths': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== Changed-paths: stdout =====
+
+===== Changed-paths: stderr =====
+
+===== Changed-paths: exit 0 =====
+Owned process 'New-paths': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== New-paths: stdout =====
+
+===== New-paths: stderr =====
+
+===== New-paths: exit 0 =====
+Owned process 'portable-load-browser-handlers-frontend-001': FileName=node; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=node
+
+===== portable-load-browser-handlers-frontend-001: stdout =====
+JSON report written to [checkout]/TestResults/test-categories/20261004-132913-771-34-afeff4bb0a3e497c8e0c87de3b7bb813-categories/portable-load-browser-handlers-frontend-001.vitest.json
+
+===== portable-load-browser-handlers-frontend-001: stderr =====
+
+===== portable-load-browser-handlers-frontend-001: exit 0 =====
+
+Category result
+  Categories: portable-load-browser-handlers
+  Filter: <none>
+  Timeout: 5 minute(s)
+  Wall time: 00:00:02.0240647
+  Exit code: 0
+  Timed out: False
+  Owned-tree cleanup: complete
+  Planned selection: descriptors=1, cases=2; completed descriptors=1, cases=45, complete=True
+  Tests: total=45, executed=45, passed=45, failed=0
+  Duplicate test IDs: 0
+  Results: [checkout]/TestResults/test-categories/20261004-132913-771-34-afeff4bb0a3e497c8e0c87de3b7bb813-categories
+  Log: [checkout]/TestResults/test-categories/20261004-132913-771-34-afeff4bb0a3e497c8e0c87de3b7bb813-categories/dotnet-test.log
