@@ -53,6 +53,23 @@ Readback verifier initially mishandled Git-quoted Unicode paths at15:06:29; usin
 NUL-delimited ls-tree corrected the verifier and all hashes passed. No generic
 cybersecurity flag was observed or inferred; no bypass/probe was attempted.
 
+### Console first candidate verification and review correction
+
+Candidate `57967624f35a14150be4b074b7106e6424c6449d` restored clean from GitHub:
+4,775 tracked blob hashes match tree `73d33495c724c97fd4b9c5d74ddaf7590ab61069`.
+Fresh native Linux selected build/run completed 12/12 cases in2:28.935,11passed,
+1failed, zero skips/duplicates and complete cleanup. The new late required UI-refresh
+test deliberately checks that its configured mutation cut was actually reached;
+it was not. This case is not qualified; preserve the failure and inspect the actual
+retained exception before changing its fixture. All existing rebind controls and
+new generation/admission/commit/rollback/uncertainty cases passed individually.
+
+Independent Sol6.1XHigh identified a real admission defect: existing lock InspectAsync
+creates a generation even when absent. New test-first malformed-owner refusal and
+publication rollback cases assert preservation of prior generation absence. These
+cases and an enriched UI-refresh diagnostic are now added before the correction;
+review and overall GREEN remain open. No filesystem/resource cohort is repeated.
+
 ## Accepted T032-B4 public entry — 2026-10-04
 
 Separate **gpt-6.1-sol / xhigh** final review passed the bounded public API through

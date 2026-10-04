@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="5879b147-99da-4d30-9e80-95d475371825" name="@95e438a3e5cb 2026-10-04 11:16:36" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-04T11:16:36.4031821-04:00" queuing="2026-10-04T11:16:36.4031821-04:00" start="2026-10-04T11:16:32.7492170-04:00" finish="2026-10-04T11:16:36.7468313-04:00" />
+  <TestSettings name="default" id="c6883bf2-fda7-49a2-92fa-9b45487f37af">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-04_11_16_36" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="d9146236-79a6-4910-9c36-34a4acc7d0f1" testId="47da4ae5-8d70-1442-829a-520edd13765a" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LoadSelectedSaveAndRebindRuntime_UsesLoadedCanonicalStateInsteadOfSaveListMetadata" computerName="95e438a3e5cb" duration="00:00:01.0666081" startTime="2026-10-04T11:16:36.3804453-04:00" endTime="2026-10-04T11:16:36.3804457-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d9146236-79a6-4910-9c36-34a4acc7d0f1" />
+    <UnitTestResult executionId="341576d2-869d-4533-9d67-edb06da95b2c" testId="cce75688-be2c-041f-f51f-a536ebe1417e" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RollbackAndUncertaintyKeepDistinctContinuation(conflict: True)" computerName="95e438a3e5cb" duration="00:00:00.0933765" startTime="2026-10-04T11:16:35.2054591-04:00" endTime="2026-10-04T11:16:35.2054593-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="341576d2-869d-4533-9d67-edb06da95b2c" />
+    <UnitTestResult executionId="893c74d9-efa7-485d-9cb3-70098ca9d494" testId="788d4f57-b842-e9f4-a150-b1b456e9f1e1" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RebindRuntimeAfterSessionReplacement_ActiveReplacementRebindsLoopAndClearsTransientState" computerName="95e438a3e5cb" duration="00:00:00.0461596" startTime="2026-10-04T11:16:36.6865664-04:00" endTime="2026-10-04T11:16:36.6865666-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="893c74d9-efa7-485d-9cb3-70098ca9d494" />
+    <UnitTestResult executionId="1ad38f53-2b67-4f6e-a932-0eb30c19f9a8" testId="983d39eb-a48d-c240-9d43-01106076ce93" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RebindUsesEstablishedGeneration" computerName="95e438a3e5cb" duration="00:00:00.0937487" startTime="2026-10-04T11:16:36.4774606-04:00" endTime="2026-10-04T11:16:36.4774608-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1ad38f53-2b67-4f6e-a932-0eb30c19f9a8" />
+    <UnitTestResult executionId="21be2221-c63d-4a74-a417-f16eb52f2248" testId="e49bb492-e7b9-c000-ec79-b3cb341cab60" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RollbackAndUncertaintyKeepDistinctContinuation(conflict: False)" computerName="95e438a3e5cb" duration="00:00:00.1097882" startTime="2026-10-04T11:16:35.3132183-04:00" endTime="2026-10-04T11:16:35.3132185-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="21be2221-c63d-4a74-a417-f16eb52f2248" />
+    <UnitTestResult executionId="19e48d1d-a626-41a1-9632-64eedff87298" testId="1b0df10a-058d-cca2-f26c-657e935a5376" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredRefreshFailureRetainsCommitAndStopsContinuation(serviceRefresh: True)" computerName="95e438a3e5cb" duration="00:00:00.0803617" startTime="2026-10-04T11:16:35.1086829-04:00" endTime="2026-10-04T11:16:35.1086831-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="19e48d1d-a626-41a1-9632-64eedff87298" />
+    <UnitTestResult executionId="74136f8d-c1c8-4e1f-a341-c7f71ce6f38b" testId="35d2d5e2-6164-616c-bd1d-2c436a158d25" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_LatePendingOrOwnerRefusesBeforeMutation(activeOwner: True)" computerName="95e438a3e5cb" duration="00:00:00.3705584" startTime="2026-10-04T11:16:34.8278566-04:00" endTime="2026-10-04T11:16:34.8278692-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="74136f8d-c1c8-4e1f-a341-c7f71ce6f38b" />
+    <UnitTestResult executionId="f785af9b-58b3-478f-9acc-48af7505f4db" testId="44640cac-4de8-36fa-b3e9-516e5ccb99ef" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InvalidSourceRetainsOldRuntime" computerName="95e438a3e5cb" duration="00:00:00.0079355" startTime="2026-10-04T11:16:36.5131892-04:00" endTime="2026-10-04T11:16:36.5131894-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f785af9b-58b3-478f-9acc-48af7505f4db" />
+    <UnitTestResult executionId="de063c50-bc22-4c65-b22f-b7fb95b83d49" testId="fc108ea5-f5d0-50a8-cb25-221d2108b587" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredRefreshFailureRetainsCommitAndStopsContinuation(serviceRefresh: False)" computerName="95e438a3e5cb" duration="00:00:00.1542559" startTime="2026-10-04T11:16:35.0277118-04:00" endTime="2026-10-04T11:16:35.0277120-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="de063c50-bc22-4c65-b22f-b7fb95b83d49" />
+    <UnitTestResult executionId="aa536a1a-d76b-4576-aa0a-80a57dc12305" testId="ac2ac991-fdd1-2f36-2ef2-d9a8efef0661" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RebindRuntimeAfterSessionReplacement_EmptyReplacementReturnsToMenu" computerName="95e438a3e5cb" duration="00:00:00.0296565" startTime="2026-10-04T11:16:36.5048855-04:00" endTime="2026-10-04T11:16:36.5048857-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aa536a1a-d76b-4576-aa0a-80a57dc12305" />
+    <UnitTestResult executionId="d05b3996-7327-4efd-884a-cbe9107ec870" testId="d9b79e5d-630a-469a-a8ba-a7450c8a34c4" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredUiRefreshFailureCannotEraseCommit" computerName="95e438a3e5cb" duration="00:00:00.1139889" startTime="2026-10-04T11:16:36.6436345-04:00" endTime="2026-10-04T11:16:36.6436347-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d05b3996-7327-4efd-884a-cbe9107ec870">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Null() Failure: Value is not null
+Expected: null
+Actual:   "game_state/core/game_settings.json"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredUiRefreshFailureCannotEraseCommit() in [checkout]/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs:line 200
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0e01a488-7105-4d88-9cbb-cb5456a7c41d" testId="ab78c107-ea84-a72a-8926-fa29c8007745" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_LatePendingOrOwnerRefusesBeforeMutation(activeOwner: False)" computerName="95e438a3e5cb" duration="00:00:00.0439215" startTime="2026-10-04T11:16:34.8721144-04:00" endTime="2026-10-04T11:16:34.8721146-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0e01a488-7105-4d88-9cbb-cb5456a7c41d" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_LatePendingOrOwnerRefusesBeforeMutation(activeOwner: True)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="35d2d5e2-6164-616c-bd1d-2c436a158d25">
+      <Execution id="74136f8d-c1c8-4e1f-a341-c7f71ce6f38b" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="PortableLoadConsole_LatePendingOrOwnerRefusesBeforeMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InvalidSourceRetainsOldRuntime" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="44640cac-4de8-36fa-b3e9-516e5ccb99ef">
+      <Execution id="f785af9b-58b3-478f-9acc-48af7505f4db" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="PortableLoadConsole_InvalidSourceRetainsOldRuntime" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredUiRefreshFailureCannotEraseCommit" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d9b79e5d-630a-469a-a8ba-a7450c8a34c4">
+      <Execution id="d05b3996-7327-4efd-884a-cbe9107ec870" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="PortableLoadConsole_RequiredUiRefreshFailureCannotEraseCommit" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredRefreshFailureRetainsCommitAndStopsContinuation(serviceRefresh: False)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="fc108ea5-f5d0-50a8-cb25-221d2108b587">
+      <Execution id="de063c50-bc22-4c65-b22f-b7fb95b83d49" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="PortableLoadConsole_RequiredRefreshFailureRetainsCommitAndStopsContinuation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_LatePendingOrOwnerRefusesBeforeMutation(activeOwner: False)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ab78c107-ea84-a72a-8926-fa29c8007745">
+      <Execution id="0e01a488-7105-4d88-9cbb-cb5456a7c41d" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="PortableLoadConsole_LatePendingOrOwnerRefusesBeforeMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RebindUsesEstablishedGeneration" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="983d39eb-a48d-c240-9d43-01106076ce93">
+      <Execution id="1ad38f53-2b67-4f6e-a932-0eb30c19f9a8" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="PortableLoadConsole_RebindUsesEstablishedGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RebindRuntimeAfterSessionReplacement_EmptyReplacementReturnsToMenu" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ac2ac991-fdd1-2f36-2ef2-d9a8efef0661">
+      <Execution id="aa536a1a-d76b-4576-aa0a-80a57dc12305" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="RebindRuntimeAfterSessionReplacement_EmptyReplacementReturnsToMenu" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RebindRuntimeAfterSessionReplacement_ActiveReplacementRebindsLoopAndClearsTransientState" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="788d4f57-b842-e9f4-a150-b1b456e9f1e1">
+      <Execution id="893c74d9-efa7-485d-9cb3-70098ca9d494" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="RebindRuntimeAfterSessionReplacement_ActiveReplacementRebindsLoopAndClearsTransientState" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RollbackAndUncertaintyKeepDistinctContinuation(conflict: True)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="cce75688-be2c-041f-f51f-a536ebe1417e">
+      <Execution id="341576d2-869d-4533-9d67-edb06da95b2c" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="PortableLoadConsole_RollbackAndUncertaintyKeepDistinctContinuation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RollbackAndUncertaintyKeepDistinctContinuation(conflict: False)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e49bb492-e7b9-c000-ec79-b3cb341cab60">
+      <Execution id="21be2221-c63d-4a74-a417-f16eb52f2248" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="PortableLoadConsole_RollbackAndUncertaintyKeepDistinctContinuation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LoadSelectedSaveAndRebindRuntime_UsesLoadedCanonicalStateInsteadOfSaveListMetadata" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="47da4ae5-8d70-1442-829a-520edd13765a">
+      <Execution id="d9146236-79a6-4910-9c36-34a4acc7d0f1" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="LoadSelectedSaveAndRebindRuntime_UsesLoadedCanonicalStateInsteadOfSaveListMetadata" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredRefreshFailureRetainsCommitAndStopsContinuation(serviceRefresh: True)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="1b0df10a-058d-cca2-f26c-657e935a5376">
+      <Execution id="19e48d1d-a626-41a1-9632-64eedff87298" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="PortableLoadConsole_RequiredRefreshFailureRetainsCommitAndStopsContinuation" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="47da4ae5-8d70-1442-829a-520edd13765a" executionId="d9146236-79a6-4910-9c36-34a4acc7d0f1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cce75688-be2c-041f-f51f-a536ebe1417e" executionId="341576d2-869d-4533-9d67-edb06da95b2c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="788d4f57-b842-e9f4-a150-b1b456e9f1e1" executionId="893c74d9-efa7-485d-9cb3-70098ca9d494" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="983d39eb-a48d-c240-9d43-01106076ce93" executionId="1ad38f53-2b67-4f6e-a932-0eb30c19f9a8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e49bb492-e7b9-c000-ec79-b3cb341cab60" executionId="21be2221-c63d-4a74-a417-f16eb52f2248" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1b0df10a-058d-cca2-f26c-657e935a5376" executionId="19e48d1d-a626-41a1-9632-64eedff87298" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="35d2d5e2-6164-616c-bd1d-2c436a158d25" executionId="74136f8d-c1c8-4e1f-a341-c7f71ce6f38b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="44640cac-4de8-36fa-b3e9-516e5ccb99ef" executionId="f785af9b-58b3-478f-9acc-48af7505f4db" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fc108ea5-f5d0-50a8-cb25-221d2108b587" executionId="de063c50-bc22-4c65-b22f-b7fb95b83d49" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ac2ac991-fdd1-2f36-2ef2-d9a8efef0661" executionId="aa536a1a-d76b-4576-aa0a-80a57dc12305" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d9b79e5d-630a-469a-a8ba-a7450c8a34c4" executionId="d05b3996-7327-4efd-884a-cbe9107ec870" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ab78c107-ea84-a72a-8926-fa29c8007745" executionId="0e01a488-7105-4d88-9cbb-cb5456a7c41d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="12" executed="12" passed="11" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.28]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.28]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.32]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:03.54]       Assert.Null() Failure: Value is not null
+[xUnit.net 00:00:03.54]       Expected: null
+[xUnit.net 00:00:03.54]       Actual:   "game_state/core/game_settings.json"
+[xUnit.net 00:00:03.54]       Stack Trace:
+[xUnit.net 00:00:03.54]         [checkout]/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs(200,0): at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredUiRefreshFailureCannotEraseCommit()
+[xUnit.net 00:00:03.54]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.59]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T11:16:36.6424050-04:00">
+        <Text>[xUnit.net 00:00:03.54]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredUiRefreshFailureCannotEraseCommit [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

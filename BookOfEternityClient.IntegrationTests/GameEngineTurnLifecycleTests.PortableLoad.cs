@@ -197,7 +197,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.False(loaded.ContinuationBlocked);
         ArmCanonicalWriteFailure("game_state/core/game_settings.json");
         var result = await InvokePrivateAsync<LoadReplacementResult>(engine, "PrepareLoadedConsoleContinuationAsync", loaded);
-        Assert.Null(_armedCanonicalWriteFailurePath);
+        Assert.True(_armedCanonicalWriteFailurePath == null, result.Failure?.ToString());
         Assert.Equal(loaded.Disposition, result.Disposition);
         Assert.Equal(loaded.SelectedSourcePath, result.SelectedSourcePath);
         Assert.Equal(loaded.EstablishedGeneration, result.EstablishedGeneration);
@@ -205,6 +205,36 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(result.ContinuationBlocked);
         Assert.False(GetPrivateFieldValue<bool>(engine, "_inGame"));
         Assert.Equal(string.Empty, GetPrivateField<GameLoop>(engine, "_gameLoop").SessionId);
+    }
+
+    /// <summary>Client admission cannot create previously absent generation authority.</summary>
+    /// <param name="malformedOwner">Refuses a fresh malformed UI lock when true; otherwise cuts publication to exact rollback.</param>
+    /// <returns>A task completing after prior generation absence is preserved.</returns>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task PortableLoadConsole_AbsentGenerationAdmissionPreservesAbsence(bool malformedOwner)
+    {
+        var path = await CreateConsoleLoadArchiveAsync();
+        File.Delete(_fs.SessionGenerationPath);
+        var cuts = 0;
+        var files = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            {
+                LocalPublicationObserver = (phase, _) =>
+                {
+                    if (phase != TrustedLocalPublicationPhase.CommitStaged) return;
+                    cuts++;
+                    throw new InvalidOperationException("absent generation rollback cut");
+                }
+            });
+        if (malformedOwner) File.WriteAllText(files.ResolvePath(LocalUiSessionLockService.LockPath), "{");
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]), fileSystem: files);
+        var result = Assert.IsType<LoadReplacementResult>(await InvokeConsoleLoadResultAsync(engine, path));
+        Assert.Equal(malformedOwner ? 0 : 1, cuts);
+        Assert.Equal(malformedOwner ? LoadReplacementDisposition.NotLoaded : LoadReplacementDisposition.RolledBack, result.Disposition);
+        Assert.False(File.Exists(files.SessionGenerationPath));
+        Assert.Null(result.EstablishedGeneration);
     }
 
     /// <summary>Waits for the actual operation before asserting the revised typed return contract.</summary>
