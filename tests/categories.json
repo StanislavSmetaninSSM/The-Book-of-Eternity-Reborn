@@ -10862,6 +10862,31 @@
       ]
     }
   ]
+},
+{
+  "id": "portable-load-browser-handlers",
+  "responsibility": "Actual launcher/settings load handlers: typed HTTP results, duplicate dispatch, stale navigation, unmount, lost response and required-refresh continuation. Controlled component execution, not visual QA.",
+  "excludes": "Backend filesystem/resource cohorts and live browser access.",
+  "changeHints": [
+    "BookOfEternityClient.WebFrontend/src/components/GameLauncher.tsx",
+    "BookOfEternityClient.WebFrontend/src/components/SettingsView.tsx"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "frontend",
+      "runner": "vitest",
+      "tests": [
+        "BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts"
+      ]
+    }
+  ]
 }
 ]
 }

@@ -48,6 +48,17 @@ committed generation for required menu refresh. Required bundle endpoint tests a
 written next and still RED/unimplemented. Candidate build/runtime and independent
 review remain pending; frontend handlers are unchanged and B4 remains open.
 
+### Browser handler RED source and runner invocation correction
+
+Typed backend candidate saved at `9d9f5c72`. Its first combined invocation used
+PowerShell `-File` from bash with a comma-separated argument; the runner correctly
+rejected that single unknown category before any workload. Use `pwsh -Command`
+with an explicit PowerShell array for multiple IDs. This is an invocation failure,
+not a runtime test result. Actual GameLauncher/SettingsView handler tests now cover
+17 decision/duplicate/unmount/navigation/lost-response cases before changing frontend
+production. Their isolated harness was extended, not shared across cases. No new
+frontend behavior, required bundle implementation or acceptance is claimed yet.
+
 ## Current verification scope — owner decision, 2026-10-04 15:45 UTC
 
 Browser verification is now exclusively test-based at the code level, including

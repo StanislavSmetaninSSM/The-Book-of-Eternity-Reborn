@@ -47,20 +47,38 @@ export function createSettingsComponentHarness() {
   let audioPosts = 0;
   let refreshFailure = false;
   let savePosts = 0;
+  let loadPosts = 0;
+  let navigations = 0;
+  let loadOwner: any = null;
+  let navigation = 0;
   let saveLatch: any;
   let realRefreshClient: any;
   let realRefreshState: any = { status: 'loading' };
   const refreshOwner = { current: 0 };
   const api = {
     updateClientSettings: async () => { settingsPosts++; return ok(persistedSettings); },
-    loadSave: () => load.promise,
+    loadSave: () => { loadPosts++; return load.promise; },
     createSave: () => { savePosts++; return save.promise; },
     updateAudioSettings: () => { audioPosts++; return audioWrite.promise; }
   };
   const shell: any = {
     readyState: { settings: ok(persistedSettings), audio: ok(initialAudio) },
     menu: { session: { gameSessionExists: true, hasReadableSoul: true, canStartBrowserWrite: true }, saves: [{ saveId: 'save', displayName: 'save', description: '', scopeLabel: '', characterName: '', turnLabel: '' }] },
-    advancedEnabled: false, activeRoute: 'settings', setAdvancedEnabled() {}, setActiveRoute() {},
+    advancedEnabled: false, activeRoute: 'settings', setAdvancedEnabled() {},
+    setActiveRoute(route: string) { navigations++; navigation++; shell.activeRoute = route; },
+    beginLoad: () => {
+      if (loadOwner || shell.loadContinuationNotice || saveLatch?.isBlocked()) return null;
+      loadOwner = { navigation }; return loadOwner;
+    },
+    isLoadCurrent: (owner: any) => loadOwner === owner && owner.navigation === navigation && !shell.loadContinuationNotice,
+    finishLoad: (owner: any) => { if (loadOwner === owner) loadOwner = null; },
+    blockLoadContinuation: (notice: any) => { shell.loadContinuationNotice ??= notice; },
+    refreshAfterLoad: async (_generation: string, isCurrent: () => boolean = () => true) => {
+      refreshes++;
+      if (refreshFailure) return false;
+      if (isCurrent()) shell.readyState = { settings: ok(persistedSettings), audio: ok(initialAudio) };
+      return isCurrent();
+    },
     loadBrowserState: async (isCurrent: () => boolean = () => true) => {
       if (saveLatch?.isBlocked()) return;
       refreshes++;
@@ -97,7 +115,11 @@ export function createSettingsComponentHarness() {
       shell.saveContinuationNotice = saveLatch.block(notice);
     }
   };
+  shell.menu.actions = [{ id: 'load', enabled: true, label: 'Загрузить сохранение', description: '', disabledReason: '' },
+    { id: 'about', enabled: true, label: 'Сведения', description: '', disabledReason: '' }];
+  shell.menu.options = { guidance: '' }; shell.menu.about = { title: 'Книга', body: '' };
   const react = {
+    useMemo(factory: any, _dependencies: unknown[]) { return factory(); },
     useState(initial: any) {
       const owner = current; const index = owner.index++;
       if (!(index in owner.hooks)) owner.hooks[index] = typeof initial === 'function' ? initial() : initial;
@@ -134,6 +156,14 @@ export function createSettingsComponentHarness() {
       if (id.includes('ShellContext')) return { useShell: () => shell, isSuccess: (value: any) => value?.ok === true };
       if (id.includes('settingsPersistenceNotice')) return module('src/utils/settingsPersistenceNotice.ts');
       if (id.includes('savePersistenceNotice')) return module('src/utils/savePersistenceNotice.ts');
+      if (id.includes('loadPersistenceNotice')) return module('src/utils/loadPersistenceNotice.ts');
+      if (id === 'framer-motion') return { motion: { nav: 'nav', div: 'div' } };
+      if (id.includes('playerFacingCommandResult')) return { sanitizePlayerDefaultCommandResult: (v: unknown) => v };
+      if (id.includes('CommandResult')) return { ActionCommandResult: () => null };
+      if (id.includes('PromptForm')) return { buildDefaultPromptAnswers: () => ({}) };
+      if (id.includes('decorative')) return { OrnamentBorder: 'div' };
+      if (id.includes('lib/motion')) return {};
+
       if (id.includes('shellStateResult')) return module('src/hooks/shellStateResult.ts');
       if (id.includes('loadShellState')) return module('src/hooks/loadShellState.ts');
       if (id.includes('playerCopy')) return { toPlayerFacingText: (value: string, fallback: string) => value || fallback };
@@ -157,11 +187,12 @@ export function createSettingsComponentHarness() {
     instance.render(); instance.render();
     return instance;
   }
+  const launcher = () => renderer('src/components/GameLauncher.tsx', 'GameLauncher', { menu: shell.menu });
   const settings = () => renderer('src/components/SettingsView.tsx', 'SettingsView');
   const audio = (writeScope: { generation: number }) => renderer('src/components/AudioPanel.tsx', 'AudioPanel', { writeScope });
-  return { settings, audio, shell, load, save, audioWrite, initialAudio, persistedSettings, timers,
+  return { settings, launcher, audio, shell, load, save, audioWrite, initialAudio, persistedSettings, timers,
     setRefreshFailure: () => { refreshFailure = true; },
     setRealRefreshClient: (client: unknown) => { realRefreshClient = client; },
     realRefreshState: () => realRefreshState,
-    counts: () => ({ refreshes, settingsPosts, audioPosts, savePosts }) };
+    counts: () => ({ refreshes, settingsPosts, audioPosts, savePosts, loadPosts, navigations }) };
 }
