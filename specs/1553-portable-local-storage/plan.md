@@ -89,6 +89,16 @@ Blocked menu keys are asserted exactly. New source remains WIP until GREEN and
 focused independent re-review; healthy full-stage proof is not assumed from the
 minimal load fixture. Browser and all previously listed open gates remain open.
 
+### Console menu test harness build correction
+
+Checkpoint `ca86ad589900c2ac22b34ee836292d71ff4afcfe` restored all 4,785 files
+cleanly at tree `38ef46040eddee9fca4067f215bd0f5116d52405`. Its selected build
+stopped after 1:15.986 with CS0535: the new counting test input omitted required
+IConsoleInputSource.AssertCompleted. Zero tests were planned/executed; this is a
+harness build failure, not GREEN. Add the missing assertion method and retain the
+full failed build log in recovery/evidence/load-console-menu-build-failure. Runtime
+code is unchanged by this correction. Separate earlier failures remain retained.
+
 ## Accepted T032-B4 public entry — 2026-10-04
 
 Separate **gpt-6.1-sol / xhigh** final review passed the bounded public API through

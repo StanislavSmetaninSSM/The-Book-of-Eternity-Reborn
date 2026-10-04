@@ -310,6 +310,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             return Key(ConsoleKey.Enter);
         }
         public string ReadLine() { Reads++; UnexpectedRead?.Invoke(); return string.Empty; }
+        public void AssertCompleted() => Assert.Empty(_keys);
     }
 
     private sealed class LoadMenuAnsiConsole : IAnsiConsole, IAnsiConsoleInput, IDisposable
