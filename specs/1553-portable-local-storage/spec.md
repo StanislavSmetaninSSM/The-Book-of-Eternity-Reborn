@@ -14,6 +14,12 @@
 - Latest direction, 18:26 UTC: replace Windows-only mechanisms, remove protection against the owner editing their own saves, demonstrate complete Linux behavior; the owner will execute Windows checks
 - Wound implementation was merged by explicit owner request in [PR #1554](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/pull/1554). Its unfinished acceptance remains deferred under #1536, not declared complete by this feature
 
+## Detached workspace portability — T041-WORKSPACE, 2026-10-05
+
+The owner authorized a bounded component from exact `b487526fc5f4d11a2c02816813f870f063e9fdc5`: create and stage pinned context plus task bytes into an isolated runtime directory outside canonical state; bounded proposal/contentRef byte reads; cancel, roll back partial creation and dispose only the owned workspace. Reuse the accepted #1553 trusted-local namespace/byte authority. No second journal or anti-owner save protection, and no changes to accepted load behavior. Preserve physical path/kind/link validation, exact pinned bytes, existing artifact limits and retryable cleanup. Windows retained-handle behavior remains source-compared and unqualified natively here.
+
+This does not launch a process, import/apply a proposal, publish a quarantine receipt, release a worker or qualify stop/ownership/process-tree/PTY. Production execution gates remain closed. Only isolated temporary synthetic fixtures may be mutated. Native permission refusal is evidence, never a reason to bypass environment controls. Independent actual gpt-6.1-sol/xhigh design and final reviews, causal RED/GREEN through the narrow catalog runner and remote/fresh-restore evidence are required.
+
 ## Worker environment portability — T041-ENV, 2026-10-05
 
 Under US4/FR-012/015, preserve the existing caller-selected worker environment
