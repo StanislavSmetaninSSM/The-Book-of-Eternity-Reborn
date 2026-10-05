@@ -49,6 +49,49 @@ The same single native descendant case is next; GREEN and final review are pendi
 Managed test sources are unchanged since the successful d57b4574 PlanOnly build;
 every native test rebuilds both C executables from current source with provenance.
 
+## Restored native continuation — 2026-10-05
+
+Exact GitHub recovery `3e1b11c220ea3286002ea78c90e4eb4498e887dd`, parent
+`d57b4574d0dd3695e9cef084addc6bc80934b6d1`, tree
+`c8a6734e9ce467616449c32118ecd71b470afcd8`. Connector publication preserved the
+original 8339e9c2 tree but changed commit identity; no original commit is rewritten.
+Isolated `/workspace/native-1553` checkout clean; all21 changed files byte-match
+fetched Git blobs,44 bootstrap/RED manifest artifact hashes and16 gzip files verify.
+Toolchain from existing `/workspace/.onboarding/activate.sh`: SDK10.0.401,
+runtime8.0.31, PowerShell7.5.4 (not the previous VM7.6.6), GCC14.2.0-19,
+Debian13.6/linux-x64. Initial unactivated PowerShell version query failed at its
+read-only default cache path; activation selects the existing workspace cache and
+succeeds. This is tool preparation, no native test failure or security change.
+
+Fresh `scripts/test-csharp.ps1 -Category linux-fallback-proc-discovery -Parallelism 1
+-PlanOnly`:1planned/0executed,96.8970339s,15warnings/0errors. Same category
+`-NoBuild`: **1/1PASS**,10.5885846s, no skips/duplicates. Native sourceSHA256
+`1f12338f013eb54070a198d0dd4a5998bbb5a7f426249442db4dfe5653b0217c`.
+Helper scoped stop and guardian actualECHILD/emergency0/alarmReaps0 prove cleanup
+before independent expiry. [Complete source/build/native evidence](recovery/evidence/linux-fallback-restored-descendant-green/manifest.json).
+Historical descendantRED remains d57b4574, not repeated. New source has no runtime
+change beyond restored WIP; whole backend qualification remains pending.
+
+Spec Kit prerequisite/read-only consistency pass: feature/task/source references
+resolve, requirements checklist22/22, T041-FALLBACK-PROC/NATIVE cover FR-014/015;
+current owner-approved algorithm supersedes the historical proc-children paragraph.
+Cross-platform status still describes the historical blocked checkpoint and will be
+updated with final evidence. No new spec or approval is needed for this continuation.
+Use this existing ledger, no duplicate plan framework; optional Spec Kit commit hooks
+are not executed. Current execution method: inline Superpowers TDD/verification,
+then separate actual Sol6.1/xhigh review of source, evidence and category sufficiency.
+
+Next staged selections: descendants5 (doublefork/setsid, ignoredTERM, spawn-during-stop,
+root-first with actual exit23, and a child with spaces/parentheses/newline in comm),
+control6 (prestart sealing/cancel, poststart cancel, ownerEOF, bounded retained timeout),
+then authority7 (scope notice/sentinel, exec failure, command errors, private ownerFD,
+closed/full status). Catalog split structurally; unchanged entries preserve formatting.
+The previous broad19case category now owns only its unchanged pidfd primitive;
+its historical PASS is retained, not replayed. Every stage depends on previous cleanup.
+No production consumer, Windows Job, pool/main Release, canonical/GM or old accepted
+cohort changes. Test fixture name variant is synthetic only; no gameplay prompt/example
+change is required. No systemd native qualification is inferred.
+
 ## Priority handoff — disconnect audit and BLOCKED native slice
 
 Owner requested immediate handoff before further portability design. Exact helper/

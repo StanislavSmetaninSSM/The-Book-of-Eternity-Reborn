@@ -56,12 +56,16 @@ static int worker(const char *dir, const char *mode) {
         return 0;
     }
     if (!strcmp(mode, "ignore")) signal(SIGTERM, SIG_IGN);
-    if (!strcmp(mode, "tree") || !strcmp(mode, "ignore") || !strcmp(mode, "root-first") || !strcmp(mode, "doublefork")) {
+    if (!strcmp(mode, "tree") || !strcmp(mode, "ignore") || !strcmp(mode, "root-first") || !strcmp(mode, "doublefork") || !strcmp(mode, "named")) {
         int ready[2]; if (pipe2(ready, O_CLOEXEC)) return 91;
         pid_t p = fork(); if (p < 0) return 91;
         if (!p) {
             expiry();
             close(ready[0]);
+            if (!strcmp(mode, "named")) {
+                if (prctl(PR_SET_NAME, "boe ) (\n leaf")) _exit(91);
+                event(dir, "name-set");
+            }
             if (!strcmp(mode, "doublefork")) {
                 if (setsid() < 0) _exit(91);
                 pid_t second = fork(); if (second < 0) _exit(91);

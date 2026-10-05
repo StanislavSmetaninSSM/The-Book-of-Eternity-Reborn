@@ -1,0 +1,13 @@
+{
+  "sourceCommit": "3e1b11c220ea3286002ea78c90e4eb4498e887dd",
+  "files": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "be57b94ebb772e642032f32f8cbdfaed9a3422b29ca001491b4e93d429404830"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.pdb",
+      "sha256": "0d03cef8a3bb240b70c1b196a3ca31b47b89d6aceba9808240090cf480cdc9bd"
+    }
+  ]
+}

@@ -22,11 +22,11 @@ public sealed class LinuxFallbackSupervisorTests
     }
 
     [Theory]
-    [InlineData("tree")]
     [InlineData("doublefork")]
     [InlineData("ignore")]
     [InlineData("spawn")]
     [InlineData("root-first")]
+    [InlineData("named")]
     public async Task NativeDescendants_RetireWithinDeclaredScope(string mode)
     {
         await using var run = await NativeRun.Create(mode);
@@ -37,6 +37,8 @@ public sealed class LinuxFallbackSupervisorTests
         run.AssertScopedStop();
         Assert.Contains(run.Events(), e => e.GetProperty("kind").GetString() == (mode == "spawn" ? "spawned" : "leaf"));
         if (mode == "doublefork") Assert.Contains(run.Events(), e => e.GetProperty("kind").GetString() == "detached");
+        if (mode == "named") Assert.Contains(run.Events(), e => e.GetProperty("kind").GetString() == "name-set");
+        if (mode == "root-first") Assert.Equal(23, run.Records.Last().GetProperty("rootExitCode").GetInt32());
         Assert.True(run.Elapsed < TimeSpan.FromSeconds(6), "Cleanup must precede independent 7s fixture alarms.");
     }
 

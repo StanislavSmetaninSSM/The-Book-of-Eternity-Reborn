@@ -72,8 +72,8 @@
       ]
     },
     {
-      "id": "linux-fallback-supervisor",
-      "responsibility": "#1553 T041-FALLBACK-NATIVE actual repo-built Linux native ordinary-lineage supervisor: bootstrap/private lifetime, subreaper/pidfd/exclusive reap, scoped stop and retained uncertainty, owned synthetic descendants and independent guardian cleanup.",
+      "id": "linux-fallback-descendants",
+      "responsibility": "#1553 T041-FALLBACK-NATIVE: Staged native ordinary-lineage retirement after the single adopted-child GREEN: double fork/setsid, ignored TERM, spawn during stop, early root exit and stat names containing parentheses/newline.",
       "excludes": "Production pool/main Release, systemd positive qualification, namespace migration/external broker containment, Windows Job, PTY/live GM and unchanged prior cohorts. Fails explicitly off Linux.",
       "changeHints": [
         "native/linux/boe-lineage-supervisor.c",
@@ -86,13 +86,99 @@
         "frontendBuild": false,
         "exclusive": false
       },
-      "timeoutMinutes": 3,
+      "timeoutMinutes": 1,
       "expectedSeconds": null,
       "selectors": [
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.*"
+            "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "linux-fallback-control",
+      "responsibility": "#1553 T041-FALLBACK-NATIVE: Staged native launch sealing, cancellation, owner loss and bounded stop timeout retaining authority and typed uncertainty through actual cleanup.",
+      "excludes": "Production pool/main Release, systemd positive qualification, namespace migration/external broker containment, Windows Job, PTY/live GM and unchanged prior cohorts. Fails explicitly off Linux.",
+      "changeHints": [
+        "native/linux/boe-lineage-supervisor.c",
+        "scripts/build-linux-supervisor.ps1",
+        "tests/fixtures/LinuxLineage/lineage-fixture.c",
+        "BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.BeforeStart_SealPreventsAnyChild",
+            "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.CancellationAfterStart_StopsActualChild",
+            "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup",
+            "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Deadline_RetainsAuthorityAndUncertaintyThroughLateCleanup"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "linux-fallback-authority",
+      "responsibility": "#1553 T041-FALLBACK-NATIVE: Staged native scope notice and unrelated sentinel, exec failure, malformed/repeated launch, private owner lifetime and bounded/broken status channels; actual independent guardian ECHILD.",
+      "excludes": "Production pool/main Release, systemd positive qualification, namespace migration/external broker containment, Windows Job, PTY/live GM and unchanged prior cohorts. Fails explicitly off Linux.",
+      "changeHints": [
+        "native/linux/boe-lineage-supervisor.c",
+        "scripts/build-linux-supervisor.ps1",
+        "tests/fixtures/LinuxLineage/lineage-fixture.c",
+        "BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ObservedOutsideContractWork_IsVisibleAndRemainsUncertain",
+            "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ExecFailure_DoesNotClaimStartedOrScopedSuccess",
+            "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.MalformedOrRepeatedLaunch_SealsUncertain",
+            "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Child_DoesNotInheritOwnerInput_AndPreservesSyntheticEnvironmentAndCwd",
+            "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ClosedStatusAfterStart_RetiresOwnedChildrenWithoutBlockingOrSigpipeExit",
+            "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.FullStatusPipe_BeforeReadyFailsClosedWithoutAnyLaunch"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "linux-fallback-supervisor",
+      "responsibility": "#1553 native pidfd primitive only: a retired held pidfd cannot signal another owned incarnation. Historical primitive evidence is retained without replay for unchanged code.",
+      "excludes": "Production pool/main Release, systemd positive qualification, namespace migration/external broker containment, Windows Job, PTY/live GM and unchanged prior cohorts. Fails explicitly off Linux.",
+      "changeHints": [
+        "native/linux/boe-lineage-supervisor.c",
+        "scripts/build-linux-supervisor.ps1",
+        "tests/fixtures/LinuxLineage/lineage-fixture.c",
+        "BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.StalePidfdCannotSignalAnotherOwnedIncarnation"
           ]
         }
       ]
