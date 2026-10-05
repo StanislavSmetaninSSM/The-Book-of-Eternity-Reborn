@@ -151,6 +151,11 @@ from a sealed Windows adapter preserves current cleanup; no native-to-legacy rou
 Existing relevant lifecycle fixtures invoke powershell.exe and remain Windows-only
 coverage, explicitly not executed/qualified by this Linux stage.
 
+WIP descriptor-transfer7cases now exercise real SCM_RIGHTS with independent malformed
+sender. Identity rejection is expected causal RED: an unadmitted transferred pipe FD
+must close immediately; later uncertainty must still retain admitted host pidfds.
+No production source changed; fresh build and selected RED are next.
+
 ## Worker-host native integration design — 2026-10-05
 
 **Design only; not implementation authorization.** Source/remote base

@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "worker-native-descriptor-transfer",
+      "responsibility": "#1553 actual SCM_RIGHTS receipt: CLOEXEC, deterministic ownership, malformed count/envelope/truncation cleanup and rejected pidfd identity closure.",
+      "excludes": "No helper/host launch or WorkerRelease; only per-test private sockets and own pipe descriptors.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeDescriptors.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerHostIdentity.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "worker-native-package-publish",
       "responsibility": "#1553 explicitly prebuilt native assets publish and relocate with the client; actual neutral host uses the default AppContext package path with empty runtime PATH, then scoped stop and independent ECHILD.",
       "excludes": "No runtime compilation/download, WorkerRelease, production pool B, main PTY or live GM. Build and publish are fixture preparation only.",

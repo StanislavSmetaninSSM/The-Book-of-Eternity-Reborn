@@ -78,6 +78,13 @@
       "contracts": [
         "#1553 T041-FALLBACK-HOST"
       ]
+    },
+    {
+      "category": "worker-native-descriptor-transfer",
+      "reason": "Rejected transfers must close before host authority admission; real socket negative/CLOEXEC controls precede correction.",
+      "contracts": [
+        "#1553 T041-FALLBACK-HOST"
+      ]
     }
   ]
 }
