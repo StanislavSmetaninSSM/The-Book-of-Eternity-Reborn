@@ -1,0 +1,91 @@
+{
+  "Categories": [
+    "portable-worker-consumers",
+    "portable-worker-docs",
+    "portable-storage-publication",
+    "portable-storage-stream-publication",
+    "portable-storage-original-v1-fixtures"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "ce0d39f349982a44fde16bb6e85b6a499fc552b9",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-storage-original-v1-fixtures",
+      "Seconds": 2.6531645,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "portable-storage-publication",
+      "Seconds": 4.4287932,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "portable-storage-stream-publication",
+      "Seconds": 2.81888,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-worker-consumers",
+      "Seconds": 4.631781,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "portable-worker-docs",
+      "Seconds": 2.6200065,
+      "BudgetMinutes": 2,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0471379,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0111023,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0176599,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 20,
+  "WallTime": "00:00:20.3568761",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 5,
+    "CompletedDescriptors": 5,
+    "PlannedCases": 121,
+    "CompletedCases": 121,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 121,
+    "Executed": 121,
+    "Passed": 120,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

@@ -268,7 +268,7 @@ commit, and an observed non-cooperating mutation rejects the proposal.
 The same lease covers built-in backup, restore, game-state clear, and
 current-world lore clear operations. Save and load operations use the same canonical write lease,
 so save archives contain one coherent session snapshot
-and load cannot replace live state during a worker apply decision. Load uses an
+and load cannot replace live state during a worker apply decision. Original Load uses an
 external durable journal under `.boe_runtime/load-transactions`; startup restores
 an interrupted swap before creating session directories. If rollback cannot
 complete, the previous backup and journal remain available for startup recovery.
@@ -284,6 +284,8 @@ journal cleanup cannot roll back accepted bytes and may be retried later.
 The production apply gate always receives the real `ValidationService`. A
 scope-valid proposal that leaves any production validation issue is rolled back
 to the exact original bytes; there is no runtime empty-validator mode.
+
+Ordinary Load uses B1 under lifecycle then replacement leases with its complete namespace decision; the load-transactions namespace above is original recovery evidence only.
 
 Ordinary worker apply (#1553) uses the existing `.boe_runtime/trusted-local-publication-v1`
 B1 journal with a v2 self-contained frame and one deferred worker decision. The complete

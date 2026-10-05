@@ -253,7 +253,7 @@ authority is the external canonical write lease. Built-in backup, restore,
 game-state clear, and current-world lore clear operations acquire the same
 canonical write lease. Save and load operations use the same canonical write lease:
 saves read one coherent snapshot, and a loaded session cannot replace live
-state during worker apply. Load uses an external durable journal under
+state during worker apply. Original Load uses an external durable journal under
 `.boe_runtime/load-transactions`: startup recovers an interrupted swap before
 creating session directories, and rollback failure preserves the last valid
 backup plus journal for a later retry. State refresh and client-owned mirror
@@ -268,6 +268,8 @@ accepted canonical bytes authoritative; committed journal cleanup cannot roll
 back accepted bytes and may be retried later. Detached runtime cleanup
 never follows reparse points. A cleanup failure is an audit diagnostic and does
 not replace an already completed, timed-out, or rejected worker result.
+
+Ordinary Load uses B1 under lifecycle then replacement leases with its complete namespace decision; the load-transactions namespace above is original recovery evidence only.
 
 Ordinary worker apply (#1553) uses the existing `.boe_runtime/trusted-local-publication-v1`
 B1 journal with a v2 self-contained frame and one deferred worker decision. The complete

@@ -1,0 +1,50 @@
+{
+  "Categories": [
+    "portable-worker-continuation"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "ce0d39f349982a44fde16bb6e85b6a499fc552b9",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 70.7912057,
+  "Descriptors": [
+    {
+      "Name": "portable-worker-continuation-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-worker-continuation",
+      "Categories": [
+        "portable-worker-continuation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_DecisionWithoutChangedFilesUsesCurrentOwner|FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_DependentCostsUseCurrentDiagnosticsAndRollback|FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_MaterializeIsComposedBeforeNarrativeApply|FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_PublicTaskCannotAuthorizePrivateOrUnrelatedChanges|FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_ReadyPublishedDuringExecutionPreventsNarrativeApply",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_DecisionWithoutChangedFilesUsesCurrentOwner",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_DependentCostsUseCurrentDiagnosticsAndRollback",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_MaterializeIsComposedBeforeNarrativeApply",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_PublicTaskCannotAuthorizePrivateOrUnrelatedChanges",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_ReadyPublishedDuringExecutionPreventsNarrativeApply",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

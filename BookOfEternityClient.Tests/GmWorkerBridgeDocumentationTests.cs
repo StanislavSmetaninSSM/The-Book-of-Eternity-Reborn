@@ -417,6 +417,8 @@ public sealed class GmWorkerBridgeDocumentationTests
         var quarantineReaper = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs");
         var repairDelegator = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs");
         var saveLoadService = ReadRepoFile("BookOfEternityClient/Services/SaveLoadService.cs");
+        var saveCreation = ReadRepoFile("BookOfEternityClient/Services/SaveLoadService.Creation.cs");
+        var loadOperation = ReadRepoFile("BookOfEternityClient/Services/SaveLoadService.Loading.cs");
 
         foreach (var source in new[] { guide, contract, repair, runner })
         {
@@ -578,11 +580,30 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("outside canonical afterlife state", contractValidator, StringComparison.Ordinal);
         Assert.Contains("identity collision repair is main GM only", contractValidator, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Guid.NewGuid():N", repairDelegator, StringComparison.Ordinal);
-        Assert.True(
-            saveLoadService.Split("AcquireCanonicalWriteLeaseAsync", StringSplitOptions.None).Length - 1 >= 2,
-            "Expected save and load to acquire the canonical write lease.");
-        Assert.Contains("BeginLoadTransaction", saveLoadService, StringComparison.Ordinal);
-        Assert.Contains("RecoverInterruptedLoadTransaction", saveLoadService, StringComparison.Ordinal);
+        AssertOrdered(saveCreation,
+            "lease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+            "result = await CreateSaveAsync(lease, saveName, description, saveDir, turnNumber);",
+            "candidate = await PrepareSaveArchiveAsync(lease, saveName, description, saveDir, turnNumber);",
+            "result = await PublishPreparedSaveAsync(lease, candidate);");
+        Assert.Contains("(await LoadGameWithOutcomeAsync(saveFilePath)).Disposition == LoadReplacementDisposition.Committed", saveLoadService, StringComparison.Ordinal);
+        Assert.DoesNotContain("BeginLoadTransaction", saveLoadService, StringComparison.Ordinal);
+        AssertOrdered(loadOperation,
+            "lifecycleLease = await _fs.AcquireSessionLifecycleLeaseAsync();",
+            "writeLease = await _fs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease, cancellationToken);",
+            "_fs.ResolveBackupPublicationRecovery(writeLease);",
+            "_fs.CaptureLoadReplacementNamespace(writeLease, candidate.SourcePath)",
+            "_fs.PublishLoadReplacementNamespaceAsync(writeLease, generation, namespacePlan, replacement,");
+
+        static void AssertOrdered(string source, params string[] operations)
+        {
+            var prior = -1;
+            foreach (var operation in operations)
+            {
+                var position = source.IndexOf(operation, prior + 1, StringComparison.Ordinal);
+                Assert.True(position > prior, $"Missing or out-of-order authority operation: {operation}");
+                prior = position;
+            }
+        }
         Assert.Contains(".boe_runtime", fileSystemManager, StringComparison.Ordinal);
         Assert.Contains("load-transactions", fileSystemManager, StringComparison.Ordinal);
         Assert.Contains("RecoverInterruptedLoadTransaction", fileSystemManager, StringComparison.Ordinal);

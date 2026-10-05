@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="1c260ffc-fd4e-4279-aefd-649968e38d67" name="@95e438a3e5cb 2026-10-04 23:16:59" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-04T23:16:59.6736659-04:00" queuing="2026-10-04T23:16:59.6736659-04:00" start="2026-10-04T23:16:54.8804117-04:00" finish="2026-10-04T23:17:10.8402902-04:00" />
+  <TestSettings name="default" id="ea06fb2e-1db3-4e79-83f2-8a2066d4daa9">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-04_23_16_59" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="9d5603d1-36d5-42f4-b87a-64c51ca51d7c" testId="d07563c4-28d7-0a19-b525-1a98d7d5aec1" testName="BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_DecisionWithoutChangedFilesUsesCurrentOwner" computerName="95e438a3e5cb" duration="00:00:02.1696766" startTime="2026-10-04T23:17:10.7777377-04:00" endTime="2026-10-04T23:17:10.7777379-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9d5603d1-36d5-42f4-b87a-64c51ca51d7c" />
+    <UnitTestResult executionId="6572fe12-4b30-4ada-b7e8-8de5f916819a" testId="716f499a-6a90-c52d-de0e-7c0517ca884a" testName="BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_ReadyPublishedDuringExecutionPreventsNarrativeApply" computerName="95e438a3e5cb" duration="00:00:00.7286742" startTime="2026-10-04T23:17:08.6074427-04:00" endTime="2026-10-04T23:17:08.6074440-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6572fe12-4b30-4ada-b7e8-8de5f916819a" />
+    <UnitTestResult executionId="746bfc61-a41f-43bd-90bd-b46037f799d5" testId="62ea4c0a-ef50-cd71-7d0d-f56e05327c67" testName="BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_MaterializeIsComposedBeforeNarrativeApply" computerName="95e438a3e5cb" duration="00:00:03.5909382" startTime="2026-10-04T23:17:07.8781695-04:00" endTime="2026-10-04T23:17:07.8781697-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="746bfc61-a41f-43bd-90bd-b46037f799d5" />
+    <UnitTestResult executionId="3780c378-10a5-47be-949e-b2eb42d5cb70" testId="b09ca2fb-72ef-1aea-c60b-ce8eab5b8453" testName="BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_DependentCostsUseCurrentDiagnosticsAndRollback" computerName="95e438a3e5cb" duration="00:00:04.6436130" startTime="2026-10-04T23:17:04.2868360-04:00" endTime="2026-10-04T23:17:04.2868362-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3780c378-10a5-47be-949e-b2eb42d5cb70" />
+    <UnitTestResult executionId="a21fbd23-6808-4787-bf19-be3586f22e42" testId="42025ebd-d697-bc4c-e94f-765ac7af147d" testName="BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_PublicTaskCannotAuthorizePrivateOrUnrelatedChanges" computerName="95e438a3e5cb" duration="00:00:02.8587698" startTime="2026-10-04T23:16:59.6441157-04:00" endTime="2026-10-04T23:16:59.6441286-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a21fbd23-6808-4787-bf19-be3586f22e42" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_PublicTaskCannotAuthorizePrivateOrUnrelatedChanges" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="42025ebd-d697-bc4c-e94f-765ac7af147d">
+      <Execution id="a21fbd23-6808-4787-bf19-be3586f22e42" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AfterlifeResourceCutoverTests" name="OriginalSpiritualContinuationWorker_PublicTaskCannotAuthorizePrivateOrUnrelatedChanges" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_MaterializeIsComposedBeforeNarrativeApply" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="62ea4c0a-ef50-cd71-7d0d-f56e05327c67">
+      <Execution id="746bfc61-a41f-43bd-90bd-b46037f799d5" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AfterlifeResourceCutoverTests" name="OriginalSpiritualContinuationWorker_MaterializeIsComposedBeforeNarrativeApply" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_ReadyPublishedDuringExecutionPreventsNarrativeApply" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="716f499a-6a90-c52d-de0e-7c0517ca884a">
+      <Execution id="6572fe12-4b30-4ada-b7e8-8de5f916819a" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AfterlifeResourceCutoverTests" name="OriginalSpiritualContinuationWorker_ReadyPublishedDuringExecutionPreventsNarrativeApply" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_DependentCostsUseCurrentDiagnosticsAndRollback" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b09ca2fb-72ef-1aea-c60b-ce8eab5b8453">
+      <Execution id="3780c378-10a5-47be-949e-b2eb42d5cb70" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AfterlifeResourceCutoverTests" name="OriginalSpiritualContinuationWorker_DependentCostsUseCurrentDiagnosticsAndRollback" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_DecisionWithoutChangedFilesUsesCurrentOwner" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d07563c4-28d7-0a19-b525-1a98d7d5aec1">
+      <Execution id="9d5603d1-36d5-42f4-b87a-64c51ca51d7c" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AfterlifeResourceCutoverTests" name="OriginalSpiritualContinuationWorker_DecisionWithoutChangedFilesUsesCurrentOwner" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="d07563c4-28d7-0a19-b525-1a98d7d5aec1" executionId="9d5603d1-36d5-42f4-b87a-64c51ca51d7c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="716f499a-6a90-c52d-de0e-7c0517ca884a" executionId="6572fe12-4b30-4ada-b7e8-8de5f916819a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="62ea4c0a-ef50-cd71-7d0d-f56e05327c67" executionId="746bfc61-a41f-43bd-90bd-b46037f799d5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b09ca2fb-72ef-1aea-c60b-ce8eab5b8453" executionId="3780c378-10a5-47be-949e-b2eb42d5cb70" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="42025ebd-d697-bc4c-e94f-765ac7af147d" executionId="a21fbd23-6808-4787-bf19-be3586f22e42" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="5" executed="5" passed="5" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.31]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.45]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.47]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:15.51]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

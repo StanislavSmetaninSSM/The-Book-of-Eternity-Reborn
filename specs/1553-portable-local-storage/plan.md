@@ -99,6 +99,23 @@ was automatically cancelled before any shell output or runner directory; one aut
 same-permission retry produced the actual RED above. No authentication change or alternate
 route was used. The next saved candidate is unverified until its actual GREEN run.
 
+Corrected runtime `ce0d39f3`: core **42/42 GREEN** (38 lifecycle/cold/envelope, real
+worker→Load ordering1, safe-rejection gate1, original diagnostics2), no skips/duplicates,
+complete cleanup,2:16.927 including build. Separate shared/consumer command completed
+**120 passed /1 failed /121 executed**: original-v1=2, B1byte71, streamed29, actual worker
+consumers15 all passed; docs3/4. The lone stale guard still expected old active Load calls
+already removed by accepted public cutover. It is now replaced by actual save canonical
+lease→held preparation/publication and typed Load lifecycle→replacement→recovery→capture→
+publication assertions; original FileSystemManager recovery/type/generation guards stay.
+Old load namespace prose is explicitly original-only; no Load production file changed.
+
+Five actual spiritual continuation consumers also passed **5/5** natively atce0d39f3,
+including dependent-cost rollback and materialization/narrative ordering, with no OS skip,
+complete cleanup and1:27.717 including a fresh integration build. Current runtime is now
+frozen. Only the corrected four-case docs guard, discovery-only ownership audit, exact
+evidence/restoration and final independent acceptance remain. Passed runtime owners are
+not repeated after documentation/evidence-only changes.
+
 1. Diagnose the original Begin failure with a causal test: force the existing
    unsupported before-image backend and a distinct cleanup failure, require both
    exceptions in initiating-first order, and retain the real Linux worker/load

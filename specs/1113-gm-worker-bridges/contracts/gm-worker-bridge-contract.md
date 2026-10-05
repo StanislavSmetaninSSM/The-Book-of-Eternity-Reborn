@@ -182,7 +182,7 @@ The apply gate has no replaceable lock inside `game_session`; the external lease
 is its sole exclusion authority. Built-in backup, restore, game-state clear, and
 current-world lore clear use the same lease. Save and load operations use the
 same canonical write lease so a save is one coherent snapshot and load cannot
-replace live state during apply. Load uses an external durable journal under
+replace live state during apply. Original Load uses an external durable journal under
 `.boe_runtime/load-transactions`: startup restores an interrupted swap before
 creating session directories, and failed rollback preserves the backup and
 journal for a later recovery attempt. State refresh and client-owned mirror
@@ -197,6 +197,8 @@ canonical bytes remain authoritative: committed journal cleanup cannot roll back
 accepted bytes and may be retried.
 Detached workspace deletion never follows reparse points; a cleanup failure is an audit diagnostic
 and cannot replace the worker result.
+
+Ordinary Load uses B1 under lifecycle then replacement leases with its complete namespace decision; the load-transactions namespace above is original recovery evidence only.
 
 Ordinary worker apply (#1553) uses the existing `.boe_runtime/trusted-local-publication-v1`
 B1 journal with a v2 self-contained frame and one deferred worker decision. The complete

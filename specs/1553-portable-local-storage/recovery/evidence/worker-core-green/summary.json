@@ -1,0 +1,123 @@
+{
+  "Categories": [
+    "portable-worker-transaction",
+    "portable-worker-admission",
+    "portable-worker-diagnostic",
+    "portable-load-worker-ordering"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-worker-transaction",
+      "reason": "Deferred B1 worker decision, generation/identity/nesting, actual cold and current envelope cases.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    },
+    {
+      "category": "portable-worker-admission",
+      "reason": "Review-driven causal safe rejection, lost evidence, empty-parent guard and streamed envelope.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    },
+    {
+      "category": "portable-worker-diagnostic",
+      "reason": "Preserve both initiating original-backend and private cleanup failures.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    },
+    {
+      "category": "portable-load-worker-ordering",
+      "reason": "Real worker decision serializes public Load and preserves the original positive result assertions.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "ce0d39f349982a44fde16bb6e85b6a499fc552b9",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-load-worker-ordering",
+      "Seconds": 3.0496396,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "portable-worker-admission",
+      "Seconds": 2.6198875,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-worker-diagnostic",
+      "Seconds": 2.6190327,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "portable-worker-transaction",
+      "Seconds": 8.032843,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0554202,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0113966,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0154398,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 117.4739599,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0053605,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 15,
+  "WallTime": "00:02:16.9271196",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 4,
+    "PlannedCases": 42,
+    "CompletedCases": 42,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 42,
+    "Executed": 42,
+    "Passed": 42,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

@@ -1,0 +1,92 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "ce0d39f349982a44fde16bb6e85b6a499fc552b9",
+  "SourceResultDirectory": "20261004-231136-469-2-24bf1d8e1064464396b1da9fee25548b-categories",
+  "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Runtime": "native Linux x64",
+  "Toolchain": {
+    "PowerShell": "7.6.6",
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31"
+  },
+  "TelemetryOptOuts": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1"
+  },
+  "DOTNET_PROCESSOR_COUNT": "1",
+  "PathSanitization": "Absolute checkout/run-root/toolchain paths replaced; raw and stored hashes retained",
+  "Artifacts": [
+    {
+      "Path": "Build-unit.log",
+      "OriginalBytes": 10676,
+      "OriginalSha256": "fd048a8cdfb8ca9be9fb4b28b416dbce0ef1038779a05954206cfcdad3ae3d79",
+      "Embedded": true,
+      "StoredPath": "Build-unit.log",
+      "StoredBytes": 8659,
+      "StoredSha256": "993dba1ad96508839fe00082f8140fe87f0980bf7019211b2638ec965b848810"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 1479340,
+      "OriginalSha256": "040f4791168170699db94327db2d3f07c76d9334960a35405ac21139195018ac",
+      "Embedded": false,
+      "Reason": "Oversized generated runner log; causal TRX and structured/build reports are embedded"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 9216,
+      "OriginalSha256": "04dc17252128499ef96b320b24aefd87b3d807c12832425391c5addcedbf88fe",
+      "Embedded": true,
+      "StoredPath": "plan.json",
+      "StoredBytes": 9216,
+      "StoredSha256": "04dc17252128499ef96b320b24aefd87b3d807c12832425391c5addcedbf88fe"
+    },
+    {
+      "Path": "portable-load-worker-ordering-unit-001.trx",
+      "OriginalBytes": 3045,
+      "OriginalSha256": "935717e065356bafa4c372dbe1d2514115af93d86c39ce1d117091245ade0a62",
+      "Embedded": true,
+      "StoredPath": "portable-load-worker-ordering-unit-001.trx",
+      "StoredBytes": 2971,
+      "StoredSha256": "4eeec043fb6d0bafe7a8374c61bfe721270bf154e24818deee237b5114559c64"
+    },
+    {
+      "Path": "portable-worker-admission-unit-002.trx",
+      "OriginalBytes": 3069,
+      "OriginalSha256": "1d312d703327032d55d8a7f30668bc12b963987767e2be6d76fce4d83c281f2a",
+      "Embedded": true,
+      "StoredPath": "portable-worker-admission-unit-002.trx",
+      "StoredBytes": 2995,
+      "StoredSha256": "c44a7b62a926f9ebef8a5e880a715c5e20298d52220e7d319e285fdaf701fe82"
+    },
+    {
+      "Path": "portable-worker-diagnostic-unit-003.trx",
+      "OriginalBytes": 4612,
+      "OriginalSha256": "ed2630ee1d6065ef84df8409867eaa30ef4e2179b5469e97663d254edc3437d2",
+      "Embedded": true,
+      "StoredPath": "portable-worker-diagnostic-unit-003.trx",
+      "StoredBytes": 4466,
+      "StoredSha256": "e9a5c4bc22c6f432828190be996b349d22815ad7c082499917b65bdc9ef08d53"
+    },
+    {
+      "Path": "portable-worker-transaction-unit-004.trx",
+      "OriginalBytes": 59233,
+      "OriginalSha256": "a1682832e2eaf5afdf3373cb2181514d8fff1c7f3c12bb37ed445c6559a8e114",
+      "Embedded": true,
+      "StoredPath": "portable-worker-transaction-unit-004.trx",
+      "StoredBytes": 56495,
+      "StoredSha256": "a322b53bd23691f8437dcb58a44ae73d607aaf4ad59e9967536fcd45d5fe83b3"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 3144,
+      "OriginalSha256": "3e0380fefb246865906e661790443cbcb9e66580b332688a689c6ba6082f67ba",
+      "Embedded": true,
+      "StoredPath": "summary.json",
+      "StoredBytes": 3144,
+      "StoredSha256": "3e0380fefb246865906e661790443cbcb9e66580b332688a689c6ba6082f67ba"
+    }
+  ],
+  "MeasuredChildren": 0
+}
