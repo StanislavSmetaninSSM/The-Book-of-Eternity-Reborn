@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "worker-consumer-execution-evidence",
+      "responsibility": "#1553 POOL B actual proposal-only and validation-repair consumer decision boundaries reject legacy success-shaped records and failed-but-stopped with-copies without an accepted execution publication permit.",
+      "excludes": "Pure consumer boundary negatives; no native process, actual publication or Windows runtime qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalOnlyDispatchService.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "worker-execution-scoped-evidence",
       "responsibility": "#1553 POOL B stop evidence must match the original execution run/backend/scope and permanently retain explicit uncertainty, malformed observations and output settlement failure.",
       "excludes": "Pure authority interpretation only; no native process cleanup qualification, proposal publication, restart or Windows runtime claim.",

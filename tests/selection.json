@@ -15,6 +15,14 @@
       "contracts": [
         "#1553 T041-FALLBACK-POOL"
       ]
+    },
+    {
+      "category": "worker-consumer-execution-evidence",
+      "reason": "Causal negatives at both real consumer acceptance boundaries before replacing legacy Proposal/exit0 checks with the shared exact-execution permit.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL",
+        "FR-012/014/015"
+      ]
     }
   ]
 }

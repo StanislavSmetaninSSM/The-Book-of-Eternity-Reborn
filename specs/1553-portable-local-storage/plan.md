@@ -220,6 +220,29 @@ retain their current authoring contract, with a no-change rationale recorded at 
 General Linux rollout, systemd implementation/qualification, native Windows, main PTY,
 live provider/CLI/GM and real saves remain out of scope. No public guard is removed.
 
+### B4 consumer RED scaffold, 2026-10-05
+
+At verified remote `a549bbe66a54515e72a6e0096fbe52b78d8fa8db`, source remains
+clean before this block. Mechanically extract the existing acceptance conditions
+into internal methods invoked by each actual consumer without changing behavior.
+New category worker-consumer-execution-evidence exercises both real boundaries:
+legacy public success-shaped records and failed-but-stopped with-copies carrying
+cleanup evidence but no accepted publication. Four expected causal failures; fresh
+selected build/discovery and execution are pending, no result claimed. No native
+processes or filesystem publication occur in this pure negative slice. Next replace
+both conditions with the shared exact-execution permit and verify only this category;
+the unchanged13 scoped-authority successes need no rerun.
+
+The independent actual Sol6.1/xhigh publication consultation confirms a separate
+missing directory backend. Recommended bounded amendment: sealed internal Store
+adapter selected only by existing fixture-root admission; a Core operation retains
+lease/no-pending, runtime/canonical boundaries, exact staging containment and fresh
+trusted-local path/type/link validation of the complete staged tree. Use atomic
+same-filesystem Linux renameat2(RENAME_NOREPLACE); absent destination, unsupported
+operation and EXDEV fail closed without copy/per-file fallback. Default Store and
+Windows descriptor method/capability remain unchanged. This is not yet implemented
+or qualified; detailed tests/design amendment precede the new Core operation.
+
 ### B1 execution record
 
 Read-only Spec Kit consistency pass at `0ffb1c45`: B has coverage in spec, this plan,

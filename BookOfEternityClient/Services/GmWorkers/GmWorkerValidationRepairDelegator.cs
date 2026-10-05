@@ -186,11 +186,7 @@ public sealed class GmWorkerValidationRepairDelegator
             };
         }
 
-        var workerExecutionSucceeded =
-            !run.TimedOut &&
-            run.ExitCode == 0 &&
-            run.Status.State == WorkerBridgeState.Stopped;
-        if (!workerExecutionSucceeded || run.Proposal == null)
+        if (!CanAcceptExecution(run, task))
         {
             var outcome = run.TimedOut || run.Status.State == WorkerBridgeState.TimedOut
                 ? GmWorkerValidationRepairOutcome.WorkerTimedOut
@@ -267,6 +263,9 @@ public sealed class GmWorkerValidationRepairDelegator
             FallbackReason = readyPublication.Diagnostic
         };
     }
+
+    internal static bool CanAcceptExecution(GmWorkerTaskRunResult run, WorkerTaskPacket task) =>
+        !run.TimedOut && run.ExitCode == 0 && run.Status.State == WorkerBridgeState.Stopped && run.Proposal != null;
 
     private async Task<bool> IsCurrentSessionGenerationAsync(string expectedSessionGeneration)
     {
