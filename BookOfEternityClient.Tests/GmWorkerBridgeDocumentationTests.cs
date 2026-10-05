@@ -323,6 +323,10 @@ public sealed class GmWorkerBridgeDocumentationTests
             Assert.Contains("bounded artifact reads without launching any process", normalized, StringComparison.Ordinal);
             Assert.Contains("Linux ordinary hardlinks may be read and unlinked only", normalized, StringComparison.Ordinal);
             Assert.Contains("native Windows qualification remains separate", normalized, StringComparison.Ordinal);
+            Assert.Contains("matching original run/backend/scope stop evidence", normalized, StringComparison.Ordinal);
+            Assert.Contains("Native Uncertain is permanent for that execution", normalized, StringComparison.Ordinal);
+            Assert.Contains("original execution publication permit", normalized, StringComparison.Ordinal);
+            Assert.Contains("ordinary public Linux WorkerRelease remains closed", normalized, StringComparison.Ordinal);
             Assert.Contains(
                 "parent creates private current-user named control/status pipe servers",
                 normalized,
@@ -641,7 +645,12 @@ public sealed class GmWorkerBridgeDocumentationTests
             "BookOfEternityClient", "Services", "GmWorkers", "GmWorkerWindowsOwnedLaunch.cs"));
         AssertOrdered(windowsOwner, "owner.Start()", "beforeAttach().WaitAsync", "owner.Attach(factory)");
         Assert.Contains("host.WaitUntilReadyAsync(_process, token)", windowsOwner, StringComparison.Ordinal);
-        Assert.Contains("TransferToWindowsPool", bridgePool, StringComparison.Ordinal);
+        Assert.DoesNotContain("TransferToWindowsPool", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("new GmWorkerExecutionAuthority(owner.Identity, task, taskBytes)", bridgePool, StringComparison.Ordinal);
+        AssertOrdered(bridgePool, "executionAuthority!.ObserveCompletion", "executionAuthority.StopForCleanupAsync(ownedLaunch)",
+            "executionAuthority.SettleOutputsAsync(ownedLaunch)", "executionAuthority.RequirePublication()", "await ReadAndStoreProposalAsync(");
+        Assert.Contains("HasValidatedExecutionFor", repairDelegator, StringComparison.Ordinal);
+        Assert.Contains("same original assigned Job", ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionAuthority.cs"), StringComparison.Ordinal);
         Assert.Contains("processHostLaunch.ReleaseAsync", bridgePool, StringComparison.Ordinal);
         Assert.Contains("WaitForWorkerCompletionAsync", bridgePool, StringComparison.Ordinal);
         Assert.Contains("workerSlot.TransferOwnership()", bridgePool, StringComparison.Ordinal);

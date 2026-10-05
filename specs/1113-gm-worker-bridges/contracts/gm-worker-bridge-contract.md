@@ -156,8 +156,8 @@ stopped. The parent sends typed `Release`, and only then may the host start the
 configured worker. Typed `Completed` requires a non-null exit code and is
 published immediately after the direct worker exits, before output pipes are
 drained. Typed `OutputDrained` follows bounded output capture and is awaited
-before ordinary host teardown; this explicit `OutputDrained` acknowledgement is
-diagnostic and cannot replace the authoritative completion. These are complete
+before Windows host teardown; this explicit `OutputDrained` acknowledgement is
+diagnostic and cannot replace authoritative scoped stop and owned-output settlement. These are complete
 typed frames bound to the per-launch nonce.
 
 A proposal becomes applyable only after confirmed zero exit and confirmed process-tree termination.
@@ -166,9 +166,9 @@ code, incomplete process-tree cleanup, or uncertain host cleanup is
 diagnostic-only: any bytes written by that execution must not be imported as a
 worker proposal or passed to the apply gate.
 
-Windows Job Object is the supported complete descendant boundary. Platforms
-without an equivalent queryable kernel containment boundary fail closed before
-worker release. Timeout and cancellation remain authoritative; cleanup
+Windows Job Object is the supported complete descendant boundary. Ordinary
+Linux profiles still fail closed before worker release; the isolated synthetic
+native capability below has its separately declared lineage scope. Timeout and cancellation remain authoritative; cleanup
 uncertainty quarantines the worker slot rather than changing the result or
 releasing uncertain capacity. Complete-tree termination and unattached-host
 cleanup is bounded. One fixed-capacity reaper entry retains the complete
@@ -880,3 +880,34 @@ Every worker task must produce durable audit events for dispatch and terminal re
   }
 }
 ```
+
+
+Client-owned synthetic Linux pool qualification (#1553): ordinary public Linux
+WorkerRelease remains closed; only explicit internal admission bound to an isolated
+fixture root reaches the native pool. No profile, environment or command-line switch
+enables it. The declared native guarantee is ordinary same-namespace lineage; external
+services and work outside the tracked lineage are excluded. The existing systemd user
+manager remains the primary design, but has no positive native qualification here.
+
+The actual native pool stops the original lineage after correlated Completed, before
+waiting for owned stdout/stderr to settle. Windows retains its diagnostic drain grace
+before original Job stop. Neither OutputDrained, root/helper exit nor pidfd readiness
+proves scoped cleanup. Success requires matching original run/backend/scope stop evidence,
+settled owned outputs, exit0, current cancellation/timeout outcome, exact reserved task
+bytes and successful generation/lease-bound proposal publication. Both dispatch consumers
+require the original execution publication permit; public result copies cannot substitute
+a task/proposal body or turn failed cleanup into success. Existing apply/generation gates
+still govern any later canonical change.
+
+Native Uncertain is permanent for that execution: late observation completion or independent
+guardian cleanup cannot authorize acceptance, delete retained workspace, publish a
+cleanup-confirmed receipt or release its slot/reservation. Known lost helper authority
+is rechecked on the original Ready identity immediately before native Release. This is
+not an atomic promise against failure immediately after that check. After already validated
+stop and output settlement, disposal/filesystem/audit/receipt failures retain the same
+cleanup phase state for retry. A successfully published proposal is not revoked by a
+later cleanup-only failure; CleanupDeferred keeps the slot held. Required audit I/O errors
+retain capacity; absent audit sink or replaced generation uses the existing exact create-only
+fallback receipt. Lost receipt acknowledgement is retried without rewriting bytes; conflicting
+receipt bytes retain the original runtime authority and capacity. No durable reconstruction,
+main PTY, real GM/provider or new GM-authored payload/schema is introduced by this slice.

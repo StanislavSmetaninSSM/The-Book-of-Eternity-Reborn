@@ -12,6 +12,8 @@ public sealed class GmWorkerNativeAdmissionTests
     [InlineData(0, 1)]
     [InlineData(2, 1)]
     [InlineData(1, 0)]
+    [InlineData(0, 2)]
+    [InlineData(2, 2)]
     public async Task SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(int mode, int capability)
     {
         Assert.True(OperatingSystem.IsLinux());

@@ -543,6 +543,23 @@ its conflicting receipt. No native process remains in these fixture lineages.
 Next B6: only reviewed affected HOST/IPC/admission/Windows-policy/receipt/source-doc
 regressions, catalog discovery, consolidated exact qualification and final review/restore.
 
+B6 WIP on verified carrier `59c5322d`: independent Sol6.1/xhigh selected original
+HOST8, original Process/arbiter3, affected receipt/reaper9, admission6 (including2 new
+Synthetic-without-capability rows), Windows selector1 and managed platform policy6,
+plus3 exact operational/source guards. Expected36cases, to be confirmed by discovery;
+no full HOST61/IPC34/receipt41 or unrelated cohort replay. Managed Windows policy only:
+retain diagnostic drain default, native bypass before stop, and narrow original Job
+pending observation retry versus sticky native/unassigned errors. Arbitrary fake trees
+do not grant the actual Windows owner retained-Job status. Public Linux admission stays
+closed. Existing source guard is updated from obsolete TransferToWindowsPool to original
+common authority/stop/output/publication order, not removed.
+Operational guide, bridge contract/example commentary and shared afterlife note now
+explain fixture-only native scope, exact success permit, permanent uncertainty and
+validated-stop retry distinctions. No GM-authored payload/schema/action/pending/control
+changes; no new example payload or prompt field is appropriate for this client-owned
+slice. Existing apply/generation gates and worked repair payload remain unchanged.
+These checks are not yet built/run. Final catalog and qualification/review/restore remain.
+
 B5 observation seam design consultation, actual Sol6.1/xhigh: an internal optional
 capture of the genuinely launched owner is allowed only after pool binding (or with
 OwnedLaunchException preserving that owner). It cannot replace owner/identity or

@@ -129,7 +129,7 @@ invalid for every worker proposal.
 `maxConcurrentTasks` is enforced at runtime for the same worker and game
 session, including calls made through separate bridge-pool instances. Worker
 slots use reference-counted gates that retire when idle, so an idle profile can
-change its limit; an active limit change fails as a worker result. Cancellation
+change its limit; an active limit change fails as a worker result. On the Windows Job path, cancellation
 kills and awaits the complete worker process tree before releasing its worker slot.
 The durable session generation lives under `.boe_runtime/session-generation/current.json`
 and rotates on load and New Game. Task reservation, proposal publication, and
@@ -223,14 +223,14 @@ worker is still stopped. The parent then sends typed `Release`, and only then
 does the host start the configured worker. The host publishes typed `Completed`
 with a non-null exit code immediately after the direct worker exits and before
 output pipes are drained. Typed `OutputDrained` follows bounded output capture
-and is awaited before ordinary host teardown. This explicit `OutputDrained`
-acknowledgement prevents descendants from delaying or forging the authoritative
-result. All readiness, release, completion, and
+and remains diagnostic. Windows awaits the explicit `OutputDrained` acknowledgement
+within its bounded grace before Job teardown; native synthetic execution retires
+its scope before owned-output settlement. Neither message is stop evidence. All readiness, release, completion, and
 output-drain messages are complete typed frames bound to the per-launch nonce.
 
-Windows Job Object is the supported complete descendant boundary. Platforms
-without an equivalent queryable kernel containment boundary fail closed before
-worker release. Timeout and cancellation remain authoritative; cleanup
+Windows Job Object is the supported complete descendant boundary. Ordinary
+Linux profiles still fail closed before worker release; the isolated synthetic
+native capability below has its separately declared lineage scope. Timeout and cancellation remain authoritative; cleanup
 uncertainty quarantines the worker slot instead of changing the result or
 admitting another worker into uncertain capacity. Complete-tree termination and
 unattached-host cleanup is bounded. The complete process tree, process, host
@@ -759,3 +759,34 @@ wound choice; B has separate Ready and `woundDecisions: []`.
 - `Examples/E_CLI_GM_Worker_Afterlife_Contract.txt`
 - `Examples/E_CLI_GM_Worker_Guardian_Abode_Content.txt`
 - `Examples/E_CLI_GM_Worker_Soul_Content.txt`
+
+
+Client-owned synthetic Linux pool qualification (#1553): ordinary public Linux
+WorkerRelease remains closed; only explicit internal admission bound to an isolated
+fixture root reaches the native pool. No profile, environment or command-line switch
+enables it. The declared native guarantee is ordinary same-namespace lineage; external
+services and work outside the tracked lineage are excluded. The existing systemd user
+manager remains the primary design, but has no positive native qualification here.
+
+The actual native pool stops the original lineage after correlated Completed, before
+waiting for owned stdout/stderr to settle. Windows retains its diagnostic drain grace
+before original Job stop. Neither OutputDrained, root/helper exit nor pidfd readiness
+proves scoped cleanup. Success requires matching original run/backend/scope stop evidence,
+settled owned outputs, exit0, current cancellation/timeout outcome, exact reserved task
+bytes and successful generation/lease-bound proposal publication. Both dispatch consumers
+require the original execution publication permit; public result copies cannot substitute
+a task/proposal body or turn failed cleanup into success. Existing apply/generation gates
+still govern any later canonical change.
+
+Native Uncertain is permanent for that execution: late observation completion or independent
+guardian cleanup cannot authorize acceptance, delete retained workspace, publish a
+cleanup-confirmed receipt or release its slot/reservation. Known lost helper authority
+is rechecked on the original Ready identity immediately before native Release. This is
+not an atomic promise against failure immediately after that check. After already validated
+stop and output settlement, disposal/filesystem/audit/receipt failures retain the same
+cleanup phase state for retry. A successfully published proposal is not revoked by a
+later cleanup-only failure; CleanupDeferred keeps the slot held. Required audit I/O errors
+retain capacity; absent audit sink or replaced generation uses the existing exact create-only
+fallback receipt. Lost receipt acknowledgement is retried without rewriting bytes; conflicting
+receipt bytes retain the original runtime authority and capacity. No durable reconstruction,
+main PTY, real GM/provider or new GM-authored payload/schema is introduced by this slice.
