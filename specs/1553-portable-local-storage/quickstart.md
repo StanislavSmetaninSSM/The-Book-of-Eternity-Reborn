@@ -2,10 +2,10 @@
 
 ## Linux worker-host IPC admission (T041-IPC-LINUX)
 
-Native Linux candidate `9a346308d02d55ddb50a49fab109fc99b8871505` passes 34/34;
-final independent implementation/evidence review is pending. See the exact
+Native Linux source `9a346308d02d55ddb50a49fab109fc99b8871505` passes 34/34;
+separate **gpt-6.1-sol / xhigh** final implementation/evidence review passed. See the exact
 [qualification matrix](recovery/worker-ipc-linux-qualification.json) and
-[current plan](plan.md#t041-ipc-linux-admission--2026-10-05-final-review-pending).
+[current plan](plan.md#t041-ipc-linux-admission--2026-10-05-verified-component).
 This is the later both-channel SO_PEERCRED PID/effective-UID adapter and controlled
 pre-Release host qualification. The historical FRAME checkpoint below retains its
 original platform boundary; it is not the source of the new Linux claim.

@@ -5,7 +5,7 @@
   "Base": "914f27dc331250bfd98639982d408f0e66a0bcf8",
   "RuntimeSource": "9a346308d02d55ddb50a49fab109fc99b8871505",
   "RuntimeTree": "71aaf75241f86b75108e0cdadb4d1c92e0fd2ca2",
-  "Status": "34/34 GREEN on native Linux; final independent implementation/evidence review pending. Full T041-IPC and worker execution are not accepted.",
+  "Status": "PASS for bounded native Linux T041-IPC-LINUX after independent final review. Full T041-IPC and worker execution remain open; final evidence carrier is restored after publication and identified in handoff.",
   "Scope": "Both-channel PID/effective-UID before Launch; controlled worker payload, native frames/envelopes/cancellation/deadline and actual host Ready then owner close without Release.",
   "Environment": {
     "OsRelease": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
@@ -181,7 +181,16 @@
   "IndependentFinalReview": {
     "Model": "gpt-6.1-sol",
     "Effort": "xhigh",
-    "Result": "PENDING"
+    "Result": "PASS",
+    "ActionableFindings": 0,
+    "ReviewedRuntimeSource": "9a346308d02d55ddb50a49fab109fc99b8871505",
+    "ReviewedEvidenceCarrier": "efe92ab6343d0e7e8d11c90133f5965415f1f497",
+    "VerifiedInputHashes": 11,
+    "VerifiedUnchangedBaseBlobs": 6,
+    "VerifiedArtifactHashes": 59,
+    "VerifiedManifests": 13,
+    "VerifiedDistinctPasses": 34,
+    "Scope": "Implementation, actual selection/TRX, RED provenance, preparation failure classification, SafeHandle lifetime, native claim limits, source restoration, cleanup assertions, redaction and synchronized operational docs. No independent rerun or edits."
   },
   "SourceRestoration": {
     "Method": "New empty GitHub-only clone; no local objects/source cache",
@@ -214,5 +223,14 @@
     "in-flight concurrent Dispose diagnostic ordering; fixtures cancel/await before disposal",
     "native slow-byte framing separately (prior pure FRAME remains its own evidence)",
     "full T041-IPC/T041/T042/T043 or whole #1553"
-  ]
+  ],
+  "CleanupObservations": {
+    "ObservedUtc": "2026-10-05T10:42:21.549050+00:00",
+    "OwnedPipePathsRemaining": 0,
+    "OwnedWorkerTestRootsRemaining": 0,
+    "BuildServerShutdown": "Succeeded for MSBuild and compiler server",
+    "ActiveTestOrWorkerCommands": 0,
+    "FormerCompilerProcessState": "PID    PPID STAT COMMAND\n   4077       1 Z    dotnet\n   4111       1 Z    VBCSCompiler\n   4391       1 Z    dotnet",
+    "Limit": "Former compiler/MSBuild processes are terminated zombies parented to PID1; no claim that PID1 reaped them."
+  }
 }

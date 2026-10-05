@@ -4,13 +4,14 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
-## T041-IPC Linux admission — 2026-10-05 (final review pending)
+## T041-IPC Linux admission — 2026-10-05 (verified component)
 
 Bounded Linux candidate **`9a346308d02d55ddb50a49fab109fc99b8871505`**, tree
 `71aaf75241f86b75108e0cdadb4d1c92e0fd2ca2`, passes **34/34** after two explicit
 causal RED stages. The [qualification matrix](recovery/worker-ipc-linux-qualification.json)
-is the current source/test/platform record. Final independent implementation/evidence
-review is pending; this does not close full T041-IPC or #1553.
+is the current source/test/platform record. Independent **gpt-6.1-sol / xhigh**
+final source/evidence review passed with no actionable findings. Only
+**T041-IPC-LINUX is complete**; full T041-IPC and #1553 remain open.
 
 The owner transferred the sole-writer baton from base
 `914f27dc331250bfd98639982d408f0e66a0bcf8`, tree
@@ -78,13 +79,18 @@ capture limitation remains unresolved production Linux worker-launch work.
 Independent Sol/xhigh follow-up design review approved this bounded fixture choice.
 Nine generated/copied project XML documentation files parsed. Test temp roots and
 owned pipe paths are absent; `dotnet build-server shutdown` completed successfully.
+No active test/worker commands remain. Three terminated compiler/MSBuild processes
+remain zombies parented to PID1; their reaping is not claimed.
 
 ### Review, persistence and next action
 
 Separate **gpt-6.1-sol / xhigh** design review passed, including the SafePipeHandle
-lifetime and connection-time-credential boundary. Final independent source/evidence
-review remains pending. Next: review this exact candidate, address material findings,
-publish the final evidence carrier, and verify its fresh GitHub-only restoration.
+lifetime and connection-time-credential boundary. Final independent **Sol/xhigh PASS**
+reviewed runtime `9a346308` and evidence carrier `efe92ab6`: all 11 input hashes,
+six unchanged-base blobs, 59 artifact hashes across 13 manifests, exact 34 distinct
+TRX passes, RED causes and restoration match. No material finding or source fix.
+Next: publish this final review/evidence carrier and verify its fresh GitHub-only
+restoration; the exact final carrier SHA/readback is recorded in the handoff.
 
 Before the first publication, noninteractive ordinary push dry-run passed. Every
 bounded WIP was published before a long build/review with a checked remote base,
