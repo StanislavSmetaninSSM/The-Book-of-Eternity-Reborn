@@ -4,7 +4,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class GmWorkerNativePoolTests
+public sealed partial class GmWorkerNativePoolTests
 {
     [Fact]
     public async Task ActualPool_SyntheticAnalysisPublishesAfterOwnedRetirement()

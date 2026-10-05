@@ -54,6 +54,14 @@
         "#1553 T041-FALLBACK-POOL B5",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-native-pool-terminal",
+      "reason": "New actual pool terminal-boundary negatives after happy/descendant GREEN; verify rejected results cannot mint an accepted with-copy and native cleanup still releases owned capacity.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
     }
   ]
 }

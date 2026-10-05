@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "worker-native-pool-terminal",
+      "responsibility": "#1553 POOL B actual pool cancellation and timeout at Release/publication; stale generation/task bytes, nonzero exit and absent proposal reject while original native cleanup completes.",
+      "excludes": "Synthetic isolated state only; no public Linux Release, systemd, out-of-lineage ownership, live GM, main PTY, durable restart or Windows runtime qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup",
+            "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_StaleGenerationOrTaskRejectsAfterRealWorkerStop",
+            "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NonzeroOrMissingProposalCannotBecomeSuccessfulStoppedResult"
+          ]
+        }
+      ]
+    },
+    {
       "id": "worker-native-pool-descendants",
       "responsibility": "#1553 POOL B Actual native pool ordinary output-holding descendants and early descendant-root exit; complete scoped retirement before publication with no guardian emergency or actor expiry.",
       "excludes": "Synthetic isolated state only; no public Linux Release, systemd, out-of-lineage ownership, live GM, main PTY, durable restart or Windows runtime qualification.",

@@ -415,6 +415,15 @@ lineage including intermediate/detached and stop-spawned child. No actor expiry 
 Next: cancellation/timeout and retained uncertainty/cleanup retry matrix; no repeated
 happy/descendant run without a relevant runtime change or unresolved concern.
 
+B5 terminal extension WIP from verified carrier `f7138fb2`: eight actual pool
+cases cover cancellation/timeout before Release and before publication, generation
+replacement, exact task-byte mismatch, nonzero worker exit and missing proposal.
+Use existing production hooks only; no runtime changes. Assert absence of proposal/
+inbox, retained exact tampered task, unchanged fixture context, completed owned cleanup
+and rejected forged success copies. `releases` in scenario records counts hook calls
+at the Release boundary, not transmitted Release when cancellation wins there.
+New category worker-native-pool-terminal only; fresh build/execution still pending.
+
 B5 observation seam design consultation, actual Sol6.1/xhigh: an internal optional
 capture of the genuinely launched owner is allowed only after pool binding (or with
 OwnedLaunchException preserving that owner). It cannot replace owner/identity or
