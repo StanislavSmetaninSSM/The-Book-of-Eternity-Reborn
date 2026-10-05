@@ -24,12 +24,13 @@ Owner decision: primary existing **systemd user manager**, plus a **native ordin
 - Default `Auto`: prefer available systemd-user; if unavailable before any launch, select native-lineage explicitly after its prerequisites pass. Explicit `SystemdUser` never silently downgrades. Explicit `NativeLineage` declares its limited scope. After a launch may have happened, backend switching is forbidden; uncertain startup retires through the original authority. Neither backend claims external delegated work. Windows Job behavior is unchanged.
 - Every readiness/status/stop-evidence record exposes backend, guarantee scope, run identity, state, reason, whether managed authority is retained and whether scoped cleanup actually completed. `StoppedWithinScope` is never an Accepted proposal or durable run/fence. Consumers must preserve the scope and typed uncertainty; an old unqualified bool must not erase them. Source guards for existing production gates remain; new tests must assert the revised two-mode contract without enabling Linux Release.
 
-## Proposed worker-host integration — design only, 2026-10-05
+## Worker-host integration — staged contract, 2026-10-05
 
 From accepted native checkpoint `1434be00abd143e9f2ed9d0589d1c30b8063ba06`,
-T041-FALLBACK-INTEGRATION-DESIGN proposes two connected slices under US4/FR-012/014/015.
-The parent must authorize the first slice after this design handoff; neither slice
-is implemented or qualified by this document. [Source-backed plan](plan.md#worker-host-native-integration-design--2026-10-05).
+T041-FALLBACK-INTEGRATION-DESIGN defines two connected slices under US4/FR-012/014/015.
+The parent authorized only A from `e7b26f9c`; implementation and bounded verification
+are recorded in the current plan. B remains separately gated. This specification
+is not execution or qualification evidence. [Source-backed plan](plan.md#worker-host-native-integration-design--2026-10-05).
 
 - One owned launch seam must be consumed by the actual worker host and pool. Native
   supervisor forks the neutral managed host itself and binds its pidfd before exec;

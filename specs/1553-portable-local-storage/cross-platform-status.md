@@ -5,7 +5,31 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## Текущий bounded native checkpoint, 2026-10-05
+## HOST — проверка реализации A, 2026-10-05
+
+Родитель разрешил только T041-FALLBACK-HOST от `e7b26f9c`.
+Подключены реальный native launch и проверенный pidfd neutral host к общему
+`PrepareOwnedAsync`, раздельные output streams и типизированная остановка.
+Linux pool требует WorkerRelease и отказывает до reservation/helper/host;
+сам neutral host также отклоняет Release. Windows использует тот же preparation
+через отдельный адаптер с передачей исходных Process/Job в прежнюю cleanup-логику.
+Native package — заранее собранный linux-x64/glibc asset, проверяемый до запуска.
+
+Финальная runtime-правка — `822387cb`: отклонённая передача FD закрывается,
+уже принятый pidfd сохраняется при последующей неопределённости.
+Последний дополнительный test source — `66ca39bb`,3/3PASS; descriptor/bootstrap/
+output13/13, затронутые native v1/IPC12/12 и package/publish9/9 тоже сохранены
+с точными отдельными source SHA в [журнале](plan.md#host-implementation-authorized--2026-10-05).
+Реальный Ready и StoppedWithinScope доказаны без worker Release; negative fixtures
+имеют независимый guardian и фактический ECHILD. Каталог, итоговое независимое ревью
+и fresh GitHub-only restoration пока завершаются; A ещё не объявлена принятой.
+
+B/pool Release, main PTY, настоящий CLI/ГМ, canonical writes, Windows runtime и
+systemd-user qualification остаются открыты. Согласованный systemd-primary
+ещё не реализован; selector показывает NotImplemented, без ложного PASS.
+Сеть/security/credentials не менялись; HOME-PC и старые VM не использовались.
+
+## Предыдущий bounded native checkpoint, 2026-10-05
 
 Восстановлен `3e1b11c220ea3286002ea78c90e4eb4498e887dd`: точное дерево исходного
 WIP8339e9c2, без восстановления реализации от main. Native helper неизменён;

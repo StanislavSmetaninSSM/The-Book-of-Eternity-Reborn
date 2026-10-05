@@ -211,6 +211,18 @@ distinguishes readable exit from HUP after reap. Fixture-only correction indepen
 polls and records IN/HUP bits before actual factory rejection, preserving strict
 production liveness behavior and existing authority. Repeat only these3cases.
 
+At `66ca39bb5abdf06431cdfcd0320fb03b1f753989`, fresh3case preparation passed
+42.0205397s; **3/3PASS**,11.6240654s, no skips/duplicates/timeouts and complete cleanup.
+Both retired pidfds independently reported poll events17 (IN|HUP), were rejected
+and closed by the actual factory under a live purported owner; supervisor/self
+transfer was also rejected while its original descriptor stayed valid. Both raw
+guardians ECHILD/emergency0/failures0; zero root execution.
+[Evidence](recovery/evidence/worker-host-pidfd-rejection-green/manifest.json).
+All selected behavior now has current GREEN evidence. Next discovery-only catalog
+audit uses fresh unit/integration builds because TestSupport changed; it executes
+zero tests. Final independent review, full evidence index and fresh GitHub-only
+restoration remain pending. No B work starts.
+
 ## Worker-host native integration design — 2026-10-05
 
 **Design only; not implementation authorization.** Source/remote base

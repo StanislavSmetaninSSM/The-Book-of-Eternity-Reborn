@@ -1,5 +1,11 @@
 # Linux ownership: primary systemd and ordinary-lineage fallback
 
+Current implementation status: authorized HOST slice A connects the packaged v2
+helper to the actual shared neutral-host preparation. Its verification is recorded
+in [the active plan](plan.md#host-implementation-authorized--2026-10-05);
+B/WorkerRelease, main PTY and live GM remain closed. The design history below
+does not supersede that current bounded scope.
+
 ## Approved two-backend Linux ownership — 2026-10-05 15:12 UTC
 
 Owner decision: primary existing **systemd user manager**, plus a **native ordinary-lineage fallback** for cloud/similar environments. This explicitly supersedes the earlier unconditional complete-descendant requirement only for the declared fallback scope. It is a product guarantee change, not permission to bypass environment security. Source base `2defe92cd8b7d313d07b059db76b73e97905f66f`, same branch/sole writer. First implementation is T041-FALLBACK-NATIVE synthetic helper qualification only; production pool/main Release wiring requires the next handoff/authorization.
