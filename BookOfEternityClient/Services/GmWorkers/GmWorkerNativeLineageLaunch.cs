@@ -16,8 +16,8 @@ internal sealed class GmWorkerNativeLineageLaunch : GmWorkerOwnedLaunch
     private readonly Socket _listener;
     private Socket? _bootstrap;
     private readonly Process _supervisor = new();
-    private readonly AnonymousPipeServerStream _output = new(PipeDirection.In, HandleInheritability.None);
-    private readonly AnonymousPipeServerStream _error = new(PipeDirection.In, HandleInheritability.None);
+    private readonly AnonymousPipeServerStream _output;
+    private readonly AnonymousPipeServerStream _error;
     private readonly TaskCompletionSource _ready = new(TaskCreationOptions.RunContinuationsAsynchronously);
     private readonly TaskCompletionSource _startedHost = new(TaskCreationOptions.RunContinuationsAsynchronously);
     private readonly object _stateGate = new();
@@ -36,12 +36,31 @@ internal sealed class GmWorkerNativeLineageLaunch : GmWorkerOwnedLaunch
     private GmWorkerNativeLineageLaunch()
     {
         _bootstrapDirectory = Path.Combine(Path.GetTempPath(), "boe-native-" + _run);
-        Directory.CreateDirectory(_bootstrapDirectory, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
-        _listener = new Socket(AddressFamily.Unix, SocketType.Seqpacket, ProtocolType.Unspecified);
-        _listener.Bind(new UnixDomainSocketEndPoint(Path.Combine(_bootstrapDirectory, "owner")));
-        _listener.Listen(1);
-        _outputDrain = DrainAsync(_output);
-        _errorDrain = DrainAsync(_error);
+        var socketPath = Path.Combine(_bootstrapDirectory, "owner");
+        if (Encoding.UTF8.GetByteCount(socketPath) > 107)
+            throw new InvalidDataException("Private native bootstrap path exceeds the Linux socket bound.");
+        var createdDirectory = false;
+        try
+        {
+            Directory.CreateDirectory(_bootstrapDirectory, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
+            createdDirectory = true;
+            _listener = new Socket(AddressFamily.Unix, SocketType.Seqpacket, ProtocolType.Unspecified);
+            _listener.Bind(new UnixDomainSocketEndPoint(socketPath));
+            _listener.Listen(1);
+            _output = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.None);
+            _error = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.None);
+            _outputDrain = DrainAsync(_output);
+            _errorDrain = DrainAsync(_error);
+        }
+        catch
+        {
+            // No process start has been attempted. Roll back each acquired local
+            // handle deterministically instead of relying on eventual finalization.
+            _listener?.Dispose(); _output?.Dispose(); _error?.Dispose(); _supervisor.Dispose();
+            _stopGate.Dispose(); _controlGate.Dispose();
+            if (createdDirectory) Directory.Delete(_bootstrapDirectory, recursive: true);
+            throw;
+        }
     }
 
     internal override int HostProcessId => _identity?.ProcessId ?? throw new InvalidOperationException("Host identity has not been admitted.");
@@ -235,8 +254,13 @@ internal sealed class GmWorkerNativeLineageLaunch : GmWorkerOwnedLaunch
     {
         if (_disposed) return;
         // Disposal cannot manufacture stop evidence or abandon a live original owner.
-        if (_processStarted && (!_supervisorExit!.IsCompletedSuccessfully || !_outputDrain.IsCompleted || !_errorDrain.IsCompleted))
-            throw new InvalidOperationException("Native launch still retains cleanup authority and I/O.");
+        lock (_stateGate)
+        {
+            if (_uncertainty != null || _terminal?.State != GmWorkerStopState.StoppedWithinScope ||
+                !_processStarted || !_supervisorExit!.IsCompletedSuccessfully || _supervisor.ExitCode != 0 ||
+                !_statusReader!.IsCompletedSuccessfully || !_outputDrain.IsCompletedSuccessfully || !_errorDrain.IsCompletedSuccessfully)
+                throw new InvalidOperationException("Native launch retains an unconfirmed owner; output EOF and helper exit cannot retire it.");
+        }
         _disposed = true;
         CloseBootstrap();
         await Task.WhenAll(_outputDrain, _errorDrain);

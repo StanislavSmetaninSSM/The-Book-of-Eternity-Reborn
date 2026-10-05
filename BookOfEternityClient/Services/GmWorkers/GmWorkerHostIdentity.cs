@@ -43,6 +43,8 @@ internal sealed class GmWorkerHostIdentity
 
     internal void EnsureLive()
     {
+        if (_pidfd == null && _owner.HasExited)
+            throw new InvalidOperationException("Worker process host exited before launch admission.");
         if (_owner.HasExited || (_authorityValid != null && !_authorityValid()) || (_pidfd != null && IsReadable(_pidfd))) throw Invalid();
     }
     internal string ExitDescription => _pidfd == null && _owner.HasExited ? $" with code {_owner.ExitCode}" : "";

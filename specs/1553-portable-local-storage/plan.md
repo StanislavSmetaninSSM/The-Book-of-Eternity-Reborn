@@ -94,7 +94,19 @@ plus original Process exited-host diagnostic regression. Three focused causal ca
 are added/selected before fixes: long private TMPDIR; actual Ready host closes outputs,
 helper is deliberately lost, live pidfd must remain undisposed; existing exited-host
 case. Outer guardian retains all real native descendants and verifies ECHILD.
-These are WIP/unrun; no Native/pool B acceptance or Windows runtime claim.
+At `979a4ca9b88e3d46f4f155e67c183e42d7d78dc6`, fresh unit/integration
+preparation passed4planned/0executed,74.6554063s. First execution stopped on
+**2/2causalFAIL** (16.2614425s; planned4, completed2, incomplete due fail-fast):
+constructor left one directory; helper-loss stop was Uncertain with live host but
+Dispose closed its pidfd. Both independent guardians reached ECHILD/failures0;
+helper-loss needed one guardian emergency signal, constructor needed none.
+The separately executed existing identity case was **0PASS/1causalFAIL**,11.7007082s;
+wrong exception type/diagnostic. Source-contract case was not executed in that
+fail-fast run. [Evidence](recovery/evidence/worker-host-retention-red/manifest.json).
+WIP fixes validate socket-path bounds before resource acquisition, roll back partial
+local acquisition transactionally, forbid owner disposal without non-uncertain scoped
+terminal evidence plus actual helper/I/O completion, and restore original Process
+exit diagnostics. Next: fresh focused GREEN plus affected positive Ready case.
 Independent Sol consult confirms original Process/tree/started-state one-way handoff
 from a sealed Windows adapter preserves current cleanup; no native-to-legacy route.
 Existing relevant lifecycle fixtures invoke powershell.exe and remain Windows-only

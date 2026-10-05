@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "worker-owned-original-identity"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "979a4ca9b88e3d46f4f155e67c183e42d7d78dc6",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 6.5848488,
+  "Descriptors": [
+    {
+      "Name": "worker-owned-original-identity-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "worker-owned-original-identity",
+      "Categories": [
+        "worker-owned-original-identity"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

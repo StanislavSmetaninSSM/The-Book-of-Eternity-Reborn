@@ -1,0 +1,80 @@
+{
+  "Categories": [
+    "worker-native-owner-retention",
+    "worker-owned-original-identity",
+    "worker-owned-preparation-source-contract"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "979a4ca9b88e3d46f4f155e67c183e42d7d78dc6",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 74.3987503,
+  "Descriptors": [
+    {
+      "Name": "worker-native-owner-retention-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-owner-retention",
+      "Categories": [
+        "worker-native-owner-retention"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.ConstructorFailure_RollsBackPrivateBootstrapBeforeAnyProcessStart|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.HelperLossAndOutputEof_CannotDisposeLiveHostIdentity",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.ConstructorFailure_RollsBackPrivateBootstrapBeforeAnyProcessStart",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.HelperLossAndOutputEof_CannotDisposeLiveHostIdentity",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-owned-original-identity-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "worker-owned-original-identity",
+      "Categories": [
+        "worker-owned-original-identity"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-owned-preparation-source-contract-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-owned-preparation-source-contract",
+      "Categories": [
+        "worker-owned-preparation-source-contract"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
