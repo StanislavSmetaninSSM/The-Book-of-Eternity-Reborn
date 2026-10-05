@@ -21,24 +21,34 @@ internal sealed class GmWorkerHostIdentity
 
     internal static GmWorkerHostIdentity FromTransferredPidfd(Process supervisor, SafeFileHandle descriptor, Func<bool> authorityValid)
     {
-        if (supervisor.HasExited || Signal(descriptor, 0, IntPtr.Zero, 0) != 0 || IsReadable(descriptor)) throw Invalid();
-        var fd = descriptor.DangerousGetHandle().ToInt32();
-        var info = File.ReadAllLines($"/proc/self/fdinfo/{fd}");
-        int ReadOne(string name)
+        try
         {
-            var lines = info.Where(l => l.StartsWith(name + ":", StringComparison.Ordinal)).ToArray();
-            if (lines.Length != 1 || !int.TryParse(lines[0][(name.Length + 1)..].Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out var pid) || pid <= 0) throw Invalid();
-            return pid;
+            if (supervisor.HasExited || Signal(descriptor, 0, IntPtr.Zero, 0) != 0 || IsReadable(descriptor)) throw Invalid();
+            var fd = descriptor.DangerousGetHandle().ToInt32();
+            var info = File.ReadAllLines($"/proc/self/fdinfo/{fd}");
+            int ReadOne(string name)
+            {
+                var lines = info.Where(l => l.StartsWith(name + ":", StringComparison.Ordinal)).ToArray();
+                if (lines.Length != 1 || !int.TryParse(lines[0][(name.Length + 1)..].Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out var pid) || pid <= 0) throw Invalid();
+                return pid;
+            }
+            var expected = ReadOne("Pid");
+            if (ReadOne("NSpid") != expected || expected == supervisor.Id) throw Invalid();
+            var stat = File.ReadAllText($"/proc/{expected}/stat");
+            var opening = stat.IndexOf(" (", StringComparison.Ordinal); var closing = stat.LastIndexOf(") ", StringComparison.Ordinal);
+            if (opening <= 0 || closing <= opening || !int.TryParse(stat[..opening], out var statPid) || statPid != expected) throw Invalid();
+            var rest = stat[(closing + 2)..].Split(' ', 3);
+            if (rest.Length != 3 || !int.TryParse(rest[1], out var parent) || parent != supervisor.Id) throw Invalid();
+            var identity = new GmWorkerHostIdentity(supervisor, expected, descriptor, authorityValid);
+            identity.EnsureLive(); return identity;
         }
-        var expected = ReadOne("Pid");
-        if (ReadOne("NSpid") != expected || expected == supervisor.Id) throw Invalid();
-        var stat = File.ReadAllText($"/proc/{expected}/stat");
-        var opening = stat.IndexOf(" (", StringComparison.Ordinal); var closing = stat.LastIndexOf(") ", StringComparison.Ordinal);
-        if (opening <= 0 || closing <= opening || !int.TryParse(stat[..opening], out var statPid) || statPid != expected) throw Invalid();
-        var rest = stat[(closing + 2)..].Split(' ', 3);
-        if (rest.Length != 3 || !int.TryParse(rest[1], out var parent) || parent != supervisor.Id) throw Invalid();
-        var identity = new GmWorkerHostIdentity(supervisor, expected, descriptor, authorityValid);
-        identity.EnsureLive(); return identity;
+        catch
+        {
+            // No checked host identity was returned: this transfer never became
+            // retained authority. Later uncertainty still retains admitted pidfds.
+            descriptor.Dispose();
+            throw;
+        }
     }
 
     internal void EnsureLive()

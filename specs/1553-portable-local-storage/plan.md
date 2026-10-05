@@ -156,6 +156,14 @@ sender. Identity rejection is expected causal RED: an unadmitted transferred pip
 must close immediately; later uncertainty must still retain admitted host pidfds.
 No production source changed; fresh build and selected RED are next.
 
+At `f512b37f14711b2ed7e91438a8bd94911e643af2`, fresh7case preparation passed
+88.1085163s; causal descriptor RED **6PASS/1FAIL**,8.2590778s, complete cleanup.
+Only rejected identity retained its unadmitted descriptor; real envelope/count/
+truncation/CLOEXEC controls passed. [Evidence](recovery/evidence/worker-host-descriptor-red/manifest.json).
+Minimal correction closes failed identity transfers inside their factory; successful
+checked bindings retain the existing later-uncertainty behavior. GREEN plus affected
+actual Ready and helper-loss retention controls are next.
+
 ## Worker-host native integration design — 2026-10-05
 
 **Design only; not implementation authorization.** Source/remote base
