@@ -1,5 +1,46 @@
 # Reproduce the cross-platform development environment
 
+## Linux worker-host IPC admission (T041-IPC-LINUX)
+
+Native Linux candidate `9a346308d02d55ddb50a49fab109fc99b8871505` passes 34/34;
+final independent implementation/evidence review is pending. See the exact
+[qualification matrix](recovery/worker-ipc-linux-qualification.json) and
+[current plan](plan.md#t041-ipc-linux-admission--2026-10-05-final-review-pending).
+This is the later both-channel SO_PEERCRED PID/effective-UID adapter and controlled
+pre-Release host qualification. The historical FRAME checkpoint below retains its
+original platform boundary; it is not the source of the new Linux claim.
+
+Use a separate checkout at that exact SHA, .NET SDK 10/runtime 8 and PowerShell 7.
+The actually tested environment is Debian13.6 x86_64, SDK10.0.401/runtime8.0.31,
+PowerShell7.6.6, effective UID1000, normal permissions. Configure the existing
+process-local telemetry/cache setup below without changing HOME. Linux named-pipe
+names plus TMPDIR must fit Unix-domain socket length; the verified short directory
+is `/workspace/ipc-tmp`:
+
+```sh
+mkdir -p /workspace/ipc-tmp
+export TMPDIR=/workspace/ipc-tmp
+export TMP="$TMPDIR" TEMP="$TMPDIR"
+pwsh -NoProfile -File scripts/test-csharp.ps1 -Category worker-host-ipc-admission -PlanOnly
+pwsh -NoProfile -File scripts/test-csharp.ps1 -Category worker-host-ipc-admission -NoBuild
+pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild
+```
+
+Only the first selected build permits the following NoBuild calls. Catalog audit
+executes zero tests. Preserve plan, summary, TRX, exact source and cleanup. Stop
+and report an actual permission denial; do not alter security or transport to
+bypass it. No credentials, new accounts or elevated privileges are prerequisites.
+
+The fixture worker payload owns a minimal environment and an absolute PowerShell
+canary executable; the hidden host retains ordinary inherited environment. Existing
+production payload capture still rejects Linux inherited case aliases such as
+HTTP_PROXY/http_proxy through its case-insensitive dictionary. General worker
+execution/environment portability is not established by this IPC qualification.
+The actual host only reaches Ready and exits125 on owner close without Release.
+Linux process-tree/workspace and main PTY/live-GM gates remain closed. Windows,
+real different-UID peers and successful worker Release require separate evidence.
+Unchanged FRAME49 and run-record90 are not part of this execution selection.
+
 ## Persistent-main record component (T041-RUN-RECORD)
 
 Exact source: `dc8c742cb3dc86d6cff09dadbbb412c77ae779a6`, tree

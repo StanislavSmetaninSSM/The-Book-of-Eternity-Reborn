@@ -4,127 +4,103 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
-## T041-IPC Linux admission implementation — 2026-10-05 (WIP)
+## T041-IPC Linux admission — 2026-10-05 (final review pending)
 
-Owner-authorized sole writer in the separate official Linux environment, based on
+Bounded Linux candidate **`9a346308d02d55ddb50a49fab109fc99b8871505`**, tree
+`71aaf75241f86b75108e0cdadb4d1c92e0fd2ca2`, passes **34/34** after two explicit
+causal RED stages. The [qualification matrix](recovery/worker-ipc-linux-qualification.json)
+is the current source/test/platform record. Final independent implementation/evidence
+review is pending; this does not close full T041-IPC or #1553.
+
+The owner transferred the sole-writer baton from base
 `914f27dc331250bfd98639982d408f0e66a0bcf8`, tree
-`5a770404f54d59c4e5bfa34a6215eca55999db50`. The original checkout and HOME-PC are
-untouched. Native permission was already established by the separately retained
-same-process capability probe; no privilege, credential or security changes.
-Debian 13.6 x86_64, SDK 10.0.401, target runtime 8.0.31, PowerShell 7.6.6.
+`5a770404f54d59c4e5bfa34a6215eca55999db50`, and authorized bounded non-force WIP
+pushes on `codex/1553-load-filesystem`. This separate official environment uses
+Debian 13.6 x86_64/kernel 6.18.44, SDK 10.0.401, runtime 8.0.31, PowerShell 7.6.6,
+effective UID 1000 and normal environment permissions. No credentials, account,
+privilege or security settings changed; original checkout/HOME-PC were not edited.
 
-The approved adapter uses `getsockopt(SOL_SOCKET, SO_PEERCRED)` with a pinned
-`SafePipeHandle`, exact `ucred`/`socklen_t` lengths, expected owned host PID and
-current effective UID on both channels before publishing admission or Launch.
-Keep Windows `GetNamedPipeClientProcessId`, liveness and cancellation checks,
-redacted errors, the existing absolute Ready/Release deadlines and failed-admission
-closure. Linux process-tree/workspace/worker execution, main PTY/live GM and
-run-record production wiring remain closed and outside this change.
+### Delivered behavior and acceptance boundary
 
-Independent **gpt-6.1-sol / xhigh** design review passed with no architectural
-blocker. It confirmed SafePipeHandle lifetime, connection-time credential limits,
-both-channel/zero-Launch assertions and explicit platform scope. Test-first WIP
-replaces same-process status fixtures with owned child processes, checks same UID
-and distinct PID independently, retains actual hidden-host Ready then owner close
-without Release/exit125/zero starts, and adds invalid envelope, partial-connect
-cancellation, exited expected host and blocked-Launch cancellation. Foreign-channel
-negatives also assert failed admission cannot retry or Release. The exact existing
-operational documentation guard moves from FRAME to this sole IPC category.
-No production source has changed yet; no new tests have run. Next: fresh selected
-PlanOnly/build, then observe and retain causal RED before implementing the adapter.
-Compilation/preparation failures will not be labeled behavioral RED.
+`getsockopt(SOL_SOCKET, SO_PEERCRED)` uses SafePipeHandle marshalling to retain the
+underlying Unix socket during the native call. Exact ucred length, positive expected
+owned host PID and current effective UID must match on **both** channels before
+frame-channel publication or any Launch byte. Expected PID/EUID are captured once;
+liveness is checked around authentication and under the control gate before Launch.
+Native errors/length mismatches/foreign peers/unsupported platforms fail closed.
+Windows retains `GetNamedPipeClientProcessId`. Ready/Release framing, strict nonce
+and schema, absolute deadlines and closed-channel failure semantics are preserved.
 
-First preparation at `a1ac8c215c21caf2f579c78b01d530cedb574332` passed:
-PlanOnly built both projects, planned 16 cases, executed zero, 151.1971597 seconds.
-The first native execution completed 15 integration rows, all failed before socket
-creation with `ArgumentOutOfRangeException`: the configured long TMPDIR produced
-109-character Unix-domain paths, beyond the runtime's 108-character bound. The
-runner stopped before the one documentation row. This is **preparation failure,
-not causal RED, not a permission denial**. [Build](recovery/evidence/worker-ipc-linux-20261005-red-plan/manifest.json),
-[failure](recovery/evidence/worker-ipc-temp-path-failure/manifest.json).
-Use process-local `TMPDIR=/workspace/ipc-tmp` (and matching TMP/TEMP), an ordinary
-owned directory under the same permissions, for the repeated selected run. No
-transport, endpoint names, production code, credentials or security setting changed.
-First GitHub-only clone restored all 5,158 tracked files cleanly at `a1ac8c21`;
-five changed files matched byte-for-byte. This was source restoration only.
+Actual Linux evidence comprises 16 named-pipe/host cases, 14 policy simulation
+cases, two real invalid/disposed native-handle cases and two exact operational
+source/documentation guards. The actual hidden host reaches Ready; owner close
+**without Release** yields exit125 within five seconds and zero canary marker.
+The canary uses an absolute resolved PowerShell executable. Foreign control,
+foreign status and both foreign peers receive zero Launch. Native exact/over-limit
+status, invalid UTF-8, truncated EOF, nonce/schema, partial-connect cancellation,
+15-second Ready deadline, exited host and blocked Launch cancellation pass.
+Failed admission cannot retry or Release. Tests own children, pipes and artifacts;
+normal fixture disposal follows awaited admission/cancellation.
 
-The second unchanged-source execution at evidence carrier `00e975bf` reached
-named-pipe construction but all 15 integration rows failed while copying inherited
-worker environment: `ArgumentException`, duplicate key `http_proxy`, because the
-existing payload builder uses `OrdinalIgnoreCase` and this Linux environment has
-both `HTTP_PROXY` and `http_proxy`. Again no adapter behavioral RED; the documentation
-row was not reached. [Exact evidence](recovery/evidence/worker-ipc-linux-20261005-inherited-environment-failure/manifest.json).
-The bounded IPC fixtures now explicitly own minimal worker payload environment,
-including only their test marker/large value. Host processes retain the ordinary
-inherited environment; no proxy/security/global configuration changes. Production
-Linux case-sensitive worker environment capture remains a recorded limitation for
-future worker-execution work. This selection cannot qualify arbitrary Linux worker
-payloads or execution. Next: rebuild the refined tests and obtain adapter-specific RED.
+The three operational documents and both exact affected source/doc guards are
+synchronized. The second guard remains shared with its existing authority category;
+only that exact static guard is added here, not its unrelated lifecycle cohort.
+The sole execution selection is `worker-host-ipc-admission`. The original pure
+FRAME49 checkpoint and run-record90 were not repeated. Their implementation files,
+Linux process-tree/workspace guards and run-record production boundary are unchanged.
+No GM-authored gameplay, prompt, schema or example capability changed; the existing
+operational example was updated with the IPC boundary.
 
-At `61e921a6d8008a81dcba7e527b8b343e6cb727f7`, fresh PlanOnly passed in
-69.8449821 seconds (16 planned, zero execution). The selected native run completed
-15 cases: **3 PASS / 12 causal FAIL**, all twelve caused by the existing Windows-only
-peer-authentication guard, not preparation or permission failures. It took
-16.6053139 seconds; runner cleanup complete, no skips/duplicates; documentation
-row was not executed after integration failure. [Native RED](recovery/evidence/worker-ipc-linux-20261005-native-red/manifest.json),
-[fresh plan](recovery/evidence/worker-ipc-linux-20261005-owned-env-plan/manifest.json).
-The follow-up independent Sol/xhigh design check approves explicit owned payload
-environment, with an absolute resolved PowerShell canary path (now in the fixture).
+### Verification and historical failures
 
-The `b143eb1d` WIP added policy tests before implementation and a deliberately throwing,
-unwired adapter scaffold. The policy unit cases share the integration project to observe PID/UID, native
-error/length and SafeHandle negative RED in the same descriptor; the changed documentation
-guard also expects the approved Linux contract, while the three documents await
-implementation. That WIP retained the original Windows authentication guard.
-PlanOnly at `b143eb1d` passed (32 planned, zero execution, 66.0858359 seconds),
-and showed that runner project order is integration before unit regardless of
-selector order. Policy cases moved into the integration project without broadening
-the category or changing runner behavior. Added one actual 15-second partial-connect
-Ready deadline row, checking control EOF/zero Launch and rejected Release.
-Next: fresh PlanOnly/build and policy RED, then fill/wire the adapter and synchronize
-the documents. Simulated different-UID credentials are only policy evidence.
+All commands use `pwsh -NoProfile -File scripts/test-csharp.ps1` from the isolated
+checkout. PlanOnly builds/discovers and executes zero; NoBuild is used only after
+a fresh successful build of both selected projects. No full/Fast/PreMerge run,
+all-category sequence, live GM or successful executable-worker Release occurred.
 
-At `c3636f0de2ba57a1b78726a303b4a48eaa8f0d4b`, fresh PlanOnly passed
-(33 planned, zero execution, 64.8339023 seconds). Policy/native RED completed 32:
-**4 PASS / 28 FAIL**, comprising 16 deliberately unimplemented adapter/policy cases
-and the 12 original Windows-only authentication failures. The real 15-second
-partial-connect deadline passed. The documentation descriptor remained unexecuted
-after integration failure. No skips/duplicates, cleanup complete; 29.7010117 seconds.
-[Policy/native RED](recovery/evidence/worker-ipc-linux-20261005-policy-red/manifest.json),
-[plan](recovery/evidence/worker-ipc-linux-20261005-policy-plan/manifest.json).
+| Source | Command suffix / result | Evidence |
+| --- | --- | --- |
+| `a1ac8c21` | `-Category worker-host-ipc-admission -PlanOnly`: PASS, 16 planned, 151.1971597s | [plan/build](recovery/evidence/worker-ipc-linux-20261005-red-plan/manifest.json) |
+| `a1ac8c21` | `-Category worker-host-ipc-admission -NoBuild`: 15/15 preparation failures, one guard unexecuted; chosen TMPDIR made a 109-character Unix socket path | [path failure](recovery/evidence/worker-ipc-temp-path-failure/manifest.json) |
+| `00e975bf` | Same selected execution: 15/15 preparation failures, one guard unexecuted; inherited HTTP_PROXY/http_proxy collide in existing OrdinalIgnoreCase payload builder | [environment failure](recovery/evidence/worker-ipc-linux-20261005-inherited-environment-failure/manifest.json) |
+| `61e921a6` | Fresh PlanOnly PASS; execution 15 completed, 3 PASS / 12 causal FAIL at Windows-only identity guard, 16.6053139s; one guard unexecuted | [native RED](recovery/evidence/worker-ipc-linux-20261005-native-red/manifest.json) |
+| `b143eb1d` | PlanOnly PASS, 32 planned; zero execution. Runner sorts projects, so policy cases moved into integration before their RED | [initial policy plan](recovery/evidence/worker-ipc-linux-20261005-policy-initial-plan/manifest.json) |
+| `c3636f0d` | Fresh PlanOnly PASS; execution 32 completed, 4 PASS / 28 causal FAIL: 16 unwired policy stubs, 12 original Windows guard; 29.7010117s, one doc guard unexecuted | [policy/native RED](recovery/evidence/worker-ipc-linux-20261005-policy-red/manifest.json) |
+| `c1a4a376` | Fresh PlanOnly and 33/33 GREEN, 32.0678684s; affected shared source guard then added | [first GREEN](recovery/evidence/worker-ipc-linux-20261005-first-green/manifest.json) |
+| `9a346308` | Fresh PlanOnly/build PASS, 34 planned, 65.0701684s; **34/34 GREEN**, 33.6581428s, no skips/duplicates, complete selection/cleanup | [plan/build](recovery/evidence/worker-ipc-linux-20261005-final-plan/manifest.json), [GREEN](recovery/evidence/worker-ipc-linux-20261005-final-green/manifest.json) |
+| `9a346308` | `-ValidateCatalog -NoBuild`: PASS, 238 categories / 10,660 methods/files, zero unmapped/stale, **zero executed**, 9.3647242s | [inventory](recovery/evidence/worker-ipc-linux-20261005-final-audit/manifest.json) |
 
-Current implementation WIP fills the reviewed Linux adapter and wires both channel
-identities before frame-channel publication. Expected PID/EUID are captured once,
-liveness is checked around authentication and before Launch, and cancellation is
-checked before publication and under the control gate. The Windows P/Invoke path
-is retained in the adapter. Exact native lengths/errors fail closed; SafePipeHandle
-marshalling owns pin lifetime. All three operational documents now match the exact
-guard. No framing helper, process-tree/workspace guard or run-record source changed.
-Next: publish, fresh selected PlanOnly/build, then the complete 33-case GREEN attempt.
-No implementation success or native Windows qualification is claimed before results.
+The two preparation failures are not authentication RED or permission denials.
+The temporary directory is now process-local `/workspace/ipc-tmp`, under unchanged
+permissions. Worker test payloads explicitly own only their chosen environment;
+host/peer processes retain the ordinary inherited environment. The case-alias
+capture limitation remains unresolved production Linux worker-launch work.
+Independent Sol/xhigh follow-up design review approved this bounded fixture choice.
+Nine generated/copied project XML documentation files parsed. Test temp roots and
+owned pipe paths are absent; `dotnet build-server shutdown` completed successfully.
 
-First candidate `c1a4a3760ddb8da106e871b20b12e7c18a6765d8` passed fresh
-PlanOnly (33 planned, zero execution, 62.2709106 seconds) and **33/33 GREEN**
-(32.0678684 seconds), complete selection/cleanup, no skips/duplicates. The actual
-hidden host reached Ready and exited125 within five seconds after owner close;
-its absolute-path controlled worker canary did not start. Foreign control/status/
-both peers received zero Launch; policy simulations retain their narrower meaning.
-[First GREEN](recovery/evidence/worker-ipc-linux-20261005-first-green/manifest.json).
-The final affected-consumer audit found one more existing exact source guard in
-`ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions`
-that still searched the old file for the moved Windows P/Invoke. It now reads the
-adapter, checks both-channel ordering before admission/Launch, and is selected as
-one additional static guard in the same category (34 cases). Its existing broader
-category ownership is retained; no unrelated lifecycle tests are selected.
-Next: fresh build/34-case run, discovery-only inventory, independent final review.
+### Review, persistence and next action
 
-The owner explicitly authorizes ordinary non-force WIP pushes to the existing
-`codex/1553-load-filesystem` branch. Noninteractive push dry-run succeeded before
-first publication; this supersedes the older HOME-PC publication route for this
-slice. Check the remote base before each push and read back the exact SHA/files.
-A successful push alone is neither acceptance nor clean-restoration evidence.
-Persist WIP before long tests/review; final separate Sol/xhigh source/evidence
-review and fresh GitHub-only source restoration remain required.
+Separate **gpt-6.1-sol / xhigh** design review passed, including the SafePipeHandle
+lifetime and connection-time-credential boundary. Final independent source/evidence
+review remains pending. Next: review this exact candidate, address material findings,
+publish the final evidence carrier, and verify its fresh GitHub-only restoration.
+
+Before the first publication, noninteractive ordinary push dry-run passed. Every
+bounded WIP was published before a long build/review with a checked remote base,
+non-force push, exact remote SHA readback and byte comparison of changed files
+fetched independently from GitHub. This owner-authorized route supersedes the
+historical HOME-PC route for this slice. No parallel writer, merge or force push.
+First fresh source restore at `a1ac8c21` verified 5,158 files/five changed bytesets.
+Fresh candidate restore at `9a346308` verified a clean 5,216-file tree, all 68 changed
+files byte-for-byte and connectivity fsck. Restoration alone does not rerun tests.
+
+Native Windows regression, a real different-UID peer, arbitrary inherited Linux
+worker payloads, executable-worker Release, Linux process-tree/workspace, in-flight
+concurrent Dispose diagnostic ordering, main PTY/live GM, canonical mutation and
+run-record production wiring remain unqualified. Native slow-byte framing was not
+separately run; prior pure FRAME has its own evidence. No user confirmation is
+currently required for the authorized remaining review/publication work.
 
 ## T041-RUN-RECORD verified component — 2026-10-05
 

@@ -1,0 +1,218 @@
+{
+  "SchemaVersion": 1,
+  "Issue": "#1553",
+  "Task": "T041-IPC-LINUX (bounded subset of T041-IPC)",
+  "Base": "914f27dc331250bfd98639982d408f0e66a0bcf8",
+  "RuntimeSource": "9a346308d02d55ddb50a49fab109fc99b8871505",
+  "RuntimeTree": "71aaf75241f86b75108e0cdadb4d1c92e0fd2ca2",
+  "Status": "34/34 GREEN on native Linux; final independent implementation/evidence review pending. Full T041-IPC and worker execution are not accepted.",
+  "Scope": "Both-channel PID/effective-UID before Launch; controlled worker payload, native frames/envelopes/cancellation/deadline and actual host Ready then owner close without Release.",
+  "Environment": {
+    "OsRelease": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+    "Kernel": "6.18.44",
+    "Architecture": "x86_64",
+    "EffectiveUid": 1000,
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31",
+    "PowerShell": "7.6.6",
+    "Permissions": "normal environment permissions; no escalation",
+    "DOTNET_PROCESSOR_COUNT": "unset",
+    "FirstPublishedWip": "a1ac8c215c21caf2f579c78b01d530cedb574332",
+    "FirstFreshGitHubRestore": {
+      "Commit": "a1ac8c215c21caf2f579c78b01d530cedb574332",
+      "TrackedFiles": 5158,
+      "ChangedFileBytesVerified": 5,
+      "Clean": true,
+      "BuildOrExecutionInRestoration": false
+    },
+    "TMPDIR": "/workspace/ipc-tmp"
+  },
+  "VerificationInputs": {
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs": {
+      "GitBlob": "553b6c1767c150289bbe9aecff22466147324e45",
+      "Sha256": "17d1aab47df91b66f0c582317d13610179b4b88e1b67e0c499b52373a5550668"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs": {
+      "GitBlob": "ed9e24d1afd8c3e53d74e11260d862fd72b4874a",
+      "Sha256": "6817c1b4c76374fbfbd5d483394e059ed884e9297f6a6b51333fbea8635313c2"
+    },
+    "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs": {
+      "GitBlob": "5949d22cbc2a536efa0aa7224a03bae22e199238",
+      "Sha256": "be280e552a1e1548b0d3eebaa96f0c64b436a40363fac1ab93022ccebe637333"
+    },
+    "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs": {
+      "GitBlob": "8f883aace819f2e9035039578204fdacf924fc98",
+      "Sha256": "145d79232612a70a4d1ee8c377bb35f1bfb35f251b8f3c27f1a466c132ae518b"
+    },
+    "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs": {
+      "GitBlob": "946428094773123bbcd32f06fbf3b128c11a7231",
+      "Sha256": "3590aeeb5f1b104bb9e6c995acdfb5b2807f51d23ada80978e4f2b2b1f432982"
+    },
+    "BookOfEternityClient.Tests/GmWorkerBridgeDocumentationTests.cs": {
+      "GitBlob": "2a3fbea1196c37e79045ba501954c1d1b9354dc6",
+      "Sha256": "2cf261ae743719d1b1b20b309d7afc35b621b693b29289c4163e63922bd2211e"
+    },
+    "OtherGuides/GM_Worker_Bridges.md": {
+      "GitBlob": "3d1a3ad3d7e37965c60e787939b21587a5875c65",
+      "Sha256": "ee49f8d6759b5f955d7dd0fd19ae46a56b6ed9dda023cc0a1572021f656c6731"
+    },
+    "specs/1113-gm-worker-bridges/contracts/gm-worker-bridge-contract.md": {
+      "GitBlob": "074902261486d6a6aad5138dbd0821b154e1db00",
+      "Sha256": "f08bbf08ba8cc241f45167cc1c7b22555c8163d2a0a97fbdbe8ef67f3d8cb888"
+    },
+    "Examples/E_CLI_GM_Worker_Validation_Repair.txt": {
+      "GitBlob": "40a9cac4b7b9e6d52640dfb983a4883254c25462",
+      "Sha256": "2408fe9a40bbdc3afed342b5d78d12b10c2aaf0e7bae095373786af617abd962"
+    },
+    "tests/categories.json": {
+      "GitBlob": "6499528e347e452c24c7c9f65328c438a989f24a",
+      "Sha256": "0b1c93151daf1e91580aa6b542076db7666d0453d263c6dd355cb19a12c7ce71"
+    },
+    "tests/selection.json": {
+      "GitBlob": "50025e019a5ce7dfb08717117bceb5515b9996a9",
+      "Sha256": "4a341ffdc646416c3543b787a7bdb6d3fcdc448d2008c547ea94ad89e04937b1"
+    }
+  },
+  "UnchangedFromBase": {
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostFrameChannel.cs": {
+      "GitBlob": "ab8002ba2ce4be75bbe383b72b4dd71a2863ecae",
+      "Sha256": "91527d69d2ec77494aba09fbf06c3c719d156e9b108dd6fb89a16052c6e09d29"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs": {
+      "GitBlob": "4c99db4f3b8770a660018135f9edade0747567a1",
+      "Sha256": "812c10afbef30f0117126e209dcb5b2926995a9afdec2d8d329b53a59eb0fa74"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs": {
+      "GitBlob": "26729f4393793e6361359aca7008ead4eeb3980d",
+      "Sha256": "3f48b16f0655840ddab41d99d54f776f4e66416ff07733fd2c0fb916723faf94"
+    },
+    "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecord.cs": {
+      "GitBlob": "877b16da222a4326d3228d08a1a253b0b81ecbbb",
+      "Sha256": "d31a714f9485647ab68b6ee7b7d07da852cb1e88edb3f0df7a1e6bf5ff9ec8c8"
+    },
+    "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecordCodec.cs": {
+      "GitBlob": "19f6293794a283e666c220912c2ea6cb47a535ab",
+      "Sha256": "7e269f884c4ca2dd9277d9b1e3813dc8f15d405bd163160d6fc671247849ad63"
+    },
+    "BookOfEternityClient/Services/GmRuntime/GmSessionRunAdmission.cs": {
+      "GitBlob": "aaa6433bb7ca0caa687f66d660be85ff82f83983",
+      "Sha256": "aa1338fbfa3ba4b8a89851acaa41b4a5bfa3b95c8cc3239116fc24057add621a"
+    }
+  },
+  "CausalRed": [
+    {
+      "Commit": "61e921a6d8008a81dcba7e527b8b343e6cb727f7",
+      "Planned": 16,
+      "Executed": 15,
+      "Passed": 3,
+      "Failed": 12,
+      "Cause": "Original Windows-only identity guard",
+      "RemainingUnexecuted": 1,
+      "Seconds": 16.6053139,
+      "Evidence": "evidence/worker-ipc-linux-20261005-native-red/manifest.json"
+    },
+    {
+      "Commit": "c3636f0de2ba57a1b78726a303b4a48eaa8f0d4b",
+      "Planned": 33,
+      "Executed": 32,
+      "Passed": 4,
+      "Failed": 28,
+      "Cause": "16 unwired policy/adapter scaffold failures and 12 original Windows-only identity failures",
+      "RemainingUnexecuted": 1,
+      "Seconds": 29.7010117,
+      "Evidence": "evidence/worker-ipc-linux-20261005-policy-red/manifest.json"
+    }
+  ],
+  "PreparationFailures": [
+    {
+      "Commit": "a1ac8c215c21caf2f579c78b01d530cedb574332",
+      "Cause": "109-character Unix socket path under chosen TMPDIR; ArgumentOutOfRangeException before socket creation",
+      "Executed": 15,
+      "Failed": 15,
+      "RemainingUnexecuted": 1,
+      "BehavioralRed": false,
+      "Evidence": "evidence/worker-ipc-temp-path-failure/manifest.json"
+    },
+    {
+      "Commit": "00e975bf2fae2201f471fa2385484a7a471a7a2b",
+      "Cause": "Inherited HTTP_PROXY/http_proxy collision in existing OrdinalIgnoreCase payload environment capture; ArgumentException before authentication",
+      "Executed": 15,
+      "Failed": 15,
+      "RemainingUnexecuted": 1,
+      "BehavioralRed": false,
+      "Evidence": "evidence/worker-ipc-linux-20261005-inherited-environment-failure/manifest.json"
+    }
+  ],
+  "Green": {
+    "Commit": "9a346308d02d55ddb50a49fab109fc99b8871505",
+    "Planned": 34,
+    "Completed": 34,
+    "Passed": 34,
+    "Failed": 0,
+    "Skipped": 0,
+    "Duplicates": 0,
+    "CompleteSelection": true,
+    "CompleteCleanup": true,
+    "Seconds": 33.6581428,
+    "FreshPlanBuildSeconds": 65.0701684,
+    "NativePipeHostCases": 16,
+    "PeerPolicyCases": 16,
+    "PolicySimulationCases": 14,
+    "RealInvalidOrDisposedNativeHandleCases": 2,
+    "OperationalDocAndSourceGuards": 2,
+    "Evidence": "evidence/worker-ipc-linux-20261005-final-green/manifest.json",
+    "PlanEvidence": "evidence/worker-ipc-linux-20261005-final-plan/manifest.json"
+  },
+  "CatalogAudit": {
+    "Categories": 238,
+    "MethodsOrFiles": 10660,
+    "Unmapped": [],
+    "StaleSelectors": [],
+    "ExecutedTests": 0,
+    "Seconds": 9.3647242,
+    "Evidence": "evidence/worker-ipc-linux-20261005-final-audit/manifest.json"
+  },
+  "IndependentDesignReview": {
+    "Model": "gpt-6.1-sol",
+    "Effort": "xhigh",
+    "Result": "PASS",
+    "FixtureEnvironmentFollowup": "PASS; controlled payload and absolute canary executable required"
+  },
+  "IndependentFinalReview": {
+    "Model": "gpt-6.1-sol",
+    "Effort": "xhigh",
+    "Result": "PENDING"
+  },
+  "SourceRestoration": {
+    "Method": "New empty GitHub-only clone; no local objects/source cache",
+    "Commit": "9a346308d02d55ddb50a49fab109fc99b8871505",
+    "Tree": "71aaf75241f86b75108e0cdadb4d1c92e0fd2ca2",
+    "TrackedFiles": 5216,
+    "ChangedFilesBytesVerified": 68,
+    "Clean": true,
+    "ConnectivityFsck": "PASS",
+    "SourceOnlyNoRebuildOrExecution": true
+  },
+  "GeneratedXmlValidation": [
+    "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.xml",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.xml",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.xml",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.xml",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.xml",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.xml"
+  ],
+  "PublicationRoute": "Owner-authorized normal non-force git push to codex/1553-load-filesystem; each base checked, remote SHA and changed raw bytes independently read back; no credential/security configuration changes.",
+  "NotQualified": [
+    "native Windows execution/regression",
+    "real different-UID peer (no account/privilege changes)",
+    "arbitrary inherited Linux worker environment with case-alias keys",
+    "successful executable-worker Release, process-tree or detached-workspace authority",
+    "main PTY, live GM, gameplay or canonical mutation/run-record production fencing",
+    "in-flight concurrent Dispose diagnostic ordering; fixtures cancel/await before disposal",
+    "native slow-byte framing separately (prior pure FRAME remains its own evidence)",
+    "full T041-IPC/T041/T042/T043 or whole #1553"
+  ]
+}

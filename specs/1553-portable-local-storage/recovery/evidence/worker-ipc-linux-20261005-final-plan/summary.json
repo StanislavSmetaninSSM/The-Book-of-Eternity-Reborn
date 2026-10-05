@@ -1,0 +1,74 @@
+{
+  "Categories": [
+    "worker-host-ipc-admission"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "9a346308d02d55ddb50a49fab109fc99b8871505",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0721835,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0187079,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0188394,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 46.219499,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 11.4147958,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0050357,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 10,
+  "WallTime": "00:01:05.0701684",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 34,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "worker-host-ipc-admission-integration-001",
+      "worker-host-ipc-admission-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
