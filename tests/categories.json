@@ -11136,6 +11136,43 @@
   ]
 },
 {
+  "id": "worker-host-environment",
+  "responsibility": "Platform-faithful worker environment capture, strict Launch JSON and host ProcessStartInfo reconstruction using only synthetic values; exact operational guidance guard and actual hidden-host Ready then owner-close without Release.",
+  "excludes": "Real inherited values/secrets, proxy/network changes, worker Release/execution, process-tree/workspace/PTY lifecycle and broad IPC/frame cohorts. Linux execution does not qualify Windows.",
+  "changeHints": [
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs",
+    "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostEnvironmentTests.cs",
+    "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.Environment.cs"
+  ],
+  "related": [
+    {
+      "id": "worker-host-ipc-admission",
+      "when": "Authentication, channel ownership or native admission changes; not required for a platform-faithful environment dictionary fix."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.*",
+        "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Environment_*"
+      ]
+    },
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake"
+      ]
+    }
+  ]
+},
+{
   "id": "worker-host-ipc-admission",
   "responsibility": "Windows/Linux worker-host both-channel PID/UID admission, native bounded frames/envelopes, cancellation and owner-close before Release, plus the exact operational handshake documentation guard and affected shared authority source guard. Includes explicit peer policy unit cases; simulated UID/native failures do not qualify a real different-UID peer.",
   "excludes": "Worker execution, Linux process ownership, detached workspace, persistent GM/PTY, gameplay and completion arbitration.",
