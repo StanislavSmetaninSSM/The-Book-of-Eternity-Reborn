@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="f7f3bb93-096c-44d3-ac48-2bea79afb6fd" name="@c7669543e9c7 2026-10-05 19:38:52" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T19:38:52.5326657+00:00" queuing="2026-10-05T19:38:52.5326658+00:00" start="2026-10-05T19:38:50.5147129+00:00" finish="2026-10-05T19:38:52.5420838+00:00" />
+  <TestSettings name="default" id="a2eb444d-a8c1-4cb0-8c2d-cab56417aaed">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-05_19_38_52" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="722536cf-db46-4d7c-85f1-9c276197435a" testId="33d0a0c2-a2d2-02cb-35e4-c6d970b104b1" testName="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxWorkerRelease_IsUnavailableBeforeAnyLaunch(mode: 0)" computerName="c7669543e9c7" duration="00:00:00.0004499" startTime="2026-10-05T19:38:52.4434410+00:00" endTime="2026-10-05T19:38:52.4434410+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="722536cf-db46-4d7c-85f1-9c276197435a">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: NotQualified
+Actual:   Unsupported</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxWorkerRelease_IsUnavailableBeforeAnyLaunch(Int32 mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerBackendSelectionTests.cs:line 32
+   at InvokeStub_GmWorkerBackendSelectionTests.LinuxWorkerRelease_IsUnavailableBeforeAnyLaunch(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2aaff6e4-b4c5-4304-915b-26b4188e8558" testId="c8bb35e4-4e7e-2965-9d50-ddeb81b4d71f" testName="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.OtherPlatform_RemainsUnavailable" computerName="c7669543e9c7" duration="00:00:00.0011132" startTime="2026-10-05T19:38:52.4447062+00:00" endTime="2026-10-05T19:38:52.4447062+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2aaff6e4-b4c5-4304-915b-26b4188e8558" />
+    <UnitTestResult executionId="4eba6210-afb9-48b9-894d-bcbaac43816c" testId="ca8ab7fa-0e20-ef76-a12e-6f034166ebde" testName="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxWorkerRelease_IsUnavailableBeforeAnyLaunch(mode: 2)" computerName="c7669543e9c7" duration="00:00:00.0004065" startTime="2026-10-05T19:38:52.4430110+00:00" endTime="2026-10-05T19:38:52.4430111+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4eba6210-afb9-48b9-894d-bcbaac43816c">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: NotQualified
+Actual:   Unsupported</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxWorkerRelease_IsUnavailableBeforeAnyLaunch(Int32 mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerBackendSelectionTests.cs:line 32
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a6e3812a-40f3-460b-b73d-d8b8895f86be" testId="5527aef6-63b2-fb75-3898-2137084d7188" testName="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.ExplicitSystemd_DoesNotPretendSuccessOrSilentlyDowngrade" computerName="c7669543e9c7" duration="00:00:00.0100392" startTime="2026-10-05T19:38:52.4424037+00:00" endTime="2026-10-05T19:38:52.4424039+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a6e3812a-40f3-460b-b73d-d8b8895f86be">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: NotImplemented
+Actual:   Unsupported</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.ExplicitSystemd_DoesNotPretendSuccessOrSilentlyDowngrade() in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerBackendSelectionTests.cs:line 43
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5a7f5f9d-097b-4383-b637-12097e18ae33" testId="8b6847c4-4acb-c647-5e02-6cc829f2a61b" testName="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxNeutralHost_SelectsDeclaredFallbackPendingActualPreflight(mode: 2)" computerName="c7669543e9c7" duration="00:00:00.0004789" startTime="2026-10-05T19:38:52.4368800+00:00" endTime="2026-10-05T19:38:52.4368802+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5a7f5f9d-097b-4383-b637-12097e18ae33">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.True() Failure
+Expected: True
+Actual:   False</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxNeutralHost_SelectsDeclaredFallbackPendingActualPreflight(Int32 mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerBackendSelectionTests.cs:line 15
+   at InvokeStub_GmWorkerBackendSelectionTests.LinuxNeutralHost_SelectsDeclaredFallbackPendingActualPreflight(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4ea8d9bf-22a6-49fb-ae11-e7eecc87cc5c" testId="2a40e86a-aa05-6440-11cc-0e9aca8cff50" testName="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxNeutralHost_SelectsDeclaredFallbackPendingActualPreflight(mode: 0)" computerName="c7669543e9c7" duration="00:00:00.0041084" startTime="2026-10-05T19:38:52.4329759+00:00" endTime="2026-10-05T19:38:52.4329902+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4ea8d9bf-22a6-49fb-ae11-e7eecc87cc5c">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.True() Failure
+Expected: True
+Actual:   False</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxNeutralHost_SelectsDeclaredFallbackPendingActualPreflight(Int32 mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerBackendSelectionTests.cs:line 15
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4cc9244e-416e-4df0-81f9-2c3252fe3168" testId="a44c5b17-faf6-3e99-cdde-d40163ffbef7" testName="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.WindowsAuto_PreservesJobCapabilityWithoutNativePreflight" computerName="c7669543e9c7" duration="00:00:00.0002534" startTime="2026-10-05T19:38:52.4380267+00:00" endTime="2026-10-05T19:38:52.4380269+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4cc9244e-416e-4df0-81f9-2c3252fe3168">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.True() Failure
+Expected: True
+Actual:   False</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.WindowsAuto_PreservesJobCapabilityWithoutNativePreflight() in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerBackendSelectionTests.cs:line 51
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxNeutralHost_SelectsDeclaredFallbackPendingActualPreflight(mode: 0)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2a40e86a-aa05-6440-11cc-0e9aca8cff50">
+      <Execution id="4ea8d9bf-22a6-49fb-ae11-e7eecc87cc5c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests" name="LinuxNeutralHost_SelectsDeclaredFallbackPendingActualPreflight" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxWorkerRelease_IsUnavailableBeforeAnyLaunch(mode: 0)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="33d0a0c2-a2d2-02cb-35e4-c6d970b104b1">
+      <Execution id="722536cf-db46-4d7c-85f1-9c276197435a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests" name="LinuxWorkerRelease_IsUnavailableBeforeAnyLaunch" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxNeutralHost_SelectsDeclaredFallbackPendingActualPreflight(mode: 2)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8b6847c4-4acb-c647-5e02-6cc829f2a61b">
+      <Execution id="5a7f5f9d-097b-4383-b637-12097e18ae33" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests" name="LinuxNeutralHost_SelectsDeclaredFallbackPendingActualPreflight" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxWorkerRelease_IsUnavailableBeforeAnyLaunch(mode: 2)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ca8ab7fa-0e20-ef76-a12e-6f034166ebde">
+      <Execution id="4eba6210-afb9-48b9-894d-bcbaac43816c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests" name="LinuxWorkerRelease_IsUnavailableBeforeAnyLaunch" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.ExplicitSystemd_DoesNotPretendSuccessOrSilentlyDowngrade" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5527aef6-63b2-fb75-3898-2137084d7188">
+      <Execution id="a6e3812a-40f3-460b-b73d-d8b8895f86be" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests" name="ExplicitSystemd_DoesNotPretendSuccessOrSilentlyDowngrade" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.WindowsAuto_PreservesJobCapabilityWithoutNativePreflight" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a44c5b17-faf6-3e99-cdde-d40163ffbef7">
+      <Execution id="4cc9244e-416e-4df0-81f9-2c3252fe3168" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests" name="WindowsAuto_PreservesJobCapabilityWithoutNativePreflight" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.OtherPlatform_RemainsUnavailable" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c8bb35e4-4e7e-2965-9d50-ddeb81b4d71f">
+      <Execution id="2aaff6e4-b4c5-4304-915b-26b4188e8558" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests" name="OtherPlatform_RemainsUnavailable" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="33d0a0c2-a2d2-02cb-35e4-c6d970b104b1" executionId="722536cf-db46-4d7c-85f1-9c276197435a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c8bb35e4-4e7e-2965-9d50-ddeb81b4d71f" executionId="2aaff6e4-b4c5-4304-915b-26b4188e8558" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ca8ab7fa-0e20-ef76-a12e-6f034166ebde" executionId="4eba6210-afb9-48b9-894d-bcbaac43816c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5527aef6-63b2-fb75-3898-2137084d7188" executionId="a6e3812a-40f3-460b-b73d-d8b8895f86be" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8b6847c4-4acb-c647-5e02-6cc829f2a61b" executionId="5a7f5f9d-097b-4383-b637-12097e18ae33" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2a40e86a-aa05-6440-11cc-0e9aca8cff50" executionId="4ea8d9bf-22a6-49fb-ae11-e7eecc87cc5c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a44c5b17-faf6-3e99-cdde-d40163ffbef7" executionId="4cc9244e-416e-4df0-81f9-2c3252fe3168" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="7" executed="7" passed="1" failed="6" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.18]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.40]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.42]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.48]       Assert.True() Failure
+[xUnit.net 00:00:01.48]       Expected: True
+[xUnit.net 00:00:01.48]       Actual:   False
+[xUnit.net 00:00:01.48]       Stack Trace:
+[xUnit.net 00:00:01.49]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerBackendSelectionTests.cs(15,0): at BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxNeutralHost_SelectsDeclaredFallbackPendingActualPreflight(Int32 mode)
+[xUnit.net 00:00:01.49]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.49]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.49]       Assert.True() Failure
+[xUnit.net 00:00:01.49]       Expected: True
+[xUnit.net 00:00:01.49]       Actual:   False
+[xUnit.net 00:00:01.49]       Stack Trace:
+[xUnit.net 00:00:01.49]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerBackendSelectionTests.cs(15,0): at BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxNeutralHost_SelectsDeclaredFallbackPendingActualPreflight(Int32 mode)
+[xUnit.net 00:00:01.49]            at InvokeStub_GmWorkerBackendSelectionTests.LinuxNeutralHost_SelectsDeclaredFallbackPendingActualPreflight(Object, Span`1)
+[xUnit.net 00:00:01.49]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.49]       Assert.True() Failure
+[xUnit.net 00:00:01.49]       Expected: True
+[xUnit.net 00:00:01.49]       Actual:   False
+[xUnit.net 00:00:01.49]       Stack Trace:
+[xUnit.net 00:00:01.49]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerBackendSelectionTests.cs(51,0): at BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.WindowsAuto_PreservesJobCapabilityWithoutNativePreflight()
+[xUnit.net 00:00:01.49]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.49]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.50]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.50]       Expected: NotImplemented
+[xUnit.net 00:00:01.50]       Actual:   Unsupported
+[xUnit.net 00:00:01.50]       Stack Trace:
+[xUnit.net 00:00:01.50]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerBackendSelectionTests.cs(43,0): at BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.ExplicitSystemd_DoesNotPretendSuccessOrSilentlyDowngrade()
+[xUnit.net 00:00:01.50]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.50]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.50]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.50]       Expected: NotQualified
+[xUnit.net 00:00:01.50]       Actual:   Unsupported
+[xUnit.net 00:00:01.50]       Stack Trace:
+[xUnit.net 00:00:01.50]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerBackendSelectionTests.cs(32,0): at BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxWorkerRelease_IsUnavailableBeforeAnyLaunch(Int32 mode)
+[xUnit.net 00:00:01.50]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.50]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.50]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.50]       Expected: NotQualified
+[xUnit.net 00:00:01.50]       Actual:   Unsupported
+[xUnit.net 00:00:01.50]       Stack Trace:
+[xUnit.net 00:00:01.50]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerBackendSelectionTests.cs(32,0): at BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxWorkerRelease_IsUnavailableBeforeAnyLaunch(Int32 mode)
+[xUnit.net 00:00:01.50]            at InvokeStub_GmWorkerBackendSelectionTests.LinuxWorkerRelease_IsUnavailableBeforeAnyLaunch(Object, Span`1)
+[xUnit.net 00:00:01.50]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.50]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T19:38:52.4507683+00:00">
+        <Text>[xUnit.net 00:00:01.48]     BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxNeutralHost_SelectsDeclaredFallbackPendingActualPreflight(mode: 0) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T19:38:52.4531475+00:00">
+        <Text>[xUnit.net 00:00:01.49]     BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxNeutralHost_SelectsDeclaredFallbackPendingActualPreflight(mode: 2) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T19:38:52.4532047+00:00">
+        <Text>[xUnit.net 00:00:01.49]     BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.WindowsAuto_PreservesJobCapabilityWithoutNativePreflight [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T19:38:52.4532176+00:00">
+        <Text>[xUnit.net 00:00:01.50]     BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.ExplicitSystemd_DoesNotPretendSuccessOrSilentlyDowngrade [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T19:38:52.4532436+00:00">
+        <Text>[xUnit.net 00:00:01.50]     BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxWorkerRelease_IsUnavailableBeforeAnyLaunch(mode: 2) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T19:38:52.4532557+00:00">
+        <Text>[xUnit.net 00:00:01.50]     BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxWorkerRelease_IsUnavailableBeforeAnyLaunch(mode: 0) [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

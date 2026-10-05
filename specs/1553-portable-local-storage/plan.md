@@ -20,6 +20,20 @@ control/owner-loss, output/FD and adopted-descendant regression selections; exac
 categories/commands/counts/source hashes and cleanup are recorded as each stage runs.
 No unchanged unrelated IPC/ENV/FRAME/workspace/receipt/input/output cohort is replayed.
 
+Selector baseline `6e917c5559222e749363e0fd60a4fef4ce8a39a6`: fresh category
+PlanOnly/build7planned/0executed,93.8263162s; selected NoBuild7executed,
+**1PASS/6causalFAIL**,7.7687953s, no skip/duplicates, runner cleanup complete.
+Failure is the deliberately unavailable policy scaffold, not preparation or native
+admission. [RED evidence](recovery/evidence/worker-host-selector-red/manifest.json).
+Minimal selector correction now distinguishes admitted stage/platform; package test
+next asserts the existing real builder emits relocatable measured-ELF provenance.
+Guardian design ruling: separate outer subreaper launches actual scenario driver;
+independent own-PPID/pidfd bind-before-reap loop retires adoptees through ECHILD.
+Actual Sol6.1/xhigh consult confirmed this is required: original no-enumeration
+alarm-only guardian cannot cover a supervisor clearing alarms or a gated host.
+Qualify driver/helper/gate loss and unaffected sentinel before native host expansion.
+This changes synthetic fixture cleanup only, not production backend scope.
+
 ## Worker-host native integration design — 2026-10-05
 
 **Design only; not implementation authorization.** Source/remote base

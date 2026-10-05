@@ -11627,6 +11627,30 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-native-package",
+      "responsibility": "Actual repo native package provenance, relocatable path and ELF ABI metadata; no worker/helper execution.",
+      "excludes": "Native ownership, IPC, Release, player-side compilation and cross-RID qualification.",
+      "changeHints": [
+        "scripts/build-linux-supervisor.ps1",
+        "BookOfEternityClient/BookOfEternityClient.csproj"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerNativePackageTests.*"
+          ]
+        }
+      ]
     }
   ]
 }
