@@ -243,6 +243,12 @@ operation and EXDEV fail closed without copy/per-file fallback. Default Store an
 Windows descriptor method/capability remain unchanged. This is not yet implemented
 or qualified; detailed tests/design amendment precede the new Core operation.
 
+B4 first preparation at `b75148b5`: selected PlanOnly stopped at build with
+CS9035 because the new fixture omitted required WorkerProposal.Status. Zero tests
+executed;39.0077061s, no timeout, complete runner cleanup. This is preparation
+failure, not causal RED. [Evidence](recovery/evidence/worker-pool-consumer-preparation-failure/manifest.json).
+Set the fixture's explicit Completed status; runtime gates remain unchanged.
+
 ### B1 execution record
 
 Read-only Spec Kit consistency pass at `0ffb1c45`: B has coverage in spec, this plan,

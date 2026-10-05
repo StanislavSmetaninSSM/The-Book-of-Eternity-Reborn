@@ -41,6 +41,7 @@ public sealed class GmWorkerConsumerEvidenceTests
         Status = new() { WorkerId = task.WorkerId, CurrentTaskId = task.TaskId, State = WorkerBridgeState.Stopped },
         ExitCode = 0,
         BoundTask = task,
-        Proposal = new() { ProposalId = "synthetic-record", WorkerId = task.WorkerId, TaskId = task.TaskId }
+        Proposal = new() { ProposalId = "synthetic-record", WorkerId = task.WorkerId, TaskId = task.TaskId,
+            Status = WorkerProposalStatus.Completed }
     };
 }
