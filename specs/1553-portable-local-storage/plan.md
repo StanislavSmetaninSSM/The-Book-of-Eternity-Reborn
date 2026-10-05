@@ -4,6 +4,22 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## Current recovery checkpoint — 2026-10-05
+
+**Start here: [cross-platform status and recovery handoff](cross-platform-status.md).**
+Accepted base **`f0af8c4b3affe4689e675d1dc7b1f50da334fcf6`**, branch
+`codex/1553-load-filesystem`; input-lifetime runtime source `dc29b37d` has37/37GREEN
+and independent Sol6.1/XHigh PASS. The accepted base was published/read back and
+restored cleanly from GitHub. This #1553 documentation-only handoff consolidates
+existing qualification; no runtime edits, builds, tests or probes.
+
+Current decision gate: target Linux distributions/environments and acceptable
+reliance on an already available process supervisor. Complete-descendant stop
+backend remains unchosen/unimplemented; namespace is a pending compatibility
+candidate. Full T041/T042/main-GM/Windows qualification remains open. No next code
+slice is authorized by this handoff. Sections below are historical bounded-block
+records: their old “next” recommendations do not define the current queue.
+
 ## T041-ENV worker environment — 2026-10-05 (verified component)
 
 Source **`43b60b954265e3bb404bf562cf7b9ff13dc4f953`**, tree
