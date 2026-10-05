@@ -1,0 +1,47 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "a729f4142779041f4633298c2ab9cc749004d05b",
+  "SourceResultDirectory": "20261005-132536-033-28569-f1cf59ea763f4c20b58575b6a26353fa-categories",
+  "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-bridge-output-stream -Parallelism 1 -PlanOnly",
+  "Os": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Sdk": "10.0.401",
+  "Runtime": "8.0.31",
+  "PowerShell": "7.6.6",
+  "EffectiveUid": 1000,
+  "TMPDIR": "/workspace/ipc-tmp",
+  "DOTNET_PROCESSOR_COUNT": null,
+  "Artifacts": [
+    {
+      "Path": "Build-unit.log",
+      "OriginalBytes": 10702,
+      "OriginalSha256": "0ecf7a5e4175e2f14297bac8d0bc80963643ff037b1aec90d71dedcab34f8e1d",
+      "StoredPath": "Build-unit.log.gz",
+      "StoredBytes": 908,
+      "StoredSha256": "2c5788bb9a27d8d6de64ce89be65f3793f2f751ccf8875e0685d770e3dfd0fac"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 1493540,
+      "OriginalSha256": "db001c4953720f0dd6ec10f28922cd3cde1750c3cfc55f912026c7b7d95f8b4b",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 163480,
+      "StoredSha256": "ed1c07fe35546529328a71bebae633b62cbdc0757b581e44fd016f7cb6f43e52"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 5560,
+      "OriginalSha256": "8dd447f4b9028c3ea1bc7f23245b7add89f9b4672d28d83513a727a6508f51b7",
+      "StoredPath": "plan.json",
+      "StoredBytes": 5560,
+      "StoredSha256": "8dd447f4b9028c3ea1bc7f23245b7add89f9b4672d28d83513a727a6508f51b7"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1456,
+      "OriginalSha256": "5aec464e70ae79811975981d6cf2f5bdfa2d8d9522d1df5c77360cabbe0a5a81",
+      "StoredPath": "summary.json",
+      "StoredBytes": 1456,
+      "StoredSha256": "5aec464e70ae79811975981d6cf2f5bdfa2d8d9522d1df5c77360cabbe0a5a81"
+    }
+  ]
+}

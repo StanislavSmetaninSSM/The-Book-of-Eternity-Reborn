@@ -867,30 +867,52 @@ internal sealed class BridgeHost : IDisposable
     private async Task PumpOutputAsync(Stream outputReader, Stream consoleWriter, CancellationToken cancellationToken)
     {
         var buffer = new byte[4096];
-        while (!cancellationToken.IsCancellationRequested)
+        var decoder = Encoding.UTF8.GetDecoder();
+        var characters = new char[Encoding.UTF8.GetMaxCharCount(buffer.Length)];
+        while (true)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             var read = await outputReader.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken);
-            if (read <= 0)
-                break;
+            cancellationToken.ThrowIfCancellationRequested();
+            if (read == 0)
+            {
+                // Only a real EOF finalizes pending bytes. Faults/cancellation propagate above.
+                var finalCount = decoder.GetChars(buffer, 0, 0, characters, 0, flush: true);
+                if (finalCount > 0)
+                    RecordOutputChunk(characters, finalCount, hasByteActivity: false);
+                return;
+            }
 
             await consoleWriter.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
             await consoleWriter.FlushAsync(cancellationToken);
 
-            var chunk = Encoding.UTF8.GetString(buffer, 0, read);
-            TaskCompletionSource<bool> signalToRelease;
-            lock (_sync)
-            {
-                _recentOutput.Append(chunk);
-                if (_recentOutput.Length > 65536)
-                    _recentOutput.Remove(0, _recentOutput.Length - 65536);
-                _outputVersion++;
-                signalToRelease = _outputChanged;
-                _outputChanged = CreateOutputSignal();
-            }
-
-            signalToRelease.TrySetResult(true);
-
+            var count = decoder.GetChars(buffer, 0, read, characters, 0, flush: false);
+            // A partial scalar is still byte activity, even when it produces no text yet.
+            RecordOutputChunk(characters, count, hasByteActivity: true);
         }
+    }
+
+    private void RecordOutputChunk(char[] characters, int count, bool hasByteActivity)
+    {
+        TaskCompletionSource<bool> signalToRelease;
+        lock (_sync)
+        {
+            _recentOutput.Append(characters, 0, count);
+            if (_recentOutput.Length > 65536)
+            {
+                var removeCount = _recentOutput.Length - 65536;
+                if (char.IsHighSurrogate(_recentOutput[removeCount - 1]) &&
+                    char.IsLowSurrogate(_recentOutput[removeCount]))
+                    removeCount++;
+                _recentOutput.Remove(0, removeCount);
+            }
+            if (hasByteActivity)
+                _outputVersion++;
+            signalToRelease = _outputChanged;
+            _outputChanged = CreateOutputSignal();
+        }
+
+        signalToRelease.TrySetResult(true);
     }
 
     private async Task PumpKeyboardAsync(CancellationToken cancellationToken)
@@ -1272,7 +1294,12 @@ internal sealed class BridgeHost : IDisposable
         const int tailLimit = 12000;
         var recentOutput = _recentOutput.ToString();
         if (recentOutput.Length > tailLimit)
-            recentOutput = recentOutput[^tailLimit..];
+        {
+            var start = recentOutput.Length - tailLimit;
+            if (char.IsHighSurrogate(recentOutput[start - 1]) && char.IsLowSurrogate(recentOutput[start]))
+                start++;
+            recentOutput = recentOutput[start..];
+        }
         return recentOutput;
     }
 

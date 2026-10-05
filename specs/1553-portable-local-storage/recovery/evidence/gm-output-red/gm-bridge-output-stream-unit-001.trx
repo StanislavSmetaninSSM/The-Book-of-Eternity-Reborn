@@ -1,0 +1,935 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="35454ca3-5a14-4cfb-b63c-9b8d5408512f" name="@3a7834d0640d 2026-10-05 13:26:52" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T13:26:52.7343981+00:00" queuing="2026-10-05T13:26:52.7343982+00:00" start="2026-10-05T13:26:50.6200616+00:00" finish="2026-10-05T13:26:52.9219863+00:00" />
+  <TestSettings name="default" id="c20f6be7-1152-4957-8779-f269a8339a28">
+    <Deployment runDeploymentRoot="_3a7834d0640d_2026-10-05_13_26_52" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="4ef41919-94c3-4e49-94fe-825fd0b07726" testId="bf21eedb-094b-c3f1-8dc1-89381ffc8693" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode(chunkSize: 1)" computerName="3a7834d0640d" duration="00:00:00.0065715" startTime="2026-10-05T13:26:52.6935889+00:00" endTime="2026-10-05T13:26:52.6935891+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4ef41919-94c3-4e49-94fe-825fd0b07726">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+                                  ↓ (pos 4095)
+Expected: ···"aaaaaaaaaaaaaaaaaaaaЖ\ud83d\ude00é\r\n\0\u001b[31m紅\u001b[0m\u001b]0"···
+Actual:   ···"aaaaaaaaaaaaaaaaaaaa������e��\r\n\0\u001b[31m���\u001b"···
+                                  ↑ (pos 4095)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode(Int32 chunkSize) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 49
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="47b958d6-b9e2-4328-987c-60e2aa920a4e" testId="6f731a2c-0d9f-ed71-2482-2590779d4822" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailRetainsCompletePairAtBoundary(limit: 65536)" computerName="3a7834d0640d" duration="00:00:00.0057303" startTime="2026-10-05T13:26:52.8242123+00:00" endTime="2026-10-05T13:26:52.8242124+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="47b958d6-b9e2-4328-987c-60e2aa920a4e" />
+    <UnitTestResult executionId="94074e39-4449-4761-bc04-3005dbf44491" testId="34220843-81ba-2d7d-71e8-033b020f1a78" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EmptyEofDoesNotInventActivityOrText" computerName="3a7834d0640d" duration="00:00:00.0021389" startTime="2026-10-05T13:26:52.7931493+00:00" endTime="2026-10-05T13:26:52.7931494+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="94074e39-4449-4761-bc04-3005dbf44491" />
+    <UnitTestResult executionId="1e36bf49-86bd-480e-b84c-57f744a0b785" testId="447238c8-46f6-6d5c-b3e2-ace1b90ad6b3" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ProductionStartAndDiagnosticsConsumeTheTestedMethods" computerName="3a7834d0640d" duration="00:00:00.0009421" startTime="2026-10-05T13:26:52.7257459+00:00" endTime="2026-10-05T13:26:52.7257460+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1e36bf49-86bd-480e-b84c-57f744a0b785" />
+    <UnitTestResult executionId="46ba045c-1c2e-40fe-b8b9-e067c47d1c4a" testId="fc038755-02e2-c82e-885b-2ffdd5cf25a1" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailNeverStartsInsideSurrogatePair(limit: 65536)" computerName="3a7834d0640d" duration="00:00:00.0073074" startTime="2026-10-05T13:26:52.7399456+00:00" endTime="2026-10-05T13:26:52.7399457+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="46ba045c-1c2e-40fe-b8b9-e067c47d1c4a">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+           ↓ (pos 0)
+Expected: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"···
+Actual:   "�xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"···
+           ↑ (pos 0)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailNeverStartsInsideSurrogatePair(Int32 limit) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 274
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1e73ed2b-7edc-4dd6-9b74-82bd7ffdd7d1" testId="530a9da6-d5d5-9906-200f-e49c64b01428" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 13)" computerName="3a7834d0640d" duration="00:00:00.0002834" startTime="2026-10-05T13:26:52.7169914+00:00" endTime="2026-10-05T13:26:52.7169915+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1e73ed2b-7edc-4dd6-9b74-82bd7ffdd7d1" />
+    <UnitTestResult executionId="cde62775-329c-4cec-97c2-db446c8ab90c" testId="ab020b10-942d-17dc-8502-32f4ab48b374" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailNeverStartsInsideSurrogatePair(limit: 12000)" computerName="3a7834d0640d" duration="00:00:00.0019689" startTime="2026-10-05T13:26:52.7322825+00:00" endTime="2026-10-05T13:26:52.7322826+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cde62775-329c-4cec-97c2-db446c8ab90c">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+           ↓ (pos 0)
+Expected: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"···
+Actual:   "�xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"···
+           ↑ (pos 0)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailNeverStartsInsideSurrogatePair(Int32 limit) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 274
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4264a9da-f98d-4df2-94c4-96a77ab1b3e1" testId="3d0eb670-9b42-036b-5bcc-23fb5a445288" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: &quot;before&quot;)" computerName="3a7834d0640d" duration="00:00:00.0020448" startTime="2026-10-05T13:26:52.7201044+00:00" endTime="2026-10-05T13:26:52.7201045+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4264a9da-f98d-4df2-94c4-96a77ab1b3e1">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.ThrowsAny() Failure: No exception was thrown
+Expected: typeof(System.OperationCanceledException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(String phase) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 212
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c34cf619-b523-45f7-8280-3e333cb0a616" testId="1c0eaded-34e2-ad06-a54c-ebcbe1cea9da" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: &quot;flush&quot;)" computerName="3a7834d0640d" duration="00:00:00.0037903" startTime="2026-10-05T13:26:52.7199260+00:00" endTime="2026-10-05T13:26:52.7199261+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c34cf619-b523-45f7-8280-3e333cb0a616">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: String was not empty
+String: "�"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(String phase) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 213
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f5949f68-b8c8-4b7c-83f5-f0c17518e8cf" testId="e80ca4d7-9f05-d10e-4db7-f2ecfe3b0fa9" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode(chunkSize: 2)" computerName="3a7834d0640d" duration="00:00:00.0021508" startTime="2026-10-05T13:26:52.6960198+00:00" endTime="2026-10-05T13:26:52.6960199+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f5949f68-b8c8-4b7c-83f5-f0c17518e8cf">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+                                  ↓ (pos 4095)
+Expected: ···"aaaaaaaaaaaaaaaaaaaaЖ\ud83d\ude00é\r\n\0\u001b[31m紅\u001b[0m\u001b]0"···
+Actual:   ···"aaaaaaaaaaaaaaaaaaaa������é\r\n\0\u001b[31m��\u001b[0"···
+                                  ↑ (pos 4095)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode(Int32 chunkSize) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 49
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0f07731c-20ee-4cb0-ac6f-9ef314c758a2" testId="1c62e3d9-20c9-0aa8-3f6b-f905d517059c" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 4)" computerName="3a7834d0640d" duration="00:00:00.0003264" startTime="2026-10-05T13:26:52.7166852+00:00" endTime="2026-10-05T13:26:52.7166852+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0f07731c-20ee-4cb0-ac6f-9ef314c758a2">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+             ↓ (pos 2)
+Expected: "AЖé€\ud83d\ude00éZ"
+Actual:   "AЖ��€\ud83d\ude00éZ"
+             ↑ (pos 2)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(Int32 split) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 29
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3ee21557-9eb2-43d3-8bff-1370069ae277" testId="e921b67b-bfe1-b27a-a29b-032533d1304b" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 5)" computerName="3a7834d0640d" duration="00:00:00.0001437" startTime="2026-10-05T13:26:52.7197201+00:00" endTime="2026-10-05T13:26:52.7197201+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3ee21557-9eb2-43d3-8bff-1370069ae277" />
+    <UnitTestResult executionId="af304068-6db9-4231-9fa4-06fd14c9604d" testId="c79fe32c-cb03-8e53-b44c-a380029f5844" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_OnlyRealEofFinalizesPendingTextWithoutInventingByteActivity" computerName="3a7834d0640d" duration="00:00:00.0013470" startTime="2026-10-05T13:26:52.7913876+00:00" endTime="2026-10-05T13:26:52.7913877+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="af304068-6db9-4231-9fa4-06fd14c9604d">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: String was not empty
+String: "�"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.&lt;&gt;c__DisplayClass8_0.&lt;ActualPump_OnlyRealEofFinalizesPendingTextWithoutInventingByteActivity&gt;b__0(Int32 index) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 129
+   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ChunkStream.ReadAsync(Memory`1 buffer, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 417
+   at BookOfEternityGMBridge.BridgeHost.PumpOutputAsync(Stream outputReader, Stream consoleWriter, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityGMBridge/Program.cs:line 872
+   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_OnlyRealEofFinalizesPendingTextWithoutInventingByteActivity() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 133
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d7b8813a-f5bd-4c03-929b-87ae79d70b8d" testId="e0021abe-1b0d-8fe3-510b-1707903e5970" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: &quot;read&quot;)" computerName="3a7834d0640d" duration="00:00:00.0003727" startTime="2026-10-05T13:26:52.7211922+00:00" endTime="2026-10-05T13:26:52.7211923+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d7b8813a-f5bd-4c03-929b-87ae79d70b8d">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: String was not empty
+String: "�"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(String phase) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 213
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="00496215-41be-4e6f-84fd-387e5b3e78ad" testId="c7437885-26d3-0677-27a6-f1a19c68e99e" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: &quot;write&quot;)" computerName="3a7834d0640d" duration="00:00:00.0006228" startTime="2026-10-05T13:26:52.7207444+00:00" endTime="2026-10-05T13:26:52.7207446+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="00496215-41be-4e6f-84fd-387e5b3e78ad">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: String was not empty
+String: "�"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(String phase) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 213
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b4b56f7e-9fff-4740-abff-8469a1d09fb2" testId="2798e2c7-2972-8f58-afcc-86c1392e6499" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(bytes: [226, 130], expected: &quot;�&quot;)" computerName="3a7834d0640d" duration="00:00:00.0003279" startTime="2026-10-05T13:26:52.7289878+00:00" endTime="2026-10-05T13:26:52.7289879+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b4b56f7e-9fff-4740-abff-8469a1d09fb2">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+Expected: "�"
+Actual:   "��"
+            ↑ (pos 1)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(Byte[] bytes, String expected) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 74
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="cfbe8aca-8bdc-4a9b-b3e7-62e8aacecb44" testId="4be28f62-a9f5-e691-f88c-7c283d46d91c" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode(chunkSize: 7)" computerName="3a7834d0640d" duration="00:00:00.0228463" startTime="2026-10-05T13:26:52.6743021+00:00" endTime="2026-10-05T13:26:52.6743305+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cfbe8aca-8bdc-4a9b-b3e7-62e8aacecb44" />
+    <UnitTestResult executionId="b9317fbf-9416-400d-92af-9e3d5dfa5729" testId="e1bbe14d-9975-c31c-d84a-662a81909741" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_FaultPropagatesWithoutFinalizingPendingBytes(phase: &quot;write&quot;)" computerName="3a7834d0640d" duration="00:00:00.0004401" startTime="2026-10-05T13:26:52.7242148+00:00" endTime="2026-10-05T13:26:52.7242153+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b9317fbf-9416-400d-92af-9e3d5dfa5729">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: String was not empty
+String: "�"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_FaultPropagatesWithoutFinalizingPendingBytes(String phase) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 171
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c55599da-c777-4de1-b9f2-4850efdd02de" testId="151a1f4c-cdb1-254d-017b-206840b17fbc" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(bytes: [237, 160, 128], expected: &quot;���&quot;)" computerName="3a7834d0640d" duration="00:00:00.0001376" startTime="2026-10-05T13:26:52.7299148+00:00" endTime="2026-10-05T13:26:52.7299148+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c55599da-c777-4de1-b9f2-4850efdd02de" />
+    <UnitTestResult executionId="4431e337-6970-4408-9da0-5f4430b9f9c6" testId="e1b6a38d-4119-47bb-fe6b-67fcb7370d58" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_FaultPropagatesWithoutFinalizingPendingBytes(phase: &quot;flush&quot;)" computerName="3a7834d0640d" duration="00:00:00.0007323" startTime="2026-10-05T13:26:52.7238604+00:00" endTime="2026-10-05T13:26:52.7238605+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4431e337-6970-4408-9da0-5f4430b9f9c6">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: String was not empty
+String: "�"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_FaultPropagatesWithoutFinalizingPendingBytes(String phase) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 171
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d4be876a-c2dd-4b9d-bbb3-61d56059a943" testId="75727204-5725-1708-ac63-f2b0c882a356" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 12)" computerName="3a7834d0640d" duration="00:00:00.0017387" startTime="2026-10-05T13:26:52.6984672+00:00" endTime="2026-10-05T13:26:52.6984673+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d4be876a-c2dd-4b9d-bbb3-61d56059a943" />
+    <UnitTestResult executionId="6c94caea-5743-47ac-a4eb-bf10e3d84230" testId="a5592d6e-e24c-1396-8a00-34acde433b02" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_SeparateInvocationsNeverSharePendingDecoderState(firstEndsInFault: True)" computerName="3a7834d0640d" duration="00:00:00.0012766" startTime="2026-10-05T13:26:52.7250858+00:00" endTime="2026-10-05T13:26:52.7250859+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6c94caea-5743-47ac-a4eb-bf10e3d84230">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+Expected: "��"
+Actual:   "���"
+             ↑ (pos 2)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_SeparateInvocationsNeverSharePendingDecoderState(Boolean firstEndsInFault) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 258
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6d8dd788-ee4f-43e1-aa7e-b5de98826f28" testId="884f5342-626b-0573-8355-c6fada5c9450" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: &quot;eof&quot;)" computerName="3a7834d0640d" duration="00:00:00.0004533" startTime="2026-10-05T13:26:52.7209400+00:00" endTime="2026-10-05T13:26:52.7209401+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6d8dd788-ee4f-43e1-aa7e-b5de98826f28">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.ThrowsAny() Failure: No exception was thrown
+Expected: typeof(System.OperationCanceledException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(String phase) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 212
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="354964fc-44da-4a63-865f-1f5caeb5a3f1" testId="e4a60ecc-6de6-fbe7-8a71-722ec94e09e8" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 10)" computerName="3a7834d0640d" duration="00:00:00.0003183" startTime="2026-10-05T13:26:52.7169057+00:00" endTime="2026-10-05T13:26:52.7169058+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="354964fc-44da-4a63-865f-1f5caeb5a3f1">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+               ↓ (pos 4)
+Expected: "AЖé€\ud83d\ude00éZ"
+Actual:   "AЖé€���éZ"
+               ↑ (pos 4)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(Int32 split) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 29
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="8baca189-0392-4fe4-8bb1-9c6eb1d2056d" testId="3b6fa19d-1e1a-3795-cbd6-2aad443b255c" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode(chunkSize: 4096)" computerName="3a7834d0640d" duration="00:00:00.0023333" startTime="2026-10-05T13:26:52.6949472+00:00" endTime="2026-10-05T13:26:52.6949473+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8baca189-0392-4fe4-8bb1-9c6eb1d2056d">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+                                  ↓ (pos 4095)
+Expected: ···"aaaaaaaaaaaaaaaaaaaaЖ\ud83d\ude00é\r\n\0\u001b[31m紅\u001b[0m\u001b]0"···
+Actual:   ···"aaaaaaaaaaaaaaaaaaaa��\ud83d\ude00é\r\n\0\u001b[31m紅\u001b[0m\u001b]"···
+                                  ↑ (pos 4095)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode(Int32 chunkSize) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 49
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c90a06a4-5f81-40f8-9eac-a4ca67a6bd2e" testId="29cde489-f85a-cb57-008b-00c701f548f1" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_IncompleteScalarAdvancesByteActivityBeforeTextExists" computerName="3a7834d0640d" duration="00:00:00.0020812" startTime="2026-10-05T13:26:52.6973552+00:00" endTime="2026-10-05T13:26:52.6973553+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c90a06a4-5f81-40f8-9eac-a4ca67a6bd2e">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: String was not empty
+String: "�"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.&lt;&gt;c__DisplayClass7_0.&lt;ActualPump_IncompleteScalarAdvancesByteActivityBeforeTextExists&gt;b__0(Int32 index) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 111
+   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ChunkStream.ReadAsync(Memory`1 buffer, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 417
+   at BookOfEternityGMBridge.BridgeHost.PumpOutputAsync(Stream outputReader, Stream consoleWriter, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityGMBridge/Program.cs:line 872
+   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_IncompleteScalarAdvancesByteActivityBeforeTextExists() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 113
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="128c6e7f-4b6e-474d-a9fd-76775788bdef" testId="cf86f6ef-31ac-dbd4-112e-4864acabcb48" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 1)" computerName="3a7834d0640d" duration="00:00:00.0007431" startTime="2026-10-05T13:26:52.7152830+00:00" endTime="2026-10-05T13:26:52.7152830+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="128c6e7f-4b6e-474d-a9fd-76775788bdef" />
+    <UnitTestResult executionId="4e511761-28f4-4590-8389-863e830692d4" testId="116054ba-5042-82e9-f3d9-c5c89de57bd5" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_SeparateInvocationsNeverSharePendingDecoderState(firstEndsInFault: False)" computerName="3a7834d0640d" duration="00:00:00.0012783" startTime="2026-10-05T13:26:52.7243055+00:00" endTime="2026-10-05T13:26:52.7243056+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4e511761-28f4-4590-8389-863e830692d4" />
+    <UnitTestResult executionId="75f43092-b298-4435-a7d1-88c8ac2c999c" testId="0ca2fe9b-b673-1d1e-3cd1-17eeeab3ffa4" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 15)" computerName="3a7834d0640d" duration="00:00:00.0003356" startTime="2026-10-05T13:26:52.7153256+00:00" endTime="2026-10-05T13:26:52.7153256+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="75f43092-b298-4435-a7d1-88c8ac2c999c" />
+    <UnitTestResult executionId="db68eeb5-2db6-42b5-bd74-bde441f0075f" testId="c130df1e-cf85-627f-4671-7e3d00f62ad8" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 7)" computerName="3a7834d0640d" duration="00:00:00.0005480" startTime="2026-10-05T13:26:52.6999055+00:00" endTime="2026-10-05T13:26:52.6999056+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="db68eeb5-2db6-42b5-bd74-bde441f0075f">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+              ↓ (pos 3)
+Expected: "AЖé€\ud83d\ude00éZ"
+Actual:   "AЖé��\ud83d\ude00éZ"
+              ↑ (pos 3)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(Int32 split) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 29
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="325a51a7-0d9b-4bdb-94a9-155305e301ef" testId="a8a34bd6-37c0-1e6e-928b-66ca4e66347c" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 8)" computerName="3a7834d0640d" duration="00:00:00.0001872" startTime="2026-10-05T13:26:52.7169548+00:00" endTime="2026-10-05T13:26:52.7169549+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="325a51a7-0d9b-4bdb-94a9-155305e301ef" />
+    <UnitTestResult executionId="41717600-fb05-4242-a2fe-855f0b275055" testId="0275bb13-3ee4-d6c3-7687-05d8424f4bab" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 6)" computerName="3a7834d0640d" duration="00:00:00.0003532" startTime="2026-10-05T13:26:52.7164380+00:00" endTime="2026-10-05T13:26:52.7164382+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="41717600-fb05-4242-a2fe-855f0b275055">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+              ↓ (pos 3)
+Expected: "AЖé€\ud83d\ude00éZ"
+Actual:   "AЖé���\ud83d\ude00éZ"
+              ↑ (pos 3)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(Int32 split) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 29
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f6e0f9ee-ce7a-48bf-8539-8e0bf2887383" testId="ccc92ee2-2b17-c08f-765b-4fec51fe7843" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_FaultPropagatesWithoutFinalizingPendingBytes(phase: &quot;read&quot;)" computerName="3a7834d0640d" duration="00:00:00.0024390" startTime="2026-10-05T13:26:52.7220705+00:00" endTime="2026-10-05T13:26:52.7220706+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f6e0f9ee-ce7a-48bf-8539-8e0bf2887383">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: String was not empty
+String: "�"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_FaultPropagatesWithoutFinalizingPendingBytes(String phase) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 171
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1fd06592-c2fd-49c4-8466-d135abd6b870" testId="2272a58c-9a46-6116-48ca-a03cc3dbe05d" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_PendingMalformedPrefixPlusFullReadFitsDecoderBuffer" computerName="3a7834d0640d" duration="00:00:00.0125019" startTime="2026-10-05T13:26:52.8378012+00:00" endTime="2026-10-05T13:26:52.8378013+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1fd06592-c2fd-49c4-8466-d135abd6b870" />
+    <UnitTestResult executionId="436e64ba-893c-4fd8-ae41-1717f1eb53a9" testId="23279b7b-2e32-9e93-c0b0-035a02bd1d95" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(bytes: [255, 65, 128], expected: &quot;�A�&quot;)" computerName="3a7834d0640d" duration="00:00:00.0002241" startTime="2026-10-05T13:26:52.7281067+00:00" endTime="2026-10-05T13:26:52.7281068+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="436e64ba-893c-4fd8-ae41-1717f1eb53a9" />
+    <UnitTestResult executionId="f214d8ad-2383-404c-90cd-e069bc2ec3a3" testId="ece7477f-297d-b966-c246-bcf1867180fe" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 3)" computerName="3a7834d0640d" duration="00:00:00.0002601" startTime="2026-10-05T13:26:52.7152248+00:00" endTime="2026-10-05T13:26:52.7152249+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f214d8ad-2383-404c-90cd-e069bc2ec3a3" />
+    <UnitTestResult executionId="42a889c7-fe2c-4b60-a477-16838847af5c" testId="276c44a7-70f8-85e8-53a0-162bfb6a338d" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(bytes: [226, 130, 65], expected: &quot;�A&quot;)" computerName="3a7834d0640d" duration="00:00:00.0006523" startTime="2026-10-05T13:26:52.7280376+00:00" endTime="2026-10-05T13:26:52.7280377+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="42a889c7-fe2c-4b60-a477-16838847af5c">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+            ↓ (pos 1)
+Expected: "�A"
+Actual:   "��A"
+            ↑ (pos 1)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(Byte[] bytes, String expected) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 74
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9375d114-fac0-4290-9cae-16ddd37af800" testId="359eaf43-7a84-e4c0-6e5f-77a016fead05" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualConsumerAssemblyAndPortablePdbMatchCurrentProductionSource" computerName="3a7834d0640d" duration="00:00:00.0103844" startTime="2026-10-05T13:26:52.7890541+00:00" endTime="2026-10-05T13:26:52.7890542+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9375d114-fac0-4290-9cae-16ddd37af800" />
+    <UnitTestResult executionId="4c937d5d-60ca-4176-9c90-c472e82dd1a7" testId="35913838-0a08-8bf8-f34c-3e8803a0a7c4" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(bytes: [192, 175], expected: &quot;��&quot;)" computerName="3a7834d0640d" duration="00:00:00.0001996" startTime="2026-10-05T13:26:52.7298579+00:00" endTime="2026-10-05T13:26:52.7298581+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4c937d5d-60ca-4176-9c90-c472e82dd1a7" />
+    <UnitTestResult executionId="1606728a-7c6d-4fff-8b06-f9139130b575" testId="bd99aebb-cd6d-0b03-53f3-ec15718d8803" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 14)" computerName="3a7834d0640d" duration="00:00:00.0006824" startTime="2026-10-05T13:26:52.7008333+00:00" endTime="2026-10-05T13:26:52.7008334+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1606728a-7c6d-4fff-8b06-f9139130b575">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+                  ↓ (pos 7)
+Expected: "AЖé€\ud83d\ude00éZ"
+Actual:   "AЖé€\ud83d\ude00e��Z"
+                  ↑ (pos 7)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(Int32 split) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 29
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1afc0c8c-da32-4f53-a48e-2c68964b6eef" testId="85d7b087-6724-7f0a-624d-2b418f9214c4" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_LongOutputStaysBoundedAfterEveryRead" computerName="3a7834d0640d" duration="00:00:00.0382833" startTime="2026-10-05T13:26:52.7817029+00:00" endTime="2026-10-05T13:26:52.7817030+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1afc0c8c-da32-4f53-a48e-2c68964b6eef">
+      <Output>
+        <ErrorInfo>
+          <Message>System.Text.EncoderFallbackException : Unable to translate Unicode character \\uDE00 at index 0 to specified code page.</Message>
+          <StackTrace>   at System.Text.EncoderExceptionFallbackBuffer.Fallback(Char charUnknown, Int32 index)
+   at System.Text.EncoderFallbackBuffer.InternalFallback(ReadOnlySpan`1 chars, Int32&amp; charsConsumed)
+   at System.Text.Encoding.GetByteCountWithFallback(ReadOnlySpan`1 chars, Int32 originalCharsLength, EncoderNLS encoder)
+   at System.Text.Encoding.GetByteCountWithFallback(Char* pCharsOriginal, Int32 originalCharCount, Int32 charsConsumedSoFar)
+   at System.Text.UTF8Encoding.GetByteCount(String chars)
+   at System.Text.Encoding.GetBytes(String s)
+   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.AssertWellFormedUtf16(String text) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 362
+   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.&lt;&gt;c__DisplayClass16_0.&lt;ActualPump_LongOutputStaysBoundedAfterEveryRead&gt;b__0(Int32 _) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 306
+   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ChunkStream.ReadAsync(Memory`1 buffer, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 417
+   at BookOfEternityGMBridge.BridgeHost.PumpOutputAsync(Stream outputReader, Stream consoleWriter, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityGMBridge/Program.cs:line 872
+   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_LongOutputStaysBoundedAfterEveryRead() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 309
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4370cbe9-61e6-4834-bfc9-00a690513900" testId="6e9b4cda-0905-ea4f-8b9c-dd39d29f5d26" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 2)" computerName="3a7834d0640d" duration="00:00:00.0003348" startTime="2026-10-05T13:26:52.7015331+00:00" endTime="2026-10-05T13:26:52.7015332+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4370cbe9-61e6-4834-bfc9-00a690513900">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+            ↓ (pos 1)
+Expected: "AЖé€\ud83d\ude00éZ"
+Actual:   "A��é€\ud83d\ude00éZ"
+            ↑ (pos 1)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(Int32 split) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 29
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c89aefcf-dead-4190-a17a-77ff8f15fb57" testId="4097b20f-8046-d4e0-efe6-0552178b3d04" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 9)" computerName="3a7834d0640d" duration="00:00:00.0002313" startTime="2026-10-05T13:26:52.7196506+00:00" endTime="2026-10-05T13:26:52.7196507+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c89aefcf-dead-4190-a17a-77ff8f15fb57">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+               ↓ (pos 4)
+Expected: "AЖé€\ud83d\ude00éZ"
+Actual:   "AЖé€����éZ"
+               ↑ (pos 4)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(Int32 split) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 29
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e4909ca6-3642-463c-afa5-6822f35fb48a" testId="0e58cdac-a2c5-3d10-38df-90b6f6b9e5d7" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: &quot;between&quot;)" computerName="3a7834d0640d" duration="00:00:00.0002482" startTime="2026-10-05T13:26:52.7218644+00:00" endTime="2026-10-05T13:26:52.7218645+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e4909ca6-3642-463c-afa5-6822f35fb48a">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.ThrowsAny() Failure: No exception was thrown
+Expected: typeof(System.OperationCanceledException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(String phase) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 212
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e641ea38-9d74-40e7-9fe2-cc325ed2679e" testId="139efb9c-d72a-34a0-7bc7-9eeeb4da8244" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailRetainsCompletePairAtBoundary(limit: 12000)" computerName="3a7834d0640d" duration="00:00:00.0008373" startTime="2026-10-05T13:26:52.8251472+00:00" endTime="2026-10-05T13:26:52.8251473+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e641ea38-9d74-40e7-9fe2-cc325ed2679e" />
+    <UnitTestResult executionId="6d027e65-5cc5-4772-8464-a8ef78f3817d" testId="c65cc898-a029-87ac-9cd3-85ed8bfa6267" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(bytes: [244, 144, 128, 128], expected: &quot;����&quot;)" computerName="3a7834d0640d" duration="00:00:00.0008301" startTime="2026-10-05T13:26:52.7266717+00:00" endTime="2026-10-05T13:26:52.7266718+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6d027e65-5cc5-4772-8464-a8ef78f3817d" />
+    <UnitTestResult executionId="8987e5c0-38cb-4f8d-9b9b-f1768989162d" testId="1ae78860-6a7c-50be-4865-d12d01a0eb1c" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CanceledBlockedReadCompletesWithoutEofFlush" computerName="3a7834d0640d" duration="00:00:00.0153982" startTime="2026-10-05T13:26:52.8151112+00:00" endTime="2026-10-05T13:26:52.8151113+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8987e5c0-38cb-4f8d-9b9b-f1768989162d">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: String was not empty
+String: "�"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CanceledBlockedReadCompletesWithoutEofFlush() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 231
+   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CanceledBlockedReadCompletesWithoutEofFlush() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 238
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6d26e72a-0217-4c70-a44f-47901798a802" testId="f8b193a6-4d07-dfe2-5e74-2dc65585d3e4" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 11)" computerName="3a7834d0640d" duration="00:00:00.0002627" startTime="2026-10-05T13:26:52.7160628+00:00" endTime="2026-10-05T13:26:52.7160629+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6d26e72a-0217-4c70-a44f-47901798a802">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+               ↓ (pos 4)
+Expected: "AЖé€\ud83d\ude00éZ"
+Actual:   "AЖé€��éZ"
+               ↑ (pos 4)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(Int32 split) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs:line 29
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 2)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6e9b4cda-0905-ea4f-8b9c-dd39d29f5d26">
+      <Execution id="4370cbe9-61e6-4834-bfc9-00a690513900" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 4)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1c62e3d9-20c9-0aa8-3f6b-f905d517059c">
+      <Execution id="0f07731c-20ee-4cb0-ac6f-9ef314c758a2" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(bytes: [255, 65, 128], expected: &quot;�A�&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="23279b7b-2e32-9e93-c0b0-035a02bd1d95">
+      <Execution id="436e64ba-893c-4fd8-ae41-1717f1eb53a9" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: &quot;write&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c7437885-26d3-0677-27a6-f1a19c68e99e">
+      <Execution id="00496215-41be-4e6f-84fd-387e5b3e78ad" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_CancellationIsNotSuccessfulEof" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_FaultPropagatesWithoutFinalizingPendingBytes(phase: &quot;flush&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e1b6a38d-4119-47bb-fe6b-67fcb7370d58">
+      <Execution id="4431e337-6970-4408-9da0-5f4430b9f9c6" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_FaultPropagatesWithoutFinalizingPendingBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_SeparateInvocationsNeverSharePendingDecoderState(firstEndsInFault: True)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a5592d6e-e24c-1396-8a00-34acde433b02">
+      <Execution id="6c94caea-5743-47ac-a4eb-bf10e3d84230" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_SeparateInvocationsNeverSharePendingDecoderState" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EmptyEofDoesNotInventActivityOrText" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="34220843-81ba-2d7d-71e8-033b020f1a78">
+      <Execution id="94074e39-4449-4761-bc04-3005dbf44491" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_EmptyEofDoesNotInventActivityOrText" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailNeverStartsInsideSurrogatePair(limit: 65536)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fc038755-02e2-c82e-885b-2ffdd5cf25a1">
+      <Execution id="46ba045c-1c2e-40fe-b8b9-e067c47d1c4a" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_BoundedTailNeverStartsInsideSurrogatePair" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(bytes: [244, 144, 128, 128], expected: &quot;����&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c65cc898-a029-87ac-9cd3-85ed8bfa6267">
+      <Execution id="6d027e65-5cc5-4772-8464-a8ef78f3817d" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CanceledBlockedReadCompletesWithoutEofFlush" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1ae78860-6a7c-50be-4865-d12d01a0eb1c">
+      <Execution id="8987e5c0-38cb-4f8d-9b9b-f1768989162d" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_CanceledBlockedReadCompletesWithoutEofFlush" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(bytes: [237, 160, 128], expected: &quot;���&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="151a1f4c-cdb1-254d-017b-206840b17fbc">
+      <Execution id="c55599da-c777-4de1-b9f2-4850efdd02de" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_FaultPropagatesWithoutFinalizingPendingBytes(phase: &quot;write&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e1bbe14d-9975-c31c-d84a-662a81909741">
+      <Execution id="b9317fbf-9416-400d-92af-9e3d5dfa5729" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_FaultPropagatesWithoutFinalizingPendingBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_IncompleteScalarAdvancesByteActivityBeforeTextExists" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="29cde489-f85a-cb57-008b-00c701f548f1">
+      <Execution id="c90a06a4-5f81-40f8-9eac-a4ca67a6bd2e" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_IncompleteScalarAdvancesByteActivityBeforeTextExists" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: &quot;flush&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1c0eaded-34e2-ad06-a54c-ebcbe1cea9da">
+      <Execution id="c34cf619-b523-45f7-8280-3e333cb0a616" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_CancellationIsNotSuccessfulEof" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(bytes: [226, 130], expected: &quot;�&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2798e2c7-2972-8f58-afcc-86c1392e6499">
+      <Execution id="b4b56f7e-9fff-4740-abff-8469a1d09fb2" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 6)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0275bb13-3ee4-d6c3-7687-05d8424f4bab">
+      <Execution id="41717600-fb05-4242-a2fe-855f0b275055" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 13)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="530a9da6-d5d5-9906-200f-e49c64b01428">
+      <Execution id="1e73ed2b-7edc-4dd6-9b74-82bd7ffdd7d1" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 1)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="cf86f6ef-31ac-dbd4-112e-4864acabcb48">
+      <Execution id="128c6e7f-4b6e-474d-a9fd-76775788bdef" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 9)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4097b20f-8046-d4e0-efe6-0552178b3d04">
+      <Execution id="c89aefcf-dead-4190-a17a-77ff8f15fb57" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: &quot;between&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0e58cdac-a2c5-3d10-38df-90b6f6b9e5d7">
+      <Execution id="e4909ca6-3642-463c-afa5-6822f35fb48a" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_CancellationIsNotSuccessfulEof" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode(chunkSize: 4096)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3b6fa19d-1e1a-3795-cbd6-2aad443b255c">
+      <Execution id="8baca189-0392-4fe4-8bb1-9c6eb1d2056d" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 10)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e4a60ecc-6de6-fbe7-8a71-722ec94e09e8">
+      <Execution id="354964fc-44da-4a63-865f-1f5caeb5a3f1" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(bytes: [226, 130, 65], expected: &quot;�A&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="276c44a7-70f8-85e8-53a0-162bfb6a338d">
+      <Execution id="42a889c7-fe2c-4b60-a477-16838847af5c" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualConsumerAssemblyAndPortablePdbMatchCurrentProductionSource" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="359eaf43-7a84-e4c0-6e5f-77a016fead05">
+      <Execution id="9375d114-fac0-4290-9cae-16ddd37af800" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualConsumerAssemblyAndPortablePdbMatchCurrentProductionSource" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_PendingMalformedPrefixPlusFullReadFitsDecoderBuffer" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2272a58c-9a46-6116-48ca-a03cc3dbe05d">
+      <Execution id="1fd06592-c2fd-49c4-8466-d135abd6b870" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_PendingMalformedPrefixPlusFullReadFitsDecoderBuffer" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 8)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a8a34bd6-37c0-1e6e-928b-66ca4e66347c">
+      <Execution id="325a51a7-0d9b-4bdb-94a9-155305e301ef" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 11)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f8b193a6-4d07-dfe2-5e74-2dc65585d3e4">
+      <Execution id="6d26e72a-0217-4c70-a44f-47901798a802" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_FaultPropagatesWithoutFinalizingPendingBytes(phase: &quot;read&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ccc92ee2-2b17-c08f-765b-4fec51fe7843">
+      <Execution id="f6e0f9ee-ce7a-48bf-8539-8e0bf2887383" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_FaultPropagatesWithoutFinalizingPendingBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode(chunkSize: 7)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4be28f62-a9f5-e691-f88c-7c283d46d91c">
+      <Execution id="cfbe8aca-8bdc-4a9b-b3e7-62e8aacecb44" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailRetainsCompletePairAtBoundary(limit: 65536)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6f731a2c-0d9f-ed71-2482-2590779d4822">
+      <Execution id="47b958d6-b9e2-4328-987c-60e2aa920a4e" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_BoundedTailRetainsCompletePairAtBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 5)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e921b67b-bfe1-b27a-a29b-032533d1304b">
+      <Execution id="3ee21557-9eb2-43d3-8bff-1370069ae277" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: &quot;eof&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="884f5342-626b-0573-8355-c6fada5c9450">
+      <Execution id="6d8dd788-ee4f-43e1-aa7e-b5de98826f28" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_CancellationIsNotSuccessfulEof" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 14)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="bd99aebb-cd6d-0b03-53f3-ec15718d8803">
+      <Execution id="1606728a-7c6d-4fff-8b06-f9139130b575" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 7)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c130df1e-cf85-627f-4671-7e3d00f62ad8">
+      <Execution id="db68eeb5-2db6-42b5-bd74-bde441f0075f" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode(chunkSize: 2)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e80ca4d7-9f05-d10e-4db7-f2ecfe3b0fa9">
+      <Execution id="f5949f68-b8c8-4b7c-83f5-f0c17518e8cf" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailNeverStartsInsideSurrogatePair(limit: 12000)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ab020b10-942d-17dc-8502-32f4ab48b374">
+      <Execution id="cde62775-329c-4cec-97c2-db446c8ab90c" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_BoundedTailNeverStartsInsideSurrogatePair" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ProductionStartAndDiagnosticsConsumeTheTestedMethods" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="447238c8-46f6-6d5c-b3e2-ace1b90ad6b3">
+      <Execution id="1e36bf49-86bd-480e-b84c-57f744a0b785" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ProductionStartAndDiagnosticsConsumeTheTestedMethods" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 3)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ece7477f-297d-b966-c246-bcf1867180fe">
+      <Execution id="f214d8ad-2383-404c-90cd-e069bc2ec3a3" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 15)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0ca2fe9b-b673-1d1e-3cd1-17eeeab3ffa4">
+      <Execution id="75f43092-b298-4435-a7d1-88c8ac2c999c" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_OnlyRealEofFinalizesPendingTextWithoutInventingByteActivity" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c79fe32c-cb03-8e53-b44c-a380029f5844">
+      <Execution id="af304068-6db9-4231-9fa4-06fd14c9604d" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_OnlyRealEofFinalizesPendingTextWithoutInventingByteActivity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: &quot;before&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3d0eb670-9b42-036b-5bcc-23fb5a445288">
+      <Execution id="4264a9da-f98d-4df2-94c4-96a77ab1b3e1" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_CancellationIsNotSuccessfulEof" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_LongOutputStaysBoundedAfterEveryRead" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="85d7b087-6724-7f0a-624d-2b418f9214c4">
+      <Execution id="1afc0c8c-da32-4f53-a48e-2c68964b6eef" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_LongOutputStaysBoundedAfterEveryRead" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: &quot;read&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e0021abe-1b0d-8fe3-510b-1707903e5970">
+      <Execution id="d7b8813a-f5bd-4c03-929b-87ae79d70b8d" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_CancellationIsNotSuccessfulEof" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailRetainsCompletePairAtBoundary(limit: 12000)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="139efb9c-d72a-34a0-7bc7-9eeeb4da8244">
+      <Execution id="e641ea38-9d74-40e7-9fe2-cc325ed2679e" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_BoundedTailRetainsCompletePairAtBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(bytes: [192, 175], expected: &quot;��&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="35913838-0a08-8bf8-f34c-3e8803a0a7c4">
+      <Execution id="4c937d5d-60ca-4176-9c90-c472e82dd1a7" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_SeparateInvocationsNeverSharePendingDecoderState(firstEndsInFault: False)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="116054ba-5042-82e9-f3d9-c5c89de57bd5">
+      <Execution id="4e511761-28f4-4590-8389-863e830692d4" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_SeparateInvocationsNeverSharePendingDecoderState" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode(chunkSize: 1)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="bf21eedb-094b-c3f1-8dc1-89381ffc8693">
+      <Execution id="4ef41919-94c3-4e49-94fe-825fd0b07726" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 12)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="75727204-5725-1708-ac63-f2b0c882a356">
+      <Execution id="d4be876a-c2dd-4b9d-bbb3-61d56059a943" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="bf21eedb-094b-c3f1-8dc1-89381ffc8693" executionId="4ef41919-94c3-4e49-94fe-825fd0b07726" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6f731a2c-0d9f-ed71-2482-2590779d4822" executionId="47b958d6-b9e2-4328-987c-60e2aa920a4e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="34220843-81ba-2d7d-71e8-033b020f1a78" executionId="94074e39-4449-4761-bc04-3005dbf44491" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="447238c8-46f6-6d5c-b3e2-ace1b90ad6b3" executionId="1e36bf49-86bd-480e-b84c-57f744a0b785" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fc038755-02e2-c82e-885b-2ffdd5cf25a1" executionId="46ba045c-1c2e-40fe-b8b9-e067c47d1c4a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="530a9da6-d5d5-9906-200f-e49c64b01428" executionId="1e73ed2b-7edc-4dd6-9b74-82bd7ffdd7d1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ab020b10-942d-17dc-8502-32f4ab48b374" executionId="cde62775-329c-4cec-97c2-db446c8ab90c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3d0eb670-9b42-036b-5bcc-23fb5a445288" executionId="4264a9da-f98d-4df2-94c4-96a77ab1b3e1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1c0eaded-34e2-ad06-a54c-ebcbe1cea9da" executionId="c34cf619-b523-45f7-8280-3e333cb0a616" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e80ca4d7-9f05-d10e-4db7-f2ecfe3b0fa9" executionId="f5949f68-b8c8-4b7c-83f5-f0c17518e8cf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1c62e3d9-20c9-0aa8-3f6b-f905d517059c" executionId="0f07731c-20ee-4cb0-ac6f-9ef314c758a2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e921b67b-bfe1-b27a-a29b-032533d1304b" executionId="3ee21557-9eb2-43d3-8bff-1370069ae277" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c79fe32c-cb03-8e53-b44c-a380029f5844" executionId="af304068-6db9-4231-9fa4-06fd14c9604d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e0021abe-1b0d-8fe3-510b-1707903e5970" executionId="d7b8813a-f5bd-4c03-929b-87ae79d70b8d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c7437885-26d3-0677-27a6-f1a19c68e99e" executionId="00496215-41be-4e6f-84fd-387e5b3e78ad" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2798e2c7-2972-8f58-afcc-86c1392e6499" executionId="b4b56f7e-9fff-4740-abff-8469a1d09fb2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4be28f62-a9f5-e691-f88c-7c283d46d91c" executionId="cfbe8aca-8bdc-4a9b-b3e7-62e8aacecb44" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e1bbe14d-9975-c31c-d84a-662a81909741" executionId="b9317fbf-9416-400d-92af-9e3d5dfa5729" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="151a1f4c-cdb1-254d-017b-206840b17fbc" executionId="c55599da-c777-4de1-b9f2-4850efdd02de" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e1b6a38d-4119-47bb-fe6b-67fcb7370d58" executionId="4431e337-6970-4408-9da0-5f4430b9f9c6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="75727204-5725-1708-ac63-f2b0c882a356" executionId="d4be876a-c2dd-4b9d-bbb3-61d56059a943" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a5592d6e-e24c-1396-8a00-34acde433b02" executionId="6c94caea-5743-47ac-a4eb-bf10e3d84230" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="884f5342-626b-0573-8355-c6fada5c9450" executionId="6d8dd788-ee4f-43e1-aa7e-b5de98826f28" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e4a60ecc-6de6-fbe7-8a71-722ec94e09e8" executionId="354964fc-44da-4a63-865f-1f5caeb5a3f1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3b6fa19d-1e1a-3795-cbd6-2aad443b255c" executionId="8baca189-0392-4fe4-8bb1-9c6eb1d2056d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="29cde489-f85a-cb57-008b-00c701f548f1" executionId="c90a06a4-5f81-40f8-9eac-a4ca67a6bd2e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cf86f6ef-31ac-dbd4-112e-4864acabcb48" executionId="128c6e7f-4b6e-474d-a9fd-76775788bdef" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="116054ba-5042-82e9-f3d9-c5c89de57bd5" executionId="4e511761-28f4-4590-8389-863e830692d4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0ca2fe9b-b673-1d1e-3cd1-17eeeab3ffa4" executionId="75f43092-b298-4435-a7d1-88c8ac2c999c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c130df1e-cf85-627f-4671-7e3d00f62ad8" executionId="db68eeb5-2db6-42b5-bd74-bde441f0075f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a8a34bd6-37c0-1e6e-928b-66ca4e66347c" executionId="325a51a7-0d9b-4bdb-94a9-155305e301ef" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0275bb13-3ee4-d6c3-7687-05d8424f4bab" executionId="41717600-fb05-4242-a2fe-855f0b275055" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ccc92ee2-2b17-c08f-765b-4fec51fe7843" executionId="f6e0f9ee-ce7a-48bf-8539-8e0bf2887383" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2272a58c-9a46-6116-48ca-a03cc3dbe05d" executionId="1fd06592-c2fd-49c4-8466-d135abd6b870" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="23279b7b-2e32-9e93-c0b0-035a02bd1d95" executionId="436e64ba-893c-4fd8-ae41-1717f1eb53a9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ece7477f-297d-b966-c246-bcf1867180fe" executionId="f214d8ad-2383-404c-90cd-e069bc2ec3a3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="276c44a7-70f8-85e8-53a0-162bfb6a338d" executionId="42a889c7-fe2c-4b60-a477-16838847af5c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="359eaf43-7a84-e4c0-6e5f-77a016fead05" executionId="9375d114-fac0-4290-9cae-16ddd37af800" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="35913838-0a08-8bf8-f34c-3e8803a0a7c4" executionId="4c937d5d-60ca-4176-9c90-c472e82dd1a7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bd99aebb-cd6d-0b03-53f3-ec15718d8803" executionId="1606728a-7c6d-4fff-8b06-f9139130b575" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="85d7b087-6724-7f0a-624d-2b418f9214c4" executionId="1afc0c8c-da32-4f53-a48e-2c68964b6eef" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6e9b4cda-0905-ea4f-8b9c-dd39d29f5d26" executionId="4370cbe9-61e6-4834-bfc9-00a690513900" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4097b20f-8046-d4e0-efe6-0552178b3d04" executionId="c89aefcf-dead-4190-a17a-77ff8f15fb57" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0e58cdac-a2c5-3d10-38df-90b6f6b9e5d7" executionId="e4909ca6-3642-463c-afa5-6822f35fb48a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="139efb9c-d72a-34a0-7bc7-9eeeb4da8244" executionId="e641ea38-9d74-40e7-9fe2-cc325ed2679e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c65cc898-a029-87ac-9cd3-85ed8bfa6267" executionId="6d027e65-5cc5-4772-8464-a8ef78f3817d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1ae78860-6a7c-50be-4865-d12d01a0eb1c" executionId="8987e5c0-38cb-4f8d-9b9b-f1768989162d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f8b193a6-4d07-dfe2-5e74-2dc65585d3e4" executionId="6d26e72a-0217-4c70-a44f-47901798a802" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="48" executed="48" passed="19" failed="29" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.16]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.52]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.54]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.63]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.63]                                         ↓ (pos 4095)
+[xUnit.net 00:00:01.63]       Expected: ···"aaaaaaaaaaaaaaaaaaaaЖ\ud83d\ude00é\r\n\0\u001b[31m紅\u001b[0m\u001b]0"···
+[xUnit.net 00:00:01.63]       Actual:   ···"aaaaaaaaaaaaaaaaaaaa������e��\r\n\0\u001b[31m���\u001b"···
+[xUnit.net 00:00:01.63]                                         ↑ (pos 4095)
+[xUnit.net 00:00:01.63]       Stack Trace:
+[xUnit.net 00:00:01.63]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(49,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode(Int32 chunkSize)
+[xUnit.net 00:00:01.63]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.63]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.63]                                         ↓ (pos 4095)
+[xUnit.net 00:00:01.63]       Expected: ···"aaaaaaaaaaaaaaaaaaaaЖ\ud83d\ude00é\r\n\0\u001b[31m紅\u001b[0m\u001b]0"···
+[xUnit.net 00:00:01.63]       Actual:   ···"aaaaaaaaaaaaaaaaaaaa��\ud83d\ude00é\r\n\0\u001b[31m紅\u001b[0m\u001b]"···
+[xUnit.net 00:00:01.63]                                         ↑ (pos 4095)
+[xUnit.net 00:00:01.63]       Stack Trace:
+[xUnit.net 00:00:01.63]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(49,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode(Int32 chunkSize)
+[xUnit.net 00:00:01.63]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.64]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.64]                                         ↓ (pos 4095)
+[xUnit.net 00:00:01.64]       Expected: ···"aaaaaaaaaaaaaaaaaaaaЖ\ud83d\ude00é\r\n\0\u001b[31m紅\u001b[0m\u001b]0"···
+[xUnit.net 00:00:01.64]       Actual:   ···"aaaaaaaaaaaaaaaaaaaa������é\r\n\0\u001b[31m��\u001b[0"···
+[xUnit.net 00:00:01.64]                                         ↑ (pos 4095)
+[xUnit.net 00:00:01.64]       Stack Trace:
+[xUnit.net 00:00:01.64]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(49,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode(Int32 chunkSize)
+[xUnit.net 00:00:01.64]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.64]       Assert.Empty() Failure: String was not empty
+[xUnit.net 00:00:01.64]       String: "�"
+[xUnit.net 00:00:01.64]       Stack Trace:
+[xUnit.net 00:00:01.64]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(111,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.&lt;&gt;c__DisplayClass7_0.&lt;ActualPump_IncompleteScalarAdvancesByteActivityBeforeTextExists&gt;b__0(Int32 index)
+[xUnit.net 00:00:01.64]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(417,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ChunkStream.ReadAsync(Memory`1 buffer, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.64]         /workspace/1553-linux-c706e2c3/BookOfEternityGMBridge/Program.cs(872,0): at BookOfEternityGMBridge.BridgeHost.PumpOutputAsync(Stream outputReader, Stream consoleWriter, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.64]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(113,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_IncompleteScalarAdvancesByteActivityBeforeTextExists()
+[xUnit.net 00:00:01.64]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.64]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.64]                     ↓ (pos 3)
+[xUnit.net 00:00:01.64]       Expected: "AЖé€\ud83d\ude00éZ"
+[xUnit.net 00:00:01.64]       Actual:   "AЖé��\ud83d\ude00éZ"
+[xUnit.net 00:00:01.64]                     ↑ (pos 3)
+[xUnit.net 00:00:01.64]       Stack Trace:
+[xUnit.net 00:00:01.64]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(29,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(Int32 split)
+[xUnit.net 00:00:01.64]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.64]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.64]                         ↓ (pos 7)
+[xUnit.net 00:00:01.64]       Expected: "AЖé€\ud83d\ude00éZ"
+[xUnit.net 00:00:01.64]       Actual:   "AЖé€\ud83d\ude00e��Z"
+[xUnit.net 00:00:01.64]                         ↑ (pos 7)
+[xUnit.net 00:00:01.64]       Stack Trace:
+[xUnit.net 00:00:01.64]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(29,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(Int32 split)
+[xUnit.net 00:00:01.64]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.64]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.64]                   ↓ (pos 1)
+[xUnit.net 00:00:01.64]       Expected: "AЖé€\ud83d\ude00éZ"
+[xUnit.net 00:00:01.64]       Actual:   "A��é€\ud83d\ude00éZ"
+[xUnit.net 00:00:01.64]                   ↑ (pos 1)
+[xUnit.net 00:00:01.64]       Stack Trace:
+[xUnit.net 00:00:01.64]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(29,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(Int32 split)
+[xUnit.net 00:00:01.64]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.66]                      ↓ (pos 4)
+[xUnit.net 00:00:01.66]       Expected: "AЖé€\ud83d\ude00éZ"
+[xUnit.net 00:00:01.66]       Actual:   "AЖé€��éZ"
+[xUnit.net 00:00:01.66]                      ↑ (pos 4)
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(29,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(Int32 split)
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.66]                     ↓ (pos 3)
+[xUnit.net 00:00:01.66]       Expected: "AЖé€\ud83d\ude00éZ"
+[xUnit.net 00:00:01.66]       Actual:   "AЖé���\ud83d\ude00éZ"
+[xUnit.net 00:00:01.66]                     ↑ (pos 3)
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(29,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(Int32 split)
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.66]                    ↓ (pos 2)
+[xUnit.net 00:00:01.66]       Expected: "AЖé€\ud83d\ude00éZ"
+[xUnit.net 00:00:01.66]       Actual:   "AЖ��€\ud83d\ude00éZ"
+[xUnit.net 00:00:01.66]                    ↑ (pos 2)
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(29,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(Int32 split)
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.66]                      ↓ (pos 4)
+[xUnit.net 00:00:01.66]       Expected: "AЖé€\ud83d\ude00éZ"
+[xUnit.net 00:00:01.66]       Actual:   "AЖé€���éZ"
+[xUnit.net 00:00:01.66]                      ↑ (pos 4)
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(29,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(Int32 split)
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.66]                      ↓ (pos 4)
+[xUnit.net 00:00:01.66]       Expected: "AЖé€\ud83d\ude00éZ"
+[xUnit.net 00:00:01.66]       Actual:   "AЖé€����éZ"
+[xUnit.net 00:00:01.66]                      ↑ (pos 4)
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(29,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(Int32 split)
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       Assert.Empty() Failure: String was not empty
+[xUnit.net 00:00:01.66]       String: "�"
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(213,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(String phase)
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       Assert.ThrowsAny() Failure: No exception was thrown
+[xUnit.net 00:00:01.66]       Expected: typeof(System.OperationCanceledException)
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(212,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(String phase)
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       Assert.Empty() Failure: String was not empty
+[xUnit.net 00:00:01.66]       String: "�"
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(213,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(String phase)
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       Assert.ThrowsAny() Failure: No exception was thrown
+[xUnit.net 00:00:01.66]       Expected: typeof(System.OperationCanceledException)
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(212,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(String phase)
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       Assert.Empty() Failure: String was not empty
+[xUnit.net 00:00:01.66]       String: "�"
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(213,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(String phase)
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       Assert.ThrowsAny() Failure: No exception was thrown
+[xUnit.net 00:00:01.66]       Expected: typeof(System.OperationCanceledException)
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(212,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(String phase)
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       Assert.Empty() Failure: String was not empty
+[xUnit.net 00:00:01.66]       String: "�"
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(171,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_FaultPropagatesWithoutFinalizingPendingBytes(String phase)
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       Assert.Empty() Failure: String was not empty
+[xUnit.net 00:00:01.66]       String: "�"
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(171,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_FaultPropagatesWithoutFinalizingPendingBytes(String phase)
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       Assert.Empty() Failure: String was not empty
+[xUnit.net 00:00:01.66]       String: "�"
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(171,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_FaultPropagatesWithoutFinalizingPendingBytes(String phase)
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.66]       Expected: "��"
+[xUnit.net 00:00:01.66]       Actual:   "���"
+[xUnit.net 00:00:01.66]                    ↑ (pos 2)
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(258,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_SeparateInvocationsNeverSharePendingDecoderState(Boolean firstEndsInFault)
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.67]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.67]                   ↓ (pos 1)
+[xUnit.net 00:00:01.67]       Expected: "�A"
+[xUnit.net 00:00:01.67]       Actual:   "��A"
+[xUnit.net 00:00:01.67]                   ↑ (pos 1)
+[xUnit.net 00:00:01.67]       Stack Trace:
+[xUnit.net 00:00:01.67]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(74,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(Byte[] bytes, String expected)
+[xUnit.net 00:00:01.67]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.67]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.67]       Expected: "�"
+[xUnit.net 00:00:01.67]       Actual:   "��"
+[xUnit.net 00:00:01.67]                   ↑ (pos 1)
+[xUnit.net 00:00:01.67]       Stack Trace:
+[xUnit.net 00:00:01.67]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(74,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(Byte[] bytes, String expected)
+[xUnit.net 00:00:01.67]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.67]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.67]                  ↓ (pos 0)
+[xUnit.net 00:00:01.67]       Expected: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"···
+[xUnit.net 00:00:01.67]       Actual:   "�xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"···
+[xUnit.net 00:00:01.67]                  ↑ (pos 0)
+[xUnit.net 00:00:01.67]       Stack Trace:
+[xUnit.net 00:00:01.67]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(274,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailNeverStartsInsideSurrogatePair(Int32 limit)
+[xUnit.net 00:00:01.67]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.68]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.68]                  ↓ (pos 0)
+[xUnit.net 00:00:01.68]       Expected: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"···
+[xUnit.net 00:00:01.68]       Actual:   "�xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"···
+[xUnit.net 00:00:01.68]                  ↑ (pos 0)
+[xUnit.net 00:00:01.68]       Stack Trace:
+[xUnit.net 00:00:01.68]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(274,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailNeverStartsInsideSurrogatePair(Int32 limit)
+[xUnit.net 00:00:01.68]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.72]       System.Text.EncoderFallbackException : Unable to translate Unicode character \\uDE00 at index 0 to specified code page.
+[xUnit.net 00:00:01.72]       Stack Trace:
+[xUnit.net 00:00:01.72]            at System.Text.EncoderExceptionFallbackBuffer.Fallback(Char charUnknown, Int32 index)
+[xUnit.net 00:00:01.72]            at System.Text.EncoderFallbackBuffer.InternalFallback(ReadOnlySpan`1 chars, Int32&amp; charsConsumed)
+[xUnit.net 00:00:01.72]            at System.Text.Encoding.GetByteCountWithFallback(ReadOnlySpan`1 chars, Int32 originalCharsLength, EncoderNLS encoder)
+[xUnit.net 00:00:01.72]            at System.Text.Encoding.GetByteCountWithFallback(Char* pCharsOriginal, Int32 originalCharCount, Int32 charsConsumedSoFar)
+[xUnit.net 00:00:01.72]            at System.Text.UTF8Encoding.GetByteCount(String chars)
+[xUnit.net 00:00:01.72]            at System.Text.Encoding.GetBytes(String s)
+[xUnit.net 00:00:01.72]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(362,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.AssertWellFormedUtf16(String text)
+[xUnit.net 00:00:01.72]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(306,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.&lt;&gt;c__DisplayClass16_0.&lt;ActualPump_LongOutputStaysBoundedAfterEveryRead&gt;b__0(Int32 _)
+[xUnit.net 00:00:01.72]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(417,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ChunkStream.ReadAsync(Memory`1 buffer, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.72]         /workspace/1553-linux-c706e2c3/BookOfEternityGMBridge/Program.cs(872,0): at BookOfEternityGMBridge.BridgeHost.PumpOutputAsync(Stream outputReader, Stream consoleWriter, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.72]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(309,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_LongOutputStaysBoundedAfterEveryRead()
+[xUnit.net 00:00:01.72]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.73]       Assert.Empty() Failure: String was not empty
+[xUnit.net 00:00:01.73]       String: "�"
+[xUnit.net 00:00:01.73]       Stack Trace:
+[xUnit.net 00:00:01.73]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(129,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.&lt;&gt;c__DisplayClass8_0.&lt;ActualPump_OnlyRealEofFinalizesPendingTextWithoutInventingByteActivity&gt;b__0(Int32 index)
+[xUnit.net 00:00:01.73]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(417,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ChunkStream.ReadAsync(Memory`1 buffer, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.73]         /workspace/1553-linux-c706e2c3/BookOfEternityGMBridge/Program.cs(872,0): at BookOfEternityGMBridge.BridgeHost.PumpOutputAsync(Stream outputReader, Stream consoleWriter, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.73]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(133,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_OnlyRealEofFinalizesPendingTextWithoutInventingByteActivity()
+[xUnit.net 00:00:01.73]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.75]       Assert.Empty() Failure: String was not empty
+[xUnit.net 00:00:01.75]       String: "�"
+[xUnit.net 00:00:01.75]       Stack Trace:
+[xUnit.net 00:00:01.75]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(231,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CanceledBlockedReadCompletesWithoutEofFlush()
+[xUnit.net 00:00:01.75]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs(238,0): at BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CanceledBlockedReadCompletesWithoutEofFlush()
+[xUnit.net 00:00:01.75]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.78]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.6907474+00:00">
+        <Text>[xUnit.net 00:00:01.63]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode(chunkSize: 1) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.6949190+00:00">
+        <Text>[xUnit.net 00:00:01.63]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode(chunkSize: 4096) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.6959474+00:00">
+        <Text>[xUnit.net 00:00:01.64]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode(chunkSize: 2) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.6970881+00:00">
+        <Text>[xUnit.net 00:00:01.64]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_IncompleteScalarAdvancesByteActivityBeforeTextExists [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7000855+00:00">
+        <Text>[xUnit.net 00:00:01.64]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 7) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7008136+00:00">
+        <Text>[xUnit.net 00:00:01.64]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 14) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7014368+00:00">
+        <Text>[xUnit.net 00:00:01.64]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 2) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7440213+00:00">
+        <Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 11) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7440595+00:00">
+        <Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 6) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7440897+00:00">
+        <Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 4) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7441207+00:00">
+        <Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 10) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7445838+00:00">
+        <Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 9) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7446156+00:00">
+        <Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: "flush") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7446355+00:00">
+        <Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: "before") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7446561+00:00">
+        <Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: "write") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7446815+00:00">
+        <Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: "eof") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7447104+00:00">
+        <Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: "read") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7447315+00:00">
+        <Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: "between") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7447521+00:00">
+        <Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_FaultPropagatesWithoutFinalizingPendingBytes(phase: "read") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7468268+00:00">
+        <Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_FaultPropagatesWithoutFinalizingPendingBytes(phase: "flush") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7468505+00:00">
+        <Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_FaultPropagatesWithoutFinalizingPendingBytes(phase: "write") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7468716+00:00">
+        <Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_SeparateInvocationsNeverSharePendingDecoderState(firstEndsInFault: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7468981+00:00">
+        <Text>[xUnit.net 00:00:01.67]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(bytes: [226, 130, 65], expected: "�A") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7469446+00:00">
+        <Text>[xUnit.net 00:00:01.67]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(bytes: [226, 130], expected: "�") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7479023+00:00">
+        <Text>[xUnit.net 00:00:01.67]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailNeverStartsInsideSurrogatePair(limit: 12000) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7479387+00:00">
+        <Text>[xUnit.net 00:00:01.68]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailNeverStartsInsideSurrogatePair(limit: 65536) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7793081+00:00">
+        <Text>[xUnit.net 00:00:01.72]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_LongOutputStaysBoundedAfterEveryRead [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.7913591+00:00">
+        <Text>[xUnit.net 00:00:01.73]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_OnlyRealEofFinalizesPendingTextWithoutInventingByteActivity [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T13:26:52.8150879+00:00">
+        <Text>[xUnit.net 00:00:01.75]     BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CanceledBlockedReadCompletesWithoutEofFlush [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>
