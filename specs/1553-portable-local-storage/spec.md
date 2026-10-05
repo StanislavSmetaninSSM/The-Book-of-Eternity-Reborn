@@ -14,6 +14,26 @@
 - Latest direction, 18:26 UTC: replace Windows-only mechanisms, remove protection against the owner editing their own saves, demonstrate complete Linux behavior; the owner will execute Windows checks
 - Wound implementation was merged by explicit owner request in [PR #1554](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/pull/1554). Its unfinished acceptance remains deferred under #1536, not declared complete by this feature
 
+## Worker environment portability — T041-ENV, 2026-10-05
+
+Under US4/FR-012/015, preserve the existing caller-selected worker environment
+through owner payload capture, strict Launch JSON and host ProcessStartInfo
+reconstruction. Names follow the target local platform: Linux case-distinct names
+remain distinct; Windows retains case-insensitive behavior. Values, spelling,
+null/empty entries and snapshot independence retain the existing contract. Exact
+JSON property duplicates remain rejected without payload/key/value diagnostics.
+No filtering, normalization, new inheritance, secret policy or network/proxy
+configuration is introduced. Cross-platform JSON is not a remote-launch feature.
+
+The owner authorized this bounded continuation from
+`9d5ffa0a3f513a89a9f4e4c89b0743bb2f4b5d6b`, retaining the sole writer and normal
+non-force publication. Evidence uses only synthetic environment fixtures and
+whitelisted metadata. Pure codec/reconstruction and an actual host reaching Ready
+then owner close without Release are required. Native Windows and successful
+worker execution remain separate; process-tree/workspace/PTY guards stay closed.
+No GM-authored field, gameplay capability or prompt changes. Operational guidance
+and its exact source/documentation guard must describe the environment boundary.
+
 ## Persistent-main run-record component — T041-RUN-RECORD, 2026-10-05
 
 This bounded internal prerequisite implements US4/FR-014 record interpretation,

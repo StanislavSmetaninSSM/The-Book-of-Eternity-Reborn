@@ -4,6 +4,58 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T041-ENV worker environment — 2026-10-05 (WIP design)
+
+Base and verified remote: `9d5ffa0a3f513a89a9f4e4c89b0743bb2f4b5d6b` on
+`codex/1553-load-filesystem`; owner-authorized sole-writer continuation in the same
+isolated Linux worktree. No HOME-PC, main, security, credential or proxy changes.
+Tracked requirements: [spec](spec.md#worker-environment-portability--t041-env-2026-10-05),
+T041-ENV under #1553/US4/FR-012/015. Full worker lifecycle remains out of scope.
+
+### Cause, design and acceptance
+
+Current production `GmWorkerProcessHostLaunch.Create` copies
+`workerStartInfo.Environment` with unconditional `OrdinalIgnoreCase`. .NET 8.0.31
+[ProcessStartInfo](https://github.com/dotnet/runtime/blob/v8.0.31/src/libraries/System.Diagnostics.Process/src/System/Diagnostics/ProcessStartInfo.cs)
+uses OrdinalIgnoreCase on Windows and Ordinal elsewhere. Linux can legitimately
+have HTTP_PROXY and http_proxy with different values. The current capture throws;
+it must preserve the platform's original name semantics, not remove proxy names.
+The normal pool builder inherits ProcessStartInfo environment and adds explicit
+BOE task/proposal/session keys; that inheritance policy is not changed.
+
+Design: first add synthetic regression tests against the unchanged production
+builder. Then extract existing payload capture and host ProcessStartInfo assembly
+as internal pure operations used by their original call sites; choose the same
+platform comparer during capture. Preserve all existing flags/arguments and host
+Clear-then-assign behavior. JSON remains case-sensitive and exact duplicates are
+rejected recursively; Windows reconstruction retains its existing platform map
+semantics. No wire schema, field, native admission, framing or release changes.
+Alternatives rejected: dropping/normalizing variables loses caller data; changing
+secret inheritance or introducing a remote OS policy exceeds this bug-fix scope.
+
+Synthetic tests cover case-distinct proxy and ordinary names, exact spellings and
+values, null/empty/Unicode, empty-map replacement, independent capture, exact JSON
+duplicates and envelope casing. A narrowly selected actual hidden host must reach
+Ready with case-distinct synthetic payload and exit125 after owner close without
+Release or worker marker. No real environment values are logged or archived.
+Pure tests exercise reconstruction without Process.Start; no successful worker
+Release is allowed. Native Windows behavior is source-preserved, not Linux-proven.
+
+Use new category `worker-host-environment`, only new environment tests and the
+exact affected operational documentation guard. Do not rerun IPC34/FRAME49 or
+run-record90 without a source reason. Fresh `-PlanOnly` build precedes `-NoBuild`;
+`-ValidateCatalog -NoBuild` is discovery only. All use PowerShell 7 and
+`scripts/test-csharp.ps1`. Environment remains Debian13.6, kernel6.18.44,
+SDK10.0.401/runtime8.0.31/PowerShell7.6.6, EUID1000, normal permissions and short
+process-local TMPDIR `/workspace/ipc-tmp`. Preserve exact RED/GREEN, source,
+counts, safe artifacts and owned cleanup. Sol6.1/xhigh design and final review,
+non-force publication/readback and fresh GitHub-only restoration are required.
+
+Current state: source inspection complete; no tests or implementation yet.
+Next: independent design review of platform semantics, test seams/selection and
+scope. The explicit autonomous owner instruction authorizes routine implementation;
+stop only if the faithful fix needs a new product/secret-inheritance policy.
+
 ## T041-IPC Linux admission — 2026-10-05 (verified component)
 
 Bounded Linux candidate **`9a346308d02d55ddb50a49fab109fc99b8871505`**, tree
