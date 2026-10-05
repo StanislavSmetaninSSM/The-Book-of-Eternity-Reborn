@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="7e346c88-4b91-4c32-9ef8-6b7774bf06b3" name="@c7669543e9c7 2026-10-05 22:39:58" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T22:39:58.4862244+00:00" queuing="2026-10-05T22:39:58.4862244+00:00" start="2026-10-05T22:39:54.5225277+00:00" finish="2026-10-05T22:40:11.7102249+00:00" />
+  <TestSettings name="default" id="012df173-b6b1-47cd-95ea-4d87513f7d9d">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-05_22_39_58" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="55fbc765-2f5b-440b-88c8-6a19376efed5" testId="eb680956-1f43-76fc-1f12-f1dc53c8c972" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup(mode: &quot;timeout-release&quot;, canceled: False, starts: 0)" computerName="c7669543e9c7" duration="00:00:01.8964745" startTime="2026-10-05T22:40:09.5694622+00:00" endTime="2026-10-05T22:40:09.5694624+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="55fbc765-2f5b-440b-88c8-6a19376efed5" />
+    <UnitTestResult executionId="65940863-f635-4a39-96c8-e7b4f47f13f3" testId="1f68057a-3af3-0563-801c-f3c66ebb1f08" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup(mode: &quot;timeout-publication&quot;, canceled: False, starts: 1)" computerName="c7669543e9c7" duration="00:00:01.8992003" startTime="2026-10-05T22:40:06.0279735+00:00" endTime="2026-10-05T22:40:06.0279736+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="65940863-f635-4a39-96c8-e7b4f47f13f3" />
+    <UnitTestResult executionId="24bcf89a-5c02-432a-9a1c-284b9dadd62e" testId="095b81be-7ebe-7629-ab0b-2d671b7ba838" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NonzeroOrMissingProposalCannotBecomeSuccessfulStoppedResult(mode: &quot;nonzero&quot;)" computerName="c7669543e9c7" duration="00:00:02.0174591" startTime="2026-10-05T22:39:58.4497866+00:00" endTime="2026-10-05T22:39:58.4498185+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="24bcf89a-5c02-432a-9a1c-284b9dadd62e" />
+    <UnitTestResult executionId="ad7ecdef-d9d0-448d-9e31-f2bbe3c6fabf" testId="53298844-ecef-fcbe-f4ce-3f8d93c6a226" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_StaleGenerationOrTaskRejectsAfterRealWorkerStop(mode: &quot;generation&quot;, replaced: True)" computerName="c7669543e9c7" duration="00:00:01.9485319" startTime="2026-10-05T22:40:02.2350456+00:00" endTime="2026-10-05T22:40:02.2350459+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ad7ecdef-d9d0-448d-9e31-f2bbe3c6fabf">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: True
+Actual:   False</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_StaleGenerationOrTaskRejectsAfterRealWorkerStop(String mode, Boolean replaced) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerNativePoolTests.Terminal.cs:line 37
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="aa36fd8f-bb64-4f6c-a8a9-c1f0334a9de7" testId="bd3e4c62-e84a-bcc7-3945-11715316f2a0" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_StaleGenerationOrTaskRejectsAfterRealWorkerStop(mode: &quot;task-bytes&quot;, replaced: False)" computerName="c7669543e9c7" duration="00:00:01.8970672" startTime="2026-10-05T22:40:04.1289865+00:00" endTime="2026-10-05T22:40:04.1289867+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aa36fd8f-bb64-4f6c-a8a9-c1f0334a9de7" />
+    <UnitTestResult executionId="bb703117-a0b6-427c-b99f-764d7fe25153" testId="157abeba-13a2-a995-b6eb-88f92f83f9df" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NonzeroOrMissingProposalCannotBecomeSuccessfulStoppedResult(mode: &quot;missing-proposal&quot;)" computerName="c7669543e9c7" duration="00:00:01.8133338" startTime="2026-10-05T22:40:00.2646487+00:00" endTime="2026-10-05T22:40:00.2646489+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bb703117-a0b6-427c-b99f-764d7fe25153" />
+    <UnitTestResult executionId="4840f2e0-69f8-4b41-a991-a1ff08797d3d" testId="a463cd6b-12c5-0592-f9d6-a71cea393401" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup(mode: &quot;cancel-release&quot;, canceled: True, starts: 0)" computerName="c7669543e9c7" duration="00:00:01.6395389" startTime="2026-10-05T22:40:07.6711951+00:00" endTime="2026-10-05T22:40:07.6711953+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4840f2e0-69f8-4b41-a991-a1ff08797d3d" />
+    <UnitTestResult executionId="518c5ea8-eec7-4d3b-b98c-fa16e56bc32f" testId="d227d4ab-03c4-f704-cab2-0f51683c0daa" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup(mode: &quot;cancel-publication&quot;, canceled: True, starts: 1)" computerName="c7669543e9c7" duration="00:00:02.0665464" startTime="2026-10-05T22:40:11.6372038+00:00" endTime="2026-10-05T22:40:11.6372041+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="518c5ea8-eec7-4d3b-b98c-fa16e56bc32f" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_StaleGenerationOrTaskRejectsAfterRealWorkerStop(mode: &quot;generation&quot;, replaced: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="53298844-ecef-fcbe-f4ce-3f8d93c6a226">
+      <Execution id="ad7ecdef-d9d0-448d-9e31-f2bbe3c6fabf" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_StaleGenerationOrTaskRejectsAfterRealWorkerStop" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_StaleGenerationOrTaskRejectsAfterRealWorkerStop(mode: &quot;task-bytes&quot;, replaced: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="bd3e4c62-e84a-bcc7-3945-11715316f2a0">
+      <Execution id="aa36fd8f-bb64-4f6c-a8a9-c1f0334a9de7" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_StaleGenerationOrTaskRejectsAfterRealWorkerStop" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup(mode: &quot;cancel-publication&quot;, canceled: True, starts: 1)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d227d4ab-03c4-f704-cab2-0f51683c0daa">
+      <Execution id="518c5ea8-eec7-4d3b-b98c-fa16e56bc32f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup(mode: &quot;timeout-release&quot;, canceled: False, starts: 0)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="eb680956-1f43-76fc-1f12-f1dc53c8c972">
+      <Execution id="55fbc765-2f5b-440b-88c8-6a19376efed5" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NonzeroOrMissingProposalCannotBecomeSuccessfulStoppedResult(mode: &quot;missing-proposal&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="157abeba-13a2-a995-b6eb-88f92f83f9df">
+      <Execution id="bb703117-a0b6-427c-b99f-764d7fe25153" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_NonzeroOrMissingProposalCannotBecomeSuccessfulStoppedResult" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup(mode: &quot;cancel-release&quot;, canceled: True, starts: 0)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a463cd6b-12c5-0592-f9d6-a71cea393401">
+      <Execution id="4840f2e0-69f8-4b41-a991-a1ff08797d3d" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NonzeroOrMissingProposalCannotBecomeSuccessfulStoppedResult(mode: &quot;nonzero&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="095b81be-7ebe-7629-ab0b-2d671b7ba838">
+      <Execution id="24bcf89a-5c02-432a-9a1c-284b9dadd62e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_NonzeroOrMissingProposalCannotBecomeSuccessfulStoppedResult" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup(mode: &quot;timeout-publication&quot;, canceled: False, starts: 1)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1f68057a-3af3-0563-801c-f3c66ebb1f08">
+      <Execution id="65940863-f635-4a39-96c8-e7b4f47f13f3" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="eb680956-1f43-76fc-1f12-f1dc53c8c972" executionId="55fbc765-2f5b-440b-88c8-6a19376efed5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1f68057a-3af3-0563-801c-f3c66ebb1f08" executionId="65940863-f635-4a39-96c8-e7b4f47f13f3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="095b81be-7ebe-7629-ab0b-2d671b7ba838" executionId="24bcf89a-5c02-432a-9a1c-284b9dadd62e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="53298844-ecef-fcbe-f4ce-3f8d93c6a226" executionId="ad7ecdef-d9d0-448d-9e31-f2bbe3c6fabf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bd3e4c62-e84a-bcc7-3945-11715316f2a0" executionId="aa36fd8f-bb64-4f6c-a8a9-c1f0334a9de7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="157abeba-13a2-a995-b6eb-88f92f83f9df" executionId="bb703117-a0b6-427c-b99f-764d7fe25153" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a463cd6b-12c5-0592-f9d6-a71cea393401" executionId="4840f2e0-69f8-4b41-a991-a1ff08797d3d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d227d4ab-03c4-f704-cab2-0f51683c0daa" executionId="518c5ea8-eec7-4d3b-b98c-fa16e56bc32f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="8" executed="8" passed="7" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.20]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.30]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.32]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:07.16]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:07.16]       Expected: True
+[xUnit.net 00:00:07.16]       Actual:   False
+[xUnit.net 00:00:07.16]       Stack Trace:
+[xUnit.net 00:00:07.16]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerNativePoolTests.Terminal.cs(37,0): at BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_StaleGenerationOrTaskRejectsAfterRealWorkerStop(String mode, Boolean replaced)
+[xUnit.net 00:00:07.16]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:16.57]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T22:40:02.2426502+00:00">
+        <Text>[xUnit.net 00:00:07.16]     BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_StaleGenerationOrTaskRejectsAfterRealWorkerStop(mode: "generation", replaced: True) [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

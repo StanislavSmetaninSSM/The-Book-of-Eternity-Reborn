@@ -35,6 +35,9 @@ public sealed partial class GmWorkerNativePoolTests
         Assert.Equal(1, result.GetProperty("workerStarts").GetInt32());
         Assert.Equal(1, result.GetProperty("publicationCalls").GetInt32());
         Assert.Equal(replaced, result.GetProperty("result").GetProperty("SessionReplaced").GetBoolean());
+        Assert.Equal(0, result.GetProperty("result").GetProperty("ExitCode").GetInt32());
+        Assert.True(result.GetProperty("result").GetProperty("OutputsSettled").GetBoolean());
+        Assert.False(result.GetProperty("result").GetProperty("TimedOut").GetBoolean());
         Assert.True(result.GetProperty("tamperedTaskRetained").GetBoolean());
         Assert.True(result.GetProperty("failureCopyRejected").GetBoolean());
         Assert.True(result.GetProperty("result").GetProperty("StopEvidence").GetProperty("CleanupComplete").GetBoolean());
@@ -49,6 +52,11 @@ public sealed partial class GmWorkerNativePoolTests
         AssertRejectedAndCleaned(result);
         Assert.Equal(1, result.GetProperty("workerStarts").GetInt32());
         Assert.Equal(0, result.GetProperty("publicationCalls").GetInt32());
+        var run = result.GetProperty("result");
+        Assert.Equal(mode == "nonzero" ? 23 : 0, run.GetProperty("ExitCode").GetInt32());
+        Assert.False(run.GetProperty("TimedOut").GetBoolean());
+        Assert.False(run.GetProperty("SessionReplaced").GetBoolean());
+        Assert.Equal((int)BookOfEternityClient.Services.GmWorkers.WorkerBridgeState.Failed, run.GetProperty("Status").GetProperty("State").GetInt32());
         Assert.True(result.GetProperty("failureCopyRejected").GetBoolean());
         Assert.True(result.GetProperty("result").GetProperty("OutputsSettled").GetBoolean());
         Assert.True(result.GetProperty("result").GetProperty("StopEvidence").GetProperty("CleanupComplete").GetBoolean());

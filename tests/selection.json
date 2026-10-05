@@ -62,6 +62,13 @@
         "#1553 T041-FALLBACK-POOL B5",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-native-pool-publication-rejection",
+      "reason": "Only affected4 terminal cases: fix generation lifecycle preparation and strengthen exact completion outcome assertions; do not repeat unchanged cancellation/timeout4.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5"
+      ]
     }
   ]
 }

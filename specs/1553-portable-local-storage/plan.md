@@ -424,6 +424,19 @@ and rejected forged success copies. `releases` in scenario records counts hook c
 at the Release boundary, not transmitted Release when cancellation wins there.
 New category worker-native-pool-terminal only; fresh build/execution still pending.
 
+B5 terminal first execution at `f115c7629667d4b0bd63bec2f84aa2fd88f1d17b`:
+Plan8/0exec85.2591174s; run8executed/7PASS/1FAIL23.0786793s, complete selection
+and cleanup,0skip/duplicate/timeout. [Evidence](recovery/evidence/worker-pool-terminal-fixture-failure/manifest.json).
+Eight guardians ECHILD/emergency0/failures0/deadlinefalse. The failed generation case
+reached real worker completion/scoped stop/output, but fixture attempted direct
+SessionReplacement canonical lease without the required lifecycle lease. This is a
+fixture boundary failure, not a demonstrated generation-publication defect. Correct
+fixture to acquire lifecycle then replacement lease. Separate Sol6.1/xhigh requested
+exact Completed exit0 for generation/task and exit23/0 plus Failed/no-timeout/no-replacement
+for nonzero/missing-proposal. Strengthen these assertions and select only affected4
+under worker-native-pool-publication-rejection; unchanged cancellation/timeout4 retain
+prior GREEN. Fresh build/execution of corrected4 still pending.
+
 B5 observation seam design consultation, actual Sol6.1/xhigh: an internal optional
 capture of the genuinely launched owner is allowed only after pool binding (or with
 OwnedLaunchException preserving that owner). It cannot replace owner/identity or

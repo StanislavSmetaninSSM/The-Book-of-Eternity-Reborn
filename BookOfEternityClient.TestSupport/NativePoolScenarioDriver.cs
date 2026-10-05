@@ -70,7 +70,8 @@ internal static class NativePoolScenarioDriver
                 if (terminalMode == "timeout-publication") timeout.Cancel();
                 if (terminalMode == "generation")
                 {
-                    await using var lease = await fs.AcquireCanonicalWriteLeaseAsync(CanonicalWritePurpose.SessionReplacement);
+                    await using var lifecycle = await fs.AcquireSessionLifecycleLeaseAsync();
+                    await using var lease = await fs.AcquireSessionReplacementWriteLeaseAsync(lifecycle);
                     fs.RotateSessionGeneration(lease);
                 }
                 if (terminalMode == "task-bytes")
