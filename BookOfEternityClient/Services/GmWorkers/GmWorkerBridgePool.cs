@@ -20,6 +20,7 @@ internal sealed class GmWorkerBridgePoolHooks
     internal Action<GmWorkerProcessCompletionOutcome>? AfterCompletionArbitration { get; init; }
     internal Func<string, Task>? BeforeWorkspaceCleanupAsync { get; init; }
     internal Func<string, Task>? AfterQuarantineAuditTempCreatedAsync { get; init; }
+    internal Func<string, Task>? AfterQuarantineAuditPublishedAsync { get; init; }
     internal CancellationToken TimeoutSignal { get; init; }
 }
 
@@ -708,12 +709,13 @@ public sealed class GmWorkerBridgePool
         try
         {
             var workspaceHooks =
-                _hooks?.AfterQuarantineAuditTempCreatedAsync == null
+                _hooks?.AfterQuarantineAuditTempCreatedAsync == null && _hooks?.AfterQuarantineAuditPublishedAsync == null
                     ? null
                     : new GmWorkerExecutionWorkspaceHooks
                     {
                         AfterQuarantineAuditTempCreatedAsync =
-                            _hooks.AfterQuarantineAuditTempCreatedAsync
+                            _hooks?.AfterQuarantineAuditTempCreatedAsync,
+                        AfterQuarantineAuditPublishedAsync = _hooks?.AfterQuarantineAuditPublishedAsync
                     };
             workspace = await GmWorkerExecutionWorkspace.CreateAsync(
                 _fs,

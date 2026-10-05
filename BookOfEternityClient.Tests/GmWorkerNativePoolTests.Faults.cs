@@ -27,7 +27,6 @@ public sealed partial class GmWorkerNativePoolTests
     [InlineData("malformed")]
     [InlineData("uncertain")]
     [InlineData("late-terminal")]
-    [InlineData("late-output")]
     public async Task ActualPool_NativeObservationUncertaintySurvivesLateCleanup(string mode)
     {
         var result = await RunScenario("pool-fault-" + mode);
@@ -37,6 +36,20 @@ public sealed partial class GmWorkerNativePoolTests
         Assert.True(result.GetProperty("actualOutputTasksSettled").GetBoolean());
         if (mode.StartsWith("late-", StringComparison.Ordinal))
             Assert.InRange(result.GetProperty("elapsedMilliseconds").GetInt64(), 4900, 20000);
+    }
+
+    [Fact]
+    public async Task ActualPool_LateOriginalOutputObservationCannotClearUncertainty()
+    {
+        var result = await RunScenario("pool-fault-late-output");
+        AssertRetainedUncertainty(result);
+        Assert.True(result.GetProperty("observationFaultReached").GetBoolean());
+        Assert.True(result.GetProperty("lateOutputObservationSettled").GetBoolean());
+        Assert.True(result.GetProperty("retainedSlotProbePending").GetBoolean());
+        Assert.True(result.GetProperty("retainedSlotProbeCanceled").GetBoolean());
+        Assert.Equal(0, result.GetProperty("result").GetProperty("ExitCode").GetInt32());
+        Assert.True(result.GetProperty("actualOutputTasksSettled").GetBoolean());
+        Assert.InRange(result.GetProperty("elapsedMilliseconds").GetInt64(), 4900, 20000);
     }
 
     [Theory]

@@ -109,6 +109,22 @@
         "#1553 T041-FALLBACK-POOL B5",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-native-pool-late-output",
+      "reason": "#1553 POOL B Late original output-observation task actually settles yet uncertainty/worker slot/quarantine remain held; exact corrected fixture row only.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-cleanup-retry",
+      "reason": "#1553 POOL B Actual native valid-stop owner disposal/workspace/audit/fallback receipt retries preserve original phases and exactly-once slot/capacity across concurrent passes.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
     }
   ]
 }

@@ -2,6 +2,54 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "worker-native-pool-late-output",
+      "responsibility": "#1553 POOL B Late original output-observation task actually settles yet uncertainty/worker slot/quarantine remain held; exact corrected fixture row only.",
+      "excludes": "Synthetic isolated state only; no public Linux Release, systemd, out-of-lineage ownership, live GM, main PTY, durable restart or Windows runtime qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LateOriginalOutputObservationCannotClearUncertainty"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "worker-native-pool-cleanup-retry",
+      "responsibility": "#1553 POOL B Actual native valid-stop owner disposal/workspace/audit/fallback receipt retries preserve original phases and exactly-once slot/capacity across concurrent passes.",
+      "excludes": "Synthetic isolated state only; no public Linux Release, systemd, out-of-lineage ownership, live GM, main PTY, durable restart or Windows runtime qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity"
+          ]
+        }
+      ]
+    },
+    {
       "id": "worker-native-pool-uncertainty",
       "responsibility": "#1553 POOL B Original native terminal corruption, explicit uncertainty and late original status/output observations retain workspace, receipt denial and quarantine across concurrent reaper passes.",
       "excludes": "Synthetic isolated state only; no public Linux Release, systemd, out-of-lineage ownership, live GM, main PTY, durable restart or Windows runtime qualification.",

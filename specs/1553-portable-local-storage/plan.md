@@ -504,6 +504,28 @@ deliberate post-Completed helper loss requires emergency1/reaped2; others emerge
 Validated-stop cleanup/disposal/audit/receipt retry and affected regression acceptance
 are still pending. No wider production/platform qualification is inferred.
 
+B5 separate actual Sol6.1/xhigh source review found one fixture proof gap: late-output
+released its gate but awaited only raw drains and late stop, not the retained original
+_outputObservation. Source sticky uncertainty was correct. Add bounded await of that
+same original observation task and record settlement before late stop/reaper. Split
+only this affected row into worker-native-pool-late-output; unchanged other14PASS are
+not repeated. Also prove the held worker slot through a same-worker call that stays
+pending100ms before cancellation; a free slot would synchronously fail on full
+quarantine capacity, so no-reservation alone is not used as proof.
+
+Next cleanup8 WIP: valid scoped stop followed by original DisposeOnce, workspace-hook
+failure, actual canonical-audit I/O failure, absent audit sink fallback, receipt temp
+failure, published receipt lost acknowledgement, real generation-replaced fallback,
+and conflicting published receipt. Preserve actual original cleanup object/phase flags.
+Only existing after-published workspace receipt hook is threaded through internal pool
+hooks. No new I/O-failure fallback: required audit exceptions retain capacity until
+retry; null audit/replacement use original fallback semantics. First failures retain
+runtime authority; concurrent8+repeated passes preserve exact receipt bytes/mtime,
+stable event and single disposal/import/Release. Successful retry gets one capacity
+reservation and a second bounded same-worker call which stops before reservation/
+launch, proving slot reuse. Conflicting receipt remains intact with capacity held.
+Separate Sol6.1/xhigh approved scope/seams. Fresh corrected1+new8 build/run pending.
+
 B5 observation seam design consultation, actual Sol6.1/xhigh: an internal optional
 capture of the genuinely launched owner is allowed only after pool binding (or with
 OwnedLaunchException preserving that owner). It cannot replace owner/identity or

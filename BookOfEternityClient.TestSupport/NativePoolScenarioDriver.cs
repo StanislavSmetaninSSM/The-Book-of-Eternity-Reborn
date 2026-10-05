@@ -11,7 +11,7 @@ namespace BookOfEternityClient.Tests;
 
 // Actual production pool in a private state copy. Launched only beneath the
 // independent C subreaper; it retains cleanup authority if this process is lost.
-internal static class NativePoolScenarioDriver
+internal static partial class NativePoolScenarioDriver
 {
     private static readonly byte[] ProposedContent = Encoding.UTF8.GetBytes("{\"fixture\":\"proposed-content-only\"}\n");
 
@@ -25,16 +25,19 @@ internal static class NativePoolScenarioDriver
         var helperLoss = mode == "pool-helper-loss-before-release";
         var faultMode = mode.StartsWith("pool-fault-", StringComparison.Ordinal) ? mode[11..] : null;
         var boundaryMode = mode.StartsWith("pool-boundary-", StringComparison.Ordinal) ? mode[14..] : null;
-        var observationFault = CreateObservationFault(faultMode, boundaryMode);
+        var cleanupMode = mode.StartsWith("pool-cleanup-", StringComparison.Ordinal) ? mode[13..] : null;
+        var cleanupCase = cleanupMode is "dispose" or "workspace" or "audit-failure" or "audit-unavailable" or "receipt-temp" or "receipt-ack" or "receipt-replaced" or "receipt-conflict";
+        var cleanupScenario = cleanupCase ? new CleanupScenario(cleanupMode!) : null;
+        var observationFault = cleanupScenario?.ObservationFault ?? CreateObservationFault(faultMode, boundaryMode);
         var faultCase = faultMode != null && (observationFault != null || faultMode is "owner-eof" or "status-loss" or "helper-loss");
         var boundaryCase = boundaryMode is "cancel-completed" or "timeout-completed" or "cancel-stop" or "timeout-stop" or "cancel-output" or "timeout-output";
-        if (!faultCase && !boundaryCase && !helperLoss && contentMode is not ("valid" or "bad-hash" or "missing") && mode != "pool-happy" && descendantMode is not ("tree" or "root-first" or "doublefork" or "ignore" or "spawn") &&
+        if (!cleanupCase && !faultCase && !boundaryCase && !helperLoss && contentMode is not ("valid" or "bad-hash" or "missing") && mode != "pool-happy" && descendantMode is not ("tree" or "root-first" or "doublefork" or "ignore" or "spawn") &&
             terminalMode is not ("cancel-release" or "timeout-release" or "cancel-publication" or "timeout-publication" or
                 "generation" or "task-bytes" or "nonzero" or "missing-proposal")) return 64;
         var workerMode = contentMode != null ? "content-" + contentMode : terminalMode is "nonzero" or "missing-proposal" ? terminalMode : descendantMode;
         var fixtureRoot = Path.Combine(output, "state-copy");
         Directory.CreateDirectory(fixtureRoot);
-        var fs = new FileSystemManager(fixtureRoot, NullLogger<FileSystemManager>.Instance);
+        var fs = new FileSystemManager(fixtureRoot, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance, cleanupScenario?.FileHooks);
         fs.EnsureDirectoryStructure();
         Directory.CreateDirectory(Path.GetDirectoryName(fs.SessionGenerationPath)!);
         await File.WriteAllTextAsync(fs.SessionGenerationPath,
@@ -122,11 +125,14 @@ internal static class NativePoolScenarioDriver
                 if (terminalMode == "task-bytes")
                     await fs.WriteFileAtomicBytesAsync(GmWorkerBridgePool.GetTaskPacketPath(task.TaskId), [99]);
             },
-            BeforeWorkspaceCleanupAsync = path => { cleanupPath = path; return Task.CompletedTask; },
+            BeforeTaskReservationAsync = () => cleanupScenario?.BeforeReservation() ?? Task.CompletedTask,
+            BeforeWorkspaceCleanupAsync = path => { cleanupPath = path; return cleanupScenario?.BeforeWorkspace(path) ?? Task.CompletedTask; },
+            AfterQuarantineAuditTempCreatedAsync = path => cleanupScenario?.AfterReceiptTemp(path) ?? Task.CompletedTask,
+            AfterQuarantineAuditPublishedAsync = path => cleanupScenario?.AfterReceiptPublished(path) ?? Task.CompletedTask,
             TimeoutSignal = timeout.Token
         };
         var reaper = new GmWorkerQuarantineReaper(capacity: 1, retrySchedule: [], runInBackground: false);
-        var pool = new GmWorkerBridgePool(fs, null, new GmWorkerAuditLog(fs),
+        var pool = new GmWorkerBridgePool(fs, null, cleanupScenario?.WithoutAudit == true ? null : new GmWorkerAuditLog(fs),
             hooks, GmWorkerProcessTreeFactory.Instance, reaper, new GmWorkerNativePoolAdmission(package, fixtureRoot));
         GmWorkerTaskRunResult? result = null; string? failure = null; var canceled = false;
         var executionClock = Stopwatch.StartNew();
@@ -153,12 +159,31 @@ internal static class NativePoolScenarioDriver
         var beforeLateEntries = reaper.EntryCount;
         var beforeLateCapacity = reaper.OwnedCapacity;
         GmWorkerStopEvidence? lateStop = null;
+        var lateOutputObservationSettled = false;
+        var retainedSlotProbePending = false; var retainedSlotProbeCanceled = false;
+        if (faultMode == "late-output")
+        {
+            using var probeCancellation = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+            var probe = pool.RunTaskAsync(profile, task with { TaskId = task.TaskId + "_held_probe" }, probeCancellation.Token);
+            _ = await Task.WhenAny(probe, Task.Delay(100));
+            retainedSlotProbePending = !probe.IsCompleted;
+            probeCancellation.Cancel();
+            try { _ = await probe; }
+            catch (OperationCanceledException) { retainedSlotProbeCanceled = true; }
+        }
         if (faultCase)
         {
             observationFault?.ReleaseObservation();
+            if (faultMode == "late-output")
+            {
+                var originalObservation = (Task)typeof(GmWorkerNativeLineageLaunch).GetField("_outputObservation", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(capturedOwner)!;
+                await originalObservation.WaitAsync(TimeSpan.FromSeconds(5));
+                lateOutputObservationSettled = originalObservation.IsCompletedSuccessfully;
+            }
             lateStop = await capturedOwner!.StopAndObserveAsync();
             await Task.WhenAll(reaper.RunPassAsync(), reaper.RunPassAsync());
         }
+        var cleanupReport = cleanupScenario == null ? null : await cleanupScenario.CompleteAsync(fs, reaper, pool, profile, task, result, capturedOwner);
         var stored = result?.Proposal == null ? null : await new GmWorkerProposalStore(fs).ReadProposalAsync(result.Proposal.ProposalId);
         await File.WriteAllTextAsync(Path.Combine(output, "scenario.json"), JsonSerializer.Serialize(new
         {
@@ -170,7 +195,7 @@ internal static class NativePoolScenarioDriver
             ownerTerminal = capturedOwner == null ? null : typeof(GmWorkerNativeLineageLaunch).GetField("_terminal", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(capturedOwner),
             ownerUncertainty = capturedOwner == null ? null : typeof(GmWorkerNativeLineageLaunch).GetField("_uncertainty", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(capturedOwner),
             observationFaultReached = observationFault?.Reached.IsCompletedSuccessfully == true,
-            beforeLateEntries, beforeLateCapacity, lateStop,
+            beforeLateEntries, beforeLateCapacity, lateStop, lateOutputObservationSettled, retainedSlotProbePending, retainedSlotProbeCanceled, cleanupReport,
             actualOutputTasksSettled = capturedOwner?.HostStandardOutput.IsCompletedSuccessfully == true && capturedOwner.HostStandardError.IsCompletedSuccessfully,
             cleanupConfirmedAuditCount = ReadAudit(fs).Count(entry => entry.EventType == "process-tree-cleanup-confirmed"),
             quarantineReceipts = Directory.Exists(Path.Combine(fixtureRoot, "native-runtime"))
@@ -186,7 +211,7 @@ internal static class NativePoolScenarioDriver
             reaperEntries = reaper.EntryCount, reaperCapacity = reaper.OwnedCapacity,
             canonicalContextUnchanged = await File.ReadAllTextAsync(fs.ResolvePath(contextPath)) == weather,
             validatedExecution = result?.HasValidatedExecutionFor(task) == true,
-            proposalBytesMatch = result?.Proposal != null && (await File.ReadAllBytesAsync(
+            proposalBytesMatch = result?.Proposal != null && File.Exists(fs.ResolvePath(GmWorkerProposalStore.GetProposalPath(result.Proposal.ProposalId))) && (await File.ReadAllBytesAsync(
                 fs.ResolvePath(GmWorkerProposalStore.GetProposalPath(result.Proposal.ProposalId))))
                 .AsSpan().SequenceEqual(Encoding.UTF8.GetBytes(GmWorkerJson.Serialize(result.Proposal))),
             stagingCleaned = !Directory.Exists(Path.Combine(fs.RuntimeRootPath, "proposal-staging")) ||
