@@ -31,6 +31,7 @@ internal static class NativeBootstrapScenario
         var ready = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var statuses = ReadStatuses(helper.StandardOutput, ready, Path.Combine(output, "bootstrap-status.jsonl"));
         Socket? connection = null; string? failure = null; var bound = false;
+        var deadPidfdReadable = false; var deadTransferRejectedAndClosed = false;
         try
         {
             using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(5));
@@ -49,6 +50,12 @@ internal static class NativeBootstrapScenario
             if (mode == "bootstrap-wrong-ack") GmWorkerNativeDescriptors.Send(connection, "A2:wrong-run");
             connection.Dispose(); connection = null;
             await exit.WaitAsync(deadline.Token);
+            deadPidfdReadable = GmWorkerHostIdentity.IsReadable(pidfd);
+            // A live purported owner prevents exited-supervisor short-circuiting:
+            // this negative check must reject the dead capability itself.
+            using var liveScenario = Process.GetCurrentProcess();
+            try { GmWorkerHostIdentity.FromTransferredPidfd(liveScenario, pidfd, () => true); }
+            catch (InvalidDataException) { deadTransferRejectedAndClosed = pidfd.IsClosed; }
         }
         catch (Exception ex) { failure = ex.Message; }
         finally
@@ -62,6 +69,7 @@ internal static class NativeBootstrapScenario
             await File.WriteAllTextAsync(Path.Combine(output, "helper-stderr.log"), await errors);
             await File.WriteAllTextAsync(Path.Combine(output, "scenario.json"), JsonSerializer.Serialize(new
             { bound, failure, rootExecuted = File.Exists(marker), helperExitCode = helper.ExitCode,
+              deadPidfdReadable, deadTransferRejectedAndClosed,
               frames, hostStdout = await outTask, hostStderr = await errTask, workerReleased = false }));
             Directory.Delete(root, recursive: true);
         }

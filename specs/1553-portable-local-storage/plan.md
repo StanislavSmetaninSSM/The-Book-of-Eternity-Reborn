@@ -186,6 +186,19 @@ Next narrowly selected regressions: v1 transport7cases and original-Process IPC5
 fresh unit/integration build; no whole old cohort replay. Production code unchanged
 after `822387cb`; these new category selectors name existing tests only.
 
+At `97cd5d50f7edc1c6d5cbc04007fa2ac6d60d64fc`, fresh unit/integration preparation
+passed12planned/0executed,67.0846126s; affected native v1 **7/7** and original-Process
+IPC **5/5PASS**,23.7365513s, no skips/duplicates/timeouts and complete cleanup.
+Native7guardians reached ECHILD with no emergency cleanup/failure/deadline.
+[Evidence](recovery/evidence/worker-host-affected-regressions-green/manifest.json).
+Independent Sol delta review confirms rejected-FD fix and fixture ownership. Its
+remaining evidence gap adds one process-free real self/supervisor pidfd case and
+dead-capability assertions in the two existing gated bootstrap cases. Dead pidfd
+is first observed readable after actual helper/root retirement, then rejected using
+a live original scenario Process as purported owner, avoiding exited-helper
+short-circuit. This is negative admission only; existing reused-PID primitive proof
+is retained separately. Only these3cases need rerun; no production change.
+
 ## Worker-host native integration design — 2026-10-05
 
 **Design only; not implementation authorization.** Source/remote base

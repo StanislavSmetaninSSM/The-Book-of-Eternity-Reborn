@@ -1,0 +1,75 @@
+{
+  "Categories": [
+    "worker-native-v1-transport-regression",
+    "worker-owned-original-ipc-regression"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "97cd5d50f7edc1c6d5cbc04007fa2ac6d60d64fc",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0733228,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0165777,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0219065,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 47.7362853,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 10.9683472,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0048899,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 9,
+  "WallTime": "00:01:07.0846126",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 12,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "worker-native-v1-transport-regression-unit-001",
+      "worker-owned-original-ipc-regression-integration-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

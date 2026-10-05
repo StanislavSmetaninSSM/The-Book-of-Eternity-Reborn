@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "worker-native-pidfd-rejection",
+      "responsibility": "#1553 transferred real supervisor/self pidfd and retired gated root pidfd cannot become host identity; rejected handles close while original source descriptor remains owned.",
+      "excludes": "Negative admission only; no new child topology, positive ownership or reused-PID signalling qualification. Existing raw helper cases retain independent guardian ECHILD.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerHostIdentity.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.SupervisorPidfd_CannotBecomeHostIdentity",
+            "BookOfEternityClient.Tests.GmWorkerNativeHostTests.GatedBootstrapLoss_RetiresWithoutExecutingRoot"
+          ]
+        }
+      ]
+    },
+    {
       "id": "worker-native-v1-transport-regression",
       "responsibility": "#1553 actual v1 native launch/FD/status paths affected by v2 extension; own root, adopted child, owner/status loss, exec error and private input/environment/cwd.",
       "excludes": "No full prototype/IPC cohort replay, WorkerRelease qualification, live GM, main PTY or Windows runtime claim. Exact affected existing methods only.",
@@ -131,7 +155,9 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.*"
+            "BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.ReceivedRight_IsCloseOnExecAndHasOneDeterministicOwner",
+            "BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.RejectedEnvelope_ClosesEveryDeliveredDescriptor",
+            "BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.IdentityRejection_ClosesUnadmittedTransferredDescriptor"
           ]
         }
       ]

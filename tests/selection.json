@@ -113,6 +113,13 @@
       "contracts": [
         "#1553 T041-FALLBACK-HOST"
       ]
+    },
+    {
+      "category": "worker-native-pidfd-rejection",
+      "reason": "#1553 transferred real supervisor/self pidfd and retired gated root pidfd cannot become host identity; rejected handles close while original source descriptor remains owned.",
+      "contracts": [
+        "#1553 T041-FALLBACK-HOST"
+      ]
     }
   ]
 }

@@ -14,6 +14,24 @@ public sealed class GmWorkerNativeDescriptorTests
     private const string Envelope = "B2:fixture-run";
 
     [Fact]
+    public async Task SupervisorPidfd_CannotBecomeHostIdentity()
+    {
+        await WithSockets(async (sender, receiver, _, _) =>
+        {
+            using var supervisor = Process.GetCurrentProcess();
+            using var original = OpenPidfd(supervisor.Id, 0);
+            Assert.False(original.IsInvalid);
+            Assert.False(GmWorkerHostIdentity.IsReadable(original));
+            GmWorkerNativeDescriptors.Send(sender, Envelope, original);
+            using var transferred = Assert.Single(await GmWorkerNativeDescriptors.ReceiveAsync(receiver, Envelope, 1, CancellationToken.None));
+            Assert.Throws<InvalidDataException>(() => GmWorkerHostIdentity.FromTransferredPidfd(supervisor, transferred, () => true));
+            Assert.True(transferred.IsClosed);
+            Assert.False(original.IsClosed);
+            Assert.False(GmWorkerHostIdentity.IsReadable(original));
+        });
+    }
+
+    [Fact]
     public async Task ReceivedRight_IsCloseOnExecAndHasOneDeterministicOwner()
     {
         await WithSockets(async (sender, receiver, pipe, target) =>
@@ -136,4 +154,6 @@ public sealed class GmWorkerNativeDescriptorTests
     private static extern long SendMessage(SafeSocketHandle socket, ref Message message, int flags);
     [DllImport("libc", EntryPoint = "fcntl", SetLastError = true)]
     private static extern int GetDescriptorFlags(SafeFileHandle handle, int command);
+    [DllImport("libc", EntryPoint = "pidfd_open", SetLastError = true)]
+    private static extern SafeFileHandle OpenPidfd(int pid, uint flags);
 }

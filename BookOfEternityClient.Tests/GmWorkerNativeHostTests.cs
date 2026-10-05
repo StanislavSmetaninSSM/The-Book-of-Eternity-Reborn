@@ -16,6 +16,8 @@ public sealed class GmWorkerNativeHostTests
         Assert.Equal(JsonValueKind.Null, result.GetProperty("failure").ValueKind);
         Assert.False(result.GetProperty("rootExecuted").GetBoolean());
         Assert.Equal(2, result.GetProperty("helperExitCode").GetInt32());
+        Assert.True(result.GetProperty("deadPidfdReadable").GetBoolean());
+        Assert.True(result.GetProperty("deadTransferRejectedAndClosed").GetBoolean());
         var frames = result.GetProperty("frames").EnumerateArray().ToArray();
         Assert.DoesNotContain(frames, f => f.GetProperty("state").GetString() == "Started");
         Assert.Equal("Uncertain", frames[^1].GetProperty("state").GetString());
