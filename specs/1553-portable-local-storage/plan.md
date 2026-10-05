@@ -84,6 +84,31 @@ Acceptance will prove codec/policy and ordinary-file interpretation only, not at
 persistence/crash durability, authenticated stop, canonical wiring, Windows/native
 IPC/process/workspace/PTY, live GM, full T041–043 or whole #1553.
 
+### T041-RUN-RECORD causal RED and candidate
+
+RED source `46e641a1d83daa32ba199e04ccb61a0d4edd8756`, tree
+`b3437a44b8730226db2d9f6a775f8562f9eb0cf9`, was published through verified desktop
+blobs and cloud tree/commit/non-force ref, with exact GitHub readback. Clean selected
+PlanOnly/build discovered 90 cases in 121.740075 seconds (exec session 86273).
+The actual 90/90 execution completed in 6.001238 seconds (session 75174): **27 pass /
+63 expected failures**, no skips/duplicates, complete descriptor and owned cleanup.
+49 assertions expose missing validation/transition rejection, 11 expose stale/invalid
+admission, and three expose cold Prepared/Running/Stopping failing to become Uncertain.
+[Build/plan](recovery/evidence/gm-run-record-red-plan/manifest.json),
+[causal RED](recovery/evidence/gm-run-record-red/manifest.json). Both sessions ended.
+
+Candidate now validates exact nested schema and UTF-8/encoded bounds, binds every
+identity field and evidence kind, retains terminal evidence, makes cold nonterminal
+state uncertain and evaluates the trusted-target slot-local matrix. The observation
+factory is named FromRecord and validates before returning Valid; malformed objects
+become Unreadable rather than acquiring an unearned Valid label. The test call-site
+rename changes no assertion. Independently authenticated live identity is required
+at future active admission, never an identity copied from decoded evidence.
+
+Status: **candidate WIP, fresh build/GREEN/audit and independent implementation review
+not yet run**. No runtime caller is wired. Publish the candidate before verification;
+no native IPC refusal is retried, and no previously accepted cohort is repeated.
+
 ## T041-FRAME verified component — 2026-10-05
 
 Corrected runtime: `e9f9452deb296988a0ced6feb9b8003b54449a19`, tree

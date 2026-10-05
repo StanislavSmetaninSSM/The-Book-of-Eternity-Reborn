@@ -256,7 +256,7 @@ public sealed class GmSessionRunRecordTests
             File.WriteAllBytes(path, bytes);
             var cold = GmSessionRunTransitions.InterpretCold(GmSessionRunRecordCodec.Decode(File.ReadAllBytes(path)));
             Assert.Equal(state == "Stopped" ? GmSessionRunDisposition.Stopped : GmSessionRunDisposition.Uncertain, cold.Disposition);
-            var decision = GmSessionRunAdmission.Evaluate(GmSessionRunObservation.Valid(cold),
+            var decision = GmSessionRunAdmission.Evaluate(GmSessionRunObservation.FromRecord(cold),
                 new(Identity.RootKey, Identity.Backend, Identity.GenerationId), GmSessionRunOperation.QuiescentMutation);
             Assert.Equal(state == "Stopped", decision == GmSessionRunAdmissionDecision.SlotConditionSatisfied);
             Assert.Equal(bytes, File.ReadAllBytes(path));

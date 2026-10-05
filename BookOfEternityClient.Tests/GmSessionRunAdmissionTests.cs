@@ -30,7 +30,7 @@ public sealed class GmSessionRunAdmissionTests
     [InlineData("Stopped", false, true)]
     public void Admission_StateMatrixIsSlotLocal(string state, bool active, bool quiescent)
     {
-        var observation = GmSessionRunObservation.Valid(state == "Stopped" ? Stopped : Record(state));
+        var observation = GmSessionRunObservation.FromRecord(state == "Stopped" ? Stopped : Record(state));
         Assert.True(Allows(observation, GmSessionRunOperation.DiagnosticRead));
         Assert.Equal(active, Allows(observation, GmSessionRunOperation.ActiveRunMutation, Identity));
         Assert.Equal(quiescent, Allows(observation, GmSessionRunOperation.QuiescentMutation));
@@ -58,13 +58,13 @@ public sealed class GmSessionRunAdmissionTests
     [InlineData("HostInstanceId")]
     [InlineData("BootId")]
     public void Admission_ActiveMutationRejectsEveryStaleIdentityField(string field) =>
-        Assert.False(Allows(GmSessionRunObservation.Valid(Record("Running")),
+        Assert.False(Allows(GmSessionRunObservation.FromRecord(Record("Running")),
             GmSessionRunOperation.ActiveRunMutation, Mismatch(Identity, field)));
 
     [Fact]
     public void Admission_RequiresCurrentGenerationAndExistingOwner()
     {
-        var running = GmSessionRunObservation.Valid(Record("Running"));
+        var running = GmSessionRunObservation.FromRecord(Record("Running"));
         Assert.False(Allows(running, GmSessionRunOperation.ActiveRunMutation, Identity,
             Target with { GenerationId = new string('7', 32) }));
         Assert.False(Allows(running, GmSessionRunOperation.ActiveRunMutation));
@@ -78,7 +78,7 @@ public sealed class GmSessionRunAdmissionTests
     {
         Assert.True(Allows(GmSessionRunObservation.Missing, GmSessionRunOperation.StartRun, Identity));
         Assert.False(Allows(GmSessionRunObservation.Missing, GmSessionRunOperation.StartRun, Identity with { Epoch = 2 }));
-        var stopped = GmSessionRunObservation.Valid(Stopped);
+        var stopped = GmSessionRunObservation.FromRecord(Stopped);
         Assert.False(Allows(stopped, GmSessionRunOperation.StartRun, Identity with { Epoch = 2 }));
         Assert.False(Allows(stopped, GmSessionRunOperation.StartRun, Identity with { Epoch = 3, RunId = new string('4', 32) }));
         var replacement = Identity with { Epoch = 2, RunId = new string('4', 32), GenerationId = new string('7', 32) };
@@ -86,7 +86,7 @@ public sealed class GmSessionRunAdmissionTests
         Assert.True(Allows(stopped, GmSessionRunOperation.QuiescentMutation, target: Target with { GenerationId = replacement.GenerationId }));
         var exhaustedIdentity = Identity with { Epoch = long.MaxValue };
         var exhausted = Stopped with { Identity = exhaustedIdentity, StopEvidence = Stop(exhaustedIdentity) };
-        Assert.False(Allows(GmSessionRunObservation.Valid(exhausted), GmSessionRunOperation.StartRun, Identity with { RunId = new string('4', 32) }));
+        Assert.False(Allows(GmSessionRunObservation.FromRecord(exhausted), GmSessionRunOperation.StartRun, Identity with { RunId = new string('4', 32) }));
     }
 
     [Fact]
@@ -94,14 +94,14 @@ public sealed class GmSessionRunAdmissionTests
     {
         var windowsIdentity = Identity with { RootKey = "C:\\Game", Backend = GmSessionRunBackend.WindowsJob };
         var windows = Stopped with { Identity = windowsIdentity, StopEvidence = Stop(windowsIdentity) };
-        Assert.True(Allows(GmSessionRunObservation.Valid(windows), GmSessionRunOperation.QuiescentMutation,
+        Assert.True(Allows(GmSessionRunObservation.FromRecord(windows), GmSessionRunOperation.QuiescentMutation,
             target: new("c:\\game", GmSessionRunBackend.WindowsJob, Identity.GenerationId)));
-        Assert.False(Allows(GmSessionRunObservation.Valid(Stopped), GmSessionRunOperation.QuiescentMutation,
+        Assert.False(Allows(GmSessionRunObservation.FromRecord(Stopped), GmSessionRunOperation.QuiescentMutation,
             target: Target with { RootKey = "/GAME/世界" }));
         var foreignIdentity = Identity with { RootKey = "/GAME/世界", Backend = GmSessionRunBackend.WindowsJob };
         var foreign = Stopped with { Identity = foreignIdentity, StopEvidence = Stop(foreignIdentity) };
-        Assert.False(Allows(GmSessionRunObservation.Valid(foreign), GmSessionRunOperation.QuiescentMutation));
-        Assert.False(Allows(GmSessionRunObservation.Valid(Stopped), GmSessionRunOperation.QuiescentMutation,
+        Assert.False(Allows(GmSessionRunObservation.FromRecord(foreign), GmSessionRunOperation.QuiescentMutation));
+        Assert.False(Allows(GmSessionRunObservation.FromRecord(Stopped), GmSessionRunOperation.QuiescentMutation,
             target: Target with { RootKey = "/other" }));
         // An unrelated root obtains its own absence observation, not this root's record.
         Assert.True(Allows(GmSessionRunObservation.Missing, GmSessionRunOperation.QuiescentMutation,
@@ -117,7 +117,7 @@ public sealed class GmSessionRunAdmissionTests
             Identity with { RunId = new string('0', 32) }));
         Assert.False(Allows(GmSessionRunObservation.Missing, GmSessionRunOperation.QuiescentMutation,
             target: Target with { RootKey = "" }));
-        Assert.False(Allows(GmSessionRunObservation.Valid(Record("Stopped")), GmSessionRunOperation.QuiescentMutation));
+        Assert.False(Allows(GmSessionRunObservation.FromRecord(Record("Stopped")), GmSessionRunOperation.QuiescentMutation));
         Assert.False(Allows(GmSessionRunObservation.Missing, GmSessionRunOperation.Unspecified));
     }
 }
