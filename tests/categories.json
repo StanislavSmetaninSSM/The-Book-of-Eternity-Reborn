@@ -2,6 +2,56 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "worker-native-package-publish",
+      "responsibility": "#1553 explicitly prebuilt native assets publish and relocate with the client; actual neutral host uses the default AppContext package path with empty runtime PATH, then scoped stop and independent ECHILD.",
+      "excludes": "No runtime compilation/download, WorkerRelease, production pool B, main PTY or live GM. Build and publish are fixture preparation only.",
+      "changeHints": [
+        "BookOfEternityClient/BookOfEternityClient.csproj",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerNativePackage.cs",
+        "scripts/build-linux-supervisor.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerNativeHostTests.PublishedRelocatedPackage_StartsRealNeutralHostWithEmptyPath"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "worker-native-package-preflight",
+      "responsibility": "#1553 runtime preflight rejects missing/duplicate/protocol/RID/scope/ABI/hash/ELF mismatches in actually compiled packages before native execution.",
+      "excludes": "No helper or host execution; build preparation is separate, no availability test qualifies the game.",
+      "changeHints": [
+        "BookOfEternityClient/BookOfEternityClient.csproj",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerNativePackage.cs",
+        "scripts/build-linux-supervisor.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerNativePackageTests.RuntimePreflight_RejectsIncompatibleActualPackage"
+          ]
+        }
+      ]
+    },
+    {
       "id": "worker-native-host-boundaries",
       "responsibility": "#1553 actual native owned-host negative boundaries: independently authenticated control/status peers, cancellation after checked native binding, owner/status loss, exec failure and NeutralHost Release denial. Independent guardian checks ECHILD in every case.",
       "excludes": "WorkerRelease qualification, real GM, pool B/canonical mutation, Windows runtime, whole IPC/prototype replay. Linux native only; partial cancellation fixture holds after exec until cancellation.",

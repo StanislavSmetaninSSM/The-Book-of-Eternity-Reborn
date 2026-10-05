@@ -14,7 +14,7 @@ internal static class NativeHostScenarioDriver
     internal static async Task<int> Main(string[] args)
     {
         if (args.Length != 3 || args[0] is not ("neutral-ready" or "constructor-path" or "helper-loss-closed-output" or
-            "foreign-control" or "foreign-status" or "cancel-before-ready" or "exec-failure" or "owner-eof" or "status-loss" or "release-denied")) return 64;
+            "foreign-control" or "foreign-status" or "cancel-before-ready" or "exec-failure" or "owner-eof" or "status-loss" or "release-denied" or "published-ready")) return 64;
         var mode = args[0];
         var output = args[2];
         var marker = Path.Combine(output, "worker-released");
@@ -59,7 +59,7 @@ internal static class NativeHostScenarioDriver
                     mode == "foreign-control" ? PipeDirection.In : PipeDirection.Out, PipeOptions.Asynchronous | PipeOptions.CurrentUserOnly);
                 await foreign.ConnectAsync(deadline.Token);
             }
-            var launcher = new ObserveReturnedOwner(new GmWorkerNativeLineageLauncher(args[1]));
+            var launcher = new ObserveReturnedOwner(new GmWorkerNativeLineageLauncher(mode == "published-ready" ? null : args[1]));
             var preparation = host.PrepareOwnedAsync(launcher,
                 GmWorkerBackendRequest.NativeLineage, GmWorkerRequiredCapability.NeutralHost, deadline.Token);
             if (mode == "cancel-before-ready")

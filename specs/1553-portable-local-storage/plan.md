@@ -129,6 +129,11 @@ cancellation retired within scope; control/status/exec failures stayed Uncertain
 on second observation and rejected disposal; explicit Release was denied. All seven
 guardians reached ECHILD/failures0/emergency0, with zero worker markers.
 [Evidence](recovery/evidence/worker-host-boundaries-green/manifest.json).
+WIP package coverage adds8actual-artifact rejection cases (no native execution) and
+1real published/relocated neutral-host case. Publish uses the already freshly built
+client and explicit prebuilt assets, no restore/build; the relocated driver uses
+default AppContext lookup and empty PATH. Native compiler remains fixture preparation
+only. These9cases are unrun pending fresh unit preparation.
 Independent Sol consult confirms original Process/tree/started-state one-way handoff
 from a sealed Windows adapter preserves current cleanup; no native-to-legacy route.
 Existing relevant lifecycle fixtures invoke powershell.exe and remain Windows-only

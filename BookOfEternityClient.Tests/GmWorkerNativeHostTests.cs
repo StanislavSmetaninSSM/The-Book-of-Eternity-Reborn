@@ -94,6 +94,17 @@ public sealed class GmWorkerNativeHostTests
         Assert.True(result.GetProperty("stop").GetProperty("CleanupComplete").GetBoolean());
     }
 
+    [Fact]
+    public async Task PublishedRelocatedPackage_StartsRealNeutralHostWithEmptyPath()
+    {
+        var result = await RunScenario("published-ready");
+        Assert.True(result.GetProperty("ready").GetBoolean(), result.GetProperty("failure").ToString());
+        Assert.False(result.GetProperty("workerReleased").GetBoolean());
+        Assert.Equal(0, result.GetProperty("stop").GetProperty("State").GetInt32());
+        Assert.True(result.GetProperty("stop").GetProperty("CleanupComplete").GetBoolean());
+        Assert.True(result.GetProperty("disposeAllowed").GetBoolean());
+    }
+
     private static async Task<JsonElement> RunScenario(string mode, bool allowGuardianEmergency = false)
     {
         Assert.True(OperatingSystem.IsLinux(), "Actual native host qualification requires Linux.");
@@ -109,7 +120,31 @@ public sealed class GmWorkerNativeHostTests
         }
         var start = new ProcessStartInfo(Path.Combine(output, "host-guardian")) { UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true };
         var dotnet = Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!, "dotnet");
-        foreach (var arg in new[] { Path.Combine(output, "guardian.json"), "12000", dotnet, typeof(NativeHostScenarioDriver).Assembly.Location, mode, output, output }) start.ArgumentList.Add(arg);
+        var driver = typeof(NativeHostScenarioDriver).Assembly.Location;
+        if (mode == "published-ready")
+        {
+            var published = Path.Combine(output, "published");
+            var relocated = Path.Combine(output, "relocated");
+            var publish = new ProcessStartInfo(dotnet) { UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true };
+            foreach (var arg in new[] { "publish", Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "BookOfEternityClient.csproj"),
+                "--no-build", "--no-restore", "--disable-build-servers", "-c", "Debug", "-o", published,
+                "-p:BoeNativePackageDirectory=" + output, "-p:BoeRequireNativePackage=true" }) publish.ArgumentList.Add(arg);
+            using (var packager = Process.Start(publish)!)
+            {
+                var log = await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(packager, TimeSpan.FromSeconds(45), Path.Combine(output, "publish.log"));
+                Assert.True(packager.ExitCode == 0, "Publish preparation failure: " + log);
+            }
+            foreach (var suffix in new[] { ".dll", ".deps.json", ".runtimeconfig.json" })
+                File.Copy(Path.ChangeExtension(driver, suffix), Path.Combine(published, "BookOfEternityClient.TestSupport" + suffix));
+            Directory.Move(published, relocated);
+            driver = Path.Combine(relocated, "BookOfEternityClient.TestSupport.dll");
+            var assets = Path.Combine(relocated, "runtimes", "linux-x64", "native");
+            Assert.Equal(await File.ReadAllBytesAsync(Path.Combine(output, "boe-lineage-supervisor")), await File.ReadAllBytesAsync(Path.Combine(assets, "boe-lineage-supervisor")));
+            Assert.Equal(await File.ReadAllBytesAsync(Path.Combine(output, "package-manifest.json")), await File.ReadAllBytesAsync(Path.Combine(assets, "package-manifest.json")));
+            start.Environment["PATH"] = ""; // Runtime must use only the prebuilt package and absolute host executable.
+            await File.WriteAllTextAsync(Path.Combine(output, "publish-layout.json"), JsonSerializer.Serialize(new { relocated = true, defaultPackagePath = assets, emptyRuntimePath = true, runtimeCompilation = false }));
+        }
+        foreach (var arg in new[] { Path.Combine(output, "guardian.json"), "12000", dotnet, driver, mode, output, output }) start.ArgumentList.Add(arg);
         using var guardian = Process.Start(start)!;
         var guardianLog = await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(guardian, TimeSpan.FromSeconds(20), Path.Combine(output, "guardian.log"));
         Assert.True(guardian.ExitCode == 0, "Guardian failed: " + guardianLog);

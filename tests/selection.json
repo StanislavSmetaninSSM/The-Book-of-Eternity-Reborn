@@ -64,6 +64,20 @@
       "contracts": [
         "#1553 T041-FALLBACK-HOST"
       ]
+    },
+    {
+      "category": "worker-native-package-preflight",
+      "reason": "HOST production package boundary and actual relocated default lookup need independent runtime proof.",
+      "contracts": [
+        "#1553 T041-FALLBACK-HOST"
+      ]
+    },
+    {
+      "category": "worker-native-package-publish",
+      "reason": "HOST production package boundary and actual relocated default lookup need independent runtime proof.",
+      "contracts": [
+        "#1553 T041-FALLBACK-HOST"
+      ]
     }
   ]
 }
