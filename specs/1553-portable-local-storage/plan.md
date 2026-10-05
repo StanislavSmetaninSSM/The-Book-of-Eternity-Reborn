@@ -54,7 +54,22 @@ non-force publication/readback and fresh GitHub-only restoration are required.
 Current state: separate gpt-6.1-sol/xhigh design review PASS at `a6fcdb24719b91992e3fd28c23c623f77b2878bc`, no findings. Initial test-only WIP adds two actual-builder synthetic alias regressions plus four pure JSON cases and the existing exact documentation guard. Production remains byte-identical to base; all seven planned rows are unrun. Spec Kit prerequisites and scoped spec/plan/task consistency pass; optional auto-commit hooks are disabled.
 Preparation at `412661f71cf28297178d39816b16c3887e75650d`: PlanOnly failed before discovery/execution (zero tests, 79.4371548s) with two CS9007 errors in new raw JSON test strings; corrected interpolation delimiters only. [Build evidence](recovery/evidence/worker-environment-20261005-preparation-failure/manifest.json). This is not behavioral RED.
 Causal RED at `e6b6436bf99440a5284815435c92010a90abd7a2`: fresh PlanOnly/build PASS (77.1787408s, seven planned, zero executed); NoBuild completed six integration cases: four pure JSON PASS, both actual-builder case-pair regressions FAIL with `ArgumentException` duplicate synthetic key at the original ToDictionary. One unit documentation guard remained unexecuted after integration failure. Total 11.0053660s; owned/runtime cleanup complete. Production is still byte-identical to base. [Build/plan](recovery/evidence/worker-environment-20261005-red-plan/manifest.json), [causal RED](recovery/evidence/worker-environment-20261005-native-red/manifest.json).
-Next WIP extracts the existing capture and reconstruction operations without changing the faulty comparer or consumer semantics, and adds nine pure round-trip/snapshot/platform/field cases. Sixteen total rows are now planned, unrun at this WIP. A second selected RED will verify the pure regression against that unchanged comparer before its one-line fix. Actual Ready does not execute reconstruction; the pure production-wired method provides that evidence without Release. The explicit autonomous owner instruction authorizes routine implementation;
+Next WIP extracts the existing capture and reconstruction operations without changing the faulty comparer or consumer semantics, and adds nine pure round-trip/snapshot/platform/field cases. Sixteen total rows are now planned, unrun at this WIP. A second selected RED will verify the pure regression against that unchanged comparer before its one-line fix. Actual Ready does not execute reconstruction; the pure production-wired method provides that evidence without Release.
+
+Second causal RED at `8704aa04c8337d74f58bca06966e405db878bd2d`: fresh selected
+build/PlanOnly PASS, 16 planned/zero executed, 69.1892382s. Execution completed15:
+10 PASS and five expected FAIL (two native pairs, two pure round-trip pairs and
+Linux lookup case semantics); the unit guard remained unexecuted. No skips or
+duplicates; complete owned/runtime cleanup; 12.5727586s. [Build/plan](recovery/evidence/worker-environment-20261005-pure-red-plan/manifest.json),
+[RED](recovery/evidence/worker-environment-20261005-pure-red/manifest.json).
+
+Candidate now makes the single platform-comparer correction, preserving the
+extracted method bodies/call order, and synchronizes all three operational docs
+and their exact shared guard. No real environment values are inspected/logged.
+All 16 selected rows require a fresh build and actual GREEN; implementation/final
+review remains pending. Next: publish candidate, run selected verification and
+independent Sol6.1/xhigh implementation/evidence review.
+ The explicit autonomous owner instruction authorizes routine implementation;
 stop only if the faithful fix needs a new product/secret-inheritance policy.
 
 ## T041-IPC Linux admission — 2026-10-05 (verified component)

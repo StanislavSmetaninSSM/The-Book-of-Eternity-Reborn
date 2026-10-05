@@ -107,6 +107,18 @@ marker files exist. After both channels connect, parent-side client PID
 authentication authenticates both connected pipe clients as the exact
 hidden-host PID. The parent only after authentication sends a typed `Launch`
 frame containing the executable, arguments, working directory, and environment.
+
+Environment names are case-sensitive on Linux and case-insensitive on Windows,
+matching the local ProcessStartInfo environment through capture, Launch JSON and
+host reconstruction. HTTP_PROXY and http_proxy keep distinct values on Linux.
+No environment names are filtered or normalized; the existing caller-selected
+inheritance policy is unchanged. For example, synthetic BOE_CASE=upper and
+boe_case=lower remain two Linux entries with their exact spelling and values;
+Windows retains one case-insensitive entry with the caller's latest assignment.
+Null/empty values are preserved through transport; actual process interpretation
+remains the platform's behavior. Exact duplicate JSON names are still rejected.
+Native Ready/owner-close evidence stops before Release; pure reconstruction
+checks do not qualify successful worker execution or its process-tree/workspace.
 The hidden host retains both channels; the configured worker receives neither
 channel nor any pipe handle.
 

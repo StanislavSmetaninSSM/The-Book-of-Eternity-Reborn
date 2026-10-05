@@ -316,6 +316,9 @@ public sealed class GmWorkerBridgeDocumentationTests
             Assert.Contains("Linux uses SO_PEERCRED for the expected host PID and the owner’s effective UID on both channels", normalized, StringComparison.Ordinal);
             Assert.Contains("before any Launch byte", normalized, StringComparison.Ordinal);
             Assert.Contains("does not enable Linux worker execution", normalized, StringComparison.Ordinal);
+            Assert.Contains("Environment names are case-sensitive on Linux and case-insensitive on Windows", normalized, StringComparison.Ordinal);
+            Assert.Contains("HTTP_PROXY and http_proxy keep distinct values on Linux", normalized, StringComparison.Ordinal);
+            Assert.Contains("No environment names are filtered or normalized", normalized, StringComparison.Ordinal);
             Assert.Contains("Linux process-tree and detached-workspace gates remain closed", normalized, StringComparison.Ordinal);
             Assert.Contains(
                 "parent creates private current-user named control/status pipe servers",

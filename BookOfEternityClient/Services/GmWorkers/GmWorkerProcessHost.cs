@@ -21,7 +21,8 @@ internal sealed record GmWorkerProcessHostPayload(
         workerStartInfo.Environment.ToDictionary(
             entry => entry.Key,
             entry => entry.Value,
-            StringComparer.OrdinalIgnoreCase));
+            // Match ProcessStartInfo.Environment: case aliases are distinct on Unix.
+            OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal));
 }
 
 internal enum GmWorkerProcessHostControlKind

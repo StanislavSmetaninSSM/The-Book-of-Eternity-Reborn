@@ -1,0 +1,245 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="984fdd41-027a-4bb5-96b4-e831edb51c6b" name="@3a7834d0640d 2026-10-05 11:04:05" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T11:04:05.5792609+00:00" queuing="2026-10-05T11:04:05.5792609+00:00" start="2026-10-05T11:04:02.8387030+00:00" finish="2026-10-05T11:04:05.6300626+00:00" />
+  <TestSettings name="default" id="1661c07e-5f07-4415-813b-ce3a7d9b1d03">
+    <Deployment runDeploymentRoot="_3a7834d0640d_2026-10-05_11_04_05" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="7e1624f2-c83d-4bc2-bc2d-ae0143d29440" testId="aca49c38-54ef-2536-adec-8346b9af83a7" testName="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Capture_OwnsIndependentEnvironmentAndArgumentSnapshot" computerName="3a7834d0640d" duration="00:00:00.0097841" startTime="2026-10-05T11:04:05.5446695+00:00" endTime="2026-10-05T11:04:05.5446696+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7e1624f2-c83d-4bc2-bc2d-ae0143d29440" />
+    <UnitTestResult executionId="2d595769-90d3-4bba-8b77-282be9047acc" testId="e3ed4621-0be3-3612-f6c2-7cc3e55556a8" testName="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.RoundTrip_PreservesNullableEmptyAndUnicodeValues(value: null)" computerName="3a7834d0640d" duration="00:00:00.0314126" startTime="2026-10-05T11:04:05.5183871+00:00" endTime="2026-10-05T11:04:05.5183872+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2d595769-90d3-4bba-8b77-282be9047acc" />
+    <UnitTestResult executionId="9c26575f-2c57-4876-80e0-a532492358ab" testId="1a5188a2-c76b-9dee-8117-decd1d440f0d" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.Environment_ActualHostAdmitsCaseAliasesThenClosesWithoutRelease(upperName: &quot;HTTP_PROXY&quot;, lowerName: &quot;http_proxy&quot;)" computerName="3a7834d0640d" duration="00:00:00.0191025" startTime="2026-10-05T11:04:05.5037896+00:00" endTime="2026-10-05T11:04:05.5037897+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9c26575f-2c57-4876-80e0-a532492358ab">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentException : An item with the same key has already been added. Key: http_proxy</Message>
+          <StackTrace>   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+   at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPayload.Capture(ProcessStartInfo workerStartInfo) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 17
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 319
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.Environment_ActualHostAdmitsCaseAliasesThenClosesWithoutRelease(String upperName, String lowerName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.Environment.cs:line 32
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.Environment_ActualHostAdmitsCaseAliasesThenClosesWithoutRelease(String upperName, String lowerName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.Environment.cs:line 57
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b5fd33df-078b-4082-8edb-77c4b19a44a7" testId="b7f9d9c4-4e1d-3a1b-25d5-6075be63f7e0" testName="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Capture_RoundTripPreservesPlatformCaseAliases(upperName: &quot;BOE_SYNTHETIC_NAME&quot;, lowerName: &quot;boe_synthetic_name&quot;)" computerName="3a7834d0640d" duration="00:00:00.0005915" startTime="2026-10-05T11:04:05.5021820+00:00" endTime="2026-10-05T11:04:05.5021821+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b5fd33df-078b-4082-8edb-77c4b19a44a7">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentException : An item with the same key has already been added. Key: boe_synthetic_name</Message>
+          <StackTrace>   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+   at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPayload.Capture(ProcessStartInfo workerStartInfo) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 17
+   at BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Capture_RoundTripPreservesPlatformCaseAliases(String upperName, String lowerName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostEnvironmentTests.cs:line 20
+   at InvokeStub_GmWorkerProcessHostEnvironmentTests.Capture_RoundTripPreservesPlatformCaseAliases(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="743c30cd-212a-4f72-afe2-69cef50907a9" testId="1f953a79-f837-a196-ca0c-93cbf9cc46b8" testName="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Capture_RoundTripPreservesPlatformCaseAliases(upperName: &quot;HTTP_PROXY&quot;, lowerName: &quot;http_proxy&quot;)" computerName="3a7834d0640d" duration="00:00:00.0056691" startTime="2026-10-05T11:04:05.4937427+00:00" endTime="2026-10-05T11:04:05.4937677+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="743c30cd-212a-4f72-afe2-69cef50907a9">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentException : An item with the same key has already been added. Key: http_proxy</Message>
+          <StackTrace>   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+   at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPayload.Capture(ProcessStartInfo workerStartInfo) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 17
+   at BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Capture_RoundTripPreservesPlatformCaseAliases(String upperName, String lowerName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostEnvironmentTests.cs:line 20
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f1d47475-03b1-4be0-bfda-ac5a089abecb" testId="c12f96f9-3efd-b811-0a6e-0f13442b5d85" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.Environment_ActualHostAdmitsCaseAliasesThenClosesWithoutRelease(upperName: &quot;BOE_SYNTHETIC_NAME&quot;, lowerName: &quot;boe_synthetic_name&quot;)" computerName="3a7834d0640d" duration="00:00:00.0009746" startTime="2026-10-05T11:04:05.5043671+00:00" endTime="2026-10-05T11:04:05.5043672+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f1d47475-03b1-4be0-bfda-ac5a089abecb">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentException : An item with the same key has already been added. Key: boe_synthetic_name</Message>
+          <StackTrace>   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+   at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPayload.Capture(ProcessStartInfo workerStartInfo) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 17
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 319
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.Environment_ActualHostAdmitsCaseAliasesThenClosesWithoutRelease(String upperName, String lowerName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.Environment.cs:line 32
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.Environment_ActualHostAdmitsCaseAliasesThenClosesWithoutRelease(String upperName, String lowerName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.Environment.cs:line 57
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3dffbbb7-f492-4adf-9f46-b3b6f703f0d6" testId="58e66bac-3983-3191-6c66-a64edafa2638" testName="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Capture_LookupRetainsPlatformNameSemantics" computerName="3a7834d0640d" duration="00:00:00.0041325" startTime="2026-10-05T11:04:05.5451192+00:00" endTime="2026-10-05T11:04:05.5451192+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3dffbbb7-f492-4adf-9f46-b3b6f703f0d6">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Capture_LookupRetainsPlatformNameSemantics() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostEnvironmentTests.cs:line 37
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f711fff5-82fa-4489-a01b-63a4a49e3572" testId="4cb91414-7be9-bf5d-de4c-54bd0dbc5ce6" testName="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Wire_EnvironmentCaseAliasesDoNotRelaxEnvelopePropertyCasing" computerName="3a7834d0640d" duration="00:00:00.0019755" startTime="2026-10-05T11:04:05.5444565+00:00" endTime="2026-10-05T11:04:05.5444566+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f711fff5-82fa-4489-a01b-63a4a49e3572" />
+    <UnitTestResult executionId="ff539db6-6c95-4286-ae8f-ad5de5828484" testId="47ca25d6-3719-add0-ccd2-e6f339d17bfd" testName="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.RoundTrip_PreservesNullableEmptyAndUnicodeValues(value: &quot;&quot;)" computerName="3a7834d0640d" duration="00:00:00.0009456" startTime="2026-10-05T11:04:05.5189332+00:00" endTime="2026-10-05T11:04:05.5189332+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ff539db6-6c95-4286-ae8f-ad5de5828484" />
+    <UnitTestResult executionId="255472ac-960c-431d-b412-8f7d00110bb8" testId="78f8e291-815b-d912-a36f-330b6a4c1782" testName="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Wire_CaseDistinctEnvironmentKeysRemainDistinct" computerName="3a7834d0640d" duration="00:00:00.0004645" startTime="2026-10-05T11:04:05.5445708+00:00" endTime="2026-10-05T11:04:05.5445709+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="255472ac-960c-431d-b412-8f7d00110bb8" />
+    <UnitTestResult executionId="d6a23b61-2006-42f7-bbdb-b05f1bf54ae6" testId="7285975b-7341-df0b-0f01-82c6ca001c8a" testName="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Reconstruct_WireAliasesUseExistingPlatformAssignmentSemantics" computerName="3a7834d0640d" duration="00:00:00.0004492" startTime="2026-10-05T11:04:05.5452706+00:00" endTime="2026-10-05T11:04:05.5452706+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d6a23b61-2006-42f7-bbdb-b05f1bf54ae6" />
+    <UnitTestResult executionId="5a1a2fdb-dbd2-4442-8426-1a1857734bc1" testId="e2a84495-bda7-d3a6-e022-db7b4d14dfc0" testName="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Reconstruct_EmptyEnvironmentReplacesAmbientAndPreservesLaunchFields" computerName="3a7834d0640d" duration="00:00:00.0043752" startTime="2026-10-05T11:04:05.5452115+00:00" endTime="2026-10-05T11:04:05.5452115+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5a1a2fdb-dbd2-4442-8426-1a1857734bc1" />
+    <UnitTestResult executionId="181fe350-f097-4a64-a2a9-f9aa1f61724d" testId="6b261332-0f97-57ae-027f-f262f8d7e266" testName="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.RoundTrip_PreservesNullableEmptyAndUnicodeValues(value: &quot;synthetic-снег-☃=\&quot;quoted\&quot;\nsecond line&quot;)" computerName="3a7834d0640d" duration="00:00:00.0004738" startTime="2026-10-05T11:04:05.5194872+00:00" endTime="2026-10-05T11:04:05.5194873+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="181fe350-f097-4a64-a2a9-f9aa1f61724d" />
+    <UnitTestResult executionId="188ab808-c10c-47f6-9383-50398a0f3021" testId="6ffe27e8-9c0e-7172-c169-3e2c63ef186f" testName="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Wire_ExactDuplicateEnvironmentKeysAreRejectedWithoutPayloadDiagnostics(escaped: False)" computerName="3a7834d0640d" duration="00:00:00.0008659" startTime="2026-10-05T11:04:05.5223901+00:00" endTime="2026-10-05T11:04:05.5223901+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="188ab808-c10c-47f6-9383-50398a0f3021" />
+    <UnitTestResult executionId="61b766ab-d723-4b12-a242-a4f8da7850d2" testId="00135bf8-0c95-84b0-9c22-4ff421a710b0" testName="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Wire_ExactDuplicateEnvironmentKeysAreRejectedWithoutPayloadDiagnostics(escaped: True)" computerName="3a7834d0640d" duration="00:00:00.0018659" startTime="2026-10-05T11:04:05.5214436+00:00" endTime="2026-10-05T11:04:05.5214437+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="61b766ab-d723-4b12-a242-a4f8da7850d2" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Capture_RoundTripPreservesPlatformCaseAliases(upperName: &quot;BOE_SYNTHETIC_NAME&quot;, lowerName: &quot;boe_synthetic_name&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b7f9d9c4-4e1d-3a1b-25d5-6075be63f7e0">
+      <Execution id="b5fd33df-078b-4082-8edb-77c4b19a44a7" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests" name="Capture_RoundTripPreservesPlatformCaseAliases" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.RoundTrip_PreservesNullableEmptyAndUnicodeValues(value: &quot;synthetic-снег-☃=\&quot;quoted\&quot;\nsecond line&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="6b261332-0f97-57ae-027f-f262f8d7e266">
+      <Execution id="181fe350-f097-4a64-a2a9-f9aa1f61724d" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests" name="RoundTrip_PreservesNullableEmptyAndUnicodeValues" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.RoundTrip_PreservesNullableEmptyAndUnicodeValues(value: null)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e3ed4621-0be3-3612-f6c2-7cc3e55556a8">
+      <Execution id="2d595769-90d3-4bba-8b77-282be9047acc" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests" name="RoundTrip_PreservesNullableEmptyAndUnicodeValues" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Reconstruct_WireAliasesUseExistingPlatformAssignmentSemantics" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="7285975b-7341-df0b-0f01-82c6ca001c8a">
+      <Execution id="d6a23b61-2006-42f7-bbdb-b05f1bf54ae6" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests" name="Reconstruct_WireAliasesUseExistingPlatformAssignmentSemantics" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Wire_EnvironmentCaseAliasesDoNotRelaxEnvelopePropertyCasing" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="4cb91414-7be9-bf5d-de4c-54bd0dbc5ce6">
+      <Execution id="f711fff5-82fa-4489-a01b-63a4a49e3572" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests" name="Wire_EnvironmentCaseAliasesDoNotRelaxEnvelopePropertyCasing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Reconstruct_EmptyEnvironmentReplacesAmbientAndPreservesLaunchFields" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e2a84495-bda7-d3a6-e022-db7b4d14dfc0">
+      <Execution id="5a1a2fdb-dbd2-4442-8426-1a1857734bc1" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests" name="Reconstruct_EmptyEnvironmentReplacesAmbientAndPreservesLaunchFields" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Wire_ExactDuplicateEnvironmentKeysAreRejectedWithoutPayloadDiagnostics(escaped: False)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="6ffe27e8-9c0e-7172-c169-3e2c63ef186f">
+      <Execution id="188ab808-c10c-47f6-9383-50398a0f3021" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests" name="Wire_ExactDuplicateEnvironmentKeysAreRejectedWithoutPayloadDiagnostics" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Capture_OwnsIndependentEnvironmentAndArgumentSnapshot" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="aca49c38-54ef-2536-adec-8346b9af83a7">
+      <Execution id="7e1624f2-c83d-4bc2-bc2d-ae0143d29440" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests" name="Capture_OwnsIndependentEnvironmentAndArgumentSnapshot" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.RoundTrip_PreservesNullableEmptyAndUnicodeValues(value: &quot;&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="47ca25d6-3719-add0-ccd2-e6f339d17bfd">
+      <Execution id="ff539db6-6c95-4286-ae8f-ad5de5828484" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests" name="RoundTrip_PreservesNullableEmptyAndUnicodeValues" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.Environment_ActualHostAdmitsCaseAliasesThenClosesWithoutRelease(upperName: &quot;BOE_SYNTHETIC_NAME&quot;, lowerName: &quot;boe_synthetic_name&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c12f96f9-3efd-b811-0a6e-0f13442b5d85">
+      <Execution id="f1d47475-03b1-4be0-bfda-ac5a089abecb" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="Environment_ActualHostAdmitsCaseAliasesThenClosesWithoutRelease" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Capture_RoundTripPreservesPlatformCaseAliases(upperName: &quot;HTTP_PROXY&quot;, lowerName: &quot;http_proxy&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="1f953a79-f837-a196-ca0c-93cbf9cc46b8">
+      <Execution id="743c30cd-212a-4f72-afe2-69cef50907a9" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests" name="Capture_RoundTripPreservesPlatformCaseAliases" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Wire_ExactDuplicateEnvironmentKeysAreRejectedWithoutPayloadDiagnostics(escaped: True)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="00135bf8-0c95-84b0-9c22-4ff421a710b0">
+      <Execution id="61b766ab-d723-4b12-a242-a4f8da7850d2" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests" name="Wire_ExactDuplicateEnvironmentKeysAreRejectedWithoutPayloadDiagnostics" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Wire_CaseDistinctEnvironmentKeysRemainDistinct" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="78f8e291-815b-d912-a36f-330b6a4c1782">
+      <Execution id="255472ac-960c-431d-b412-8f7d00110bb8" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests" name="Wire_CaseDistinctEnvironmentKeysRemainDistinct" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Capture_LookupRetainsPlatformNameSemantics" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="58e66bac-3983-3191-6c66-a64edafa2638">
+      <Execution id="3dffbbb7-f492-4adf-9f46-b3b6f703f0d6" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests" name="Capture_LookupRetainsPlatformNameSemantics" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.Environment_ActualHostAdmitsCaseAliasesThenClosesWithoutRelease(upperName: &quot;HTTP_PROXY&quot;, lowerName: &quot;http_proxy&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="1a5188a2-c76b-9dee-8117-decd1d440f0d">
+      <Execution id="9c26575f-2c57-4876-80e0-a532492358ab" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="Environment_ActualHostAdmitsCaseAliasesThenClosesWithoutRelease" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="aca49c38-54ef-2536-adec-8346b9af83a7" executionId="7e1624f2-c83d-4bc2-bc2d-ae0143d29440" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e3ed4621-0be3-3612-f6c2-7cc3e55556a8" executionId="2d595769-90d3-4bba-8b77-282be9047acc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1a5188a2-c76b-9dee-8117-decd1d440f0d" executionId="9c26575f-2c57-4876-80e0-a532492358ab" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b7f9d9c4-4e1d-3a1b-25d5-6075be63f7e0" executionId="b5fd33df-078b-4082-8edb-77c4b19a44a7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1f953a79-f837-a196-ca0c-93cbf9cc46b8" executionId="743c30cd-212a-4f72-afe2-69cef50907a9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c12f96f9-3efd-b811-0a6e-0f13442b5d85" executionId="f1d47475-03b1-4be0-bfda-ac5a089abecb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="58e66bac-3983-3191-6c66-a64edafa2638" executionId="3dffbbb7-f492-4adf-9f46-b3b6f703f0d6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4cb91414-7be9-bf5d-de4c-54bd0dbc5ce6" executionId="f711fff5-82fa-4489-a01b-63a4a49e3572" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="47ca25d6-3719-add0-ccd2-e6f339d17bfd" executionId="ff539db6-6c95-4286-ae8f-ad5de5828484" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="78f8e291-815b-d912-a36f-330b6a4c1782" executionId="255472ac-960c-431d-b412-8f7d00110bb8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7285975b-7341-df0b-0f01-82c6ca001c8a" executionId="d6a23b61-2006-42f7-bbdb-b05f1bf54ae6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e2a84495-bda7-d3a6-e022-db7b4d14dfc0" executionId="5a1a2fdb-dbd2-4442-8426-1a1857734bc1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6b261332-0f97-57ae-027f-f262f8d7e266" executionId="181fe350-f097-4a64-a2a9-f9aa1f61724d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6ffe27e8-9c0e-7172-c169-3e2c63ef186f" executionId="188ab808-c10c-47f6-9383-50398a0f3021" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="00135bf8-0c95-84b0-9c22-4ff421a710b0" executionId="61b766ab-d723-4b12-a242-a4f8da7850d2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="15" executed="15" passed="10" failed="5" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.31]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.10]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.13]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.20]       System.ArgumentException : An item with the same key has already been added. Key: http_proxy
+[xUnit.net 00:00:02.20]       Stack Trace:
+[xUnit.net 00:00:02.20]            at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+[xUnit.net 00:00:02.20]            at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+[xUnit.net 00:00:02.20]            at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:02.20]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(17,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPayload.Capture(ProcessStartInfo workerStartInfo)
+[xUnit.net 00:00:02.20]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostEnvironmentTests.cs(20,0): at BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Capture_RoundTripPreservesPlatformCaseAliases(String upperName, String lowerName)
+[xUnit.net 00:00:02.20]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.20]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.21]       System.ArgumentException : An item with the same key has already been added. Key: boe_synthetic_name
+[xUnit.net 00:00:02.21]       Stack Trace:
+[xUnit.net 00:00:02.21]            at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+[xUnit.net 00:00:02.21]            at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+[xUnit.net 00:00:02.21]            at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:02.21]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(17,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPayload.Capture(ProcessStartInfo workerStartInfo)
+[xUnit.net 00:00:02.21]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostEnvironmentTests.cs(20,0): at BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Capture_RoundTripPreservesPlatformCaseAliases(String upperName, String lowerName)
+[xUnit.net 00:00:02.21]            at InvokeStub_GmWorkerProcessHostEnvironmentTests.Capture_RoundTripPreservesPlatformCaseAliases(Object, Span`1)
+[xUnit.net 00:00:02.21]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.21]       System.ArgumentException : An item with the same key has already been added. Key: http_proxy
+[xUnit.net 00:00:02.21]       Stack Trace:
+[xUnit.net 00:00:02.21]            at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+[xUnit.net 00:00:02.21]            at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+[xUnit.net 00:00:02.21]            at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:02.21]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(17,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPayload.Capture(ProcessStartInfo workerStartInfo)
+[xUnit.net 00:00:02.21]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(319,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:02.21]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.Environment.cs(32,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.Environment_ActualHostAdmitsCaseAliasesThenClosesWithoutRelease(String upperName, String lowerName)
+[xUnit.net 00:00:02.21]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.Environment.cs(57,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.Environment_ActualHostAdmitsCaseAliasesThenClosesWithoutRelease(String upperName, String lowerName)
+[xUnit.net 00:00:02.21]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.21]       System.ArgumentException : An item with the same key has already been added. Key: boe_synthetic_name
+[xUnit.net 00:00:02.21]       Stack Trace:
+[xUnit.net 00:00:02.21]            at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+[xUnit.net 00:00:02.21]            at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+[xUnit.net 00:00:02.21]            at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:02.21]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(17,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPayload.Capture(ProcessStartInfo workerStartInfo)
+[xUnit.net 00:00:02.21]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(319,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:02.21]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.Environment.cs(32,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.Environment_ActualHostAdmitsCaseAliasesThenClosesWithoutRelease(String upperName, String lowerName)
+[xUnit.net 00:00:02.21]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.Environment.cs(57,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.Environment_ActualHostAdmitsCaseAliasesThenClosesWithoutRelease(String upperName, String lowerName)
+[xUnit.net 00:00:02.21]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.26]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:02.26]       Expected: False
+[xUnit.net 00:00:02.26]       Actual:   True
+[xUnit.net 00:00:02.26]       Stack Trace:
+[xUnit.net 00:00:02.26]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostEnvironmentTests.cs(37,0): at BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Capture_LookupRetainsPlatformNameSemantics()
+[xUnit.net 00:00:02.26]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.26]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.26]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T11:04:05.5058948+00:00">
+        <Text>[xUnit.net 00:00:02.20]     BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Capture_RoundTripPreservesPlatformCaseAliases(upperName: "HTTP_PROXY", lowerName: "http_proxy") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T11:04:05.5065832+00:00">
+        <Text>[xUnit.net 00:00:02.21]     BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Capture_RoundTripPreservesPlatformCaseAliases(upperName: "BOE_SYNTHETIC_NAME", lowerName: "boe_synthetic_name") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T11:04:05.5066092+00:00">
+        <Text>[xUnit.net 00:00:02.21]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.Environment_ActualHostAdmitsCaseAliasesThenClosesWithoutRelease(upperName: "HTTP_PROXY", lowerName: "http_proxy") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T11:04:05.5066359+00:00">
+        <Text>[xUnit.net 00:00:02.21]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.Environment_ActualHostAdmitsCaseAliasesThenClosesWithoutRelease(upperName: "BOE_SYNTHETIC_NAME", lowerName: "boe_synthetic_name") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T11:04:05.5857191+00:00">
+        <Text>[xUnit.net 00:00:02.26]     BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Capture_LookupRetainsPlatformNameSemantics [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>
