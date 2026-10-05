@@ -425,7 +425,7 @@ public sealed class GmBridgeOutputPumpTests
             }
             var chunk = chunks[_index++];
             Assert.InRange(chunk.Length, 1, buffer.Length);
-            chunk.CopyTo(buffer);
+            chunk.AsMemory().CopyTo(buffer);
             NonemptyReads++;
             return chunk.Length;
         }
