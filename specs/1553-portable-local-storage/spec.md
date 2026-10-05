@@ -88,6 +88,13 @@ Windows' diagnostic output grace before Job stop and its existing pending cleanu
 retry only while the same original assigned Job remains retained. This exception
 does not cover lost/disposed Job authority, unattached PID cleanup, native observation
 failure/timeout or any explicit Uncertain record.
+The synthetic fixture path may use a separately qualified, explicit fixture-root-bound
+atomic create-only directory-bundle publisher for the actual Store. Default Linux
+publication remains closed; Windows descriptor behavior is unchanged. Retain generation,
+exact task bytes, canonical lease, safe staging/tree and derived inbox/audit checks.
+Never replace a destination that appears at the final boundary, copy partial members,
+or weaken unsupported-filesystem errors. This is a trusted-local isolated-fixture
+prerequisite, not public rollout, hostile-owner race protection or power-loss durability.
 Only independent finite guardians retire failed synthetic fixtures; their cleanup
 cannot repair production authority. Windows Job meaning stays intact, runtime here
 unqualified. B handoff precedes a separately authorized durable restart/fencing plan.

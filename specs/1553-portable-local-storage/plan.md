@@ -220,6 +220,63 @@ retain their current authoring contract, with a no-change rationale recorded at 
 General Linux rollout, systemd implementation/qualification, native Windows, main PTY,
 live provider/CLI/GM and real saves remain out of scope. No public guard is removed.
 
+### B3-P bounded fixture bundle-publication prerequisite
+
+The connected run at `24f63234` reached the original Store but exposed a genuinely
+missing Linux directory-bundle operation; existing file publication is not equivalent.
+This amendment serves the already-authorized synthetic actual-pool path only. It does
+not turn on general worker publication, state replacement, or a public Linux backend.
+
+- Add a sealed internal GmWorkerSyntheticBundlePublication in Services/GmWorkers,
+  constructed only by GmWorkerNativePoolAdmission.CreateProposalStore(fs). It captures
+  the same explicit fixture root and rejects mismatched FileSystemManager.BasePath.
+  Store accepts the sealed adapter internally; its public/default construction still
+  invokes the unchanged Windows descriptor method. Pool chooses this admitted Store
+  only when its explicit native admission is supplied. No arbitrary success callback,
+  global filesystem capability flag or env/config/profile path is introduced.
+- Core owns a new internal MoveSyntheticRuntimeBundleIntoCanonicalSessionAsync in a
+  separate FileSystemManager partial. It accepts the original canonical lease and
+  explicit admitted root, source directory and destination relative name. Require
+  Linux, exact ordinal BasePath binding, valid current-session lease/no pending local
+  decision and ordinary trusted-local writer (no recorder/legacy recovery). Constrain
+  destination to exactly worker_proposals/<safe nonreserved proposal ID>; require the
+  matching source leaf directly below one private proposal-staging directory, never
+  the staging area/root, traversal or another runtime area. Preserve mutation
+  registration and before/after canonical-boundary hooks; invoke the existing runtime
+  safety boundary and fresh scope checks before the actual move.
+- Under the held canonical lease, create only the destination parent through the
+  trusted-local scope; validate source as an existing ordinary directory and walk
+  the complete tree with EnumerateLocalTreeFiles, rejecting symlinks/special entries.
+  Require an absent destination. After awaited hooks, repeat current-lease/path/root/
+  source-tree/destination checks. Trusted-local by-name checks do not claim protection
+  from a hostile concurrently mutating computer owner. Files are staged with actual
+  exact bytes; publication performs no per-file replacement or copying.
+- The sole native operation is libc renameat2(AT_FDCWD, absolute source, AT_FDCWD,
+  absolute destination, RENAME_NOREPLACE). Linux rename documentation establishes
+  create-only behavior even for an empty target directory and EXDEV across mounts:
+  <https://man7.org/linux/man-pages/man2/rename.2.html>. Every errno or missing symbol
+  rejects with no fallback or retry using plain rename/Directory.Move. Preserve source
+  and destination on rejected moves; Store alone owns its existing staging cleanup.
+  This qualifies atomic bundle visibility on supported local storage, not power-loss
+  durability, network filesystems or descriptor-bound hostile-race protection.
+- Store retains its exact generation/task-byte checks, empty-directory normalization,
+  cancellation publication boundary, derived inbox/audit and authoritative-bundle
+  warning behavior. The new Core operation must revalidate the current lease after
+  awaits. No default guard or Windows implementation is modified.
+
+TDD in narrow worker-synthetic-bundle-publication category: actual Store positive
+proposal plus imported binary content/inbox/audit; final-cut destination arrival
+(empty and nonempty) preserved; wrong admitted root, staging/destination namespace,
+linked/special staged-tree entries and invalid/disposed lease rejected; stale task/
+generation and canceled lease wait preserve existing bytes; default Linux Store
+still raises its descriptor-backend refusal. Native create-only rejection is exercised
+against a real existing destination, and syscall errors never select another backend.
+First positive must RED on the current unavailable operation. After targeted GREEN,
+rerun only worker-native-pool-happy because its storage prerequisite changed; keep the
+already-passing13 scoped-evidence cases untouched. Independent actual Sol6.1/xhigh
+reviews this design before Core implementation and later its source/evidence together.
+B3-P remains unchecked until these tests/review pass; no filesystem changes yet.
+
 ### B4 consumer RED scaffold, 2026-10-05
 
 At verified remote `a549bbe66a54515e72a6e0096fbe52b78d8fa8db`, source remains
