@@ -2,6 +2,39 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-worker-transaction",
+      "responsibility": "Ordinary worker complete-set pending B1 decision, exact before/after images, validation-compatible byte reads, nested write/recovery guard, stale handles, generation/conflict preflight and committed cleanup. Native portable lifecycle, not original physical-worker protocol.",
+      "excludes": "Worker processes/IPC, save producer case names, full game/GM and platform acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.WorkerPublication.cs",
+        "BookOfEternityClient/Core/TrustedLocalFilePublication.Deferred.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-load-worker-ordering",
+          "when": "Changing worker decision serialization against replacement."
+        },
+        {
+          "id": "portable-storage-publication",
+          "when": "Changing shared B1 publication/recovery."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableWorkerTransactionTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-worker-diagnostic",
       "responsibility": "Initiating worker before-image preparation error and independent cleanup error remain inspectable in causal order; exact legacy failure diagnosis before portable cutover.",
       "excludes": "Worker acceptance, B1 publication, full gameplay and platform qualification.",

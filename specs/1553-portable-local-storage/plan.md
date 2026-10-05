@@ -24,6 +24,27 @@ has not begun. Fresh GitHub-only restoration of `f3732e3f` matched HEAD/tree wit
 checkout and connectivity check. The original 2026-10-04 catalog blob approval completed
 2026-10-05 02:13:26 UTC; no repeated write/cancellation/alternate route was used.
 
+At `24b16d55`, the actual ordering diagnostic now exposes the initiating
+PlatformNotSupportedException (runtime before-image create-only backend), followed by
+kernel32 DllNotFoundException from cleanup. Load dispatch is not reached. Selection
+completed only that failing case before fail-fast (1/3 planned, 0/1); separate diagnostics
+then passed **2/2**, 5.375 seconds, no skips/duplicates, complete cleanup. An earlier
+shell `-File -Category a,b` invocation was rejected as one unknown category before any
+workload; corrected to the tracked selection file, without changing test membership.
+
+Concrete design review (separate gpt-6.1-sol/xhigh, read-only) supports a deferred
+file-only B1 decision. Ordinary Begin applies the complete set and returns an opaque
+lease-bound handle; gate validation and ownership checks precede Commit, or Rollback
+uses B1's complete-set preflight. Original worker APIs/namespace remain explicit legacy
+handlers. Reserve the handle before publication callbacks and refuse nested publication,
+recovery and legacy entry before catch/recovery wrappers or mutation preparation; only
+its exact owner/lease/ID may finalize. Unknown rollback keeps the guard until disposal.
+Production general and spiritual validation paths were inspected as read-only; no
+repairing normalizer is introduced. Current journal format is reused unchanged.
+
+The new portable-worker-transaction tests specify the next RED boundary against the
+still-original ordinary Begin. No portable implementation is included in this checkpoint.
+
 1. Diagnose the original Begin failure with a causal test: force the existing
    unsupported before-image backend and a distinct cleanup failure, require both
    exceptions in initiating-first order, and retain the real Linux worker/load
