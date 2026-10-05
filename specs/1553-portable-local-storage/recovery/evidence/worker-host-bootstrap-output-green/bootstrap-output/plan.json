@@ -1,0 +1,96 @@
+{
+  "Categories": [
+    "worker-native-descriptor-transfer",
+    "worker-native-transfer-consumers",
+    "worker-native-bootstrap-output"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "d691cd08ce4c0a1ae41337eb004b560081a49d1a",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.6807686,
+  "Descriptors": [
+    {
+      "Name": "worker-native-bootstrap-output-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-bootstrap-output",
+      "Categories": [
+        "worker-native-bootstrap-output"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.GatedBootstrapLoss_RetiresWithoutExecutingRoot|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.HostOutput_IsDistinctAndPrivateDescriptorsDoNotSurviveExec|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.PreCanceledPreparation_RejectsBeforeAllocatingNativeOwner",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.GatedBootstrapLoss_RetiresWithoutExecutingRoot",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.HostOutput_IsDistinctAndPrivateDescriptorsDoNotSurviveExec",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.PreCanceledPreparation_RejectsBeforeAllocatingNativeOwner",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-descriptor-transfer-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-descriptor-transfer",
+      "Categories": [
+        "worker-native-descriptor-transfer"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.IdentityRejection_ClosesUnadmittedTransferredDescriptor|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.ReceivedRight_IsCloseOnExecAndHasOneDeterministicOwner|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.RejectedEnvelope_ClosesEveryDeliveredDescriptor",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.IdentityRejection_ClosesUnadmittedTransferredDescriptor",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.ReceivedRight_IsCloseOnExecAndHasOneDeterministicOwner",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.RejectedEnvelope_ClosesEveryDeliveredDescriptor",
+          "Cases": 5
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-transfer-consumers-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-transfer-consumers",
+      "Categories": [
+        "worker-native-transfer-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.HelperLossAndOutputEof_CannotDisposeLiveHostIdentity",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.HelperLossAndOutputEof_CannotDisposeLiveHostIdentity",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

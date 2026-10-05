@@ -172,6 +172,20 @@ own descriptors before same-PID neutral-host exec and emits distinct literal mar
 Descriptor7GREEN and exactly2affected identity consumers run with these4new cases;
 13planned, no B/Release or generic abstraction added.
 
+At `d691cd08ce4c0a1ae41337eb004b560081a49d1a`, initial shell `-File` comma-list
+command was rejected as unknown category before any workload (preparation incident,
+not RED). Correct `pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category
+worker-native-descriptor-transfer,worker-native-transfer-consumers,worker-native-bootstrap-output
+-Parallelism 1 -PlanOnly'` built/discovered13cases in45.7612827s; same command with
+`-NoBuild` passed **13/13**,23.5514223s, zero skips/duplicates/timeouts, complete
+runner cleanup. All6native guardians reached ECHILD/failures0; only intentional
+helper loss required1emergency signal. Both gated failures never executed root and
+ended Uncertain after actual cleanup; real output markers stayed distinct, inherited
+privateFDs0, stdin /dev/null; pre-cancel returned no owner. [Evidence](recovery/evidence/worker-host-bootstrap-output-green/manifest.json).
+Next narrowly selected regressions: v1 transport7cases and original-Process IPC5cases,
+fresh unit/integration build; no whole old cohort replay. Production code unchanged
+after `822387cb`; these new category selectors name existing tests only.
+
 ## Worker-host native integration design — 2026-10-05
 
 **Design only; not implementation authorization.** Source/remote base

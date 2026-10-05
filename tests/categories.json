@@ -2,6 +2,64 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "worker-native-v1-transport-regression",
+      "responsibility": "#1553 actual v1 native launch/FD/status paths affected by v2 extension; own root, adopted child, owner/status loss, exec error and private input/environment/cwd.",
+      "excludes": "No full prototype/IPC cohort replay, WorkerRelease qualification, live GM, main PTY or Windows runtime claim. Exact affected existing methods only.",
+      "changeHints": [
+        "native/linux/boe-lineage-supervisor.c",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LinuxFallbackBootstrapTests.RealRootBinding_StartStopAndActualReap",
+            "BookOfEternityClient.Tests.LinuxFallbackProcDiscoveryTests.FirstAdoptedChild_MustRetireBeforeIndependentFixtureExpiry",
+            "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup",
+            "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Child_DoesNotInheritOwnerInput_AndPreservesSyntheticEnvironmentAndCwd",
+            "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ClosedStatusAfterStart_RetiresOwnedChildrenWithoutBlockingOrSigpipeExit",
+            "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ExecFailure_DoesNotClaimStartedOrScopedSuccess"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "worker-owned-original-ipc-regression",
+      "responsibility": "#1553 shared host identity and SafeHandle marshalling affect original-Process IPC consumers: control/status peer authentication, actual Ready owner close and partial cancellation.",
+      "excludes": "No full prototype/IPC cohort replay, WorkerRelease qualification, live GM, main PTY or Windows runtime claim. Exact affected existing methods only.",
+      "changeHints": [
+        "native/linux/boe-lineage-supervisor.c",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost",
+            "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost",
+            "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker",
+            "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch"
+          ]
+        }
+      ]
+    },
+    {
       "id": "worker-native-transfer-consumers",
       "responsibility": "#1553 checked pidfd factory change: actual Ready and admitted identity retention after helper loss; narrow affected consumers only.",
       "excludes": "No worker Release, pool B, PTY or live GM. Independent guardian retains every synthetic native lineage to ECHILD.",

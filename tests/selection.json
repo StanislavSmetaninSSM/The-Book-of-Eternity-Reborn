@@ -99,6 +99,20 @@
       "contracts": [
         "#1553 T041-FALLBACK-HOST"
       ]
+    },
+    {
+      "category": "worker-native-v1-transport-regression",
+      "reason": "#1553 actual v1 native launch/FD/status paths affected by v2 extension; own root, adopted child, owner/status loss, exec error and private input/environment/cwd.",
+      "contracts": [
+        "#1553 T041-FALLBACK-HOST"
+      ]
+    },
+    {
+      "category": "worker-owned-original-ipc-regression",
+      "reason": "#1553 shared host identity and SafeHandle marshalling affect original-Process IPC consumers: control/status peer authentication, actual Ready owner close and partial cancellation.",
+      "contracts": [
+        "#1553 T041-FALLBACK-HOST"
+      ]
     }
   ]
 }

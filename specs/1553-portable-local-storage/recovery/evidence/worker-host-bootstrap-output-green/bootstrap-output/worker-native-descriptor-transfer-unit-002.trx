@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="088d846d-ff45-4f1d-bffc-6c9cab276b28" name="@c7669543e9c7 2026-10-05 20:51:13" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T20:51:13.5485403+00:00" queuing="2026-10-05T20:51:13.5485403+00:00" start="2026-10-05T20:51:11.4506784+00:00" finish="2026-10-05T20:51:13.5568922+00:00" />
+  <TestSettings name="default" id="585af48a-00f7-4051-8673-3f592d35d684">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-05_20_51_13" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="bfa69e68-3101-4fd9-8bc7-ae3c8d5b0fb7" testId="ff2b9b1c-de53-32eb-42c4-ed353bae57e2" testName="BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.RejectedEnvelope_ClosesEveryDeliveredDescriptor(mode: &quot;control-truncated&quot;)" computerName="c7669543e9c7" duration="00:00:00.0232431" startTime="2026-10-05T20:51:13.4432714+00:00" endTime="2026-10-05T20:51:13.4432932+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bfa69e68-3101-4fd9-8bc7-ae3c8d5b0fb7" />
+    <UnitTestResult executionId="fc28beab-d0cc-4d21-8a15-11a09704a5a7" testId="81eba745-863c-6d3d-0fa1-5e7f4a7a45a5" testName="BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.ReceivedRight_IsCloseOnExecAndHasOneDeterministicOwner" computerName="c7669543e9c7" duration="00:00:00.0037521" startTime="2026-10-05T20:51:13.4628600+00:00" endTime="2026-10-05T20:51:13.4628603+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fc28beab-d0cc-4d21-8a15-11a09704a5a7" />
+    <UnitTestResult executionId="3fbbe9e8-4039-4a10-91ba-384fc330f893" testId="1a873f9e-7952-4ebb-39e9-34481c76975a" testName="BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.IdentityRejection_ClosesUnadmittedTransferredDescriptor" computerName="c7669543e9c7" duration="00:00:00.0058606" startTime="2026-10-05T20:51:13.4590065+00:00" endTime="2026-10-05T20:51:13.4590066+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3fbbe9e8-4039-4a10-91ba-384fc330f893" />
+    <UnitTestResult executionId="11a821c5-74d2-4ff5-b174-5c96e50a3208" testId="d8d07139-2567-62d4-9223-4b25dde61b73" testName="BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.RejectedEnvelope_ClosesEveryDeliveredDescriptor(mode: &quot;extra&quot;)" computerName="c7669543e9c7" duration="00:00:00.0019527" startTime="2026-10-05T20:51:13.4506208+00:00" endTime="2026-10-05T20:51:13.4506209+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="11a821c5-74d2-4ff5-b174-5c96e50a3208" />
+    <UnitTestResult executionId="09252803-9fca-4c2a-b7ef-cd56a18bfb1c" testId="5cb0bbff-f7a5-3d78-1046-a4c0ec74cfe4" testName="BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.RejectedEnvelope_ClosesEveryDeliveredDescriptor(mode: &quot;payload-truncated&quot;)" computerName="c7669543e9c7" duration="00:00:00.0020931" startTime="2026-10-05T20:51:13.4527905+00:00" endTime="2026-10-05T20:51:13.4527906+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="09252803-9fca-4c2a-b7ef-cd56a18bfb1c" />
+    <UnitTestResult executionId="23254211-8d58-4ddd-86e3-ed14e838cbb7" testId="0b91caa5-52a2-e1e4-1174-b6bcc98bee4e" testName="BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.RejectedEnvelope_ClosesEveryDeliveredDescriptor(mode: &quot;missing&quot;)" computerName="c7669543e9c7" duration="00:00:00.0019726" startTime="2026-10-05T20:51:13.4485741+00:00" endTime="2026-10-05T20:51:13.4485742+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="23254211-8d58-4ddd-86e3-ed14e838cbb7" />
+    <UnitTestResult executionId="e406a259-aef5-4af6-adee-70a1b0514c15" testId="f65a81f5-f532-99d6-bc09-91d9ea56c48d" testName="BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.RejectedEnvelope_ClosesEveryDeliveredDescriptor(mode: &quot;wrong-run&quot;)" computerName="c7669543e9c7" duration="00:00:00.0040136" startTime="2026-10-05T20:51:13.4465878+00:00" endTime="2026-10-05T20:51:13.4465882+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e406a259-aef5-4af6-adee-70a1b0514c15" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.RejectedEnvelope_ClosesEveryDeliveredDescriptor(mode: &quot;missing&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0b91caa5-52a2-e1e4-1174-b6bcc98bee4e">
+      <Execution id="23254211-8d58-4ddd-86e3-ed14e838cbb7" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests" name="RejectedEnvelope_ClosesEveryDeliveredDescriptor" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.RejectedEnvelope_ClosesEveryDeliveredDescriptor(mode: &quot;wrong-run&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f65a81f5-f532-99d6-bc09-91d9ea56c48d">
+      <Execution id="e406a259-aef5-4af6-adee-70a1b0514c15" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests" name="RejectedEnvelope_ClosesEveryDeliveredDescriptor" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.IdentityRejection_ClosesUnadmittedTransferredDescriptor" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1a873f9e-7952-4ebb-39e9-34481c76975a">
+      <Execution id="3fbbe9e8-4039-4a10-91ba-384fc330f893" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests" name="IdentityRejection_ClosesUnadmittedTransferredDescriptor" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.RejectedEnvelope_ClosesEveryDeliveredDescriptor(mode: &quot;control-truncated&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ff2b9b1c-de53-32eb-42c4-ed353bae57e2">
+      <Execution id="bfa69e68-3101-4fd9-8bc7-ae3c8d5b0fb7" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests" name="RejectedEnvelope_ClosesEveryDeliveredDescriptor" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.RejectedEnvelope_ClosesEveryDeliveredDescriptor(mode: &quot;payload-truncated&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5cb0bbff-f7a5-3d78-1046-a4c0ec74cfe4">
+      <Execution id="09252803-9fca-4c2a-b7ef-cd56a18bfb1c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests" name="RejectedEnvelope_ClosesEveryDeliveredDescriptor" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.ReceivedRight_IsCloseOnExecAndHasOneDeterministicOwner" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="81eba745-863c-6d3d-0fa1-5e7f4a7a45a5">
+      <Execution id="fc28beab-d0cc-4d21-8a15-11a09704a5a7" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests" name="ReceivedRight_IsCloseOnExecAndHasOneDeterministicOwner" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.RejectedEnvelope_ClosesEveryDeliveredDescriptor(mode: &quot;extra&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d8d07139-2567-62d4-9223-4b25dde61b73">
+      <Execution id="11a821c5-74d2-4ff5-b174-5c96e50a3208" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests" name="RejectedEnvelope_ClosesEveryDeliveredDescriptor" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="ff2b9b1c-de53-32eb-42c4-ed353bae57e2" executionId="bfa69e68-3101-4fd9-8bc7-ae3c8d5b0fb7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="81eba745-863c-6d3d-0fa1-5e7f4a7a45a5" executionId="fc28beab-d0cc-4d21-8a15-11a09704a5a7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1a873f9e-7952-4ebb-39e9-34481c76975a" executionId="3fbbe9e8-4039-4a10-91ba-384fc330f893" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d8d07139-2567-62d4-9223-4b25dde61b73" executionId="11a821c5-74d2-4ff5-b174-5c96e50a3208" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5cb0bbff-f7a5-3d78-1046-a4c0ec74cfe4" executionId="09252803-9fca-4c2a-b7ef-cd56a18bfb1c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0b91caa5-52a2-e1e4-1174-b6bcc98bee4e" executionId="23254211-8d58-4ddd-86e3-ed14e838cbb7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f65a81f5-f532-99d6-bc09-91d9ea56c48d" executionId="e406a259-aef5-4af6-adee-70a1b0514c15" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="7" executed="7" passed="7" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.21]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.42]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.44]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.53]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>
