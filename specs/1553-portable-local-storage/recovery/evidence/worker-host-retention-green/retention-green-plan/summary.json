@@ -1,0 +1,79 @@
+{
+  "Categories": [
+    "worker-native-owner-retention",
+    "worker-owned-original-identity",
+    "worker-owned-preparation-source-contract",
+    "worker-native-host-ready"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "19d032d3fcd84e4e35ccd31ee422905fc7ce3aa6",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0829549,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0278157,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0280831,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 50.082718,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 11.7656383,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0049631,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 13,
+  "WallTime": "00:01:11.0599276",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 5,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "worker-native-host-ready-unit-001",
+      "worker-native-owner-retention-unit-002",
+      "worker-owned-original-identity-integration-003",
+      "worker-owned-preparation-source-contract-unit-004"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

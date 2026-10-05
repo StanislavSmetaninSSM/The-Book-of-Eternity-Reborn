@@ -106,7 +106,16 @@ fail-fast run. [Evidence](recovery/evidence/worker-host-retention-red/manifest.j
 WIP fixes validate socket-path bounds before resource acquisition, roll back partial
 local acquisition transactionally, forbid owner disposal without non-uncertain scoped
 terminal evidence plus actual helper/I/O completion, and restore original Process
-exit diagnostics. Next: fresh focused GREEN plus affected positive Ready case.
+exit diagnostics. At `19d032d3fcd84e4e35ccd31ee422905fc7ce3aa6`, fresh
+unit/integration preparation passed5planned/0executed,71.0599276s; **5/5PASS**,
+29.7482406s, no skip/duplicates/timeouts and complete runner cleanup. Constructor
+left zero directories; helper-loss/EOF kept Uncertain and the live pidfd, rejecting
+Dispose; original identity diagnostic, source contract and positive Ready all passed.
+Every native guardian reached ECHILD/failures0; only deliberate helper loss needed
+one guardian emergency signal. [Evidence](recovery/evidence/worker-host-retention-green/manifest.json).
+Remaining HOST acceptance work: native channel/partial cancellation and descriptor
+negative cases, package/publish checks, exact affected prototype/IPC regressions,
+catalog discovery, independent final review and fresh GitHub-only restoration.
 Independent Sol consult confirms original Process/tree/started-state one-way handoff
 from a sealed Windows adapter preserves current cleanup; no native-to-legacy route.
 Existing relevant lifecycle fixtures invoke powershell.exe and remain Windows-only
