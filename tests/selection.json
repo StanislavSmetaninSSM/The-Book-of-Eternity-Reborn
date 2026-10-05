@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "worker-host-ipc-admission",
-      "reason": "T041-IPC both-channel native identity and byte-bounded authenticated handshake, denial/EOF/redaction and actual pre-Release host lifecycle; no worker command is released.",
+      "category": "worker-host-frame-contract",
+      "reason": "Permitted pure frame/JSON/diagnostic hardening after native socket creation was denied; no native IPC retry.",
       "contracts": [
-        "#1553 T041-IPC US4 FR-012/014/015"
+        "#1553 T041-FRAME FR-012/014/015"
       ]
     }
   ]

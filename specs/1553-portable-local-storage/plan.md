@@ -171,6 +171,44 @@ corrected, and the foreign-control cleanup removes an unnecessary stdin write af
 its EOF-triggered exit. Production remains unchanged. Static catalog parsing now
 checks the corrected top-level owner before publishing the amended test WIP.
 
+### T041-FRAME scope amendment after native IPC refusal
+
+Amended RED source `3fa4f0b62fa24cab57936b161a1b510323699e3f`, tree
+`89fe0b7159e48bcf6006936b72b430b6a54fc6eb`, has verified GitHub readback.
+Fresh PlanOnly built/discovered **34 cases** in191.353239 seconds. Native attempt
+completed **33/34** in10.025860 seconds:21 pass,3 causal diagnostic-redaction
+failures (unknown/duplicate property text and peer-supplied Failed error), and9
+socket-construction permission failures. The unit documentation descriptor was
+not run after fail-fast. Both owned-tree/runtime cleanup completed; no duplicate
+or skipped test. [Plan evidence](recovery/evidence/worker-ipc-red-plan/manifest.json),
+[restricted run](recovery/evidence/worker-ipc-red-restricted/manifest.json).
+
+The exact native exception is `System.Net.Sockets.SocketException: Permission denied`
+at `Socket..ctor` → `NamedPipeServerStream.SharedServer` → host Create line300,
+before bind, authentication or host process start. No numeric errno was captured;
+the actual socket pathname and policy cause are unknown. The options were Byte,
+Asynchronous|CurrentUserOnly, maxInstances1, control Out/status In. No retry,
+TCP substitution, path/environment workaround or alternate execution was attempted.
+The parent paused native IPC work and authorized independent pure parser/frame/
+diagnostic work only. Linux native admission remains open; the Windows-only peer
+identity gate and all process-tree/workspace gates stay unchanged.
+
+The permitted T041-FRAME subset implements the exact framing/redaction contract
+above with owned in-memory/controlled Stream tests, then source-reviewed host
+framing/deadline wiring. Separate owner `worker-host-frame-contract` contains only
+those pure tests, existing strict JSON controls and the affected documentation
+assertion; native tests remain in `worker-host-ipc-admission` and are not selected
+here. Existing accepted Linux CI selection remains unchanged pending a separately
+planned qualification, rather than rerouting denied calls automatically.
+
+New tests precede an initial roundtrip-only helper using the existing host's
+StreamReader/Writer behavior. The helper is not yet wired into production. This
+compilable baseline must show causal boundary/deadline RED before hardening; its
+missing limits are deliberate unaccepted WIP. Preserve slow byte absolute limits,
+awaited underlying cancellation, split Unicode, EOF, exact limit/+1 and zero bytes
+written on invalid/oversize input. Runtime native integration remains unrun even
+if pure tests pass. No task-wide Linux IPC or gameplay acceptance follows.
+
 ## Accepted T032-A4-NATIVE-NAMES — bounded Linux, 2026-10-05
 
 Current bounded code/verification verdict: **separate gpt-6.1-sol / xhigh PASS**

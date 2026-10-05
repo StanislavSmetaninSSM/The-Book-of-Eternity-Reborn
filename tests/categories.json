@@ -11134,7 +11134,35 @@
       "project": "integration",
       "tests": [
         "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_*",
-        "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_*",
+        "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_*"
+      ]
+    }
+  ]
+},
+{
+  "id": "worker-host-frame-contract",
+  "responsibility": "Pure worker-host strict JSON/UTF-8 frame, byte limits, cancellation/deadlines and diagnostic redaction, using owned in-memory streams without native IPC.",
+  "excludes": "Named-pipe construction, peer authentication, host/process/native execution, PTY and worker lifecycle.",
+  "changeHints": [
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost*.cs"
+  ],
+  "related": [
+    {
+      "id": "worker-host-ipc-admission",
+      "when": "Native host/frame integration needs separate permitted-platform qualification."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.*",
         "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Parse*",
         "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Validate*"
       ]
