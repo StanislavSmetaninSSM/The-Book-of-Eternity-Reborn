@@ -66,6 +66,22 @@ Candidate is saved before build/tests; no portable GREEN or acceptance yet. Exis
 consumer/doc-guard reconciliation, shared B1 regression owners, inventory and independent
 final review remain outstanding.
 
+First candidate `b3a0598d`: native **34/34 GREEN**, no skips/duplicates, complete
+cleanup (2:06.518 including build; runtime about5s). Separate real ordering diagnostic
+now reaches validation, then its unleased FileExists observation blocks on pending B1
+before Load dispatch (0/1,16.689s). That is a fixture observation incompatibility: use
+direct filesystem observations while preserving every positive ordering assertion;
+ordinary unbound reads must not recover someone else's held decision.
+
+Independent review identified two candidate defects: a safe pre-intent baseline conflict
+lost its Rejected decision mapping, and recovery without active evidence could clear the
+pending guard without confirming all before-images. Added causal tests before correction. Review also found the direct empty-parent pruning helper bypassed the pending guard; its own deletion/rollback case is added.
+Also remove duplicated shared preflight introduced by factoring, so unchanged ordinary
+publishers retain one precommit hash pass. Worker switches to existing v2 frame to avoid
+whole base64 JSON payload buffers; a 16 MiB After/32 MiB Before test checks that exact
+bounded envelope, without claiming a new resource benchmark. Candidate correction tests
+are saved RED-first; production remains at the first candidate pending their execution.
+
 1. Diagnose the original Begin failure with a causal test: force the existing
    unsupported before-image backend and a distinct cleanup failure, require both
    exceptions in initiating-first order, and retain the real Linux worker/load

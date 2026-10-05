@@ -1,0 +1,56 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "b3a0598d7e53049ef38f3cef17033b230d490cdf",
+  "SourceResultDirectory": "20261004-224652-267-2-1ffc5613c94f435bbb873b91224b438e-categories",
+  "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Runtime": "native Linux x64",
+  "Toolchain": {
+    "PowerShell": "7.6.6",
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31"
+  },
+  "TelemetryOptOuts": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1"
+  },
+  "DOTNET_PROCESSOR_COUNT": "1",
+  "PathSanitization": "Absolute checkout/run-root/toolchain paths replaced; raw and stored hashes retained",
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 1467756,
+      "OriginalSha256": "0d24ac2ef109bf545f10abbd06c1ecf33d1dcd5762358f0336c3e07a1ffb816c",
+      "Embedded": false,
+      "Reason": "Oversized generated runner log; causal TRX and structured/build reports are embedded"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 1117,
+      "OriginalSha256": "57b22046083978ad0fd472b0a0ec2ce51a623402438725a56866ab8daae57e7c",
+      "Embedded": true,
+      "StoredPath": "plan.json",
+      "StoredBytes": 1117,
+      "StoredSha256": "57b22046083978ad0fd472b0a0ec2ce51a623402438725a56866ab8daae57e7c"
+    },
+    {
+      "Path": "portable-load-worker-ordering-unit-001.trx",
+      "OriginalBytes": 8705,
+      "OriginalSha256": "9a4ab200f2a5cff81d007ba18582ddf93080beaa917577efdc8d49e28d0c46c8",
+      "Embedded": true,
+      "StoredPath": "portable-load-worker-ordering-unit-001.trx",
+      "StoredBytes": 8199,
+      "StoredSha256": "846798b23ded4f3de0c3734607c8fd960519c612eb31067731c848e6dbaca35c"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1369,
+      "OriginalSha256": "13ac1d281394387084102f7e36472092c331c4a9b0167ce8cc1bbe433612afb4",
+      "Embedded": true,
+      "StoredPath": "summary.json",
+      "StoredBytes": 1369,
+      "StoredSha256": "13ac1d281394387084102f7e36472092c331c4a9b0167ce8cc1bbe433612afb4"
+    }
+  ],
+  "MeasuredChildren": 0
+}

@@ -2,6 +2,33 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-worker-admission",
+      "responsibility": "Causal worker review regressions: typed safe preparation rejection, proof of complete rollback before clearing the decision guard, and streamed 16 MiB imported/32 MiB baseline envelope.",
+      "excludes": "Full resource benchmark, whole gameplay/GM and platform acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Core/TrustedLocalFilePublication.Deferred.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableWorkerTransactionTests.LostPendingEvidenceCannotConfirmRollbackOrClearWriteGuard",
+            "BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDeletionRefusesEmptyParentRemovalBeforeRollback",
+            "BookOfEternityClient.Tests.PortableWorkerTransactionTests.ImportedEnvelopeAndLargerBaselinesUseStreamedDecision",
+            "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_PreparationBaselineConflictReturnsRejectedWithoutDecisionEvidence"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-worker-transaction",
       "responsibility": "Ordinary worker complete-set pending B1 decision, exact before/after images, validation-compatible byte reads, nested write/recovery guard, stale handles, generation/conflict preflight and committed cleanup. Native portable lifecycle, not original physical-worker protocol.",
       "excludes": "Worker processes/IPC, save producer case names, full game/GM and platform acceptance.",

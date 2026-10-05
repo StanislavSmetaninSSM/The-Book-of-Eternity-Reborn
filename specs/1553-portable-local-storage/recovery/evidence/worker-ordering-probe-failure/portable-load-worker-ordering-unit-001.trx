@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="363e818b-696b-46d5-8fd3-e6e1e6cefef0" name="@95e438a3e5cb 2026-10-04 22:47:08" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-04T22:47:08.8270304-04:00" queuing="2026-10-04T22:47:08.8270305-04:00" start="2026-10-04T22:46:55.8345985-04:00" finish="2026-10-04T22:47:08.8322188-04:00" />
+  <TestSettings name="default" id="4109daef-6edd-4136-b6e6-ca2a9587cd1b">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-04_22_47_08" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="46ac944d-5006-4883-b42e-4c0c68234932" testId="d3665005-f397-f341-5a54-8a5c363de411" testName="BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock" computerName="95e438a3e5cb" duration="00:00:11.2801623" startTime="2026-10-04T22:47:08.7534079-04:00" endTime="2026-10-04T22:47:08.7534218-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="46ac944d-5006-4883-b42e-4c0c68234932">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.IOException : The process cannot access the file '[checkout]-run-20261003/temp/boe-gm-worker-gate-9c493a1d2d7b4f1194593e7e14f041f5/.boe_runtime/locks/canonical-write.lock' because it is being used by another process.</Message>
+          <StackTrace>   at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64&amp; fileLength, UnixFileMode&amp; filePermissions)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Core/FileSystemManager.cs:line 3638
+   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Core/FileSystemManager.cs:line 3604
+   at BookOfEternityClient.Core.FileSystemManager.RecoverPendingFilePublicationsBeforeCanonicalRead() in [checkout]/BookOfEternityClient/Core/FileSystemManager.cs:line 4059
+   at BookOfEternityClient.Core.FileSystemManager.FileExists(String relativePath) in [checkout]/BookOfEternityClient/Core/FileSystemManager.cs:line 1485
+   at BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock() in [checkout]/BookOfEternityClient.Tests/GmWorkerApplyGateTests.cs:line 374
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d3665005-f397-f341-5a54-8a5c363de411">
+      <Execution id="46ac944d-5006-4883-b42e-4c0c68234932" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerApplyGateTests" name="ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="d3665005-f397-f341-5a54-8a5c363de411" executionId="46ac944d-5006-4883-b42e-4c0c68234932" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" passed="0" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.15]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.10]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.11]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:12.57]       System.IO.IOException : The process cannot access the file '[checkout]-run-20261003/temp/boe-gm-worker-gate-9c493a1d2d7b4f1194593e7e14f041f5/.boe_runtime/locks/canonical-write.lock' because it is being used by another process.
+[xUnit.net 00:00:12.57]       Stack Trace:
+[xUnit.net 00:00:12.57]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64&amp; fileLength, UnixFileMode&amp; filePermissions)
+[xUnit.net 00:00:12.57]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:12.57]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:12.57]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)
+[xUnit.net 00:00:12.57]         [checkout]/BookOfEternityClient/Core/FileSystemManager.cs(3638,0): at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken)
+[xUnit.net 00:00:12.57]         [checkout]/BookOfEternityClient/Core/FileSystemManager.cs(3604,0): at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken)
+[xUnit.net 00:00:12.57]         [checkout]/BookOfEternityClient/Core/FileSystemManager.cs(4059,0): at BookOfEternityClient.Core.FileSystemManager.RecoverPendingFilePublicationsBeforeCanonicalRead()
+[xUnit.net 00:00:12.57]         [checkout]/BookOfEternityClient/Core/FileSystemManager.cs(1485,0): at BookOfEternityClient.Core.FileSystemManager.FileExists(String relativePath)
+[xUnit.net 00:00:12.57]         [checkout]/BookOfEternityClient.Tests/GmWorkerApplyGateTests.cs(374,0): at BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock()
+[xUnit.net 00:00:12.57]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:12.58]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T22:47:08.7515149-04:00">
+        <Text>[xUnit.net 00:00:12.57]     BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

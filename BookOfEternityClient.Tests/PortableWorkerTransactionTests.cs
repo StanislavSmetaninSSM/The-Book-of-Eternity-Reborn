@@ -233,6 +233,65 @@ public sealed partial class PortableWorkerTransactionTests : IDisposable
         Assert.False(Directory.Exists(Path.GetDirectoryName(_files.ActiveWorkerApplyTransactionJournalPath)!));
     }
 
+    [Fact]
+    public async Task LostPendingEvidenceCannotConfirmRollbackOrClearWriteGuard()
+    {
+        var primary = new IOException("worker decision evidence disappeared");
+        var observed = false;
+        var files = Manager(new FileSystemManagerHooks { LocalPublicationObserver = (phase, index) =>
+        {
+            if (phase == TrustedLocalPublicationPhase.MemberPublished && index == 0)
+            {
+                observed = true; File.Delete(Active); throw primary;
+            }
+        } });
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        var failure = await Assert.ThrowsAsync<AggregateException>(() => files.BeginWorkerApplyTransactionAsync(lease, Changes));
+        Assert.True(observed); Assert.Same(primary, failure.InnerExceptions[0]);
+        Assert.IsType<InvalidDataException>(failure.InnerExceptions[1]);
+        Assert.Equal(After, File.ReadAllBytes(_files.ResolvePath(A)));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => files.WriteFileAtomicBytesAsync(lease, A, [8]));
+        Assert.Equal(After, File.ReadAllBytes(_files.ResolvePath(A)));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ImportedEnvelopeAndLargerBaselinesUseStreamedDecision(bool commit)
+    {
+        var before = new byte[8 * 1024 * 1024]; before[0] = 77; before[^1] = 99;
+        var after = new byte[4 * 1024 * 1024]; after[0] = 55; after[^1] = 66;
+        var changes = Enumerable.Range(0, 4).Select(index =>
+            new CanonicalWorkerApplyChange($"game_state/world/envelope-{index}.bin", before, after)).ToArray();
+        foreach (var change in changes) Seed(change.Path, before);
+        await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();
+        var transaction = await _files.BeginWorkerApplyTransactionAsync(lease, changes);
+        var magic = new byte[8];
+        using (var stream = File.OpenRead(Active)) stream.ReadExactly(magic);
+        Assert.Equal(System.Text.Encoding.ASCII.GetBytes("BOELP2\r\n"), magic);
+        if (commit) _files.CommitWorkerApplyTransaction(lease, transaction);
+        else Assert.Empty(await _files.RollbackWorkerApplyTransactionAsync(lease, transaction));
+        foreach (var change in changes)
+            Assert.Equal(commit ? after : before, File.ReadAllBytes(_files.ResolvePath(change.Path)));
+        AssertState(after: false); Assert.False(File.Exists(Active));
+    }
+
+    [Fact]
+    public async Task PendingDeletionRefusesEmptyParentRemovalBeforeRollback()
+    {
+        const string parent = "game_state/worker-empty-parent";
+        const string path = parent + "/only.bin";
+        Seed(path, [7]);
+        await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();
+        var transaction = await _files.BeginWorkerApplyTransactionAsync(lease, [new(path, [7], null)]);
+        var evidence = File.ReadAllBytes(Active);
+        Assert.Throws<InvalidOperationException>(() => _files.TryRemoveEmptyCanonicalDirectory(lease, parent));
+        Assert.True(Directory.Exists(_files.ResolvePath(parent)));
+        Assert.Equal(evidence, File.ReadAllBytes(Active));
+        Assert.Empty(await _files.RollbackWorkerApplyTransactionAsync(lease, transaction));
+        Assert.Equal(new byte[] { 7 }, File.ReadAllBytes(_files.ResolvePath(path)));
+    }
+
     private sealed class UnusedRecorder : ICanonicalMutationIntentRecorder
     {
         public Task RecordMutationIntentAsync(string relativePath, byte[]? desiredContent) => throw new Exception("Unexpected recorder entry");
