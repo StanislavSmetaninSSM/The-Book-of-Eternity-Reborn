@@ -1,0 +1,31 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "412661f71cf28297178d39816b16c3887e75650d",
+  "SourceResultDirectory": "20261005-105631-505-11654-32f2253d26c8499cb9b8e5a2f4d99b28-categories",
+  "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category worker-host-environment -PlanOnly",
+  "Os": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Sdk": "10.0.401",
+  "Runtime": "8.0.31",
+  "PowerShell": "7.6.6",
+  "EffectiveUid": 1000,
+  "TMPDIR": "/workspace/ipc-tmp",
+  "DOTNET_PROCESSOR_COUNT": null,
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 5494,
+      "OriginalSha256": "c3b439174629bab37e4170ba42f1a84d65b9b3c58029b9d9aad1960b04f8bf8b",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 1172,
+      "StoredSha256": "5fc50f0f07e504770a9f24b74e1f2c4712e3e7d8413ef35cd482aa3aeb1b7a10"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1319,
+      "OriginalSha256": "1381c0ed5b424f4f56678794f6e05e0b805a0b00b8a85c9d7bb2948ca2234f40",
+      "StoredPath": "summary.json",
+      "StoredBytes": 1319,
+      "StoredSha256": "1381c0ed5b424f4f56678794f6e05e0b805a0b00b8a85c9d7bb2948ca2234f40"
+    }
+  ]
+}

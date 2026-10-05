@@ -28,7 +28,7 @@ public sealed class GmWorkerProcessHostEnvironmentTests
     public void Wire_ExactDuplicateEnvironmentKeysAreRejectedWithoutPayloadDiagnostics(bool escaped)
     {
         var secondKey = escaped ? "SYNTHETIC_\\u004bEY" : "SYNTHETIC_KEY";
-        var json = $$"""{"schemaVersion":1,"launchNonce":"{{Nonce}}","kind":"launch","payload":{"fileName":"synthetic","arguments":[],"workingDirectory":"","environment":{"SYNTHETIC_KEY":"SYNTHETIC_VALUE","{{secondKey}}":"second"}}}""";
+        var json = $$$$"""{"schemaVersion":1,"launchNonce":"{{{{Nonce}}}}","kind":"launch","payload":{"fileName":"synthetic","arguments":[],"workingDirectory":"","environment":{"SYNTHETIC_KEY":"SYNTHETIC_VALUE","{{{{secondKey}}}}":"second"}}}""";
         var error = Assert.Throws<InvalidDataException>(() =>
             GmWorkerProcessHostProtocol.ParseControl(json, Nonce, GmWorkerProcessHostControlKind.Launch));
         Assert.Contains("duplicate property", error.Message, StringComparison.Ordinal);
@@ -39,7 +39,7 @@ public sealed class GmWorkerProcessHostEnvironmentTests
     [Fact]
     public void Wire_EnvironmentCaseAliasesDoNotRelaxEnvelopePropertyCasing()
     {
-        var json = $$"""{"schemaVersion":1,"launchNonce":"{{Nonce}}","kind":"launch","payload":{"FileName":"synthetic","arguments":[],"workingDirectory":"","environment":{"HTTP_PROXY":"upper","http_proxy":"lower"}}}""";
+        var json = $$$$"""{"schemaVersion":1,"launchNonce":"{{{{Nonce}}}}","kind":"launch","payload":{"FileName":"synthetic","arguments":[],"workingDirectory":"","environment":{"HTTP_PROXY":"upper","http_proxy":"lower"}}}""";
         Assert.Throws<InvalidDataException>(() =>
             GmWorkerProcessHostProtocol.ParseControl(json, Nonce, GmWorkerProcessHostControlKind.Launch));
     }

@@ -52,6 +52,7 @@ counts, safe artifacts and owned cleanup. Sol6.1/xhigh design and final review,
 non-force publication/readback and fresh GitHub-only restoration are required.
 
 Current state: separate gpt-6.1-sol/xhigh design review PASS at `a6fcdb24719b91992e3fd28c23c623f77b2878bc`, no findings. Initial test-only WIP adds two actual-builder synthetic alias regressions plus four pure JSON cases and the existing exact documentation guard. Production remains byte-identical to base; all seven planned rows are unrun. Spec Kit prerequisites and scoped spec/plan/task consistency pass; optional auto-commit hooks are disabled.
+Preparation at `412661f71cf28297178d39816b16c3887e75650d`: PlanOnly failed before discovery/execution (zero tests, 79.4371548s) with two CS9007 errors in new raw JSON test strings; corrected interpolation delimiters only. [Build evidence](recovery/evidence/worker-environment-20261005-preparation-failure/manifest.json). This is not behavioral RED.
 Next: fresh selected PlanOnly/build, then causal RED on this unchanged builder. The explicit autonomous owner instruction authorizes routine implementation;
 stop only if the faithful fix needs a new product/secret-inheritance policy.
 
