@@ -273,7 +273,22 @@ proposed implementation details requiring A's actual native RED/GREEN, not claim
 already covered by the22 prototype cases. No user gameplay/GM-authored schema changes
 in this design-only block; future operational backend/scope fields require matching
 worker guidance/examples and focused documentation guards in their implementation.
-Independent review and source-preservation verification follow before final handoff.
+Independent actual **gpt-6.1-sol/xhigh design PASS** at
+`bdaa46cc77c668161c9b5c3948f9d16da145f5c6`, no remaining actionable findings.
+The review's slice-boundary finding was resolved: A rejects native WorkerRelease
+before any helper/host start; B admits synthetic execution together with typed
+pool/quarantine/result handling. Reviewer confirmed source mapping and test-selection
+sufficiency for identity/FDs, output, uncertainty/retry, downstream guards and package.
+Only the three spec/plan/tasks documents changed from1434be00;14 inspected source,
+project and catalog inputs byte-match that base. `git diff --check` and read-only
+Spec Kit consistency (three tasks, FR-012/014/015, explicit gates, no placeholders)
+passed. No runtime builds/tests/native launches/probes or auth/network changes.
+Design WIP commits were ordinarily pushed and all three documents byte-read back
+from independent GitHub fetch. Final verdict metadata is likewise published/read
+back and restored into an empty GitHub-only checkout; exact final carrier/restoration
+belongs to handoff, avoiding self-reference. Only INTEGRATION-DESIGN is complete;
+HOST/POOL implementation, native FD-transfer/package qualification and rollout remain
+pending. Stop at this handoff for the parent's first-slice authorization.
 
 ## Accepted bounded native prototype — historical checkpoint before integration design
 
