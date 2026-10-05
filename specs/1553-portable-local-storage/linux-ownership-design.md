@@ -140,14 +140,15 @@ provider, user save, canonical write or production process-pool entry is exercis
    handlers set flags. Owner EOF is detected even if a child lives. Status output is
    nonblocking/bounded; broken/backpressured output latches Uncertain and triggers
    cleanup, never blocks the reaper. No signal is sent by untrusted numeric PID.
-4. During retirement repeatedly read only `/proc/self/task/<self>/children` as a
-   **worklist**, never a proof of completeness. Children may be omitted during exit;
-   retry until exclusive wait reports ECHILD. Before any reap, open pidfds for listed
-   unreaped direct children. Exclusive ownership of reaping prevents their PID reuse
-   in that interval. Verify known child membership/namespace where observable; any
-   unexpected failure/scope mismatch latches Uncertain. Descendants orphaned by
-   stopped parents are adopted by this subreaper within the declared same-namespace
-   scope. No scanning/signal to unrelated system PIDs or broad process-group kill.
+4. During retirement enumerate bounded numeric proc entries and consume stat
+   PID/PPID only to discover this helper's direct/adopted unreaped children, following
+   the reviewed portable revision above. This replaces the unavailable proc-children
+   worklist; no snapshot proves completeness. Acquire owned pidfds before the next
+   exclusive reap, verify namespace where observable, and retry until actual ECHILD.
+   Only proven unreaped direct children grant signal authority. Observed errors or
+   scope mismatch latch Uncertain. No unrelated environment/cmdline reads, foreign
+   signals or broad process-group kill. Orphans are adopted within the declared
+   ordinary same-namespace scope, with no external-service containment promise.
 5. Send TERM once per acquired pidfd, then KILL after the configured grace. Repeated
    adoption rounds catch double-fork/setsid and forking while parents stop. Retain
    each handle until actual wait/reap; SIGKILL send, pidfd readiness, empty snapshot

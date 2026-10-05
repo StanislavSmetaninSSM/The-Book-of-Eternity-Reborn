@@ -5,7 +5,34 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## Текущий WIP: fallback BLOCKED, 2026-10-05
+## Текущий bounded native checkpoint, 2026-10-05
+
+Восстановлен `3e1b11c220ea3286002ea78c90e4eb4498e887dd`: точное дерево исходного
+WIP8339e9c2, без восстановления реализации от main. Native helper неизменён;
+итоговые fixture/test corrections — `0f7b3ef366d16e40b1295ef22c6a24df04a65c4f`.
+[Qualification](recovery/linux-fallback-qualification.json) содержит **22 разных
+сценария** с точными source SHA:20 native helper,1 pidfd primitive,1 preparation.
+Все выбранные GREEN прошли; два замечания независимого Sol6.1/xhigh получили
+причинный RED→GREEN. Каталог **252/10759**,0исполнений,0пробелов. Guardian ECHILD,
+ноль аварийной очистки,34 записанных собственных PID отсутствуют. Итоговое ревью
+полного пакета и чистое GitHub-восстановление ещё ожидаются; это не полная игра.
+
+Гарантия native-lineage ограничена обычными потомками в одной PID namespace;
+внешние службы/брокеры не охватываются. Timeout/lost authority остаются Uncertain,
+не разрешают автоматическое принятие, освобождение slot или удаление quarantine.
+Systemd-user остаётся основным согласованным backend; его положительной native
+qualification здесь нет. Windows Job, production pool/main Release, PTY/live GM и
+canonical writes не менялись. Forced cleanup навсегда зависшего компилятора также
+не квалифицирован: после observational timeout fixture сохраняет wait/drain до
+реального выхода и затем сообщает исходную ошибку подготовки.
+
+Текущая VM: SDK10.0.401/runtime8.0.31/**PowerShell7.5.4**, Debian13.6,
+kernel6.18.44/x86_64, GCC14.2.0-19/glibc2.41. Использована существующая активация
+`source /workspace/.onboarding/activate.sh`; сеть, credentials и security не менялись.
+Продолжение — окончательное review/readback/restore и handoff перед интеграцией.
+Исторические19 zombies в старой VM не трогали и не объявляют очищенными.
+
+## Исторический prerequisite blocker, 2026-10-05
 
 Последний проверенный исходный checkpoint — `04fd23f5dec35cfd447b05787129faab88d535bd`.
 [Полные результаты и ограничения](recovery/linux-fallback-blocked.json),
@@ -27,7 +54,7 @@ peakоколо12GiB/limit16GiB,oom_kill0; это не замер ресурса 
 
 ## Восстановление и правила продолжения
 
-**Принятая точная база: `f0af8c4b3affe4689e675d1dc7b1f50da334fcf6`.**
+**Историческая принятая база input-slice перед native работой: `f0af8c4b3affe4689e675d1dc7b1f50da334fcf6`.**
 Она опубликована обычным non-force push и восстановлена в чистый GitHub-only
 checkout: совпали HEAD/tree, 79 изменённых файлов и 8 входов input qualification.
 Runtime input-код проверен на `dc29b37d0c3e3067acf9943a048360fbba66d0e3`;
@@ -52,7 +79,7 @@ fetch/readback текущего tip и проверка единственног
 проверять remote SHA/байты и чистое восстановление. При неожиданном продвижении
 ветки остановить запись и согласовать writer; force push не использовать.
 
-Toolchain этой среды: Debian 13.6/x86_64, kernel 6.18.44, .NET SDK **10.0.401**,
+Исторический toolchain input-slice (текущая VM указана выше): Debian 13.6/x86_64, kernel 6.18.44, .NET SDK **10.0.401**,
 .NET runtime **8.0.31**, PowerShell **7.6.6**. Для существующего Windows-target
 bridge доступен reference pack 8.0.31; его cross-build не означает native запуск.
 Для frontend сохранённая [browser qualification](recovery/load-browser-qualification.json)

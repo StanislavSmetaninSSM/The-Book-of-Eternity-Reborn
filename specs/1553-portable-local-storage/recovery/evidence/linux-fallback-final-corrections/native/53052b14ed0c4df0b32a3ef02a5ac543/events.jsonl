@@ -1,0 +1,4 @@
+{"kind":"root","pid":6107,"parent":6106}
+{"kind":"prepared","pid":6107,"parent":6106}
+{"kind":"before-wait","pid":6107,"parent":6106}
+{"kind":"spawned","pid":6108,"parent":6106}

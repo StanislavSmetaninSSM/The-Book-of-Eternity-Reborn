@@ -1,0 +1,77 @@
+{
+  "Categories": [
+    null
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": true,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "0f7b3ef366d16e40b1295ef22c6a24df04a65c4f",
+    "WorkingTreeFingerprint": "564806637EB245E869CE3979909D4B7C683A400E2B3F259056D39A161F793120",
+    "ChangedFiles": 29
+  },
+  "CatalogAudit": {
+    "Valid": true,
+    "Methods": 10759,
+    "Categories": 252,
+    "Unmapped": [],
+    "StaleSelectors": []
+  },
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0857362,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0381733,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0304229,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 26.8263818,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 2.2528154,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0041808,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 10,
+  "WallTime": "00:00:40.5350942",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 0,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 0,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

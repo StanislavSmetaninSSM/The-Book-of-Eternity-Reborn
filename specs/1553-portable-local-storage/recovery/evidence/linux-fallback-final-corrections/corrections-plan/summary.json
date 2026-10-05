@@ -1,0 +1,72 @@
+{
+  "Categories": [
+    "linux-fallback-spawn-boundary",
+    "linux-fallback-build-lifetime",
+    "linux-fallback-pidfd-identity"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "0f7b3ef366d16e40b1295ef22c6a24df04a65c4f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0631067,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0208725,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0179505,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 40.8341706,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0060087,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 8,
+  "WallTime": "00:00:45.0116463",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 4,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "linux-fallback-build-lifetime-unit-001",
+      "linux-fallback-pidfd-identity-unit-002",
+      "linux-fallback-spawn-boundary-unit-003"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

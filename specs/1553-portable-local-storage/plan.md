@@ -4,7 +4,54 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
-## Current continuation — portable own-child discovery
+## Current continuation — bounded native evidence ready for final review
+
+Sole writer restored exact GitHub `3e1b11c220ea3286002ea78c90e4eb4498e887dd`,
+preserving original8339e9c2 tree `c8a6734e9ce467616449c32118ecd71b470afcd8`.
+Native helper remains byte-identical to that restoration, SHA256
+`1f12338f013eb54070a198d0dd4a5998bbb5a7f426249442db4dfe5653b0217c`.
+Final fixture/test source `0f7b3ef366d16e40b1295ef22c6a24df04a65c4f`.
+[Source-specific qualification](recovery/linux-fallback-qualification.json) now maps
+**22 distinct cases**:20 native helper scenarios,1 stale-pidfd primitive and1 finite
+preparation-lifetime case. GREEN runs completed23 passing executions (normal spawn
+was necessarily repeated after its fixture fix). Two new causal review regressions
+were observed then fixed;26 total executed here,24passes/2expected RED failures.
+The inherited single descendant RED was inspected, not replayed.
+
+Staged commands used only `scripts/test-csharp.ps1`, explicit categories and
+Parallelism1. Fresh unit builds preceded NoBuild; every native case rebuilt both C
+executables with compiler/source/binary provenance. Final correction categories
+spawn2/build-lifetime1/pidfd-identity1 passed **4/4**,18.9061489s. Discovery-only
+`-ValidateCatalog` freshly built unit+integration: **252 categories/10759 methods
+and files**,0unmapped/0stale/**0executed**,40.5350942s. Audit revision recorded29
+new evidence paths captured concurrently; source/catalog inputs remained exact0f7b3ef3.
+No accepted IPC/ENV/workspace/receipt/output/input/run-record/FRAME cohort was replayed.
+
+Two independent actual Sol6.1/xhigh P2 findings have causal fixes: fixture TERM
+check-to-pause loss now uses blocked SIGTERM+sigsuspend; compilation observation
+timeout retains the original process/exit/drains until actual completion, logs output
+and rethrows the timeout before any worker launch. Permanently stalled compiler
+forced cleanup/termination remains unqualified; an outer budget is not its proof.
+No new containment layer, broad signal or environment/security change was added.
+
+Evidence currently retains10manifests/266artifact hashes/102valid gzip files,
+18unchanged production/runner/governance boundaries and6parsed project XML files.
+All current native guardians reached actualECHILD with emergency0/alarmReaps0;
+all34recorded owned fixture PIDs are absent. The primitive has its own exclusive
+ECHILD and the preparation fixture was actually waited to exit0. Build servers
+shut down successfully; no active test/helper/fixture/build process remains. Historical
+19old-VM zombies and current PID1 terminated tool zombies are not claimed reaped.
+
+Final source/evidence review and fresh GitHub-only restoration are next; tasks stay
+unchecked until those gates. No production Release/main PTY/backend Auto wiring,
+canonical writes or live GM; Windows Job unchanged. Primary existing systemd remains
+the approved choice when qualified/available; native systemd proof is absent here.
+Only ordinary same-PID-namespace lineage is confirmed by this helper. Timeout or
+lost authority stays typedUncertain, not Accepted or permission to release quarantine/
+slot. Stop at handoff before production integration. No GM-authored field or gameplay
+capability changed, so operational scope docs suffice without prompt/example edits.
+
+## Historical recovery sequence — portable own-child discovery
 
 Base `c70a8c02515f115ef220c9b806b10005f88e368e`; sole writer on same branch.
 Owner authorized replacing only unavailable proc-children discovery with reviewed

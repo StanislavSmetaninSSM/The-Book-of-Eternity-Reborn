@@ -1,0 +1,21 @@
+{
+  "SourceCommit": "0f7b3ef366d16e40b1295ef22c6a24df04a65c4f",
+  "Files": [
+    {
+      "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "Sha256": "9bb22448caa4f315bd56a2d690a2d238ffdce42a37247239689f705d87b1d194"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.pdb",
+      "Sha256": "7e37bb4acd6c21f4297ab09006a113a7dbfe754be65c7f5a30fc02e586284058"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "Sha256": "bbe4cfab8c4232267bd199a092bb1b47924a39f4bbd7fdbb2e6bc3c5d81d29de"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.pdb",
+      "Sha256": "fdb16efa58d450ba7e18572ac6a269f25fcc2102c532149991f8dbb2c1101785"
+    }
+  ]
+}
