@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "compiler": "/usr/bin/cc",
+  "compilerVersion": "cc (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+  "flags": [
+    "-std=c11",
+    "-O2",
+    "-g",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-D_FORTIFY_SOURCE=2",
+    "-fstack-protector-strong",
+    "-Wl,-z,relro,-z,now"
+  ],
+  "architecture": "X64",
+  "os": "Debian GNU/Linux 13 (trixie)",
+  "assets": [
+    {
+      "source": "native/linux/boe-lineage-supervisor.c",
+      "sourceSha256": "ab586cbfcf446ab702975ec0dd2f0347fc3378b6175370c2c862d26579d2d608",
+      "binary": "boe-lineage-supervisor",
+      "binarySha256": "589ee1fdd1e3c42461646ffbecea2a34f4345d645440cba4e514a36d2c75e770"
+    },
+    {
+      "source": "tests/fixtures/LinuxLineage/lineage-fixture.c",
+      "sourceSha256": "c940f7545ebb2ef49ff667607d913b0d12ad56f5993711581aefaf5a6ece5372",
+      "binary": "lineage-fixture",
+      "binarySha256": "9e28e052af2024ea57158f85e606c0ab0bd56eaf0396eb89c551802eafc7d778"
+    }
+  ]
+}

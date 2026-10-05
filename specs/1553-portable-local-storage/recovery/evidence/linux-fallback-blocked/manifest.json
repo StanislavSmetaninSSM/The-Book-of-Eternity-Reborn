@@ -1,0 +1,571 @@
+{
+  "SchemaVersion": 1,
+  "Kind": "Blocked native prerequisite, actual failed cleanup, fixture-only correction, disconnect audit",
+  "Artifacts": [
+    {
+      "Path": "blocked-review.json",
+      "Bytes": 565,
+      "Sha256": "1154a6fbf8b07173dddc864828748de5c5f1a2973ec4eb761a9ae3dbf176b02d"
+    },
+    {
+      "Path": "causal-red/dotnet-test.log.gz",
+      "Bytes": 166226,
+      "Sha256": "4b9249fa07b585bf6683239c088a20b0216f836dd162fd9bdecfeb7b7af997d6"
+    },
+    {
+      "Path": "causal-red/linux-fallback-supervisor-unit-001.trx",
+      "Bytes": 107278,
+      "Sha256": "c2bc9277fae5fb99496075438d42e071c4fa0d976e9a464ad24319d26a3e5b6f"
+    },
+    {
+      "Path": "causal-red/plan.json",
+      "Bytes": 4342,
+      "Sha256": "75296c4d1d304e7f545ebf9bde893a17aac42de6d08a3c5939f2b9a742e7837e"
+    },
+    {
+      "Path": "causal-red/summary.json",
+      "Bytes": 1364,
+      "Sha256": "3f44dc5482336f336066e0dfef7ec6e2cb7098cdd7965034e4faf4c2f5f2dced"
+    },
+    {
+      "Path": "commands/causal-red-result.json",
+      "Bytes": 433,
+      "Sha256": "e7ff390b8a560364eeefc960ae8d56cd6889da67ad92e3209212fc17d9066b86"
+    },
+    {
+      "Path": "commands/causal-red.log.gz",
+      "Bytes": 3051,
+      "Sha256": "d2ea302fcf3e13f1890e0b5add95bae7ff0b319beec5c3c230b752e4b28384c9"
+    },
+    {
+      "Path": "commands/fixture-admission-check-result.json",
+      "Bytes": 454,
+      "Sha256": "8bfe1dc9ef7906b4bd5f8cde5ef1db3c3d8089c15ede9d12d2c7acd59a10d127"
+    },
+    {
+      "Path": "commands/fixture-admission-check.log.gz",
+      "Bytes": 737,
+      "Sha256": "5d1d48ad0bfe88572642622c6d05d01fe43b992d6379aae5a3ab6b6db7c73bb5"
+    },
+    {
+      "Path": "commands/fixture-admission-plan-result.json",
+      "Bytes": 454,
+      "Sha256": "5c74a41c354acd4d47f013291f20c8c4e8f78e30b987606808c684e878fb37bf"
+    },
+    {
+      "Path": "commands/fixture-admission-plan.log.gz",
+      "Bytes": 591,
+      "Sha256": "5c28f688b05de539d523196297df13bdbb23077971da65ac7748c78b90161cb7"
+    },
+    {
+      "Path": "commands/native-preparation-2-result.json",
+      "Bytes": 469,
+      "Sha256": "bca6be9acc4c60d7033809509be5f7c048ca899d2bd7cdf7e62d5abab968f4d5"
+    },
+    {
+      "Path": "commands/native-preparation-2.log.gz",
+      "Bytes": 88,
+      "Sha256": "fbe2ccc9c691a6bc85d4037eb74199a445ab614a7cd8c05294627663533dcdfd"
+    },
+    {
+      "Path": "commands/native-preparation-result.json",
+      "Bytes": 464,
+      "Sha256": "4853f0261253307db61dc887b4557588037bf02cdb1f4dbb4abffb7e001e0eeb"
+    },
+    {
+      "Path": "commands/native-preparation.log.gz",
+      "Bytes": 198,
+      "Sha256": "393c7aa9354511004ba70195ca8806d47c1c13da078e7a58358e5b67e43e9731"
+    },
+    {
+      "Path": "commands/red-plan-result.json",
+      "Bytes": 433,
+      "Sha256": "65b14960ec077c0cca6ec04d2674c283d2b21a1ecffe28aa0005fd22dac02a20"
+    },
+    {
+      "Path": "commands/red-plan.log.gz",
+      "Bytes": 1008,
+      "Sha256": "e38ac7a94e0d5de7ce951f38b27e2197e181254c6cc9f2c73567222058b8af16"
+    },
+    {
+      "Path": "correction-review.json",
+      "Bytes": 392,
+      "Sha256": "582fecff1a97406622c6208a1805194f57553ca94d385f1f2730a08569d2edb8"
+    },
+    {
+      "Path": "design-review.json",
+      "Bytes": 552,
+      "Sha256": "44332777fa557706223b559ba9ae03a7cb321298bf7ffaca2ff14acd55372b76"
+    },
+    {
+      "Path": "disconnect-action-audit.json",
+      "Bytes": 5052,
+      "Sha256": "2990aae87ac53aca4c0ca3216235e07e19d9fe14f53925b22ad6698f7ea54135"
+    },
+    {
+      "Path": "fixture-admission-check/dotnet-test.log.gz",
+      "Bytes": 163973,
+      "Sha256": "dd683a35e6275013df9531ae8234ccb0b8bdfd64763e314e6c8928b37e3a2ace"
+    },
+    {
+      "Path": "fixture-admission-check/linux-fallback-fixture-admission-unit-001.trx",
+      "Bytes": 3010,
+      "Sha256": "c7657cc9fc8cf4bfaa67b70109039a76bda5becbc6d7db3469fdb38925fb128c"
+    },
+    {
+      "Path": "fixture-admission-check/plan.json",
+      "Bytes": 1128,
+      "Sha256": "2fcd229fd43811338caa5d8dbf0dec725e5024bbabe1e98cb912577438e923f0"
+    },
+    {
+      "Path": "fixture-admission-check/summary.json",
+      "Bytes": 1471,
+      "Sha256": "0bf421b75996bf04164ecdb66729c06dd3e044b4562edb143b1bd0b7b1cfe1fc"
+    },
+    {
+      "Path": "fixture-admission-native/218414165fb644a7893dbff81fe2104d/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "76f098ff34ec2ffbb946c4be25f4482d5e839e346f92a86280d9f28150497864"
+    },
+    {
+      "Path": "fixture-admission-native/218414165fb644a7893dbff81fe2104d/build.log.gz",
+      "Bytes": 121,
+      "Sha256": "745584e40a08f886ab89886e70e5deeb3251c2234fe18d6cbdea2ac2b0b294e4"
+    },
+    {
+      "Path": "fixture-admission-native/218414165fb644a7893dbff81fe2104d/guardian.json",
+      "Bytes": 91,
+      "Sha256": "0efeae6adfd6538d13656f43fb691b4a3334db9853184b3b9a5740b448b230a5"
+    },
+    {
+      "Path": "fixture-admission-native/218414165fb644a7893dbff81fe2104d/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "fixture-admission-plan/Build-unit.log.gz",
+      "Bytes": 1008,
+      "Sha256": "497900325a6847e020d2e6a46cf2b96f190c2a0cf50c3f5d98c83376c7681c19"
+    },
+    {
+      "Path": "fixture-admission-plan/dotnet-test.log.gz",
+      "Bytes": 164639,
+      "Sha256": "2c539bb21be1e22572ccfe0cbe3cdce33b40d99c8ced1ebff79c69a8146110e1"
+    },
+    {
+      "Path": "fixture-admission-plan/plan.json",
+      "Bytes": 1129,
+      "Sha256": "b234e1d6db05f8acb314ab2cc3c22e10fb2f591eef0709ea84da4e63746ec012"
+    },
+    {
+      "Path": "fixture-admission-plan/summary.json",
+      "Bytes": 1473,
+      "Sha256": "02032d7b9289d3876ca94ac6c2b8e706ee6417864477345cb406afea9bc505a4"
+    },
+    {
+      "Path": "proc-children-capability.json",
+      "Bytes": 1639,
+      "Sha256": "0ac18f0392ed82cd8bc4128556ccb43c1f63dccc53ea82cdb98781c8f9e3259d"
+    },
+    {
+      "Path": "red-native/02ef050712034bd3ae42625928ddc05a/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "7fbc69ffea673926ac6438eb1c8cfd933c6b03a07901ae9b033eb5fbac3fb199"
+    },
+    {
+      "Path": "red-native/02ef050712034bd3ae42625928ddc05a/build.log.gz",
+      "Bytes": 112,
+      "Sha256": "b76b6b2f4d767effedf56d1dd2ad03ffe8e1778a009fd7f3803804b6bea1a4d9"
+    },
+    {
+      "Path": "red-native/02ef050712034bd3ae42625928ddc05a/status.jsonl",
+      "Bytes": 270,
+      "Sha256": "12339bf64cb87813e4fd5e0d174ae3cc2fdd9e05c85e47a4e7f8c0ba32827574"
+    },
+    {
+      "Path": "red-native/02ef050712034bd3ae42625928ddc05a/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "red-native/0b1c0bac291d472d90ff34a59a45f53e/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "7fbc69ffea673926ac6438eb1c8cfd933c6b03a07901ae9b033eb5fbac3fb199"
+    },
+    {
+      "Path": "red-native/0b1c0bac291d472d90ff34a59a45f53e/build.log.gz",
+      "Bytes": 112,
+      "Sha256": "17a3c1168cb9342e77a5553267332e74d029c81109ba1bc76d55b5f978cddf18"
+    },
+    {
+      "Path": "red-native/0b1c0bac291d472d90ff34a59a45f53e/status.jsonl",
+      "Bytes": 270,
+      "Sha256": "eb555dfd66c8c66d38e3b904d71db9f844de521f74c1c988a9f955acebc5c6bd"
+    },
+    {
+      "Path": "red-native/0b1c0bac291d472d90ff34a59a45f53e/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "red-native/23a1bab2c54149f793162e48b60667d1/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "7fbc69ffea673926ac6438eb1c8cfd933c6b03a07901ae9b033eb5fbac3fb199"
+    },
+    {
+      "Path": "red-native/23a1bab2c54149f793162e48b60667d1/build.log.gz",
+      "Bytes": 112,
+      "Sha256": "0faa30963552d49dabe3ec3c7ed27b057199a4a2afee81e74351b68173f64ac6"
+    },
+    {
+      "Path": "red-native/23a1bab2c54149f793162e48b60667d1/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "red-native/284ac29eaf7b4205a8eca5df64c3202e/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "7fbc69ffea673926ac6438eb1c8cfd933c6b03a07901ae9b033eb5fbac3fb199"
+    },
+    {
+      "Path": "red-native/284ac29eaf7b4205a8eca5df64c3202e/build.log.gz",
+      "Bytes": 111,
+      "Sha256": "fc3a47f893fa0c08b79c12b61ab9a66c60a833f9c4a6fb7dbf26c0998db34982"
+    },
+    {
+      "Path": "red-native/284ac29eaf7b4205a8eca5df64c3202e/status.jsonl",
+      "Bytes": 270,
+      "Sha256": "02179a70ab15e8f5d288bee750d28081b7f58256d4255f8b153117bbccfcce1a"
+    },
+    {
+      "Path": "red-native/284ac29eaf7b4205a8eca5df64c3202e/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "red-native/30c72275789c4e76be138312e3a430fc/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "7fbc69ffea673926ac6438eb1c8cfd933c6b03a07901ae9b033eb5fbac3fb199"
+    },
+    {
+      "Path": "red-native/30c72275789c4e76be138312e3a430fc/build.log.gz",
+      "Bytes": 112,
+      "Sha256": "a4417518fe707f84ff1655e01344c81121378d601c7d1c38a4ebb16ae4b9d663"
+    },
+    {
+      "Path": "red-native/30c72275789c4e76be138312e3a430fc/status.jsonl",
+      "Bytes": 270,
+      "Sha256": "2503d517ac87a6223c658435015f4eaa7aa087a843db945ba476019bd0400bd2"
+    },
+    {
+      "Path": "red-native/30c72275789c4e76be138312e3a430fc/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "red-native/445ccedba2db4ae9a3949b2236aadeef/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "7fbc69ffea673926ac6438eb1c8cfd933c6b03a07901ae9b033eb5fbac3fb199"
+    },
+    {
+      "Path": "red-native/445ccedba2db4ae9a3949b2236aadeef/build.log.gz",
+      "Bytes": 110,
+      "Sha256": "6f874613dd51e5e1e6cef578f2a6d8d5bb40eec26d9da460efcd385b2f1f1095"
+    },
+    {
+      "Path": "red-native/445ccedba2db4ae9a3949b2236aadeef/status.jsonl",
+      "Bytes": 270,
+      "Sha256": "677ada9179dbb8fad5326c928d6c156fd31f54827d2f13da6c884ed5c342d923"
+    },
+    {
+      "Path": "red-native/445ccedba2db4ae9a3949b2236aadeef/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "red-native/4de848aa6e59452e941a5426cd28f168/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "7fbc69ffea673926ac6438eb1c8cfd933c6b03a07901ae9b033eb5fbac3fb199"
+    },
+    {
+      "Path": "red-native/4de848aa6e59452e941a5426cd28f168/build.log.gz",
+      "Bytes": 111,
+      "Sha256": "49d78a55f998950d2267b16ac6ef2ce2515e464779eea3b99805fa56ce667a9d"
+    },
+    {
+      "Path": "red-native/4de848aa6e59452e941a5426cd28f168/status.jsonl",
+      "Bytes": 270,
+      "Sha256": "3acb16584eb1f612bfd511a1cd948dba21cef0af654dc076ab0ce2f4db36f07d"
+    },
+    {
+      "Path": "red-native/4de848aa6e59452e941a5426cd28f168/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "red-native/5a4b7f7f19b64177985c7b31189c25b2/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "7fbc69ffea673926ac6438eb1c8cfd933c6b03a07901ae9b033eb5fbac3fb199"
+    },
+    {
+      "Path": "red-native/5a4b7f7f19b64177985c7b31189c25b2/build.log.gz",
+      "Bytes": 112,
+      "Sha256": "4b3a27e69bdacf256133a33b8dd223b126cbeb0c9fa285d6434908053c4710db"
+    },
+    {
+      "Path": "red-native/5a4b7f7f19b64177985c7b31189c25b2/status.jsonl",
+      "Bytes": 270,
+      "Sha256": "22046e15ec136df4d5228b367c532e87112996b38622fc69a03179b78bc6ccce"
+    },
+    {
+      "Path": "red-native/5a4b7f7f19b64177985c7b31189c25b2/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "red-native/6521a37a997b4c9e82b32316b781cc9e/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "7fbc69ffea673926ac6438eb1c8cfd933c6b03a07901ae9b033eb5fbac3fb199"
+    },
+    {
+      "Path": "red-native/6521a37a997b4c9e82b32316b781cc9e/build.log.gz",
+      "Bytes": 113,
+      "Sha256": "74dd9086ca65a7dbf2b884ed5acdfab65dfb350b1a42263bd5ef5bfc10d37574"
+    },
+    {
+      "Path": "red-native/6521a37a997b4c9e82b32316b781cc9e/primitive.json",
+      "Bytes": 64,
+      "Sha256": "a9ffcd78267cdc8890cee81f927296c076568f32ca03a7e3b4f5d5ef450b8a05"
+    },
+    {
+      "Path": "red-native/75c7006d5a364cbc9d899fa6d02f29c8/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "7fbc69ffea673926ac6438eb1c8cfd933c6b03a07901ae9b033eb5fbac3fb199"
+    },
+    {
+      "Path": "red-native/75c7006d5a364cbc9d899fa6d02f29c8/build.log.gz",
+      "Bytes": 112,
+      "Sha256": "93acf7dfca5cf791cb8f630ac0b9a086ffe0f480405c56ffc24cab72178d9ce3"
+    },
+    {
+      "Path": "red-native/75c7006d5a364cbc9d899fa6d02f29c8/events.jsonl",
+      "Bytes": 55,
+      "Sha256": "164cff9011aef603e1f09d827f0a3c31a31c6ad334f9eebe5e7fbf5966922944"
+    },
+    {
+      "Path": "red-native/75c7006d5a364cbc9d899fa6d02f29c8/status.jsonl",
+      "Bytes": 270,
+      "Sha256": "c43f4322864d3f017eb16adfcbdd36b79ab3adec4cd9a43faf5e5f46ffa15dc1"
+    },
+    {
+      "Path": "red-native/75c7006d5a364cbc9d899fa6d02f29c8/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "red-native/761777babe2841d9b63a727b4f6f0f6c/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "7fbc69ffea673926ac6438eb1c8cfd933c6b03a07901ae9b033eb5fbac3fb199"
+    },
+    {
+      "Path": "red-native/761777babe2841d9b63a727b4f6f0f6c/build.log.gz",
+      "Bytes": 112,
+      "Sha256": "f1c8eccb1df00e6d39eef31372710fb47ec2bbd08d9bad71f308357fb9e409c5"
+    },
+    {
+      "Path": "red-native/761777babe2841d9b63a727b4f6f0f6c/status.jsonl",
+      "Bytes": 270,
+      "Sha256": "225e3d16f524a7c600aa9ade8eeb5c33cd045ca6caae8ec6cbd9b44743bb8ac7"
+    },
+    {
+      "Path": "red-native/761777babe2841d9b63a727b4f6f0f6c/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "red-native/84b5cf5aa8914de190bd671383b9c49b/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "7fbc69ffea673926ac6438eb1c8cfd933c6b03a07901ae9b033eb5fbac3fb199"
+    },
+    {
+      "Path": "red-native/84b5cf5aa8914de190bd671383b9c49b/build.log.gz",
+      "Bytes": 111,
+      "Sha256": "9e5ea1270c77de14a46f91b8cc5d030f1b18f72c546f617cc1951401ad5ea232"
+    },
+    {
+      "Path": "red-native/84b5cf5aa8914de190bd671383b9c49b/status.jsonl",
+      "Bytes": 270,
+      "Sha256": "df481828ee09f25d44e80ed5d6e76971db6d5d1bebcf86433f00fda893e4c92f"
+    },
+    {
+      "Path": "red-native/84b5cf5aa8914de190bd671383b9c49b/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "red-native/9fe0e9b5642e454996c900bb506cd2db/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "7fbc69ffea673926ac6438eb1c8cfd933c6b03a07901ae9b033eb5fbac3fb199"
+    },
+    {
+      "Path": "red-native/9fe0e9b5642e454996c900bb506cd2db/build.log.gz",
+      "Bytes": 111,
+      "Sha256": "3d755810b9119960c285919feef55e80066b3aeab1c7fa7149f95e563d3ea475"
+    },
+    {
+      "Path": "red-native/9fe0e9b5642e454996c900bb506cd2db/status.jsonl",
+      "Bytes": 270,
+      "Sha256": "0862d8bed9dd5be8702f0ee3d3fa653bc18dfcc8c90a6ffb6b077c1831264392"
+    },
+    {
+      "Path": "red-native/9fe0e9b5642e454996c900bb506cd2db/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "red-native/af1504a3d6fc40d2bd1f07d1bf834776/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "7fbc69ffea673926ac6438eb1c8cfd933c6b03a07901ae9b033eb5fbac3fb199"
+    },
+    {
+      "Path": "red-native/af1504a3d6fc40d2bd1f07d1bf834776/build.log.gz",
+      "Bytes": 111,
+      "Sha256": "9ad9b386ed8535269a1c9e0864f1ecd7a9dafa02aa05ff52ff492dcfe177d783"
+    },
+    {
+      "Path": "red-native/af1504a3d6fc40d2bd1f07d1bf834776/status.jsonl",
+      "Bytes": 270,
+      "Sha256": "ae18a3bbfad852350d434c4bfa04ef5e118f53ac04beb51dcb91a8c83df1380d"
+    },
+    {
+      "Path": "red-native/af1504a3d6fc40d2bd1f07d1bf834776/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "red-native/d30129aad2f740d9b31f86506281070a/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "7fbc69ffea673926ac6438eb1c8cfd933c6b03a07901ae9b033eb5fbac3fb199"
+    },
+    {
+      "Path": "red-native/d30129aad2f740d9b31f86506281070a/build.log.gz",
+      "Bytes": 113,
+      "Sha256": "1aeddfcfa3fbc23a25dbd49abb4c26d4e09d7e5bd0faab3930b5666e528b9ea3"
+    },
+    {
+      "Path": "red-native/d30129aad2f740d9b31f86506281070a/status.jsonl",
+      "Bytes": 270,
+      "Sha256": "fa44f0390629b156bf2c43e370c942afd037a45879009496b5f2a894fff85bff"
+    },
+    {
+      "Path": "red-native/d30129aad2f740d9b31f86506281070a/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "red-native/d356396d1a674ccbb918f6d2b85d5d42/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "7fbc69ffea673926ac6438eb1c8cfd933c6b03a07901ae9b033eb5fbac3fb199"
+    },
+    {
+      "Path": "red-native/d356396d1a674ccbb918f6d2b85d5d42/build.log.gz",
+      "Bytes": 112,
+      "Sha256": "dd1004500ae131cc427caf4e6a4b7d1a2f306527d763bb9ac5a4214a1091edd4"
+    },
+    {
+      "Path": "red-native/d356396d1a674ccbb918f6d2b85d5d42/status.jsonl",
+      "Bytes": 270,
+      "Sha256": "f5b8929d56146359b2387f2b23ae59703e9b8632c256ec6c872b16d404c68dd1"
+    },
+    {
+      "Path": "red-native/d356396d1a674ccbb918f6d2b85d5d42/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "red-native/dc41f02b8e3f423fbc2bbdebe455733c/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "7fbc69ffea673926ac6438eb1c8cfd933c6b03a07901ae9b033eb5fbac3fb199"
+    },
+    {
+      "Path": "red-native/dc41f02b8e3f423fbc2bbdebe455733c/build.log.gz",
+      "Bytes": 110,
+      "Sha256": "b64cc822e29020d8a190eac5dfa213711c6b8d2536a00b1a92336d1c70dfe0af"
+    },
+    {
+      "Path": "red-native/dc41f02b8e3f423fbc2bbdebe455733c/status.jsonl",
+      "Bytes": 270,
+      "Sha256": "8f7e0818c3ac759e13ca15a3efdff2858b039d75878b117d9a3d8486975a255f"
+    },
+    {
+      "Path": "red-native/dc41f02b8e3f423fbc2bbdebe455733c/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "red-native/e3e8c7af467048d6bb2c04ca4178f072/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "7fbc69ffea673926ac6438eb1c8cfd933c6b03a07901ae9b033eb5fbac3fb199"
+    },
+    {
+      "Path": "red-native/e3e8c7af467048d6bb2c04ca4178f072/build.log.gz",
+      "Bytes": 111,
+      "Sha256": "a6988014b01bc1a13c84f8c4b8e75745cc254f08583fb8633baf98b75e87623e"
+    },
+    {
+      "Path": "red-native/e3e8c7af467048d6bb2c04ca4178f072/status.jsonl",
+      "Bytes": 270,
+      "Sha256": "02454f6b67750a5de080f6666c9646a7b18b616d573cfdf6806b87eef2352387"
+    },
+    {
+      "Path": "red-native/e3e8c7af467048d6bb2c04ca4178f072/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "red-native/ff1556a7dacf473ba030f130d5f68480/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "7fbc69ffea673926ac6438eb1c8cfd933c6b03a07901ae9b033eb5fbac3fb199"
+    },
+    {
+      "Path": "red-native/ff1556a7dacf473ba030f130d5f68480/build.log.gz",
+      "Bytes": 112,
+      "Sha256": "9780d9496b76675da13d2f9a882e7f73ed6fba32b0f46099c187b848baf0df93"
+    },
+    {
+      "Path": "red-native/ff1556a7dacf473ba030f130d5f68480/status.jsonl",
+      "Bytes": 270,
+      "Sha256": "98a718251459a46e11ae9ff8487da6508cfacc37654d24326077f55f5df61d9b"
+    },
+    {
+      "Path": "red-native/ff1556a7dacf473ba030f130d5f68480/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "red-plan/Build-unit.log.gz",
+      "Bytes": 1010,
+      "Sha256": "cb38781ac765bc9ab6343b404b5cf33782b753149dbf1f2c2f62e9312b92d08c"
+    },
+    {
+      "Path": "red-plan/dotnet-test.log.gz",
+      "Bytes": 164605,
+      "Sha256": "da3718a975a989627989716b53a518546c0231b645be6f91c1d6c01915c91aa1"
+    },
+    {
+      "Path": "red-plan/plan.json",
+      "Bytes": 4345,
+      "Sha256": "9d3a764398bd6ec7ea286f848b878edb7ce886c048e0f7276070815e5f4d99e7"
+    },
+    {
+      "Path": "red-plan/summary.json",
+      "Bytes": 1461,
+      "Sha256": "8357dd028a5b826e4f487f1a7872bbd7a7db7fb033c8174c2baa4e4d0d336917"
+    },
+    {
+      "Path": "spec-prerequisites.json",
+      "Bytes": 159,
+      "Sha256": "89e20855f3015d4d08cf0e17587396f4ff959392d98a78b24ae05d80eec53200"
+    }
+  ]
+}

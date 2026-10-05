@@ -1,0 +1,19 @@
+{
+  "StartedUtc": "2026-10-05T15:55:40.248715+00:00",
+  "EndedUtc": "2026-10-05T15:55:50.252530+00:00",
+  "Source": "04fd23f5dec35cfd447b05787129faab88d535bd",
+  "Command": [
+    "pwsh",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "linux-fallback-fixture-admission",
+    "-Parallelism",
+    "1",
+    "-NoBuild"
+  ],
+  "ExitCode": 0,
+  "DurationSeconds": 10.003856121998979,
+  "Log": "fixture-admission-check.log"
+}

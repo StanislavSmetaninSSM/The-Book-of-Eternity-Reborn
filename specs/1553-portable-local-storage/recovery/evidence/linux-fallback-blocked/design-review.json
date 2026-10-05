@@ -1,0 +1,16 @@
+{
+  "reviewer": "gpt-6.1-sol",
+  "reasoningEffort": "xhigh",
+  "agent": "/root/fallback_design_review",
+  "source": "a3e48f3a636bfd6aca86171b2f0a41ae2b93812e",
+  "base": "2defe92cd8b7d313d07b059db76b73e97905f66f",
+  "verdict": "PASS",
+  "blockingFindings": [],
+  "runtimeExecuted": false,
+  "obligations": [
+    "guardian retains authority until actual ECHILD",
+    "positive cases before fixture alarms and zero emergency lineage cleanup",
+    "SIGPIPE and actual closed/backpressured status cases",
+    "final cleanup does not clear Uncertain"
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T041-FALLBACK-NATIVE",
+  "BaseCommit": "2defe92cd8b7d313d07b059db76b73e97905f66f",
+  "SourceCommit": "04fd23f5dec35cfd447b05787129faab88d535bd",
+  "Status": "BLOCKED; root-only helper WIP, positive fallback not qualified",
+  "Environment": {
+    "OS": "Debian13.6",
+    "Kernel": "6.18.44",
+    "Architecture": "x86_64",
+    "SDK": "10.0.401",
+    "Runtime": "8.0.31",
+    "PowerShell": "7.6.6",
+    "GCC": "14.2.0",
+    "OrdinaryPermissions": true
+  },
+  "Inputs": {
+    "native/linux/boe-lineage-supervisor.c": "ab586cbfcf446ab702975ec0dd2f0347fc3378b6175370c2c862d26579d2d608",
+    "scripts/build-linux-supervisor.ps1": "7644f02870fa97d53e50f7507d8ca3c85c0ade9dc274bb2a459587456f196474",
+    "tests/fixtures/LinuxLineage/lineage-fixture.c": "c940f7545ebb2ef49ff667607d913b0d12ad56f5993711581aefaf5a6ece5372",
+    "BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs": "2a2662637d050b5056f35b09b5cda41bca6bb888d0b14de1f8a38e1eaab5ebb0",
+    "tests/categories.json": "95460f8e7cb2f45a00a35087d890c9d2451a11256e1401d9735514f38b43a510",
+    "tests/selection.json": "deeb189b823fc5672fc3d9385346d49dd80e9e03890a5b972d649a284d346476"
+  },
+  "Runs": {
+    "red-plan": {
+      "Source": "8d9a3304d4f27fe60e9e2e0aaa6da4ae4aab59a4",
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 19,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "linux-fallback-supervisor-unit-001"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "WallTime": "00:02:15.3023988"
+    },
+    "causal-red": {
+      "Source": "690a975593e3696530a355057c761480f3d43e70",
+      "Tests": {
+        "Total": 19,
+        "Executed": 19,
+        "Passed": 1,
+        "Failed": 18
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 19,
+        "CompletedCases": 19,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 1,
+      "WallTime": "00:00:23.8121391"
+    },
+    "fixture-admission-plan": {
+      "Source": "8ce890fa36af6cd6f183379131fc1251bc1a276e",
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 1,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "linux-fallback-fixture-admission-unit-001"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "WallTime": "00:00:46.9298161"
+    },
+    "fixture-admission-check": {
+      "Source": "04fd23f5dec35cfd447b05787129faab88d535bd",
+      "Tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 1,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 0,
+      "WallTime": "00:00:08.9709727"
+    }
+  },
+  "Classification": {
+    "Native19": "1pass(stale-pidfd primitive),18fail(prerequisite/fixture), not causalRED",
+    "FixtureAdmission1": "PASS1/1,zerohelper/sentinelforks,negativepreparationonly",
+    "PreparationFailure": "ccresolutionreturnedtwoapplicationpaths; fixedselectfirst",
+    "MissingInterface": "Both ownprocchildren paths ENOENT2; not a security-denial finding; exactcause unknown",
+    "CleanupFailure": "Old guardian returned beforewait;18helpers+1sentinel becamePID1zombies;zero liveblockprocesses observed; runnercleanupflag doesnotprovefixturecleanup",
+    "CausalRedGreen": "Not achieved",
+    "NativeSystemd": "Not executed/unavailable existingmanager",
+    "ProductionIntegration": "Closed/unchanged",
+    "FullCatalogAudit": "Not run in priorityhand off; catalogsource documentednewowners",
+    "ExistingFallbackStrategy": "Still approved; missingoneAPI doesnotrejectstrategy; separatelyassignedportabilitydesignnext"
+  },
+  "Review": {
+    "Model": "gpt-6.1-sol",
+    "Effort": "xhigh",
+    "Agent": "/root/fallback_design_review",
+    "Source": "04fd23f5dec35cfd447b05787129faab88d535bd",
+    "Verdict": "P1 guardian preflight/reap and P2 clock-abort fixes PASS on read-only review",
+    "RuntimeByReviewer": false,
+    "NativeBackendQualified": false,
+    "CompleteEvidenceReview": "Pending; owner requested immediate disconnect handoff"
+  },
+  "Evidence": "evidence/linux-fallback-blocked/manifest.json",
+  "SourceOnlyRestore": "Pending finalcarrier",
+  "Next": "Ownerrequested immediate disconnectaudit handoff. Separate portabilitydesign afterhandoff; no furtherprobe orimplementation now."
+}

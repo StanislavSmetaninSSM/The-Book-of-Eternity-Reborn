@@ -5,6 +5,26 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
+## Текущий WIP: fallback BLOCKED, 2026-10-05
+
+Последний проверенный исходный checkpoint — `04fd23f5dec35cfd447b05787129faab88d535bd`.
+[Полные результаты и ограничения](recovery/linux-fallback-blocked.json),
+[логи/транскрипты/audit](recovery/evidence/linux-fallback-blocked/manifest.json).
+Исходный native прогон19:1PASS(stale-pidfd)/18FAIL до workerlaunch из-за отсутствия
+proc-children. Это не causalRED/GREEN. Guardian ошибочно оставил18helper+1sentinel
+zombies уPID1; живых процессов блока нет. Исправления guardian получили отдельное
+Sol6.1/XHigh PASS; проверка его отказа доfork —1/1PASS, не nativeownershipPASS.
+Полный evidence-review/положительная qualification не завершены. Согласованная
+fallback-стратегия сохраняется; после handoff отдельно исследуется переносимое
+перечисление собственных детей. Production Release закрыт.
+
+Приоритетный audit уведомления disconnect15:41: в это время выполнялась.NETсборка;
+первый native запуск был15:42:47. Изменений сети/CLONE_NEWNET/DNS/proxy/routes/firewall,
+остановкиruntimeслужб или broadgroupkill в проверенном блоке не найдено. Сигналы
+nativeкода направлены своим pidfd; точныеPIDstaleprimitive не записаны. Связь с
+уведомлением не установлена; историческойCPU/networkтелеметрии нет. Текущий cgroup:
+peakоколо12GiB/limit16GiB,oom_kill0; это не замер ресурса в15:41. Executionдоступен.
+
 ## Восстановление и правила продолжения
 
 **Принятая точная база: `f0af8c4b3affe4689e675d1dc7b1f50da334fcf6`.**
@@ -80,7 +100,7 @@ carrier итогового пакета; точный reviewed candidate и OS �
 Ordinary-save handoff хранит несколько Windows/Linux runtime-срезов: его старые
 указания «next Load» исторические. Таблица не переносит один результат на другой
 SHA или ОС. Сохранённые RED, подготовительные ошибки и неполные прогоны остаются
-в qualification. Текущий docs-блок не запускает сборок, тестов или native probes.
+в qualification. Эта таблица сохраняет прежние принятые блоки; текущий native WIP описан выше.
 
 ## Что ещё не квалифицировано
 
@@ -100,9 +120,9 @@ quarantine/slot сохраняются, результат не принимае
 Saved environment подтверждает sockets/pidfd/subreaper, но прежние normal maps/
 cgroup delegation недоступны, systemd user manager не найден. Namespace не нужен
 для fallback и не объявлен единственным backend. Systemd положительно здесь не
-квалифицирован; его не устанавливают/запускают/настраивают. Текущий этап — design
-review и bounded native helper с собственными synthetic fixtures, без production
-Release/liveGM/canonical writes. Нативный успех ещё не заявлен.
+квалифицирован; его не устанавливают/запускают/настраивают. Design review PASS. Native helper остаётся root-only WIP: требуемый proc-children
+файл отсутствует, положительная qualification BLOCKED. Production
+Release/liveGM/canonical writes не запускались.
 
 Открыты T041 ownership/Release/PTY и основной bridge/daemon/launcher portability,
 production run/generation/fence wiring, owner loss/reboot/unknown-stop recovery
@@ -121,14 +141,13 @@ live-browser/visual-QA gate не требуется. Аудио/clipboard/дру
 
 ## Следующий допустимый шаг
 
-Решение о двух режимах принято; повторного согласования обычных действий не нужно.
-Сначала независимый Sol6.1/XHigh design review нового контракта/алгоритма, затем
-T041-FALLBACK-NATIVE: actual helper build, causal RED/GREEN, scoped cleanup evidence
-и independent final review. После remote checkpoint/restore — handoff родителю,
-**до** production pool/main Release интеграции. Расширение списка Linux дистрибутивов
-и положительная systemd qualification требуют подходящего runner, не root или
-ослабления ограничений. T042 queue/paste-submit/unknown outcome остаётся отдельным
-coherent design и не входит в этот native helper этап.
+Решение о двух режимах принято. По приоритетному указанию владельца остановлено
+дальнейшее проектирование до handoff audit/cleanup evidence. Следующий отдельно
+назначаемый portability-design исследует read-only proc metadata/ordinary APIs
+для перечисления только собственных детей с review identity/reap/races. Отсутствие
+одного API не отвергает fallback-стратегию. Никаких remount/security bypass,
+production pool/main Release или новых probes в этом handoff. Main merge и issue
+closure не разрешены. Полная positive fallback qualification остаётся открыта.
 
 Неизменные требования: бесплатная single-player игра; trusted-local-player
 storage без anti-player save protection; сохранение проверок формата/путей,

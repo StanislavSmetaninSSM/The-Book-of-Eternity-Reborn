@@ -4,6 +4,22 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## Priority handoff — disconnect audit and BLOCKED native slice
+
+Owner requested immediate handoff before further portability design. Exact helper/
+fixture source `04fd23f5dec35cfd447b05787129faab88d535bd`; [results/evidence](recovery/linux-fallback-blocked.json)
+and [current status](cross-platform-status.md). Original19completed:1primitivePASS,
+18prerequisite/fixtureFAIL, no behavioralRED/GREEN. Guardian correction reviewPASS;
+fresh fixture-admission1/1PASS withzerohelper/sentinelforks. Positivefallback/systemd
+and production wiring remain open.19PID1zombies from first fixturefailure are not
+claimed reaped. Networkaudit has no directnetworkmutation/broadsignal finding;
+causalityunknown; source/runtime timeline retained. No furtherprobes/designnow.
+The two-backendstrategy remains approved; separatelyassigned own-child enumeration
+research is the next task. Completeevidence review/discoveryaudit remain unrun.
+
+The following initial current-block plan records its agreed scope; this priority
+handoff supersedes its sequencing where the missingprocinterface blocks execution.
+
 ## Current checkpoint — approved two-backend native slice, 2026-10-05
 
 Base **`2defe92cd8b7d313d07b059db76b73e97905f66f`**, branch `codex/1553-load-filesystem`, sole writer. Owner approved primary existing user systemd plus an ordinary-lineage fallback at15:12UTC. This replaces the previous backend-choice wait and only the fallback's former universal guarantee. [Current contract, algorithm and TDD plan](linux-ownership-design.md) / [concise status](cross-platform-status.md).
