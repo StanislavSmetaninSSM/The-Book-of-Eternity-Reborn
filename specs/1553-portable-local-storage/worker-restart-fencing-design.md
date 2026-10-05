@@ -3,8 +3,9 @@
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553),
 T041-WORKER-RESTART-DESIGN / US4 / FR-012/014/015.
 Base: `30ab292d46f6a8fc88b03ee8f3d0731523788e8d`, accepted bounded synthetic POOL B.
-Status: design WIP for independent Sol6.1/xhigh review; implementation requires the
-parent's separate launch instruction. This document is the architectural brief and
+Status: independent actual gpt-6.1-sol/xhigh DESIGN PASS at
+`e90d5e4dbae51f6d9ba4601bdba3a060f29720dc`, no unresolved findings;
+implementation requires the parent's separate launch instruction. This document is the architectural brief and
 sequential plan; existing Spec Kit spec/plan/tasks remain the durable source of scope.
 Use Superpowers executing-plans/TDD for each later authorized slice, sole writer and
 independent review. No new runtime, tests, probes, dependency or permission changes here.
@@ -372,7 +373,10 @@ before a broader product claim. This limitation does not weaken any cold refusal
 
 ## Design verification / delivery
 
-Source inspection only, zero tests/native probes. Self-check: main/worker identities
+Source inspection only, zero tests/native probes. [Design evidence](recovery/worker-restart-design.json)
+records exact input hashes, the independent verdict and a fresh GitHub-only candidate
+restoration of all7,043 tracked files. Only five Spec Kit documents changed from the
+accepted B source before this evidence/status carrier. Self-check: main/worker identities
 remain separate; all uncertainty paths retain evidence; no recorded observation grants
 live authority; source bootstrap cannot recover before admission; lock hierarchy is
 acyclic; every side-effect cut has an owned crash test in R1–R3. Keep current catalog

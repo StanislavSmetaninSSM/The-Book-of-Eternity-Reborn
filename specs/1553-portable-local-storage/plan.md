@@ -34,11 +34,34 @@ Focused review at `19de2b8ec85cdf03a3ced107790c9358b6532b57` closed all four arc
 findings and requested one terminal-boundary wording correction: fallible local disposal
 retains live authority/capacity without rewriting committed evidence; cold readers use
 durable state/archive consistency, not knowledge of the former owner's acknowledgement.
-That correction is prepared; final focused verdict and GitHub restoration pending.
-Zero tests or native probes;
-unchanged accepted run-record90/POOL127 and unrelated cohorts are not repeated.
-Next action: publish corrections, resolve focused review, verify source hashes and
-fresh GitHub restoration, then return the concrete R1 handoff to parent.
+Independent actual **gpt-6.1-sol/xhigh DESIGN PASS** at
+`e90d5e4dbae51f6d9ba4601bdba3a060f29720dc`, no unresolved findings. The source audit
+confirms28 inspected runtime/test/catalog inputs byte-identical to accepted B, and the
+entire candidate delta is five Spec Kit documents. Zero builds, C# tests or native
+probes; unchanged accepted run-record90/POOL127 and unrelated cohorts are not repeated.
+Read-only Spec Kit consistency maps this design and proposed R1–R3 to US4/FR-012/014/015;
+the broader SC-001–005 runtime criteria remain open, and no game/GM contract changes.
+
+[Design evidence](recovery/worker-restart-design.json) includes exact source hashes,
+review resolutions and GitHub-only candidate restoration:7,043 tracked files byte
+compared with both clean checkouts and independent GitHub blobs, tree
+`ace5b58deb3fdcb9e7f256ebed0c9e4ba512f864`, fsck/connectivity and remote SHA matched.
+Commands: `git diff --check <accepted-B> HEAD`, per-input Git blob/SHA256 comparison,
+`git ls-remote origin refs/heads/codex/1553-load-filesystem`, independent bare-fetch
+byte readback, and fresh `git clone --single-branch --branch codex/1553-load-filesystem`
+from the GitHub HTTPS repository; restoration verifies every tracked blob plus clean
+status, ancestry and `git fsck --connectivity-only --no-dangling`. This proves source
+restoration, not execution. The final metadata carrier is separately pushed/read back
+and freshly restored at handoff; it does not change the reviewed design contract.
+
+**First implementable slice:** R1 only — strict bounded worker record/codec, real
+disk ledger, retained non-inherited locks, closed typed transitions, original live
+never-Start abort archive and finite cold/storage/crash tests. No pool wiring or worker
+launch. Parent authorization is still required; no new product decision blocks R1.
+Before R2, parent chooses root-wide refusal (recommended first bound) versus selective
+continuation after valid unresolved work. R2 connects the whole synthetic lifecycle
+atomically; R3 expands qualification after positive cleanup. Final next action is
+metadata publication/readback/restoration and handoff, with no implementation started.
 Do not start implementation from this entry or from historical next instructions below.
 
 ## POOL B — authorized refinement from accepted HOST A, 2026-10-05
