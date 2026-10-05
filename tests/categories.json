@@ -2,6 +2,35 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "worker-pool-regression-managed-policy",
+      "responsibility": "#1553 B6 platform-independent Windows selection/native drain bypass/default diagnostic drain and original retained-Job policy. Safe for default Windows CI; no native runtime qualification.",
+      "excludes": "Only explicitly affected contracts; no full HOST/IPC/receipt sweep, real GM, public Linux Release or Windows native qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.WindowsAuto_PreservesJobCapabilityWithoutNativePreflight"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "worker-pool-regression-host",
       "responsibility": "#1553 B6 Original actual HOST lifecycle/output/authority and neutral Release guards affected by common owner changes.",
       "excludes": "Only explicitly affected contracts; no full HOST/IPC/receipt sweep, real GM, public Linux Release or Windows native qualification.",

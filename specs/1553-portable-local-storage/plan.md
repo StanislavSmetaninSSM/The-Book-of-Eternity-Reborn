@@ -560,6 +560,16 @@ changes; no new example payload or prompt field is appropriate for this client-o
 slice. Existing apply/generation gates and worked repair payload remain unchanged.
 These checks are not yet built/run. Final catalog and qualification/review/restore remain.
 
+B6 CI routing correction before execution: existing default dotnet-ci runs Windows,
+so tests/selection.json now declares only platform-independent authority13+consumer4+
+managed policy7+docs3 (expected27). Full task Linux selection is preserved explicitly
+at tests/selections/1553-worker-pool-linux.json. No workflow/runner/network/install
+change; Linux execution here continues with the exact reviewed36regression selection,
+not the complete historical B file. No repeated passing17pure cases just to exercise
+routing. Final catalog discovery validates both selectors/membership; Windows native
+runtime remains unqualified. B5 at95c12101 independently reviewed PASS by actual
+Sol6.1/xhigh:69inputs/66artifacts/23gzip/twoTRX9PASS and nine guardians.
+
 B5 observation seam design consultation, actual Sol6.1/xhigh: an internal optional
 capture of the genuinely launched owner is allowed only after pool binding (or with
 OwnedLaunchException preserving that owner). It cannot replace owner/identity or
