@@ -81,6 +81,13 @@ retains the original owner/evidence/workspace/slot/reservation, may have lost au
 and cannot become certain merely because cleanup later finishes. No cleanup-confirmed
 receipt or automatic result acceptance follows uncertainty. Valid-stop filesystem/
 receipt retries preserve idempotent phase order and exactly-once capacity release.
+An internal success permit binds exact reserved task bytes, actual correlated
+completion/outcome and accepted publication/proposal bytes; copied public records
+cannot borrow cleanup evidence for a substituted body or failed execution. Preserve
+Windows' diagnostic output grace before Job stop and its existing pending cleanup
+retry only while the same original assigned Job remains retained. This exception
+does not cover lost/disposed Job authority, unattached PID cleanup, native observation
+failure/timeout or any explicit Uncertain record.
 Only independent finite guardians retire failed synthetic fixtures; their cleanup
 cannot repair production authority. Windows Job meaning stays intact, runtime here
 unqualified. B handoff precedes a separately authorized durable restart/fencing plan.

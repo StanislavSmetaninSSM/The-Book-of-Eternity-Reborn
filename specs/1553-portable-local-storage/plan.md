@@ -75,18 +75,30 @@ identity/scope would leave cleanup/result paths able to discard the declaration.
    2500ms stop deadline; output observation failure latches uncertainty. Preserve A's
    stop/disposal callers by explicitly settling outputs before Dispose where needed.
 4. Add `GmWorkerExecutionAuthority` in its own file. It freezes the original owner's
-   identity and reserved WorkerId/TaskId/SessionGeneration, validates every stop record
+   identity and exact reserved task bytes/digest, including WorkerId/TaskId/
+   SessionGeneration, validates every stop record
    against them and known backend/scope/state, and permanently latches any Uncertain,
    malformed/stale/mismatched evidence or output-observation failure. Positive requires
    StoppedWithinScope, CleanupComplete=true, AuthorityRetained=false and matching
    nonempty RunId/backend/guarantee. Root exit code is not worker completion.
    No-launch cleanup is an explicit internal no-launch disposition, never a native
    success permit. Cleanup retries after valid stop retain cached validated evidence.
+   Preserve the existing narrow Windows retry contract: a stop-observation exception
+   while the same original assigned Job is still retained means pending cleanup with
+   no success permit, and only that exact Job can be retried. Lost/disposed Job
+   authority and unattached PID cleanup cannot claim this exception. Native observation
+   errors/timeouts and every explicit Uncertain record are permanently latched.
 5. Extend WorkerBridgeStatus/GmWorkerTaskRunResult with execution identity and typed
    stop evidence plus output-settled state; diagnostic types are public, authority
    assignment remains internal. `HasValidatedExecutionFor(WorkerTaskPacket task)`
    checks the actual frozen binding, settled outputs, non-uncertain matching evidence,
-   current result state/no timeout/no replacement/worker exit0 and bound task. Missing
+   current result state/no timeout/no replacement/worker exit0 and bound task. An
+   internal success permit is created only after actual correlated Completed exit0,
+   validated stop/output settlement and successful PublishBundleAsync. It freezes
+   accepted proposal identity/bytes digest and completion/publication outcome; both
+   requested task and BoundTask must match the original reserved bytes digest. Public
+   diagnostics and record with-copies cannot mint success or substitute a same-ID
+   task/proposal body; failed-but-stopped cleanup evidence is never a permit. Missing
    evidence on a legacy Stopped/exit0/Proposal record fails closed. Consumers use the
    shared check, not a new duplicated bool. This is internal execution evidence,
    not a durable restart fence or permission to apply game state.
@@ -96,14 +108,17 @@ identity/scope would leave cleanup/result paths able to discard the declaration.
 `RunTaskAsync` keeps existing validation/reservation/workspace and audit gates. It
 uses the shared owned launcher for both platforms; acquire original owner on success
 or partial exception before invoking any downstream operation. Start completion and
-owned drains once. After correlated Completed, stop the same owner immediately;
+owned drains once. After native correlated Completed, stop the same owner immediately;
 OutputDrained is optional diagnostic progress, not an import prerequisite or proof.
 Validate typed stop, settle actual owned outputs within the bound, recheck cancellation/
 timeout and authority, then run existing detached proposal validation and generation/
 lease/exact-task-byte PublishBundleAsync. No proposal read/import is admitted earlier.
 
-Change completion arbitration so correlated completion can proceed to stop without
-waiting for output holders; cancellation/timeout still outrank buffered completion.
+Native completion arbitration proceeds to stop without waiting for output holders;
+cancellation/timeout still outrank buffered completion. Preserve Windows' existing
+Completed → bounded diagnostic OutputDrained/grace → original Job stop order: its
+host can still forward buffered worker output after Completed. This diagnostic phase
+does not prove EOF; Windows also requires actual post-stop output settlement.
 Add identity-token status overloads while retaining actual original-Process callers.
 Host exit before correlated completion remains failure; completion never implies stop.
 
@@ -115,6 +130,9 @@ reaper pass, even after a later positive-shaped cleanup record or guardian clean
 Do not call native legacy StopUnattachedProcessTreeAsync, reacquire PID, publish a
 cleanup-confirmed receipt, delete workspace or release either capacity while uncertain.
 
+Use one retained cleanup state object for ordinary cleanup and subsequent quarantine
+transfer so phase flags are not reconstructed after a failure; only quarantined
+cleanup requires the stable cleanup-confirmed event/fallback receipt.
 For an already validated non-uncertain stop, subsequent owner-disposal/filesystem/
 terminal-audit/receipt failure transfers the remaining state into quarantine rather
 than losing workspace/slot. Retain phase flags so physical stop/disposal, workspace
@@ -179,6 +197,10 @@ Uncertain. No durable reconstruction of a dead owner is invented.
   validated-stop cleanup hook/audit/fallback receipt failure and lost acknowledgement;
   repeated/concurrent quarantine passes never duplicate Release/import/receipt or
   dispose capacity twice. Window Job semantics keep native runtime unqualified here.
+- Public record with-copies cannot substitute same-ID task bodies, mutable nested
+  task data, proposals or failed outcomes for an original accepted publication. Verify
+  the actual consumer gates and narrow Windows output ordering/pending-Job retry;
+  do not claim Windows native execution from managed synthetic/source checks.
 
 New coherent category owners will separate pool happy/descendants, cancellation/
 terminal boundaries, typed uncertainty/quarantine and actual success consumers.
@@ -197,6 +219,24 @@ uncertainty. This adds no GM-authored task/proposal/gameplay surface; prompts/ex
 retain their current authoring contract, with a no-change rationale recorded at handoff.
 General Linux rollout, systemd implementation/qualification, native Windows, main PTY,
 live provider/CLI/GM and real saves remain out of scope. No public guard is removed.
+
+### B1 execution record
+
+Read-only Spec Kit consistency pass at `0ffb1c45`: B has coverage in spec, this plan,
+T041-FALLBACK-POOL and US4/FR-012/014/015; required artifacts exist, no uncovered B
+requirement or constitution conflict. Existing optional analyze commit hooks are
+covered by ordinary explicit checkpoints; no extension installation or new branch.
+Independent actual Sol6.1/xhigh design review identified three material corrections:
+exact bytes/completion/publication permit binding, preserved Windows diagnostic
+output order, and original retained Job pending-vs-Uncertain semantics. All three
+are incorporated above; final published-delta closure is pending. No B runtime or
+test changes/builds/executions yet. Verified environment again: SDK10.0.401,
+runtime8.0.31, pwsh7.5.4, GCC14.2.0-19, glibc2.41, readelf2.44, Linux6.18.44x64.
+Next: reviewer closure then one independently guarded actual-pool happy-path causal
+RED on the still-closed synthetic admission scaffold. Parent's explicit sole-writer,
+category-only test and ordinary non-force publication authorization overrides skill
+defaults for implementation delegation, full-suite runs and renewed push approval.
+Use this existing plan as the durable execution ledger; do not duplicate it.
 
 ## HOST implementation authorized — 2026-10-05
 
