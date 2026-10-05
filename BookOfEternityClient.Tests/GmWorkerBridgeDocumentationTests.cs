@@ -443,6 +443,13 @@ public sealed class GmWorkerBridgeDocumentationTests
             Assert.Contains("canonical write lease", source, StringComparison.OrdinalIgnoreCase);
         }
 
+        foreach (var source in new[] { guide, mainGmPrompt, afterlifeMatrix })
+        {
+            Assert.Contains("Linux portable quarantine audit receipt", source, StringComparison.Ordinal);
+            Assert.Contains("Same-content retry preserves the original receipt", source, StringComparison.Ordinal);
+            Assert.Contains("does not enable Linux worker execution or prove process-tree death", source, StringComparison.Ordinal);
+        }
+
         foreach (var source in new[] { guide, contract, repair })
         {
             var normalizedSource = string.Join(

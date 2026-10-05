@@ -244,6 +244,8 @@ writes a create-only retained receipt under
 `.worker_runtime/quarantine-audit/<eventId>.json`. Any uncertain audit write
 retains the same entry and slot for retry.
 
+Linux portable quarantine audit receipt publication validates ordinary paths and exact bytes, refuses links and special files before opening, and publishes create-only. Same-content retry preserves the original receipt; conflicting content retains uncertainty and the worker slot. A published receipt survives a lost acknowledgement for idempotent retry. This filesystem capability does not enable Linux worker execution or prove process-tree death; Windows retains opened-handle checks.
+
 Every validation-repair `contextFiles.sha256` and `changedFiles.beforeSha256`
 must be the exact 64-character SHA-256 digest of the same canonical file bytes,
 or the literal `missing` for an absent add target. Every non-delete

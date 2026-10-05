@@ -278,12 +278,6 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
         var receiptDirectoryPath = Path.Combine(
             _runtimeRoot,
             QuarantineAuditDirectoryName);
-        using var receiptDirectoryAuthority =
-            PhysicalFileAuthority.CreateStableChildDirectory(
-                runtimeRootAuthority,
-                receiptDirectoryPath,
-                "Worker quarantine audit directory",
-                requireNew: false);
         var receiptPath = Path.Combine(
             receiptDirectoryPath,
             auditEvent.EventId + ".json");
@@ -294,6 +288,19 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
                 auditEvent),
             CompactJsonOptions);
 
+        if (!OperatingSystem.IsWindows())
+        {
+            await PersistPortableQuarantineAuditReceiptAsync(
+                receiptDirectoryPath, receiptPath, receiptBytes);
+            return;
+        }
+
+        using var receiptDirectoryAuthority =
+            PhysicalFileAuthority.CreateStableChildDirectory(
+                runtimeRootAuthority,
+                receiptDirectoryPath,
+                "Worker quarantine audit directory",
+                requireNew: false);
         using (var existing = PhysicalFileAuthority.OpenReadFile(
                    receiptDirectoryAuthority,
                    receiptPath,
@@ -411,6 +418,94 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
                 await stream.DisposeAsync();
             }
         }
+    }
+
+    /// <summary>
+    /// Publishes existing receipt bytes in the trusted-local namespace without
+    /// replacing a destination or inventing Windows opened-file authority.
+    /// </summary>
+    private async Task PersistPortableQuarantineAuditReceiptAsync(
+        string directoryPath, string receiptPath, byte[] receiptBytes)
+    {
+        var scope = new TrustedLocalFileScope([directoryPath]);
+        scope.EnsureDirectory(directoryPath);
+        using var directory = PhysicalFileAuthority.OpenStableDirectory(
+            directoryPath, "Worker quarantine audit directory");
+        if (TryMatchPortableQuarantineAuditReceipt(scope, directory, receiptPath, receiptBytes))
+            return;
+
+        var expected = TrustedLocalFileImage.FromBytes(receiptBytes);
+        var tempPath = receiptPath + ".tmp." + Guid.NewGuid().ToString("N");
+        var created = false;
+        var published = false;
+        try
+        {
+            scope.ValidateFile(tempPath);
+            await using (var stream = PhysicalFileAuthority.CreateNewWritableFile(
+                directory, tempPath, "Worker quarantine audit temporary receipt",
+                asynchronous: true, requestDeleteAccess: false))
+            {
+                created = true;
+                if (_hooks?.AfterQuarantineAuditTempCreatedAsync != null)
+                    await _hooks.AfterQuarantineAuditTempCreatedAsync(tempPath);
+                scope.ValidateFile(tempPath, allowMissing: false);
+                await stream.WriteAsync(receiptBytes);
+                await stream.FlushAsync();
+                stream.Flush(flushToDisk: true);
+            }
+
+            if (_hooks?.AfterQuarantineAuditStagedAsync != null)
+                await _hooks.AfterQuarantineAuditStagedAsync(tempPath);
+            if (!expected.MatchesFile(scope, tempPath))
+                throw new InvalidDataException("Worker quarantine audit staging bytes changed.");
+
+            try
+            {
+                File.Move(scope.ValidateFile(tempPath, allowMissing: false),
+                    scope.ValidateFile(receiptPath), overwrite: false);
+                published = true;
+            }
+            catch (IOException)
+            {
+                if (!TryMatchPortableQuarantineAuditReceipt(scope, directory, receiptPath, receiptBytes))
+                    throw;
+                return;
+            }
+
+            if (_hooks?.AfterQuarantineAuditPublishedAsync != null)
+                await _hooks.AfterQuarantineAuditPublishedAsync(receiptPath);
+            if (!TryMatchPortableQuarantineAuditReceipt(scope, directory, receiptPath, receiptBytes))
+                throw new InvalidDataException("Worker quarantine audit receipt disappeared after publication.");
+        }
+        finally
+        {
+            if (created && !published)
+            {
+                try { scope.DeleteOwnedFile(tempPath); }
+                catch
+                {
+                    // Preserve the initiating failure and any unsafe residue.
+                    // A unique temporary is never terminal receipt evidence.
+                }
+            }
+        }
+    }
+
+    /// <summary>Checks an existing ordinary receipt against the supplied exact bytes.</summary>
+    private static bool TryMatchPortableQuarantineAuditReceipt(
+        TrustedLocalFileScope scope, PhysicalFileAuthority.StableDirectory directory,
+        string receiptPath, byte[] expectedBytes)
+    {
+        scope.ValidateFile(receiptPath);
+        using var stream = PhysicalFileAuthority.OpenReadFile(
+            directory, receiptPath, "Worker quarantine audit receipt", asynchronous: false);
+        if (stream == null)
+            return false;
+        if (stream.Length != expectedBytes.LongLength)
+            throw new InvalidDataException("Worker quarantine audit receipt identity is already bound to different evidence.");
+        EnsureQuarantineAuditReceiptMatches(stream, receiptPath, expectedBytes);
+        scope.ValidateFile(receiptPath, allowMissing: false);
+        return true;
     }
 
     internal async Task DeleteDetachedSessionRetainingRuntimeAuthorityAsync()
