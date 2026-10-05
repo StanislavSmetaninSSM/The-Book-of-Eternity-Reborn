@@ -34,6 +34,20 @@ No production source has changed yet; no new tests have run. Next: fresh selecte
 PlanOnly/build, then observe and retain causal RED before implementing the adapter.
 Compilation/preparation failures will not be labeled behavioral RED.
 
+First preparation at `a1ac8c215c21caf2f579c78b01d530cedb574332` passed:
+PlanOnly built both projects, planned 16 cases, executed zero, 151.1971597 seconds.
+The first native execution completed 15 integration rows, all failed before socket
+creation with `ArgumentOutOfRangeException`: the configured long TMPDIR produced
+109-character Unix-domain paths, beyond the runtime's 108-character bound. The
+runner stopped before the one documentation row. This is **preparation failure,
+not causal RED, not a permission denial**. [Build](recovery/evidence/worker-ipc-linux-20261005-red-plan/manifest.json),
+[failure](recovery/evidence/worker-ipc-temp-path-failure/manifest.json).
+Use process-local `TMPDIR=/workspace/ipc-tmp` (and matching TMP/TEMP), an ordinary
+owned directory under the same permissions, for the repeated selected run. No
+transport, endpoint names, production code, credentials or security setting changed.
+First GitHub-only clone restored all 5,158 tracked files cleanly at `a1ac8c21`;
+five changed files matched byte-for-byte. This was source restoration only.
+
 The owner explicitly authorizes ordinary non-force WIP pushes to the existing
 `codex/1553-load-filesystem` branch. Noninteractive push dry-run succeeded before
 first publication; this supersedes the older HOME-PC publication route for this
