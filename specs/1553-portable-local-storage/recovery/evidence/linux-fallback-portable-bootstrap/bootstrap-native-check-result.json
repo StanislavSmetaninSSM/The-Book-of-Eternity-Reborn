@@ -1,0 +1,19 @@
+{
+  "StartedUtc": "2026-10-05T16:20:45.425705+00:00",
+  "EndedUtc": "2026-10-05T16:21:03.889899+00:00",
+  "Source": "4b6a19a2ae86d101318c79d0941f6c6939d15a8c",
+  "Command": [
+    "pwsh",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "linux-fallback-bootstrap",
+    "-Parallelism",
+    "1",
+    "-NoBuild"
+  ],
+  "ExitCode": 0,
+  "DurationSeconds": 18.46423502900143,
+  "Log": "bootstrap-native-check.log"
+}

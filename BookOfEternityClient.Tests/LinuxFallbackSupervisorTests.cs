@@ -334,6 +334,13 @@ public sealed class LinuxFallbackBootstrapTests
     }
 }
 
+public sealed class LinuxFallbackProcDiscoveryTests
+{
+    [Fact]
+    public Task FirstAdoptedChild_MustRetireBeforeIndependentFixtureExpiry() =>
+        new LinuxFallbackSupervisorTests().NativeDescendants_RetireWithinDeclaredScope("tree");
+}
+
 public sealed class LinuxFallbackFixtureAdmissionTests
 {
     [Fact]

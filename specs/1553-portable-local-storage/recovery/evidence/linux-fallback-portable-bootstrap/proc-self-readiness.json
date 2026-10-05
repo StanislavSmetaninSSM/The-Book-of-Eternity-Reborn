@@ -1,0 +1,15 @@
+{
+  "getpid": 43653,
+  "selfLink": "43653",
+  "threadSelfLink": "43653/task/43653",
+  "selfNamespace": "pid:[4026532200]",
+  "selfStatReadable": true,
+  "numericDirectoryEntries": 182,
+  "selfStatPid": 43653,
+  "selfStatParent": 43633,
+  "selfStatStartTime": 2509486,
+  "NSpid": [
+    "43653"
+  ],
+  "NoOtherProcessMetadataRead": true
+}

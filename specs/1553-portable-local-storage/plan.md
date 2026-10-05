@@ -9,7 +9,7 @@
 Base `c70a8c02515f115ef220c9b806b10005f88e368e`; sole writer on same branch.
 Owner authorized replacing only unavailable proc-children discovery with reviewed
 read-only numeric proc/stat/PPID discovery. [Algorithm and independent fixture
-cleanup](linux-ownership-design.md#portable-own-child-discovery-revision--proposed-2026-10-05).
+cleanup](linux-ownership-design.md#portable-own-child-discovery-revision--design-pass-2026-10-05).
 Self metadata/PID coordinates/proc enumeration availability observed with no child
 probe and no unrelated metadata retained. Independent actualSol6.1/XHigh design reviewPASS at4882e3b3. Nativepreflight nowuses
 selfstat/status/procnamespacecoordinates; guardian cleanup no longer enumerates
@@ -19,6 +19,22 @@ root/guardian cleanup cases. Then causal descendant RED/GREEN and justified narr
 expansion. Historical19FAIL/prerequisite/zombie evidence below remains unchanged.
 Do not stop at negative-only admission; preserve approvedfallbackscope/systemdprimary,
 Windows/productionguards, no security/networkchanges or foreignsignals.
+
+### Stage1 native cleanup PASS, descendant RED pending
+
+Exactsource `4b6a19a2ae86d101318c79d0941f6c6939d15a8c`: fresh
+`-Category linux-fallback-bootstrap -Parallelism 1 -PlanOnly` PASS,2planned/0executed;
+`-NoBuild` **2/2PASS**, runner17.4203813s. [Raw source/build/status/guardian evidence](recovery/evidence/linux-fallback-portable-bootstrap/manifest.json).
+Real root terminatedSIGTERM15 and helper reaped it; conservativebaseline still
+returnsUncertain rather thanclaimdescendantstop. Separatecontrolledhelperloss137
+leftoneexpiringownedroot; independentguardian reapedSIGALRM14 child andhelper,
+actualECHILD, explicitexpectedemergency1, nodeadline/failure. This proves first
+fixturecleanupcapability; historical19zombies are notclaimedreaped.
+
+Nextselectedrun contains onlyone new descendant expectation using the same
+independentlyowned fixture. Nativehelper remains root-only unchanged; anticipated
+behavioralRED is missingadoptedchildretirement/scopedstop, notbuild/prereq failure.
+OnlyafteractualRED addprocstatworklist/pidfdretirement. Otheracceptedcohorts unrun.
 
 ## Priority handoff — disconnect audit and BLOCKED native slice
 

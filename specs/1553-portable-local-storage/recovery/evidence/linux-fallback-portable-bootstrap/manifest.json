@@ -1,0 +1,135 @@
+{
+  "SchemaVersion": 1,
+  "Artifacts": [
+    {
+      "Path": "bootstrap-native-check/dotnet-test.log.gz",
+      "Bytes": 164024,
+      "Sha256": "f096bd17a0e4341d51cdd730c395fe9d79b9b6e4937bbd79bb96d9fc789e737f"
+    },
+    {
+      "Path": "bootstrap-native-check/linux-fallback-bootstrap-unit-001.trx",
+      "Bytes": 4379,
+      "Sha256": "1b065f74d3e06a2888dbd535b6df426681bb18dd07161329c4738bf37e282c15"
+    },
+    {
+      "Path": "bootstrap-native-check/plan.json",
+      "Bytes": 1360,
+      "Sha256": "d05304657d3db7c568a6521a871af3afcc004e65b3954a5bd4df4cc6a5190d81"
+    },
+    {
+      "Path": "bootstrap-native-check/summary.json",
+      "Bytes": 1456,
+      "Sha256": "854d5a5e9842050336f527647169c335c9c2a5dd227ebac96421e6810184b2d6"
+    },
+    {
+      "Path": "bootstrap-native-check-result.json",
+      "Bytes": 444,
+      "Sha256": "190cc98c2cc22e4a5436370e730cf53efe46d8c4cca33f5a3bfa4668a56b0429"
+    },
+    {
+      "Path": "bootstrap-native-check.log.gz",
+      "Bytes": 786,
+      "Sha256": "443417331cd55493ecd49197cc16bfb86b85068a9d167352ce98d8a61107a08b"
+    },
+    {
+      "Path": "bootstrap-plan/Build-unit.log.gz",
+      "Bytes": 1035,
+      "Sha256": "58e280af9222b10ac42dbc4c78c91529f6da738be998a2e72764b228e6b79545"
+    },
+    {
+      "Path": "bootstrap-plan/dotnet-test.log.gz",
+      "Bytes": 164733,
+      "Sha256": "889266de44f8afc7c8f1bd8889832a7b0119e3487c6888556ecce9770290efa5"
+    },
+    {
+      "Path": "bootstrap-plan/plan.json",
+      "Bytes": 1362,
+      "Sha256": "20d9c4c0be395ac07976fb3ca44efa35fb75503eeed249426850c4185b0511ef"
+    },
+    {
+      "Path": "bootstrap-plan/summary.json",
+      "Bytes": 1458,
+      "Sha256": "2df13842932cff4d40438d4f1b6acb87b44b3e528a01c8b995d320eeadddba10"
+    },
+    {
+      "Path": "bootstrap-plan-result.json",
+      "Bytes": 438,
+      "Sha256": "49fcf2530288360720ae253f8b76e8202afa908545058bb8b246aeca1500078a"
+    },
+    {
+      "Path": "bootstrap-plan.log.gz",
+      "Bytes": 634,
+      "Sha256": "2da4a5c02fdbd3f190216c389f8d27438ade490334941d3706cdc6e7e193f218"
+    },
+    {
+      "Path": "design-review.json",
+      "Bytes": 442,
+      "Sha256": "9d21127af189d50c99e821dc9cf0078e80143d91236f85727ba27da6d4be8f7e"
+    },
+    {
+      "Path": "native/19f56d561bcc48bea35012a5b8188845/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "2081f6fca56fd3fb0248ac42bf5836c8ee26bc686ef2047dca0c6d2f3e701b2d"
+    },
+    {
+      "Path": "native/19f56d561bcc48bea35012a5b8188845/build.log.gz",
+      "Bytes": 120,
+      "Sha256": "397f3a641141f581e93c691ad2efe184366708e804c0cf608d4236b597930bfc"
+    },
+    {
+      "Path": "native/19f56d561bcc48bea35012a5b8188845/events.jsonl",
+      "Bytes": 90,
+      "Sha256": "44d82465f5ebd416e89746d467d7d7520834c08d88d6b6b3cc16b489aeb9e09c"
+    },
+    {
+      "Path": "native/19f56d561bcc48bea35012a5b8188845/guardian.json",
+      "Bytes": 178,
+      "Sha256": "ae92739aba7f98e9bdcda10a145b64280520af789b915d407c2ead9db3a48502"
+    },
+    {
+      "Path": "native/19f56d561bcc48bea35012a5b8188845/status.jsonl",
+      "Bytes": 514,
+      "Sha256": "7e4c9840600b6685562458ee4852a36554af024a3e3a2877af90bd6cd78ca4f6"
+    },
+    {
+      "Path": "native/19f56d561bcc48bea35012a5b8188845/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "native/cc61ae36e54f4d259f2630b81a86c685/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "2081f6fca56fd3fb0248ac42bf5836c8ee26bc686ef2047dca0c6d2f3e701b2d"
+    },
+    {
+      "Path": "native/cc61ae36e54f4d259f2630b81a86c685/build.log.gz",
+      "Bytes": 120,
+      "Sha256": "2d03815c15c0bae8029f9c4959276b8bf5ad047dfcf7f6141528945aab6defe9"
+    },
+    {
+      "Path": "native/cc61ae36e54f4d259f2630b81a86c685/events.jsonl",
+      "Bytes": 90,
+      "Sha256": "06ed907b2ceeee2efd49d6ee25cecdd1868f42ce25ed95eb7d0a1dcdf1a40745"
+    },
+    {
+      "Path": "native/cc61ae36e54f4d259f2630b81a86c685/guardian.json",
+      "Bytes": 176,
+      "Sha256": "c01802ef78de8d6ef4b3bda3c3047fbbb2df815cc3058b97c80be9c77e4056c1"
+    },
+    {
+      "Path": "native/cc61ae36e54f4d259f2630b81a86c685/status.jsonl",
+      "Bytes": 1071,
+      "Sha256": "234d19c4ab8a1b683f7091e6b69150c4b7f1ba9902b875c51901d5cabed6c359"
+    },
+    {
+      "Path": "native/cc61ae36e54f4d259f2630b81a86c685/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "proc-self-readiness.json",
+      "Bytes": 337,
+      "Sha256": "d124d228da6f0b41b1e795566d010692e29105d1f79f364bae8a40920a8aeeaa"
+    }
+  ]
+}

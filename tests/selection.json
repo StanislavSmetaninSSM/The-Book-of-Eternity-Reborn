@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "linux-fallback-bootstrap",
-      "reason": "Firsttwo actual root/independentguardian cleanup capabilities before focuseddescendantRED/GREEN. No old19 replay.",
+      "category": "linux-fallback-proc-discovery",
+      "reason": "Single actualadoptedchild causalRED/GREEN aftertwo nativecleanup capabilities passed; no old19matrix replay.",
       "contracts": [
-        "#1553 T041-FALLBACK-PROC stagedcleanup"
+        "#1553 T041-FALLBACK-PROC discovery/retirement"
       ]
     }
   ]
