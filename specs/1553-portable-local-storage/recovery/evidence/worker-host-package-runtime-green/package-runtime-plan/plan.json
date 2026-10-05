@@ -1,0 +1,55 @@
+{
+  "Categories": [
+    "worker-native-package-preflight",
+    "worker-native-package-publish"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "88e1c9c1edb495dac16d46ccadbd5ec7bef9a678",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 43.5538792,
+  "Descriptors": [
+    {
+      "Name": "worker-native-package-preflight-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-package-preflight",
+      "Categories": [
+        "worker-native-package-preflight"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePackageTests.RuntimePreflight_RejectsIncompatibleActualPackage",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePackageTests.RuntimePreflight_RejectsIncompatibleActualPackage",
+          "Cases": 8
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-package-publish-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-package-publish",
+      "Categories": [
+        "worker-native-package-publish"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.PublishedRelocatedPackage_StartsRealNeutralHostWithEmptyPath",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.PublishedRelocatedPackage_StartsRealNeutralHostWithEmptyPath",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

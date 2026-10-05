@@ -133,7 +133,19 @@ WIP package coverage adds8actual-artifact rejection cases (no native execution) 
 1real published/relocated neutral-host case. Publish uses the already freshly built
 client and explicit prebuilt assets, no restore/build; the relocated driver uses
 default AppContext lookup and empty PATH. Native compiler remains fixture preparation
-only. These9cases are unrun pending fresh unit preparation.
+only. At `88e1c9c1edb495dac16d46ccadbd5ec7bef9a678`, fresh unit preparation
+passed9planned/0executed,43.8163774s; **9/9PASS**,24.0619829s, complete runner
+cleanup with no skips/duplicates/timeouts. Actual relocated default-package neutral
+host became Ready and retired within scope with empty PATH and zero worker Release;
+guardian ECHILD/failures0/emergency0.
+[Evidence](recovery/evidence/worker-host-package-runtime-green/manifest.json).
+Sol followup confirms lifetime fixes and A architecture; generic HostExited/output
+base API can wait for B because actual native identity/drains are consumed internally.
+Remaining bootstrap tests will use real v2 helper under the same guardian: loss/wrong
+ACK while root is gated, plus actual pre-canceled preparation. Reviewer agrees these
+combine with existing actual adapter exec-failure and after-binding cancellation
+without production interception hooks. Rejected transferred descriptors must close
+before admission; admitted pidfds remain retained on later uncertainty.
 Independent Sol consult confirms original Process/tree/started-state one-way handoff
 from a sealed Windows adapter preserves current cleanup; no native-to-legacy route.
 Existing relevant lifecycle fixtures invoke powershell.exe and remain Windows-only
