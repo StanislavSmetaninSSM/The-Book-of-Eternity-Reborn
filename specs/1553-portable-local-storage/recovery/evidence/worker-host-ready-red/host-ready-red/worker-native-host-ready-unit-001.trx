@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="cadf0889-ff57-4b36-be8a-cb93862b356f" name="@c7669543e9c7 2026-10-05 19:57:28" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T19:57:28.1601805+00:00" queuing="2026-10-05T19:57:28.1601806+00:00" start="2026-10-05T19:57:24.7820025+00:00" finish="2026-10-05T19:57:28.1679382+00:00" />
+  <TestSettings name="default" id="758cffcc-5a21-4bed-a7ed-42b490de5d26">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-05_19_57_28" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="f5c0beb7-7767-4cc9-9873-658c3fda3df3" testId="f30f02e1-bbe8-d0db-70c3-ba338ba25262" testName="BookOfEternityClient.Tests.GmWorkerNativeHostTests.ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease" computerName="c7669543e9c7" duration="00:00:01.3106869" startTime="2026-10-05T19:57:28.0613498+00:00" endTime="2026-10-05T19:57:28.0613713+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f5c0beb7-7767-4cc9-9873-658c3fda3df3">
+      <Output>
+        <ErrorInfo>
+          <Message>Native owned-host launch is not implemented.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerNativeHostTests.ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease() in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerNativeHostTests.cs:line 38
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativeHostTests.ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f30f02e1-bbe8-d0db-70c3-ba338ba25262">
+      <Execution id="f5c0beb7-7767-4cc9-9873-658c3fda3df3" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativeHostTests" name="ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="f30f02e1-bbe8-d0db-70c3-ba338ba25262" executionId="f5c0beb7-7767-4cc9-9873-658c3fda3df3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" passed="0" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.23]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.36]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.38]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:02.77]       Native owned-host launch is not implemented.
+[xUnit.net 00:00:02.77]       Stack Trace:
+[xUnit.net 00:00:02.77]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerNativeHostTests.cs(38,0): at BookOfEternityClient.Tests.GmWorkerNativeHostTests.ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease()
+[xUnit.net 00:00:02.77]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.78]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T19:57:28.0598296+00:00">
+        <Text>[xUnit.net 00:00:02.77]     BookOfEternityClient.Tests.GmWorkerNativeHostTests.ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

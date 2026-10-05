@@ -57,7 +57,12 @@ admission. WIP actual-host scaffold now defines the shared preparation seam and
 throws an explicit unavailable native implementation. The new test runs a managed
 scenario driver beneath the qualified guardian; it must fail the Ready assertion
 causally with zero native helper/host or worker launch and complete cleanup.
-Next: fresh worker-native-host-ready build/RED before implementing the native path.
+At `74d978bd81634a349b537c2db97a8ab4f74b7133`, fresh build/discovery passed
+1planned/0executed,46.9246752s; execution **0PASS/1causalFAIL**,9.5754636s.
+The actual driver reached the unimplemented-launch rejection; Ready assertion failed
+with that exact reason. Guardian ECHILD, failures0/emergency0/driverexit0; zero worker
+Release. [Evidence](recovery/evidence/worker-host-ready-red/manifest.json).
+Next: implement the shared native path, then this exact single-case GREEN.
 
 ## Worker-host native integration design — 2026-10-05
 

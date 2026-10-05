@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "compiler": "/usr/bin/cc",
+  "compilerVersion": "cc (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+  "flags": [
+    "-std=c11",
+    "-O2",
+    "-g",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-D_FORTIFY_SOURCE=2",
+    "-fstack-protector-strong",
+    "-Wl,-z,relro,-z,now"
+  ],
+  "architecture": "X64",
+  "os": "Debian GNU/Linux 13 (trixie)",
+  "assets": [
+    {
+      "source": "native/linux/boe-lineage-supervisor.c",
+      "sourceSha256": "1f12338f013eb54070a198d0dd4a5998bbb5a7f426249442db4dfe5653b0217c",
+      "binary": "boe-lineage-supervisor",
+      "binarySha256": "3ca35d70c0ba5537be0b2bbc163850d0ccfff6431aec7b92ed324dd99beb0274"
+    },
+    {
+      "source": "tests/fixtures/LinuxHost/host-guardian.c",
+      "sourceSha256": "c84fc6eb14dd0495ca64b6bf7f8aa5e8298dbd4bf3f14ca2ef799f8b9cc386a4",
+      "binary": "host-guardian",
+      "binarySha256": "fdb9f01f89e6486d158f274043c3ec619a93c23939a1a681c068b8c2e9f8fd0e"
+    }
+  ]
+}
