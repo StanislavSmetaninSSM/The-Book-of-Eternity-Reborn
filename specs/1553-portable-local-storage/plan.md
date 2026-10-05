@@ -30,7 +30,12 @@ atomically, specify operation-aware pre-recovery fences and conditional quaranti
 audit, and distinguish PublicationCommitPending from RetirementCommitPending without
 revoking B's already acknowledged live publication permit. Initialization crash cuts
 include namespace/lock creation and ancestor directory synchronization.
-Focused re-review and final GitHub restoration pending. Zero tests or native probes;
+Focused review at `19de2b8ec85cdf03a3ced107790c9358b6532b57` closed all four architectural
+findings and requested one terminal-boundary wording correction: fallible local disposal
+retains live authority/capacity without rewriting committed evidence; cold readers use
+durable state/archive consistency, not knowledge of the former owner's acknowledgement.
+That correction is prepared; final focused verdict and GitHub restoration pending.
+Zero tests or native probes;
 unchanged accepted run-record90/POOL127 and unrelated cohorts are not repeated.
 Next action: publish corrections, resolve focused review, verify source hashes and
 fresh GitHub restoration, then return the concrete R1 handoff to parent.

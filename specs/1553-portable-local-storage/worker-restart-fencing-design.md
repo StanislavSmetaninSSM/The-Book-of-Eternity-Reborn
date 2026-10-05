@@ -144,12 +144,14 @@ Complete all fallible process/channel/workspace-deletion phases first, retaining
 workspace/runtime authority. Existing B requires cleanup-confirmed audit/fallback only
 if the execution entered quarantine; ordinary successful cleanup does not gain a new
 audit event. Freeze that requirement, stable event ID, original publication/cleanup facts
-and terminal bytes before the terminal commit. Retired is fully committed only after
-the exact archive and acknowledged removal of its active reservation; it precedes
-releasing retained runtime authority, slot or reservation. A candidate archive alone
-never frees capacity. Final authority release must be a non-failing handle/resource release after
-all fallible deletion/receipt/commit phases; any remaining fallible work prevents the
-Retired boundary.
+and terminal bytes before the terminal commit. Durable retirement requires the exact
+archive and committed removal of its active reservation. The live owner additionally
+requires acknowledgement before releasing retained runtime authority, slot or
+reservation. All work that can change physical cleanup, required audit or terminal
+evidence completes before durable retirement. Later local handle/bookkeeping disposal
+failures retain the original cleanup owner, coordinator lease and live slot/reservation
+until settled, without changing committed bytes, frozen audit requirements or the
+original publication permit. A candidate archive alone never frees capacity.
 
 A definite pre-commit failure may transfer ordinary cleanup to quarantine while it
 still owns runtime authority, complete the now-required original audit/fallback and
@@ -163,9 +165,12 @@ preserves the original live publication permit and B's CleanupDeferred result be
 it does not newly authorize or replay result acceptance. Freeze terminal bytes and the
 conditional audit requirement through lost ACK and any post-commit resource-disposal
 retry, without creating a new receipt requirement for that frozen commit. Cold
-nonterminal/pending reservations block even if a matching candidate archive exists. A fully
-committed terminal record is admission evidence only and never recreates a result
-permit. Metadata CommitPending after already-validated stop is distinct from absorbing
+nonterminal/pending reservations block even if a matching candidate archive exists.
+A cold reader checks exact durable state/archive consistency; it cannot know whether
+the former owner received an acknowledgement. Fully committed retirement with no
+active/pending reservation may admit a new task even after a lost live acknowledgement;
+it is admission evidence only and never recreates a result permit. Metadata
+CommitPending after already-validated stop is distinct from absorbing
 execution Uncertain; it cannot conceal a process/output uncertainty. Tests must prove
 this distinction and all lost-ACK cuts. Tombstones survive session
 replacement and never delete retained workspaces. Failed uncertainty persistence
@@ -330,8 +335,10 @@ matrix; do not introduce reconnect or new cold cleanup authority.
   exact commit/ack and capacity release. Preserve committed canonical bytes, frozen
   terminal bytes/conditional audit requirements and uncertain workspace. Publication
   commit ambiguity grants no success; retirement-only ambiguity preserves an already
-  acknowledged live publication permit with CleanupDeferred. Cold restart grants no
-  accepted result or capacity release; no duplicate import or tombstone mutation on retry.
+  acknowledged live publication permit with CleanupDeferred. Cold active/pending
+  inventory retains capacity despite an archive; consistent fully committed retirement
+  may admit a new task without recreating a result permit. No duplicate import or
+  tombstone mutation on retry.
 - [ ] Race generation replacement with queued Release and Store publication. Prove
   all unbound/recovery entrypoints block before mutation, and already-held leases
   recheck the same binding after awaits. Old epoch/coordinator/same-ID changed body
