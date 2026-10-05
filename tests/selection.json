@@ -38,6 +38,22 @@
       "contracts": [
         "#1553 T041-FALLBACK-POOL B3-P"
       ]
+    },
+    {
+      "category": "worker-native-pool-descendants",
+      "reason": "Expand actual pool lifetime qualification only after positive root cleanup: independent finite actors inherit output handles; helper must prove scoped stop before actual Store publication.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-detached-descendants",
+      "reason": "Expand actual pool lifetime qualification only after positive root cleanup: independent finite actors inherit output handles; helper must prove scoped stop before actual Store publication.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
     }
   ]
 }

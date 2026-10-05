@@ -10,6 +10,48 @@ public sealed class GmWorkerNativePoolTests
     public async Task ActualPool_SyntheticAnalysisPublishesAfterOwnedRetirement()
     {
         var result = await RunScenario("pool-happy");
+        AssertSuccessfulPublication(result);
+    }
+
+    [Fact]
+    public async Task ActualPool_OrdinaryDescendantsHoldingOutputsAreRetiredBeforePublication()
+    {
+        var result = await RunScenario("pool-descendant-tree");
+        AssertSuccessfulPublication(result);
+        AssertDescendantEvents(result, "root", "leaf", "prepared");
+    }
+
+    [Fact]
+    public async Task ActualPool_EarlyDescendantRootExitDoesNotReleaseItsRemainingChild()
+    {
+        var result = await RunScenario("pool-descendant-root-first");
+        AssertSuccessfulPublication(result);
+        AssertDescendantEvents(result, "root", "leaf");
+    }
+
+    [Theory]
+    [InlineData("doublefork", "detached")]
+    [InlineData("ignore", "leaf")]
+    [InlineData("spawn", "spawned")]
+    public async Task ActualPool_DetachedTermResistantAndStopSpawnedDescendantsAreRetired(string mode, string eventKind)
+    {
+        var result = await RunScenario("pool-descendant-" + mode);
+        AssertSuccessfulPublication(result);
+        AssertDescendantEvents(result, "root", "prepared", eventKind);
+    }
+
+    private static void AssertDescendantEvents(JsonElement result, params string[] expected)
+    {
+        var kinds = result.GetProperty("fixtureEvents").EnumerateArray()
+            .Select(entry => entry.GetProperty("kind").GetString()).ToHashSet();
+        foreach (var kind in expected) Assert.Contains(kind, kinds);
+        // Every finite C actor arms7s only after RunTaskAsync starts. Completion
+        // below6s excludes actor expiry as the successful stop mechanism.
+        Assert.InRange(result.GetProperty("elapsedMilliseconds").GetInt64(), 0, 5999);
+    }
+
+    private static void AssertSuccessfulPublication(JsonElement result)
+    {
         Assert.True(result.GetProperty("success").GetBoolean(), result.GetProperty("failure").ToString());
         Assert.Equal(1, result.GetProperty("releases").GetInt32());
         Assert.Equal(1, result.GetProperty("workerStarts").GetInt32());
@@ -42,6 +84,7 @@ public sealed class GmWorkerNativePoolTests
         Directory.CreateDirectory(output);
         var build = new ProcessStartInfo("pwsh") { UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true };
         foreach (var arg in new[] { "-NoProfile", "-File", Path.Combine(TestRepoPaths.RepoRoot, "scripts", "build-linux-supervisor.ps1"), "-OutputDirectory", output, "-IncludeHostGuardian" }) build.ArgumentList.Add(arg);
+        if (mode.StartsWith("pool-descendant-", StringComparison.Ordinal)) build.ArgumentList.Add("-IncludeFixture");
         using (var compiler = Process.Start(build)!)
         {
             var log = await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(compiler, TimeSpan.FromSeconds(40), Path.Combine(output, "build.log"));

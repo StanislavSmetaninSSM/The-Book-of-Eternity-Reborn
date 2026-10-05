@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Diagnostics;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -13,8 +14,10 @@ internal static class NativePoolScenarioDriver
 {
     internal static async Task<int> Run(string mode, string package, string output)
     {
-        if (mode == "pool-worker") return await Worker(output);
-        if (mode != "pool-happy") return 64;
+        if (mode == "pool-worker") return await Worker(package, output, null);
+        if (mode.StartsWith("pool-worker-", StringComparison.Ordinal)) return await Worker(package, output, mode[12..]);
+        var descendantMode = mode.StartsWith("pool-descendant-", StringComparison.Ordinal) ? mode[16..] : null;
+        if (mode != "pool-happy" && descendantMode is not ("tree" or "root-first" or "doublefork" or "ignore" or "spawn")) return 64;
         var fixtureRoot = Path.Combine(output, "state-copy");
         Directory.CreateDirectory(fixtureRoot);
         var fs = new FileSystemManager(fixtureRoot, NullLogger<FileSystemManager>.Instance);
@@ -30,7 +33,8 @@ internal static class NativePoolScenarioDriver
             LaunchCommand = string.Join(" ", new[]
             {
                 Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!, "dotnet"),
-                typeof(NativePoolScenarioDriver).Assembly.Location, "pool-worker", package, output
+                typeof(NativePoolScenarioDriver).Assembly.Location,
+                descendantMode == null ? "pool-worker" : "pool-worker-" + descendantMode, package, output
             }.Select(value => "\"" + value + "\"")),
             TimeoutSeconds = 15
         };
@@ -54,8 +58,10 @@ internal static class NativePoolScenarioDriver
         var pool = new GmWorkerBridgePool(fs, null, new GmWorkerAuditLog(fs),
             hooks, GmWorkerProcessTreeFactory.Instance, reaper, new GmWorkerNativePoolAdmission(package, fixtureRoot));
         GmWorkerTaskRunResult? result = null; string? failure = null;
+        var executionClock = Stopwatch.StartNew();
         try { result = await pool.RunTaskAsync(profile, task); }
         catch (Exception ex) { failure = ex.ToString(); }
+        executionClock.Stop();
         var stored = result?.Proposal == null ? null : await new GmWorkerProposalStore(fs).ReadProposalAsync(result.Proposal.ProposalId);
         await File.WriteAllTextAsync(Path.Combine(output, "scenario.json"), JsonSerializer.Serialize(new
         {
@@ -70,7 +76,10 @@ internal static class NativePoolScenarioDriver
             proposalBytesMatch = result?.Proposal != null && (await File.ReadAllBytesAsync(
                 fs.ResolvePath(GmWorkerProposalStore.GetProposalPath(result.Proposal.ProposalId))))
                 .AsSpan().SequenceEqual(Encoding.UTF8.GetBytes(GmWorkerJson.Serialize(result.Proposal))),
-            stagingCleaned = !Directory.EnumerateFileSystemEntries(Path.Combine(fs.RuntimeRootPath, "proposal-staging")).Any(),
+            stagingCleaned = !Directory.Exists(Path.Combine(fs.RuntimeRootPath, "proposal-staging")) ||
+                !Directory.EnumerateFileSystemEntries(Path.Combine(fs.RuntimeRootPath, "proposal-staging")).Any(),
+            elapsedMilliseconds = executionClock.ElapsedMilliseconds,
+            fixtureEvents = ReadFixtureEvents(output),
             permitChecks = CheckConsumerPermits(result, task),
             result
         }));
@@ -112,9 +121,29 @@ internal static class NativePoolScenarioDriver
         return checks;
     }
 
-    private static async Task<int> Worker(string output)
+    private static async Task<int> Worker(string package, string output, string? descendantMode)
     {
         await File.AppendAllTextAsync(Path.Combine(output, "worker-starts"), "started\n");
+        if (descendantMode != null)
+        {
+            if (descendantMode is not ("tree" or "root-first" or "doublefork" or "ignore" or "spawn")) return 64;
+            var start = new ProcessStartInfo(Path.Combine(package, "lineage-fixture")) { UseShellExecute = false };
+            foreach (var value in new[] { "--worker", output, descendantMode }) start.ArgumentList.Add(value);
+            // The synthetic actor has its own7s expiry and the independent outer
+            // guardian. Its inherited output handles deliberately outlive this worker.
+            using var actor = Process.Start(start)!;
+            var preparation = Stopwatch.StartNew();
+            while (!ReadFixtureEvents(output).Any(entry => entry.GetProperty("kind").GetString() ==
+                       (descendantMode == "root-first" ? "leaf" : "prepared")))
+            {
+                if (preparation.Elapsed > TimeSpan.FromSeconds(3))
+                    throw new TimeoutException("Native descendant fixture preparation did not reach its ready event.");
+                await Task.Delay(10);
+            }
+            if (descendantMode == "root-first") await actor.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(3));
+            // No stop/kill is issued by the worker. The actual pool owner must
+            // retire this lineage after observing the managed worker's Completed.
+        }
         var task = GmWorkerJson.Deserialize<WorkerTaskPacket>(await File.ReadAllTextAsync(
             Environment.GetEnvironmentVariable(GmWorkerBridgePool.TaskPathEnvironmentVariable)!))!;
         var proposal = new WorkerProposal
@@ -130,5 +159,18 @@ internal static class NativePoolScenarioDriver
         await Console.Out.WriteLineAsync("pool-worker-stdout");
         await Console.Error.WriteLineAsync("pool-worker-stderr");
         return 0;
+    }
+
+    private static JsonElement[] ReadFixtureEvents(string output)
+    {
+        var path = Path.Combine(output, "events.jsonl");
+        if (!File.Exists(path)) return [];
+        var result = new List<JsonElement>();
+        foreach (var line in File.ReadAllLines(path))
+        {
+            try { using var value = JsonDocument.Parse(line); result.Add(value.RootElement.Clone()); }
+            catch (JsonException) { /* Only a concurrently written final event may be incomplete. */ }
+        }
+        return result.ToArray();
     }
 }

@@ -390,6 +390,18 @@ not14. This closes the previously failed happy-path prerequisite, not all B or l
 Linux game qualification. Next: independent connected-source review and bounded
 ordinary/root-first descendants, then detached/TERM/spawn and terminal fault groups.
 
+B5 next bounded fixture extension from verified carrier `cb7cf1b7`: reuse unchanged
+finite C lineage-fixture --worker modes inside the real managed worker; actual worker
+writes its proposal and exits while native descendants retain inherited output pipes.
+No production runtime or C helper changes. Every actor keeps7s expiry; positive pool
+completion must take under6s to exclude expiry as its stop mechanism. Actual original
+helper and outer independent guardian retain all cleanup authority; worker sends no
+kill. Add ordinary child/root-first2case category and separate doublefork/setsid,
+ignored TERM/spawn-during-stop3case category. Build/discover both, execute first2 and
+inspect guardian ECHILD/emergency0 before executing remaining3. Exact actor events,
+source/provenance and pool cleanup/publication/permit evidence will be saved. Nothing
+executed yet in this extension; connected-runtime review is independently underway.
+
 ### B1 execution record
 
 Read-only Spec Kit consistency pass at `0ffb1c45`: B has coverage in spec, this plan,

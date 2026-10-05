@@ -2,6 +2,55 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "worker-native-pool-descendants",
+      "responsibility": "#1553 POOL B Actual native pool ordinary output-holding descendants and early descendant-root exit; complete scoped retirement before publication with no guardian emergency or actor expiry.",
+      "excludes": "Synthetic isolated state only; no public Linux Release, systemd, out-of-lineage ownership, live GM, main PTY, durable restart or Windows runtime qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_OrdinaryDescendantsHoldingOutputsAreRetiredBeforePublication",
+            "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_EarlyDescendantRootExitDoesNotReleaseItsRemainingChild"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "worker-native-pool-detached-descendants",
+      "responsibility": "#1553 POOL B Actual native pool doublefork/setsid, ignored TERM and child created during stop; scoped retirement before publication under independent finite guardian.",
+      "excludes": "Synthetic isolated state only; no public Linux Release, systemd, out-of-lineage ownership, live GM, main PTY, durable restart or Windows runtime qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_DetachedTermResistantAndStopSpawnedDescendantsAreRetired"
+          ]
+        }
+      ]
+    },
+    {
       "id": "worker-synthetic-bundle-cleanup",
       "responsibility": "#1553 fixture-bound private proposal staging cleanup after real bundle publication or rejection; exact owned-root admission, idempotent cleanup and retention of linked/invalid trees.",
       "excludes": "Only cleanup-affected Store paths and new cleanup boundaries; do not repeat unchanged syscall/path/lease tests or default Windows/Linux backend behavior.",
