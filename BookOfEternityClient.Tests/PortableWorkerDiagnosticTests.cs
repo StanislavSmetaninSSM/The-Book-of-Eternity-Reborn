@@ -23,7 +23,7 @@ public sealed class PortableWorkerDiagnosticTests : IDisposable
         await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
         _ = files.GetOrCreateSessionGeneration(lease);
 
-        var failure = await Assert.ThrowsAsync<AggregateException>(() => files.BeginWorkerApplyTransactionAsync(
+        var failure = await Assert.ThrowsAsync<AggregateException>(() => files.BeginOriginalWorkerApplyTransactionAsync(
             lease, [new CanonicalWorkerApplyChange(failBeforeImage ? "game_state/world/weather.json" : "", [1], [2])]));
 
         Assert.Equal(2, failure.InnerExceptions.Count);

@@ -14,6 +14,7 @@ public partial class FileSystemManager
     internal async Task RunLegacyStorageRecoveryAsync(CanonicalWriteLease lease, Func<Task> recovery)
     {
         EnsureCanonicalWriteLeaseActive(lease);
+        lease.EnsureNoPendingLocalDecision();
         var previous = lease.IsLegacyStorageRecovery;
         lease.IsLegacyStorageRecovery = true;
         try { await recovery(); }
@@ -57,6 +58,7 @@ public partial class FileSystemManager
 
     private void RecoverTrustedLocalStorage(CanonicalWriteLease lease)
     {
+        lease.EnsureNoPendingLocalDecision();
         if (!HasStorageEvidence(LocalPublicationRoot)) return;
         var before = ReadExistingSessionGeneration(lease);
         new TrustedLocalFilePublication(this, new TrustedLocalFileScope([BasePath]))
@@ -106,6 +108,7 @@ public partial class FileSystemManager
     internal Task<TrustedLocalPublicationOutcome> PublishLocalFilesAsync(CanonicalWriteLease lease,
         IReadOnlyList<CanonicalLocalFileChange> changes, CancellationToken cancellationToken = default)
     {
+        lease.EnsureNoPendingLocalDecision();
         VerifyCurrentSessionOperation(lease);
         if (changes.Count == 0 || changes.Any(change => !UsesTrustedLocalWriter(lease, change.RelativePath)))
             throw new InvalidOperationException("A local publication requires ordinary declared canonical members.");
@@ -119,6 +122,7 @@ public partial class FileSystemManager
         TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes, CancellationToken cancellationToken,
         Action? validatePreparedNamespace = null)
     {
+        lease.EnsureNoPendingLocalDecision();
         var scope = new TrustedLocalFileScope([BasePath]);
         var registrations = new List<InProcessMutationRegistration>();
         try
@@ -224,6 +228,7 @@ public partial class FileSystemManager
 
     private async Task WriteTrustedLocalFileAsync(CanonicalWriteLease lease, string relativePath, byte[]? desired)
     {
+        lease.EnsureNoPendingLocalDecision();
         var before = await ReadLocalFileBytesAsync(lease, relativePath);
         RequireCommittedLocalPublication(await PublishLocalFilesAsync(lease, [new(relativePath, before, desired)]));
     }

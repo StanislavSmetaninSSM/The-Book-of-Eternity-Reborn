@@ -1610,7 +1610,7 @@ public sealed class FileSystemManagerTests : IDisposable
         await using (var lease =
                      await _fs.AcquireCanonicalWriteLeaseAsync())
         {
-            transaction = await _fs.BeginWorkerApplyTransactionAsync(
+            transaction = await _fs.BeginOriginalWorkerApplyTransactionAsync(
                 lease,
                 [new CanonicalWorkerApplyChange(
                     trackedPath,
@@ -1648,7 +1648,7 @@ public sealed class FileSystemManagerTests : IDisposable
         CanonicalWorkerApplyTransaction transaction;
         await using (var lease = await fs.AcquireCanonicalWriteLeaseAsync())
         {
-            transaction = await fs.BeginWorkerApplyTransactionAsync(
+            transaction = await fs.BeginOriginalWorkerApplyTransactionAsync(
                 lease,
                 [new CanonicalWorkerApplyChange(path, baseline, applied)]);
             Assert.Equal(
@@ -1689,7 +1689,7 @@ public sealed class FileSystemManagerTests : IDisposable
         IReadOnlyList<string> rollbackErrors;
         await using (var lease = await fs.AcquireCanonicalWriteLeaseAsync())
         {
-            transaction = await fs.BeginWorkerApplyTransactionAsync(
+            transaction = await fs.BeginOriginalWorkerApplyTransactionAsync(
                 lease,
                 [new CanonicalWorkerApplyChange(path, baseline, applied)]);
             Assert.Equal(
@@ -2124,7 +2124,7 @@ public sealed class FileSystemManagerTests : IDisposable
                 async () =>
                 {
                     await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-                    await _fs.BeginWorkerApplyTransactionAsync(
+                    await _fs.BeginOriginalWorkerApplyTransactionAsync(
                         writeLease,
                         [
                             new CanonicalWorkerApplyChange(

@@ -54,6 +54,18 @@ generation/history plus absence of legacy evidence. Added wrong-lease, initiatin
 recovery conflict and actual separate-process publication/decision/rollback cuts.
 The tightened 34-case cohort adds commit conflicts, nested original admission and legacy-recovery refusal. An explicit original Begin alias delegates unchanged behavior as API scaffolding; portable runtime is otherwise unchanged.
 
+Tightened native RED at `50a0f0e3`: **0/34**, every case executed, no skips/duplicates,
+complete owned cleanup, 2:18.382 including fresh build. This includes the corrected
+baseline oracle and owned separate-process cases; old Windows-only before-image failure
+is preserved as the cause, not bypassed. The first portable candidate now reuses the
+unchanged B1 file journal with deferred commitment, exact lease/ID/member binding and
+nested mutation/recovery refusal before mutation or automatic recovery. The four
+original integration Begin callsites and the diagnostic explicitly retain the original
+protocol. Gate publishes one complete pending set and validates before commitment.
+Candidate is saved before build/tests; no portable GREEN or acceptance yet. Existing
+consumer/doc-guard reconciliation, shared B1 regression owners, inventory and independent
+final review remain outstanding.
+
 1. Diagnose the original Begin failure with a causal test: force the existing
    unsupported before-image backend and a distinct cleanup failure, require both
    exceptions in initiating-first order, and retain the real Linux worker/load

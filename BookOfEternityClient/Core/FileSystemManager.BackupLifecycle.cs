@@ -31,6 +31,7 @@ public partial class FileSystemManager
     internal void ResolveBackupPublicationRecovery(CanonicalWriteLease lease)
     {
         EnsureValidCanonicalWriteLease(lease);
+        lease.EnsureNoPendingLocalDecision();
         if (lease.MutationIntentRecorder != null || lease.IsLegacyStorageRecovery)
         {
             VerifyCurrentSessionOperation(lease);

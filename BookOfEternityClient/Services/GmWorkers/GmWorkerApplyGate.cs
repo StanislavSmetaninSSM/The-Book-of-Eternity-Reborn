@@ -288,33 +288,9 @@ public sealed partial class GmWorkerApplyGate
                         entry.AppliedBytes)).ToArray());
             }
 
-            foreach (var entry in rollback)
-            {
-                var mutationResult = await _fs.CompareExchangeFileBytesAsync(
-                    writeLease,
-                    entry.Path,
-                    entry.BaselineBytes,
-                    entry.AppliedBytes);
-                if (mutationResult == CanonicalFileMutationResult.Conflict)
-                {
-                    var rollbackErrors = await RollbackDurableTransactionAsync(writeLease, durableTransaction);
-                    var conflict = $"canonical file changed concurrently before worker apply: {entry.Path}.";
-                    var rejectionReasons = new[] { conflict }.Concat(rollbackErrors).ToArray();
-                    return BuildDecision(
-                        proposal.ProposalId,
-                        ApplyGateResult.Rejected,
-                        checkedPaths,
-                        scopePassed: false,
-                        violations: rejectionReasons,
-                        validationRequired: profile.Permissions.RequiresValidation,
-                        validationPassed: false,
-                        issueCount: 0,
-                        appliedFiles: [],
-                        rejectionReasons: rejectionReasons);
-                }
-
-                appliedFiles.Add(entry.Path);
-            }
+            // Begin publishes the complete member set under one pending B1 decision.
+            // No separately committed per-file CAS may run while validation owns it.
+            appliedFiles.AddRange(rollback.Select(entry => entry.Path));
 
             var continuation = task.SpiritualWoundContinuation is not null;
             var validationIssues = continuation
@@ -379,9 +355,13 @@ public sealed partial class GmWorkerApplyGate
                 appliedFiles: appliedFiles,
                 rejectionReasons: []);
         }
-        catch
+        catch (Exception failure)
         {
-            await RollbackDurableTransactionAsync(writeLease, durableTransaction);
+            if (failure is CoordinatedStatePublicationUncertainException) throw;
+            var rollbackErrors = await RollbackDurableTransactionAsync(writeLease, durableTransaction);
+            if (rollbackErrors.Count > 0)
+                throw new AggregateException(failure, durableTransaction?.LocalDecision?.Failure ??
+                    new InvalidDataException(string.Join(" | ", rollbackErrors)));
             throw;
         }
     }

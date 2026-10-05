@@ -79,7 +79,8 @@ internal sealed record CanonicalWorkerApplyChange(
 
 internal sealed record CanonicalWorkerApplyTransaction(
     string TransactionId,
-    string TransactionRoot);
+    string TransactionRoot,
+    TrustedLocalFilePublication.DeferredDecision? LocalDecision = null);
 
 internal enum CanonicalMutationOperation
 {
@@ -282,6 +283,12 @@ public partial class FileSystemManager
         internal FileSystemManager Owner { get; }
         internal CanonicalWritePurpose Purpose { get; }
         internal object? ExternalPublicationContext { get; set; }
+        internal object? PendingLocalDecision { get; set; }
+        internal void EnsureNoPendingLocalDecision()
+        {
+            if (PendingLocalDecision != null)
+                throw new InvalidOperationException("A worker decision is pending on this canonical lease; nested mutation or recovery is not permitted.");
+        }
         internal ICanonicalMutationIntentRecorder? MutationIntentRecorder { get; set; }
         internal bool IsLegacyStorageRecovery { get; set; }
         internal AmbientCanonicalLeaseRegistration? AmbientRegistration
@@ -302,6 +309,7 @@ public partial class FileSystemManager
             _stream = null;
             _parentAuthority = null;
             ExternalPublicationContext = null;
+            PendingLocalDecision = null;
             MutationIntentRecorder = null;
             Exception? failure = null;
             void RetainFailure(Exception next) =>
@@ -592,6 +600,7 @@ public partial class FileSystemManager
     internal void EnsureDirectoryStructure(CanonicalWriteLease writeLease)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        writeLease.EnsureNoPendingLocalDecision();
         EnsureDirectoryStructureCore();
     }
 
@@ -739,6 +748,7 @@ public partial class FileSystemManager
             string content)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        writeLease.EnsureNoPendingLocalDecision();
         var bytes = EncodeUtf8WithPreamble(content);
         await RecordCanonicalMutationIntentAsync(
             writeLease,
@@ -806,6 +816,7 @@ public partial class FileSystemManager
         byte[] content)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        writeLease.EnsureNoPendingLocalDecision();
         if (UsesTrustedLocalWriter(writeLease, relativePath))
         {
             await WriteTrustedLocalFileAsync(writeLease, relativePath, content);
@@ -854,6 +865,7 @@ public partial class FileSystemManager
         CancellationToken cancellationToken)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        writeLease.EnsureNoPendingLocalDecision();
         cancellationToken.ThrowIfCancellationRequested();
         var useLocalWriter = UsesTrustedLocalWriter(writeLease, relativePath);
         var beforeContent = useLocalWriter
@@ -936,6 +948,7 @@ public partial class FileSystemManager
         byte[]? desiredContent)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        writeLease.EnsureNoPendingLocalDecision();
         var useLocalWriter = UsesTrustedLocalWriter(writeLease, relativePath);
         var currentContent = useLocalWriter
             ? await ReadLocalFileBytesAsync(writeLease, relativePath)
@@ -997,6 +1010,7 @@ public partial class FileSystemManager
         bool allowMissingCurrent)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        writeLease.EnsureNoPendingLocalDecision();
         ArgumentNullException.ThrowIfNull(allowedCurrentSha256s);
         var allowedHashes =
             allowMissingCurrent && allowedCurrentSha256s.Count == 0
@@ -1018,6 +1032,7 @@ public partial class FileSystemManager
         string expectedCurrentSha256)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        writeLease.EnsureNoPendingLocalDecision();
         ArgumentNullException.ThrowIfNull(expectedCurrentIdentity);
         var expectedHash = NormalizeOwnedMutationHashes(
                 [expectedCurrentSha256])
@@ -1624,6 +1639,7 @@ public partial class FileSystemManager
         string relativePath)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        writeLease.EnsureNoPendingLocalDecision();
         EnsureSafeCanonicalRelativePath(relativePath);
         if (UsesTrustedLocalWriter(writeLease, relativePath))
         {
@@ -1640,6 +1656,7 @@ public partial class FileSystemManager
         string relativePath)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        writeLease.EnsureNoPendingLocalDecision();
         EnsureSafeCanonicalRelativePath(relativePath);
         var fullPath = ResolvePath(relativePath);
         InvokeBeforeCanonicalMutationBoundaryAsync(relativePath).GetAwaiter().GetResult();
@@ -1662,6 +1679,7 @@ public partial class FileSystemManager
         string destinationRelativePath)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        writeLease.EnsureNoPendingLocalDecision();
         ArgumentException.ThrowIfNullOrWhiteSpace(sourceDirectoryPath);
         EnsureSafeCanonicalRelativePath(destinationRelativePath);
         EnsureDescriptorBoundCreateOnlyPublicationSupported(
@@ -1944,6 +1962,7 @@ public partial class FileSystemManager
         string destinationRelativePath)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        writeLease.EnsureNoPendingLocalDecision();
         ArgumentNullException.ThrowIfNull(stagedFile);
         EnsureDescriptorBoundCreateOnlyPublicationSupported(
             "Runtime save publication");
@@ -1999,6 +2018,7 @@ public partial class FileSystemManager
         string destinationRelativePath)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        writeLease.EnsureNoPendingLocalDecision();
         ArgumentException.ThrowIfNullOrWhiteSpace(sourceFilePath);
         EnsureSafeCanonicalRelativePath(destinationRelativePath);
         EnsureDescriptorBoundCreateOnlyPublicationSupported(
@@ -2056,6 +2076,7 @@ public partial class FileSystemManager
         string relativeRoot)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        writeLease.EnsureNoPendingLocalDecision();
         EnsureSafeCanonicalRelativePath(relativeRoot);
         DeleteEmptyDirectoriesWithoutFollowingReparsePoints(ResolvePath(relativeRoot));
     }
@@ -2068,6 +2089,7 @@ public partial class FileSystemManager
     internal void DeleteFile(CanonicalWriteLease writeLease, string relativePath)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        writeLease.EnsureNoPendingLocalDecision();
         if (UsesTrustedLocalWriter(writeLease, relativePath))
         {
             WriteTrustedLocalFileAsync(writeLease, relativePath, null).GetAwaiter().GetResult();
@@ -2107,6 +2129,7 @@ public partial class FileSystemManager
         IReadOnlyCollection<string> allowedCurrentSha256s)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        writeLease.EnsureNoPendingLocalDecision();
         var allowedHashes = NormalizeOwnedMutationHashes(
             allowedCurrentSha256s);
         var fullPath = ResolvePath(relativePath);
@@ -3308,6 +3331,7 @@ public partial class FileSystemManager
         string expectedCurrentSha256)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        writeLease.EnsureNoPendingLocalDecision();
         ArgumentNullException.ThrowIfNull(expectedCurrentIdentity);
         var expectedHash = NormalizeOwnedMutationHashes(
                 [expectedCurrentSha256])
@@ -3382,6 +3406,7 @@ public partial class FileSystemManager
         string relativePath,
         byte[]? desiredContent)
     {
+        writeLease.EnsureNoPendingLocalDecision();
         if (writeLease.MutationIntentRecorder == null)
             return;
 
@@ -4130,6 +4155,7 @@ public partial class FileSystemManager
     internal void RecoverInterruptedLoadTransaction(CanonicalWriteLease writeLease)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        writeLease.EnsureNoPendingLocalDecision();
         if (!RuntimeFileExists(ActiveLoadTransactionJournalPath))
             return;
 
@@ -4594,16 +4620,12 @@ public partial class FileSystemManager
         string? PreviousGenerationId = null,
         string? ReplacementGenerationId = null);
 
-    internal Task<CanonicalWorkerApplyTransaction> BeginWorkerApplyTransactionAsync(
-        CanonicalWriteLease writeLease,
-        IReadOnlyList<CanonicalWorkerApplyChange> changes) =>
-        BeginOriginalWorkerApplyTransactionAsync(writeLease, changes);
-
     internal async Task<CanonicalWorkerApplyTransaction> BeginOriginalWorkerApplyTransactionAsync(
         CanonicalWriteLease writeLease,
         IReadOnlyList<CanonicalWorkerApplyChange> changes)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        writeLease.EnsureNoPendingLocalDecision();
         if (changes.Count == 0)
             throw new ArgumentException("Worker apply transaction requires at least one changed file.", nameof(changes));
         if (RuntimeFileExists(ActiveWorkerApplyTransactionJournalPath))
@@ -4673,6 +4695,15 @@ public partial class FileSystemManager
         CanonicalWorkerApplyTransaction transaction)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        if (transaction.LocalDecision is { } decision)
+        {
+            var outcome = decision.Commit(writeLease);
+            if (outcome.Disposition == TrustedLocalPublicationDisposition.Uncertain)
+                throw new CoordinatedStatePublicationUncertainException(outcome.Failure);
+            RequireCommittedLocalPublication(outcome);
+            return;
+        }
+        writeLease.EnsureNoPendingLocalDecision();
         EnsureActiveWorkerApplyTransaction(transaction.TransactionId);
         WriteWorkerApplyJournal(transaction.TransactionId, committed: true, rolledBack: false);
         try
@@ -4696,6 +4727,12 @@ public partial class FileSystemManager
         EnsureValidCanonicalWriteLease(writeLease);
         try
         {
+            if (transaction.LocalDecision is { } decision)
+            {
+                decision.Rollback(writeLease, _hooks?.LocalPublicationRecoveryObserver);
+                return [];
+            }
+            writeLease.EnsureNoPendingLocalDecision();
             EnsureActiveWorkerApplyTransaction(transaction.TransactionId);
             await RecoverInterruptedWorkerApplyTransactionAsync(writeLease);
             return [];

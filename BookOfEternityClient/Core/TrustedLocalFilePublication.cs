@@ -163,6 +163,7 @@ internal sealed partial class TrustedLocalFilePublication
         Func<PublicationAttempt, TrustedLocalPublicationResult> publish)
     {
         _files.EnsureCanonicalWriteLeaseActive(lease);
+        lease.EnsureNoPendingLocalDecision(); // Refuse before the catch/recovery wrapper can undo its caller.
         var attempt = new PublicationAttempt();
         try
         {
@@ -205,8 +206,11 @@ internal sealed partial class TrustedLocalFilePublication
 
     internal TrustedLocalPublicationResult Publish(FileSystemManager.CanonicalWriteLease lease,
         TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes,
-        Action<TrustedLocalPublicationPhase, int>? observer = null) =>
-        PublishCore(lease, generation, changes, observer, attempt: null);
+        Action<TrustedLocalPublicationPhase, int>? observer = null)
+    {
+        lease.EnsureNoPendingLocalDecision();
+        return PublishCore(lease, generation, changes, observer, attempt: null);
+    }
 
     private TrustedLocalPublicationResult PublishCore(FileSystemManager.CanonicalWriteLease lease,
         TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes,
@@ -234,6 +238,14 @@ internal sealed partial class TrustedLocalFilePublication
     }
 
     private TrustedLocalPublicationResult PublishMembers(FileSystemManager.CanonicalWriteLease lease,
+        TrustedLocalGeneration generation, Member[] members, int format,
+        Action<TrustedLocalPublicationPhase, int>? observer, PublicationAttempt? attempt)
+    {
+        var journal = ApplyMembers(lease, generation, members, format, observer, attempt);
+        return CommitMembers(lease, journal, observer, attempt);
+    }
+
+    private Journal ApplyMembers(FileSystemManager.CanonicalWriteLease lease,
         TrustedLocalGeneration generation, Member[] members, int format,
         Action<TrustedLocalPublicationPhase, int>? observer, PublicationAttempt? attempt)
     {
@@ -287,14 +299,20 @@ internal sealed partial class TrustedLocalFilePublication
             Observe(lease, observer, TrustedLocalPublicationPhase.MemberPublished, index);
         }
         Preflight(lease, journal, requireAfter: true);
+        return journal;
+    }
+
+    private TrustedLocalPublicationResult CommitMembers(FileSystemManager.CanonicalWriteLease lease,
+        Journal journal, Action<TrustedLocalPublicationPhase, int>? observer, PublicationAttempt? attempt)
+    {
+        Preflight(lease, journal, requireAfter: true);
         journal = journal with { Committed = true };
         journal = WriteJournal(CommitStage, journal);
         Observe(lease, observer, TrustedLocalPublicationPhase.CommitStaged);
         File.Move(_journalScope.ValidateFile(CommitStage, false), _journalScope.ValidateFile(Active, false), overwrite: true);
         journal = RebindJournal(journal, Active);
-        members = journal.Members;
-        var result = new TrustedLocalPublicationResult(journal.TransactionId, afterGeneration,
-            members.Select(member => new TrustedLocalPublishedMember(member.Path, member.After.Exists, member.After.Sha256)).ToArray());
+        var result = new TrustedLocalPublicationResult(journal.TransactionId, journal.GenerationAfter,
+            journal.Members.Select(member => new TrustedLocalPublishedMember(member.Path, member.After.Exists, member.After.Sha256)).ToArray());
         if (attempt != null) attempt.Committed = result;
         Observe(lease, observer, TrustedLocalPublicationPhase.Committed);
         Cleanup(lease, journal, observer);
@@ -302,6 +320,13 @@ internal sealed partial class TrustedLocalFilePublication
     }
 
     internal void Recover(FileSystemManager.CanonicalWriteLease lease,
+        Action<TrustedLocalPublicationPhase, int>? observer = null)
+    {
+        lease.EnsureNoPendingLocalDecision();
+        RecoverCore(lease, observer);
+    }
+
+    private void RecoverCore(FileSystemManager.CanonicalWriteLease lease,
         Action<TrustedLocalPublicationPhase, int>? observer = null)
     {
         _files.EnsureCanonicalWriteLeaseActive(lease);
