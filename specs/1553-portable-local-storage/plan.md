@@ -491,6 +491,19 @@ evidence/alternate owner enters any seam; defaultnull. Native DisposeOnce negati
 hook is present after proof guards/before resources and will be exercised in the
 next validated-stop cleanup retry block. These15new cases are not yet built/executed.
 
+B5 observation/boundary GREEN at `e044a1ae2afb2193126dba7dd615bfd0a38e8927`:
+fresh Plan15/0exec38.2844385s; uncertainty run6/6PASS33.6851589s, then original
+owner-loss+completion-boundary run9/9PASS47.7992479s. Complete selection/owned
+cleanup, no skip/duplicate/timeout. [Evidence](recovery/evidence/worker-pool-faults-green/manifest.json).
+Nine uncertain actual executions retain workspace1/quarantine1/capacity1 after late
+stop and concurrent reaper passes, no proposal/inbox/cleanup-confirmed audit/receipt.
+Six cancellation/timeout cases reach named boundary and clean positively with no
+publication; buffered Completed cases observe real exit0 then actual Canceled/TimedOut
+arbiter result. Fifteen guardians ECHILD/driverExit0/failures0/deadlinefalse; only the
+deliberate post-Completed helper loss requires emergency1/reaped2; others emergency0.
+Validated-stop cleanup/disposal/audit/receipt retry and affected regression acceptance
+are still pending. No wider production/platform qualification is inferred.
+
 B5 observation seam design consultation, actual Sol6.1/xhigh: an internal optional
 capture of the genuinely launched owner is allowed only after pool binding (or with
 OwnedLaunchException preserving that owner). It cannot replace owner/identity or
