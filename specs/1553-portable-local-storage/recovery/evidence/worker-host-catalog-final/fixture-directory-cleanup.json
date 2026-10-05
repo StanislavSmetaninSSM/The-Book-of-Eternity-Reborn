@@ -1,0 +1,57 @@
+{
+  "Scope": "Only this VM synthetic fixture bootstrap directories, matched exact run identity and independent guardian ECHILD after scenario driver exit. No quarantine/workspace/slot change; no alteration of Uncertain evidence.",
+  "Removed": [
+    {
+      "Directory": "/workspace/t1553/boe-native-59067b8aa2da4555b11758305a1bab64",
+      "Scenario": "bootstrap-output-native/ea8a671859e24f14907ecbb129bb9aa1/scenario.json",
+      "Guardian": "bootstrap-output-native/ea8a671859e24f14907ecbb129bb9aa1/guardian.json",
+      "GuardianSha256": "30aae622a3ed9d8fced1f9b0e8b6e92f6143dae40c5b50796eb9af767ef9269d",
+      "IndependentEchild": true,
+      "FixtureDriverExited": true,
+      "OriginalStopStateUnchanged": 1,
+      "RemovedOnlyInertPrivateBootstrap": true
+    },
+    {
+      "Directory": "/workspace/t1553/boe-native-74a8adf79a214400b7f86bd63103f0ee",
+      "Scenario": "host-boundaries-native/d3fb848dc66f48009dcbadf29240034f/scenario.json",
+      "Guardian": "host-boundaries-native/d3fb848dc66f48009dcbadf29240034f/guardian.json",
+      "GuardianSha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "IndependentEchild": true,
+      "FixtureDriverExited": true,
+      "OriginalStopStateUnchanged": 1,
+      "RemovedOnlyInertPrivateBootstrap": true
+    },
+    {
+      "Directory": "/workspace/t1553/boe-native-940de3075dc74dfe9d0b71c93f77e0d5",
+      "Scenario": "host-boundaries-native/6ce8a0b6973742018b3c04faecec8012/scenario.json",
+      "Guardian": "host-boundaries-native/6ce8a0b6973742018b3c04faecec8012/guardian.json",
+      "GuardianSha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "IndependentEchild": true,
+      "FixtureDriverExited": true,
+      "OriginalStopStateUnchanged": 1,
+      "RemovedOnlyInertPrivateBootstrap": true
+    },
+    {
+      "Directory": "/workspace/t1553/boe-native-d79e10dfba83429abb870f119ee5cb8d",
+      "Scenario": "host-boundaries-native/2cb466fc62b0444fa27d3af513e530ad/scenario.json",
+      "Guardian": "host-boundaries-native/2cb466fc62b0444fa27d3af513e530ad/guardian.json",
+      "GuardianSha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "IndependentEchild": true,
+      "FixtureDriverExited": true,
+      "OriginalStopStateUnchanged": 1,
+      "RemovedOnlyInertPrivateBootstrap": true
+    },
+    {
+      "Directory": "/workspace/t1553/boe-native-e1e1be7bf98745aeb3a725e86a5c1127",
+      "Scenario": "retention-green-native/58c3522cc15041e7b483c301ad7f042c/scenario.json",
+      "Guardian": "retention-green-native/58c3522cc15041e7b483c301ad7f042c/guardian.json",
+      "GuardianSha256": "30aae622a3ed9d8fced1f9b0e8b6e92f6143dae40c5b50796eb9af767ef9269d",
+      "IndependentEchild": true,
+      "FixtureDriverExited": true,
+      "OriginalStopStateUnchanged": 1,
+      "RemovedOnlyInertPrivateBootstrap": true
+    }
+  ],
+  "RemainingOwnedBootstrapDirectories": 0,
+  "HistoricalOtherVmZombies": "Not touched or claimed reaped"
+}

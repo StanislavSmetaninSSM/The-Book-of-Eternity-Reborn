@@ -146,6 +146,11 @@
       "Path": "BookOfEternityClient.TestSupport/NativeBootstrapScenario.cs",
       "Sha256": "820c7794759dbc3111049fe638289406636f058b4dd481e81d0df761dff655b0",
       "GitBlob": "87b72ef25ea7b3d45ca7cfd1eec2594d7e9bb3e5"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs",
+      "Sha256": "be280e552a1e1548b0d3eebaa96f0c64b436a40363fac1ab93022ccebe637333",
+      "GitBlob": "5949d22cbc2a536efa0aa7224a03bae22e199238"
     }
   ],
   "Artifacts": [

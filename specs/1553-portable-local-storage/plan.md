@@ -223,6 +223,25 @@ audit uses fresh unit/integration builds because TestSupport changed; it execute
 zero tests. Final independent review, full evidence index and fresh GitHub-only
 restoration remain pending. No B work starts.
 
+Final discovery at `85b96e79a55002cd22402f06b72381a62ebe80c7`: fresh unit/integration
+builds, **269categories/10784methods-files**,0execution/unmapped/stale,69.8934466s.
+An initial incompatible `-ValidateCatalog -Parallelism 1` invocation was rejected
+before workload; corrected command omits Parallelism. Both command preparation
+incidents are retained separately and are not behavioral failures.
+[Qualification](recovery/worker-host-qualification.json) verifies **17manifests/469artifacts/27TRX**,
+30current input hashes and7unchanged boundary blobs. There are **61distinct latest
+PASS cases** at their exact recorded source SHAs; history has93executions,77PASS/
+16FAIL (13causal behavioral,1stale source guard,2fixture observation errors).
+Build servers shut down. Five inert fixture bootstrap directories were removed
+only after exact run-ID matching and independent ECHILD/driver-exit evidence;
+0remain. No quarantine/slot or Uncertain evidence was changed; historical old-VM
+zombies were not touched. Final independent Sol6.1/xhigh review and fresh GitHub-only
+restoration are next; no active test/build session and no next-slice implementation.
+GM synchronization check: A is client-owned neutral preparation with worker Release
+closed; no GM-authored fields/gameplay/canonical schema changed, so Mortal World/
+afterlife prompts/examples/manifests need no update. ProcessTree, quarantine reaper,
+workspace/proposal consumers and main GM bridge match the design base byte-for-byte.
+
 ## Worker-host native integration design — 2026-10-05
 
 **Design only; not implementation authorization.** Source/remote base
