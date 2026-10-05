@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="942a2a99-2b12-458c-8f9f-c6b0524ae763" name="@3a7834d0640d 2026-10-05 16:25:33" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T16:25:33.3903017+00:00" queuing="2026-10-05T16:25:33.3903017+00:00" start="2026-10-05T16:25:22.8704022+00:00" finish="2026-10-05T16:25:33.3970070+00:00" />
+  <TestSettings name="default" id="b4807778-13c4-4fdb-a8f1-c840f1f2b586">
+    <Deployment runDeploymentRoot="_3a7834d0640d_2026-10-05_16_25_33" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="6ff91ed7-ff1a-48bc-9652-5a9b59e78d64" testId="065620c0-fe9d-cc87-48bd-204caeae595f" testName="BookOfEternityClient.Tests.LinuxFallbackProcDiscoveryTests.FirstAdoptedChild_MustRetireBeforeIndependentFixtureExpiry" computerName="3a7834d0640d" duration="00:00:07.9648804" startTime="2026-10-05T16:25:33.2962362+00:00" endTime="2026-10-05T16:25:33.2962587+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6ff91ed7-ff1a-48bc-9652-5a9b59e78d64">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   2</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.AssertScopedStop() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 259
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(String mode) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 37
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(String mode) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 40
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackProcDiscoveryTests.FirstAdoptedChild_MustRetireBeforeIndependentFixtureExpiry" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="065620c0-fe9d-cc87-48bd-204caeae595f">
+      <Execution id="6ff91ed7-ff1a-48bc-9652-5a9b59e78d64" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackProcDiscoveryTests" name="FirstAdoptedChild_MustRetireBeforeIndependentFixtureExpiry" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="065620c0-fe9d-cc87-48bd-204caeae595f" executionId="6ff91ed7-ff1a-48bc-9652-5a9b59e78d64" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" passed="0" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.23]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.80]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.81]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:09.84]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:09.84]       Expected: 0
+[xUnit.net 00:00:09.84]       Actual:   2
+[xUnit.net 00:00:09.84]       Stack Trace:
+[xUnit.net 00:00:09.84]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(259,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.AssertScopedStop()
+[xUnit.net 00:00:09.84]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(37,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(String mode)
+[xUnit.net 00:00:09.84]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(40,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(String mode)
+[xUnit.net 00:00:09.84]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:09.85]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T16:25:33.2912416+00:00">
+        <Text>[xUnit.net 00:00:09.84]     BookOfEternityClient.Tests.LinuxFallbackProcDiscoveryTests.FirstAdoptedChild_MustRetireBeforeIndependentFixtureExpiry [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

@@ -19,11 +19,11 @@
 #include <time.h>
 #include <unistd.h>
 
-/* T041-FALLBACK-NATIVE bootstrap baseline. One single-thread/exclusive reaper.
- * No production integration; descendant retirement is intentionally incomplete.
- * Never convert this baseline's root exit into scoped success. */
+/* T041-FALLBACK-PROC prototype. One single-thread/exclusive reaper.
+ * Proc is a discovery worklist; only sealed launch plus ECHILD proves retirement
+ * within the declared ordinary same-PID-namespace lineage. No production wiring. */
 static const char *run_id, *reason = "ready";
-static bool uncertain, stopping, launched, term_sent, kill_sent;
+static bool uncertain, stopping, launched;
 static bool status_usable = true, exec_pending;
 static bool clock_failed;
 static int root_fd = -1, exec_fd = -1, root_exit = -1, root_signal, last_errno;
@@ -36,6 +36,10 @@ static size_t exec_bytes;
 static DIR *proc_directory;
 static int namespace_fd = -1;
 static struct stat namespace_identity;
+#define CHILD_LIMIT 128
+struct child { pid_t pid; int fd; bool term_sent, kill_sent; };
+static struct child children[CHILD_LIMIT];
+static size_t child_count;
 
 /* Only PID/PPID are consumed; comm and all other stat fields are discarded. */
 static bool parse_stat(const char *text, pid_t expected, pid_t *parent) {
@@ -43,8 +47,9 @@ static bool parse_stat(const char *text, pid_t expected, pid_t *parent) {
     long pid = strtol(text, &end, 10);
     if (errno || pid != expected || end == text || end[0] != ' ' || end[1] != '(') return false;
     const char *delimiter = strrchr(end + 1, ')');
-    if (!delimiter || delimiter[1] != ' ' || !isalpha((unsigned char)delimiter[2]) || delimiter[3] != ' ') return false;
+    if (!delimiter || strlen(delimiter) < 5 || delimiter[1] != ' ' || !isalpha((unsigned char)delimiter[2]) || delimiter[3] != ' ') return false;
     const char *start = delimiter + 4;
+    if (!isdigit((unsigned char)*start)) return false;
     errno = 0; long ppid = strtol(start, &end, 10);
     if (errno || end == start || *end != ' ' || ppid < 0 || ppid > INT_MAX) return false;
     *parent = (pid_t)ppid; return true;
@@ -96,6 +101,62 @@ static void seal(const char *why) {
 static void lose(const char *why, int error) {
     if (!uncertain) { seal(why); uncertain = true; reason = why; last_errno = error; }
 }
+static size_t find_child(pid_t pid) {
+    for (size_t i = 0; i < child_count; i++) if (children[i].pid == pid) return i;
+    return child_count;
+}
+static bool child_namespace(pid_t pid) {
+    char path[64]; snprintf(path, sizeof path, "%d/ns/pid", pid);
+    int fd = openat(dirfd(proc_directory), path, O_RDONLY | O_CLOEXEC);
+    if (fd >= 0) {
+        struct stat identity; int result = fstat(fd, &identity), error = errno; close(fd);
+        if (result) { lose("child-namespace", error); return false; }
+        if (identity.st_dev == namespace_identity.st_dev && identity.st_ino == namespace_identity.st_ino) return true;
+        lose("scope-breach", 0); return false;
+    }
+    int error = errno;
+    if (error == ENOENT || error == ESRCH) {
+        /* A zombie may have lost ns metadata. Observe, but do not reap before
+         * pidfd binding. Exclusive reaping keeps this direct-child PID stable. */
+        siginfo_t info = {0};
+        if (waitid(P_PID, (id_t)pid, &info, WEXITED | WNOHANG | WNOWAIT | __WALL) == 0 && info.si_pid == pid) return true;
+    }
+    lose("child-namespace", error); return false;
+}
+static void discover_children(void) {
+    if (!launched) return;
+    /* Bound every directory slice, not just matches. Retain the cursor between
+     * turns; no snapshot, including an empty one, has terminal significance. */
+    for (int slice = 0; slice < CHILD_LIMIT; slice++) {
+        errno = 0; struct dirent *entry = readdir(proc_directory);
+        if (!entry) {
+            int error = errno;
+            if (error) lose("proc-directory", error);
+            rewinddir(proc_directory); return;
+        }
+        if (!isdigit((unsigned char)entry->d_name[0])) continue;
+        char *end; errno = 0; long value = strtol(entry->d_name, &end, 10);
+        if (errno || *end || value < 1 || value > INT_MAX) continue;
+        pid_t pid = (pid_t)value;
+        if (find_child(pid) < child_count) continue; /* Held unreaped incarnation. */
+        char path[64], text[4096]; pid_t parent;
+        snprintf(path, sizeof path, "%d/stat", pid);
+        if (read_proc(path, text, sizeof text)) {
+            int error = errno;
+            if (error != ENOENT && error != ESRCH && error != EACCES && error != EPERM) lose("proc-stat", error);
+            continue; /* Unclassified metadata never grants signal authority. */
+        }
+        if (!parse_stat(text, pid, &parent)) { lose("proc-stat-format", EPROTO); continue; }
+        if (parent != getpid()) continue;
+        if (child_count == CHILD_LIMIT) { lose("child-capacity", ENOSPC); continue; }
+        (void)child_namespace(pid); /* Failure latches uncertainty; still clean up. */
+        int fd = pidfd_open(pid, 0);
+        if (fd < 0) lose("child-pidfd", errno);
+        /* No wait occurred after PPID verification. Even a failed bind retains
+         * the unreaped incarnation so it is not retried/signalled numerically. */
+        children[child_count++] = (struct child){ .pid = pid, .fd = fd };
+    }
+}
 static void emit(const char *state, bool complete) {
     if (!status_usable) return;
     char line[1024];
@@ -136,6 +197,7 @@ static void launch(char **argv) {
     }
     launched = true; root_pid = p; close(gate[0]); close(error[1]);
     root_fd = pidfd_open(p, 0); /* p is still our unreaped direct child. */
+    children[child_count++] = (struct child){ .pid = p, .fd = root_fd };
     if (root_fd < 0) { lose("root-pidfd", errno); close(gate[1]); close(error[0]); return; }
     exec_fd = error[0]; exec_pending = true;
     if (fcntl(exec_fd, F_SETFL, O_NONBLOCK)) { lose("exec-channel", errno); close(gate[1]); return; }
@@ -156,21 +218,42 @@ static void observe_exec(void) {
     else if (!stopping) { reason = "started"; emit("Started", false); }
     exec_pending = false; close(exec_fd); exec_fd = -1;
 }
-static void signal_root(int sig) {
-    if (root_fd >= 0 && pidfd_send_signal(root_fd, sig, NULL, 0) && errno != ESRCH) lose("signal-failed", errno);
+static void signal_children(void) {
+    bool force = now_ms() - stop_at >= grace_ms || clock_failed;
+    for (size_t i = 0; i < child_count; i++) {
+        struct child *child = &children[i];
+        if (!child->term_sent) {
+            if (child->fd >= 0 && pidfd_send_signal(child->fd, SIGTERM, NULL, 0) && errno != ESRCH) lose("signal-failed", errno);
+            child->term_sent = true;
+        }
+        if (force && !child->kill_sent) {
+            if (child->fd >= 0 && pidfd_send_signal(child->fd, SIGKILL, NULL, 0) && errno != ESRCH) lose("signal-failed", errno);
+            child->kill_sent = true;
+        }
+    }
 }
 static bool reap(void) {
-    int status; pid_t p;
-    while ((p = waitpid(-1, &status, __WALL | WNOHANG)) > 0) {
+    int status; pid_t p = 0;
+    for (int slice = 0; slice < CHILD_LIMIT; slice++) {
+        p = waitpid(-1, &status, __WALL | WNOHANG);
+        if (p <= 0) break;
         if (!WIFEXITED(status) && !WIFSIGNALED(status)) continue;
+        size_t found = find_child(p);
+        if (found < child_count) {
+            if (children[found].fd >= 0) close(children[found].fd);
+            children[found] = children[--child_count];
+        }
         if (p == root_pid) {
             root_exit = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
             root_signal = WIFSIGNALED(status) ? WTERMSIG(status) : 0;
-            if (root_fd >= 0) { close(root_fd); root_fd = -1; }
+            root_pid = -1; root_fd = -1; /* Never alias a later reused PID. */
             seal("root-exited");
         }
     }
-    if (p < 0 && errno == ECHILD) return true;
+    if (p < 0 && errno == ECHILD) {
+        if (child_count) lose("child-inventory", ECHILD);
+        return true;
+    }
     if (p < 0 && errno != EINTR) lose("wait-failed", errno);
     return false;
 }
@@ -210,16 +293,15 @@ int main(int argc, char **argv) {
             else lose("invalid-command", 0);
         }
         observe_exec();
+        discover_children(); /* Always bind before the next sole-reaper turn. */
         if (stopping) {
             if (!stop_reported) { emit("Stopping", false); stop_reported = true; }
-            if (!term_sent) { signal_root(SIGTERM); term_sent = true; }
-            if (!kill_sent && (now_ms() - stop_at >= grace_ms || clock_failed)) { signal_root(SIGKILL); kill_sent = true; }
+            signal_children();
             if (now_ms() - stop_at >= deadline_ms) lose("stop-timeout", 0);
             if (uncertain && !uncertainty_reported) { emit("Uncertain", false); uncertainty_reported = true; }
         }
         bool empty = reap();
         if (stopping && empty && !exec_pending) {
-            if (launched) lose("descendant-retirement-unimplemented", 0);
             emit(uncertain ? "Uncertain" : "StoppedWithinScope", true);
             return uncertain ? 2 : 0;
         }

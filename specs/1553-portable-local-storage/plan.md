@@ -13,14 +13,14 @@ cleanup](linux-ownership-design.md#portable-own-child-discovery-revision--design
 Self metadata/PID coordinates/proc enumeration availability observed with no child
 probe and no unrelated metadata retained. Independent actualSol6.1/XHigh design reviewPASS at4882e3b3. Nativepreflight nowuses
 selfstat/status/procnamespacecoordinates; guardian cleanup no longer enumerates
-children. Firsttwo bootstrap tests and freshbuild are pending; root-onlybaseline
-still cannot claimdescendantstop. First native stage after review: only1–2 controlled
+children. Firsttwo bootstrap tests and freshbuild passed; the root-onlybaseline
+produced the expected single descendant causal RED. First native stage after review: only1–2 controlled
 root/guardian cleanup cases. Then causal descendant RED/GREEN and justified narrow
 expansion. Historical19FAIL/prerequisite/zombie evidence below remains unchanged.
 Do not stop at negative-only admission; preserve approvedfallbackscope/systemdprimary,
 Windows/productionguards, no security/networkchanges or foreignsignals.
 
-### Stage1 native cleanup PASS, descendant RED pending
+### Stage1 native cleanup PASS; single descendant causal RED observed
 
 Exactsource `4b6a19a2ae86d101318c79d0941f6c6939d15a8c`: fresh
 `-Category linux-fallback-bootstrap -Parallelism 1 -PlanOnly` PASS,2planned/0executed;
@@ -31,10 +31,23 @@ leftoneexpiringownedroot; independentguardian reapedSIGALRM14 child andhelper,
 actualECHILD, explicitexpectedemergency1, nodeadline/failure. This proves first
 fixturecleanupcapability; historical19zombies are notclaimedreaped.
 
-Nextselectedrun contains onlyone new descendant expectation using the same
-independentlyowned fixture. Nativehelper remains root-only unchanged; anticipated
-behavioralRED is missingadoptedchildretirement/scopedstop, notbuild/prereq failure.
-OnlyafteractualRED addprocstatworklist/pidfdretirement. Otheracceptedcohorts unrun.
+Exact RED source `d57b4574d0dd3695e9cef084addc6bc80934b6d1`:
+`-Category linux-fallback-proc-discovery -Parallelism 1 -PlanOnly` PASS,
+1 planned / 0 executed; `-NoBuild` **0 PASS / 1 FAIL**, 1 completed, runner16.0966152s.
+[Raw RED and independent cleanup evidence](recovery/evidence/linux-fallback-portable-descendant-red/manifest.json).
+Actual root/leaf launched; helper retired root but could not stop adopted leaf,
+reported stop-timeout and only completed after the fixture's independent expiry.
+Guardian emergency0, failurefalse, deadlinefalse, actual ECHILD. This is a causal
+missing-retirement failure, not prerequisite failure or a leaked live child.
+
+Minimal GREEN candidate now replaces the root-only latch with bounded numeric
+proc/stat PPID discovery, namespace observations only for proven children, held
+pidfd retirement and bounded exclusive reaping. Unclassified denied metadata is
+respected; owned failures latch Uncertain. Inventories/snapshots never prove stop;
+sealed launch and actual ECHILD are required. Root PID is retired on actual reap.
+The same single native descendant case is next; GREEN and final review are pending.
+Managed test sources are unchanged since the successful d57b4574 PlanOnly build;
+every native test rebuilds both C executables from current source with provenance.
 
 ## Priority handoff — disconnect audit and BLOCKED native slice
 

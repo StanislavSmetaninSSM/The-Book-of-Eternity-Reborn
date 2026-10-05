@@ -1,0 +1,19 @@
+{
+  "StartedUtc": "2026-10-05T16:25:16.596870+00:00",
+  "EndedUtc": "2026-10-05T16:25:33.796075+00:00",
+  "Source": "d57b4574d0dd3695e9cef084addc6bc80934b6d1",
+  "Command": [
+    "pwsh",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "linux-fallback-proc-discovery",
+    "-Parallelism",
+    "1",
+    "-NoBuild"
+  ],
+  "ExitCode": 1,
+  "DurationSeconds": 17.19924458099922,
+  "Log": "descendant-red.log"
+}
