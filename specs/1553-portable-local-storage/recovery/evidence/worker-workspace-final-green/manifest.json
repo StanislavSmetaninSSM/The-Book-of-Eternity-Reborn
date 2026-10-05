@@ -1,0 +1,55 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "f8c7eeae24cf702b87f581f442ea7c720264bc34",
+  "SourceResultDirectory": "20261005-114248-936-19549-235b510e4f94460c850f74dd268db7c6-categories",
+  "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category worker-detached-workspace -Parallelism 1 -NoBuild",
+  "Os": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Sdk": "10.0.401",
+  "Runtime": "8.0.31",
+  "PowerShell": "7.6.6",
+  "EffectiveUid": 1000,
+  "TMPDIR": "/workspace/ipc-tmp",
+  "DOTNET_PROCESSOR_COUNT": null,
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 2975561,
+      "OriginalSha256": "d3a82b6f775dba4eac737464f66668df72e0538e792b40c3a2ca6d0609db0f4e",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 330800,
+      "StoredSha256": "1f365295d6782bc1c4bd1289d165f01ded7964118f5430696a0b8e72b12d5c24"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 8461,
+      "OriginalSha256": "69670a7a5a8fd0a6cebe979754c974bbef3903b54a0d7122cef13821b0e162b9",
+      "StoredPath": "plan.json",
+      "StoredBytes": 8461,
+      "StoredSha256": "69670a7a5a8fd0a6cebe979754c974bbef3903b54a0d7122cef13821b0e162b9"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1461,
+      "OriginalSha256": "f6630efa2016df87b139bb3017a3a89b14f0713a6abb282c0475a06b0d191351",
+      "StoredPath": "summary.json",
+      "StoredBytes": 1461,
+      "StoredSha256": "f6630efa2016df87b139bb3017a3a89b14f0713a6abb282c0475a06b0d191351"
+    },
+    {
+      "Path": "worker-detached-workspace-integration-001.trx",
+      "OriginalBytes": 68452,
+      "OriginalSha256": "4ed3b9f102faba27c0fb36a2e5ab46d3de37e0f7aa8f45b30a9ec44c3f4711eb",
+      "StoredPath": "worker-detached-workspace-integration-001.trx",
+      "StoredBytes": 68452,
+      "StoredSha256": "4ed3b9f102faba27c0fb36a2e5ab46d3de37e0f7aa8f45b30a9ec44c3f4711eb"
+    },
+    {
+      "Path": "worker-detached-workspace-unit-002.trx",
+      "OriginalBytes": 6024,
+      "OriginalSha256": "6fe3a2997c0c1d7a00751c0dbfec45f39d1a3c08ebb9cb398946ec0a44cf80ca",
+      "StoredPath": "worker-detached-workspace-unit-002.trx",
+      "StoredBytes": 6024,
+      "StoredSha256": "6fe3a2997c0c1d7a00751c0dbfec45f39d1a3c08ebb9cb398946ec0a44cf80ca"
+    }
+  ]
+}

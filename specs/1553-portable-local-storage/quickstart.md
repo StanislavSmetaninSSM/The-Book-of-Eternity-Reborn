@@ -1,5 +1,34 @@
 # Reproduce the cross-platform development environment
 
+## Detached workspace byte component (T041-WORKSPACE)
+
+Exact Linux source `f8c7eeae24cf702b87f581f442ea7c720264bc34` passes47/47:
+44 isolated filesystem cases and three exact source/operational guards. This
+covers create, pinned byte staging, bounded proposal/contentRef reads, cancellation,
+partial-failure cleanup and disposal. It launches no host, worker, CLI or GM.
+[Qualification and raw command/log manifests](recovery/worker-workspace-qualification.json)
+separate both causal REDs, the intermediate GREEN, Windows source correction,
+final fresh builds/GREEN, discovery-only audit and restoration. Independent
+Sol6.1/xhigh source/runtime evidence PASS; complete final handoff review pending.
+
+```sh
+pwsh -NoProfile -File scripts/test-csharp.ps1 -Category worker-detached-workspace -Parallelism 1 -PlanOnly
+pwsh -NoProfile -File scripts/test-csharp.ps1 -Category worker-detached-workspace -Parallelism 1 -NoBuild
+pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild
+```
+
+Use the documented SDK10/runtime8/PowerShell7 environment below. NoBuild requires
+the fresh selected build. Audit performs discovery only. Linux-specific link/FIFO
+fixtures do not qualify Windows. Linux ordinary hardlinks are read/unlinked only;
+Windows retained single-link identity is unchanged. Neither platform receives a
+new hostile-owner protection guarantee. Existing load/storage code remains intact.
+
+`GmWorkerProcessTreeFactory.Attach` still rejects non-Windows before Release:
+complete descendant ownership and authenticated confirmed-stop qualification are
+the next lifecycle prerequisite. Quarantine receipt handle publication is also
+still Windows-only. Do not enable execution, import/apply, quarantine publication,
+PTY or live GM from this component result; no production gate is relaxed.
+
 ## Worker environment case semantics (T041-ENV)
 
 Source `43b60b954265e3bb404bf562cf7b9ff13dc4f953` passes 16/16 synthetic environment
