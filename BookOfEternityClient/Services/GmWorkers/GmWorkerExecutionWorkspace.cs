@@ -15,6 +15,8 @@ internal sealed class GmWorkerExecutionWorkspaceHooks
     internal Func<string, int, Task>? AfterWorkspaceReadChunkAsync { get; init; }
     internal Func<string, Task>? BeforeWorkspaceDeleteAsync { get; init; }
     internal Func<string, Task>? AfterQuarantineAuditTempCreatedAsync { get; init; }
+    internal Func<string, Task>? AfterQuarantineAuditStagedAsync { get; init; }
+    internal Func<string, Task>? AfterQuarantineAuditPublishedAsync { get; init; }
 }
 
 internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable

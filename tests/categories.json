@@ -11136,6 +11136,46 @@
   ]
 },
 {
+  "id": "worker-quarantine-audit-receipt",
+  "responsibility": "Portable create-only exact-byte terminal quarantine audit receipts: stable identity, idempotent/conflicting retry, publication faults/cancellation, trusted-local kinds/links and actual no-process owner/reaper authority/slot retention. Exact affected source and operational documentation guards.",
+  "excludes": "Live process/host/worker/GM or Release, native stop proof, canonical generation mutation/append execution, ownership/PTY, accepted load/save/workspace cohorts; native Windows qualification separate.",
+  "changeHints": [
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs",
+    "BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs"
+  ],
+  "related": [
+    {
+      "id": "worker-detached-workspace",
+      "when": "Select only if accepted staging/read/dispose behavior changes; not selected for isolated receipt branch."
+    },
+    {
+      "id": "gm-worker-process",
+      "when": "Future connected lifecycle/process qualification; not selected for synthetic already-confirmed owner."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.*"
+      ]
+    },
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics",
+        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions"
+      ]
+    }
+  ]
+},
+{
   "id": "worker-detached-workspace",
   "responsibility": "Process-free detached workspace creation, exact pinned byte staging, bounded artifact reads and cancellation/partial-failure disposal; fresh trusted-local path/kind/link admission and outside/sibling isolation, plus exact affected operational/source guards.",
   "excludes": "Worker or host launch/Release, quarantine receipt publication, canonical mutation/load, ownership/stop/process-tree/PTY and live GM. Linux-only native fixtures are explicitly conditional; Windows needs its own execution.",

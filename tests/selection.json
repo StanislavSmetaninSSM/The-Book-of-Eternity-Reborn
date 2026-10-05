@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "worker-detached-workspace",
-      "reason": "T041-WORKSPACE bounded create/write/read/dispose and exact affected source/operational guards; isolated temporary filesystem only, no process/IPC/environment/frame/runrecord reruns.",
+      "category": "worker-quarantine-audit-receipt",
+      "reason": "T041-QUARANTINE-RECEIPT direct receipt + actual synthetic owner/reaper retry and exact affected guards only; no live process, canonical mutation or prior cohort repeat.",
       "contracts": [
-        "#1553 T041-WORKSPACE US4 FR-012/015"
+        "#1553 T041-QUARANTINE-RECEIPT US4 FR-012/014/015"
       ]
     }
   ]
