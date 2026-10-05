@@ -1,0 +1,13 @@
+{
+  "StartedUtc": "2026-10-05T14:38:39.410258+00:00",
+  "EndedUtc": "2026-10-05T14:38:40.707126+00:00",
+  "Source": "dc29b37d0c3e3067acf9943a048360fbba66d0e3",
+  "Command": [
+    "dotnet",
+    "build-server",
+    "shutdown"
+  ],
+  "ExitCode": 0,
+  "DurationSeconds": 1.2968911440002557,
+  "Log": "final-build-server-shutdown.log"
+}

@@ -206,6 +206,31 @@ socket pathname and policy cause were not captured. Nine affected rows are
 unqualified environmental failures, not behavioral RED and not passed tests.
 No retry or alternative native transport was used in this work.
 
+### Bounded local input lifetime (T042-INPUT-LIFETIME)
+
+The controlled `gm-bridge-input-lifetime` category builds and invokes the actual
+bridge writer, keyboard pump, stop path and connected-request error boundary with
+synthetic streams/keys. It starts no terminal or provider. Use the current exact
+qualified source in [the input qualification](recovery/gm-input-lifetime-qualification.json)
+and `pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-bridge-input-lifetime -Parallelism 1`.
+A fresh selected build is required before `-NoBuild`.
+
+Every input origin keeps its local stream lifetime. Retirement rejects queued
+writes and waits for actual old writes/flushes, cancellation callbacks and the
+keyboard task before replacement admission. A five-second managed-drain timeout
+retains those tasks and keeps replacement blocked; this is not a native-process
+stop guarantee. A started write/flush fault or cancellation records
+`lastInputWriteError` with possible partial-delivery uncertainty and revokes that
+input lifetime. Do not interpret that diagnostic as a daemon delivery disposition,
+permission to replay or confirmed native stop. Host shutdown ends control service;
+shell cancellation receives an ordinary failure response while service continues.
+
+This slice supplies no durable run/generation/fence authority. Paste-observe-submit
+coordination, manual arbitration, readiness/unknown-screen/autotrust policy,
+provider lifecycle, Linux PTY and live-GM qualification remain pending. Existing
+readiness automation has not been redesigned; a visible idle screen does not clear
+the retained input-write diagnostic or re-enable the revoked writer.
+
 ### Persistent GM and live console checklist, after implementation gates
 
 A separate Linux PC and a working named pipe are not sufficient prerequisites for

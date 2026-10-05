@@ -1,0 +1,19 @@
+{
+  "StartedUtc": "2026-10-05T14:17:04.057348+00:00",
+  "EndedUtc": "2026-10-05T14:17:12.868976+00:00",
+  "Source": "33cd8ee6b8ab8fade26b16d2e562c071a4a9e5fe",
+  "Command": [
+    "pwsh",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "gm-bridge-input-lifetime",
+    "-Parallelism",
+    "1",
+    "-NoBuild"
+  ],
+  "ExitCode": 1,
+  "DurationSeconds": 8.811668087000726,
+  "Log": "causal-red.log"
+}

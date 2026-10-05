@@ -1,0 +1,62 @@
+{
+  "SchemaVersion": 1,
+  "Kind": "review-red",
+  "Artifacts": [
+    {
+      "Path": "Build-unit.log",
+      "StoredPath": "Build-unit.log.gz",
+      "StoredBytes": 1006,
+      "StoredSha256": "ba1927da453799e5cea79b40aca7e5c48bb2fbfaf59d465c8627efad1d59d5da",
+      "OriginalBytes": 10672,
+      "OriginalSha256": "57eb7f1ae38440cd510c5d1d0c2d4eeedbc5f9a7b32b8a00ba2ad50f330aaf26"
+    },
+    {
+      "Path": "command-result.json",
+      "StoredPath": "command-result.json",
+      "StoredBytes": 416,
+      "StoredSha256": "f22396291bf4771fd418a9cf026a4b5b6559424703350dd1504bd42ee1c1c636",
+      "OriginalBytes": 416,
+      "OriginalSha256": "f22396291bf4771fd418a9cf026a4b5b6559424703350dd1504bd42ee1c1c636"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 164760,
+      "StoredSha256": "6d94f45921538887ac4415c3b56bceec1496875ca581e0225aa35052efe6b87a",
+      "OriginalBytes": 1499818,
+      "OriginalSha256": "d15df6945cc40b959d0f734760f1a13fef81b55138481ecdf9f358a7ec4b6fa3"
+    },
+    {
+      "Path": "gm-bridge-input-lifetime-unit-001.trx",
+      "StoredPath": "gm-bridge-input-lifetime-unit-001.trx",
+      "StoredBytes": 58142,
+      "StoredSha256": "3a77ddf827baba51cf435c7ba3b49b4620066455cec5a29a6fc92f2da2d1691d",
+      "OriginalBytes": 58142,
+      "OriginalSha256": "3a77ddf827baba51cf435c7ba3b49b4620066455cec5a29a6fc92f2da2d1691d"
+    },
+    {
+      "Path": "plan.json",
+      "StoredPath": "plan.json",
+      "StoredBytes": 7905,
+      "StoredSha256": "c3752458eb201c90c6b0bcccdd1f6261d5c9b2fa04bdc020eb936f593f96eeb1",
+      "OriginalBytes": 7905,
+      "OriginalSha256": "c3752458eb201c90c6b0bcccdd1f6261d5c9b2fa04bdc020eb936f593f96eeb1"
+    },
+    {
+      "Path": "runner.log",
+      "StoredPath": "runner.log.gz",
+      "StoredBytes": 1768,
+      "StoredSha256": "457888509eb89b9fe0a2d421c8ed61cdfd0c12ac7c3ef82bd515c6872c429c68",
+      "OriginalBytes": 8750,
+      "OriginalSha256": "a92713663920fda7a2a1df7d1a5643f68bb9e8b6275692c835f5f29efc9413e2"
+    },
+    {
+      "Path": "summary.json",
+      "StoredPath": "summary.json",
+      "StoredBytes": 1457,
+      "StoredSha256": "6451eca11ce0e7cd433c2512afa554ce20d5708149765d0cf4252acfe7440fec",
+      "OriginalBytes": 1457,
+      "OriginalSha256": "6451eca11ce0e7cd433c2512afa554ce20d5708149765d0cf4252acfe7440fec"
+    }
+  ]
+}

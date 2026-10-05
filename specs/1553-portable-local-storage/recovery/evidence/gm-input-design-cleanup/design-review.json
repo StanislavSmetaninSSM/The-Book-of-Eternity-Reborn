@@ -1,0 +1,17 @@
+{
+  "Task": "T042-INPUT-LIFETIME",
+  "BaseCommit": "618a8a20cba345f367a5e15659019d3dec6fd2be",
+  "Agent": "/root/input_lifetime_design_review",
+  "Model": "gpt-6.1-sol",
+  "Effort": "xhigh",
+  "Verdict": "PASS",
+  "ObservedUtc": "2026-10-05T14:09:50.369261+00:00",
+  "Conditions": [
+    "Retain all actual queued/started IO and keyboard tasks through drain timeout; single lifecycle serialization; close admission before Dispose",
+    "Five-second managed drain observation only; incomplete retains context and blocks replacement; no native stop claim",
+    "Post-start write/flush/cancel records local uncertainty and revokes lifetime; stale status cannot overwrite B",
+    "Dispatch Completed only on success; keyboard fault is recorded; host shutdown cancellation distinguished",
+    "Recheck originating lifetime after key read; B publication awaits actual A keyboard completion"
+  ],
+  "Execution": "Read-only; no builds/tests/probes/edits"
+}

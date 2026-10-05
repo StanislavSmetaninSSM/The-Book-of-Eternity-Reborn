@@ -1,0 +1,18 @@
+{
+  "StartedUtc": "2026-10-05T14:23:49.295572+00:00",
+  "EndedUtc": "2026-10-05T14:24:23.839040+00:00",
+  "Source": "146f2968f666e12a0a0905e215b2fcf6ffe33e9c",
+  "Command": [
+    "pwsh",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "gm-bridge-input-lifetime",
+    "-Parallelism",
+    "1"
+  ],
+  "ExitCode": 1,
+  "DurationSeconds": 34.54350780599998,
+  "Log": "first-green.log"
+}

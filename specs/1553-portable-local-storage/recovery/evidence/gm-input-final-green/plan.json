@@ -1,0 +1,122 @@
+{
+  "Categories": [
+    "gm-bridge-input-lifetime"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "dc29b37d0c3e3067acf9943a048360fbba66d0e3",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 42.2916168,
+  "Descriptors": [
+    {
+      "Name": "gm-bridge-input-lifetime-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-bridge-input-lifetime",
+      "Categories": [
+        "gm-bridge-input-lifetime"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_AutoSkipsCodexUpdatePromptWithoutMarkingReady|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ClearsPendingCliInputBeforeDispatchPrompt|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ConfirmsPromptLeavesInputAfterAppendEnter|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_RefusesPromptDispatchWhileCodexCliIsWorking|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualAssemblyAndPortablePdbMatchProductionSource|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualDispatchCompletion_ReflectsActualOperationSuccess|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualDispose_ClosesAdmissionAndDoesNotDisposeGateUnderUnsettledWrite|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_NullPtyStopWaitsForLateKeyReadBeforeReplacementConsumesKeys|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_WriteFailureIsRecordedAndPumpStops|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualLifetime_LateRevokeAndCompletionCannotChangeReplacement|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualRequestBoundary_OnlyHostCancellationStopsServing|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_AwaitsCancellationCallbacksThatReenterTheHost|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_ConcurrentStopsJoinOneRetiringLifetime|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_RetainsStartedAndQueuedWritesUntilSettledBeforeNewBinding|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_TimeoutRetainsSameDrainAndBlocksReplacementUntilLateCompletion|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_CancelBeforeEntryIsZeroBytesAndDoesNotPoisonActiveBinding|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_PreservesUnicodeMultilineAndAppendEnter|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StaleOriginCannotWriteToReplacementEvenWithReusedStream|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ProductionOriginsAndRetirementConsumeTheTestedLifetimeMethods|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ProductionStartAndDiagnosticsConsumeTheTestedMethods",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 37,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_AutoSkipsCodexUpdatePromptWithoutMarkingReady",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ClearsPendingCliInputBeforeDispatchPrompt",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ConfirmsPromptLeavesInputAfterAppendEnter",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_RefusesPromptDispatchWhileCodexCliIsWorking",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualAssemblyAndPortablePdbMatchProductionSource",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualDispatchCompletion_ReflectsActualOperationSuccess",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualDispose_ClosesAdmissionAndDoesNotDisposeGateUnderUnsettledWrite",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_NullPtyStopWaitsForLateKeyReadBeforeReplacementConsumesKeys",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_WriteFailureIsRecordedAndPumpStops",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualLifetime_LateRevokeAndCompletionCannotChangeReplacement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualRequestBoundary_OnlyHostCancellationStopsServing",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_AwaitsCancellationCallbacksThatReenterTheHost",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_ConcurrentStopsJoinOneRetiringLifetime",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_RetainsStartedAndQueuedWritesUntilSettledBeforeNewBinding",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_TimeoutRetainsSameDrainAndBlocksReplacementUntilLateCompletion",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_CancelBeforeEntryIsZeroBytesAndDoesNotPoisonActiveBinding",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_PreservesUnicodeMultilineAndAppendEnter",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StaleOriginCannotWriteToReplacementEvenWithReusedStream",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ProductionOriginsAndRetirementConsumeTheTestedLifetimeMethods",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ProductionStartAndDiagnosticsConsumeTheTestedMethods",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
