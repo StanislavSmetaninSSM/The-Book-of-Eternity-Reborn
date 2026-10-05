@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "linux-fallback-bootstrap",
+      "responsibility": "#1553 portable fallback stage1: real controlled root pidfd binding/start/stop/reap, and independent guardian after deliberate owned helper loss. Exactlytwo scenarios before any descendant matrix.",
+      "excludes": "Full descendant retirement, positive backendqualification, old19case replay, production Release/systemd/Windows/PT Y/liveGM. NativeLinuxrequired; guardian usesno childenumeration.",
+      "changeHints": [
+        "native/linux/boe-lineage-supervisor.c",
+        "tests/fixtures/LinuxLineage/lineage-fixture.c"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LinuxFallbackBootstrapTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "linux-fallback-fixture-admission",
       "responsibility": "#1553 fixture-only regression: native guardian missing required proc interface rejects before any helper/sentinel fork with actual ECHILD. This is preparation safety, not fallback ownership qualification.",
       "excludes": "Positive native helper/tree stop, systemd, production consumers, earlier cohorts. Linux only; separately owned from the currently BLOCKED native supervisor selection.",

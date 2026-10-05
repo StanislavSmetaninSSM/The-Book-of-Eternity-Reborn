@@ -9,7 +9,7 @@ Owner decision: primary existing **systemd user manager**, plus a **native ordin
 - Default `Auto`: prefer available systemd-user; if unavailable before any launch, select native-lineage explicitly after its prerequisites pass. Explicit `SystemdUser` never silently downgrades. Explicit `NativeLineage` declares its limited scope. After a launch may have happened, backend switching is forbidden; uncertain startup retires through the original authority. Neither backend claims external delegated work. Windows Job behavior is unchanged.
 - Every readiness/status/stop-evidence record exposes backend, guarantee scope, run identity, state, reason, whether managed authority is retained and whether scoped cleanup actually completed. `StoppedWithinScope` is never an Accepted proposal or durable run/fence. Consumers must preserve the scope and typed uncertainty; an old unqualified bool must not erase them. Source guards for existing production gates remain; new tests must assert the revised two-mode contract without enabling Linux Release.
 
-## Portable own-child discovery revision — proposed, 2026-10-05
+## Portable own-child discovery revision — design PASS, 2026-10-05
 
 Continuation from `c70a8c02515f115ef220c9b806b10005f88e368e`. Owner authorized
 read-only proc metadata discovery, independent Sol6.1/XHigh algorithm/fixture
@@ -75,8 +75,7 @@ This establishes availability of the proposed inputs, not descendant qualificati
    Deadlines/errors never drop authority; late cleanup stays Uncertain. This is
    exactly the already approved ordinary-lineage scope, not an external-work proof.
 
-This is a source-grounded inference, pending independent review and actual native
-qualification. [stat PID/PPID layout](https://man7.org/linux/man-pages/man5/proc_pid_stat.5.html),
+Independent actual Sol6.1/XHigh review PASS at `4882e3b3eb17511b73c570111e410dc791389bc6`, no P1/P2 proof gaps. This source-grounded inference still needs actual native qualification. [stat PID/PPID layout](https://man7.org/linux/man-pages/man5/proc_pid_stat.5.html),
 [unreaped-child pidfd preconditions](https://man7.org/linux/man-pages/man2/pidfd_open.2.html),
 [proc PID namespace view](https://man7.org/linux/man-pages/man7/pid_namespaces.7.html),
 [NSpid](https://man7.org/linux/man-pages/man5/proc_pid_status.5.html) and
@@ -98,7 +97,9 @@ cleanup guarantee and not production stop evidence. Unexpected adopted children
 count as emergency cleanup; positive helper cases require zero and finish before
 self-expiry. A controlled guardian crash-helper request tests this independent
 cleanup path: held helper pidfd killed, synthetic root self-expiry and actual reap,
-explicit emergency count and no helper terminal proof.
+explicit emergency count and no helper terminal proof. The real helper cancels any
+alarm inherited across exec beforeReady; only synthetic workerforks arm expiry.
+Sentinel nonterminal proof uses held-pidfd poll readiness, never signal0 alone.
 
 After independent design PASS, first run a new bootstrap category containing only
 (1) one real controlled root start/stop/reap (conservative helper still Uncertain),

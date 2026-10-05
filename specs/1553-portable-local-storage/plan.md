@@ -11,8 +11,10 @@ Owner authorized replacing only unavailable proc-children discovery with reviewe
 read-only numeric proc/stat/PPID discovery. [Algorithm and independent fixture
 cleanup](linux-ownership-design.md#portable-own-child-discovery-revision--proposed-2026-10-05).
 Self metadata/PID coordinates/proc enumeration availability observed with no child
-probe and no unrelated metadata retained. Design review pending; no code changed
-for this continuation yet. First native stage after review: only1–2 controlled
+probe and no unrelated metadata retained. Independent actualSol6.1/XHigh design reviewPASS at4882e3b3. Nativepreflight nowuses
+selfstat/status/procnamespacecoordinates; guardian cleanup no longer enumerates
+children. Firsttwo bootstrap tests and freshbuild are pending; root-onlybaseline
+still cannot claimdescendantstop. First native stage after review: only1–2 controlled
 root/guardian cleanup cases. Then causal descendant RED/GREEN and justified narrow
 expansion. Historical19FAIL/prerequisite/zombie evidence below remains unchanged.
 Do not stop at negative-only admission; preserve approvedfallbackscope/systemdprimary,

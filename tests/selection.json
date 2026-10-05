@@ -2,17 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "linux-fallback-supervisor",
-      "reason": "First native ordinary-lineage helper and owned fixtures; no production consumer changes or unchanged cohort replay.",
+      "category": "linux-fallback-bootstrap",
+      "reason": "Firsttwo actual root/independentguardian cleanup capabilities before focuseddescendantRED/GREEN. No old19 replay.",
       "contracts": [
-        "#1553 T041-FALLBACK-NATIVE US4 FR-012/013/014/015"
-      ]
-    },
-    {
-      "category": "linux-fallback-fixture-admission",
-      "reason": "Regression for observed guardian abandonment on unavailable proc-children prerequisite; negative fixture admission only, not native ownership GREEN.",
-      "contracts": [
-        "#1553 T041-FALLBACK-NATIVE owned-fixture cleanup"
+        "#1553 T041-FALLBACK-PROC stagedcleanup"
       ]
     }
   ]

@@ -26,14 +26,20 @@ static void event(const char *dir, const char *kind) {
     if (fd < 0 || write(fd, line, (size_t)n) != n) _exit(90);
     close(fd);
 }
+static void expiry(void) {
+    struct sigaction sa = { .sa_handler = SIG_DFL }; sigemptyset(&sa.sa_mask);
+    sigset_t mask; sigemptyset(&mask); sigaddset(&mask, SIGALRM);
+    if (sigaction(SIGALRM, &sa, NULL) || sigprocmask(SIG_UNBLOCK, &mask, NULL)) _exit(90);
+    alarm(7);
+}
 static void linger(const char *dir, const char *kind) {
-    alarm(7); signal(SIGTERM, SIG_IGN); event(dir, kind);
+    expiry(); signal(SIGTERM, SIG_IGN); event(dir, kind);
     for (;;) pause();
 }
 static volatile sig_atomic_t term_requested;
 static void on_term(int sig) { (void)sig; term_requested = 1; }
 static int worker(const char *dir, const char *mode) {
-    alarm(7); event(dir, "root");
+    expiry(); event(dir, "root");
     if (!strcmp(mode, "exit")) return 23;
     if (!strcmp(mode, "metadata")) {
         char c, cwd[4096]; const char *value = getenv("BOE_NATIVE_TEST_MARKER");
@@ -54,15 +60,17 @@ static int worker(const char *dir, const char *mode) {
         int ready[2]; if (pipe2(ready, O_CLOEXEC)) return 91;
         pid_t p = fork(); if (p < 0) return 91;
         if (!p) {
+            expiry();
             close(ready[0]);
             if (!strcmp(mode, "doublefork")) {
                 if (setsid() < 0) _exit(91);
                 pid_t second = fork(); if (second < 0) _exit(91);
                 if (second) { event(dir, "intermediate"); _exit(0); }
+                expiry();
                 if (setpgid(0, 0)) _exit(91);
                 event(dir, "detached");
             }
-            alarm(7); signal(SIGTERM, SIG_IGN); event(dir, "leaf");
+            expiry(); signal(SIGTERM, SIG_IGN); event(dir, "leaf");
             if (write(ready[1], "r", 1) != 1) _exit(91);
             close(ready[1]); for (;;) pause();
         }
@@ -116,20 +124,23 @@ static int stale_check(void) {
 static int guardian(const char *dir, const char *mode, char **helper_argv) {
     signal(SIGPIPE, SIG_IGN); signal(SIGCHLD, SIG_DFL);
     sigset_t empty; sigemptyset(&empty); if (sigprocmask(SIG_SETMASK, &empty, NULL) || prctl(PR_SET_CHILD_SUBREAPER, 1)) return 96;
-    /* Required proc/pidfd capabilities must exist BEFORE either fork. */
+    /* Independent guardian: no proc enumeration, only held direct-fork pidfds
+     * and exclusive wait/reap of bounded, independently expiring fixture actors. */
     char children[4096], report[4096];
     if (snprintf(report, sizeof report, "%s/guardian.json", dir) >= (int)sizeof report) return 98;
     if (!strcmp(mode, "missing-proc-fixture")) {
         if (snprintf(children, sizeof children, "%s/absent-proc-children", dir) >= (int)sizeof children) return 98;
-    } else snprintf(children, sizeof children, "/proc/self/task/%d/children", getpid());
+    } else children[0] = 0;
     FILE *result_file = fopen(report, "we"); if (!result_file) return 98;
     long long start_time = millis();
     int capability_error = start_time < 0 ? errno : 0, self = pidfd_open(getpid(), 0);
     if (self < 0) capability_error = errno;
     else { if (pidfd_send_signal(self, 0, NULL, 0)) capability_error = errno; close(self); }
-    FILE *preflight = fopen(children, "re");
-    if (!preflight) capability_error = errno;
-    else fclose(preflight);
+    if (children[0]) { /* Explicit fixture-only admission failure, no real proc dependency. */
+        FILE *preflight = fopen(children, "re");
+        if (!preflight) capability_error = errno;
+        else fclose(preflight);
+    }
     if (capability_error) {
         int s; errno = 0; int no_children = waitpid(-1, &s, __WALL | WNOHANG) == -1 && errno == ECHILD;
         fprintf(result_file, "{\"unavailable\":true,\"errno\":%d,\"helperCreated\":false,\"sentinelCreated\":false,\"echild\":%s}\n", capability_error, no_children ? "true" : "false");
@@ -159,40 +170,30 @@ static int guardian(const char *dir, const char *mode, char **helper_argv) {
     }
     close(STDIN_FILENO); close(STDOUT_FILENO);
     if (blocked[1] >= 0) close(blocked[1]);
-    int helper_code = -1, emergency = 0, sentinel_alive = 0, sentinel_reaped = 0, deadline = 0, failure = 0;
+    int helper_code = -1, emergency = 0, alarm_reaps = 0, sentinel_alive = 0, sentinel_reaped = 0, deadline = 0, failure = 0, sentinel_stopped = 0, crash_requested = 0;
+    char crash_request[4096];
+    /* dir/report path length already admitted; the request suffix is shorter. */
+    if (snprintf(crash_request, sizeof crash_request, "%s/crash", dir) >= (int)sizeof crash_request) { failure = 1; stop_fd(helper_fd); }
     long long end = start_time + 20000;
     for (;;) {
         long long current_time = millis();
         if (current_time < 0) { failure = 1; stop_fd(helper_fd); if (sentinel_fd >= 0) stop_fd(sentinel_fd); }
         if ((current_time < 0 || current_time >= end) && !deadline) { deadline = 1; if (stop_fd(helper_fd)) failure = 1; }
-        /* Snapshot only to acquire handles before this sole reaper reaps. */
-        FILE *f = fopen(children, "re");
-        if (!f) {
-            failure = 1; stop_fd(helper_fd);
-            if (sentinel_fd >= 0) stop_fd(sentinel_fd);
-            /* Unknown adopted fixture children self-expire; still reap to ECHILD. */
+        if (!crash_requested && !strcmp(mode, "crash-helper") && access(crash_request, F_OK) == 0) {
+            crash_requested = 1; if (stop_fd(helper_fd)) failure = 1;
         }
-        int pid;
-        while (f && fscanf(f, "%d", &pid) == 1) {
-            if (pid == sentinel) {
-                if (helper_code >= 0) {
-                    sentinel_alive = pidfd_send_signal(sentinel_fd, 0, NULL, 0) == 0;
-                    if (stop_fd(sentinel_fd)) failure = 1;
-                }
-            } else if (pid != helper && (helper_code >= 0 || deadline)) {
-                int fd = pidfd_open(pid, 0);
-                if (fd < 0) failure = 1;
-                else { if (stop_fd(fd)) failure = 1; close(fd); }
-                emergency++;
-            }
+        if (helper_code >= 0 && sentinel_fd >= 0 && !sentinel_stopped) {
+            struct pollfd observed = { .fd = sentinel_fd, .events = POLLIN };
+            sentinel_alive = poll(&observed, 1, 0) == 0;
+            if (stop_fd(sentinel_fd)) failure = 1;
+            sentinel_stopped = 1;
         }
-        if (f) fclose(f);
         int status; pid_t p;
         while ((p = waitpid(-1, &status, __WALL | WNOHANG)) > 0) {
             if (!WIFEXITED(status) && !WIFSIGNALED(status)) continue;
             if (p == helper) helper_code = WIFEXITED(status) ? WEXITSTATUS(status) : 128 + WTERMSIG(status);
             else if (p == sentinel) sentinel_reaped = 1;
-            else emergency++;
+            else { emergency++; if (WIFSIGNALED(status) && WTERMSIG(status) == SIGALRM) alarm_reaps++; }
         }
         if (p < 0 && errno == ECHILD) break;
         if (p < 0 && errno != EINTR) { failure = 1; stop_fd(helper_fd); if (sentinel_fd >= 0) stop_fd(sentinel_fd); }
@@ -200,7 +201,7 @@ static int guardian(const char *dir, const char *mode, char **helper_argv) {
     }
     if (blocked[0] >= 0) close(blocked[0]);
     close(helper_fd); if (sentinel_fd >= 0) close(sentinel_fd);
-    fprintf(result_file, "{\"helperExitCode\":%d,\"emergencyLineageActions\":%d,\"deadline\":%s,\"failure\":%s,\"sentinelAliveAfterHelper\":%s,\"sentinelReaped\":%s,\"echild\":true}\n", helper_code, emergency, deadline ? "true" : "false", failure ? "true" : "false", sentinel_alive ? "true" : "false", sentinel_reaped ? "true" : "false");
+    fprintf(result_file, "{\"helperExitCode\":%d,\"emergencyLineageActions\":%d,\"emergencyAlarmReaps\":%d,\"deadline\":%s,\"failure\":%s,\"sentinelAliveAfterHelper\":%s,\"sentinelReaped\":%s,\"echild\":true}\n", helper_code, emergency, alarm_reaps, deadline ? "true" : "false", failure ? "true" : "false", sentinel_alive ? "true" : "false", sentinel_reaped ? "true" : "false");
     if (fclose(result_file)) return 98;
     return emergency || deadline || failure ? 99 : 0;
 }

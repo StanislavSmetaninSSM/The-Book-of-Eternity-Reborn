@@ -1,8 +1,10 @@
 #define _GNU_SOURCE
 #include <ctype.h>
+#include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
+#include <linux/magic.h>
 #include <poll.h>
 #include <signal.h>
 #include <stdbool.h>
@@ -11,6 +13,8 @@
 #include <string.h>
 #include <sys/pidfd.h>
 #include <sys/prctl.h>
+#include <sys/stat.h>
+#include <sys/vfs.h>
 #include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
@@ -29,6 +33,58 @@ static long long stop_at;
 static volatile sig_atomic_t signal_stop;
 static unsigned char exec_error[sizeof(int)];
 static size_t exec_bytes;
+static DIR *proc_directory;
+static int namespace_fd = -1;
+static struct stat namespace_identity;
+
+/* Only PID/PPID are consumed; comm and all other stat fields are discarded. */
+static bool parse_stat(const char *text, pid_t expected, pid_t *parent) {
+    char *end; errno = 0;
+    long pid = strtol(text, &end, 10);
+    if (errno || pid != expected || end == text || end[0] != ' ' || end[1] != '(') return false;
+    const char *delimiter = strrchr(end + 1, ')');
+    if (!delimiter || delimiter[1] != ' ' || !isalpha((unsigned char)delimiter[2]) || delimiter[3] != ' ') return false;
+    const char *start = delimiter + 4;
+    errno = 0; long ppid = strtol(start, &end, 10);
+    if (errno || end == start || *end != ' ' || ppid < 0 || ppid > INT_MAX) return false;
+    *parent = (pid_t)ppid; return true;
+}
+static int read_proc(const char *relative, char *buffer, size_t capacity) {
+    int fd = openat(dirfd(proc_directory), relative, O_RDONLY | O_CLOEXEC);
+    if (fd < 0) return -1;
+    size_t used = 0;
+    while (used < capacity - 1) {
+        ssize_t n = read(fd, buffer + used, capacity - 1 - used);
+        if (n == 0) { buffer[used] = 0; close(fd); return 0; }
+        if (n < 0) { if (errno == EINTR) continue; int e = errno; close(fd); errno = e; return -1; }
+        used += (size_t)n;
+    }
+    close(fd); errno = EOVERFLOW; return -1;
+}
+static bool proc_ready(void) {
+    int fd = open("/proc", O_RDONLY | O_DIRECTORY | O_CLOEXEC);
+    if (fd < 0) return false;
+    struct statfs fs;
+    if (fstatfs(fd, &fs)) { int e = errno; close(fd); errno = e; return false; }
+    if (fs.f_type != PROC_SUPER_MAGIC) { close(fd); errno = ENOTSUP; return false; }
+    proc_directory = fdopendir(fd); if (!proc_directory) { close(fd); return false; }
+    char stat_text[4096], status[16384], self[32]; pid_t parent;
+    if (read_proc("self/stat", stat_text, sizeof stat_text)) return false;
+    if (!parse_stat(stat_text, getpid(), &parent) || parent != getppid()) { errno = EPROTO; return false; }
+    ssize_t size = readlinkat(fd, "self", self, sizeof self - 1);
+    if (size < 1 || size >= (ssize_t)sizeof self - 1) return false;
+    self[size] = 0; char *end; errno = 0; long pid = strtol(self, &end, 10);
+    if (errno || *end || pid != getpid()) return false;
+    if (read_proc("self/status", status, sizeof status)) return false;
+    const char *nspid = strstr(status, "\nNSpid:");
+    if (!nspid) { errno = ENOTSUP; return false; }
+    errno = 0; pid = strtol(nspid + 7, &end, 10);
+    if (errno || pid != getpid()) return false;
+    while (*end == ' ' || *end == '\t') end++;
+    if (*end != '\n') { errno = ENOTSUP; return false; } /* No ancestor proc PID view. */
+    namespace_fd = openat(fd, "self/ns/pid", O_RDONLY | O_CLOEXEC);
+    return namespace_fd >= 0 && fstat(namespace_fd, &namespace_identity) == 0;
+}
 
 static long long now_ms(void) {
     struct timespec t; if (clock_gettime(CLOCK_MONOTONIC, &t)) { clock_failed = true; return 0; }
@@ -123,6 +179,7 @@ int main(int argc, char **argv) {
     for (const char *c = argv[1]; *c; c++) if (!((*c >= 'A' && *c <= 'Z') || (*c >= 'a' && *c <= 'z') || (*c >= '0' && *c <= '9') || *c == '-')) return 64;
     run_id = argv[1]; grace_ms = parse_ms(argv[2]); deadline_ms = parse_ms(argv[3]);
     if (grace_ms < 0 || deadline_ms < 0) return 64;
+    alarm(0); /* A caller/bootstrap alarm may survive exec; never inherit that deadline. */
     struct sigaction sa = { .sa_handler = SIG_DFL }; sigemptyset(&sa.sa_mask);
     if (sigaction(SIGCHLD, &sa, NULL)) return 70;
     sa.sa_handler = SIG_IGN; if (sigaction(SIGPIPE, &sa, NULL)) return 70;
@@ -134,10 +191,8 @@ int main(int argc, char **argv) {
     int self = pidfd_open(getpid(), 0);
     if (self < 0 || pidfd_send_signal(self, 0, NULL, 0)) { lose("pidfd-unavailable", errno); emit("Uncertain", true); return 2; }
     close(self);
-    char children[128]; snprintf(children, sizeof children, "/proc/self/task/%d/children", getpid());
-    int proc = open(children, O_RDONLY | O_CLOEXEC);
-    if (proc < 0) { lose("proc-unavailable", errno); emit("Uncertain", true); return 2; }
-    close(proc); (void)now_ms();
+    if (!proc_ready()) { lose("proc-unavailable", errno); emit("Uncertain", true); return 2; }
+    (void)now_ms();
     if (clock_failed) { lose("clock-unavailable", errno); emit("Uncertain", true); return 2; }
     emit("Ready", false);
     bool stop_reported = false, uncertainty_reported = false;

@@ -192,6 +192,7 @@ public sealed class LinuxFallbackSupervisorTests
         public async Task Send(string command) { await process.StandardInput.WriteAsync(command); await process.StandardInput.FlushAsync(); }
         public void CloseOwner() { if (!ownerClosed) { ownerClosed = true; process.StandardInput.Close(); } }
         public void CloseStatus() { statusClosed = true; process.StandardOutput.Close(); }
+        public void RequestHelperCrash() => File.WriteAllText(Path.Combine(directory, "crash"), "owned fixture request");
         public async Task Ready()
         {
             var ready = await ReadUntil("Ready");
@@ -235,7 +236,7 @@ public sealed class LinuxFallbackSupervisorTests
                 await Task.Delay(10);
             }
         }
-        public async Task Finish()
+        public async Task Finish(bool expectedEmergency = false)
         {
             if (!statusClosed)
             {
@@ -246,10 +247,12 @@ public sealed class LinuxFallbackSupervisorTests
             clock.Stop(); await File.WriteAllTextAsync(Path.Combine(directory, "stderr.log"), await stderr);
             using var guard = JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(directory, "guardian.json")));
             Guard = guard.RootElement.Clone(); finished = true;
-            Assert.Equal(0, process.ExitCode);
+            Assert.Equal(expectedEmergency ? 99 : 0, process.ExitCode);
             Assert.True(Guard.GetProperty("echild").GetBoolean());
-            Assert.Equal(0, Guard.GetProperty("emergencyLineageActions").GetInt32());
+            if (expectedEmergency) Assert.True(Guard.GetProperty("emergencyLineageActions").GetInt32() > 0);
+            else Assert.Equal(0, Guard.GetProperty("emergencyLineageActions").GetInt32());
             Assert.False(Guard.GetProperty("deadline").GetBoolean());
+            Assert.False(Guard.GetProperty("failure").GetBoolean());
         }
         public void AssertScopedStop()
         {
@@ -301,6 +304,33 @@ public sealed class LinuxFallbackSupervisorTests
             }
             finally { process.Dispose(); }
         }
+    }
+}
+
+public sealed class LinuxFallbackBootstrapTests
+{
+    [Fact]
+    public async Task RealRootBinding_StartStopAndActualReap()
+    {
+        await using var run = await LinuxFallbackSupervisorTests.NativeRun.Create();
+        await run.Start(); await run.WaitEvent("prepared"); await run.Send("S"); await run.Finish();
+        Assert.Equal(15, run.Records.Last().GetProperty("rootSignal").GetInt32());
+        Assert.True(run.Records.Last().GetProperty("cleanupComplete").GetBoolean());
+        Assert.False(run.Records.Last().GetProperty("authorityRetained").GetBoolean());
+        Assert.True(run.Elapsed < TimeSpan.FromSeconds(6));
+        Assert.Single(run.Events().Where(e => e.GetProperty("kind").GetString() == "root"));
+    }
+
+    [Fact]
+    public async Task GuardianAfterHelperLoss_IndependentlyReapsExpiringOwnedRoot()
+    {
+        await using var run = await LinuxFallbackSupervisorTests.NativeRun.Create(guardianMode: "crash-helper");
+        await run.Start(); await run.WaitEvent("prepared"); run.RequestHelperCrash();
+        await run.Finish(expectedEmergency: true);
+        Assert.Equal(137, run.Guard.GetProperty("helperExitCode").GetInt32());
+        Assert.Equal(1, run.Guard.GetProperty("emergencyLineageActions").GetInt32());
+        Assert.Equal(1, run.Guard.GetProperty("emergencyAlarmReaps").GetInt32());
+        Assert.DoesNotContain(run.Records, r => r.GetProperty("cleanupComplete").GetBoolean());
     }
 }
 
