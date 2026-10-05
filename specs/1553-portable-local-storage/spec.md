@@ -24,6 +24,42 @@ Owner decision: primary existing **systemd user manager**, plus a **native ordin
 - Default `Auto`: prefer available systemd-user; if unavailable before any launch, select native-lineage explicitly after its prerequisites pass. Explicit `SystemdUser` never silently downgrades. Explicit `NativeLineage` declares its limited scope. After a launch may have happened, backend switching is forbidden; uncertain startup retires through the original authority. Neither backend claims external delegated work. Windows Job behavior is unchanged.
 - Every readiness/status/stop-evidence record exposes backend, guarantee scope, run identity, state, reason, whether managed authority is retained and whether scoped cleanup actually completed. `StoppedWithinScope` is never an Accepted proposal or durable run/fence. Consumers must preserve the scope and typed uncertainty; an old unqualified bool must not erase them. Source guards for existing production gates remain; new tests must assert the revised two-mode contract without enabling Linux Release.
 
+## Proposed worker-host integration — design only, 2026-10-05
+
+From accepted native checkpoint `1434be00abd143e9f2ed9d0589d1c30b8063ba06`,
+T041-FALLBACK-INTEGRATION-DESIGN proposes two connected slices under US4/FR-012/014/015.
+The parent must authorize the first slice after this design handoff; neither slice
+is implemented or qualified by this document. [Source-backed plan](plan.md#worker-host-native-integration-design--2026-10-05).
+
+- One owned launch seam must be consumed by the actual worker host and pool. Native
+  supervisor forks the neutral managed host itself and binds its pidfd before exec;
+  attaching an already-running host or using its reported numeric PID as authority
+  is prohibited. Supervisor and actual-host identities remain distinct. Both host
+  control/status peers must match the checked actual-host PID/EUID and retained live
+  identity before any worker Launch payload; Windows keeps its original Process/Job path.
+- Slice A connects packaged helper, private ownership/binding channels, separate
+  host output streams, typed backend selection and the real host Ready/owner-close
+  path. It never sends worker Release. Slice B separately exercises synthetic worker
+  Release/result/stop/quarantine through `GmWorkerBridgePool.RunTaskAsync` and existing
+  proposal/generation/lease guards. Production Linux Release and persistent main/PTY
+  remain closed pending their explicit integration authorization and restart guard.
+- Backend availability distinguishes implemented/qualified capabilities from runtime
+  prerequisite availability. An unimplemented or unqualified systemd adapter cannot
+  satisfy Auto's primary preference. Report its exact reason and select qualified
+  native-lineage only for the requested admitted stage. Explicit SystemdUser fails
+  closed; no pretend primary, silent downgrade or switch after possible launch.
+- Preserve backend, scope, run binding and sticky uncertainty through pool, result,
+  quarantine and downstream success checks. Root exit, helper exit, Completed or
+  OutputDrained is not scoped stop. Detected Uncertain never automatically permits
+  proposal import, workspace deletion or slot release, even with cleanupComplete=true.
+- Player launches consume a relocatable prebuilt helper and version/source/binary
+  manifest; no compiler, PowerShell build, PATH fallback, download or service setup
+  at runtime. Initial Linux ABI/RID support is explicit and checked before host launch.
+- Native owner death may clean its lineage but cannot restore a dead owner's durable
+  authority. Existing in-memory worker slots are not a restart fence. Restart/reboot
+  admission and unresolved quarantine recovery remain a rollout prerequisite, not a
+  claimed consequence of these two synthetic integration slices.
+
 ## Input transport lifetime — T042-INPUT-LIFETIME, 2026-10-05
 
 Bounded implementation passes37/37 actual managed-consumer cases at `dc29b37d0c3e3067acf9943a048360fbba66d0e3`, with causal lifetime RED and a separately reproduced/fixed review regression. [Qualification](recovery/gm-input-lifetime-qualification.json) retains exact build, test, discovery and cleanup evidence. Independent actual Sol6.1/xhigh final PASS and clean GitHub-only restoration verified at `a5aefe8f8151c67a15fa107e78b487581bd43458`; full T042 remains open.

@@ -4,7 +4,261 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
-## Current continuation — bounded native prototype accepted; handoff before integration
+## Worker-host native integration design — 2026-10-05
+
+**Design only; not implementation authorization.** Source/remote base
+`1434be00abd143e9f2ed9d0589d1c30b8063ba06`; same branch and sole writer.
+Source: #1553, US4/FR-012/014/015 and the [integration spec](spec.md#proposed-worker-host-integration--design-only-2026-10-05).
+Method: Superpowers brainstorming/writing-plans plus Spec Kit consistency; future
+implementation remains inline by the sole writer, with independent Sol6.1/xhigh.
+No new native process, build, test cohort, runtime/auth/network change in this block.
+
+**Goal:** connect the qualified limited native owner to the real neutral worker host,
+then qualify synthetic work through the real pool without weakening result admission.
+**Architecture:** one owned launch result supplies distinct supervisor/host identity,
+host streams and typed stop evidence to existing consumers. Existing Windows start/
+Job behavior is wrapped unchanged; Linux launch begins inside the supervisor.
+**Stack:** .NET8, current named host channels/SO_PEERCRED, Linux pidfd/subreaper,
+private AF_UNIX bootstrap with descriptor transfer, prebuilt repo-native helper.
+
+### Current source and selected approach
+
+| Exact source at the base | Observed behavior and necessary integration |
+| --- | --- |
+| `GmWorkerBridgePool.cs:824–921` | Creates workspace, starts Process, then Attach, host Ready, Release, completion and StopAndWait before proposal import. Replace that start/attach pair with one owned launch; never pass helper Process as host. |
+| `GmWorkerProcessTree.cs:7–75` | Attach-only factory rejects non-Windows; Task-only stop loses scope. Preserve WindowsJobProcessTree while introducing an owned-launch adapter and typed stop result. |
+| `GmWorkerProcessHost.cs:291–356,518–560` | Neutral host argv contains endpoints/nonce; worker payload stays private. Authentication derives expected PID from original Process and checks both peers before Launch. Replace only the identity source with checked owned-host identity; do not accept arbitrary PID input. |
+| `GmWorkerProcessHost.cs:713–758` | Worker Completed precedes a bounded diagnostic output-drain attempt; OutputDrained is sent even if the 250ms grace expired. Neither event proves output EOF or descendant retirement. |
+| `native/linux/boe-lineage-supervisor.c:160–219,260–312` | Prototype uses stdin commands/stdout status, closes FD3+, forks/pidfd-binds before gate release, maps child stdout to stderr, and exposes no transferable host identity. A versioned production bootstrap/output extension is necessary; current prototype evidence does not qualify it. |
+| `GmWorkerBridgePool.cs:542–705,1103–1251` | Cleanup failure transfers process/tree/launch/workspace/slot/tasks; successful stop precedes detached reads and exact generation/lease-bound PublishBundleAsync. Preserve ordering; transfer one complete native owner object instead of split nullable parts. |
+| `GmWorkerQuarantineReaper.cs:76–199,423–470` | Successful Task stop becomes a death bool, then workspace deletion, terminal audit/receipt and slot disposal. Require validated typed scope evidence before that transition; retry retains owner/capacity. |
+| `GmWorkerModels.cs:125–158,443–465`; `GmWorkerValidationRepairDelegator.cs:189–207`; `GmWorkerProposalOnlyDispatchService.cs:151–179` | Status has one ambiguous ProcessId; consumers infer success from Stopped/exit0 or non-null Proposal. Carry actual backend/scope/stop evidence and refuse Uncertain at these actual success consumers. |
+| `GmWorkerBridgePool.cs:1299–1460`; `GmWorkerExecutionWorkspace.cs:80–100` | Slots are in-memory semaphores; detached paths use task+GUID. Neither is durable restart admission. No startup sweep or PID disappearance may be invented as stop proof. |
+| `scripts/build-linux-supervisor.ps1`; `BookOfEternityClient.csproj` | Native script creates a relocatable prototype and build-provenance JSON; client has no native publish asset. Player startup must never invoke this script/compiler. |
+
+Recommended: a small versioned helper bootstrap that transfers the already-bound
+host pidfd, consumed by the existing host/pool. Rejected: attaching after Process.Start
+(ownership gap); accepting a PID from JSON or Process.GetProcessById (identity gap);
+making a new standalone pool/launcher (would leave real consumers unchanged).
+Do not revive namespaces or broaden group signalling. Native ECHILD remains only
+ordinary same-PID-namespace lineage evidence, never universal process termination.
+
+### Launch, checked identity and descriptor lifetime
+
+Proposed production types live in `Services/GmWorkers/GmWorkerOwnedLaunch.cs`:
+`IGmWorkerOwnedLauncher.StartAsync(GmWorkerProcessHostLaunch, GmWorkerBackendSelection,
+CancellationToken) -> Task<GmWorkerOwnedLaunch>`. The launch exposes `HostIdentity`,
+separate host stdout/stderr streams, `HostExited`, `SupervisorExited` where applicable,
+and `StopAndObserveAsync() -> Task<GmWorkerStopEvidence>`. `HostIdentity` is an internal
+non-user-constructible ownership token, with the expected PID/EUID, live-handle check
+and bound run/backend; Windows retains the original Process, Linux retains the
+transferred pidfd. Host protocol methods consume this token, never a naked PID.
+The native implementation and protocol parser live in `GmWorkerNativeLineageLaunch.cs`;
+keep WindowsJobProcessTree's actual assignment/termination semantics unchanged.
+
+1. Create the launch owner container and private bootstrap listener before starting
+   the verified helper; create two O_CLOEXEC output pipes. Process.Start returns only
+   the supervisor Process. Keep its control writer/status reader, process and all
+   unfinished I/O under that container from the instant Start may have succeeded.
+   A partial-start exception carries this retained owner; it cannot escape as null
+   and trigger StopUnattachedProcessTreeAsync or workspace disposal.
+2. Helper connects a fresh private AF_UNIX socket. Owner checks its SO_PEERCRED PID/
+   EUID against the original started supervisor plus liveness, then validates bounded
+   version/run handshake. No inherited arbitrary FD mapping through managed
+   Process.Start is assumed. Transfer only the two host-output write FDs with SCM_RIGHTS;
+   helper validates descriptor count/type, closes unused copies, and acknowledges setup.
+   Worker payload/environment remains in the original authenticated Launch channel.
+   Helper's initial close_range runs before creating bootstrap descriptors; after
+   that, explicit ownership/close lists protect only the required private channels.
+3. After helper preflight/Ready, one owner launch command permits fork of the neutral
+   managed host only. The helper acquires its direct unreaped child's pidfd while the
+   child waits on the existing exec gate. Send that pidfd over the authenticated
+   bootstrap, with bounded version/run metadata. Receiver uses MSG_CMSG_CLOEXEC,
+   rejects truncation/unknown or extra descriptors, and closes every rejected FD.
+4. Verify the received descriptor is a live pidfd; derive/check its PID via its own
+   `/proc/self/fdinfo` Pid/NSpid in the agreed namespace, rather than trusting the
+   accompanying number. Check the matching child's stat PPID against the bound
+   supervisor while it remains unreaped/gated. Unavailable or inconsistent metadata
+   is rejection before worker Launch. No foreign environment/cmdline inspection.
+   A binding ACK commits the token; helper may then release exec. Bootstrap waits are
+   bounded/nonblocking and still observe owner EOF/stop; they cannot suspend cleanup.
+5. Child maps stdin to /dev/null and the dedicated output write FDs to stdout/stderr,
+   resets signal state, closes helper control/status/bootstrap/unused pipe FDs, and
+   execs the exact neutral host. Supervisor keeps sole reap authority; owner never
+   waitpids the host. Owner polls the retained pidfd for host exit; exit metadata is
+   correlated helper evidence, not a new Process lookup. Parent/helper copies of host
+   output writers close after fork so EOF reflects actual holders.
+6. Both original host channels independently validate expected actual-host PID/EUID;
+   check retained pidfd liveness and live supervisor/valid binding before and after
+   validation and immediately before Launch. The helper PID must fail as a host peer.
+   Do not weaken frame bounds, nonce validation, CurrentUserOnly or environment capture.
+   Host Ready still means neutral host only. Worker Release is a separate later gate.
+
+Graceful A owner-close means closing the managed host's named channels while retaining
+the supervisor control/status owner, then requesting scoped stop. Closing the helper's
+own control writer instead is owner loss and must stay Uncertain. Those are separate tests.
+
+This adds a protocol version, not a second supervision algorithm. Root pidfd discovery
+and exclusive reaping remain helper-owned; ACK failure/exec failure/owner loss seals
+launch and retires through that same helper. Owner control must not be inherited by
+host/worker. Start output drains and the sole helper-status reader at process start,
+not after Release; neither a UI subscriber nor a consumer-held status lock may block
+that reader. Bound protocol frames and diagnostic tails without unbounded queues.
+An output stream is never parsed as stop evidence; native status is never game output.
+
+### Backend selection, packaging and the stage boundary
+
+`GmWorkerBackendSelector.cs` produces a typed selection containing requested mode,
+actual backend, guarantee, admitted capability and reasons for unavailable candidates.
+`GmWorkerBackendAvailability` separates `NotImplemented`, `NotQualified`, prerequisite
+failure and `Available` for `NeutralHost`/`WorkerRelease` capabilities. Inputs come
+from shipped adapter/artifact capability plus runtime preflight, not a fake success.
+
+| Requested mode | Proposed staged behavior |
+| --- | --- |
+| Auto | Prefer implemented, qualified and runtime-available systemd-user for the requested capability. While it is not shipped/qualified, report that precise reason; choose native-lineage only if its requested capability and preflight pass before any launch. |
+| SystemdUser | Unavailable here: adapter/capability is not positively qualified. Fail before launch; no fallback, manager installation or configuration. |
+| NativeLineage | Explicit ordinary-lineage scope; artifact/prerequisite/stage checks required. Missing capability is unavailable, not permission to use root-only stop. |
+| Windows | Existing Process/Job launch and stop semantics; no Linux artifact probe or behavior claim. |
+
+Selection freezes when start may have happened. No retry switches backend after
+ambiguous start. A future actual systemd adapter implements this same launch/evidence
+contract only after a separate transient-unit/authoritative-empty native qualification.
+No systemd-run shell stub, manager-presence-only readiness or mock-positive primary.
+
+Production package proposal: `AppContext.BaseDirectory/runtimes/linux-x64/native/`
+contains `boe-lineage-supervisor` plus versioned manifest. Add explicit copy/publish
+items to client csproj and an explicit dev/package target using the existing build
+script; it must fail packaging if requested assets are missing. Player startup never
+builds, downloads, resolves helper via PATH or installs anything. Manifest includes
+protocol/guarantee version, source commit/SHA256, binary SHA256, compiler/flags,
+RID/architecture and actual libc ABI floor (derive from the produced ELF requirements;
+do not infer portable glibc support from a Debian13 build). Initial accepted target
+is linux-x64/glibc only at the tested floor; other architecture/musl is unavailable.
+Validate package and protocol compatibility before forking a host, and current
+helper preflight (proc coordinates, subreaper, pidfd, close_range, monotonic clock)
+before host launch. Hashes establish package provenance, not protection against a
+trusted player changing their installation. Absolute host executable resolution
+must replace the current possible `dotnet` name before helper execv; never shell-eval.
+
+Slice A may admit NeutralHost only. Actual `GmWorkerBridgePool` must consume the same
+preparation seam; its Linux worker Release remains fail-closed. Slice B exercises
+the actual RunTaskAsync continuation using an internal, explicitly injected synthetic
+qualification capability and isolated filesystem; no public config/environment switch
+can enable production Release. This preserves the real consumer path while keeping
+general rollout closed. Durable owner/restart quarantine admission is still required
+before public Linux WorkerRelease capability; current in-memory slots cannot provide it.
+
+### Stop, uncertainty, quarantine and result admission
+
+`GmWorkerStopEvidence` carries run binding/backend/guarantee, state/reason,
+cleanupComplete, authorityRetained and root exit metadata. The native adapter accepts
+positive stop only from its private versioned helper channel with matching run,
+sealed launch and `StoppedWithinScope/cleanupComplete=true`, no prior uncertainty,
+followed by the original supervisor's actual exit/reap. EOF/exit0/pidfd readability/
+host Completed/OutputDrained alone never qualifies. Native helper already latches
+its own timeout/authority failure; managed protocol/status loss or deadline does too.
+Late positive frames cannot erase that latch. Cancellation prevents proposal import
+even when an otherwise valid scoped stop permits ordinary non-uncertain cleanup.
+
+Pool completion ordering remains: correlated Completed -> stop -> validated scoped
+evidence -> settle owned host output streams -> check cancellation/generation/lease ->
+read/validate detached proposal -> PublishBundleAsync. Host's current OutputDrained
+is only bounded diagnostic progress. Root-first exit or a late output-holder child
+must still pass lineage stop; output drain failure/timeout cannot make a task succeed.
+Output awaiting is bounded and retained on failure, never an unbounded post-stop wait.
+
+On uncertainty transfer the single launch owner, streams/tasks, workspace, slot and
+quarantine reservation to GmWorkerQuarantinedExecution before the pool unwinds.
+Remove native routes through root-only StopUnattachedProcessTreeAsync. Reaper passes
+continue observing the original owner, never reacquire by PID or clear Uncertain on
+cleanupComplete alone. Do not delete workspace, publish cleanup-confirmed receipt,
+release slot or re-import a proposal for an uncertain run. A later audit/receipt or
+filesystem retry **after an already valid non-uncertain stop** keeps the existing
+idempotent ordering: retained workspace authority, required terminal audit or exact
+fallback receipt, then slot release exactly once. Concurrent reaper passes stay serialized.
+
+Supervisor loss has no substitute ECHILD observer: retain Uncertain even if root
+pidfd is readable or fixtures are later cleaned by their test guardian. Owner-process
+death closes its private control, helper cleans but reports owner-lost Uncertain;
+there is no automatic reconstruction of dead managed authority. This pair of slices
+does not qualify cold restart/reboot, unresolved durable slot recovery, persistent
+main PTY or live GM. General production admission stays closed until those guards
+are separately designed/qualified; synthetic tests never mutate real saves.
+
+### Two connected slices and focused proof
+
+**A — T041-FALLBACK-HOST, real neutral host Ready and owner-close.** Modify the helper,
+build script/client publish assets, GmWorkerProcessHost identity parameters, pool's
+preparation call site and Windows factory wrapper; add the three focused managed
+launch/selector files above. Extend `GmWorkerProcessHostTests`/PeerIdentityTests and
+add `GmWorkerNativeLaunchTests.cs` in integration tests. Real native tests use an
+independent finite guardian; failure cleanup never depends on the adapter under test.
+
+- [ ] Add causal tests around the actual host-preparation path, not a duplicated host:
+  two authenticated peers/Ready then graceful owner stop, zero worker starts; helper
+  PID/wrong root FD/reused PID/dead pidfd/foreign single channel rejected before Launch.
+- [ ] Cover pre-fork cancellation, gated binding/ACK/exec failure, cancellation at Ready,
+  owner EOF/death and supervisor loss before/after binding; prove own descendant cleanup
+  separately from the adapter's intentionally Uncertain result. Reject stale protocol,
+  run, missing/extra/truncated SCM FDs and closed/full helper status; no FD leak/inheritance.
+- [ ] Include package relocation, missing/wrong manifest/RID/hash/protocol, unsupported
+  preflight, actual separate output, and Auto/explicit/stage policy. Keep a Windows
+  wrapper contract check; native Windows is a separate owner's environment check.
+- [ ] Run the causal focused category via scripts/test-csharp.ps1, implement the seam,
+  fresh-build affected GREEN; independent review/source hashes/cleanup/non-force
+  publication/clean restore. Stop for parent handoff before any worker Release.
+
+**B — T041-FALLBACK-POOL, synthetic Release through the real pool.** Consume the same
+launch object in RunTaskAsync completion/cleanup and GmWorkerQuarantinedExecution;
+extend WorkerBridgeStatus/GmWorkerTaskRunResult plus downstream success guards in
+ValidationRepairDelegator/ProposalOnlyDispatchService. Preserve workspace, reservation,
+PublishBundleAsync, audit/receipt and lease/generation algorithms. Add
+`GmWorkerNativePoolTests.cs`; extract only affected lifecycle/reaper consumer cases
+from GmWorkerBridgeLifecycleTests/GmWorkerProcessTreeTests into explicit catalog owners.
+
+- [ ] Causal actual-pool tests: synthetic exit0/proposal, nonzero exit, child/doublefork/
+  setsid, ignored TERM, spawn during stop, root-first exit and late output holders;
+  assert no detached read/import before scoped stop and no real canonical apply.
+- [ ] Test owner/supervisor loss, canceled or timed-out work, malformed/blocked status,
+  stop timeout followed by cleanupComplete, partial launch exceptions and concurrent
+  quarantine retries: no Proposal, no deletion/receipt/slot release while Uncertain.
+- [ ] Test valid-stop audit/receipt failure then retry exactly once; unchanged generation
+  mismatch/exact task bytes/lease rejection at publication, and no downstream success
+  from legacy Stopped/exit0 or fabricated Proposal without evidence. Existing Windows
+  semantics remain explicit; test doubles cannot qualify native Windows/systemd.
+- [ ] Fresh causal/affected GREEN, catalog discovery audit, independent review, remote
+  preservation and restore; return a bounded synthetic pool acceptance, not general
+  Linux Release availability or acceptance of the full game.
+
+Proposed category owners (add/split structurally during implementation):
+`worker-native-launch` for A native host/FD admission, `worker-backend-selection` for
+pure policy/package decisions, `worker-native-pool` for B actual synthetic execution,
+`worker-native-quarantine` for B typed uncertainty/retry. Move only affected existing
+methods out of broad `gm-worker-process`/IPC owners; preserve exact single ownership.
+Fresh `-Category <IDs> -Parallelism 1 -PlanOnly`, then the same `-NoBuild`; use
+`-ValidateCatalog` discovery-only after catalog edits. Required expectations are
+zero unexpected failures/skips/duplicate selectors and actual owned cleanup, not a
+predeclared invented test count. Do not replay unchanged IPC34/ENV16/FRAME49 or old
+native matrices by default; signature/behavior changes determine the extracted subset.
+No Fast/PreMerge/full suite. Budgets bound observations and never excuse abandoned cleanup.
+
+Review focus is explicit in A/B: stale host identity, FD writer inheritance, output
+holders after Completed, ambiguous stop/quarantine retry, and unavailable/stage-mismatched
+backend/artifact. Here Linux-x64 synthetic A/B can be proved after authorization;
+systemd-user, native Windows, other ABI/RIDs, permanently stuck compiler cleanup and
+real restart/production/main/GM remain outside the evidence. The runtime package
+requires no compiler; build-time compiler lifetime stays an existing dev limitation.
+
+**Handoff decision:** approve A as the next connected slice or revise its launch/binding
+contract. B stays separately gated. SCM_RIGHTS/pidfd transfer and publish layout are
+proposed implementation details requiring A's actual native RED/GREEN, not claims
+already covered by the22 prototype cases. No user gameplay/GM-authored schema changes
+in this design-only block; future operational backend/scope fields require matching
+worker guidance/examples and focused documentation guards in their implementation.
+Independent review and source-preservation verification follow before final handoff.
+
+## Accepted bounded native prototype — historical checkpoint before integration design
 
 Sole writer restored exact GitHub `3e1b11c220ea3286002ea78c90e4eb4498e887dd`,
 preserving original8339e9c2 tree `c8a6734e9ce467616449c32118ecd71b470afcd8`.
