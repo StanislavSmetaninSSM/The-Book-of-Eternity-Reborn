@@ -10,6 +10,9 @@ internal sealed class GmWorkerExecutionWorkspaceHooks
     internal Func<string, string, Task>? BeforeRuntimeRootCreateAsync { get; init; }
     internal Func<string, Task>? BeforeWorkspaceFileCreateAsync { get; init; }
     internal Func<string, Task>? BeforeWorkspaceFileOpenAsync { get; init; }
+    internal Func<string, Task>? AfterWorkspaceFileWriteAsync { get; init; }
+    internal Func<string, Task>? AfterWorkspaceFileReadAsync { get; init; }
+    internal Func<string, int, Task>? AfterWorkspaceReadChunkAsync { get; init; }
     internal Func<string, Task>? BeforeWorkspaceDeleteAsync { get; init; }
     internal Func<string, Task>? AfterQuarantineAuditTempCreatedAsync { get; init; }
 }

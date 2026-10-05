@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "worker-host-environment",
-      "reason": "T041-ENV: synthetic case-distinct Linux keys through the actual production capture, strict JSON and host reconstruction; preserve Windows semantics, diagnostics and operational guidance; actual host Ready/owner-close without Release. No authentication/framing change or reason to repeat full IPC34/FRAME49/runrecord90.",
+      "category": "worker-detached-workspace",
+      "reason": "T041-WORKSPACE bounded create/write/read/dispose and exact affected source/operational guards; isolated temporary filesystem only, no process/IPC/environment/frame/runrecord reruns.",
       "contracts": [
-        "#1553 T041-ENV US4 FR-012/015"
+        "#1553 T041-WORKSPACE US4 FR-012/015"
       ]
     }
   ]

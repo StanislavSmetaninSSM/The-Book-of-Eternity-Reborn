@@ -11136,6 +11136,42 @@
   ]
 },
 {
+  "id": "worker-detached-workspace",
+  "responsibility": "Process-free detached workspace creation, exact pinned byte staging, bounded artifact reads and cancellation/partial-failure disposal; fresh trusted-local path/kind/link admission and outside/sibling isolation, plus exact affected operational/source guards.",
+  "excludes": "Worker or host launch/Release, quarantine receipt publication, canonical mutation/load, ownership/stop/process-tree/PTY and live GM. Linux-only native fixtures are explicitly conditional; Windows needs its own execution.",
+  "changeHints": [
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs",
+    "BookOfEternityClient.IntegrationTests/GmWorkerDetachedWorkspaceTests.cs"
+  ],
+  "related": [
+    {
+      "id": "gm-worker-process",
+      "when": "Future connected execution or lifecycle changes; not selected for process-free byte staging."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.*"
+      ]
+    },
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics",
+        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake"
+      ]
+    }
+  ]
+},
+{
   "id": "worker-host-environment",
   "responsibility": "Platform-faithful worker environment capture, strict Launch JSON and host ProcessStartInfo reconstruction using only synthetic values; exact operational guidance guard and actual hidden-host Ready then owner-close without Release.",
   "excludes": "Real inherited values/secrets, proxy/network changes, worker Release/execution, process-tree/workspace/PTY lifecycle and broad IPC/frame cohorts. Linux execution does not qualify Windows.",
