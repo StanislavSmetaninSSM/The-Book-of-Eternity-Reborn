@@ -453,6 +453,20 @@ quarantine capacity. This tests the open hypothesis of Release after known autho
 loss; no runtime guard correction is assumed until causal result. Fresh4 build/run
 pending. No public admission or unrelated runtime change.
 
+B5 content3 GREEN + pre-Release authority1 causal RED at
+`299dfc95b2868bc3697c7e6961d24ecf6cd70755`: Plan4/0exec38.0503168s;
+run4executed/3PASS/1FAIL29.4746517s with complete selection/cleanup and no timeout/
+skip/duplicate. [Evidence](recovery/evidence/worker-pool-content-green-authority-red/manifest.json).
+Three content guardians ECHILD/emergency0. Loss fixture awaited original supervisor
+exit before Release yet observed workerStarts1, publication0, workspace1/quarantine1/
+capacity1. Its independent guardian reached ECHILD with1emergency signal/2reaped,
+no failure/deadline; this is deliberate guardian cleanup, not native confirmation.
+Cause: ReleaseAsync had only capability/cancellation/channel checks after Ready.
+Minimal correction retains original Ready identity and revalidates native pidfd/helper
+authority inside the control gate immediately before sending Release. Windows release
+path unchanged. Select only loss1 plus happy1 (new release check affects successful
+admission); content3 is unchanged. Corrected build/execution pending.
+
 B5 observation seam design consultation, actual Sol6.1/xhigh: an internal optional
 capture of the genuinely launched owner is allowed only after pool binding (or with
 OwnedLaunchException preserving that owner). It cannot replace owner/identity or

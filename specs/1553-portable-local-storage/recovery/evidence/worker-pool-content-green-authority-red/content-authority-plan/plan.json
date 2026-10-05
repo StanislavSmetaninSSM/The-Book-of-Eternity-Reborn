@@ -1,0 +1,59 @@
+{
+  "Categories": [
+    "worker-native-pool-content",
+    "worker-native-pool-release-authority"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "299dfc95b2868bc3697c7e6961d24ecf6cd70755",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 37.8201907,
+  "Descriptors": [
+    {
+      "Name": "worker-native-pool-content-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pool-content",
+      "Categories": [
+        "worker-native-pool-content"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ImportsExactDetachedContentWithoutApplyingCanonicalChange|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_RejectsMissingOrChangedDetachedContent",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ImportsExactDetachedContentWithoutApplyingCanonicalChange",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_RejectsMissingOrChangedDetachedContent",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-pool-release-authority-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pool-release-authority",
+      "Categories": [
+        "worker-native-pool-release-authority"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LostOriginalHelperCannotReleaseWorker",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LostOriginalHelperCannotReleaseWorker",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

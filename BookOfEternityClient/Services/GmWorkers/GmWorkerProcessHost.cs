@@ -270,6 +270,7 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
     private int _connected;
     private int _launchSent;
     private int _released;
+    private GmWorkerHostIdentity? _readyIdentity;
     private int _disposed;
     private GmWorkerRequiredCapability _capability = GmWorkerRequiredCapability.WorkerRelease;
 
@@ -416,6 +417,7 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
             await ConnectAndAuthenticateAsync(hostProcess, readiness.Token);
             await SendLaunchAsync(hostProcess, readiness.Token);
             _ = await ReadStatusAsync(hostProcess, GmWorkerProcessHostStatusKind.Ready, readiness.Token);
+            _readyIdentity = hostProcess;
         }
         catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested && readiness.IsCancellationRequested)
         {
@@ -471,6 +473,10 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
             await _controlGate.WaitAsync(deadline.Token);
             entered = true;
             if (Volatile.Read(ref _released) != 0) return;
+            // Revalidate the original admitted pidfd/helper authority after the
+            // control gate and every caller hook, before sending native Release.
+            if (_capability == GmWorkerRequiredCapability.SyntheticWorkerRelease)
+                (_readyIdentity ?? throw new InvalidOperationException("Native Release has no admitted ready identity.")).EnsureLive();
             var frame = new GmWorkerProcessHostControlFrame(
                 GmWorkerProcessHostProtocol.SchemaVersion, _launchNonce, GmWorkerProcessHostControlKind.Release);
             var controlChannel = _controlChannel ?? throw new InvalidOperationException(

@@ -11,7 +11,10 @@ HOST A принят родителем на `55f43c9e5d81ec0ef1e3944d2932f49f67b
 Разрешён следующий связанный B-срез: настоящий pool и success consumers, synthetic
 Release только через явно injected internal seam, typed scoped evidence и quarantine.
 [Уточнение B](plan.md#pool-b--authorized-refinement-from-accepted-host-a-2026-10-05)
-пока design WIP перед отдельным Sol6.1/xhigh review; B-код/тесты ещё не менялись.
+прошло отдельное Sol6.1/xhigh design review; связанный runtime уже имеет actual-pool
+happy1, descendants5, terminal8 и content3 GREEN на точных источниках в плане.
+B остаётся WIP: причинный RED на Release после потери helper получил минимальную
+правку; её GREEN, остальная uncertainty/retry-матрица и финальное ревью ещё впереди.
 Общий Linux WorkerRelease, durable restart/fencing, PTY и live GM остаются закрыты.
 После B acceptance — handoff, без начала следующего этапа.
 
