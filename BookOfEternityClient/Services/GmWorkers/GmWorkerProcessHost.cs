@@ -12,7 +12,17 @@ internal sealed record GmWorkerProcessHostPayload(
     [property: JsonRequired] string FileName,
     [property: JsonRequired] IReadOnlyList<string> Arguments,
     [property: JsonRequired] string WorkingDirectory,
-    [property: JsonRequired] Dictionary<string, string?> Environment);
+    [property: JsonRequired] Dictionary<string, string?> Environment)
+{
+    internal static GmWorkerProcessHostPayload Capture(ProcessStartInfo workerStartInfo) => new(
+        workerStartInfo.FileName,
+        workerStartInfo.ArgumentList.ToArray(),
+        workerStartInfo.WorkingDirectory,
+        workerStartInfo.Environment.ToDictionary(
+            entry => entry.Key,
+            entry => entry.Value,
+            StringComparer.OrdinalIgnoreCase));
+}
 
 internal enum GmWorkerProcessHostControlKind
 {
@@ -306,14 +316,7 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
                 maxNumberOfServerInstances: 1,
                 PipeTransmissionMode.Byte,
                 pipeOptions);
-            var payload = new GmWorkerProcessHostPayload(
-                workerStartInfo.FileName,
-                workerStartInfo.ArgumentList.ToArray(),
-                workerStartInfo.WorkingDirectory,
-                workerStartInfo.Environment.ToDictionary(
-                    entry => entry.Key,
-                    entry => entry.Value,
-                    StringComparer.OrdinalIgnoreCase));
+            var payload = GmWorkerProcessHostPayload.Capture(workerStartInfo);
             var assemblyPath = typeof(GmWorkerProcessHost).Assembly.Location;
             var appHostPath = Path.Combine(
                 Path.GetDirectoryName(assemblyPath)!,
@@ -682,10 +685,7 @@ internal static class GmWorkerProcessHost
         }
     }
 
-    private static async Task RunWorkerAsync(
-        GmWorkerProcessHostPayload payload,
-        GmWorkerProcessHostFrameChannel statusChannel,
-        string launchNonce)
+    internal static ProcessStartInfo CreateWorkerStartInfo(GmWorkerProcessHostPayload payload)
     {
         if (string.IsNullOrWhiteSpace(payload.FileName))
             throw new InvalidDataException("Worker process host executable is empty.");
@@ -706,7 +706,15 @@ internal static class GmWorkerProcessHost
         foreach (var (key, value) in payload.Environment)
             startInfo.Environment[key] = value;
 
-        using var process = new Process { StartInfo = startInfo };
+        return startInfo;
+    }
+
+    private static async Task RunWorkerAsync(
+        GmWorkerProcessHostPayload payload,
+        GmWorkerProcessHostFrameChannel statusChannel,
+        string launchNonce)
+    {
+        using var process = new Process { StartInfo = CreateWorkerStartInfo(payload) };
         if (!process.Start())
             throw new InvalidOperationException("Worker command did not start inside its process host.");
 
