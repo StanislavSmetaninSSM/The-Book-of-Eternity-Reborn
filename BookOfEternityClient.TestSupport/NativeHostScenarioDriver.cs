@@ -118,6 +118,7 @@ internal static class NativeHostScenarioDriver
             if (owner != null && mode != "helper-loss-closed-output")
             {
                 stop = await owner.StopAndObserveAsync();
+                if (stop.State == GmWorkerStopState.StoppedWithinScope) await owner.SettleOutputsAsync();
                 if (mode == "output-audit")
                 {
                     hostStdout = await ((GmWorkerNativeLineageLaunch)owner).HostStandardOutput;

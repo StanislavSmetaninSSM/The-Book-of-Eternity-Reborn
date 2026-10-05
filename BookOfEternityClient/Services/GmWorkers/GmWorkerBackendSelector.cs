@@ -1,8 +1,8 @@
 namespace BookOfEternityClient.Services.GmWorkers;
 
 internal enum GmWorkerBackendRequest { Auto, SystemdUser, NativeLineage }
-internal enum GmWorkerRequiredCapability { NeutralHost, WorkerRelease }
-internal enum GmWorkerBackend { None, WindowsJob, NativeLineage }
+internal enum GmWorkerRequiredCapability { NeutralHost, WorkerRelease, SyntheticWorkerRelease }
+public enum GmWorkerBackend { None, WindowsJob, NativeLineage }
 internal enum GmWorkerBackendAvailability { NotImplemented, NotQualified, Unsupported, PreflightRequired, Available }
 
 internal sealed record GmWorkerBackendSelection(
@@ -29,6 +29,8 @@ internal static class GmWorkerBackendSelector
                 GmWorkerBackendAvailability.NotImplemented);
         if (!Enum.IsDefined(request) || !Enum.IsDefined(capability))
             return Unavailable(GmWorkerBackendAvailability.Unsupported, "Unknown owned-launch request.");
+        if (capability == GmWorkerRequiredCapability.SyntheticWorkerRelease)
+            return Unavailable(GmWorkerBackendAvailability.NotQualified, "Synthetic worker Release requires an explicit internal fixture admission.");
         if (windows && request == GmWorkerBackendRequest.Auto)
             return new(request, capability, GmWorkerBackend.WindowsJob, GmWorkerBackendAvailability.Available,
                 "windows-job", "Existing Windows Job path.", GmWorkerBackendAvailability.NotImplemented);

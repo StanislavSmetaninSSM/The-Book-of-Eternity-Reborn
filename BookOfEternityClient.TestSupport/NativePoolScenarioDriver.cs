@@ -65,6 +65,7 @@ internal static class NativePoolScenarioDriver
             workspaceCleaned = cleanupPath != null && !Directory.Exists(cleanupPath),
             reaperEntries = reaper.EntryCount, reaperCapacity = reaper.OwnedCapacity,
             canonicalContextUnchanged = await File.ReadAllTextAsync(fs.ResolvePath(contextPath)) == weather,
+            validatedExecution = result?.HasValidatedExecutionFor(task) == true,
             result
         }));
         return 0;

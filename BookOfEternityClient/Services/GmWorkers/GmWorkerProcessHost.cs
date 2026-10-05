@@ -288,13 +288,21 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
     }
 
     internal ProcessStartInfo StartInfo { get; }
+    internal string WorkerWorkingDirectory => _payload.WorkingDirectory;
+    private GmWorkerNativePoolAdmission? _nativeAdmission;
+    internal bool HasAdmission(GmWorkerNativePoolAdmission admission) => ReferenceEquals(_nativeAdmission, admission);
 
     internal async Task<GmWorkerOwnedLaunch> PrepareOwnedAsync(IGmWorkerOwnedLauncher launcher,
-        GmWorkerBackendRequest request, GmWorkerRequiredCapability capability, CancellationToken cancellationToken)
+        GmWorkerBackendRequest request, GmWorkerRequiredCapability capability, CancellationToken cancellationToken,
+        GmWorkerNativePoolAdmission? nativeAdmission = null)
     {
-        var selection = GmWorkerBackendSelector.Select(request, capability, OperatingSystem.IsWindows(), OperatingSystem.IsLinux());
+        var selection = capability == GmWorkerRequiredCapability.SyntheticWorkerRelease &&
+            request == GmWorkerBackendRequest.NativeLineage && nativeAdmission != null
+            ? nativeAdmission.ValidateHost(this)
+            : GmWorkerBackendSelector.Select(request, capability, OperatingSystem.IsWindows(), OperatingSystem.IsLinux());
         if (!selection.CanStart) throw new PlatformNotSupportedException(selection.Reason);
         _capability = capability;
+        _nativeAdmission = nativeAdmission;
         var owner = await launcher.StartAsync(this, selection, cancellationToken);
         try
         {
@@ -452,7 +460,8 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
 
     internal async Task ReleaseAsync(CancellationToken cancellationToken)
     {
-        if (_capability != GmWorkerRequiredCapability.WorkerRelease)
+        if (_capability != GmWorkerRequiredCapability.WorkerRelease &&
+            !(_capability == GmWorkerRequiredCapability.SyntheticWorkerRelease && _nativeAdmission != null))
             throw new InvalidOperationException("This owned host was admitted for NeutralHost only.");
         using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         deadline.CancelAfter(OwnershipReleaseTimeout);
@@ -486,12 +495,15 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
         }
     }
 
-    internal async Task<int> WaitForWorkerCompletionAsync(
+    internal Task<int> WaitForWorkerCompletionAsync(
         Process hostProcess,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken) => WaitForWorkerCompletionAsync(GmWorkerHostIdentity.FromOwnedProcess(hostProcess), cancellationToken);
+
+    internal async Task<int> WaitForWorkerCompletionAsync(
+        GmWorkerHostIdentity hostIdentity, CancellationToken cancellationToken)
     {
         var frame = await ReadStatusAsync(
-            GmWorkerHostIdentity.FromOwnedProcess(hostProcess),
+            hostIdentity,
             GmWorkerProcessHostStatusKind.Completed,
             cancellationToken);
         return frame.ExitCode!.Value;

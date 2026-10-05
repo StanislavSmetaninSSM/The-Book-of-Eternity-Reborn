@@ -383,8 +383,11 @@ public sealed class GmWorkerQuarantineAuditReceiptTests
         ? new OperationCanceledException("synthetic receipt cancellation") : new IOException("synthetic receipt failure");
     private static GmWorkerQuarantinedExecution Owner(GmWorkerExecutionWorkspace workspace, Slot slot, bool confirmed,
         Func<Task<GmWorkerAuditAppendDisposition>> append, Func<Exception, Task> failure) => new(
-        "synthetic-owner", confirmed, null, null, null, workspace, slot, null, null, null, null,
-        Generation, Event, append, failure);
+        "synthetic-owner", confirmed
+            ? GmWorkerExecutionAuthority.NoLaunch(GmWorkerBridgeTestFixtures.AnalysisTask())
+            : new GmWorkerExecutionAuthority(new("unconfirmed-fixture", GmWorkerBackend.NativeLineage,
+                GmWorkerBackendSelector.NativeGuarantee), GmWorkerBridgeTestFixtures.AnalysisTask()),
+        null, null, workspace, slot, null, null, Generation, Event, append, failure);
     private sealed class Slot : IDisposable
     {
         internal int Disposals { get; private set; }

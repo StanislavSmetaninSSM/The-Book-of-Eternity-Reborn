@@ -273,6 +273,24 @@ certainty/output uncertainty expose the intended missing validation/sticky latch
 No native processes launched by this pure set. B2 complete; B3 connected implementation
 now starts from both observed causal REDs. Public Linux guard remains closed.
 
+B3 connected WIP now replaces pool Windows-only ownership transfer with retained
+common owners and immutable original scope; native internal admission is tied to the
+explicit fixture source/runtime root. Ordinary public Linux Release remains closed.
+Native Completed proceeds to scoped stop then bounded actual outputs; Windows keeps
+its diagnostic drain phase and original Job primitive. Native output capture reuses
+the existing pool bounded collector. Typed authority binds exact reserved bytes
+(including existing UTF-8 BOM) separately from the parsed task model, completion and
+published proposal; cleanup evidence alone is not a success permit. One cleanup state
+moves intact into quarantine on failure, retaining phase flags and slot/reservation;
+explicit Uncertain remains sticky, with the reviewed original retained Job exception.
+Receipt-only fixtures migrate to explicit no-launch disposition and the capacity
+fixture returns typed evidence. Actual HOST driver explicitly settles outputs before
+disposal under the separated contract. No broad replay or native Windows claim.
+This block is unbuilt/unverified; first selected build and14case GREEN attempt next
+(worker-native-pool-happy + worker-execution-scoped-evidence). Consumer gate extraction/
+causal tests, complete fault matrix, changed source guards/docs and independent final
+review remain open; B is not accepted. No public rollout or durable restart connected.
+
 ## HOST implementation authorized — 2026-10-05
 
 Parent authorized only T041-FALLBACK-HOST from exact

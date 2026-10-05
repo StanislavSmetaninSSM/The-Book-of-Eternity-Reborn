@@ -16,6 +16,7 @@ public sealed class GmWorkerNativePoolTests
         Assert.Equal(1, result.GetProperty("publicationCalls").GetInt32());
         Assert.True(result.GetProperty("workspaceCleaned").GetBoolean());
         Assert.True(result.GetProperty("canonicalContextUnchanged").GetBoolean());
+        Assert.True(result.GetProperty("validatedExecution").GetBoolean());
         Assert.Equal(0, result.GetProperty("reaperEntries").GetInt32());
         Assert.Equal(0, result.GetProperty("reaperCapacity").GetInt32());
         Assert.Contains("pool-worker-stdout", result.GetProperty("result").GetProperty("StandardOutput").GetString());

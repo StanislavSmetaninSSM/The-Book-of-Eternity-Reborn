@@ -59,6 +59,27 @@ internal sealed class GmWorkerHostIdentity
     }
     internal string ExitDescription => _pidfd == null && _owner.HasExited ? $" with code {_owner.ExitCode}" : "";
 
+    // Observation of this retained incarnation only. IN/HUP after exclusive reap
+    // is exit evidence, never proof that the lineage stopped within its scope.
+    internal async Task WaitForExitAsync()
+    {
+        if (_pidfd == null) { await _owner.WaitForExitAsync(); return; }
+        while (true)
+        {
+            var held = false;
+            try
+            {
+                _pidfd.DangerousAddRef(ref held);
+                var descriptor = new PollDescriptor { Descriptor = _pidfd.DangerousGetHandle().ToInt32(), Events = 1 };
+                var result = Poll(ref descriptor, 1, 0);
+                if (result < 0 || (descriptor.ReturnedEvents & ~0x11) != 0) throw Invalid();
+                if ((descriptor.ReturnedEvents & 0x11) != 0) return;
+            }
+            finally { if (held) _pidfd.DangerousRelease(); }
+            await Task.Delay(10);
+        }
+    }
+
     internal static bool IsReadable(SafeFileHandle handle)
     {
         var held = false;

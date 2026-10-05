@@ -77,6 +77,7 @@ internal sealed class GmWorkerProcessTreeFactory : IGmWorkerProcessTreeFactory
 
 internal sealed class WindowsJobProcessTree : IGmWorkerProcessTree
 {
+    internal bool HasRetainedAuthority { get { lock (_sync) return !_disposed && !_job.IsClosed && !_job.IsInvalid; } }
     private const uint JobObjectLimitKillOnJobClose = 0x00002000;
     private readonly Process _rootProcess;
     private readonly SafeJobHandle _job;

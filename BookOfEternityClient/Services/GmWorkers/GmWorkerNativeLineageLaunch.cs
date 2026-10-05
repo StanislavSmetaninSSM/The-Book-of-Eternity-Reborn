@@ -25,10 +25,10 @@ internal sealed class GmWorkerNativeLineageLaunch : GmWorkerOwnedLaunch
     private readonly SemaphoreSlim _controlGate = new(1);
     private readonly Task<string> _outputDrain, _errorDrain;
     private Task<string>? _helperErrorDrain;
-    private Task? _statusReader, _supervisorExit;
+    private Task? _statusReader, _supervisorExit, _hostExit, _stopControl;
     private GmWorkerHostIdentity? _identity;
     private SafeFileHandle? _hostPidfd;
-    private bool _processStarted, _sealed, _stopped, _disposed;
+    private bool _processStarted, _sealed, _stopped, _disposed, _outputsSettled;
     private string? _uncertainty;
     private GmWorkerStopEvidence? _terminal;
     private int _phase;
@@ -49,8 +49,8 @@ internal sealed class GmWorkerNativeLineageLaunch : GmWorkerOwnedLaunch
             _listener.Listen(1);
             _output = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.None);
             _error = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.None);
-            _outputDrain = DrainAsync(_output);
-            _errorDrain = DrainAsync(_error);
+            _outputDrain = CaptureHostOutputAsync(_output);
+            _errorDrain = CaptureHostOutputAsync(_error);
         }
         catch
         {
@@ -64,6 +64,9 @@ internal sealed class GmWorkerNativeLineageLaunch : GmWorkerOwnedLaunch
     }
 
     internal override int HostProcessId => _identity?.ProcessId ?? throw new InvalidOperationException("Host identity has not been admitted.");
+    internal override GmWorkerExecutionIdentity Identity => new(_run, GmWorkerBackend.NativeLineage, GmWorkerBackendSelector.NativeGuarantee);
+    internal override int? AdmittedHostProcessId => _identity?.ProcessId;
+    internal override Task HostExited => _hostExit ?? throw new InvalidOperationException("Host identity has not been admitted.");
     internal override int SupervisorProcessId => _supervisor.Id;
     internal Task<string> HostStandardOutput => _outputDrain;
     internal Task<string> HostStandardError => _errorDrain;
@@ -117,6 +120,7 @@ internal sealed class GmWorkerNativeLineageLaunch : GmWorkerOwnedLaunch
         var rights = await GmWorkerNativeDescriptors.ReceiveAsync(_bootstrap, "B2:" + _run, 1, deadline.Token);
         _hostPidfd = rights[0];
         _identity = GmWorkerHostIdentity.FromTransferredPidfd(_supervisor, _hostPidfd, AuthorityValid);
+        _hostExit = ObserveHostExitAsync();
         GmWorkerNativeDescriptors.Send(_bootstrap, "A2:" + _run);
         _bootstrap.Dispose(); _bootstrap = null;
         await _startedHost.Task.WaitAsync(deadline.Token);
@@ -125,6 +129,15 @@ internal sealed class GmWorkerNativeLineageLaunch : GmWorkerOwnedLaunch
 
     internal override Task WaitUntilReadyAsync(GmWorkerProcessHostLaunch host, CancellationToken cancellationToken) =>
         host.WaitUntilReadyAsync(_identity ?? throw new InvalidOperationException("Native host binding is missing."), cancellationToken);
+
+    internal override Task<int> WaitForWorkerCompletionAsync(GmWorkerProcessHostLaunch host, CancellationToken cancellationToken) =>
+        host.WaitForWorkerCompletionAsync(_identity ?? throw new InvalidOperationException("Native host binding is missing."), cancellationToken);
+
+    private async Task ObserveHostExitAsync()
+    {
+        try { await _identity!.WaitForExitAsync(); }
+        catch { Lose("host-exit-observation-lost"); throw; }
+    }
 
     private bool AuthorityValid() { lock (_stateGate) return _uncertainty == null && _terminal == null && !_sealed; }
     private void Lose(string reason)
@@ -201,17 +214,25 @@ internal sealed class GmWorkerNativeLineageLaunch : GmWorkerOwnedLaunch
         await _stopGate.WaitAsync();
         try
         {
+            using var observation = new CancellationTokenSource(TimeSpan.FromSeconds(5));
             if (!_processStarted)
                 return new(_run, GmWorkerBackend.NativeLineage, GmWorkerBackendSelector.NativeGuarantee, GmWorkerStopState.Uncertain, "start-unconfirmed", false, true, null);
             if (!_stopped)
             {
                 _stopped = true;
-                try { if (!_supervisor.HasExited) await SendControlAsync('S'); }
+                try
+                {
+                    if (!_supervisor.HasExited)
+                    {
+                        _stopControl = SendControlAsync('S');
+                        await _stopControl.WaitAsync(observation.Token);
+                    }
+                }
                 catch { Lose("control-lost"); }
             }
             try
             {
-                await Task.WhenAll(_supervisorExit!, _statusReader!, _helperErrorDrain!, _outputDrain, _errorDrain).WaitAsync(TimeSpan.FromSeconds(5));
+                await Task.WhenAll(_supervisorExit!, _statusReader!, _helperErrorDrain!, _hostExit ?? Task.CompletedTask).WaitAsync(observation.Token);
             }
             catch { Lose("observation-timeout-or-io"); }
             lock (_stateGate)
@@ -225,6 +246,29 @@ internal sealed class GmWorkerNativeLineageLaunch : GmWorkerOwnedLaunch
             }
         }
         finally { _stopGate.Release(); }
+    }
+
+    internal override async Task<GmWorkerOwnedOutputs> SettleOutputsAsync()
+    {
+        try
+        {
+            await Task.WhenAll(_outputDrain, _errorDrain).WaitAsync(TimeSpan.FromSeconds(5));
+            lock (_stateGate)
+            {
+                if (_uncertainty != null || _terminal?.State != GmWorkerStopState.StoppedWithinScope)
+                    throw new InvalidOperationException("Native outputs cannot settle without matching scoped retirement.");
+                _outputsSettled = true;
+            }
+            return new(await _outputDrain, await _errorDrain);
+        }
+        catch { Lose("owned-output-observation-failed"); throw; }
+    }
+
+    private async Task<string> CaptureHostOutputAsync(Stream stream)
+    {
+        using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, leaveOpen: true);
+        try { return await GmWorkerBridgePool.CaptureProcessOutputAsync(reader); }
+        catch { Lose("output-drain-lost"); throw; }
     }
 
     private async Task<string> DrainAsync(Stream stream)
@@ -258,14 +302,17 @@ internal sealed class GmWorkerNativeLineageLaunch : GmWorkerOwnedLaunch
         {
             if (_uncertainty != null || _terminal?.State != GmWorkerStopState.StoppedWithinScope ||
                 !_processStarted || !_supervisorExit!.IsCompletedSuccessfully || _supervisor.ExitCode != 0 ||
-                !_statusReader!.IsCompletedSuccessfully || !_outputDrain.IsCompletedSuccessfully || !_errorDrain.IsCompletedSuccessfully)
+                !_statusReader!.IsCompletedSuccessfully || !_outputsSettled || !_outputDrain.IsCompletedSuccessfully || !_errorDrain.IsCompletedSuccessfully)
                 throw new InvalidOperationException("Native launch retains an unconfirmed owner; output EOF and helper exit cannot retire it.");
         }
-        _disposed = true;
+        // A filesystem failure retains the still-disposable original resources.
+        // Repeat deletion is harmless after a partially successful attempt.
+        if (Directory.Exists(_bootstrapDirectory)) Directory.Delete(_bootstrapDirectory, recursive: true);
         CloseBootstrap();
         await Task.WhenAll(_outputDrain, _errorDrain);
+        if (_hostExit != null) await _hostExit;
         _hostPidfd?.Dispose(); _supervisor.Dispose(); _output.Dispose(); _error.Dispose();
         _stopGate.Dispose(); _controlGate.Dispose();
-        Directory.Delete(_bootstrapDirectory, recursive: true);
+        _disposed = true;
     }
 }
