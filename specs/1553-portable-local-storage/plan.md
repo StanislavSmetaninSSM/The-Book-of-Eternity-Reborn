@@ -4,14 +4,15 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
-## T041-ENV worker environment — 2026-10-05 (GREEN, final review pending)
+## T041-ENV worker environment — 2026-10-05 (verified component)
 
 Source **`43b60b954265e3bb404bf562cf7b9ff13dc4f953`**, tree
 `ff730f38e1a0030e3e2b021cd66ed0c3ac8dd9c2`, passes **16/16** in the same saved
 Linux environment. [Qualification matrix](recovery/worker-environment-qualification.json)
 contains exact source/input hashes, raw evidence manifests, platform and limits.
-Independent Sol6.1/xhigh design PASS; implementation/final evidence review pending.
-T041-ENV is not yet marked complete; full T041-IPC/T041/#1553 remain open.
+Independent **gpt-6.1-sol/xhigh** design and implementation/final evidence review
+**PASS**, no actionable findings. Only **T041-ENV is complete**; full
+T041-IPC/T041/#1553 remain open.
 
 ### Contract, cause and minimal change
 
@@ -71,13 +72,15 @@ build command remains; terminated build zombies under PID1 may remain unreaped.
 ### Review, persistence and next bounded proposal
 
 Separate actual **gpt-6.1-sol/xhigh** design review PASS at `a6fcdb24`, no findings.
-Initial implementation review reports no actionable source defect; final source/
-evidence verdict pending. Every WIP used the authorized ordinary non-force push,
+Final independent **Sol6.1/xhigh PASS** reviewed runtime `43b60b95` and evidence
+carrier `b9b2fafe`: 16 distinct passes, all 33 artifact hashes across eight manifests,
+nine source/input hashes, eight unchanged-base blobs, nine generated XML files and
+all nine restored candidate inputs match. No actionable findings or source changes. Every WIP used the authorized ordinary non-force push,
 exact remote SHA readback and independent fetched-file byte comparison.
 Fresh GitHub-only source restoration at `43b60b95` is clean: **5,260 files**, all
 **37 changed files** byte-identical and connectivity fsck PASS. No rebuild/test
-execution is claimed for restoration. Next: publish this evidence carrier, receive
-final verdict, then publish final metadata and verify a new clean final clone.
+execution is claimed for restoration. Next: publish this final review metadata and verify a new clean final clone;
+the exact final carrier SHA/readback is recorded in the handoff.
 
 Recommended next slice is **detached workspace preparation/staging/disposal only**,
 without any process launch. `GmWorkerExecutionWorkspace.WriteAbsoluteFileAsync`

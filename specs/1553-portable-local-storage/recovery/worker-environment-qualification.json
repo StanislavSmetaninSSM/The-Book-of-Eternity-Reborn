@@ -5,7 +5,7 @@
   "Base": "9d5ffa0a3f513a89a9f4e4c89b0743bb2f4b5d6b",
   "RuntimeSource": "43b60b954265e3bb404bf562cf7b9ff13dc4f953",
   "RuntimeTree": "ff730f38e1a0030e3e2b021cd66ed0c3ac8dd9c2",
-  "Status": "16/16 GREEN; independent implementation/final evidence review pending. Full worker execution/lifecycle remains open.",
+  "Status": "PASS for bounded T041-ENV after independent implementation/final evidence review. Full worker execution/lifecycle remains open; final evidence carrier is restored after publication and identified in handoff.",
   "Environment": {
     "Os": "Debian GNU/Linux13.6",
     "Kernel": "6.18.44",
@@ -161,7 +161,18 @@
   "IndependentFinalReview": {
     "Model": "gpt-6.1-sol",
     "Effort": "xhigh",
-    "Result": "PENDING"
+    "Result": "PASS",
+    "ActionableFindings": 0,
+    "ReviewedRuntimeSource": "43b60b954265e3bb404bf562cf7b9ff13dc4f953",
+    "ReviewedEvidenceCarrier": "b9b2fafe6a809aa64313a3516f704b17172033c0",
+    "VerifiedDistinctPasses": 16,
+    "VerifiedArtifactHashes": 33,
+    "VerifiedManifests": 8,
+    "VerifiedInputHashes": 9,
+    "VerifiedUnchangedBaseBlobs": 8,
+    "VerifiedGeneratedXmlFiles": 9,
+    "VerifiedRestoredInputHashes": 9,
+    "Scope": "Read-only implementation/test/docs/selection, causal RED and preparation classification, raw GREEN/discovery audit, source/evidence/restoration hashes, cleanup and source-confirmed next-slice boundary. No reviewer builds/tests/probes/environment dumps."
   },
   "SourceRestoration": {
     "ObservedUtc": "2026-10-05T11:06:58.383896+00:00",

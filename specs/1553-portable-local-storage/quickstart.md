@@ -5,7 +5,8 @@
 Source `43b60b954265e3bb404bf562cf7b9ff13dc4f953` passes 16/16 synthetic environment
 checks on Linux. [Qualification](recovery/worker-environment-qualification.json)
 separates capture/strict JSON, pure host reconstruction and two actual hidden-host
-Ready/owner-close rows without Release. Independent final review is pending.
+Ready/owner-close rows without Release. Independent **gpt-6.1-sol/xhigh**
+implementation/final evidence review passed with no actionable findings.
 Linux keeps case-distinct names; Windows retains case-insensitive map semantics.
 This fixes the earlier inherited HTTP_PROXY/http_proxy capture collision without
 filtering variables or changing inheritance/network/security settings. All test
