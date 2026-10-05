@@ -126,6 +126,15 @@ lifecycle→replacement checks remain. Every explicit ordered source operation a
 literal assertion was checked read-only before rebuilding. Runtime files/cohorts remain
 unchanged atce0d39f3; this does not weaken exclusion or rerun their passing owners.
 
+Final documentation guard **4/4** passed at `bea1cf65` (1:45.837 including build).
+Discovery-only inventory **233 categories /10,596 method-or-file identities** passed
+in7.551s with zero tests executed and complete cleanup; four generated XML files parsed.
+[Worker qualification](recovery/worker-qualification.json) binds all eight runtime blobs
+to `ce0d39f3`, every exact positive/failing cohort and a168-case distinct passing union
+across those separate runs, not an aggregate command. Runtime remains unchanged.
+Final independent artifact/restoration verdict and coordinator acceptance are pending;
+no task checkbox or whole-platform claim has been advanced by this evidence supplement.
+
 1. Diagnose the original Begin failure with a causal test: force the existing
    unsupported before-image backend and a distinct cleanup failure, require both
    exceptions in initiating-first order, and retain the real Linux worker/load

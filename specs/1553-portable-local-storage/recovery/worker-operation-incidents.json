@@ -49,6 +49,13 @@
       "Target": "base e11e26de05a2a29f8b696105b29bb753aa89c503;23 corrected worker candidate entries",
       "Error": "user cancelled MCP tool call; isError:true; no tree SHA",
       "Status": "Stopped without commit/ref attempt;23 exact blobs retained. Parent supplied renewed user authorization. One exact retry succeeded03:10:51 with b97e141f778fcb942025a23ecdccd21dc5f30501; commit/ref ce0d39f3 subsequently verified; no alternate route"
+    },
+    {
+      "Utc": "2026-10-05T03:31:59Z",
+      "Tool": "write_stdin",
+      "Target": "session21139; fetch/reset bea1cf65 then portable-worker-docs",
+      "Error": "Unified exec process failed: automatic approval review was cancelled",
+      "Status": "Read-only check confirmed local HEADd1c82071 and no new runner directory/output. One exact authorized retry ran03:33:13; docs4/4 complete. No alternative executor/publication route."
     }
   ]
 }

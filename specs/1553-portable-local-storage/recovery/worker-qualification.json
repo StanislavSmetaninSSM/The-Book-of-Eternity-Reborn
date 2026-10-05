@@ -1,0 +1,830 @@
+{
+  "SchemaVersion": 1,
+  "Scope": "T031-WORKER-PORTABLE bounded native Linux ordinary worker apply decision and cleanup/recovery, including real worker versus public Load ordering",
+  "Status": "Verified candidate; final independent evidence/restoration verdict and coordinator acceptance pending",
+  "RuntimeCodeCommit": "ce0d39f349982a44fde16bb6e85b6a499fc552b9",
+  "FinalDocumentationTestCommit": "bea1cf6559f04b78b969d8782c82b3ba9a3c0458",
+  "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Toolchain": {
+    "PowerShell": "7.6.6",
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31",
+    "DOTNET_PROCESSOR_COUNT": "1",
+    "TelemetryOptOuts": [
+      "DOTNET_CLI_TELEMETRY_OPTOUT",
+      "POWERSHELL_TELEMETRY_OPTOUT",
+      "TESTINGPLATFORM_TELEMETRY_OPTOUT"
+    ]
+  },
+  "RuntimeFileBlobs": {
+    "BookOfEternityClient/Core/FileSystemManager.cs": "a6e27695d6069bf939745e431f2babf57de61a14",
+    "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs": "977ffca5611ca8bc855d3ec7417204d623b975a3",
+    "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs": "4a25846be454f6273a1666f1b33a3faa394cc553",
+    "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs": "dce3adfdaa2107e47380cacdf6068602031c2836",
+    "BookOfEternityClient/Core/FileSystemManager.WorkerPublication.cs": "7f20c99b9402be5a468d3e63ab8d60ea062e6c52",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.cs": "952cbf00417fb461cc9f3cedda12b916e117e74b",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.Deferred.cs": "d081bde4102612466a2fd19ab73a3c2820cfca58",
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs": "b2f0a4a5ebf7a6f2e63f2660dfb7e04d8ee2fcaa"
+  },
+  "Runs": [
+    {
+      "Bundle": "worker-core-green",
+      "Source": "ce0d39f349982a44fde16bb6e85b6a499fc552b9",
+      "Planned": 42,
+      "Executed": 42,
+      "Passed": 42,
+      "Failed": 0,
+      "Skips": 0,
+      "Duplicates": 0,
+      "CleanupComplete": true,
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selections/1553-worker-portable-core.json",
+      "Seconds": 136.9271196,
+      "Meaning": "38 lifecycle/cold/envelope cases, actual worker/load ordering1, safe admission gate1, original-error diagnostics2.12 cases use actual owned cold-process publication/recovery; no native Windows run."
+    },
+    {
+      "Bundle": "worker-consumers-docs-partial",
+      "Source": "ce0d39f349982a44fde16bb6e85b6a499fc552b9",
+      "Planned": 121,
+      "Executed": 121,
+      "Passed": 120,
+      "Failed": 1,
+      "CleanupComplete": true,
+      "Seconds": 20.3568761,
+      "PassingSubsets": {
+        "portable-storage-original-v1-fixtures": 2,
+        "portable-storage-publication": 71,
+        "portable-storage-stream-publication": 29,
+        "portable-worker-consumers": 15
+      },
+      "FailedSubset": "portable-worker-docs3/4; stale pre-cutover source guard. This command remains failed; latest docs4/4 is separate."
+    },
+    {
+      "Bundle": "worker-continuation-green",
+      "Source": "ce0d39f349982a44fde16bb6e85b6a499fc552b9",
+      "Planned": 5,
+      "Executed": 5,
+      "Passed": 5,
+      "Failed": 0,
+      "Skips": 0,
+      "CleanupComplete": true,
+      "Seconds": 87.7173483,
+      "Meaning": "Actual C2 continuation worker consumers with real validator paths; not a real GM provider/process run."
+    },
+    {
+      "Bundle": "worker-docs-green",
+      "Source": "bea1cf6559f04b78b969d8782c82b3ba9a3c0458",
+      "Planned": 4,
+      "Executed": 4,
+      "Passed": 4,
+      "Failed": 0,
+      "Skips": 0,
+      "CleanupComplete": true,
+      "Seconds": 105.8367301,
+      "Meaning": "Actual current Save/Load/backup lease handoff guards plus worker operational/original recovery documentation."
+    }
+  ],
+  "PassingCaseUnion": {
+    "Count": 168,
+    "Meaning": "Distinct passing parameterized case names across the source-qualified runs above; not one aggregate run or whole-catalog acceptance. The failed docs versions remain preserved.",
+    "Cases": [
+      {
+        "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_DecisionWithoutChangedFilesUsesCurrentOwner",
+        "Evidence": "evidence/worker-continuation-green/portable-worker-continuation-integration-001.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_DependentCostsUseCurrentDiagnosticsAndRollback",
+        "Evidence": "evidence/worker-continuation-green/portable-worker-continuation-integration-001.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_MaterializeIsComposedBeforeNarrativeApply",
+        "Evidence": "evidence/worker-continuation-green/portable-worker-continuation-integration-001.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_PublicTaskCannotAuthorizePrivateOrUnrelatedChanges",
+        "Evidence": "evidence/worker-continuation-green/portable-worker-continuation-integration-001.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_ReadyPublishedDuringExecutionPreventsNarrativeApply",
+        "Evidence": "evidence/worker-continuation-green/portable-worker-continuation-integration-001.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_AcceptedCanonicalCommitSurvivesAuditPublicationFailure",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-worker-consumers-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_AcceptsAllowedProposalAndWritesCanonicalFile",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-worker-consumers-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_ActorMaterializationRepairChangingOnlyNamedSection_IsAccepted",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-worker-consumers-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_CanonicalMutationAfterContextReadWinsOverWorkerProposal",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-worker-consumers-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_CharacteristicAuthorityMutationDuringValidationRejectsAndRollsBackTarget",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-worker-consumers-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_CooperatingRealmAuthorityWriterWaitsUntilAcceptedLinearizationPoint",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-worker-consumers-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock",
+        "Evidence": "evidence/worker-core-green/portable-load-worker-ordering-unit-001.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_PreparationBaselineConflictReturnsRejectedWithoutDecisionEvidence",
+        "Evidence": "evidence/worker-core-green/portable-worker-admission-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_ProductionValidationFailureRestoresOriginalBytes",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-worker-consumers-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_RealmAuthorityMutationDuringValidationRejectsAndRollsBackTarget",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-worker-consumers-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_RollbackCasDoesNotOverwriteMutationAfterOwnershipRead",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-worker-consumers-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_RollsBackAllowedProposalWhenValidationFails",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-worker-consumers-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_StaleTaskContextWithBomOnlyByteDifference_IsRejectedWithoutChangingCanonicalFile",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-worker-consumers-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_TaskFromPriorSessionGenerationIsRejectedEvenWhenProposalBytesAreRestored",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-worker-consumers-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_ValidationFailureDoesNotRollbackOverConcurrentCanonicalMutation",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-worker-consumers-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_WhenAuditLogProvided_RecordsApplyDecision",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-worker-consumers-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyReservedAsync_UsesCanonicalReservedTaskAsAuthority",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-worker-consumers-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.DurableFileAuthoritySourceGuard_RejectsPathBasedRuntimeMutations",
+        "Evidence": "evidence/worker-docs-green/portable-worker-docs-unit-001.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.MainGmPrompt_DocumentsExplicitWorkerDelegationFlow",
+        "Evidence": "evidence/worker-docs-green/portable-worker-docs-unit-001.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+        "Evidence": "evidence/worker-docs-green/portable-worker-docs-unit-001.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentReservedAuthorityAndSessionReplacementAbort",
+        "Evidence": "evidence/worker-docs-green/portable-worker-docs-unit-001.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerDiagnosticTests.Begin_PreservesInitiatingFailureWhenPrivateCleanupAlsoFails(failBeforeImage: False)",
+        "Evidence": "evidence/worker-core-green/portable-worker-diagnostic-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerDiagnosticTests.Begin_PreservesInitiatingFailureWhenPrivateCleanupAlsoFails(failBeforeImage: True)",
+        "Evidence": "evidence/worker-core-green/portable-worker-diagnostic-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.ActualWorkerDecisionRecoversInIndependentProcess(cut: \"CleanupComplete\", committed: True)",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.ActualWorkerDecisionRecoversInIndependentProcess(cut: \"CleanupMember\", committed: True)",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.ActualWorkerDecisionRecoversInIndependentProcess(cut: \"CommitStaged\", committed: False)",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.ActualWorkerDecisionRecoversInIndependentProcess(cut: \"Committed\", committed: True)",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.ActualWorkerDecisionRecoversInIndependentProcess(cut: \"IntentPublished\", committed: False)",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.ActualWorkerDecisionRecoversInIndependentProcess(cut: \"IntentStaged\", committed: False)",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.ActualWorkerDecisionRecoversInIndependentProcess(cut: \"PendingValidation\", committed: False)",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.ActualWorkerDecisionRecoversInIndependentProcess(cut: \"first-member\", committed: False)",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.BeginRetainsInitiatingFailureAndConflictingRecoveryWithoutEarlierUndo",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.ColdRollbackCanResumeAfterItsOwnInterruption(cut: \"MemberRestored\")",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.ColdRollbackCanResumeAfterItsOwnInterruption(cut: \"RollbackStaged\")",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.ColdUnknownMemberOrGenerationBlocksBeforeAnyRestoration(generation: False)",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.ColdUnknownMemberOrGenerationBlocksBeforeAnyRestoration(generation: True)",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.CommitCleanupFailurePreservesCommitForNextWriter",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.CompleteSetRemainsPendingUntilExplicitDecision(commit: False)",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.CompleteSetRemainsPendingUntilExplicitDecision(commit: True)",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.DecisionPreflightsLateUnknownMemberAndGenerationBeforeAnyRestore(generation: False, commit: False)",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.DecisionPreflightsLateUnknownMemberAndGenerationBeforeAnyRestore(generation: False, commit: True)",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.DecisionPreflightsLateUnknownMemberAndGenerationBeforeAnyRestore(generation: True, commit: False)",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.DecisionPreflightsLateUnknownMemberAndGenerationBeforeAnyRestore(generation: True, commit: True)",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.DifferentLeaseCannotFinalizePendingDecision",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.ImportedEnvelopeAndLargerBaselinesUseStreamedDecision(commit: False)",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.ImportedEnvelopeAndLargerBaselinesUseStreamedDecision(commit: True)",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.LateBaselineMismatchRefusesWholeSetWithoutMutation",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.LostPendingEvidenceCannotConfirmRollbackOrClearWriteGuard",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.MissingGenerationIsNotInventedByWorkerAdmission",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.OldHandleCannotCommitOrRollbackNewerDecision",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.OrdinaryWorkerCannotBeginInsideOriginalRecoveryOrRecorder(recorder: False)",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.OrdinaryWorkerCannotBeginInsideOriginalRecoveryOrRecorder(recorder: True)",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDecisionRefusesNestedPublicationAndRecoveryWithoutUndo(nested: \"direct\")",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDecisionRefusesNestedPublicationAndRecoveryWithoutUndo(nested: \"directory\")",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDecisionRefusesNestedPublicationAndRecoveryWithoutUndo(nested: \"original-worker\")",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDecisionRefusesNestedPublicationAndRecoveryWithoutUndo(nested: \"publisher\")",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDecisionRefusesNestedPublicationAndRecoveryWithoutUndo(nested: \"recovery\")",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDecisionRefusesNestedPublicationAndRecoveryWithoutUndo(nested: \"stream\")",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDecisionRefusesNestedPublicationAndRecoveryWithoutUndo(nested: \"worker\")",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDecisionRefusesNestedPublicationAndRecoveryWithoutUndo(nested: \"writer\")",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDeletionRefusesEmptyParentRemovalBeforeRollback",
+        "Evidence": "evidence/worker-core-green/portable-worker-transaction-unit-004.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.AuthorityPathNormalization_MatchesScopeForExtendedWindowsComparisons(raw: \"\\\\\\\\?\\\\C:\\\\game\\\\.boe_runtime\\\\locks\\\\canonical-wr\"···, expected: \"C:\\\\game\\\\.boe_runtime\\\\locks\\\\canonical-write.loc\"···)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.AuthorityPathNormalization_MatchesScopeForExtendedWindowsComparisons(raw: \"\\\\\\\\?\\\\C:\\\\game\\\\.boe_runtime\\\\locks\\\\session-life\"···, expected: \"C:\\\\game\\\\.boe_runtime\\\\locks\\\\session-lifecycle.l\"···)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.AuthorityPathNormalization_MatchesScopeForExtendedWindowsComparisons(raw: \"\\\\\\\\?\\\\C:\\\\game\\\\.boe_runtime\\\\session-generation\\\"···, expected: \"C:\\\\game\\\\.boe_runtime\\\\session-generation\\\\curren\"···)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.AuthorityPathNormalization_MatchesScopeForExtendedWindowsComparisons(raw: \"\\\\\\\\?\\\\C:\\\\game\\\\.boe_runtime\\\\trusted-local-publi\"···, expected: \"C:\\\\game\\\\.boe_runtime\\\\trusted-local-publication-\"···)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.AuthorityPathNormalization_MatchesScopeForExtendedWindowsComparisons(raw: \"\\\\\\\\?\\\\UNC\\\\server\\\\share\\\\game\\\\.boe_runtime\\\\loc\"···, expected: \"\\\\\\\\server\\\\share\\\\game\\\\.boe_runtime\\\\locks\\\\cano\"···)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.AuthorityPathNormalization_MatchesScopeForExtendedWindowsComparisons(raw: \"\\\\\\\\?\\\\UNC\\\\server\\\\share\\\\game\\\\.boe_runtime\\\\loc\"···, expected: \"\\\\\\\\server\\\\share\\\\game\\\\.boe_runtime\\\\locks\\\\sess\"···)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.AuthorityPathNormalization_MatchesScopeForExtendedWindowsComparisons(raw: \"\\\\\\\\?\\\\UNC\\\\server\\\\share\\\\game\\\\.boe_runtime\\\\ses\"···, expected: \"\\\\\\\\server\\\\share\\\\game\\\\.boe_runtime\\\\session-gen\"···)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.AuthorityPathNormalization_MatchesScopeForExtendedWindowsComparisons(raw: \"\\\\\\\\?\\\\UNC\\\\server\\\\share\\\\game\\\\.boe_runtime\\\\tru\"···, expected: \"\\\\\\\\server\\\\share\\\\game\\\\.boe_runtime\\\\trusted-loc\"···)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.PublishWithOutcome_PreconditionConflictCannotClaimRestoredBeforeImages",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.PublishWithOutcome_SeparatesRollbackFromDurableCommitCleanupFailure(phase: 3, expected: 1)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.PublishWithOutcome_SeparatesRollbackFromDurableCommitCleanupFailure(phase: 5, expected: 0)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.PublishWithOutcome_SeparatesRollbackFromDurableCommitCleanupFailure(phase: 8, expected: 0)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.PublishWithOutcome_UnknownRollbackContentIsUncertainAndRetainsEvidence",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_BootstrapGenerationIsAnExplicitJournalMember(committed: False)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_BootstrapGenerationIsAnExplicitJournalMember(committed: True)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_ExactExternalGrantUsesOwnedSiblingStageWithoutGrantingOtherFiles",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_GenerationEncodingPreservesExactBootstrapTransitionAndRollbackBytes(encodingName: \"utf16-be\", operation: \"bootstrap\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_GenerationEncodingPreservesExactBootstrapTransitionAndRollbackBytes(encodingName: \"utf16-be\", operation: \"rollback\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_GenerationEncodingPreservesExactBootstrapTransitionAndRollbackBytes(encodingName: \"utf16-be\", operation: \"transition\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_GenerationEncodingPreservesExactBootstrapTransitionAndRollbackBytes(encodingName: \"utf16-le\", operation: \"bootstrap\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_GenerationEncodingPreservesExactBootstrapTransitionAndRollbackBytes(encodingName: \"utf16-le\", operation: \"rollback\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_GenerationEncodingPreservesExactBootstrapTransitionAndRollbackBytes(encodingName: \"utf16-le\", operation: \"transition\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_GenerationEncodingPreservesExactBootstrapTransitionAndRollbackBytes(encodingName: \"utf32-be\", operation: \"bootstrap\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_GenerationEncodingPreservesExactBootstrapTransitionAndRollbackBytes(encodingName: \"utf32-be\", operation: \"rollback\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_GenerationEncodingPreservesExactBootstrapTransitionAndRollbackBytes(encodingName: \"utf32-be\", operation: \"transition\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_GenerationEncodingPreservesExactBootstrapTransitionAndRollbackBytes(encodingName: \"utf32-le\", operation: \"bootstrap\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_GenerationEncodingPreservesExactBootstrapTransitionAndRollbackBytes(encodingName: \"utf32-le\", operation: \"rollback\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_GenerationEncodingPreservesExactBootstrapTransitionAndRollbackBytes(encodingName: \"utf32-le\", operation: \"transition\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_GenerationEncodingPreservesExactBootstrapTransitionAndRollbackBytes(encodingName: \"utf8-bom\", operation: \"bootstrap\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_GenerationEncodingPreservesExactBootstrapTransitionAndRollbackBytes(encodingName: \"utf8-bom\", operation: \"rollback\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_GenerationEncodingPreservesExactBootstrapTransitionAndRollbackBytes(encodingName: \"utf8-bom\", operation: \"transition\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_HardLinkedDestinationNeverChangesOutsideBytes(delete: False)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_HardLinkedDestinationNeverChangesOutsideBytes(delete: True)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_PreservesExactBytesAbsenceAndReturnsLogicalResult(before: [1, 2], after: [1, 2])",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_PreservesExactBytesAbsenceAndReturnsLogicalResult(before: [239, 187, 191, 123, 125], after: null)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_PreservesExactBytesAbsenceAndReturnsLogicalResult(before: [255, 0, 254, 17], after: [])",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_PreservesExactBytesAbsenceAndReturnsLogicalResult(before: [], after: [255, 0, 254, 17])",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_PreservesExactBytesAbsenceAndReturnsLogicalResult(before: null, after: [239, 187, 191, 123, 125])",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_PreservesExactBytesAbsenceAndReturnsLogicalResult(before: null, after: null)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_PreservesTheExistingGenerationReadersCurrentSchemaContract",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RecoversPendingWorkBeforeStartingNextTransaction",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RejectsDuplicateAndReservedMembers",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RejectsDuplicateGenerationMemberAsInvalidData",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RejectsExpectedContentAndStaleGenerationBeforeAnyMutation",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RequiresItsOwnActiveCanonicalLease",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_SecondParticipatingProcessCannotAcquireHeldCanonicalLease",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_AbruptColdProcessExitAndSeparateRecoveryProcess(phase: \"CleanupMember\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_AbruptColdProcessExitAndSeparateRecoveryProcess(phase: \"Committed\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_AbruptColdProcessExitAndSeparateRecoveryProcess(phase: \"MemberPublished\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_AbruptColdProcessExitAndSeparateRecoveryProcess(phase: \"RollbackStaged\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_CommittedUnknownMemberBlocksCleanupWithoutRollback",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_EveryPublishCutRestoresWholeSetOrKeepsCommitted(phaseValue: 0)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_EveryPublishCutRestoresWholeSetOrKeepsCommitted(phaseValue: 1)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_EveryPublishCutRestoresWholeSetOrKeepsCommitted(phaseValue: 2)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_EveryPublishCutRestoresWholeSetOrKeepsCommitted(phaseValue: 3)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_EveryPublishCutRestoresWholeSetOrKeepsCommitted(phaseValue: 4)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_EveryPublishCutRestoresWholeSetOrKeepsCommitted(phaseValue: 5)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_EveryPublishCutRestoresWholeSetOrKeepsCommitted(phaseValue: 8)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_EveryPublishCutRestoresWholeSetOrKeepsCommitted(phaseValue: 9)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_LinkInLaterMemberPreservesEarlierMemberAndOutsideSentinel",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_PartiallyWrittenPrivateScratchIsNotCanonicalAuthority",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_PreflightsEveryMemberBeforeRollbackAndRetainsUnknownContent",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_PreflightsInvalidJournalWithoutRestoringAnyMember(corruption: \"duplicate-member\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_PreflightsInvalidJournalWithoutRestoringAnyMember(corruption: \"format\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_PreflightsInvalidJournalWithoutRestoringAnyMember(corruption: \"hash\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_PreflightsInvalidJournalWithoutRestoringAnyMember(corruption: \"missing-decision\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_PreflightsInvalidJournalWithoutRestoringAnyMember(corruption: \"outside-path\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_RejectsChangedGenerationWithoutTouchingMembersOrEvidence",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_RestartsAfterInterruptedRollback(phaseValue: 6)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_RestartsAfterInterruptedRollback(phaseValue: 7)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_RetainsInvalidJournalAndLeavesOldFormatSeparate",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-publication-unit-002.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests.NormalLeaseRecoversIndependentOriginalV1Decision(committed: False, fixtureName: \"pending.json\", fixtureLength: 2066, fixtureSha256: \"13fb4c68e26b87107501478a4f302a17e16fa5f25019de3bca\"···)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-original-v1-fixtures-unit-001.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests.NormalLeaseRecoversIndependentOriginalV1Decision(committed: True, fixtureName: \"committed.json\", fixtureLength: 2065, fixtureSha256: \"da0c9fd29ed3d23d8903d42b88691d4d83bc156c1142061595\"···)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-original-v1-fixtures-unit-001.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration(fresh: False)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration(fresh: True)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.FileImagesBecomeSelfContainedBeforeDisposableSourcesAreRemoved",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: \"duplicate-member\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: \"duplicate-property\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: \"huge-header\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: \"image-hash\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: \"negative-header\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: \"negative-length\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: \"region-gap\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: \"region-overflow\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: \"region-overlap\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: \"trailing-region\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: \"truncated-header\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: \"truncated-region\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: \"unknown-format\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: \"unknown-property\")",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.OriginalV1EvidenceKeepsItsOriginalPendingAndCommittedSemantics(committed: False)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.OriginalV1EvidenceKeepsItsOriginalPendingAndCommittedSemantics(committed: True)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.UnknownLaterMemberPreventsEarlierRollbackAndRetainsV2Authority",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidActiveV2OwnsDecisionDespiteUnknownTemporaryContents(committed: False)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidActiveV2OwnsDecisionDespiteUnknownTemporaryContents(committed: True)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidFramedEvidenceRecoversThroughNormalCanonicalAcquisition(committed: False)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidFramedEvidenceRecoversThroughNormalCanonicalAcquisition(committed: True)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(phaseValue: 0, committed: False)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(phaseValue: 2, committed: False)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(phaseValue: 3, committed: False)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(phaseValue: 4, committed: False)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(phaseValue: 5, committed: True)",
+        "Evidence": "evidence/worker-consumers-docs-partial/portable-storage-stream-publication-unit-003.trx"
+      }
+    ]
+  },
+  "CatalogAudit": {
+    "Bundle": "worker-final-audit",
+    "Source": "bea1cf6559f04b78b969d8782c82b3ba9a3c0458",
+    "Categories": 233,
+    "MethodOrFileIdentities": 10596,
+    "TestsExecuted": 0,
+    "ExitCode": 0,
+    "Seconds": 7.5510438,
+    "CleanupComplete": true
+  },
+  "GeneratedXml": [
+    {
+      "Project": "BookOfEternityClient",
+      "Parsed": true,
+      "Bytes": 1529792,
+      "Sha256": "04dd18dc0650721d5f4c0faabada6887caa08a307460052d50bb07f354676d4b"
+    },
+    {
+      "Project": "BookOfEternityClient.TestSupport",
+      "Parsed": true,
+      "Bytes": 31844,
+      "Sha256": "93af45db23359cc9d3c777bddc3babed12f713c2ced27fce989306fba80ba907"
+    },
+    {
+      "Project": "BookOfEternityClient.Tests",
+      "Parsed": true,
+      "Bytes": 333046,
+      "Sha256": "e91bf83c00f13157defa3bd335724b5e09f607263c1418d43dbdfed6e4054404"
+    },
+    {
+      "Project": "BookOfEternityClient.IntegrationTests",
+      "Parsed": true,
+      "Bytes": 574626,
+      "Sha256": "c36e3bda2774be391f44f8114013e4dcc2e8bf3d1c4513d41506fae087e28a00"
+    }
+  ],
+  "CausalHistory": [
+    "worker-diagnostic-red0/2 -> worker-diagnostic-green2/2; initiating before-image rejection retained before cleanup failure",
+    "worker-initiating-failure: actual original worker/load case0/1 before Load",
+    "worker-transaction-initial-red14failed/1weak-oracle-pass; oracle corrected before implementation",
+    "worker-transaction-red0/34 -> worker-transaction-first-green34/34",
+    "worker-review-red0/5 -> all five corrected cases in worker-core-green",
+    "worker-ordering-probe-failure0/1: unleased fixture observation, retained positive assertions migrated to direct File observations",
+    "worker-consumers-docs-partial and worker-docs-stale-backup-guard retain obsolete source-guard failures; worker-docs-green4/4 closes these with precise current authority checks"
+  ],
+  "ContractPreservation": [
+    "One existing B1 v2 decision applies the complete ordinary set before validation while retaining the exact canonical lease. No new journal format or second authority.",
+    "Commit survives late cleanup failure; rollback requires whole-set/generation confirmation. Unknown state retains the guard/evidence and blocks later recovery.",
+    "Same-lease nested publication/recovery/original entry and empty-parent mutation are refused. Other participating writers wait.",
+    "Original worker namespace and handler remain distinct; explicit original fixtures are not reinterpreted.",
+    "No GM-authored schema/mechanic/command change; active operational guides, worked example, matrix, launchers and guards synchronized."
+  ],
+  "Limits": [
+    "No new native Windows worker qualification; Windows checklist remains an owner/platform gate",
+    "No actual worker process/proposal-workspace/IPC/PTY migration or real provider/GM/live-console game acceptance",
+    "No unchanged filesystem/load-resource/browser/console aggregate rerun",
+    "16 MiB imported After and32 MiB Before is an in-process decision envelope, not a complete resource benchmark; cold-process proof uses smaller exact images",
+    "T032-A4-NATIVE-NAMES, full T031/T032/B4/B5/T033 and whole#1553 remain open",
+    "Compiler/analyzer warnings remain in retained build logs; no warning-free claim"
+  ],
+  "Review": {
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "Status": "Corrections source-reviewed; final evidence/readback verdict pending"
+  },
+  "OperationIncidents": "worker-operation-incidents.json"
+}

@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "portable-worker-docs"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "bea1cf6559f04b78b969d8782c82b3ba9a3c0458",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 102.9257318,
+  "Descriptors": [
+    {
+      "Name": "portable-worker-docs-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-worker-docs",
+      "Categories": [
+        "portable-worker-docs"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.DurableFileAuthoritySourceGuard_RejectsPathBasedRuntimeMutations|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.MainGmPrompt_DocumentsExplicitWorkerDelegationFlow|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentReservedAuthorityAndSessionReplacementAbort",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.DurableFileAuthoritySourceGuard_RejectsPathBasedRuntimeMutations",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.MainGmPrompt_DocumentsExplicitWorkerDelegationFlow",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentReservedAuthorityAndSessionReplacementAbort",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
