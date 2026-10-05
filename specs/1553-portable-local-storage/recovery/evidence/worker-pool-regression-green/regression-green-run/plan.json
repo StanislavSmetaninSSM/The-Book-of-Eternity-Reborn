@@ -1,0 +1,198 @@
+{
+  "Categories": [
+    "worker-pool-regression-host",
+    "worker-pool-regression-ipc",
+    "worker-pool-regression-reaper",
+    "worker-pool-regression-policy",
+    "worker-pool-regression-docs"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 8.1987545,
+  "Descriptors": [
+    {
+      "Name": "worker-pool-regression-docs-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-pool-regression-docs",
+      "Categories": [
+        "worker-pool-regression-docs"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-pool-regression-host-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-pool-regression-host",
+      "Categories": [
+        "worker-pool-regression-host"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.CancellationAfterNativeBinding_RetainsOwnerThroughScopedRetirement|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.HelperLossAndOutputEof_CannotDisposeLiveHostIdentity|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.HostOutput_IsDistinctAndPrivateDescriptorsDoNotSurviveExec|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.NeutralHostCapability_RejectsReleaseBeforeSendingAnyWorkerCommand",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.CancellationAfterNativeBinding_RetainsOwnerThroughScopedRetirement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.HelperLossAndOutputEof_CannotDisposeLiveHostIdentity",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.HostOutput_IsDistinctAndPrivateDescriptorsDoNotSurviveExec",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.NeutralHostCapability_RejectsReleaseBeforeSendingAnyWorkerCommand",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-pool-regression-ipc-integration-003",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "worker-pool-regression-ipc",
+      "Categories": [
+        "worker-pool-regression-ipc"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.CompletionArbiter_AlreadySignaledTimeoutOverridesBufferedCompletion|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.CompletionArbiter_CancellationDuringOutputDrainOverridesCompletion|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.CompletionArbiter_AlreadySignaledTimeoutOverridesBufferedCompletion",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.CompletionArbiter_CancellationDuringOutputDrainOverridesCompletion",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-pool-regression-policy-unit-004",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-pool-regression-policy",
+      "Categories": [
+        "worker-pool-regression-policy"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.WindowsAuto_PreservesJobCapabilityWithoutNativePreflight|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.ActualPool_RejectsLinuxReleaseBeforeReservationAttachOrRelease|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.DefaultWindowsCompletion_PreservesDiagnosticDrainBeforeStop|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.NativeCompletion_DoesNotWaitForDiagnosticDrainBeforeScopedStop|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.ObservationException_RetriesOnlyRetainedAssignedWindowsJob|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.WindowsOwner_DoesNotTreatArbitraryProcessTreeAsRetainedJob",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 13,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.WindowsAuto_PreservesJobCapabilityWithoutNativePreflight",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.ActualPool_RejectsLinuxReleaseBeforeReservationAttachOrRelease",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher",
+          "Cases": 5
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.DefaultWindowsCompletion_PreservesDiagnosticDrainBeforeStop",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.NativeCompletion_DoesNotWaitForDiagnosticDrainBeforeScopedStop",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.ObservationException_RetriesOnlyRetainedAssignedWindowsJob",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.WindowsOwner_DoesNotTreatArbitraryProcessTreeAsRetainedJob",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-pool-regression-reaper-integration-005",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "worker-pool-regression-reaper",
+      "Categories": [
+        "worker-pool-regression-reaper"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessTreeTests.QuarantineReaper_OverlappingPassesCleanAndReleaseCapacityExactlyOnce|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessTreeTests.QuarantineReaper_UnconfirmedOwnerRetainsBoundedCapacityUntilLaterDeath|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.CanonicalAppendSuccessNeedsNoFallbackAndReleasesExactlyOnce|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PublishedTamperRemainsConflictAndCannotReleaseRetainedSlot|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnconfirmedOwnerCannotCleanWorkspaceRecordReceiptOrReleaseSlot",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 9,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessTreeTests.QuarantineReaper_OverlappingPassesCleanAndReleaseCapacityExactlyOnce",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessTreeTests.QuarantineReaper_UnconfirmedOwnerRetainsBoundedCapacityUntilLaterDeath",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.CanonicalAppendSuccessNeedsNoFallbackAndReleasesExactlyOnce",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PublishedTamperRemainsConflictAndCannotReleaseRetainedSlot",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnconfirmedOwnerCannotCleanWorkspaceRecordReceiptOrReleaseSlot",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

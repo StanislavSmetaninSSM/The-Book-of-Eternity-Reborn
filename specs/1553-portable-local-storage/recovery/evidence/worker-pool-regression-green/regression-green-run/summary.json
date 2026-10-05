@@ -1,0 +1,96 @@
+{
+  "Categories": [
+    "worker-pool-regression-host",
+    "worker-pool-regression-ipc",
+    "worker-pool-regression-reaper",
+    "worker-pool-regression-policy",
+    "worker-pool-regression-docs"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "worker-pool-regression-docs",
+      "Seconds": 3.1201114,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-pool-regression-host",
+      "Seconds": 19.6783127,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-pool-regression-ipc",
+      "Seconds": 3.6852594,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-pool-regression-policy",
+      "Seconds": 3.0536063,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-pool-regression-reaper",
+      "Seconds": 3.9112245,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0617549,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0228305,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0171336,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0055746,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 20,
+  "WallTime": "00:00:41.9491780",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 5,
+    "CompletedDescriptors": 5,
+    "PlannedCases": 36,
+    "CompletedCases": 36,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 36,
+    "Executed": 36,
+    "Passed": 36,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

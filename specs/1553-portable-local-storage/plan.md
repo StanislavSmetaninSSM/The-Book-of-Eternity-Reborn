@@ -37,6 +37,14 @@ source assertion, not a runtime causal RED. Preserve exact failure in
 check of retained-owner transfer before both diagnostics, then rebuild and run the
 same still-pending narrow36 selection. Runtime source is unchanged.
 
+B6 regression GREEN at `b89a60dfdcd23d54e60015321e4bd826e0b8ef81`:
+fresh unit+integration build/Plan36/0exec65.8836693s, followed by36/36PASS
+in the exact five selected categories. Complete selection and owned cleanup,
+no skip/duplicate/timeout. Exact elapsed time and guardian reports are preserved in
+`recovery/evidence/worker-pool-regression-green`; no runtime edits followed95c12101.
+The revised guard received separate actual Sol6.1/xhigh PASS. Catalog and both
+selection files still need discovery-only audits; final packet/review/restore pending.
+
 ### Current source findings and choice
 
 - Pool lines565–666 reduce a completed StopAndWaitAsync to deathConfirmed; reaper
