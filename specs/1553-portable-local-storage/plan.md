@@ -34,6 +34,17 @@ alarm-only guardian cannot cover a supervisor clearing alarms or a gated host.
 Qualify driver/helper/gate loss and unaffected sentinel before native host expansion.
 This changes synthetic fixture cleanup only, not production backend scope.
 
+At `8cb425f57ed7c7a0aedf1313ea46904144ce6c9a`, fresh selected build/discovery
+8planned/0executed,44.8895364s; selected execution **selector7/7PASS and package0/1
+causalFAIL**,13.1461940s, complete cleanup. Native compilation exited0; package
+failure is missing player provenance manifest, not compiler preparation. No native
+helper was executed. [Evidence](recovery/evidence/worker-host-package-red/manifest.json).
+Builder correction adds measured readelf GLIBC floor and relocatable/source/binary
+manifest; client publish accepts only explicitly prebuilt assets. Protocol capability
+remains1 until the actual helper v2 extension exists. New independent guardian
+fixture4cases next: normal, driver loss, helper loss, held pre-exec gate, each with
+an unrelated finite sentinel. Guard failure/deadline retains own wait/reap authority.
+
 ## Worker-host native integration design — 2026-10-05
 
 **Design only; not implementation authorization.** Source/remote base

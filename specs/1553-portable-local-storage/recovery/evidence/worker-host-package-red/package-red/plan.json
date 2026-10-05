@@ -1,0 +1,71 @@
+{
+  "Categories": [
+    "worker-backend-selection",
+    "worker-native-package"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "8cb425f57ed7c7a0aedf1313ea46904144ce6c9a",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 5.2834703,
+  "Descriptors": [
+    {
+      "Name": "worker-backend-selection-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-backend-selection",
+      "Categories": [
+        "worker-backend-selection"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.ExplicitSystemd_DoesNotPretendSuccessOrSilentlyDowngrade|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxNeutralHost_SelectsDeclaredFallbackPendingActualPreflight|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxWorkerRelease_IsUnavailableBeforeAnyLaunch|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.OtherPlatform_RemainsUnavailable|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.WindowsAuto_PreservesJobCapabilityWithoutNativePreflight",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.ExplicitSystemd_DoesNotPretendSuccessOrSilentlyDowngrade",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxNeutralHost_SelectsDeclaredFallbackPendingActualPreflight",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxWorkerRelease_IsUnavailableBeforeAnyLaunch",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.OtherPlatform_RemainsUnavailable",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.WindowsAuto_PreservesJobCapabilityWithoutNativePreflight",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-package-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-package",
+      "Categories": [
+        "worker-native-package"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePackageTests.Build_ProducesRelocatableManifestWithMeasuredElfAbi",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePackageTests.Build_ProducesRelocatableManifestWithMeasuredElfAbi",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

@@ -65,4 +65,20 @@
     <None Remove="SnapshotHelper\**" />
   </ItemGroup>
 
+  <!-- Supply an explicitly prebuilt package; normal player launch never builds/downloads it. -->
+  <ItemGroup Condition="'$(BoeNativePackageDirectory)' != ''">
+    <Content Include="$(BoeNativePackageDirectory)/boe-lineage-supervisor"
+             Link="runtimes/linux-x64/native/boe-lineage-supervisor"
+             CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="$(BoeNativePackageDirectory)/package-manifest.json"
+             Link="runtimes/linux-x64/native/package-manifest.json"
+             CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+  <Target Name="ValidateBoeNativePackage" BeforeTargets="PrepareForBuild;Publish"
+          Condition="'$(BoeRequireNativePackage)' == 'true' Or '$(BoeNativePackageDirectory)' != ''">
+    <Error Condition="'$(BoeNativePackageDirectory)' == ''" Text="An explicitly prebuilt native package is required." />
+    <Error Condition="!Exists('$(BoeNativePackageDirectory)/boe-lineage-supervisor') Or !Exists('$(BoeNativePackageDirectory)/package-manifest.json')"
+           Text="The prebuilt native package is incomplete; build it explicitly before packaging." />
+  </Target>
+
 </Project>

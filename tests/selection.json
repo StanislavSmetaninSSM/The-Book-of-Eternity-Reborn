@@ -15,6 +15,13 @@
       "contracts": [
         "#1553 T041-FALLBACK-HOST"
       ]
+    },
+    {
+      "category": "worker-native-guardian",
+      "reason": "Independent guardian must demonstrate loss/gate cleanup before actual native-host integration runs.",
+      "contracts": [
+        "#1553 T041-FALLBACK-HOST fixture authority"
+      ]
     }
   ]
 }

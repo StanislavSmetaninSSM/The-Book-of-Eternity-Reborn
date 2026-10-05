@@ -11651,6 +11651,29 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-native-guardian",
+      "responsibility": "Independent finite outer guardian qualification: actual direct/adopted child retirement after driver/helper/gated-child failure, exclusive ECHILD and an unaffected foreign sentinel.",
+      "excludes": "Production helper/managed-host admission, worker Release, game results and backend qualification.",
+      "changeHints": [
+        "tests/fixtures/LinuxHost/host-guardian.c"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerNativeGuardianTests.*"
+          ]
+        }
+      ]
     }
   ]
 }
