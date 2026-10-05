@@ -1,0 +1,55 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "43b60b954265e3bb404bf562cf7b9ff13dc4f953",
+  "SourceResultDirectory": "20261005-110642-257-13814-9fc42c71581f4d7d99ec63c8a36f8bef-categories",
+  "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category worker-host-environment -NoBuild",
+  "Os": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Sdk": "10.0.401",
+  "Runtime": "8.0.31",
+  "PowerShell": "7.6.6",
+  "EffectiveUid": 1000,
+  "TMPDIR": "/workspace/ipc-tmp",
+  "DOTNET_PROCESSOR_COUNT": null,
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 2969713,
+      "OriginalSha256": "71fe7608a2bab0f623d00b8cecf9851fad0fb20d3c800d03a0a112cf76b19cd8",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 330097,
+      "StoredSha256": "c87be255526490b04b75f442291482c1ea154d4547dbf57127dd51f27c9f2e8a"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 4781,
+      "OriginalSha256": "8cbba65ba435d3a3ba8f85e8b01ecc5a7e86f36340c37a88f33cc70a957ab7d5",
+      "StoredPath": "plan.json",
+      "StoredBytes": 4781,
+      "StoredSha256": "8cbba65ba435d3a3ba8f85e8b01ecc5a7e86f36340c37a88f33cc70a957ab7d5"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1458,
+      "OriginalSha256": "206991fdce05211a2e69a3d0e7801fb0e2026dd1ecc0ef6b09a31bd7e672bfab",
+      "StoredPath": "summary.json",
+      "StoredBytes": 1458,
+      "StoredSha256": "206991fdce05211a2e69a3d0e7801fb0e2026dd1ecc0ef6b09a31bd7e672bfab"
+    },
+    {
+      "Path": "worker-host-environment-integration-001.trx",
+      "OriginalBytes": 24913,
+      "OriginalSha256": "00832d2495d5f164fe2719b417024f903a6bc94cbe53ffc17b70a9c2a4ee441b",
+      "StoredPath": "worker-host-environment-integration-001.trx",
+      "StoredBytes": 24913,
+      "StoredSha256": "00832d2495d5f164fe2719b417024f903a6bc94cbe53ffc17b70a9c2a4ee441b"
+    },
+    {
+      "Path": "worker-host-environment-unit-002.trx",
+      "OriginalBytes": 3043,
+      "OriginalSha256": "b63678e82cf2097aa39a013834e7a7a5197f51398857b5e12f3e25676569eeef",
+      "StoredPath": "worker-host-environment-unit-002.trx",
+      "StoredBytes": 3043,
+      "StoredSha256": "b63678e82cf2097aa39a013834e7a7a5197f51398857b5e12f3e25676569eeef"
+    }
+  ]
+}

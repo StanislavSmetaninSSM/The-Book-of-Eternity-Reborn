@@ -4,73 +4,98 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
-## T041-ENV worker environment — 2026-10-05 (WIP design)
+## T041-ENV worker environment — 2026-10-05 (GREEN, final review pending)
 
-Base and verified remote: `9d5ffa0a3f513a89a9f4e4c89b0743bb2f4b5d6b` on
-`codex/1553-load-filesystem`; owner-authorized sole-writer continuation in the same
-isolated Linux worktree. No HOME-PC, main, security, credential or proxy changes.
-Tracked requirements: [spec](spec.md#worker-environment-portability--t041-env-2026-10-05),
-T041-ENV under #1553/US4/FR-012/015. Full worker lifecycle remains out of scope.
+Source **`43b60b954265e3bb404bf562cf7b9ff13dc4f953`**, tree
+`ff730f38e1a0030e3e2b021cd66ed0c3ac8dd9c2`, passes **16/16** in the same saved
+Linux environment. [Qualification matrix](recovery/worker-environment-qualification.json)
+contains exact source/input hashes, raw evidence manifests, platform and limits.
+Independent Sol6.1/xhigh design PASS; implementation/final evidence review pending.
+T041-ENV is not yet marked complete; full T041-IPC/T041/#1553 remain open.
 
-### Cause, design and acceptance
+### Contract, cause and minimal change
 
-Current production `GmWorkerProcessHostLaunch.Create` copies
-`workerStartInfo.Environment` with unconditional `OrdinalIgnoreCase`. .NET 8.0.31
-[ProcessStartInfo](https://github.com/dotnet/runtime/blob/v8.0.31/src/libraries/System.Diagnostics.Process/src/System/Diagnostics/ProcessStartInfo.cs)
-uses OrdinalIgnoreCase on Windows and Ordinal elsewhere. Linux can legitimately
-have HTTP_PROXY and http_proxy with different values. The current capture throws;
-it must preserve the platform's original name semantics, not remove proxy names.
-The normal pool builder inherits ProcessStartInfo environment and adds explicit
-BOE task/proposal/session keys; that inheritance policy is not changed.
+Owner-authorized sole-writer continuation from
+`9d5ffa0a3f513a89a9f4e4c89b0743bb2f4b5d6b` on `codex/1553-load-filesystem`;
+no HOME-PC/main/other worktree edits or credential/security/network/proxy changes.
+Tracked spec: T041-ENV, US4/FR-012/015. Spec Kit prerequisites and scoped
+spec/plan/task consistency pass; optional auto-commit hooks are disabled.
 
-Design: first add synthetic regression tests against the unchanged production
-builder. Then extract existing payload capture and host ProcessStartInfo assembly
-as internal pure operations used by their original call sites; choose the same
-platform comparer during capture. Preserve all existing flags/arguments and host
-Clear-then-assign behavior. JSON remains case-sensitive and exact duplicates are
-rejected recursively; Windows reconstruction retains its existing platform map
-semantics. No wire schema, field, native admission, framing or release changes.
-Alternatives rejected: dropping/normalizing variables loses caller data; changing
-secret inheritance or introducing a remote OS policy exceeds this bug-fix scope.
+The original owner builder copied `ProcessStartInfo.Environment` with unconditional
+OrdinalIgnoreCase, collapsing valid Linux case aliases. The single semantic fix
+matches [.NET 8.0.31 ProcessStartInfo](https://github.com/dotnet/runtime/blob/v8.0.31/src/libraries/System.Diagnostics.Process/src/System/Diagnostics/ProcessStartInfo.cs):
+Windows OrdinalIgnoreCase, otherwise Ordinal. Existing payload capture and
+post-Release worker StartInfo reconstruction were extracted as internal operations
+used by the original production callers. Fields/flags/arguments, capture timing,
+Clear-then-assign reconstruction, strict JSON/schema/duplicate rejection and native
+admission/framing/release remain unchanged. No proxy name filtering, normalization
+or new secret/inheritance policy. The pool's inherited map and explicit BOE keys
+are untouched. Windows behavior is source-preserved, not natively qualified here.
 
-Synthetic tests cover case-distinct proxy and ordinary names, exact spellings and
-values, null/empty/Unicode, empty-map replacement, independent capture, exact JSON
-duplicates and envelope casing. A narrowly selected actual hidden host must reach
-Ready with case-distinct synthetic payload and exit125 after owner close without
-Release or worker marker. No real environment values are logged or archived.
-Pure tests exercise reconstruction without Process.Start; no successful worker
-Release is allowed. Native Windows behavior is source-preserved, not Linux-proven.
+All new fixtures own synthetic worker maps. No current environment values are
+printed, archived, changed or sent as test payload. The actual hidden host retains
+its ordinary environment. Thirteen pure cases cover case pairs, comparer lookup,
+snapshot independence, null/empty/Unicode values, launch fields/flags, empty-map
+replacement, existing platform assignment, strict duplicate names/redaction and
+envelope casing. Two real host rows use proxy and ordinary synthetic name pairs:
+Ready then owner close without Release, bounded exit125 and no worker marker.
+**Ready precedes reconstruction**; reconstruction is proved through the wired pure
+method without Process.Start. One exact existing operational documentation guard
+checks synchronized guidance and synthetic worked example in all three documents.
+No GM-authored gameplay field/prompt changes are needed.
 
-Use new category `worker-host-environment`, only new environment tests and the
-exact affected operational documentation guard. Do not rerun IPC34/FRAME49 or
-run-record90 without a source reason. Fresh `-PlanOnly` build precedes `-NoBuild`;
-`-ValidateCatalog -NoBuild` is discovery only. All use PowerShell 7 and
-`scripts/test-csharp.ps1`. Environment remains Debian13.6, kernel6.18.44,
-SDK10.0.401/runtime8.0.31/PowerShell7.6.6, EUID1000, normal permissions and short
-process-local TMPDIR `/workspace/ipc-tmp`. Preserve exact RED/GREEN, source,
-counts, safe artifacts and owned cleanup. Sol6.1/xhigh design and final review,
-non-force publication/readback and fresh GitHub-only restoration are required.
+### Exact verification and historical failures
 
-Current state: separate gpt-6.1-sol/xhigh design review PASS at `a6fcdb24719b91992e3fd28c23c623f77b2878bc`, no findings. Initial test-only WIP adds two actual-builder synthetic alias regressions plus four pure JSON cases and the existing exact documentation guard. Production remains byte-identical to base; all seven planned rows are unrun. Spec Kit prerequisites and scoped spec/plan/task consistency pass; optional auto-commit hooks are disabled.
-Preparation at `412661f71cf28297178d39816b16c3887e75650d`: PlanOnly failed before discovery/execution (zero tests, 79.4371548s) with two CS9007 errors in new raw JSON test strings; corrected interpolation delimiters only. [Build evidence](recovery/evidence/worker-environment-20261005-preparation-failure/manifest.json). This is not behavioral RED.
-Causal RED at `e6b6436bf99440a5284815435c92010a90abd7a2`: fresh PlanOnly/build PASS (77.1787408s, seven planned, zero executed); NoBuild completed six integration cases: four pure JSON PASS, both actual-builder case-pair regressions FAIL with `ArgumentException` duplicate synthetic key at the original ToDictionary. One unit documentation guard remained unexecuted after integration failure. Total 11.0053660s; owned/runtime cleanup complete. Production is still byte-identical to base. [Build/plan](recovery/evidence/worker-environment-20261005-red-plan/manifest.json), [causal RED](recovery/evidence/worker-environment-20261005-native-red/manifest.json).
-Next WIP extracts the existing capture and reconstruction operations without changing the faulty comparer or consumer semantics, and adds nine pure round-trip/snapshot/platform/field cases. Sixteen total rows are now planned, unrun at this WIP. A second selected RED will verify the pure regression against that unchanged comparer before its one-line fix. Actual Ready does not execute reconstruction; the pure production-wired method provides that evidence without Release.
+All commands use `pwsh -NoProfile -File scripts/test-csharp.ps1` from the isolated
+checkout, SDK10.0.401/runtime8.0.31/PowerShell7.6.6, Debian13.6/kernel6.18.44/x86_64,
+EUID1000, ordinary permissions. Process-local TMPDIR is `/workspace/ipc-tmp`;
+DOTNET_PROCESSOR_COUNT is unset. Selected builds always precede NoBuild. Full
+IPC34/FRAME49/run-record90, broad suites and successful worker Release were not run.
 
-Second causal RED at `8704aa04c8337d74f58bca06966e405db878bd2d`: fresh selected
-build/PlanOnly PASS, 16 planned/zero executed, 69.1892382s. Execution completed15:
-10 PASS and five expected FAIL (two native pairs, two pure round-trip pairs and
-Linux lookup case semantics); the unit guard remained unexecuted. No skips or
-duplicates; complete owned/runtime cleanup; 12.5727586s. [Build/plan](recovery/evidence/worker-environment-20261005-pure-red-plan/manifest.json),
-[RED](recovery/evidence/worker-environment-20261005-pure-red/manifest.json).
+| Source | Command suffix and actual result | Evidence |
+| --- | --- | --- |
+| `412661f7` | `-Category worker-host-environment -PlanOnly`: preparation FAIL, two new-test CS9007 raw-string delimiters, zero tests, 79.4371548s; corrected before RED | [build failure](recovery/evidence/worker-environment-20261005-preparation-failure/manifest.json) |
+| `e6b6436b` | Fresh PlanOnly/build PASS, seven planned/zero executed, 77.1787408s; NoBuild six completed, **4 PASS/2 causal FAIL**, doc1 unrun, 11.0053660s. Production byte-identical to base | [plan](recovery/evidence/worker-environment-20261005-red-plan/manifest.json), [native RED](recovery/evidence/worker-environment-20261005-native-red/manifest.json) |
+| `8704aa04` | Extracted unchanged comparer: fresh PlanOnly PASS, 16 planned/zero executed, 69.1892382s; NoBuild15 completed, **10 PASS/5 causal FAIL**, doc1 unrun, 12.5727586s | [plan](recovery/evidence/worker-environment-20261005-pure-red-plan/manifest.json), [pure/native RED](recovery/evidence/worker-environment-20261005-pure-red/manifest.json) |
+| `43b60b95` | Fresh `-Category worker-host-environment -PlanOnly` PASS, 16 planned/zero executed, 66.7619604s; `-NoBuild` **16/16 PASS**, 15.0862867s, zero skips/duplicates, complete selection/cleanup | [plan](recovery/evidence/worker-environment-20261005-final-plan/manifest.json), [GREEN](recovery/evidence/worker-environment-20261005-final-green/manifest.json) |
+| `43b60b95` | `-ValidateCatalog -NoBuild`: **239 categories/10,670 methods/files**, zero unmapped/stale, **zero executed**, 9.7453970s | [audit](recovery/evidence/worker-environment-20261005-final-audit/manifest.json) |
 
-Candidate now makes the single platform-comparer correction, preserving the
-extracted method bodies/call order, and synchronizes all three operational docs
-and their exact shared guard. No real environment values are inspected/logged.
-All 16 selected rows require a fresh build and actual GREEN; implementation/final
-review remains pending. Next: publish candidate, run selected verification and
-independent Sol6.1/xhigh implementation/evidence review.
- The explicit autonomous owner instruction authorizes routine implementation;
-stop only if the faithful fix needs a new product/secret-inheritance policy.
+First behavioral RED hits both original production-builder collisions. Second RED
+adds two failing pure roundtrips and Linux comparer lookup; ten other pure cases
+already pass. Preparation failure is not behavioral RED. All 33 artifact hashes
+across eight manifests match; nine current source/input hashes and eight unchanged
+base blobs are recorded. Nine generated/copied project XML files parse. Owned host
+roots/pipes are absent, build-server shutdown succeeded and no active test/worker/
+build command remains; terminated build zombies under PID1 may remain unreaped.
+
+### Review, persistence and next bounded proposal
+
+Separate actual **gpt-6.1-sol/xhigh** design review PASS at `a6fcdb24`, no findings.
+Initial implementation review reports no actionable source defect; final source/
+evidence verdict pending. Every WIP used the authorized ordinary non-force push,
+exact remote SHA readback and independent fetched-file byte comparison.
+Fresh GitHub-only source restoration at `43b60b95` is clean: **5,260 files**, all
+**37 changed files** byte-identical and connectivity fsck PASS. No rebuild/test
+execution is claimed for restoration. Next: publish this evidence carrier, receive
+final verdict, then publish final metadata and verify a new clean final clone.
+
+Recommended next slice is **detached workspace preparation/staging/disposal only**,
+without any process launch. `GmWorkerExecutionWorkspace.WriteAbsoluteFileAsync`
+unconditionally calls `CaptureOpenedFileAuthority` and `EnsureExactOpenedFileAuthority`;
+these depend on Windows-only `CaptureFileIdentity`. First source-review existing
+portable exact-byte/path/kind/link authority under the accepted trusted-local-player
+contract; define narrow owned canonical/workspace fixtures, cancellation/failed
+staging/cleanup negatives and causal RED. Keep ReadProposal/contentRef/quarantine
+and lifecycle execution separate unless the next approved scope explicitly needs
+them. `GmWorkerProcessTreeFactory.Attach` remains Windows-only and precedes Release;
+complete descendant ownership/confirmed stop, owner-loss/reboot uncertainty and
+available normal-permission Linux primitives require a later independent design
+and native qualification before any worker execution. No such next-slice code or
+capability probe was run in T041-ENV.
+
+Native Windows, successful worker Release/OS environment interpretation, process-
+tree/workspace/PTY/live GM and run-record production wiring remain unqualified.
+No user confirmation or product/secret-inheritance policy decision is required.
 
 ## T041-IPC Linux admission — 2026-10-05 (verified component)
 

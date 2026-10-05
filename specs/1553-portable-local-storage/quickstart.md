@@ -1,5 +1,30 @@
 # Reproduce the cross-platform development environment
 
+## Worker environment case semantics (T041-ENV)
+
+Source `43b60b954265e3bb404bf562cf7b9ff13dc4f953` passes 16/16 synthetic environment
+checks on Linux. [Qualification](recovery/worker-environment-qualification.json)
+separates capture/strict JSON, pure host reconstruction and two actual hidden-host
+Ready/owner-close rows without Release. Independent final review is pending.
+Linux keeps case-distinct names; Windows retains case-insensitive map semantics.
+This fixes the earlier inherited HTTP_PROXY/http_proxy capture collision without
+filtering variables or changing inheritance/network/security settings. All test
+payload values are synthetic; do not print or archive real environment values.
+
+Use the same SDK10/runtime8/PowerShell7 and process-local short TMPDIR below:
+
+```sh
+pwsh -NoProfile -File scripts/test-csharp.ps1 -Category worker-host-environment -PlanOnly
+pwsh -NoProfile -File scripts/test-csharp.ps1 -Category worker-host-environment -NoBuild
+pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild
+```
+
+NoBuild requires the fresh successful selected build. Audit executes zero tests.
+Ready is before worker StartInfo reconstruction; the latter is tested purely.
+Windows native execution and successful worker Release remain unqualified. Full
+IPC34, FRAME49 and run-record90 need a separate source reason before repetition.
+The older IPC qualification below retains its source-specific environment limits.
+
 ## Linux worker-host IPC admission (T041-IPC-LINUX)
 
 Native Linux source `9a346308d02d55ddb50a49fab109fc99b8871505` passes 34/34;

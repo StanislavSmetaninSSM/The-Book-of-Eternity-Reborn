@@ -1,0 +1,236 @@
+{
+  "SchemaVersion": 1,
+  "Issue": "#1553",
+  "Task": "T041-ENV",
+  "Base": "9d5ffa0a3f513a89a9f4e4c89b0743bb2f4b5d6b",
+  "RuntimeSource": "43b60b954265e3bb404bf562cf7b9ff13dc4f953",
+  "RuntimeTree": "ff730f38e1a0030e3e2b021cd66ed0c3ac8dd9c2",
+  "Status": "16/16 GREEN; independent implementation/final evidence review pending. Full worker execution/lifecycle remains open.",
+  "Environment": {
+    "Os": "Debian GNU/Linux13.6",
+    "Kernel": "6.18.44",
+    "Architecture": "x86_64",
+    "EffectiveUid": 1000,
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31",
+    "PowerShell": "7.6.6",
+    "Permissions": "normal environment permissions, no escalation",
+    "TMPDIR": "/workspace/ipc-tmp",
+    "DOTNET_PROCESSOR_COUNT": "unset"
+  },
+  "Scope": "Preserve the existing caller-selected worker environment through capture, strict Launch JSON and host ProcessStartInfo reconstruction. No filtering/normalization/new inheritance or security/network settings. Windows uses OrdinalIgnoreCase; Linux Ordinal.",
+  "VerificationInputs": {
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs": {
+      "GitBlob": "44ad2eec1427ff7256142804741ce3fdb8f4e658",
+      "Sha256": "3da5134089e1b3748a0525805c0e716f807dd64a78b2a9ff391b5187a3074cea"
+    },
+    "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.Environment.cs": {
+      "GitBlob": "246d9cde1943056e43a4e1d9e997ceeb623d4d87",
+      "Sha256": "1b0c2f276c820239b3319c7a5e3d73fc750f29369dd07dc51f1a4a9df145d6a1"
+    },
+    "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostEnvironmentTests.cs": {
+      "GitBlob": "69981326f8bcdb6a508f1f4d4ada26359f842383",
+      "Sha256": "dcf030fedd498ba53c441d1831eb92e153688d0e5df3afeceb7412bafe4c301a"
+    },
+    "BookOfEternityClient.Tests/GmWorkerBridgeDocumentationTests.cs": {
+      "GitBlob": "2909b25bf59b6b4759becb842eb6ebce5a8d8038",
+      "Sha256": "37509d00666ad2607ba41a6cccb8cbebd8bf64a1b0b23761ff047e6516c90e16"
+    },
+    "OtherGuides/GM_Worker_Bridges.md": {
+      "GitBlob": "82e73979f8b732000d1fdd6a56f5e70f0f63bce3",
+      "Sha256": "65fbf6f82f41724ec747d99f18550d043ad2c1b0830b19b8da5f38bc04274d3c"
+    },
+    "specs/1113-gm-worker-bridges/contracts/gm-worker-bridge-contract.md": {
+      "GitBlob": "2cf49f47fac8f95d07133bbfcfc453de948528b5",
+      "Sha256": "d50b2a0f584ff5d5b58628fc34439836b7d3469d9ea181dc0144fde071076187"
+    },
+    "Examples/E_CLI_GM_Worker_Validation_Repair.txt": {
+      "GitBlob": "1d202d3291b82d673af416d451d41d85bc65ca98",
+      "Sha256": "a311a403328892a95b1e50ca03969c9214bb776481fc32f064e4043621b22671"
+    },
+    "tests/categories.json": {
+      "GitBlob": "8da6519d59ee04e972b1f1af0cbc1e3a9c70f210",
+      "Sha256": "3ae722641b242dd1eae5a610f2ec2fff2b0fc1e663a119a4af4de805899474fe"
+    },
+    "tests/selection.json": {
+      "GitBlob": "2fcb5d6c14547730e039b8639e96083a5c10f9b2",
+      "Sha256": "63c37049308cffd6f9fa31aba85c7278fc73dae46c934c5595a3f28a9287994d"
+    }
+  },
+  "UnchangedFromBase": {
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs": {
+      "GitBlob": "ed9e24d1afd8c3e53d74e11260d862fd72b4874a",
+      "Sha256": "6817c1b4c76374fbfbd5d483394e059ed884e9297f6a6b51333fbea8635313c2"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostFrameChannel.cs": {
+      "GitBlob": "ab8002ba2ce4be75bbe383b72b4dd71a2863ecae",
+      "Sha256": "91527d69d2ec77494aba09fbf06c3c719d156e9b108dd6fb89a16052c6e09d29"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs": {
+      "GitBlob": "473abc4659edacfbedca584317077da1891bd7cd",
+      "Sha256": "3a1dac5619ee4c6bc1e0292a82476a2c6fe6bdb2b6c0c7e9868fefd2773e9d7f"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs": {
+      "GitBlob": "4c99db4f3b8770a660018135f9edade0747567a1",
+      "Sha256": "812c10afbef30f0117126e209dcb5b2926995a9afdec2d8d329b53a59eb0fa74"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs": {
+      "GitBlob": "26729f4393793e6361359aca7008ead4eeb3980d",
+      "Sha256": "3f48b16f0655840ddab41d99d54f776f4e66416ff07733fd2c0fb916723faf94"
+    },
+    "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecord.cs": {
+      "GitBlob": "877b16da222a4326d3228d08a1a253b0b81ecbbb",
+      "Sha256": "d31a714f9485647ab68b6ee7b7d07da852cb1e88edb3f0df7a1e6bf5ff9ec8c8"
+    },
+    "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecordCodec.cs": {
+      "GitBlob": "19f6293794a283e666c220912c2ea6cb47a535ab",
+      "Sha256": "7e269f884c4ca2dd9277d9b1e3813dc8f15d405bd163160d6fc671247849ad63"
+    },
+    "BookOfEternityClient/Services/GmRuntime/GmSessionRunAdmission.cs": {
+      "GitBlob": "aaa6433bb7ca0caa687f66d660be85ff82f83983",
+      "Sha256": "aa1338fbfa3ba4b8a89851acaa41b4a5bfa3b95c8cc3239116fc24057add621a"
+    }
+  },
+  "PreparationFailure": {
+    "Commit": "412661f71cf28297178d39816b16c3887e75650d",
+    "Cause": "Two CS9007 raw JSON test interpolation delimiters; corrected before behavioral execution. Production unchanged.",
+    "ExecutedTests": 0,
+    "Seconds": 79.4371548,
+    "BehavioralRed": false,
+    "Evidence": "evidence/worker-environment-20261005-preparation-failure/manifest.json"
+  },
+  "CausalRed": [
+    {
+      "Commit": "e6b6436bf99440a5284815435c92010a90abd7a2",
+      "Planned": 7,
+      "Executed": 6,
+      "Passed": 4,
+      "Failed": 2,
+      "RemainingUnexecuted": 1,
+      "Cause": "Original production builder: both synthetic case pairs collide before host launch; four pure wire cases pass.",
+      "WallTime": "00:00:11.0053660",
+      "Evidence": "evidence/worker-environment-20261005-native-red/manifest.json"
+    },
+    {
+      "Commit": "8704aa04c8337d74f58bca06966e405db878bd2d",
+      "Planned": 16,
+      "Executed": 15,
+      "Passed": 10,
+      "Failed": 5,
+      "RemainingUnexecuted": 1,
+      "Cause": "Extracted unchanged comparer: two native pairs, two pure case-pair round trips and Linux lookup fail; ten other pure checks pass.",
+      "WallTime": "00:00:12.5727586",
+      "Evidence": "evidence/worker-environment-20261005-pure-red/manifest.json"
+    }
+  ],
+  "Green": {
+    "Commit": "43b60b954265e3bb404bf562cf7b9ff13dc4f953",
+    "Planned": 16,
+    "Completed": 16,
+    "Passed": 16,
+    "Failed": 0,
+    "Skipped": 0,
+    "Duplicates": 0,
+    "CompleteSelection": true,
+    "CompleteCleanup": true,
+    "WallTime": "00:00:15.0862867",
+    "FreshPlanBuildWallTime": "00:01:06.7619604",
+    "PureCases": 13,
+    "NativeHostCases": 2,
+    "OperationalDocumentationGuards": 1,
+    "Evidence": "evidence/worker-environment-20261005-final-green/manifest.json",
+    "PlanEvidence": "evidence/worker-environment-20261005-final-plan/manifest.json"
+  },
+  "CatalogAudit": {
+    "Valid": true,
+    "Methods": 10670,
+    "Categories": 239,
+    "Unmapped": [],
+    "StaleSelectors": [],
+    "ExecutedTests": 0,
+    "WallTime": "00:00:09.7453970",
+    "Evidence": "evidence/worker-environment-20261005-final-audit/manifest.json"
+  },
+  "IndependentDesignReview": {
+    "Model": "gpt-6.1-sol",
+    "Effort": "xhigh",
+    "Result": "PASS",
+    "Commit": "a6fcdb24719b91992e3fd28c23c623f77b2878bc",
+    "Findings": 0
+  },
+  "IndependentFinalReview": {
+    "Model": "gpt-6.1-sol",
+    "Effort": "xhigh",
+    "Result": "PENDING"
+  },
+  "SourceRestoration": {
+    "ObservedUtc": "2026-10-05T11:06:58.383896+00:00",
+    "Commit": "43b60b954265e3bb404bf562cf7b9ff13dc4f953",
+    "Tree": "ff730f38e1a0030e3e2b021cd66ed0c3ac8dd9c2",
+    "Method": "Fresh GitHub-only clone into a new empty directory; no local source/object cache",
+    "RestorationDirectory": "/workspace/linux-1553-env-candidate-restore",
+    "RemoteShaBeforeAndAfterVerified": true,
+    "Clean": true,
+    "TrackedFiles": 5260,
+    "ChangedFilesBytesVerified": 37,
+    "QualificationInputHashesVerified": 0,
+    "ConnectivityFsck": "PASS",
+    "SourceOnlyNoBuildOrExecution": true
+  },
+  "ArtifactIntegrity": {
+    "Manifests": 8,
+    "ArtifactHashes": 33,
+    "Evidence": [
+      "evidence/worker-environment-20261005-final-audit/manifest.json",
+      "evidence/worker-environment-20261005-final-green/manifest.json",
+      "evidence/worker-environment-20261005-final-plan/manifest.json",
+      "evidence/worker-environment-20261005-native-red/manifest.json",
+      "evidence/worker-environment-20261005-preparation-failure/manifest.json",
+      "evidence/worker-environment-20261005-pure-red/manifest.json",
+      "evidence/worker-environment-20261005-pure-red-plan/manifest.json",
+      "evidence/worker-environment-20261005-red-plan/manifest.json"
+    ]
+  },
+  "GeneratedXmlValidation": [
+    "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.xml",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.xml",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.xml",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.xml",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.xml",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.xml"
+  ],
+  "Cleanup": {
+    "ObservedUtc": "2026-10-05T11:09:41.527379+00:00",
+    "OwnedPipePathsRemaining": 0,
+    "OwnedHostRootsRemaining": 0,
+    "ActiveTestWorkerBuildCommands": 0,
+    "BuildServerShutdown": "Succeeded",
+    "FormerBuildProcesses": [
+      "   4077       1 Z    dotnet",
+      "   4111       1 Z    VBCSCompiler",
+      "   4391       1 Z    dotnet",
+      "  11704       1 Z    dotnet",
+      "  12166       1 Z    dotnet"
+    ],
+    "Limit": "Terminated zombies parented to PID1 may remain; no claim PID1 reaped them."
+  },
+  "NativeBoundary": "Actual host Ready proves capture and strict host JSON admission; owner close without Release -> bounded exit125, no worker marker. Reconstruction occurs after Release and is verified only through the actual production-wired pure method, without Process.Start.",
+  "NotQualified": [
+    "Native Windows regression (Windows conditional cases saved but not executed here)",
+    "Successful worker Release or OS interpretation of environment by an executed worker",
+    "Process-tree/workspace/PTY/live GM and canonical run-record production fencing",
+    "Any new filtering/redaction/inheritance policy or arbitrary real environment size/invalid-value behavior"
+  ],
+  "NextSuggestedSlice": {
+    "Scope": "Isolated detached workspace preparation/staging/disposal without launching any process",
+    "SourceBlocker": "GmWorkerExecutionWorkspace.WriteAbsoluteFileAsync -> CaptureOpenedFileAuthority -> CaptureFileIdentity, which rejects non-Windows",
+    "Prerequisites": [
+      "Source audit and independent design of exact bytes/path/kind/link checks under accepted trusted-local-player contract",
+      "Synthetic owned workspace/canonical fixtures and causal RED, narrow existing lifecycle-method selection or new bounded category",
+      "Keep process factory Windows-only and no Release; complete-process-tree ownership is a later separate capability/design qualification"
+    ]
+  }
+}
