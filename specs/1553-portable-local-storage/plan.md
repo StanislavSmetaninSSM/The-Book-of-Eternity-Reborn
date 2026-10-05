@@ -71,11 +71,11 @@ row was not executed after integration failure. [Native RED](recovery/evidence/w
 The follow-up independent Sol/xhigh design check approves explicit owned payload
 environment, with an absolute resolved PowerShell canary path (now in the fixture).
 
-Current WIP adds policy tests before implementation and a deliberately throwing,
+The `b143eb1d` WIP added policy tests before implementation and a deliberately throwing,
 unwired adapter scaffold. The policy unit cases share the integration project to observe PID/UID, native
 error/length and SafeHandle negative RED in the same descriptor; the changed documentation
 guard also expects the approved Linux contract, while the three documents await
-implementation. Production authentication still uses the original Windows guard.
+implementation. That WIP retained the original Windows authentication guard.
 PlanOnly at `b143eb1d` passed (32 planned, zero execution, 66.0858359 seconds),
 and showed that runner project order is integration before unit regardless of
 selector order. Policy cases moved into the integration project without broadening
@@ -83,6 +83,25 @@ the category or changing runner behavior. Added one actual 15-second partial-con
 Ready deadline row, checking control EOF/zero Launch and rejected Release.
 Next: fresh PlanOnly/build and policy RED, then fill/wire the adapter and synchronize
 the documents. Simulated different-UID credentials are only policy evidence.
+
+At `c3636f0de2ba57a1b78726a303b4a48eaa8f0d4b`, fresh PlanOnly passed
+(33 planned, zero execution, 64.8339023 seconds). Policy/native RED completed 32:
+**4 PASS / 28 FAIL**, comprising 16 deliberately unimplemented adapter/policy cases
+and the 12 original Windows-only authentication failures. The real 15-second
+partial-connect deadline passed. The documentation descriptor remained unexecuted
+after integration failure. No skips/duplicates, cleanup complete; 29.7010117 seconds.
+[Policy/native RED](recovery/evidence/worker-ipc-linux-20261005-policy-red/manifest.json),
+[plan](recovery/evidence/worker-ipc-linux-20261005-policy-plan/manifest.json).
+
+Current implementation WIP fills the reviewed Linux adapter and wires both channel
+identities before frame-channel publication. Expected PID/EUID are captured once,
+liveness is checked around authentication and before Launch, and cancellation is
+checked before publication and under the control gate. The Windows P/Invoke path
+is retained in the adapter. Exact native lengths/errors fail closed; SafePipeHandle
+marshalling owns pin lifetime. All three operational documents now match the exact
+guard. No framing helper, process-tree/workspace guard or run-record source changed.
+Next: publish, fresh selected PlanOnly/build, then the complete 33-case GREEN attempt.
+No implementation success or native Windows qualification is claimed before results.
 
 The owner explicitly authorizes ordinary non-force WIP pushes to the existing
 `codex/1553-load-filesystem` branch. Noninteractive push dry-run succeeded before

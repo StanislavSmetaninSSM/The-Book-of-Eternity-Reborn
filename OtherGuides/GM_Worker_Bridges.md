@@ -186,8 +186,15 @@ Release retains its 60-second ownership deadline. Slow bytes do not renew a fram
 deadline. Completion/output-drain may wait under the owner's lifetime token, but
 once a frame starts it must finish within 15 seconds. Underlying I/O cancellation
 is awaited. Diagnostics never include payload, environment or parser excerpts.
-This framing contract does not enable Linux peer authentication or worker execution;
-the existing Windows identity, process-tree and detached-workspace gates remain.
+Windows uses GetNamedPipeClientProcessId; Linux uses SO_PEERCRED for the expected
+host PID and the owner’s effective UID on both channels. Both identities must pass
+before any Launch byte. Native identity errors, malformed credential length,
+foreign peers, cancellation and owner loss fail closed; failed admission closes
+both channels and cannot be retried into Release. Unsupported platforms fail closed.
+This IPC admission contract does not enable Linux worker execution;
+Linux process-tree and detached-workspace gates remain closed. Main GM/PTY and
+live gameplay qualification are separate. Ready then owner close without Release
+must exit the hidden host with code 125 and never start the configured worker.
 
 Unknown, duplicate, or missing frame fields are rejected. The hidden host
 returns typed `Ready` after accepting the launch payload while the configured

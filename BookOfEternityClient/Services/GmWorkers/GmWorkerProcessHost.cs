@@ -1,13 +1,10 @@
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO.Pipes;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Microsoft.Win32.SafeHandles;
 
 namespace BookOfEternityClient.Services.GmWorkers;
 
@@ -367,7 +364,7 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
         try
         {
             await ConnectAndAuthenticateAsync(hostProcess, readiness.Token);
-            await SendLaunchAsync(readiness.Token);
+            await SendLaunchAsync(hostProcess, readiness.Token);
             _ = await ReadStatusAsync(hostProcess, GmWorkerProcessHostStatusKind.Ready, readiness.Token);
         }
         catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested && readiness.IsCancellationRequested)
@@ -382,11 +379,13 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
         }
     }
 
-    private async Task SendLaunchAsync(CancellationToken cancellationToken)
+    private async Task SendLaunchAsync(Process hostProcess, CancellationToken cancellationToken)
     {
         await _controlGate.WaitAsync(cancellationToken);
         try
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            EnsureHostIsRunning(hostProcess);
             if (Volatile.Read(ref _launchSent) != 0)
                 return;
             var frame = new GmWorkerProcessHostControlFrame(
@@ -522,14 +521,26 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
             if (Volatile.Read(ref _connected) != 0)
                 return;
 
+            // Capture the identity from the Process returned by the owned start,
+            // never from peer frames, command lines or a new PID lookup.
+            EnsureHostIsRunning(hostProcess);
+            var expectedProcessId = hostProcess.Id;
+            var expectedUserId = GmWorkerProcessHostPeerIdentity.CaptureEffectiveUserId();
             await Task.WhenAll(
                 _controlPipe.WaitForConnectionAsync(cancellationToken),
                 _statusPipe.WaitForConnectionAsync(cancellationToken));
 
-            ValidateConnectedHost(_controlPipe, hostProcess.Id, "control");
-            ValidateConnectedHost(_statusPipe, hostProcess.Id, "status");
-            _controlChannel = new GmWorkerProcessHostFrameChannel(_controlPipe);
-            _statusChannel = new GmWorkerProcessHostFrameChannel(_statusPipe);
+            cancellationToken.ThrowIfCancellationRequested();
+            EnsureHostIsRunning(hostProcess);
+            GmWorkerProcessHostPeerIdentity.Validate(_controlPipe.SafePipeHandle, expectedProcessId, expectedUserId, "control");
+            GmWorkerProcessHostPeerIdentity.Validate(_statusPipe.SafePipeHandle, expectedProcessId, expectedUserId, "status");
+            // SO_PEERCRED describes connection-time credentials, not ongoing liveness.
+            EnsureHostIsRunning(hostProcess);
+            var controlChannel = new GmWorkerProcessHostFrameChannel(_controlPipe);
+            var statusChannel = new GmWorkerProcessHostFrameChannel(_statusPipe);
+            cancellationToken.ThrowIfCancellationRequested();
+            _controlChannel = controlChannel;
+            _statusChannel = statusChannel;
             Volatile.Write(ref _connected, 1);
         }
         finally
@@ -538,23 +549,10 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
         }
     }
 
-    private static void ValidateConnectedHost(
-        NamedPipeServerStream pipe,
-        int expectedProcessId,
-        string channelName)
+    private static void EnsureHostIsRunning(Process hostProcess)
     {
-        if (!OperatingSystem.IsWindows())
-            throw new PlatformNotSupportedException(
-                "Worker process host channel authentication requires Windows named-pipe client identity.");
-        if (!NativeMethods.GetNamedPipeClientProcessId(pipe.SafePipeHandle, out var processId))
-            throw new Win32Exception(
-                Marshal.GetLastWin32Error(),
-                $"Worker process host {channelName} channel client identity could not be read.");
-        if (processId != (uint)expectedProcessId)
-        {
-            throw new InvalidDataException(
-                $"Worker process host {channelName} channel was connected by an unexpected process.");
-        }
+        if (hostProcess.HasExited)
+            throw new InvalidOperationException("Worker process host exited before launch admission.");
     }
 
     private void CloseChannels()
@@ -583,15 +581,6 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
 
     internal static bool IsModeSwitch(string value) =>
         string.Equals(value, ModeSwitch, StringComparison.Ordinal);
-
-    private static class NativeMethods
-    {
-        [DllImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool GetNamedPipeClientProcessId(
-            SafePipeHandle pipe,
-            out uint clientProcessId);
-    }
 }
 
 internal static class GmWorkerProcessHost
