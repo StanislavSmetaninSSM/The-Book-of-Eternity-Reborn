@@ -378,6 +378,18 @@ stop/output evidence and14 acceptance/substitution predicates through both actua
 consumer gates. This is one native execution, not14new native cases. Fresh selected
 build and actual pool GREEN remain pending; do not repeat other passing categories.
 
+B3 actual pool GREEN at `d18bb97e14fffad109c81d885a1c64ea0dfa534c`: fresh
+PlanOnly1planned/0executed,42.5082853s; NoBuild **1executed/1PASS**,9.6047007s,
+complete selection/cleanup, no skip/duplicate/timeout. [Evidence](recovery/evidence/worker-pool-happy-green/manifest.json).
+Actual workerStarts1/Release1/publication1, matching scoped native stop and owned
+output settlement, exact stored proposal bytes, workspace/staging cleaned, canonical
+context unchanged, quarantine entries/capacity0. All14 original/mutable/public record
+acceptance predicates passed through both production consumer gates. Guardian ECHILD,
+driverExit0/emergency0/failures0/deadlinefalse, reaped1(driver only). One native case,
+not14. This closes the previously failed happy-path prerequisite, not all B or live
+Linux game qualification. Next: independent connected-source review and bounded
+ordinary/root-first descendants, then detached/TERM/spawn and terminal fault groups.
+
 ### B1 execution record
 
 Read-only Spec Kit consistency pass at `0ffb1c45`: B has coverage in spec, this plan,
