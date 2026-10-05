@@ -1,0 +1,99 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "5d56efc43f55034db90d6f8c6948196a5259a8db",
+  "SourceResultDirectory": "20261005-035129-113-40-e24a228f4a2e4c5b9a0138c4eb2d450a-categories",
+  "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Runtime": "native Linux x64",
+  "Toolchain": {
+    "PowerShell": "7.6.6",
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31"
+  },
+  "TelemetryOptOuts": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1"
+  },
+  "DOTNET_PROCESSOR_COUNT": "1",
+  "PathSanitization": "Absolute checkout/run-root/toolchain paths replaced; raw and stored hashes retained",
+  "Artifacts": [
+    {
+      "Path": "Build-integration.log",
+      "OriginalBytes": 9590,
+      "OriginalSha256": "606dc12b6c76e4c0ce434587c17e486860d87e81497fce4f7760b2e4c3ae0726",
+      "Embedded": true,
+      "StoredPath": "Build-integration.log",
+      "StoredBytes": 7897,
+      "StoredSha256": "50149b4d5c29f7dd0c49fb08f19358ba51d227f92602547503e1c17e1cc3ad9e"
+    },
+    {
+      "Path": "Build-unit.log",
+      "OriginalBytes": 8910,
+      "OriginalSha256": "18d262395db9d9deb959500215fc7ba1b9061af5824b8e1f9aaa60bfb5d71319",
+      "Embedded": true,
+      "StoredPath": "Build-unit.log",
+      "StoredBytes": 7325,
+      "StoredSha256": "74218c5c344f4ceea3a9a72e4a63aacd47a0ff626b89924e50a2a7964c4edae6"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 2969744,
+      "OriginalSha256": "f5beb2f288d2acc3d4939b3656ebc37f8a9f13f9f2f56315ea4d3aad674d5a84",
+      "Embedded": false,
+      "Reason": "Oversized generated runner log; causal TRX and structured/build reports are embedded"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 10876,
+      "OriginalSha256": "77862e0a8f5a49ffce27be272bf656049d5e7a01138977e4d0c8b6fc5bee8aaa",
+      "Embedded": true,
+      "StoredPath": "plan.json",
+      "StoredBytes": 10876,
+      "StoredSha256": "77862e0a8f5a49ffce27be272bf656049d5e7a01138977e4d0c8b6fc5bee8aaa"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1615,
+      "OriginalSha256": "1335ebf107c44656ed003dbceaeee9c27d076ff69440db799f3f690736f8fef9",
+      "Embedded": true,
+      "StoredPath": "summary.json",
+      "StoredBytes": 1615,
+      "StoredSha256": "1335ebf107c44656ed003dbceaeee9c27d076ff69440db799f3f690736f8fef9"
+    }
+  ],
+  "MeasuredChildren": 0,
+  "SourceQualification": {
+    "TestedCommit": "5d56efc43f55034db90d6f8c6948196a5259a8db",
+    "WorkingTreeCleanDuringExecution": true,
+    "VerificationInputs": {
+      "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs": {
+        "GitBlob": "a7ee5968bc2cbea8aa0bcfd77b14586ca5726cac",
+        "Sha256": "24705d2218409f0fbab95968ea86eec5bd83e5711bee3c306168f0e855552b17"
+      },
+      "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostFrameChannel.cs": {
+        "GitBlob": "507497dd8732f5849e384c2a0a61db95820caf74",
+        "Sha256": "80efce7aaa262b1e8e1cda7ca50a940f34b04404aa6bfd9493477343ea9acf25"
+      },
+      "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs": {
+        "GitBlob": "a3f5f5c20f15a236e18373342cffee125a2c315b",
+        "Sha256": "8a74ca5ced86a963689354f35c6eaa4030c3381dbd4448502cf3a0c87275a296"
+      },
+      "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs": {
+        "GitBlob": "eae79af2e2261e099a552b5402597def2e9b11bb",
+        "Sha256": "90104c8efc414d3cbfa5fcad3dea1d10dbfdfad419adacade27e4c22e0d1a8c1"
+      },
+      "BookOfEternityClient.Tests/GmWorkerBridgeDocumentationTests.cs": {
+        "GitBlob": "89e68a88f787f6bc4c2d06b12b1ff194508c1925",
+        "Sha256": "9821f24945300a96cf07a23d2361a7282ca8ae6b20f7218db5d17df27070c3e7"
+      },
+      "tests/categories.json": {
+        "GitBlob": "a40607c2d455de91d6ca15544631c25fb888c78b",
+        "Sha256": "fa1aeca2e9e6d878c9bcf6130ca44af2c1b7ae64bcfbd05f643ac0b8506ad896"
+      },
+      "tests/selection.json": {
+        "GitBlob": "993a7200bd209fb8d9b21406c614b971c660638a",
+        "Sha256": "248ddb701d4e47d0070124d1a590b7452030b57a6b0d1f48522ffc800b5f1d87"
+      }
+    }
+  }
+}

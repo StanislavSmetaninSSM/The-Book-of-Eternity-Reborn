@@ -234,6 +234,29 @@ This candidate is **not yet freshly built or GREEN**; native host wiring remains
 unqualified. Next publish candidate/evidence, run pure owner and discovery-only
 audit, then obtain separate Sol6.1/xhigh review of this limited component scope.
 
+T041-FRAME first GREEN and review, 2026-10-05: published candidate
+`5d56efc43f55034db90d6f8c6948196a5259a8db`, tree
+`188191986e32211bb2cb37b3d83bb454967f3f50`, was restored from GitHub alone into a
+new clean5,095-file checkout; all17 changed hashes and fsck matched. Fresh pure
+PlanOnly discovered46 cases in178.330126 seconds; **46/46 passed** in9.891373
+seconds, no failures/skips/duplicates, both descriptors and cleanup complete.
+[Build/plan](recovery/evidence/worker-frame-initial-green-plan/manifest.json),
+[run](recovery/evidence/worker-frame-initial-green/manifest.json).
+
+Separate gpt-6.1-sol/xhigh review found one concrete P2: a partial next frame already
+buffered by a preceding read receives a new full timeout when read later. The first
+byte deadline therefore is not retained across calls. No second actionable source
+finding was identified. Two new causal rows hold a partial second frame past its
+original deadline (ordinary and wait-for-first-byte reads); a positive control keeps
+an already-complete buffered frame readable because both first byte and LF arrived
+together within the bound. These new tests are not yet run; runtime remains the
+first GREEN source until their RED is observed. Next preserve this regression WIP,
+observe the two expected failures, retain original buffer arrival time and verify.
+Research wording is reconciled with the current two-channel identity plan rather
+than reviving the old nonce-only proposal. Native IPC remains excluded. The owner's
+2026-10-05 decision defers full Linux live qualification to a separate Linux PC;
+this is not a qualification waiver or permission to operate another computer now.
+
 ## Accepted T032-A4-NATIVE-NAMES — bounded Linux, 2026-10-05
 
 Current bounded code/verification verdict: **separate gpt-6.1-sol / xhigh PASS**

@@ -29,6 +29,32 @@ public sealed class GmWorkerProcessHostFrameTests
     }
 
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Read_BufferedPartialFrameKeepsOriginalArrivalDeadline(bool waitForFirstByte)
+    {
+        // The first physical read also receives "seco", but not the second delimiter.
+        using var stream = new FragmentedStream(Encoding.UTF8.GetBytes("first\nsecond\n"), 10);
+        var channel = new GmWorkerProcessHostFrameChannel(stream);
+        var timeout = TimeSpan.FromMilliseconds(150);
+        Assert.Equal("first", await channel.ReadAsync(64, timeout, CancellationToken.None));
+        await Task.Delay(TimeSpan.FromMilliseconds(300));
+        await Assert.ThrowsAsync<TimeoutException>(() => channel.ReadAsync(64, timeout, CancellationToken.None, waitForFirstByte));
+    }
+
+    [Fact]
+    public async Task Read_AlreadyCompleteBufferedFrameRemainsReadable()
+    {
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("first\nsecond\n"));
+        var channel = new GmWorkerProcessHostFrameChannel(stream);
+        var timeout = TimeSpan.FromMilliseconds(150);
+        Assert.Equal("first", await channel.ReadAsync(64, timeout, CancellationToken.None));
+        await Task.Delay(TimeSpan.FromMilliseconds(300));
+        // Both first byte and LF already arrived together, so this frame is complete.
+        Assert.Equal("second", await channel.ReadAsync(64, timeout, CancellationToken.None, waitForFirstByte: true));
+    }
+
+    [Theory]
     [InlineData(64 * 1024)]
     [InlineData(1024 * 1024)]
     public async Task WriteAndRead_ExactUtf8ByteBoundaryIsAccepted(int limit)
