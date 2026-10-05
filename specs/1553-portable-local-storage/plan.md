@@ -4,6 +4,200 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+
+## POOL B — authorized refinement from accepted HOST A, 2026-10-05
+
+Source [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553),
+T041-FALLBACK-POOL / US4 / FR-012/014/015. Exact remote/base
+`55f43c9e5d81ec0ef1e3944d2932f49f67b22723`, clean sole-writer checkout
+`/workspace/native-1553`; no main restart. Parent accepted A and explicitly authorized
+B plus this design refinement and separate actual Sol6.1/xhigh design review.
+Use Superpowers brainstorming/writing-plans, then executing-plans/TDD inline;
+Spec Kit remains the durable spec/plan/tasks layer. No additional user approval is
+needed for the authorized work. This refinement is design WIP; no B code/test changes.
+
+**Goal:** actual production RunTaskAsync and both downstream dispatch consumers
+prove synthetic worker completion/publication only after matching scoped stop and
+bounded owned-output settlement; uncertainty retains the execution and quarantine.
+**Stack:** current net8 C#, Linux x64/glibc prebuilt C supervisor v2, existing named
+IPC, workspace/proposal/audit contracts; verified SDK10.0.401/runtime8.0.31/pwsh7.5.4
+and GCC14.2.0-19. No new dependency, installation, network/auth/security setting.
+**Spec:** the B subsection in spec.md and approved two-backend scope; A acceptance
+and the earlier two-slice design below remain prerequisites/history.
+
+### Current source findings and choice
+
+- Pool lines565–666 reduce a completed StopAndWaitAsync to deathConfirmed; reaper
+  ConfirmDeathAsync repeats that bool conversion. Native Uncertain cannot enter it.
+- CompletionArbiter lines135–205 currently waits for OutputDrained before native
+  scoped stop can retire a descendant holding output. Native root/helper exit is
+  not a substitute boundary; status parser currently exposes only Process overloads.
+- Pool already validates exact reserved task bytes, detached proposal/content hashes,
+  cancellation and generation/lease in existing PublishBundleAsync. Preserve those
+  algorithms; add the missing execution authority before detached reads/publication.
+- ProposalOnlyDispatchService accepts Proposal alone; ValidationRepairDelegator uses
+  exit0/Stopped. Both require the same matching run/backend/scope evidence gate.
+- A's Windows one-way transfer preserves legacy behavior but cannot carry native
+  owner or typed output/stop evidence. B completes the common owner contract; it
+  must not admit native and then cast/transfer it into the Windows/bool route.
+
+Chosen approach: one owned launch plus one per-execution evidence validator consumed
+by the real pool and retained quarantine owner. Windows adapter invokes the existing
+Job/unattached stop primitives and wraps their actual confirmed result; native uses
+its original helper/pidfd/status authority. Keep those platform primitives and
+workspace/receipt algorithms. Rejected alternatives: a parallel synthetic-only pool
+would miss consumers, and converting Uncertain to a failed Task without retaining
+identity/scope would leave cleanup/result paths able to discard the declaration.
+
+### Admission, owned interfaces and public diagnostic models
+
+1. Add internal sealed `GmWorkerNativePoolAdmission` with explicit prebuilt package
+   directory and isolated fixture root, supplied only to an internal pool constructor.
+   Its factory/validation binds the exact synthetic source root; it is never read
+   from config, environment, profile, command line or a public constructor. Introduce
+   distinct `SyntheticWorkerRelease` internal capability. Auto/Native ordinary
+   WorkerRelease stays NotQualified before reservation/launch; NeutralHost still
+   cannot Release. Shared preparation validates the explicit admission before freezing
+   synthetic capability. Native launcher requires that same admission; no new general
+   selector availability or public rollout flag.
+2. Extend GmWorkerOwnedLaunch with immutable `Identity` (RunId, Backend, Guarantee),
+   actual `HostExited` task, identity-bound `WaitForWorkerCompletionAsync(host, token)`
+   and `SettleOutputsAsync()` returning bounded stdout/stderr. Native HostExited uses
+   its retained pidfd's exit/HUP observation, not a fresh Process-by-PID; it conveys
+   exit only. Windows keeps its original Process/Job and original streams. Original
+   partial owner still arrives in GmWorkerOwnedLaunchException before any cleanup.
+3. `StopAndObserveAsync()` waits for authoritative mechanism evidence (native original
+   helper exit/status and exclusive ECHILD; Windows existing Job/unattached stop).
+   Output settlement is a separate bounded step after validated stop. Native status
+   and output drains begin at launch, are separate, bounded-memory tasks, and are
+   retained after observation timeout. No canceled waiter disposes a live owner.
+   Use5second observation bounds for native stop/output, inherited helper100ms grace/
+   2500ms stop deadline; output observation failure latches uncertainty. Preserve A's
+   stop/disposal callers by explicitly settling outputs before Dispose where needed.
+4. Add `GmWorkerExecutionAuthority` in its own file. It freezes the original owner's
+   identity and reserved WorkerId/TaskId/SessionGeneration, validates every stop record
+   against them and known backend/scope/state, and permanently latches any Uncertain,
+   malformed/stale/mismatched evidence or output-observation failure. Positive requires
+   StoppedWithinScope, CleanupComplete=true, AuthorityRetained=false and matching
+   nonempty RunId/backend/guarantee. Root exit code is not worker completion.
+   No-launch cleanup is an explicit internal no-launch disposition, never a native
+   success permit. Cleanup retries after valid stop retain cached validated evidence.
+5. Extend WorkerBridgeStatus/GmWorkerTaskRunResult with execution identity and typed
+   stop evidence plus output-settled state; diagnostic types are public, authority
+   assignment remains internal. `HasValidatedExecutionFor(WorkerTaskPacket task)`
+   checks the actual frozen binding, settled outputs, non-uncertain matching evidence,
+   current result state/no timeout/no replacement/worker exit0 and bound task. Missing
+   evidence on a legacy Stopped/exit0/Proposal record fails closed. Consumers use the
+   shared check, not a new duplicated bool. This is internal execution evidence,
+   not a durable restart fence or permission to apply game state.
+
+### Pool order and quarantine ownership
+
+`RunTaskAsync` keeps existing validation/reservation/workspace and audit gates. It
+uses the shared owned launcher for both platforms; acquire original owner on success
+or partial exception before invoking any downstream operation. Start completion and
+owned drains once. After correlated Completed, stop the same owner immediately;
+OutputDrained is optional diagnostic progress, not an import prerequisite or proof.
+Validate typed stop, settle actual owned outputs within the bound, recheck cancellation/
+timeout and authority, then run existing detached proposal validation and generation/
+lease/exact-task-byte PublishBundleAsync. No proposal read/import is admitted earlier.
+
+Change completion arbitration so correlated completion can proceed to stop without
+waiting for output holders; cancellation/timeout still outrank buffered completion.
+Add identity-token status overloads while retaining actual original-Process callers.
+Host exit before correlated completion remains failure; completion never implies stop.
+
+Pool cleanup and GmWorkerQuarantinedExecution retain the same authority object,
+owner, host channels/drains, workspace, worker-slot lease and quarantine reservation.
+Replace native-relevant Task-only ConfirmDeathAsync/bool death with typed observation
+and validation before CleanupConfirmedAsync. Uncertain stays latched through every
+reaper pass, even after a later positive-shaped cleanup record or guardian cleanup.
+Do not call native legacy StopUnattachedProcessTreeAsync, reacquire PID, publish a
+cleanup-confirmed receipt, delete workspace or release either capacity while uncertain.
+
+For an already validated non-uncertain stop, subsequent owner-disposal/filesystem/
+terminal-audit/receipt failure transfers the remaining state into quarantine rather
+than losing workspace/slot. Retain phase flags so physical stop/disposal, workspace
+cleanup hook, stable-id terminal event/fallback receipt and final slot/capacity release
+are idempotent in the existing order. A receipt published before lost acknowledgement
+is compared exactly on retry. Concurrent reaper passes remain serialized; retries
+never re-Release, re-run or re-import a proposal. No automatic acceptance after
+Uncertain. No durable reconstruction of a dead owner is invented.
+
+### Files and staged TDD execution
+
+- [ ] B1 Design: update this plan/spec/tasks; read-only Spec Kit consistency pass,
+  publish design WIP and obtain separate actual Sol6.1/xhigh review of authority,
+  quarantine and both result consumers before implementation.
+- [ ] B2 Causal connected scaffold: new TestSupport/NativePoolScenarioDriver.cs and
+  Tests/GmWorkerNativePoolTests.cs use actual FileSystemManager, pool/workspace and
+  proposal store in a unique fixture copy, beneath the existing independent guardian.
+  Internal admission scaffold stays unavailable. First actual-pool happy case must
+  RED before worker launch on that gate, with guardian ECHILD; classify preparation
+  failures separately. Add typed evidence negative tests before corresponding fixes.
+- [ ] B3 Atomic connected implementation: new GmWorkerNativePoolAdmission.cs and
+  GmWorkerExecutionAuthority.cs; update OwnedLaunch, NativeLineageLaunch,
+  WindowsOwnedLaunch, BackendSelector, ProcessHost, BridgePool, QuarantineReaper and
+  Models together before synthetic capability can pass. No intermediate native
+  admission into legacy cleanup. Add bounded original-stream settlement and sticky
+  typed quarantine; preserve platform stop primitives and publication/receipt bytes.
+  Reach one positive real pool GREEN with actual native cleanup before expanding.
+- [ ] B4 Result consumers: update ProposalOnlyDispatchService and
+  ValidationRepairDelegator to consume matching evidence; causal negative records
+  must exercise their actual decision boundary, plus positive actual-pool result.
+  Preserve existing generation/lease/apply guards; use isolated test state only.
+- [ ] B5 Native fault matrix: extend independent finite C fixture only as required
+  for real descendant/output-holder lifetimes; native helper remains the actual
+  producer/reaper. Negative-only internal stream/evidence decorators may stall or
+  corrupt the actual helper's received status or stop observation, but cannot forge
+  positive evidence or replace its cleanup authority. Guard ECHILD proves fixture
+  cleanup separately from deliberately retained application uncertainty. Publish
+  source/evidence checkpoints before each bounded build/test/review boundary.
+- [ ] B6 Acceptance: narrow affected original IPC/native HOST/Windows source and
+  quarantine-receipt consumers, catalog discovery, provenance/source hashes/results/
+  cleanup packet, independent implementation plus final evidence review, non-force
+  push/race check/readback and fresh GitHub-only restore; handoff and stop before
+  separately planned durable restart/fencing.
+
+### Review focus and exact behavioral matrix
+
+- Happy synthetic analysis/content proposal with actual detached content import into
+  isolated state copy, exactly one Release/import; nonzero exit/missing proposal
+  rejects. Ordinary public Linux pool and direct NeutralHost Release remain closed.
+- Worker root exits before a child/doublefork/setsid/output holder; ignored TERM and
+  child created during stop. Distinguish worker root from neutral-host root: early
+  neutral-host exit without correlated Completed fails. No publication before scoped
+  cleanup and output settlement; no reliance on OutputDrained/EOF/pidfd readiness.
+- Cancellation and timeout at Release, buffered Completed and stop/output settlement;
+  precedence must suppress publication even after physical cleanup completes. Original
+  owner remains retained until its own cleanup authority actually confirms the scope.
+- Helper loss, malformed/old/wrong-run/scope stop evidence, blocked helper-status or
+  owned-output observation and stop deadline followed by late cleanup: permanent
+  Uncertain, no Proposal/receipt/deletion, slot and reservation remain held. Negative
+  decorators always retain the actual owned helper and independent guardian.
+- Generation replacement/exact reservation bytes/lease rejection at publication;
+  validated-stop cleanup hook/audit/fallback receipt failure and lost acknowledgement;
+  repeated/concurrent quarantine passes never duplicate Release/import/receipt or
+  dispose capacity twice. Window Job semantics keep native runtime unqualified here.
+
+New coherent category owners will separate pool happy/descendants, cancellation/
+terminal boundaries, typed uncertainty/quarantine and actual success consumers.
+Select only changed HOST identity/completion/output cases and existing receipt/reaper
+methods affected by signature/ordering changes; do not replay all61HOST or unrelated
+IPC/ENV/FRAME/storage cohorts. Commands: fresh `pwsh -NoProfile -Command '&
+./scripts/test-csharp.ps1 -Category <explicit IDs> -Parallelism 1 -PlanOnly'`, then same
+`-NoBuild`; final `pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog`.
+Counts are discovered, never invented. Fixture driver/guardian bounds must encompass
+known5s observation phases and preserve independent cleanup after timeout; no broad
+signals or observational-timeout abandonment. No global shared mutable fixture.
+
+Operational docs/source guards in OtherGuides/GM_Worker_Bridges.md and the existing
+shared afterlife quarantine note must explain matching scoped evidence and retained
+uncertainty. This adds no GM-authored task/proposal/gameplay surface; prompts/examples
+retain their current authoring contract, with a no-change rationale recorded at handoff.
+General Linux rollout, systemd implementation/qualification, native Windows, main PTY,
+live provider/CLI/GM and real saves remain out of scope. No public guard is removed.
+
 ## HOST implementation authorized — 2026-10-05
 
 Parent authorized only T041-FALLBACK-HOST from exact

@@ -63,6 +63,28 @@ is not execution or qualification evidence. [Source-backed plan](plan.md#worker-
   admission and unresolved quarantine recovery remain a rollout prerequisite, not a
   claimed consequence of these two synthetic integration slices.
 
+## Authorized synthetic POOL B — 2026-10-05
+
+The parent accepted HOST A at `55f43c9e5d81ec0ef1e3944d2932f49f67b22723` and
+explicitly authorized T041-FALLBACK-POOL with a separate typed evidence/quarantine/
+consumer design review. The [B refinement](plan.md#pool-b--authorized-refinement-from-accepted-host-a-2026-10-05)
+extends only that accepted base. A distinct injected internal synthetic admission
+can execute the actual pool in isolated fixtures; no public configuration/environment
+switch admits ordinary Linux WorkerRelease. Durable restart/fencing remains unconnected.
+
+Correlated Completed must precede validated matching run/backend/scope stop and
+bounded owned-output settlement. Only then may cancellation/generation/lease/exact
+reservation checks, detached proposal validation and existing publication proceed.
+Both real delegating consumers require that evidence; Proposal, exit0, root/helper
+exit, pidfd readability and OutputDrained alone cannot establish success. Uncertain
+retains the original owner/evidence/workspace/slot/reservation, may have lost authority,
+and cannot become certain merely because cleanup later finishes. No cleanup-confirmed
+receipt or automatic result acceptance follows uncertainty. Valid-stop filesystem/
+receipt retries preserve idempotent phase order and exactly-once capacity release.
+Only independent finite guardians retire failed synthetic fixtures; their cleanup
+cannot repair production authority. Windows Job meaning stays intact, runtime here
+unqualified. B handoff precedes a separately authorized durable restart/fencing plan.
+
 ## Input transport lifetime — T042-INPUT-LIFETIME, 2026-10-05
 
 Bounded implementation passes37/37 actual managed-consumer cases at `dc29b37d0c3e3067acf9943a048360fbba66d0e3`, with causal lifetime RED and a separately reproduced/fixed review regression. [Qualification](recovery/gm-input-lifetime-qualification.json) retains exact build, test, discovery and cleanup evidence. Independent actual Sol6.1/xhigh final PASS and clean GitHub-only restoration verified at `a5aefe8f8151c67a15fa107e78b487581bd43458`; full T042 remains open.
