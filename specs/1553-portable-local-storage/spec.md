@@ -63,6 +63,19 @@ is not execution or qualification evidence. [Source-backed plan](plan.md#worker-
   admission and unresolved quarantine recovery remain a rollout prerequisite, not a
   claimed consequence of these two synthetic integration slices.
 
+## Worker durable restart/fencing — design-only continuation, 2026-10-05
+
+The parent accepted bounded synthetic POOL B at `30ab292d46f6a8fc88b03ee8f3d0731523788e8d`
+and authorized only the [restart/fencing design](worker-restart-fencing-design.md).
+Worker durable identity/inventory is separate from the accepted persistent-main codec.
+After lost authority, cold nonterminal evidence remains Uncertain: no repeated Release,
+old-generation publication, recreated success permit, automatic quarantine deletion or
+capacity release. Existing generation/lease/receipt and live Windows Job semantics
+remain required. The planned first slice is an inert durable worker-ledger prerequisite;
+actual pool connection and product restart-admission policy require later authorization.
+No runtime changes, public Linux rollout, main PTY/live GM/real saves or automatic
+salvage follow this design. FR-012/014/015, T041-WORKER-RESTART-DESIGN.
+
 ## Authorized synthetic POOL B — 2026-10-05
 
 Bounded verification now has127 distinct latest passing cases at exact sources in

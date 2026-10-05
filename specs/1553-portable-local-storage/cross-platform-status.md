@@ -5,6 +5,16 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
+## Текущий этап: только дизайн durable worker restart/fencing
+
+Родитель принял POOL B на `30ab292d` и поручил отдельный design-only этап.
+[Дизайн и последовательные срезы](worker-restart-fencing-design.md): отдельный
+worker ledger, проверка до recovery, durable intent перед Release и fencing публикации.
+Main-only run-record90 сохраняется; из файла нельзя восстановить kernel authority или
+success permit. Первый предлагаемый R1 — только durable ledger, без подключения pool.
+Runtime/tests/catalog не меняются; design review и удалённое восстановление пока впереди.
+Для реализации потребуется отдельный запуск родителя. Предыдущий handoff B ниже принят.
+
 ## POOL B: bounded synthetic-срез завершён, 2026-10-05
 
 HOST A принят родителем на `55f43c9e5d81ec0ef1e3944d2932f49f67b22723`.

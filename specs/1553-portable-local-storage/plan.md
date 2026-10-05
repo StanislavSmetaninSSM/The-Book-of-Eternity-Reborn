@@ -5,6 +5,30 @@
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
 
+## Active worker restart/fencing design-only continuation, 2026-10-05
+
+Parent accepted POOL B at `30ab292d46f6a8fc88b03ee8f3d0731523788e8d` and explicitly
+requested the next architectural design only. Branch and remote match, writer clean
+at start. Active task: T041-WORKER-RESTART-DESIGN / #1553 / US4 / FR-012/014/015.
+[Source-backed design and sequential plan](worker-restart-fencing-design.md) applies
+Superpowers brainstorming/writing-plans and spec-kit-superpowers-bridge. No new
+initialization, worktree or Spec Kit scaffold; no runtime/test/catalog/CI changes.
+
+Findings: main-only pure record is not a worker fence; pool capacity and success permits
+are live memory; canonical acquisition can recover before returning the lease; current
+cleanup receipt is not a cold stop credential. Recommended approach is a separate
+durable worker ledger with conservative cold admission, then actual synthetic pool
+intent/admission and one-send/publication/retirement fences. R1 is the first proposed
+implementation slice, still unapproved. Product root-block versus per-worker cold
+continuation is explicitly separated for the parent before R2. Autonomous salvage,
+reboot clear, main writer integration and power-cut qualification remain excluded.
+
+Design WIP: source audit/self-check complete; independent actual Sol6.1/xhigh review
+and final GitHub restoration pending. Zero tests or native probes; unchanged accepted
+run-record90/POOL127 and unrelated cohorts are not repeated. Next action: publish this
+WIP, obtain design review, resolve findings and return the concrete R1 handoff to parent.
+Do not start implementation from this entry or from historical next instructions below.
+
 ## POOL B — authorized refinement from accepted HOST A, 2026-10-05
 
 Source [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553),
