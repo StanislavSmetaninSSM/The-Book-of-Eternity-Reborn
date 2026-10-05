@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "worker-native-host-boundaries"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "02cd9dc931dc08b7d2d740a7e5c206b8ee89eeca",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 5.361697,
+  "Descriptors": [
+    {
+      "Name": "worker-native-host-boundaries-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-host-boundaries",
+      "Categories": [
+        "worker-native-host-boundaries"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.CancellationAfterNativeBinding_RetainsOwnerThroughScopedRetirement|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.NativeIdentity_RejectsForeignNamedChannelBeforeLaunch|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.NeutralHostCapability_RejectsReleaseBeforeSendingAnyWorkerCommand",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.CancellationAfterNativeBinding_RetainsOwnerThroughScopedRetirement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.NativeIdentity_RejectsForeignNamedChannelBeforeLaunch",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.NeutralHostCapability_RejectsReleaseBeforeSendingAnyWorkerCommand",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

@@ -122,7 +122,13 @@ wrapper observes that exact boundary, no production hook), owner control EOF,
 status loss, actual exec failure and explicit NeutralHost Release rejection. Every
 fixture retains the independent guardian through ECHILD; uncertainty must survive
 a second observation and must reject disposal. No production source changed here;
-new coverage is unrun pending fresh unit preparation.
+At `02cd9dc931dc08b7d2d740a7e5c206b8ee89eeca`, fresh unit preparation
+passed7planned/0executed,44.3403026s; **7/7PASS**,21.5415315s, no skips/duplicates/
+timeouts and complete cleanup. Foreign peers failed before Launch; bound-owner
+cancellation retired within scope; control/status/exec failures stayed Uncertain
+on second observation and rejected disposal; explicit Release was denied. All seven
+guardians reached ECHILD/failures0/emergency0, with zero worker markers.
+[Evidence](recovery/evidence/worker-host-boundaries-green/manifest.json).
 Independent Sol consult confirms original Process/tree/started-state one-way handoff
 from a sealed Windows adapter preserves current cleanup; no native-to-legacy route.
 Existing relevant lifecycle fixtures invoke powershell.exe and remain Windows-only
