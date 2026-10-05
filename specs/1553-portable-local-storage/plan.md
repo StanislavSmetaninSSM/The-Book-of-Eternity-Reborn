@@ -4,6 +4,62 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T041-RUN-RECORD verified component — 2026-10-05
+
+Runtime/source `dc8c742cb3dc86d6cff09dadbbb412c77ae779a6`, tree
+`4d1f0e595983dab702692f7804e8357607c7784a`, is remotely verified and restored from
+GitHub alone into a new clean 5,142-file checkout. All 14 changed hashes and
+connectivity fsck match. Exact [qualification](recovery/gm-run-record-qualification.json)
+keeps source, test, review and publication identities separate.
+
+After causal RED (90 completed, 27 passed/63 expected failures), a fresh all-project
+build and discovery-only audit passed **238 categories / 10,648 identities**, zero
+unmapped/stale selectors and zero executed tests, in 176.596309 seconds. The focused
+NoBuild PlanOnly selected 90 cases in 3.098110 seconds; actual **90/90 passed** in
+5.963130 seconds, no skips/duplicates/failures, full descriptor and owned cleanup.
+Five generated/copied XML documentation files parsed. All exec sessions ended.
+[Audit/build](recovery/evidence/gm-run-record-candidate-audit/manifest.json),
+[plan](recovery/evidence/gm-run-record-candidate-plan/manifest.json),
+[GREEN](recovery/evidence/gm-run-record-candidate-green/manifest.json).
+
+Separate **gpt-6.1-sol / xhigh PASS** independently inspected source, RED/GREEN TRX,
+source identities, category ownership and restoration. Its final docs/evidence
+check also passed, including all original capability-archive checksums; no material
+defect or required source correction remains. The component strictly interprets one main
+slot, retains identity-bound stop/reboot evidence, blocks malformed/uncertain/stale
+mutations and preserves cold evidence bytes. It does not wire any live consumer.
+
+**T041-RUN-RECORD only is complete.** Atomic main-record persistence, trusted bounded
+no-follow reads, all-worker ownership composition and actual canonical/held-lease
+fencing remain T041-RUN-FENCE. Native IPC/process/workspace/PTY, live GM, full
+T041–043 and whole #1553 remain open; no gameplay/GM-authored field changed.
+Final evidence-carrier publication/restoration must be verified before delivery.
+
+### Separately reported saved Linux environment capability
+
+The owner's new saved environment supplied a reviewed probe at unchanged source
+`c706e2c3efa2c360358f99f1495f11be53c764a5`: Debian 13.6, SDK 10.0.401/runtime 8.0.31,
+PowerShell 7.6.6 and Spec Kit CLI 1.0.13. Two normal-permission named-pipe servers and
+two local clients constructed, connected, transferred one byte in each direction,
+closed and unlinked their owned sockets. **All endpoints were in PID 1860**; this
+is same-process/same-effective-user transport capability only. Numeric UID was not
+recorded. No project category was built/discovered/executed there.
+
+The original [source/log/review archive](recovery/evidence/linux-named-pipe-capability-20261005/source-and-evidence.tar.gz)
+is preserved unchanged with its [verified manifest and scope](recovery/evidence/linux-named-pipe-capability-20261005/manifest.json).
+Its separate gpt-6-astra/xhigh evidence review is not relabeled as the required
+Sol implementation review. No native call was repeated in this component checkout.
+The earlier restricted-cloud Socket-constructor refusal remains valid historical
+evidence. New capability in a separately owner-authorized environment establishes
+neither cross-process peer PID/UID authentication nor actual host/lifecycle/live-GM
+qualification. The Linux identity guard and process/workspace gates remain intact.
+
+Next executable native slice: separately implement/review both-channel Linux
+SO_PEERCRED PID/UID before Launch, then qualify the exact `worker-host-ipc-admission`
+owner on the ready saved environment. Parent coordination and the sole-writer baton
+remain required; this handoff starts no such work. The connected fence has its own
+consumer gate and cannot be replaced by a successful pipe probe.
+
 ## T041-RUN-RECORD design and execution — 2026-10-05
 
 Source/base: #1553, `codex/1553-load-filesystem`, verified local/GitHub
@@ -46,14 +102,14 @@ slot-local decisions. Corresponding unit tests in `GmSessionRunRecordTests.cs` a
 persist bytes to unique directories, cold-decode into the real decision code and
 verify rejected/uncertain bytes remain untouched. No pipes/processes/provider.
 
-- [ ] Write behavior tests first, then a minimal permissive roundtrip/transition/
+- [x] Write behavior tests first, then a minimal permissive roundtrip/transition/
   policy baseline solely to obtain causal behavioral RED; never claim baseline safe
-- [ ] Publish reviewed design + RED-source WIP before fresh selected build/run
-- [ ] Observe missing validation/evidence/admission failures in the sole new
+- [x] Publish reviewed design + RED-source WIP before fresh selected build/run
+- [x] Observe missing validation/evidence/admission failures in the sole new
   `gm-session-run-record` category; preserve exact evidence and no unrelated reruns
-- [ ] Implement strict schema, identity-bound transitions and fail-closed matrix;
+- [x] Implement strict schema, identity-bound transitions and fail-closed matrix;
   publish candidate before fresh PlanOnly/build and category GREEN
-- [ ] Discovery-only catalog validation, separate gpt-6.1-sol/xhigh source/evidence
+- [x] Discovery-only catalog validation, separate gpt-6.1-sol/xhigh source/evidence
   review, exact remote SHA/readback and clean GitHub-only restoration
 
 Review focus is unknown/duplicate/nested and Unicode-boundary inputs; stale run,
@@ -76,7 +132,7 @@ main-slot versus concurrent-worker scope, trusted-target backend comparison and
 preserving all-zero current generation. No remaining design blocker. The focused
 Spec Kit consistency pass is clean after those corrections.
 
-Status: **RED-source WIP, unqualified and unwired**. Tests precede a deliberately
+Historical initial status: **RED-source WIP, unqualified and unwired**. Tests precede a deliberately
 permissive roundtrip/transition/policy baseline to obtain causal failures. No fresh
 build or test has run; no production consumer invokes these helpers. Publish this
 source, then run PlanOnly/build and the single selected category.
@@ -105,7 +161,7 @@ become Unreadable rather than acquiring an unearned Valid label. The test call-s
 rename changes no assertion. Independently authenticated live identity is required
 at future active admission, never an identity copied from decoded evidence.
 
-Status: **candidate WIP, fresh build/GREEN/audit and independent implementation review
+Historical pre-verification status: **candidate WIP, fresh build/GREEN/audit and independent implementation review
 not yet run**. No runtime caller is wired. Publish the candidate before verification;
 no native IPC refusal is retried, and no previously accepted cohort is repeated.
 

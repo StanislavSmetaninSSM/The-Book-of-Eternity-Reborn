@@ -1,5 +1,53 @@
 # Reproduce the cross-platform development environment
 
+## Persistent-main record component (T041-RUN-RECORD)
+
+Exact source: `dc8c742cb3dc86d6cff09dadbbb412c77ae779a6`, tree
+`4d1f0e595983dab702692f7804e8357607c7784a`. The component is internal and unwired:
+it does not enable a GM process or make current rollback/cleanup safe. Its
+[qualification](recovery/gm-run-record-qualification.json) records 90/90 pure and
+isolated ordinary-file checks, separate Sol/xhigh review and clean source recovery.
+
+With PowerShell 7, SDK 10 and .NET 8 runtime in a fresh exact-source checkout:
+
+```sh
+pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-session-run-record -PlanOnly
+pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-session-run-record -NoBuild
+```
+
+Use the second command only after a successful fresh selected build. These tests
+create only owned ordinary files and exercise strict bytes/schema, every identity
+field, retained stop/reboot evidence, cold Uncertain, trusted root/backend/generation
+and terminal epoch decisions. They launch no worker/pipe/provider. Do not delete a
+record or invent Missing to gain admission. Cold decode is not live-ownership proof.
+A satisfied main-slot decision still requires independent worker-owner conditions
+and canonical/held-lease ordering before any actual mutation.
+
+## New saved Linux environment: capability only
+
+At source `c706e2c3efa2c360358f99f1495f11be53c764a5`, a separate owner-authorized
+saved Linux environment now has Debian 13.6, SDK 10.0.401/runtime 8.0.31,
+PowerShell 7.6.6 and Spec Kit CLI 1.0.13. Its one normal-permission standalone probe
+constructed both Byte/Asynchronous/CurrentUserOnly channels, connected local clients,
+transferred one byte per channel and closed/unlinked them. Both servers and both
+clients ran in **the same PID 1860**. This is not cross-process or expected-host
+PID/UID authentication, and no application test category ran there.
+
+The [exact source/log/install/review archive](recovery/evidence/linux-named-pipe-capability-20261005/source-and-evidence.tar.gz)
+and [manifest](recovery/evidence/linux-named-pipe-capability-20261005/manifest.json)
+retain provenance and limits. Inspect archive entries/checksums before extraction;
+it contains no binaries, caches, certificate material or links. Do not rerun the
+successful capability probe unchanged. The earlier restricted-cloud refusal and
+its stopped diagnostic remain historical evidence, not a reason to alter security.
+
+The next native prerequisite is still the separately reviewed Linux peer adapter
+on both channels before Launch. Use the saved environment for a new exact-source
+bounded `worker-host-ipc-admission` qualification only after that implementation and
+coordinator handoff. Preserve Linux process-tree/workspace guards and require later
+persistent-main fence/PTY/lifecycle work before a live GM/console session. The
+separate-PC live checklist below remains applicable; this new environment capability
+does not replace any live or native Windows qualification.
+
 ## Worker-host FRAME checkpoint and separate Linux-PC handoff
 
 The source-qualified component checkpoint is

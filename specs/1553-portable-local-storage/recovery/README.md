@@ -1,5 +1,21 @@
 # Source and evidence recovery
 
+## Current persistent-main record component
+
+`dc8c742cb3dc86d6cff09dadbbb412c77ae779a6` / tree
+`4d1f0e595983dab702692f7804e8357607c7784a` qualifies only the strict record codec,
+immutable transitions and slot-local admission/ordinary-file interpretation.
+See [exact qualification](gm-run-record-qualification.json), 90/90 GREEN and the
+238/10,648 discovery-only inventory. No process/canonical consumer is wired.
+Do not remove retained uncertainty or treat a main-slot decision as all-writer
+safety; atomic persistence, authenticated evidence and connected fencing remain open.
+
+The separate [saved-environment archive](evidence/linux-named-pipe-capability-20261005/source-and-evidence.tar.gz)
+contains exact c706e2c3 transport-capability source/logs and installation/review
+provenance. Its [manifest](evidence/linux-named-pipe-capability-20261005/manifest.json)
+checks every original payload and clearly limits the result to same-process pipe
+construction/connect/bytes/cleanup. It is not native application admission.
+
 ## Current worker-host FRAME component
 
 Runtime source `e9f9452deb296988a0ced6feb9b8003b54449a19`, tree

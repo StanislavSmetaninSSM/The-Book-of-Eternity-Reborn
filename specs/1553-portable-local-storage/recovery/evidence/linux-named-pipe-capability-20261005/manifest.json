@@ -1,0 +1,161 @@
+{
+  "SchemaVersion": 1,
+  "SourceCommit": "c706e2c3efa2c360358f99f1495f11be53c764a5",
+  "Archive": "source-and-evidence.tar.gz",
+  "Bytes": 60724,
+  "Sha256": "c377e6fb30b1383b5a4c77e638c1448defc68370d995ce83cf54dd1fb83b31ba",
+  "Provenance": "Owner-authorized separate saved Linux environment; original exact source/log/qualification/install/review package, preserved unchanged after safe-entry and complete manifest verification. No probe rerun by the component writer.",
+  "ArchiveFiles": [
+    {
+      "Path": "qualification.json",
+      "Bytes": 14360,
+      "Sha256": "c38d2805e46ebff0005e4179687295f9dc9c88023df067719f09e216640113bf"
+    },
+    {
+      "Path": "handoff.txt",
+      "Bytes": 3159,
+      "Sha256": "a3a24d6f8af12a834a5257dd1014831e31c22d6be24e2128e13a2c843b075677"
+    },
+    {
+      "Path": "readiness.json",
+      "Bytes": 1894,
+      "Sha256": "6fe924a8929b54aa2d9c2c0c7300242e62262fda73a790e095f481163d5215b8"
+    },
+    {
+      "Path": "final-verification.json",
+      "Bytes": 4057,
+      "Sha256": "0391308f827d8f877efcd26c80e3c5dbd7557ec523ad9fb7e2d0a37c9c6511fc"
+    },
+    {
+      "Path": "fetch.log",
+      "Bytes": 151,
+      "Sha256": "eea5ef47d95d8ec8449e6dfb2e9fe53bf82e0cd66ce78930e8bee66d2977ed72"
+    },
+    {
+      "Path": "worktree.log",
+      "Bytes": 2729,
+      "Sha256": "45ccf6c3847364d16b5faa741dce28f5e0fa689842c9ced07af2a91868c8e4ca"
+    },
+    {
+      "Path": "env.sh",
+      "Bytes": 1074,
+      "Sha256": "af1a05ce32dbf348697f7440bab5e20ba651c55329fa05b810d992520bc00a6f"
+    },
+    {
+      "Path": "install-dotnet.sh",
+      "Bytes": 486,
+      "Sha256": "89def067521d34ea320eb50ded92324371afec81f04cf39ea27267dd0c12e35c"
+    },
+    {
+      "Path": "dotnet-install-reviewed.sh",
+      "Bytes": 63563,
+      "Sha256": "082f7685e156738a1b2e2ed8381a621870d4ce8e8c59278034556f05c186eb2e"
+    },
+    {
+      "Path": "install-dotnet.log",
+      "Bytes": 4049,
+      "Sha256": "7b29cf57aa6c0155d53d655d453bef79f0c53dfd71c918421965c2a6a172f64b"
+    },
+    {
+      "Path": "install-powershell.sh",
+      "Bytes": 628,
+      "Sha256": "b526e00943ebc91b3e4a7e2fcb3440b0646f83169a21a8577b4626650e0835ad"
+    },
+    {
+      "Path": "install-powershell.log",
+      "Bytes": 2471,
+      "Sha256": "c93680a3058e4cddcdb4dc1c2e1bfb1e46ea2012b8fc416eaa823075916370be"
+    },
+    {
+      "Path": "install-specify.log",
+      "Bytes": 443,
+      "Sha256": "37cb14291d0a3cc8e48c8218570d35bb4d4a502c38b718290e5fbc10c42a94a3"
+    },
+    {
+      "Path": "specify-version.log",
+      "Bytes": 2343,
+      "Sha256": "b5b80de4f3c791fb74bc8f35fb7f1cd21bdaf4c93aa5d1fd95808d076c3dd936"
+    },
+    {
+      "Path": "specify-integrations.log",
+      "Bytes": 133,
+      "Sha256": "163264c49d4b596da9efaf74791d6358ec635a0ba4f23f49ad061726470fbea9"
+    },
+    {
+      "Path": "specify-integrations-at-repo.log",
+      "Bytes": 5605,
+      "Sha256": "b406ab6d9f2124d2c1fdcf18bb3875c48b86033cd0e8f8c8afc3b7caa02a860e"
+    },
+    {
+      "Path": "spec-kit-prerequisites.json",
+      "Bytes": 159,
+      "Sha256": "89e20855f3015d4d08cf0e17587396f4ff959392d98a78b24ae05d80eec53200"
+    },
+    {
+      "Path": "spec-kit-prerequisites-stderr.log",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "category-catalog.json",
+      "Bytes": 154204,
+      "Sha256": "f7a6d82893416ea6ad3deb28402ca01b4ce786f00ba253023a9af6437fff4464"
+    },
+    {
+      "Path": "category-catalog-stderr.log",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "ipc-probe/IpcProbe.csproj",
+      "Bytes": 237,
+      "Sha256": "031da6a6f6d810b9f23ffe7818f3acefb7b0ff54b0eb8c6752735ad58d254904"
+    },
+    {
+      "Path": "ipc-probe/Program.cs",
+      "Bytes": 3798,
+      "Sha256": "1c94e95b0a77c9bb8813303ae4342edce80b03dcb643ec36517ced58624ce6c0"
+    },
+    {
+      "Path": "ipc-probe-build.log",
+      "Bytes": 953,
+      "Sha256": "26e0146ed3a1758911e66cc5e61913814e145ff6c008ec89638459064ec732f6"
+    },
+    {
+      "Path": "ipc-probe-result.json",
+      "Bytes": 733,
+      "Sha256": "b2576b1101d4a956e2185d18b46107b64b255b34d765ca0547356805e7bbb116"
+    },
+    {
+      "Path": "ipc-probe-stderr.log",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "sdk-certificate-location.json",
+      "Bytes": 621,
+      "Sha256": "984900b98d52b5d8882e3b795c59082b1369a6b72117892b48bd1ca71489147a"
+    },
+    {
+      "Path": "review.txt",
+      "Bytes": 2098,
+      "Sha256": "aca760aa22cd872633363ed2537455bdd8c4b2363b1122d4b1e575c3e032a444"
+    },
+    {
+      "Path": "next-linux-peer-adapter.txt",
+      "Bytes": 1619,
+      "Sha256": "6bb0b78bf56bcfcfc9f6293d26c9b408a2bbb0304fae64e4896e9145e6cc24ce"
+    }
+  ],
+  "Qualification": "PASS same-process normal-permission two-named-pipe construction/connect/one-byte transfer/close/unlink only. Both servers and both clients have PID 1860; same effective user positive path. No numeric UID recorded.",
+  "NativeAdmissionQualified": false,
+  "CrossProcessQualified": false,
+  "PeerPidUidQualified": false,
+  "ProcessLifecycleQualified": false,
+  "IndependentReview": {
+    "Model": "gpt-6-astra",
+    "Effort": "xhigh",
+    "Scope": "Original environment/transport-capability evidence only; preserved without relabeling. Future implementation review remains gpt-6.1-sol/xhigh."
+  },
+  "PreservedLimitations": "Native application category never built/discovered/executed; missing Linux peer adapter. First-use SDK certificate banner does not prove physical creation or store; no trust command ran; no certificate material in archive."
+}
