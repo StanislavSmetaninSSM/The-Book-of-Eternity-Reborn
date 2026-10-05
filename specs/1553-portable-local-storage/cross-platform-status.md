@@ -12,7 +12,11 @@ qualification — доказательствами конкретного огр
 worker ledger, проверка до recovery, durable intent перед Release и fencing публикации.
 Main-only run-record90 сохраняется; из файла нельзя восстановить kernel authority или
 success permit. Первый предлагаемый R1 — только durable ledger, без подключения pool.
-Runtime/tests/catalog не меняются; design review и удалённое восстановление пока впереди.
+R2 подключает весь lifecycle одним блоком; R3 постепенно расширяет crash/restart матрицу.
+Первое независимое Sol6.1/xhigh ревью потребовало уточнить закрытые переходы, проверки
+до recovery, условный cleanup-аудит и различие publication/retirement commit ambiguity.
+Поправки подготовлены; повторное ревью и удалённое восстановление пока впереди.
+Runtime/tests/catalog не меняются.
 Для реализации потребуется отдельный запуск родителя. Предыдущий handoff B ниже принят.
 
 ## POOL B: bounded synthetic-срез завершён, 2026-10-05

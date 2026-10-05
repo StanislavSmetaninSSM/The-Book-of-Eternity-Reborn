@@ -17,16 +17,23 @@ initialization, worktree or Spec Kit scaffold; no runtime/test/catalog/CI change
 Findings: main-only pure record is not a worker fence; pool capacity and success permits
 are live memory; canonical acquisition can recover before returning the lease; current
 cleanup receipt is not a cold stop credential. Recommended approach is a separate
-durable worker ledger with conservative cold admission, then actual synthetic pool
-intent/admission and one-send/publication/retirement fences. R1 is the first proposed
+durable worker ledger with conservative cold admission, then one atomic connected
+synthetic lifecycle and gradual crash/restart qualification. R1 is the first proposed
 implementation slice, still unapproved. Product root-block versus per-worker cold
 continuation is explicitly separated for the parent before R2. Autonomous salvage,
 reboot clear, main writer integration and power-cut qualification remain excluded.
 
-Design WIP: source audit/self-check complete; independent actual Sol6.1/xhigh review
-and final GitHub restoration pending. Zero tests or native probes; unchanged accepted
-run-record90/POOL127 and unrelated cohorts are not repeated. Next action: publish this
-WIP, obtain design review, resolve findings and return the concrete R1 handoff to parent.
+Design WIP `61915468a48c2a9fe3bef2faa7adb042ec30124d` received independent actual
+Sol6.1/xhigh changes-required review. Corrections close mutation authority with typed
+transitions, preserve concurrent per-entry epochs, connect the whole R2 lifecycle
+atomically, specify operation-aware pre-recovery fences and conditional quarantine
+audit, and distinguish PublicationCommitPending from RetirementCommitPending without
+revoking B's already acknowledged live publication permit. Initialization crash cuts
+include namespace/lock creation and ancestor directory synchronization.
+Focused re-review and final GitHub restoration pending. Zero tests or native probes;
+unchanged accepted run-record90/POOL127 and unrelated cohorts are not repeated.
+Next action: publish corrections, resolve focused review, verify source hashes and
+fresh GitHub restoration, then return the concrete R1 handoff to parent.
 Do not start implementation from this entry or from historical next instructions below.
 
 ## POOL B — authorized refinement from accepted HOST A, 2026-10-05

@@ -66,7 +66,11 @@ positive root-wide Int64 epoch, random RunId, existing generation, WorkerId, Tas
 exact reserved task SHA256, backend and guarantee, host-instance token. Native boot
 identity may be recorded diagnostically; changed boot never clears worker Uncertain.
 Target OS chooses root comparison; all other fields are exact. Epoch never wraps or
-resets on generation replacement. No PID, launch nonce, credentials, environment or
+resets on generation replacement. High-water allocates identities, not invalidation:
+each active permit must match its own exact retained entry/epoch and current live
+coordinator; it need not equal the latest high-water. Concurrent valid workers with
+epochs N and N+1 remain valid independently. A new generation never rewrites an older
+entry's identity or clears its reservation. No PID, launch nonce, credentials, environment or
 provider content becomes durable authority. Keep main schema1 unchanged.
 
 Use fixed `<BasePath>/.boe_runtime/worker-runs-v1/` independent of workspace env settings:
@@ -81,7 +85,13 @@ A terminal archive is written before removing its reservation from state; crash 
 those steps only retains capacity. Exact archive retry is idempotent; conflict blocks.
 
 First initialization is an explicit create-only operation under the original locks
-on a trusted empty namespace. A missing state inside an initialized/nonempty namespace
+on a trusted empty namespace. Create/open the stable owner.lock with exclusive access,
+then journal.lock in that order; never delete/rename a lock file. Remember whether this
+exact coordinator created the namespace and lock entries. Only that original creation
+attempt may initialize; any existing namespace/lock without state after a previous
+crash blocks. Qualification cuts include directory creation, each lock creation and
+initial state install, not only later replacements. Synchronize new ancestor directory
+entries before reporting initialization durable. A missing state inside an initialized/nonempty namespace
 is not fresh bootstrap. No recovery by resetting epoch, deleting markers or choosing
 an older backup. Atomic replacement/CAS compares exact previous bytes plus sequence
 under the retained journal lock; unchanged writes are idempotent. A failed/ambiguous
@@ -105,10 +115,13 @@ ordinary-file or process-termination tests.
 ## Lifecycle and uncertainty
 
 The durable state records intent and progress, not process authority:
-`Prepared -> ReleaseIntent -> Released -> StopValidated -> PublicationIntent -> Published
--> CleanupPending -> Retired`. A no-result path may skip publication after validated
-stop/output. `AbortedBeforeLaunch` is permitted only while the same live coordinator
-can prove Start was never attempted; cold Prepared cannot use that shortcut.
+`Prepared -> LaunchIntent -> ReleaseIntent -> Released -> StopValidated -> PublicationIntent
+-> Published -> CleanupPending -> Retired`. LaunchIntent is durable before any Start
+attempt, including helper creation; StopValidated requires the original matching scoped
+stop AND actual owned-output settlement. There is no edge from Uncertain to any other
+state. Same-phase exact retries cannot change identity or completed proof. A no-result path may skip publication after validated
+stop/output. `AbortedBeforeLaunch` is permitted only from Prepared while the same live coordinator
+retains its original unconsumed launch intent and can prove Start was never attempted; cold Prepared cannot use that shortcut.
 Every nonterminal cold observation becomes effective Uncertain, including a durable
 StopValidated/Published progress record. Explicit Uncertain is absorbing in all
 planned slices. A reboot, late ECHILD, new generation, PID absence, cleanup receipt,
@@ -126,8 +139,35 @@ unknown task is not retried with a new epoch merely to evade its tombstone.
 A same-process post-stop filesystem/receipt failure keeps the original phase owner
 and may retry exactly as in B. A process death loses that live owner: the same durable
 CleanupPending now blocks; do not manufacture a reaper owner from saved paths.
-Persist Retired/archive before releasing the worker slot or quarantine reservation.
-If retirement publication fails, capacity stays retained. Tombstones survive session
+Retirement uses a frozen exact commit plan and an explicit RetirementCommitPending state.
+Complete all fallible process/channel/workspace-deletion phases first, retaining original
+workspace/runtime authority. Existing B requires cleanup-confirmed audit/fallback only
+if the execution entered quarantine; ordinary successful cleanup does not gain a new
+audit event. Freeze that requirement, stable event ID, original publication/cleanup facts
+and terminal bytes before the terminal commit. Retired is fully committed only after
+the exact archive and acknowledged removal of its active reservation; it precedes
+releasing retained runtime authority, slot or reservation. A candidate archive alone
+never frees capacity. Final authority release must be a non-failing handle/resource release after
+all fallible deletion/receipt/commit phases; any remaining fallible work prevents the
+Retired boundary.
+
+A definite pre-commit failure may transfer ordinary cleanup to quarantine while it
+still owns runtime authority, complete the now-required original audit/fallback and
+then create its terminal plan. An ambiguous/installed commit or lost ACK remains
+RetirementCommitPending with the same original owner, frozen bytes and requirements; it cannot
+be reclassified into a different terminal receipt plan. Observe/retry that exact
+publication only, no repeat Release/import or slot reuse. Distinguish this from
+PublicationCommitPending: an ambiguous Published commit cannot mint a success permit.
+A retirement-only failure after an already acknowledged durable Published commit
+preserves the original live publication permit and B's CleanupDeferred result behavior;
+it does not newly authorize or replay result acceptance. Freeze terminal bytes and the
+conditional audit requirement through lost ACK and any post-commit resource-disposal
+retry, without creating a new receipt requirement for that frozen commit. Cold
+nonterminal/pending reservations block even if a matching candidate archive exists. A fully
+committed terminal record is admission evidence only and never recreates a result
+permit. Metadata CommitPending after already-validated stop is distinct from absorbing
+execution Uncertain; it cannot conceal a process/output uncertainty. Tests must prove
+this distinction and all lost-ACK cuts. Tombstones survive session
 replacement and never delete retained workspaces. Failed uncertainty persistence
 cannot silently leave a usable coordinator; its live gate closes while the prior
 nonterminal record still makes the next process refuse admission.
@@ -150,7 +190,18 @@ releases its fence; original I/O must settle, or ownership remains retained/bloc
 For the later explicitly injected fixture contour:
 - Split canonical lock acquisition from recovery just enough to invoke a typed worker
   admission predicate after exact lock-handle validation and before legacy/local
-  recovery. Check both newly acquired and already-held lease mutation paths. Diagnostic
+  recovery. The typed purposes are ColdAdmission, TaskReservation, Release,
+  ProposalPublication, ConfirmedCleanupAudit and DiagnosticObservation; a Boolean
+  allow-anything hook is forbidden. Cold nonterminal or explicit Uncertain inventory
+  blocks recovery and dispatch/publication. Warm reservation/Release/publication needs
+  the current coordinator, exact applicable entry and generation; those purposes
+  cannot authorize a cleanup receipt. ConfirmedCleanupAudit needs the original live
+  positive stop/output authority and only its required exact audit operation; if the
+  root inventory blocks canonical recovery, retain capacity and propagate the refusal,
+  without inventing a new fallback for arbitrary I/O failures. Ledger uncertainty/
+  CommitPending persistence uses its standalone journal path, never canonical recovery.
+  DiagnosticObservation is standalone read-only, with no recovery side effects.
+  Check both newly acquired and already-held lease mutation paths. Diagnostic
   ledger reads do not call that acquisition. Default/public behavior remains unchanged
   until a separately approved rollout; this is not a whole-root/main-writer fence.
 - Admission binds coordinator, root, current existing generation and exact task. It
@@ -171,7 +222,9 @@ For the later explicitly injected fixture contour:
   On ambiguous commit persistence preserve bundle/evidence and suppress new success;
   never undo accepted bytes merely to make metadata look clean.
 - Reaper retry keeps the same ledger binding/phase owner. Cleanup-confirmed audit or
-  fallback receipt is still required before terminal archival and capacity release.
+  fallback receipt remains required only after quarantine transfer; preserve the normal
+  no-receipt path. Apply the frozen terminal commit protocol above before releasing
+  retained runtime authority or capacity.
   Neither missing main record nor main Stopped skips any worker condition.
 
 R2/R3 must exercise all relevant pre-recovery/held-lease routes in the injected contour.
@@ -194,13 +247,28 @@ codec/admission files unchanged. All service/Core paths are under BookOfEternity
 
 Interfaces: `ObserveAsync(WorkerLedgerTarget, CancellationToken) -> Task<WorkerLedgerObservation>`
 never creates/repairs files; `OpenCoordinatorAsync(...) -> Task<WorkerLedgerCoordinator>`
-retains original root locks; `InitializeAsync(...)`, `CompareExchangeAsync(expectedBytes,
-desiredSnapshot, CancellationToken)` and `ArchiveRetiredAsync(exactRecordBytes, ...)`
-return explicit Applied/AlreadyExact/Blocked outcomes. Only a coordinator can mutate;
-returned observations never implement a lease/permit. Concrete record fields/bounds,
-identity comparison and cold semantics are defined above; unsupported platform durability
-returns Blocked before publication. Cancellation after mutation starts retains/settles
-original I/O before reporting its result.
+retains original root locks. Expose typed operations: Initialize, Prepare, PlanLaunch,
+PlanRelease, RecordReleased, RecordValidatedStopAndOutputs, PlanPublication,
+RecordPublication, PlanCleanup, MarkUncertain and Retire. Each consumes the same opaque
+live coordinator/entry handle plus its exact expected sequence, returns an explicit
+Applied/AlreadyExact/Blocked/CommitPending outcome, and enforces the closed transition
+table above. Generic exact-byte CAS remains private to storage and cannot choose a
+phase or bypass validation. Cold observations and arbitrary decoded snapshots cannot
+be passed as live entry handles or stop/retirement witnesses.
+
+R1 implements initialization, Prepared/LaunchIntent/Uncertain, exact live prelaunch
+abort, strict serialization/cold interpretation and private atomic storage. Started-run
+stop/publication/retirement operations stay unavailable until R2 connects sealed
+witnesses from the original `GmWorkerExecutionAuthority`; never add a production
+"trusted=true" or arbitrary evidence callback. R1 may read seeded valid terminal
+fixtures to test syntax/admission policy, but cannot mint real started-run retirement.
+The writer rejects Uncertain->Retired, cold handle reuse, changed identities, epoch
+regression/overflow and archival/removal without its required phase witness.
+Terminal candidate bytes are separate from committed state; exact archive retry cannot
+turn an active entry into a terminal one. R1's archive mutation proof is limited to
+its live no-launch abort path; actual stopped-run retirement is R2's responsibility.
+Unsupported platform durability returns Blocked before publication. Cancellation after
+mutation starts retains/settles original I/O before reporting its result.
 
 - [ ] Add a coherent `worker-run-ledger` category and explicit selection for this slice.
   Write cold tests for Prepared/ReleaseIntent/Published/CleanupPending/Uncertain;
@@ -219,44 +287,63 @@ original I/O before reporting its result.
 - [ ] Verify catalog discovery, exact source/commands/counts/cleanup, separate
   Sol6.1/xhigh review and GitHub restoration. Handoff as a prerequisite only.
 
-### R2 — actual synthetic pool admission, intent and cold refusal
+### R2 — atomic connection of the complete synthetic lifecycle
 
-Depends on R1 and the product admission choice below. Modify explicit native fixture
-admission/coordinator, pool, workspace preallocation, OwnedLaunch/native launcher RunId
-binding and the minimal FileSystemManager pre-recovery hook. Preserve default public
-Linux refusal and original Windows Job lifecycle. Add `GmWorkerRestartAdmissionTests`
-under its own selected category with actual pool/independent guardian and finite actors.
+Depends on R1 and the product admission choice below. Connect durable admission,
+pre-recovery checks, launch/Release/publication intent and terminal retirement as one
+bounded implementation. Never enable durable pool admission while later lifecycle
+stages still use the unfenced B route. Default public Linux admission stays closed.
+Files: pool, native fixture admission, workspace preallocation, OwnedLaunch/native
+RunId binding, ProcessHost, ExecutionAuthority, real Store and QuarantinedExecution;
+minimal injected FileSystemManager pre-recovery/held-lease predicates. Do not broaden
+Windows Job semantics or claim native Windows execution. Test entrypoint:
+`BookOfEternityClient.Tests/GmWorkerRestartAdmissionTests.cs` plus finite TestSupport
+restart driver under the existing independent guardian.
 
-- [ ] Causal test: kill the original application after durable Prepared / after real
-  helper bind / before Release; fresh actual pool must preserve capacity/evidence and
-  send zero Release, with guardian cleanup independent of its decision.
-- [ ] Connect one shared coordinator, exact preallocated identity and pre-recovery
-  admission. Prove a held old lock blocks a second app, PID reuse/boot change do not
-  clear evidence, terminal old epochs cannot restart same task, and valid fresh roots
-  still reach the existing synthetic path only through explicit injection.
-- [ ] Add generation replacement at queued Release, during prepare and immediately
-  before send; old-generation dispatch is rejected at its held-lease boundary.
-- [ ] Review/qualify this admission slice before attempting publication recovery.
+- [ ] First causal RED: preserve a nonterminal intent from an abruptly stopped first
+  app; a fresh real pool must not allocate fresh capacity, perform recovery writes,
+  send Release or accept the saved result. Separate preparation errors from the RED.
+- [ ] Thread the same sealed entry handle through preparation, original owner binding,
+  one Release, Store and cleanup. Connect every typed operation/fence listed above
+  before lifting the internal scaffold refusal. Preallocate identity before Start.
+- [ ] One positive actual-pool happy/content result must stop and settle outputs,
+  publish under the current generation, finish conditional cleanup, commit terminal
+  state and release capacity exactly once. Fresh restart may admit a NEW task after
+  this fully committed terminal record, never replay the old task identity.
+- [ ] Prove the retained owner lock blocks a second process and a queued old-generation
+  Release refuses under the original canonical lease. Parallel workers with different
+  epochs remain valid; new high-water alone must not invalidate an earlier live entry.
+- [ ] Focused GREEN and independent review of this complete connected path precede R3.
+  No intermediate build is qualified as restart-safe merely because metadata exists.
 
-### R3 — one-send/publication fences and retirement
+### R3 — gradual crash/restart and retirement qualification
 
-Depends on R2. Modify ProcessHost Release, real pool/Store, ExecutionAuthority and
-QuarantinedExecution through typed permits; preserve actual proposal bytes, create-only
-publication, generation and B cleanup order. Add narrow `GmWorkerRestartFenceTests`.
+Depends on positive R2 cleanup. Add narrow `GmWorkerRestartFenceTests` and only required
+negative/observation hooks. Change runtime only to fix causal defects found by this
+matrix; do not introduce reconnect or new cold cleanup authority.
 
-- [ ] Causal Release write/ack-loss case proves fresh restart never repeats a send.
-  Old coordinator/epoch and same-ID changed task/proposal cannot publish.
-- [ ] Crash cuts after actual Completed, stop, output settlement, before/after bundle
-  move, before derived inbox/audit, before/after terminal archive and capacity release.
-  Fresh process accepts no old result; canonical committed bytes and uncertain
-  workspace remain unchanged; cleanup retries cannot double-release capacity.
-- [ ] Prove unbound acquisition is rejected before any recovery writer and already-held
-  leases recheck the same fence. Race replacement/publication under original lock;
-  exactly one generation ordering wins, stale paths never mutate the new generation.
-- [ ] Preserve B live happy/content paths and only affected uncertainty/receipt/consumer
-  cases; do not rerun all127 solely because a later slice uses the same pool.
-- [ ] Final source-specific native process-crash packet, independent review, normal
-  publication/readback/fresh restore. Stop before public rollout or autonomous salvage.
+- [ ] Extend one bounded cohort at a time: crash after Prepared, helper bind, Release
+  intent/write/ack, Completed, scoped stop and output settlement. Fresh process blocks
+  every nonterminal case and sends zero repeated Release; guardian proves independent
+  physical cleanup without clearing ledger uncertainty.
+- [ ] Cut before/after bundle move, derived inbox/audit, terminal candidate archive,
+  exact commit/ack and capacity release. Preserve committed canonical bytes, frozen
+  terminal bytes/conditional audit requirements and uncertain workspace. Publication
+  commit ambiguity grants no success; retirement-only ambiguity preserves an already
+  acknowledged live publication permit with CleanupDeferred. Cold restart grants no
+  accepted result or capacity release; no duplicate import or tombstone mutation on retry.
+- [ ] Race generation replacement with queued Release and Store publication. Prove
+  all unbound/recovery entrypoints block before mutation, and already-held leases
+  recheck the same binding after awaits. Old epoch/coordinator/same-ID changed body
+  cannot borrow a live permit; existing original journal recovery conflicts still block.
+- [ ] Crash with active parallel workers, valid and corrupt inventory, changed profile
+  limits, changed runtime base and lost owner lock. Preserve all reservations; no
+  per-root inventory claims to replace the existing process-wide reaper capacity bound.
+- [ ] Qualify selected B uncertainty/receipt/consumer regressions only when changed.
+  Do not replay all127, main-record90 or unrelated passing cohorts by default.
+- [ ] Preserve exact source/commands/counts/cleanup, catalog discovery, separate
+  Sol6.1/xhigh final review, non-force publication/readback and fresh GitHub restore.
+  No public rollout, reboot-based clear or autonomous salvage follows R3.
 
 ## Product decisions versus technical choices
 

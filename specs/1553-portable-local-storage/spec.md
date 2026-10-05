@@ -73,6 +73,12 @@ old-generation publication, recreated success permit, automatic quarantine delet
 capacity release. Existing generation/lease/receipt and live Windows Job semantics
 remain required. The planned first slice is an inert durable worker-ledger prerequisite;
 actual pool connection and product restart-admission policy require later authorization.
+The proposed sequence is R1 inert ledger with closed mutation authority, R2 one atomic
+connection of admission/Release/publication/retirement, then R3 gradual crash/restart
+qualification. Explicit execution Uncertain remains absorbing. Metadata ambiguity is
+separate: PublicationCommitPending grants no success, while retirement-only ambiguity
+preserves an already acknowledged live Published permit with CleanupDeferred; neither
+case restores authority after a cold restart.
 No runtime changes, public Linux rollout, main PTY/live GM/real saves or automatic
 salvage follow this design. FR-012/014/015, T041-WORKER-RESTART-DESIGN.
 
