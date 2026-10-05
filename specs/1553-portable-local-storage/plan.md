@@ -437,6 +437,22 @@ for nonzero/missing-proposal. Strengthen these assertions and select only affect
 under worker-native-pool-publication-rejection; unchanged cancellation/timeout4 retain
 prior GREEN. Fresh build/execution of corrected4 still pending.
 
+B5 corrected terminal4 GREEN at `6a956673813fb22df248435d59aa243132fa1f2d`:
+Plan4/0exec41.6022296s; run4/4PASS14.7822824s, complete selection/cleanup,
+no skip/duplicate/timeout. [Evidence](recovery/evidence/worker-pool-publication-rejection-green/manifest.json).
+Four guardians ECHILD/emergency0/failures0/deadlinefalse. Eight distinct latest terminal
+cases now PASS including unchanged cancellation/timeout4 from f115c762. Actual separate
+Sol6.1/xhigh confirmed corrected lease path and causal assertions in source.
+
+Next bounded WIP: three actual contentRef cases (exact bytes+inbox, missing bytes,
+wrong hash) and one pre-Release original-helper loss case. Add observation-only
+AfterOwnerBound callback after original owner binding; fixture captures original owner,
+then kills only its retained Process at BeforeWorkerRelease and awaits its real exit.
+Independent guardian retains orphan cleanup; uncertainty must preserve workspace and
+quarantine capacity. This tests the open hypothesis of Release after known authority
+loss; no runtime guard correction is assumed until causal result. Fresh4 build/run
+pending. No public admission or unrelated runtime change.
+
 B5 observation seam design consultation, actual Sol6.1/xhigh: an internal optional
 capture of the genuinely launched owner is allowed only after pool binding (or with
 OwnedLaunchException preserving that owner). It cannot replace owner/identity or

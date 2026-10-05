@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Diagnostics;
+using System.Reflection;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -12,16 +13,20 @@ namespace BookOfEternityClient.Tests;
 // independent C subreaper; it retains cleanup authority if this process is lost.
 internal static class NativePoolScenarioDriver
 {
+    private static readonly byte[] ProposedContent = Encoding.UTF8.GetBytes("{\"fixture\":\"proposed-content-only\"}\n");
+
     internal static async Task<int> Run(string mode, string package, string output)
     {
         if (mode == "pool-worker") return await Worker(package, output, null);
         if (mode.StartsWith("pool-worker-", StringComparison.Ordinal)) return await Worker(package, output, mode[12..]);
         var descendantMode = mode.StartsWith("pool-descendant-", StringComparison.Ordinal) ? mode[16..] : null;
         var terminalMode = mode.StartsWith("pool-terminal-", StringComparison.Ordinal) ? mode[14..] : null;
-        if (mode != "pool-happy" && descendantMode is not ("tree" or "root-first" or "doublefork" or "ignore" or "spawn") &&
+        var contentMode = mode.StartsWith("pool-content-", StringComparison.Ordinal) ? mode[13..] : null;
+        var helperLoss = mode == "pool-helper-loss-before-release";
+        if (!helperLoss && contentMode is not ("valid" or "bad-hash" or "missing") && mode != "pool-happy" && descendantMode is not ("tree" or "root-first" or "doublefork" or "ignore" or "spawn") &&
             terminalMode is not ("cancel-release" or "timeout-release" or "cancel-publication" or "timeout-publication" or
                 "generation" or "task-bytes" or "nonzero" or "missing-proposal")) return 64;
-        var workerMode = terminalMode is "nonzero" or "missing-proposal" ? terminalMode : descendantMode;
+        var workerMode = contentMode != null ? "content-" + contentMode : terminalMode is "nonzero" or "missing-proposal" ? terminalMode : descendantMode;
         var fixtureRoot = Path.Combine(output, "state-copy");
         Directory.CreateDirectory(fixtureRoot);
         var fs = new FileSystemManager(fixtureRoot, NullLogger<FileSystemManager>.Instance);
@@ -32,7 +37,7 @@ internal static class NativePoolScenarioDriver
         const string weather = "{\"fixture\":\"isolated-pool-context\"}";
         const string contextPath = "game_state/world/weather.json";
         await fs.WriteFileAtomicAsync(contextPath, weather);
-        var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+        var profile = (contentMode != null ? GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() : GmWorkerBridgeTestFixtures.AnalysisCodexProfile()) with
         {
             LaunchCommand = string.Join(" ", new[]
             {
@@ -42,7 +47,7 @@ internal static class NativePoolScenarioDriver
             }.Select(value => "\"" + value + "\"")),
             TimeoutSeconds = 15
         };
-        var task = GmWorkerBridgeTestFixtures.AnalysisTask() with
+        var task = (contentMode != null ? GmWorkerBridgeTestFixtures.ValidationRepairTask() : GmWorkerBridgeTestFixtures.AnalysisTask()) with
         {
             TimeoutSeconds = profile.TimeoutSeconds,
             ContextFiles = [new WorkerFileReference
@@ -54,14 +59,23 @@ internal static class NativePoolScenarioDriver
         var releases = 0; var publicationCalls = 0; string? cleanupPath = null;
         using var cancellation = new CancellationTokenSource();
         using var timeout = new CancellationTokenSource();
+        GmWorkerNativeLineageLaunch? capturedOwner = null;
+        var helperWasLost = false;
         var hooks = new GmWorkerBridgePoolHooks
         {
-            BeforeWorkerReleaseAsync = () =>
+            AfterOwnerBound = owner => capturedOwner = (GmWorkerNativeLineageLaunch)owner,
+            BeforeWorkerReleaseAsync = async () =>
             {
                 releases++;
                 if (terminalMode == "cancel-release") cancellation.Cancel();
                 if (terminalMode == "timeout-release") timeout.Cancel();
-                return Task.CompletedTask;
+                if (helperLoss)
+                {
+                    var original = (Process)typeof(GmWorkerNativeLineageLaunch).GetField("_supervisor", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(capturedOwner)!;
+                    original.Kill(); // Original retained Process only; outer guardian owns surviving host.
+                    await original.WaitForExitAsync();
+                    helperWasLost = true;
+                }
             },
             BeforeProposalPublicationAsync = async () =>
             {
@@ -94,7 +108,13 @@ internal static class NativePoolScenarioDriver
             success = result?.Status.State == WorkerBridgeState.Stopped && result.ExitCode == 0 && stored != null,
             failure = failure ?? result?.Status.LastError,
             canceled, resultReturned = result != null,
-            releases, publicationCalls,
+            mode, helperWasLost, releases, publicationCalls,
+            retainedWorkspaces = Directory.Exists(Path.Combine(fixtureRoot, "native-runtime"))
+                ? Directory.GetDirectories(Path.Combine(fixtureRoot, "native-runtime"), "game_session", SearchOption.AllDirectories).Length : 0,
+            contentImportedExactly = stored?.ChangedFiles.Count == 1 && File.Exists(fs.ResolvePath(stored.ChangedFiles[0].ContentRef!)) &&
+                (await File.ReadAllBytesAsync(fs.ResolvePath(stored.ChangedFiles[0].ContentRef!))).AsSpan().SequenceEqual(ProposedContent),
+            inboxMatches = stored != null && (await File.ReadAllBytesAsync(fs.ResolvePath(GmWorkerBridgePool.GetProposalInboxPath(task.TaskId))))
+                .AsSpan().SequenceEqual(Encoding.UTF8.GetBytes(GmWorkerJson.Serialize(stored))),
             workerStarts = File.Exists(Path.Combine(output, "worker-starts")) ? File.ReadAllLines(Path.Combine(output, "worker-starts")).Length : 0,
             workspaceCleaned = cleanupPath != null && !Directory.Exists(cleanupPath),
             reaperEntries = reaper.EntryCount, reaperCapacity = reaper.OwnedCapacity,
@@ -170,7 +190,7 @@ internal static class NativePoolScenarioDriver
     {
         await File.AppendAllTextAsync(Path.Combine(output, "worker-starts"), "started\n");
         if (descendantMode == "missing-proposal") return 0;
-        if (descendantMode != null && descendantMode != "nonzero")
+        if (descendantMode != null && descendantMode != "nonzero" && !descendantMode.StartsWith("content-", StringComparison.Ordinal))
         {
             if (descendantMode is not ("tree" or "root-first" or "doublefork" or "ignore" or "spawn")) return 64;
             var start = new ProcessStartInfo(Path.Combine(package, "lineage-fixture")) { UseShellExecute = false };
@@ -200,6 +220,23 @@ internal static class NativePoolScenarioDriver
             SelfCheck = new WorkerSelfCheck { ScopeReviewed = true, ValidationExpectedToPass = true },
             CreatedAtUtc = "2026-10-05T00:00:00Z"
         };
+        if (descendantMode?.StartsWith("content-", StringComparison.Ordinal) == true)
+        {
+            var contentRef = "worker_proposals/" + proposal.ProposalId + "/game_state/world/weather.json";
+            proposal = proposal with { ChangedFiles = [new WorkerChangedFile
+            {
+                Path = "game_state/world/weather.json", ChangeKind = WorkerFileChangeKind.Replace,
+                BeforeSha256 = task.ContextFiles[0].Sha256,
+                AfterSha256 = descendantMode == "content-bad-hash" ? new string('f', 64) : Convert.ToHexString(SHA256.HashData(ProposedContent)).ToLowerInvariant(),
+                ContentRef = contentRef
+            }] };
+            if (descendantMode != "content-missing")
+            {
+                var path = Path.Combine(Environment.GetEnvironmentVariable(GmWorkerBridgePool.SessionPathEnvironmentVariable)!, contentRef);
+                Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+                await File.WriteAllBytesAsync(path, ProposedContent);
+            }
+        }
         await File.WriteAllTextAsync(Environment.GetEnvironmentVariable(GmWorkerBridgePool.ProposalPathEnvironmentVariable)!,
             GmWorkerJson.Serialize(proposal));
         await Console.Out.WriteLineAsync("pool-worker-stdout");

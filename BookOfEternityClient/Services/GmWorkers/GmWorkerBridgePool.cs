@@ -15,6 +15,7 @@ internal sealed class GmWorkerBridgePoolHooks
     internal Func<Task>? BeforeProposalPublicationAsync { get; init; }
     internal Func<Task>? BeforeProcessTreeAttachAsync { get; init; }
     internal Func<Task>? BeforeWorkerReleaseAsync { get; init; }
+    internal Action<GmWorkerOwnedLaunch>? AfterOwnerBound { get; init; }
     internal Func<string, Task>? BeforeWorkspaceCleanupAsync { get; init; }
     internal Func<string, Task>? AfterQuarantineAuditTempCreatedAsync { get; init; }
     internal CancellationToken TimeoutSignal { get; init; }
@@ -749,6 +750,7 @@ public sealed class GmWorkerBridgePool
                     System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex.InnerException!).Throw();
                     throw;
                 }
+                _hooks?.AfterOwnerBound?.Invoke(ownedLaunch!);
                 if (_hooks?.BeforeWorkerReleaseAsync != null)
                 {
                     await _hooks.BeforeWorkerReleaseAsync()

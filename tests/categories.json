@@ -2,6 +2,55 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "worker-native-pool-content",
+      "responsibility": "#1553 POOL B Actual pool detached content import exact bytes and rejection for missing/hash mismatch, without applying canonical game state.",
+      "excludes": "Synthetic isolated state only; no public Linux Release, systemd, out-of-lineage ownership, live GM, main PTY, durable restart or Windows runtime qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ImportsExactDetachedContentWithoutApplyingCanonicalChange",
+            "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_RejectsMissingOrChangedDetachedContent"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "worker-native-pool-release-authority",
+      "responsibility": "#1553 POOL B Actual original native supervisor lost before Release; no worker launch or publication, original quarantine retained and independent guardian owns cleanup.",
+      "excludes": "Synthetic isolated state only; no public Linux Release, systemd, out-of-lineage ownership, live GM, main PTY, durable restart or Windows runtime qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LostOriginalHelperCannotReleaseWorker"
+          ]
+        }
+      ]
+    },
+    {
       "id": "worker-native-pool-publication-rejection",
       "responsibility": "#1553 actual pool generation/task and nonzero/missing-proposal terminal rejection; exact correlated Completed result and safe cleanup.",
       "excludes": "Synthetic isolated state only; no public Linux Release, systemd, out-of-lineage ownership, live GM, main PTY, durable restart or Windows runtime qualification.",

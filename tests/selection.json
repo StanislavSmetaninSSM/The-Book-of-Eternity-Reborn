@@ -69,6 +69,22 @@
       "contracts": [
         "#1553 T041-FALLBACK-POOL B5"
       ]
+    },
+    {
+      "category": "worker-native-pool-content",
+      "reason": "#1553 POOL B Actual pool detached content import exact bytes and rejection for missing/hash mismatch, without applying canonical game state.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-release-authority",
+      "reason": "#1553 POOL B Actual original native supervisor lost before Release; no worker launch or publication, original quarantine retained and independent guardian owns cleanup.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
     }
   ]
 }
