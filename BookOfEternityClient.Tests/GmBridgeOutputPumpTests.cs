@@ -396,7 +396,8 @@ public sealed class GmBridgeOutputPumpTests
         private static string FindRepoRoot()
         {
             for (var dir = new DirectoryInfo(AppContext.BaseDirectory); dir != null; dir = dir.Parent)
-                if (File.Exists(Path.Combine(dir.FullName, "TheBookOfEternityReborn.sln"))) return dir.FullName;
+                if (File.Exists(Path.Combine(dir.FullName, "BookOfEternityGMBridge", "BookOfEternityGMBridge.csproj")) &&
+                    File.Exists(Path.Combine(dir.FullName, "BookOfEternityClient.Tests", "BookOfEternityClient.Tests.csproj"))) return dir.FullName;
             throw new DirectoryNotFoundException("Repository root not found.");
         }
     }
