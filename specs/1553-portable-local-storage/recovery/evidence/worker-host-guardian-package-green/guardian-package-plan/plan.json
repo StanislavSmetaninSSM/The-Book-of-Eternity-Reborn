@@ -1,0 +1,55 @@
+{
+  "Categories": [
+    "worker-native-package",
+    "worker-native-guardian"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "0e78152a6e0e485cbb0e06c03699df9ed783d632",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 44.2656336,
+  "Descriptors": [
+    {
+      "Name": "worker-native-guardian-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-guardian",
+      "Categories": [
+        "worker-native-guardian"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeGuardianTests.IndependentGuardian_RetiresOwnedAdopteesAndLeavesForeignSentinel",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeGuardianTests.IndependentGuardian_RetiresOwnedAdopteesAndLeavesForeignSentinel",
+          "Cases": 4
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-package-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-package",
+      "Categories": [
+        "worker-native-package"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePackageTests.Build_ProducesRelocatableManifestWithMeasuredElfAbi",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePackageTests.Build_ProducesRelocatableManifestWithMeasuredElfAbi",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

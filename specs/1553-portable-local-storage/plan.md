@@ -45,6 +45,16 @@ remains1 until the actual helper v2 extension exists. New independent guardian
 fixture4cases next: normal, driver loss, helper loss, held pre-exec gate, each with
 an unrelated finite sentinel. Guard failure/deadline retains own wait/reap authority.
 
+At `0e78152a6e0e485cbb0e06c03699df9ed783d632`, fresh selected preparation passed
+5planned/0executed,44.4768312s; package/guardian execution **5/5PASS**,21.2935660s,
+zero skips/duplicates/timeouts, complete runner cleanup. All four independent
+guardian reports reached ECHILD/failures0 with unaffected finite sibling sentinel;
+normal driver required zero emergency signals, three deliberate loss cases required
+emergency retirement. Package manifest now matches actual ELF requirements and hash.
+[Evidence](recovery/evidence/worker-host-guardian-package-green/manifest.json).
+This establishes fixture preparation and artifact provenance, not managed host
+admission. Next bounded block adds the actual neutral-host causal RED.
+
 ## Worker-host native integration design — 2026-10-05
 
 **Design only; not implementation authorization.** Source/remote base
