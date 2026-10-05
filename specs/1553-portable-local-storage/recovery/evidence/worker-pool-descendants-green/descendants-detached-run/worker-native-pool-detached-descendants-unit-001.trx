@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="75991bdc-8035-4d62-8aef-037d5bc0f2cc" name="@c7669543e9c7 2026-10-05 22:28:38" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T22:28:38.0037032+00:00" queuing="2026-10-05T22:28:38.0037032+00:00" start="2026-10-05T22:28:33.3290012+00:00" finish="2026-10-05T22:28:43.2369986+00:00" />
+  <TestSettings name="default" id="08055be2-bfea-43a7-9df2-8fe4527d39ab">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-05_22_28_38" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="6e0185c6-795a-4beb-9a7e-a25a4c702706" testId="b7565b07-a436-2d63-c103-6d49f9abcc69" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_DetachedTermResistantAndStopSpawnedDescendantsAreRetired(mode: &quot;ignore&quot;, eventKind: &quot;leaf&quot;)" computerName="c7669543e9c7" duration="00:00:02.4172151" startTime="2026-10-05T22:28:43.1374942+00:00" endTime="2026-10-05T22:28:43.1374943+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6e0185c6-795a-4beb-9a7e-a25a4c702706" />
+    <UnitTestResult executionId="78836685-5cef-48b6-a9c8-127308a3420a" testId="7017fe91-3e29-d754-9612-0606bfae18b3" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_DetachedTermResistantAndStopSpawnedDescendantsAreRetired(mode: &quot;spawn&quot;, eventKind: &quot;spawned&quot;)" computerName="c7669543e9c7" duration="00:00:02.7518460" startTime="2026-10-05T22:28:40.7175929+00:00" endTime="2026-10-05T22:28:40.7175934+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="78836685-5cef-48b6-a9c8-127308a3420a" />
+    <UnitTestResult executionId="7f3146d1-ada9-48a8-abef-8331c6967535" testId="5e4a90ea-092b-2218-8cbc-ec0cf5fdaf92" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_DetachedTermResistantAndStopSpawnedDescendantsAreRetired(mode: &quot;doublefork&quot;, eventKind: &quot;detached&quot;)" computerName="c7669543e9c7" duration="00:00:02.5588502" startTime="2026-10-05T22:28:37.9646985+00:00" endTime="2026-10-05T22:28:37.9647191+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7f3146d1-ada9-48a8-abef-8331c6967535" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_DetachedTermResistantAndStopSpawnedDescendantsAreRetired(mode: &quot;spawn&quot;, eventKind: &quot;spawned&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7017fe91-3e29-d754-9612-0606bfae18b3">
+      <Execution id="78836685-5cef-48b6-a9c8-127308a3420a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_DetachedTermResistantAndStopSpawnedDescendantsAreRetired" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_DetachedTermResistantAndStopSpawnedDescendantsAreRetired(mode: &quot;ignore&quot;, eventKind: &quot;leaf&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b7565b07-a436-2d63-c103-6d49f9abcc69">
+      <Execution id="6e0185c6-795a-4beb-9a7e-a25a4c702706" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_DetachedTermResistantAndStopSpawnedDescendantsAreRetired" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_DetachedTermResistantAndStopSpawnedDescendantsAreRetired(mode: &quot;doublefork&quot;, eventKind: &quot;detached&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5e4a90ea-092b-2218-8cbc-ec0cf5fdaf92">
+      <Execution id="7f3146d1-ada9-48a8-abef-8331c6967535" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_DetachedTermResistantAndStopSpawnedDescendantsAreRetired" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="b7565b07-a436-2d63-c103-6d49f9abcc69" executionId="6e0185c6-795a-4beb-9a7e-a25a4c702706" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7017fe91-3e29-d754-9612-0606bfae18b3" executionId="78836685-5cef-48b6-a9c8-127308a3420a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5e4a90ea-092b-2218-8cbc-ec0cf5fdaf92" executionId="7f3146d1-ada9-48a8-abef-8331c6967535" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="3" executed="3" passed="3" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.34]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.52]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.54]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:09.33]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

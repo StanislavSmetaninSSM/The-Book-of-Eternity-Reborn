@@ -402,6 +402,29 @@ inspect guardian ECHILD/emergency0 before executing remaining3. Exact actor even
 source/provenance and pool cleanup/publication/permit evidence will be saved. Nothing
 executed yet in this extension; connected-runtime review is independently underway.
 
+B5 descendant GREEN at `14aa66678f74e4db5c27e65d5db4afd815b9f682`: fresh
+PlanOnly5planned/0executed,40.3899196s. First ordinary/root-first **2executed/2PASS**,
+14.5106763s; after confirming both guardian reports, detached/ignore-TERM/spawn-stop
+**3executed/3PASS**,16.0291719s. All selections/cleanup complete, no skip/duplicate/
+timeout. [Evidence](recovery/evidence/worker-pool-descendants-green/manifest.json).
+Each actual pool run takes827–974ms(<6s), Release/workerStarts/publication1, scoped
+stop/output/14consumer permit predicates pass, workspace/staging cleaned, canonical
+context unchanged, quarantine entries/capacity0. Five independent guardians ECHILD,
+driverExit0/emergency0/failures0/deadlinefalse/reaped1; events prove each requested
+lineage including intermediate/detached and stop-spawned child. No actor expiry used.
+Next: cancellation/timeout and retained uncertainty/cleanup retry matrix; no repeated
+happy/descendant run without a relevant runtime change or unresolved concern.
+
+B5 observation seam design consultation, actual Sol6.1/xhigh: an internal optional
+capture of the genuinely launched owner is allowed only after pool binding (or with
+OwnedLaunchException preserving that owner). It cannot replace owner/identity or
+return evidence. Negative-only sealed enum/gate may corrupt original terminal status
+or delay its original reader/output-observation task; late release never clears
+Uncertain, and no seam supplies positive evidence. Existing original-Process access
+inside fixtures may close owner stdin or induce helper loss; no fresh PID ownership.
+Existing hooks suffice for cancellation/generation/cleanup retries. All remain finite
+under independent guardian; source implementation of these seams is still pending.
+
 ### B1 execution record
 
 Read-only Spec Kit consistency pass at `0ffb1c45`: B has coverage in spec, this plan,
