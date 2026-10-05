@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "worker-consumer-execution-evidence"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "eac876f6916a9b6d624625fbddb1ce07c944a0b3",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 38.7323804,
+  "Descriptors": [
+    {
+      "Name": "worker-consumer-execution-evidence-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-consumer-execution-evidence",
+      "Categories": [
+        "worker-consumer-execution-evidence"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

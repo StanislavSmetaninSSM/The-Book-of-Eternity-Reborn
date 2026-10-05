@@ -314,6 +314,16 @@ Both production-invoked acceptance methods now delegate to HasValidatedExecution
 explicit proposal-null guards retain compiler flow checking. Fresh selected GREEN
 verification is pending. Native publication and positive consumer proof remain open.
 
+B4 negative consumer boundary GREEN at source `eac876f6916a9b6d624625fbddb1ce07c944a0b3`:
+fresh PlanOnly4planned/0executed,38.9364582s,0errors; NoBuild **4executed/4PASS**,
+8.3430630s, complete selection/cleanup, no skip/duplicate/timeout. [Evidence](recovery/evidence/worker-pool-consumer-green/manifest.json).
+No native process or actual accepted-publication positive in this category; B4 overall
+remains open until the actual accepted result and substitution cases are verified.
+B3-P separate actual Sol6.1/xhigh design PASS at `1d5b8ea51b72205be1f073b386c43570bf911bba`;
+read-only, no probes/tests, no remaining design blocker. Remote SHA/readback confirmed.
+Next: actual Store positive causal RED with sealed adapter scaffold, then implement
+only its reviewed Core create-only operation and narrow rejection tests.
+
 ### B1 execution record
 
 Read-only Spec Kit consistency pass at `0ffb1c45`: B has coverage in spec, this plan,
