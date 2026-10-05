@@ -605,10 +605,14 @@ public partial class SaveLoadService
         List<SaveIntegrityManifestEntry> manifestEntries)
     {
         var normalizedPath = entryPath.Replace('\\', '/');
+        // Arbitrary Linux payloads retain native identity, while fixed whole-file
+        // authorities must remain unambiguous under the loader's declared mapping.
+        var nameComparison = OperatingSystem.IsLinux() && !FixedLoadStatePaths.ContainsKey(normalizedPath)
+            ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
         if (manifestEntries.Any(entry =>
                 entry.Path.Equals(
                     normalizedPath,
-                    StringComparison.OrdinalIgnoreCase)))
+                    nameComparison)))
         {
             throw new InvalidDataException(
                 $"Save payload contains duplicate archive path '{normalizedPath}'.");

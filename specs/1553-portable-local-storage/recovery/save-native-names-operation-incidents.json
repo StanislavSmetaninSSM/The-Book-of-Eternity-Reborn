@@ -1,0 +1,19 @@
+{
+  "SchemaVersion": 1,
+  "Incidents": [
+    {
+      "Utc": "2026-10-05T05:41:40Z",
+      "Tool": "GitHub search_branches",
+      "Target": "StanislavSmetaninSSM/The-Book-of-Eternity-Reborn codex/1553-load-filesystem",
+      "Error": "INVALID_ARGUMENT: repo_name missing; initial lookup used repo instead",
+      "Outcome": "Read-only; no state mutation. Full schema inspected."
+    },
+    {
+      "Utc": "2026-10-05T05:41:49Z",
+      "Tool": "GitHub search_branches",
+      "Target": "Same branch lookup",
+      "Error": "INVALID_ARGUMENT: owner missing",
+      "Outcome": "Correct owner/repo_name shape succeeded; full remote SHA independently verified via fetch_commit. No publication or test action was retried."
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="8078e2a0-4c52-4d54-94a6-9ab72f0d5e37" name="@95e438a3e5cb 2026-10-05 02:01:42" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T02:01:42.9299271-04:00" queuing="2026-10-05T02:01:42.9299271-04:00" start="2026-10-05T02:01:40.5851643-04:00" finish="2026-10-05T02:01:42.9352746-04:00" />
+  <TestSettings name="default" id="27857bcc-eba9-4c75-8526-f8942604b6d6">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-05_02_01_42" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="258e63f4-45d1-40a1-8874-e4753d7ef40f" testId="77322824-5933-e824-6063-3330d0b916bc" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerRejectsFixedAuthorityCaseCollision(canonical: &quot;game_state/world/world_time.json&quot;, alias: &quot;game_state/WORLD/WORLD_TIME.JSON&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0313135" startTime="2026-10-05T02:01:42.8181205-04:00" endTime="2026-10-05T02:01:42.8181206-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="258e63f4-45d1-40a1-8874-e4753d7ef40f" />
+    <UnitTestResult executionId="75f17a00-2665-429b-b88e-6f59b5b1cb29" testId="799e7246-a707-8d9b-4364-7ba9b4ac51c2" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerRejectsFixedAuthorityCaseCollision(canonical: &quot;lore/codex_entries.json&quot;, alias: &quot;lore/CODEX_ENTRIES.JSON&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0220077" startTime="2026-10-05T02:01:42.8404859-04:00" endTime="2026-10-05T02:01:42.8404861-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="75f17a00-2665-429b-b88e-6f59b5b1cb29" />
+    <UnitTestResult executionId="09ca014f-a394-44d3-a28c-4c18897a3936" testId="6ec697f2-3fdd-506e-a91e-0d10a17fae4e" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerNativeNamesSurviveSaveTypedLoadSave(upper: &quot;lore/Pair.bin&quot;, lower: &quot;lore/pair.bin&quot;)" computerName="95e438a3e5cb" duration="00:00:00.2431586" startTime="2026-10-05T02:01:42.7561515-04:00" endTime="2026-10-05T02:01:42.7561719-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="09ca014f-a394-44d3-a28c-4c18897a3936">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException: Save payload contains duplicate archive path 'lore/pair.bin'.
+   at BookOfEternityClient.Services.SaveLoadService.AddManifestedBytesToArchiveAsync(ZipArchive archive, String entryPath, Byte[] content, List`1 manifestEntries) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 613
+   at BookOfEternityClient.Services.SaveLoadService.AddDirectoryToArchive(CanonicalWriteLease canonicalSnapshotLease, ZipArchive archive, String sourceDir, String entryPrefix, List`1 manifestEntries) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 580
+   at BookOfEternityClient.Services.SaveLoadService.PrepareSaveArchiveAsync(CanonicalWriteLease canonicalSnapshotLease, String saveName, String description, String saveDir, Int32 turnNumber) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 231
+   at BookOfEternityClient.Services.SaveLoadService.PrepareSaveArchiveAsync(CanonicalWriteLease canonicalSnapshotLease, String saveName, String description, String saveDir, Int32 turnNumber) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 356
+   at BookOfEternityClient.Services.SaveLoadService.CreateSaveAsync(CanonicalWriteLease lease, String saveName, String description, String saveDir, Int32 turnNumber) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Creation.cs:line 306</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerNativeNamesSurviveSaveTypedLoadSave(String upper, String lower) in [checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.SaveNativeNames.cs:line 39
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0fa31ca8-b53d-4c1e-8396-d36e615c0ae4" testId="09d0eb5a-2f0a-ab20-5416-31c69fea83b7" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerNativeNamesSurviveSaveTypedLoadSave(upper: &quot;mods/Pair/member.bin&quot;, lower: &quot;mods/pair/member.bin&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0344775" startTime="2026-10-05T02:01:42.7851714-04:00" endTime="2026-10-05T02:01:42.7851716-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0fa31ca8-b53d-4c1e-8396-d36e615c0ae4">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException: Save payload contains duplicate archive path 'mods/pair/member.bin'.
+   at BookOfEternityClient.Services.SaveLoadService.AddManifestedBytesToArchiveAsync(ZipArchive archive, String entryPath, Byte[] content, List`1 manifestEntries) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 613
+   at BookOfEternityClient.Services.SaveLoadService.AddDirectoryToArchive(CanonicalWriteLease canonicalSnapshotLease, ZipArchive archive, String sourceDir, String entryPrefix, List`1 manifestEntries) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 580
+   at BookOfEternityClient.Services.SaveLoadService.PrepareSaveArchiveAsync(CanonicalWriteLease canonicalSnapshotLease, String saveName, String description, String saveDir, Int32 turnNumber) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 239
+   at BookOfEternityClient.Services.SaveLoadService.PrepareSaveArchiveAsync(CanonicalWriteLease canonicalSnapshotLease, String saveName, String description, String saveDir, Int32 turnNumber) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 356
+   at BookOfEternityClient.Services.SaveLoadService.CreateSaveAsync(CanonicalWriteLease lease, String saveName, String description, String saveDir, Int32 turnNumber) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Creation.cs:line 306</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerNativeNamesSurviveSaveTypedLoadSave(String upper, String lower) in [checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.SaveNativeNames.cs:line 39
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerRejectsFixedAuthorityCaseCollision(canonical: &quot;game_state/world/world_time.json&quot;, alias: &quot;game_state/WORLD/WORLD_TIME.JSON&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="77322824-5933-e824-6063-3330d0b916bc">
+      <Execution id="258e63f4-45d1-40a1-8874-e4753d7ef40f" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="CurrentProducerRejectsFixedAuthorityCaseCollision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerNativeNamesSurviveSaveTypedLoadSave(upper: &quot;lore/Pair.bin&quot;, lower: &quot;lore/pair.bin&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="6ec697f2-3fdd-506e-a91e-0d10a17fae4e">
+      <Execution id="09ca014f-a394-44d3-a28c-4c18897a3936" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="CurrentProducerNativeNamesSurviveSaveTypedLoadSave" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerNativeNamesSurviveSaveTypedLoadSave(upper: &quot;mods/Pair/member.bin&quot;, lower: &quot;mods/pair/member.bin&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="09d0eb5a-2f0a-ab20-5416-31c69fea83b7">
+      <Execution id="0fa31ca8-b53d-4c1e-8396-d36e615c0ae4" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="CurrentProducerNativeNamesSurviveSaveTypedLoadSave" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerRejectsFixedAuthorityCaseCollision(canonical: &quot;lore/codex_entries.json&quot;, alias: &quot;lore/CODEX_ENTRIES.JSON&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="799e7246-a707-8d9b-4364-7ba9b4ac51c2">
+      <Execution id="75f17a00-2665-429b-b88e-6f59b5b1cb29" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="CurrentProducerRejectsFixedAuthorityCaseCollision" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="77322824-5933-e824-6063-3330d0b916bc" executionId="258e63f4-45d1-40a1-8874-e4753d7ef40f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="799e7246-a707-8d9b-4364-7ba9b4ac51c2" executionId="75f17a00-2665-429b-b88e-6f59b5b1cb29" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6ec697f2-3fdd-506e-a91e-0d10a17fae4e" executionId="09ca014f-a394-44d3-a28c-4c18897a3936" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="09d0eb5a-2f0a-ab20-5416-31c69fea83b7" executionId="0fa31ca8-b53d-4c1e-8396-d36e615c0ae4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="4" executed="4" passed="2" failed="2" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.31]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.47]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.49]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.80]       System.IO.InvalidDataException: Save payload contains duplicate archive path 'lore/pair.bin'.
+[xUnit.net 00:00:01.80]          at BookOfEternityClient.Services.SaveLoadService.AddManifestedBytesToArchiveAsync(ZipArchive archive, String entryPath, Byte[] content, List`1 manifestEntries) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 613
+[xUnit.net 00:00:01.80]          at BookOfEternityClient.Services.SaveLoadService.AddDirectoryToArchive(CanonicalWriteLease canonicalSnapshotLease, ZipArchive archive, String sourceDir, String entryPrefix, List`1 manifestEntries) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 580
+[xUnit.net 00:00:01.80]          at BookOfEternityClient.Services.SaveLoadService.PrepareSaveArchiveAsync(CanonicalWriteLease canonicalSnapshotLease, String saveName, String description, String saveDir, Int32 turnNumber) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 231
+[xUnit.net 00:00:01.80]          at BookOfEternityClient.Services.SaveLoadService.PrepareSaveArchiveAsync(CanonicalWriteLease canonicalSnapshotLease, String saveName, String description, String saveDir, Int32 turnNumber) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 356
+[xUnit.net 00:00:01.80]          at BookOfEternityClient.Services.SaveLoadService.CreateSaveAsync(CanonicalWriteLease lease, String saveName, String description, String saveDir, Int32 turnNumber) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Creation.cs:line 306
+[xUnit.net 00:00:01.80]       Stack Trace:
+[xUnit.net 00:00:01.80]         [checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.SaveNativeNames.cs(39,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerNativeNamesSurviveSaveTypedLoadSave(String upper, String lower)
+[xUnit.net 00:00:01.80]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.83]       System.IO.InvalidDataException: Save payload contains duplicate archive path 'mods/pair/member.bin'.
+[xUnit.net 00:00:01.83]          at BookOfEternityClient.Services.SaveLoadService.AddManifestedBytesToArchiveAsync(ZipArchive archive, String entryPath, Byte[] content, List`1 manifestEntries) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 613
+[xUnit.net 00:00:01.83]          at BookOfEternityClient.Services.SaveLoadService.AddDirectoryToArchive(CanonicalWriteLease canonicalSnapshotLease, ZipArchive archive, String sourceDir, String entryPrefix, List`1 manifestEntries) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 580
+[xUnit.net 00:00:01.83]          at BookOfEternityClient.Services.SaveLoadService.PrepareSaveArchiveAsync(CanonicalWriteLease canonicalSnapshotLease, String saveName, String description, String saveDir, Int32 turnNumber) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 239
+[xUnit.net 00:00:01.83]          at BookOfEternityClient.Services.SaveLoadService.PrepareSaveArchiveAsync(CanonicalWriteLease canonicalSnapshotLease, String saveName, String description, String saveDir, Int32 turnNumber) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 356
+[xUnit.net 00:00:01.83]          at BookOfEternityClient.Services.SaveLoadService.CreateSaveAsync(CanonicalWriteLease lease, String saveName, String description, String saveDir, Int32 turnNumber) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Creation.cs:line 306
+[xUnit.net 00:00:01.83]       Stack Trace:
+[xUnit.net 00:00:01.83]         [checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.SaveNativeNames.cs(39,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerNativeNamesSurviveSaveTypedLoadSave(String upper, String lower)
+[xUnit.net 00:00:01.83]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.90]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T02:01:42.7549070-04:00">
+        <Text>[xUnit.net 00:00:01.80]     BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerNativeNamesSurviveSaveTypedLoadSave(upper: "lore/Pair.bin", lower: "lore/pair.bin") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T02:01:42.7855095-04:00">
+        <Text>[xUnit.net 00:00:01.83]     BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerNativeNamesSurviveSaveTypedLoadSave(upper: "mods/Pair/member.bin", lower: "mods/pair/member.bin") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

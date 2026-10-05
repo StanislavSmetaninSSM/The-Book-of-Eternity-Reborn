@@ -45,6 +45,25 @@ Spec Kit CLI is not on the task PATH; no installation or scaffolding rewrite is
 needed for this tracked continuation. Runtime is client-owned storage, so no GM
 prompt/example change is needed; operational handoff is updated at acceptance.
 
+A4 causal RED and candidate, 2026-10-05: WIP source published at
+`31c4e0353391c122ed5d8c1886f7c1fe0809c961`, tree
+`ba77c6ac1c0057e13542dd114852b1d0092402cd`; direct GitHub ref and git ls-remote
+matched, with fresh clean GitHub-only restoration of all5,043 blobs and fsck.
+Fresh `-Category portable-save-native-names -PlanOnly` built/discovered exactly4
+rows in155.337190s with zero execution. The same owner with `-NoBuild` then ran
+4/4 in6.860540s: **2 expected RED /2 fixed-collision controls GREEN**, no skips or
+duplicates and complete cleanup. Both failures originate at the real producer's
+AddManifestedBytesToArchiveAsync duplicate check before Load dispatch; leaf and
+directory case pairs independently reproduce the tracked defect. Exact artifacts:
+[RED plan](recovery/evidence/save-native-names-red-plan/manifest.json) and
+[RED run](recovery/evidence/save-native-names-red/manifest.json).
+
+The minimal candidate now changes only that producer comparison: native ordinal
+for non-fixed Linux payloads; original ignore-case behavior for every other platform
+and the existing fixed-path registry. Registry contents, payload spelling and all
+loader/archive validation remain untouched. Candidate runtime is not yet rebuilt
+or tested. Next publish this source/evidence WIP before fresh PlanOnly/GREEN.
+
 ## Accepted T031-WORKER-PORTABLE — native Linux, 2026-10-05
 
 The final supplement is now published as `c122d3e18550f8169b288628ecab3276758bdd7c`
