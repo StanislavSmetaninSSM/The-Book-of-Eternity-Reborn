@@ -104,17 +104,29 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
             ?? throw new InvalidDataException(
                 "Worker runtime parent has no physical root.");
 
-        using var runtimeParentAuthority =
-            PhysicalFileAuthority.EnsureStableDirectory(
-                physicalRoot,
-                runtimeParentPath,
-                "Worker runtime parent");
+        // Admit existing ancestry before creating any runtime directories. A
+        // configured base may contain several missing ordinary components.
+        var creationRoot = runtimeParentPath;
+        while (!Directory.Exists(Path.GetDirectoryName(creationRoot)))
+            creationRoot = Path.GetDirectoryName(creationRoot)
+                ?? throw new InvalidDataException("Worker runtime parent has no existing ancestor.");
+        var creationScope = new TrustedLocalFileScope([creationRoot]);
+        creationScope.ValidateDirectory(runtimeParentPath);
+        using var runtimeParentAuthority = OperatingSystem.IsWindows()
+            ? PhysicalFileAuthority.EnsureStableDirectory(
+                physicalRoot, runtimeParentPath, "Worker runtime parent")
+            : PhysicalFileAuthority.OpenStableDirectory(
+                creationScope.EnsureDirectory(runtimeParentPath), "Worker runtime parent");
         if (hooks?.BeforeRuntimeRootCreateAsync != null)
         {
             await hooks.BeforeRuntimeRootCreateAsync(
                 runtimeParentPath,
                 runtimeRoot);
         }
+
+        cancellationToken.ThrowIfCancellationRequested();
+        creationScope.ValidateDirectory(runtimeParentPath, allowMissing: false);
+        new TrustedLocalFileScope([runtimeRoot]).ValidateDirectory(runtimeRoot);
 
         PhysicalFileAuthority.StableDirectory? runtimeRootAuthority = null;
         PhysicalFileAuthority.StableDirectory? workspaceRootAuthority = null;

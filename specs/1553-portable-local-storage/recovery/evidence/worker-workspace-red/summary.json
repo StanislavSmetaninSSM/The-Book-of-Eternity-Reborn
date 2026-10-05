@@ -1,0 +1,65 @@
+{
+  "Categories": [
+    "worker-detached-workspace"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "23dc6cbdecfeb3482ab79ceb6198416f0f005567",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "worker-detached-workspace",
+      "Seconds": 4.0657864,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0697627,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0125231,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0152649,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 8,
+  "WallTime": "00:00:12.1614087",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 46,
+    "CompletedCases": 44,
+    "UnderfilledDescriptors": [
+      "worker-detached-workspace-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 44,
+    "Executed": 44,
+    "Passed": 2,
+    "Failed": 42
+  },
+  "DuplicateTests": []
+}
