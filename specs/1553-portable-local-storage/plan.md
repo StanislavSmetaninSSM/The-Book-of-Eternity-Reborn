@@ -25,6 +25,18 @@ and GCC14.2.0-19. No new dependency, installation, network/auth/security setting
 **Spec:** the B subsection in spec.md and approved two-backend scope; A acceptance
 and the earlier two-slice design below remain prerequisites/history.
 
+### B6 regression guard checkpoint
+
+At `f3bedb46`, fresh two-project build/PlanOnly discovered36 cases; the bounded
+run stopped after the docs descriptor:3 executed,2PASS/1FAIL,33 not run,12.1643705s,
+owned cleanup complete. The old guard searched for removed `workspace-cleanup-failed`;
+actual code transfers the same phase owner to quarantine before recording
+`process-tree-cleanup-unconfirmed` and `workspace-cleanup-deferred`. This is a stale
+source assertion, not a runtime causal RED. Preserve exact failure in
+`recovery/evidence/worker-pool-regression-guard-failure`; replace it with an ordered
+check of retained-owner transfer before both diagnostics, then rebuild and run the
+same still-pending narrow36 selection. Runtime source is unchanged.
+
 ### Current source findings and choice
 
 - Pool lines565–666 reduce a completed StopAndWaitAsync to deathConfirmed; reaper

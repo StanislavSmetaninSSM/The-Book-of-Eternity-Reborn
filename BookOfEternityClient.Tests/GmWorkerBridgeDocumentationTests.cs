@@ -588,7 +588,8 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("Worker task id already exists and cannot overwrite", bridgePool, StringComparison.Ordinal);
         Assert.Contains("Worker proposal id already exists and cannot be overwritten", proposalStore, StringComparison.Ordinal);
         Assert.Contains("TimedOut = true", bridgePool, StringComparison.Ordinal);
-        Assert.Contains("workspace-cleanup-failed", bridgePool, StringComparison.Ordinal);
+        AssertOrdered(bridgePool, "cleanup.RetainForRetry()", "quarantineReservation.Transfer(cleanup)",
+            "RecordTerminalEventAsync(\"process-tree-cleanup-unconfirmed\"", "RecordTerminalEventAsync(\"workspace-cleanup-deferred\"");
         Assert.Contains("WorkerConcurrencyGates", bridgePool, StringComparison.Ordinal);
         Assert.Contains("TryReserveTaskAsync", bridgePool, StringComparison.Ordinal);
         Assert.Contains("ReferenceCount", bridgePool, StringComparison.Ordinal);

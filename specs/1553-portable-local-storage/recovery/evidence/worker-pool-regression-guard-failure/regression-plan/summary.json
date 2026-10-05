@@ -1,0 +1,81 @@
+{
+  "Categories": [
+    "worker-pool-regression-host",
+    "worker-pool-regression-ipc",
+    "worker-pool-regression-reaper",
+    "worker-pool-regression-policy",
+    "worker-pool-regression-docs"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "f3bedb46e60f3913409a8f60faf4fe4008d0b808",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0517458,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.021649,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.029298,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 46.2176058,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 11.0364988,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0040883,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 20,
+  "WallTime": "00:01:05.8868907",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 5,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 36,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "worker-pool-regression-docs-unit-001",
+      "worker-pool-regression-host-unit-002",
+      "worker-pool-regression-ipc-integration-003",
+      "worker-pool-regression-policy-unit-004",
+      "worker-pool-regression-reaper-integration-005"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
