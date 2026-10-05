@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services.GmWorkers;
@@ -50,7 +51,7 @@ internal static class NativePoolScenarioDriver
             BeforeWorkspaceCleanupAsync = path => { cleanupPath = path; return Task.CompletedTask; }
         };
         var reaper = new GmWorkerQuarantineReaper(capacity: 1, retrySchedule: [], runInBackground: false);
-        var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs),
+        var pool = new GmWorkerBridgePool(fs, null, new GmWorkerAuditLog(fs),
             hooks, GmWorkerProcessTreeFactory.Instance, reaper, new GmWorkerNativePoolAdmission(package, fixtureRoot));
         GmWorkerTaskRunResult? result = null; string? failure = null;
         try { result = await pool.RunTaskAsync(profile, task); }
@@ -66,9 +67,49 @@ internal static class NativePoolScenarioDriver
             reaperEntries = reaper.EntryCount, reaperCapacity = reaper.OwnedCapacity,
             canonicalContextUnchanged = await File.ReadAllTextAsync(fs.ResolvePath(contextPath)) == weather,
             validatedExecution = result?.HasValidatedExecutionFor(task) == true,
+            proposalBytesMatch = result?.Proposal != null && (await File.ReadAllBytesAsync(
+                fs.ResolvePath(GmWorkerProposalStore.GetProposalPath(result.Proposal.ProposalId))))
+                .AsSpan().SequenceEqual(Encoding.UTF8.GetBytes(GmWorkerJson.Serialize(result.Proposal))),
+            stagingCleaned = !Directory.EnumerateFileSystemEntries(Path.Combine(fs.RuntimeRootPath, "proposal-staging")).Any(),
+            permitChecks = CheckConsumerPermits(result, task),
             result
         }));
         return 0;
+    }
+
+    private static Dictionary<string, bool> CheckConsumerPermits(GmWorkerTaskRunResult? result, WorkerTaskPacket task)
+    {
+        if (result?.Proposal == null || result.BoundTask == null) return new() { ["actual-publication-required"] = false };
+        static bool Accept(GmWorkerTaskRunResult run, WorkerTaskPacket requested) =>
+            GmWorkerProposalOnlyDispatchService.CanAcceptExecution(run, requested) &&
+            GmWorkerValidationRepairDelegator.CanAcceptExecution(run, requested);
+        static bool Reject(GmWorkerTaskRunResult run, WorkerTaskPacket requested) =>
+            !GmWorkerProposalOnlyDispatchService.CanAcceptExecution(run, requested) &&
+            !GmWorkerValidationRepairDelegator.CanAcceptExecution(run, requested);
+        var checks = new Dictionary<string, bool>
+        {
+            ["actual-publication-accepted"] = Accept(result, task),
+            ["changed-requested-body-rejected"] = Reject(result, task with { Instructions = "substituted body" }),
+            ["changed-bound-body-rejected"] = Reject(result with { BoundTask = result.BoundTask with { Instructions = "substituted body" } }, task),
+            ["changed-proposal-body-rejected"] = Reject(result with { Proposal = result.Proposal with { Summary = "substituted proposal" } }, task),
+            ["nonzero-result-rejected"] = Reject(result with { ExitCode = 1 }, task),
+            ["timeout-result-rejected"] = Reject(result with { TimedOut = true }, task),
+            ["replaced-result-rejected"] = Reject(result with { SessionReplaced = true }, task),
+            ["failed-result-rejected"] = Reject(result with { Status = result.Status with { State = WorkerBridgeState.Failed } }, task),
+            ["wrong-worker-rejected"] = Reject(result with { Status = result.Status with { WorkerId = "another-worker" } }, task),
+            ["wrong-task-rejected"] = Reject(result with { Status = result.Status with { CurrentTaskId = "another-task" } }, task)
+        };
+        var contexts = result.BoundTask.ContextFiles.ToList();
+        var mutableBound = result with { BoundTask = result.BoundTask with { ContextFiles = contexts } };
+        checks["same-bound-model-accepted"] = Accept(mutableBound, task);
+        contexts[0] = contexts[0] with { Sha256 = new string('f', 64) };
+        checks["mutated-bound-model-rejected"] = Reject(mutableBound, task);
+        var findings = result.Proposal.Findings.ToList();
+        var mutableProposal = result with { Proposal = result.Proposal with { Findings = findings } };
+        checks["same-proposal-model-accepted"] = Accept(mutableProposal, task);
+        findings[0] = findings[0] with { Message = "mutated after result copy" };
+        checks["mutated-proposal-model-rejected"] = Reject(mutableProposal, task);
+        return checks;
     }
 
     private static async Task<int> Worker(string output)

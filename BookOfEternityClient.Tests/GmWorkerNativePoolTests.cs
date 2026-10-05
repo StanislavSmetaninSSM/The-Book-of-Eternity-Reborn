@@ -17,10 +17,21 @@ public sealed class GmWorkerNativePoolTests
         Assert.True(result.GetProperty("workspaceCleaned").GetBoolean());
         Assert.True(result.GetProperty("canonicalContextUnchanged").GetBoolean());
         Assert.True(result.GetProperty("validatedExecution").GetBoolean());
+        Assert.True(result.GetProperty("proposalBytesMatch").GetBoolean());
+        Assert.True(result.GetProperty("stagingCleaned").GetBoolean());
+        var checks = result.GetProperty("permitChecks").EnumerateObject().ToArray();
+        Assert.Equal(14, checks.Length);
+        foreach (var check in checks) Assert.True(check.Value.GetBoolean(), check.Name);
         Assert.Equal(0, result.GetProperty("reaperEntries").GetInt32());
         Assert.Equal(0, result.GetProperty("reaperCapacity").GetInt32());
         Assert.Contains("pool-worker-stdout", result.GetProperty("result").GetProperty("StandardOutput").GetString());
         Assert.Contains("pool-worker-stderr", result.GetProperty("result").GetProperty("StandardError").GetString());
+        var execution = result.GetProperty("result");
+        Assert.True(execution.GetProperty("OutputsSettled").GetBoolean());
+        Assert.True(execution.GetProperty("StopEvidence").GetProperty("CleanupComplete").GetBoolean());
+        Assert.False(execution.GetProperty("StopEvidence").GetProperty("AuthorityRetained").GetBoolean());
+        Assert.Equal(execution.GetProperty("ExecutionIdentity").GetProperty("RunId").GetString(),
+            execution.GetProperty("StopEvidence").GetProperty("RunId").GetString());
     }
 
     private static async Task<JsonElement> RunScenario(string mode, bool allowGuardianEmergency = false)

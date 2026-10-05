@@ -368,6 +368,16 @@ source delta closure/evidence review pending. Next explicitly select this sealed
 Store adapter through native fixture admission and re-run only the previously failed
 actual-pool happy case with consumer permit/substitution assertions. B remains WIP.
 
+B3-P source cleanup finding closed by actual Sol6.1/xhigh at `1ade6c3b`; full
+publication source has no remaining blocker and13selected cleanup cases subsequently
+passed. The actual pool now chooses admission.CreateProposalStore only when its
+internal constructor has explicit native fixture admission and no supplied Store;
+public/default Store selection stays unchanged. The original single guarded happy
+case now also checks exact stored proposal bytes, staging cleanup, matching scoped
+stop/output evidence and14 acceptance/substitution predicates through both actual
+consumer gates. This is one native execution, not14new native cases. Fresh selected
+build and actual pool GREEN remain pending; do not repeat other passing categories.
+
 ### B1 execution record
 
 Read-only Spec Kit consistency pass at `0ffb1c45`: B has coverage in spec, this plan,

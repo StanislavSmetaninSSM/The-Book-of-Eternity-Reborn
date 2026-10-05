@@ -287,7 +287,7 @@ public sealed class GmWorkerBridgePool
         GmWorkerNativePoolAdmission? nativePoolAdmission = null)
     {
         _fs = fs;
-        _proposalStore = proposalStore ?? new GmWorkerProposalStore(fs);
+        _proposalStore = proposalStore ?? nativePoolAdmission?.CreateProposalStore(fs) ?? new GmWorkerProposalStore(fs);
         _auditLog = auditLog;
         _hooks = hooks;
         _processTreeFactory = processTreeFactory;
