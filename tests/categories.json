@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-worker-diagnostic",
+      "responsibility": "Initiating worker before-image preparation error and independent cleanup error remain inspectable in causal order; exact legacy failure diagnosis before portable cutover.",
+      "excludes": "Worker acceptance, B1 publication, full gameplay and platform qualification.",
+      "changeHints": ["BookOfEternityClient/Core/FileSystemManager.cs"],
+      "related": [{"id": "portable-load-worker-ordering", "when": "Changing the active worker decision lifecycle."}],
+      "requirements": {"frontendBuild": false, "exclusive": false},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.PortableWorkerDiagnosticTests.*"]}]
+    },
+    {
       "id": "portable-load-resource-sampling",
       "responsibility": "Native Linux load-resource disk monitor: cached missing-attribute sentinel after exact owned enumeration, active regular/declared directory disappearance versus stable/unknown missing refusal, real file/directory/dangling link refusal, exact stable bytes.",
       "excludes": "Actual bulk/inventory envelope categories, production publication or recovery changes, Windows runtime execution and synthetic successful OS returns.",

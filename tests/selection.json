@@ -1,54 +1,7 @@
 {
   "schemaVersion": 1,
   "selections": [
-    {
-      "category": "portable-load-browser",
-      "reason": "B4 browser typed load caller/admission/transport; accepted filesystem/resource/console cohorts unchanged.",
-      "contracts": [
-        "#1553 T032-B4 public load integration revision 1"
-      ]
-    },
-    {
-      "category": "portable-load-browser-refresh",
-      "reason": "Exact HTTP generation bundle and affected existing endpoint/owner-token consumers.",
-      "contracts": [
-        "#1553 T032-B4 public load integration revision 1"
-      ]
-    },
-    {
-      "category": "portable-load-browser-handlers",
-      "reason": "Both actual consuming handlers and shared ShellProvider/required bundle publication, including interrupted and stale ownership.",
-      "contracts": [
-        "#1553 T032-B4 public load integration revision 1"
-      ]
-    },
-    {
-      "category": "portable-browser-save-presentation",
-      "reason": "Existing save interruption latch shares the shell and Settings consumer.",
-      "contracts": [
-        "#1553 T032-B4 public load integration revision 1"
-      ]
-    },
-    {
-      "category": "portable-settings-notices",
-      "reason": "Cancelled settings/audio drafts now consume typed safe NotLoaded and block lost replies.",
-      "contracts": [
-        "#1553 T032-B4 public load integration revision 1"
-      ]
-    },
-    {
-      "category": "portable-settings-consumers",
-      "reason": "Exact pre-existing settings/audio and ordinary partial refresh consumers.",
-      "contracts": [
-        "#1553 T032-B4 public load integration revision 1"
-      ]
-    },
-    {
-      "category": "frontend-shell-types",
-      "reason": "Changed shell context and API contract types.",
-      "contracts": [
-        "#1553 T032-B4 public load integration revision 1"
-      ]
-    }
+    {"category": "portable-worker-diagnostic", "reason": "T031 worker primary/cleanup causal diagnosis", "contracts": ["#1553 FR-005/007 T031-WORKER-PORTABLE"]},
+    {"category": "portable-load-worker-ordering", "reason": "Retained real worker decision versus public Load ordering", "contracts": ["#1553 FR-006 T031-WORKER-PORTABLE"]}
   ]
 }

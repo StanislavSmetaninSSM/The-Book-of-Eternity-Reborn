@@ -4,6 +4,40 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## Active T031-WORKER-PORTABLE — diagnosis, 2026-10-04
+
+Verified clean local HEAD and GitHub branch `2bae7bb48855c11042b93dea0ecd48fcc7f89ccb`.
+This bounded continuation preserves FR-002–009/015 and US2/US3: one canonical
+lease, exact generation and complete before/after member authority, validation
+before acceptance, evidence-preserving crash recovery, and original-handler-or-block
+for the original worker journal. A4 save-producer names and full gameplay remain separate.
+The owner-authorized autonomous design waiver applies; independent Sol 6.1 XHigh
+review remains required. Spec Kit prerequisite/path check resolves this feature.
+
+1. Diagnose the original Begin failure with a causal test: force the existing
+   unsupported before-image backend and a distinct cleanup failure, require both
+   exceptions in initiating-first order, and retain the real Linux worker/load
+   diagnostic. No skip or deletion of its positive acceptance assertions.
+2. Port only the worker apply/decision boundary using the existing B1 journal and
+   trusted-local byte/generation rules. Review the concrete deferred-decision seam
+   and validator consumers before implementation; avoid a second competing journal
+   or generic rewrite of legacy runtime helpers. Keep original evidence recovery.
+3. Prove real accepted/validation-failed/exception decisions, complete-member rollback,
+   conflict preflight, generation/lease fencing, pending/committed cold recovery,
+   cleanup failures, and actual worker/load ordering with isolated mutable roots.
+   Select narrow owners through the canonical runner; preserve all RED/failure evidence.
+4. Run affected shared-publication consumers only where the implementation changes
+   their contract; discovery-only inventory audit, independent review, GitHub checkpoint
+   and fresh restoration. Native Windows/live console-GM/full #1553 remain explicit gates.
+
+Initial source trace: the first non-null before-image reaches
+`WriteRuntimeBytesAtomicCoreAsync` → `EnsureAuthorityFilePublicationSupported` →
+`EnsureDescriptorBoundCreateOnlyPublicationSupported`; its Linux rejection is then
+replaced by the catch block's unconditional old `DeleteRuntimeDirectory` failure.
+This is source-derived pending causal execution, not yet a runtime root-cause claim.
+Client-owned storage/recovery only: no new GM-authored field/mechanic. Operational
+worker journal guidance and source guards will be synchronized with the chosen boundary.
+
 ## Accepted T032-B4 browser integration — 2026-10-04
 
 Separate **gpt-6.1-sol / xhigh** final review **PASS** at evidence carrier
