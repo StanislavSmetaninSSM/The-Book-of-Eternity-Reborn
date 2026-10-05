@@ -11604,6 +11604,29 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-backend-selection",
+      "responsibility": "Stage-aware owned-worker backend selection: honest systemd availability, Linux neutral-only fallback, pre-start Release rejection and unchanged Windows Job capability. Pure policy only.",
+      "excludes": "Native launch, IPC, worker Release, production pool lifecycle and actual systemd/Windows qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBackendSelector.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.*"
+          ]
+        }
+      ]
     }
-]
+  ]
 }

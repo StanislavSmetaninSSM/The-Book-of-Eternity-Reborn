@@ -2,57 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "linux-fallback-proc-discovery",
-      "reason": "Single descendant causal RED to GREEN; executed at restored source before staged expansion.",
+      "category": "worker-backend-selection",
+      "reason": "T041-FALLBACK-HOST stage-aware selector causal RED/GREEN before any native launch.",
       "contracts": [
-        "#1553 T041-FALLBACK-PROC / T041-FALLBACK-NATIVE",
-        "FR-014 ordinary same-namespace scope and retained Uncertain"
-      ]
-    },
-    {
-      "category": "linux-fallback-descendants",
-      "reason": "Positive retirement variants and bounded proc stat parsing; executed only after first actual cleanup GREEN.",
-      "contracts": [
-        "#1553 T041-FALLBACK-PROC / T041-FALLBACK-NATIVE",
-        "FR-014 ordinary same-namespace scope and retained Uncertain"
-      ]
-    },
-    {
-      "category": "linux-fallback-control",
-      "reason": "Stop/cancel and owner-loss/deadline uncertainty, keeping cleanup authority until ECHILD.",
-      "contracts": [
-        "#1553 T041-FALLBACK-PROC / T041-FALLBACK-NATIVE",
-        "FR-014 ordinary same-namespace scope and retained Uncertain"
-      ]
-    },
-    {
-      "category": "linux-fallback-authority",
-      "reason": "Sentinel separation, actual launch errors/private owner lifetime and unavailable status outputs.",
-      "contracts": [
-        "#1553 T041-FALLBACK-PROC / T041-FALLBACK-NATIVE",
-        "FR-014 ordinary same-namespace scope and retained Uncertain"
-      ]
-    },
-    {
-      "category": "linux-fallback-spawn-boundary",
-      "reason": "Confirmed review fixture lost-wakeup race: deterministic causal RED/GREEN and normal spawn control, only affected cases repeated.",
-      "contracts": [
-        "#1553 independent native fixture evidence",
-        "FR-014 stop during fork"
-      ]
-    },
-    {
-      "category": "linux-fallback-build-lifetime",
-      "reason": "Review regression for compiler observation timeout abandoning its owned process; finite direct-process causal RED/GREEN, no native worker.",
-      "contracts": [
-        "#1553 T041-FALLBACK-NATIVE preparation lifecycle"
-      ]
-    },
-    {
-      "category": "linux-fallback-pidfd-identity",
-      "reason": "Source comparison found stale_check/fork binding changed after its historical PASS; verify exactly this one current primitive with its own wait-to-ECHILD cleanup.",
-      "contracts": [
-        "#1553 pidfd stale identity primitive"
+        "#1553 T041-FALLBACK-HOST",
+        "FR-012/014/015"
       ]
     }
   ]

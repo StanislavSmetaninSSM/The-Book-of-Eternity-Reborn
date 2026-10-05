@@ -4,6 +4,22 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## HOST implementation authorized — 2026-10-05
+
+Parent authorized only T041-FALLBACK-HOST from exact
+`e7b26f9c8515dd0423388eaa18752e2d496c49a9`; sole writer, same isolated checkout.
+Use the accepted design below with inline executing-plans/TDD and independent
+actual Sol6.1/xhigh review. Slice B/public Linux WorkerRelease/main PTY remain closed.
+Initial selector scaffold returns unavailable for every platform; its narrow7case
+policy tests must show causal RED before implementation. No native child is launched
+by this first stage. Test catalog is changed structurally, keeping existing owners.
+Next: pure policy RED/GREEN, package/transport tests, then guarded real host admission.
+Independent fixture topology is being checked before any new native integration run.
+Actual helper/host transport changes justify later targeted prototype bootstrap,
+control/owner-loss, output/FD and adopted-descendant regression selections; exact
+categories/commands/counts/source hashes and cleanup are recorded as each stage runs.
+No unchanged unrelated IPC/ENV/FRAME/workspace/receipt/input/output cohort is replayed.
+
 ## Worker-host native integration design — 2026-10-05
 
 **Design only; not implementation authorization.** Source/remote base
