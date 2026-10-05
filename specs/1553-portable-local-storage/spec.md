@@ -65,6 +65,13 @@ is not execution or qualification evidence. [Source-backed plan](plan.md#worker-
 
 ## Authorized synthetic POOL B — 2026-10-05
 
+Bounded verification now has127 distinct latest passing cases at exact sources in
+[qualification](recovery/worker-pool-qualification.json), including actual pool content,
+lineage stop, original-owner uncertainty, consumer gates and retained cleanup phases.
+Final independent packet review/restoration is pending in the current plan; this does
+not change the admission or product limits below.
+
+
 The parent accepted HOST A at `55f43c9e5d81ec0ef1e3944d2932f49f67b22723` and
 explicitly authorized T041-FALLBACK-POOL with a separate typed evidence/quarantine/
 consumer design review. The [B refinement](plan.md#pool-b--authorized-refinement-from-accepted-host-a-2026-10-05)

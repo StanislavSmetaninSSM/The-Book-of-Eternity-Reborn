@@ -1,0 +1,267 @@
+{
+  "Categories": [
+    "worker-native-pool-happy",
+    "worker-execution-scoped-evidence",
+    "worker-consumer-execution-evidence",
+    "worker-synthetic-bundle-publication",
+    "worker-synthetic-bundle-cleanup",
+    "worker-native-pool-descendants",
+    "worker-native-pool-detached-descendants",
+    "worker-native-pool-terminal",
+    "worker-native-pool-publication-rejection",
+    "worker-native-pool-content",
+    "worker-native-pool-release-authority",
+    "worker-native-pool-uncertainty",
+    "worker-native-pool-owner-loss",
+    "worker-native-pool-completion-boundaries",
+    "worker-native-pool-late-output",
+    "worker-native-pool-cleanup-retry",
+    "worker-pool-regression-host",
+    "worker-pool-regression-ipc",
+    "worker-pool-regression-reaper",
+    "worker-pool-regression-policy",
+    "worker-pool-regression-docs"
+  ],
+  "Reasons": [
+    {
+      "category": "worker-native-pool-happy",
+      "reason": "T041-FALLBACK-POOL first causal actual pool RED/GREEN under independent finite guardian; internal admission scaffold stays closed until typed integration.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-execution-scoped-evidence",
+      "reason": "Pure typed authority causal RED/GREEN before connecting native admission; wrong run/scope and late certainty must never reuse cleanup evidence.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL"
+      ]
+    },
+    {
+      "category": "worker-consumer-execution-evidence",
+      "reason": "Causal negatives at both real consumer acceptance boundaries before replacing legacy Proposal/exit0 checks with the shared exact-execution permit.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-synthetic-bundle-publication",
+      "reason": "New bounded Linux directory bundle prerequisite through real Store, preserving default refusal and exact publication semantics.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B3-P",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-synthetic-bundle-cleanup",
+      "reason": "Causal staging residue after successful native rename; requalify only changed sealed-adapter cleanup and Store callers.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B3-P"
+      ]
+    },
+    {
+      "category": "worker-native-pool-descendants",
+      "reason": "Expand actual pool lifetime qualification only after positive root cleanup: independent finite actors inherit output handles; helper must prove scoped stop before actual Store publication.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-detached-descendants",
+      "reason": "Expand actual pool lifetime qualification only after positive root cleanup: independent finite actors inherit output handles; helper must prove scoped stop before actual Store publication.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-terminal",
+      "reason": "New actual pool terminal-boundary negatives after happy/descendant GREEN; verify rejected results cannot mint an accepted with-copy and native cleanup still releases owned capacity.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-publication-rejection",
+      "reason": "Only affected4 terminal cases: fix generation lifecycle preparation and strengthen exact completion outcome assertions; do not repeat unchanged cancellation/timeout4.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5"
+      ]
+    },
+    {
+      "category": "worker-native-pool-content",
+      "reason": "#1553 POOL B Actual pool detached content import exact bytes and rejection for missing/hash mismatch, without applying canonical game state.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-release-authority",
+      "reason": "#1553 POOL B Actual original native supervisor lost before Release; no worker launch or publication, original quarantine retained and independent guardian owns cleanup.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-uncertainty",
+      "reason": "#1553 POOL B Original native terminal corruption, explicit uncertainty and late original status/output observations retain workspace, receipt denial and quarantine across concurrent reaper passes.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-owner-loss",
+      "reason": "#1553 POOL B Actual owner-control EOF, status-reader loss and original helper loss after real Completed retain uncertainty and cannot publish or free owned capacity.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-completion-boundaries",
+      "reason": "#1553 POOL B Actual cancellation/timeout at buffered Completed, original terminal stop and output settlement precede publication while positive physical cleanup is preserved.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-late-output",
+      "reason": "#1553 POOL B Late original output-observation task actually settles yet uncertainty/worker slot/quarantine remain held; exact corrected fixture row only.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-cleanup-retry",
+      "reason": "#1553 POOL B Actual native valid-stop owner disposal/workspace/audit/fallback receipt retries preserve original phases and exactly-once slot/capacity across concurrent passes.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-pool-regression-host",
+      "reason": "#1553 B6 Original actual HOST lifecycle/output/authority and neutral Release guards affected by common owner changes.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B6",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-pool-regression-ipc",
+      "reason": "#1553 B6 Original Process readiness owner-close and completion arbiter cancellation/timeout precedence.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B6",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-pool-regression-reaper",
+      "reason": "#1553 B6 Affected original retained-cleanup constructor/phase and reaper overlap/capacity semantics; exact receipt retry remains unchanged.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B6",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-pool-regression-policy",
+      "reason": "#1553 B6 Explicit synthetic admission denial and original public Linux/Windows selection; managed native/Windows drain order and narrow retained Job pending retry.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B6",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-pool-regression-docs",
+      "reason": "#1553 B6 Three affected operational documentation/isolation source guards; synchronize synthetic typed evidence and unchanged public admission.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B6",
+        "FR-012/014/015"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "b7ca1ba587ef44fe75edbc7cc6331d647b7fb2ae",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0943678,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0240922,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0279649,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0062813,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 30,
+  "WallTime": "00:00:09.6275693",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 19,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 127,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "worker-consumer-execution-evidence-unit-001",
+      "worker-execution-scoped-evidence-unit-002",
+      "worker-native-pool-cleanup-retry-unit-003",
+      "worker-native-pool-completion-boundaries-unit-004",
+      "worker-native-pool-content-unit-005",
+      "worker-native-pool-descendants-unit-006",
+      "worker-native-pool-detached-descendants-unit-007",
+      "worker-native-pool-happy-unit-008",
+      "worker-native-pool-late-output-unit-009",
+      "worker-native-pool-owner-loss-unit-010",
+      "worker-native-pool-release-authority-unit-011",
+      "worker-native-pool-terminal-unit-012",
+      "worker-native-pool-uncertainty-unit-013",
+      "worker-pool-regression-docs-unit-014",
+      "worker-pool-regression-host-unit-015",
+      "worker-pool-regression-ipc-integration-016",
+      "worker-pool-regression-policy-unit-017",
+      "worker-pool-regression-reaper-integration-018",
+      "worker-synthetic-bundle-publication-unit-019"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

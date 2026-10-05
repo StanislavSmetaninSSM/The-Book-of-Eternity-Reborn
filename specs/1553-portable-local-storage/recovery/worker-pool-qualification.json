@@ -1,0 +1,4352 @@
+{
+  "SchemaVersion": 1,
+  "Task": "#1553 T041-FALLBACK-POOL",
+  "BaseCommit": "55f43c9e5d81ec0ef1e3944d2932f49f67b22723",
+  "CandidateSourceCommit": "b7ca1ba587ef44fe75edbc7cc6331d647b7fb2ae",
+  "Status": "Bounded B verification packet; final independent review and GitHub-only restoration pending",
+  "Environment": [
+    {
+      "Command": [
+        "dotnet",
+        "--list-sdks"
+      ],
+      "ExitCode": 0,
+      "Output": "10.0.401 [/workspace/.onboarding/tools/dotnet/sdk]",
+      "Error": ""
+    },
+    {
+      "Command": [
+        "dotnet",
+        "--list-runtimes"
+      ],
+      "ExitCode": 0,
+      "Output": "Microsoft.AspNetCore.App 8.0.31 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.AspNetCore.App 10.0.12 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.NETCore.App 8.0.31 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.NETCore.App]\nMicrosoft.NETCore.App 10.0.12 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.NETCore.App]",
+      "Error": ""
+    },
+    {
+      "Command": [
+        "pwsh",
+        "-NoProfile",
+        "-Command",
+        "$PSVersionTable.PSVersion.ToString()"
+      ],
+      "ExitCode": 0,
+      "Output": "7.5.4",
+      "Error": ""
+    },
+    {
+      "Command": [
+        "gcc",
+        "--version"
+      ],
+      "ExitCode": 0,
+      "Output": "gcc (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+      "Error": ""
+    },
+    {
+      "Command": [
+        "ldd",
+        "--version"
+      ],
+      "ExitCode": 0,
+      "Output": "ldd (Debian GLIBC 2.41-12+deb13u3) 2.41\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\nWritten by Roland McGrath and Ulrich Drepper.",
+      "Error": ""
+    },
+    {
+      "Command": [
+        "readelf",
+        "--version"
+      ],
+      "ExitCode": 0,
+      "Output": "GNU readelf (GNU Binutils for Debian) 2.44\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis program is free software; you may redistribute it under the terms of\nthe GNU General Public License version 3 or (at your option) any later version.\nThis program has absolutely no warranty.",
+      "Error": ""
+    },
+    {
+      "Command": [
+        "uname",
+        "-srm"
+      ],
+      "ExitCode": 0,
+      "Output": "Linux 6.18.44 x86_64",
+      "Error": ""
+    }
+  ],
+  "Manifests": [
+    {
+      "Path": "evidence/worker-pool-authority-loss-green/manifest.json",
+      "Sha256": "06917d7911979b7ed90bbe14fc34886ba147dd9caa436f2ba4a764bb1af96eb0",
+      "SourceCommit": "4cb9b3e9281e32523ca951f36504b82cad4e0abc",
+      "SourceTree": "c2d2c6b35fac5baba493643105c71ebee466d1fa",
+      "Artifacts": 24
+    },
+    {
+      "Path": "evidence/worker-pool-authority-red/manifest.json",
+      "Sha256": "5ef245465070c0bb5ecf6ece4a9b121927bfea1cfa584f8581a6fd3dc843ea8b",
+      "SourceCommit": "ac7cbdb67ca5b1df9784189b00f21b0b92765c6c",
+      "SourceTree": "a06283c9284ab34928f56bbebaccf4adbbc522e8",
+      "Artifacts": 11
+    },
+    {
+      "Path": "evidence/worker-pool-bundle-cleanup-green/manifest.json",
+      "Sha256": "4407bd992f70d5a203117ef3b07714b820347d53b29ced08314e50ebd7b8f9d9",
+      "SourceCommit": "1ade6c3b97622fef29bd4f89579a9e4bc9e016b8",
+      "SourceTree": "fd739f88c702f36ef30c095560a7878270abbdb5",
+      "Artifacts": 11
+    },
+    {
+      "Path": "evidence/worker-pool-bundle-cleanup-red/manifest.json",
+      "Sha256": "adeda33214175600cbdfff86b79381eae09d3c2c287b6f1c442afd39e7e5c1c0",
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "SourceTree": "0cfa28f5e586fd86c106151d6c8aca86221d3916",
+      "Artifacts": 11
+    },
+    {
+      "Path": "evidence/worker-pool-bundle-red/manifest.json",
+      "Sha256": "907eaa8a1e88f827e9a20bc42519e7a226b98ffbbb8d3ed8f6e3043703270f86",
+      "SourceCommit": "611d9ee078d9a0efb84dc8446a8d64b9c271c0d8",
+      "SourceTree": "f32b5b1f11268e22fabe8ba309fa7e6354b06404",
+      "Artifacts": 11
+    },
+    {
+      "Path": "evidence/worker-pool-catalog-final/manifest.json",
+      "Sha256": "6d6a9479ccd7c8ac7968306d45f22676eb263ac5ab028015741c3b5475b8ba4f",
+      "SourceCommit": "b7ca1ba587ef44fe75edbc7cc6331d647b7fb2ae",
+      "SourceTree": "f9a5c6f43475ed11442348494e4a43a07cb2d2cc",
+      "Artifacts": 13
+    },
+    {
+      "Path": "evidence/worker-pool-cleanup-green/manifest.json",
+      "Sha256": "aa1f25997bd2ba2b442ebe4f1ea85a0bdc5122f3b480b24f0bef9012e0018edc",
+      "SourceCommit": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "SourceTree": "ca8f099bef85272073b5606652928c960ac877d5",
+      "Artifacts": 66
+    },
+    {
+      "Path": "evidence/worker-pool-connected-publication-red/manifest.json",
+      "Sha256": "36d3cfeae183e5d76d5e7757ad1378ed92745f296f36f9521b4d5f61c3e82646",
+      "SourceCommit": "24f63234bf3182982b96a13a4145db34cfdbd755",
+      "SourceTree": "584ad97878bc0f086276a744e551a35818be1e01",
+      "Artifacts": 18
+    },
+    {
+      "Path": "evidence/worker-pool-consumer-green/manifest.json",
+      "Sha256": "317185ee9608036c1fa52e71f3d7e07da2818d1230aa6fad73e09d801888fc73",
+      "SourceCommit": "eac876f6916a9b6d624625fbddb1ce07c944a0b3",
+      "SourceTree": "50cf20bbf84331ba32802cb08d09ae7ef03ff7cd",
+      "Artifacts": 11
+    },
+    {
+      "Path": "evidence/worker-pool-consumer-preparation-failure/manifest.json",
+      "Sha256": "48b6d322c20e08914fee7b888a6c7f6c9062ec152a944a9c158bb497da80f186",
+      "SourceCommit": "b75148b5d11c37a9f34bf67e3c0ae00791ec70af",
+      "SourceTree": "0a3c4e6a2c50c1e58d8948323adfba60787cb50e",
+      "Artifacts": 4
+    },
+    {
+      "Path": "evidence/worker-pool-consumer-red/manifest.json",
+      "Sha256": "4bad315c11dd212659bbd6bc8a2a885bad89cafbfee43b754f715ebf62890bad",
+      "SourceCommit": "0e4c0688e17ed9c5ecf243267a7c897820d72980",
+      "SourceTree": "cd13b449d9d8fd9b3ce3100838c4d88076f3fb2f",
+      "Artifacts": 11
+    },
+    {
+      "Path": "evidence/worker-pool-content-green-authority-red/manifest.json",
+      "Sha256": "973d0f6cd840639f0226dedd1fd5e630edce3b559f7988354abc154319e3d5a3",
+      "SourceCommit": "299dfc95b2868bc3697c7e6961d24ecf6cd70755",
+      "SourceTree": "370d50243b3abdf00b92e01e143e911224a34d0c",
+      "Artifacts": 36
+    },
+    {
+      "Path": "evidence/worker-pool-descendants-green/manifest.json",
+      "Sha256": "02f209cc5c24f2e29a6f010572ce97b67f8ba68f53fbc9f98b4fd3de724b3c15",
+      "SourceCommit": "14aa66678f74e4db5c27e65d5db4afd815b9f682",
+      "SourceTree": "0e1dd2c517cfbd047d5bef1333f16057a3e4b7f7",
+      "Artifacts": 51
+    },
+    {
+      "Path": "evidence/worker-pool-faults-green/manifest.json",
+      "Sha256": "6c197ec356c807af5c54d091a8c7f9dcc94220cfd68b9f879318efde580645d5",
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "SourceTree": "4788ae74fead5854c49c2eefb630b85e7c99d110",
+      "Artifacts": 107
+    },
+    {
+      "Path": "evidence/worker-pool-happy-green/manifest.json",
+      "Sha256": "76a0100d3440fbcf43a8f9626560282266b9cf280f93c928364f8eb3852650d0",
+      "SourceCommit": "d18bb97e14fffad109c81d885a1c64ea0dfa534c",
+      "SourceTree": "7baf410986e61c48c6a463def47396cf23906d23",
+      "Artifacts": 17
+    },
+    {
+      "Path": "evidence/worker-pool-happy-red/manifest.json",
+      "Sha256": "a1a98e8c6624445bf203602e2aa19611b92bf13c16f0643814687384373910ee",
+      "SourceCommit": "7edc9681d38caa2cdbbcd88301a21333ad836992",
+      "SourceTree": "48792af5df8cdb779f3536bc56bcfcd1f2c6c473",
+      "Artifacts": 17
+    },
+    {
+      "Path": "evidence/worker-pool-publication-rejection-green/manifest.json",
+      "Sha256": "60fc5012968ee146e145e4a9696320551cd1832e4dcac585a30469cd4138f9c2",
+      "SourceCommit": "6a956673813fb22df248435d59aa243132fa1f2d",
+      "SourceTree": "89e4fa48dc1f472e3b9c3ff996bb7a87202d23b7",
+      "Artifacts": 35
+    },
+    {
+      "Path": "evidence/worker-pool-regression-green/manifest.json",
+      "Sha256": "3211959ab007b101ece934236acae666aa100b9ff29fd0452927c3e628613e50",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "SourceTree": "0852a3c4832f1b09d6c78b1c74239f09fa93359d",
+      "Artifacts": 65
+    },
+    {
+      "Path": "evidence/worker-pool-regression-guard-failure/manifest.json",
+      "Sha256": "2b3e1896704a6afde64c7ff4cf28e5557e7d53920dbbb5f0f3ac503ea35a8364",
+      "SourceCommit": "f3bedb46e60f3913409a8f60faf4fe4008d0b808",
+      "SourceTree": "3298175e96ca94e90f24982a69a88ec76f7444e1",
+      "Artifacts": 12
+    },
+    {
+      "Path": "evidence/worker-pool-terminal-fixture-failure/manifest.json",
+      "Sha256": "9d44075cc98554141598524fa0a10bfd6a74892a47c8ce31b8b02eaaf09ff0c8",
+      "SourceCommit": "f115c7629667d4b0bd63bec2f84aa2fd88f1d17b",
+      "SourceTree": "8bd43f002096bf34b629dc81af4bb9a1bec27d42",
+      "Artifacts": 59
+    }
+  ],
+  "Runs": [
+    {
+      "SourceCommit": "4cb9b3e9281e32523ca951f36504b82cad4e0abc",
+      "ExecutionRevision": "4cb9b3e9281e32523ca951f36504b82cad4e0abc",
+      "Path": "evidence/worker-pool-authority-loss-green/authority-green-plan/summary.json",
+      "Categories": [
+        "worker-native-pool-release-authority",
+        "worker-native-pool-happy"
+      ],
+      "Reasons": [],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 2,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-pool-happy-unit-001",
+          "worker-native-pool-release-authority-unit-002"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:39.0069826",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-native-pool-release-authority,worker-native-pool-happy",
+        "-Parallelism",
+        "1",
+        "-PlanOnly"
+      ]
+    },
+    {
+      "SourceCommit": "4cb9b3e9281e32523ca951f36504b82cad4e0abc",
+      "ExecutionRevision": "4cb9b3e9281e32523ca951f36504b82cad4e0abc",
+      "Path": "evidence/worker-pool-authority-loss-green/authority-green-run/summary.json",
+      "Categories": [
+        "worker-native-pool-release-authority",
+        "worker-native-pool-happy"
+      ],
+      "Reasons": [],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:14.2327601",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-native-pool-release-authority,worker-native-pool-happy",
+        "-Parallelism",
+        "1",
+        "-NoBuild"
+      ]
+    },
+    {
+      "SourceCommit": "ac7cbdb67ca5b1df9784189b00f21b0b92765c6c",
+      "ExecutionRevision": "ac7cbdb67ca5b1df9784189b00f21b0b92765c6c",
+      "Path": "evidence/worker-pool-authority-red/authority-red-plan/summary.json",
+      "Categories": [
+        "worker-execution-scoped-evidence"
+      ],
+      "Reasons": [],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 13,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-execution-scoped-evidence-unit-001"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:43.9626781",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-execution-scoped-evidence",
+        "-Parallelism",
+        "1",
+        "-PlanOnly"
+      ]
+    },
+    {
+      "SourceCommit": "ac7cbdb67ca5b1df9784189b00f21b0b92765c6c",
+      "ExecutionRevision": "ac7cbdb67ca5b1df9784189b00f21b0b92765c6c",
+      "Path": "evidence/worker-pool-authority-red/authority-red-run/summary.json",
+      "Categories": [
+        "worker-execution-scoped-evidence"
+      ],
+      "Reasons": [],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 13,
+        "Executed": 13,
+        "Passed": 1,
+        "Failed": 12
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 13,
+        "CompletedCases": 13,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 1,
+      "TimedOut": false,
+      "WallTime": "00:00:08.5025767",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-execution-scoped-evidence",
+        "-Parallelism",
+        "1",
+        "-NoBuild"
+      ]
+    },
+    {
+      "SourceCommit": "1ade6c3b97622fef29bd4f89579a9e4bc9e016b8",
+      "ExecutionRevision": "1ade6c3b97622fef29bd4f89579a9e4bc9e016b8",
+      "Path": "evidence/worker-pool-bundle-cleanup-green/bundle-cleanup-green-plan/summary.json",
+      "Categories": [
+        "worker-synthetic-bundle-cleanup"
+      ],
+      "Reasons": [],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 13,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-synthetic-bundle-cleanup-unit-001"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:39.5967957",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-synthetic-bundle-cleanup",
+        "-Parallelism",
+        "1",
+        "-PlanOnly"
+      ]
+    },
+    {
+      "SourceCommit": "1ade6c3b97622fef29bd4f89579a9e4bc9e016b8",
+      "ExecutionRevision": "1ade6c3b97622fef29bd4f89579a9e4bc9e016b8",
+      "Path": "evidence/worker-pool-bundle-cleanup-green/bundle-cleanup-green-run/summary.json",
+      "Categories": [
+        "worker-synthetic-bundle-cleanup"
+      ],
+      "Reasons": [],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 13,
+        "Executed": 13,
+        "Passed": 13,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 13,
+        "CompletedCases": 13,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:07.9933608",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-synthetic-bundle-cleanup",
+        "-Parallelism",
+        "1",
+        "-NoBuild"
+      ]
+    },
+    {
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "ExecutionRevision": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-plan/summary.json",
+      "Categories": [
+        "worker-synthetic-bundle-publication"
+      ],
+      "Reasons": [],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 26,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-synthetic-bundle-publication-unit-001"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:39.7023487",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-synthetic-bundle-publication",
+        "-Parallelism",
+        "1",
+        "-PlanOnly"
+      ]
+    },
+    {
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "ExecutionRevision": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-run/summary.json",
+      "Categories": [
+        "worker-synthetic-bundle-publication"
+      ],
+      "Reasons": [],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 26,
+        "Executed": 26,
+        "Passed": 25,
+        "Failed": 1
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 26,
+        "CompletedCases": 26,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 1,
+      "TimedOut": false,
+      "WallTime": "00:00:08.8108138",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-synthetic-bundle-publication",
+        "-Parallelism",
+        "1",
+        "-NoBuild"
+      ]
+    },
+    {
+      "SourceCommit": "611d9ee078d9a0efb84dc8446a8d64b9c271c0d8",
+      "ExecutionRevision": "611d9ee078d9a0efb84dc8446a8d64b9c271c0d8",
+      "Path": "evidence/worker-pool-bundle-red/bundle-red-plan/summary.json",
+      "Categories": [
+        "worker-synthetic-bundle-publication"
+      ],
+      "Reasons": [],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 2,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-synthetic-bundle-publication-unit-001"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:42.1143633",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-synthetic-bundle-publication",
+        "-Parallelism",
+        "1",
+        "-PlanOnly"
+      ]
+    },
+    {
+      "SourceCommit": "611d9ee078d9a0efb84dc8446a8d64b9c271c0d8",
+      "ExecutionRevision": "611d9ee078d9a0efb84dc8446a8d64b9c271c0d8",
+      "Path": "evidence/worker-pool-bundle-red/bundle-red-run/summary.json",
+      "Categories": [
+        "worker-synthetic-bundle-publication"
+      ],
+      "Reasons": [],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 1,
+        "Failed": 1
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 1,
+      "TimedOut": false,
+      "WallTime": "00:00:07.9014594",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-synthetic-bundle-publication",
+        "-Parallelism",
+        "1",
+        "-NoBuild"
+      ]
+    },
+    {
+      "SourceCommit": "b7ca1ba587ef44fe75edbc7cc6331d647b7fb2ae",
+      "ExecutionRevision": "b7ca1ba587ef44fe75edbc7cc6331d647b7fb2ae",
+      "Path": "evidence/worker-pool-catalog-final/catalog-final/summary.json",
+      "Categories": [
+        null
+      ],
+      "Reasons": [],
+      "PlanOnly": false,
+      "DiscoveryOnly": true,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:10.1093579",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-ValidateCatalog",
+        "-NoBuild"
+      ]
+    },
+    {
+      "SourceCommit": "b7ca1ba587ef44fe75edbc7cc6331d647b7fb2ae",
+      "ExecutionRevision": "b7ca1ba587ef44fe75edbc7cc6331d647b7fb2ae",
+      "Path": "evidence/worker-pool-catalog-final/default-selection-plan/summary.json",
+      "Categories": [
+        "worker-execution-scoped-evidence",
+        "worker-consumer-execution-evidence",
+        "worker-pool-regression-managed-policy",
+        "worker-pool-regression-docs"
+      ],
+      "Reasons": [
+        {
+          "category": "worker-execution-scoped-evidence",
+          "reason": "Windows CI runs only platform-independent B evidence/consumer/order/documentation contracts; actual Linux qualification has explicit tests/selections/1553-worker-pool-linux.json and source-specific evidence.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL B6",
+            "FR-012/014/015"
+          ]
+        },
+        {
+          "category": "worker-consumer-execution-evidence",
+          "reason": "Windows CI runs only platform-independent B evidence/consumer/order/documentation contracts; actual Linux qualification has explicit tests/selections/1553-worker-pool-linux.json and source-specific evidence.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL B6",
+            "FR-012/014/015"
+          ]
+        },
+        {
+          "category": "worker-pool-regression-managed-policy",
+          "reason": "Windows CI runs only platform-independent B evidence/consumer/order/documentation contracts; actual Linux qualification has explicit tests/selections/1553-worker-pool-linux.json and source-specific evidence.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL B6",
+            "FR-012/014/015"
+          ]
+        },
+        {
+          "category": "worker-pool-regression-docs",
+          "reason": "Windows CI runs only platform-independent B evidence/consumer/order/documentation contracts; actual Linux qualification has explicit tests/selections/1553-worker-pool-linux.json and source-specific evidence.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL B6",
+            "FR-012/014/015"
+          ]
+        }
+      ],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 4,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 27,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-consumer-execution-evidence-unit-001",
+          "worker-execution-scoped-evidence-unit-002",
+          "worker-pool-regression-docs-unit-003",
+          "worker-pool-regression-managed-policy-unit-004"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:04.9577833",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-SelectionFile",
+        "tests/selection.json",
+        "-Parallelism",
+        "1",
+        "-PlanOnly",
+        "-NoBuild"
+      ]
+    },
+    {
+      "SourceCommit": "b7ca1ba587ef44fe75edbc7cc6331d647b7fb2ae",
+      "ExecutionRevision": "b7ca1ba587ef44fe75edbc7cc6331d647b7fb2ae",
+      "Path": "evidence/worker-pool-catalog-final/linux-selection-plan/summary.json",
+      "Categories": [
+        "worker-native-pool-happy",
+        "worker-execution-scoped-evidence",
+        "worker-consumer-execution-evidence",
+        "worker-synthetic-bundle-publication",
+        "worker-synthetic-bundle-cleanup",
+        "worker-native-pool-descendants",
+        "worker-native-pool-detached-descendants",
+        "worker-native-pool-terminal",
+        "worker-native-pool-publication-rejection",
+        "worker-native-pool-content",
+        "worker-native-pool-release-authority",
+        "worker-native-pool-uncertainty",
+        "worker-native-pool-owner-loss",
+        "worker-native-pool-completion-boundaries",
+        "worker-native-pool-late-output",
+        "worker-native-pool-cleanup-retry",
+        "worker-pool-regression-host",
+        "worker-pool-regression-ipc",
+        "worker-pool-regression-reaper",
+        "worker-pool-regression-policy",
+        "worker-pool-regression-docs"
+      ],
+      "Reasons": [
+        {
+          "category": "worker-native-pool-happy",
+          "reason": "T041-FALLBACK-POOL first causal actual pool RED/GREEN under independent finite guardian; internal admission scaffold stays closed until typed integration.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL",
+            "FR-012/014/015"
+          ]
+        },
+        {
+          "category": "worker-execution-scoped-evidence",
+          "reason": "Pure typed authority causal RED/GREEN before connecting native admission; wrong run/scope and late certainty must never reuse cleanup evidence.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL"
+          ]
+        },
+        {
+          "category": "worker-consumer-execution-evidence",
+          "reason": "Causal negatives at both real consumer acceptance boundaries before replacing legacy Proposal/exit0 checks with the shared exact-execution permit.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL",
+            "FR-012/014/015"
+          ]
+        },
+        {
+          "category": "worker-synthetic-bundle-publication",
+          "reason": "New bounded Linux directory bundle prerequisite through real Store, preserving default refusal and exact publication semantics.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL B3-P",
+            "FR-012/014/015"
+          ]
+        },
+        {
+          "category": "worker-synthetic-bundle-cleanup",
+          "reason": "Causal staging residue after successful native rename; requalify only changed sealed-adapter cleanup and Store callers.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL B3-P"
+          ]
+        },
+        {
+          "category": "worker-native-pool-descendants",
+          "reason": "Expand actual pool lifetime qualification only after positive root cleanup: independent finite actors inherit output handles; helper must prove scoped stop before actual Store publication.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL B5",
+            "FR-012/014/015"
+          ]
+        },
+        {
+          "category": "worker-native-pool-detached-descendants",
+          "reason": "Expand actual pool lifetime qualification only after positive root cleanup: independent finite actors inherit output handles; helper must prove scoped stop before actual Store publication.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL B5",
+            "FR-012/014/015"
+          ]
+        },
+        {
+          "category": "worker-native-pool-terminal",
+          "reason": "New actual pool terminal-boundary negatives after happy/descendant GREEN; verify rejected results cannot mint an accepted with-copy and native cleanup still releases owned capacity.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL B5",
+            "FR-012/014/015"
+          ]
+        },
+        {
+          "category": "worker-native-pool-publication-rejection",
+          "reason": "Only affected4 terminal cases: fix generation lifecycle preparation and strengthen exact completion outcome assertions; do not repeat unchanged cancellation/timeout4.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL B5"
+          ]
+        },
+        {
+          "category": "worker-native-pool-content",
+          "reason": "#1553 POOL B Actual pool detached content import exact bytes and rejection for missing/hash mismatch, without applying canonical game state.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL B5",
+            "FR-012/014/015"
+          ]
+        },
+        {
+          "category": "worker-native-pool-release-authority",
+          "reason": "#1553 POOL B Actual original native supervisor lost before Release; no worker launch or publication, original quarantine retained and independent guardian owns cleanup.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL B5",
+            "FR-012/014/015"
+          ]
+        },
+        {
+          "category": "worker-native-pool-uncertainty",
+          "reason": "#1553 POOL B Original native terminal corruption, explicit uncertainty and late original status/output observations retain workspace, receipt denial and quarantine across concurrent reaper passes.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL B5",
+            "FR-012/014/015"
+          ]
+        },
+        {
+          "category": "worker-native-pool-owner-loss",
+          "reason": "#1553 POOL B Actual owner-control EOF, status-reader loss and original helper loss after real Completed retain uncertainty and cannot publish or free owned capacity.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL B5",
+            "FR-012/014/015"
+          ]
+        },
+        {
+          "category": "worker-native-pool-completion-boundaries",
+          "reason": "#1553 POOL B Actual cancellation/timeout at buffered Completed, original terminal stop and output settlement precede publication while positive physical cleanup is preserved.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL B5",
+            "FR-012/014/015"
+          ]
+        },
+        {
+          "category": "worker-native-pool-late-output",
+          "reason": "#1553 POOL B Late original output-observation task actually settles yet uncertainty/worker slot/quarantine remain held; exact corrected fixture row only.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL B5",
+            "FR-012/014/015"
+          ]
+        },
+        {
+          "category": "worker-native-pool-cleanup-retry",
+          "reason": "#1553 POOL B Actual native valid-stop owner disposal/workspace/audit/fallback receipt retries preserve original phases and exactly-once slot/capacity across concurrent passes.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL B5",
+            "FR-012/014/015"
+          ]
+        },
+        {
+          "category": "worker-pool-regression-host",
+          "reason": "#1553 B6 Original actual HOST lifecycle/output/authority and neutral Release guards affected by common owner changes.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL B6",
+            "FR-012/014/015"
+          ]
+        },
+        {
+          "category": "worker-pool-regression-ipc",
+          "reason": "#1553 B6 Original Process readiness owner-close and completion arbiter cancellation/timeout precedence.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL B6",
+            "FR-012/014/015"
+          ]
+        },
+        {
+          "category": "worker-pool-regression-reaper",
+          "reason": "#1553 B6 Affected original retained-cleanup constructor/phase and reaper overlap/capacity semantics; exact receipt retry remains unchanged.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL B6",
+            "FR-012/014/015"
+          ]
+        },
+        {
+          "category": "worker-pool-regression-policy",
+          "reason": "#1553 B6 Explicit synthetic admission denial and original public Linux/Windows selection; managed native/Windows drain order and narrow retained Job pending retry.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL B6",
+            "FR-012/014/015"
+          ]
+        },
+        {
+          "category": "worker-pool-regression-docs",
+          "reason": "#1553 B6 Three affected operational documentation/isolation source guards; synchronize synthetic typed evidence and unchanged public admission.",
+          "contracts": [
+            "#1553 T041-FALLBACK-POOL B6",
+            "FR-012/014/015"
+          ]
+        }
+      ],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 19,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 127,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-consumer-execution-evidence-unit-001",
+          "worker-execution-scoped-evidence-unit-002",
+          "worker-native-pool-cleanup-retry-unit-003",
+          "worker-native-pool-completion-boundaries-unit-004",
+          "worker-native-pool-content-unit-005",
+          "worker-native-pool-descendants-unit-006",
+          "worker-native-pool-detached-descendants-unit-007",
+          "worker-native-pool-happy-unit-008",
+          "worker-native-pool-late-output-unit-009",
+          "worker-native-pool-owner-loss-unit-010",
+          "worker-native-pool-release-authority-unit-011",
+          "worker-native-pool-terminal-unit-012",
+          "worker-native-pool-uncertainty-unit-013",
+          "worker-pool-regression-docs-unit-014",
+          "worker-pool-regression-host-unit-015",
+          "worker-pool-regression-ipc-integration-016",
+          "worker-pool-regression-policy-unit-017",
+          "worker-pool-regression-reaper-integration-018",
+          "worker-synthetic-bundle-publication-unit-019"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:09.6275693",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-SelectionFile",
+        "tests/selections/1553-worker-pool-linux.json",
+        "-Parallelism",
+        "1",
+        "-PlanOnly",
+        "-NoBuild"
+      ]
+    },
+    {
+      "SourceCommit": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "ExecutionRevision": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "Path": "evidence/worker-pool-cleanup-green/cleanup-plan/summary.json",
+      "Categories": [
+        "worker-native-pool-cleanup-retry",
+        "worker-native-pool-late-output"
+      ],
+      "Reasons": [],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 9,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-pool-cleanup-retry-unit-001",
+          "worker-native-pool-late-output-unit-002"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:39.6301162",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-native-pool-cleanup-retry,worker-native-pool-late-output",
+        "-Parallelism",
+        "1",
+        "-PlanOnly"
+      ]
+    },
+    {
+      "SourceCommit": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "ExecutionRevision": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "Path": "evidence/worker-pool-cleanup-green/cleanup-run/summary.json",
+      "Categories": [
+        "worker-native-pool-late-output",
+        "worker-native-pool-cleanup-retry"
+      ],
+      "Reasons": [],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 9,
+        "Executed": 9,
+        "Passed": 9,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 9,
+        "CompletedCases": 9,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:36.4513940",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-native-pool-late-output,worker-native-pool-cleanup-retry",
+        "-Parallelism",
+        "1",
+        "-NoBuild"
+      ]
+    },
+    {
+      "SourceCommit": "24f63234bf3182982b96a13a4145db34cfdbd755",
+      "ExecutionRevision": "24f63234bf3182982b96a13a4145db34cfdbd755",
+      "Path": "evidence/worker-pool-connected-publication-red/connected-green-plan/summary.json",
+      "Categories": [
+        "worker-native-pool-happy",
+        "worker-execution-scoped-evidence"
+      ],
+      "Reasons": [],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 14,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-execution-scoped-evidence-unit-001",
+          "worker-native-pool-happy-unit-002"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:01:24.0326588",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-native-pool-happy,worker-execution-scoped-evidence",
+        "-Parallelism",
+        "1",
+        "-PlanOnly"
+      ]
+    },
+    {
+      "SourceCommit": "24f63234bf3182982b96a13a4145db34cfdbd755",
+      "ExecutionRevision": "24f63234bf3182982b96a13a4145db34cfdbd755",
+      "Path": "evidence/worker-pool-connected-publication-red/connected-green-run/summary.json",
+      "Categories": [
+        "worker-native-pool-happy",
+        "worker-execution-scoped-evidence"
+      ],
+      "Reasons": [],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 14,
+        "Executed": 14,
+        "Passed": 13,
+        "Failed": 1
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 14,
+        "CompletedCases": 14,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 1,
+      "TimedOut": false,
+      "WallTime": "00:00:12.9832580",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-native-pool-happy,worker-execution-scoped-evidence",
+        "-Parallelism",
+        "1",
+        "-NoBuild"
+      ]
+    },
+    {
+      "SourceCommit": "eac876f6916a9b6d624625fbddb1ce07c944a0b3",
+      "ExecutionRevision": "eac876f6916a9b6d624625fbddb1ce07c944a0b3",
+      "Path": "evidence/worker-pool-consumer-green/consumer-green-plan/summary.json",
+      "Categories": [
+        "worker-consumer-execution-evidence"
+      ],
+      "Reasons": [],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 4,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-consumer-execution-evidence-unit-001"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:38.9364582",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-consumer-execution-evidence",
+        "-Parallelism",
+        "1",
+        "-PlanOnly"
+      ]
+    },
+    {
+      "SourceCommit": "eac876f6916a9b6d624625fbddb1ce07c944a0b3",
+      "ExecutionRevision": "eac876f6916a9b6d624625fbddb1ce07c944a0b3",
+      "Path": "evidence/worker-pool-consumer-green/consumer-green-run/summary.json",
+      "Categories": [
+        "worker-consumer-execution-evidence"
+      ],
+      "Reasons": [],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 4,
+        "Executed": 4,
+        "Passed": 4,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 4,
+        "CompletedCases": 4,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:08.3430630",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-consumer-execution-evidence",
+        "-Parallelism",
+        "1",
+        "-NoBuild"
+      ]
+    },
+    {
+      "SourceCommit": "b75148b5d11c37a9f34bf67e3c0ae00791ec70af",
+      "ExecutionRevision": "b75148b5d11c37a9f34bf67e3c0ae00791ec70af",
+      "Path": "evidence/worker-pool-consumer-preparation-failure/consumer-red-plan/summary.json",
+      "Categories": [
+        "worker-consumer-execution-evidence"
+      ],
+      "Reasons": [],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "ExitCode": 1,
+      "TimedOut": false,
+      "WallTime": "00:00:39.0077061",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-consumer-execution-evidence",
+        "-Parallelism",
+        "1",
+        "-PlanOnly"
+      ]
+    },
+    {
+      "SourceCommit": "0e4c0688e17ed9c5ecf243267a7c897820d72980",
+      "ExecutionRevision": "0e4c0688e17ed9c5ecf243267a7c897820d72980",
+      "Path": "evidence/worker-pool-consumer-red/consumer-red-fixed-plan/summary.json",
+      "Categories": [
+        "worker-consumer-execution-evidence"
+      ],
+      "Reasons": [],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 4,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-consumer-execution-evidence-unit-001"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:37.4464993",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-consumer-execution-evidence",
+        "-Parallelism",
+        "1",
+        "-PlanOnly"
+      ]
+    },
+    {
+      "SourceCommit": "0e4c0688e17ed9c5ecf243267a7c897820d72980",
+      "ExecutionRevision": "1d5b8ea51b72205be1f073b386c43570bf911bba",
+      "Path": "evidence/worker-pool-consumer-red/consumer-red-run/summary.json",
+      "Categories": [
+        "worker-consumer-execution-evidence"
+      ],
+      "Reasons": [],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 4,
+        "Executed": 4,
+        "Passed": 0,
+        "Failed": 4
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 4,
+        "CompletedCases": 4,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 1,
+      "TimedOut": false,
+      "WallTime": "00:00:08.0413845",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-consumer-execution-evidence",
+        "-Parallelism",
+        "1",
+        "-NoBuild"
+      ]
+    },
+    {
+      "SourceCommit": "299dfc95b2868bc3697c7e6961d24ecf6cd70755",
+      "ExecutionRevision": "299dfc95b2868bc3697c7e6961d24ecf6cd70755",
+      "Path": "evidence/worker-pool-content-green-authority-red/content-authority-plan/summary.json",
+      "Categories": [
+        "worker-native-pool-content",
+        "worker-native-pool-release-authority"
+      ],
+      "Reasons": [],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 4,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-pool-content-unit-001",
+          "worker-native-pool-release-authority-unit-002"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:38.0503168",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-native-pool-content,worker-native-pool-release-authority",
+        "-Parallelism",
+        "1",
+        "-PlanOnly"
+      ]
+    },
+    {
+      "SourceCommit": "299dfc95b2868bc3697c7e6961d24ecf6cd70755",
+      "ExecutionRevision": "299dfc95b2868bc3697c7e6961d24ecf6cd70755",
+      "Path": "evidence/worker-pool-content-green-authority-red/content-authority-run/summary.json",
+      "Categories": [
+        "worker-native-pool-content",
+        "worker-native-pool-release-authority"
+      ],
+      "Reasons": [],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 4,
+        "Executed": 4,
+        "Passed": 3,
+        "Failed": 1
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 4,
+        "CompletedCases": 4,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 1,
+      "TimedOut": false,
+      "WallTime": "00:00:29.4746517",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-native-pool-content,worker-native-pool-release-authority",
+        "-Parallelism",
+        "1",
+        "-NoBuild"
+      ]
+    },
+    {
+      "SourceCommit": "14aa66678f74e4db5c27e65d5db4afd815b9f682",
+      "ExecutionRevision": "14aa66678f74e4db5c27e65d5db4afd815b9f682",
+      "Path": "evidence/worker-pool-descendants-green/descendants-detached-run/summary.json",
+      "Categories": [
+        "worker-native-pool-detached-descendants"
+      ],
+      "Reasons": [],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 3,
+        "Executed": 3,
+        "Passed": 3,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 3,
+        "CompletedCases": 3,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:16.0291719",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-native-pool-detached-descendants",
+        "-Parallelism",
+        "1",
+        "-NoBuild"
+      ]
+    },
+    {
+      "SourceCommit": "14aa66678f74e4db5c27e65d5db4afd815b9f682",
+      "ExecutionRevision": "14aa66678f74e4db5c27e65d5db4afd815b9f682",
+      "Path": "evidence/worker-pool-descendants-green/descendants-ordinary-run/summary.json",
+      "Categories": [
+        "worker-native-pool-descendants"
+      ],
+      "Reasons": [],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:14.5106763",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-native-pool-descendants",
+        "-Parallelism",
+        "1",
+        "-NoBuild"
+      ]
+    },
+    {
+      "SourceCommit": "14aa66678f74e4db5c27e65d5db4afd815b9f682",
+      "ExecutionRevision": "14aa66678f74e4db5c27e65d5db4afd815b9f682",
+      "Path": "evidence/worker-pool-descendants-green/descendants-plan/summary.json",
+      "Categories": [
+        "worker-native-pool-descendants",
+        "worker-native-pool-detached-descendants"
+      ],
+      "Reasons": [],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 5,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-pool-descendants-unit-001",
+          "worker-native-pool-detached-descendants-unit-002"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:40.3899196",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-native-pool-descendants,worker-native-pool-detached-descendants",
+        "-Parallelism",
+        "1",
+        "-PlanOnly"
+      ]
+    },
+    {
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "ExecutionRevision": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/boundaries-loss-run/summary.json",
+      "Categories": [
+        "worker-native-pool-owner-loss",
+        "worker-native-pool-completion-boundaries"
+      ],
+      "Reasons": [],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 9,
+        "Executed": 9,
+        "Passed": 9,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 9,
+        "CompletedCases": 9,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:47.7992479",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-native-pool-owner-loss,worker-native-pool-completion-boundaries",
+        "-Parallelism",
+        "1",
+        "-NoBuild"
+      ]
+    },
+    {
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "ExecutionRevision": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/faults-plan/summary.json",
+      "Categories": [
+        "worker-native-pool-uncertainty",
+        "worker-native-pool-owner-loss",
+        "worker-native-pool-completion-boundaries"
+      ],
+      "Reasons": [],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 3,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 15,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-pool-completion-boundaries-unit-001",
+          "worker-native-pool-owner-loss-unit-002",
+          "worker-native-pool-uncertainty-unit-003"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:38.2844385",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-native-pool-uncertainty,worker-native-pool-owner-loss,worker-native-pool-completion-boundaries",
+        "-Parallelism",
+        "1",
+        "-PlanOnly"
+      ]
+    },
+    {
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "ExecutionRevision": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/uncertainty-run/summary.json",
+      "Categories": [
+        "worker-native-pool-uncertainty"
+      ],
+      "Reasons": [],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 6,
+        "Executed": 6,
+        "Passed": 6,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 6,
+        "CompletedCases": 6,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:33.6851589",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-native-pool-uncertainty",
+        "-Parallelism",
+        "1",
+        "-NoBuild"
+      ]
+    },
+    {
+      "SourceCommit": "d18bb97e14fffad109c81d885a1c64ea0dfa534c",
+      "ExecutionRevision": "d18bb97e14fffad109c81d885a1c64ea0dfa534c",
+      "Path": "evidence/worker-pool-happy-green/happy-green-plan/summary.json",
+      "Categories": [
+        "worker-native-pool-happy"
+      ],
+      "Reasons": [],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 1,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-pool-happy-unit-001"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:42.5082853",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-native-pool-happy",
+        "-Parallelism",
+        "1",
+        "-PlanOnly"
+      ]
+    },
+    {
+      "SourceCommit": "d18bb97e14fffad109c81d885a1c64ea0dfa534c",
+      "ExecutionRevision": "d18bb97e14fffad109c81d885a1c64ea0dfa534c",
+      "Path": "evidence/worker-pool-happy-green/happy-green-run/summary.json",
+      "Categories": [
+        "worker-native-pool-happy"
+      ],
+      "Reasons": [],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 1,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:09.6047007",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-native-pool-happy",
+        "-Parallelism",
+        "1",
+        "-NoBuild"
+      ]
+    },
+    {
+      "SourceCommit": "7edc9681d38caa2cdbbcd88301a21333ad836992",
+      "ExecutionRevision": "7edc9681d38caa2cdbbcd88301a21333ad836992",
+      "Path": "evidence/worker-pool-happy-red/happy-red-plan/summary.json",
+      "Categories": [
+        "worker-native-pool-happy"
+      ],
+      "Reasons": [],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 1,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-pool-happy-unit-001"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:01:28.3757251",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-native-pool-happy",
+        "-Parallelism",
+        "1",
+        "-PlanOnly"
+      ]
+    },
+    {
+      "SourceCommit": "7edc9681d38caa2cdbbcd88301a21333ad836992",
+      "ExecutionRevision": "7edc9681d38caa2cdbbcd88301a21333ad836992",
+      "Path": "evidence/worker-pool-happy-red/happy-red-run/summary.json",
+      "Categories": [
+        "worker-native-pool-happy"
+      ],
+      "Reasons": [],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 1,
+      "TimedOut": false,
+      "WallTime": "00:00:09.5410244",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-native-pool-happy",
+        "-Parallelism",
+        "1",
+        "-NoBuild"
+      ]
+    },
+    {
+      "SourceCommit": "6a956673813fb22df248435d59aa243132fa1f2d",
+      "ExecutionRevision": "6a956673813fb22df248435d59aa243132fa1f2d",
+      "Path": "evidence/worker-pool-publication-rejection-green/rejection-plan/summary.json",
+      "Categories": [
+        "worker-native-pool-publication-rejection"
+      ],
+      "Reasons": [],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 4,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-pool-publication-rejection-unit-001"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:41.6022296",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-native-pool-publication-rejection",
+        "-Parallelism",
+        "1",
+        "-PlanOnly"
+      ]
+    },
+    {
+      "SourceCommit": "6a956673813fb22df248435d59aa243132fa1f2d",
+      "ExecutionRevision": "6a956673813fb22df248435d59aa243132fa1f2d",
+      "Path": "evidence/worker-pool-publication-rejection-green/rejection-run/summary.json",
+      "Categories": [
+        "worker-native-pool-publication-rejection"
+      ],
+      "Reasons": [],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 4,
+        "Executed": 4,
+        "Passed": 4,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 4,
+        "CompletedCases": 4,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:14.7822824",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-native-pool-publication-rejection",
+        "-Parallelism",
+        "1",
+        "-NoBuild"
+      ]
+    },
+    {
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "ExecutionRevision": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-plan/summary.json",
+      "Categories": [
+        "worker-pool-regression-host",
+        "worker-pool-regression-ipc",
+        "worker-pool-regression-reaper",
+        "worker-pool-regression-policy",
+        "worker-pool-regression-docs"
+      ],
+      "Reasons": [],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 5,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 36,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-pool-regression-docs-unit-001",
+          "worker-pool-regression-host-unit-002",
+          "worker-pool-regression-ipc-integration-003",
+          "worker-pool-regression-policy-unit-004",
+          "worker-pool-regression-reaper-integration-005"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:01:05.8836693",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-pool-regression-host,worker-pool-regression-ipc,worker-pool-regression-reaper,worker-pool-regression-policy,worker-pool-regression-docs",
+        "-Parallelism",
+        "1",
+        "-PlanOnly"
+      ]
+    },
+    {
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "ExecutionRevision": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/summary.json",
+      "Categories": [
+        "worker-pool-regression-host",
+        "worker-pool-regression-ipc",
+        "worker-pool-regression-reaper",
+        "worker-pool-regression-policy",
+        "worker-pool-regression-docs"
+      ],
+      "Reasons": [],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 36,
+        "Executed": 36,
+        "Passed": 36,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 5,
+        "CompletedDescriptors": 5,
+        "PlannedCases": 36,
+        "CompletedCases": 36,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:41.9491780",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-pool-regression-host,worker-pool-regression-ipc,worker-pool-regression-reaper,worker-pool-regression-policy,worker-pool-regression-docs",
+        "-Parallelism",
+        "1",
+        "-NoBuild"
+      ]
+    },
+    {
+      "SourceCommit": "f3bedb46e60f3913409a8f60faf4fe4008d0b808",
+      "ExecutionRevision": "f3bedb46e60f3913409a8f60faf4fe4008d0b808",
+      "Path": "evidence/worker-pool-regression-guard-failure/regression-plan/summary.json",
+      "Categories": [
+        "worker-pool-regression-host",
+        "worker-pool-regression-ipc",
+        "worker-pool-regression-reaper",
+        "worker-pool-regression-policy",
+        "worker-pool-regression-docs"
+      ],
+      "Reasons": [],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 5,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 36,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-pool-regression-docs-unit-001",
+          "worker-pool-regression-host-unit-002",
+          "worker-pool-regression-ipc-integration-003",
+          "worker-pool-regression-policy-unit-004",
+          "worker-pool-regression-reaper-integration-005"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:01:05.8868907",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-pool-regression-host,worker-pool-regression-ipc,worker-pool-regression-reaper,worker-pool-regression-policy,worker-pool-regression-docs",
+        "-Parallelism",
+        "1",
+        "-PlanOnly"
+      ]
+    },
+    {
+      "SourceCommit": "f3bedb46e60f3913409a8f60faf4fe4008d0b808",
+      "ExecutionRevision": "f3bedb46e60f3913409a8f60faf4fe4008d0b808",
+      "Path": "evidence/worker-pool-regression-guard-failure/regression-run/summary.json",
+      "Categories": [
+        "worker-pool-regression-host",
+        "worker-pool-regression-ipc",
+        "worker-pool-regression-reaper",
+        "worker-pool-regression-policy",
+        "worker-pool-regression-docs"
+      ],
+      "Reasons": [],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 3,
+        "Executed": 3,
+        "Passed": 2,
+        "Failed": 1
+      },
+      "Selection": {
+        "PlannedDescriptors": 5,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 36,
+        "CompletedCases": 3,
+        "UnderfilledDescriptors": [
+          "worker-pool-regression-host-unit-002",
+          "worker-pool-regression-ipc-integration-003",
+          "worker-pool-regression-policy-unit-004",
+          "worker-pool-regression-reaper-integration-005"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 1,
+      "TimedOut": false,
+      "WallTime": "00:00:12.1643705",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-pool-regression-host,worker-pool-regression-ipc,worker-pool-regression-reaper,worker-pool-regression-policy,worker-pool-regression-docs",
+        "-Parallelism",
+        "1",
+        "-NoBuild"
+      ]
+    },
+    {
+      "SourceCommit": "f115c7629667d4b0bd63bec2f84aa2fd88f1d17b",
+      "ExecutionRevision": "f115c7629667d4b0bd63bec2f84aa2fd88f1d17b",
+      "Path": "evidence/worker-pool-terminal-fixture-failure/terminal-plan/summary.json",
+      "Categories": [
+        "worker-native-pool-terminal"
+      ],
+      "Reasons": [],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 8,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-pool-terminal-unit-001"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:01:25.2591174",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-native-pool-terminal",
+        "-Parallelism",
+        "1",
+        "-PlanOnly"
+      ]
+    },
+    {
+      "SourceCommit": "f115c7629667d4b0bd63bec2f84aa2fd88f1d17b",
+      "ExecutionRevision": "f115c7629667d4b0bd63bec2f84aa2fd88f1d17b",
+      "Path": "evidence/worker-pool-terminal-fixture-failure/terminal-run/summary.json",
+      "Categories": [
+        "worker-native-pool-terminal"
+      ],
+      "Reasons": [],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 8,
+        "Executed": 8,
+        "Passed": 7,
+        "Failed": 1
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 8,
+        "CompletedCases": 8,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 1,
+      "TimedOut": false,
+      "WallTime": "00:00:23.0786793",
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "DuplicateTests": [],
+      "EffectiveRunnerArguments": [
+        "./scripts/test-csharp.ps1",
+        "-Category",
+        "worker-native-pool-terminal",
+        "-Parallelism",
+        "1",
+        "-NoBuild"
+      ]
+    }
+  ],
+  "Inputs": [
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs",
+      "Sha256": "be280e552a1e1548b0d3eebaa96f0c64b436a40363fac1ab93022ccebe637333",
+      "GitBlob": "5949d22cbc2a536efa0aa7224a03bae22e199238"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/GmWorkerProcessTreeTests.cs",
+      "Sha256": "e173f5de0b4f682b37a0bf23affd2981f6b3ab4e00a61733e09df7099b233d24",
+      "GitBlob": "ec82b810119de2005b99ff0c240d365b917d6806"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs",
+      "Sha256": "9985beb081b864ad1dc99a21873e963ef6a1bdaa2b525a31935deeb2c3975eee",
+      "GitBlob": "ad5705b540e4d88e264af1c2e2e6a41ca341e89a"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+      "Sha256": "472a2d743d0bb89a2585ca22c90fd5bce33ba92edc02e0a98634ae094bf2972f",
+      "GitBlob": "ddbbc890b30c53a35df72256552c195aa57f6b4c"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/GmWorkerBridgeTestFixtures.cs",
+      "Sha256": "a16c1e4b87250c27db9db8dba21e73ad95ad987eec7f4dd17188418945e92474",
+      "GitBlob": "f96dd67317a60d6cfcbb344a85a3701e3131d7cb"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "Sha256": "e8e6b28583615031a4eda2978b16011d046cf05661f75331c54efb0bcc070ea5",
+      "GitBlob": "5226cdf71f1efb03b961880307a02448536d9864"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.Cleanup.cs",
+      "Sha256": "f2e85f71741555ccce3e209e2ed8d69f14a5ea7c483348bd0f436ec740550424",
+      "GitBlob": "d0847f137cb25c8cfd58473a80f27471fbd05aff"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.cs",
+      "Sha256": "fc7eed28f266be11f47d05ee5e51901c0834c6c5f8ba31da699c3b448844a0e8",
+      "GitBlob": "6426803d75df9897288dc79d8c36313876303235"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerBackendSelectionTests.cs",
+      "Sha256": "c02d231ecc979f76c08a2eb8ae1c1300b14728821081f28cae5bf4a81bb312de",
+      "GitBlob": "1b63f80616e77137c71425f0ab0af7f43154bd16"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerBridgeDocumentationTests.cs",
+      "Sha256": "3f581e81d0b3bbf6e547bb64bc646c4759860d33f19bbaaa40094d8b531c7579",
+      "GitBlob": "729b664b2b3f82514c30e35c90557407bdbf59ff"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerBridgeSourceGuardTests.cs",
+      "Sha256": "41fcafd661303d0a042b6514943c42d3bea549eace7334e8145a42d69ecce424",
+      "GitBlob": "4917dd1d77956c30acc794e44aa88e407c91ceaf"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerConsumerEvidenceTests.cs",
+      "Sha256": "59ab8bd1d5a5fa465170b63e4032bac5b5cbe7e4118e28b300341be2a29671c5",
+      "GitBlob": "165a9e790345a67854ba1357d2a2ad0166e623a1"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs",
+      "Sha256": "cd006575197f1568305ede50b82bca3a39993853bca0e55596b4f5fd803b53cc",
+      "GitBlob": "27975bc9de8573ca96eeec0d8b5b156eaa75ea73"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativeAdmissionTests.cs",
+      "Sha256": "61a6b1307420c9ee62c07704256cb0c6ea1bd106a824b0a9802133a351c0d9d9",
+      "GitBlob": "d39e24368d09c7262a24600dc22505a44ae8d12c"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativeHostTests.cs",
+      "Sha256": "2f9df4ebda78c3841dad1f31b4917ed5bbeed51146d620c348d46fdac33d08a2",
+      "GitBlob": "de12d9b9f49d0ddd446797a3dde163b2fbea6765"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativePoolTests.Cleanup.cs",
+      "Sha256": "cef1c0a742df8862e1bbd01fd384bae0c1a67e49c6fe06718d52dd90a0c0f664",
+      "GitBlob": "d999c950b3c5264ec8f5a488100e564b87bda1ef"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativePoolTests.Content.cs",
+      "Sha256": "b57ffc81286b54b70b63a8ccd2c2e79962447daf46ca87c6fbef1a4da73d64d7",
+      "GitBlob": "cfd321e4e1bec6aec3c6d8463ffc366ba4ddeee0"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativePoolTests.Faults.cs",
+      "Sha256": "318a4003546e733dfe19f57ce2b4cb81cc54deae9cb13a6d95a912298083bca0",
+      "GitBlob": "f952f52c5fcd7dd6e4bad3e195aef198df9f9fef"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativePoolTests.Terminal.cs",
+      "Sha256": "86ba067744fd558032ea16cf97b49fd2df45b3a1d546b1bedcbc277e606a8ede",
+      "GitBlob": "c0035c2daa66f08cff40db81b7ae5b1ffda7b67d"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativePoolTests.cs",
+      "Sha256": "cec718b80f9d3f646e9efd84426232cb7647f1d63bcb1125d56d2f02a92fe3a7",
+      "GitBlob": "98a36a3b492ad1a6a6aa121e69f29a205ababbb3"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerPoolPlatformPolicyTests.cs",
+      "Sha256": "2f99414fd33eafa52175e55c760084c1ef01a1e7630a287ba03e8ae945ccc091",
+      "GitBlob": "e2d0faad67a6be40e324f308e9258e703adbda75"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerSyntheticBundlePublicationTests.Cleanup.cs",
+      "Sha256": "098f8a7244d4ba25f03a1e758337e7d96207f98881023b786363557bdd7725cf",
+      "GitBlob": "4ec6d43bdd3abbaf98280834ca02d943d4b1c868"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerSyntheticBundlePublicationTests.Rejection.cs",
+      "Sha256": "aba81f10d4c02c2a5e64e7d34c3f4b814a9042d406dd13fdc2f62879918b45c5",
+      "GitBlob": "aa76254580accac74f5aa5d50e1f55badc089df1"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerSyntheticBundlePublicationTests.cs",
+      "Sha256": "d9bf9ceec67d6093cd103fa219345f219660a883112b62a66f3e9d89dc37cbeb",
+      "GitBlob": "20823abf05b389486db8fe0f6b76d0b09d3f24de"
+    },
+    {
+      "Path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "Sha256": "009f4dbfe71f80887561227b708af0abb9a153a8de2a75c10af0be1487f6e4c6",
+      "GitBlob": "e6e78f3b5797ed6367763878790309e48041befe"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+      "Sha256": "02a439348af398372763c83f0d6fde394709ed59f67471f5ff5c42e4791e655e",
+      "GitBlob": "4a25846be454f6273a1666f1b33a3faa394cc553"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.SyntheticBundlePublication.cs",
+      "Sha256": "e71dff56cf2780cd803931225285231a5e3a9769dcbfc593dd9a3967a3e102e4",
+      "GitBlob": "ccd1ef1e474f698621d1e36f72098b27572f8c64"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "Sha256": "0f282bc0e34742fc40749beb0eba523e7022398810f8278662c9a742ea1b6db8",
+      "GitBlob": "dce3adfdaa2107e47380cacdf6068602031c2836"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "Sha256": "c000d3cd16fb0d01bb00003326e58e38f8ae144eb41475802ed22ea36ae5ecc3",
+      "GitBlob": "a6e27695d6069bf939745e431f2babf57de61a14"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/LinuxCreateOnlyDirectoryRename.cs",
+      "Sha256": "49343a0a18082919a922abb6afc7a84dec61fb8bec09029b097ac4ed58e08c30",
+      "GitBlob": "df4c9f0ce42c97fb0938adada6bfbbe8af66fb88"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/PhysicalFileAuthority.cs",
+      "Sha256": "41028e4d984c06ff1ea5d77c060d590c3a060ce99ca73cf4d568ffff526cb5ea",
+      "GitBlob": "1445bf5f6cc3c3c5bb8145983974336446a53604"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+      "Sha256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2",
+      "GitBlob": "c4c9d46904efd9361c02e690d6d142c799e9d672"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/ActorMaterializationRepairPreservationGuard.cs",
+      "Sha256": "8e29dbce0a4f4fa9c74afc28974ada3823b695f527e30c51f2a81d0057152eb3",
+      "GitBlob": "4f1d1c31fd902b9af3009facb5ff196aa280f0ab"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/AfterlifeRealmAuthorityContract.cs",
+      "Sha256": "100cd7d703c7204a11282fd0328ff986d5a7edbbd72ed297a2b10df523b0f006",
+      "GitBlob": "777ca951f083eabc3711e66a876ed1d120658f59"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.SpiritualContinuation.cs",
+      "Sha256": "2d338f219e79ca34b470730ba2705a7d9473938e8923f4fda59900c8e5a4620d",
+      "GitBlob": "90ea55a7cdf255dacabac8e999be61f7fe3f21ae"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs",
+      "Sha256": "64aeba548d807aed0142f5af62dc37dbd11acc27b5e593fe84f9a8331b589d62",
+      "GitBlob": "b2f0a4a5ebf7a6f2e63f2660dfb7e04d8ee2fcaa"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerAuditEventIdGenerator.cs",
+      "Sha256": "d86ecfec2c6f412e9c0f7828ccef2ab9b98de6a6484eda3f08c13680af785437",
+      "GitBlob": "224569b2f94c50cc8349a6594f3f41738f34b9f4"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs",
+      "Sha256": "4343d8e45cf865fb05594d186e741a3447163a2b445911a8b26ce084b37ab6e4",
+      "GitBlob": "63d2a6111e2c544350840c3d8d71ae9d5df3c914"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBackendSelector.cs",
+      "Sha256": "fdc63764d17b50c37477c900b9a8fea0c97ec7eaaab84b1a25c0703dacd2a7a1",
+      "GitBlob": "855114bfafa9981c76cb2f15c04accaffc7629c7"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+      "Sha256": "16abd1986a2950076082d601f6f3fb6f6d0cda6118e4cb9b9a7f1805203c1852",
+      "GitBlob": "c483e08c9849a93d0b221c23614198cf75bb3226"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgeProfileTemplates.cs",
+      "Sha256": "262b9f8e27639fd791e4a60ee32cadf9e5fc66e71a24cab2daf183197989e265",
+      "GitBlob": "1e7e6c23d152607259a6c80de2126aef5e6e733b"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerContractValidator.cs",
+      "Sha256": "2a1ed15b35058beb8c3415dce783e0e551f0be211bf6ff69a451b694e9eef472",
+      "GitBlob": "49f384b6f6f7c6c62397c0acf4ab14bc9c49ee3f"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionAuthority.cs",
+      "Sha256": "0bac24119109d38aba02acaa5e9432251242c79e33e55363764b1d472fb308a9",
+      "GitBlob": "57e9e7c8ff6d729096788bf439e45d1d8e73cb19"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs",
+      "Sha256": "412f1f3c5560ebd5f114aa160e6ba9cc4610ec873bfdf72d5b324a02ded927c9",
+      "GitBlob": "a46f14becab9acf68275e788d2b749dbb081896b"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerHostIdentity.cs",
+      "Sha256": "e8d62a1d41a2ebdb8c800e4b903b592353bfeadd5c6183b80875cb06f2ce7f01",
+      "GitBlob": "0d5fa2b4fd822dda90f884d75ad254baeeac8e0f"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerJson.cs",
+      "Sha256": "f33387bea8124a10ab220d09e2e0b29adbc9d3a7af1a56fd62370efa5e6e1c6a",
+      "GitBlob": "85921f5cd9a9e3b5bf5421ea43dd0d75e96c8e26"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerModels.cs",
+      "Sha256": "16331789f5a39b4c01cb1584f61266b698fea67ed5348398fc710885d8747ba4",
+      "GitBlob": "e4b395e7e2c64ba93719fdb442ae86a56a1e7f89"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeDescriptors.cs",
+      "Sha256": "59540c43658b8a079ae842eb252196ad3878c3912a3726a4a6b2c1a1f8a62160",
+      "GitBlob": "0d889a1d4cc5f1048c50122feebb85082d119808"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs",
+      "Sha256": "5c567b222b4db9bb25ae7c34f64b10e788046ed0ad4298cdfc2d2c1492a97e0f",
+      "GitBlob": "5ae3871785c8437646734263afa16c23f830541c"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeObservationFault.cs",
+      "Sha256": "f7848c8eb1b87461f1383e0176417e5ed0aed6f368c3dda15672aa9a70e3494d",
+      "GitBlob": "fa5496e938808303475ae3a53e40613222894b89"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativePackage.cs",
+      "Sha256": "20fcd945a355ab36c09ea1aecc7c3438a2eaa93fe65fe73b4eab1c0d5525a9c4",
+      "GitBlob": "ff2ad06c6c5e57fc55b2fd249f600822bf34a676"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativePoolAdmission.cs",
+      "Sha256": "5115b8ce0b5935e8168b370d8fa4c6366f814d91eb35c0f391c8ba2d001b9952",
+      "GitBlob": "c780752102221166d85d23e631eb2547463079a3"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerOwnedLaunch.cs",
+      "Sha256": "e55af299af6400b9328e363fd7c37589f64244550ff301aceda7135beddb57f5",
+      "GitBlob": "2f0760d6462c7c411743eccae1ac23c55368a436"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs",
+      "Sha256": "da7a5476e6d9b373ef57c60c8c0eaf9bb909004fefb2b076972f2dceb56e54b1",
+      "GitBlob": "0935b66a49e8ed7c68a065079d802d46b906b603"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostFrameChannel.cs",
+      "Sha256": "91527d69d2ec77494aba09fbf06c3c719d156e9b108dd6fb89a16052c6e09d29",
+      "GitBlob": "ab8002ba2ce4be75bbe383b72b4dd71a2863ecae"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs",
+      "Sha256": "8bd8b3103b6c09f2dd375480d910ca8515018c291963681901edd7896e0fa58c",
+      "GitBlob": "c38e4115e90dc24a68ea496e7bcbb6fec8ee15db"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs",
+      "Sha256": "70d56db7e8f3ce129310c7e207c9c38bff8a450ecfaa43ddec1a515582162ba1",
+      "GitBlob": "b104fa202efd54b616e8f04b9b2e324411db7668"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalInboxService.cs",
+      "Sha256": "fc607a6bc8d2f7ed6aa6917b7869e05bd632a9da8f65cc8dfebb931644afe08b",
+      "GitBlob": "e14926aa606bb2482905a865843646a043014b69"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalOnlyDispatchService.cs",
+      "Sha256": "c763c2093174ffceecf4c5a90f574e833b0a17d9f7fb1e8179f49d3a5ecbdcce",
+      "GitBlob": "12218e1ad3bab3e3686947a2d288559f98def9a1"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalStore.cs",
+      "Sha256": "6a25b172d22a37285d634a68dea4fefb352a80120c946d333be3e4503eed1f05",
+      "GitBlob": "8c614ba10617fe1f2eb138474550226f77b0ca72"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs",
+      "Sha256": "c1209e7265d9e595a4e2966813a821076ed67b8cb24626f68f8d78cb575f14f0",
+      "GitBlob": "5012edc06da4be88bd85176f688916cfdcf5d123"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerSyntheticBundlePublication.cs",
+      "Sha256": "d6552bef4445890e8f26c40c942fa16077afb4cda7aa91ad18b86fba51c6a0b0",
+      "GitBlob": "2a7622a5ea56acc8b87b03a9d529c34016615a5d"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerTaskPacketBuilder.cs",
+      "Sha256": "4b31c7f2ac645c299b3050f0f89e01dcfa8fcfbec25d3d1dc76d1ab4e1a6d89e",
+      "GitBlob": "1d75eff41232345abb664dc821b07cfff97cf691"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs",
+      "Sha256": "f6982c4340a6cdc2942b56763f3738df2b0c91f158318c21dbb8e14d470cae50",
+      "GitBlob": "66702543107f9633a85c625cefaea077dad695b4"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerWindowsOwnedLaunch.cs",
+      "Sha256": "2960a8393c651768896bee1867aa971dff40c4d33000320b0cfb9454e3086056",
+      "GitBlob": "7336881118fcbeb0268db2eca36ebed3dd73deb5"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/MortalCharacteristicAuthorityContract.cs",
+      "Sha256": "9702e39dd5b48c585d27f600a167a91b24452684e84180f34afc6d892f708973",
+      "GitBlob": "aced0f5669e6f67a8c12e4d78dc1a89d18a953b4"
+    },
+    {
+      "Path": "Examples/E_CLI_GM_Worker_Validation_Repair.txt",
+      "Sha256": "dc157f36ce7fd371d0743a0bfc65ec1e0cb82738cc4c7838824821c2e1905f0d",
+      "GitBlob": "f15a57e9506fe3a492c3d3bf9aecaa0330dc8154"
+    },
+    {
+      "Path": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "Sha256": "cdf74a2394c560c6ebda7ceddc613071247fd4e6d1f62128db04ac98279e85dc",
+      "GitBlob": "48d2509b1c5859d14ad1600aa17c73e79233e7fa"
+    },
+    {
+      "Path": "OtherGuides/GM_Worker_Bridges.md",
+      "Sha256": "e17da79401743ebe8422b7ed9f7bd9d9fccfc4d2a347a3255b165a0bb6a3acd6",
+      "GitBlob": "940a0e86269d47e5c0a82b59a7a46c21363ba562"
+    },
+    {
+      "Path": "native/linux/boe-lineage-supervisor.c",
+      "Sha256": "b8b6ed123ca2b437713e51e022f9fe943d0d762967e6d7388f040e2ae68f8b9a",
+      "GitBlob": "beeb7e12a25ffb7f3874db41b17b8d6f46836702"
+    },
+    {
+      "Path": "scripts/build-linux-supervisor.ps1",
+      "Sha256": "14a665eb1734e3d4cca3607efc69c1b37ef3a355dd94d93487989d2fd6882485",
+      "GitBlob": "f0bde0ae108612a995ecab179ad655cb3d3747a9"
+    },
+    {
+      "Path": "specs/1113-gm-worker-bridges/contracts/gm-worker-bridge-contract.md",
+      "Sha256": "a4709a6fa36a22d4431d76bd77cbff56c6e4f5685baf8b9b748a47ddddfd522a",
+      "GitBlob": "35534f6834f8a0bd39f9f79960ce7f75cb280d27"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Sha256": "16ca896fa5c2d697b5a840571d87c12b81708cb685f973a6986776af8d51c4c7",
+      "GitBlob": "7b143fedad30a52f3fc1277dd14a574f3db53a7b"
+    },
+    {
+      "Path": "tests/fixtures/LinuxHost/host-guardian.c",
+      "Sha256": "d7963c86632153ec2bf1adf9a7c30dea29e1cea5c274e5fa0ea311a0518cc3db",
+      "GitBlob": "6c3ddbc42282d9b0ee2251764fda61250f97984c"
+    },
+    {
+      "Path": "tests/fixtures/LinuxLineage/lineage-fixture.c",
+      "Sha256": "49861138606b63e591e5768276b291f2f6b2fa2791252001543a4f2b937164ea",
+      "GitBlob": "65dc5adefda6742b1122f9ffbac97f8b44393609"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Sha256": "672821792966bfe08223bc0ccdc70bf4654a39115457bcaa5e03debd47311a79",
+      "GitBlob": "c888cb857991e7566fe9ed273a269578dac8ddc8"
+    },
+    {
+      "Path": "tests/selections/1553-worker-pool-linux.json",
+      "Sha256": "711770c4bc280a69126e02b48239b80abf0f9f1742e48109394bd68847d725e2",
+      "GitBlob": "cffb7c5fbf2f1aa7200aed133d2796954dfef8d7"
+    }
+  ],
+  "GuardianReports": [
+    {
+      "SourceCommit": "4cb9b3e9281e32523ca951f36504b82cad4e0abc",
+      "Path": "evidence/worker-pool-authority-loss-green/native/5db1b8c4072d458ca757dbc453307d97/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 2,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "4cb9b3e9281e32523ca951f36504b82cad4e0abc",
+      "Path": "evidence/worker-pool-authority-loss-green/native/b76dcef7e2754fdca92efcf0cf637d4b/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "Path": "evidence/worker-pool-cleanup-green/native/067ccd3c86b64a66b67ce0f8e3ca3085/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "Path": "evidence/worker-pool-cleanup-green/native/1d33e8e700aa4041bea064db56929698/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "Path": "evidence/worker-pool-cleanup-green/native/454d64a612c44816803232ded02b8dc1/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "Path": "evidence/worker-pool-cleanup-green/native/68c95f151ad54d9c8e00cad3e824073a/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "Path": "evidence/worker-pool-cleanup-green/native/692099b61f26491ba19bdf61547b2382/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "Path": "evidence/worker-pool-cleanup-green/native/aed18be6f3a448439846cd4b392950a0/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "Path": "evidence/worker-pool-cleanup-green/native/c20b99404d564a57b17b4a43b9fdfa99/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "Path": "evidence/worker-pool-cleanup-green/native/dda698501595433aaa06f0a3bc92b8e9/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "Path": "evidence/worker-pool-cleanup-green/native/fa709fcc1f0b4f8eb33bad46822740bf/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "24f63234bf3182982b96a13a4145db34cfdbd755",
+      "Path": "evidence/worker-pool-connected-publication-red/native/7161f90f3c3c4b2583d900b3db1c465e/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "299dfc95b2868bc3697c7e6961d24ecf6cd70755",
+      "Path": "evidence/worker-pool-content-green-authority-red/native/0b32157ba9fd41f88fbde79867bf7db4/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "299dfc95b2868bc3697c7e6961d24ecf6cd70755",
+      "Path": "evidence/worker-pool-content-green-authority-red/native/393b5bf2834e4a9c97d6d6f6536ab5bb/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "299dfc95b2868bc3697c7e6961d24ecf6cd70755",
+      "Path": "evidence/worker-pool-content-green-authority-red/native/98c028e51b5345abb350dcf81004d854/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 1,
+      "reaped": 2,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "299dfc95b2868bc3697c7e6961d24ecf6cd70755",
+      "Path": "evidence/worker-pool-content-green-authority-red/native/e466eb8e4bab45448fc0eb4aa77e58a1/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "14aa66678f74e4db5c27e65d5db4afd815b9f682",
+      "Path": "evidence/worker-pool-descendants-green/native/549d70a571c34c9ba789a344a14bc6a3/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "14aa66678f74e4db5c27e65d5db4afd815b9f682",
+      "Path": "evidence/worker-pool-descendants-green/native/8a57f906e4674e418413577021ee66f3/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "14aa66678f74e4db5c27e65d5db4afd815b9f682",
+      "Path": "evidence/worker-pool-descendants-green/native/91491d148cb74e95a41b01f4c5b94a44/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "14aa66678f74e4db5c27e65d5db4afd815b9f682",
+      "Path": "evidence/worker-pool-descendants-green/native/add07aacf50a4b2185801bfd22589ebf/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "14aa66678f74e4db5c27e65d5db4afd815b9f682",
+      "Path": "evidence/worker-pool-descendants-green/native/ec3c9aaf7c9e4addb97234bdad7c1bca/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/native/0d7f101e99aa4a0cb34e72e6d1aae602/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/native/155f875c47db447ab0ff0978995ebb35/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/native/1a5bec243d9b49a0bb3a8b9454062acf/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/native/4048ff437df8424baf04e20e33739c30/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/native/4b85646e5ec9461a94f330945c4d4967/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/native/5a63fecf5a57440cb8fdbf5369def82b/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/native/6886df9daa0745f989ca769bb85ef2ca/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/native/a180f6c6eb8c4fe898299b94900ab7f0/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/native/b4100bd8ccd84faf86b22b11da3431a2/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/native/c1884c1c39b446f08d0255b363bc674b/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 1,
+      "reaped": 2,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/native/d9e784fccbfe419292163a848588388f/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/native/e4c9719662e84b2faf3d5afb49cccb4b/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/native/e850f4d8bd464fba9325bde825ab5de4/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/native/f6f845e04411461493f807385192e800/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/native/ffb378742041458a89dcca369b89b685/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "d18bb97e14fffad109c81d885a1c64ea0dfa534c",
+      "Path": "evidence/worker-pool-happy-green/native/ee84de0260d54c1b99b4aac63a0e3a24/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "7edc9681d38caa2cdbbcd88301a21333ad836992",
+      "Path": "evidence/worker-pool-happy-red/native/19fa781af9e24f2baffee2cc6923fe84/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "6a956673813fb22df248435d59aa243132fa1f2d",
+      "Path": "evidence/worker-pool-publication-rejection-green/native/15765f8f5f76430bb5e715caca10690b/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "6a956673813fb22df248435d59aa243132fa1f2d",
+      "Path": "evidence/worker-pool-publication-rejection-green/native/6fe21a8743754ec1b1c2cc86227f9ffc/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "6a956673813fb22df248435d59aa243132fa1f2d",
+      "Path": "evidence/worker-pool-publication-rejection-green/native/d6fc86de70584f76bcb22678ff0bb5d3/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "6a956673813fb22df248435d59aa243132fa1f2d",
+      "Path": "evidence/worker-pool-publication-rejection-green/native/e6ad83574c914d9f87aebe6c9ddd006b/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/native/09f888bd8e34473ba6458ab76c10427a/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/native/1375598ac59a4cedb5799e501e699618/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/native/1a41dd292fbf4c8b905d959843fb0a3b/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/native/287f452878844e6dbd1861a6b6c40ce8/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/native/2abb7ac84ce0435c9f24fe16ee6ef680/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/native/43ae9e25013c4c7ebf4e56d582ebd0ab/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/native/77ceb5ad0ee34a2c9ff612cc2c94170d/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 1,
+      "reaped": 2,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/native/d39531240daf4378868921cada509c55/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "f115c7629667d4b0bd63bec2f84aa2fd88f1d17b",
+      "Path": "evidence/worker-pool-terminal-fixture-failure/native/37d9a15864e042ee85f6be66913d15dd/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "f115c7629667d4b0bd63bec2f84aa2fd88f1d17b",
+      "Path": "evidence/worker-pool-terminal-fixture-failure/native/3b772df6a4ad41b99dc78bf841d9d2fe/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "f115c7629667d4b0bd63bec2f84aa2fd88f1d17b",
+      "Path": "evidence/worker-pool-terminal-fixture-failure/native/45771e96f5a844629712060fa49d4685/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "f115c7629667d4b0bd63bec2f84aa2fd88f1d17b",
+      "Path": "evidence/worker-pool-terminal-fixture-failure/native/5e146900402742bcaa624432168ade73/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "f115c7629667d4b0bd63bec2f84aa2fd88f1d17b",
+      "Path": "evidence/worker-pool-terminal-fixture-failure/native/62f08041829b4a38b4434b3377720375/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "f115c7629667d4b0bd63bec2f84aa2fd88f1d17b",
+      "Path": "evidence/worker-pool-terminal-fixture-failure/native/8912dd60d4934bc892b37a1b6b8e1cd7/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "f115c7629667d4b0bd63bec2f84aa2fd88f1d17b",
+      "Path": "evidence/worker-pool-terminal-fixture-failure/native/a1fc4b6af61a41c2abdcdb766a3b004e/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    {
+      "SourceCommit": "f115c7629667d4b0bd63bec2f84aa2fd88f1d17b",
+      "Path": "evidence/worker-pool-terminal-fixture-failure/native/dbfcf27a157f45ecb3155eef3e25de2d/guardian.json",
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    }
+  ],
+  "SupersededCaseNames": {
+    "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NativeObservationUncertaintySurvivesLateCleanup(mode: \"late-output\")": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LateOriginalOutputObservationCannotClearUncertainty"
+  },
+  "ConsumerRedBuildAndExecutionRevision": {
+    "BuildSourceCommit": "0e4c0688e17ed9c5ecf243267a7c897820d72980",
+    "ExecutionRevision": "1d5b8ea51b72205be1f073b386c43570bf911bba",
+    "ChangedPaths": [
+      "specs/1553-portable-local-storage/plan.md",
+      "specs/1553-portable-local-storage/spec.md"
+    ],
+    "Explanation": "NoBuild run after published design-only amendment; all code/test/catalog inputs unchanged, verified by Git diff. Original summary and manifest retained unchanged."
+  },
+  "HistoricalExecutions": {
+    "Total": 164,
+    "Executed": 164,
+    "Passed": 141,
+    "Failed": 23
+  },
+  "LatestCaseOutcomes": [
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.WindowsAuto_PreservesJobCapabilityWithoutNativePreflight",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-policy-unit-004.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.WindowsAuto_PreservesJobCapabilityWithoutNativePreflight"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-docs-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-docs-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-docs-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence(repair: False)",
+      "Outcome": "Passed",
+      "SourceCommit": "eac876f6916a9b6d624625fbddb1ce07c944a0b3",
+      "Path": "evidence/worker-pool-consumer-green/consumer-green-run/worker-consumer-execution-evidence-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence(repair: False)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence(repair: True)",
+      "Outcome": "Passed",
+      "SourceCommit": "eac876f6916a9b6d624625fbddb1ce07c944a0b3",
+      "Path": "evidence/worker-pool-consumer-green/consumer-green-run/worker-consumer-execution-evidence-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence(repair: True)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer(repair: False)",
+      "Outcome": "Passed",
+      "SourceCommit": "eac876f6916a9b6d624625fbddb1ce07c944a0b3",
+      "Path": "evidence/worker-pool-consumer-green/consumer-green-run/worker-consumer-execution-evidence-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer(repair: False)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer(repair: True)",
+      "Outcome": "Passed",
+      "SourceCommit": "eac876f6916a9b6d624625fbddb1ce07c944a0b3",
+      "Path": "evidence/worker-pool-consumer-green/consumer-green-run/worker-consumer-execution-evidence-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer(repair: True)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup(cleaned: False)",
+      "Outcome": "Passed",
+      "SourceCommit": "24f63234bf3182982b96a13a4145db34cfdbd755",
+      "Path": "evidence/worker-pool-connected-publication-red/connected-green-run/worker-execution-scoped-evidence-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup(cleaned: False)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup(cleaned: True)",
+      "Outcome": "Passed",
+      "SourceCommit": "24f63234bf3182982b96a13a4145db34cfdbd755",
+      "Path": "evidence/worker-pool-connected-publication-red/connected-green-run/worker-execution-scoped-evidence-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup(cleaned: True)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MatchingScopedStop_IsAcceptedAsCleanupEvidence",
+      "Outcome": "Passed",
+      "SourceCommit": "24f63234bf3182982b96a13a4145db34cfdbd755",
+      "Path": "evidence/worker-pool-connected-publication-red/connected-green-run/worker-execution-scoped-evidence-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MatchingScopedStop_IsAcceptedAsCleanupEvidence"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"empty-run\")",
+      "Outcome": "Passed",
+      "SourceCommit": "24f63234bf3182982b96a13a4145db34cfdbd755",
+      "Path": "evidence/worker-pool-connected-publication-red/connected-green-run/worker-execution-scoped-evidence-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"empty-run\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"empty-scope\")",
+      "Outcome": "Passed",
+      "SourceCommit": "24f63234bf3182982b96a13a4145db34cfdbd755",
+      "Path": "evidence/worker-pool-connected-publication-red/connected-green-run/worker-execution-scoped-evidence-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"empty-scope\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"not-cleaned\")",
+      "Outcome": "Passed",
+      "SourceCommit": "24f63234bf3182982b96a13a4145db34cfdbd755",
+      "Path": "evidence/worker-pool-connected-publication-red/connected-green-run/worker-execution-scoped-evidence-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"not-cleaned\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"still-authoritative\")",
+      "Outcome": "Passed",
+      "SourceCommit": "24f63234bf3182982b96a13a4145db34cfdbd755",
+      "Path": "evidence/worker-pool-connected-publication-red/connected-green-run/worker-execution-scoped-evidence-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"still-authoritative\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"unknown-backend\")",
+      "Outcome": "Passed",
+      "SourceCommit": "24f63234bf3182982b96a13a4145db34cfdbd755",
+      "Path": "evidence/worker-pool-connected-publication-red/connected-green-run/worker-execution-scoped-evidence-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"unknown-backend\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"unknown-state\")",
+      "Outcome": "Passed",
+      "SourceCommit": "24f63234bf3182982b96a13a4145db34cfdbd755",
+      "Path": "evidence/worker-pool-connected-publication-red/connected-green-run/worker-execution-scoped-evidence-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"unknown-state\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"wrong-backend\")",
+      "Outcome": "Passed",
+      "SourceCommit": "24f63234bf3182982b96a13a4145db34cfdbd755",
+      "Path": "evidence/worker-pool-connected-publication-red/connected-green-run/worker-execution-scoped-evidence-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"wrong-backend\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"wrong-run\")",
+      "Outcome": "Passed",
+      "SourceCommit": "24f63234bf3182982b96a13a4145db34cfdbd755",
+      "Path": "evidence/worker-pool-connected-publication-red/connected-green-run/worker-execution-scoped-evidence-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"wrong-run\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"wrong-scope\")",
+      "Outcome": "Passed",
+      "SourceCommit": "24f63234bf3182982b96a13a4145db34cfdbd755",
+      "Path": "evidence/worker-pool-connected-publication-red/connected-green-run/worker-execution-scoped-evidence-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"wrong-scope\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.OutputObservationFailure_RevokesPreviouslyValidatedStop",
+      "Outcome": "Passed",
+      "SourceCommit": "24f63234bf3182982b96a13a4145db34cfdbd755",
+      "Path": "evidence/worker-pool-connected-publication-red/connected-green-run/worker-execution-scoped-evidence-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.OutputObservationFailure_RevokesPreviouslyValidatedStop"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.ActualPool_RejectsLinuxReleaseBeforeReservationAttachOrRelease",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-policy-unit-004.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.ActualPool_RejectsLinuxReleaseBeforeReservationAttachOrRelease"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 0, capability: 1)",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-policy-unit-004.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 0, capability: 1)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 0, capability: 2)",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-policy-unit-004.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 0, capability: 2)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 1, capability: 0)",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-policy-unit-004.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 1, capability: 0)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 2, capability: 1)",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-policy-unit-004.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 2, capability: 1)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 2, capability: 2)",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-policy-unit-004.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 2, capability: 2)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-host-unit-002.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation(mode: \"exec-failure\")",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-host-unit-002.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation(mode: \"exec-failure\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation(mode: \"owner-eof\")",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-host-unit-002.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation(mode: \"owner-eof\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation(mode: \"status-loss\")",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-host-unit-002.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation(mode: \"status-loss\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.CancellationAfterNativeBinding_RetainsOwnerThroughScopedRetirement",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-host-unit-002.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.CancellationAfterNativeBinding_RetainsOwnerThroughScopedRetirement"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.HelperLossAndOutputEof_CannotDisposeLiveHostIdentity",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-host-unit-002.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.HelperLossAndOutputEof_CannotDisposeLiveHostIdentity"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.HostOutput_IsDistinctAndPrivateDescriptorsDoNotSurviveExec",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-host-unit-002.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.HostOutput_IsDistinctAndPrivateDescriptorsDoNotSurviveExec"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.NeutralHostCapability_RejectsReleaseBeforeSendingAnyWorkerCommand",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-host-unit-002.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.NeutralHostCapability_RejectsReleaseBeforeSendingAnyWorkerCommand"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_AuthorityLossAfterCompletedRetainsOriginalExecution(mode: \"helper-loss\")",
+      "Outcome": "Passed",
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/boundaries-loss-run/worker-native-pool-owner-loss-unit-002.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_AuthorityLossAfterCompletedRetainsOriginalExecution(mode: \"helper-loss\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_AuthorityLossAfterCompletedRetainsOriginalExecution(mode: \"owner-eof\")",
+      "Outcome": "Passed",
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/boundaries-loss-run/worker-native-pool-owner-loss-unit-002.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_AuthorityLossAfterCompletedRetainsOriginalExecution(mode: \"owner-eof\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_AuthorityLossAfterCompletedRetainsOriginalExecution(mode: \"status-loss\")",
+      "Outcome": "Passed",
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/boundaries-loss-run/worker-native-pool-owner-loss-unit-002.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_AuthorityLossAfterCompletedRetainsOriginalExecution(mode: \"status-loss\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup(mode: \"cancel-publication\", canceled: True, starts: 1)",
+      "Outcome": "Passed",
+      "SourceCommit": "f115c7629667d4b0bd63bec2f84aa2fd88f1d17b",
+      "Path": "evidence/worker-pool-terminal-fixture-failure/terminal-run/worker-native-pool-terminal-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup(mode: \"cancel-publication\", canceled: True, starts: 1)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup(mode: \"cancel-release\", canceled: True, starts: 0)",
+      "Outcome": "Passed",
+      "SourceCommit": "f115c7629667d4b0bd63bec2f84aa2fd88f1d17b",
+      "Path": "evidence/worker-pool-terminal-fixture-failure/terminal-run/worker-native-pool-terminal-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup(mode: \"cancel-release\", canceled: True, starts: 0)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup(mode: \"timeout-publication\", canceled: False, starts: 1)",
+      "Outcome": "Passed",
+      "SourceCommit": "f115c7629667d4b0bd63bec2f84aa2fd88f1d17b",
+      "Path": "evidence/worker-pool-terminal-fixture-failure/terminal-run/worker-native-pool-terminal-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup(mode: \"timeout-publication\", canceled: False, starts: 1)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup(mode: \"timeout-release\", canceled: False, starts: 0)",
+      "Outcome": "Passed",
+      "SourceCommit": "f115c7629667d4b0bd63bec2f84aa2fd88f1d17b",
+      "Path": "evidence/worker-pool-terminal-fixture-failure/terminal-run/worker-native-pool-terminal-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup(mode: \"timeout-release\", canceled: False, starts: 0)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: \"cancel-completed\")",
+      "Outcome": "Passed",
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/boundaries-loss-run/worker-native-pool-completion-boundaries-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: \"cancel-completed\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: \"cancel-output\")",
+      "Outcome": "Passed",
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/boundaries-loss-run/worker-native-pool-completion-boundaries-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: \"cancel-output\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: \"cancel-stop\")",
+      "Outcome": "Passed",
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/boundaries-loss-run/worker-native-pool-completion-boundaries-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: \"cancel-stop\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: \"timeout-completed\")",
+      "Outcome": "Passed",
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/boundaries-loss-run/worker-native-pool-completion-boundaries-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: \"timeout-completed\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: \"timeout-output\")",
+      "Outcome": "Passed",
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/boundaries-loss-run/worker-native-pool-completion-boundaries-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: \"timeout-output\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: \"timeout-stop\")",
+      "Outcome": "Passed",
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/boundaries-loss-run/worker-native-pool-completion-boundaries-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: \"timeout-stop\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_DetachedTermResistantAndStopSpawnedDescendantsAreRetired(mode: \"doublefork\", eventKind: \"detached\")",
+      "Outcome": "Passed",
+      "SourceCommit": "14aa66678f74e4db5c27e65d5db4afd815b9f682",
+      "Path": "evidence/worker-pool-descendants-green/descendants-detached-run/worker-native-pool-detached-descendants-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_DetachedTermResistantAndStopSpawnedDescendantsAreRetired(mode: \"doublefork\", eventKind: \"detached\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_DetachedTermResistantAndStopSpawnedDescendantsAreRetired(mode: \"ignore\", eventKind: \"leaf\")",
+      "Outcome": "Passed",
+      "SourceCommit": "14aa66678f74e4db5c27e65d5db4afd815b9f682",
+      "Path": "evidence/worker-pool-descendants-green/descendants-detached-run/worker-native-pool-detached-descendants-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_DetachedTermResistantAndStopSpawnedDescendantsAreRetired(mode: \"ignore\", eventKind: \"leaf\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_DetachedTermResistantAndStopSpawnedDescendantsAreRetired(mode: \"spawn\", eventKind: \"spawned\")",
+      "Outcome": "Passed",
+      "SourceCommit": "14aa66678f74e4db5c27e65d5db4afd815b9f682",
+      "Path": "evidence/worker-pool-descendants-green/descendants-detached-run/worker-native-pool-detached-descendants-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_DetachedTermResistantAndStopSpawnedDescendantsAreRetired(mode: \"spawn\", eventKind: \"spawned\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_EarlyDescendantRootExitDoesNotReleaseItsRemainingChild",
+      "Outcome": "Passed",
+      "SourceCommit": "14aa66678f74e4db5c27e65d5db4afd815b9f682",
+      "Path": "evidence/worker-pool-descendants-green/descendants-ordinary-run/worker-native-pool-descendants-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_EarlyDescendantRootExitDoesNotReleaseItsRemainingChild"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ImportsExactDetachedContentWithoutApplyingCanonicalChange",
+      "Outcome": "Passed",
+      "SourceCommit": "299dfc95b2868bc3697c7e6961d24ecf6cd70755",
+      "Path": "evidence/worker-pool-content-green-authority-red/content-authority-run/worker-native-pool-content-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ImportsExactDetachedContentWithoutApplyingCanonicalChange"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LateOriginalOutputObservationCannotClearUncertainty",
+      "Outcome": "Passed",
+      "SourceCommit": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "Path": "evidence/worker-pool-cleanup-green/cleanup-run/worker-native-pool-late-output-unit-002.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LateOriginalOutputObservationCannotClearUncertainty"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LostOriginalHelperCannotReleaseWorker",
+      "Outcome": "Passed",
+      "SourceCommit": "4cb9b3e9281e32523ca951f36504b82cad4e0abc",
+      "Path": "evidence/worker-pool-authority-loss-green/authority-green-run/worker-native-pool-release-authority-unit-002.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LostOriginalHelperCannotReleaseWorker"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NativeObservationUncertaintySurvivesLateCleanup(mode: \"late-terminal\")",
+      "Outcome": "Passed",
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/uncertainty-run/worker-native-pool-uncertainty-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NativeObservationUncertaintySurvivesLateCleanup(mode: \"late-terminal\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NativeObservationUncertaintySurvivesLateCleanup(mode: \"malformed\")",
+      "Outcome": "Passed",
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/uncertainty-run/worker-native-pool-uncertainty-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NativeObservationUncertaintySurvivesLateCleanup(mode: \"malformed\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NativeObservationUncertaintySurvivesLateCleanup(mode: \"uncertain\")",
+      "Outcome": "Passed",
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/uncertainty-run/worker-native-pool-uncertainty-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NativeObservationUncertaintySurvivesLateCleanup(mode: \"uncertain\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NativeObservationUncertaintySurvivesLateCleanup(mode: \"wrong-run\")",
+      "Outcome": "Passed",
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/uncertainty-run/worker-native-pool-uncertainty-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NativeObservationUncertaintySurvivesLateCleanup(mode: \"wrong-run\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NativeObservationUncertaintySurvivesLateCleanup(mode: \"wrong-scope\")",
+      "Outcome": "Passed",
+      "SourceCommit": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+      "Path": "evidence/worker-pool-faults-green/uncertainty-run/worker-native-pool-uncertainty-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NativeObservationUncertaintySurvivesLateCleanup(mode: \"wrong-scope\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NonzeroOrMissingProposalCannotBecomeSuccessfulStoppedResult(mode: \"missing-proposal\")",
+      "Outcome": "Passed",
+      "SourceCommit": "6a956673813fb22df248435d59aa243132fa1f2d",
+      "Path": "evidence/worker-pool-publication-rejection-green/rejection-run/worker-native-pool-publication-rejection-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NonzeroOrMissingProposalCannotBecomeSuccessfulStoppedResult(mode: \"missing-proposal\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NonzeroOrMissingProposalCannotBecomeSuccessfulStoppedResult(mode: \"nonzero\")",
+      "Outcome": "Passed",
+      "SourceCommit": "6a956673813fb22df248435d59aa243132fa1f2d",
+      "Path": "evidence/worker-pool-publication-rejection-green/rejection-run/worker-native-pool-publication-rejection-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NonzeroOrMissingProposalCannotBecomeSuccessfulStoppedResult(mode: \"nonzero\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_OrdinaryDescendantsHoldingOutputsAreRetiredBeforePublication",
+      "Outcome": "Passed",
+      "SourceCommit": "14aa66678f74e4db5c27e65d5db4afd815b9f682",
+      "Path": "evidence/worker-pool-descendants-green/descendants-ordinary-run/worker-native-pool-descendants-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_OrdinaryDescendantsHoldingOutputsAreRetiredBeforePublication"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_RejectsMissingOrChangedDetachedContent(mode: \"bad-hash\", expectedError: \"do not match afterSha256\")",
+      "Outcome": "Passed",
+      "SourceCommit": "299dfc95b2868bc3697c7e6961d24ecf6cd70755",
+      "Path": "evidence/worker-pool-content-green-authority-red/content-authority-run/worker-native-pool-content-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_RejectsMissingOrChangedDetachedContent(mode: \"bad-hash\", expectedError: \"do not match afterSha256\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_RejectsMissingOrChangedDetachedContent(mode: \"missing\", expectedError: \"is missing from detached execution output\")",
+      "Outcome": "Passed",
+      "SourceCommit": "299dfc95b2868bc3697c7e6961d24ecf6cd70755",
+      "Path": "evidence/worker-pool-content-green-authority-red/content-authority-run/worker-native-pool-content-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_RejectsMissingOrChangedDetachedContent(mode: \"missing\", expectedError: \"is missing from detached execution output\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_StaleGenerationOrTaskRejectsAfterRealWorkerStop(mode: \"generation\", replaced: True)",
+      "Outcome": "Passed",
+      "SourceCommit": "6a956673813fb22df248435d59aa243132fa1f2d",
+      "Path": "evidence/worker-pool-publication-rejection-green/rejection-run/worker-native-pool-publication-rejection-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_StaleGenerationOrTaskRejectsAfterRealWorkerStop(mode: \"generation\", replaced: True)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_StaleGenerationOrTaskRejectsAfterRealWorkerStop(mode: \"task-bytes\", replaced: False)",
+      "Outcome": "Passed",
+      "SourceCommit": "6a956673813fb22df248435d59aa243132fa1f2d",
+      "Path": "evidence/worker-pool-publication-rejection-green/rejection-run/worker-native-pool-publication-rejection-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_StaleGenerationOrTaskRejectsAfterRealWorkerStop(mode: \"task-bytes\", replaced: False)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_SyntheticAnalysisPublishesAfterOwnedRetirement",
+      "Outcome": "Passed",
+      "SourceCommit": "4cb9b3e9281e32523ca951f36504b82cad4e0abc",
+      "Path": "evidence/worker-pool-authority-loss-green/authority-green-run/worker-native-pool-happy-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_SyntheticAnalysisPublishesAfterOwnedRetirement"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: \"audit-failure\")",
+      "Outcome": "Passed",
+      "SourceCommit": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "Path": "evidence/worker-pool-cleanup-green/cleanup-run/worker-native-pool-cleanup-retry-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: \"audit-failure\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: \"audit-unavailable\")",
+      "Outcome": "Passed",
+      "SourceCommit": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "Path": "evidence/worker-pool-cleanup-green/cleanup-run/worker-native-pool-cleanup-retry-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: \"audit-unavailable\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: \"dispose\")",
+      "Outcome": "Passed",
+      "SourceCommit": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "Path": "evidence/worker-pool-cleanup-green/cleanup-run/worker-native-pool-cleanup-retry-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: \"dispose\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: \"receipt-ack\")",
+      "Outcome": "Passed",
+      "SourceCommit": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "Path": "evidence/worker-pool-cleanup-green/cleanup-run/worker-native-pool-cleanup-retry-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: \"receipt-ack\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: \"receipt-conflict\")",
+      "Outcome": "Passed",
+      "SourceCommit": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "Path": "evidence/worker-pool-cleanup-green/cleanup-run/worker-native-pool-cleanup-retry-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: \"receipt-conflict\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: \"receipt-replaced\")",
+      "Outcome": "Passed",
+      "SourceCommit": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "Path": "evidence/worker-pool-cleanup-green/cleanup-run/worker-native-pool-cleanup-retry-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: \"receipt-replaced\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: \"receipt-temp\")",
+      "Outcome": "Passed",
+      "SourceCommit": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "Path": "evidence/worker-pool-cleanup-green/cleanup-run/worker-native-pool-cleanup-retry-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: \"receipt-temp\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: \"workspace\")",
+      "Outcome": "Passed",
+      "SourceCommit": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+      "Path": "evidence/worker-pool-cleanup-green/cleanup-run/worker-native-pool-cleanup-retry-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: \"workspace\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.DefaultWindowsCompletion_PreservesDiagnosticDrainBeforeStop",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-policy-unit-004.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.DefaultWindowsCompletion_PreservesDiagnosticDrainBeforeStop"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.NativeCompletion_DoesNotWaitForDiagnosticDrainBeforeScopedStop",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-policy-unit-004.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.NativeCompletion_DoesNotWaitForDiagnosticDrainBeforeScopedStop"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.ObservationException_RetriesOnlyRetainedAssignedWindowsJob(windows: False, retainedJob: False)",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-policy-unit-004.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.ObservationException_RetriesOnlyRetainedAssignedWindowsJob(windows: False, retainedJob: False)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.ObservationException_RetriesOnlyRetainedAssignedWindowsJob(windows: True, retainedJob: False)",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-policy-unit-004.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.ObservationException_RetriesOnlyRetainedAssignedWindowsJob(windows: True, retainedJob: False)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.ObservationException_RetriesOnlyRetainedAssignedWindowsJob(windows: True, retainedJob: True)",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-policy-unit-004.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.ObservationException_RetriesOnlyRetainedAssignedWindowsJob(windows: True, retainedJob: True)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.WindowsOwner_DoesNotTreatArbitraryProcessTreeAsRetainedJob",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-policy-unit-004.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.WindowsOwner_DoesNotTreatArbitraryProcessTreeAsRetainedJob"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.CompletionArbiter_AlreadySignaledTimeoutOverridesBufferedCompletion",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-ipc-integration-003.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.CompletionArbiter_AlreadySignaledTimeoutOverridesBufferedCompletion"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.CompletionArbiter_CancellationDuringOutputDrainOverridesCompletion",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-ipc-integration-003.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.CompletionArbiter_CancellationDuringOutputDrainOverridesCompletion"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-ipc-integration-003.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerProcessTreeTests.QuarantineReaper_OverlappingPassesCleanAndReleaseCapacityExactlyOnce",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-reaper-integration-005.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerProcessTreeTests.QuarantineReaper_OverlappingPassesCleanAndReleaseCapacityExactlyOnce"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerProcessTreeTests.QuarantineReaper_UnconfirmedOwnerRetainsBoundedCapacityUntilLaterDeath",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-reaper-integration-005.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerProcessTreeTests.QuarantineReaper_UnconfirmedOwnerRetainsBoundedCapacityUntilLaterDeath"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.CanonicalAppendSuccessNeedsNoFallbackAndReleasesExactlyOnce",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-reaper-integration-005.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.CanonicalAppendSuccessNeedsNoFallbackAndReleasesExactlyOnce"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PublishedTamperRemainsConflictAndCannotReleaseRetainedSlot",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-reaper-integration-005.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PublishedTamperRemainsConflictAndCannotReleaseRetainedSlot"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: False, afterPublication: False, canonicalUnavailable: False)",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-reaper-integration-005.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: False, afterPublication: False, canonicalUnavailable: False)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: False, afterPublication: True, canonicalUnavailable: True)",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-reaper-integration-005.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: False, afterPublication: True, canonicalUnavailable: True)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: True, afterPublication: False, canonicalUnavailable: True)",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-reaper-integration-005.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: True, afterPublication: False, canonicalUnavailable: True)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: True, afterPublication: True, canonicalUnavailable: False)",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-reaper-integration-005.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: True, afterPublication: True, canonicalUnavailable: False)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnconfirmedOwnerCannotCleanWorkspaceRecordReceiptOrReleaseSlot",
+      "Outcome": "Passed",
+      "SourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+      "Path": "evidence/worker-pool-regression-green/regression-green-run/worker-pool-regression-reaper-integration-005.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnconfirmedOwnerCannotCleanWorkspaceRecordReceiptOrReleaseSlot"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ActualStore_PublishesCompleteBundleAndDerivedInboxAudit",
+      "Outcome": "Passed",
+      "SourceCommit": "1ade6c3b97622fef29bd4f89579a9e4bc9e016b8",
+      "Path": "evidence/worker-pool-bundle-cleanup-green/bundle-cleanup-green-run/worker-synthetic-bundle-cleanup-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ActualStore_PublishesCompleteBundleAndDerivedInboxAudit"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.CancellationWhileWaitingForCanonicalLease_PublishesNothing",
+      "Outcome": "Passed",
+      "SourceCommit": "1ade6c3b97622fef29bd4f89579a9e4bc9e016b8",
+      "Path": "evidence/worker-pool-bundle-cleanup-green/bundle-cleanup-green-run/worker-synthetic-bundle-cleanup-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.CancellationWhileWaitingForCanonicalLease_PublishesNothing"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DefaultStore_RetainsExistingLinuxDescriptorBackendRefusal",
+      "Outcome": "Passed",
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-run/worker-synthetic-bundle-publication-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DefaultStore_RetainsExistingLinuxDescriptorBackendRefusal"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationArrivingAtFinalStoreBoundary_IsNeverReplaced(nonempty: False)",
+      "Outcome": "Passed",
+      "SourceCommit": "1ade6c3b97622fef29bd4f89579a9e4bc9e016b8",
+      "Path": "evidence/worker-pool-bundle-cleanup-green/bundle-cleanup-green-run/worker-synthetic-bundle-cleanup-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationArrivingAtFinalStoreBoundary_IsNeverReplaced(nonempty: False)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationArrivingAtFinalStoreBoundary_IsNeverReplaced(nonempty: True)",
+      "Outcome": "Passed",
+      "SourceCommit": "1ade6c3b97622fef29bd4f89579a9e4bc9e016b8",
+      "Path": "evidence/worker-pool-bundle-cleanup-green/bundle-cleanup-green-run/worker-synthetic-bundle-cleanup-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationArrivingAtFinalStoreBoundary_IsNeverReplaced(nonempty: True)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationOutsideSingleSafeBundle_IsRejected(destination: \"game_state/escape\")",
+      "Outcome": "Passed",
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-run/worker-synthetic-bundle-publication-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationOutsideSingleSafeBundle_IsRejected(destination: \"game_state/escape\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationOutsideSingleSafeBundle_IsRejected(destination: \"worker_proposals/Upper\")",
+      "Outcome": "Passed",
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-run/worker-synthetic-bundle-publication-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationOutsideSingleSafeBundle_IsRejected(destination: \"worker_proposals/Upper\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationOutsideSingleSafeBundle_IsRejected(destination: \"worker_proposals/inbox\")",
+      "Outcome": "Passed",
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-run/worker-synthetic-bundle-publication-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationOutsideSingleSafeBundle_IsRejected(destination: \"worker_proposals/inbox\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationOutsideSingleSafeBundle_IsRejected(destination: \"worker_proposals/nested/escape\")",
+      "Outcome": "Passed",
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-run/worker-synthetic-bundle-publication-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationOutsideSingleSafeBundle_IsRejected(destination: \"worker_proposals/nested/escape\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ForeignManagerLease_DoesNotAuthorizeThisFixture",
+      "Outcome": "Passed",
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-run/worker-synthetic-bundle-publication-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ForeignManagerLease_DoesNotAuthorizeThisFixture"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.InvalidNestedTreeEntryAtFinalBoundary_IsRejectedWithoutFollowingIt(kind: \"directory-link\")",
+      "Outcome": "Passed",
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-run/worker-synthetic-bundle-publication-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.InvalidNestedTreeEntryAtFinalBoundary_IsRejectedWithoutFollowingIt(kind: \"directory-link\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.InvalidNestedTreeEntryAtFinalBoundary_IsRejectedWithoutFollowingIt(kind: \"fifo\")",
+      "Outcome": "Passed",
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-run/worker-synthetic-bundle-publication-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.InvalidNestedTreeEntryAtFinalBoundary_IsRejectedWithoutFollowingIt(kind: \"fifo\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.InvalidNestedTreeEntryAtFinalBoundary_IsRejectedWithoutFollowingIt(kind: \"file-link\")",
+      "Outcome": "Passed",
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-run/worker-synthetic-bundle-publication-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.InvalidNestedTreeEntryAtFinalBoundary_IsRejectedWithoutFollowingIt(kind: \"file-link\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.InvalidatedLeaseAfterAwait_CannotReachNativeMove(fault: \"disposed\")",
+      "Outcome": "Passed",
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-run/worker-synthetic-bundle-publication-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.InvalidatedLeaseAfterAwait_CannotReachNativeMove(fault: \"disposed\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.InvalidatedLeaseAfterAwait_CannotReachNativeMove(fault: \"legacy\")",
+      "Outcome": "Passed",
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-run/worker-synthetic-bundle-publication-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.InvalidatedLeaseAfterAwait_CannotReachNativeMove(fault: \"legacy\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.InvalidatedLeaseAfterAwait_CannotReachNativeMove(fault: \"pending\")",
+      "Outcome": "Passed",
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-run/worker-synthetic-bundle-publication-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.InvalidatedLeaseAfterAwait_CannotReachNativeMove(fault: \"pending\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.NativeRename_ExistingDirectoryActuallyFailsWithoutOverwrite(nonempty: False)",
+      "Outcome": "Passed",
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-run/worker-synthetic-bundle-publication-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.NativeRename_ExistingDirectoryActuallyFailsWithoutOverwrite(nonempty: False)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.NativeRename_ExistingDirectoryActuallyFailsWithoutOverwrite(nonempty: True)",
+      "Outcome": "Passed",
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-run/worker-synthetic-bundle-publication-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.NativeRename_ExistingDirectoryActuallyFailsWithoutOverwrite(nonempty: True)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.NativeRename_MissingSourceReportsErrnoWithoutCreatingDestination",
+      "Outcome": "Passed",
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-run/worker-synthetic-bundle-publication-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.NativeRename_MissingSourceReportsErrnoWithoutCreatingDestination"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SourceMustBeMatchingBundleInsidePrivateStaging(fault: \"area\")",
+      "Outcome": "Passed",
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-run/worker-synthetic-bundle-publication-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SourceMustBeMatchingBundleInsidePrivateStaging(fault: \"area\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SourceMustBeMatchingBundleInsidePrivateStaging(fault: \"different-bundle\")",
+      "Outcome": "Passed",
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-run/worker-synthetic-bundle-publication-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SourceMustBeMatchingBundleInsidePrivateStaging(fault: \"different-bundle\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SourceMustBeMatchingBundleInsidePrivateStaging(fault: \"outside\")",
+      "Outcome": "Passed",
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-run/worker-synthetic-bundle-publication-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SourceMustBeMatchingBundleInsidePrivateStaging(fault: \"outside\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SourceMustBeMatchingBundleInsidePrivateStaging(fault: \"traversal\")",
+      "Outcome": "Passed",
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-run/worker-synthetic-bundle-publication-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SourceMustBeMatchingBundleInsidePrivateStaging(fault: \"traversal\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.StaleTaskOrGeneration_RetainsExistingEmptyStructure(generation: False)",
+      "Outcome": "Passed",
+      "SourceCommit": "1ade6c3b97622fef29bd4f89579a9e4bc9e016b8",
+      "Path": "evidence/worker-pool-bundle-cleanup-green/bundle-cleanup-green-run/worker-synthetic-bundle-cleanup-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.StaleTaskOrGeneration_RetainsExistingEmptyStructure(generation: False)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.StaleTaskOrGeneration_RetainsExistingEmptyStructure(generation: True)",
+      "Outcome": "Passed",
+      "SourceCommit": "1ade6c3b97622fef29bd4f89579a9e4bc9e016b8",
+      "Path": "evidence/worker-pool-bundle-cleanup-green/bundle-cleanup-green-run/worker-synthetic-bundle-cleanup-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.StaleTaskOrGeneration_RetainsExistingEmptyStructure(generation: True)"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_ActualStoreInvalidTreeRetainsExactStagingAndOutsideData",
+      "Outcome": "Passed",
+      "SourceCommit": "1ade6c3b97622fef29bd4f89579a9e4bc9e016b8",
+      "Path": "evidence/worker-pool-bundle-cleanup-green/bundle-cleanup-green-run/worker-synthetic-bundle-cleanup-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_ActualStoreInvalidTreeRetainsExactStagingAndOutsideData"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_LinkedTreeRetainsWholeStagingAndOutsideBytes",
+      "Outcome": "Passed",
+      "SourceCommit": "1ade6c3b97622fef29bd4f89579a9e4bc9e016b8",
+      "Path": "evidence/worker-pool-bundle-cleanup-green/bundle-cleanup-green-run/worker-synthetic-bundle-cleanup-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_LinkedTreeRetainsWholeStagingAndOutsideBytes"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_OwnPrivateRootIsRemovedAndMissingRootRetryIsIdempotent",
+      "Outcome": "Passed",
+      "SourceCommit": "1ade6c3b97622fef29bd4f89579a9e4bc9e016b8",
+      "Path": "evidence/worker-pool-bundle-cleanup-green/bundle-cleanup-green-run/worker-synthetic-bundle-cleanup-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_OwnPrivateRootIsRemovedAndMissingRootRetryIsIdempotent"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes(fault: \"another-area\")",
+      "Outcome": "Passed",
+      "SourceCommit": "1ade6c3b97622fef29bd4f89579a9e4bc9e016b8",
+      "Path": "evidence/worker-pool-bundle-cleanup-green/bundle-cleanup-green-run/worker-synthetic-bundle-cleanup-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes(fault: \"another-area\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes(fault: \"area\")",
+      "Outcome": "Passed",
+      "SourceCommit": "1ade6c3b97622fef29bd4f89579a9e4bc9e016b8",
+      "Path": "evidence/worker-pool-bundle-cleanup-green/bundle-cleanup-green-run/worker-synthetic-bundle-cleanup-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes(fault: \"area\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes(fault: \"nested\")",
+      "Outcome": "Passed",
+      "SourceCommit": "1ade6c3b97622fef29bd4f89579a9e4bc9e016b8",
+      "Path": "evidence/worker-pool-bundle-cleanup-green/bundle-cleanup-green-run/worker-synthetic-bundle-cleanup-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes(fault: \"nested\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes(fault: \"wrong-fixture\")",
+      "Outcome": "Passed",
+      "SourceCommit": "1ade6c3b97622fef29bd4f89579a9e4bc9e016b8",
+      "Path": "evidence/worker-pool-bundle-cleanup-green/bundle-cleanup-green-run/worker-synthetic-bundle-cleanup-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes(fault: \"wrong-fixture\")"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.WrongFixtureRoot_CannotPublishIntoThisManager",
+      "Outcome": "Passed",
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-run/worker-synthetic-bundle-publication-unit-001.trx",
+      "OriginalName": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.WrongFixtureRoot_CannotPublishIntoThisManager"
+    }
+  ],
+  "DistinctLatestPassedCases": 127,
+  "ArtifactCount": 590,
+  "ParsedTrxCount": 29,
+  "HistoricalFailures": [
+    {
+      "SourceCommit": "ac7cbdb67ca5b1df9784189b00f21b0b92765c6c",
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.OutputObservationFailure_RevokesPreviouslyValidatedStop",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-authority-red/authority-red-run/worker-execution-scoped-evidence-unit-001.trx"
+    },
+    {
+      "SourceCommit": "ac7cbdb67ca5b1df9784189b00f21b0b92765c6c",
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"wrong-scope\")",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-authority-red/authority-red-run/worker-execution-scoped-evidence-unit-001.trx"
+    },
+    {
+      "SourceCommit": "ac7cbdb67ca5b1df9784189b00f21b0b92765c6c",
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup(cleaned: True)",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-authority-red/authority-red-run/worker-execution-scoped-evidence-unit-001.trx"
+    },
+    {
+      "SourceCommit": "ac7cbdb67ca5b1df9784189b00f21b0b92765c6c",
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"unknown-backend\")",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-authority-red/authority-red-run/worker-execution-scoped-evidence-unit-001.trx"
+    },
+    {
+      "SourceCommit": "ac7cbdb67ca5b1df9784189b00f21b0b92765c6c",
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"unknown-state\")",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-authority-red/authority-red-run/worker-execution-scoped-evidence-unit-001.trx"
+    },
+    {
+      "SourceCommit": "ac7cbdb67ca5b1df9784189b00f21b0b92765c6c",
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"empty-run\")",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-authority-red/authority-red-run/worker-execution-scoped-evidence-unit-001.trx"
+    },
+    {
+      "SourceCommit": "ac7cbdb67ca5b1df9784189b00f21b0b92765c6c",
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"not-cleaned\")",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-authority-red/authority-red-run/worker-execution-scoped-evidence-unit-001.trx"
+    },
+    {
+      "SourceCommit": "ac7cbdb67ca5b1df9784189b00f21b0b92765c6c",
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup(cleaned: False)",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-authority-red/authority-red-run/worker-execution-scoped-evidence-unit-001.trx"
+    },
+    {
+      "SourceCommit": "ac7cbdb67ca5b1df9784189b00f21b0b92765c6c",
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"still-authoritative\")",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-authority-red/authority-red-run/worker-execution-scoped-evidence-unit-001.trx"
+    },
+    {
+      "SourceCommit": "ac7cbdb67ca5b1df9784189b00f21b0b92765c6c",
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"wrong-run\")",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-authority-red/authority-red-run/worker-execution-scoped-evidence-unit-001.trx"
+    },
+    {
+      "SourceCommit": "ac7cbdb67ca5b1df9784189b00f21b0b92765c6c",
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"empty-scope\")",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-authority-red/authority-red-run/worker-execution-scoped-evidence-unit-001.trx"
+    },
+    {
+      "SourceCommit": "ac7cbdb67ca5b1df9784189b00f21b0b92765c6c",
+      "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: \"wrong-backend\")",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-authority-red/authority-red-run/worker-execution-scoped-evidence-unit-001.trx"
+    },
+    {
+      "SourceCommit": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ActualStore_PublishesCompleteBundleAndDerivedInboxAudit",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-bundle-cleanup-red/bundle-green-run/worker-synthetic-bundle-publication-unit-001.trx"
+    },
+    {
+      "SourceCommit": "611d9ee078d9a0efb84dc8446a8d64b9c271c0d8",
+      "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ActualStore_PublishesCompleteBundleAndDerivedInboxAudit",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-bundle-red/bundle-red-run/worker-synthetic-bundle-publication-unit-001.trx"
+    },
+    {
+      "SourceCommit": "24f63234bf3182982b96a13a4145db34cfdbd755",
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_SyntheticAnalysisPublishesAfterOwnedRetirement",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-connected-publication-red/connected-green-run/worker-native-pool-happy-unit-002.trx"
+    },
+    {
+      "SourceCommit": "0e4c0688e17ed9c5ecf243267a7c897820d72980",
+      "Name": "BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer(repair: False)",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-consumer-red/consumer-red-run/worker-consumer-execution-evidence-unit-001.trx"
+    },
+    {
+      "SourceCommit": "0e4c0688e17ed9c5ecf243267a7c897820d72980",
+      "Name": "BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer(repair: True)",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-consumer-red/consumer-red-run/worker-consumer-execution-evidence-unit-001.trx"
+    },
+    {
+      "SourceCommit": "0e4c0688e17ed9c5ecf243267a7c897820d72980",
+      "Name": "BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence(repair: True)",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-consumer-red/consumer-red-run/worker-consumer-execution-evidence-unit-001.trx"
+    },
+    {
+      "SourceCommit": "0e4c0688e17ed9c5ecf243267a7c897820d72980",
+      "Name": "BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence(repair: False)",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-consumer-red/consumer-red-run/worker-consumer-execution-evidence-unit-001.trx"
+    },
+    {
+      "SourceCommit": "299dfc95b2868bc3697c7e6961d24ecf6cd70755",
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LostOriginalHelperCannotReleaseWorker",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-content-green-authority-red/content-authority-run/worker-native-pool-release-authority-unit-002.trx"
+    },
+    {
+      "SourceCommit": "7edc9681d38caa2cdbbcd88301a21333ad836992",
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_SyntheticAnalysisPublishesAfterOwnedRetirement",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-happy-red/happy-red-run/worker-native-pool-happy-unit-001.trx"
+    },
+    {
+      "SourceCommit": "f3bedb46e60f3913409a8f60faf4fe4008d0b808",
+      "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-regression-guard-failure/regression-run/worker-pool-regression-docs-unit-001.trx"
+    },
+    {
+      "SourceCommit": "f115c7629667d4b0bd63bec2f84aa2fd88f1d17b",
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_StaleGenerationOrTaskRejectsAfterRealWorkerStop(mode: \"generation\", replaced: True)",
+      "Outcome": "Failed",
+      "Path": "evidence/worker-pool-terminal-fixture-failure/terminal-run/worker-native-pool-terminal-unit-001.trx"
+    }
+  ],
+  "ZeroExecutionPreparationFailures": [
+    "evidence/worker-pool-consumer-preparation-failure/consumer-red-plan/summary.json"
+  ],
+  "UnchangedBoundaries": [
+    {
+      "Path": "native/linux/boe-lineage-supervisor.c",
+      "Sha256": "b8b6ed123ca2b437713e51e022f9fe943d0d762967e6d7388f040e2ae68f8b9a",
+      "GitBlob": "beeb7e12a25ffb7f3874db41b17b8d6f46836702"
+    },
+    {
+      "Path": "scripts/build-linux-supervisor.ps1",
+      "Sha256": "14a665eb1734e3d4cca3607efc69c1b37ef3a355dd94d93487989d2fd6882485",
+      "GitBlob": "f0bde0ae108612a995ecab179ad655cb3d3747a9"
+    },
+    {
+      "Path": "tests/fixtures/LinuxHost/host-guardian.c",
+      "Sha256": "d7963c86632153ec2bf1adf9a7c30dea29e1cea5c274e5fa0ea311a0518cc3db",
+      "GitBlob": "6c3ddbc42282d9b0ee2251764fda61250f97984c"
+    },
+    {
+      "Path": "tests/fixtures/LinuxLineage/lineage-fixture.c",
+      "Sha256": "49861138606b63e591e5768276b291f2f6b2fa2791252001543a4f2b937164ea",
+      "GitBlob": "65dc5adefda6742b1122f9ffbac97f8b44393609"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/Program.cs",
+      "Sha256": "112191361e8b753a7b7a3fe53b8b5418ecb4cd4936b8165c1ae1aab35423711d",
+      "GitBlob": "4287ea735798fc5a207286af443ac8e60039a0f1"
+    },
+    {
+      "Path": ".github/workflows/dotnet-ci.yml",
+      "Sha256": "fb75bd4800e15d74cf44c305be465f51eaefbddff9dbb55fbe8911a084e6d10b",
+      "GitBlob": "dde699d2a4edc786ea8e14fd98ffa76d22a1e301"
+    },
+    {
+      "Path": "scripts/test-csharp.ps1",
+      "Sha256": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1",
+      "GitBlob": "0576b2e34e5c0c5d164c173a9961a67c965c5509"
+    }
+  ],
+  "CurrentBuildArtifacts": [
+    {
+      "Path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "Bytes": 24270848,
+      "Sha256": "0d9ea81b5cb09fd14f6a5ab006440fcbdb19d4a10aead383f1d19a29fd6361cc"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "Bytes": 480256,
+      "Sha256": "64699c10a76c3460413cc227d9641d1db66a6cd1cd4453bb670d1088762a626a"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "Bytes": 8228352,
+      "Sha256": "0516e3463d92971489345d913035d9917526289431d855197fc95d969575251e"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "Bytes": 24270848,
+      "Sha256": "0d9ea81b5cb09fd14f6a5ab006440fcbdb19d4a10aead383f1d19a29fd6361cc"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "Bytes": 24993280,
+      "Sha256": "16c82951bcc56d00cfe53ac8522351398ac179c2727fe1dd0134d41d095c2bd0"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "Bytes": 480256,
+      "Sha256": "64699c10a76c3460413cc227d9641d1db66a6cd1cd4453bb670d1088762a626a"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "Bytes": 24270848,
+      "Sha256": "0d9ea81b5cb09fd14f6a5ab006440fcbdb19d4a10aead383f1d19a29fd6361cc"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "Bytes": 480256,
+      "Sha256": "64699c10a76c3460413cc227d9641d1db66a6cd1cd4453bb670d1088762a626a"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "Bytes": 24270848,
+      "Sha256": "0d9ea81b5cb09fd14f6a5ab006440fcbdb19d4a10aead383f1d19a29fd6361cc"
+    }
+  ],
+  "CurrentBuildArtifactLimit": "Hashes of fresh final regression build only; historical runs are bound by their clean Git revision, source manifests, tree and build logs, not by retroactively inferred DLL hashes.",
+  "Limitations": [
+    "Explicit internal fixture-root-bound synthetic Release only; ordinary/public Linux WorkerRelease remains closed",
+    "Linux x64/glibc ordinary same-PID-namespace descendants; no external services/outside-lineage guarantee",
+    "systemd user backend remains NotImplemented and unavailable for native qualification here",
+    "Managed Windows policy/source checks preserve assigned Job semantics; no native Windows runtime qualification",
+    "Uncertain retains original evidence/owner/workspace/slot/reservation; authority may be lost; late physical cleanup never permits acceptance or automatic release",
+    "Valid-stop cleanup failures may defer cleanup after accepted publication; same phase object and exact terminal receipt precede capacity release",
+    "No main PTY, real GM/provider, real save writes or durable restart/fencing; no next slice",
+    "Historical executions and latest distinct cases are separate source-qualified runs, never an aggregate full suite",
+    "Restoration validates source bytes and connectivity; it executes no tests"
+  ],
+  "WindowsProcessTreeDelta": {
+    "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs",
+    "OnlyChange": "Read-only locked HasRetainedAuthority property; all Job stop primitives unchanged",
+    "Sha256": "70d56db7e8f3ce129310c7e207c9c38bff8a450ecfaa43ddec1a515582162ba1",
+    "BaseSha256": "812c10afbef30f0117126e209dcb5b2926995a9afdec2d8d329b53a59eb0fa74"
+  },
+  "CompilerProvenance": {
+    "Path": "/usr/bin/x86_64-linux-gnu-gcc-14",
+    "Bytes": 1162264,
+    "Sha256": "a23ecab8ff08f09ad8c80602c2c5df7f49e09c25905cb8975902e101bf72635f"
+  },
+  "LatestFailures": [],
+  "SelectionCoverage": {
+    "LinuxSelection": "tests/selections/1553-worker-pool-linux.json",
+    "LatestSemanticCasesExactlyMatchDiscoveredMethodCounts": true,
+    "DistinctMethods": 63,
+    "DistinctCases": 127,
+    "LinuxPlanOnlyDescriptors": 19,
+    "DefaultWindowsCompatiblePlanOnlyCases": 27,
+    "BothPlansExecuteZeroTests": true
+  },
+  "CatalogAudit": {
+    "Categories": 291,
+    "MethodsAndFiles": 10826,
+    "TestsExecuted": 0,
+    "Unmapped": 0,
+    "StaleSelectors": 0,
+    "SourceCommit": "b7ca1ba587ef44fe75edbc7cc6331d647b7fb2ae",
+    "Path": "evidence/worker-pool-catalog-final/catalog-final/catalog-audit.json"
+  },
+  "HistoricalFailureClassification": {
+    "BehavioralCausalFailures": 21,
+    "FixtureLifecyclePreparationFailureAfterWorkerCompletion": 1,
+    "StaleSourceGuardFailure": 1,
+    "BuildPreparationFailureWithZeroExecutedTests": 1
+  },
+  "GuardianSummary": {
+    "Reports": 58,
+    "AllReachedECHILD": true,
+    "ReportsWithEmergencySignals": 3,
+    "Failures": 0,
+    "Deadlines": 0,
+    "EmergencyExplanation": "Deliberate helper loss: pre-Release causal RED, post-Completed pool uncertainty GREEN, and repeated original HOST loss regression GREEN. Physical guardian cleanup never clears application Uncertain."
+  },
+  "NoRepeatRationale": "Latest per-case passing evidence retained at exact clean sources. Subsequent changes are covered by causal correction cohorts and affected final36 regressions; unchanged IPC34/ENV16/workspace47/receipt41/output48/input37/run-record90/FRAME49 are not replayed.",
+  "InvocationNote": "Effective runner arguments reconstructed from preserved selection, strategy and build phases; activate /workspace/.onboarding/activate.sh and TMPDIR=/workspace/t1553. Native fixture runs set BOE_NATIVE_EVIDENCE_ROOT to the dedicated path recorded by their artifact packet. These are not an instruction to repeat historical cohorts."
+}

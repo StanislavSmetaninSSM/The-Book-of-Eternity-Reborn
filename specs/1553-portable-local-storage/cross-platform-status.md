@@ -5,18 +5,25 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## Текущая работа: POOL B, 2026-10-05
+## POOL B: проверен, финальная передача готовится, 2026-10-05
 
 HOST A принят родителем на `55f43c9e5d81ec0ef1e3944d2932f49f67b22723`.
-Разрешён следующий связанный B-срез: настоящий pool и success consumers, synthetic
-Release только через явно injected internal seam, typed scoped evidence и quarantine.
-[Уточнение B](plan.md#pool-b--authorized-refinement-from-accepted-host-a-2026-10-05)
-прошло отдельное Sol6.1/xhigh design review; связанный runtime уже имеет actual-pool
-happy1, descendants5, terminal8 и content3 GREEN на точных источниках в плане.
-B остаётся WIP: причинный RED на Release после потери helper получил минимальную
-правку; её GREEN, остальная uncertainty/retry-матрица и финальное ревью ещё впереди.
-Общий Linux WorkerRelease, durable restart/fencing, PTY и live GM остаются закрыты.
-После B acceptance — handoff, без начала следующего этапа.
+Разрешённый B-срез подключает настоящий pool и оба success consumers через
+явно injected internal synthetic admission. Matching scoped stop и actual output
+settlement обязательны до публикации; Uncertain сохраняет owner/evidence/workspace/
+slot/reservation и не разрешает принятие результата даже после поздней очистки.
+[Qualification](recovery/worker-pool-qualification.json): **127 различных последних
+PASS**, исторически164 исполнения/141PASS/23FAIL; ошибки fixture/source guard и
+нулевая build preparation failure выделены отдельно. Финальные регрессии36/36PASS,
+каталог291/10826 и selection27/127 — discovery-only. Все58 guardian reports — ECHILD,
+три намеренных helper-loss требовали независимой аварийной очистки, failures/deadlines0.
+
+Runtime `95c12101`, финальные регрессии `b89a60df`, audit source `b7ca1ba5`.
+Отдельные Sol6.1/xhigh design/implementation/B5/B6 reviews — PASS; финальный combined
+review и свежий GitHub-only restore ещё требуются. Текущий следующий шаг — только
+эта передача; исторические «next» ниже не открывают новые этапы.
+Общий Linux WorkerRelease, systemd/native Windows qualification, durable restart,
+main PTY/live GM и настоящие saves остаются вне закрываемого synthetic-среза.
 
 ## HOST — ограниченный этап A завершён, 2026-10-05
 
@@ -41,11 +48,11 @@ metadata `7589c50b` и уточнённой формулировки Uncertain; 
 дерево. [Qualification](recovery/worker-host-qualification.json),
 [review/restore](recovery/evidence/worker-host-review/manifest.json). Финальный
 verdict carrier получает отдельный обычный push/readback и fresh restore; точный
-SHA передаётся в handoff. Следующий шаг — передача родителю; B не начинать.
+SHA передаётся в handoff. Это исторический handoff A; текущий разрешённый B описан выше.
 При Uncertain сохраняются исходный owner и evidence; authority может быть потеряна.
 Это не разрешает принять результат, освободить slot или удалить quarantine.
 
-B/pool Release, main PTY, настоящий CLI/ГМ, canonical writes, Windows runtime и
+Общий/public pool Release, main PTY, настоящий CLI/ГМ, реальные canonical writes, Windows runtime и
 systemd-user qualification остаются открыты. Согласованный systemd-primary
 ещё не реализован; selector показывает NotImplemented, без ложного PASS.
 Сеть/security/credentials не менялись; HOME-PC и старые VM не использовались.

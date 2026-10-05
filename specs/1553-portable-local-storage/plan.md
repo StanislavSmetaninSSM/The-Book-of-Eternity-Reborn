@@ -14,7 +14,8 @@ T041-FALLBACK-POOL / US4 / FR-012/014/015. Exact remote/base
 B plus this design refinement and separate actual Sol6.1/xhigh design review.
 Use Superpowers brainstorming/writing-plans, then executing-plans/TDD inline;
 Spec Kit remains the durable spec/plan/tasks layer. No additional user approval is
-needed for the authorized work. This refinement is design WIP; no B code/test changes.
+needed for the authorized work. B1–B5 implementation and bounded verification are complete;
+B6 final independent packet review and clean GitHub restoration are pending below.
 
 **Goal:** actual production RunTaskAsync and both downstream dispatch consumers
 prove synthetic worker completion/publication only after matching scoped stop and
@@ -24,6 +25,42 @@ IPC, workspace/proposal/audit contracts; verified SDK10.0.401/runtime8.0.31/pwsh
 and GCC14.2.0-19. No new dependency, installation, network/auth/security setting.
 **Spec:** the B subsection in spec.md and approved two-backend scope; A acceptance
 and the earlier two-slice design below remain prerequisites/history.
+
+### Current B verification and handoff gate, 2026-10-05
+
+Final runtime source `95c12101449b0d44527b2da6a49e84f3386e18c3`; final regression
+source `b89a60dfdcd23d54e60015321e4bd826e0b8ef81`; regression carrier and audit
+source `b7ca1ba587ef44fe75edbc7cc6331d647b7fb2ae`. No runtime/source change follows
+these builds. [Qualification](recovery/worker-pool-qualification.json) verifies20
+manifests/590 artifacts/29 TRX, source Git blobs/SHA256 and every compressed hash.
+There are **127 distinct latest passing semantic cases**, exactly matching every
+method/count in the discovered explicit Linux selection. This is a union of separate
+source-qualified bounded runs, not one aggregate run. The old late-output theory row
+is explicitly superseded by the strengthened original-observation Fact.
+Historical164 executions =141PASS/23FAIL:21 causal behavioral failures, one fixture
+lifecycle-boundary error after worker completion and one stale source guard. The
+missing-required-field build failure executed zero tests and is counted separately.
+Consumer RED built at0e4c0688 and executed NoBuild on1d5b8ea5: only plan/spec changed;
+qualification records both exact revisions and verifies that delta.
+
+Final affected regressions36/36PASS41.9491780s after fresh65.8836693s build/PlanOnly.
+Catalog discovery291 categories/10,826 methods/files, no unmapped/stale identities,
+zero execution. Default Windows-compatible selection27 and explicit Linux selection127
+both discover successfully with zero execution; no native Windows runtime claim.
+All58 guardian reports reachECHILD; deliberate helper-loss experiments account for
+three emergency retirements, all with failures0/deadlinefalse. Old PID1 zombies from
+prior work/VMs were not touched or claimed cleaned. Application Uncertain remains
+retained even when the independent guardian proves physical fixture cleanup.
+
+Independent actual Sol6.1/xhigh design, implementation, B5 cleanup and B6 regression/
+routing reviews passed. The final combined packet and GitHub-only restoration are
+still pending; do not call B accepted from these intermediate reviews alone.
+The current next step is that final gate and handoff, superseding historical next/WIP
+statements below. No next slice, public Linux rollout, systemd/native Windows/main PTY,
+real GM/provider/save or durable restart work is authorized by this completion.
+Operational guide, existing repair example commentary and shared afterlife note are
+synchronized; task/proposal payloads, game schemas, Mortal/afterlife actions and
+pending/control files remain unchanged, so no new GM-authored example or prompt field.
 
 ### B6 regression guard checkpoint
 
@@ -45,7 +82,7 @@ no skip/duplicate/timeout. Exact elapsed time and guardian reports are preserved
 The revised guard received separate actual Sol6.1/xhigh PASS. Catalog and both
 selection files still need discovery-only audits; final packet/review/restore pending.
 
-### Current source findings and choice
+### Original source findings and approved choice (historical)
 
 - Pool lines565–666 reduce a completed StopAndWaitAsync to deathConfirmed; reaper
   ConfirmDeathAsync repeats that bool conversion. Native Uncertain cannot enter it.
@@ -173,18 +210,18 @@ Uncertain. No durable reconstruction of a dead owner is invented.
   Internal admission scaffold stays unavailable. First actual-pool happy case must
   RED before worker launch on that gate, with guardian ECHILD; classify preparation
   failures separately. Add typed evidence negative tests before corresponding fixes.
-- [ ] B3 Atomic connected implementation: new GmWorkerNativePoolAdmission.cs and
+- [x] B3 Atomic connected implementation: new GmWorkerNativePoolAdmission.cs and
   GmWorkerExecutionAuthority.cs; update OwnedLaunch, NativeLineageLaunch,
   WindowsOwnedLaunch, BackendSelector, ProcessHost, BridgePool, QuarantineReaper and
   Models together before synthetic capability can pass. No intermediate native
   admission into legacy cleanup. Add bounded original-stream settlement and sticky
   typed quarantine; preserve platform stop primitives and publication/receipt bytes.
   Reach one positive real pool GREEN with actual native cleanup before expanding.
-- [ ] B4 Result consumers: update ProposalOnlyDispatchService and
+- [x] B4 Result consumers: update ProposalOnlyDispatchService and
   ValidationRepairDelegator to consume matching evidence; causal negative records
   must exercise their actual decision boundary, plus positive actual-pool result.
   Preserve existing generation/lease/apply guards; use isolated test state only.
-- [ ] B5 Native fault matrix: extend independent finite C fixture only as required
+- [x] B5 Native fault matrix: extend independent finite C fixture only as required
   for real descendant/output-holder lifetimes; native helper remains the actual
   producer/reaper. Negative-only internal stream/evidence decorators may stall or
   corrupt the actual helper's received status or stop observation, but cannot forge
