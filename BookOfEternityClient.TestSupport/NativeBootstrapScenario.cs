@@ -1,8 +1,10 @@
 using System.Diagnostics;
 using System.IO.Pipes;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using BookOfEternityClient.Services.GmWorkers;
+using Microsoft.Win32.SafeHandles;
 
 namespace BookOfEternityClient.Tests;
 
@@ -31,7 +33,7 @@ internal static class NativeBootstrapScenario
         var ready = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var statuses = ReadStatuses(helper.StandardOutput, ready, Path.Combine(output, "bootstrap-status.jsonl"));
         Socket? connection = null; string? failure = null; var bound = false;
-        var deadPidfdReadable = false; var deadTransferRejectedAndClosed = false;
+        var deadPidfdPollEvents = 0; var deadTransferRejectedAndClosed = false;
         try
         {
             using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(5));
@@ -50,7 +52,7 @@ internal static class NativeBootstrapScenario
             if (mode == "bootstrap-wrong-ack") GmWorkerNativeDescriptors.Send(connection, "A2:wrong-run");
             connection.Dispose(); connection = null;
             await exit.WaitAsync(deadline.Token);
-            deadPidfdReadable = GmWorkerHostIdentity.IsReadable(pidfd);
+            deadPidfdPollEvents = ObserveRetiredPidfd(pidfd);
             // A live purported owner prevents exited-supervisor short-circuiting:
             // this negative check must reject the dead capability itself.
             using var liveScenario = Process.GetCurrentProcess();
@@ -69,12 +71,32 @@ internal static class NativeBootstrapScenario
             await File.WriteAllTextAsync(Path.Combine(output, "helper-stderr.log"), await errors);
             await File.WriteAllTextAsync(Path.Combine(output, "scenario.json"), JsonSerializer.Serialize(new
             { bound, failure, rootExecuted = File.Exists(marker), helperExitCode = helper.ExitCode,
-              deadPidfdReadable, deadTransferRejectedAndClosed,
+              deadPidfdPollEvents, deadTransferRejectedAndClosed,
               frames, hostStdout = await outTask, hostStderr = await errTask, workerReleased = false }));
             Directory.Delete(root, recursive: true);
         }
         return 0;
     }
+
+    private static int ObserveRetiredPidfd(SafeFileHandle descriptor)
+    {
+        // Independent observation accepts exit-readable and reaped-HUP. The
+        // production live-identity guard intentionally rejects HUP as unavailable.
+        var held = false;
+        try
+        {
+            descriptor.DangerousAddRef(ref held);
+            var item = new PollDescriptor { Descriptor = descriptor.DangerousGetHandle().ToInt32(), Events = 1 };
+            if (Poll(ref item, 1, 0) != 1 || (item.ReturnedEvents & 0x11) == 0 || (item.ReturnedEvents & ~0x11) != 0)
+                throw new InvalidDataException("Retired fixture pidfd did not expose exit/HUP.");
+            return item.ReturnedEvents;
+        }
+        finally { if (held) descriptor.DangerousRelease(); }
+    }
+    [StructLayout(LayoutKind.Sequential)]
+    private struct PollDescriptor { internal int Descriptor; internal short Events; internal short ReturnedEvents; }
+    [DllImport("libc", EntryPoint = "poll", SetLastError = true)]
+    private static extern int Poll(ref PollDescriptor item, nuint count, int timeout);
 
     private static async Task<List<JsonElement>> ReadStatuses(StreamReader input, TaskCompletionSource ready, string path)
     {

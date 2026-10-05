@@ -199,6 +199,18 @@ a live original scenario Process as purported owner, avoiding exited-helper
 short-circuit. This is negative admission only; existing reused-PID primitive proof
 is retained separately. Only these3cases need rerun; no production change.
 
+Identity supplement at `78af9d409dcc3150639e94cecc548598fbf5fe51`: fresh preparation
+46.6768365s; execution **1PASS/2fixtureFAIL**,11.2865782s, all3executed, complete
+cleanup. Self/supervisor rejection passed. Both real gated helpers correctly retired
+Uncertain/root-exec=false/guardian ECHILD/emergency0, but the new fixture reused a
+production live-identity poll guard after reap; its deliberate HUP rejection prevented
+the dead-capability assertion. This is a fixture observation error, not causal backend
+RED. [Evidence](recovery/evidence/worker-host-pidfd-fixture-incident/manifest.json).
+The [Linux pidfd manual](https://man7.org/linux/man-pages/man2/pidfd_open.2.html)
+distinguishes readable exit from HUP after reap. Fixture-only correction independently
+polls and records IN/HUP bits before actual factory rejection, preserving strict
+production liveness behavior and existing authority. Repeat only these3cases.
+
 ## Worker-host native integration design — 2026-10-05
 
 **Design only; not implementation authorization.** Source/remote base
