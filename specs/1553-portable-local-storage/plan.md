@@ -61,6 +61,24 @@ Linux case-sensitive worker environment capture remains a recorded limitation fo
 future worker-execution work. This selection cannot qualify arbitrary Linux worker
 payloads or execution. Next: rebuild the refined tests and obtain adapter-specific RED.
 
+At `61e921a6d8008a81dcba7e527b8b343e6cb727f7`, fresh PlanOnly passed in
+69.8449821 seconds (16 planned, zero execution). The selected native run completed
+15 cases: **3 PASS / 12 causal FAIL**, all twelve caused by the existing Windows-only
+peer-authentication guard, not preparation or permission failures. It took
+16.6053139 seconds; runner cleanup complete, no skips/duplicates; documentation
+row was not executed after integration failure. [Native RED](recovery/evidence/worker-ipc-linux-20261005-native-red/manifest.json),
+[fresh plan](recovery/evidence/worker-ipc-linux-20261005-owned-env-plan/manifest.json).
+The follow-up independent Sol/xhigh design check approves explicit owned payload
+environment, with an absolute resolved PowerShell canary path (now in the fixture).
+
+Current WIP adds policy tests before implementation and a deliberately throwing,
+unwired adapter scaffold. The unit selector runs first to observe PID/UID, native
+error/length and SafeHandle negative RED independently; the changed documentation
+guard also expects the approved Linux contract, while the three documents await
+implementation. Production authentication still uses the original Windows guard.
+Next: fresh PlanOnly/build and policy RED, then fill/wire the adapter and synchronize
+the documents. Simulated different-UID credentials are only policy evidence.
+
 The owner explicitly authorizes ordinary non-force WIP pushes to the existing
 `codex/1553-load-filesystem` branch. Noninteractive push dry-run succeeded before
 first publication; this supersedes the older HOME-PC publication route for this

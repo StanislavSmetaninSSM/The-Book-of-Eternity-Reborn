@@ -11137,7 +11137,7 @@
 },
 {
   "id": "worker-host-ipc-admission",
-  "responsibility": "Windows/Linux worker-host both-channel PID/UID admission, native bounded frames/envelopes, cancellation and owner-close before Release, plus the exact operational handshake documentation guard.",
+  "responsibility": "Windows/Linux worker-host both-channel PID/UID admission, native bounded frames/envelopes, cancellation and owner-close before Release, plus the exact operational handshake documentation guard. Includes explicit peer policy unit cases; simulated UID/native failures do not qualify a real different-UID peer.",
   "excludes": "Worker execution, Linux process ownership, detached workspace, persistent GM/PTY, gameplay and completion arbitration.",
   "changeHints": [
     "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost*.cs",
@@ -11158,16 +11158,17 @@
   "expectedSeconds": null,
   "selectors": [
     {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake",
+        "BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.*"
+      ]
+    },
+    {
       "project": "integration",
       "tests": [
         "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_*",
         "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_*"
-      ]
-    },
-    {
-      "project": "unit",
-      "tests": [
-        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake"
       ]
     }
   ]

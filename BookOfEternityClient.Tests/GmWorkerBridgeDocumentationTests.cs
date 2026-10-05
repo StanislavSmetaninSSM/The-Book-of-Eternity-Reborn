@@ -312,7 +312,11 @@ public sealed class GmWorkerBridgeDocumentationTests
             Assert.Contains("Release are limited to 64 KiB of encoded bytes", normalized, StringComparison.Ordinal);
             Assert.Contains("Slow bytes do not renew a frame deadline", normalized, StringComparison.Ordinal);
             Assert.Contains("Diagnostics never include payload, environment or parser excerpts", normalized, StringComparison.Ordinal);
-            Assert.Contains("does not enable Linux peer authentication or worker execution", normalized, StringComparison.Ordinal);
+            Assert.Contains("Windows uses GetNamedPipeClientProcessId", normalized, StringComparison.Ordinal);
+            Assert.Contains("Linux uses SO_PEERCRED for the expected host PID and the owner’s effective UID on both channels", normalized, StringComparison.Ordinal);
+            Assert.Contains("before any Launch byte", normalized, StringComparison.Ordinal);
+            Assert.Contains("does not enable Linux worker execution", normalized, StringComparison.Ordinal);
+            Assert.Contains("Linux process-tree and detached-workspace gates remain closed", normalized, StringComparison.Ordinal);
             Assert.Contains(
                 "parent creates private current-user named control/status pipe servers",
                 normalized,

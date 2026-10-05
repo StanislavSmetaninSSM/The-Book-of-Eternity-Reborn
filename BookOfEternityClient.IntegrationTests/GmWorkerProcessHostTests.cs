@@ -508,7 +508,7 @@ public sealed partial class GmWorkerProcessHostTests
     {
         var worker = new ProcessStartInfo
         {
-            FileName = "pwsh",
+            FileName = ResolvePowerShellExecutable(),
             WorkingDirectory = root,
             UseShellExecute = false
         };

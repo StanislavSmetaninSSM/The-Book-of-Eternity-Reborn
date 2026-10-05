@@ -160,6 +160,14 @@ public sealed partial class GmWorkerProcessHostTests
         Assert.Empty(await peer.StandardError.ReadToEndAsync());
     }
 
+    private static string ResolvePowerShellExecutable()
+    {
+        var executable = OperatingSystem.IsWindows() ? "pwsh.exe" : "pwsh";
+        var paths = (Environment.GetEnvironmentVariable("PATH") ?? "").Split(Path.PathSeparator);
+        return paths.Select(path => Path.GetFullPath(Path.Combine(path, executable)))
+            .FirstOrDefault(File.Exists) ?? throw new InvalidOperationException("PowerShell 7 fixture executable is unavailable.");
+    }
+
     private static Process StartPipePeer(string root, string controlEndpoint, string statusEndpoint,
         string mode, string nonce = "", string statusPath = "")
     {
@@ -213,7 +221,7 @@ public sealed partial class GmWorkerProcessHostTests
             """;
         var startInfo = new ProcessStartInfo
         {
-            FileName = "pwsh", WorkingDirectory = root, UseShellExecute = false,
+            FileName = ResolvePowerShellExecutable(), WorkingDirectory = root, UseShellExecute = false,
             CreateNoWindow = true, RedirectStandardInput = true,
             RedirectStandardOutput = true, RedirectStandardError = true
         };
