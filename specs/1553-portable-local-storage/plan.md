@@ -4,6 +4,44 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T041-IPC Linux admission implementation — 2026-10-05 (WIP)
+
+Owner-authorized sole writer in the separate official Linux environment, based on
+`914f27dc331250bfd98639982d408f0e66a0bcf8`, tree
+`5a770404f54d59c4e5bfa34a6215eca55999db50`. The original checkout and HOME-PC are
+untouched. Native permission was already established by the separately retained
+same-process capability probe; no privilege, credential or security changes.
+Debian 13.6 x86_64, SDK 10.0.401, target runtime 8.0.31, PowerShell 7.6.6.
+
+The approved adapter uses `getsockopt(SOL_SOCKET, SO_PEERCRED)` with a pinned
+`SafePipeHandle`, exact `ucred`/`socklen_t` lengths, expected owned host PID and
+current effective UID on both channels before publishing admission or Launch.
+Keep Windows `GetNamedPipeClientProcessId`, liveness and cancellation checks,
+redacted errors, the existing absolute Ready/Release deadlines and failed-admission
+closure. Linux process-tree/workspace/worker execution, main PTY/live GM and
+run-record production wiring remain closed and outside this change.
+
+Independent **gpt-6.1-sol / xhigh** design review passed with no architectural
+blocker. It confirmed SafePipeHandle lifetime, connection-time credential limits,
+both-channel/zero-Launch assertions and explicit platform scope. Test-first WIP
+replaces same-process status fixtures with owned child processes, checks same UID
+and distinct PID independently, retains actual hidden-host Ready then owner close
+without Release/exit125/zero starts, and adds invalid envelope, partial-connect
+cancellation, exited expected host and blocked-Launch cancellation. Foreign-channel
+negatives also assert failed admission cannot retry or Release. The exact existing
+operational documentation guard moves from FRAME to this sole IPC category.
+No production source has changed yet; no new tests have run. Next: fresh selected
+PlanOnly/build, then observe and retain causal RED before implementing the adapter.
+Compilation/preparation failures will not be labeled behavioral RED.
+
+The owner explicitly authorizes ordinary non-force WIP pushes to the existing
+`codex/1553-load-filesystem` branch. Noninteractive push dry-run succeeded before
+first publication; this supersedes the older HOME-PC publication route for this
+slice. Check the remote base before each push and read back the exact SHA/files.
+A successful push alone is neither acceptance nor clean-restoration evidence.
+Persist WIP before long tests/review; final separate Sol/xhigh source/evidence
+review and fresh GitHub-only source restoration remain required.
+
 ## T041-RUN-RECORD verified component — 2026-10-05
 
 Runtime/source `dc8c742cb3dc86d6cff09dadbbb412c77ae779a6`, tree

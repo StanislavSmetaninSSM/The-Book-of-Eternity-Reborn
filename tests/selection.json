@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-session-run-record",
-      "reason": "New persistent-main slot codec/transitions/admission component only; per-test ordinary files, no native IPC/process or unchanged prior cohorts.",
+      "category": "worker-host-ipc-admission",
+      "reason": "T041-IPC Linux SO_PEERCRED admission on both channels before Launch, real owned cross-process positives/foreign peers, cancellation and owner-close without Release, and the affected operational documentation guard. Unchanged pure FRAME49 and run-record90 are excluded.",
       "contracts": [
-        "#1553 T041-RUN-RECORD US4 FR-014/015"
+        "#1553 T041-IPC US4 FR-012/014/015"
       ]
     }
   ]

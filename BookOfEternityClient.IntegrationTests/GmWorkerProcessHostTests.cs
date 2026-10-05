@@ -8,7 +8,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 [Trait("Category", "ProcessIntegration")]
-public sealed class GmWorkerProcessHostTests
+public sealed partial class GmWorkerProcessHostTests
 {
     private const string LaunchNonce = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
@@ -84,6 +84,7 @@ public sealed class GmWorkerProcessHostTests
             await using (var launch = GmWorkerProcessHostLaunch.Create(worker, root))
             {
                 host = Process.Start(launch.StartInfo)!;
+                Assert.NotEqual(Environment.ProcessId, host.Id);
                 using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(20));
                 await launch.WaitUntilReadyAsync(host, deadline.Token);
                 Assert.False(host.HasExited);
@@ -108,45 +109,39 @@ public sealed class GmWorkerProcessHostTests
     public async Task WaitUntilReadyAsync_StatusFrameByteLimitIsExact(bool oversized)
     {
         const int maximumBytes = 64 * 1024;
-        await WithLocalPeerAsync(async (launch, control, status, nonce, token) =>
+        await WithOwnedStatusPeerAsync(nonce =>
         {
             var json = ReadyJson(nonce);
-            var bytes = Encoding.UTF8.GetBytes(new string(' ', maximumBytes - Encoding.UTF8.GetByteCount(json) + (oversized ? 1 : 0)) + json + "\n");
-            var ready = launch.WaitUntilReadyAsync(Process.GetCurrentProcess(), token);
-            await ReadLaunchOrFailureAsync(control, nonce, ready, token);
-            await status.WriteAsync(bytes, token);
-            if (oversized)
-                await Assert.ThrowsAsync<InvalidDataException>(() => ready);
-            else
-                await ready;
-        });
+            return Encoding.UTF8.GetBytes(new string(' ', maximumBytes - Encoding.UTF8.GetByteCount(json) + (oversized ? 1 : 0)) + json + "\n");
+        }, rejected: oversized);
     }
 
     [Fact]
     public async Task WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected()
     {
-        await WithLocalPeerAsync(async (launch, control, status, nonce, token) =>
-        {
-            var ready = launch.WaitUntilReadyAsync(Process.GetCurrentProcess(), token);
-            await ReadLaunchOrFailureAsync(control, nonce, ready, token);
-            await status.WriteAsync(Encoding.UTF8.GetBytes(ReadyJson(nonce)), token);
-            await status.DisposeAsync();
-            await Assert.ThrowsAsync<InvalidDataException>(() => ready);
-        });
+        await WithOwnedStatusPeerAsync(nonce => Encoding.UTF8.GetBytes(ReadyJson(nonce)),
+            rejected: true, closeStatus: true);
     }
 
     [Fact]
     public async Task WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing()
     {
-        await WithLocalPeerAsync(async (launch, control, status, nonce, token) =>
+        await WithOwnedStatusPeerAsync(nonce =>
         {
-            var ready = launch.WaitUntilReadyAsync(Process.GetCurrentProcess(), token);
-            await ReadLaunchOrFailureAsync(control, nonce, ready, token);
             var prefix = Encoding.UTF8.GetBytes($"{{\"schemaVersion\":1,\"launchNonce\":\"{nonce}\",\"kind\":\"failed\",\"exitCode\":null,\"error\":\"");
-            await status.WriteAsync(prefix.Concat(new byte[] { 0xc3, 0x28 }).Concat(Encoding.UTF8.GetBytes("\"}\n")).ToArray(), token);
-            await Assert.ThrowsAsync<InvalidDataException>(() => ready);
-        });
+            return prefix.Concat(new byte[] { 0xc3, 0x28 }).Concat(Encoding.UTF8.GetBytes("\"}\n")).ToArray();
+        }, rejected: true);
     }
+
+    [Theory]
+    [InlineData("nonce")]
+    [InlineData("schema")]
+    public Task WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected(string invalidField) =>
+        WithOwnedStatusPeerAsync(nonce => Encoding.UTF8.GetBytes(
+            GmWorkerProcessHostProtocol.SerializeStatus(new(
+                invalidField == "schema" ? 2 : 1,
+                invalidField == "nonce" ? LaunchNonce : nonce,
+                GmWorkerProcessHostStatusKind.Ready, null, null)) + "\n"), rejected: true);
 
     [Theory]
     [InlineData("malformed")]
@@ -518,44 +513,6 @@ public sealed class GmWorkerProcessHostTests
     private static string ReadyJson(string nonce) => GmWorkerProcessHostProtocol.SerializeStatus(
         new(1, nonce, GmWorkerProcessHostStatusKind.Ready, null, null));
 
-    private static async Task ReadLaunchAsync(Stream control, string nonce, CancellationToken token)
-    {
-        using var reader = new StreamReader(control, Encoding.UTF8, false, 1024, leaveOpen: true);
-        var line = await reader.ReadLineAsync(token);
-        Assert.NotNull(line);
-        GmWorkerProcessHostProtocol.ParseControl(line, nonce, GmWorkerProcessHostControlKind.Launch);
-    }
-
-    private static async Task ReadLaunchOrFailureAsync(Stream control, string nonce, Task ready, CancellationToken token)
-    {
-        using var readCancellation = CancellationTokenSource.CreateLinkedTokenSource(token);
-        var read = ReadLaunchAsync(control, nonce, readCancellation.Token);
-        if (await Task.WhenAny(read, ready) == ready && ready.IsFaulted)
-        {
-            readCancellation.Cancel();
-            try { await read; } catch (OperationCanceledException) { }
-            await ready;
-        }
-        await read;
-    }
-
-    private static async Task WithLocalPeerAsync(
-        Func<GmWorkerProcessHostLaunch, NamedPipeClientStream, NamedPipeClientStream, string, CancellationToken, Task> body)
-    {
-        var root = CreateTempRoot();
-        try
-        {
-            await using var launch = GmWorkerProcessHostLaunch.Create(CreateWorker(root), root);
-            var args = launch.StartInfo.ArgumentList.ToArray();
-            await using var control = new NamedPipeClientStream(".", args[^3], PipeDirection.In, PipeOptions.Asynchronous);
-            await using var status = new NamedPipeClientStream(".", args[^2], PipeDirection.Out, PipeOptions.Asynchronous);
-            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-            await Task.WhenAll(control.ConnectAsync(timeout.Token), status.ConnectAsync(timeout.Token));
-            await body(launch, control, status, args[^1], timeout.Token);
-        }
-        finally { CleanupTempRoot(root); }
-    }
-
     private static async Task AssertForeignChannelsRejectedAsync(bool foreignControl, bool foreignStatus)
     {
         var root = CreateTempRoot();
@@ -567,7 +524,7 @@ public sealed class GmWorkerProcessHostTests
             await using (var launch = GmWorkerProcessHostLaunch.Create(CreateWorker(root), root))
             {
                 var args = launch.StartInfo.ArgumentList.ToArray();
-                foreign = StartForeignPipeClient(root, foreignControl ? args[^3] : "", foreignStatus ? args[^2] : "");
+                foreign = StartPipePeer(root, foreignControl ? args[^3] : "", foreignStatus ? args[^2] : "", "foreign");
                 using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
                 if (!foreignControl)
                 {
@@ -584,6 +541,9 @@ public sealed class GmWorkerProcessHostTests
                     launch.WaitUntilReadyAsync(expectedHost, timeout.Token));
                 Assert.Contains(foreignControl ? "control" : "status", error.Message, StringComparison.OrdinalIgnoreCase);
                 Assert.Contains("unexpected process", error.Message, StringComparison.OrdinalIgnoreCase);
+                await AssertConnectedPeerAsync(foreign, timeout.Token);
+                await Assert.ThrowsAnyAsync<Exception>(() => launch.WaitUntilReadyAsync(expectedHost, timeout.Token));
+                await Assert.ThrowsAnyAsync<Exception>(() => launch.ReleaseAsync(timeout.Token));
             }
             if (localControl != null)
                 Assert.Equal(0, await localControl.ReadAsync(new byte[1]).AsTask().WaitAsync(TimeSpan.FromSeconds(3)));
@@ -599,47 +559,6 @@ public sealed class GmWorkerProcessHostTests
             await StopOwnedProcessAsync(foreign);
             CleanupTempRoot(root);
         }
-    }
-
-    private static Process StartForeignPipeClient(string root, string controlEndpoint, string statusEndpoint)
-    {
-        const string script = """
-            $ErrorActionPreference = 'Stop'
-            $control = $null
-            $status = $null
-            try {
-                if ($env:BOE_CONTROL_PIPE) {
-                    $control = [IO.Pipes.NamedPipeClientStream]::new('.', $env:BOE_CONTROL_PIPE, [IO.Pipes.PipeDirection]::In)
-                    $control.Connect(10000)
-                }
-                if ($env:BOE_STATUS_PIPE) {
-                    $status = [IO.Pipes.NamedPipeClientStream]::new('.', $env:BOE_STATUS_PIPE, [IO.Pipes.PipeDirection]::Out)
-                    $status.Connect(10000)
-                }
-                if ($control) { [Console]::WriteLine($control.ReadByte()) }
-                else { [Console]::WriteLine('no-control'); $null = [Console]::ReadLine() }
-            } finally {
-                if ($control) { $control.Dispose() }
-                if ($status) { $status.Dispose() }
-            }
-            """;
-        var startInfo = new ProcessStartInfo
-        {
-            FileName = "pwsh",
-            WorkingDirectory = root,
-            UseShellExecute = false,
-            CreateNoWindow = true,
-            RedirectStandardInput = true,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true
-        };
-        startInfo.ArgumentList.Add("-NoProfile");
-        startInfo.ArgumentList.Add("-NonInteractive");
-        startInfo.ArgumentList.Add("-Command");
-        startInfo.ArgumentList.Add(script);
-        startInfo.Environment["BOE_CONTROL_PIPE"] = controlEndpoint;
-        startInfo.Environment["BOE_STATUS_PIPE"] = statusEndpoint;
-        return Process.Start(startInfo) ?? throw new InvalidOperationException("Owned pipe fixture did not start.");
     }
 
     private static async Task StopOwnedProcessAsync(Process? process)
