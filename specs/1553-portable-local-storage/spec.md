@@ -17,6 +17,8 @@
 
 ## Persistent-main output decoding — T041-OUTPUT-UTF8, 2026-10-05
 
+Bounded implementation status: actual managed bridge output pump passes48/48 on Linux at `ff7e5a2b08f8fde196151909487c1d94089ea91d` (runtime source `a9472a35`), after causal19/48 RED. [Qualification](recovery/gm-output-qualification.json). Independent final complete-packet review and source restore pending; no terminal/ownership readiness follows.
+
 From exact `08e9805d10237d3bc50438e67b58fd33c5509c42`, fix the production-consumed `BridgeHost.PumpOutputAsync`, preserving raw byte forwarding and the current UTF-8 replacement fallback. Each invocation owns one decoder; incomplete scalars span reads and finalize only at a genuine successful zero-byte EOF, never cancellation or read/write/flush failure. Every successfully forwarded nonempty byte read still advances output version and wakes observers even when no character is complete. EOF replacement output wakes text observers without inventing byte activity. Decoder state cannot cross pump invocations.
 
 Preserve recent-output and diagnostic upper bounds of 65536 and 12000 UTF-16 code units; truncation drops an additional low surrogate if the cut would bisect a valid pair. Keep diagnostics DTO and raw console behavior. This client-owned correction does not add a GM-authored field or gameplay capability, so no GM worked example is required. Readiness/autotrust, manual input, configured visibility/paste/submit behavior, terminal backend, process/stop/ownership and all production guards are outside scope.
