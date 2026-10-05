@@ -320,6 +320,9 @@ public sealed class GmWorkerBridgeDocumentationTests
             Assert.Contains("HTTP_PROXY and http_proxy keep distinct values on Linux", normalized, StringComparison.Ordinal);
             Assert.Contains("No environment names are filtered or normalized", normalized, StringComparison.Ordinal);
             Assert.Contains("Linux process-tree and detached-workspace gates remain closed", normalized, StringComparison.Ordinal);
+            Assert.Contains("bounded artifact reads without launching any process", normalized, StringComparison.Ordinal);
+            Assert.Contains("Linux ordinary hardlinks may be read and unlinked only", normalized, StringComparison.Ordinal);
+            Assert.Contains("native Windows qualification remains separate", normalized, StringComparison.Ordinal);
             Assert.Contains(
                 "parent creates private current-user named control/status pipe servers",
                 normalized,

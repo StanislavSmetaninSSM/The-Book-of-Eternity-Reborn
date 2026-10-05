@@ -141,6 +141,15 @@ Linux process-tree and detached-workspace gates remain closed. Main GM/PTY and
 live gameplay qualification are separate. Ready then owner close without Release
 must exit the hidden host with code 125 and never start the configured worker.
 
+The bounded detached-workspace component stages exact pinned bytes and performs
+bounded artifact reads without launching any process. Fresh trusted-local
+path, kind and link checks precede creation and opening; Linux cleanup preflights
+the whole owned tree and preserves unexpected evidence for retry. Linux ordinary
+hardlinks may be read and unlinked only; staging never overwrites an existing
+name or changes an outside alias. Windows retains its single-link handle checks;
+native Windows qualification remains separate. This byte component does not
+qualify quarantine receipt publication, process ownership, confirmed stop or PTY.
+
 Unknown, duplicate, or missing frame fields are rejected. The host emits typed
 `Ready` after accepting the launch payload while the configured worker remains
 stopped. The parent sends typed `Release`, and only then may the host start the

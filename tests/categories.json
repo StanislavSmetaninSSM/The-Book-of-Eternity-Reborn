@@ -11166,7 +11166,8 @@
       "project": "unit",
       "tests": [
         "BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics",
-        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake"
+        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake",
+        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions"
       ]
     }
   ]

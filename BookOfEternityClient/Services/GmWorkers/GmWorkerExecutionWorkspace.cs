@@ -31,6 +31,7 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
 
     private readonly string _runtimeRoot;
     private readonly string _workspaceRoot;
+    private readonly TrustedLocalFileScope _fileScope;
     private readonly PhysicalFileAuthority.FileIdentity?
         _workspaceRootIdentity;
     private readonly GmWorkerExecutionWorkspaceHooks? _hooks;
@@ -56,6 +57,7 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
     {
         _runtimeRoot = runtimeRoot;
         _workspaceRoot = workspaceRoot;
+        _fileScope = new TrustedLocalFileScope([gameSessionPath]);
         _runtimeRootAuthority = runtimeRootAuthority;
         _workspaceRootAuthority = workspaceRootAuthority;
         _gameSessionAuthority = gameSessionAuthority;
@@ -140,12 +142,14 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
                     runtimeRoot,
                     "Worker runtime root",
                     requireNew: false);
+            new TrustedLocalFileScope([workspaceRoot]).ValidateDirectory(workspaceRoot);
             workspaceRootAuthority =
                 PhysicalFileAuthority.CreateStableChildDirectory(
                     runtimeRootAuthority,
                     workspaceRoot,
                     "Worker workspace root",
                     requireNew: true);
+            new TrustedLocalFileScope([gameSessionPath]).ValidateDirectory(gameSessionPath);
             gameSessionAuthority =
                 PhysicalFileAuthority.CreateStableChildDirectory(
                     workspaceRootAuthority,
@@ -572,6 +576,7 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
         var proposalParent = Path.GetDirectoryName(ProposalPath)
             ?? throw new InvalidDataException(
                 "Worker proposal path has no parent.");
+        _fileScope.ValidateDirectory(proposalParent);
         using var proposalParentAuthority =
             PhysicalFileAuthority.EnsureStableDirectory(
                 _gameSessionAuthority
@@ -662,55 +667,40 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        var expected = TrustedLocalFileImage.FromBytes(content);
+        _fileScope.ValidateFile(fullPath);
         var parentPath = Path.GetDirectoryName(fullPath)
-            ?? throw new InvalidDataException(
-                "Worker workspace file has no parent.");
-        using var parentAuthority =
-            PhysicalFileAuthority.EnsureStableDirectory(
-                _gameSessionAuthority
-                ?? throw new ObjectDisposedException(
-                    nameof(GmWorkerExecutionWorkspace)),
-                parentPath,
-                "Worker workspace file parent");
+            ?? throw new InvalidDataException("Worker workspace file has no parent.");
+        using var parentAuthority = PhysicalFileAuthority.EnsureStableDirectory(
+            _gameSessionAuthority ?? throw new ObjectDisposedException(nameof(GmWorkerExecutionWorkspace)),
+            parentPath, "Worker workspace file parent");
         if (_hooks?.BeforeWorkspaceFileCreateAsync != null)
-        {
-            await _hooks.BeforeWorkspaceFileCreateAsync(
-                fullPath);
-        }
+            await _hooks.BeforeWorkspaceFileCreateAsync(fullPath);
+        cancellationToken.ThrowIfCancellationRequested();
+        _fileScope.ValidateFile(fullPath);
 
-        FileStream? stream = null;
-        try
+        await using var stream = PhysicalFileAuthority.CreateNewWritableFile(
+            parentAuthority, fullPath, "Worker workspace staging file",
+            asynchronous: true, requestDeleteAccess: false);
+        await stream.WriteAsync(expected.Bytes!, cancellationToken);
+        await stream.FlushAsync(cancellationToken);
+        stream.Flush(flushToDisk: true);
+        if (_hooks?.AfterWorkspaceFileWriteAsync != null)
+            await _hooks.AfterWorkspaceFileWriteAsync(fullPath);
+        cancellationToken.ThrowIfCancellationRequested();
+        // Keep Windows retained identity/single-link checks. Linux uses the
+        // approved trusted-local by-name byte authority, not inode identity.
+        if (OperatingSystem.IsWindows())
         {
-            stream = PhysicalFileAuthority.CreateNewWritableFile(
-                parentAuthority,
-                fullPath,
-                "Worker workspace staging file",
-                asynchronous: true,
-                requestDeleteAccess: false);
-            await stream.WriteAsync(
-                content,
-                cancellationToken);
-            await stream.FlushAsync(
-                cancellationToken);
-            stream.Flush(flushToDisk: true);
-            var authority =
-                PhysicalFileAuthority.CaptureOpenedFileAuthority(
-                    stream.SafeFileHandle,
-                    fullPath,
-                    "Worker workspace staging file");
+            var identity = PhysicalFileAuthority.CaptureFileIdentity(
+                stream.SafeFileHandle, "Worker workspace staging file");
             PhysicalFileAuthority.EnsureExactOpenedFileAuthority(
-                stream.SafeFileHandle,
-                fullPath,
-                authority.Identity,
-                authority.Sha256,
-                "Worker workspace staging file",
-                authority.Length);
+                stream.SafeFileHandle, fullPath, identity, expected.Sha256!,
+                "Worker workspace staging file", expected.Length);
         }
-        finally
-        {
-            if (stream != null)
-                await stream.DisposeAsync();
-        }
+        if (!expected.MatchesFile(_fileScope, fullPath))
+            throw new InvalidDataException("Worker workspace staging bytes changed.");
+        cancellationToken.ThrowIfCancellationRequested();
     }
 
     private async Task<byte[]?> ReadBoundedFileAsync(
@@ -720,73 +710,62 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        var parentPath = Path.GetDirectoryName(fullPath)
-            ?? throw new InvalidDataException(
-                $"{artifactName} has no parent.");
         if (_hooks?.BeforeWorkspaceFileOpenAsync != null)
-        {
-            await _hooks.BeforeWorkspaceFileOpenAsync(
-                fullPath);
-        }
-
+            await _hooks.BeforeWorkspaceFileOpenAsync(fullPath);
+        cancellationToken.ThrowIfCancellationRequested();
+        _fileScope.ValidateFile(fullPath);
+        var parentPath = Path.GetDirectoryName(fullPath)
+            ?? throw new InvalidDataException($"{artifactName} has no parent.");
         PhysicalFileAuthority.StableDirectory? parentAuthority;
         try
         {
-            parentAuthority =
-                PhysicalFileAuthority.OpenExistingStableDirectory(
-                    _gameSessionAuthority
-                    ?? throw new ObjectDisposedException(
-                        nameof(GmWorkerExecutionWorkspace)),
-                    parentPath,
-                    artifactName + " parent");
+            parentAuthority = PhysicalFileAuthority.OpenExistingStableDirectory(
+                _gameSessionAuthority ?? throw new ObjectDisposedException(nameof(GmWorkerExecutionWorkspace)),
+                parentPath, artifactName + " parent");
         }
-        catch (DirectoryNotFoundException)
-        {
-            return null;
-        }
+        catch (DirectoryNotFoundException) { return null; }
 
         using (parentAuthority)
         {
-            using var stream = PhysicalFileAuthority.OpenReadFile(
-                parentAuthority,
-                fullPath,
-                artifactName,
-                asynchronous: false,
-                shareDelete: true);
-            if (stream == null)
-                return null;
+            _fileScope.ValidateFile(fullPath);
+            await using var stream = PhysicalFileAuthority.OpenReadFile(
+                parentAuthority, fullPath, artifactName, asynchronous: true, shareDelete: true);
+            if (stream == null) return null;
 
-            var authority =
-                PhysicalFileAuthority.CaptureOpenedFileAuthority(
-                    stream.SafeFileHandle,
-                    fullPath,
-                    artifactName);
-            if (authority.Length > maxBytes)
+            // Admit the resource bound before hashing or allocating on either platform.
+            var length = stream.Length;
+            if (length > maxBytes) throw CreateArtifactLimitException(artifactName, maxBytes);
+            var authority = OperatingSystem.IsWindows()
+                ? PhysicalFileAuthority.CaptureOpenedFileAuthority(stream.SafeFileHandle, fullPath, artifactName)
+                : null;
+            var content = new byte[checked((int)length)];
+            for (var offset = 0; offset < content.Length;)
             {
-                throw CreateArtifactLimitException(
-                    artifactName,
-                    maxBytes);
+                cancellationToken.ThrowIfCancellationRequested();
+                var read = await stream.ReadAsync(
+                    content.AsMemory(offset, Math.Min(TrustedLocalFileImage.CopyBufferSize, content.Length - offset)),
+                    cancellationToken);
+                if (read == 0) throw new InvalidDataException($"{artifactName} was truncated during read.");
+                offset += read;
+                if (_hooks?.AfterWorkspaceReadChunkAsync != null)
+                    await _hooks.AfterWorkspaceReadChunkAsync(fullPath, offset);
             }
-
-            PhysicalFileAuthority.EnsureExactOpenedFileAuthority(
-                stream.SafeFileHandle,
-                fullPath,
-                authority.Identity,
-                authority.Sha256,
-                artifactName,
-                authority.Length);
             cancellationToken.ThrowIfCancellationRequested();
-            var content = PhysicalFileAuthority.ReadOpenedFileBytes(
-                stream.SafeFileHandle,
-                artifactName);
+            if (stream.Length != length || stream.ReadByte() != -1)
+                throw new InvalidDataException($"{artifactName} length changed during read.");
+            if (_hooks?.AfterWorkspaceFileReadAsync != null)
+                await _hooks.AfterWorkspaceFileReadAsync(fullPath);
             cancellationToken.ThrowIfCancellationRequested();
-            PhysicalFileAuthority.EnsureExactOpenedFileAuthority(
-                stream.SafeFileHandle,
-                fullPath,
-                authority.Identity,
-                authority.Sha256,
-                artifactName,
-                authority.Length);
+            var expected = TrustedLocalFileImage.FromBytes(content);
+            if (authority != null)
+            {
+                PhysicalFileAuthority.EnsureExactOpenedFileAuthority(
+                    stream.SafeFileHandle, fullPath, authority.Identity, authority.Sha256,
+                    artifactName, authority.Length);
+            }
+            if (!expected.MatchesFile(_fileScope, fullPath))
+                throw new InvalidDataException($"{artifactName} bytes changed during read.");
+            cancellationToken.ThrowIfCancellationRequested();
             return content;
         }
     }
@@ -836,7 +815,14 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
         {
             try
             {
-                if (workspaceRootIdentity == null)
+                if (!OperatingSystem.IsWindows())
+                {
+                    // Exact owned-name grant; complete preflight refuses links and
+                    // special nodes before deleting evidence. Ordinary hardlinks
+                    // are unlinked only: never clear attributes on outside aliases.
+                    new TrustedLocalFileScope([workspaceRoot]).DeleteOwnedTree(workspaceRoot);
+                }
+                else if (workspaceRootIdentity == null)
                 {
                     PhysicalFileAuthority.TryDeleteDirectoryTree(
                         runtimeRootAuthority,
