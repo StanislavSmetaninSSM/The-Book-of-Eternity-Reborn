@@ -267,29 +267,12 @@
       "id": "portable-worker-diagnostic",
       "responsibility": "Initiating worker before-image preparation error and independent cleanup error remain inspectable in causal order; exact legacy failure diagnosis before portable cutover.",
       "excludes": "Worker acceptance, B1 publication, full gameplay and platform qualification.",
-      "changeHints": [
-        "BookOfEternityClient/Core/FileSystemManager.cs"
-      ],
-      "related": [
-        {
-          "id": "portable-load-worker-ordering",
-          "when": "Changing the active worker decision lifecycle."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": false
-      },
+      "changeHints": ["BookOfEternityClient/Core/FileSystemManager.cs"],
+      "related": [{"id": "portable-load-worker-ordering", "when": "Changing the active worker decision lifecycle."}],
+      "requirements": {"frontendBuild": false, "exclusive": false},
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.PortableWorkerDiagnosticTests.*"
-          ]
-        }
-      ]
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.PortableWorkerDiagnosticTests.*"]}]
     },
     {
       "id": "portable-load-resource-sampling",
@@ -398,87 +381,64 @@
       "id": "portable-save-original-profile-windows",
       "responsibility": "Native Windows original profile-refresh dispatch retains a real physical publication receipt under its held recorder lease, without B1 publication or generation/sentinel changes.",
       "excludes": "Full Load execution, known original Load staging admission blocker, portable original receipts and Linux execution; this owner requires Windows.",
-      "changeHints": [
-        "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs",
-        "BookOfEternityClient.Tests/OriginalSaveProfileRefreshTests.cs"
-      ],
+      "changeHints": ["BookOfEternityClient/Services/AfterlifeEntityProfileState.cs", "BookOfEternityClient.Tests/OriginalSaveProfileRefreshTests.cs"],
       "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "requirements": { "frontendBuild": false, "exclusive": true },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.OriginalSaveProfileRefreshTests.WindowsOriginalRecorderRefreshRetainsPhysicalPublicationReceipt"
-          ]
-        }
+      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.OriginalSaveProfileRefreshTests.WindowsOriginalRecorderRefreshRetainsPhysicalPublicationReceipt"] }]
+    },
+{
+  "id": "portable-load-public-consumers",
+  "responsibility": "T032-B4 affected public-load consumers: detached profile repair and pre-publication foreign-byte refusal, canonical/lifecycle contention, stale bound writer fencing, bounded original ZIP preflight source guard. Retires only the superseded active original-load profile category; immutable historical diagnostic evidence stays unchanged.",
+  "excludes": "Console/browser cutover, original-handler recovery internals, unrelated storage/worker/validation wildcard owners and unchanged filesystem/resource cohorts.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SaveLoadService.cs",
+    "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+    "BookOfEternityClient.IntegrationTests/SaveLoadServiceTests.cs",
+    "BookOfEternityClient.Tests/ValidationSourceGuardTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_RepairsClientOwnedProfileMirrorWithoutReacquiringCanonicalLease",
+        "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameWithOutcomeAsync_ProfilePreparationRefusesChangedLiveBytesBeforePublication",
+        "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_WaitsForCanonicalWriteLeaseBeforeReplacingLiveSession",
+        "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_WaitsForSessionLifecycleLeaseBeforeReplacingLiveSession"
       ]
     },
     {
-      "id": "portable-load-public-consumers",
-      "responsibility": "T032-B4 affected public-load consumers: detached profile repair and pre-publication foreign-byte refusal, canonical/lifecycle contention, stale bound writer fencing, bounded original ZIP preflight source guard. Retires only the superseded active original-load profile category; immutable historical diagnostic evidence stays unchanged.",
-      "excludes": "Console/browser cutover, original-handler recovery internals, unrelated storage/worker/validation wildcard owners and unchanged filesystem/resource cohorts.",
-      "changeHints": [
-        "BookOfEternityClient/Services/SaveLoadService.cs",
-        "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
-        "BookOfEternityClient.IntegrationTests/SaveLoadServiceTests.cs",
-        "BookOfEternityClient.Tests/ValidationSourceGuardTests.cs"
-      ],
-      "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
-      "timeoutMinutes": 3,
-      "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_RepairsClientOwnedProfileMirrorWithoutReacquiringCanonicalLease",
-            "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameWithOutcomeAsync_ProfilePreparationRefusesChangedLiveBytesBeforePublication",
-            "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_WaitsForCanonicalWriteLeaseBeforeReplacingLiveSession",
-            "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_WaitsForSessionLifecycleLeaseBeforeReplacingLiveSession"
-          ]
-        },
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_LoadRotatesGeneration_ThrowsBeforeReplacementMutation",
-            "BookOfEternityClient.Tests.ValidationSourceGuardTests.ResourceAuthorityBoundaries_MustPreflightZipAndRetainLoadLeavesThroughPublication"
-          ]
-        }
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_LoadRotatesGeneration_ThrowsBeforeReplacementMutation",
+        "BookOfEternityClient.Tests.ValidationSourceGuardTests.ResourceAuthorityBoundaries_MustPreflightZipAndRetainLoadLeavesThroughPublication"
       ]
-    },
+    }
+  ]
+},
+
     {
       "id": "portable-save-profile-consumers",
       "responsibility": "Existing StateManager consumers retain leased profile-mirror repair, player authority and rejection of an unleased mirror API.",
       "excludes": "Whole aggregate state, original Load and gameplay lifecycle.",
-      "changeHints": [
-        "BookOfEternityClient/Core/StateManager.cs",
-        "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs"
-      ],
+      "changeHints": ["BookOfEternityClient/Core/StateManager.cs", "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs"],
       "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "requirements": { "frontendBuild": false, "exclusive": true },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.StateManagerTests.AfterlifeEntityProfileState_DoesNotExposeUnleasedCanonicalMirrorWrite",
-            "BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_PlayerSoulProfileAuthorityMirror_RepairsStaleAutoProgression",
-            "BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_ProfileMirrorReadModifyWrite_HoldsOneCanonicalLease"
-          ]
-        }
-      ]
+      "selectors": [{ "project": "unit", "tests": [
+        "BookOfEternityClient.Tests.StateManagerTests.AfterlifeEntityProfileState_DoesNotExposeUnleasedCanonicalMirrorWrite",
+        "BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_PlayerSoulProfileAuthorityMirror_RepairsStaleAutoProgression",
+        "BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_ProfileMirrorReadModifyWrite_HoldsOneCanonicalLease"
+      ] }]
     },
     {
       "id": "portable-engine-save-presentation",
@@ -533,7 +493,7 @@
             "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_SelfConsistentUnknownResourceOwnerIsRejected",
             "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_InvalidUtf8CanonicalResourceInputFailsClosed",
             "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ExcludesLocalUiLockNamespaceDescendants",
-            "BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_RetriesWhenSaveMetadataIsTemporarilyLocked",
+                "BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_RetriesWhenSaveMetadataIsTemporarilyLocked",
             "BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_RejectsOversizedMetadataThroughTrustedBudget",
             "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_WaitsForCanonicalWriteLeaseBeforeReadingSessionSnapshot",
             "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_DoesNotArchiveDirectoryJunctionTarget",
@@ -653,244 +613,117 @@
       "id": "portable-browser-save-creation",
       "responsibility": "Actual browser manual save through one held lease and prepared v2 image decision; exact created destination, confirmed rollback, uncertainty and committed cleanup/close follow-up.",
       "excludes": "Load, original browser v6 writes for other consumers, gameplay/provider lifecycle, full browser GUI and native Linux execution.",
-      "changeHints": [
-        "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs",
-        "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs",
-        "BookOfEternityClient.WebFrontend/src/utils/savePersistenceNotice.ts"
-      ],
+      "changeHints": ["BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs", "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs", "BookOfEternityClient.WebFrontend/src/utils/savePersistenceNotice.ts"],
       "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "requirements": { "frontendBuild": false, "exclusive": true },
       "timeoutMinutes": 5,
       "expectedSeconds": null,
       "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.PortableBrowserSaveCreationTests.BrowserSaveUsesPreparedImageDecisionAndRetainsExactOutcome",
-            "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPlayerActionSarefAndManualSave_BindBeforeAuthoritativeReads"
-          ]
-        }
+        { "project": "unit", "tests": ["BookOfEternityClient.Tests.PortableBrowserSaveCreationTests.BrowserSaveUsesPreparedImageDecisionAndRetainsExactOutcome", "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPlayerActionSarefAndManualSave_BindBeforeAuthoritativeReads"] }
       ]
     },
     {
       "id": "portable-save-bound-outcome",
       "responsibility": "Actual save outcomes through ordinary session finalization preserve committed or uncertain decisions and retained evidence when closing recovery also fails; generation replacement and escaped writer fences remain authoritative.",
       "excludes": "Full engine accepted-turn preparation, browser transport and load; native OS evidence is recorded separately.",
-      "changeHints": [
-        "BookOfEternityClient/Core/SessionOperationContext.cs",
-        "BookOfEternityClient.Tests/PortableSaveBoundOutcomeTests.cs"
-      ],
+      "changeHints": ["BookOfEternityClient/Core/SessionOperationContext.cs", "BookOfEternityClient.Tests/PortableSaveBoundOutcomeTests.cs"],
       "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "requirements": { "frontendBuild": false, "exclusive": true },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.*",
-            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ReplacementWithoutLaterWrite_FinalCheckStillThrows",
-            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_EscapedTaskCannotWriteAfterOwningScopeCloses",
-            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter"
-          ]
-        }
-      ]
+      "selectors": [{ "project": "unit", "tests": [
+        "BookOfEternityClient.Tests.PortableSaveBoundOutcomeTests.*",
+        "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ReplacementWithoutLaterWrite_FinalCheckStillThrows",
+        "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_EscapedTaskCannotWriteAfterOwningScopeCloses",
+        "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter"
+      ] }]
     },
     {
       "id": "portable-browser-save-presentation",
       "responsibility": "Browser save transport notices retain confirmed commit, follow-up, rollback and uncertainty, including HTTP failure payloads and lost responses, without unsafe refresh or false retry promises.",
       "excludes": "Backend publication, full rendered browser GUI, load and settings publication.",
-      "changeHints": [
-        "BookOfEternityClient.WebFrontend/src/api/contracts.ts",
-        "BookOfEternityClient.WebFrontend/src/utils/savePersistenceNotice.ts"
-      ],
+      "changeHints": ["BookOfEternityClient.WebFrontend/src/api/contracts.ts", "BookOfEternityClient.WebFrontend/src/utils/savePersistenceNotice.ts"],
       "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": false
-      },
+      "requirements": { "frontendBuild": false, "exclusive": false },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
       "selectors": [
-        {
-          "project": "frontend",
-          "runner": "node",
-          "tests": [
-            "BookOfEternityClient.WebFrontend/test/savePersistenceNotice.test.ts"
-          ]
-        },
-        {
-          "project": "frontend",
-          "runner": "vitest",
-          "tests": [
-            "BookOfEternityClient.WebFrontend/test/browserSaveContinuation.test.ts"
-          ]
-        }
+        { "project": "frontend", "runner": "node", "tests": ["BookOfEternityClient.WebFrontend/test/savePersistenceNotice.test.ts"] },
+        { "project": "frontend", "runner": "vitest", "tests": ["BookOfEternityClient.WebFrontend/test/browserSaveContinuation.test.ts"] }
       ]
     },
     {
       "id": "portable-save-read-refresh",
       "responsibility": "Ordinary save-list stream and immediate profile-refresh prerequisites: leased seekable reads, hard-link acceptance, completion type/link rejection, one common mirror publication, byte-exact no-op and typed same-lease uncertainty/debt admission.",
       "excludes": "SaveLoadService listing integration, original load physical receipts, browser transport, resource envelopes and unrelated aggregate-state readers.",
-      "changeHints": [
-        "BookOfEternityClient/Core/FileSystemManager.OrdinaryReadStreams.cs",
-        "BookOfEternityClient/Core/StateManager.cs",
-        "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs",
-        "BookOfEternityClient.Tests/OrdinarySaveReadAndRefreshTests.cs"
-      ],
+      "changeHints": ["BookOfEternityClient/Core/FileSystemManager.OrdinaryReadStreams.cs", "BookOfEternityClient/Core/StateManager.cs", "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs", "BookOfEternityClient.Tests/OrdinarySaveReadAndRefreshTests.cs"],
       "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "requirements": { "frontendBuild": false, "exclusive": true },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.OrdinaryStreamReadsFullFileAndAcceptsHardLinkedInput",
-            "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.OrdinaryStreamCompletionRejectsLinkedOrWrongTypeName",
-            "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.ProfileRepairPublishesOneCommonDecisionOnTheSuppliedLease",
-            "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.MatchingProfileRefreshPreservesExactBomBytesWithoutPublication",
-            "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.UncertainMirrorRepairPropagatesWithoutRefreshingRuntime",
-            "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.RetainedDebtBlocksStreamAndRefreshBeforeAnyReadOnTheSameLease"
-          ]
-        }
-      ]
+      "selectors": [{ "project": "unit", "tests": [
+        "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.OrdinaryStreamReadsFullFileAndAcceptsHardLinkedInput",
+        "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.OrdinaryStreamCompletionRejectsLinkedOrWrongTypeName",
+        "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.ProfileRepairPublishesOneCommonDecisionOnTheSuppliedLease",
+        "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.MatchingProfileRefreshPreservesExactBomBytesWithoutPublication",
+        "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.UncertainMirrorRepairPropagatesWithoutRefreshingRuntime",
+        "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.RetainedDebtBlocksStreamAndRefreshBeforeAnyReadOnTheSameLease"
+      ] }]
     },
     {
       "id": "portable-save-retention-release",
       "responsibility": "Actual autosave retains its known committed archive and blocks continuation if the retention lease reports release failure, including preservation of an earlier typed retention outcome.",
       "excludes": "Native handle failure injection, broad retention matrix and engine lifecycle; native OS evidence is recorded separately.",
-      "changeHints": [
-        "BookOfEternityClient/Services/SaveLoadService.cs",
-        "BookOfEternityClient.Tests/PortableSaveOutcomeTests.cs"
-      ],
+      "changeHints": ["BookOfEternityClient/Services/SaveLoadService.cs", "BookOfEternityClient.Tests/PortableSaveOutcomeTests.cs"],
       "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "requirements": { "frontendBuild": false, "exclusive": true },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.PortableSaveOutcomeTests.RetentionLeaseReleaseFailureBlocksCommittedAutosave"
-          ]
-        }
-      ]
+      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.PortableSaveOutcomeTests.RetentionLeaseReleaseFailureBlocksCommittedAutosave"] }]
     },
     {
       "id": "portable-save-outcomes",
       "responsibility": "Public ordinary SaveGame and immediate autosave outcomes: closed ZIP before publication, actual known rollback, committed cleanup/log follow-up and uncertainty stopping retention while preserving the complete library.",
       "excludes": "Browser transport, engine turn continuation, archive validation matrix, load and historical resource experiments.",
-      "changeHints": [
-        "BookOfEternityClient/Services/SaveLoadService.cs",
-        "BookOfEternityClient.Tests/PortableSaveOutcomeTests.cs"
-      ],
+      "changeHints": ["BookOfEternityClient/Services/SaveLoadService.cs", "BookOfEternityClient.Tests/PortableSaveOutcomeTests.cs"],
       "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "requirements": { "frontendBuild": false, "exclusive": true },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller",
-            "BookOfEternityClient.Tests.PortableSaveOutcomeTests.ClosedArchiveAndCommittedResultSurviveLoggingFailure",
-            "BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveWithUnresolvedDebtStopsBeforeRetention",
-            "BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveRetainsFollowUpWhenDeletionRollsBack",
-            "BookOfEternityClient.Tests.PortableSaveOutcomeTests.PreparedCandidateRequiresItsOriginalContinuouslyHeldLease",
-            "BookOfEternityClient.Tests.PortableSaveOutcomeTests.PreparedCandidateRejectsGenerationDriftAndCreateCollision"
-          ]
-        }
-      ]
+      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller", "BookOfEternityClient.Tests.PortableSaveOutcomeTests.ClosedArchiveAndCommittedResultSurviveLoggingFailure", "BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveWithUnresolvedDebtStopsBeforeRetention", "BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveRetainsFollowUpWhenDeletionRollsBack", "BookOfEternityClient.Tests.PortableSaveOutcomeTests.PreparedCandidateRequiresItsOriginalContinuouslyHeldLease", "BookOfEternityClient.Tests.PortableSaveOutcomeTests.PreparedCandidateRejectsGenerationDriftAndCreateCollision"] }]
     },
     {
       "id": "portable-storage-stream-generation",
       "responsibility": "Six separate-process v2 generation-member ordering cases: fresh adapter generation before/staged/published/commit cuts and existing BOM/case/extension-preserving transitions, with present-empty versus absent members and exact whole-set cold recovery.",
       "excludes": "Full original v1 encoding matrix, generic content phase matrix, resource envelope, Linux FIFO and SaveGame caller cutover.",
-      "changeHints": [
-        "BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs",
-        "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
-        "BookOfEternityClient.TestSupport/TrustedLocalStreamGenerationCrashFixture.cs",
-        "BookOfEternityClient.Tests/TrustedLocalStreamGenerationRecoveryTests.cs"
-      ],
+      "changeHints": ["BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs", "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs", "BookOfEternityClient.TestSupport/TrustedLocalStreamGenerationCrashFixture.cs", "BookOfEternityClient.Tests/TrustedLocalStreamGenerationRecoveryTests.cs"],
       "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "requirements": { "frontendBuild": false, "exclusive": true },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages"
-          ]
-        }
-      ]
+      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages"] }]
     },
     {
       "id": "portable-storage-stream-linux-fifo",
       "responsibility": "Linux-only real FIFO replacing a later v2 member: cold acquisition rejects the special file without opening it or changing earlier data, generation, journal or outside/library sentinels. Run on Linux; Windows compilation is not native execution.",
       "excludes": "Windows execution, ordinary type/link cases owned by cold-conflicts, general scope FIFO validation and resource/caller acceptance.",
-      "changeHints": [
-        "BookOfEternityClient.Tests/TrustedLocalStreamRecoveryTests.cs",
-        "BookOfEternityClient/Core/TrustedLocalFileScope.cs"
-      ],
+      "changeHints": ["BookOfEternityClient.Tests/TrustedLocalStreamRecoveryTests.cs", "BookOfEternityClient/Core/TrustedLocalFileScope.cs"],
       "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "requirements": { "frontendBuild": false, "exclusive": true },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LinuxFifoLaterMemberPreventsEarlierColdRollback"
-          ]
-        }
-      ]
+      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LinuxFifoLaterMemberPreventsEarlierColdRollback"] }]
     },
     {
       "id": "portable-storage-image-admission",
       "responsibility": "Actual image adapter pre-intent generation drift and changed/missing captured candidate rejection; exact typed result, no published phases and complete destination/library/generation/outside preservation.",
       "excludes": "Ordinary identical-create collision, generation cold ordering, resource and SaveGame caller acceptance.",
-      "changeHints": [
-        "BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs",
-        "BookOfEternityClient.Tests/TrustedLocalImageAdapterAdmissionTests.cs"
-      ],
+      "changeHints": ["BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs", "BookOfEternityClient.Tests/TrustedLocalImageAdapterAdmissionTests.cs"],
       "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "requirements": { "frontendBuild": false, "exclusive": true },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.TrustedLocalImageAdapterAdmissionTests.PreIntentDriftCannotPublishCapturedArchive"
-          ]
-        }
-      ]
+      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.TrustedLocalImageAdapterAdmissionTests.PreIntentDriftCannotPublishCapturedArchive"] }]
     },
     {
       "id": "portable-storage-stream-resource",
@@ -903,18 +736,13 @@
         "BookOfEternityClient.Tests/TrustedLocalStreamResourceTests.cs"
       ],
       "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "requirements": { "frontendBuild": false, "exclusive": true },
       "timeoutMinutes": 8,
       "expectedSeconds": null,
       "selectors": [
         {
           "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.TrustedLocalStreamResourceTests.FullArchiveImagesPublishAndRecoverWithinOriginalOwnedBounds"
-          ]
+          "tests": ["BookOfEternityClient.Tests.TrustedLocalStreamResourceTests.FullArchiveImagesPublishAndRecoverWithinOriginalOwnedBounds"]
         }
       ]
     },
@@ -2889,88 +2717,34 @@
       "id": "spiritual-staged-recovery-before-ready",
       "responsibility": "Cold recovery after the real A draft write but before A Ready; require the original A response before B and publish once.",
       "excludes": "Recovery after authenticated Ready or issued B, worker transport, and unrelated turn lifecycles.",
-      "changeHints": [
-        "BookOfEternityClient/Core/GameEngine/*Spiritual*",
-        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependent*"
-      ],
-      "related": [
-        {
-          "id": "spiritual-staged-recovery-ready",
-          "when": "The change affects authentication or recovery of already-written A transport."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "changeHints": ["BookOfEternityClient/Core/GameEngine/*Spiritual*", "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependent*"],
+      "related": [{"id": "spiritual-staged-recovery-ready", "when": "The change affects authentication or recovery of already-written A transport."}],
+      "requirements": {"frontendBuild": false, "exclusive": true},
       "timeoutMinutes": 15,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterAApplyRequiresAReadyThenB"
-          ]
-        }
-      ]
+      "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterAApplyRequiresAReadyThenB"]}]
     },
     {
       "id": "spiritual-staged-recovery-ready",
       "responsibility": "Cold recovery with the original A Ready already present; authenticate A before a separate B response.",
       "excludes": "Pre-Ready draft recovery, already-issued B recovery, worker transport, and unrelated turn lifecycles.",
-      "changeHints": [
-        "BookOfEternityClient/Core/GameEngine/*Spiritual*",
-        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependent*"
-      ],
-      "related": [
-        {
-          "id": "spiritual-staged-recovery-issued-successor",
-          "when": "The change alters accepted A preservation or successor request recovery."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "changeHints": ["BookOfEternityClient/Core/GameEngine/*Spiritual*", "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependent*"],
+      "related": [{"id": "spiritual-staged-recovery-issued-successor", "when": "The change alters accepted A preservation or successor request recovery."}],
+      "requirements": {"frontendBuild": false, "exclusive": true},
       "timeoutMinutes": 15,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterAReadyAuthenticatesBeforeB"
-          ]
-        }
-      ]
+      "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterAReadyAuthenticatesBeforeB"]}]
     },
     {
       "id": "spiritual-staged-recovery-issued-successor",
       "responsibility": "Cold recovery after B request publication; preserve accepted A and the saved wound, require B Ready, and publish once.",
       "excludes": "Earlier A draft/Ready cuts, worker transport, and unrelated turn lifecycles.",
-      "changeHints": [
-        "BookOfEternityClient/Core/GameEngine/*Spiritual*",
-        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependent*"
-      ],
-      "related": [
-        {
-          "id": "spiritual-cutover-staged-publication",
-          "when": "The change alters private progress write/readback or staged publication ownership."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "changeHints": ["BookOfEternityClient/Core/GameEngine/*Spiritual*", "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependent*"],
+      "related": [{"id": "spiritual-cutover-staged-publication", "when": "The change alters private progress write/readback or staged publication ownership."}],
+      "requirements": {"frontendBuild": false, "exclusive": true},
       "timeoutMinutes": 15,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterBPublicationRetainsA"
-          ]
-        }
-      ]
+      "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterBPublicationRetainsA"]}]
     },
     {
       "id": "turn-lifecycle-spiritual",
@@ -3364,7 +3138,7 @@
             "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentExclusiveHandoffExactHashesAndAfterlifeRepairShape",
             "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.GmWorkerTaskExamples_BindEveryTaskPacketToSessionGeneration",
             "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.GmWorkerTaskExamples_UseCanonicalSessionGenerationInEveryTaskPacket",
-            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentExplicitChangeKindsAndPinnedAfterlifeRealmAuthority",
+                "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentExplicitChangeKindsAndPinnedAfterlifeRealmAuthority",
             "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentReservedAuthorityAndSessionReplacementAbort",
             "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.DurableFileAuthoritySourceGuard_RejectsPathBasedRuntimeMutations",
             "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.GmWorkerBridgeDocs_DocumentExternalRuntimeAndArtifactBudgets",
@@ -9141,113 +8915,56 @@
         "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualBindingResultClosure.cs"
       ],
       "related": [
-        {
-          "id": "spiritual-cutover-c2-replay",
-          "when": "The change affects saved-decision replay or generic position/cost correction compatibility."
-        },
-        {
-          "id": "spiritual-cutover-staged-publication",
-          "when": "The change affects durable A/B progress or continuation publication ownership."
-        }
+        { "id": "spiritual-cutover-c2-replay", "when": "The change affects saved-decision replay or generic position/cost correction compatibility." },
+        { "id": "spiritual-cutover-staged-publication", "when": "The change affects durable A/B progress or continuation publication ownership." }
       ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "requirements": { "frontendBuild": false, "exclusive": true },
       "timeoutMinutes": 5,
       "expectedSeconds": null,
       "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingLosesLeverageRequestsExactFailedResult"
-          ]
-        }
+        { "project": "integration", "tests": [
+          "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingLosesLeverageRequestsExactFailedResult"
+        ] }
       ]
     },
     {
       "id": "spiritual-binding-control-boundaries",
       "responsibility": "Exact control presence/value and effective raw carrier precedence for bounded failed-binding and terminal correction groups.",
       "excludes": "Original-owner admission, resource execution and live continuation publication.",
-      "changeHints": [
-        "BookOfEternityClient/Services/SpiritualBindingTerminalControlCorrection.cs"
-      ],
-      "related": [
-        {
-          "id": "spiritual-binding-wrapper-control",
-          "when": "Raw carrier interpretation changes."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": false
-      },
+      "changeHints": ["BookOfEternityClient/Services/SpiritualBindingTerminalControlCorrection.cs"],
+      "related": [{ "id": "spiritual-binding-wrapper-control", "when": "Raw carrier interpretation changes." }],
+      "requirements": { "frontendBuild": false, "exclusive": false },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.SpiritualBindingCorrectionBoundaryTests.*"
-          ]
-        }
-      ]
+      "selectors": [{ "project": "unit", "tests": [
+        "BookOfEternityClient.Tests.SpiritualBindingCorrectionBoundaryTests.*"
+      ] }]
     },
     {
       "id": "spiritual-binding-live-publication",
       "responsibility": "Original GameEngine binding turn with three actual file-GM responses, final-control closure and once-only resource/wound/story publication.",
       "excludes": "Cold force-binding recovery and unrelated spiritual lifecycle matrices.",
-      "changeHints": [
-        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2DependentWalk.cs"
-      ],
-      "related": [
-        {
-          "id": "spiritual-binding-final-control",
-          "when": "Private A/B admission or progress replay changes."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "changeHints": ["BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2DependentWalk.cs"],
+      "related": [{ "id": "spiritual-binding-final-control", "when": "Private A/B admission or progress replay changes." }],
+      "requirements": { "frontendBuild": false, "exclusive": true },
       "timeoutMinutes": 12,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualBindingContinuation_FileRepliesPublishOnce"
-          ]
-        }
-      ]
+      "selectors": [{ "project": "integration", "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualBindingContinuation_FileRepliesPublishOnce"
+      ] }]
     },
     {
       "id": "spiritual-binding-cold-publication",
       "responsibility": "Force-binding original GameEngine turn interrupted after accepted A and B publication, requiring a distinct final Ready after restart and publishing once.",
       "excludes": "Other restart cuts, worker processes and general continuation matrices.",
-      "changeHints": [
-        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2SavedReplay.cs"
-      ],
-      "related": [
-        {
-          "id": "spiritual-binding-live-publication",
-          "when": "Shared live binding completion changes."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "changeHints": ["BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2SavedReplay.cs"],
+      "related": [{ "id": "spiritual-binding-live-publication", "when": "Shared live binding completion changes." }],
+      "requirements": { "frontendBuild": false, "exclusive": true },
       "timeoutMinutes": 15,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualBindingContinuation_ColdAfterARequiresFinalReady"
-          ]
-        }
-      ]
+      "selectors": [{ "project": "integration", "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualBindingContinuation_ColdAfterARequiresFinalReady"
+      ] }]
     },
     {
       "id": "spiritual-binding-wrapper-control",
@@ -9258,24 +8975,15 @@
         "BookOfEternityClient/Services/SpiritualBindingTerminalControlCorrection.cs"
       ],
       "related": [
-        {
-          "id": "spiritual-binding-final-control",
-          "when": "Shared terminal continuation or private progress rules change."
-        }
+        { "id": "spiritual-binding-final-control", "when": "Shared terminal continuation or private progress rules change." }
       ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "requirements": { "frontendBuild": false, "exclusive": true },
       "timeoutMinutes": 5,
       "expectedSeconds": null,
       "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_ForceBindingWrapperClosesAThenFinalControl"
-          ]
-        }
+        { "project": "integration", "tests": [
+          "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_ForceBindingWrapperClosesAThenFinalControl"
+        ] }
       ]
     },
     {
@@ -9288,28 +8996,16 @@
         "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependentProgress.cs"
       ],
       "related": [
-        {
-          "id": "spiritual-binding-result-dependency",
-          "when": "Original legality, result permissions or mixed-cost arithmetic changes."
-        },
-        {
-          "id": "spiritual-cutover-staged-publication",
-          "when": "Shared sequential walk, progress journal or continuation evaluation changes."
-        }
+        { "id": "spiritual-binding-result-dependency", "when": "Original legality, result permissions or mixed-cost arithmetic changes." },
+        { "id": "spiritual-cutover-staged-publication", "when": "Shared sequential walk, progress journal or continuation evaluation changes." }
       ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "requirements": { "frontendBuild": false, "exclusive": true },
       "timeoutMinutes": 5,
       "expectedSeconds": null,
       "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingClosesAThenSeparatelyCorrectsFinalControl"
-          ]
-        }
+        { "project": "integration", "tests": [
+          "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingClosesAThenSeparatelyCorrectsFinalControl"
+        ] }
       ]
     },
     {
@@ -9451,14 +9147,8 @@
         "BookOfEternityClient/Services/Afterlife*"
       ],
       "related": [
-        {
-          "id": "spiritual-frontier-admission",
-          "when": "Changes affect issued draft permissions or private-pair affinity."
-        },
-        {
-          "id": "spiritual-frontier-response-evaluation",
-          "when": "Changes affect response classification or transition from accepted A to issued B."
-        }
+        { "id": "spiritual-frontier-admission", "when": "Changes affect issued draft permissions or private-pair affinity." },
+        { "id": "spiritual-frontier-response-evaluation", "when": "Changes affect response classification or transition from accepted A to issued B." }
       ],
       "requirements": {
         "frontendBuild": false,
@@ -9480,61 +9170,28 @@
       "id": "spiritual-frontier-admission",
       "responsibility": "Issued A rejects future or invalid critical edits and replacement of its private checkpoint/pending pair.",
       "excludes": "Progress persistence, complete A/B response evaluation and final GameEngine publication.",
-      "changeHints": [
-        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2Dependent*",
-        "BookOfEternityClient/Services/SpiritualWoundDependentDraftPolicy.cs"
-      ],
-      "related": [
-        {
-          "id": "spiritual-frontier-response-evaluation",
-          "when": "Changed admission rules affect a complete corrected response."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "changeHints": ["BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2Dependent*", "BookOfEternityClient/Services/SpiritualWoundDependentDraftPolicy.cs"],
+      "related": [{ "id": "spiritual-frontier-response-evaluation", "when": "Changed admission rules affect a complete corrected response." }],
+      "requirements": { "frontendBuild": false, "exclusive": true },
       "timeoutMinutes": 5,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedFrontier_IssuedARejectsFutureAndInvalidCriticalDrafts",
-            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedFrontier_IssuedARejectsReplacementPrivatePair"
-          ]
-        }
-      ]
+      "selectors": [{ "project": "integration", "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedFrontier_IssuedARejectsFutureAndInvalidCriticalDrafts",
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedFrontier_IssuedARejectsReplacementPrivatePair"
+      ] }]
     },
     {
       "id": "spiritual-frontier-response-evaluation",
       "responsibility": "One complete A/B protocol scenario: held witness, rejected draft, read-only progress, durable successor, stale A and resolved B without another write.",
       "excludes": "Atomic write-failure matrix, unrelated draft admission variants and final GameEngine publication.",
-      "changeHints": [
-        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualContinuationDraft.cs",
-        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependentProgress.cs",
-        "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs"
-      ],
-      "related": [
-        {
-          "id": "spiritual-cutover-staged-publication",
-          "when": "Changed evaluation also changes progress persistence or failure classification."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "changeHints": ["BookOfEternityClient/Services/Validation/ValidationService.SpiritualContinuationDraft.cs", "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependentProgress.cs", "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs"],
+      "related": [{ "id": "spiritual-cutover-staged-publication", "when": "Changed evaluation also changes progress persistence or failure classification." }],
+      "requirements": { "frontendBuild": false, "exclusive": true },
       "timeoutMinutes": 7,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedFrontier_PublicEvaluationAdvancesAThenResolvesB"
-          ]
-        }
-      ]
+      "selectors": [{ "project": "integration", "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedFrontier_PublicEvaluationAdvancesAThenResolvesB"
+      ] }]
     },
     {
       "id": "spiritual-cutover-output",
@@ -10930,255 +10587,122 @@
       "id": "portable-load-topology",
       "responsibility": "Connected current-producer ordinary load across complete file/directory shapes and harmless old empty-directory preservation, with one decision, exact generation and protected source/library bytes.",
       "excludes": "Independent malformed-v3 preflight, cold process termination, resource envelopes, public-client cutover and unrelated gameplay.",
-      "changeHints": [
-        "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs",
-        "BookOfEternityClient/Core/FileSystemManager.LoadReplacement.cs",
-        "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
-        "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.Topology.cs"
-      ],
-      "related": [
-        {
-          "id": "portable-load-entry",
-          "when": "Changing the internal typed-load namespace publication adapter."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "changeHints": ["BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs", "BookOfEternityClient/Core/FileSystemManager.LoadReplacement.cs", "BookOfEternityClient/Services/SaveLoadService.Loading.cs", "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.Topology.cs"],
+      "related": [{"id": "portable-load-entry", "when": "Changing the internal typed-load namespace publication adapter."}],
+      "requirements": {"frontendBuild": false, "exclusive": true},
       "timeoutMinutes": 5,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace",
-            "BookOfEternityClient.Tests.PortableLoadReplacementTests.InterruptedTopologyRestoresExactBeforeNamespace",
-            "BookOfEternityClient.Tests.PortableLoadReplacementTests.FreshGenerationInterruptionRestoresExactAbsence"
-          ]
-        }
-      ]
+      "selectors": [{"project": "integration", "tests": [
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace",
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.InterruptedTopologyRestoresExactBeforeNamespace",
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.FreshGenerationInterruptionRestoresExactAbsence"
+      ]}]
     },
     {
       "id": "portable-storage-namespace-generation",
       "responsibility": "V3 new-generation authority: independent pending/committed frames must restore exact prior generation absence last or retain exact committed generation bytes.",
       "excludes": "V2 generation compatibility and full namespace/topology/resource/client acceptance.",
-      "changeHints": [
-        "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs",
-        "BookOfEternityClient.Tests/TrustedLocalNamespaceJournalTests.cs",
-        "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.Topology.cs"
-      ],
-      "related": [
-        {
-          "id": "portable-storage-namespace",
-          "when": "Changing v3 generation-last reconciliation or exact rollback confirmation."
-        },
-        {
-          "id": "portable-load-topology",
-          "when": "Changing the typed namespace publication outcome."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "changeHints": ["BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs", "BookOfEternityClient.Tests/TrustedLocalNamespaceJournalTests.cs", "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.Topology.cs"],
+      "related": [{"id":"portable-storage-namespace","when":"Changing v3 generation-last reconciliation or exact rollback confirmation."},{"id":"portable-load-topology","when":"Changing the typed namespace publication outcome."}],
+      "requirements": {"frontendBuild":false,"exclusive":true},
       "timeoutMinutes": 3,
       "expectedSeconds": null,
       "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentNewGenerationFramePreservesExactAbsence"
-          ]
-        }
+        {"project":"unit","tests":["BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentNewGenerationFramePreservesExactAbsence"]}
       ]
     },
     {
       "id": "portable-storage-namespace",
       "responsibility": "V3 namespace authority through real lease/recovery: independent pending/committed frames, strict decoded schema and exact regions, immutable boundaries, required/root grants, complete unknown-file/empty-directory preflight before earlier restoration.",
       "excludes": "Connected ZIP load belongs to portable-load-topology. Native link/special-file mechanisms, cold termination and resource envelopes receive their own bounded owners when added.",
-      "changeHints": [
-        "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs",
-        "BookOfEternityClient/Core/TrustedLocalFilePublication.NamespaceJournal.cs",
-        "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
-        "BookOfEternityClient.Tests/TrustedLocalNamespaceJournalTests.cs"
-      ],
-      "related": [
-        {
-          "id": "portable-storage-stream-dispatch",
-          "when": "Changing the shared recovery version dispatcher."
-        },
-        {
-          "id": "portable-storage-original-v1-fixtures",
-          "when": "Changing the shared recovery entry while preserving original v1 authority."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "changeHints": ["BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs", "BookOfEternityClient/Core/TrustedLocalFilePublication.NamespaceJournal.cs", "BookOfEternityClient/Core/TrustedLocalFileScope.cs", "BookOfEternityClient.Tests/TrustedLocalNamespaceJournalTests.cs"],
+      "related": [{"id": "portable-storage-stream-dispatch", "when": "Changing the shared recovery version dispatcher."}, {"id": "portable-storage-original-v1-fixtures", "when": "Changing the shared recovery entry while preserving original v1 authority."}],
+      "requirements": {"frontendBuild": false, "exclusive": true},
       "timeoutMinutes": 5,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentV3FrameKeepsCompletePendingOrCommittedDecision",
-            "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.LateInvalidV3MetadataRetainsEveryEarlierMemberAndEvidence",
-            "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.EveryV3FieldRejectsOmissionWrongTypeAndForbiddenNull",
-            "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.UnknownLaterChildRetainsEveryEarlierAfterImage",
-            "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.UnsupportedNamespaceAuthorityRetainsExactEvidence"
-          ]
-        }
-      ]
+      "selectors": [{"project": "unit", "tests": [
+        "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentV3FrameKeepsCompletePendingOrCommittedDecision",
+        "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.LateInvalidV3MetadataRetainsEveryEarlierMemberAndEvidence",
+        "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.EveryV3FieldRejectsOmissionWrongTypeAndForbiddenNull",
+        "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.UnknownLaterChildRetainsEveryEarlierAfterImage",
+        "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.UnsupportedNamespaceAuthorityRetainsExactEvidence"
+      ]}]
     },
     {
       "id": "portable-load-metadata",
       "responsibility": "V2 metadata authority: headers beyond the former aggregate cap, independent pending/committed bytes, reordered/escaped fields, strict decoded schema/contiguous regions and complete preflight before exact recovery.",
       "excludes": "Per-member encoding and token-carry observations belong to portable-load-metadata-transport. Namespace v3 conversions, load archive/resource envelopes, full save acceptance and public-client cutover.",
-      "changeHints": [
-        "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
-        "BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs",
-        "BookOfEternityClient.Tests/TrustedLocalFrameMetadataTests.cs"
-      ],
+      "changeHints": ["BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs", "BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs", "BookOfEternityClient.Tests/TrustedLocalFrameMetadataTests.cs"],
       "related": [
-        {
-          "id": "portable-storage-stream-publication",
-          "when": "Changing v2 metadata encoding, strict schema or region rebinding."
-        },
-        {
-          "id": "portable-storage-stream-dispatch",
-          "when": "Changing journal dispatch or physical metadata length admission."
-        },
-        {
-          "id": "portable-storage-original-v1-fixtures",
-          "when": "Changing shared journal dispatch while retaining v1 authority."
-        },
-        {
-          "id": "portable-storage-stream-generation",
-          "when": "Changing generation descriptor parsing or complete frame binding."
-        }
+        {"id": "portable-storage-stream-publication", "when": "Changing v2 metadata encoding, strict schema or region rebinding."},
+        {"id": "portable-storage-stream-dispatch", "when": "Changing journal dispatch or physical metadata length admission."},
+        {"id": "portable-storage-original-v1-fixtures", "when": "Changing shared journal dispatch while retaining v1 authority."},
+        {"id": "portable-storage-stream-generation", "when": "Changing generation descriptor parsing or complete frame binding."}
       ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "requirements": {"frontendBuild": false, "exclusive": true},
       "timeoutMinutes": 5,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.LargeMetadataWriterReachesCompleteIntentWithoutAggregateCap",
-            "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.LargeMetadataRoundTripsWithoutAggregateCap",
-            "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.ReorderedAndEscapedFieldsKeepExistingMeaning",
-            "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.IndependentSmallV2FrameKeepsExactDecision",
-            "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.StrictMetadataRejectsLateInvalidMemberBeforeRecoveryMutation",
-            "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.EveryMetadataFieldRejectsOmissionWrongTypeAndForbiddenNull",
-            "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.SplitUtf8PathTokenKeepsExactMemberMeaning",
-            "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.InvalidMetadataSyntaxAndNumericTokensRetainExactEvidence"
-          ]
-        }
-      ]
+      "selectors": [{"project": "unit", "tests": [
+        "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.LargeMetadataWriterReachesCompleteIntentWithoutAggregateCap",
+        "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.LargeMetadataRoundTripsWithoutAggregateCap",
+        "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.ReorderedAndEscapedFieldsKeepExistingMeaning",
+        "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.IndependentSmallV2FrameKeepsExactDecision",
+        "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.StrictMetadataRejectsLateInvalidMemberBeforeRecoveryMutation",
+        "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.EveryMetadataFieldRejectsOmissionWrongTypeAndForbiddenNull",
+        "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.SplitUtf8PathTokenKeepsExactMemberMeaning",
+        "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.InvalidMetadataSyntaxAndNumericTokensRetainExactEvidence"
+      ]}]
     },
     {
       "id": "portable-load-metadata-transport",
       "responsibility": "Causal v2 transport measurements: real opening/per-member output advancement and zero pending encoding for equal largest-member workloads; actual oversized escaped token carry growth, completion and immediate release before later path refusal.",
       "excludes": "Strict schema/large complete-frame acceptance is owned by portable-load-metadata. A long relative token proves parser transport plus separate authority refusal, not legal native long-path acceptance or a complete resource envelope.",
-      "changeHints": [
-        "BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs",
-        "BookOfEternityClient.Tests/TrustedLocalFrameMetadataTests.cs"
-      ],
-      "related": [
-        {
-          "id": "portable-load-metadata",
-          "when": "Changing writer flush or incremental reader buffering used by the same v2 codec."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "changeHints": ["BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs", "BookOfEternityClient.Tests/TrustedLocalFrameMetadataTests.cs"],
+      "related": [{"id": "portable-load-metadata", "when": "Changing writer flush or incremental reader buffering used by the same v2 codec."}],
+      "requirements": {"frontendBuild": false, "exclusive": true},
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.WriterFlushesEachMemberWithoutWholeHeaderRetention",
-            "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.LongEscapedTokenReleasesCarryBeforeLaterPathRefusal"
-          ]
-        }
-      ]
+      "selectors": [{"project": "unit", "tests": [
+        "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.WriterFlushesEachMemberWithoutWholeHeaderRetention",
+        "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.LongEscapedTokenReleasesCarryBeforeLaterPathRefusal"
+      ]}]
     },
     {
       "id": "portable-load-original-admission",
       "responsibility": "Original admission controls retained by the portable load entry: actual corrupt ZIP, missing resource root and self-consistent unknown resource owner reject before leases; existing raw central-directory budget, exact descriptor limits and stream-position controls remain unchanged.",
       "excludes": "Original public physical-load acceptance, resource-size qualification, save-only performance sweeps and all gameplay validation.",
-      "changeHints": [
-        "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
-        "BookOfEternityClient/Services/SaveLoadService.cs"
-      ],
-      "related": [
-        {
-          "id": "portable-load-alias-admission",
-          "when": "Changing path interpretation after original archive admission."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": false
-      },
+      "changeHints": ["BookOfEternityClient/Services/SaveLoadService.Loading.cs", "BookOfEternityClient/Services/SaveLoadService.cs"],
+      "related": [{"id": "portable-load-alias-admission", "when": "Changing path interpretation after original archive admission."}],
+      "requirements": {"frontendBuild": false, "exclusive": false},
       "timeoutMinutes": 3,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.PortableLoadReplacementTests.OriginalArchiveAndResourceAdmissionRejectsBeforePortableDecision",
-            "BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchivePreflight_RejectsCentralDirectoryMetadataBeforeZipArchiveMaterialization",
-            "BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchivePreflight_AcceptsBoundedArchiveAndRestoresStreamPosition",
-            "BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchiveBudgets_AcceptExactLimitsAndRejectOverByOne"
-          ]
-        }
-      ]
+      "selectors": [{"project": "integration", "tests": [
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.OriginalArchiveAndResourceAdmissionRejectsBeforePortableDecision",
+        "BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchivePreflight_RejectsCentralDirectoryMetadataBeforeZipArchiveMaterialization",
+        "BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchivePreflight_AcceptsBoundedArchiveAndRestoresStreamPosition",
+        "BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchiveBudgets_AcceptExactLimitsAndRejectOverByOne"
+      ]}]
     },
     {
       "id": "portable-load-lease-consumers",
       "responsibility": "Exact affected acquisition consumers when ordinary load classifies trusted-local recovery failure: replacement requires active lifecycle authority, mutation cannot rotate, ordinary unbound recovery keeps its established decision and original recovery callbacks restore lease mode on both success and failure.",
       "excludes": "Full clear/storage/bootstrap/gameplay sweeps, public load cutover, topology and resource qualification.",
-      "changeHints": [
-        "BookOfEternityClient/Core/FileSystemManager.cs"
-      ],
-      "related": [
-        {
-          "id": "portable-load-outcomes",
-          "when": "Replacement acquisition or recovery exception classification changes."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": false
-      },
+      "changeHints": ["BookOfEternityClient/Core/FileSystemManager.cs"],
+      "related": [{"id": "portable-load-outcomes", "when": "Replacement acquisition or recovery exception classification changes."}],
+      "requirements": {"frontendBuild": false, "exclusive": false},
       "timeoutMinutes": 3,
       "expectedSeconds": null,
       "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.FileSystemManagerTests.SessionMutationLease_CannotRotateSessionGeneration",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_RequiresActiveLifecycleAuthority",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_CanRotateGenerationWhileLifecycleAuthorityIsActive"
-          ]
-        },
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes",
-            "BookOfEternityClient.Tests.PortableClientStorageTests.OriginalRecoveryCallbackDoesNotCreatePortableJournalOrGenerationAndRestoresLeaseMode",
-            "BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterRejectsStaleBoundGenerationWithoutChangingContent"
-          ]
-        }
+        {"project": "integration", "tests": [
+          "BookOfEternityClient.Tests.FileSystemManagerTests.SessionMutationLease_CannotRotateSessionGeneration",
+          "BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_RequiresActiveLifecycleAuthority",
+          "BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_CanRotateGenerationWhileLifecycleAuthorityIsActive"
+        ]},
+        {"project": "unit", "tests": [
+          "BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes",
+          "BookOfEternityClient.Tests.PortableClientStorageTests.OriginalRecoveryCallbackDoesNotCreatePortableJournalOrGenerationAndRestoresLeaseMode",
+          "BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterRejectsStaleBoundGenerationWithoutChangingContent"
+        ]}
       ]
     },
     {
@@ -11215,117 +10739,57 @@
       "id": "portable-load-cold-decision",
       "responsibility": "Actual current-producer manifested typed load is terminated by its owning parent at durable intent, first/late/generation stage/publication, commit and cleanup boundaries. Fresh normal canonical acquisition with extraction absent proves exact Before/After namespace and generation including initial absence; pending/committed unknown file/empty-directory conflicts retain every earlier byte/evidence, and incomplete exact owned stage/undo safely recovers.",
       "excludes": "Structural forward/rollback cuts belong to portable-load-cold-topology. No resource envelope, native Linux claim from Windows execution, public caller/GM/game acceptance or synthetic helper-only recovery.",
-      "changeHints": [
-        "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs",
-        "BookOfEternityClient.TestSupport/PortableLoadColdHost.cs",
-        "BookOfEternityClient.Tests/PortableLoadColdRecoveryTests.cs"
-      ],
-      "related": [
-        {
-          "id": "portable-load-cold-topology",
-          "when": "Shared namespace reconciliation or crash host cut authority changes."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "changeHints": ["BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs", "BookOfEternityClient.TestSupport/PortableLoadColdHost.cs", "BookOfEternityClient.Tests/PortableLoadColdRecoveryTests.cs"],
+      "related": [{"id": "portable-load-cold-topology", "when": "Shared namespace reconciliation or crash host cut authority changes."}],
+      "requirements": {"frontendBuild": false, "exclusive": true},
       "timeoutMinutes": 8,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.FreshAcquisitionRecoversActualLoadWithoutExtractionSources",
-            "BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.ColdUnknownLaterMemberRetainsAllEarlierStateAndEvidence",
-            "BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.IncompleteExactOwnedScratchRecoversCompleteBeforeDecision"
-          ]
-        }
-      ]
+      "selectors": [{"project": "unit", "tests": [
+        "BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.FreshAcquisitionRecoversActualLoadWithoutExtractionSources",
+        "BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.ColdUnknownLaterMemberRetainsAllEarlierStateAndEvidence",
+        "BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.IncompleteExactOwnedScratchRecoversCompleteBeforeDecision"
+      ]}]
     },
     {
       "id": "portable-load-cold-topology",
       "responsibility": "Actual typed-load cold interruption exercises file-to-directory and nonempty-directory-to-file removal/creation/file operations plus interrupted rollback directory removal/creation/file/generation restoration. A fresh process without extraction and another repeated acquisition converge to complete independent Before expectations, including empty directories, opaque library/source and exact generation bytes.",
       "excludes": "Durable decision/conflict/scratch admission cases belong to portable-load-cold-decision. No resource envelope or public/Linux/live acceptance follows from Windows cases.",
-      "changeHints": [
-        "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs",
-        "BookOfEternityClient.TestSupport/PortableLoadFixture.cs",
-        "BookOfEternityClient.Tests/PortableLoadColdRecoveryTests.cs"
-      ],
+      "changeHints": ["BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs", "BookOfEternityClient.TestSupport/PortableLoadFixture.cs", "BookOfEternityClient.Tests/PortableLoadColdRecoveryTests.cs"],
       "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "requirements": {"frontendBuild": false, "exclusive": true},
       "timeoutMinutes": 8,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.InterruptedTopologyRecoveryConvergesWithoutExtraction"
-          ]
-        }
-      ]
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.InterruptedTopologyRecoveryConvergesWithoutExtraction"]}]
     },
     {
       "id": "portable-load-native-boundaries",
       "responsibility": "Actual typed load protects a selected archive inside the opaque library, replaces a hard-linked canonical file by name without changing its outside-session alias, and refuses native directory links at target, ancestor, source and library before publication. Windows junction/hard-link and Linux symlink/hard-link bodies must actually execute on their native platform.",
       "excludes": "Journal-only restart, full resource envelope, public caller cutover and cleanup debt; no early-return OS pass.",
-      "changeHints": [
-        "BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs",
-        "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
-        "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeBoundaries.cs"
-      ],
-      "related": [
-        {
-          "id": "portable-load-cleanup-debt",
-          "when": "Transaction scratch ownership or committed cleanup admission changes."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "changeHints": ["BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs", "BookOfEternityClient/Core/TrustedLocalFileScope.cs", "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeBoundaries.cs"],
+      "related": [{"id": "portable-load-cleanup-debt", "when": "Transaction scratch ownership or committed cleanup admission changes."}],
+      "requirements": {"frontendBuild": false, "exclusive": true},
       "timeoutMinutes": 3,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.PortableLoadReplacementTests.LibrarySelectedSourceCommitsWithoutChangingOpaqueLibrary",
-            "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeHardLinkedMarkerReplacementPreservesOutsideSessionAlias",
-            "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeDirectoryLinkBoundaryRefusesBeforeSessionPublication"
-          ]
-        }
-      ]
+      "selectors": [{"project": "integration", "tests": [
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.LibrarySelectedSourceCommitsWithoutChangingOpaqueLibrary",
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeHardLinkedMarkerReplacementPreservesOutsideSessionAlias",
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeDirectoryLinkBoundaryRefusesBeforeSessionPublication"
+      ]}]
     },
     {
       "id": "portable-load-cleanup-debt",
       "responsibility": "Actual v3 load retains pending evidence and exact before state when a native link occupies an exact owned stage, and retains committed files/generation when an unknown empty child or callback failure interrupts cleanup. Fresh normal acquisition refuses conflict then completes the same decision after exact conflict removal.",
       "excludes": "Full cold process interruption/resource envelope, public caller integration and unrelated cleanup sweeps.",
-      "changeHints": [
-        "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs",
-        "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
-        "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeBoundaries.cs"
-      ],
+      "changeHints": ["BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs", "BookOfEternityClient/Services/SaveLoadService.Loading.cs", "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeBoundaries.cs"],
       "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "requirements": {"frontendBuild": false, "exclusive": true},
       "timeoutMinutes": 3,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeExactStageJunctionRetainsIntentUntilRemovedAndFreshlyRecovered",
-            "BookOfEternityClient.Tests.PortableLoadReplacementTests.CommittedUnknownEmptyDirectoryDebtPreservesDecisionUntilFreshCleanup",
-            "BookOfEternityClient.Tests.PortableLoadReplacementTests.PlainCommittedCallbackFailureKeepsEstablishedLoadDecision"
-          ]
-        }
-      ]
+      "selectors": [{"project": "integration", "tests": [
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeExactStageJunctionRetainsIntentUntilRemovedAndFreshlyRecovered",
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.CommittedUnknownEmptyDirectoryDebtPreservesDecisionUntilFreshCleanup",
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.PlainCommittedCallbackFailureKeepsEstablishedLoadDecision"
+      ]}]
     },
     {
       "id": "portable-load-alias-admission",
@@ -11394,563 +10858,516 @@
         }
       ]
     },
+{
+  "id": "portable-load-resource-preparation",
+  "responsibility": "Actual original-manifest typed load preparation stops at the prepared/lease boundary with complete old namespace, generation, history, config, source and library unchanged; separate streamed seed and phase resource measurements. Four independent rows:64/128/near512MiB and8192 entries/near2MiB UTF8 names/9216 disjoint old files. Guard/setup/cleanup/missing sampling is a non-pass.",
+  "excludes": "Other resource phases, save-only resource controls, public client integration, live gameplay and unrelated test sweeps.",
+  "changeHints": [
+    "BookOfEternityClient.TestSupport/PortableLoadResourceProbe.cs",
+    "BookOfEternityClient.TestSupport/PortableLoadFixture.cs",
+    "BookOfEternityClient.Tests/PortableLoadResourceTests.cs",
+    "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 10,
+  "expectedSeconds": null,
+  "selectors": [
     {
-      "id": "portable-load-resource-preparation",
-      "responsibility": "Actual original-manifest typed load preparation stops at the prepared/lease boundary with complete old namespace, generation, history, config, source and library unchanged; separate streamed seed and phase resource measurements. Four independent rows:64/128/near512MiB and8192 entries/near2MiB UTF8 names/9216 disjoint old files. Guard/setup/cleanup/missing sampling is a non-pass.",
-      "excludes": "Other resource phases, save-only resource controls, public client integration, live gameplay and unrelated test sweeps.",
-      "changeHints": [
-        "BookOfEternityClient.TestSupport/PortableLoadResourceProbe.cs",
-        "BookOfEternityClient.TestSupport/PortableLoadFixture.cs",
-        "BookOfEternityClient.Tests/PortableLoadResourceTests.cs",
-        "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
-        "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs"
-      ],
-      "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
-      "timeoutMinutes": 10,
-      "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope"
-          ]
-        }
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope"
       ]
-    },
+    }
+  ]
+},
+{
+  "id": "portable-load-resource-publication",
+  "responsibility": "Actual typed load from its prepared boundary through exactly one committed v3 replacement; complete archive-derived target and exact generation, history, config, source and library verified under sampled and OS resource controls. Three independent bulk rows:64/128/near512MiB. Many-member/name publication is owned by portable-load-resource-inventory-publication. Guard/setup/cleanup/missing sampling is a non-pass.",
+  "excludes": "Many-member inventory publication, other resource phases, save-only controls, public client integration and unrelated sweeps.",
+  "changeHints": [
+    "BookOfEternityClient.TestSupport/PortableLoadResourceProbe.cs",
+    "BookOfEternityClient.TestSupport/PortableLoadFixture.cs",
+    "BookOfEternityClient.Tests/PortableLoadResourceTests.cs",
+    "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 10,
+  "expectedSeconds": null,
+  "selectors": [
     {
-      "id": "portable-load-resource-publication",
-      "responsibility": "Actual typed load from its prepared boundary through exactly one committed v3 replacement; complete archive-derived target and exact generation, history, config, source and library verified under sampled and OS resource controls. Three independent bulk rows:64/128/near512MiB. Many-member/name publication is owned by portable-load-resource-inventory-publication. Guard/setup/cleanup/missing sampling is a non-pass.",
-      "excludes": "Many-member inventory publication, other resource phases, save-only controls, public client integration and unrelated sweeps.",
-      "changeHints": [
-        "BookOfEternityClient.TestSupport/PortableLoadResourceProbe.cs",
-        "BookOfEternityClient.TestSupport/PortableLoadFixture.cs",
-        "BookOfEternityClient.Tests/PortableLoadResourceTests.cs",
-        "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
-        "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs"
-      ],
-      "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
-      "timeoutMinutes": 10,
-      "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPublicationFitsDeclaredLoadResourceEnvelope"
-          ]
-        }
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPublicationFitsDeclaredLoadResourceEnvelope"
       ]
-    },
+    }
+  ]
+},
+{
+  "id": "portable-load-resource-recovery",
+  "responsibility": "Three bulk64/128/near512MiB rows only; maximum-inventory recovery is separately owned by portable-load-resource-inventory-recovery. Actual pending-generation or committed load process cuts followed by fresh ordinary acquisition without extraction sources; journal-only exact old restoration or committed cleanup and independently measured resource limits. Three independent bulk rows:64/128/near512MiB. Guard/setup/cleanup/missing sampling is a non-pass.",
+  "excludes": "Other resource phases, save-only resource controls, public client integration, live gameplay and unrelated test sweeps.",
+  "changeHints": [
+    "BookOfEternityClient.TestSupport/PortableLoadResourceProbe.cs",
+    "BookOfEternityClient.TestSupport/PortableLoadFixture.cs",
+    "BookOfEternityClient.Tests/PortableLoadResourceTests.cs",
+    "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 10,
+  "expectedSeconds": null,
+  "selectors": [
     {
-      "id": "portable-load-resource-recovery",
-      "responsibility": "Three bulk64/128/near512MiB rows only; maximum-inventory recovery is separately owned by portable-load-resource-inventory-recovery. Actual pending-generation or committed load process cuts followed by fresh ordinary acquisition without extraction sources; journal-only exact old restoration or committed cleanup and independently measured resource limits. Three independent bulk rows:64/128/near512MiB. Guard/setup/cleanup/missing sampling is a non-pass.",
-      "excludes": "Other resource phases, save-only resource controls, public client integration, live gameplay and unrelated test sweeps.",
-      "changeHints": [
-        "BookOfEternityClient.TestSupport/PortableLoadResourceProbe.cs",
-        "BookOfEternityClient.TestSupport/PortableLoadFixture.cs",
-        "BookOfEternityClient.Tests/PortableLoadResourceTests.cs",
-        "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
-        "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs"
-      ],
-      "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
-      "timeoutMinutes": 10,
-      "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.PortableLoadResourceTests.ActualColdRecoveryFitsDeclaredLoadResourceEnvelope"
-          ]
-        }
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PortableLoadResourceTests.ActualColdRecoveryFitsDeclaredLoadResourceEnvelope"
       ]
-    },
+    }
+  ]
+},
+{
+  "id": "portable-load-resource-inventory-publication",
+  "responsibility": "Actual typed load publication with exactly8192 original manifested ZIP entries, near2MiB UTF8 names and9216 disjoint old files; complete independent namespace/generation/history/config/source/library oracle and actual large metadata. Measured600-second publication child guard; fixed768MiB heap/1GiB RSS/5GiB disk,100ms RSS/time polling delay (synchronous disk scans extend actual intervals), final OS RSS peak and1000ms plus durable-boundary disk sampling and owned cleanup; stops are non-passes.",
+  "excludes": "Bulk payload publication, preparation/recovery, save-only resource controls, public client/gameplay and unrelated sweeps.",
+  "changeHints": [
+    "BookOfEternityClient.TestSupport/PortableLoadResourceProbe.cs",
+    "BookOfEternityClient.Tests/PortableLoadResourceTests.cs",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs",
+    "BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 12,
+  "expectedSeconds": null,
+  "selectors": [
     {
-      "id": "portable-load-resource-inventory-publication",
-      "responsibility": "Actual typed load publication with exactly8192 original manifested ZIP entries, near2MiB UTF8 names and9216 disjoint old files; complete independent namespace/generation/history/config/source/library oracle and actual large metadata. Measured600-second publication child guard; fixed768MiB heap/1GiB RSS/5GiB disk,100ms RSS/time polling delay (synchronous disk scans extend actual intervals), final OS RSS peak and1000ms plus durable-boundary disk sampling and owned cleanup; stops are non-passes.",
-      "excludes": "Bulk payload publication, preparation/recovery, save-only resource controls, public client/gameplay and unrelated sweeps.",
-      "changeHints": [
-        "BookOfEternityClient.TestSupport/PortableLoadResourceProbe.cs",
-        "BookOfEternityClient.Tests/PortableLoadResourceTests.cs",
-        "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs",
-        "BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs"
-      ],
-      "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
-      "timeoutMinutes": 12,
-      "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.PortableLoadResourceTests.ActualManyMemberPublicationFitsDeclaredLoadResourceEnvelope"
-          ]
-        }
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PortableLoadResourceTests.ActualManyMemberPublicationFitsDeclaredLoadResourceEnvelope"
       ]
-    },
+    }
+  ]
+},
     {
       "id": "portable-storage-batch-admission",
       "responsibility": "Fresh read-only batch admission with existing exact ordinal file grants: complete request/grant materialization, every required or optional leaf, late type/blocker refusal, and actual Windows junction or Linux link replacement between calls without shared physical cache.",
       "excludes": "Namespace journals, publication mutation, resource timing, public clients and hostile concurrent owner races. Native Linux execution is a separate qualification; unsupported native setup is not a pass.",
-      "changeHints": [
-        "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
-        "BookOfEternityClient.Tests/TrustedLocalFileScopeBatchTests.cs"
-      ],
-      "related": [
-        {
-          "id": "portable-storage-paths",
-          "when": "Scalar scope admission or constructors change."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": false
-      },
+      "changeHints": ["BookOfEternityClient/Core/TrustedLocalFileScope.cs", "BookOfEternityClient.Tests/TrustedLocalFileScopeBatchTests.cs"],
+      "related": [{"id":"portable-storage-paths", "when":"Scalar scope admission or constructors change."}],
+      "requirements": {"frontendBuild":false, "exclusive":false},
       "timeoutMinutes": 3,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.*"
-          ]
-        }
-      ]
+      "selectors": [{"project":"unit", "tests":["BookOfEternityClient.Tests.TrustedLocalFileScopeBatchTests.*"]}]
     },
     {
       "id": "portable-load-resource-inventory-diagnosis",
       "responsibility": "One separately bounded full-pipeline investigation of the unchanged8192-entry/name/9216-old-file typed load with private read-only stage timings, actual parent disk-scan cost and complete independent publication oracle. The600-second child and12-minute owner are diagnostic only; historical original180-second failures are retained; amended ordinary qualification is separately owned and is never inferred from this investigation.",
       "excludes": "Ordinary resource acceptance, other resource rows, preparation/recovery, public clients, gameplay, unrelated sweeps or archive/grant/schema changes.",
-      "changeHints": [
-        "BookOfEternityClient.TestSupport/PortableLoadResourceProbe.cs",
-        "BookOfEternityClient.Tests/PortableLoadResourceTests.cs",
-        "BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs",
-        "BookOfEternityClient/Services/SaveLoadService.Loading.cs"
-      ],
+      "changeHints": ["BookOfEternityClient.TestSupport/PortableLoadResourceProbe.cs", "BookOfEternityClient.Tests/PortableLoadResourceTests.cs", "BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs", "BookOfEternityClient/Services/SaveLoadService.Loading.cs"],
       "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "requirements": {"frontendBuild":false, "exclusive":true},
       "timeoutMinutes": 12,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.PortableLoadResourceTests.DiagnoseManyMemberPublicationThroughCompletePipeline"
-          ]
-        }
-      ]
+      "selectors": [{"project":"unit", "tests":["BookOfEternityClient.Tests.PortableLoadResourceTests.DiagnoseManyMemberPublicationThroughCompletePipeline"]}]
     },
     {
       "id": "portable-load-resource-inventory-recovery",
       "responsibility": "One actual maximum-inventory typed-load committed cut then fresh journal-only canonical acquisition without extraction:8192 entries/near2MiB names/>1MiB metadata/9216 disjoint old files, complete independent namespace/generation/source/library oracle.600-second publication cut,180-second seed/recovery, actual RSS and forced/cadenced disk observations, fixed heap/RSS/disk stops and owned cleanup.",
       "excludes": "Bulk recovery rows, preparation/publication-only acceptance, diagnostic-only tracing, public clients/gameplay and broad sweeps.",
-      "changeHints": [
-        "BookOfEternityClient.Tests/PortableLoadResourceTests.cs",
-        "BookOfEternityClient.TestSupport/PortableLoadResourceProbe.cs",
-        "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs"
-      ],
+      "changeHints": ["BookOfEternityClient.Tests/PortableLoadResourceTests.cs", "BookOfEternityClient.TestSupport/PortableLoadResourceProbe.cs", "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs"],
       "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
+      "requirements": {"frontendBuild":false, "exclusive":true},
       "timeoutMinutes": 12,
       "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.PortableLoadResourceTests.ActualManyMemberColdRecoveryFitsDeclaredLoadResourceEnvelope"
-          ]
-        }
-      ]
+      "selectors": [{"project":"unit", "tests":["BookOfEternityClient.Tests.PortableLoadResourceTests.ActualManyMemberColdRecoveryFitsDeclaredLoadResourceEnvelope"]}]
     },
+{
+  "id": "portable-load-public-entry",
+  "responsibility": "T032-B4 public typed result accessibility and actual ordinary public load compatibility wrapper: confirmed commit including required-refresh failure, exact rollback, retained uncertainty and pre-publication refusal. Bool is commitment-only, never continuation permission; all player-facing consumers use the typed API. Each case owns an isolated current-producer root.",
+  "excludes": "Console/browser integration, unchanged internal filesystem/resource/native qualification, historical anti-owner load implementation tests and unrelated save/gameplay cohorts.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SaveLoadService.cs",
+    "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+    "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.PublicEntry.cs"
+  ],
+  "related": [
     {
-      "id": "portable-load-public-entry",
-      "responsibility": "T032-B4 public typed result accessibility and actual ordinary public load compatibility wrapper: confirmed commit including required-refresh failure, exact rollback, retained uncertainty and pre-publication refusal. Bool is commitment-only, never continuation permission; all player-facing consumers use the typed API. Each case owns an isolated current-producer root.",
-      "excludes": "Console/browser integration, unchanged internal filesystem/resource/native qualification, historical anti-owner load implementation tests and unrelated save/gameplay cohorts.",
-      "changeHints": [
-        "BookOfEternityClient/Services/SaveLoadService.cs",
-        "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
-        "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.PublicEntry.cs"
-      ],
-      "related": [
-        {
-          "id": "portable-load-outcomes",
-          "when": "Changing the internal typed decision or late-failure mapping, rather than only the public wrapper."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": false
-      },
-      "timeoutMinutes": 3,
-      "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityReportsCommitEvenWhenRequiredRefreshFails",
-            "BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityDoesNotReportRollbackOrUncertaintyAsCommit",
-            "BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityRejectsInvalidInputWithoutPublication",
-            "BookOfEternityClient.Tests.PortableLoadReplacementTests.TypedLoadContractIsPublicAndRetainsFourDistinctDecisions"
-          ]
-        }
-      ]
-    },
+      "id": "portable-load-outcomes",
+      "when": "Changing the internal typed decision or late-failure mapping, rather than only the public wrapper."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
     {
-      "id": "portable-load-worker-ordering",
-      "responsibility": "One actual public load competing with a held real worker-apply decision. Diagnostic boundary distinguishes early worker failure before load dispatch from a timeout; original positive acceptance, applied bytes and exact load ordering remain required. Linux worker backend is not presumed portable.",
-      "excludes": "Public entry/profile/lease contract cases, unrelated worker owners, actual GM/provider and full platform qualification.",
-      "changeHints": [
-        "BookOfEternityClient.Tests/GmWorkerApplyGateTests.cs",
-        "BookOfEternityClient/Services/SaveLoadService.cs",
-        "BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs"
-      ],
-      "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
-      "timeoutMinutes": 2,
-      "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock"
-          ]
-        }
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityReportsCommitEvenWhenRequiredRefreshFails",
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityDoesNotReportRollbackOrUncertaintyAsCommit",
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityRejectsInvalidInputWithoutPublication",
+        "BookOfEternityClient.Tests.PortableLoadReplacementTests.TypedLoadContractIsPublicAndRetainsFourDistinctDecisions"
       ]
-    },
+    }
+  ]
+},
+{
+  "id": "portable-load-worker-ordering",
+  "responsibility": "One actual public load competing with a held real worker-apply decision. Diagnostic boundary distinguishes early worker failure before load dispatch from a timeout; original positive acceptance, applied bytes and exact load ordering remain required. Linux worker backend is not presumed portable.",
+  "excludes": "Public entry/profile/lease contract cases, unrelated worker owners, actual GM/provider and full platform qualification.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/GmWorkerApplyGateTests.cs",
+    "BookOfEternityClient/Services/SaveLoadService.cs",
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
     {
-      "id": "portable-load-console",
-      "responsibility": "T032-B4 actual console load typed decisions, established-generation rebind, required refresh and persistent same-process continuation block, late pending/UI-owner admission under replacement lease; existing active/empty runtime consumers. Each test owns mutable state.",
-      "excludes": "Browser transport/handlers, unchanged filesystem and resource cohorts, worker portability and live clients/GM.",
-      "changeHints": [
-        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
-        "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
-        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs"
-      ],
-      "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
-      "timeoutMinutes": 4,
-      "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_*",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LoadSelectedSaveAndRebindRuntime_UsesLoadedCanonicalStateInsteadOfSaveListMetadata",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RebindRuntimeAfterSessionReplacement_ActiveReplacementRebindsLoopAndClearsTransientState",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RebindRuntimeAfterSessionReplacement_EmptyReplacementReturnsToMenu"
-          ]
-        }
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock"
       ]
-    },
+    }
+  ]
+},
+{
+  "id": "portable-load-console",
+  "responsibility": "T032-B4 actual console load typed decisions, established-generation rebind, required refresh and persistent same-process continuation block, late pending/UI-owner admission under replacement lease; existing active/empty runtime consumers. Each test owns mutable state.",
+  "excludes": "Browser transport/handlers, unchanged filesystem and resource cohorts, worker portability and live clients/GM.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 4,
+  "expectedSeconds": null,
+  "selectors": [
     {
-      "id": "portable-load-browser",
-      "responsibility": "T032-B4 actual browser load four-state transport, exact committed identity, late pending/UI lease token admission and required generation-bound continuation. Independent per-case state.",
-      "excludes": "Unchanged filesystem/resource and console cohorts, live console/GM and native Windows public-client acceptance.",
-      "changeHints": [
-        "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs",
-        "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs"
-      ],
-      "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
-      "timeoutMinutes": 5,
-      "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.PortableBrowserLoadTests.*"
-          ]
-        }
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_*",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LoadSelectedSaveAndRebindRuntime_UsesLoadedCanonicalStateInsteadOfSaveListMetadata",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RebindRuntimeAfterSessionReplacement_ActiveReplacementRebindsLoopAndClearsTransientState",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RebindRuntimeAfterSessionReplacement_EmptyReplacementReturnsToMenu"
       ]
-    },
+    }
+  ]
+},
+{
+  "id": "portable-load-browser",
+  "responsibility": "T032-B4 actual browser load four-state transport, exact committed identity, late pending/UI lease token admission and required generation-bound continuation. Independent per-case state.",
+  "excludes": "Unchanged filesystem/resource and console cohorts, live console/GM and native Windows public-client acceptance.",
+  "changeHints": [
+    "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs",
+    "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
     {
-      "id": "portable-load-browser-refresh",
-      "responsibility": "Actual browser HTTP typed load identity and complete exact-generation required refresh bundle; failure returns no partial surfaces. Uses per-test owned roots.",
-      "excludes": "Live browser access/visual QA, unchanged filesystem/resource/console cohorts, unrelated browser routes.",
-      "changeHints": [
-        "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
-        "BookOfEternityClient/WebUi/BrowserLoadStateService.cs"
-      ],
-      "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
-      "timeoutMinutes": 5,
-      "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_*",
-            "BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds",
-            "BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked",
-            "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock"
-          ]
-        }
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PortableBrowserLoadTests.*"
       ]
-    },
+    }
+  ]
+},
+{
+  "id": "portable-load-browser-refresh",
+  "responsibility": "Actual browser HTTP typed load identity and complete exact-generation required refresh bundle; failure returns no partial surfaces. Uses per-test owned roots.",
+  "excludes": "Live browser access/visual QA, unchanged filesystem/resource/console cohorts, unrelated browser routes.",
+  "changeHints": [
+    "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
+    "BookOfEternityClient/WebUi/BrowserLoadStateService.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
     {
-      "id": "portable-load-browser-handlers",
-      "responsibility": "Actual launcher/settings load handlers: typed HTTP results, duplicate dispatch, stale navigation, unmount, lost response and required-refresh continuation. Controlled component execution, not visual QA.",
-      "excludes": "Backend filesystem/resource cohorts and live browser access.",
-      "changeHints": [
-        "BookOfEternityClient.WebFrontend/src/components/GameLauncher.tsx",
-        "BookOfEternityClient.WebFrontend/src/components/SettingsView.tsx"
-      ],
-      "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": false
-      },
-      "timeoutMinutes": 3,
-      "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "frontend",
-          "runner": "vitest",
-          "tests": [
-            "BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts",
-            "BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts"
-          ]
-        }
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_*",
+        "BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds",
+        "BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked",
+        "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock"
       ]
-    },
+    }
+  ]
+},
+{
+  "id": "portable-load-browser-handlers",
+  "responsibility": "Actual launcher/settings load handlers: typed HTTP results, duplicate dispatch, stale navigation, unmount, lost response and required-refresh continuation. Controlled component execution, not visual QA.",
+  "excludes": "Backend filesystem/resource cohorts and live browser access.",
+  "changeHints": [
+    "BookOfEternityClient.WebFrontend/src/components/GameLauncher.tsx",
+    "BookOfEternityClient.WebFrontend/src/components/SettingsView.tsx"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
     {
-      "id": "worker-quarantine-audit-receipt",
-      "responsibility": "Portable create-only exact-byte terminal quarantine audit receipts: stable identity, idempotent/conflicting retry, publication faults/cancellation, trusted-local kinds/links and actual no-process owner/reaper authority/slot retention. Exact affected source and operational documentation guards.",
-      "excludes": "Live process/host/worker/GM or Release, native stop proof, canonical generation mutation/append execution, ownership/PTY, accepted load/save/workspace cohorts; native Windows qualification separate.",
-      "changeHints": [
-        "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs",
-        "BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs"
-      ],
-      "related": [
-        {
-          "id": "worker-detached-workspace",
-          "when": "Select only if accepted staging/read/dispose behavior changes; not selected for isolated receipt branch."
-        },
-        {
-          "id": "gm-worker-process",
-          "when": "Future connected lifecycle/process qualification; not selected for synthetic already-confirmed owner."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
-      "timeoutMinutes": 3,
-      "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.*"
-          ]
-        },
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics",
-            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions"
-          ]
-        }
+      "project": "frontend",
+      "runner": "vitest",
+      "tests": [
+        "BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts",
+        "BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts"
       ]
-    },
+    }
+  ]
+},
+{
+  "id": "worker-quarantine-audit-receipt",
+  "responsibility": "Portable create-only exact-byte terminal quarantine audit receipts: stable identity, idempotent/conflicting retry, publication faults/cancellation, trusted-local kinds/links and actual no-process owner/reaper authority/slot retention. Exact affected source and operational documentation guards.",
+  "excludes": "Live process/host/worker/GM or Release, native stop proof, canonical generation mutation/append execution, ownership/PTY, accepted load/save/workspace cohorts; native Windows qualification separate.",
+  "changeHints": [
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs",
+    "BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs"
+  ],
+  "related": [
     {
       "id": "worker-detached-workspace",
-      "responsibility": "Process-free detached workspace creation, exact pinned byte staging, bounded artifact reads and cancellation/partial-failure disposal; fresh trusted-local path/kind/link admission and outside/sibling isolation, plus exact affected operational/source guards.",
-      "excludes": "Worker or host launch/Release, quarantine receipt publication, canonical mutation/load, ownership/stop/process-tree/PTY and live GM. Linux-only native fixtures are explicitly conditional; Windows needs its own execution.",
-      "changeHints": [
-        "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs",
-        "BookOfEternityClient.IntegrationTests/GmWorkerDetachedWorkspaceTests.cs"
-      ],
-      "related": [
-        {
-          "id": "gm-worker-process",
-          "when": "Future connected execution or lifecycle changes; not selected for process-free byte staging."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
-      "timeoutMinutes": 3,
-      "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.*"
-          ]
-        },
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics",
-            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake",
-            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions"
-          ]
-        }
+      "when": "Select only if accepted staging/read/dispose behavior changes; not selected for isolated receipt branch."
+    },
+    {
+      "id": "gm-worker-process",
+      "when": "Future connected lifecycle/process qualification; not selected for synthetic already-confirmed owner."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.*"
       ]
     },
     {
-      "id": "worker-host-environment",
-      "responsibility": "Platform-faithful worker environment capture, strict Launch JSON and host ProcessStartInfo reconstruction using only synthetic values; exact operational guidance guard and actual hidden-host Ready then owner-close without Release.",
-      "excludes": "Real inherited values/secrets, proxy/network changes, worker Release/execution, process-tree/workspace/PTY lifecycle and broad IPC/frame cohorts. Linux execution does not qualify Windows.",
-      "changeHints": [
-        "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs",
-        "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostEnvironmentTests.cs",
-        "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.Environment.cs"
-      ],
-      "related": [
-        {
-          "id": "worker-host-ipc-admission",
-          "when": "Authentication, channel ownership or native admission changes; not required for a platform-faithful environment dictionary fix."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
-      "timeoutMinutes": 3,
-      "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.*",
-            "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Environment_*"
-          ]
-        },
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake"
-          ]
-        }
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics",
+        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions"
+      ]
+    }
+  ]
+},
+{
+  "id": "worker-detached-workspace",
+  "responsibility": "Process-free detached workspace creation, exact pinned byte staging, bounded artifact reads and cancellation/partial-failure disposal; fresh trusted-local path/kind/link admission and outside/sibling isolation, plus exact affected operational/source guards.",
+  "excludes": "Worker or host launch/Release, quarantine receipt publication, canonical mutation/load, ownership/stop/process-tree/PTY and live GM. Linux-only native fixtures are explicitly conditional; Windows needs its own execution.",
+  "changeHints": [
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs",
+    "BookOfEternityClient.IntegrationTests/GmWorkerDetachedWorkspaceTests.cs"
+  ],
+  "related": [
+    {
+      "id": "gm-worker-process",
+      "when": "Future connected execution or lifecycle changes; not selected for process-free byte staging."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.*"
       ]
     },
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics",
+        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake",
+        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions"
+      ]
+    }
+  ]
+},
+{
+  "id": "worker-host-environment",
+  "responsibility": "Platform-faithful worker environment capture, strict Launch JSON and host ProcessStartInfo reconstruction using only synthetic values; exact operational guidance guard and actual hidden-host Ready then owner-close without Release.",
+  "excludes": "Real inherited values/secrets, proxy/network changes, worker Release/execution, process-tree/workspace/PTY lifecycle and broad IPC/frame cohorts. Linux execution does not qualify Windows.",
+  "changeHints": [
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs",
+    "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostEnvironmentTests.cs",
+    "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.Environment.cs"
+  ],
+  "related": [
     {
       "id": "worker-host-ipc-admission",
-      "responsibility": "Windows/Linux worker-host both-channel PID/UID admission, native bounded frames/envelopes, cancellation and owner-close before Release, plus the exact operational handshake documentation guard and affected shared authority source guard. Includes explicit peer policy unit cases; simulated UID/native failures do not qualify a real different-UID peer.",
-      "excludes": "Worker execution, Linux process ownership, detached workspace, persistent GM/PTY, gameplay and completion arbitration.",
-      "changeHints": [
-        "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost*.cs",
-        "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs",
-        "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs"
-      ],
-      "related": [
-        {
-          "id": "gm-worker-process",
-          "when": "Process-tree, worker release/execution or completion arbitration changes; not required for bounded pre-Release IPC admission."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
-      "timeoutMinutes": 5,
-      "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake",
-            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions"
-          ]
-        },
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_*",
-            "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_*",
-            "BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.*"
-          ]
-        }
+      "when": "Authentication, channel ownership or native admission changes; not required for a platform-faithful environment dictionary fix."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.*",
+        "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Environment_*"
       ]
     },
     {
-      "id": "worker-host-frame-contract",
-      "responsibility": "Pure worker-host strict JSON/UTF-8 frame, byte limits, cancellation/deadlines and diagnostic redaction, using owned in-memory streams without native IPC.",
-      "excludes": "Named-pipe construction, peer authentication, host/process/native execution, PTY and worker lifecycle.",
-      "changeHints": [
-        "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost*.cs"
-      ],
-      "related": [
-        {
-          "id": "worker-host-ipc-admission",
-          "when": "Native host/frame integration needs separate permitted-platform qualification."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": false
-      },
-      "timeoutMinutes": 2,
-      "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.*",
-            "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Parse*",
-            "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Validate*"
-          ]
-        }
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake"
+      ]
+    }
+  ]
+},
+{
+  "id": "worker-host-ipc-admission",
+  "responsibility": "Windows/Linux worker-host both-channel PID/UID admission, native bounded frames/envelopes, cancellation and owner-close before Release, plus the exact operational handshake documentation guard and affected shared authority source guard. Includes explicit peer policy unit cases; simulated UID/native failures do not qualify a real different-UID peer.",
+  "excludes": "Worker execution, Linux process ownership, detached workspace, persistent GM/PTY, gameplay and completion arbitration.",
+  "changeHints": [
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost*.cs",
+    "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs",
+    "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs"
+  ],
+  "related": [
+    {
+      "id": "gm-worker-process",
+      "when": "Process-tree, worker release/execution or completion arbitration changes; not required for bounded pre-Release IPC admission."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake",
+        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions"
       ]
     },
     {
-      "id": "gm-bridge-output-stream",
-      "responsibility": "T041-OUTPUT-UTF8 actual persistent-main output pump from freshly built bridge assembly: raw forwarding, incremental UTF-8 replacement/EOF, activity, cancellation/fault propagation and Unicode-safe bounded diagnostics.",
-      "excludes": "Native ConPTY/PTY/CLI/GM, readiness/autotrust/input arbitration, process ownership/stop/backend and prior worker/storage cohorts.",
-      "changeHints": [
-        "BookOfEternityGMBridge/Program.cs",
-        "BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs"
-      ],
-      "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.*"
-          ]
-        }
-      ],
-      "timeoutMinutes": 3,
-      "expectedSeconds": null
-    },
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_*",
+        "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_*",
+        "BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "worker-host-frame-contract",
+  "responsibility": "Pure worker-host strict JSON/UTF-8 frame, byte limits, cancellation/deadlines and diagnostic redaction, using owned in-memory streams without native IPC.",
+  "excludes": "Named-pipe construction, peer authentication, host/process/native execution, PTY and worker lifecycle.",
+  "changeHints": [
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost*.cs"
+  ],
+  "related": [
+    {
+      "id": "worker-host-ipc-admission",
+      "when": "Native host/frame integration needs separate permitted-platform qualification."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.*",
+        "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Parse*",
+        "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Validate*"
+      ]
+    }
+  ]
+},
+{
+  "id": "gm-bridge-output-stream",
+  "responsibility": "T041-OUTPUT-UTF8 actual persistent-main output pump from freshly built bridge assembly: raw forwarding, incremental UTF-8 replacement/EOF, activity, cancellation/fault propagation and Unicode-safe bounded diagnostics.",
+  "excludes": "Native ConPTY/PTY/CLI/GM, readiness/autotrust/input arbitration, process ownership/stop/backend and prior worker/storage cohorts.",
+  "changeHints": [
+    "BookOfEternityGMBridge/Program.cs",
+    "BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.*"
+      ]
+    }
+  ],
+  "timeoutMinutes": 3,
+  "expectedSeconds": null
+},
     {
       "id": "gm-bridge-input-lifetime",
       "responsibility": "Actual bridge input lifetime admission, queued cancellation, partial-write uncertainty and managed keyboard handoff using controlled streams/keys.",
@@ -11980,5 +11397,5 @@
         }
       ]
     }
-  ]
+]
 }
