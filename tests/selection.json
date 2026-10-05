@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-bridge-input-lifetime",
-      "reason": "Actual local writer/key lifetime plus five exact affected wiring guards; no output algorithm change, native terminal or prior cohort replay.",
+      "category": "linux-fallback-supervisor",
+      "reason": "First native ordinary-lineage helper and owned fixtures; no production consumer changes or unchanged cohort replay.",
       "contracts": [
-        "#1553 T042-INPUT-LIFETIME US4 FR-012/013/014/015"
+        "#1553 T041-FALLBACK-NATIVE US4 FR-012/013/014/015"
       ]
     }
   ]

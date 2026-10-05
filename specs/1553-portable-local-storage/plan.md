@@ -14,6 +14,18 @@ Selection/capability/outcome preserve visible backend and guarantee. Auto choose
 
 Historical accepted component evidence and old “next” suggestions below retain their original source/scope. Input37 and earlier cohorts are not rerun for this new native helper. Design/review/RED/GREEN and exact build/cleanup/checkpoint evidence will be appended to this current block; no implementation success is claimed yet.
 
+### Native bootstrap WIP — behavioral RED pending
+
+Tests/guardian/native build package and conservative root-only supervisor are now
+source-complete for the first selected run. No descendant stop guarantee exists in
+this baseline: it owns/reaps until children terminate and returns Uncertain after
+launch. Root control, inherited lifetime isolation and actual native preparation
+are exercised; the descendant retirement/scoped-success tests must show behavioral
+RED before adding that algorithm. Build/missing-binary failures are preparation
+failures. New category linux-fallback-supervisor is the only execution selection.
+Independent design PASS is retained; implementation review and all runtime claims
+are pending. This WIP is published before the first fresh build/selected run.
+
 ## T041-ENV worker environment — 2026-10-05 (verified component)
 
 Source **`43b60b954265e3bb404bf562cf7b9ff13dc4f953`**, tree
