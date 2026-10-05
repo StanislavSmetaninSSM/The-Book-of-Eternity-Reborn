@@ -144,7 +144,7 @@ Uncertain. No durable reconstruction of a dead owner is invented.
 
 ### Files and staged TDD execution
 
-- [ ] B1 Design: update this plan/spec/tasks; read-only Spec Kit consistency pass,
+- [x] B1 Design: update this plan/spec/tasks; read-only Spec Kit consistency pass,
   publish design WIP and obtain separate actual Sol6.1/xhigh review of authority,
   quarantine and both result consumers before implementation.
 - [ ] B2 Causal connected scaffold: new TestSupport/NativePoolScenarioDriver.cs and
@@ -237,6 +237,15 @@ RED on the still-closed synthetic admission scaffold. Parent's explicit sole-wri
 category-only test and ordinary non-force publication authorization overrides skill
 defaults for implementation delegation, full-suite runs and renewed push approval.
 Use this existing plan as the durable execution ledger; do not duplicate it.
+
+B1 design PASS at `c3a942cb24e64cf43be321c2bfe3b188e215f135`, actual separate
+Sol6.1/xhigh; all three findings closed, no other blocker. B2 scaffold now adds a
+single actual-pool synthetic analysis case under the unchanged qualified guardian
+and a distinct explicit internal admission value/constructor argument. The argument
+is deliberately not consumed yet: Linux Release stays closed. Fresh selected build/
+discovery and expected causal RED are next; zero B executions claimed. Guardian30s
+budget contains future5s stop/output observation phases; actual independent reap to
+ECHILD remains mandatory. Only new category worker-native-pool-happy is selected.
 
 ## HOST implementation authorized — 2026-10-05
 

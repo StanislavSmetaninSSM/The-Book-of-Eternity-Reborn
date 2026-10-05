@@ -278,7 +278,8 @@ public sealed class GmWorkerBridgePool
         GmWorkerAuditLog? auditLog,
         GmWorkerBridgePoolHooks? hooks,
         IGmWorkerProcessTreeFactory processTreeFactory,
-        GmWorkerQuarantineReaper quarantineReaper)
+        GmWorkerQuarantineReaper quarantineReaper,
+        GmWorkerNativePoolAdmission? nativePoolAdmission = null)
     {
         _fs = fs;
         _proposalStore = proposalStore ?? new GmWorkerProposalStore(fs);

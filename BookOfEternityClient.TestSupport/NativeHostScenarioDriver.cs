@@ -13,6 +13,8 @@ internal static class NativeHostScenarioDriver
 {
     internal static async Task<int> Main(string[] args)
     {
+        if (args.Length == 3 && args[0].StartsWith("pool-", StringComparison.Ordinal))
+            return await NativePoolScenarioDriver.Run(args[0], args[1], args[2]);
         if (args.Length == 3 && args[0] is "bootstrap-close" or "bootstrap-wrong-ack")
             return await NativeBootstrapScenario.Run(args[0], args[1], args[2]);
         if (args.Length != 3 || args[0] is not ("neutral-ready" or "constructor-path" or "helper-loss-closed-output" or
