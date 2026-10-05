@@ -193,7 +193,17 @@ public sealed class LinuxFallbackSupervisorTests
         {
             var stdout = compiler.StandardOutput.ReadToEndAsync();
             var errors = compiler.StandardError.ReadToEndAsync();
-            await compiler.WaitForExitAsync().WaitAsync(observation);
+            var exit = compiler.WaitForExitAsync();
+            try { await exit.WaitAsync(observation); }
+            catch (TimeoutException)
+            {
+                // The observation budget is not cleanup authority. Retain this
+                // process and both drains until actual exit, then preserve the
+                // original preparation failure; no worker may be launched.
+                await exit;
+                await File.WriteAllTextAsync(logPath, await stdout + await errors);
+                throw;
+            }
             var log = await stdout + await errors;
             await File.WriteAllTextAsync(logPath, log);
             return log;

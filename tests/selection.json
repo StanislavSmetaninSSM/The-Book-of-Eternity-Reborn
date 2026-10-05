@@ -47,6 +47,13 @@
       "contracts": [
         "#1553 T041-FALLBACK-NATIVE preparation lifecycle"
       ]
+    },
+    {
+      "category": "linux-fallback-pidfd-identity",
+      "reason": "Source comparison found stale_check/fork binding changed after its historical PASS; verify exactly this one current primitive with its own wait-to-ECHILD cleanup.",
+      "contracts": [
+        "#1553 pidfd stale identity primitive"
+      ]
     }
   ]
 }

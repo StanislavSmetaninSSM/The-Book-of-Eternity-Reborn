@@ -133,6 +133,26 @@ A single independently finite direct-PowerShell regression, with an outer owned 
 on both RED/GREEN, is introduced before the correction. No process-tree kill,
 broad signal, new containment layer or shared mutable fixture is added.
 
+### Preparation causal RED and evidence-scope correction
+
+At `c41dc9c107713d2dc919a02f4c550357b725bb52`, fresh preparation-lifetime build/
+discovery PASS1planned/0executed; execution **0PASS/1causalFAIL**,1completed,
+8.6388107s: timeout returned while the controlled process was still live. The outer
+test independently awaited its finite process exit0, with no worker launched.
+[RED and actual cleanup](recovery/evidence/linux-fallback-build-lifetime-red/manifest.json).
+Correction retains the uncancelled exit task and both concurrent drains, writes the
+log after actual exit, then rethrows the original timeout. GREEN pending.
+
+Evidence ruling: initial planned reuse of the old stale primitive PASS was too broad.
+Source comparison found `stale_check` changed from hash13dbedf2 (690a9755 tested)
+to ac05b6b5 after guardian's bind_child-to-fork_bound correction, before this restore.
+Run only the new `linux-fallback-pidfd-identity` single-case owner after the current
+fixture correction. Historical PASS remains historical, not current qualification.
+This justified repeat does not replay the old19case prerequisite-failure selection.
+Next fresh build and only spawn2/preparation1/primitive1 GREEN; then full discovery
+with zero test execution. All other passing native cases retain source-specific
+proof; the helper and their fixture branches are unchanged.
+
 ## Priority handoff — disconnect audit and BLOCKED native slice
 
 Owner requested immediate handoff before further portability design. Exact helper/

@@ -210,8 +210,8 @@
       ]
     },
     {
-      "id": "linux-fallback-supervisor",
-      "responsibility": "#1553 native pidfd primitive only: a retired held pidfd cannot signal another owned incarnation. Historical primitive evidence is retained without replay for unchanged code.",
+      "id": "linux-fallback-pidfd-identity",
+      "responsibility": "#1553 native pidfd primitive only: a retired held pidfd cannot signal another owned incarnation. Fresh proof after the earlier bind_child-to-fork_bound fixture correction; no old nineteen-case replay.",
       "excludes": "Production pool/main Release, systemd positive qualification, namespace migration/external broker containment, Windows Job, PTY/live GM and unchanged prior cohorts. Fails explicitly off Linux.",
       "changeHints": [
         "native/linux/boe-lineage-supervisor.c",
