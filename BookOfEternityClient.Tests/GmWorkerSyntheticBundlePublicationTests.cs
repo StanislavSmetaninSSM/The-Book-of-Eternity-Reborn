@@ -6,7 +6,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class GmWorkerSyntheticBundlePublicationTests : IDisposable
+public sealed partial class GmWorkerSyntheticBundlePublicationTests : IDisposable
 {
     private readonly string _root = Path.Combine(Path.GetTempPath(), "boe-synthetic-bundle-" + Guid.NewGuid().ToString("N"));
     private readonly FileSystemManager _fs;
@@ -14,6 +14,7 @@ public sealed class GmWorkerSyntheticBundlePublicationTests : IDisposable
     private readonly byte[] _taskBytes = [0, 1, 0xFF];
     private readonly byte[] _content = [0, 0xFF, 0xEF, 0xBB, 0xBF];
     private readonly string _generation = Guid.NewGuid().ToString("N");
+    private Func<Task>? _afterBoundary;
     private string TaskPath => GmWorkerBridgePool.GetTaskPacketPath(_proposal.TaskId);
     private string InboxPath => GmWorkerBridgePool.GetProposalInboxPath(_proposal.TaskId);
     private string BundlePath => $"{GmWorkerProposalStore.ProposalRoot}/{_proposal.ProposalId}";
@@ -24,7 +25,12 @@ public sealed class GmWorkerSyntheticBundlePublicationTests : IDisposable
     {
         Assert.True(OperatingSystem.IsLinux(), "This category qualifies the Linux fixture-only bundle backend.");
         Directory.CreateDirectory(_root);
-        _fs = new(_root, NullLogger<FileSystemManager>.Instance);
+        _fs = new(_root, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                AfterCanonicalMutationBoundaryValidatedAsync = path =>
+                    path == BundlePath ? _afterBoundary?.Invoke() ?? Task.CompletedTask : Task.CompletedTask
+            });
         _fs.EnsureDirectoryStructure();
         Directory.CreateDirectory(Path.GetDirectoryName(_fs.SessionGenerationPath)!);
         File.WriteAllText(_fs.SessionGenerationPath, $$"""{"SchemaVersion":1,"GenerationId":"{{_generation}}"}""");
@@ -32,14 +38,15 @@ public sealed class GmWorkerSyntheticBundlePublicationTests : IDisposable
         File.WriteAllBytes(_fs.ResolvePath(TaskPath), _taskBytes);
     }
 
-    private Task<WorkerProposalPublicationResult> Publish(GmWorkerProposalStore store) =>
+    private Task<WorkerProposalPublicationResult> Publish(GmWorkerProposalStore store,
+        string? expectedGeneration = null, byte[]? expectedTask = null, CancellationToken cancellationToken = default) =>
         store.PublishBundleAsync(_proposal, ProposalBytes, new Dictionary<string, byte[]> { [ContentPath] = _content },
-            TaskPath, _taskBytes, _generation, InboxPath,
+            TaskPath, expectedTask ?? _taskBytes, expectedGeneration ?? _generation, InboxPath,
             lease => new GmWorkerAuditLog(_fs).AppendEventAsync(lease, new WorkerAuditEvent
             {
                 EventId = "synthetic-bundle-published", EventType = "proposal-published", WorkerId = _proposal.WorkerId,
                 TaskId = _proposal.TaskId, ProposalId = _proposal.ProposalId, TimestampUtc = "2026-10-05T00:00:00Z"
-            }));
+            }), cancellationToken);
 
     [Fact]
     public async Task ActualStore_PublishesCompleteBundleAndDerivedInboxAudit()

@@ -330,6 +330,19 @@ inbox and actual audit append; a separate default Store Linux refusal control re
 No native process or pool behavior changes in this scaffold. Fresh2-case build/RED
 is pending; no publication capability is claimed or enabled.
 
+B3-P causal RED at `611d9ee078d9a0efb84dc8446a8d64b9c271c0d8`: fresh
+PlanOnly2planned/0executed,42.1143633s; NoBuild2executed, **1PASS/1causalFAIL**,
+7.9014594s, complete selection/cleanup, no skip/duplicate/timeout. Positive actual
+Store failed at the explicit unqualified Core operation; default Linux refusal
+control passed. [Evidence](recovery/evidence/worker-pool-bundle-red/manifest.json).
+Implement only the reviewed fixture-bound Core operation plus direct libc create-only
+rename; default Store/Windows guard unchanged. Add narrow rejection cases for paths,
+final tree/destination/lease changes, stale binding, canceled lease wait and real
+EEXIST/ENOENT. Fresh selected GREEN is pending; actual pool has not been rerun.
+Sol6.1/xhigh clarification preserves Store task/generation check order: original lease
+is continuously held; Core revalidates active/no-pending/ambient/ordinary authority
+and namespace after hooks. No extra callback or duplicated generation payload.
+
 ### B1 execution record
 
 Read-only Spec Kit consistency pass at `0ffb1c45`: B has coverage in spec, this plan,

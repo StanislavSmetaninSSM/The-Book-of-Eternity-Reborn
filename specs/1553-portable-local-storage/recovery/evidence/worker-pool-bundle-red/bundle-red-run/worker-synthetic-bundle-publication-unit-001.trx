@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="5df5c4d1-c1fa-4ea7-939f-e20536a3a40c" name="@c7669543e9c7 2026-10-05 22:11:54" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T22:11:54.8159164+00:00" queuing="2026-10-05T22:11:54.8159165+00:00" start="2026-10-05T22:11:52.7991589+00:00" finish="2026-10-05T22:11:54.8227967+00:00" />
+  <TestSettings name="default" id="9b004454-e839-4550-9ccb-545fe613bf3a">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-05_22_11_54" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="877b3071-08d1-404b-8ed4-75a7956ebb78" testId="2538d595-f335-8ae5-6e64-c243efaf306d" testName="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DefaultStore_RetainsExistingLinuxDescriptorBackendRefusal" computerName="c7669543e9c7" duration="00:00:00.1407218" startTime="2026-10-05T22:11:54.7134168+00:00" endTime="2026-10-05T22:11:54.7134298+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="877b3071-08d1-404b-8ed4-75a7956ebb78" />
+    <UnitTestResult executionId="33a7871c-c033-4d52-aba9-9b49509525d6" testId="277dd8e5-676a-04dc-9bea-23d2969ffa83" testName="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ActualStore_PublishesCompleteBundleAndDerivedInboxAudit" computerName="c7669543e9c7" duration="00:00:00.0130028" startTime="2026-10-05T22:11:54.7408182+00:00" endTime="2026-10-05T22:11:54.7408184+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="33a7871c-c033-4d52-aba9-9b49509525d6">
+      <Output>
+        <ErrorInfo>
+          <Message>System.PlatformNotSupportedException : Synthetic bundle publication is not qualified.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.FileSystemManager.MoveSyntheticRuntimeBundleIntoCanonicalSessionAsync(CanonicalWriteLease lease, String admittedFixtureRoot, String sourceDirectory, String destinationRelativePath) in /workspace/native-1553/BookOfEternityClient/Core/FileSystemManager.SyntheticBundlePublication.cs:line 7
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerSyntheticBundlePublication.PublishAsync(FileSystemManager fs, CanonicalWriteLease lease, String sourceDirectory, String destinationRelativePath) in /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerSyntheticBundlePublication.cs:line 11
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProposalStore.PublishBundleAsync(WorkerProposal proposal, Byte[] proposalBytes, IReadOnlyDictionary`2 importedContent, String taskPath, Byte[] expectedTaskBytes, String expectedSessionGeneration, String proposalInboxPath, Func`2 publishDerivedAuditAsync, CancellationToken cancellationToken) in /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerProposalStore.cs:line 104
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProposalStore.PublishBundleAsync(WorkerProposal proposal, Byte[] proposalBytes, IReadOnlyDictionary`2 importedContent, String taskPath, Byte[] expectedTaskBytes, String expectedSessionGeneration, String proposalInboxPath, Func`2 publishDerivedAuditAsync, CancellationToken cancellationToken) in /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerProposalStore.cs:line 137
+   at BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ActualStore_PublishesCompleteBundleAndDerivedInboxAudit() in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerSyntheticBundlePublicationTests.cs:line 48
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ActualStore_PublishesCompleteBundleAndDerivedInboxAudit" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="277dd8e5-676a-04dc-9bea-23d2969ffa83">
+      <Execution id="33a7871c-c033-4d52-aba9-9b49509525d6" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests" name="ActualStore_PublishesCompleteBundleAndDerivedInboxAudit" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DefaultStore_RetainsExistingLinuxDescriptorBackendRefusal" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2538d595-f335-8ae5-6e64-c243efaf306d">
+      <Execution id="877b3071-08d1-404b-8ed4-75a7956ebb78" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests" name="DefaultStore_RetainsExistingLinuxDescriptorBackendRefusal" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="2538d595-f335-8ae5-6e64-c243efaf306d" executionId="877b3071-08d1-404b-8ed4-75a7956ebb78" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="277dd8e5-676a-04dc-9bea-23d2969ffa83" executionId="33a7871c-c033-4d52-aba9-9b49509525d6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="2" executed="2" passed="1" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.18]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.30]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.32]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.53]       System.PlatformNotSupportedException : Synthetic bundle publication is not qualified.
+[xUnit.net 00:00:01.53]       Stack Trace:
+[xUnit.net 00:00:01.53]         /workspace/native-1553/BookOfEternityClient/Core/FileSystemManager.SyntheticBundlePublication.cs(7,0): at BookOfEternityClient.Core.FileSystemManager.MoveSyntheticRuntimeBundleIntoCanonicalSessionAsync(CanonicalWriteLease lease, String admittedFixtureRoot, String sourceDirectory, String destinationRelativePath)
+[xUnit.net 00:00:01.53]         /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerSyntheticBundlePublication.cs(11,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerSyntheticBundlePublication.PublishAsync(FileSystemManager fs, CanonicalWriteLease lease, String sourceDirectory, String destinationRelativePath)
+[xUnit.net 00:00:01.53]         /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerProposalStore.cs(104,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProposalStore.PublishBundleAsync(WorkerProposal proposal, Byte[] proposalBytes, IReadOnlyDictionary`2 importedContent, String taskPath, Byte[] expectedTaskBytes, String expectedSessionGeneration, String proposalInboxPath, Func`2 publishDerivedAuditAsync, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.53]         /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerProposalStore.cs(137,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProposalStore.PublishBundleAsync(WorkerProposal proposal, Byte[] proposalBytes, IReadOnlyDictionary`2 importedContent, String taskPath, Byte[] expectedTaskBytes, String expectedSessionGeneration, String proposalInboxPath, Func`2 publishDerivedAuditAsync, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.53]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerSyntheticBundlePublicationTests.cs(48,0): at BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ActualStore_PublishesCompleteBundleAndDerivedInboxAudit()
+[xUnit.net 00:00:01.53]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.54]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T22:11:54.7395885+00:00">
+        <Text>[xUnit.net 00:00:01.53]     BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ActualStore_PublishesCompleteBundleAndDerivedInboxAudit [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>
