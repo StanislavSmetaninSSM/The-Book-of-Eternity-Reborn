@@ -3485,7 +3485,7 @@ Source issue [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternit
 
 - [x] Publish plan WIP and obtain independent actual gpt-6.1-sol/xhigh design review, then write tests/build wiring and mechanical suffix extraction.
 - [x] Publish RED source, run `pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-bridge-output-stream -Parallelism 1 -PlanOnly`, then the same category `-NoBuild`; retain exact causal failures, distinct counts and fresh actual bridge build evidence.
-- [ ] Implement the minimal actual-pump/Unicode-tail correction, publish source and repeat the affected fresh build/selected tests to GREEN.
+- [x] Implement the minimal actual-pump/Unicode-tail correction, publish source and repeat the affected fresh build/selected tests to GREEN.
 - [ ] Run `pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild` discovery only, retain evidence/source hashes/XML/owned cleanup and independent actual Sol6.1/xhigh final source/evidence review.
 - [ ] Publish final verdict by ordinary non-force push, verify exact remote bytes and fresh GitHub-only clean restore; stop at handoff without starting another scope.
 
@@ -3500,3 +3500,5 @@ Preparation incident at `ae2084a0`: fresh selected PlanOnly failed before discov
 Fresh build at `a0eb13b4` succeeded and compiled actual bridge;48 cases discovered. First execution reached 48 fixture-initializer failures because the test searched a nonexistent root TheBookOfEternityReborn.sln (the solution is nested). Correct root lookup by both existing bridge/unit csproj paths. No pump invocation occurred and this is **not causal RED**. Keep evidence as a fixture preparation incident; repeat the affected build/run only after this test correction.
 
 Causal RED at clean `a729f4142779041f4633298c2ab9cc749004d05b`: fresh build compiled actual bridge/unit;48planned/executed,19PASS/29FAIL,0skips/duplicates/timeouts,complete owned cleanup,7.9919576 seconds. Actual DLL location/PDB source checksum and production-call guards pass. Failures are split/incomplete UTF-8, 65536/12000 surrogate cuts and silent cancellation success; no fixture/build errors. Minimal candidate changes only the existing output pump, a private output-record helper and the extracted suffix. Native entrypoints and all input/readiness/lifecycle methods remain unchanged.
+
+First GREEN at clean `a9472a35ebcc0e3fc0f09c168c49cef0a2629402`:48/48 distinct passes,0skips/duplicates/timeouts,complete cleanup,7.7003966 seconds after fresh actual-consumer build40.6863952 seconds. Discovery-only audit242categories/10723methods,0execution/unmapped/stale,9.1747857 seconds. One new xUnit2031 warning belongs to the PDB-check fixture; replace Where+Assert.Single with the equivalent predicate overload and verify the final test source. Runtime source remains unchanged. Other warnings are pre-existing source locations.

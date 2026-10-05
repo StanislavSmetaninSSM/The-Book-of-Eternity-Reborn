@@ -323,8 +323,8 @@ public sealed class GmBridgeOutputPumpTests
         using var pdb = File.OpenRead(Path.ChangeExtension(assembly.Location, ".pdb"));
         using var provider = MetadataReaderProvider.FromPortablePdbStream(pdb);
         var metadata = provider.GetMetadataReader();
-        var document = Assert.Single(metadata.Documents.Select(metadata.GetDocument).Where(d =>
-            metadata.GetString(d.Name).Replace('\\', '/').EndsWith("BookOfEternityGMBridge/Program.cs", StringComparison.Ordinal)));
+        var document = Assert.Single(metadata.Documents.Select(metadata.GetDocument), d =>
+            metadata.GetString(d.Name).Replace('\\', '/').EndsWith("BookOfEternityGMBridge/Program.cs", StringComparison.Ordinal));
         Assert.Equal(new Guid("8829d00f-11b8-4213-878b-770e8597ac16"), metadata.GetGuid(document.HashAlgorithm));
         Assert.Equal(SHA256.HashData(File.ReadAllBytes(Path.Combine(HostFixture.RepoRoot, "BookOfEternityGMBridge", "Program.cs"))), metadata.GetBlobBytes(document.Hash));
         Assert.Null(host.Field("_pty"));
