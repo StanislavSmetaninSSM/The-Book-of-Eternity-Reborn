@@ -324,6 +324,12 @@ read-only, no probes/tests, no remaining design blocker. Remote SHA/readback con
 Next: actual Store positive causal RED with sealed adapter scaffold, then implement
 only its reviewed Core create-only operation and narrow rejection tests.
 
+B3-P RED scaffold: sealed Store adapter created by the exact fixture admission and
+an unavailable Core operation. Actual Store positive includes binary content, derived
+inbox and actual audit append; a separate default Store Linux refusal control remains.
+No native process or pool behavior changes in this scaffold. Fresh2-case build/RED
+is pending; no publication capability is claimed or enabled.
+
 ### B1 execution record
 
 Read-only Spec Kit consistency pass at `0ffb1c45`: B has coverage in spec, this plan,

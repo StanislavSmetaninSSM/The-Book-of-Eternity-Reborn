@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "worker-synthetic-bundle-publication",
+      "responsibility": "#1553 POOL B explicit fixture-root-bound actual Store atomic create-only Linux directory bundle publication, full content/inbox/audit and safe rejection at lease/namespace/native boundaries.",
+      "excludes": "No default Linux rollout, real saves, worker launch, power-loss or hostile-owner race guarantees; Windows descriptor backend unchanged.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.SyntheticBundlePublication.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerSyntheticBundlePublication.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalStore.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "worker-consumer-execution-evidence",
       "responsibility": "#1553 POOL B actual proposal-only and validation-repair consumer decision boundaries reject legacy success-shaped records and failed-but-stopped with-copies without an accepted execution publication permit.",
       "excludes": "Pure consumer boundary negatives; no native process, actual publication or Windows runtime qualification.",

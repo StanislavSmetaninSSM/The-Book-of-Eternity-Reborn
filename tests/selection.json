@@ -23,6 +23,14 @@
         "#1553 T041-FALLBACK-POOL",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-synthetic-bundle-publication",
+      "reason": "New bounded Linux directory bundle prerequisite through real Store, preserving default refusal and exact publication semantics.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B3-P",
+        "FR-012/014/015"
+      ]
     }
   ]
 }

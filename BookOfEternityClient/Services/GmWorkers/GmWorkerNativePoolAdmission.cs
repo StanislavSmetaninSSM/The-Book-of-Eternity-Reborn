@@ -10,6 +10,13 @@ internal sealed class GmWorkerNativePoolAdmission(string packageDirectory, strin
     internal string FixtureRoot { get; } = Path.GetFullPath(fixtureRoot);
     internal string RuntimeBase => Path.Combine(FixtureRoot, "native-runtime");
 
+    internal GmWorkerProposalStore CreateProposalStore(FileSystemManager fs)
+    {
+        SelectFor(fs);
+        return new(fs, (lease, path, bytes) => fs.WriteFileAtomicBytesAsync(lease, path, bytes),
+            new GmWorkerSyntheticBundlePublication(FixtureRoot));
+    }
+
     internal GmWorkerBackendSelection SelectFor(FileSystemManager fs)
     {
         if (!OperatingSystem.IsLinux() || !string.Equals(Path.GetFullPath(fs.BasePath), FixtureRoot, StringComparison.Ordinal))

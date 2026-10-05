@@ -9,6 +9,7 @@ public sealed class GmWorkerProposalStore
 
     private readonly FileSystemManager _fs;
     private readonly Func<FileSystemManager.CanonicalWriteLease, string, byte[], Task> _publishInboxAsync;
+    private readonly GmWorkerSyntheticBundlePublication? _syntheticPublication;
 
     public GmWorkerProposalStore(FileSystemManager fs)
         : this(fs, (lease, path, content) => fs.WriteFileAtomicBytesAsync(lease, path, content))
@@ -17,10 +18,12 @@ public sealed class GmWorkerProposalStore
 
     internal GmWorkerProposalStore(
         FileSystemManager fs,
-        Func<FileSystemManager.CanonicalWriteLease, string, byte[], Task> publishInboxAsync)
+        Func<FileSystemManager.CanonicalWriteLease, string, byte[], Task> publishInboxAsync,
+        GmWorkerSyntheticBundlePublication? syntheticPublication = null)
     {
         _fs = fs;
         _publishInboxAsync = publishInboxAsync ?? throw new ArgumentNullException(nameof(publishInboxAsync));
+        _syntheticPublication = syntheticPublication;
     }
 
     internal async Task<WorkerProposalPublicationResult> PublishBundleAsync(
@@ -94,10 +97,12 @@ public sealed class GmWorkerProposalStore
 
             try
             {
-                await _fs.MoveRuntimeDirectoryIntoCanonicalSessionAsync(
-                    writeLease,
-                    stagingBundleRoot,
-                    finalBundleRelativePath);
+                if (_syntheticPublication == null)
+                    await _fs.MoveRuntimeDirectoryIntoCanonicalSessionAsync(
+                        writeLease, stagingBundleRoot, finalBundleRelativePath);
+                else
+                    await _syntheticPublication.PublishAsync(_fs,
+                        writeLease, stagingBundleRoot, finalBundleRelativePath);
             }
             catch (IOException) when (Directory.Exists(finalBundleRoot))
             {
