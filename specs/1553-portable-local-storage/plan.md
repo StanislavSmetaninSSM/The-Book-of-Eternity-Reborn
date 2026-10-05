@@ -74,6 +74,9 @@ helper exit awaited, independent guardian ECHILD/emergency0/failures0/driverexit
 [Evidence](recovery/evidence/worker-host-ready-first-green/manifest.json).
 This is one bounded positive HOST case, not acceptance of the unfinished slice.
 The actual pool Windows-only adapter extraction and negative matrix remain pending.
+New worker-native-admission4cases target the real pool early gate and shared
+preparation rejection. A pre-reservation fixture guard makes the unfixed pool safe:
+causal RED must be an unexpected reservation-hook call, never an unguarded process.
 Independent Sol consult confirms original Process/tree/started-state one-way handoff
 from a sealed Windows adapter preserves current cleanup; no native-to-legacy route.
 Existing relevant lifecycle fixtures invoke powershell.exe and remain Windows-only

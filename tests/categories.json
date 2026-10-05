@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "worker-native-admission",
+      "responsibility": "#1553 slice A forbids Linux WorkerRelease and explicit unavailable systemd before calling launcher, reservation, host attach or Release. Shared preparation plus actual pool consumer with pre-reservation safety guard.",
+      "excludes": "No child processes, native positive qualification, Windows Job, production Release or canonical writes. Linux-only policy/admission execution.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "worker-native-host-ready",
       "responsibility": "#1553 HOST shared production preparation of actual neutral managed host with checked native owner: Ready, named-channel owner-close and scoped ECHILD stop, zero worker Release. Outer independent guardian is mandatory.",
       "excludes": "WorkerRelease/pool integration B, canonical mutations, real GM, main PTY and unchanged IPC cohorts. Actual Linux x64 glibc/native compiler fixture preparation only.",

@@ -29,6 +29,13 @@
       "contracts": [
         "#1553 T041-FALLBACK-HOST"
       ]
+    },
+    {
+      "category": "worker-native-admission",
+      "reason": "Real pool and shared preparation must reject stage B capability before any process or reservation.",
+      "contracts": [
+        "#1553 T041-FALLBACK-HOST"
+      ]
     }
   ]
 }
