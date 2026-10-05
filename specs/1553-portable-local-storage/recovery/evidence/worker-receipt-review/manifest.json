@@ -1,0 +1,48 @@
+{
+  "SchemaVersion": 1,
+  "Kind": "Independent final review and source-only restoration/cleanup evidence",
+  "ReviewedEvidenceCarrier": "fb0a9d76db116ce605a52cd7a8a241fcd450ee17",
+  "RuntimeSource": "da35de5498d8edf2787c987bd5a45ea5aa39e988",
+  "Artifacts": [
+    {
+      "Path": "review.json",
+      "OriginalBytes": 1314,
+      "OriginalSha256": "c283ba00737bb9db43888d9480131069db9e963c6083d9881c02b01fcaea50f7",
+      "StoredPath": "review.json",
+      "StoredBytes": 1314,
+      "StoredSha256": "c283ba00737bb9db43888d9480131069db9e963c6083d9881c02b01fcaea50f7"
+    },
+    {
+      "Path": "review-restore.json",
+      "OriginalBytes": 566,
+      "OriginalSha256": "82641dd15f72ff3c99e430625397fe237a2072bea3668d53dc848207e271c6c2",
+      "StoredPath": "review-restore.json",
+      "StoredBytes": 566,
+      "StoredSha256": "82641dd15f72ff3c99e430625397fe237a2072bea3668d53dc848207e271c6c2"
+    },
+    {
+      "Path": "publication.json",
+      "OriginalBytes": 230,
+      "OriginalSha256": "6a03393f143acd22c5743b44bb397fad19a7e4065b7992ff3860b7f16de6f02f",
+      "StoredPath": "publication.json",
+      "StoredBytes": 230,
+      "StoredSha256": "6a03393f143acd22c5743b44bb397fad19a7e4065b7992ff3860b7f16de6f02f"
+    },
+    {
+      "Path": "build-server-shutdown-result.json",
+      "OriginalBytes": 326,
+      "OriginalSha256": "9eb0c2db1967a4e6fb60a91dc39f2dd0f383e1ebf2cc82bfc8195e1a94a2c55b",
+      "StoredPath": "build-server-shutdown-result.json",
+      "StoredBytes": 326,
+      "StoredSha256": "9eb0c2db1967a4e6fb60a91dc39f2dd0f383e1ebf2cc82bfc8195e1a94a2c55b"
+    },
+    {
+      "Path": "build-server-shutdown.log",
+      "OriginalBytes": 156,
+      "OriginalSha256": "830e5cd707f90e485d1b96b500318ea1d4c6248cd46f3da146a5887084144dbf",
+      "StoredPath": "build-server-shutdown.log.gz",
+      "StoredBytes": 97,
+      "StoredSha256": "84c53ffe297096af1ac00c41255a2f44f6f76f43aee361514ef58041c4d5f77c"
+    }
+  ]
+}

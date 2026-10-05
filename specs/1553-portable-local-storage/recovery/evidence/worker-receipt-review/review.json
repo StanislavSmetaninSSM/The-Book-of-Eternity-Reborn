@@ -1,0 +1,41 @@
+{
+  "Model": "gpt-6.1-sol",
+  "Effort": "xhigh",
+  "Agent": "/root/receipt_final_review",
+  "Result": "PASS",
+  "ReviewedRuntimeSource": "da35de5498d8edf2787c987bd5a45ea5aa39e988",
+  "ReviewedEvidenceCarrier": "fb0a9d76db116ce605a52cd7a8a241fcd450ee17",
+  "UnresolvedActionableFindings": [],
+  "ClosedFinding": "Plan now describes the actual direct unconfirmed cleanup guard, not a refusing ConfirmDeath stub.",
+  "Verified": {
+    "GreenDistinctPasses": 41,
+    "CausalRed": {
+      "Executed": 39,
+      "Passed": 16,
+      "Failed": 23
+    },
+    "FreshSelectedBuilds": true,
+    "CatalogCategories": 241,
+    "CatalogMethods": 10707,
+    "CatalogExecution": 0,
+    "CompleteCleanup": true,
+    "Manifests": 5,
+    "ArtifactHashes": 22,
+    "Inputs": 9,
+    "UnchangedBoundaryFiles": 15,
+    "GeneratedXmlParses": 9,
+    "RestoredTrackedFiles": 5376,
+    "RestoredChangedFileBytes": 40,
+    "RestoredInputHashes": 9,
+    "WindowsReceiptBodyAndWorkspaceSuffixByteEquivalent": true
+  },
+  "ReviewerExecution": "read-only, no builds/tests/probes rerun",
+  "ScopeLimits": [
+    "Native Windows",
+    "native complete process stop and Release",
+    "live canonical append/replacement",
+    "cold process crash/restart and power-loss",
+    "PTY and live GM"
+  ],
+  "ObservedUtc": "2026-10-05T12:56:07.555208+00:00"
+}

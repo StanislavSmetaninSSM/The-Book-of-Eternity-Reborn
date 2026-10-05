@@ -5,7 +5,7 @@
   "BaseCommit": "c815c4fd3890871c95355c42546a3bd88df65867",
   "SourceCommit": "da35de5498d8edf2787c987bd5a45ea5aa39e988",
   "SourceTree": "fedb6445a40b4f486d4101e20bc67e52ee99cc5d",
-  "Status": "Native Linux bounded receipt GREEN; independent final complete-packet review pending",
+  "Status": "Bounded native Linux receipt implementation and evidence PASS; production execution remains closed",
   "Environment": {
     "OS": "Debian13.6",
     "Kernel": "6.18.44",
@@ -188,20 +188,54 @@
   "IndependentFinalReview": {
     "Model": "gpt-6.1-sol",
     "Effort": "xhigh",
-    "Result": "Source/GREEN evidence preliminary PASS, final packet pending",
-    "RuntimeSource": "da35de5498d8edf2787c987bd5a45ea5aa39e988",
     "Agent": "/root/receipt_final_review",
-    "PlanWordingCorrected": "UnconfirmedOwner directly tests CleanupConfirmedAsync precondition, not ConfirmDeathAsync refusal."
+    "Result": "PASS",
+    "ReviewedRuntimeSource": "da35de5498d8edf2787c987bd5a45ea5aa39e988",
+    "ReviewedEvidenceCarrier": "fb0a9d76db116ce605a52cd7a8a241fcd450ee17",
+    "UnresolvedActionableFindings": [],
+    "ClosedFinding": "Plan now describes the actual direct unconfirmed cleanup guard, not a refusing ConfirmDeath stub.",
+    "Verified": {
+      "GreenDistinctPasses": 41,
+      "CausalRed": {
+        "Executed": 39,
+        "Passed": 16,
+        "Failed": 23
+      },
+      "FreshSelectedBuilds": true,
+      "CatalogCategories": 241,
+      "CatalogMethods": 10707,
+      "CatalogExecution": 0,
+      "CompleteCleanup": true,
+      "Manifests": 5,
+      "ArtifactHashes": 22,
+      "Inputs": 9,
+      "UnchangedBoundaryFiles": 15,
+      "GeneratedXmlParses": 9,
+      "RestoredTrackedFiles": 5376,
+      "RestoredChangedFileBytes": 40,
+      "RestoredInputHashes": 9,
+      "WindowsReceiptBodyAndWorkspaceSuffixByteEquivalent": true
+    },
+    "ReviewerExecution": "read-only, no builds/tests/probes rerun",
+    "ScopeLimits": [
+      "Native Windows",
+      "native complete process stop and Release",
+      "live canonical append/replacement",
+      "cold process crash/restart and power-loss",
+      "PTY and live GM"
+    ],
+    "ObservedUtc": "2026-10-05T12:56:07.555208+00:00"
   },
   "ArtifactIntegrity": {
-    "Manifests": 5,
-    "ArtifactHashes": 22,
+    "Manifests": 6,
+    "ArtifactHashes": 27,
     "Evidence": [
       "evidence/worker-receipt-red/manifest.json",
       "evidence/worker-receipt-green/manifest.json",
       "evidence/worker-receipt-red-plan/manifest.json",
       "evidence/worker-receipt-audit/manifest.json",
-      "evidence/worker-receipt-green-plan/manifest.json"
+      "evidence/worker-receipt-green-plan/manifest.json",
+      "evidence/worker-receipt-review/manifest.json"
     ]
   },
   "GeneratedXmlValidation": [
@@ -234,7 +268,20 @@
       "23520       1 Z    dotnet"
     ]
   },
-  "SourceRestoration": "Pending clean GitHub-only candidate restore before final review",
+  "SourceRestoration": {
+    "ObservedUtc": "2026-10-05T12:52:57.056433+00:00",
+    "Commit": "fb0a9d76db116ce605a52cd7a8a241fcd450ee17",
+    "Tree": "5d48e492fcf97a8a5dccf10a0ce5ee50de3d42ac",
+    "Method": "Fresh GitHub-only clone into a new empty directory; no local source/object cache",
+    "RestorationDirectory": "/workspace/linux-1553-receipt-review-restore",
+    "RemoteShaBeforeAndAfterVerified": true,
+    "Clean": true,
+    "TrackedFiles": 5376,
+    "ChangedFilesBytesVerified": 40,
+    "QualificationInputHashesVerified": 9,
+    "ConnectivityFsck": "PASS",
+    "SourceOnlyNoBuildOrExecution": true
+  },
   "NotQualified": [
     "Native Windows execution; body preserved only",
     "Native process/host/worker/GM execution, Release, ownership stop or PTY",
@@ -244,5 +291,6 @@
     "Hostile concurrent computer-owner substitution resistance; trusted local by-name model",
     "Whole #1553/B4/platform acceptance"
   ],
-  "NextWork": "Ownership backend remains pending comparison and compatibility resolution. No namespace bootstrap now; no negative-only backend work as readiness evidence. Parent selects next bounded prerequisite; new CLI restrictions/system dependencies require owner decision."
+  "NextWork": "Ownership backend remains pending comparison and compatibility resolution. No namespace bootstrap now; no negative-only backend work as readiness evidence. Parent selects next bounded prerequisite; new CLI restrictions/system dependencies require owner decision.",
+  "FinalCarrier": "Final verdict carrier is published/read back and restored separately; exact SHA in handoff to avoid self-reference."
 }
