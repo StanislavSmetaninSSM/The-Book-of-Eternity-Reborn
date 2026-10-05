@@ -1,0 +1,34 @@
+{
+  "StartedUtc": "2026-10-05T12:04:27.540676+00:00",
+  "BuildCommand": [
+    "cc",
+    "-std=c11",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-O2",
+    "/workspace/linux-1553-ownership-design-artifacts/namespace-capability-probe.c",
+    "-o",
+    "/workspace/linux-1553-ownership-design-artifacts/namespace-capability-probe"
+  ],
+  "BuildExitCode": 0,
+  "SourceSha256": "3d2dee28377b6b459b735da880d5f121791afc3eeaec399783014ed7135e2d99",
+  "Permissions": "normal; first and only namespace attempt; no settings/flags/security workaround",
+  "ProcessLimit": 1,
+  "ChildrenCreated": 0,
+  "TimeoutSeconds": 3,
+  "Command": [
+    "/workspace/linux-1553-ownership-design-artifacts/namespace-capability-probe"
+  ],
+  "ExitCode": 0,
+  "Rows": [
+    {
+      "call": "unshare(CLONE_NEWUSER|CLONE_NEWPID)",
+      "rc": 0,
+      "errno": 0,
+      "error": "Success",
+      "childrenCreated": 0
+    }
+  ],
+  "EndedUtc": "2026-10-05T12:04:27.542713+00:00"
+}

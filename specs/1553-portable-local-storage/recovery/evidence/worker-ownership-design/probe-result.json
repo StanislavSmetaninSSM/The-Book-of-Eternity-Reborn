@@ -1,0 +1,79 @@
+{
+  "StartedUtc": "2026-10-05T12:01:36.954348+00:00",
+  "Kind": "Minimal capability evidence; not native ownership qualification or TDD GREEN",
+  "SourceBase": "31de2e33a6f44001fee9c0c3b6c4e61c8d3aab0e",
+  "BuildCommand": [
+    "cc",
+    "-std=c11",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-O2",
+    "/workspace/linux-1553-ownership-design-artifacts/capability-probe.c",
+    "-o",
+    "/workspace/linux-1553-ownership-design-artifacts/capability-probe"
+  ],
+  "BuildExitCode": 0,
+  "Permissions": "normal, no escalation or settings change",
+  "SyntheticChildLimit": 1,
+  "ChildSelfExitSeconds": 3,
+  "ProbeTimeoutSeconds": 8,
+  "SourceSha256": "b0ec1455198d73c86eb995881162703d61e3fecdeb2a8430f417d7533e0f7978",
+  "Command": [
+    "/workspace/linux-1553-ownership-design-artifacts/capability-probe"
+  ],
+  "ExitCode": 0,
+  "Rows": [
+    {
+      "call": "prctl(PR_SET_CHILD_SUBREAPER,1)",
+      "rc": 0,
+      "errno": 0
+    },
+    {
+      "call": "prctl(PR_GET_CHILD_SUBREAPER)",
+      "rc": 0,
+      "errno": 0
+    },
+    {
+      "call": "owned-child-pid",
+      "rc": 21504,
+      "errno": 0
+    },
+    {
+      "call": "pidfd_open(owned-unreaped-child,0)",
+      "rc": 0,
+      "errno": 0
+    },
+    {
+      "call": "pidfd_send_signal(signal0)",
+      "rc": 0,
+      "errno": 0
+    },
+    {
+      "call": "pidfd_send_signal(SIGKILL,owned-child)",
+      "rc": 0,
+      "errno": 0
+    },
+    {
+      "call": "waitpid(owned-child,__WALL)",
+      "rc": 0,
+      "errno": 0
+    },
+    {
+      "call": "owned-child-terminal-signal",
+      "rc": 9,
+      "errno": 0
+    },
+    {
+      "call": "pidfd_send_signal(stale-fd,signal0)",
+      "rc": -1,
+      "errno": 3
+    },
+    {
+      "call": "waitpid(all,__WALL|WNOHANG)",
+      "rc": -1,
+      "errno": 10
+    }
+  ],
+  "EndedUtc": "2026-10-05T12:01:36.956651+00:00"
+}
