@@ -423,6 +423,7 @@ public sealed class GmWorkerBridgeDocumentationTests
         var backupLifecycle = ReadRepoFile("BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs");
         var stateManager = ReadRepoFile("BookOfEternityClient/Core/StateManager.cs");
         var processHost = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs");
+        var peerIdentity = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs");
         var processTree = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs");
         var quarantineReaper = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs");
         var repairDelegator = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs");
@@ -638,7 +639,17 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("NamedPipeServerStream", processHost, StringComparison.Ordinal);
         Assert.Contains("NamedPipeClientStream", processHost, StringComparison.Ordinal);
         Assert.Contains("PipeOptions.CurrentUserOnly", processHost, StringComparison.Ordinal);
-        Assert.Contains("GetNamedPipeClientProcessId", processHost, StringComparison.Ordinal);
+        Assert.Contains("GetNamedPipeClientProcessId", peerIdentity, StringComparison.Ordinal);
+        Assert.Contains("EntryPoint = \"getsockopt\"", peerIdentity, StringComparison.Ordinal);
+        Assert.Contains("EntryPoint = \"geteuid\"", peerIdentity, StringComparison.Ordinal);
+        Assert.Contains("SafePipeHandle pipe", peerIdentity, StringComparison.Ordinal);
+        AssertOrdered(processHost,
+            "GmWorkerProcessHostPeerIdentity.Validate(_controlPipe.SafePipeHandle",
+            "GmWorkerProcessHostPeerIdentity.Validate(_statusPipe.SafePipeHandle",
+            "Volatile.Write(ref _connected, 1)");
+        AssertOrdered(processHost,
+            "await ConnectAndAuthenticateAsync(hostProcess, readiness.Token);",
+            "await SendLaunchAsync(hostProcess, readiness.Token);");
         Assert.Contains("CryptographicOperations.FixedTimeEquals", processHost, StringComparison.Ordinal);
         Assert.Contains("HandleInheritability.None", processHost, StringComparison.Ordinal);
         Assert.Contains("GmWorkerProcessHostStatusKind.OutputDrained", processHost, StringComparison.Ordinal);

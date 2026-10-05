@@ -103,6 +103,21 @@ guard. No framing helper, process-tree/workspace guard or run-record source chan
 Next: publish, fresh selected PlanOnly/build, then the complete 33-case GREEN attempt.
 No implementation success or native Windows qualification is claimed before results.
 
+First candidate `c1a4a3760ddb8da106e871b20b12e7c18a6765d8` passed fresh
+PlanOnly (33 planned, zero execution, 62.2709106 seconds) and **33/33 GREEN**
+(32.0678684 seconds), complete selection/cleanup, no skips/duplicates. The actual
+hidden host reached Ready and exited125 within five seconds after owner close;
+its absolute-path controlled worker canary did not start. Foreign control/status/
+both peers received zero Launch; policy simulations retain their narrower meaning.
+[First GREEN](recovery/evidence/worker-ipc-linux-20261005-first-green/manifest.json).
+The final affected-consumer audit found one more existing exact source guard in
+`ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions`
+that still searched the old file for the moved Windows P/Invoke. It now reads the
+adapter, checks both-channel ordering before admission/Launch, and is selected as
+one additional static guard in the same category (34 cases). Its existing broader
+category ownership is retained; no unrelated lifecycle tests are selected.
+Next: fresh build/34-case run, discovery-only inventory, independent final review.
+
 The owner explicitly authorizes ordinary non-force WIP pushes to the existing
 `codex/1553-load-filesystem` branch. Noninteractive push dry-run succeeded before
 first publication; this supersedes the older HOME-PC publication route for this
