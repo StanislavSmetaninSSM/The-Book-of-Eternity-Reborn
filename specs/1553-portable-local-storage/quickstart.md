@@ -75,7 +75,8 @@ assemblies passed. See the [current handoff](load-five-fixes-handoff.md),
 [full GitHub readback](recovery/load-filesystem-linux-github-readback.json).
 Final separate Sol 6.1 XHigh review passed at `6133bfed`; the scoped filesystem
 B1/B2/B3/B5-FS gate is accepted after complete proof and fresh GitHub restoration.
-Public B4, A4 producer case-pair follow-up, T033/live/full B5 and whole #1553 remain open.
+Full public B4, T033/live/full B5 and whole #1553 remain open; bounded A4 producer
+qualification is recorded below at its later exact source.
 
 Restore the current branch into a fresh directory and compare complete SHAs:
 
@@ -258,3 +259,23 @@ Use the terminal's actual advertised capabilities; do not override TERM. Omit sc
 Keep `HOME`, `home` and `CODEX_HOME` unchanged. Do not source historical environment scripts that redefine them. Use the existing official tool binaries via explicit `DOTNET_ROOT` and `PATH`; set `DOTNET_CLI_TELEMETRY_OPTOUT=1`, `POWERSHELL_TELEMETRY_OPTOUT=1`, `TESTINGPLATFORM_TELEMETRY_OPTOUT=1` and `DOTNET_PROCESSOR_COUNT=1` before startup. Allocate a new owned run root for `DOTNET_CLI_HOME`, `XDG_CONFIG_HOME`, `XDG_CACHE_HOME`, `XDG_DATA_HOME`, `NUGET_HTTP_CACHE_PATH`, `NUGET_SCRATCH`, `NUGET_PLUGINS_CACHE_PATH`, `TMPDIR`, `TMP` and `TEMP`. Reuse only the existing immutable package cache with `NUGET_PACKAGES`. For a justified Linux reproduction, the reviewed `tests/selection.json` plans 28 methods / 58 cases / five descriptors: use `pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -PlanOnly -Parallelism 1` for discovery only, and omit `-PlanOnly` to execute. `-NoBuild` requires a fresh successful build of all selected projects at unchanged source. The separate `-Category portable-directory-backup-prerequisite` owns the recorded Linux failure; it is transparently excluded from the passing Linux selection, without an OS early return or fixture bypass. The initial three-case RED is historical evidence from its named pre-port source, not a current invocation target.
 
 The exact completed Windows command and 30/30 result are in [normal recovery](recovery/README.md#accepted-t030-f-recovery). Use its Windows selection only for a justified native rerun. Neither a zero-test plan nor source recovery constitutes behavioral execution.
+
+## Current native save names qualification — 2026-10-05
+
+T032-A4 runtime `ddd86922` passed actual current Save → typed Load → Save for
+Linux leaf/directory case pairs with exact bytes, manifested hashes and canonical
+fixed authorities. The four new cases require Linux; they must not be selected by
+the default Windows job. Use the existing Linux workflow selection:
+
+```powershell
+./scripts/test-csharp.ps1 -SelectionFile tests/selections/1553-load-linux.json -PlanOnly
+./scripts/test-csharp.ps1 -SelectionFile tests/selections/1553-load-linux.json -NoBuild
+```
+
+That selection contains36 affected cases (new4, original-name8, fixed-alias24).
+Default `tests/selection.json` contains only the32 Windows-compatible affected cases.
+PlanOnly/discovery on Linux does not qualify Windows execution. Do not repeat the
+passing behavior solely for restoration or a selection-only edit. See the current
+[plan](plan.md) for the final independent PASS, bounded acceptance and exact delivery requirements. Existing
+Windows collision policy and archive format/hash/budgets remain unchanged; native
+Windows public-client/worker and real GM/live console/full gameplay remain open.

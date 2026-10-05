@@ -4,7 +4,23 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
-## Active T032-A4-NATIVE-NAMES — test-first WIP, 2026-10-05
+## Accepted T032-A4-NATIVE-NAMES — bounded Linux, 2026-10-05
+
+Current bounded code/verification verdict: **separate gpt-6.1-sol / xhigh PASS**
+on runtime `ddd869229b79016b9b595f5eb21235c699927e6a`, final routing/docs/artifacts.
+All36 current-source selected cases passed after the two causal producer failures;
+audit235/10,600 executed zero tests and all4 generated XML files parsed. The single
+P2 selection-routing finding is resolved and independently rechecked. No remaining
+correctness, coverage, compatibility or evidence finding. This closes the bounded
+A4 implementation/qualification scope only; new Windows execution, full T031/T032,
+public-client Windows, real GM/live console/full gameplay and whole #1553 stay open.
+
+The runtime checkpoint already has exact fresh GitHub restoration; this final
+source-qualified evidence and acceptance carrier must now be published through the
+verified desktop-blob/cloud-publisher workflow and freshly restored before delivery
+is claimed. Read its exact commit SHA from GitHub rather than inventing a self-SHA.
+No runtime/test code changed after GREEN. The historical steps below explain the
+causal sequence; their earlier pending statements do not override this final verdict.
 
 Base and directly verified GitHub branch: `c122d3e18550f8169b288628ecab3276758bdd7c`,
 tree `4093c98d3495942ee4b41024870e2237852390e5`; the assigned checkout was clean.
@@ -63,6 +79,39 @@ for non-fixed Linux payloads; original ignore-case behavior for every other plat
 and the existing fixed-path registry. Registry contents, payload spelling and all
 loader/archive validation remain untouched. Candidate runtime is not yet rebuilt
 or tested. Next publish this source/evidence WIP before fresh PlanOnly/GREEN.
+
+A4 GREEN, 2026-10-05: candidate `ddd869229b79016b9b595f5eb21235c699927e6a`,
+tree `4b86d8523889bda4386e08b75672bbc735f04824`, is remotely verified and restored
+from GitHub alone into a clean5,052-blob checkout with matching tree and fsck.
+Fresh `-SelectionFile tests/selection.json -PlanOnly` built the changed runtime and
+discovered36 rows in143.813397s, zero execution. Its `-NoBuild` execution passed
+**36/36** in16.656634s: new actual producer roundtrip/fixed-collision4, original-name
+manifest/hash/decision8 and fixed-alias/admission24. No skips/duplicates, all three
+descriptors complete, owned cleanup complete. Source-bound [GREEN evidence](recovery/evidence/save-native-names-green/manifest.json)
+and [fresh build/plan](recovery/evidence/save-native-names-green-plan/manifest.json)
+retain exact SHA/toolchain/inputs. No new native Windows execution is implied.
+
+Independent Sol6.1 XHigh source review found one P2 in CI selection routing:
+the new owner explicitly requires Linux, while default `.NET CI` reads
+`tests/selection.json` on Windows. This is a verified configuration incompatibility,
+not an observed Windows run failure (that workflow was historically disabled).
+Corrected without changing runtime/tests: retain the32 Windows-compatible affected
+alias/native-name rows in the default selection; move the full36-row A4 selection
+to the existing Ubuntu workflow's `tests/selections/1553-load-linux.json`. This
+replaces the older completed filesystem cohort rather than adding a broad sweep.
+Do not use early-return platform passes. Both exact selected plans and discovery-only
+catalog validation will verify routing/ownership; no passing behavior is repeated
+solely for this configuration change. Final artifact review/delivery and A4 checkbox
+acceptance remain pending.
+
+The routing correction now has fresh zero-execution PlanOnly evidence: Linux36
+cases in3.458979s and Windows-compatible default32 in3.435879s. Discovery-only
+`-ValidateCatalog` passed **235 categories /10,600 identities**, zero executed tests,
+50.795330s with complete cleanup. Four generated XML documents parsed. The exact
+post-correction source/selection hashes are recorded in each discovery manifest and
+[qualification](recovery/save-native-names-qualification.json). These Linux discovery
+plans are not native Windows execution. Runtime/test blobs remain unchanged from
+the36/36 GREEN source; no behavioral rerun was made for the selection-only fix.
 
 ## Accepted T031-WORKER-PORTABLE — native Linux, 2026-10-05
 

@@ -2,13 +2,6 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-save-native-names",
-      "reason": "Causal producer and end-to-end case-pair roundtrip plus fixed authority collision negatives on actual Linux.",
-      "contracts": [
-        "#1553 T032-A4-NATIVE-NAMES FR-002/006/015 US3"
-      ]
-    },
-    {
       "category": "portable-load-native-names",
       "reason": "Affected archive boundary preserves original name/hash/manifest identity and rejects fixed aliases and invalid claims.",
       "contracts": [

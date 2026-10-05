@@ -1,0 +1,127 @@
+{
+  "SchemaVersion": 1,
+  "Scope": "T032-A4-NATIVE-NAMES bounded native-Linux actual producer -> typed Load -> Save case-pair preservation",
+  "Status": "Bounded native-Linux implementation/qualification accepted after final independent PASS; final evidence-carrier publication and fresh restoration required before delivery",
+  "RuntimeCodeCommit": "ddd869229b79016b9b595f5eb21235c699927e6a",
+  "RuntimeTree": "4b86d8523889bda4386e08b75672bbc735f04824",
+  "RedCodeCommit": "31c4e0353391c122ed5d8c1886f7c1fe0809c961",
+  "OperatingSystem": "native Linux x64",
+  "Toolchain": {
+    "PowerShell": "7.6.6",
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31"
+  },
+  "Runs": {
+    "Red": {
+      "Manifest": "evidence/save-native-names-red/manifest.json",
+      "ExpectedFailures": 2,
+      "PassedFixedCollisionControls": 2,
+      "Executed": 4,
+      "Seconds": 6.8605402
+    },
+    "Green": {
+      "Manifest": "evidence/save-native-names-green/manifest.json",
+      "Categories": {
+        "portable-save-native-names": 4,
+        "portable-load-native-names": 8,
+        "portable-load-alias-admission": 24
+      },
+      "Executed": 36,
+      "Passed": 36,
+      "Seconds": 16.6566337,
+      "NoSkipsOrDuplicates": true,
+      "OwnedCleanupComplete": true
+    },
+    "FreshGreenPlan": {
+      "Manifest": "evidence/save-native-names-green-plan/manifest.json",
+      "Seconds": 143.813397,
+      "Cases": 36,
+      "Executed": 0
+    },
+    "LinuxSelectionPlan": {
+      "Manifest": "evidence/save-native-names-linux-selection-plan/manifest.json",
+      "Cases": 36,
+      "Executed": 0
+    },
+    "DefaultSelectionPlan": {
+      "Manifest": "evidence/save-native-names-default-selection-plan/manifest.json",
+      "Cases": 32,
+      "Executed": 0
+    }
+  },
+  "CatalogAudit": {
+    "Manifest": "evidence/save-native-names-final-audit/manifest.json",
+    "Categories": 235,
+    "Identities": 10600,
+    "Executed": 0,
+    "Seconds": 50.7953302,
+    "OwnedCleanupComplete": true
+  },
+  "CurrentVerificationInputs": {
+    "BookOfEternityClient/Services/SaveLoadService.cs": {
+      "GitBlob": "1c6b4557c110d808c4842e147e9c3e724a5548a4",
+      "Sha256": "5270a1385069fe0172c66f980dc8644762fbf3f3c7859ea2bda17cfe3158525a"
+    },
+    "BookOfEternityClient/Services/SaveLoadService.Loading.cs": {
+      "GitBlob": "1a5499d7dd65caf5aa04a4e6ed2ea4fcfc2e5675",
+      "Sha256": "87ef33e7bf8ae33b692148bd4a5b8023c3f470fe83561597dcdccad54c896473"
+    },
+    "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.SaveNativeNames.cs": {
+      "GitBlob": "3319b8fee03f18a476c0624ed658ba34d0227057",
+      "Sha256": "52e3d91fe5c56e56d6d491ceaafc9a2623e5e91f463ff5f4771d6a62fd899563"
+    },
+    "tests/categories.json": {
+      "GitBlob": "c36d2e4ae1793ffdd44e750d552f649f634b58f2",
+      "Sha256": "930ca8e92e22ea85c4fe7f9b05bb919f9c7dca6b306070de60b8eb435a6ae929"
+    },
+    "tests/selection.json": {
+      "GitBlob": "0dddaf2d165faa3a74f1ac90930abacc8b8fcad3",
+      "Sha256": "4acec9fa3d2e8394a97af1c70c07bc8e28cf0f977dbe36784431465fefb6d60f"
+    },
+    "tests/selections/1553-load-linux.json": {
+      "GitBlob": "34abdb44414d3134cbbdbf3200ef11d9783799cb",
+      "Sha256": "3ce5bf06799840a3730f5fef01f9e0f1306a4b7bd168c3a3ceffaf7ea01f38a3"
+    }
+  },
+  "GeneratedXml": {
+    "Parsed": [
+      "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.xml",
+      "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.xml",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.xml",
+      "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml"
+    ],
+    "Count": 4
+  },
+  "Review": {
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "Status": "PASS: no remaining actionable correctness, coverage, selection, compatibility or evidence finding",
+    "Findings": [
+      {
+        "Severity": "P2",
+        "Subject": "Linux-only owner selected by Windows default CI",
+        "Correction": "Default selection keeps Windows-compatible32; existing Ubuntu selection contains current36. No runtime/test changes or early-return passes.",
+        "Verification": "Both exact PlanOnly counts and zero-execution catalog audit",
+        "Status": "Resolved and independently rechecked"
+      }
+    ],
+    "ReviewedRuntimeCommit": "ddd869229b79016b9b595f5eb21235c699927e6a",
+    "ReviewedDelta": "c122d3e1..ddd86922 plus exact final routing/docs/artifacts"
+  },
+  "Limits": [
+    "No new native Windows execution. Windows/non-Linux producer duplicate comparison retains original OrdinalIgnoreCase semantics.",
+    "Archive format, original manifest/hash validation and accepted resource limits unchanged; no full resource/whole-game sweep.",
+    "Native Windows worker/public-client, actual GM/live console, process/IPC/PTY, full T031/T032/B4/B5/T033 and whole #1553 remain open.",
+    "Build logs retain pre-existing compiler/analyzer warnings; no warning-free claim."
+  ],
+  "RuntimeRecoveryReadback": {
+    "Commit": "ddd869229b79016b9b595f5eb21235c699927e6a",
+    "Tree": "4b86d8523889bda4386e08b75672bbc735f04824",
+    "PhysicalBlobsVerified": 5052,
+    "Clean": true,
+    "Connectivity": "git fsck --connectivity-only exit0",
+    "Method": "Fresh depth1 single-branch clone directly from GitHub; no old source/object copy",
+    "BuildOrTestsRepeated": false,
+    "Limit": "Runtime checkpoint restoration; final evidence carrier must also be restored before delivered claim"
+  }
+}
