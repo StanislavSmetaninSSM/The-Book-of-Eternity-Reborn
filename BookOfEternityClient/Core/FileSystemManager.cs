@@ -4594,7 +4594,12 @@ public partial class FileSystemManager
         string? PreviousGenerationId = null,
         string? ReplacementGenerationId = null);
 
-    internal async Task<CanonicalWorkerApplyTransaction> BeginWorkerApplyTransactionAsync(
+    internal Task<CanonicalWorkerApplyTransaction> BeginWorkerApplyTransactionAsync(
+        CanonicalWriteLease writeLease,
+        IReadOnlyList<CanonicalWorkerApplyChange> changes) =>
+        BeginOriginalWorkerApplyTransactionAsync(writeLease, changes);
+
+    internal async Task<CanonicalWorkerApplyTransaction> BeginOriginalWorkerApplyTransactionAsync(
         CanonicalWriteLease writeLease,
         IReadOnlyList<CanonicalWorkerApplyChange> changes)
     {

@@ -27,5 +27,7 @@ public static class Program
                 ? BookOfEternityClient.Tests.TrustedLocalStreamCrashFixture.RunAsync(args)
             : args.Length == 4 && args[2] is "load-publish" or "load-recover" or "load-recover-cut"
                 ? BookOfEternityClient.Tests.PortableLoadColdHost.RunAsync(args)
+            : args.Length == 4 && args[2] is "worker-publish" or "worker-recover" or "worker-recover-cut" or "worker-conflict"
+                ? BookOfEternityClient.Tests.PortableWorkerColdHost.RunAsync(args)
             : BookOfEternityClient.Tests.TrustedLocalPublicationCrashFixture.RunAsync(args);
 }

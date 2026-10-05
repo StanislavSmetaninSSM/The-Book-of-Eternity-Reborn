@@ -1,0 +1,65 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "de31cc57056fcc114f75b1c4f0a4a302579a4fcd",
+  "SourceResultDirectory": "20261004-222755-680-2-7a7ed9dfeeda401abcac51204cd8a114-categories",
+  "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Runtime": "native Linux x64",
+  "Toolchain": {
+    "PowerShell": "7.6.6",
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31"
+  },
+  "TelemetryOptOuts": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1"
+  },
+  "DOTNET_PROCESSOR_COUNT": "1",
+  "PathSanitization": "Absolute checkout/run-root/toolchain paths replaced; raw and stored hashes retained",
+  "Artifacts": [
+    {
+      "Path": "Build-unit.log",
+      "OriginalBytes": 10676,
+      "OriginalSha256": "ad5c6be36405e27fb9cf27fcd2ff0ade383827923b5bb96cc34a055a1203cc02",
+      "Embedded": true,
+      "StoredPath": "Build-unit.log",
+      "StoredBytes": 8659,
+      "StoredSha256": "5cebbdf6363ef5fe4c20f07fcdedcbc42bfa92c58e0d720f20f7d5ca4c4cf9ac"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 1576130,
+      "OriginalSha256": "49d7ffada46bc4ae4fdb42a046208438b2a751431cb65bbad9be150401edd091",
+      "Embedded": false,
+      "Reason": "Oversized generated runner log; causal TRX and structured/build reports are embedded"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 2913,
+      "OriginalSha256": "95fcfc86fe5ba0dd4a250be90566f613535479d8608be460e2e0ece20c29cdbd",
+      "Embedded": true,
+      "StoredPath": "plan.json",
+      "StoredBytes": 2913,
+      "StoredSha256": "95fcfc86fe5ba0dd4a250be90566f613535479d8608be460e2e0ece20c29cdbd"
+    },
+    {
+      "Path": "portable-worker-transaction-unit-001.trx",
+      "OriginalBytes": 242348,
+      "OriginalSha256": "2ce1ac30ae9e0046ad8aa21e50dc060bfaef5f961004d8b703af0b61b15773b8",
+      "Embedded": true,
+      "StoredPath": "portable-worker-transaction-unit-001.trx",
+      "StoredBytes": 213490,
+      "StoredSha256": "7f2b8b5588888d23329bb07ea99c5032f50b926b9a570eed8027add5b8bf7fdc"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1464,
+      "OriginalSha256": "0b6cfd34497b77b37c7728ebf23b8a0c69a386608c77552cd8b94dea437730f7",
+      "Embedded": true,
+      "StoredPath": "summary.json",
+      "StoredBytes": 1464,
+      "StoredSha256": "0b6cfd34497b77b37c7728ebf23b8a0c69a386608c77552cd8b94dea437730f7"
+    }
+  ],
+  "MeasuredChildren": 0
+}

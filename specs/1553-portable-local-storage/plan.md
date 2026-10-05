@@ -45,6 +45,15 @@ repairing normalizer is introduced. Current journal format is reused unchanged.
 The new portable-worker-transaction tests specify the next RED boundary against the
 still-original ordinary Begin. No portable implementation is included in this checkpoint.
 
+Initial lifecycle RED at `de31cc57`: **14 failed / 1 passed / 15 executed**, no
+skips/duplicates and complete cleanup (1:58.568 including fresh build). The sole
+passing baseline-mismatch case was a fixture false-positive: broad Exception also
+accepted the old unsupported-backend failure. Independent review identified it before
+implementation; the assertion now requires InvalidDataException and preserves exact
+generation/history plus absence of legacy evidence. Added wrong-lease, initiating-plus-
+recovery conflict and actual separate-process publication/decision/rollback cuts.
+The tightened 34-case cohort adds commit conflicts, nested original admission and legacy-recovery refusal. An explicit original Begin alias delegates unchanged behavior as API scaffolding; portable runtime is otherwise unchanged.
+
 1. Diagnose the original Begin failure with a causal test: force the existing
    unsupported before-image backend and a distinct cleanup failure, require both
    exceptions in initiating-first order, and retain the real Linux worker/load
