@@ -126,6 +126,15 @@ int main(int argc, char **argv) {
         expire(); close(STDOUT_FILENO); close(STDERR_FILENO);
         execv(argv[2], &argv[2]); return 127;
     }
+    if (argc >= 4 && !strcmp(argv[1], "--expire-delayed-exec")) {
+        expire();
+        int marker = open(argv[2], O_WRONLY | O_CREAT | O_EXCL | O_CLOEXEC, 0600);
+        if (marker < 0) return 71;
+        close(marker);
+        /* Parent cancels real shared host preparation after the native launcher
+         * has returned its checked owner. Never enter the managed host here. */
+        for (;;) pause();
+    }
     if (argc < 5) return 64;
     signal(SIGCHLD, SIG_DFL); signal(SIGPIPE, SIG_IGN);
     sigset_t empty; sigemptyset(&empty);

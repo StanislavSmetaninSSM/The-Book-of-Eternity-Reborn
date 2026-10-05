@@ -116,6 +116,13 @@ one guardian emergency signal. [Evidence](recovery/evidence/worker-host-retentio
 Remaining HOST acceptance work: native channel/partial cancellation and descriptor
 negative cases, package/publish checks, exact affected prototype/IPC regressions,
 catalog discovery, independent final review and fresh GitHub-only restoration.
+WIP new7case native-host-boundaries selection now covers foreign control/status
+peers, cancellation after the real native launcher returns its checked owner (test
+wrapper observes that exact boundary, no production hook), owner control EOF,
+status loss, actual exec failure and explicit NeutralHost Release rejection. Every
+fixture retains the independent guardian through ECHILD; uncertainty must survive
+a second observation and must reject disposal. No production source changed here;
+new coverage is unrun pending fresh unit preparation.
 Independent Sol consult confirms original Process/tree/started-state one-way handoff
 from a sealed Windows adapter preserves current cleanup; no native-to-legacy route.
 Existing relevant lifecycle fixtures invoke powershell.exe and remain Windows-only

@@ -2,6 +2,33 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "worker-native-host-boundaries",
+      "responsibility": "#1553 actual native owned-host negative boundaries: independently authenticated control/status peers, cancellation after checked native binding, owner/status loss, exec failure and NeutralHost Release denial. Independent guardian checks ECHILD in every case.",
+      "excludes": "WorkerRelease qualification, real GM, pool B/canonical mutation, Windows runtime, whole IPC/prototype replay. Linux native only; partial cancellation fixture holds after exec until cancellation.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerNativeHostTests.NativeIdentity_RejectsForeignNamedChannelBeforeLaunch",
+            "BookOfEternityClient.Tests.GmWorkerNativeHostTests.CancellationAfterNativeBinding_RetainsOwnerThroughScopedRetirement",
+            "BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation",
+            "BookOfEternityClient.Tests.GmWorkerNativeHostTests.NeutralHostCapability_RejectsReleaseBeforeSendingAnyWorkerCommand"
+          ]
+        }
+      ]
+    },
+    {
       "id": "worker-owned-original-identity",
       "responsibility": "#1553 original Process identity diagnostic/liveness contract affected by shared owned-host token extraction.",
       "excludes": "No native qualification or whole IPC cohort replay. Exact existing exited-original-host fixture only.",

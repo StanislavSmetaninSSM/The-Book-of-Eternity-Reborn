@@ -42,6 +42,58 @@ public sealed class GmWorkerNativeHostTests
         Assert.False(result.GetProperty("pidfdClosedAfterDispose").GetBoolean());
     }
 
+    [Theory]
+    [InlineData("foreign-control")]
+    [InlineData("foreign-status")]
+    public async Task NativeIdentity_RejectsForeignNamedChannelBeforeLaunch(string mode)
+    {
+        var result = await RunScenario(mode);
+        Assert.False(result.GetProperty("ready").GetBoolean());
+        Assert.False(result.GetProperty("workerReleased").GetBoolean());
+        Assert.Contains("unexpected process", result.GetProperty("failure").ToString());
+        Assert.Equal(0, result.GetProperty("stop").GetProperty("State").GetInt32());
+        Assert.True(result.GetProperty("stop").GetProperty("CleanupComplete").GetBoolean());
+        Assert.True(result.GetProperty("disposeAllowed").GetBoolean());
+    }
+
+    [Fact]
+    public async Task CancellationAfterNativeBinding_RetainsOwnerThroughScopedRetirement()
+    {
+        var result = await RunScenario("cancel-before-ready");
+        Assert.False(result.GetProperty("ready").GetBoolean());
+        Assert.True(result.GetProperty("canceled").GetBoolean(), result.GetProperty("failure").ToString());
+        Assert.False(result.GetProperty("workerReleased").GetBoolean());
+        Assert.Equal(0, result.GetProperty("stop").GetProperty("State").GetInt32());
+        Assert.True(result.GetProperty("stop").GetProperty("CleanupComplete").GetBoolean());
+        Assert.True(result.GetProperty("disposeAllowed").GetBoolean());
+    }
+
+    [Theory]
+    [InlineData("owner-eof")]
+    [InlineData("status-loss")]
+    [InlineData("exec-failure")]
+    public async Task AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation(string mode)
+    {
+        var result = await RunScenario(mode);
+        Assert.Equal(mode != "exec-failure", result.GetProperty("ready").GetBoolean());
+        Assert.False(result.GetProperty("workerReleased").GetBoolean());
+        Assert.Equal(1, result.GetProperty("stop").GetProperty("State").GetInt32());
+        Assert.Equal(1, result.GetProperty("laterStop").GetProperty("State").GetInt32());
+        Assert.False(result.GetProperty("disposeAllowed").GetBoolean());
+        Assert.False(result.GetProperty("pidfdClosedAfterDispose").GetBoolean());
+    }
+
+    [Fact]
+    public async Task NeutralHostCapability_RejectsReleaseBeforeSendingAnyWorkerCommand()
+    {
+        var result = await RunScenario("release-denied");
+        Assert.True(result.GetProperty("ready").GetBoolean(), result.GetProperty("failure").ToString());
+        Assert.True(result.GetProperty("releaseDenied").GetBoolean());
+        Assert.False(result.GetProperty("workerReleased").GetBoolean());
+        Assert.Equal(0, result.GetProperty("stop").GetProperty("State").GetInt32());
+        Assert.True(result.GetProperty("stop").GetProperty("CleanupComplete").GetBoolean());
+    }
+
     private static async Task<JsonElement> RunScenario(string mode, bool allowGuardianEmergency = false)
     {
         Assert.True(OperatingSystem.IsLinux(), "Actual native host qualification requires Linux.");

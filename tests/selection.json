@@ -57,6 +57,13 @@
       "contracts": [
         "#1553 T041-FALLBACK-HOST"
       ]
+    },
+    {
+      "category": "worker-native-host-boundaries",
+      "reason": "Actual native host capability, named-channel identity and retained failure owners before HOST acceptance.",
+      "contracts": [
+        "#1553 T041-FALLBACK-HOST"
+      ]
     }
   ]
 }

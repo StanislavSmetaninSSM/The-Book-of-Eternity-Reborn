@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Text.Json;
 using System.Reflection;
+using System.IO.Pipes;
 using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Win32.SafeHandles;
 
@@ -12,7 +13,8 @@ internal static class NativeHostScenarioDriver
 {
     internal static async Task<int> Main(string[] args)
     {
-        if (args.Length != 3 || args[0] is not ("neutral-ready" or "constructor-path" or "helper-loss-closed-output")) return 64;
+        if (args.Length != 3 || args[0] is not ("neutral-ready" or "constructor-path" or "helper-loss-closed-output" or
+            "foreign-control" or "foreign-status" or "cancel-before-ready" or "exec-failure" or "owner-eof" or "status-loss" or "release-denied")) return 64;
         var mode = args[0];
         var output = args[2];
         var marker = Path.Combine(output, "worker-released");
@@ -25,15 +27,24 @@ internal static class NativeHostScenarioDriver
         var hostArguments = host.StartInfo.ArgumentList.ToArray();
         host.StartInfo.FileName = fixture;
         host.StartInfo.ArgumentList.Clear();
-        host.StartInfo.ArgumentList.Add(mode == "helper-loss-closed-output" ? "--expire-closed-output-exec" : "--expire-exec");
+        host.StartInfo.ArgumentList.Add(mode switch
+        {
+            "helper-loss-closed-output" => "--expire-closed-output-exec",
+            "cancel-before-ready" => "--expire-delayed-exec",
+            _ => "--expire-exec"
+        });
+        if (mode == "cancel-before-ready") host.StartInfo.ArgumentList.Add(Path.Combine(output, "host-held"));
         host.StartInfo.ArgumentList.Add(executable);
         foreach (var arg in hostArguments) host.StartInfo.ArgumentList.Add(arg);
+        if (mode == "exec-failure") host.StartInfo.FileName = Path.Combine(output, "absent-neutral-host");
         GmWorkerOwnedLaunch? owner = null;
         GmWorkerStopEvidence? stop = null;
         var ready = false; string? failure = null; int? hostPid = null, supervisorPid = null;
         var originalTemp = Environment.GetEnvironmentVariable("TMPDIR");
         var longTemp = Path.Combine(output, new string('t', 100));
         var disposeAllowed = false; var hostAliveBeforeDispose = false; var pidfdClosedAfterDispose = false;
+        var releaseDenied = false; var canceled = false; GmWorkerStopEvidence? laterStop = null;
+        NamedPipeClientStream? foreign = null;
         if (mode == "constructor-path")
         {
             Directory.CreateDirectory(longTemp);
@@ -42,9 +53,36 @@ internal static class NativeHostScenarioDriver
         try
         {
             using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-            owner = await host.PrepareOwnedAsync(new GmWorkerNativeLineageLauncher(args[1]),
+            if (mode is "foreign-control" or "foreign-status")
+            {
+                foreign = new NamedPipeClientStream(".", hostArguments[mode == "foreign-control" ? ^3 : ^2],
+                    mode == "foreign-control" ? PipeDirection.In : PipeDirection.Out, PipeOptions.Asynchronous | PipeOptions.CurrentUserOnly);
+                await foreign.ConnectAsync(deadline.Token);
+            }
+            var launcher = new ObserveReturnedOwner(new GmWorkerNativeLineageLauncher(args[1]));
+            var preparation = host.PrepareOwnedAsync(launcher,
                 GmWorkerBackendRequest.NativeLineage, GmWorkerRequiredCapability.NeutralHost, deadline.Token);
+            if (mode == "cancel-before-ready")
+            {
+                // Exact lifecycle anchor: actual native StartAsync has completed
+                // binding/ACK/Started; shared named-channel Ready is still blocked.
+                _ = await launcher.Started.Task.WaitAsync(deadline.Token);
+                while (!File.Exists(Path.Combine(output, "host-held"))) await Task.Delay(10, deadline.Token);
+                deadline.Cancel();
+            }
+            owner = await preparation;
             ready = true; hostPid = owner.HostProcessId; supervisorPid = owner.SupervisorProcessId;
+            if (mode == "release-denied")
+            {
+                try { await host.ReleaseAsync(deadline.Token); }
+                catch (InvalidOperationException) { releaseDenied = true; }
+            }
+            if (mode is "owner-eof" or "status-loss")
+            {
+                var original = (Process)typeof(GmWorkerNativeLineageLaunch).GetField("_supervisor", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(owner)!;
+                if (mode == "owner-eof") original.StandardInput.Close();
+                else original.StandardOutput.Close();
+            }
             if (mode == "helper-loss-closed-output")
             {
                 var original = (Process)typeof(GmWorkerNativeLineageLaunch).GetField("_supervisor", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(owner)!;
@@ -58,24 +96,43 @@ internal static class NativeHostScenarioDriver
                 pidfdClosedAfterDispose = pidfd.IsClosed;
             }
         }
-        catch (GmWorkerOwnedLaunchException ex) { owner = ex.Owner; failure = ex.InnerException?.Message ?? ex.Message; }
+        catch (GmWorkerOwnedLaunchException ex)
+        {
+            owner = ex.Owner; failure = ex.InnerException?.Message ?? ex.Message;
+            canceled = ex.InnerException is OperationCanceledException;
+        }
         catch (Exception ex) { failure = ex.Message; }
         finally
         {
             Environment.SetEnvironmentVariable("TMPDIR", originalTemp);
             await host.DisposeAsync(); // Named-channel owner-close, not helper control EOF.
+            foreign?.Dispose();
             if (owner != null && mode != "helper-loss-closed-output")
             {
                 stop = await owner.StopAndObserveAsync();
-                await owner.DisposeAsync();
+                if (mode is "owner-eof" or "status-loss" or "exec-failure") laterStop = await owner.StopAndObserveAsync();
+                try { await owner.DisposeAsync(); disposeAllowed = true; }
+                catch (InvalidOperationException) when (stop.State == GmWorkerStopState.Uncertain) { }
+                var pidfd = (SafeFileHandle?)typeof(GmWorkerNativeLineageLaunch).GetField("_hostPidfd", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(owner);
+                pidfdClosedAfterDispose = pidfd?.IsClosed ?? false;
             }
             await File.WriteAllTextAsync(Path.Combine(output, "scenario.json"), JsonSerializer.Serialize(new
             {
                 ready, failure, hostPid, supervisorPid, stop, workerReleased = File.Exists(marker),
                 bootstrapDirectoriesAfter = mode == "constructor-path" ? Directory.GetDirectories(longTemp).Length : 0,
-                disposeAllowed, hostAliveBeforeDispose, pidfdClosedAfterDispose
+                disposeAllowed, hostAliveBeforeDispose, pidfdClosedAfterDispose, releaseDenied, canceled, laterStop
             }));
         }
         return 0; // Assertions live outside the independently reaped scenario driver.
+    }
+
+    private sealed class ObserveReturnedOwner(IGmWorkerOwnedLauncher actual) : IGmWorkerOwnedLauncher
+    {
+        internal TaskCompletionSource<GmWorkerOwnedLaunch> Started { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        public async Task<GmWorkerOwnedLaunch> StartAsync(GmWorkerProcessHostLaunch host, GmWorkerBackendSelection selection, CancellationToken token)
+        {
+            try { var owner = await actual.StartAsync(host, selection, token); Started.TrySetResult(owner); return owner; }
+            catch (Exception ex) { Started.TrySetException(ex); throw; }
+        }
     }
 }
