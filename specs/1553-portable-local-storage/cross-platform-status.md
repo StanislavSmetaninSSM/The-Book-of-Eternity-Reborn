@@ -15,14 +15,18 @@ Runtime input-код проверен на `dc29b37d0c3e3067acf9943a048360fbba66
 
 ```sh
 git clone --single-branch --branch codex/1553-load-filesystem https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git boe-1553
-git -C boe-1553 checkout --detach f0af8c4b3affe4689e675d1dc7b1f50da334fcf6
+git -C boe-1553 rev-parse HEAD
+git -C boe-1553 merge-base --is-ancestor f0af8c4b3affe4689e675d1dc7b1f50da334fcf6 HEAD
 git -C boe-1553 status --porcelain
 git -C boe-1553 ls-remote origin refs/heads/codex/1553-load-filesystem
 ```
 
-Status должен быть пустым. Эта база остаётся воспроизводимой; последующие docs
-commits находятся на той же ветке. Перед записью fetch/readback текущего tip и
-проверка единственного writer обязательны. В saved environment обычный
+Status должен быть пустым, локальный HEAD — совпадать с remote SHA; проверка
+предка должна завершиться с кодом 0. Для handoff сохранять опубликованный tip,
+содержащий этот документ; точный runtime повторяется из отдельного checkout базы
+`f0af8c4b`. Последующие docs commits находятся на той же ветке. Перед записью
+fetch/readback текущего tip и проверка единственного writer обязательны.
+В saved environment обычный
 `git push origin HEAD:refs/heads/codex/1553-load-filesystem` работает; новых секретов
 или разрешений для него не потребовалось. После bounded блока сохранять WIP,
 проверять remote SHA/байты и чистое восстановление. При неожиданном продвижении
@@ -31,6 +35,8 @@ commits находятся на той же ветке. Перед запись�
 Toolchain этой среды: Debian 13.6/x86_64, kernel 6.18.44, .NET SDK **10.0.401**,
 .NET runtime **8.0.31**, PowerShell **7.6.6**. Для существующего Windows-target
 bridge доступен reference pack 8.0.31; его cross-build не означает native запуск.
+Для frontend сохранённая [browser qualification](recovery/load-browser-qualification.json)
+использует Node **24.19.0** и npm **11.9.0**.
 Подготовка — официальными разрешёнными способами, без смены security settings.
 
 Читать [AGENTS.md](../../AGENTS.md), [workflow](../../docs/development-workflow.md),
