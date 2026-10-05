@@ -10,6 +10,7 @@
 #include <string.h>
 #include <sys/pidfd.h>
 #include <sys/prctl.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
@@ -112,6 +113,25 @@ static int actor(const char *mode) {
     for (;;) pause();
 }
 int main(int argc, char **argv) {
+    if (argc >= 4 && !strcmp(argv[1], "--expire-audit-exec")) {
+        expire();
+        DIR *fds = opendir("/proc/self/fd"); if (!fds) return 71;
+        int extra = 0; struct dirent *entry;
+        while ((entry = readdir(fds))) {
+            char *end; long fd = strtol(entry->d_name, &end, 10);
+            if (!*end && fd > 2 && fd != dirfd(fds)) extra++;
+        }
+        closedir(fds);
+        struct stat in, out, err, null_device;
+        if (fstat(0, &in) || fstat(1, &out) || fstat(2, &err) || stat("/dev/null", &null_device)) return 71;
+        FILE *audit = fopen(argv[2], "wex"); if (!audit) return 71;
+        fprintf(audit, "{\"extraDescriptors\":%d,\"stdinDevNull\":%s,\"distinctOutputPipes\":%s}\n", extra,
+            S_ISCHR(in.st_mode) && in.st_rdev == null_device.st_rdev ? "true" : "false",
+            S_ISFIFO(out.st_mode) && S_ISFIFO(err.st_mode) && out.st_ino != err.st_ino ? "true" : "false");
+        fclose(audit);
+        if (write(1, "fixture-host-stdout\n", 20) != 20 || write(2, "fixture-host-stderr\n", 20) != 20) return 71;
+        execv(argv[3], &argv[3]); return 127;
+    }
     if (argc == 3 && !strcmp(argv[1], "--worker-marker")) {
         int fd = open(argv[2], O_WRONLY | O_CREAT | O_EXCL | O_CLOEXEC, 0600);
         if (fd < 0) return 71;

@@ -2,6 +2,59 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "worker-native-transfer-consumers",
+      "responsibility": "#1553 checked pidfd factory change: actual Ready and admitted identity retention after helper loss; narrow affected consumers only.",
+      "excludes": "No worker Release, pool B, PTY or live GM. Independent guardian retains every synthetic native lineage to ECHILD.",
+      "changeHints": [
+        "native/linux/boe-lineage-supervisor.c",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerHostIdentity.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerNativeHostTests.ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease",
+            "BookOfEternityClient.Tests.GmWorkerNativeHostTests.HelperLossAndOutputEof_CannotDisposeLiveHostIdentity"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "worker-native-bootstrap-output",
+      "responsibility": "#1553 real v2 gated bootstrap loss/wrong ACK, actual pre-canceled preparation and native host stdout/stderr/private-FD exec boundaries.",
+      "excludes": "No worker Release, pool B, PTY or live GM. Independent guardian retains every synthetic native lineage to ECHILD.",
+      "changeHints": [
+        "native/linux/boe-lineage-supervisor.c",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerHostIdentity.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerNativeHostTests.GatedBootstrapLoss_RetiresWithoutExecutingRoot",
+            "BookOfEternityClient.Tests.GmWorkerNativeHostTests.PreCanceledPreparation_RejectsBeforeAllocatingNativeOwner",
+            "BookOfEternityClient.Tests.GmWorkerNativeHostTests.HostOutput_IsDistinctAndPrivateDescriptorsDoNotSurviveExec"
+          ]
+        }
+      ]
+    },
+    {
       "id": "worker-native-descriptor-transfer",
       "responsibility": "#1553 actual SCM_RIGHTS receipt: CLOEXEC, deterministic ownership, malformed count/envelope/truncation cleanup and rejected pidfd identity closure.",
       "excludes": "No helper/host launch or WorkerRelease; only per-test private sockets and own pipe descriptors.",

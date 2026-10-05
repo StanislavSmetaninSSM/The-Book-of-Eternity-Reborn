@@ -85,6 +85,20 @@
       "contracts": [
         "#1553 T041-FALLBACK-HOST"
       ]
+    },
+    {
+      "category": "worker-native-transfer-consumers",
+      "reason": "#1553 checked pidfd factory change: actual Ready and admitted identity retention after helper loss; narrow affected consumers only.",
+      "contracts": [
+        "#1553 T041-FALLBACK-HOST"
+      ]
+    },
+    {
+      "category": "worker-native-bootstrap-output",
+      "reason": "#1553 real v2 gated bootstrap loss/wrong ACK, actual pre-canceled preparation and native host stdout/stderr/private-FD exec boundaries.",
+      "contracts": [
+        "#1553 T041-FALLBACK-HOST"
+      ]
     }
   ]
 }

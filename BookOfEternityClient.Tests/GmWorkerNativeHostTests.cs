@@ -6,6 +6,51 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class GmWorkerNativeHostTests
 {
+    [Theory]
+    [InlineData("bootstrap-close", "bootstrap-lost")]
+    [InlineData("bootstrap-wrong-ack", "bootstrap-invalid")]
+    public async Task GatedBootstrapLoss_RetiresWithoutExecutingRoot(string mode, string reason)
+    {
+        var result = await RunScenario(mode);
+        Assert.True(result.GetProperty("bound").GetBoolean(), result.GetProperty("failure").ToString());
+        Assert.Equal(JsonValueKind.Null, result.GetProperty("failure").ValueKind);
+        Assert.False(result.GetProperty("rootExecuted").GetBoolean());
+        Assert.Equal(2, result.GetProperty("helperExitCode").GetInt32());
+        var frames = result.GetProperty("frames").EnumerateArray().ToArray();
+        Assert.DoesNotContain(frames, f => f.GetProperty("state").GetString() == "Started");
+        Assert.Equal("Uncertain", frames[^1].GetProperty("state").GetString());
+        Assert.Equal(reason, frames[^1].GetProperty("reason").GetString());
+        Assert.True(frames[^1].GetProperty("cleanupComplete").GetBoolean());
+        Assert.Equal("", result.GetProperty("hostStdout").GetString());
+        Assert.Equal("", result.GetProperty("hostStderr").GetString());
+    }
+
+    [Fact]
+    public async Task PreCanceledPreparation_RejectsBeforeAllocatingNativeOwner()
+    {
+        var result = await RunScenario("pre-canceled");
+        Assert.True(result.GetProperty("canceled").GetBoolean(), result.GetProperty("failure").ToString());
+        Assert.False(result.GetProperty("ready").GetBoolean());
+        Assert.False(result.GetProperty("workerReleased").GetBoolean());
+        foreach (var name in new[] { "hostPid", "supervisorPid", "stop" }) Assert.Equal(JsonValueKind.Null, result.GetProperty(name).ValueKind);
+    }
+
+    [Fact]
+    public async Task HostOutput_IsDistinctAndPrivateDescriptorsDoNotSurviveExec()
+    {
+        var result = await RunScenario("output-audit");
+        Assert.True(result.GetProperty("ready").GetBoolean(), result.GetProperty("failure").ToString());
+        Assert.False(result.GetProperty("workerReleased").GetBoolean());
+        Assert.Equal(0, result.GetProperty("stop").GetProperty("State").GetInt32());
+        Assert.True(result.GetProperty("stop").GetProperty("CleanupComplete").GetBoolean());
+        Assert.Equal("fixture-host-stdout\n", result.GetProperty("hostStdout").GetString());
+        Assert.Equal("fixture-host-stderr\n", result.GetProperty("hostStderr").GetString());
+        var audit = result.GetProperty("fdAudit");
+        Assert.Equal(0, audit.GetProperty("extraDescriptors").GetInt32());
+        Assert.True(audit.GetProperty("stdinDevNull").GetBoolean());
+        Assert.True(audit.GetProperty("distinctOutputPipes").GetBoolean());
+    }
+
     [Fact]
     public async Task ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease()
     {

@@ -13,8 +13,10 @@ internal static class NativeHostScenarioDriver
 {
     internal static async Task<int> Main(string[] args)
     {
+        if (args.Length == 3 && args[0] is "bootstrap-close" or "bootstrap-wrong-ack")
+            return await NativeBootstrapScenario.Run(args[0], args[1], args[2]);
         if (args.Length != 3 || args[0] is not ("neutral-ready" or "constructor-path" or "helper-loss-closed-output" or
-            "foreign-control" or "foreign-status" or "cancel-before-ready" or "exec-failure" or "owner-eof" or "status-loss" or "release-denied" or "published-ready")) return 64;
+            "foreign-control" or "foreign-status" or "cancel-before-ready" or "exec-failure" or "owner-eof" or "status-loss" or "release-denied" or "published-ready" or "pre-canceled" or "output-audit")) return 64;
         var mode = args[0];
         var output = args[2];
         var marker = Path.Combine(output, "worker-released");
@@ -31,9 +33,11 @@ internal static class NativeHostScenarioDriver
         {
             "helper-loss-closed-output" => "--expire-closed-output-exec",
             "cancel-before-ready" => "--expire-delayed-exec",
+            "output-audit" => "--expire-audit-exec",
             _ => "--expire-exec"
         });
         if (mode == "cancel-before-ready") host.StartInfo.ArgumentList.Add(Path.Combine(output, "host-held"));
+        if (mode == "output-audit") host.StartInfo.ArgumentList.Add(Path.Combine(output, "fd-audit.json"));
         host.StartInfo.ArgumentList.Add(executable);
         foreach (var arg in hostArguments) host.StartInfo.ArgumentList.Add(arg);
         if (mode == "exec-failure") host.StartInfo.FileName = Path.Combine(output, "absent-neutral-host");
@@ -44,6 +48,7 @@ internal static class NativeHostScenarioDriver
         var longTemp = Path.Combine(output, new string('t', 100));
         var disposeAllowed = false; var hostAliveBeforeDispose = false; var pidfdClosedAfterDispose = false;
         var releaseDenied = false; var canceled = false; GmWorkerStopEvidence? laterStop = null;
+        string? hostStdout = null, hostStderr = null; JsonElement? fdAudit = null;
         NamedPipeClientStream? foreign = null;
         if (mode == "constructor-path")
         {
@@ -53,6 +58,7 @@ internal static class NativeHostScenarioDriver
         try
         {
             using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+            if (mode == "pre-canceled") deadline.Cancel();
             if (mode is "foreign-control" or "foreign-status")
             {
                 foreign = new NamedPipeClientStream(".", hostArguments[mode == "foreign-control" ? ^3 : ^2],
@@ -101,7 +107,7 @@ internal static class NativeHostScenarioDriver
             owner = ex.Owner; failure = ex.InnerException?.Message ?? ex.Message;
             canceled = ex.InnerException is OperationCanceledException;
         }
-        catch (Exception ex) { failure = ex.Message; }
+        catch (Exception ex) { failure = ex.Message; canceled = ex is OperationCanceledException; }
         finally
         {
             Environment.SetEnvironmentVariable("TMPDIR", originalTemp);
@@ -110,6 +116,13 @@ internal static class NativeHostScenarioDriver
             if (owner != null && mode != "helper-loss-closed-output")
             {
                 stop = await owner.StopAndObserveAsync();
+                if (mode == "output-audit")
+                {
+                    hostStdout = await ((GmWorkerNativeLineageLaunch)owner).HostStandardOutput;
+                    hostStderr = await ((GmWorkerNativeLineageLaunch)owner).HostStandardError;
+                    using var audit = JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(output, "fd-audit.json")));
+                    fdAudit = audit.RootElement.Clone();
+                }
                 if (mode is "owner-eof" or "status-loss" or "exec-failure") laterStop = await owner.StopAndObserveAsync();
                 try { await owner.DisposeAsync(); disposeAllowed = true; }
                 catch (InvalidOperationException) when (stop.State == GmWorkerStopState.Uncertain) { }
@@ -120,7 +133,8 @@ internal static class NativeHostScenarioDriver
             {
                 ready, failure, hostPid, supervisorPid, stop, workerReleased = File.Exists(marker),
                 bootstrapDirectoriesAfter = mode == "constructor-path" ? Directory.GetDirectories(longTemp).Length : 0,
-                disposeAllowed, hostAliveBeforeDispose, pidfdClosedAfterDispose, releaseDenied, canceled, laterStop
+                disposeAllowed, hostAliveBeforeDispose, pidfdClosedAfterDispose, releaseDenied, canceled, laterStop,
+                hostStdout, hostStderr, fdAudit
             }));
         }
         return 0; // Assertions live outside the independently reaped scenario driver.

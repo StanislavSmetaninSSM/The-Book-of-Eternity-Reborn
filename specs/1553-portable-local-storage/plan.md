@@ -164,6 +164,14 @@ Minimal correction closes failed identity transfers inside their factory; succes
 checked bindings retain the existing later-uncertainty behavior. GREEN plus affected
 actual Ready and helper-loss retention controls are next.
 
+WIP final bootstrap/output4cases use the actual compiled v2 helper or actual native
+launcher, all beneath the independent guardian. Raw protocol cases validate the
+original helper peer and transferred gated pidfd, then lose/reject ACK without root
+exec. Actual pre-cancel enters the real preparation; output fixture audits only its
+own descriptors before same-PID neutral-host exec and emits distinct literal markers.
+Descriptor7GREEN and exactly2affected identity consumers run with these4new cases;
+13planned, no B/Release or generic abstraction added.
+
 ## Worker-host native integration design — 2026-10-05
 
 **Design only; not implementation authorization.** Source/remote base
