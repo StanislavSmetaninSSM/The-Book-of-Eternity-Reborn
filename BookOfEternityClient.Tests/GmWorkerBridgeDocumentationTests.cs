@@ -650,7 +650,8 @@ public sealed class GmWorkerBridgeDocumentationTests
         AssertOrdered(bridgePool, "executionAuthority!.ObserveCompletion", "executionAuthority.StopForCleanupAsync(ownedLaunch)",
             "executionAuthority.SettleOutputsAsync(ownedLaunch)", "executionAuthority.RequirePublication()", "await ReadAndStoreProposalAsync(");
         Assert.Contains("HasValidatedExecutionFor", repairDelegator, StringComparison.Ordinal);
-        Assert.Contains("same original assigned Job", ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionAuthority.cs"), StringComparison.Ordinal);
+        Assert.Contains("_tree is WindowsJobProcessTree { HasRetainedAuthority: true }", windowsOwner, StringComparison.Ordinal);
+        Assert.Contains("if (!owner.RetainsAssignedWindowsJob)", ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionAuthority.cs"), StringComparison.Ordinal);
         Assert.Contains("processHostLaunch.ReleaseAsync", bridgePool, StringComparison.Ordinal);
         Assert.Contains("WaitForWorkerCompletionAsync", bridgePool, StringComparison.Ordinal);
         Assert.Contains("workerSlot.TransferOwnership()", bridgePool, StringComparison.Ordinal);
