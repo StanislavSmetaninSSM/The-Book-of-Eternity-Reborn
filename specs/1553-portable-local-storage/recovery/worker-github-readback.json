@@ -1,0 +1,15 @@
+{
+  "Commit": "fb3ce1e389d959ca8ef02bacd02d10c1ac5614bf",
+  "Tree": "84e3a58c66ea823364108b5359bb943274b46204",
+  "TrackedFiles": 5024,
+  "CleanCheckout": true,
+  "AllPhysicalGitBlobHashesMatch": true,
+  "WorkerManifestsVerified": 15,
+  "WorkerEvidenceTrxParsed": 20,
+  "EmbeddedArtifactsVerified": 60,
+  "QualifiedProductionBlobsVerified": 8,
+  "Method": "Fresh GitHub depth1 single-branch clone created before this continuation; this continuation completed its clean/tree/physical-blob/embedded-artifact verification and directly re-read the GitHub branch ref. No local source/object copy was used for the clone.",
+  "Connectivity": "git fsck --connectivity-only exit0",
+  "BuildOrTestsRepeated": false,
+  "Limit": "Verifies the published base before the two-test supplement. The new desktop-published checkpoint still requires remote SHA and fresh-restoration verification; no acceptance is implied."
+}

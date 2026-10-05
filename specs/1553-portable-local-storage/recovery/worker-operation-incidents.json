@@ -56,6 +56,13 @@
       "Target": "session21139; fetch/reset bea1cf65 then portable-worker-docs",
       "Error": "Unified exec process failed: automatic approval review was cancelled",
       "Status": "Read-only check confirmed local HEADd1c82071 and no new runner directory/output. One exact authorized retry ran03:33:13; docs4/4 complete. No alternative executor/publication route."
+    },
+    {
+      "Utc": "2026-10-05T03:58:02Z",
+      "Tool": "exec_command / test-csharp.ps1",
+      "Target": "portable-worker-validator-exceptions PlanOnly preparation",
+      "Error": "Initial invocation result was displayed without its session ID; a command-local process listing was incorrectly treated as host-wide, causing one redundant PlanOnly launch.",
+      "Status": "Both runs reached terminal exit0 summaries with zero tests executed and complete owned/runtime cleanup (134.794849s and122.5060742s). Their evidence is retained as worker-validator-plan-first and worker-validator-plan-duplicate. Only after both completed was the review-found test message expectation corrected, followed by one actual two-case execution. Process-list absence is not used as cross-session termination evidence."
     }
   ]
 }

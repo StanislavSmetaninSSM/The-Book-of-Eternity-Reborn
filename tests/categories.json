@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-worker-validator-exceptions",
+      "responsibility": "Actual reserved worker apply gate validator exceptions: exact whole-set byte/absence rollback and original exception identity; late unknown member retains the complete pending decision and both initiating/recovery causes, blocking subsequent writers and fresh-manager recovery.",
+      "excludes": "Other already-qualified worker/shared publication consumers, process/IPC, whole gameplay and platform acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs",
+        "BookOfEternityClient/Core/TrustedLocalFilePublication.Deferred.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_ValidatorThrowsRestoresWholeSetAndRethrowsOriginal",
+            "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_ValidatorThrowsWithLateConflictPreservesBothCauses"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-worker-consumers",
       "responsibility": "Actual worker gate acceptance/production validation/rollback, reserved-task and generation authority, foreign-byte conflicts, read-only realm/characteristic witnesses, audit and cooperating writer serialization.",
       "excludes": "Worker process/IPC migration, whole gameplay and unrelated contracts.",

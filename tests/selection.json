@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-worker-validator-exceptions",
+      "reason": "Close final review coverage gap with actual validator exception catch/rollback and unresolved whole-set conflict; runtime unchanged.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    },
+    {
       "category": "portable-worker-transaction",
       "reason": "Deferred B1 worker decision, generation/identity/nesting, actual cold and current envelope cases.",
       "contracts": [

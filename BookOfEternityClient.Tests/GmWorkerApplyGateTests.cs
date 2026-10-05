@@ -11,7 +11,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class GmWorkerApplyGateTests
+public sealed partial class GmWorkerApplyGateTests
 {
     [Fact]
     public void PublicConstruction_RequiresProductionValidationService()

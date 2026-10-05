@@ -135,6 +135,33 @@ across those separate runs, not an aggregate command. Runtime remains unchanged.
 Final independent artifact/restoration verdict and coordinator acceptance are pending;
 no task checkbox or whole-platform claim has been advanced by this evidence supplement.
 
+Final review supplement, 2026-10-05: remote ref and fresh GitHub restoration of
+`fb3ce1e389d959ca8ef02bacd02d10c1ac5614bf` / tree
+`84e3a58c66ea823364108b5359bb943274b46204` are verified: clean checkout,
+5,024 physical blobs, connectivity fsck exit0, all60 embedded artifacts across15
+worker manifests,20 parsed TRX and all8 runtime blobs. No old test process remains.
+Independent review requested two additional actual apply-gate validator-exception
+cases: successful complete-set rollback and a late unknown member retaining both
+causes and preventing earlier restoration. The new narrow
+`portable-worker-validator-exceptions` owner now passed **2/2** in one actual
+execution (38.164836s including a fresh unit build), with no skips/duplicates and
+complete cleanup. The exact test/catalog input blobs and hashes overfb3ce1e3 are
+recorded in the [supplement manifest](recovery/evidence/worker-validator-exceptions-green/manifest.json).
+Discovery-only inventory is now **234 categories /10,598 identities**, zero execution,
+complete cleanup (7.771516s); four XML files parse. The distinct passing case union is
+170 across source-qualified separate runs, not an aggregate command. Two PlanOnly preparations, one redundant, completed with zero executed tests; their provenance is retained
+in [operation incidents](recovery/worker-operation-incidents.json). Review caught a test
+expectation for a path absent from the existing exact conflict message; the assertion
+was corrected before execution. This is existing-behavior coverage, not a new production
+fix or a claimed causal RED. Runtime remains unchanged atce0d39f3. Final independent **gpt-6.1-sol / xhigh PASS**
+verified the corrected tests, exact source/artifact hashes, distinct passing union and
+discovery-only audit with no remaining actionable finding. Desktop publication/fresh
+restoration and coordinator acceptance remain pending; no task checkbox is advanced.
+The owner now requires publication through the configured desktop dialogue. Prepare
+an exact immutable binary patch package with base/tree/path hashes for that writer;
+no new GitHub connector writes from this cloud continuation. Remote publication,
+readback and coordinator acceptance remain pending for this supplement.
+
 1. Diagnose the original Begin failure with a causal test: force the existing
    unsupported before-image backend and a distinct cleanup failure, require both
    exceptions in initiating-first order, and retain the real Linux worker/load

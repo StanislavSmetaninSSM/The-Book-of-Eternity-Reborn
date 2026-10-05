@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "portable-worker-validator-exceptions"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "fb3ce1e389d959ca8ef02bacd02d10c1ac5614bf",
+    "WorkingTreeFingerprint": "995F065CB107F91B1997C9E683689193FF5D8759ECCCE6EA260923589CC23DD5",
+    "ChangedFiles": 5
+  },
+  "PreparationSeconds": 34.9186424,
+  "Descriptors": [
+    {
+      "Name": "portable-worker-validator-exceptions-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-worker-validator-exceptions",
+      "Categories": [
+        "portable-worker-validator-exceptions"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_ValidatorThrowsRestoresWholeSetAndRethrowsOriginal|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_ValidatorThrowsWithLateConflictPreservesBothCauses",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_ValidatorThrowsRestoresWholeSetAndRethrowsOriginal",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_ValidatorThrowsWithLateConflictPreservesBothCauses",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

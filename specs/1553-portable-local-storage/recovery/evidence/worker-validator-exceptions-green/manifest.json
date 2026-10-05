@@ -1,0 +1,88 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "fb3ce1e389d959ca8ef02bacd02d10c1ac5614bf",
+  "SourceResultDirectory": "20261005-000016-664-2-72693c2688d54186ad601767fa6724f8-categories",
+  "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Runtime": "native Linux x64",
+  "Toolchain": {
+    "PowerShell": "7.6.6",
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31"
+  },
+  "TelemetryOptOuts": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1"
+  },
+  "DOTNET_PROCESSOR_COUNT": "1",
+  "PathSanitization": "Absolute checkout/run-root/toolchain paths replaced; raw and stored hashes retained",
+  "Artifacts": [
+    {
+      "Path": "Build-unit.log",
+      "OriginalBytes": 8910,
+      "OriginalSha256": "54c03042189824150eab9d940fe4a48e984649306255edd2b0f13b1b4e2cbb79",
+      "Embedded": true,
+      "StoredPath": "Build-unit.log",
+      "StoredBytes": 7325,
+      "StoredSha256": "4a33a1052f86947f9acd4bd7c7187de2ec813c59a5ddf6f63090bdb70d494a89"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 1475245,
+      "OriginalSha256": "4d61ea3ab4a80ee42500d933ced96d0af65d72d42d748fe97d753c0b87db76be",
+      "Embedded": false,
+      "Reason": "Oversized generated runner log; causal TRX and structured/build reports are embedded"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 1439,
+      "OriginalSha256": "6728d6dc526b8b75fbdc6993356d0c7967c25be739a725449c6efd53e07f7f7c",
+      "Embedded": true,
+      "StoredPath": "plan.json",
+      "StoredBytes": 1439,
+      "StoredSha256": "6728d6dc526b8b75fbdc6993356d0c7967c25be739a725449c6efd53e07f7f7c"
+    },
+    {
+      "Path": "portable-worker-validator-exceptions-unit-001.trx",
+      "OriginalBytes": 4488,
+      "OriginalSha256": "ebc6d7109fa8eb941116df8f7230bc94647731fdb4aca18e1518acb979d1edf2",
+      "Embedded": true,
+      "StoredPath": "portable-worker-validator-exceptions-unit-001.trx",
+      "StoredBytes": 4342,
+      "StoredSha256": "8530d17efcc2afe2fa00222d44f33389f11209baa8417c3d9bad47b0f68cb93e"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1573,
+      "OriginalSha256": "f4ed614461fe42ee8c4179350a451e3441d333b05dab4f75e15f08eb8c807341",
+      "Embedded": true,
+      "StoredPath": "summary.json",
+      "StoredBytes": 1573,
+      "StoredSha256": "f4ed614461fe42ee8c4179350a451e3441d333b05dab4f75e15f08eb8c807341"
+    }
+  ],
+  "MeasuredChildren": 0,
+  "SourceQualification": {
+    "BaseCommit": "fb3ce1e389d959ca8ef02bacd02d10c1ac5614bf",
+    "WorkingTreeClean": false,
+    "Meaning": "Executed source is the exact verification-input blob/hash map below over the published base. CollectedAtHead names the base, not a commit containing these new tests. Runtime blobs remain those in worker-qualification.json.",
+    "VerificationInputs": {
+      "BookOfEternityClient.Tests/GmWorkerApplyGateTests.cs": {
+        "GitBlob": "51fd123e0b07e247b15bc7b22a2d98bafb61a02a",
+        "Sha256": "f9fdace002c10e5318b23ebcbbfdec162359372324b5caccca044376c230bcb0"
+      },
+      "BookOfEternityClient.Tests/GmWorkerApplyGateTests.ValidatorExceptions.cs": {
+        "GitBlob": "56e1371acd562dff2a2f3f5dfaec935d86ee39a3",
+        "Sha256": "6eff8794b1eeb3b712cba1f1d5bd0e9ce5b13c6f2c5def1511c00b5a21ee5715"
+      },
+      "tests/categories.json": {
+        "GitBlob": "3be83cd1256faaa8f5b700d2108266134ffbc1b5",
+        "Sha256": "3cf52cf16b2b8c7d23240fbd735a3eace44d8337107d0d6f905f23c37ab02ffa"
+      },
+      "tests/selection.json": {
+        "GitBlob": "934edc1af72141c2c96be156cb166bb8824d76b2",
+        "Sha256": "5d066e2571f25c313aeb03eb36fac059188042fa58c6d5d954a2d750348ada70"
+      }
+    }
+  }
+}
