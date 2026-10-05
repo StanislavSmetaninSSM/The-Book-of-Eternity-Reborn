@@ -1,0 +1,62 @@
+{
+  "Categories": [
+    "worker-synthetic-bundle-cleanup"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "1ade6c3b97622fef29bd4f89579a9e4bc9e016b8",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 39.4309279,
+  "Descriptors": [
+    {
+      "Name": "worker-synthetic-bundle-cleanup-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-synthetic-bundle-cleanup",
+      "Categories": [
+        "worker-synthetic-bundle-cleanup"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ActualStore_PublishesCompleteBundleAndDerivedInboxAudit|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.CancellationWhileWaitingForCanonicalLease_PublishesNothing|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationArrivingAtFinalStoreBoundary_IsNeverReplaced|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.StaleTaskOrGeneration_RetainsExistingEmptyStructure|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_ActualStoreInvalidTreeRetainsExactStagingAndOutsideData|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_LinkedTreeRetainsWholeStagingAndOutsideBytes|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_OwnPrivateRootIsRemovedAndMissingRootRetryIsIdempotent|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 13,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ActualStore_PublishesCompleteBundleAndDerivedInboxAudit",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.CancellationWhileWaitingForCanonicalLease_PublishesNothing",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationArrivingAtFinalStoreBoundary_IsNeverReplaced",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.StaleTaskOrGeneration_RetainsExistingEmptyStructure",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_ActualStoreInvalidTreeRetainsExactStagingAndOutsideData",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_LinkedTreeRetainsWholeStagingAndOutsideBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_OwnPrivateRootIsRemovedAndMissingRootRetryIsIdempotent",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

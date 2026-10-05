@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="375b5b89-d4cd-4b05-930b-c85f5236f94e" name="@c7669543e9c7 2026-10-05 22:20:09" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T22:20:09.1916966+00:00" queuing="2026-10-05T22:20:09.1916966+00:00" start="2026-10-05T22:20:06.9266503+00:00" finish="2026-10-05T22:20:09.3368190+00:00" />
+  <TestSettings name="default" id="5ab928a6-b0ca-42ce-ae7a-b6718fdde021">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-05_22_20_09" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="78ad274c-fc1a-4708-90d3-24a74df9d540" testId="41b1d472-b70a-e3db-fd1c-899344c2824a" testName="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationArrivingAtFinalStoreBoundary_IsNeverReplaced(nonempty: True)" computerName="c7669543e9c7" duration="00:00:00.0111003" startTime="2026-10-05T22:20:09.1480609+00:00" endTime="2026-10-05T22:20:09.1480613+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="78ad274c-fc1a-4708-90d3-24a74df9d540" />
+    <UnitTestResult executionId="7505b89b-5d31-458e-98e0-5049a052f9b9" testId="fc12e61d-8d6b-8f19-f671-db0ad6749b1a" testName="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.CancellationWhileWaitingForCanonicalLease_PublishesNothing" computerName="c7669543e9c7" duration="00:00:00.0125194" startTime="2026-10-05T22:20:09.2703743+00:00" endTime="2026-10-05T22:20:09.2703745+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7505b89b-5d31-458e-98e0-5049a052f9b9" />
+    <UnitTestResult executionId="d115c31f-a3ea-4747-abc2-f1b839af054a" testId="865053a9-4399-59f0-6387-af052991c9a5" testName="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_LinkedTreeRetainsWholeStagingAndOutsideBytes" computerName="c7669543e9c7" duration="00:00:00.0036212" startTime="2026-10-05T22:20:09.1517534+00:00" endTime="2026-10-05T22:20:09.1517536+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d115c31f-a3ea-4747-abc2-f1b839af054a" />
+    <UnitTestResult executionId="96bc3de3-52bf-4bef-903e-1da2dec2e39b" testId="383754a4-6572-8670-cdcf-7f21b022d4e9" testName="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_ActualStoreInvalidTreeRetainsExactStagingAndOutsideData" computerName="c7669543e9c7" duration="00:00:00.1349335" startTime="2026-10-05T22:20:09.1058641+00:00" endTime="2026-10-05T22:20:09.1058778+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="96bc3de3-52bf-4bef-903e-1da2dec2e39b" />
+    <UnitTestResult executionId="274e5526-b4fe-4ae3-8da9-d2e8b19b780e" testId="dcd585b6-dbb1-8b5f-4d7b-15ee87437285" testName="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.StaleTaskOrGeneration_RetainsExistingEmptyStructure(generation: False)" computerName="c7669543e9c7" duration="00:00:00.0138812" startTime="2026-10-05T22:20:09.1797112+00:00" endTime="2026-10-05T22:20:09.1797115+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="274e5526-b4fe-4ae3-8da9-d2e8b19b780e" />
+    <UnitTestResult executionId="54eb978c-e79c-4166-97f5-1fee70985bd1" testId="435f1c05-1477-8eb5-d583-140c7a6a9920" testName="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes(fault: &quot;wrong-fixture&quot;)" computerName="c7669543e9c7" duration="00:00:00.0036187" startTime="2026-10-05T22:20:09.1212035+00:00" endTime="2026-10-05T22:20:09.1212036+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="54eb978c-e79c-4166-97f5-1fee70985bd1" />
+    <UnitTestResult executionId="611fff4f-21f9-4574-b3bc-6c93530c3e3d" testId="c9a544f3-054c-805a-dc45-9273da51890e" testName="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes(fault: &quot;nested&quot;)" computerName="c7669543e9c7" duration="00:00:00.0041720" startTime="2026-10-05T22:20:09.1110261+00:00" endTime="2026-10-05T22:20:09.1110262+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="611fff4f-21f9-4574-b3bc-6c93530c3e3d" />
+    <UnitTestResult executionId="a2f26f70-cfe3-41c0-8236-a1d11856bd40" testId="1e97d940-58bf-dda8-ab32-fb2ce9a8860a" testName="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_OwnPrivateRootIsRemovedAndMissingRootRetryIsIdempotent" computerName="c7669543e9c7" duration="00:00:00.0036319" startTime="2026-10-05T22:20:09.2572937+00:00" endTime="2026-10-05T22:20:09.2572938+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a2f26f70-cfe3-41c0-8236-a1d11856bd40" />
+    <UnitTestResult executionId="f564b534-2d28-4b39-83d6-c1f3ee4e3bc4" testId="c0b6cd23-30b0-437d-8cb6-22bbb913dc61" testName="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.StaleTaskOrGeneration_RetainsExistingEmptyStructure(generation: True)" computerName="c7669543e9c7" duration="00:00:00.0129735" startTime="2026-10-05T22:20:09.1653653+00:00" endTime="2026-10-05T22:20:09.1653655+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f564b534-2d28-4b39-83d6-c1f3ee4e3bc4" />
+    <UnitTestResult executionId="ba73dbf0-37c3-464b-a271-6f9fc0017bc2" testId="2d2fe985-1b4c-2c0b-94d7-9349cd66559f" testName="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationArrivingAtFinalStoreBoundary_IsNeverReplaced(nonempty: False)" computerName="c7669543e9c7" duration="00:00:00.0146208" startTime="2026-10-05T22:20:09.1363242+00:00" endTime="2026-10-05T22:20:09.1363244+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ba73dbf0-37c3-464b-a271-6f9fc0017bc2" />
+    <UnitTestResult executionId="7737d734-6b23-4033-b564-83b0f5f23434" testId="7afbe350-46ea-84b8-acad-4263057d5942" testName="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes(fault: &quot;another-area&quot;)" computerName="c7669543e9c7" duration="00:00:00.0031541" startTime="2026-10-05T22:20:09.1174679+00:00" endTime="2026-10-05T22:20:09.1174681+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7737d734-6b23-4033-b564-83b0f5f23434" />
+    <UnitTestResult executionId="b2b35689-273f-41f1-8e3b-fad8be933da0" testId="654971ed-2c1d-ea4f-bc37-986acc078dc2" testName="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes(fault: &quot;area&quot;)" computerName="c7669543e9c7" duration="00:00:00.0031015" startTime="2026-10-05T22:20:09.1142182+00:00" endTime="2026-10-05T22:20:09.1142184+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b2b35689-273f-41f1-8e3b-fad8be933da0" />
+    <UnitTestResult executionId="6a1fdb2e-8bf4-4072-b383-cf385c4afd50" testId="277dd8e5-676a-04dc-9bea-23d2969ffa83" testName="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ActualStore_PublishesCompleteBundleAndDerivedInboxAudit" computerName="c7669543e9c7" duration="00:00:00.0731804" startTime="2026-10-05T22:20:09.2534986+00:00" endTime="2026-10-05T22:20:09.2534988+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6a1fdb2e-8bf4-4072-b383-cf385c4afd50" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_ActualStoreInvalidTreeRetainsExactStagingAndOutsideData" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="383754a4-6572-8670-cdcf-7f21b022d4e9">
+      <Execution id="96bc3de3-52bf-4bef-903e-1da2dec2e39b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests" name="SyntheticCleanup_ActualStoreInvalidTreeRetainsExactStagingAndOutsideData" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ActualStore_PublishesCompleteBundleAndDerivedInboxAudit" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="277dd8e5-676a-04dc-9bea-23d2969ffa83">
+      <Execution id="6a1fdb2e-8bf4-4072-b383-cf385c4afd50" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests" name="ActualStore_PublishesCompleteBundleAndDerivedInboxAudit" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.StaleTaskOrGeneration_RetainsExistingEmptyStructure(generation: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="dcd585b6-dbb1-8b5f-4d7b-15ee87437285">
+      <Execution id="274e5526-b4fe-4ae3-8da9-d2e8b19b780e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests" name="StaleTaskOrGeneration_RetainsExistingEmptyStructure" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.StaleTaskOrGeneration_RetainsExistingEmptyStructure(generation: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c0b6cd23-30b0-437d-8cb6-22bbb913dc61">
+      <Execution id="f564b534-2d28-4b39-83d6-c1f3ee4e3bc4" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests" name="StaleTaskOrGeneration_RetainsExistingEmptyStructure" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_LinkedTreeRetainsWholeStagingAndOutsideBytes" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="865053a9-4399-59f0-6387-af052991c9a5">
+      <Execution id="d115c31f-a3ea-4747-abc2-f1b839af054a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests" name="SyntheticCleanup_LinkedTreeRetainsWholeStagingAndOutsideBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.CancellationWhileWaitingForCanonicalLease_PublishesNothing" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fc12e61d-8d6b-8f19-f671-db0ad6749b1a">
+      <Execution id="7505b89b-5d31-458e-98e0-5049a052f9b9" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests" name="CancellationWhileWaitingForCanonicalLease_PublishesNothing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationArrivingAtFinalStoreBoundary_IsNeverReplaced(nonempty: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2d2fe985-1b4c-2c0b-94d7-9349cd66559f">
+      <Execution id="ba73dbf0-37c3-464b-a271-6f9fc0017bc2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests" name="DestinationArrivingAtFinalStoreBoundary_IsNeverReplaced" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes(fault: &quot;wrong-fixture&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="435f1c05-1477-8eb5-d583-140c7a6a9920">
+      <Execution id="54eb978c-e79c-4166-97f5-1fee70985bd1" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests" name="SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes(fault: &quot;nested&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c9a544f3-054c-805a-dc45-9273da51890e">
+      <Execution id="611fff4f-21f9-4574-b3bc-6c93530c3e3d" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests" name="SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes(fault: &quot;another-area&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7afbe350-46ea-84b8-acad-4263057d5942">
+      <Execution id="7737d734-6b23-4033-b564-83b0f5f23434" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests" name="SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationArrivingAtFinalStoreBoundary_IsNeverReplaced(nonempty: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="41b1d472-b70a-e3db-fd1c-899344c2824a">
+      <Execution id="78ad274c-fc1a-4708-90d3-24a74df9d540" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests" name="DestinationArrivingAtFinalStoreBoundary_IsNeverReplaced" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes(fault: &quot;area&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="654971ed-2c1d-ea4f-bc37-986acc078dc2">
+      <Execution id="b2b35689-273f-41f1-8e3b-fad8be933da0" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests" name="SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_OwnPrivateRootIsRemovedAndMissingRootRetryIsIdempotent" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1e97d940-58bf-dda8-ab32-fb2ce9a8860a">
+      <Execution id="a2f26f70-cfe3-41c0-8236-a1d11856bd40" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests" name="SyntheticCleanup_OwnPrivateRootIsRemovedAndMissingRootRetryIsIdempotent" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="41b1d472-b70a-e3db-fd1c-899344c2824a" executionId="78ad274c-fc1a-4708-90d3-24a74df9d540" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fc12e61d-8d6b-8f19-f671-db0ad6749b1a" executionId="7505b89b-5d31-458e-98e0-5049a052f9b9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="865053a9-4399-59f0-6387-af052991c9a5" executionId="d115c31f-a3ea-4747-abc2-f1b839af054a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="383754a4-6572-8670-cdcf-7f21b022d4e9" executionId="96bc3de3-52bf-4bef-903e-1da2dec2e39b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dcd585b6-dbb1-8b5f-4d7b-15ee87437285" executionId="274e5526-b4fe-4ae3-8da9-d2e8b19b780e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="435f1c05-1477-8eb5-d583-140c7a6a9920" executionId="54eb978c-e79c-4166-97f5-1fee70985bd1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c9a544f3-054c-805a-dc45-9273da51890e" executionId="611fff4f-21f9-4574-b3bc-6c93530c3e3d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1e97d940-58bf-dda8-ab32-fb2ce9a8860a" executionId="a2f26f70-cfe3-41c0-8236-a1d11856bd40" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c0b6cd23-30b0-437d-8cb6-22bbb913dc61" executionId="f564b534-2d28-4b39-83d6-c1f3ee4e3bc4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2d2fe985-1b4c-2c0b-94d7-9349cd66559f" executionId="ba73dbf0-37c3-464b-a271-6f9fc0017bc2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7afbe350-46ea-84b8-acad-4263057d5942" executionId="7737d734-6b23-4033-b564-83b0f5f23434" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="654971ed-2c1d-ea4f-bc37-986acc078dc2" executionId="b2b35689-273f-41f1-8e3b-fad8be933da0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="277dd8e5-676a-04dc-9bea-23d2969ffa83" executionId="6a1fdb2e-8bf4-4072-b383-cf385c4afd50" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="13" executed="13" passed="13" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.20]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.50]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.52]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.86]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

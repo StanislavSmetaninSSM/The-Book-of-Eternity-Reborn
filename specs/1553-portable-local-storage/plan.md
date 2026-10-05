@@ -358,6 +358,16 @@ missing owned roots are idempotent. Add7new cleanup cases (including actual Stor
 cleanup-affected Store cases in worker-synthetic-bundle-cleanup; unchanged20passing
 Core/syscall/default-guard cases need no repeat. Fresh selected checks/review pending.
 
+B3-P cleanup correction at `1ade6c3b97622fef29bd4f89579a9e4bc9e016b8`:
+fresh PlanOnly13planned/0executed,39.5967957s; NoBuild **13executed/13PASS**,
+7.9933608s, complete selection/cleanup, no skip/duplicate/timeout. [Evidence](recovery/evidence/worker-pool-bundle-cleanup-green/manifest.json).
+Together with20unchanged passing cases from fde47a70,33distinct storage cases now
+have latest PASS (not a single33-case run). Actual Store bundle/content/inbox/audit
+and staging cleanup pass; malformed tree retains own and outside bytes. Independent
+source delta closure/evidence review pending. Next explicitly select this sealed
+Store adapter through native fixture admission and re-run only the previously failed
+actual-pool happy case with consumer permit/substitution assertions. B remains WIP.
+
 ### B1 execution record
 
 Read-only Spec Kit consistency pass at `0ffb1c45`: B has coverage in spec, this plan,
