@@ -1,10 +1,136 @@
-# Linux complete-descendant ownership — T041-OWNERSHIP-DESIGN
+# Linux ownership: primary systemd and ordinary-lineage fallback
 
-Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
-Exact source base: `31de2e33a6f44001fee9c0c3b6c4e61c8d3aab0e`.
-2026-10-05; design and capability evidence only. Implementation is not authorized
-by this document. Independent actual gpt-6.1-sol/xhigh design/evidence PASS at reviewed
-`39df05024cecefe7266f41cec1b772895155e576`; no actionable findings.
+## Approved two-backend Linux ownership — 2026-10-05 15:12 UTC
+
+Owner decision: primary existing **systemd user manager**, plus a **native ordinary-lineage fallback** for cloud/similar environments. This explicitly supersedes the earlier unconditional complete-descendant requirement only for the declared fallback scope. It is a product guarantee change, not permission to bypass environment security. Source base `2defe92cd8b7d313d07b059db76b73e97905f66f`, same branch/sole writer. First implementation is T041-FALLBACK-NATIVE synthetic helper qualification only; production pool/main Release wiring requires the next handoff/authorization.
+
+- `systemd-user` declares the owned transient unit/cgroup boundary. Prefer it in Auto only when an already-running accessible user manager supplies the required transient-unit, stop and authoritative empty-boundary capabilities. No root, new persistent service, enable/autostart, cgroup delegation or policy changes. Positive native systemd qualification is absent here; mocks cannot establish it.
+- `native-lineage` declares **ordinary descendants remaining within tracked lineage in the same PID namespace**, including ordinary double-fork, setsid and process-group changes. It does not cover external brokers/services, descendants outside the tracked lineage or unrestricted namespace migration. Those absences need not be universally proved on every ordinary launch. Detected escape/scope breach, lost authority, timeout, incomplete cleanup, owner loss or restart ambiguity is `Uncertain`; preserve quarantine and slot and do not automatically accept the task result.
+- Default `Auto`: prefer available systemd-user; if unavailable before any launch, select native-lineage explicitly after its prerequisites pass. Explicit `SystemdUser` never silently downgrades. Explicit `NativeLineage` declares its limited scope. After a launch may have happened, backend switching is forbidden; uncertain startup retires through the original authority. Neither backend claims external delegated work. Windows Job behavior is unchanged.
+- Every readiness/status/stop-evidence record exposes backend, guarantee scope, run identity, state, reason, whether managed authority is retained and whether scoped cleanup actually completed. `StoppedWithinScope` is never an Accepted proposal or durable run/fence. Consumers must preserve the scope and typed uncertainty; an old unqualified bool must not erase them. Source guards for existing production gates remain; new tests must assert the revised two-mode contract without enabling Linux Release.
+
+## Native fallback algorithm proposed for independent review
+
+A single-thread C helper owns one launch, inherited private owner-command stdin and
+status stdout. It is never loaded/forked from CLR. `native/linux/boe-lineage-supervisor.c`
+is built from repo source by `scripts/build-linux-supervisor.ps1`; fixture child code
+lives separately under `tests/fixtures/LinuxLineage/`. No privileged installation.
+The managed tests invoke the actual built executable, retaining source/binary hashes,
+compiler version/flags and complete bounded transcripts. No generic shell command,
+provider, user save, canonical write or production process-pool entry is exercised.
+
+1. Before Ready, restore SIGCHLD=SIG_DFL without SA_NOCLDWAIT, clear inherited signal
+   mask, establish/verify PR_SET_CHILD_SUBREAPER, verify own proc-child discovery and
+   pidfd capability. No other thread/signal handler reaps. Use monotonic deadlines.
+   Ready carries `native-lineage` / `ordinary-same-namespace-lineage`; it launches
+   nothing. Commands are fixed single bytes, no buffered/unbounded request payload.
+2. One Start command forks a child behind an internal bootstrap pipe. Open its pidfd
+   while it is the helper's unreaped direct child; only then release exec. Child
+   closes/replaces owner stdin and status stdout, closes internal ends, restores
+   normal signal disposition/mask, and owns a new process group. All helper pidfds
+   and exec-error/control pipes are CLOEXEC. Preserve inherited credentials, groups,
+   environment, cwd and proc view; no namespace/mount/credential change. Child stdout
+   goes to the caller's stderr stream in this non-PTY prototype. Exec-error pipe
+   distinguishes exec failure from successful start; authority exists before exec.
+3. EOF/owner loss, Cancel, Stop, root exit or authority error seals launch permanently
+   and enters stop. SIGTERM/SIGINT to helper only request its owned cleanup; signal
+   handlers set flags. Owner EOF is detected even if a child lives. Status output is
+   nonblocking/bounded; broken/backpressured output latches Uncertain and triggers
+   cleanup, never blocks the reaper. No signal is sent by untrusted numeric PID.
+4. During retirement repeatedly read only `/proc/self/task/<self>/children` as a
+   **worklist**, never a proof of completeness. Children may be omitted during exit;
+   retry until exclusive wait reports ECHILD. Before any reap, open pidfds for listed
+   unreaped direct children. Exclusive ownership of reaping prevents their PID reuse
+   in that interval. Verify known child membership/namespace where observable; any
+   unexpected failure/scope mismatch latches Uncertain. Descendants orphaned by
+   stopped parents are adopted by this subreaper within the declared same-namespace
+   scope. No scanning/signal to unrelated system PIDs or broad process-group kill.
+5. Send TERM once per acquired pidfd, then KILL after the configured grace. Repeated
+   adoption rounds catch double-fork/setsid and forking while parents stop. Retain
+   each handle until actual wait/reap; SIGKILL send, pidfd readiness, empty snapshot
+   and root exit are not stop success. Reap with exclusive `waitpid(-1,__WALL|WNOHANG)`;
+   stopped/traced notifications are not terminal; failed syscalls retain uncertainty.
+   Terminal child entries are retired without reacquiring their numeric PID; stale
+   pidfds cannot target a reused process. Bound the live handle inventory; exhaustion
+   latches uncertainty and preserves cleanup authority, never truncates a proof.
+6. Only sealed launch plus actual ECHILD, with no uncertainty latch, yields
+   `StoppedWithinScope`. It says nothing about out-of-contract external work. Root
+   exit status/reason remains separate from stop evidence; no Accepted field exists.
+   Timeout reports `Uncertain` once and retains helper/reaping authority until actual
+   cleanup. Cleanup may later finish, but the uncertainty latch is not silently
+   converted to successful task delivery. Owner loss, malformed command or an explicit
+   observable out-of-scope notice likewise remain uncertain. Abrupt helper death or
+   restart cannot reconstruct authority from PIDs; the future consumer retains slot
+   and quarantine. The helper is not promised to survive its own SIGKILL.
+
+Default protective observations: TERM grace250ms, stop5s; tests use explicit shorter
+budgets, with a stop deadline shorter than TERM grace to prove timeout while a known
+child still exists. No exit/drop of authority merely to fit that deadline. Per-test
+synthetic children also self-expire and tests wait for actual helper/child cleanup.
+The fixture harness must preserve its own emergency cleanup authority; a missing
+helper terminal report is a test failure, not permission to kill arbitrary PIDs.
+No permanent resources, global handlers/shared mutable fixture or native installation.
+
+Protocol v1 fixed metadata: `runId`, `backend`, `guarantee`, `state`, `reason`,
+`cleanupComplete`, `authorityRetained`, root exit information and syscall error code
+when applicable. States Ready/Started/Stopping/StoppedWithinScope/Uncertain have
+fixed semantics; parse strictly and correlate the run. No command text, environment
+values or payload content in errors. A scoped terminal result never substitutes for
+fence/canonical acceptance/whole-application qualification. Future systemd adapter
+uses the same semantic record with its distinct scope, after its own native proof.
+
+## Selection and first bounded TDD plan
+
+Tracked T041-BACKENDS-DESIGN and T041-FALLBACK-NATIVE, US4/FR-012/013/014/015.
+Alternatives considered: retain unavailable universal namespace gate (does not meet
+new approved fallback requirement); root/process-group-only killing (misses ordinary
+setsid/double-fork); selected single-thread subreaper/pidfd worklist plus exclusive
+reap for the narrower declared contract. Namespaces remain optional future research.
+
+- First commit the reviewed docs. Add native build/package script, per-test native
+  fixture and narrow `linux-fallback-supervisor` owner through the canonical C# runner.
+  Actual native build is part of test preparation; compile/missing-binary errors are
+  preparation failures, never causal RED. Record compiler/source/binary provenance.
+- Bootstrap a conservative baseline that really forks/execs and owns/reaps a synthetic
+  root, reports its limited/uncertain outcome and does not yet claim descendant stop.
+  Positive root startup/control/cleanup passes; missing descendant retirement and
+  false/absent scoped-success cases provide behavioral RED. Fixture self-expiry and
+  owned cleanup prevent leaked test children. Do not fabricate a source-era defect.
+- Add iterative adopted-child pidfd retirement and typed protocol handling. GREEN
+  must include ordinary children, double-fork/setsid in same namespace, TERM ignored,
+  forking during stop, root-exits-first, cancellation before/after Start, owner-channel
+  loss, retained timeout, stale pidfd, exec failure, observable out-of-scope notice
+  and an unrelated synthetic sentinel unchanged. Source-linked fixture PID/exit
+  records prove actual descendants existed and were reaped; positive cases are
+  required. Pure selection/outcome contract checks may accompany this owner.
+- Run `scripts/test-csharp.ps1 -Category linux-fallback-supervisor -Parallelism 1`
+  with fresh managed/native builds; PlanOnly for exact selection, discovery-only
+  catalog audit. Do not replay prior IPC/FRAME/ENV/workspace/receipt/output/input or
+  full categories. Native tests fail explicitly off Linux; no fake OS-skip PASS.
+- Independent actual Sol6.1/XHigh design review before helper implementation, then
+  implementation/evidence review after RED/GREEN. Commit/push WIP non-force, read
+  remote SHA/bytes, restore fresh from GitHub. Stop at handoff before production
+  pool/main Release wiring. Primary systemd positive native execution stays open.
+
+## API grounding and compatibility
+
+[Subreaper](https://man7.org/linux/man-pages/man2/PR_SET_CHILD_SUBREAPER.2const.html)
+provides ordinary orphan adoption; it is not universal namespace containment.
+[pidfd_open](https://man7.org/linux/man-pages/man2/pidfd_open.2.html) documents the
+unreaped-child/no-other-reaper PID stability preconditions; [pidfd signals](https://man7.org/linux/man-pages/man2/pidfd_send_signal.2.html)
+retain identity after numeric PID reuse. [wait](https://man7.org/linux/man-pages/man2/waitpid.2.html)
+and [proc children](https://man7.org/linux/man-pages/man5/proc_tid_children.5.html)
+separate actual reaping from a racy worklist. The helper's loop is a design inference
+under the new limited contract and still requires native tests, not proof by citation.
+Systemd user support needs separately qualified transient-unit ownership and stop/
+empty-cgroup observation; do not start or configure the absent manager here.
+
+## Historical universal-boundary analysis (superseded only as stated above)
+
+The following original analysis records why subreaper alone could not satisfy the
+old unrestricted guarantee. Its namespace-only preference and old no-implementation
+instructions do not override the approved two-mode contract or current bounded task.
+Its kernel counterexample and environment evidence remain valid scope limitations.
 
 ## Root assessment — backend choice deferred, 2026-10-05
 

@@ -84,20 +84,25 @@ SHA или ОС. Сохранённые RED, подготовительные о
 
 ## Что ещё не квалифицировано
 
-**Linux complete-descendant stop backend ещё не выбран и не реализован.**
-[Ownership design и ограничения](linux-ownership-design.md) прошли отдельное
-Sol 6.1/XHigh design/evidence PASS; это не runtime acceptance. В этой saved
-среде подтверждены [Unix sockets/named pipes](recovery/evidence/linux-named-pipe-capability-20261005/manifest.json),
-pidfd/subreaper и работа с одним owned child. Native host Ready без Release
-подтверждает IPC admission, но не запуск CLI или остановку всех потомков.
+**Owner согласовал два Linux backend (2026-10-05 15:12 UTC):** основной — уже
+существующий пользовательский systemd, резервный — native supervisor для обычных
+потомков в tracked lineage и том же PID namespace. [Точный контракт и текущий план](linux-ownership-design.md).
+Auto предпочитает доступный systemd; до запуска явно выбирает fallback при его
+недоступности. Backend/guarantee видны в status/outcome; после возможного запуска
+молчаливое переключение запрещено. Windows Job semantics сохранены.
 
-Нормальный UID/GID mapping route и cgroup delegation здесь недоступны;
-[read-only observation](recovery/evidence/gm-output-design/environment.json)
-не нашёл systemd user manager. Это факт этой среды, а не запрет Linux в целом.
-Namespace остаётся кандидатом: нужны faithful UID/GID/groups, credentials,
-proc/PID view и совместимость произвольного CLI. Он не утверждён единственным
-backend. Выход root PID, EOF, pidfd одного процесса или ECHILD сами по себе
-не доказывают полный stop. Обход ограничений, root и смена политики не предлагаются.
+Fallback включает обычные double-fork/setsid/group changes, но не external brokers,
+внешнюю lineage или unrestricted namespace migration. Для обычного запуска не
+требуется невозможное доказательство отсутствия всякой внешней работы. Наблюдаемая
+потеря authority, timeout/incomplete cleanup, owner/restart ambiguity — Uncertain:
+quarantine/slot сохраняются, результат не принимается автоматически.
+
+Saved environment подтверждает sockets/pidfd/subreaper, но прежние normal maps/
+cgroup delegation недоступны, systemd user manager не найден. Namespace не нужен
+для fallback и не объявлен единственным backend. Systemd положительно здесь не
+квалифицирован; его не устанавливают/запускают/настраивают. Текущий этап — design
+review и bounded native helper с собственными synthetic fixtures, без production
+Release/liveGM/canonical writes. Нативный успех ещё не заявлен.
 
 Открыты T041 ownership/Release/PTY и основной bridge/daemon/launcher portability,
 production run/generation/fence wiring, owner loss/reboot/unknown-stop recovery
@@ -114,20 +119,16 @@ Browser проверяется автоматизированными actual cli
 live-browser/visual-QA gate не требуется. Аудио/clipboard/другие platform helpers
 и общая приёмка #1553 также остаются отдельными задачами.
 
-## Решения владельца и следующий допустимый шаг
+## Следующий допустимый шаг
 
-1. На каких Linux-дистрибутивах и в каких окружениях важен запуск игры:
-   обычный desktop, server без desktop-сессии, containers?
-2. Допустимо ли требовать уже доступный в такой системе механизм управления
-   процессами (например, пользовательский systemd), или игра должна работать
-   и там, где его нет? Новая привилегированная служба не подразумевается.
-
-После ответа можно сравнить существующие ownership-кандидаты с этой матрицей
-и выбрать отдельный bounded design/qualification на подходящем runner с обычными
-разрешениями. Отсутствующий runner оставляет native proof открытым. Для T042 можно
-продолжить согласование уже описанного [input design](plan.md#t042-persistent-cli-input-coordination--read-only-design-2026-10-05),
-затем отдельно утвердить цельный queue/paste/submit/unknown-outcome блок; политика
-потери/повтора ввода не выбирается молча. Этот handoff не разрешает новый код.
+Решение о двух режимах принято; повторного согласования обычных действий не нужно.
+Сначала независимый Sol6.1/XHigh design review нового контракта/алгоритма, затем
+T041-FALLBACK-NATIVE: actual helper build, causal RED/GREEN, scoped cleanup evidence
+и independent final review. После remote checkpoint/restore — handoff родителю,
+**до** production pool/main Release интеграции. Расширение списка Linux дистрибутивов
+и положительная systemd qualification требуют подходящего runner, не root или
+ослабления ограничений. T042 queue/paste-submit/unknown outcome остаётся отдельным
+coherent design и не входит в этот native helper этап.
 
 Неизменные требования: бесплатная single-player игра; trusted-local-player
 storage без anti-player save protection; сохранение проверок формата/путей,

@@ -4,25 +4,15 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
-## Current recovery checkpoint — 2026-10-05
+## Current checkpoint — approved two-backend native slice, 2026-10-05
 
-**Start here: [cross-platform status and recovery handoff](cross-platform-status.md).**
-Accepted base **`f0af8c4b3affe4689e675d1dc7b1f50da334fcf6`**, branch
-`codex/1553-load-filesystem`; input-lifetime runtime source `dc29b37d` has37/37GREEN
-and independent Sol6.1/XHigh PASS. The accepted base was published/read back and
-restored cleanly from GitHub. This #1553 documentation-only handoff consolidates
-existing qualification; no runtime edits, builds, tests or probes.
+Base **`2defe92cd8b7d313d07b059db76b73e97905f66f`**, branch `codex/1553-load-filesystem`, sole writer. Owner approved primary existing user systemd plus an ordinary-lineage fallback at15:12UTC. This replaces the previous backend-choice wait and only the fallback's former universal guarantee. [Current contract, algorithm and TDD plan](linux-ownership-design.md) / [concise status](cross-platform-status.md).
 
-Independent documentation consistency review: actual **gpt-6.1-sol/xhigh PASS**;
-qualification/commit links, source attribution and recovery instructions checked,
-no remaining findings. No builds/tests/probes were repeated.
+Active tasks: T041-BACKENDS-DESIGN, then T041-FALLBACK-NATIVE. Use existing Spec Kit artifacts with Superpowers TDD/debugging/review; no duplicate plan framework. User authorized design review followed by bounded implementation without another routine approval gate. Separate actual Sol6.1/XHigh design review is pending. Then build the real native helper, run only its synthetic native category with causal RED/GREEN and discovery audit, obtain independent implementation/evidence review, publish/read back/restore and stop at handoff. No production pool/main Release wiring in this block.
 
-Current decision gate: target Linux distributions/environments and acceptable
-reliance on an already available process supervisor. Complete-descendant stop
-backend remains unchosen/unimplemented; namespace is a pending compatibility
-candidate. Full T041/T042/main-GM/Windows qualification remains open. No next code
-slice is authorized by this handoff. Sections below are historical bounded-block
-records: their old “next” recommendations do not define the current queue.
+Selection/capability/outcome preserve visible backend and guarantee. Auto chooses available existing user systemd first, otherwise advertised native-lineage before launch; no silent post-launch switch. Detected authority loss/timeout/cleanup/owner/restart ambiguity stays Uncertain and retains quarantine/slot. No unrestricted namespace/external-broker guarantee is implied, and no universal absence proof is demanded for ordinary fallback launches. Windows Job/source guards remain intact. Systemd positive native qualification remains unavailable here; do not start/configure it.
+
+Historical accepted component evidence and old “next” suggestions below retain their original source/scope. Input37 and earlier cohorts are not rerun for this new native helper. Design/review/RED/GREEN and exact build/cleanup/checkpoint evidence will be appended to this current block; no implementation success is claimed yet.
 
 ## T041-ENV worker environment — 2026-10-05 (verified component)
 

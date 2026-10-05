@@ -15,6 +15,15 @@
 - Wound implementation was merged by explicit owner request in [PR #1554](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/pull/1554). Its unfinished acceptance remains deferred under #1536, not declared complete by this feature
 
 
+## Approved two-backend Linux ownership — 2026-10-05 15:12 UTC
+
+Owner decision: primary existing **systemd user manager**, plus a **native ordinary-lineage fallback** for cloud/similar environments. This explicitly supersedes the earlier unconditional complete-descendant requirement only for the declared fallback scope. It is a product guarantee change, not permission to bypass environment security. Source base `2defe92cd8b7d313d07b059db76b73e97905f66f`, same branch/sole writer. First implementation is T041-FALLBACK-NATIVE synthetic helper qualification only; production pool/main Release wiring requires the next handoff/authorization.
+
+- `systemd-user` declares the owned transient unit/cgroup boundary. Prefer it in Auto only when an already-running accessible user manager supplies the required transient-unit, stop and authoritative empty-boundary capabilities. No root, new persistent service, enable/autostart, cgroup delegation or policy changes. Positive native systemd qualification is absent here; mocks cannot establish it.
+- `native-lineage` declares **ordinary descendants remaining within tracked lineage in the same PID namespace**, including ordinary double-fork, setsid and process-group changes. It does not cover external brokers/services, descendants outside the tracked lineage or unrestricted namespace migration. Those absences need not be universally proved on every ordinary launch. Detected escape/scope breach, lost authority, timeout, incomplete cleanup, owner loss or restart ambiguity is `Uncertain`; preserve quarantine and slot and do not automatically accept the task result.
+- Default `Auto`: prefer available systemd-user; if unavailable before any launch, select native-lineage explicitly after its prerequisites pass. Explicit `SystemdUser` never silently downgrades. Explicit `NativeLineage` declares its limited scope. After a launch may have happened, backend switching is forbidden; uncertain startup retires through the original authority. Neither backend claims external delegated work. Windows Job behavior is unchanged.
+- Every readiness/status/stop-evidence record exposes backend, guarantee scope, run identity, state, reason, whether managed authority is retained and whether scoped cleanup actually completed. `StoppedWithinScope` is never an Accepted proposal or durable run/fence. Consumers must preserve the scope and typed uncertainty; an old unqualified bool must not erase them. Source guards for existing production gates remain; new tests must assert the revised two-mode contract without enabling Linux Release.
+
 ## Input transport lifetime — T042-INPUT-LIFETIME, 2026-10-05
 
 Bounded implementation passes37/37 actual managed-consumer cases at `dc29b37d0c3e3067acf9943a048360fbba66d0e3`, with causal lifetime RED and a separately reproduced/fixed review regression. [Qualification](recovery/gm-input-lifetime-qualification.json) retains exact build, test, discovery and cleanup evidence. Independent actual Sol6.1/xhigh final PASS and clean GitHub-only restoration verified at `a5aefe8f8151c67a15fa107e78b487581bd43458`; full T042 remains open.
@@ -314,8 +323,8 @@ The bridge owns a persistent arbitrary interactive CLI. The daemon automatically
 Acceptance:
 1. The main GM remains interactive and persistent; one-shot stdin or manual copy/export is not an equivalent replacement
 2. Manual input, automatic delivery, output/readiness, restart, cancellation and owned process cleanup use a common supported contract on Linux and Windows
-3. Unknown termination outcome preserves the workspace and blocks unsafe reuse/rollback while a writer may still be alive
-4. Real CLI evidence is required in addition to controlled terminal fixtures; ordinary provider descendants are not dismissed as malicious escape
+3. Unknown termination outcome preserves workspace/slot and blocks unsafe reuse/rollback within the explicitly selected backend contract; native-lineage fallback has the owner-approved scope above
+4. Real CLI evidence is required beyond controlled fixtures. Ordinary same-namespace descendants, including setsid/double-fork, belong to native-lineage scope; external delegation/unrestricted namespace migration are explicit limits, not universally claimed coverage
 
 ### US5 — Use other local system capabilities (P3)
 
@@ -340,7 +349,7 @@ Empty files, non-UTF8 bytes, BOMs, absent files, case-distinct Linux names, dupl
 - **FR-011**: Both actual Linux clients must satisfy US1 and US3. Windows uses the same intended behavior; provide a reproducible owner-run checklist and report Windows coverage by the capabilities actually executed at their exact source revision, leaving all remaining capabilities explicitly unverified
 - **FR-012**: Replace Windows-only process, IPC, bridge, daemon, launcher, audio and clipboard mechanisms with supported cross-platform behavior. Thin platform adapters are permissible where a native primitive is necessary, with equivalent declared behavior
 - **FR-013**: Persistent arbitrary interactive CLI and automatic daemon text delivery are mandatory. No special game API is required of the CLI
-- **FR-014**: Resolve process ownership, cancellation, timeout and restart uncertainty without deleting or reusing files while an old writer may still run
+- **FR-014**: Resolve ownership/cancellation/timeout/restart under the declared active backend scope above. Unknown outcomes retain workspace/quarantine/slot; no automatic result acceptance or unsafe reuse. Native-lineage may positively confirm its ordinary same-namespace lineage without proving absence of arbitrary external work; observable scope breach remains Uncertain
 - **FR-015**: Run only affected categories via scripts/test-csharp.ps1, retain isolated mutable test state, publish source/checkpoint before lengthy tests or review, and independently review completed blocks
 
 ### Superseded storage guarantees
