@@ -698,8 +698,10 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
                 stream.SafeFileHandle, fullPath, identity, expected.Sha256!,
                 "Worker workspace staging file", expected.Length);
         }
-        if (!expected.MatchesFile(_fileScope, fullPath))
+        else if (!expected.MatchesFile(_fileScope, fullPath))
+        {
             throw new InvalidDataException("Worker workspace staging bytes changed.");
+        }
         cancellationToken.ThrowIfCancellationRequested();
     }
 
