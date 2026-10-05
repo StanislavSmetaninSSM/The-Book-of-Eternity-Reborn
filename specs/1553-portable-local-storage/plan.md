@@ -147,7 +147,7 @@ Uncertain. No durable reconstruction of a dead owner is invented.
 - [x] B1 Design: update this plan/spec/tasks; read-only Spec Kit consistency pass,
   publish design WIP and obtain separate actual Sol6.1/xhigh review of authority,
   quarantine and both result consumers before implementation.
-- [ ] B2 Causal connected scaffold: new TestSupport/NativePoolScenarioDriver.cs and
+- [x] B2 Causal connected scaffold: new TestSupport/NativePoolScenarioDriver.cs and
   Tests/GmWorkerNativePoolTests.cs use actual FileSystemManager, pool/workspace and
   proposal store in a unique fixture copy, beneath the existing independent guardian.
   Internal admission scaffold stays unavailable. First actual-pool happy case must
@@ -263,6 +263,15 @@ uncertainty. Expected causal RED: matching positive control passes; malformed or
 mismatched records and revival after uncertainty fail the new requirements. No pool
 admission changed. Next fresh build/discovery and only worker-execution-scoped-evidence;
 do not repeat the unchanged actual-pool RED.
+
+B2 typed baseline `ac7cbdb67ca5b1df9784189b00f21b0b92765c6c`: fresh selected
+build/discovery13planned/0executed,43.9626781s; execution **13executed,1PASS/
+12causalFAIL**,8.5025767s, no skips/duplicates/timeouts, complete cleanup. Matching
+positive control passes; wrong run/backend/scope, malformed flags/state and late
+certainty/output uncertainty expose the intended missing validation/sticky latch.
+[Exact evidence](recovery/evidence/worker-pool-authority-red/manifest.json).
+No native processes launched by this pure set. B2 complete; B3 connected implementation
+now starts from both observed causal REDs. Public Linux guard remains closed.
 
 ## HOST implementation authorized — 2026-10-05
 
