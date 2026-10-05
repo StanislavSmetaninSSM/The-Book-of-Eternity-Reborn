@@ -84,7 +84,17 @@ WIP correction adds real-OS WorkerRelease admission before slot/reservation and
 extracts Windows Start/attach/Ready through the same PrepareOwnedAsync. Only the
 sealed Windows owner can hand original Process/tree/start state into legacy cleanup,
 including partial failures before original exception propagation. Native has no handoff.
-Next fresh admission4/source-contract1 GREEN; no native case repeated for this change.
+At `510156d07dd9599bca12ef568a2fe05eb86d51ad`, fresh5case preparation
+passed42.9504689s; execution **admission4/4PASS, source-contract0/1FAIL**,12.1360252s.
+Failure is its stale SafePipeHandle-specific signature guard after safe-handle
+marshalling was shared with bootstrap sockets; narrow guard corrected to SafeHandle.
+[Evidence](recovery/evidence/worker-host-admission-first-green/manifest.json).
+Sol core review found constructor rollback and disposal-after-helper-loss blockers,
+plus original Process exited-host diagnostic regression. Three focused causal cases
+are added/selected before fixes: long private TMPDIR; actual Ready host closes outputs,
+helper is deliberately lost, live pidfd must remain undisposed; existing exited-host
+case. Outer guardian retains all real native descendants and verifies ECHILD.
+These are WIP/unrun; no Native/pool B acceptance or Windows runtime claim.
 Independent Sol consult confirms original Process/tree/started-state one-way handoff
 from a sealed Windows adapter preserves current cleanup; no native-to-legacy route.
 Existing relevant lifecycle fixtures invoke powershell.exe and remain Windows-only

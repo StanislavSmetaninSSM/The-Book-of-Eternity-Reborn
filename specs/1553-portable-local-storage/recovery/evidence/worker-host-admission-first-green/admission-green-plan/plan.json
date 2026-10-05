@@ -1,0 +1,59 @@
+{
+  "Categories": [
+    "worker-native-admission",
+    "worker-owned-preparation-source-contract"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "510156d07dd9599bca12ef568a2fe05eb86d51ad",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 42.7150176,
+  "Descriptors": [
+    {
+      "Name": "worker-native-admission-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-admission",
+      "Categories": [
+        "worker-native-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.ActualPool_RejectsLinuxReleaseBeforeReservationAttachOrRelease|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.ActualPool_RejectsLinuxReleaseBeforeReservationAttachOrRelease",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "worker-owned-preparation-source-contract-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-owned-preparation-source-contract",
+      "Categories": [
+        "worker-owned-preparation-source-contract"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

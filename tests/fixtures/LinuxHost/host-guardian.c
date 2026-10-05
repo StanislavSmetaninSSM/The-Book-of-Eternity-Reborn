@@ -122,6 +122,10 @@ int main(int argc, char **argv) {
     if (argc >= 3 && !strcmp(argv[1], "--expire-exec")) {
         expire(); execv(argv[2], &argv[2]); return 127;
     }
+    if (argc >= 3 && !strcmp(argv[1], "--expire-closed-output-exec")) {
+        expire(); close(STDOUT_FILENO); close(STDERR_FILENO);
+        execv(argv[2], &argv[2]); return 127;
+    }
     if (argc < 5) return 64;
     signal(SIGCHLD, SIG_DFL); signal(SIGPIPE, SIG_IGN);
     sigset_t empty; sigemptyset(&empty);

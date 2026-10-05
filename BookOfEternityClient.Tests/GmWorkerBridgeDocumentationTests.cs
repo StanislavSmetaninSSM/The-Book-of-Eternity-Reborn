@@ -661,7 +661,7 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("GetNamedPipeClientProcessId", peerIdentity, StringComparison.Ordinal);
         Assert.Contains("EntryPoint = \"getsockopt\"", peerIdentity, StringComparison.Ordinal);
         Assert.Contains("EntryPoint = \"geteuid\"", peerIdentity, StringComparison.Ordinal);
-        Assert.Contains("SafePipeHandle pipe", peerIdentity, StringComparison.Ordinal);
+        Assert.Contains("SafeHandle pipe", peerIdentity, StringComparison.Ordinal);
         AssertOrdered(processHost,
             "GmWorkerProcessHostPeerIdentity.Validate(_controlPipe.SafePipeHandle",
             "GmWorkerProcessHostPeerIdentity.Validate(_statusPipe.SafePipeHandle",

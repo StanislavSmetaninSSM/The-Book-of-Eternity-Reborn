@@ -2,6 +2,55 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "worker-owned-original-identity",
+      "responsibility": "#1553 original Process identity diagnostic/liveness contract affected by shared owned-host token extraction.",
+      "excludes": "No native qualification or whole IPC cohort replay. Exact existing exited-original-host fixture only.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerHostIdentity.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "worker-native-owner-retention",
+      "responsibility": "#1553 constructor rollback and original native host pidfd retention after helper loss plus output EOF. Actual independently guarded Linux host, zero worker Release.",
+      "excludes": "No accepted scoped stop claim for deliberate helper loss; guardian cleanup is separate. No pool B/public Release.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerHostIdentity.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerNativeHostTests.ConstructorFailure_RollsBackPrivateBootstrapBeforeAnyProcessStart",
+            "BookOfEternityClient.Tests.GmWorkerNativeHostTests.HelperLossAndOutputEof_CannotDisposeLiveHostIdentity"
+          ]
+        }
+      ]
+    },
+    {
       "id": "worker-owned-preparation-source-contract",
       "responsibility": "#1553 HOST extraction: existing production source/documentation contract follows shared PrepareOwnedAsync, original Windows Start/attach/Ready and retained one-way transfer into pool cleanup.",
       "excludes": "Actual Windows Job runtime qualification, native helper execution, other documentation cohorts and GM behavior changes.",

@@ -43,6 +43,20 @@
       "contracts": [
         "#1553 T041-FALLBACK-HOST"
       ]
+    },
+    {
+      "category": "worker-native-owner-retention",
+      "reason": "Independent review finding requires focused causal regression before fix.",
+      "contracts": [
+        "#1553 T041-FALLBACK-HOST"
+      ]
+    },
+    {
+      "category": "worker-owned-original-identity",
+      "reason": "Independent review finding requires focused causal regression before fix.",
+      "contracts": [
+        "#1553 T041-FALLBACK-HOST"
+      ]
     }
   ]
 }
