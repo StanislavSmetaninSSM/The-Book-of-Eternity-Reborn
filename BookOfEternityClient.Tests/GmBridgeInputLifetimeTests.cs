@@ -359,11 +359,46 @@ public sealed class GmBridgeInputLifetimeTests
         Assert.Empty(stream.Bytes);
     }
 
+    [Theory]
+    [InlineData("shell", true)]
+    [InlineData("host", false)]
+    [InlineData("io", true)]
+    public async Task ActualRequestBoundary_OnlyHostCancellationStopsServing(string source, bool shouldContinue)
+    {
+        await using var host = new HostFixture();
+        using var response = new MemoryStream();
+        using var shell = new CancellationTokenSource();
+        shell.Cancel();
+        if (source == "host") host.HostTokenSource.Cancel();
+        Func<Task> request = () => Task.FromException(source == "io"
+            ? new IOException("controlled failure")
+            : new OperationCanceledException(source == "host" ? host.HostTokenSource.Token : shell.Token));
+        Assert.Equal(shouldContinue, await host.ConnectedRequest(response, request));
+        if (shouldContinue)
+        {
+            var reply = Encoding.UTF8.GetString(response.ToArray());
+            using var json = System.Text.Json.JsonDocument.Parse(reply);
+            Assert.False(json.RootElement.GetProperty("ok").GetBoolean());
+            Assert.NotEmpty(json.RootElement.GetProperty("error").GetString()!);
+            var handled = false;
+            using var laterResponse = new MemoryStream();
+            Assert.True(await host.ConnectedRequest(laterResponse, () => { handled = true; return Task.CompletedTask; }));
+            Assert.True(handled);
+            Assert.False(host.HostTokenSource.IsCancellationRequested);
+        }
+        else Assert.Empty(response.ToArray());
+    }
+
     [Fact]
     public void ProductionOriginsAndRetirementConsumeTheTestedLifetimeMethods()
     {
         var source = File.ReadAllText(Path.Combine(HostFixture.RepoRoot, "BookOfEternityGMBridge/Program.cs"));
         Assert.Contains("BeginInputLifetime(pty.InputWriter, shellLoopCts)", source, StringComparison.Ordinal);
+        var server = source[source.IndexOf("private async Task RunServerLoopAsync", StringComparison.Ordinal)..source.IndexOf("private async Task<bool> ProcessConnectedRequestAsync", StringComparison.Ordinal)];
+        Assert.Contains("if (!await ProcessConnectedRequestAsync(server, async () =>", server, StringComparison.Ordinal);
+        Assert.Contains("var response = await HandleRequestAsync(request);", server, StringComparison.Ordinal);
+        Assert.Contains("}, cancellationToken))", server, StringComparison.Ordinal);
+        Assert.Contains("break;", server, StringComparison.Ordinal);
         Assert.Contains("PumpKeyboardAsync(input, ReadConsoleKeyAsync, shellToken)", source, StringComparison.Ordinal);
         Assert.Contains("WriteToPtyAsync(dispatchInput, payload", source, StringComparison.Ordinal);
         Assert.Contains("WriteToPtyAsync(dispatchInput, string.Empty", source, StringComparison.Ordinal);
@@ -430,6 +465,12 @@ public sealed class GmBridgeInputLifetimeTests
                 : Invoke("PumpKeyboardAsync", binding, keys, ShellTokenSource.Token)!);
             Set("_keyboardPumpTask", task);
             return Track(task);
+        }
+        public async Task<bool> ConnectedRequest(Stream response, Func<Task> request)
+        {
+            var task = (Task<bool>)Invoke("ProcessConnectedRequestAsync", response, request, HostTokenSource.Token)!;
+            Track(task);
+            return await task;
         }
         public Task Stop() => Track((Task)Invoke("StopShellAsync")!);
         public void Complete(object binding, bool success) => Invoke("CompletePromptDispatch", binding, success, 1L);

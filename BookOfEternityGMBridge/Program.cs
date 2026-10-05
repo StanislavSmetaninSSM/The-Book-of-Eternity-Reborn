@@ -236,7 +236,7 @@ internal sealed class BridgeHost : IDisposable
 
             await server.WaitForConnectionAsync(cancellationToken);
 
-            try
+            if (!await ProcessConnectedRequestAsync(server, async () =>
             {
                 var request = await ReadMessageAsync<BridgeRequest>(server, cancellationToken) ?? new BridgeRequest();
                 var response = await HandleRequestAsync(request);
@@ -246,21 +246,31 @@ internal sealed class BridgeHost : IDisposable
                     response.ShutdownAfterResponse ? CancellationToken.None : cancellationToken);
                 if (response.ShutdownAfterResponse)
                     _cts.Cancel();
-            }
-            catch (OperationCanceledException)
-            {
+            }, cancellationToken))
                 break;
-            }
-            catch (Exception ex)
-            {
-                await WriteMessageAsync(server, new BridgeResponse
-                {
-                    Ok = false,
-                    Error = ex.Message,
-                    Status = SnapshotStatus()
-                }, cancellationToken);
-            }
         }
+    }
+
+    private async Task<bool> ProcessConnectedRequestAsync(Stream server, Func<Task> processRequest, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await processRequest();
+        }
+        catch (OperationCanceledException)
+        {
+            return false;
+        }
+        catch (Exception ex)
+        {
+            await WriteMessageAsync(server, new BridgeResponse
+            {
+                Ok = false,
+                Error = ex.Message,
+                Status = SnapshotStatus()
+            }, cancellationToken);
+        }
+        return true;
     }
 
     private async Task<BridgeResponse> HandleRequestAsync(BridgeRequest request)
