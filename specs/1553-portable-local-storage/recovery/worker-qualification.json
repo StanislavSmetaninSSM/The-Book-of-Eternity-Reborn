@@ -1,7 +1,7 @@
 {
   "SchemaVersion": 1,
   "Scope": "T031-WORKER-PORTABLE bounded native Linux ordinary worker apply decision and cleanup/recovery, including real worker versus public Load ordering",
-  "Status": "Verified native Linux candidate; final independent gpt-6.1-sol/xhigh review PASS; desktop publication/readback and coordinator acceptance pending",
+  "Status": "Accepted bounded native-Linux worker apply/decision/cleanup/recovery; final independent gpt-6.1-sol/xhigh PASS, exact c122d3e1 GitHub publication and fresh restoration verified",
   "RuntimeCodeCommit": "ce0d39f349982a44fde16bb6e85b6a499fc552b9",
   "FinalDocumentationTestCommit": "bea1cf6559f04b78b969d8782c82b3ba9a3c0458",
   "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
@@ -903,7 +903,11 @@
         "Sha256": "5d066e2571f25c313aeb03eb36fac059188042fa58c6d5d954a2d750348ada70"
       }
     },
-    "Limit": "Review does not establish desktop publication, fresh restoration of the supplement, coordinator acceptance or whole #1553 completion."
+    "Limit": "Bounded worker acceptance only; native Windows worker/public-client, process/IPC/PTY, real GM/live console and whole #1553 remain open.",
+    "DeliveryReconciliation": {
+      "Commit": "c122d3e18550f8169b288628ecab3276758bdd7c",
+      "Status": "Separate gpt-6.1-sol/xhigh read-only reconciliation PASS on 2026-10-05, exact runtime/test/artifact hashes and 170-case union; no tests repeated"
+    }
   },
   "OperationIncidents": "worker-operation-incidents.json",
   "PriorCatalogAudit": {

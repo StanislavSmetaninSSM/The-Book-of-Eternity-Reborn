@@ -1,15 +1,16 @@
 {
-  "Commit": "fb3ce1e389d959ca8ef02bacd02d10c1ac5614bf",
-  "Tree": "84e3a58c66ea823364108b5359bb943274b46204",
-  "TrackedFiles": 5024,
+  "Commit": "c122d3e18550f8169b288628ecab3276758bdd7c",
+  "Tree": "4093c98d3495942ee4b41024870e2237852390e5",
+  "TrackedFiles": 5042,
   "CleanCheckout": true,
   "AllPhysicalGitBlobHashesMatch": true,
-  "WorkerManifestsVerified": 15,
-  "WorkerEvidenceTrxParsed": 20,
-  "EmbeddedArtifactsVerified": 60,
+  "WorkerManifestsVerified": 19,
+  "WorkerEvidenceTrxParsed": 21,
+  "EmbeddedArtifactsVerified": 72,
   "QualifiedProductionBlobsVerified": 8,
-  "Method": "Fresh GitHub depth1 single-branch clone created before this continuation; this continuation completed its clean/tree/physical-blob/embedded-artifact verification and directly re-read the GitHub branch ref. No local source/object copy was used for the clone.",
+  "Method": "Fresh GitHub-only restoration and direct branch verification, followed by independent Sol6.1 XHigh physical blob/artifact/TRX/runtime verification on 2026-10-05. No old source or object copy used.",
   "Connectivity": "git fsck --connectivity-only exit0",
   "BuildOrTestsRepeated": false,
-  "Limit": "Verifies the published base before the two-test supplement. The new desktop-published checkpoint still requires remote SHA and fresh-restoration verification; no acceptance is implied."
+  "Limit": "Verifies the published bounded native-Linux worker supplement. It does not qualify native Windows, process/IPC/PTY or full gameplay/client acceptance.",
+  "ManifestScope": "recovery/evidence/worker*/manifest.json, including two validator-supplement PlanOnly manifests"
 }

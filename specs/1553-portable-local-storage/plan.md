@@ -1,8 +1,71 @@
 # Implementation Plan: Trusted local storage and cross-platform runtime
 
-**Branch**: `codex/1553-load-filesystem` | **Updated**: 2026-10-04
+**Branch**: `codex/1553-load-filesystem` | **Updated**: 2026-10-05
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
+
+## Active T032-A4-NATIVE-NAMES — test-first WIP, 2026-10-05
+
+Base and directly verified GitHub branch: `c122d3e18550f8169b288628ecab3276758bdd7c`,
+tree `4093c98d3495942ee4b41024870e2237852390e5`; the assigned checkout was clean.
+The current producer uses unconditional OrdinalIgnoreCase duplicate detection in
+AddManifestedBytesToArchiveAsync, rejecting actual `lore/Pair.bin` / `lore/pair.bin`
+although typed Linux Load already preserves their independently validated identities.
+This is the existing tracked A4 gap, not a change to archive contracts.
+
+Narrow design: retain ordinal-ignore-case Windows/non-Linux duplicate semantics;
+on Linux permit ordinal distinctions only outside the existing fixed whole-file
+registry. Fixed authority aliases still collide, with no global directory folding
+or change to registry spellings. Keep original manifest/hash/schema validation,
+archive bounds and loader code unchanged. Reuse the established assigned isolated
+checkout and sole-writer baton; no unchanged baseline test rerun. The owner's
+autonomous design waiver applies; final independent Sol6.1 XHigh review is mandatory.
+
+Four new Linux-native rows cover actual current producer → typed Load → Save
+with leaf and directory case pairs, present empty/non-UTF8/BOM/CRLF bytes, full
+manifest SHA-256/length/key checks, original source/library preservation, generation
+and scratch outcomes; fixed-authority collisions cover leaf and directory aliases.
+The positive fixture includes a single real-produced fixed alias and requires its
+exact registry name after Load and the second Save. No archive editing substitutes
+for the producer in these cases. New owner `portable-save-native-names` requires
+Linux explicitly. Affected existing `portable-load-native-names` and
+`portable-load-alias-admission` protect loader/manifest/refusal boundaries; no
+resource, client or full-suite rerun is selected. Exact PlanOnly and zero-execution
+catalog audit remain required. Production is unchanged; tests are not yet built/run.
+Next: publish this WIP, execute the narrow RED, make the smallest producer change,
+then verify affected owners and independently review. HOME-PC was confirmed connected;
+publication uses an immutable Library package, desktop blobs and parent cloud
+non-force tree/commit/ref publication. Do not proceed past uncertain publication.
+
+Spec Kit prerequisite check resolved the active feature and required artifacts.
+Focused consistency: FR-002/006/015 and US3 cover A4; LOAD-FS-001 preserves original
+archive identity then fixed-path mapping; no new schema, gameplay or GM-authored
+capability is introduced. No constitution/spec/task conflict was found. The existing
+Spec Kit CLI is not on the task PATH; no installation or scaffolding rewrite is
+needed for this tracked continuation. Runtime is client-owned storage, so no GM
+prompt/example change is needed; operational handoff is updated at acceptance.
+
+## Accepted T031-WORKER-PORTABLE — native Linux, 2026-10-05
+
+The final supplement is now published as `c122d3e18550f8169b288628ecab3276758bdd7c`
+and fresh GitHub-only restoration is verified at tree
+`4093c98d3495942ee4b41024870e2237852390e5`: all5,042 physical blobs,19 manifests
+under `recovery/evidence/worker*/manifest.json` (including two PlanOnly supplements),
+72 embedded artifacts,21 parsed TRX and8 exact runtime blobs. Clean checkout and
+connectivity fsck passed. The independent Sol6.1 XHigh reconciliation directly
+verified these files and the170 distinct passing-case union without rerunning tests.
+The [readback](recovery/worker-github-readback.json) supersedes the previous pending
+supplement-delivery statement. Prior partial/failed evidence retains its meaning.
+
+Final independent Sol6.1 XHigh PASS and exact delivery permit bounded acceptance:
+ordinary native-Linux worker apply/decision/cleanup/recovery and actual worker →
+public Load ordering satisfy the recorded FR-002–009/015 scope. Core42/42,
+consumers15/15, continuation5/5, shared byte71/71, streamed29/29, v1 2/2, docs4/4
+and validator exceptions2/2 are distinct source-qualified runs, not one aggregate.
+Discovery-only audit234/10,598 executed zero tests. Runtime remains `ce0d39f3`.
+Full T031, native-Windows worker/public clients, process/IPC/PTY, real GM/live console,
+full gameplay/restart, A4 and whole #1553 remain open. The historical diagnosis below
+is retained as provenance and is not the current bounded acceptance status.
 
 ## Active T031-WORKER-PORTABLE — diagnosis, 2026-10-04
 

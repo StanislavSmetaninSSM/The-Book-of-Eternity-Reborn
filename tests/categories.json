@@ -2,6 +2,41 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-save-native-names",
+      "responsibility": "T032-A4 actual native Linux current Save producer -> typed Load -> Save: exact arbitrary leaf/directory case pairs and bytes, complete manifest/hash claims, fixed whole-file canonical mapping and fixed-authority case collision refusal before publication.",
+      "excludes": "Native Windows producer execution, full resource envelope, other load recovery/client/gameplay contracts. This owner requires Linux and asserts that platform rather than returning early.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SaveLoadService.cs",
+        "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+        "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.SaveNativeNames.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-load-native-names",
+          "when": "Original archive identity, duplicate/hash claims or producer native-name policy changes."
+        },
+        {
+          "id": "portable-load-alias-admission",
+          "when": "Fixed whole-file path registry or producer fixed-name identity changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerNativeNamesSurviveSaveTypedLoadSave",
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerRejectsFixedAuthorityCaseCollision"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-worker-validator-exceptions",
       "responsibility": "Actual reserved worker apply gate validator exceptions: exact whole-set byte/absence rollback and original exception identity; late unknown member retains the complete pending decision and both initiating/recovery causes, blocking subsequent writers and fresh-manager recovery.",
       "excludes": "Other already-qualified worker/shared publication consumers, process/IPC, whole gameplay and platform acceptance.",
