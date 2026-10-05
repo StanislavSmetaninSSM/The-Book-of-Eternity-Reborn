@@ -9,6 +9,108 @@ Owner decision: primary existing **systemd user manager**, plus a **native ordin
 - Default `Auto`: prefer available systemd-user; if unavailable before any launch, select native-lineage explicitly after its prerequisites pass. Explicit `SystemdUser` never silently downgrades. Explicit `NativeLineage` declares its limited scope. After a launch may have happened, backend switching is forbidden; uncertain startup retires through the original authority. Neither backend claims external delegated work. Windows Job behavior is unchanged.
 - Every readiness/status/stop-evidence record exposes backend, guarantee scope, run identity, state, reason, whether managed authority is retained and whether scoped cleanup actually completed. `StoppedWithinScope` is never an Accepted proposal or durable run/fence. Consumers must preserve the scope and typed uncertainty; an old unqualified bool must not erase them. Source guards for existing production gates remain; new tests must assert the revised two-mode contract without enabling Linux Release.
 
+## Portable own-child discovery revision — proposed, 2026-10-05
+
+Continuation from `c70a8c02515f115ef220c9b806b10005f88e368e`. Owner authorized
+read-only proc metadata discovery, independent Sol6.1/XHigh algorithm/fixture
+review, then staged native implementation. The ordinary same-namespace guarantee,
+systemd primary, typed uncertainty, Windows Job and closed production gates remain.
+Missing proc-children is ENOENT, not a security-refusal conclusion. The failed19case
+run and19PID1zombies remain historical failures; never signal PID1 or claim them
+reaped. This revision replaces only the proc-children discovery dependency and
+makes fixture emergency cleanup independent of that discovery implementation.
+
+**Observed without child/process probe:** `/proc` directory enumeration and own
+`/proc/self/stat`/`status`/namespace metadata are readable. getpid, self link and
+stat PID agree; NSpid contains exactly that one value. Only self metadata and the
+count of numeric directory entries were retained; no other task metadata was read.
+This establishes availability of the proposed inputs, not descendant qualification.
+
+### Discovery and identity invariant
+
+1. Open a retained read-only CLOEXEC proc directory; verify procfs with fstatfs.
+   Before Ready require bounded self stat/status reads, matching own PID/PPID,
+   exactly one NSpid equal to getpid, and the live self PID namespace identity.
+   The one-element NSpid requirement rejects an ancestor proc mount's different
+   PID coordinate system without touching PID1, changing mounts or translating
+   numbers speculatively. SIGCHLD remains SIG_DFL without SA_NOCLDWAIT; helper is
+   single-threaded and its loop is the only wait/reap owner. No fork occurs before
+   admission. Keep the existing held-child bootstrap/pidfd gate before worker exec.
+2. Enumerate only numeric `/proc` entries and read a bounded stat prefix. Consume
+   PID, parent PID and state only. Skip `comm` structurally using the final closing
+   parenthesis in the bounded record, so spaces/parentheses/newlines in names cannot
+   shift PPID. Do not read environ, cmdline, maps, filesystem roots or file handles.
+   No raw stat/comm or metadata of unrelated tasks goes to logs/artifacts. The
+   unavoidable observation of numeric PID/PPID while filtering is expressly scoped
+   to this worklist construction; no control operation follows on nonchildren.
+3. A candidate is admitted only if the kernel stat PID equals the numeric entry
+   and stat PPID equals this still-live helper in the verified PID coordinate
+   system. That proves it is a current direct child, including adopted descendants.
+   Before ANY next reap, acquire its pidfd. Such a child cannot have its PID reused
+   between that parent check and pidfd acquisition: it remains our unreaped child,
+   SIGCHLD is not ignored, and no other thread reaps it. Do not use starttime or a
+   PID snapshot as authority. An old retired PID number can be considered again
+   only after a fresh direct-parent check, never by replaying the old identity.
+4. For verified children only, compare observable PID namespace identity to the
+   retained own namespace. Mismatch is scope-breach/Uncertain. If namespace metadata
+   disappears for a child already terminal, observe terminal status without reaping
+   first (waitid WNOWAIT) instead of declaring a false breach. Other errors on
+   known-owned metadata/pidfd/signal/wait latch Uncertain and retain cleanup.
+5. ENOENT/ESRCH for an unbound directory entry are ordinary disappearance races;
+   skip and rescan. EACCES/EPERM are respected: no privilege retry, alternate mount
+   or reading more private metadata. An unreadable unclassified entry grants no
+   authority and is skipped; a live hidden in-scope child still prevents ECHILD,
+   so timeout remains Uncertain. A refusal for a known-owned candidate latches
+   Uncertain immediately. Global proc/self/read-directory failure is a capability
+   failure, never a silently empty inventory or a stop proof.
+6. Bound each scan slice (128 numeric entries) and each stat read (4096bytes), keep
+   the directory cursor between iterations and begin a fresh pass at EOF. Bound
+   held live pidfds (128). Capacity failure latches Uncertain but continues retiring
+   held children and reaping so later passes can acquire freed slots. Full/empty
+   snapshots have no terminal meaning. Forks, exits, reuse, root-first exit and late
+   adoption are caught by repeated passes; no completeness claim comes from proc.
+7. TERM each owned handle once; KILL after the global grace. Sole waitpid __WALL
+   handles actual terminal states and releases each retired handle. Only sealed
+   launch + actual ECHILD + no uncertainty latch produce StoppedWithinScope.
+   Deadlines/errors never drop authority; late cleanup stays Uncertain. This is
+   exactly the already approved ordinary-lineage scope, not an external-work proof.
+
+This is a source-grounded inference, pending independent review and actual native
+qualification. [stat PID/PPID layout](https://man7.org/linux/man-pages/man5/proc_pid_stat.5.html),
+[unreaped-child pidfd preconditions](https://man7.org/linux/man-pages/man2/pidfd_open.2.html),
+[proc PID namespace view](https://man7.org/linux/man-pages/man7/pid_namespaces.7.html),
+[NSpid](https://man7.org/linux/man-pages/man5/proc_pid_status.5.html) and
+[wait semantics](https://man7.org/linux/man-pages/man2/waitpid.2.html) distinguish
+metadata discovery from retained kernel authority and terminal reaping.
+
+### Independent fixture cleanup and staged verification
+
+Guardian uses **no child enumeration/proc scan**. It preflights only its own clock,
+subreaper/SIGCHLD, pidfd and report/lifetime resources before any fork; known helper
+and optional sibling sentinel are gated direct forks with retained pidfds. It
+exclusively waits/reaps all its children, including later adopted fixture children,
+until actual ECHILD. On helper error/deadline it retires only those held known
+pidfds. Unknown adopted fixture children have independently armed7s default,
+unblocked SIGALRM in EVERY fork branch before blocking work; they self-expire while
+guardian retains reap authority. It never exits on a deadline/error while children
+remain. This is a bounded trusted synthetic-fixture mechanism, not a generic CLI
+cleanup guarantee and not production stop evidence. Unexpected adopted children
+count as emergency cleanup; positive helper cases require zero and finish before
+self-expiry. A controlled guardian crash-helper request tests this independent
+cleanup path: held helper pidfd killed, synthetic root self-expiry and actual reap,
+explicit emergency count and no helper terminal proof.
+
+After independent design PASS, first run a new bootstrap category containing only
+(1) one real controlled root start/stop/reap (conservative helper still Uncertain),
+and (2) the controlled helper-loss/guardian-reap scenario. No old19case replay.
+Only after actual cleanup of these1–2 scenarios passes add a focused descendant
+causal RED against the root-only baseline (child self-expiry is not scoped success),
+then the minimal proc worklist/pidfd retirement GREEN. Later expand coherent narrow
+owners for doublefork/setsid, names with brackets/spaces, late adoption/root-first,
+spawn-during-stop, ignored TERM, cancellation/owner loss/timeout and sentinel scope.
+Unchanged pure/previous cohorts remain unrun. Every stage retains native build
+provenance, actual case counts/terminal records and independent guardian cleanup.
+
 ## Native fallback algorithm — independent design review PASS
 
 A single-thread C helper owns one launch, inherited private owner-command stdin and

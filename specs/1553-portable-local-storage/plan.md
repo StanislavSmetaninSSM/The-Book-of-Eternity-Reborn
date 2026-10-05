@@ -4,6 +4,20 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## Current continuation — portable own-child discovery
+
+Base `c70a8c02515f115ef220c9b806b10005f88e368e`; sole writer on same branch.
+Owner authorized replacing only unavailable proc-children discovery with reviewed
+read-only numeric proc/stat/PPID discovery. [Algorithm and independent fixture
+cleanup](linux-ownership-design.md#portable-own-child-discovery-revision--proposed-2026-10-05).
+Self metadata/PID coordinates/proc enumeration availability observed with no child
+probe and no unrelated metadata retained. Design review pending; no code changed
+for this continuation yet. First native stage after review: only1–2 controlled
+root/guardian cleanup cases. Then causal descendant RED/GREEN and justified narrow
+expansion. Historical19FAIL/prerequisite/zombie evidence below remains unchanged.
+Do not stop at negative-only admission; preserve approvedfallbackscope/systemdprimary,
+Windows/productionguards, no security/networkchanges or foreignsignals.
+
 ## Priority handoff — disconnect audit and BLOCKED native slice
 
 Owner requested immediate handoff before further portability design. Exact helper/
