@@ -3,7 +3,8 @@
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
 Exact source base: `31de2e33a6f44001fee9c0c3b6c4e61c8d3aab0e`.
 2026-10-05; design and capability evidence only. Implementation is not authorized
-by this document. Independent actual gpt-6.1-sol/xhigh review is pending.
+by this document. Independent actual gpt-6.1-sol/xhigh design/evidence PASS at reviewed
+`39df05024cecefe7266f41cec1b772895155e576`; no actionable findings.
 
 ## Recommendation and environment decision
 
@@ -109,8 +110,11 @@ This inference is grounded in [PID namespace semantics](https://man7.org/linux/m
 and [v6.18 zap_pid_ns_processes](https://github.com/torvalds/linux/blob/v6.18/kernel/pid_namespace.c).
 It is not native qualification of this 6.18.44 environment or all supported kernels.
 
-All worker descendants must originate inside this namespace; no attach-after-
-Release migration can establish that history. Namespace inode numbers or PID
+All worker descendants must originate inside this namespace. Even an already-
+running neutral managed host cannot be transplanted into it. Linux needs an
+explicit launch/ownership seam creating monitor → fresh init → managed host
+before Ready; preserve the existing Windows Attach path. No later migration
+can establish that history. Namespace inode numbers or PID
 numbers alone are not durable identity. External pre-existing brokers/daemons
 asked by a CLI to write are outside both the ordinary Job lineage and this
 namespace. Such provider behavior needs its own owned-service contract or must
@@ -264,3 +268,10 @@ behavior change; Mortal World/afterlife prompts/examples and source guards need
 no update for this task. Operational documentation and guards must be updated
 with any eventual new runtime capability. No Fast/PreMerge/full-suite, real GM,
 canonical writes, HOME-PC changes or unrelated checkout edits occurred.
+
+Independent review verified the exact source/remote/tree, clean fresh restoration,
+all16 changed file bytes,11 unchanged inputs and10 artifact hashes, including
+probe log/result/source consistency. No independent runtime execution or native
+ownership acceptance is claimed. [Review/restoration evidence](recovery/evidence/worker-ownership-design-review/manifest.json).
+Final verdict-carrier publication and another empty-directory restore are
+reported in the handoff, without a self-referential commit identifier.
