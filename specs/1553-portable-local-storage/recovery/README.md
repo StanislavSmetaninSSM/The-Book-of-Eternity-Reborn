@@ -1,5 +1,18 @@
 # Source and evidence recovery
 
+## Current worker-host FRAME component
+
+Runtime source `e9f9452deb296988a0ced6feb9b8003b54449a19`, tree
+`f93412342654f05d7d0eaa07f29a23fb10afd996`, has 49/49 pure frame/JSON/documentation
+checks and a discovery-only audit of 237 categories / 10,623 identities. Exact
+source hashes, causal failures, native restrictions and review/publication status
+are in [worker-frame-qualification.json](worker-frame-qualification.json).
+The [separate Linux-PC checklist](../quickstart.md#worker-host-frame-checkpoint-and-separate-linux-pc-handoff)
+provides exact source and narrow commands, followed by still-required native IPC,
+process/workspace/PTY and live-GM gates. This component does not enable Linux host
+peer authentication or establish any native Windows/live-GM result. Restore normal
+GitHub blobs; do not apply old transfer packages or erase retained uncertainty.
+
 ## Current ordinary-load filesystem recovery
 
 Continue **codex/1553-load-filesystem**, not the historical save-only or bd5cb827

@@ -1,0 +1,132 @@
+{
+  "SchemaVersion": 1,
+  "Issue": "#1553",
+  "Task": "T041-FRAME",
+  "RuntimeSource": "e9f9452deb296988a0ced6feb9b8003b54449a19",
+  "RuntimeTree": "f93412342654f05d7d0eaa07f29a23fb10afd996",
+  "Status": "PASS for bounded pure FRAME component and source-reviewed host wiring. Native integration remains unqualified; final carrier publication/restoration must be verified separately.",
+  "Scope": "Strict bounded UTF-8 frame helper, strict JSON diagnostic redaction and source-reviewed host frame/deadline wiring. No Linux peer adapter or runtime gate relaxation.",
+  "VerificationInputs": {
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs": {
+      "GitBlob": "a7ee5968bc2cbea8aa0bcfd77b14586ca5726cac",
+      "Sha256": "24705d2218409f0fbab95968ea86eec5bd83e5711bee3c306168f0e855552b17"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostFrameChannel.cs": {
+      "GitBlob": "ab8002ba2ce4be75bbe383b72b4dd71a2863ecae",
+      "Sha256": "91527d69d2ec77494aba09fbf06c3c719d156e9b108dd6fb89a16052c6e09d29"
+    },
+    "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs": {
+      "GitBlob": "a3f5f5c20f15a236e18373342cffee125a2c315b",
+      "Sha256": "8a74ca5ced86a963689354f35c6eaa4030c3381dbd4448502cf3a0c87275a296"
+    },
+    "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs": {
+      "GitBlob": "ea0a5380740c358a76587f29e61db13a547b075c",
+      "Sha256": "a27d552c01e4ba8c3bb8ad93ff1847698b7082b02e9831024543dabd3bcd564d"
+    },
+    "BookOfEternityClient.Tests/GmWorkerBridgeDocumentationTests.cs": {
+      "GitBlob": "89e68a88f787f6bc4c2d06b12b1ff194508c1925",
+      "Sha256": "9821f24945300a96cf07a23d2361a7282ca8ae6b20f7218db5d17df27070c3e7"
+    },
+    "OtherGuides/GM_Worker_Bridges.md": {
+      "GitBlob": "c54f2f904332f8ce954bdcc6029e771cd252e807",
+      "Sha256": "79bb6fab19acabe3495bf5c53055c58622af2bd7bdddb76d3e7b9f6452b63f3f"
+    },
+    "specs/1113-gm-worker-bridges/contracts/gm-worker-bridge-contract.md": {
+      "GitBlob": "a9b81476895ac7927878a79883d4088746b1205c",
+      "Sha256": "ce64396ae16c6121ed65d0e012582012be40113992f1cdaeffb5419087c3319c"
+    },
+    "Examples/E_CLI_GM_Worker_Validation_Repair.txt": {
+      "GitBlob": "cbbe171dffe636055fb467127641fe8771ce994c",
+      "Sha256": "5d78f7feb0cab44e6205f1c0dc53df4d10c4a70b34165b4032c41ca311f4c461"
+    },
+    "tests/categories.json": {
+      "GitBlob": "a40607c2d455de91d6ca15544631c25fb888c78b",
+      "Sha256": "fa1aeca2e9e6d878c9bcf6130ca44af2c1b7ae64bcfbd05f643ac0b8506ad896"
+    },
+    "tests/selection.json": {
+      "GitBlob": "993a7200bd209fb8d9b21406c614b971c660638a",
+      "Sha256": "248ddb701d4e47d0070124d1a590b7452030b57a6b0d1f48522ffc800b5f1d87"
+    }
+  },
+  "Verification": {
+    "PureCases": {
+      "Planned": 49,
+      "Executed": 49,
+      "Passed": 49,
+      "Failed": 0,
+      "Skipped": 0,
+      "Seconds": 11.0845118,
+      "Complete": true,
+      "OwnedCleanupComplete": true
+    },
+    "PlanOnly": {
+      "Cases": 49,
+      "Seconds": 176.6256611,
+      "Executed": 0
+    },
+    "Catalog": {
+      "Categories": 237,
+      "Identities": 10623,
+      "Executed": 0,
+      "Seconds": 7.9793775
+    },
+    "GeneratedXmlParsed": 10
+  },
+  "Review": {
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "SourceVerdict": "PASS at exact runtime source after focused correction and artifact/handback review; no remaining actionable finding within the bounded scope.",
+    "ClosedFindings": [
+      "P2: unfinished buffered frame deadline reset; causal two-row RED then 49/49 GREEN, original monotonic arrival retained and no tail read after expiry."
+    ],
+    "FinalEvidenceChecked": true
+  },
+  "EvidenceDirectories": [
+    "worker-ipc-red-plan",
+    "worker-ipc-red-restricted",
+    "worker-frame-red-plan",
+    "worker-frame-red",
+    "worker-frame-initial-green-plan",
+    "worker-frame-initial-green",
+    "worker-frame-buffered-red-plan",
+    "worker-frame-buffered-red",
+    "worker-frame-final-plan",
+    "worker-frame-final-green",
+    "worker-frame-final-audit"
+  ],
+  "NativeLimits": {
+    "InitialRestrictedRun": {
+      "Source": "3fa4f0b62fa24cab57936b161a1b510323699e3f",
+      "Planned": 34,
+      "Executed": 33,
+      "Passed": 21,
+      "CausalRedactionFailures": 3,
+      "SocketPermissionFailures": 9,
+      "UnrunDocumentation": 1,
+      "Exception": "System.Net.Sockets.SocketException: Permission denied",
+      "FailureStage": "Socket constructor, before bind/authentication/host start",
+      "NumericErrno": "not captured",
+      "ActualSocketPath": "not captured",
+      "PolicyCause": "unknown",
+      "Retried": false
+    },
+    "LinuxPeerAuthentication": "Not implemented; original Windows-only guard remains",
+    "NativeWindows": "Not run for this source",
+    "NativeHostFrameIntegration": "Not qualified",
+    "ProcessTreeAndDetachedWorkspace": "Unchanged gates",
+    "MainPersistentGmAndLiveGameplay": "Not qualified; separate Linux PC work remains future and requires prerequisite implementation/qualification"
+  },
+  "Restoration": {
+    "RuntimeSource": "e9f9452deb296988a0ced6feb9b8003b54449a19",
+    "FreshGitHubOnlyClone": true,
+    "TrackedFiles": 5115,
+    "ChangedManifestPathsVerified": 13,
+    "Clean": true,
+    "ConnectivityFsck": "PASS"
+  },
+  "Commands": [
+    "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category worker-host-frame-contract -PlanOnly",
+    "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category worker-host-frame-contract -NoBuild",
+    "pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild"
+  ]
+}

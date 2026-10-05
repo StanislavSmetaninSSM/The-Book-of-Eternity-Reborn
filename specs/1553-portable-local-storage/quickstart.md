@@ -1,5 +1,94 @@
 # Reproduce the cross-platform development environment
 
+## Worker-host FRAME checkpoint and separate Linux-PC handoff
+
+The source-qualified component checkpoint is
+[`e9f9452deb296988a0ced6feb9b8003b54449a19`](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/commit/e9f9452deb296988a0ced6feb9b8003b54449a19),
+tree `f93412342654f05d7d0eaa07f29a23fb10afd996`. Its pure frame/protocol/operational
+source-guard selection passes **49/49**; this is not native IPC or a live GM pass.
+The [qualification record](recovery/worker-frame-qualification.json) and current
+[plan](plan.md) separate source, review, publication and native gates. Later evidence
+carriers do not change this runtime identity unless the record explicitly says so.
+
+### Reproduce the permitted pure checks
+
+Use a new checkout on the intended machine, .NET SDK 10 plus .NET 8 runtime and
+PowerShell 7. Follow the environment and process-local telemetry setup below;
+do not change HOME, credentials, security settings or global environment settings.
+No provider login, game session or external credentials are needed for this owner.
+
+```sh
+git clone --single-branch --branch codex/1553-load-filesystem https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git boe-frame-check
+git -C boe-frame-check checkout --detach e9f9452deb296988a0ced6feb9b8003b54449a19
+git -C boe-frame-check rev-parse HEAD
+git -C boe-frame-check status --porcelain
+cd boe-frame-check
+pwsh -NoProfile -File scripts/test-csharp.ps1 -Category worker-host-frame-contract -PlanOnly
+pwsh -NoProfile -File scripts/test-csharp.ps1 -Category worker-host-frame-contract -NoBuild
+```
+
+The final status command must be empty. `-NoBuild` is valid only immediately after
+the fresh successful selected build. This owner runs only strict JSON/framing,
+controlled in-memory stream and documentation assertions. It creates no native
+pipe or worker command. Retain the exact SHA, OS/architecture/toolchain, plan,
+summary, TRX, counts and cleanup. Use discovery-only `-ValidateCatalog -NoBuild`
+when validating ownership; it does not run the full suite. Never run a blanket
+suite, Fast/PreMerge, all categories or unrelated accepted storage cohorts.
+
+### Native IPC remains a separate prerequisite
+
+At this checkpoint Linux host peer authentication is intentionally **not implemented**:
+the original Windows-only identity guard remains. Linux process-tree admission and
+detached execution-workspace authority also remain closed. Running the native owner
+on another Linux PC now does not turn those gates into supported behavior.
+
+After a separately reviewed Linux peer adapter is implemented at a new exact SHA,
+qualify `worker-host-ipc-admission` on that machine through its own PlanOnly/build
+and bounded execution. Require SO_PEERCRED PID/UID on **both** channels before any
+Launch bytes; preserve Windows GetNamedPipeClientProcessId regression separately.
+Check actual host authenticated Ready followed by owner close **without Release**,
+bounded host exit and zero controlled worker starts. Foreign control, foreign status
+and both foreign peers must receive zero Launch bytes. Verify native framing,
+invalid UTF-8/EOF/nonce/schema, writer backpressure, absolute deadlines and cleanup.
+Report native Windows and Linux independently. Do not use early-return OS passes.
+Do not replace the transport or alter paths/security merely to evade a denial.
+
+The existing cloud refusal occurred in `Socket..ctor` before bind or authentication:
+`System.Net.Sockets.SocketException: Permission denied`. Numeric errno, actual
+socket pathname and policy cause were not captured. Nine affected rows are
+unqualified environmental failures, not behavioral RED and not passed tests.
+No retry or alternative native transport was used in this work.
+
+### Persistent GM and live console checklist, after implementation gates
+
+A separate Linux PC and a working named pipe are not sufficient prerequisites for
+a live GM run. First implement and qualify the planned durable run/generation/epoch
+admission fence, detached-workspace portability, owned Linux supervisor/subreaper/
+PTY and authoritative descendant reaping, plus main bridge/daemon/launcher platform
+adapters. Root PID exit or PTY EOF cannot establish confirmed stop. Unknown ownership
+must retain the workspace and block rollback, cleanup, replacement and unsafe restart.
+The existing Windows-only main bridge and process gates must not simply be removed.
+
+Then qualify persistent input with controlled fixtures: manual draft preservation,
+one atomic paste-observe-submit operation, configurable paste/submit/interrupt/exit,
+fragmented UTF-8, readiness, multiple turns in the same CLI, queue cancellation,
+timeout/ambiguous delivery without automatic replay, owner loss and verified stop.
+Unknown authentication/trust screens pause automation. No one-shot replacement,
+auto-login or automatic trust acceptance is authorized by this checklist.
+
+Only after those gates pass at a separately recorded source may the normal console
+client and integrated daemon be used for a real persistent CLI → accepted turn →
+save → typed Load → full restart scenario. Use the then-current verified launcher
+instructions and an owned disposable session; there is no qualified Linux live-GM
+launch command at the present checkpoint. Historical OpenCode mini/pure evidence
+is a reusable profile, not proof that the current integration works. Preserve
+accepted state/history and prove confirmed stop before rollback or folder reuse.
+Browser qualification remains automated client/backend code testing; no live-browser
+or visual-QA gate is added. Windows equivalent capabilities require their own runs.
+
+The owner's 2026-10-05 decision defers full Linux live testing to another PC.
+This checklist does not waive qualification or authorize access to that machine now.
+
 ## Browser load continuation (T032-B4)
 
 Browser loading uses the typed four-state result on every business HTTP outcome.

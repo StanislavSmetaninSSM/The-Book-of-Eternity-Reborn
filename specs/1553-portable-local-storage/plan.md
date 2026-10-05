@@ -4,6 +4,48 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T041-FRAME verified component — 2026-10-05
+
+Corrected runtime: `e9f9452deb296988a0ced6feb9b8003b54449a19`, tree
+`f93412342654f05d7d0eaa07f29a23fb10afd996`. Fresh GitHub-only restoration verifies
+5,115 tracked files, all 13 changed manifest hashes, clean status and connectivity
+fsck. No local source cache or patch is needed to recover this source.
+
+After a fresh 49-case PlanOnly/build (176.625661 seconds), the pure
+`worker-host-frame-contract` owner passed **49/49** in 11.084512 seconds, with no
+failures/skips/duplicates, both descriptors complete and owned cleanup complete.
+Discovery-only catalog validation passed **237 categories / 10,623 identities** in
+7.979378 seconds and executed zero tests. Ten generated XML files, including copied
+project documentation outputs, parsed successfully. [Exact qualification](recovery/worker-frame-qualification.json),
+[build/plan](recovery/evidence/worker-frame-final-plan/manifest.json),
+[GREEN](recovery/evidence/worker-frame-final-green/manifest.json),
+[audit](recovery/evidence/worker-frame-final-audit/manifest.json).
+
+Independent **gpt-6.1-sol / xhigh** source recheck closes its single P2: partial
+buffered frames retain original monotonic arrival time and reject expired tail
+reads. Already completed buffered frames remain readable. No new material source
+finding. Final independent artifact/handback review is **PASS**: exact source hashes,
+TRX counters, complete selection/cleanup, catalog ownership and native limits are
+verified. Host.cs is unchanged from the initial GREEN source. The final carrier
+still requires remote publication and restoration before delivery is claimed.
+
+Acceptance is deliberately limited to the pure frame/JSON component and reviewed
+host source wiring. **T041-IPC, full T041–043, Linux and Windows native host
+integration, process-tree/workspace/PTY, live GM and whole #1553 remain open.**
+The original Windows-only peer-identity guard is unchanged. The nine recorded native
+socket failures are neither behavioral RED nor a pass, and were not retried.
+See the [separate Linux-PC handoff](quickstart.md#worker-host-frame-checkpoint-and-separate-linux-pc-handoff)
+for the exact source, permitted checks and prerequisites before future live work.
+No gameplay schema or GM-authored capability changes; the three operational
+handshake documents and their exact source guard changed together.
+
+Next independent bounded work: specify and test the durable run-record codec and
+admission decisions from the T040 plan, binding run/generation/epoch and retaining
+Uncertain until verified stop/recovery evidence. Pure and ordinary-file fixtures can
+exercise those decisions without launching a process. Actual canonical mutation,
+held-lease and read-recovery wiring remains a separate connected prerequisite.
+This is a proposed next slice only; no new native/live work starts in this handoff.
+
 ## T040 audit and T041-IPC admission design — 2026-10-05
 
 Source issue: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
@@ -175,8 +217,8 @@ checks the corrected top-level owner before publishing the amended test WIP.
 
 Amended RED source `3fa4f0b62fa24cab57936b161a1b510323699e3f`, tree
 `89fe0b7159e48bcf6006936b72b430b6a54fc6eb`, has verified GitHub readback.
-Fresh PlanOnly built/discovered **34 cases** in191.353239 seconds. Native attempt
-completed **33/34** in10.025860 seconds:21 pass,3 causal diagnostic-redaction
+Fresh PlanOnly built/discovered **34 cases** in 191.353239 seconds. Native attempt
+completed **33/34** in 10.025860 seconds:21 pass,3 causal diagnostic-redaction
 failures (unknown/duplicate property text and peer-supplied Failed error), and9
 socket-construction permission failures. The unit documentation descriptor was
 not run after fail-fast. Both owned-tree/runtime cleanup completed; no duplicate
@@ -211,9 +253,9 @@ if pure tests pass. No task-wide Linux IPC or gameplay acceptance follows.
 
 T041-FRAME causal RED, 2026-10-05: pure baseline published/read back as
 `63792938ab5a7d3f164552fa3e56cf31fbaf8f32`, tree
-`04e87d01d18e12fc7c47e6713bdcd775eee89f6b`. Fresh PlanOnly built/discovered46
-cases in198.561681 seconds; its NoBuild execution completed **46/46**, **28 pass /
-18 expected failures**, in41.127706 seconds, no skip/duplicate, complete cleanup.
+`04e87d01d18e12fc7c47e6713bdcd775eee89f6b`. Fresh PlanOnly built/discovered 46
+cases in 198.561681 seconds; its NoBuild execution completed **46/46**, **28 pass /
+18 expected failures**, in 41.127706 seconds, no skip/duplicate, complete cleanup.
 Fifteen helper failures directly demonstrate missing encoded bounds, CR accounting,
 strict decoding/encoding, delimiter/EOF rejection and absolute slow-read/blocked-write
 deadlines; three protocol failures expose diagnostic text. The positive Unicode,
@@ -237,8 +279,8 @@ audit, then obtain separate Sol6.1/xhigh review of this limited component scope.
 T041-FRAME first GREEN and review, 2026-10-05: published candidate
 `5d56efc43f55034db90d6f8c6948196a5259a8db`, tree
 `188191986e32211bb2cb37b3d83bb454967f3f50`, was restored from GitHub alone into a
-new clean5,095-file checkout; all17 changed hashes and fsck matched. Fresh pure
-PlanOnly discovered46 cases in178.330126 seconds; **46/46 passed** in9.891373
+new clean 5,095-file checkout; all 17 changed hashes and fsck matched. Fresh pure
+PlanOnly discovered 46 cases in 178.330126 seconds; **46/46 passed** in 9.891373
 seconds, no failures/skips/duplicates, both descriptors and cleanup complete.
 [Build/plan](recovery/evidence/worker-frame-initial-green-plan/manifest.json),
 [run](recovery/evidence/worker-frame-initial-green/manifest.json).
@@ -260,8 +302,8 @@ this is not a qualification waiver or permission to operate another computer now
 Buffered-frame review correction RED: test source
 `f21652674773b810152452eeb7c0735c75b8a166`, tree
 `8a59d3207315ea036c4c2ade4e7442409b35a535`, is remotely verified and read back.
-Fresh PlanOnly discovered49 rows in194.204296 seconds; actual **49/49** completed
-in10.648314 seconds: **47 pass / exactly2 expected failures**, no skips or
+Fresh PlanOnly discovered 49 rows in 194.204296 seconds; actual **49/49** completed
+in 10.648314 seconds: **47 pass / exactly 2 expected failures**, no skips or
 duplicates and complete cleanup. Both ordinary and idle-first partial buffered
 frames incorrectly complete after their deadline; complete queued frames still
 pass. [Plan](recovery/evidence/worker-frame-buffered-red-plan/manifest.json),
