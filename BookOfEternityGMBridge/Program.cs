@@ -293,6 +293,7 @@ internal sealed class BridgeHost : IDisposable
                 return BridgeResponse.Success(SnapshotStatus());
 
             case "dispatchprompt":
+            {
                 EnsureShellAlive();
                 var dispatchInput = CaptureInputLifetime();
                 using var dispatchCancellation = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, dispatchInput.Token);
@@ -378,6 +379,7 @@ internal sealed class BridgeHost : IDisposable
 
                 return BridgeResponse.Success(SnapshotStatus());
 
+            }
             case "restartshell":
             case "restartcli":
                 await StartShellAsync();
