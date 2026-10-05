@@ -257,6 +257,13 @@ failures0/emergencySignals0/deadlinefalse/driverExit0. [Exact RED evidence](reco
 Next: test-first typed authority and connected common-owner integration; no synthetic
 native admission until cleanup/result gates are connected atomically. B remains WIP.
 
+B2 typed evidence regression cases are now written against an unconnected scaffold
+that interprets only the old completed-stop shape, omitting scope/run and sticky
+uncertainty. Expected causal RED: matching positive control passes; malformed or
+mismatched records and revival after uncertainty fail the new requirements. No pool
+admission changed. Next fresh build/discovery and only worker-execution-scoped-evidence;
+do not repeat the unchanged actual-pool RED.
+
 ## HOST implementation authorized — 2026-10-05
 
 Parent authorized only T041-FALLBACK-HOST from exact

@@ -2,6 +2,29 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "worker-execution-scoped-evidence",
+      "responsibility": "#1553 POOL B stop evidence must match the original execution run/backend/scope and permanently retain explicit uncertainty, malformed observations and output settlement failure.",
+      "excludes": "Pure authority interpretation only; no native process cleanup qualification, proposal publication, restart or Windows runtime claim.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionAuthority.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "worker-native-pool-happy",
       "responsibility": "#1553 POOL B actual production RunTaskAsync synthetic proposal publication after original native scoped stop and output settlement.",
       "excludes": "No public Linux admission, durable restart, live GM/main PTY, real saves or Windows runtime qualification. Independently guarded private state per case.",

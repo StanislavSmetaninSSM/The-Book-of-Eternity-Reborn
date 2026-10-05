@@ -8,6 +8,13 @@
         "#1553 T041-FALLBACK-POOL",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-execution-scoped-evidence",
+      "reason": "Pure typed authority causal RED/GREEN before connecting native admission; wrong run/scope and late certainty must never reuse cleanup evidence.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL"
+      ]
     }
   ]
 }
