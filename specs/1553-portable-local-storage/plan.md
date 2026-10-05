@@ -247,6 +247,16 @@ discovery and expected causal RED are next; zero B executions claimed. Guardian3
 budget contains future5s stop/output observation phases; actual independent reap to
 ECHILD remains mandatory. Only new category worker-native-pool-happy is selected.
 
+B2 actual-pool baseline `7edc9681d38caa2cdbbcd88301a21333ad836992`: fresh
+selected PlanOnly/build1planned/0executed,88.3757251s,0errors (existing warnings
+retained in log); selected NoBuild1executed, **0PASS/1causalFAIL**,9.5410244s,
+no skips/duplicates/timeouts, complete runner cleanup. Failure is the deliberately
+closed Linux Release admission, not preparation. Actual fixture reports Release0,
+workerStarts0, publication0, quarantine entries/capacity0; guardian ECHILD,
+failures0/emergencySignals0/deadlinefalse/driverExit0. [Exact RED evidence](recovery/evidence/worker-pool-happy-red/manifest.json).
+Next: test-first typed authority and connected common-owner integration; no synthetic
+native admission until cleanup/result gates are connected atomically. B remains WIP.
+
 ## HOST implementation authorized — 2026-10-05
 
 Parent authorized only T041-FALLBACK-HOST from exact
