@@ -1,0 +1,95 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "63792938ab5a7d3f164552fa3e56cf31fbaf8f32",
+  "SourceResultDirectory": "20261005-033512-406-6-2711331768e249b78405e45f2358a6c4-categories",
+  "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Runtime": "native Linux x64",
+  "Toolchain": {
+    "PowerShell": "7.6.6",
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31"
+  },
+  "TelemetryOptOuts": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1"
+  },
+  "DOTNET_PROCESSOR_COUNT": "1",
+  "PathSanitization": "Absolute checkout/run-root/toolchain paths replaced; raw and stored hashes retained",
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 2966021,
+      "OriginalSha256": "c9959c13bf73c083af3c7d445f83b2caf0cd5218050eb0927d59fb8a0e86cf0b",
+      "Embedded": false,
+      "Reason": "Oversized generated runner log; causal TRX and structured/build reports are embedded"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 10874,
+      "OriginalSha256": "6959847240c8cc1f2add878c624df2f9a6806b782238d5f1898275b2e9848cc1",
+      "Embedded": true,
+      "StoredPath": "plan.json",
+      "StoredBytes": 10874,
+      "StoredSha256": "6959847240c8cc1f2add878c624df2f9a6806b782238d5f1898275b2e9848cc1"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1368,
+      "OriginalSha256": "d970604978718bf2d2a8d95de842f095ac9f6caaabbc3167b231dcb510654b57",
+      "Embedded": true,
+      "StoredPath": "summary.json",
+      "StoredBytes": 1368,
+      "StoredSha256": "d970604978718bf2d2a8d95de842f095ac9f6caaabbc3167b231dcb510654b57"
+    },
+    {
+      "Path": "worker-host-frame-contract-integration-001.trx",
+      "OriginalBytes": 95882,
+      "OriginalSha256": "d7207e79cd45358ed0bb6b7240a6aee45ecc8d0b02309256a47071b023182b4b",
+      "Embedded": true,
+      "StoredPath": "worker-host-frame-contract-integration-001.trx",
+      "StoredBytes": 91344,
+      "StoredSha256": "8582db96221af64d14a905d9c009f21cd262e291b5a4ce0a06bff826540b796c"
+    },
+    {
+      "Path": "worker-host-frame-contract-unit-002.trx",
+      "OriginalBytes": 3075,
+      "OriginalSha256": "c8ef46d0b0c0c91f1822937e22acfbd684ada5a186f52fe2018401fcd7d78127",
+      "Embedded": true,
+      "StoredPath": "worker-host-frame-contract-unit-002.trx",
+      "StoredBytes": 3001,
+      "StoredSha256": "f29a1a805b800b7e2c27cfb057baa2632c38b19be73a43ce7a687d6bb8ce9f31"
+    }
+  ],
+  "MeasuredChildren": 0,
+  "SourceQualification": {
+    "TestedCommit": "63792938ab5a7d3f164552fa3e56cf31fbaf8f32",
+    "WorkingTreeCleanDuringExecution": true,
+    "VerificationInputs": {
+      "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs": {
+        "GitBlob": "b848eaba40a0d2f03566a116f65263e427b416b8",
+        "Sha256": "cc2e19695ed82be01b2f2b0d8130b6821630a49015bf42c91afcbca25555474c"
+      },
+      "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostFrameChannel.cs": {
+        "GitBlob": "4dedf15172755c73b308c6a33cfc276eb41947fd",
+        "Sha256": "80ec7e39b12166c7a132d27ab46f2f3d63018bf65e1d3f0f041439ac200c4063"
+      },
+      "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs": {
+        "GitBlob": "a3f5f5c20f15a236e18373342cffee125a2c315b",
+        "Sha256": "8a74ca5ced86a963689354f35c6eaa4030c3381dbd4448502cf3a0c87275a296"
+      },
+      "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs": {
+        "GitBlob": "eae79af2e2261e099a552b5402597def2e9b11bb",
+        "Sha256": "90104c8efc414d3cbfa5fcad3dea1d10dbfdfad419adacade27e4c22e0d1a8c1"
+      },
+      "tests/categories.json": {
+        "GitBlob": "a40607c2d455de91d6ca15544631c25fb888c78b",
+        "Sha256": "fa1aeca2e9e6d878c9bcf6130ca44af2c1b7ae64bcfbd05f643ac0b8506ad896"
+      },
+      "tests/selection.json": {
+        "GitBlob": "993a7200bd209fb8d9b21406c614b971c660638a",
+        "Sha256": "248ddb701d4e47d0070124d1a590b7452030b57a6b0d1f48522ffc800b5f1d87"
+      }
+    }
+  }
+}

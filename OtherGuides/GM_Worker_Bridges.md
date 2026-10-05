@@ -177,6 +177,18 @@ frame containing the executable, arguments, working directory, and environment.
 The hidden host retains both channels; the configured worker receives neither
 channel nor any pipe handle.
 
+Host framing uses strict UTF-8 and LF delimiters. Launch is limited to 1 MiB;
+status and Release are limited to 64 KiB of encoded bytes, excluding LF (an
+optional preceding CR counts toward the limit). Invalid UTF-8, oversized frames
+and unterminated EOF are rejected without truncation. One absolute 15-second
+readiness deadline covers connection, authentication, Launch write and Ready read;
+Release retains its 60-second ownership deadline. Slow bytes do not renew a frame
+deadline. Completion/output-drain may wait under the owner's lifetime token, but
+once a frame starts it must finish within 15 seconds. Underlying I/O cancellation
+is awaited. Diagnostics never include payload, environment or parser excerpts.
+This framing contract does not enable Linux peer authentication or worker execution;
+the existing Windows identity, process-tree and detached-workspace gates remain.
+
 Unknown, duplicate, or missing frame fields are rejected. The hidden host
 returns typed `Ready` after accepting the launch payload while the configured
 worker is still stopped. The parent then sends typed `Release`, and only then

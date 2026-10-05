@@ -98,7 +98,7 @@ internal static class GmWorkerProcessHostProtocol
         ValidateStatusPayload(frame);
         if (frame.Kind == GmWorkerProcessHostStatusKind.Failed)
         {
-            throw new InvalidOperationException($"Worker process host failed: {frame.Error}");
+            throw new InvalidOperationException("Worker process host reported failure.");
         }
         if (frame.Kind != expectedKind)
         {
@@ -128,11 +128,10 @@ internal static class GmWorkerProcessHostProtocol
             return document.RootElement.Deserialize<T>(JsonOptions) ??
                    throw new InvalidDataException($"Worker process host {frameName} frame is empty.");
         }
-        catch (JsonException ex)
+        catch (JsonException)
         {
-            throw new InvalidDataException(
-                $"Worker process host {frameName} frame is malformed: {ex.Message}",
-                ex);
+            // JsonException messages and paths can contain environment keys or payload excerpts.
+            throw new InvalidDataException($"Worker process host {frameName} frame is malformed.");
         }
     }
 
@@ -146,7 +145,7 @@ internal static class GmWorkerProcessHostProtocol
                 if (!names.Add(property.Name))
                 {
                     throw new InvalidDataException(
-                        $"Worker process host {frameName} frame contains duplicate property '{property.Name}'.");
+                        $"Worker process host {frameName} frame contains a duplicate property.");
                 }
 
                 ValidateNoDuplicateProperties(property.Value, frameName);
@@ -250,10 +249,11 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
 {
     private const string ModeSwitch = "--gm-worker-process-host";
     private static readonly TimeSpan HostReadyTimeout = TimeSpan.FromSeconds(15);
+    private static readonly TimeSpan OwnershipReleaseTimeout = TimeSpan.FromSeconds(60);
     private readonly NamedPipeServerStream _controlPipe;
     private readonly NamedPipeServerStream _statusPipe;
-    private StreamWriter? _controlWriter;
-    private StreamReader? _statusReader;
+    private GmWorkerProcessHostFrameChannel? _controlChannel;
+    private GmWorkerProcessHostFrameChannel? _statusChannel;
     private readonly SemaphoreSlim _connectionGate = new(1, 1);
     private readonly SemaphoreSlim _controlGate = new(1, 1);
     private readonly SemaphoreSlim _statusGate = new(1, 1);
@@ -362,14 +362,24 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
         Process hostProcess,
         CancellationToken cancellationToken)
     {
-        await ConnectAndAuthenticateAsync(hostProcess, cancellationToken);
-        await SendLaunchAsync(cancellationToken);
-        var frame = await ReadStatusAsync(
-            hostProcess,
-            GmWorkerProcessHostStatusKind.Ready,
-            cancellationToken,
-            HostReadyTimeout);
-        _ = frame;
+        using var readiness = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        readiness.CancelAfter(HostReadyTimeout);
+        try
+        {
+            await ConnectAndAuthenticateAsync(hostProcess, readiness.Token);
+            await SendLaunchAsync(readiness.Token);
+            _ = await ReadStatusAsync(hostProcess, GmWorkerProcessHostStatusKind.Ready, readiness.Token);
+        }
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested && readiness.IsCancellationRequested)
+        {
+            CloseChannels();
+            throw new TimeoutException("Worker process host did not become ready before the ownership deadline.");
+        }
+        catch
+        {
+            CloseChannels();
+            throw;
+        }
     }
 
     private async Task SendLaunchAsync(CancellationToken cancellationToken)
@@ -384,12 +394,13 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
                 _launchNonce,
                 GmWorkerProcessHostControlKind.Launch,
                 _payload);
-            var controlWriter = _controlWriter ??
+            var controlChannel = _controlChannel ??
                                 throw new InvalidOperationException(
                                     "Worker process host control channel is not connected.");
-            await controlWriter.WriteLineAsync(
-                GmWorkerProcessHostProtocol.SerializeControl(frame).AsMemory(),
-                cancellationToken);
+            await controlChannel.WriteAsync(
+                GmWorkerProcessHostProtocol.SerializeControl(frame),
+                GmWorkerProcessHostFrameChannel.LaunchMaximumBytes,
+                HostReadyTimeout, cancellationToken);
             Interlocked.Exchange(ref _launchSent, 1);
         }
         finally
@@ -400,26 +411,35 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
 
     internal async Task ReleaseAsync(CancellationToken cancellationToken)
     {
-        await _controlGate.WaitAsync(cancellationToken);
+        using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        deadline.CancelAfter(OwnershipReleaseTimeout);
+        var entered = false;
         try
         {
-            if (Volatile.Read(ref _released) != 0)
-                return;
+            await _controlGate.WaitAsync(deadline.Token);
+            entered = true;
+            if (Volatile.Read(ref _released) != 0) return;
             var frame = new GmWorkerProcessHostControlFrame(
-                GmWorkerProcessHostProtocol.SchemaVersion,
-                _launchNonce,
-                GmWorkerProcessHostControlKind.Release);
-            var controlWriter = _controlWriter ??
-                                throw new InvalidOperationException(
-                                    "Worker process host control channel is not connected.");
-            await controlWriter.WriteLineAsync(
-                GmWorkerProcessHostProtocol.SerializeControl(frame).AsMemory(),
-                cancellationToken);
+                GmWorkerProcessHostProtocol.SchemaVersion, _launchNonce, GmWorkerProcessHostControlKind.Release);
+            var controlChannel = _controlChannel ?? throw new InvalidOperationException(
+                "Worker process host control channel is not connected.");
+            await controlChannel.WriteAsync(GmWorkerProcessHostProtocol.SerializeControl(frame),
+                GmWorkerProcessHostFrameChannel.SmallMaximumBytes, OwnershipReleaseTimeout, deadline.Token);
             Interlocked.Exchange(ref _released, 1);
+        }
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested && deadline.IsCancellationRequested)
+        {
+            CloseChannels();
+            throw new TimeoutException("Worker process host release did not finish before its deadline.");
+        }
+        catch
+        {
+            CloseChannels();
+            throw;
         }
         finally
         {
-            _controlGate.Release();
+            if (entered) _controlGate.Release();
         }
     }
 
@@ -430,8 +450,7 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
         var frame = await ReadStatusAsync(
             hostProcess,
             GmWorkerProcessHostStatusKind.Completed,
-            cancellationToken,
-            timeout: null);
+            cancellationToken);
         return frame.ExitCode!.Value;
     }
 
@@ -442,8 +461,7 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
         _ = await ReadStatusAsync(
             hostProcess,
             GmWorkerProcessHostStatusKind.OutputDrained,
-            cancellationToken,
-            timeout: null);
+            cancellationToken);
     }
 
     public ValueTask DisposeAsync()
@@ -451,10 +469,7 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
         if (Interlocked.Exchange(ref _disposed, 1) != 0)
             return ValueTask.CompletedTask;
 
-        TryDispose(_controlWriter);
-        TryDispose(_statusReader);
-        TryDispose(_controlPipe);
-        TryDispose(_statusPipe);
+        CloseChannels();
         _connectionGate.Dispose();
         _controlGate.Dispose();
         _statusGate.Dispose();
@@ -464,32 +479,16 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
     private async Task<GmWorkerProcessHostStatusFrame> ReadStatusAsync(
         Process hostProcess,
         GmWorkerProcessHostStatusKind expectedKind,
-        CancellationToken cancellationToken,
-        TimeSpan? timeout)
+        CancellationToken cancellationToken)
     {
         await _statusGate.WaitAsync(cancellationToken);
         try
         {
-            using var readCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-            if (timeout.HasValue)
-                readCancellation.CancelAfter(timeout.Value);
-
-            string? line;
-            try
-            {
-                var statusReader = _statusReader ??
-                                   throw new InvalidOperationException(
-                                       "Worker process host status channel is not connected.");
-                line = await statusReader.ReadLineAsync(readCancellation.Token);
-            }
-            catch (OperationCanceledException) when (
-                timeout.HasValue &&
-                !cancellationToken.IsCancellationRequested &&
-                readCancellation.IsCancellationRequested)
-            {
-                throw new TimeoutException(
-                    "Worker process host did not become ready for ownership handshake.");
-            }
+            var channel = _statusChannel ?? throw new InvalidOperationException(
+                "Worker process host status channel is not connected.");
+            var line = await channel.ReadAsync(GmWorkerProcessHostFrameChannel.SmallMaximumBytes,
+                GmWorkerProcessHostFrameChannel.FrameTimeout, cancellationToken,
+                waitForFirstByte: expectedKind != GmWorkerProcessHostStatusKind.Ready);
 
             if (line == null)
             {
@@ -501,6 +500,11 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
             }
 
             return GmWorkerProcessHostProtocol.ParseStatus(line, _launchNonce, expectedKind);
+        }
+        catch
+        {
+            CloseChannels();
+            throw;
         }
         finally
         {
@@ -518,38 +522,14 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
             if (Volatile.Read(ref _connected) != 0)
                 return;
 
-            using var connectionCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-            connectionCancellation.CancelAfter(HostReadyTimeout);
-            try
-            {
-                await Task.WhenAll(
-                    _controlPipe.WaitForConnectionAsync(connectionCancellation.Token),
-                    _statusPipe.WaitForConnectionAsync(connectionCancellation.Token));
-            }
-            catch (OperationCanceledException) when (
-                !cancellationToken.IsCancellationRequested &&
-                connectionCancellation.IsCancellationRequested)
-            {
-                throw new TimeoutException(
-                    "Worker process host did not connect its private channels before the ownership deadline.");
-            }
+            await Task.WhenAll(
+                _controlPipe.WaitForConnectionAsync(cancellationToken),
+                _statusPipe.WaitForConnectionAsync(cancellationToken));
 
             ValidateConnectedHost(_controlPipe, hostProcess.Id, "control");
             ValidateConnectedHost(_statusPipe, hostProcess.Id, "status");
-            _controlWriter = new StreamWriter(
-                _controlPipe,
-                new UTF8Encoding(encoderShouldEmitUTF8Identifier: false),
-                bufferSize: 1024,
-                leaveOpen: true)
-            {
-                AutoFlush = true
-            };
-            _statusReader = new StreamReader(
-                _statusPipe,
-                Encoding.UTF8,
-                detectEncodingFromByteOrderMarks: false,
-                bufferSize: 1024,
-                leaveOpen: true);
+            _controlChannel = new GmWorkerProcessHostFrameChannel(_controlPipe);
+            _statusChannel = new GmWorkerProcessHostFrameChannel(_statusPipe);
             Volatile.Write(ref _connected, 1);
         }
         finally
@@ -575,6 +555,12 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
             throw new InvalidDataException(
                 $"Worker process host {channelName} channel was connected by an unexpected process.");
         }
+    }
+
+    private void CloseChannels()
+    {
+        TryDispose(_controlPipe);
+        TryDispose(_statusPipe);
     }
 
     private static void TryDispose(IDisposable? disposable)
@@ -619,49 +605,36 @@ internal static class GmWorkerProcessHost
         if (args.Count == 0 || !GmWorkerProcessHostLaunch.IsModeSwitch(args[0]))
             return null;
 
-        StreamWriter? statusWriter = null;
+        NamedPipeClientStream? controlPipe = null;
+        NamedPipeClientStream? statusPipe = null;
+        GmWorkerProcessHostFrameChannel? statusChannel = null;
         string? launchNonce = args.Count == 4 ? args[3] : null;
         try
         {
             if (args.Count != 4)
                 throw new ArgumentException("Worker process host invocation is incomplete.");
             GmWorkerProcessHostProtocol.ValidateLaunchNonce(launchNonce);
-            using var controlPipe = new NamedPipeClientStream(
+            controlPipe = new NamedPipeClientStream(
                 ".",
                 args[1],
                 PipeDirection.In,
                 PipeOptions.Asynchronous,
                 TokenImpersonationLevel.Identification,
                 HandleInheritability.None);
-            using var statusPipe = new NamedPipeClientStream(
+            statusPipe = new NamedPipeClientStream(
                 ".",
                 args[2],
                 PipeDirection.Out,
                 PipeOptions.Asynchronous,
                 TokenImpersonationLevel.Identification,
                 HandleInheritability.None);
-            await Task.WhenAll(
-                controlPipe.ConnectAsync((int)OwnershipReleaseTimeout.TotalMilliseconds),
-                statusPipe.ConnectAsync((int)OwnershipReleaseTimeout.TotalMilliseconds));
-            using var controlReader = new StreamReader(
-                controlPipe,
-                Encoding.UTF8,
-                detectEncodingFromByteOrderMarks: false,
-                bufferSize: 1024,
-                leaveOpen: true);
-            statusWriter = new StreamWriter(
-                statusPipe,
-                new UTF8Encoding(encoderShouldEmitUTF8Identifier: false),
-                bufferSize: 1024,
-                leaveOpen: true)
-            {
-                AutoFlush = true
-            };
-
-            var launchJson = await controlReader.ReadLineAsync()
-                                 .WaitAsync(OwnershipReleaseTimeout) ??
-                             throw new InvalidDataException(
-                                 "Worker process host control channel closed before launch payload.");
+            using var startup = new CancellationTokenSource(GmWorkerProcessHostFrameChannel.FrameTimeout);
+            await Task.WhenAll(controlPipe.ConnectAsync(startup.Token), statusPipe.ConnectAsync(startup.Token));
+            var controlChannel = new GmWorkerProcessHostFrameChannel(controlPipe);
+            statusChannel = new GmWorkerProcessHostFrameChannel(statusPipe);
+            var launchJson = await controlChannel.ReadAsync(GmWorkerProcessHostFrameChannel.LaunchMaximumBytes,
+                GmWorkerProcessHostFrameChannel.FrameTimeout, startup.Token) ??
+                throw new InvalidDataException("Worker process host control channel closed before launch payload.");
             var launchFrame = GmWorkerProcessHostProtocol.ParseControl(
                 launchJson,
                 launchNonce!,
@@ -671,58 +644,58 @@ internal static class GmWorkerProcessHost
                               "Worker process host launch payload is empty.");
 
             await WriteStatusAsync(
-                statusWriter,
+                statusChannel,
                 new GmWorkerProcessHostStatusFrame(
                     GmWorkerProcessHostProtocol.SchemaVersion,
                     launchNonce!,
                     GmWorkerProcessHostStatusKind.Ready,
                     ExitCode: null,
-                    Error: null));
-            var controlJson = await controlReader.ReadLineAsync()
-                                  .WaitAsync(OwnershipReleaseTimeout) ??
-                              throw new InvalidDataException(
-                                  "Worker process host control channel closed before release.");
+                    Error: null), startup.Token);
+            var controlJson = await controlChannel.ReadAsync(GmWorkerProcessHostFrameChannel.SmallMaximumBytes,
+                OwnershipReleaseTimeout, CancellationToken.None) ??
+                throw new InvalidDataException("Worker process host control channel closed before release.");
             GmWorkerProcessHostProtocol.ParseControl(
                 controlJson,
                 launchNonce!,
                 GmWorkerProcessHostControlKind.Release);
-            await RunWorkerAsync(payload, statusWriter, launchNonce!);
+            await RunWorkerAsync(payload, statusChannel, launchNonce!);
             throw new InvalidOperationException("Worker process host lifecycle ended unexpectedly.");
         }
         catch (Exception ex)
         {
-            if (statusWriter != null && launchNonce != null)
+            if (statusChannel != null && launchNonce != null)
             {
                 try
                 {
                     await WriteStatusAsync(
-                        statusWriter,
+                        statusChannel,
                         new GmWorkerProcessHostStatusFrame(
                             GmWorkerProcessHostProtocol.SchemaVersion,
                             launchNonce,
                             GmWorkerProcessHostStatusKind.Failed,
                             ExitCode: null,
-                            Error: ex.Message));
+                            Error: SafeFailureReason(ex)));
                 }
                 catch (Exception statusException) when (
-                    statusException is IOException or ObjectDisposedException)
+                    statusException is IOException or ObjectDisposedException or TimeoutException or OperationCanceledException)
                 {
                     // The owner may already have closed its private status channel.
                 }
             }
 
-            await Console.Error.WriteLineAsync($"worker-process-host failed: {ex.Message}");
+            await Console.Error.WriteLineAsync($"worker-process-host failed: {SafeFailureReason(ex)}");
             return HostFailureExitCode;
         }
         finally
         {
-            statusWriter?.Dispose();
+            controlPipe?.Dispose();
+            statusPipe?.Dispose();
         }
     }
 
     private static async Task RunWorkerAsync(
         GmWorkerProcessHostPayload payload,
-        StreamWriter statusWriter,
+        GmWorkerProcessHostFrameChannel statusChannel,
         string launchNonce)
     {
         if (string.IsNullOrWhiteSpace(payload.FileName))
@@ -757,7 +730,7 @@ internal static class GmWorkerProcessHost
         await process.WaitForExitAsync(CancellationToken.None);
         var exitCode = process.ExitCode;
         await WriteStatusAsync(
-            statusWriter,
+            statusChannel,
             new GmWorkerProcessHostStatusFrame(
                 GmWorkerProcessHostProtocol.SchemaVersion,
                 launchNonce,
@@ -776,7 +749,7 @@ internal static class GmWorkerProcessHost
             // Output capture is diagnostic and cannot revoke the authoritative worker exit code.
         }
         await WriteStatusAsync(
-            statusWriter,
+            statusChannel,
             new GmWorkerProcessHostStatusFrame(
                 GmWorkerProcessHostProtocol.SchemaVersion,
                 launchNonce,
@@ -786,12 +759,19 @@ internal static class GmWorkerProcessHost
         await Task.Delay(Timeout.InfiniteTimeSpan, CancellationToken.None);
     }
 
-    private static async Task WriteStatusAsync(
-        StreamWriter writer,
-        GmWorkerProcessHostStatusFrame frame)
-    {
-        await writer.WriteLineAsync(GmWorkerProcessHostProtocol.SerializeStatus(frame));
-        await writer.FlushAsync();
-    }
+    private static Task WriteStatusAsync(
+        GmWorkerProcessHostFrameChannel channel,
+        GmWorkerProcessHostStatusFrame frame,
+        CancellationToken cancellationToken = default) =>
+        channel.WriteAsync(GmWorkerProcessHostProtocol.SerializeStatus(frame),
+            GmWorkerProcessHostFrameChannel.SmallMaximumBytes,
+            GmWorkerProcessHostFrameChannel.FrameTimeout, cancellationToken);
 
+    private static string SafeFailureReason(Exception exception) => exception switch
+    {
+        InvalidDataException => "invalid protocol data",
+        OperationCanceledException or TimeoutException => "protocol deadline or cancellation",
+        IOException => "channel I/O failure",
+        _ => "host operation failed"
+    };
 }

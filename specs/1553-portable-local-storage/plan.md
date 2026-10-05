@@ -209,6 +209,31 @@ awaited underlying cancellation, split Unicode, EOF, exact limit/+1 and zero byt
 written on invalid/oversize input. Runtime native integration remains unrun even
 if pure tests pass. No task-wide Linux IPC or gameplay acceptance follows.
 
+T041-FRAME causal RED, 2026-10-05: pure baseline published/read back as
+`63792938ab5a7d3f164552fa3e56cf31fbaf8f32`, tree
+`04e87d01d18e12fc7c47e6713bdcd775eee89f6b`. Fresh PlanOnly built/discovered46
+cases in198.561681 seconds; its NoBuild execution completed **46/46**, **28 pass /
+18 expected failures**, in41.127706 seconds, no skip/duplicate, complete cleanup.
+Fifteen helper failures directly demonstrate missing encoded bounds, CR accounting,
+strict decoding/encoding, delimiter/EOF rejection and absolute slow-read/blocked-write
+deadlines; three protocol failures expose diagnostic text. The positive Unicode,
+buffering, exact-byte boundary and caller-cancellation controls pass. Native pipe
+cases were excluded and no IPC denial was retried. [RED build/plan](recovery/evidence/worker-frame-red-plan/manifest.json),
+[RED run](recovery/evidence/worker-frame-red/manifest.json).
+
+The candidate now enforces the strict byte/frame limits and directly awaits
+cancellable underlying operations with absolute timeout tokens. The owner's total
+Ready deadline spans its connection/gates/write/read; completion/drain can remain
+idle until their first byte under the caller lifetime. The host reads Launch and
+Release through the same helper, writes bounded statuses and reports only fixed
+failure reasons. Both existing Windows peer checks still precede Launch. Failed
+owner I/O closes both channels; no unsupported Linux adapter or process/workspace
+gate relaxation is included. Operational guide/contract/example and their exact
+source guard document bounds, deadlines and remaining Linux gates together.
+This candidate is **not yet freshly built or GREEN**; native host wiring remains
+unqualified. Next publish candidate/evidence, run pure owner and discovery-only
+audit, then obtain separate Sol6.1/xhigh review of this limited component scope.
+
 ## Accepted T032-A4-NATIVE-NAMES — bounded Linux, 2026-10-05
 
 Current bounded code/verification verdict: **separate gpt-6.1-sol / xhigh PASS**
