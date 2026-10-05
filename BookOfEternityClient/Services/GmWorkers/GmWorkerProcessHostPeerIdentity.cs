@@ -20,7 +20,7 @@ internal static class GmWorkerProcessHostPeerIdentity
         throw new PlatformNotSupportedException("Worker process host peer authentication is unsupported on this platform.");
     }
 
-    internal static void Validate(SafePipeHandle pipe, int expectedProcessId, uint expectedUserId, string channelName)
+    internal static void Validate(SafeHandle pipe, int expectedProcessId, uint expectedUserId, string channelName)
     {
         if (OperatingSystem.IsWindows())
         {
@@ -75,11 +75,11 @@ internal static class GmWorkerProcessHostPeerIdentity
         internal static extern uint GetEffectiveUserId();
 
         [DllImport("libc", EntryPoint = "getsockopt", SetLastError = true)]
-        internal static extern int GetSocketOption(SafePipeHandle pipe, int level, int option,
+        internal static extern int GetSocketOption(SafeHandle pipe, int level, int option,
             out LinuxCredentials credentials, ref uint length);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool GetNamedPipeClientProcessId(SafePipeHandle pipe, out uint clientProcessId);
+        internal static extern bool GetNamedPipeClientProcessId(SafeHandle pipe, out uint clientProcessId);
     }
 }

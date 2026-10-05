@@ -271,6 +271,7 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
     private int _launchSent;
     private int _released;
     private int _disposed;
+    private GmWorkerRequiredCapability _capability = GmWorkerRequiredCapability.WorkerRelease;
 
     private GmWorkerProcessHostLaunch(
         ProcessStartInfo startInfo,
@@ -293,6 +294,7 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
     {
         var selection = GmWorkerBackendSelector.Select(request, capability, OperatingSystem.IsWindows(), OperatingSystem.IsLinux());
         if (!selection.CanStart) throw new PlatformNotSupportedException(selection.Reason);
+        _capability = capability;
         var owner = await launcher.StartAsync(this, selection, cancellationToken);
         try
         {
@@ -342,7 +344,7 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
                 (OperatingSystem.IsWindows() ? ".exe" : ""));
             var hostStartInfo = new ProcessStartInfo
             {
-                FileName = File.Exists(appHostPath) ? appHostPath : "dotnet",
+                FileName = File.Exists(appHostPath) ? appHostPath : ResolveDotnetExecutable(),
                 WorkingDirectory = workerStartInfo.WorkingDirectory,
                 UseShellExecute = false,
                 CreateNoWindow = true,
@@ -376,8 +378,27 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
         }
     }
 
+    private static string ResolveDotnetExecutable()
+    {
+        if (!OperatingSystem.IsLinux()) return "dotnet";
+        var current = Environment.ProcessPath;
+        if (current != null && Path.GetFileName(current) == "dotnet" && Path.IsPathFullyQualified(current)) return current;
+        var root = Environment.GetEnvironmentVariable("DOTNET_ROOT");
+        if (root != null && Path.IsPathFullyQualified(root) && File.Exists(Path.Combine(root, "dotnet"))) return Path.Combine(root, "dotnet");
+        foreach (var directory in (Environment.GetEnvironmentVariable("PATH") ?? "").Split(Path.PathSeparator))
+        {
+            if (!Path.IsPathFullyQualified(directory)) continue;
+            var candidate = Path.Combine(directory, "dotnet");
+            if (File.Exists(candidate)) return candidate;
+        }
+        throw new FileNotFoundException("An absolute managed host executable could not be resolved.");
+    }
+
+    internal Task WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken) =>
+        WaitUntilReadyAsync(GmWorkerHostIdentity.FromOwnedProcess(hostProcess), cancellationToken);
+
     internal async Task WaitUntilReadyAsync(
-        Process hostProcess,
+        GmWorkerHostIdentity hostProcess,
         CancellationToken cancellationToken)
     {
         using var readiness = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -400,7 +421,7 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
         }
     }
 
-    private async Task SendLaunchAsync(Process hostProcess, CancellationToken cancellationToken)
+    private async Task SendLaunchAsync(GmWorkerHostIdentity hostProcess, CancellationToken cancellationToken)
     {
         await _controlGate.WaitAsync(cancellationToken);
         try
@@ -431,6 +452,8 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
 
     internal async Task ReleaseAsync(CancellationToken cancellationToken)
     {
+        if (_capability != GmWorkerRequiredCapability.WorkerRelease)
+            throw new InvalidOperationException("This owned host was admitted for NeutralHost only.");
         using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         deadline.CancelAfter(OwnershipReleaseTimeout);
         var entered = false;
@@ -468,7 +491,7 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
         CancellationToken cancellationToken)
     {
         var frame = await ReadStatusAsync(
-            hostProcess,
+            GmWorkerHostIdentity.FromOwnedProcess(hostProcess),
             GmWorkerProcessHostStatusKind.Completed,
             cancellationToken);
         return frame.ExitCode!.Value;
@@ -479,7 +502,7 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
         CancellationToken cancellationToken)
     {
         _ = await ReadStatusAsync(
-            hostProcess,
+            GmWorkerHostIdentity.FromOwnedProcess(hostProcess),
             GmWorkerProcessHostStatusKind.OutputDrained,
             cancellationToken);
     }
@@ -497,7 +520,7 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
     }
 
     private async Task<GmWorkerProcessHostStatusFrame> ReadStatusAsync(
-        Process hostProcess,
+        GmWorkerHostIdentity hostProcess,
         GmWorkerProcessHostStatusKind expectedKind,
         CancellationToken cancellationToken)
     {
@@ -512,9 +535,7 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
 
             if (line == null)
             {
-                var suffix = hostProcess.HasExited
-                    ? $" with code {hostProcess.ExitCode}"
-                    : string.Empty;
+                var suffix = hostProcess.ExitDescription;
                 throw new InvalidOperationException(
                     $"Worker process host status channel closed before {expectedKind}{suffix}.");
             }
@@ -533,7 +554,7 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
     }
 
     private async Task ConnectAndAuthenticateAsync(
-        Process hostProcess,
+        GmWorkerHostIdentity hostProcess,
         CancellationToken cancellationToken)
     {
         await _connectionGate.WaitAsync(cancellationToken);
@@ -542,11 +563,11 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
             if (Volatile.Read(ref _connected) != 0)
                 return;
 
-            // Capture the identity from the Process returned by the owned start,
-            // never from peer frames, command lines or a new PID lookup.
+            // The token retains the original owned Process or checked transferred pidfd.
+            // Never obtain launch identity from a peer frame or a fresh PID lookup.
             EnsureHostIsRunning(hostProcess);
-            var expectedProcessId = hostProcess.Id;
-            var expectedUserId = GmWorkerProcessHostPeerIdentity.CaptureEffectiveUserId();
+            var expectedProcessId = hostProcess.ProcessId;
+            var expectedUserId = hostProcess.UserId;
             await Task.WhenAll(
                 _controlPipe.WaitForConnectionAsync(cancellationToken),
                 _statusPipe.WaitForConnectionAsync(cancellationToken));
@@ -570,11 +591,7 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
         }
     }
 
-    private static void EnsureHostIsRunning(Process hostProcess)
-    {
-        if (hostProcess.HasExited)
-            throw new InvalidOperationException("Worker process host exited before launch admission.");
-    }
+    private static void EnsureHostIsRunning(GmWorkerHostIdentity hostProcess) => hostProcess.EnsureLive();
 
     private void CloseChannels()
     {

@@ -1,4 +1,5 @@
 #define _GNU_SOURCE
+#define BOE_LINEAGE_PROTOCOL_MAX 2
 #include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
@@ -14,6 +15,8 @@
 #include <sys/pidfd.h>
 #include <sys/prctl.h>
 #include <sys/stat.h>
+#include <sys/socket.h>
+#include <sys/un.h>
 #include <sys/vfs.h>
 #include <sys/wait.h>
 #include <time.h>
@@ -21,7 +24,8 @@
 
 /* T041-FALLBACK-PROC prototype. One single-thread/exclusive reaper.
  * Proc is a discovery worklist; only sealed launch plus ECHILD proves retirement
- * within the declared ordinary same-PID-namespace lineage. No production wiring. */
+ * within the declared ordinary same-PID-namespace lineage. Version 2 adds only
+ * authenticated descriptor bootstrap for a neutral host, not another reaper. */
 static const char *run_id, *reason = "ready";
 static bool uncertain, stopping, launched;
 static bool status_usable = true, exec_pending;
@@ -40,6 +44,10 @@ static struct stat namespace_identity;
 struct child { pid_t pid; int fd; bool term_sent, kill_sent; };
 static struct child children[CHILD_LIMIT];
 static size_t child_count;
+static bool host_v2;
+static int bootstrap_fd = -1, output_fds[2] = {-1, -1}, held_gate = -1, bootstrap_phase;
+static long long bootstrap_at;
+
 
 /* Only PID/PPID are consumed; comm and all other stat fields are discarded. */
 static bool parse_stat(const char *text, pid_t expected, pid_t *parent) {
@@ -161,8 +169,8 @@ static void emit(const char *state, bool complete) {
     if (!status_usable) return;
     char line[1024];
     int n = snprintf(line, sizeof line,
-        "{\"version\":1,\"runId\":\"%s\",\"backend\":\"native-lineage\",\"guarantee\":\"ordinary-same-namespace-lineage\",\"state\":\"%s\",\"reason\":\"%s\",\"cleanupComplete\":%s,\"authorityRetained\":%s,\"rootExitCode\":%d,\"rootSignal\":%d,\"errno\":%d}\n",
-        run_id, state, reason, complete ? "true" : "false", complete ? "false" : "true", root_exit, root_signal, last_errno);
+        "{\"version\":%d,\"runId\":\"%s\",\"backend\":\"native-lineage\",\"guarantee\":\"ordinary-same-namespace-lineage\",\"state\":\"%s\",\"reason\":\"%s\",\"cleanupComplete\":%s,\"authorityRetained\":%s,\"rootExitCode\":%d,\"rootSignal\":%d,\"errno\":%d}\n",
+        host_v2 ? 2 : 1, run_id, state, reason, complete ? "true" : "false", complete ? "false" : "true", root_exit, root_signal, last_errno);
     ssize_t written;
     do { written = write(STDOUT_FILENO, line, (size_t)n); } while (written < 0 && errno == EINTR);
     if (written != n) { int error = errno; status_usable = false; lose("status-unavailable", error); }
@@ -176,6 +184,80 @@ static void child_error(int fd, int error) {
     ssize_t n; do { n = write(fd, &error, sizeof error); } while (n < 0 && errno == EINTR);
     (void)n; _exit(126);
 }
+/* SOCK_SEQPACKET preserves the finite handshake boundaries. All received rights
+ * are close-on-exec and closed on every rejected message. No raw PID is authority. */
+static bool bootstrap_send(const char *kind, int descriptor) {
+    char text[80]; int length = snprintf(text, sizeof text, "%s:%s", kind, run_id);
+    struct iovec io = { .iov_base = text, .iov_len = (size_t)length };
+    char control[CMSG_SPACE(sizeof(int))] = {0};
+    struct msghdr msg = { .msg_iov = &io, .msg_iovlen = 1 };
+    if (descriptor >= 0) {
+        msg.msg_control = control; msg.msg_controllen = sizeof control;
+        struct cmsghdr *c = CMSG_FIRSTHDR(&msg);
+        c->cmsg_level = SOL_SOCKET; c->cmsg_type = SCM_RIGHTS; c->cmsg_len = CMSG_LEN(sizeof(int));
+        memcpy(CMSG_DATA(c), &descriptor, sizeof descriptor);
+    }
+    ssize_t n; do { n = sendmsg(bootstrap_fd, &msg, MSG_NOSIGNAL | MSG_DONTWAIT); } while (n < 0 && errno == EINTR);
+    if (n != length) { lose("bootstrap-send", n < 0 ? errno : EIO); return false; }
+    return true;
+}
+static void close_bootstrap(void) {
+    if (held_gate >= 0) { close(held_gate); held_gate = -1; }
+    if (bootstrap_fd >= 0) { close(bootstrap_fd); bootstrap_fd = -1; }
+    for (int i = 0; i < 2; i++) if (output_fds[i] >= 0) { close(output_fds[i]); output_fds[i] = -1; }
+}
+static bool bootstrap_connect(const char *path) {
+    struct sockaddr_un address = { .sun_family = AF_UNIX };
+    if (!*path || strlen(path) >= sizeof address.sun_path) { lose("bootstrap-path", EINVAL); return false; }
+    strcpy(address.sun_path, path);
+    bootstrap_fd = socket(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC | SOCK_NONBLOCK, 0);
+    if (bootstrap_fd < 0 || connect(bootstrap_fd, (struct sockaddr *)&address, sizeof address)) {
+        lose("bootstrap-connect", errno); return false;
+    }
+    bootstrap_phase = 1; bootstrap_at = now_ms();
+    return bootstrap_send("H2", -1);
+}
+static void observe_bootstrap(void) {
+    if (bootstrap_fd < 0 || stopping) return;
+    if ((bootstrap_phase == 1 || bootstrap_phase == 3) && now_ms() - bootstrap_at >= 5000) {
+        lose("bootstrap-timeout", 0); return;
+    }
+    char text[81] = {0}, control[CMSG_SPACE(8 * sizeof(int))] = {0};
+    struct iovec io = { .iov_base = text, .iov_len = sizeof text - 1 };
+    struct msghdr msg = { .msg_iov = &io, .msg_iovlen = 1, .msg_control = control, .msg_controllen = sizeof control };
+    ssize_t n = recvmsg(bootstrap_fd, &msg, MSG_CMSG_CLOEXEC | MSG_DONTWAIT);
+    if (n < 0 && (errno == EAGAIN || errno == EINTR)) return;
+    if (n <= 0) { lose("bootstrap-lost", n < 0 ? errno : 0); return; }
+    int received[8], count = 0; bool valid = !(msg.msg_flags & (MSG_TRUNC | MSG_CTRUNC));
+    for (struct cmsghdr *c = CMSG_FIRSTHDR(&msg); c; c = CMSG_NXTHDR(&msg, c)) {
+        if (c->cmsg_level != SOL_SOCKET || c->cmsg_type != SCM_RIGHTS || c->cmsg_len < CMSG_LEN(0) || (c->cmsg_len - CMSG_LEN(0)) % sizeof(int)) { valid = false; continue; }
+        size_t bytes = c->cmsg_len - CMSG_LEN(0);
+        for (size_t offset = 0; offset < bytes; offset += sizeof(int)) {
+            int fd; memcpy(&fd, (char *)CMSG_DATA(c) + offset, sizeof fd);
+            if (count < 8) received[count++] = fd; else { close(fd); valid = false; }
+        }
+    }
+    char expected[80];
+    snprintf(expected, sizeof expected, "%s:%s", bootstrap_phase == 1 ? "P2" : "A2", run_id);
+    valid = valid && (size_t)n == strlen(expected) && !memcmp(text, expected, (size_t)n);
+    if (bootstrap_phase == 1) {
+        valid = valid && count == 2;
+        for (int i = 0; i < count; i++) {
+            struct stat st; int flags = fcntl(received[i], F_GETFL);
+            if (fstat(received[i], &st) || !S_ISFIFO(st.st_mode) || flags < 0 || (flags & O_ACCMODE) != O_WRONLY) valid = false;
+        }
+        if (valid) {
+            output_fds[0] = received[0]; output_fds[1] = received[1]; count = 0;
+            bootstrap_phase = 2; emit("Ready", false);
+        }
+    } else if (bootstrap_phase == 3 && count == 0 && valid) {
+        if (write(held_gate, "L", 1) != 1) lose("bootstrap-release", errno);
+        close(held_gate); held_gate = -1;
+        close(bootstrap_fd); bootstrap_fd = -1; bootstrap_phase = 4;
+    } else valid = false;
+    for (int i = 0; i < count; i++) close(received[i]);
+    if (!valid) lose("bootstrap-invalid", EPROTO);
+}
 static void launch(char **argv) {
     int gate[2], error[2];
     if (pipe2(gate, O_CLOEXEC)) { lose("bootstrap-pipe", errno); return; }
@@ -188,21 +270,35 @@ static void launch(char **argv) {
         if (sigaction(SIGTERM, &sa, NULL) || sigaction(SIGINT, &sa, NULL) || sigaction(SIGPIPE, &sa, NULL) || sigaction(SIGCHLD, &sa, NULL)) child_error(error[1], errno);
         sigset_t mask; sigemptyset(&mask); if (sigprocmask(SIG_SETMASK, &mask, NULL)) child_error(error[1], errno);
         int null = open("/dev/null", O_RDONLY | O_CLOEXEC);
-        if (null < 0 || dup2(null, STDIN_FILENO) < 0 || dup2(STDERR_FILENO, STDOUT_FILENO) < 0) child_error(error[1], errno);
+        if (null < 0 || dup2(null, STDIN_FILENO) < 0) child_error(error[1], errno);
+        if (host_v2) {
+            if (dup2(output_fds[0], STDOUT_FILENO) < 0 || dup2(output_fds[1], STDERR_FILENO) < 0) child_error(error[1], errno);
+            close(bootstrap_fd); bootstrap_fd = -1;
+        } else if (dup2(STDERR_FILENO, STDOUT_FILENO) < 0) child_error(error[1], errno);
         close(null);
         char c; ssize_t n; do { n = read(gate[0], &c, 1); } while (n < 0 && errno == EINTR);
         close(gate[0]); if (n != 1 || c != 'L') _exit(125);
+        /* Keep only stdio and the CLOEXEC exec-error pipe. In particular the
+         * gated child never owns the helper control/status/bootstrap channels. */
+        if (error[1] > 3 && close_range(3, (unsigned int)error[1] - 1, 0)) child_error(error[1], errno);
+        if (close_range((unsigned int)error[1] + 1, UINT_MAX, 0)) child_error(error[1], errno);
         if (setpgid(0, 0)) child_error(error[1], errno);
         execv(argv[0], argv); child_error(error[1], errno);
     }
     launched = true; root_pid = p; close(gate[0]); close(error[1]);
+    if (host_v2) for (int i = 0; i < 2; i++) { close(output_fds[i]); output_fds[i] = -1; }
     root_fd = pidfd_open(p, 0); /* p is still our unreaped direct child. */
     children[child_count++] = (struct child){ .pid = p, .fd = root_fd };
     if (root_fd < 0) { lose("root-pidfd", errno); close(gate[1]); close(error[0]); return; }
     exec_fd = error[0]; exec_pending = true;
     if (fcntl(exec_fd, F_SETFL, O_NONBLOCK)) { lose("exec-channel", errno); close(gate[1]); return; }
-    if (write(gate[1], "L", 1) != 1) lose("bootstrap-release", errno);
-    close(gate[1]);
+    if (host_v2) {
+        held_gate = gate[1]; bootstrap_phase = 3; bootstrap_at = now_ms();
+        (void)bootstrap_send("B2", root_fd);
+    } else {
+        if (write(gate[1], "L", 1) != 1) lose("bootstrap-release", errno);
+        close(gate[1]);
+    }
 }
 static void observe_exec(void) {
     if (!exec_pending) return;
@@ -262,6 +358,8 @@ int main(int argc, char **argv) {
     for (const char *c = argv[1]; *c; c++) if (!((*c >= 'A' && *c <= 'Z') || (*c >= 'a' && *c <= 'z') || (*c >= '0' && *c <= '9') || *c == '-')) return 64;
     run_id = argv[1]; grace_ms = parse_ms(argv[2]); deadline_ms = parse_ms(argv[3]);
     if (grace_ms < 0 || deadline_ms < 0) return 64;
+    host_v2 = !strcmp(argv[4], "--host-v2");
+    if (host_v2 && (argc < 7 || argv[6][0] != '/')) return 64;
     alarm(0); /* A caller/bootstrap alarm may survive exec; never inherit that deadline. */
     struct sigaction sa = { .sa_handler = SIG_DFL }; sigemptyset(&sa.sa_mask);
     if (sigaction(SIGCHLD, &sa, NULL)) return 70;
@@ -277,7 +375,7 @@ int main(int argc, char **argv) {
     if (!proc_ready()) { lose("proc-unavailable", errno); emit("Uncertain", true); return 2; }
     (void)now_ms();
     if (clock_failed) { lose("clock-unavailable", errno); emit("Uncertain", true); return 2; }
-    emit("Ready", false);
+    if (host_v2) (void)bootstrap_connect(argv[5]); else emit("Ready", false);
     bool stop_reported = false, uncertainty_reported = false;
     for (;;) {
         (void)now_ms(); if (clock_failed) lose("clock-unavailable", errno);
@@ -286,12 +384,14 @@ int main(int argc, char **argv) {
         if (n == 0) lose("owner-lost", 0);
         else if (n < 0 && errno != EINTR && errno != EAGAIN) lose("owner-channel", errno);
         else if (n > 0) for (ssize_t i = 0; i < n; i++) {
-            if (commands[i] == 'L' && !launched && !stopping) launch(&argv[4]);
+            if (commands[i] == 'L' && !launched && !stopping && (!host_v2 || bootstrap_phase == 2)) launch(&argv[host_v2 ? 6 : 4]);
             else if (commands[i] == 'S') seal("stop-requested");
             else if (commands[i] == 'C') seal("cancelled");
             else if (commands[i] == 'U') lose("scope-breach", 0);
             else lose("invalid-command", 0);
         }
+        observe_bootstrap();
+        if (stopping && host_v2) close_bootstrap();
         observe_exec();
         discover_children(); /* Always bind before the next sole-reaper turn. */
         if (stopping) {

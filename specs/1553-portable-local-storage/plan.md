@@ -62,7 +62,16 @@ At `74d978bd81634a349b537c2db97a8ab4f74b7133`, fresh build/discovery passed
 The actual driver reached the unimplemented-launch rejection; Ready assertion failed
 with that exact reason. Guardian ECHILD, failures0/emergency0/driverexit0; zero worker
 Release. [Evidence](recovery/evidence/worker-host-ready-red/manifest.json).
-Next: implement the shared native path, then this exact single-case GREEN.
+WIP native v2 path now adds private finite SOCK_SEQPACKET/SCM_RIGHTS bootstrap,
+output pipes, checked original-helper peer plus transferred host pidfd identity,
+ACK-gated exec, a dedicated bounded status reader and sticky typed stop evidence.
+Native package preflight and absolute managed executable resolution are connected.
+Unbuilt/unrun: next fresh worker-native-host-ready preparation and exact-case GREEN.
+The actual pool Windows-only adapter extraction and negative matrix remain pending.
+Independent Sol consult confirms original Process/tree/started-state one-way handoff
+from a sealed Windows adapter preserves current cleanup; no native-to-legacy route.
+Existing relevant lifecycle fixtures invoke powershell.exe and remain Windows-only
+coverage, explicitly not executed/qualified by this Linux stage.
 
 ## Worker-host native integration design — 2026-10-05
 

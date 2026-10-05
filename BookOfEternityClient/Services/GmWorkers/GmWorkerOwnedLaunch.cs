@@ -35,7 +35,9 @@ internal sealed class GmWorkerNativeLineageLauncher(string? packageDirectory = n
     public Task<GmWorkerOwnedLaunch> StartAsync(GmWorkerProcessHostLaunch host,
         GmWorkerBackendSelection selection, CancellationToken cancellationToken)
     {
-        _ = packageDirectory;
-        throw new NotSupportedException("Native owned-host launch is not implemented.");
+        if (selection.Backend != GmWorkerBackend.NativeLineage || selection.Capability != GmWorkerRequiredCapability.NeutralHost)
+            throw new PlatformNotSupportedException("Native launcher admits only NeutralHost.");
+        var executable = GmWorkerNativePackage.Validate(packageDirectory);
+        return GmWorkerNativeLineageLaunch.StartOwnedAsync(host, executable, cancellationToken);
     }
 }
