@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "worker-quarantine-audit-receipt",
-      "reason": "T041-QUARANTINE-RECEIPT direct receipt + actual synthetic owner/reaper retry and exact affected guards only; no live process, canonical mutation or prior cohort repeat.",
+      "category": "gm-bridge-output-stream",
+      "reason": "Actual bridge assembly pump and diagnostics suffix only; positive managed synthetic streams, no native terminal/process or prior cohort repeat.",
       "contracts": [
-        "#1553 T041-QUARANTINE-RECEIPT US4 FR-012/014/015"
+        "#1553 T041-OUTPUT-UTF8 US4 FR-012/013/014/015"
       ]
     }
   ]

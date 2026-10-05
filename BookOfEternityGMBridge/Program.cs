@@ -1248,15 +1248,12 @@ internal sealed class BridgeHost : IDisposable
 
     private BridgeDiagnostics SnapshotDiagnostics()
     {
-        const int tailLimit = 12000;
         long outputVersion;
         string recentOutput;
         string visibleScreenText;
         lock (_sync)
         {
-            recentOutput = _recentOutput.ToString();
-            if (recentOutput.Length > tailLimit)
-                recentOutput = recentOutput[^tailLimit..];
+            recentOutput = GetRecentOutputTail();
             outputVersion = _outputVersion;
             visibleScreenText = ReadVisibleConsoleText();
         }
@@ -1268,6 +1265,15 @@ internal sealed class BridgeHost : IDisposable
             VisibleScreenText = visibleScreenText,
             WorkerProposalInbox = ReadWorkerProposalInbox()
         };
+    }
+
+    private string GetRecentOutputTail()
+    {
+        const int tailLimit = 12000;
+        var recentOutput = _recentOutput.ToString();
+        if (recentOutput.Length > tailLimit)
+            recentOutput = recentOutput[^tailLimit..];
+        return recentOutput;
     }
 
     private List<GmWorkerProposalInboxEntry> ReadWorkerProposalInbox()
