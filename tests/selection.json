@@ -2,17 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-load-native-names",
-      "reason": "Affected archive boundary preserves original name/hash/manifest identity and rejects fixed aliases and invalid claims.",
+      "category": "worker-host-ipc-admission",
+      "reason": "T041-IPC both-channel native identity and byte-bounded authenticated handshake, denial/EOF/redaction and actual pre-Release host lifecycle; no worker command is released.",
       "contracts": [
-        "#1553 T032-A4-NATIVE-NAMES LOAD-FS-001"
-      ]
-    },
-    {
-      "category": "portable-load-alias-admission",
-      "reason": "The producer reuses the finite fixed-authority registry; preserve exact mapping and trim/source/settings guards.",
-      "contracts": [
-        "#1553 T032-A4-NATIVE-NAMES LOAD-FS-001/004"
+        "#1553 T041-IPC US4 FR-012/014/015"
       ]
     }
   ]

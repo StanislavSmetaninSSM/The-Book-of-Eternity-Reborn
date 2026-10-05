@@ -103,7 +103,8 @@ Current ordinary-save acceptance is `ddaade72`; historical WIN/V1/CREATE entries
 
 ## B4 — US4 persistent GM/session lifecycle
 
-- [ ] T040 Record current bridge/daemon/process/IPC design, exact supported provider behavior and failure boundaries in plan.md before edits
+- [x] T040 Record current bridge/daemon/process/IPC design, exact supported provider behavior and failure boundaries in plan.md before edits. Read-only audit at `34a4690f`, separately reviewed by gpt-6.1-sol/xhigh, is persisted in [current audit/design](plan.md#t040-audit-and-t041-ipc-admission-design--2026-10-05); no runtime or live qualification follows.
+- [ ] T041-IPC [US4] Test first and port only worker-host IPC admission: both-channel Windows/Linux PID identity, Linux UID, bounded strict UTF-8 frames and absolute deadlines. Actual host Ready then owner close without Release proves bounded exit/zero worker starts; foreign peers receive no Launch. Retain Linux execution/workspace gates. Focused category, operational guard, separate native claims, review and remote readback; FR-012/014/015.
 - [ ] T041 Test first, then implement owned persistent interactive terminal/session and automatic daemon input on Linux/Windows
 - [ ] T042 Verify manual/automatic input, readiness, multiple turns, restart, timeout/cancel and uncertain ownership recovery; preserve workspace until stop is confirmed
 - [ ] T043 Verify a real CLI workflow, synchronize GM operational prompts/examples and independently review B4

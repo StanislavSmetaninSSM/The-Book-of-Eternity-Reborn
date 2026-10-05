@@ -4,6 +4,164 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T040 audit and T041-IPC admission design — 2026-10-05
+
+Source issue: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
+Verified clean branch `codex/1553-load-filesystem` and direct remote ref:
+`34a4690fc1587a531719e68b574ce26fc6152949`. This is a source audit, not a live
+GM, provider, Windows or gameplay result. T040 findings were independently reviewed
+by a separate **gpt-6.1-sol / xhigh** context. The owner-authorized autonomous
+spec/plan revision waiver applies; no new product-policy choice is needed.
+This concrete slice does not approve all historical B4 proposals.
+
+### Current source and deferred lifecycle risks
+
+- One-shot workers and the persistent main GM have different lifecycles.
+  `Services/GmWorkers/GmWorkerProcessHost.cs` uses two private byte-mode .NET named
+  pipes with `CurrentUserOnly`, schema 1, strict JSON and a per-launch nonce.
+  Both peers are checked before Launch, but identity uses Windows-only
+  `GetNamedPipeClientProcessId`; status/control `ReadLine` is unbounded and UTF-8
+  replacement fallback is permissive. Connection, launch and readiness currently
+  have separate/missing deadlines. Parser/property/failed-frame text can expose
+  payload content in diagnostics.
+- `GmWorkerBridgePool.cs` starts the host, attaches its owned scope, authenticates
+  Ready and only then sends Release (around 835–870). Import follows confirmed
+  stop (around 913); uncertain cleanup retains quarantine (553–647).
+  `GmWorkerProcessTree.cs` rejects Linux before execution (64–73). Its Windows
+  Dispose closes the Job even when stop was not confirmed (146–158), requiring
+  separate lifecycle work. Neither gate is relaxed here.
+- Detached workspace staging/import remains a separate Windows-only blocker:
+  `GmWorkerExecutionWorkspace.WriteAbsoluteFileAsync` and `ReadBoundedFileAsync`
+  call `CaptureOpenedFileAuthority`/`PhysicalFileAuthority.CaptureFileIdentity`,
+  which rejects non-Windows. Pool workspace creation precedes host launch.
+  Directory creation itself already has a Linux fallback. Accepted T031 worker
+  apply/storage proof did not port this detached execution workspace.
+- Main `BookOfEternityGMBridge.csproj` targets `net8.0-windows`; its Program invokes
+  Win32 console APIs (145–149), unconditionally starts ConPTY (391), reads an outer
+  Windows console for readiness (1097–1126), resolves `pwsh.exe`/`powershell.exe`
+  (1147–1175) and bootstraps `chcp` (1137–1144). ConPTY starts the shell before any
+  ownership-release gate and Dispose kills without confirmed descendant reaping.
+  Main restart, shutdown, root-exit and finally/status cleanup do not share the
+  worker Job-empty guarantee. Launcher PID/CIM/status absence is not stop proof.
+- `game_master_daemon.ps1` unconditionally loads Windows.Forms even in bridge mode.
+  Launcher and worker templates retain Windows executable/window assumptions.
+  Main dispatch blocks its single server control loop, clears input with Ctrl+U
+  before actual readiness, and gates individual writes rather than the complete
+  paste → observe → submit operation. Manual input can interleave; queued writes
+  capture an obsolete stream; empty screen is treated as ready; CLI PID is never
+  established; per-chunk UTF-8 decoding corrupts fragmented characters; main IPC
+  has unbounded lines. Main requests lack durable delivery progression and daemon
+  retries ambiguous post-submit bridge failures. Unknown/auth/trust screens must
+  pause automation, with no new auto-trust or login behavior.
+- Source-backed unsafe recovery path remains open: daemon emits correlated
+  `turn_error` regardless of timeout cleanup success (5935–5951);
+  `GameEngine.TurnLifecycle` error/timeout/dead-runtime paths restore backups or
+  delete artifacts without confirmed stop (236–247, 299–310, 456–477, 849–853).
+  Repair-stall promotion in `GameEngine.SessionAndSnapshots` also assumes stop.
+  Reporting-only daemon changes cannot repair those writer races.
+- Later durable run/generation/epoch/backend/host authority must live outside
+  replaceable state, be published before writer release, and fence rollback,
+  cleanup, replacement, clear, second start and cold recovery on uncertainty.
+  Canonical lease acquisition currently performs recovery even for read quiescence
+  (`FileSystemManager`, 3685–3699), existing lease validation checks only owner/
+  activity (3852–3856), and browser restore uses an already-held lease. Admission
+  must order fence transitions against held leases or check actual mutations.
+  Diagnostic reads must not trigger recovery writes; healthy same-run operations
+  and unrelated roots remain usable. Do not deadlock disposition persistence by
+  holding a lock across supervisor IPC.
+
+### Exact first implementation contract: T041-IPC
+
+Retain the existing named-pipe transport, byte mode, `CurrentUserOnly`, nonce and
+schema. Keep Windows PID verification and add one focused Linux `SO_PEERCRED`
+adapter validating PID against the expected host and UID against the current
+user on **both** channels. Authentication of both must finish before any Launch
+payload byte is written. A foreign control, status or both peers rejects the
+whole admission. Other platforms fail closed. This does not grant Linux process
+execution or change detached workspace authority.
+
+Use a shared bounded UTF-8 line-frame helper for all host control/status I/O.
+Launch maximum is **1 MiB encoded UTF-8**, status and Release maximum **64 KiB**,
+excluding the terminating LF (an optional preceding CR counts toward the bound).
+These limits deliberately exceed ordinary launch/environment and diagnostics,
+including the existing 40,000-character environment regression, while bounding
+untrusted frame allocation. Validate before writer I/O; reject oversize, malformed
+UTF-8, a partial frame at EOF, and malformed/duplicate/missing JSON fields without
+truncation. The helper preserves bytes after LF for the next frame and accepts
+split multibyte characters; payloads and parser excerpts never enter diagnostics.
+
+The owner has one absolute **15-second Ready deadline** spanning connection,
+semaphore admission, authentication, Launch write and Ready read. Host connection/
+Launch admission uses the same bounded startup window. Release is bounded by the
+existing **60-second ownership deadline**; every frame read/write has an absolute
+deadline, never extended by slow bytes. Completion/output-drain may wait for the
+worker under the caller's lifetime token, but once the first byte arrives its frame
+must finish within 15 seconds. Cancellation is passed to and awaited on underlying
+I/O, not implemented by abandoning a still-running read/write. Failed admission
+closes channels and cannot be retried into worker execution on that launch.
+
+### Ordered execution and verification
+
+1. Persist this audit/design and test-only RED WIP before a lengthy build/run.
+   Add platform-neutral, per-test owned fixtures to existing host tests; select
+   `worker-host-ipc-admission` separately from `gm-worker-process`. The actual host
+   reaches authenticated Ready, then owner close without Release must cause bounded
+   host exit and zero controlled worker starts. Foreign-channel fixtures must
+   observe zero Launch bytes. Keep schema/nonce negatives and diagnostic redaction.
+2. Observe causal RED, then implement Linux peer identity and bounded framing/
+   deadlines. Exercise exact byte limit and limit+1, split UTF-8/newline, invalid
+   UTF-8, truncated EOF, slow frames, cancellation and blocked writers. Separate
+   native Windows authentication regression is only qualified if actually run there.
+3. Run fresh selected PlanOnly/build, focused GREEN, discovery-only catalog audit
+   and relevant documentation guard. Independent gpt-6.1-sol / xhigh review covers
+   behavior, test selection, cleanup, redaction, platform claims and evidence.
+   Publish each bounded WIP through HOME-PC blobs/cloud tree-commit-ref while the
+   desktop is connected, verify exact remote SHA and fresh final restoration.
+
+Only this coherent IPC owner and the affected authentication documentation guard
+are selected. No broad `gm-worker-process`, accepted storage reruns, full-suite,
+Fast/PreMerge or all-category sequence. Isolated tests own pipes, children, files,
+deadlines and awaited cleanup. Linux evidence is not Windows evidence. This is
+client-owned transport, with no GM-authored gameplay/schema change; operational
+handshake docs/guard are updated, and no new gameplay example is required.
+
+### Follow-on work remains open
+
+T041/T042/T043 retain durable run-admission/held-lease fencing; a Windows Job
+attached before the persistent shell can execute; common stop/restart/owner-loss
+transitions that preserve evidence on uncertain stop; and a packaged Linux native
+supervisor owning subreaper/session/PTY setup, signaling and authoritative reaping.
+Ordinary setsid/double-fork/spawn-during-stop descendants count. Root exit, PTY EOF,
+transient empty `/proc` children or expired PID/status cannot prove stop. Final
+supervisor loss leaves uncertainty with verified reconnect/reboot recovery; no
+mandatory root/systemd or player compiler. Native fork/exec stays outside CLR.
+
+Persistent input still needs atomic paste-observe-submit/manual takeover and draft
+preservation, epoch recheck after arbitration, request ledger/no ambiguous retry,
+stateful UTF-8/VT parsing, bounded queues, and configurable gesture/framing/newline/
+submit/interrupt/exit profiles. Keep arbitrary persistent CLI; no one-shot substitute.
+The stopped libvterm investigation is not reopened; node-pty/xterm remains an
+unqualified fallback. Historical OpenCode 1.18.34 mini/pure PINE/OAK evidence proves
+only its old two-turn probe, not current authentication, recall, full TUI, descendant
+cleanup, Windows or gameplay. Reuse its profile only after integrated controlled
+fixtures pass; live console/GM turn → save → Load → restart remains T033/T052,
+with browser verification automated in code only.
+
+Primary references: [.NET 8 Unix named pipes](https://raw.githubusercontent.com/dotnet/runtime/v8.0.0/src/libraries/System.IO.Pipes/src/System/IO/Pipes/NamedPipeServerStream.Unix.cs),
+[SO_PEERCRED](https://man7.org/linux/man-pages/man7/unix.7.html),
+[Process.Kill descendant caveat](https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.process.kill?view=net-10.0),
+[Job Objects](https://learn.microsoft.com/en-us/windows/win32/procthread/job-objects),
+[subreapers](https://man7.org/linux/man-pages/man2/PR_SET_CHILD_SUBREAPER.2const.html),
+[wait/reap](https://man7.org/linux/man-pages/man2/waitpid.2.html).
+
+Spec Kit prerequisite check resolved the active feature, research/data-model/
+quickstart/tasks; all existing requirements checklist items are complete. Focused
+consistency maps US4/FR-012–014 to T040–043 and FR-015 to category/evidence/review.
+No new constitution or gameplay requirement is introduced. Reuse the assigned
+isolated task checkout and sole-writer baton. Current state: **WIP, production
+unchanged, new tests/builds not yet run, implementation review pending**. T040's
+source audit is persisted here; T041-IPC and all wider runtime/live gates remain open.
+
 ## Accepted T032-A4-NATIVE-NAMES — bounded Linux, 2026-10-05
 
 Current bounded code/verification verdict: **separate gpt-6.1-sol / xhigh PASS**
