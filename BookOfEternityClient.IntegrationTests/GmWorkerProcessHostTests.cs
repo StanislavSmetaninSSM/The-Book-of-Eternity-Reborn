@@ -25,6 +25,7 @@ public sealed partial class GmWorkerProcessHostTests
                 WorkingDirectory = root,
                 UseShellExecute = false
             };
+            worker.Environment.Clear();
             worker.ArgumentList.Add("-NoProfile");
             worker.ArgumentList.Add("-Command");
             worker.ArgumentList.Add("exit 0");
@@ -503,12 +504,19 @@ public sealed partial class GmWorkerProcessHostTests
         return root;
     }
 
-    private static ProcessStartInfo CreateWorker(string root) => new()
+    private static ProcessStartInfo CreateWorker(string root)
     {
-        FileName = "pwsh",
-        WorkingDirectory = root,
-        UseShellExecute = false
-    };
+        var worker = new ProcessStartInfo
+        {
+            FileName = "pwsh",
+            WorkingDirectory = root,
+            UseShellExecute = false
+        };
+        // The fixture owns its payload. Inheriting machine/provider environment
+        // would add unrelated secrets and Linux case-variant key collisions.
+        worker.Environment.Clear();
+        return worker;
+    }
 
     private static string ReadyJson(string nonce) => GmWorkerProcessHostProtocol.SerializeStatus(
         new(1, nonce, GmWorkerProcessHostStatusKind.Ready, null, null));

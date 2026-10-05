@@ -48,6 +48,19 @@ transport, endpoint names, production code, credentials or security setting chan
 First GitHub-only clone restored all 5,158 tracked files cleanly at `a1ac8c21`;
 five changed files matched byte-for-byte. This was source restoration only.
 
+The second unchanged-source execution at evidence carrier `00e975bf` reached
+named-pipe construction but all 15 integration rows failed while copying inherited
+worker environment: `ArgumentException`, duplicate key `http_proxy`, because the
+existing payload builder uses `OrdinalIgnoreCase` and this Linux environment has
+both `HTTP_PROXY` and `http_proxy`. Again no adapter behavioral RED; the documentation
+row was not reached. [Exact evidence](recovery/evidence/worker-ipc-linux-20261005-inherited-environment-failure/manifest.json).
+The bounded IPC fixtures now explicitly own minimal worker payload environment,
+including only their test marker/large value. Host processes retain the ordinary
+inherited environment; no proxy/security/global configuration changes. Production
+Linux case-sensitive worker environment capture remains a recorded limitation for
+future worker-execution work. This selection cannot qualify arbitrary Linux worker
+payloads or execution. Next: rebuild the refined tests and obtain adapter-specific RED.
+
 The owner explicitly authorizes ordinary non-force WIP pushes to the existing
 `codex/1553-load-filesystem` branch. Noninteractive push dry-run succeeded before
 first publication; this supersedes the older HOME-PC publication route for this

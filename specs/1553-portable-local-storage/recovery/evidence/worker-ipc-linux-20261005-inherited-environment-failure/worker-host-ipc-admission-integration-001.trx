@@ -1,0 +1,501 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="503e27f9-4428-44e1-b330-a4d1c97368a1" name="@3a7834d0640d 2026-10-05 10:07:40" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T10:07:40.4744339+00:00" queuing="2026-10-05T10:07:40.4744345+00:00" start="2026-10-05T10:07:37.6770723+00:00" finish="2026-10-05T10:07:40.5504021+00:00" />
+  <TestSettings name="default" id="bb294025-156c-45e1-9f75-e8bd26506636">
+    <Deployment runDeploymentRoot="_3a7834d0640d_2026-10-05_10_07_40" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="5ab5c250-f045-48c2-92d5-28d2a177b0f6" testId="c8ecc4c2-86e2-013d-23a1-6210444a9d53" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing" computerName="3a7834d0640d" duration="00:00:00.0012274" startTime="2026-10-05T10:07:40.4666416+00:00" endTime="2026-10-05T10:07:40.4666417+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5ab5c250-f045-48c2-92d5-28d2a177b0f6">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentException : An item with the same key has already been added. Key: http_proxy</Message>
+          <StackTrace>   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+   at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 312
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 114
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 135
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 129
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3ff448c6-e836-440f-99cd-4f25b4a31756" testId="f847d1f7-270c-6649-907b-d2f48ecf0993" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost" computerName="3a7834d0640d" duration="00:00:00.0163866" startTime="2026-10-05T10:07:40.4359244+00:00" endTime="2026-10-05T10:07:40.4359500+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3ff448c6-e836-440f-99cd-4f25b4a31756">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentException : An item with the same key has already been added. Key: http_proxy</Message>
+          <StackTrace>   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+   at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 312
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 524
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 561
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0c91ffee-cc5e-494e-b6e4-3fcc0da9263c" testId="d1fa634a-d69f-ca37-dc04-7ee0aaa98bf4" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: False)" computerName="3a7834d0640d" duration="00:00:00.0009058" startTime="2026-10-05T10:07:40.4443053+00:00" endTime="2026-10-05T10:07:40.4443054+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0c91ffee-cc5e-494e-b6e4-3fcc0da9263c">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentException : An item with the same key has already been added. Key: http_proxy</Message>
+          <StackTrace>   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+   at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 312
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 114
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 135
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(Boolean oversized) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 112
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3f523dd5-0453-472e-bce2-5460f568dc51" testId="96bfe5ca-584d-ab8b-515c-29b9c23ea1d8" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: True)" computerName="3a7834d0640d" duration="00:00:00.0023944" startTime="2026-10-05T10:07:40.4438568+00:00" endTime="2026-10-05T10:07:40.4438569+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3f523dd5-0453-472e-bce2-5460f568dc51">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentException : An item with the same key has already been added. Key: http_proxy</Message>
+          <StackTrace>   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+   at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 312
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 114
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 135
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(Boolean oversized) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 112
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ee0b1949-a60b-44f8-883c-c8355123a53a" testId="9c06fc6d-da45-36a4-fabe-fbec8b4a37fb" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected(invalidField: &quot;schema&quot;)" computerName="3a7834d0640d" duration="00:00:00.0008975" startTime="2026-10-05T10:07:40.4461266+00:00" endTime="2026-10-05T10:07:40.4461267+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ee0b1949-a60b-44f8-883c-c8355123a53a">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentException : An item with the same key has already been added. Key: http_proxy</Message>
+          <StackTrace>   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+   at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 312
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 114
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 135
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6244746a-119d-4ea7-8312-8912e5c98134" testId="60aa339f-222f-7ed1-5cb2-b93e1fdedc3e" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost" computerName="3a7834d0640d" duration="00:00:00.0004502" startTime="2026-10-05T10:07:40.4431225+00:00" endTime="2026-10-05T10:07:40.4431226+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6244746a-119d-4ea7-8312-8912e5c98134">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentException : An item with the same key has already been added. Key: http_proxy</Message>
+          <StackTrace>   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+   at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 312
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 524
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 561
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="bd180e78-2309-4ecc-9de2-1c260c4120ad" testId="b2aee4e9-0446-99ba-f139-41ba95e6c671" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(controlConnected: False)" computerName="3a7834d0640d" duration="00:00:00.0028710" startTime="2026-10-05T10:07:40.4450804+00:00" endTime="2026-10-05T10:07:40.4450805+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bd180e78-2309-4ecc-9de2-1c260c4120ad">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentException : An item with the same key has already been added. Key: http_proxy</Message>
+          <StackTrace>   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+   at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 312
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(Boolean controlConnected) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 18
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(Boolean controlConnected) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 36
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6a52f977-c738-490e-a429-aac08dff4016" testId="be01edbc-ddd4-32b4-2998-13ab0b8b194b" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected(invalidField: &quot;nonce&quot;)" computerName="3a7834d0640d" duration="00:00:00.0007550" startTime="2026-10-05T10:07:40.4467154+00:00" endTime="2026-10-05T10:07:40.4467155+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6a52f977-c738-490e-a429-aac08dff4016">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentException : An item with the same key has already been added. Key: http_proxy</Message>
+          <StackTrace>   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+   at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 312
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 114
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 135
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6bfd7631-8ad4-46b1-b7f8-60eed263eee1" testId="e296c3e3-3317-833c-8b76-e63147805e44" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted" computerName="3a7834d0640d" duration="00:00:00.0023500" startTime="2026-10-05T10:07:40.4646971+00:00" endTime="2026-10-05T10:07:40.4646972+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6bfd7631-8ad4-46b1-b7f8-60eed263eee1">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentException : An item with the same key has already been added. Key: http_proxy</Message>
+          <StackTrace>   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+   at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 312
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 46
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 62
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e02f864e-1eaa-426d-8eec-b89fff0f4b91" testId="e27ce202-a5a9-7275-a7da-a46dc16e7a04" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected" computerName="3a7834d0640d" duration="00:00:00.0015936" startTime="2026-10-05T10:07:40.4660150+00:00" endTime="2026-10-05T10:07:40.4660151+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e02f864e-1eaa-426d-8eec-b89fff0f4b91">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentException : An item with the same key has already been added. Key: http_proxy</Message>
+          <StackTrace>   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+   at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 312
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 114
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 135
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 122
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4071336f-c51c-4d8b-8484-2ec4246e5e7d" testId="20af7b4c-93f6-6f2a-f14f-824dc8f64c98" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker" computerName="3a7834d0640d" duration="00:00:00.0026861" startTime="2026-10-05T10:07:40.4655324+00:00" endTime="2026-10-05T10:07:40.4655325+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4071336f-c51c-4d8b-8484-2ec4246e5e7d">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentException : An item with the same key has already been added. Key: http_proxy</Message>
+          <StackTrace>   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+   at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 312
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 84
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 103
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5c50531f-e403-4a84-a9b0-4806e094aa71" testId="4fddc5ca-1581-0b4b-c519-0f0dd75be9b7" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(controlConnected: True)" computerName="3a7834d0640d" duration="00:00:00.0010705" startTime="2026-10-05T10:07:40.4455255+00:00" endTime="2026-10-05T10:07:40.4455257+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5c50531f-e403-4a84-a9b0-4806e094aa71">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentException : An item with the same key has already been added. Key: http_proxy</Message>
+          <StackTrace>   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+   at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 312
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(Boolean controlConnected) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 18
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(Boolean controlConnected) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 36
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="656aafbc-29d7-40d8-8d24-9a69a35172f4" testId="2d637dc7-56fc-e37a-b60a-4d1f9ab2e57d" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths" computerName="3a7834d0640d" duration="00:00:00.0025788" startTime="2026-10-05T10:07:40.4640573+00:00" endTime="2026-10-05T10:07:40.4640575+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="656aafbc-29d7-40d8-8d24-9a69a35172f4">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentException : An item with the same key has already been added. Key: http_proxy</Message>
+          <StackTrace>   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+   at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 312
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 34
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b28bb7e2-7132-4533-945c-a545baa909a5" testId="8a296819-97a8-8799-e3d8-f0291e4e2bb5" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels" computerName="3a7834d0640d" duration="00:00:00.0049433" startTime="2026-10-05T10:07:40.4651365+00:00" endTime="2026-10-05T10:07:40.4651366+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b28bb7e2-7132-4533-945c-a545baa909a5">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentException : An item with the same key has already been added. Key: http_proxy</Message>
+          <StackTrace>   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+   at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 312
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 74
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 104
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7bf60d03-1c6d-4896-940a-f7aae9b7955e" testId="7a67044a-3784-2916-f33c-38be6332fdf8" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignNamedPipeClientIsRejectedBeforeLaunch" computerName="3a7834d0640d" duration="00:00:00.0059966" startTime="2026-10-05T10:07:40.4414044+00:00" endTime="2026-10-05T10:07:40.4414045+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7bf60d03-1c6d-4896-940a-f7aae9b7955e">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentException : An item with the same key has already been added. Key: http_proxy</Message>
+          <StackTrace>   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+   at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 312
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 524
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 561
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: True)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="96bfe5ca-584d-ab8b-515c-29b9c23ea1d8">
+      <Execution id="3f523dd5-0453-472e-bce2-5460f568dc51" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_StatusFrameByteLimitIsExact" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignNamedPipeClientIsRejectedBeforeLaunch" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="7a67044a-3784-2916-f33c-38be6332fdf8">
+      <Execution id="7bf60d03-1c6d-4896-940a-f7aae9b7955e" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_ForeignNamedPipeClientIsRejectedBeforeLaunch" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: False)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d1fa634a-d69f-ca37-dc04-7ee0aaa98bf4">
+      <Execution id="0c91ffee-cc5e-494e-b6e4-3fcc0da9263c" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_StatusFrameByteLimitIsExact" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected(invalidField: &quot;schema&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="9c06fc6d-da45-36a4-fabe-fbec8b4a37fb">
+      <Execution id="ee0b1949-a60b-44f8-883c-c8355123a53a" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="2d637dc7-56fc-e37a-b60a-4d1f9ab2e57d">
+      <Execution id="656aafbc-29d7-40d8-8d24-9a69a35172f4" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e27ce202-a5a9-7275-a7da-a46dc16e7a04">
+      <Execution id="e02f864e-1eaa-426d-8eec-b89fff0f4b91" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(controlConnected: True)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="4fddc5ca-1581-0b4b-c519-0f0dd75be9b7">
+      <Execution id="5c50531f-e403-4a84-a9b0-4806e094aa71" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(controlConnected: False)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b2aee4e9-0446-99ba-f139-41ba95e6c671">
+      <Execution id="bd180e78-2309-4ecc-9de2-1c260c4120ad" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c8ecc4c2-86e2-013d-23a1-6210444a9d53">
+      <Execution id="5ab5c250-f045-48c2-92d5-28d2a177b0f6" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="8a296819-97a8-8799-e3d8-f0291e4e2bb5">
+      <Execution id="b28bb7e2-7132-4533-945c-a545baa909a5" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e296c3e3-3317-833c-8b76-e63147805e44">
+      <Execution id="6bfd7631-8ad4-46b1-b7f8-60eed263eee1" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected(invalidField: &quot;nonce&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="be01edbc-ddd4-32b4-2998-13ab0b8b194b">
+      <Execution id="6a52f977-c738-490e-a429-aac08dff4016" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="20af7b4c-93f6-6f2a-f14f-824dc8f64c98">
+      <Execution id="4071336f-c51c-4d8b-8484-2ec4246e5e7d" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="60aa339f-222f-7ed1-5cb2-b93e1fdedc3e">
+      <Execution id="6244746a-119d-4ea7-8312-8912e5c98134" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="f847d1f7-270c-6649-907b-d2f48ecf0993">
+      <Execution id="3ff448c6-e836-440f-99cd-4f25b4a31756" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="c8ecc4c2-86e2-013d-23a1-6210444a9d53" executionId="5ab5c250-f045-48c2-92d5-28d2a177b0f6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f847d1f7-270c-6649-907b-d2f48ecf0993" executionId="3ff448c6-e836-440f-99cd-4f25b4a31756" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d1fa634a-d69f-ca37-dc04-7ee0aaa98bf4" executionId="0c91ffee-cc5e-494e-b6e4-3fcc0da9263c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="96bfe5ca-584d-ab8b-515c-29b9c23ea1d8" executionId="3f523dd5-0453-472e-bce2-5460f568dc51" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9c06fc6d-da45-36a4-fabe-fbec8b4a37fb" executionId="ee0b1949-a60b-44f8-883c-c8355123a53a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="60aa339f-222f-7ed1-5cb2-b93e1fdedc3e" executionId="6244746a-119d-4ea7-8312-8912e5c98134" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b2aee4e9-0446-99ba-f139-41ba95e6c671" executionId="bd180e78-2309-4ecc-9de2-1c260c4120ad" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="be01edbc-ddd4-32b4-2998-13ab0b8b194b" executionId="6a52f977-c738-490e-a429-aac08dff4016" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e296c3e3-3317-833c-8b76-e63147805e44" executionId="6bfd7631-8ad4-46b1-b7f8-60eed263eee1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e27ce202-a5a9-7275-a7da-a46dc16e7a04" executionId="e02f864e-1eaa-426d-8eec-b89fff0f4b91" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="20af7b4c-93f6-6f2a-f14f-824dc8f64c98" executionId="4071336f-c51c-4d8b-8484-2ec4246e5e7d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4fddc5ca-1581-0b4b-c519-0f0dd75be9b7" executionId="5c50531f-e403-4a84-a9b0-4806e094aa71" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2d637dc7-56fc-e37a-b60a-4d1f9ab2e57d" executionId="656aafbc-29d7-40d8-8d24-9a69a35172f4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8a296819-97a8-8799-e3d8-f0291e4e2bb5" executionId="b28bb7e2-7132-4533-945c-a545baa909a5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7a67044a-3784-2916-f33c-38be6332fdf8" executionId="7bf60d03-1c6d-4896-940a-f7aae9b7955e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="15" executed="15" passed="0" failed="15" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.50]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.12]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.15]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.23]       System.ArgumentException : An item with the same key has already been added. Key: http_proxy
+[xUnit.net 00:00:02.23]       Stack Trace:
+[xUnit.net 00:00:02.23]            at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+[xUnit.net 00:00:02.23]            at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+[xUnit.net 00:00:02.23]            at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:02.23]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(312,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:02.23]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(524,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:02.23]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(561,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:02.23]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.24]       System.ArgumentException : An item with the same key has already been added. Key: http_proxy
+[xUnit.net 00:00:02.24]       Stack Trace:
+[xUnit.net 00:00:02.24]            at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+[xUnit.net 00:00:02.24]            at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+[xUnit.net 00:00:02.24]            at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(312,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(524,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(561,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:02.24]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.24]       System.ArgumentException : An item with the same key has already been added. Key: http_proxy
+[xUnit.net 00:00:02.24]       Stack Trace:
+[xUnit.net 00:00:02.24]            at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+[xUnit.net 00:00:02.24]            at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+[xUnit.net 00:00:02.24]            at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(312,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(524,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(561,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:02.24]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.24]       System.ArgumentException : An item with the same key has already been added. Key: http_proxy
+[xUnit.net 00:00:02.24]       Stack Trace:
+[xUnit.net 00:00:02.24]            at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+[xUnit.net 00:00:02.24]            at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+[xUnit.net 00:00:02.24]            at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(312,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(114,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(135,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(112,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(Boolean oversized)
+[xUnit.net 00:00:02.24]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.24]       System.ArgumentException : An item with the same key has already been added. Key: http_proxy
+[xUnit.net 00:00:02.24]       Stack Trace:
+[xUnit.net 00:00:02.24]            at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+[xUnit.net 00:00:02.24]            at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+[xUnit.net 00:00:02.24]            at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(312,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(114,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(135,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(112,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(Boolean oversized)
+[xUnit.net 00:00:02.24]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.24]       System.ArgumentException : An item with the same key has already been added. Key: http_proxy
+[xUnit.net 00:00:02.24]       Stack Trace:
+[xUnit.net 00:00:02.24]            at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+[xUnit.net 00:00:02.24]            at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+[xUnit.net 00:00:02.24]            at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(312,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(18,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(Boolean controlConnected)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(36,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(Boolean controlConnected)
+[xUnit.net 00:00:02.24]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.24]       System.ArgumentException : An item with the same key has already been added. Key: http_proxy
+[xUnit.net 00:00:02.24]       Stack Trace:
+[xUnit.net 00:00:02.24]            at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+[xUnit.net 00:00:02.24]            at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+[xUnit.net 00:00:02.24]            at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(312,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(18,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(Boolean controlConnected)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(36,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(Boolean controlConnected)
+[xUnit.net 00:00:02.24]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.24]       System.ArgumentException : An item with the same key has already been added. Key: http_proxy
+[xUnit.net 00:00:02.24]       Stack Trace:
+[xUnit.net 00:00:02.24]            at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+[xUnit.net 00:00:02.24]            at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+[xUnit.net 00:00:02.24]            at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(312,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(114,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(135,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:02.24]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.24]       System.ArgumentException : An item with the same key has already been added. Key: http_proxy
+[xUnit.net 00:00:02.24]       Stack Trace:
+[xUnit.net 00:00:02.24]            at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+[xUnit.net 00:00:02.24]            at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+[xUnit.net 00:00:02.24]            at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(312,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(114,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:02.24]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(135,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:02.24]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.26]       System.ArgumentException : An item with the same key has already been added. Key: http_proxy
+[xUnit.net 00:00:02.26]       Stack Trace:
+[xUnit.net 00:00:02.26]            at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+[xUnit.net 00:00:02.26]            at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+[xUnit.net 00:00:02.26]            at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:02.26]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(312,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:02.26]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(34,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths()
+[xUnit.net 00:00:02.26]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.26]       System.ArgumentException : An item with the same key has already been added. Key: http_proxy
+[xUnit.net 00:00:02.26]       Stack Trace:
+[xUnit.net 00:00:02.26]            at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+[xUnit.net 00:00:02.26]            at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+[xUnit.net 00:00:02.26]            at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:02.26]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(312,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:02.26]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(46,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted()
+[xUnit.net 00:00:02.26]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(62,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted()
+[xUnit.net 00:00:02.26]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.26]       System.ArgumentException : An item with the same key has already been added. Key: http_proxy
+[xUnit.net 00:00:02.26]       Stack Trace:
+[xUnit.net 00:00:02.26]            at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+[xUnit.net 00:00:02.26]            at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+[xUnit.net 00:00:02.26]            at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:02.26]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(312,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:02.26]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(74,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels()
+[xUnit.net 00:00:02.26]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(104,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels()
+[xUnit.net 00:00:02.26]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.26]       System.ArgumentException : An item with the same key has already been added. Key: http_proxy
+[xUnit.net 00:00:02.26]       Stack Trace:
+[xUnit.net 00:00:02.26]            at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+[xUnit.net 00:00:02.26]            at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+[xUnit.net 00:00:02.26]            at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:02.26]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(312,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:02.26]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(84,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker()
+[xUnit.net 00:00:02.26]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(103,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker()
+[xUnit.net 00:00:02.26]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.26]       System.ArgumentException : An item with the same key has already been added. Key: http_proxy
+[xUnit.net 00:00:02.26]       Stack Trace:
+[xUnit.net 00:00:02.26]            at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+[xUnit.net 00:00:02.26]            at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+[xUnit.net 00:00:02.26]            at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:02.26]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(312,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:02.26]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(114,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:02.26]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(135,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:02.26]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(122,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected()
+[xUnit.net 00:00:02.26]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.26]       System.ArgumentException : An item with the same key has already been added. Key: http_proxy
+[xUnit.net 00:00:02.26]       Stack Trace:
+[xUnit.net 00:00:02.26]            at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)
+[xUnit.net 00:00:02.26]            at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+[xUnit.net 00:00:02.26]            at System.Linq.Enumerable.ToDictionary[TSource,TKey,TElement](IEnumerable`1 source, Func`2 keySelector, Func`2 elementSelector, IEqualityComparer`1 comparer)
+[xUnit.net 00:00:02.26]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(312,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:02.26]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(114,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:02.26]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(135,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:02.26]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(129,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing()
+[xUnit.net 00:00:02.26]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.27]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:07:40.4554864+00:00">
+        <Text>[xUnit.net 00:00:02.23]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:07:40.4560218+00:00">
+        <Text>[xUnit.net 00:00:02.24]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignNamedPipeClientIsRejectedBeforeLaunch [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:07:40.4560650+00:00">
+        <Text>[xUnit.net 00:00:02.24]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:07:40.4561074+00:00">
+        <Text>[xUnit.net 00:00:02.24]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:07:40.4565255+00:00">
+        <Text>[xUnit.net 00:00:02.24]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:07:40.4567959+00:00">
+        <Text>[xUnit.net 00:00:02.24]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(controlConnected: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:07:40.4575278+00:00">
+        <Text>[xUnit.net 00:00:02.24]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(controlConnected: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:07:40.4580333+00:00">
+        <Text>[xUnit.net 00:00:02.24]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected(invalidField: "schema") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:07:40.4582209+00:00">
+        <Text>[xUnit.net 00:00:02.24]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected(invalidField: "nonce") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:07:40.4844660+00:00">
+        <Text>[xUnit.net 00:00:02.26]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:07:40.4844891+00:00">
+        <Text>[xUnit.net 00:00:02.26]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:07:40.4845091+00:00">
+        <Text>[xUnit.net 00:00:02.26]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:07:40.4845331+00:00">
+        <Text>[xUnit.net 00:00:02.26]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:07:40.4845578+00:00">
+        <Text>[xUnit.net 00:00:02.26]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:07:40.4845780+00:00">
+        <Text>[xUnit.net 00:00:02.26]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>
