@@ -1717,5 +1717,15 @@
   },
   "GmDocumentationRationale": "A is an internal client-owned neutral host qualification with worker Release closed. No GM-authored fields, gameplay, canonical state or examples change; therefore Mortal World/afterlife prompts, examples and manifests remain unchanged.",
   "RuntimeSourceCommit": "822387cb2a8cb4390f1ca3d8bf8a0a30987ef0f1",
-  "FinalFixtureSourceCommit": "66ca39bb5abdf06431cdfcd0320fb03b1f753989"
+  "FinalFixtureSourceCommit": "66ca39bb5abdf06431cdfcd0320fb03b1f753989",
+  "CandidateRestoration": {
+    "Commit": "b45d6f32467ef9e099fb16f84b0617bea68c523b",
+    "TrackedFilesByteCompared": 6404,
+    "Tree": "76156200beabf82565ce06e244d41d0ca1fbc63b",
+    "Proof": "evidence/worker-host-review/candidate-restoration.json",
+    "Manifest": "evidence/worker-host-review/manifest.json",
+    "Clean": true,
+    "GitHubOnly": true,
+    "TestsExecuted": 0
+  }
 }

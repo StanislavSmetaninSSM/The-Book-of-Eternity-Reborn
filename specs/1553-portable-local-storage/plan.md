@@ -242,6 +242,16 @@ closed; no GM-authored fields/gameplay/canonical schema changed, so Mortal World
 afterlife prompts/examples/manifests need no update. ProcessTree, quarantine reaper,
 workspace/proposal consumers and main GM bridge match the design base byte-for-byte.
 
+Candidate `b45d6f32467ef9e099fb16f84b0617bea68c523b` restored from fresh GitHub
+HTTPS clone into a new directory, without local source/object reuse: exact commit,
+tree `76156200beabf82565ce06e244d41d0ca1fbc63b`, parent, branch ancestry and
+original recovered WIP tree verified; **6404tracked files** byte-compared against
+the fetched blobs in both checkouts, both clean, connectivity fsck passed and
+remote still exact. This proves source restoration,0tests for that operation.
+[Restoration proof](recovery/evidence/worker-host-review/manifest.json).
+Final independent Sol review is in progress; no active test/build/native fixture
+process. Six existing terminated dotnet zombies under PID1 are not claimed reaped.
+
 ## Worker-host native integration design — 2026-10-05
 
 **Design only; not implementation authorization.** Source/remote base
