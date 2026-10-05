@@ -11160,15 +11160,15 @@
     {
       "project": "unit",
       "tests": [
-        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake",
-        "BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.*"
+        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake"
       ]
     },
     {
       "project": "integration",
       "tests": [
         "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_*",
-        "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_*"
+        "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_*",
+        "BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.*"
       ]
     }
   ]

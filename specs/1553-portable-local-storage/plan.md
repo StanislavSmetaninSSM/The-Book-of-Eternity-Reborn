@@ -72,10 +72,15 @@ The follow-up independent Sol/xhigh design check approves explicit owned payload
 environment, with an absolute resolved PowerShell canary path (now in the fixture).
 
 Current WIP adds policy tests before implementation and a deliberately throwing,
-unwired adapter scaffold. The unit selector runs first to observe PID/UID, native
-error/length and SafeHandle negative RED independently; the changed documentation
+unwired adapter scaffold. The policy unit cases share the integration project to observe PID/UID, native
+error/length and SafeHandle negative RED in the same descriptor; the changed documentation
 guard also expects the approved Linux contract, while the three documents await
 implementation. Production authentication still uses the original Windows guard.
+PlanOnly at `b143eb1d` passed (32 planned, zero execution, 66.0858359 seconds),
+and showed that runner project order is integration before unit regardless of
+selector order. Policy cases moved into the integration project without broadening
+the category or changing runner behavior. Added one actual 15-second partial-connect
+Ready deadline row, checking control EOF/zero Launch and rejected Release.
 Next: fresh PlanOnly/build and policy RED, then fill/wire the adapter and synchronize
 the documents. Simulated different-UID credentials are only policy evidence.
 

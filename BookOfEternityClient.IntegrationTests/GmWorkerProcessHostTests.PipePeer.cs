@@ -6,6 +6,32 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class GmWorkerProcessHostTests
 {
+    [Fact]
+    public async Task WaitUntilReadyAsync_PartialConnectionExpiresAbsoluteReadyDeadline()
+    {
+        var root = CreateTempRoot();
+        Process? peer = null;
+        try
+        {
+            await using var launch = Services.GmWorkers.GmWorkerProcessHostLaunch.Create(CreateWorker(root), root);
+            var args = launch.StartInfo.ArgumentList.ToArray();
+            peer = StartPipePeer(root, args[^3], "", "foreign");
+            using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(20));
+            var elapsed = Stopwatch.StartNew();
+            var ready = launch.WaitUntilReadyAsync(peer, deadline.Token);
+            await AssertConnectedPeerAsync(peer, deadline.Token);
+            await Assert.ThrowsAsync<TimeoutException>(() => ready);
+            Assert.InRange(elapsed.Elapsed.TotalSeconds, 12, 20);
+            await Assert.ThrowsAnyAsync<Exception>(() => launch.ReleaseAsync(deadline.Token));
+            await AssertPeerExitAsync(peer, "-1");
+        }
+        finally
+        {
+            await StopOwnedProcessAsync(peer);
+            CleanupTempRoot(root);
+        }
+    }
+
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
