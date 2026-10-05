@@ -4,7 +4,7 @@
   "BaseCommit": "618a8a20cba345f367a5e15659019d3dec6fd2be",
   "SourceCommit": "dc29b37d0c3e3067acf9943a048360fbba66d0e3",
   "SourceTree": "fe42d58824f76afae9816a6c539e4a1d1c8c2f53",
-  "Status": "Bounded managed input lifetime GREEN; final complete-packet review pending",
+  "Status": "PASS: independently reviewed bounded managed input-lifetime slice",
   "Environment": {
     "OS": "Debian13.6",
     "Kernel": "6.18.44",
@@ -406,14 +406,37 @@
     "Execution": "Read-only; no builds/tests/probes/edits"
   },
   "IndependentFinalReview": {
+    "Task": "T042-INPUT-LIFETIME",
     "Model": "gpt-6.1-sol",
     "Effort": "xhigh",
     "Agent": "/root/input_final_review",
-    "Status": "Pending complete source/evidence/restore review; one P1 corrected with causal test"
+    "Verdict": "PASS",
+    "CandidateCommit": "a5aefe8f8151c67a15fa107e78b487581bd43458",
+    "TestedSourceCommit": "dc29b37d0c3e3067acf9943a048360fbba66d0e3",
+    "ObservedUtc": "2026-10-05T14:44:01.358800+00:00",
+    "RemainingActionableFindings": 0,
+    "ResolvedFinding": {
+      "Severity": "P1",
+      "Issue": "Shell cancellation ended the control server while host stayed live",
+      "CausalRed": "36pass1shell-cancel-fail at96cbe8af4003e3145f141a29e49268f44cf8eeb9",
+      "Correction": "Host-token catch filter",
+      "Green": "37distinctPASS atdc29b37d0c3e3067acf9943a048360fbba66d0e3"
+    },
+    "Verified": [
+      "37distinctPASS complete selection0skipsduplicates/timeouts completecleanup",
+      "Discovery243categories10741identities0execution",
+      "10manifests54artifacts stored+decompressedhashes",
+      "8sourceinputs DLL/PDBhashes14unchangedfiles3unchangedclosuretrees11XML",
+      "Output/key/paste-visibility regions byte-identical tobase",
+      "Clean GitHub-only restoration5497tracked75changedfilebytes8inputhashes exacttree"
+    ],
+    "WarningAssessment": "14warnings13pre-existing+1benignfixtureCS4014; Track(task) returns the same task immediately awaited;0build errors",
+    "Scope": "Bounded local input lifetime only; native stop/runfencing/readinesspolicy/transactionarbitration/fullT042 unqualified",
+    "ReviewerActions": "Read-only; no builds/tests/native probes/edits/publication"
   },
   "ArtifactIntegrity": {
-    "Manifests": 10,
-    "Artifacts": 54,
+    "Manifests": 11,
+    "Artifacts": 57,
     "Evidence": [
       "evidence/gm-input-audit/manifest.json",
       "evidence/gm-input-causal-red/manifest.json",
@@ -424,7 +447,8 @@
       "evidence/gm-input-red-plan/manifest.json",
       "evidence/gm-input-review-red/manifest.json",
       "evidence/gm-input-review-red-preparation/manifest.json",
-      "evidence/gm-input-second-green/manifest.json"
+      "evidence/gm-input-second-green/manifest.json",
+      "evidence/gm-input-review/manifest.json"
     ]
   },
   "GeneratedXmlValidation": [
@@ -479,5 +503,10 @@
     "Full T042/T041/B4/#1553/platform acceptance remains open"
   ],
   "NextWork": "Stop at handoff; no slice2/3 authorization",
-  "SourceRestoration": "Pending fresh GitHub-only candidate restoration"
+  "SourceRestoration": {
+    "CandidateCommit": "a5aefe8f8151c67a15fa107e78b487581bd43458",
+    "Report": "evidence/gm-input-review/review-restore.json",
+    "Result": "PASS",
+    "FinalMetadataCarrier": "Ordinary push/readback and another fresh GitHub-only restoration; exact final carrier report in local handoff without self-reference"
+  }
 }

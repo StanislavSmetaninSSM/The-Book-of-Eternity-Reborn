@@ -17,7 +17,7 @@
 
 ## Input transport lifetime — T042-INPUT-LIFETIME, 2026-10-05
 
-Bounded implementation passes37/37 actual managed-consumer cases at `dc29b37d0c3e3067acf9943a048360fbba66d0e3`, with causal lifetime RED and a separately reproduced/fixed review regression. [Qualification](recovery/gm-input-lifetime-qualification.json) retains exact build, test, discovery and cleanup evidence. Complete-packet final review and restoration are pending; full T042 remains open.
+Bounded implementation passes37/37 actual managed-consumer cases at `dc29b37d0c3e3067acf9943a048360fbba66d0e3`, with causal lifetime RED and a separately reproduced/fixed review regression. [Qualification](recovery/gm-input-lifetime-qualification.json) retains exact build, test, discovery and cleanup evidence. Independent actual Sol6.1/xhigh final PASS and clean GitHub-only restoration verified at `a5aefe8f8151c67a15fa107e78b487581bd43458`; full T042 remains open.
 
 The owner authorized only the first T042 slice from exact `618a8a20cba345f367a5e15659019d3dec6fd2be`: bind queued writes and keyboard consumption to the originating shell-input lifetime, cancel/reject stale work and settle the old keyboard pump before admitting a replacement. This local binding is not a run/generation/fence. Preserve exact current paste/submit/key bytes and all process/ownership/platform guards. Do not implement transaction arbitration, readiness/trust changes, daemon/QTE outcomes/retry, queue limits or manual takeover policy.
 
