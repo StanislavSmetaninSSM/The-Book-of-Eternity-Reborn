@@ -1,6 +1,6 @@
 {
   "SchemaVersion": 1,
-  "Status": "Runtime and evidence verified; final independent review/publication/restoration pending",
+  "Status": "Bounded native prototype qualified with independent PASS and exact GitHub-only candidate restoration; production integration remains open",
   "Task": "#1553 T041-FALLBACK-PROC / T041-FALLBACK-NATIVE",
   "Branch": "codex/1553-load-filesystem",
   "RestoredCommit": "3e1b11c220ea3286002ea78c90e4eb4498e887dd",
@@ -155,9 +155,14 @@
       "Path": "evidence/linux-fallback-final-audit/manifest.json",
       "Artifacts": 10,
       "Sha256": "1c1cceafb29a7418820282f1ed8244d42efb5cd00ea9c5f46ebe2c484d364f09"
+    },
+    {
+      "Path": "evidence/linux-fallback-final-review/manifest.json",
+      "Artifacts": 2,
+      "Sha256": "a73e8e912f87bc6dda480e81c8ff378339692460f3cc9ef21cb9433999eebbdf"
     }
   ],
-  "VerifiedArtifacts": 266,
+  "VerifiedArtifacts": 268,
   "ValidGzipFiles": 102,
   "SourceBoundaries": "evidence/linux-fallback-final-audit/source-boundaries.json",
   "Cleanup": "evidence/linux-fallback-final-audit/cleanup.json",
@@ -173,5 +178,14 @@
   "PassingExecutionsInGreenRuns": 23,
   "ExecutedThisContinuation": 26,
   "PassedThisContinuation": 24,
-  "ExpectedCausalFailuresThisContinuation": 2
+  "ExpectedCausalFailuresThisContinuation": 2,
+  "IndependentReview": {
+    "Verdict": "PASS",
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "ReviewedCommit": "40deee8e829149f0018ec99d35cc1a19ff3ed792",
+    "Record": "evidence/linux-fallback-final-review/review.json"
+  },
+  "CandidateRestoration": "evidence/linux-fallback-final-review/restoration.json",
+  "FinalVerdictCarrier": "Ordinary non-force publication/readback and another fresh GitHub-only restoration; exact final SHA recorded in handoff to avoid self-reference."
 }

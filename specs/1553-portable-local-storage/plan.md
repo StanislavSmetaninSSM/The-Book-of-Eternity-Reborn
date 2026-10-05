@@ -4,7 +4,7 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
-## Current continuation — bounded native evidence ready for final review
+## Current continuation — bounded native prototype accepted; handoff before integration
 
 Sole writer restored exact GitHub `3e1b11c220ea3286002ea78c90e4eb4498e887dd`,
 preserving original8339e9c2 tree `c8a6734e9ce467616449c32118ecd71b470afcd8`.
@@ -34,7 +34,8 @@ and rethrows the timeout before any worker launch. Permanently stalled compiler
 forced cleanup/termination remains unqualified; an outer budget is not its proof.
 No new containment layer, broad signal or environment/security change was added.
 
-Evidence currently retains10manifests/266artifact hashes/102valid gzip files,
+Evidence retains11manifests/268artifact hashes/102valid gzip files, including final
+review and candidate-restoration records;
 18unchanged production/runner/governance boundaries and6parsed project XML files.
 All current native guardians reached actualECHILD with emergency0/alarmReaps0;
 all34recorded owned fixture PIDs are absent. The primitive has its own exclusive
@@ -42,8 +43,16 @@ ECHILD and the preparation fixture was actually waited to exit0. Build servers
 shut down successfully; no active test/helper/fixture/build process remains. Historical
 19old-VM zombies and current PID1 terminated tool zombies are not claimed reaped.
 
-Final source/evidence review and fresh GitHub-only restoration are next; tasks stay
-unchecked until those gates. No production Release/main PTY/backend Auto wiring,
+Independent actual **gpt-6.1-sol/xhigh PASS** at complete candidate
+`40deee8e829149f0018ec99d35cc1a19ff3ed792`, with no remaining actionable findings.
+Reviewer independently verified all266 pre-verdict artifact hashes,102gzip files,
+exact source/build provenance, RED/GREEN counts, cleanup and unchanged boundaries.
+Fresh GitHub-only restoration matched exact commit/tree and all5898 tracked files,
+clean checkout and connectivity fsck. [Review/restore record](recovery/evidence/linux-fallback-final-review/manifest.json).
+Only T041-FALLBACK-PROC and T041-FALLBACK-NATIVE are complete. Final verdict metadata
+is ordinarily published/read back and restored into another empty GitHub-only
+directory; exact final carrier/restore belong to handoff, without self-referential SHA.
+No tests repeat for verdict metadata. No production Release/main PTY/backend Auto wiring,
 canonical writes or live GM; Windows Job unchanged. Primary existing systemd remains
 the approved choice when qualified/available; native systemd proof is absent here.
 Only ordinary same-PID-namespace lineage is confirmed by this helper. Timeout or

@@ -14,8 +14,11 @@ WIP8339e9c2, без восстановления реализации от main.
 сценария** с точными source SHA:20 native helper,1 pidfd primitive,1 preparation.
 Все выбранные GREEN прошли; два замечания независимого Sol6.1/xhigh получили
 причинный RED→GREEN. Каталог **252/10759**,0исполнений,0пробелов. Guardian ECHILD,
-ноль аварийной очистки,34 записанных собственных PID отсутствуют. Итоговое ревью
-полного пакета и чистое GitHub-восстановление ещё ожидаются; это не полная игра.
+ноль аварийной очистки,34 записанных собственных PID отсутствуют. Итоговое независимое
+**gpt-6.1-sol/xhigh PASS** получено для `40deee8e829149f0018ec99d35cc1a19ff3ed792`.
+Чистое GitHub-only восстановление подтвердило точные commit/tree и все5898файлов.
+[Review/restore evidence](recovery/evidence/linux-fallback-final-review/manifest.json).
+Это приёмка ограниченного native prototype; полная игра остаётся вне этой проверки.
 
 Гарантия native-lineage ограничена обычными потомками в одной PID namespace;
 внешние службы/брокеры не охватываются. Timeout/lost authority остаются Uncertain,
@@ -29,7 +32,9 @@ canonical writes не менялись. Forced cleanup навсегда зави
 Текущая VM: SDK10.0.401/runtime8.0.31/**PowerShell7.5.4**, Debian13.6,
 kernel6.18.44/x86_64, GCC14.2.0-19/glibc2.41. Использована существующая активация
 `source /workspace/.onboarding/activate.sh`; сеть, credentials и security не менялись.
-Продолжение — окончательное review/readback/restore и handoff перед интеграцией.
+Текущий verdict carrier сохраняется обычным push/readback и отдельным свежим
+GitHub-only восстановлением; точный итоговый SHA передаётся в handoff без self-reference.
+Следующий шаг — handoff родителю перед отдельно назначаемой production-интеграцией.
 Исторические19 zombies в старой VM не трогали и не объявляют очищенными.
 
 ## Исторический prerequisite blocker, 2026-10-05
@@ -63,15 +68,16 @@ Runtime input-код проверен на `dc29b37d0c3e3067acf9943a048360fbba66
 ```sh
 git clone --single-branch --branch codex/1553-load-filesystem https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git boe-1553
 git -C boe-1553 rev-parse HEAD
-git -C boe-1553 merge-base --is-ancestor f0af8c4b3affe4689e675d1dc7b1f50da334fcf6 HEAD
+git -C boe-1553 merge-base --is-ancestor 40deee8e829149f0018ec99d35cc1a19ff3ed792 HEAD
 git -C boe-1553 status --porcelain
 git -C boe-1553 ls-remote origin refs/heads/codex/1553-load-filesystem
 ```
 
 Status должен быть пустым, локальный HEAD — совпадать с remote SHA; проверка
 предка должна завершиться с кодом 0. Для handoff сохранять опубликованный tip,
-содержащий этот документ; точный runtime повторяется из отдельного checkout базы
-`f0af8c4b`. Последующие docs commits находятся на той же ветке. Перед записью
+содержащий этот документ; source SHA каждого принятого блока берётся из его
+qualification. Native runtime — `3e1b11c2`, итоговые fixture/tests — `0f7b3ef3`.
+Последующие docs commits находятся на той же ветке. Перед записью
 fetch/readback текущего tip и проверка единственного writer обязательны.
 В saved environment обычный
 `git push origin HEAD:refs/heads/codex/1553-load-filesystem` работает; новых секретов
@@ -127,7 +133,7 @@ carrier итогового пакета; точный reviewed candidate и OS �
 Ordinary-save handoff хранит несколько Windows/Linux runtime-срезов: его старые
 указания «next Load» исторические. Таблица не переносит один результат на другой
 SHA или ОС. Сохранённые RED, подготовительные ошибки и неполные прогоны остаются
-в qualification. Эта таблица сохраняет прежние принятые блоки; текущий native WIP описан выше.
+в qualification. Эта таблица сохраняет прежние принятые блоки; текущий принятый native prototype описан выше.
 
 ## Что ещё не квалифицировано
 
@@ -147,9 +153,10 @@ quarantine/slot сохраняются, результат не принимае
 Saved environment подтверждает sockets/pidfd/subreaper, но прежние normal maps/
 cgroup delegation недоступны, systemd user manager не найден. Namespace не нужен
 для fallback и не объявлен единственным backend. Systemd положительно здесь не
-квалифицирован; его не устанавливают/запускают/настраивают. Design review PASS. Native helper остаётся root-only WIP: требуемый proc-children
-файл отсутствует, положительная qualification BLOCKED. Production
-Release/liveGM/canonical writes не запускались.
+квалифицирован; его не устанавливают/запускают/настраивают. Native helper получил
+bounded положительную qualification через numeric proc/stat/PPID discovery и
+exclusive wait/reap; исторический proc-children blocker снят для этой реализации.
+Production Release/liveGM/canonical writes не запускались.
 
 Открыты T041 ownership/Release/PTY и основной bridge/daemon/launcher portability,
 production run/generation/fence wiring, owner loss/reboot/unknown-stop recovery
@@ -168,13 +175,12 @@ live-browser/visual-QA gate не требуется. Аудио/clipboard/дру
 
 ## Следующий допустимый шаг
 
-Решение о двух режимах принято. По приоритетному указанию владельца остановлено
-дальнейшее проектирование до handoff audit/cleanup evidence. Следующий отдельно
-назначаемый portability-design исследует read-only proc metadata/ordinary APIs
-для перечисления только собственных детей с review identity/reap/races. Отсутствие
-одного API не отвергает fallback-стратегию. Никаких remount/security bypass,
-production pool/main Release или новых probes в этом handoff. Main merge и issue
-closure не разрешены. Полная positive fallback qualification остаётся открыта.
+Решение о двух режимах принято; portable own-child discovery и bounded native
+prototype прошли положительные проверки и независимое ревью. Передать родителю
+точный remote SHA, qualification и финальное GitHub-only восстановление. Следующий
+production integration блок назначается отдельно; T041 в целом остаётся открыт.
+Никаких remount/security bypass, production pool/main Release или новых probes в
+этом handoff. Main merge и issue closure не разрешены.
 
 Неизменные требования: бесплатная single-player игра; trusted-local-player
 storage без anti-player save protection; сохранение проверок формата/путей,

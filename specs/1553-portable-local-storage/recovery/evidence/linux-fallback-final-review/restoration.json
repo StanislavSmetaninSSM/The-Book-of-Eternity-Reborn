@@ -1,0 +1,10 @@
+{
+  "Commit": "40deee8e829149f0018ec99d35cc1a19ff3ed792",
+  "Tree": "c9abd54826233ce2c733407bfb9920019877b353",
+  "RestoredDirectory": "/workspace/restore-1553-review",
+  "Transport": "fresh clone from GitHub HTTPS only; no local source/object/cache reuse",
+  "Clean": true,
+  "TrackedFilesByteCompared": 5898,
+  "ConnectivityFsck": true,
+  "TestsExecutedForRestoration": 0
+}

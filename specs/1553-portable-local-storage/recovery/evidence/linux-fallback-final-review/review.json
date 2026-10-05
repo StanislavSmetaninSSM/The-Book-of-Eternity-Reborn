@@ -1,0 +1,57 @@
+{
+  "SchemaVersion": 1,
+  "Verdict": "PASS",
+  "ReviewedCommit": "40deee8e829149f0018ec99d35cc1a19ff3ed792",
+  "Reviewer": {
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "Agent": "/root/native_review",
+    "Independent": true,
+    "ReadOnly": true
+  },
+  "Scope": "Bounded repo-built Linux native prototype for ordinary same-PID-namespace lineage; no production integration acceptance.",
+  "RemainingActionableFindings": [],
+  "ResolvedFindings": [
+    {
+      "Severity": "P2",
+      "Finding": "Spawn fixture could lose TERM between flag check and pause.",
+      "Correction": "Block SIGTERM around check, use sigsuspend for atomic unmask/wait, restore mask before fork.",
+      "CausalEvidence": "Spawn boundary RED:1 PASS/1 FAIL at cd91d22d; affected final corrections4/4 PASS at0f7b3ef3."
+    },
+    {
+      "Severity": "P2",
+      "Finding": "Compilation observation timeout disposed the process handle without retaining actual exit/drains.",
+      "Correction": "Retain uncancelled actual exit and output drains; log completion then rethrow preparation timeout before worker launch.",
+      "CausalEvidence": "Finite direct preparation RED:0 PASS/1 FAIL atc41dc9c1; affected final corrections4/4 PASS at0f7b3ef3. Permanently stalled compiler forced cleanup remains unqualified."
+    }
+  ],
+  "Verified": {
+    "DistinctQualifyingScenarios": 22,
+    "PassingGreenExecutions": 23,
+    "FinalCorrectionsPassed": 4,
+    "FinalCorrectionsExecuted": 4,
+    "Manifests": 10,
+    "ArtifactHashes": 266,
+    "ValidGzipFiles": 102,
+    "ExactCommitSourceInputs": 48,
+    "NativeBuildProvenanceRecords": 27,
+    "GuardianReports": 26,
+    "CatalogCategories": 252,
+    "CatalogMethodsFiles": 10759,
+    "CatalogExecuted": 0,
+    "CatalogUnmapped": 0,
+    "CatalogStale": 0,
+    "RestoredFilesByteIdentical": 5898,
+    "UnchangedBoundaries": 18,
+    "ParsedProjectXml": 6
+  },
+  "Cleanup": "Current fixtures retain actual ECHILD and owned cleanup. Only historical deliberate-helper-crash bootstrap report has emergency1. Historical zombies are not claimed reaped.",
+  "NotAccepted": [
+    "Production integration",
+    "Positive native systemd qualification",
+    "Native Windows requalification",
+    "Forced termination of permanently stalled compilation",
+    "External broker/service or outside-lineage/PID-namespace containment"
+  ],
+  "ReviewerExecution": "Read-only inspection; no tests or native probes run."
+}

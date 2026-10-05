@@ -1,0 +1,16 @@
+{
+  "SchemaVersion": 1,
+  "ReviewedCommit": "40deee8e829149f0018ec99d35cc1a19ff3ed792",
+  "Artifacts": [
+    {
+      "Path": "restoration.json",
+      "Bytes": 376,
+      "Sha256": "d29f8e85c8ff554a5c71f055434a8d0da7bc2cca8bbdaaa1398368627ac390ab"
+    },
+    {
+      "Path": "review.json",
+      "Bytes": 2433,
+      "Sha256": "f2b82c85bb4b8d1c07bd00f4d32168f5bfb79ae8c5625f755be89be18e18c0f7"
+    }
+  ]
+}
