@@ -280,12 +280,23 @@ public sealed partial class GmWorkerApplyGate
         {
             if (rollback.Count > 0)
             {
-                durableTransaction = await _fs.BeginWorkerApplyTransactionAsync(
-                    writeLease,
-                    rollback.Select(entry => new CanonicalWorkerApplyChange(
-                        entry.Path,
-                        entry.BaselineBytes,
-                        entry.AppliedBytes)).ToArray());
+                try
+                {
+                    durableTransaction = await _fs.BeginWorkerApplyTransactionAsync(
+                        writeLease,
+                        rollback.Select(entry => new CanonicalWorkerApplyChange(
+                            entry.Path,
+                            entry.BaselineBytes,
+                            entry.AppliedBytes)).ToArray());
+                }
+                catch (WorkerApplyAdmissionConflictException conflict)
+                {
+                    var reasons = new[] { conflict.Message };
+                    return BuildDecision(proposal.ProposalId, ApplyGateResult.Rejected, checkedPaths,
+                        scopePassed: false, violations: reasons,
+                        validationRequired: profile.Permissions.RequiresValidation, validationPassed: false,
+                        issueCount: 0, appliedFiles: [], rejectionReasons: reasons);
+                }
             }
 
             // Begin publishes the complete member set under one pending B1 decision.

@@ -82,6 +82,23 @@ whole base64 JSON payload buffers; a 16 MiB After/32 MiB Before test checks that
 bounded envelope, without claiming a new resource benchmark. Candidate correction tests
 are saved RED-first; production remains at the first candidate pending their execution.
 
+Review regression RED at `9120aed5`: **0/5**, all intended failures, no skips/duplicates,
+complete cleanup,1:47.831 including fresh build. The correction now distinguishes safe
+pre-intent baseline rejection from publication uncertainty, guards direct empty-parent
+pruning, retains immutable before-images plus an intent-published marker for complete
+rollback confirmation, and uses existing v2 streaming. Shared immediate publishers again
+perform exactly one precommit full-set preflight. Active guides/examples/matrix/launcher
+operational text distinguish portable B1 from original worker evidence; no gameplay or
+GM-authored payload changes. Exact consumer/continuation/docs/shared owners and reasons
+are now in tests/selection.json; core run has its own bounded selection.
+
+Publication incidents are retained in [worker-operation-incidents.json](recovery/worker-operation-incidents.json).
+The 02:53 update_ref cancellation left the branch at b3a0598d; one exact user-authorized
+retry succeeded and readback verified9120aed5. The first reconciliation/test invocation
+was automatically cancelled before any shell output or runner directory; one authorized
+same-permission retry produced the actual RED above. No authentication change or alternate
+route was used. The next saved candidate is unverified until its actual GREEN run.
+
 1. Diagnose the original Begin failure with a causal test: force the existing
    unsupported before-image backend and a distinct cleanup failure, require both
    exceptions in initiating-first order, and retain the real Linux worker/load

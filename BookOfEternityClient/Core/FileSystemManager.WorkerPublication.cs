@@ -1,5 +1,8 @@
 namespace BookOfEternityClient.Core;
 
+internal sealed class WorkerApplyAdmissionConflictException(string path)
+    : InvalidOperationException($"canonical file changed concurrently before worker apply: {path}.");
+
 public partial class FileSystemManager
 {
     /// <summary>Applies the whole ordinary worker set under a pending B1 decision, retaining the caller's lease for validation.</summary>
@@ -38,6 +41,11 @@ public partial class FileSystemManager
                 await InvokeAfterCanonicalMutationBoundaryValidatedAsync(change.Path);
             }
             VerifyCurrentSessionOperation(writeLease);
+            // Only this complete, pre-intent comparison establishes a safe rejection.
+            // Publication/recovery errors after intent remain distinct and may be uncertain.
+            foreach (var change in changes)
+                if (!ExactBytesEqual(await ReadLocalFileBytesAsync(writeLease, change.Path), change.BaselineBytes))
+                    throw new WorkerApplyAdmissionConflictException(change.Path);
             var publisher = new TrustedLocalFilePublication(this, scope);
             var decision = publisher.BeginDeferred(writeLease, TrustedLocalGeneration.Existing(generation), members,
                 _hooks?.LocalPublicationObserver);

@@ -156,7 +156,12 @@ and only then release the slot. Before release, the reaper durably records one
 stable-id `process-tree-cleanup-confirmed` event through an idempotent
 generation-bound canonical append; after generation replacement it uses a
 create-only retained `.worker_runtime/quarantine-audit/<eventId>.json` receipt.
-An uncertain audit write retains the same entry and slot for retry. Canonical writers recover
+An uncertain audit write retains the same entry and slot for retry. Ordinary worker apply uses
+one deferred B1 decision in `.boe_runtime/trusted-local-publication-v1`: keep the canonical
+lease through validation, reject nested mutation/recovery, and confirm all before-images
+before declaring rollback. Committed cleanup never undoes accepted bytes. Original
+worker journals require their original supported handler or block continuation.
+Canonical writers recover
 an interrupted load and the durable `.boe_runtime/worker-apply-transactions`
 journal after lease acquisition or fail closed; state refresh holds the same
 lease across its complete read/modify/write.

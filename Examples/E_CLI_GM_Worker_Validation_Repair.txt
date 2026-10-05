@@ -275,7 +275,7 @@ complete, the previous backup and journal remain available for startup recovery.
 Refresh and client-owned mirror repair are one lease-scoped read/modify/write.
 Every canonical writer must recover an interrupted load transaction immediately after acquiring the canonical write lease
 or fail closed before touching live state. The apply gate does not use a replaceable lock inside
-`game_session`. Worker apply uses an external durable journal under
+`game_session`. Original worker apply uses an external durable journal under
 `.boe_runtime/worker-apply-transactions`; intent, exact before-images, and
 expected applied hashes are persisted before the first canonical write. Every
 canonical writer recovers an interrupted worker apply transaction after lease
@@ -284,6 +284,17 @@ journal cleanup cannot roll back accepted bytes and may be retried later.
 The production apply gate always receives the real `ValidationService`. A
 scope-valid proposal that leaves any production validation issue is rolled back
 to the exact original bytes; there is no runtime empty-validator mode.
+
+Ordinary worker apply (#1553) uses the existing `.boe_runtime/trusted-local-publication-v1`
+B1 journal with a v2 self-contained frame and one deferred worker decision. The complete
+member set is pending while the same canonical lease holds validation and ownership
+checks; only that exact lease/transaction can commit or roll back. Nested publication,
+recovery and empty-parent cleanup are refused during that decision. Recovery preflights
+the whole set and preserves unknown bytes/evidence; rollback is confirmed only against
+all exact before-images and generation. A late cleanup failure cannot revoke commitment.
+Original `.boe_runtime/worker-apply-transactions` evidence is retained for its original
+supported handler or blocks mutation; it is never reinterpreted as a B1 journal. This
+storage change adds no GM-authored command, field or gameplay mechanic.
 
 Worker response proposal:
 

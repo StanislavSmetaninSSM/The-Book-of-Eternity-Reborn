@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="30f305c9-a89f-4f3c-99c3-79c76404732b" name="@95e438a3e5cb 2026-10-04 23:01:21" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-04T23:01:21.3224168-04:00" queuing="2026-10-04T23:01:21.3224168-04:00" start="2026-10-04T23:01:19.1902212-04:00" finish="2026-10-04T23:01:21.7246008-04:00" />
+  <TestSettings name="default" id="d3679131-bcf1-4bf5-b9b9-0b21c5110475">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-04_23_01_21" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="dea6dcc3-bd53-418e-b326-305a78e9de14" testId="f504dfbe-2d1d-f87a-79ce-9020e8526cc8" testName="BookOfEternityClient.Tests.PortableWorkerTransactionTests.ImportedEnvelopeAndLargerBaselinesUseStreamedDecision(commit: True)" computerName="95e438a3e5cb" duration="00:00:00.2568337" startTime="2026-10-04T23:01:21.5152724-04:00" endTime="2026-10-04T23:01:21.5152726-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dea6dcc3-bd53-418e-b326-305a78e9de14">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Collections differ
+           ↓ (pos 0)
+Expected: [66, 79, 69, 76, 80, ···]
+Actual:   [123, 34, 70, 111, 114, ···]
+           ↑ (pos 0)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableWorkerTransactionTests.ImportedEnvelopeAndLargerBaselinesUseStreamedDecision(Boolean commit) in [checkout]/BookOfEternityClient.Tests/PortableWorkerTransactionTests.cs:line 271
+   at BookOfEternityClient.Tests.PortableWorkerTransactionTests.ImportedEnvelopeAndLargerBaselinesUseStreamedDecision(Boolean commit) in [checkout]/BookOfEternityClient.Tests/PortableWorkerTransactionTests.cs:line 276
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c4e8d048-8235-42e3-a980-6ba76695f50c" testId="8b6800d0-30d6-924e-771e-c22683672780" testName="BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDeletionRefusesEmptyParentRemovalBeforeRollback" computerName="95e438a3e5cb" duration="00:00:00.0863893" startTime="2026-10-04T23:01:20.9098678-04:00" endTime="2026-10-04T23:01:20.9098903-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c4e8d048-8235-42e3-a980-6ba76695f50c">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.InvalidOperationException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDeletionRefusesEmptyParentRemovalBeforeRollback() in [checkout]/BookOfEternityClient.Tests/PortableWorkerTransactionTests.cs:line 288
+   at BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDeletionRefusesEmptyParentRemovalBeforeRollback() in [checkout]/BookOfEternityClient.Tests/PortableWorkerTransactionTests.cs:line 292
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="18822d85-79f1-42f1-9842-675301e280b0" testId="43d958f9-6358-a0ef-6229-93a08c2ab0ce" testName="BookOfEternityClient.Tests.PortableWorkerTransactionTests.LostPendingEvidenceCannotConfirmRollbackOrClearWriteGuard" computerName="95e438a3e5cb" duration="00:00:00.0170399" startTime="2026-10-04T23:01:21.5355355-04:00" endTime="2026-10-04T23:01:21.5355357-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="18822d85-79f1-42f1-9842-675301e280b0">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.AggregateException)
+Actual:   typeof(System.IO.IOException)
+---- System.IO.IOException : worker decision evidence disappeared</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableWorkerTransactionTests.LostPendingEvidenceCannotConfirmRollbackOrClearWriteGuard() in [checkout]/BookOfEternityClient.Tests/PortableWorkerTransactionTests.cs:line 249
+   at BookOfEternityClient.Tests.PortableWorkerTransactionTests.LostPendingEvidenceCannotConfirmRollbackOrClearWriteGuard() in [checkout]/BookOfEternityClient.Tests/PortableWorkerTransactionTests.cs:line 254
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Tests.PortableWorkerTransactionTests.&lt;&gt;c__DisplayClass31_0.&lt;LostPendingEvidenceCannotConfirmRollbackOrClearWriteGuard&gt;b__0(TrustedLocalPublicationPhase phase, Int32 index) in [checkout]/BookOfEternityClient.Tests/PortableWorkerTransactionTests.cs:line 245
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 523
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.ApplyMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 299
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.DeferredDecision.Begin(TrustedLocalFilePublication owner, CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Deferred.cs:line 43
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.BeginDeferred(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Deferred.cs:line 9
+   at BookOfEternityClient.Core.FileSystemManager.BeginWorkerApplyTransactionAsync(CanonicalWriteLease writeLease, IReadOnlyList`1 changes) in [checkout]/BookOfEternityClient/Core/FileSystemManager.WorkerPublication.cs:line 42</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d55694bd-bfb9-420e-adc1-128bec35e508" testId="c30006c7-3ab6-4169-867b-02937c47c6a8" testName="BookOfEternityClient.Tests.PortableWorkerTransactionTests.ImportedEnvelopeAndLargerBaselinesUseStreamedDecision(commit: False)" computerName="95e438a3e5cb" duration="00:00:00.3517987" startTime="2026-10-04T23:01:21.2578635-04:00" endTime="2026-10-04T23:01:21.2578637-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d55694bd-bfb9-420e-adc1-128bec35e508">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Collections differ
+           ↓ (pos 0)
+Expected: [66, 79, 69, 76, 80, ···]
+Actual:   [123, 34, 70, 111, 114, ···]
+           ↑ (pos 0)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableWorkerTransactionTests.ImportedEnvelopeAndLargerBaselinesUseStreamedDecision(Boolean commit) in [checkout]/BookOfEternityClient.Tests/PortableWorkerTransactionTests.cs:line 271
+   at BookOfEternityClient.Tests.PortableWorkerTransactionTests.ImportedEnvelopeAndLargerBaselinesUseStreamedDecision(Boolean commit) in [checkout]/BookOfEternityClient.Tests/PortableWorkerTransactionTests.cs:line 276
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="951dba8f-f2e8-4d78-abe0-3d8c74417f10" testId="304c37c7-25f4-b408-b8a1-20da0a592739" testName="BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_PreparationBaselineConflictReturnsRejectedWithoutDecisionEvidence" computerName="95e438a3e5cb" duration="00:00:00.1172962" startTime="2026-10-04T23:01:21.6586907-04:00" endTime="2026-10-04T23:01:21.6586909-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="951dba8f-f2e8-4d78-abe0-3d8c74417f10">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException : A publication member does not match its expected before image.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFilePublication.ApplyMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 269
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.DeferredDecision.Begin(TrustedLocalFilePublication owner, CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Deferred.cs:line 43
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.BeginDeferred(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Deferred.cs:line 9
+   at BookOfEternityClient.Core.FileSystemManager.BeginWorkerApplyTransactionAsync(CanonicalWriteLease writeLease, IReadOnlyList`1 changes) in [checkout]/BookOfEternityClient/Core/FileSystemManager.WorkerPublication.cs:line 42
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerApplyGate.ApplyWithinCanonicalLeaseAsync(WorkerProposal proposal, WorkerTaskPacket task, WorkerBridgeProfile profile, IReadOnlyList`1 checkedPaths, IReadOnlyDictionary`2 capturedContents, CanonicalWriteLease writeLease) in [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs:line 283
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerApplyGate.ApplyWithinCanonicalLeaseAsync(WorkerProposal proposal, WorkerTaskPacket task, WorkerBridgeProfile profile, IReadOnlyList`1 checkedPaths, IReadOnlyDictionary`2 capturedContents, CanonicalWriteLease writeLease) in [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs:line 365
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerApplyGate.ApplyAuthoritativeTaskWithinCanonicalLeaseAsync(WorkerProposal proposal, WorkerTaskPacket task, WorkerBridgeProfile profile, IReadOnlyList`1 checkedPaths, CanonicalWriteLease writeLease) in [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs:line 208
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerApplyGate.ApplyReservedAsync(WorkerProposal proposal, WorkerBridgeProfile profile, String expectedSessionGeneration) in [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs:line 109
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerApplyGate.ApplyReservedAsync(WorkerProposal proposal, WorkerBridgeProfile profile, String expectedSessionGeneration) in [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs:line 128
+   at BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_PreparationBaselineConflictReturnsRejectedWithoutDecisionEvidence() in [checkout]/BookOfEternityClient.Tests/GmWorkerApplyGateTests.cs:line 223
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_PreparationBaselineConflictReturnsRejectedWithoutDecisionEvidence" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="304c37c7-25f4-b408-b8a1-20da0a592739">
+      <Execution id="951dba8f-f2e8-4d78-abe0-3d8c74417f10" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerApplyGateTests" name="ApplyAsync_PreparationBaselineConflictReturnsRejectedWithoutDecisionEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDeletionRefusesEmptyParentRemovalBeforeRollback" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8b6800d0-30d6-924e-771e-c22683672780">
+      <Execution id="c4e8d048-8235-42e3-a980-6ba76695f50c" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableWorkerTransactionTests" name="PendingDeletionRefusesEmptyParentRemovalBeforeRollback" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableWorkerTransactionTests.LostPendingEvidenceCannotConfirmRollbackOrClearWriteGuard" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="43d958f9-6358-a0ef-6229-93a08c2ab0ce">
+      <Execution id="18822d85-79f1-42f1-9842-675301e280b0" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableWorkerTransactionTests" name="LostPendingEvidenceCannotConfirmRollbackOrClearWriteGuard" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableWorkerTransactionTests.ImportedEnvelopeAndLargerBaselinesUseStreamedDecision(commit: False)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c30006c7-3ab6-4169-867b-02937c47c6a8">
+      <Execution id="d55694bd-bfb9-420e-adc1-128bec35e508" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableWorkerTransactionTests" name="ImportedEnvelopeAndLargerBaselinesUseStreamedDecision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableWorkerTransactionTests.ImportedEnvelopeAndLargerBaselinesUseStreamedDecision(commit: True)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f504dfbe-2d1d-f87a-79ce-9020e8526cc8">
+      <Execution id="dea6dcc3-bd53-418e-b326-305a78e9de14" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableWorkerTransactionTests" name="ImportedEnvelopeAndLargerBaselinesUseStreamedDecision" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="f504dfbe-2d1d-f87a-79ce-9020e8526cc8" executionId="dea6dcc3-bd53-418e-b326-305a78e9de14" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8b6800d0-30d6-924e-771e-c22683672780" executionId="c4e8d048-8235-42e3-a980-6ba76695f50c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="43d958f9-6358-a0ef-6229-93a08c2ab0ce" executionId="18822d85-79f1-42f1-9842-675301e280b0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c30006c7-3ab6-4169-867b-02937c47c6a8" executionId="d55694bd-bfb9-420e-adc1-128bec35e508" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="304c37c7-25f4-b408-b8a1-20da0a592739" executionId="951dba8f-f2e8-4d78-abe0-3d8c74417f10" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="5" executed="5" passed="0" failed="5" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.14]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.08]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.09]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.37]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:01.37]       Expected: typeof(System.InvalidOperationException)
+[xUnit.net 00:00:01.38]       Stack Trace:
+[xUnit.net 00:00:01.38]         [checkout]/BookOfEternityClient.Tests/PortableWorkerTransactionTests.cs(288,0): at BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDeletionRefusesEmptyParentRemovalBeforeRollback()
+[xUnit.net 00:00:01.38]         [checkout]/BookOfEternityClient.Tests/PortableWorkerTransactionTests.cs(292,0): at BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDeletionRefusesEmptyParentRemovalBeforeRollback()
+[xUnit.net 00:00:01.38]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.72]       Assert.Equal() Failure: Collections differ
+[xUnit.net 00:00:01.72]                  ↓ (pos 0)
+[xUnit.net 00:00:01.72]       Expected: [66, 79, 69, 76, 80, ···]
+[xUnit.net 00:00:01.72]       Actual:   [123, 34, 70, 111, 114, ···]
+[xUnit.net 00:00:01.72]                  ↑ (pos 0)
+[xUnit.net 00:00:01.72]       Stack Trace:
+[xUnit.net 00:00:01.72]         [checkout]/BookOfEternityClient.Tests/PortableWorkerTransactionTests.cs(271,0): at BookOfEternityClient.Tests.PortableWorkerTransactionTests.ImportedEnvelopeAndLargerBaselinesUseStreamedDecision(Boolean commit)
+[xUnit.net 00:00:01.72]         [checkout]/BookOfEternityClient.Tests/PortableWorkerTransactionTests.cs(276,0): at BookOfEternityClient.Tests.PortableWorkerTransactionTests.ImportedEnvelopeAndLargerBaselinesUseStreamedDecision(Boolean commit)
+[xUnit.net 00:00:01.72]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.98]       Assert.Equal() Failure: Collections differ
+[xUnit.net 00:00:01.98]                  ↓ (pos 0)
+[xUnit.net 00:00:01.98]       Expected: [66, 79, 69, 76, 80, ···]
+[xUnit.net 00:00:01.98]       Actual:   [123, 34, 70, 111, 114, ···]
+[xUnit.net 00:00:01.98]                  ↑ (pos 0)
+[xUnit.net 00:00:01.98]       Stack Trace:
+[xUnit.net 00:00:01.98]         [checkout]/BookOfEternityClient.Tests/PortableWorkerTransactionTests.cs(271,0): at BookOfEternityClient.Tests.PortableWorkerTransactionTests.ImportedEnvelopeAndLargerBaselinesUseStreamedDecision(Boolean commit)
+[xUnit.net 00:00:01.98]         [checkout]/BookOfEternityClient.Tests/PortableWorkerTransactionTests.cs(276,0): at BookOfEternityClient.Tests.PortableWorkerTransactionTests.ImportedEnvelopeAndLargerBaselinesUseStreamedDecision(Boolean commit)
+[xUnit.net 00:00:01.98]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.00]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:02.00]       Expected: typeof(System.AggregateException)
+[xUnit.net 00:00:02.00]       Actual:   typeof(System.IO.IOException)
+[xUnit.net 00:00:02.00]       ---- System.IO.IOException : worker decision evidence disappeared
+[xUnit.net 00:00:02.00]       Stack Trace:
+[xUnit.net 00:00:02.00]         [checkout]/BookOfEternityClient.Tests/PortableWorkerTransactionTests.cs(249,0): at BookOfEternityClient.Tests.PortableWorkerTransactionTests.LostPendingEvidenceCannotConfirmRollbackOrClearWriteGuard()
+[xUnit.net 00:00:02.00]         [checkout]/BookOfEternityClient.Tests/PortableWorkerTransactionTests.cs(254,0): at BookOfEternityClient.Tests.PortableWorkerTransactionTests.LostPendingEvidenceCannotConfirmRollbackOrClearWriteGuard()
+[xUnit.net 00:00:02.00]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.00]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:02.00]         [checkout]/BookOfEternityClient.Tests/PortableWorkerTransactionTests.cs(245,0): at BookOfEternityClient.Tests.PortableWorkerTransactionTests.&lt;&gt;c__DisplayClass31_0.&lt;LostPendingEvidenceCannotConfirmRollbackOrClearWriteGuard&gt;b__0(TrustedLocalPublicationPhase phase, Int32 index)
+[xUnit.net 00:00:02.00]         [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(523,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index)
+[xUnit.net 00:00:02.00]         [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(299,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.ApplyMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt)
+[xUnit.net 00:00:02.00]         [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Deferred.cs(43,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.DeferredDecision.Begin(TrustedLocalFilePublication owner, CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer)
+[xUnit.net 00:00:02.00]         [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Deferred.cs(9,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.BeginDeferred(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer)
+[xUnit.net 00:00:02.00]         [checkout]/BookOfEternityClient/Core/FileSystemManager.WorkerPublication.cs(42,0): at BookOfEternityClient.Core.FileSystemManager.BeginWorkerApplyTransactionAsync(CanonicalWriteLease writeLease, IReadOnlyList`1 changes)
+[xUnit.net 00:00:02.13]       System.IO.InvalidDataException : A publication member does not match its expected before image.
+[xUnit.net 00:00:02.13]       Stack Trace:
+[xUnit.net 00:00:02.13]         [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(269,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.ApplyMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt)
+[xUnit.net 00:00:02.13]         [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Deferred.cs(43,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.DeferredDecision.Begin(TrustedLocalFilePublication owner, CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer)
+[xUnit.net 00:00:02.13]         [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Deferred.cs(9,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.BeginDeferred(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer)
+[xUnit.net 00:00:02.13]         [checkout]/BookOfEternityClient/Core/FileSystemManager.WorkerPublication.cs(42,0): at BookOfEternityClient.Core.FileSystemManager.BeginWorkerApplyTransactionAsync(CanonicalWriteLease writeLease, IReadOnlyList`1 changes)
+[xUnit.net 00:00:02.13]         [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs(283,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerApplyGate.ApplyWithinCanonicalLeaseAsync(WorkerProposal proposal, WorkerTaskPacket task, WorkerBridgeProfile profile, IReadOnlyList`1 checkedPaths, IReadOnlyDictionary`2 capturedContents, CanonicalWriteLease writeLease)
+[xUnit.net 00:00:02.13]         [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs(365,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerApplyGate.ApplyWithinCanonicalLeaseAsync(WorkerProposal proposal, WorkerTaskPacket task, WorkerBridgeProfile profile, IReadOnlyList`1 checkedPaths, IReadOnlyDictionary`2 capturedContents, CanonicalWriteLease writeLease)
+[xUnit.net 00:00:02.13]         [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs(208,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerApplyGate.ApplyAuthoritativeTaskWithinCanonicalLeaseAsync(WorkerProposal proposal, WorkerTaskPacket task, WorkerBridgeProfile profile, IReadOnlyList`1 checkedPaths, CanonicalWriteLease writeLease)
+[xUnit.net 00:00:02.13]         [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs(109,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerApplyGate.ApplyReservedAsync(WorkerProposal proposal, WorkerBridgeProfile profile, String expectedSessionGeneration)
+[xUnit.net 00:00:02.13]         [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs(128,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerApplyGate.ApplyReservedAsync(WorkerProposal proposal, WorkerBridgeProfile profile, String expectedSessionGeneration)
+[xUnit.net 00:00:02.13]         [checkout]/BookOfEternityClient.Tests/GmWorkerApplyGateTests.cs(223,0): at BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_PreparationBaselineConflictReturnsRejectedWithoutDecisionEvidence()
+[xUnit.net 00:00:02.13]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.13]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T23:01:20.9085944-04:00">
+        <Text>[xUnit.net 00:00:01.37]     BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDeletionRefusesEmptyParentRemovalBeforeRollback [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T23:01:21.2580867-04:00">
+        <Text>[xUnit.net 00:00:01.72]     BookOfEternityClient.Tests.PortableWorkerTransactionTests.ImportedEnvelopeAndLargerBaselinesUseStreamedDecision(commit: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T23:01:21.5155913-04:00">
+        <Text>[xUnit.net 00:00:01.98]     BookOfEternityClient.Tests.PortableWorkerTransactionTests.ImportedEnvelopeAndLargerBaselinesUseStreamedDecision(commit: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T23:01:21.5356539-04:00">
+        <Text>[xUnit.net 00:00:02.00]     BookOfEternityClient.Tests.PortableWorkerTransactionTests.LostPendingEvidenceCannotConfirmRollbackOrClearWriteGuard [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T23:01:21.6588841-04:00">
+        <Text>[xUnit.net 00:00:02.12]     BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_PreparationBaselineConflictReturnsRejectedWithoutDecisionEvidence [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

@@ -2,6 +2,96 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-worker-consumers",
+      "responsibility": "Actual worker gate acceptance/production validation/rollback, reserved-task and generation authority, foreign-byte conflicts, read-only realm/characteristic witnesses, audit and cooperating writer serialization.",
+      "excludes": "Worker process/IPC migration, whole gameplay and unrelated contracts.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_ProductionValidationFailureRestoresOriginalBytes",
+            "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyReservedAsync_UsesCanonicalReservedTaskAsAuthority",
+            "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_AcceptsAllowedProposalAndWritesCanonicalFile",
+            "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_RollsBackAllowedProposalWhenValidationFails",
+            "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_StaleTaskContextWithBomOnlyByteDifference_IsRejectedWithoutChangingCanonicalFile",
+            "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_TaskFromPriorSessionGenerationIsRejectedEvenWhenProposalBytesAreRestored",
+            "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_ValidationFailureDoesNotRollbackOverConcurrentCanonicalMutation",
+            "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_CanonicalMutationAfterContextReadWinsOverWorkerProposal",
+            "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_RollbackCasDoesNotOverwriteMutationAfterOwnershipRead",
+            "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_WhenAuditLogProvided_RecordsApplyDecision",
+            "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_AcceptedCanonicalCommitSurvivesAuditPublicationFailure",
+            "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_ActorMaterializationRepairChangingOnlyNamedSection_IsAccepted",
+            "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_CharacteristicAuthorityMutationDuringValidationRejectsAndRollsBackTarget",
+            "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_CooperatingRealmAuthorityWriterWaitsUntilAcceptedLinearizationPoint",
+            "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_RealmAuthorityMutationDuringValidationRejectsAndRollsBackTarget"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-worker-continuation",
+      "responsibility": "Five actual spiritual continuation worker consumers of the ordinary decision boundary. Preserve original C2 prerequisites and report pre-worker failures separately.",
+      "excludes": "Worker process/IPC migration, whole gameplay and unrelated contracts.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_DecisionWithoutChangedFilesUsesCurrentOwner",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_DependentCostsUseCurrentDiagnosticsAndRollback",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_MaterializeIsComposedBeforeNarrativeApply",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_PublicTaskCannotAuthorizePrivateOrUnrelatedChanges",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_ReadyPublishedDuringExecutionPreventsNarrativeApply"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-worker-docs",
+      "responsibility": "Active worker operational guidance, original-handler separation and exact source guards after the portable storage cutover.",
+      "excludes": "Worker process/IPC migration, whole gameplay and unrelated contracts.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentReservedAuthorityAndSessionReplacementAbort",
+            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.DurableFileAuthoritySourceGuard_RejectsPathBasedRuntimeMutations",
+            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.MainGmPrompt_DocumentsExplicitWorkerDelegationFlow"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-worker-admission",
       "responsibility": "Causal worker review regressions: typed safe preparation rejection, proof of complete rollback before clearing the decision guard, and streamed 16 MiB imported/32 MiB baseline envelope.",
       "excludes": "Full resource benchmark, whole gameplay/GM and platform acceptance.",

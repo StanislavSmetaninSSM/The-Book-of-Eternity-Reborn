@@ -103,7 +103,7 @@ public sealed partial class PortableWorkerTransactionTests : IDisposable
     {
         Seed(C, [9]);
         await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();
-        await Assert.ThrowsAsync<InvalidDataException>(() => _files.BeginWorkerApplyTransactionAsync(lease, Changes));
+        await Assert.ThrowsAsync<WorkerApplyAdmissionConflictException>(() => _files.BeginWorkerApplyTransactionAsync(lease, Changes));
         Assert.Equal(Before, File.ReadAllBytes(_files.ResolvePath(A)));
         Assert.False(File.Exists(_files.ResolvePath(B)));
         Assert.Equal(new byte[] { 9 }, File.ReadAllBytes(_files.ResolvePath(C)));

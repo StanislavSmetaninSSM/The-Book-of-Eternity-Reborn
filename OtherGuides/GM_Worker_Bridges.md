@@ -259,7 +259,7 @@ creating session directories, and rollback failure preserves the last valid
 backup plus journal for a later retry. State refresh and client-owned mirror
 repair use one lease-scoped read/modify/write instead of reading before lease
 acquisition or trying to reacquire it. Every canonical writer must recover an interrupted load transaction immediately after acquiring the canonical write lease
-or fail closed before touching live state. Worker apply uses an external durable
+or fail closed before touching live state. Original worker apply uses an external durable
 journal under `.boe_runtime/worker-apply-transactions`: intent, exact before-images,
 and expected applied hashes are durable before the first canonical mutation.
 Every canonical writer recovers an interrupted worker apply transaction after
@@ -268,6 +268,17 @@ accepted canonical bytes authoritative; committed journal cleanup cannot roll
 back accepted bytes and may be retried later. Detached runtime cleanup
 never follows reparse points. A cleanup failure is an audit diagnostic and does
 not replace an already completed, timed-out, or rejected worker result.
+
+Ordinary worker apply (#1553) uses the existing `.boe_runtime/trusted-local-publication-v1`
+B1 journal with a v2 self-contained frame and one deferred worker decision. The complete
+member set is pending while the same canonical lease holds validation and ownership
+checks; only that exact lease/transaction can commit or roll back. Nested publication,
+recovery and empty-parent cleanup are refused during that decision. Recovery preflights
+the whole set and preserves unknown bytes/evidence; rollback is confirmed only against
+all exact before-images and generation. A late cleanup failure cannot revoke commitment.
+Original `.boe_runtime/worker-apply-transactions` evidence is retained for its original
+supported handler or blocks mutation; it is never reinterpreted as a B1 journal. This
+storage change adds no GM-authored command, field or gameplay mechanic.
 
 A proposal becomes applyable only after confirmed zero exit and confirmed process-tree termination.
 A timeout, cancellation, nonzero exit, missing exit

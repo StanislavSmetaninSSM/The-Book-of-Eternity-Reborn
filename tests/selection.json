@@ -1,7 +1,75 @@
 {
   "schemaVersion": 1,
   "selections": [
-    {"category": "portable-worker-diagnostic", "reason": "T031 worker primary/cleanup causal diagnosis", "contracts": ["#1553 FR-005/007 T031-WORKER-PORTABLE"]},
-    {"category": "portable-load-worker-ordering", "reason": "Retained real worker decision versus public Load ordering", "contracts": ["#1553 FR-006 T031-WORKER-PORTABLE"]}
+    {
+      "category": "portable-worker-transaction",
+      "reason": "Deferred B1 worker decision, generation/identity/nesting, actual cold and current envelope cases.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    },
+    {
+      "category": "portable-worker-admission",
+      "reason": "Review-driven causal safe rejection, lost evidence, empty-parent guard and streamed envelope.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    },
+    {
+      "category": "portable-worker-diagnostic",
+      "reason": "Preserve both initiating original-backend and private cleanup failures.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    },
+    {
+      "category": "portable-load-worker-ordering",
+      "reason": "Real worker decision serializes public Load and preserves the original positive result assertions.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    },
+    {
+      "category": "portable-worker-consumers",
+      "reason": "Affected actual worker gate validation, ownership, history and audit consumers.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    },
+    {
+      "category": "portable-worker-continuation",
+      "reason": "Affected actual spiritual continuation postflight consumers; no claim that their other prerequisites are migrated.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    },
+    {
+      "category": "portable-worker-docs",
+      "reason": "Synchronize client-owned operational storage guidance and original journal separation.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    },
+    {
+      "category": "portable-storage-publication",
+      "reason": "Shared ApplyMembers/CommitMembers/RecoverCore factoring and nested guard entrance.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    },
+    {
+      "category": "portable-storage-stream-publication",
+      "reason": "Shared v2 member publication and recovery factoring; no resource envelope rerun.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    },
+    {
+      "category": "portable-storage-original-v1-fixtures",
+      "reason": "Original v1 recovery reader remains compatible through the factored recovery entrance.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    }
   ]
 }

@@ -476,6 +476,16 @@ public sealed class GmWorkerBridgeDocumentationTests
             Assert.Contains("applyable proposal", normalizedSource, StringComparison.OrdinalIgnoreCase);
         }
 
+        foreach (var source in new[] { guide, contract, repair, afterlifeMatrix })
+        {
+            var portable = string.Join(' ', source.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+            Assert.Contains("one deferred worker decision", portable, StringComparison.Ordinal);
+            Assert.Contains(".boe_runtime/trusted-local-publication-v1", portable, StringComparison.Ordinal);
+            Assert.Contains("it is never reinterpreted as a B1 journal", portable, StringComparison.Ordinal);
+        }
+        foreach (var source in new[] { mainGmPrompt, mainGmPromptGenerator })
+            Assert.Contains("one deferred B1 decision", source, StringComparison.Ordinal);
+
         var normalizedAfterlifeMatrix = string.Join(
             ' ',
             afterlifeMatrix.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));

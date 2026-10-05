@@ -92,6 +92,7 @@ public partial class FileSystemManager
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(relativePath);
         VerifyCurrentSessionOperation(lease);
+        lease.EnsureNoPendingLocalDecision();
         if (!UsesTrustedLocalWriter(lease, relativePath))
             throw new InvalidOperationException("Empty structure normalization cannot alter a legacy transaction namespace.");
         var scope = new TrustedLocalFileScope([GameSessionPath]);

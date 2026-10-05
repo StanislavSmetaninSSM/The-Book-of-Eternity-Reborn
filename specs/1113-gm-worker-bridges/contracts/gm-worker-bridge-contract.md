@@ -188,7 +188,7 @@ creating session directories, and failed rollback preserves the backup and
 journal for a later recovery attempt. State refresh and client-owned mirror
 repair are one lease-scoped read/modify/write. Every canonical writer must
 recover an interrupted load transaction immediately after acquiring the canonical write lease
-or fail closed before it touches live state. Worker apply uses an external
+or fail closed before it touches live state. Original worker apply uses an external
 durable journal under `.boe_runtime/worker-apply-transactions`; intent,
 before-images, and expected applied hashes are durable before the first canonical
 write. Every canonical writer recovers an interrupted worker apply transaction
@@ -197,6 +197,17 @@ canonical bytes remain authoritative: committed journal cleanup cannot roll back
 accepted bytes and may be retried.
 Detached workspace deletion never follows reparse points; a cleanup failure is an audit diagnostic
 and cannot replace the worker result.
+
+Ordinary worker apply (#1553) uses the existing `.boe_runtime/trusted-local-publication-v1`
+B1 journal with a v2 self-contained frame and one deferred worker decision. The complete
+member set is pending while the same canonical lease holds validation and ownership
+checks; only that exact lease/transaction can commit or roll back. Nested publication,
+recovery and empty-parent cleanup are refused during that decision. Recovery preflights
+the whole set and preserves unknown bytes/evidence; rollback is confirmed only against
+all exact before-images and generation. A late cleanup failure cannot revoke commitment.
+Original `.boe_runtime/worker-apply-transactions` evidence is retained for its original
+supported handler or blocks mutation; it is never reinterpreted as a B1 journal. This
+storage change adds no GM-authored command, field or gameplay mechanic.
 
 ## Worker Profile Contract
 

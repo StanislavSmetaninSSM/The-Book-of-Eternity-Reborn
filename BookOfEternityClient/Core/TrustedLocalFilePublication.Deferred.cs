@@ -15,6 +15,9 @@ internal sealed partial class TrustedLocalFilePublication
         private readonly FileSystemManager.CanonicalWriteLease _lease;
         private readonly Action<TrustedLocalPublicationPhase, int>? _observer;
         private readonly PublicationAttempt _attempt = new();
+        // Retained immutable byte images survive journal cleanup for exact rollback confirmation.
+        private readonly Member[] _originalMembers;
+        private readonly TrustedLocalGeneration _generation;
         private Journal? _journal;
         private bool _rolledBack;
         private bool _committed;
@@ -22,8 +25,8 @@ internal sealed partial class TrustedLocalFilePublication
         internal string TransactionId => _journal?.TransactionId ?? throw new InvalidOperationException("Worker publication did not begin.");
 
         private DeferredDecision(TrustedLocalFilePublication owner, FileSystemManager.CanonicalWriteLease lease,
-            Action<TrustedLocalPublicationPhase, int>? observer)
-        { _owner = owner; _lease = lease; _observer = observer; }
+            Action<TrustedLocalPublicationPhase, int>? observer, Member[] members, TrustedLocalGeneration generation)
+        { _owner = owner; _lease = lease; _observer = observer; _originalMembers = members; _generation = generation; }
 
         internal static DeferredDecision Begin(TrustedLocalFilePublication owner,
             FileSystemManager.CanonicalWriteLease lease, TrustedLocalGeneration generation,
@@ -36,11 +39,12 @@ internal sealed partial class TrustedLocalFilePublication
                 Path = owner.ValidateMemberPath(change.Path),
                 Before = TrustedLocalFileImage.FromBytes(change.Before), After = TrustedLocalFileImage.FromBytes(change.After)
             }).ToArray();
-            var decision = new DeferredDecision(owner, lease, observer);
+            var decision = new DeferredDecision(owner, lease, observer, members, generation);
             lease.PendingLocalDecision = decision; // Before intent/member callbacks, never after they return.
             try
             {
-                decision._journal = owner.ApplyMembers(lease, generation, members, 1, observer, decision._attempt);
+                decision._journal = owner.ApplyMembers(lease, generation, members, 2, observer, decision._attempt);
+                owner.Preflight(lease, decision._journal, requireAfter: true);
                 return decision;
             }
             catch (Exception failure)
@@ -48,8 +52,9 @@ internal sealed partial class TrustedLocalFilePublication
                 try { decision.RecoverOwned(); decision.Complete(rolledBack: true); }
                 catch (Exception recovery)
                 {
-                    decision.Failure = new AggregateException(failure, recovery);
-                    throw decision.Failure;
+                    var combined = new AggregateException(failure, recovery);
+                    decision.Failure = combined;
+                    throw combined;
                 }
                 throw;
             }
@@ -127,6 +132,11 @@ internal sealed partial class TrustedLocalFilePublication
             ValidateLease(_lease);
             if (File.Exists(_owner._journalScope.ValidateFile(_owner.Active))) _ = ReadOwnedPending();
             _owner.RecoverCore(_lease, observer); // Private owner path; the lease guard is never temporarily removed.
+            // A missing active journal alone is not evidence that a published set was restored.
+            // Pre-intent refusal is different: none of this decision's members could have changed.
+            if (_attempt.IntentPublished && (_owner.ReadGeneration(_lease) != _generation ||
+                !_originalMembers.All(member => _owner.Matches(member.Path, member.Before))))
+                throw Conflict("Worker rollback could not confirm every original image and generation; continuation remains blocked.");
         }
 
         private void Complete(bool rolledBack)

@@ -197,6 +197,7 @@ internal sealed partial class TrustedLocalFilePublication
     private sealed class PublicationAttempt
     {
         internal Journal? Prepared { get; set; }
+        internal bool IntentPublished { get; set; }
         /// <summary>
         /// Retains completely prepared v3 evidence for exact before-namespace outcome confirmation.
         /// </summary>
@@ -275,6 +276,7 @@ internal sealed partial class TrustedLocalFilePublication
         journal = WriteJournal(IntentStage, journal);
         Observe(lease, observer, TrustedLocalPublicationPhase.IntentStaged);
         File.Move(_journalScope.ValidateFile(IntentStage, false), _journalScope.ValidateFile(Active), overwrite: false);
+        if (attempt != null) attempt.IntentPublished = true;
         journal = RebindJournal(journal, Active);
         members = journal.Members;
         if (attempt != null) attempt.Prepared = journal;
@@ -298,7 +300,6 @@ internal sealed partial class TrustedLocalFilePublication
                 _scope.DeleteOwnedFile(member.Path);
             Observe(lease, observer, TrustedLocalPublicationPhase.MemberPublished, index);
         }
-        Preflight(lease, journal, requireAfter: true);
         return journal;
     }
 
