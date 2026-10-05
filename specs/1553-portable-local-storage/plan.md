@@ -526,6 +526,23 @@ reservation and a second bounded same-worker call which stops before reservation
 launch, proving slot reuse. Conflicting receipt remains intact with capacity held.
 Separate Sol6.1/xhigh approved scope/seams. Fresh corrected1+new8 build/run pending.
 
+B5 cleanup8 and strengthened late-output1 GREEN at
+`95c12101449b0d44527b2da6a49e84f3386e18c3`: fresh Plan9/0exec39.6301162s;
+run9/9PASS36.4513940s, complete selection/owned cleanup, no skip/duplicate/timeout.
+[Evidence](recovery/evidence/worker-pool-cleanup-green/manifest.json). Nine guardians
+ECHILD/emergency0/failures0/deadlinefalse/driverExit0. Late original _outputObservation
+actually completes; same-worker probe stays pending before cancellation, and original
+uncertainty retains slot/quarantine/workspace. Cleanup8 proves initial transfer with
+original runtime authority, correct owner disposal boundary, required audit I/O retry,
+null-audit/replaced-generation fallback, exact lost-ACK receipt retry and immutable
+conflict retention. Concurrent8+repeat passes keep Release/start/import1, expected
+phase hook counts, stable receipt bytes/mtime, one final audit or receipt, capacity0
+and a bounded same-worker pre-reservation probe after successful cleanup. Conflict
+retains runtime authority/capacity1 after private workspace removal and never rewrites
+its conflicting receipt. No native process remains in these fixture lineages.
+Next B6: only reviewed affected HOST/IPC/admission/Windows-policy/receipt/source-doc
+regressions, catalog discovery, consolidated exact qualification and final review/restore.
+
 B5 observation seam design consultation, actual Sol6.1/xhigh: an internal optional
 capture of the genuinely launched owner is allowed only after pool binding (or with
 OwnedLaunchException preserving that owner). It cannot replace owner/identity or

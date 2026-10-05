@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="4790eb77-f9c6-4076-a608-6c699f8fdd55" name="@c7669543e9c7 2026-10-05 23:03:16" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T23:03:16.4617917+00:00" queuing="2026-10-05T23:03:16.4617918+00:00" start="2026-10-05T23:03:12.2394768+00:00" finish="2026-10-05T23:03:33.4683517+00:00" />
+  <TestSettings name="default" id="5132b527-7af8-4a44-95c6-607b73e7f15d">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-05_23_03_16" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="7211f864-96de-43a1-a9d3-06d24831035e" testId="638c4ced-b6d9-562f-516b-2484e933656f" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: &quot;dispose&quot;)" computerName="c7669543e9c7" duration="00:00:02.2081261" startTime="2026-10-05T23:03:33.3894688+00:00" endTime="2026-10-05T23:03:33.3894690+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7211f864-96de-43a1-a9d3-06d24831035e" />
+    <UnitTestResult executionId="89587b38-19a3-42ac-bfdb-784ff1837f27" testId="c7bc56f1-48dc-73c8-17ea-1c1eaff9c61c" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: &quot;receipt-temp&quot;)" computerName="c7669543e9c7" duration="00:00:02.3139963" startTime="2026-10-05T23:03:31.1798293+00:00" endTime="2026-10-05T23:03:31.1798296+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="89587b38-19a3-42ac-bfdb-784ff1837f27" />
+    <UnitTestResult executionId="63b37700-bdab-4513-b58f-c5f2d6532e9b" testId="abf8819f-1a49-73a8-fdea-81d7438d41d3" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: &quot;receipt-replaced&quot;)" computerName="c7669543e9c7" duration="00:00:02.3636748" startTime="2026-10-05T23:03:18.7900034+00:00" endTime="2026-10-05T23:03:18.7900037+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="63b37700-bdab-4513-b58f-c5f2d6532e9b" />
+    <UnitTestResult executionId="051fe003-f0c7-4062-8282-5afdb817e42b" testId="2586f9c4-1d48-22e2-d020-dbe514d9aea7" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: &quot;audit-unavailable&quot;)" computerName="c7669543e9c7" duration="00:00:02.2940969" startTime="2026-10-05T23:03:16.4245140+00:00" endTime="2026-10-05T23:03:16.4245272+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="051fe003-f0c7-4062-8282-5afdb817e42b" />
+    <UnitTestResult executionId="cbf7e010-bdc8-4977-a20e-37b029f0261c" testId="959d6515-e566-3c1b-e14e-4dd64b00564e" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: &quot;workspace&quot;)" computerName="c7669543e9c7" duration="00:00:02.4372501" startTime="2026-10-05T23:03:26.1283095+00:00" endTime="2026-10-05T23:03:26.1283098+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cbf7e010-bdc8-4977-a20e-37b029f0261c" />
+    <UnitTestResult executionId="1815b675-51dd-42b7-8a69-902a01574e56" testId="a98321ae-e2d4-4bac-e126-5a471d8c9bd4" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: &quot;receipt-ack&quot;)" computerName="c7669543e9c7" duration="00:00:02.6311068" startTime="2026-10-05T23:03:23.6906121+00:00" endTime="2026-10-05T23:03:23.6906125+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1815b675-51dd-42b7-8a69-902a01574e56" />
+    <UnitTestResult executionId="1875bfc4-94eb-4e81-a2d3-feaec2998369" testId="3cb89b88-c691-7f6d-8d2c-3075f22f9f71" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: &quot;receipt-conflict&quot;)" computerName="c7669543e9c7" duration="00:00:02.2626955" startTime="2026-10-05T23:03:21.0543843+00:00" endTime="2026-10-05T23:03:21.0543845+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1875bfc4-94eb-4e81-a2d3-feaec2998369" />
+    <UnitTestResult executionId="9e152e78-0047-43f3-8962-fdcad807924c" testId="437c111f-a6b9-3cc3-7e74-5ec54d91645c" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: &quot;audit-failure&quot;)" computerName="c7669543e9c7" duration="00:00:02.7326684" startTime="2026-10-05T23:03:28.8641344+00:00" endTime="2026-10-05T23:03:28.8641347+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9e152e78-0047-43f3-8962-fdcad807924c" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: &quot;receipt-conflict&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3cb89b88-c691-7f6d-8d2c-3075f22f9f71">
+      <Execution id="1875bfc4-94eb-4e81-a2d3-feaec2998369" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: &quot;audit-unavailable&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2586f9c4-1d48-22e2-d020-dbe514d9aea7">
+      <Execution id="051fe003-f0c7-4062-8282-5afdb817e42b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: &quot;receipt-temp&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c7bc56f1-48dc-73c8-17ea-1c1eaff9c61c">
+      <Execution id="89587b38-19a3-42ac-bfdb-784ff1837f27" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: &quot;receipt-ack&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a98321ae-e2d4-4bac-e126-5a471d8c9bd4">
+      <Execution id="1815b675-51dd-42b7-8a69-902a01574e56" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: &quot;workspace&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="959d6515-e566-3c1b-e14e-4dd64b00564e">
+      <Execution id="cbf7e010-bdc8-4977-a20e-37b029f0261c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: &quot;dispose&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="638c4ced-b6d9-562f-516b-2484e933656f">
+      <Execution id="7211f864-96de-43a1-a9d3-06d24831035e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: &quot;receipt-replaced&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="abf8819f-1a49-73a8-fdea-81d7438d41d3">
+      <Execution id="63b37700-bdab-4513-b58f-c5f2d6532e9b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity(mode: &quot;audit-failure&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="437c111f-a6b9-3cc3-7e74-5ec54d91645c">
+      <Execution id="9e152e78-0047-43f3-8962-fdcad807924c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="638c4ced-b6d9-562f-516b-2484e933656f" executionId="7211f864-96de-43a1-a9d3-06d24831035e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c7bc56f1-48dc-73c8-17ea-1c1eaff9c61c" executionId="89587b38-19a3-42ac-bfdb-784ff1837f27" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="abf8819f-1a49-73a8-fdea-81d7438d41d3" executionId="63b37700-bdab-4513-b58f-c5f2d6532e9b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2586f9c4-1d48-22e2-d020-dbe514d9aea7" executionId="051fe003-f0c7-4062-8282-5afdb817e42b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="959d6515-e566-3c1b-e14e-4dd64b00564e" executionId="cbf7e010-bdc8-4977-a20e-37b029f0261c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a98321ae-e2d4-4bac-e126-5a471d8c9bd4" executionId="1815b675-51dd-42b7-8a69-902a01574e56" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3cb89b88-c691-7f6d-8d2c-3075f22f9f71" executionId="1875bfc4-94eb-4e81-a2d3-feaec2998369" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="437c111f-a6b9-3cc3-7e74-5ec54d91645c" executionId="9e152e78-0047-43f3-8962-fdcad807924c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="8" executed="8" passed="8" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.29]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.42]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.45]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:20.76]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

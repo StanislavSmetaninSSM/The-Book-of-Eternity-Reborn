@@ -1,0 +1,75 @@
+{
+  "Categories": [
+    "worker-native-pool-late-output",
+    "worker-native-pool-cleanup-retry"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "worker-native-pool-cleanup-retry",
+      "Seconds": 21.982896,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-native-pool-late-output",
+      "Seconds": 9.7642894,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.057077,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0132989,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0194124,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0038271,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:00:36.4513940",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 9,
+    "CompletedCases": 9,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 9,
+    "Executed": 9,
+    "Passed": 9,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

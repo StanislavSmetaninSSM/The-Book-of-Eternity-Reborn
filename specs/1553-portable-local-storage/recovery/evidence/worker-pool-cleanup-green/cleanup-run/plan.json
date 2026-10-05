@@ -1,0 +1,55 @@
+{
+  "Categories": [
+    "worker-native-pool-late-output",
+    "worker-native-pool-cleanup-retry"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "95c12101449b0d44527b2da6a49e84f3386e18c3",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.4109533,
+  "Descriptors": [
+    {
+      "Name": "worker-native-pool-cleanup-retry-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pool-cleanup-retry",
+      "Categories": [
+        "worker-native-pool-cleanup-retry"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity",
+          "Cases": 8
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-pool-late-output-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pool-late-output",
+      "Categories": [
+        "worker-native-pool-late-output"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LateOriginalOutputObservationCannotClearUncertainty",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LateOriginalOutputObservationCannotClearUncertainty",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
