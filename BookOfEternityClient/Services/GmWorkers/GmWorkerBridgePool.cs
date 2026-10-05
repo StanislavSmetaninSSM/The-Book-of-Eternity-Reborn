@@ -361,6 +361,16 @@ public sealed class GmWorkerBridgePool
             };
         }
 
+        // Capability admission precedes reservation, detached workspace and any
+        // Process.Start. Slice A native ownership admits a neutral host only.
+        var backend = GmWorkerBackendSelector.Select(GmWorkerBackendRequest.Auto,
+            GmWorkerRequiredCapability.WorkerRelease, OperatingSystem.IsWindows(), OperatingSystem.IsLinux());
+        if (!backend.CanStart)
+        {
+            var status = Track(WorkerBridgeState.Failed, ready: false, backend.Reason);
+            return new GmWorkerTaskRunResult { Status = status, StatusHistory = statusHistory.ToArray(), BoundTask = task };
+        }
+
         var slotAcquisition = await AcquireWorkerSlotAsync(profile, cancellationToken);
         if (slotAcquisition.Lease == null)
         {
@@ -837,31 +847,29 @@ public sealed class GmWorkerBridgePool
                 workerStartInfo,
                 Path.GetDirectoryName(workspace.GameSessionPath)!);
 
-            process = new Process
-            {
-                StartInfo = processHostLaunch.StartInfo,
-                EnableRaisingEvents = true
-            };
-            if (!process.Start())
-            {
-                throw new GmWorkerProposalHandoffException(
-                    "task-failed",
-                    "Worker process did not start.",
-                    []);
-            }
-            processStarted = true;
-            launchedProcessId = process.Id;
             try
             {
-                if (_hooks?.BeforeProcessTreeAttachAsync != null)
+                void TransferWindowsOwner(GmWorkerWindowsOwnedLaunch windowsOwner)
                 {
-                    await _hooks.BeforeProcessTreeAttachAsync()
-                        .WaitAsync(lifecycleCancellation.Token);
+                    (process, processTree, processStarted) = windowsOwner.TransferToWindowsPool();
+                    launchedProcessId = processStarted ? process.Id : null;
                 }
-                processTree = _processTreeFactory.Attach(process);
-                await processHostLaunch.WaitUntilReadyAsync(
-                    process,
-                    lifecycleCancellation.Token);
+                try
+                {
+                    var owner = await processHostLaunch.PrepareOwnedAsync(
+                        new GmWorkerWindowsOwnedLauncher(_processTreeFactory, _hooks?.BeforeProcessTreeAttachAsync),
+                        GmWorkerBackendRequest.Auto, GmWorkerRequiredCapability.WorkerRelease,
+                        lifecycleCancellation.Token);
+                    TransferWindowsOwner((GmWorkerWindowsOwnedLaunch)owner);
+                }
+                catch (GmWorkerOwnedLaunchException ex) when (ex.Owner is GmWorkerWindowsOwnedLaunch windowsOwner)
+                {
+                    // Transfer before propagating cancellation/failure. The existing
+                    // bounded Windows cleanup/quarantine receives every started handle.
+                    TransferWindowsOwner(windowsOwner);
+                    System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex.InnerException!).Throw();
+                    throw;
+                }
                 if (_hooks?.BeforeWorkerReleaseAsync != null)
                 {
                     await _hooks.BeforeWorkerReleaseAsync()
@@ -878,7 +886,7 @@ public sealed class GmWorkerBridgePool
                 throw;
             }
 
-            var processId = process.Id;
+            var processId = process!.Id;
             Track(WorkerBridgeState.Busy, ready: false, processId: processId);
             outputCaptureTask = CaptureProcessOutputAsync(process.StandardOutput);
             errorCaptureTask = CaptureProcessOutputAsync(process.StandardError);
@@ -910,7 +918,7 @@ public sealed class GmWorkerBridgePool
             }
 
             completedExitCode = completionOutcome.ExitCode!.Value;
-            await processTree.StopAndWaitAsync();
+            await processTree!.StopAndWaitAsync();
             await waitTask;
 
             completedStandardOutput = await ReadProcessOutputAsync(outputCaptureTask);

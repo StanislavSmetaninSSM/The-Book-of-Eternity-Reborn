@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="e76bdcae-e77d-4bd0-853c-849ea0278999" name="@c7669543e9c7 2026-10-05 20:08:16" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T20:08:16.6443163+00:00" queuing="2026-10-05T20:08:16.6443164+00:00" start="2026-10-05T20:08:14.2572799+00:00" finish="2026-10-05T20:08:16.6519865+00:00" />
+  <TestSettings name="default" id="1bacfd0b-4a87-43b6-8b80-c5e576f33ef4">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-05_20_08_16" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="67ef32e5-3716-4456-9f67-68bee9544d56" testId="66ab0ee6-f80f-f6c5-2a20-f3e922ac7b3a" testName="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 2, capability: 1)" computerName="c7669543e9c7" duration="00:00:00.0004868" startTime="2026-10-05T20:08:16.4979241+00:00" endTime="2026-10-05T20:08:16.4979242+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="67ef32e5-3716-4456-9f67-68bee9544d56" />
+    <UnitTestResult executionId="b15b35d6-8b07-49b5-8a15-72161ad48d37" testId="2550f9f0-690f-2349-beb6-fcf3c33b3f1b" testName="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 0, capability: 1)" computerName="c7669543e9c7" duration="00:00:00.0129395" startTime="2026-10-05T20:08:16.4966218+00:00" endTime="2026-10-05T20:08:16.4966219+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b15b35d6-8b07-49b5-8a15-72161ad48d37" />
+    <UnitTestResult executionId="6ac581f0-bf50-45e3-be00-6230a8e82db3" testId="0418c6c8-befc-f146-10f9-e27d50c5e43c" testName="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.ActualPool_RejectsLinuxReleaseBeforeReservationAttachOrRelease" computerName="c7669543e9c7" duration="00:00:00.1157576" startTime="2026-10-05T20:08:16.4884771+00:00" endTime="2026-10-05T20:08:16.4884963+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6ac581f0-bf50-45e3-be00-6230a8e82db3">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.ActualPool_RejectsLinuxReleaseBeforeReservationAttachOrRelease() in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerNativeAdmissionTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7d68d545-98bd-49b4-95cb-a2cf954d7a57" testId="7c5ab57b-2b2b-6cb8-dc10-556c272e0d9d" testName="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 1, capability: 0)" computerName="c7669543e9c7" duration="00:00:00.0010405" startTime="2026-10-05T20:08:16.4972505+00:00" endTime="2026-10-05T20:08:16.4972506+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7d68d545-98bd-49b4-95cb-a2cf954d7a57" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 2, capability: 1)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="66ab0ee6-f80f-f6c5-2a20-f3e922ac7b3a">
+      <Execution id="67ef32e5-3716-4456-9f67-68bee9544d56" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests" name="SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 0, capability: 1)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2550f9f0-690f-2349-beb6-fcf3c33b3f1b">
+      <Execution id="b15b35d6-8b07-49b5-8a15-72161ad48d37" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests" name="SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.ActualPool_RejectsLinuxReleaseBeforeReservationAttachOrRelease" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0418c6c8-befc-f146-10f9-e27d50c5e43c">
+      <Execution id="6ac581f0-bf50-45e3-be00-6230a8e82db3" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests" name="ActualPool_RejectsLinuxReleaseBeforeReservationAttachOrRelease" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 1, capability: 0)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7c5ab57b-2b2b-6cb8-dc10-556c272e0d9d">
+      <Execution id="7d68d545-98bd-49b4-95cb-a2cf954d7a57" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests" name="SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="66ab0ee6-f80f-f6c5-2a20-f3e922ac7b3a" executionId="67ef32e5-3716-4456-9f67-68bee9544d56" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2550f9f0-690f-2349-beb6-fcf3c33b3f1b" executionId="b15b35d6-8b07-49b5-8a15-72161ad48d37" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0418c6c8-befc-f146-10f9-e27d50c5e43c" executionId="6ac581f0-bf50-45e3-be00-6230a8e82db3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7c5ab57b-2b2b-6cb8-dc10-556c272e0d9d" executionId="7d68d545-98bd-49b4-95cb-a2cf954d7a57" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="4" executed="4" passed="3" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.21]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.52]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.55]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.73]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.73]       Expected: 0
+[xUnit.net 00:00:01.73]       Actual:   1
+[xUnit.net 00:00:01.73]       Stack Trace:
+[xUnit.net 00:00:01.73]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerNativeAdmissionTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.ActualPool_RejectsLinuxReleaseBeforeReservationAttachOrRelease()
+[xUnit.net 00:00:01.73]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.75]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T20:08:16.4867540+00:00">
+        <Text>[xUnit.net 00:00:01.73]     BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.ActualPool_RejectsLinuxReleaseBeforeReservationAttachOrRelease [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

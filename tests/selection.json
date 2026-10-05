@@ -36,6 +36,13 @@
       "contracts": [
         "#1553 T041-FALLBACK-HOST"
       ]
+    },
+    {
+      "category": "worker-owned-preparation-source-contract",
+      "reason": "Actual Windows start/attach/Ready consumer extraction changes the existing source-contract guard; runtime unavailable on Linux.",
+      "contracts": [
+        "#1553 T041-FALLBACK-HOST"
+      ]
     }
   ]
 }

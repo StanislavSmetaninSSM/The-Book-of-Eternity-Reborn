@@ -635,7 +635,13 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("RotateSessionGeneration", fileSystemManager, StringComparison.Ordinal);
         Assert.Contains("await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync()", stateManager, StringComparison.Ordinal);
         Assert.Contains("GmWorkerProcessHostLaunch.Create", bridgePool, StringComparison.Ordinal);
-        Assert.Contains("WaitUntilReadyAsync", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("PrepareOwnedAsync", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("GmWorkerRequiredCapability.WorkerRelease", bridgePool, StringComparison.Ordinal);
+        var windowsOwner = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot,
+            "BookOfEternityClient", "Services", "GmWorkers", "GmWorkerWindowsOwnedLaunch.cs"));
+        AssertOrdered(windowsOwner, "owner.Start()", "beforeAttach().WaitAsync", "owner.Attach(factory)");
+        Assert.Contains("host.WaitUntilReadyAsync(_process, token)", windowsOwner, StringComparison.Ordinal);
+        Assert.Contains("TransferToWindowsPool", bridgePool, StringComparison.Ordinal);
         Assert.Contains("processHostLaunch.ReleaseAsync", bridgePool, StringComparison.Ordinal);
         Assert.Contains("WaitForWorkerCompletionAsync", bridgePool, StringComparison.Ordinal);
         Assert.Contains("workerSlot.TransferOwnership()", bridgePool, StringComparison.Ordinal);

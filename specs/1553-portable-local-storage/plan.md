@@ -76,7 +76,15 @@ This is one bounded positive HOST case, not acceptance of the unfinished slice.
 The actual pool Windows-only adapter extraction and negative matrix remain pending.
 New worker-native-admission4cases target the real pool early gate and shared
 preparation rejection. A pre-reservation fixture guard makes the unfixed pool safe:
-causal RED must be an unexpected reservation-hook call, never an unguarded process.
+At `6728db47b5b98025886b3bbae3b34be2c2bd0c82`, fresh4case build/discovery
+passed42.4851549s; **3PASS/1causalFAIL**,8.8346738s: shared gates reject correctly,
+but real pool invokes the pre-reservation safety hook once (expected zero). No child
+launch, complete cleanup. [Evidence](recovery/evidence/worker-host-admission-red/manifest.json).
+WIP correction adds real-OS WorkerRelease admission before slot/reservation and
+extracts Windows Start/attach/Ready through the same PrepareOwnedAsync. Only the
+sealed Windows owner can hand original Process/tree/start state into legacy cleanup,
+including partial failures before original exception propagation. Native has no handoff.
+Next fresh admission4/source-contract1 GREEN; no native case repeated for this change.
 Independent Sol consult confirms original Process/tree/started-state one-way handoff
 from a sealed Windows adapter preserves current cleanup; no native-to-legacy route.
 Existing relevant lifecycle fixtures invoke powershell.exe and remain Windows-only
