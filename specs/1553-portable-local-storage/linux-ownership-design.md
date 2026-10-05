@@ -9,7 +9,7 @@ Owner decision: primary existing **systemd user manager**, plus a **native ordin
 - Default `Auto`: prefer available systemd-user; if unavailable before any launch, select native-lineage explicitly after its prerequisites pass. Explicit `SystemdUser` never silently downgrades. Explicit `NativeLineage` declares its limited scope. After a launch may have happened, backend switching is forbidden; uncertain startup retires through the original authority. Neither backend claims external delegated work. Windows Job behavior is unchanged.
 - Every readiness/status/stop-evidence record exposes backend, guarantee scope, run identity, state, reason, whether managed authority is retained and whether scoped cleanup actually completed. `StoppedWithinScope` is never an Accepted proposal or durable run/fence. Consumers must preserve the scope and typed uncertainty; an old unqualified bool must not erase them. Source guards for existing production gates remain; new tests must assert the revised two-mode contract without enabling Linux Release.
 
-## Native fallback algorithm proposed for independent review
+## Native fallback algorithm — independent design review PASS
 
 A single-thread C helper owns one launch, inherited private owner-command stdin and
 status stdout. It is never loaded/forked from CLR. `native/linux/boe-lineage-supervisor.c`
@@ -69,7 +69,25 @@ child still exists. No exit/drop of authority merely to fit that deadline. Per-t
 synthetic children also self-expire and tests wait for actual helper/child cleanup.
 The fixture harness must preserve its own emergency cleanup authority; a missing
 helper terminal report is a test failure, not permission to kill arbitrary PIDs.
-No permanent resources, global handlers/shared mutable fixture or native installation.
+The per-test external native guardian establishes its own subreaper and holds the
+unreaped helper pidfd. Its20s deadline starts emergency retirement, never authority
+disposal; it waits until actual ECHILD. A positive case must finish before the7s
+fixture alarm and report zero emergency helper-lineage cleanup. An intentionally
+separate guardian-owned sentinel is accounted independently, never signalled by
+the helper. Guardian closes duplicate owner/status FDs before fixture inheritance.
+Helper/guardian ignore SIGPIPE (worker restores default), so broken output reaches
+cleanup. Test closed output after Start and a genuinely full status pipe before
+Ready. A final Uncertain cleanup update may say cleanupComplete=true after ECHILD,
+without clearing uncertainty. No permanent resources, global handlers/shared
+mutable fixture or native installation.
+
+Before Ready the helper closes all inherited nonstandard FDs with close_range;
+this bounded build therefore requires that syscall (Linux5.9+) and glibc pidfd
+wrappers. No fallback after a denied prerequisite. It probes only its own pidfd,
+not another process. Fixed commands: L=start, S=stop, C=cancel, U=observed scope
+breach; malformed/repeated launch seals Uncertain. Run ID is1..64 ASCII alphanumeric
+or hyphen. No dynamic payload parser. First package is linux-x64 built on this
+Debian/glibc toolchain; other architectures/libc/distribution claims remain open.
 
 Protocol v1 fixed metadata: `runId`, `backend`, `guarantee`, `state`, `reason`,
 `cleanupComplete`, `authorityRetained`, root exit information and syscall error code
@@ -409,3 +427,7 @@ probe log/result/source consistency. No independent runtime execution or native
 ownership acceptance is claimed. [Review/restoration evidence](recovery/evidence/worker-ownership-design-review/manifest.json).
 Final verdict-carrier publication and another empty-directory restore are
 reported in the handoff, without a self-referential commit identifier.
+
+## Current two-mode design review
+
+Independent actual gpt-6.1-sol/xhigh reviewed five docs at `a3e48f3a636bfd6aca86171b2f0a41ae2b93812e` relative to `2defe92cd8b7d313d07b059db76b73e97905f66f`: PASS, no P1/P2 findings. Guardian/deadline/SIGPIPE/late-Uncertain obligations above are included. Read-only review and diff-check; no runtime qualification.
