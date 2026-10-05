@@ -6,7 +6,7 @@ if (-not $IsLinux) { throw 'Native lineage build requires Linux.' }
 $root = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $out = [IO.Path]::GetFullPath($OutputDirectory)
 [IO.Directory]::CreateDirectory($out) | Out-Null
-$compiler = (Get-Command cc -CommandType Application -ErrorAction Stop).Source
+$compiler = (Get-Command cc -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
 $version = (& $compiler --version | Out-String).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Compiler version failed.' }
 $flags = @('-std=c11', '-O2', '-g', '-Wall', '-Wextra', '-Werror', '-D_FORTIFY_SOURCE=2', '-fstack-protector-strong', '-Wl,-z,relro,-z,now')
