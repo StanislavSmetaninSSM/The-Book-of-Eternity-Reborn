@@ -14,8 +14,8 @@ T041-FALLBACK-POOL / US4 / FR-012/014/015. Exact remote/base
 B plus this design refinement and separate actual Sol6.1/xhigh design review.
 Use Superpowers brainstorming/writing-plans, then executing-plans/TDD inline;
 Spec Kit remains the durable spec/plan/tasks layer. No additional user approval is
-needed for the authorized work. B1–B5 implementation and bounded verification are complete;
-B6 final independent packet review and clean GitHub restoration are pending below.
+needed for the authorized work. B1–B6 bounded synthetic implementation and qualification are complete.
+Final metadata carrier is published/restored separately at handoff; no next slice.
 
 **Goal:** actual production RunTaskAsync and both downstream dispatch consumers
 prove synthetic worker completion/publication only after matching scoped stop and
@@ -26,7 +26,7 @@ and GCC14.2.0-19. No new dependency, installation, network/auth/security setting
 **Spec:** the B subsection in spec.md and approved two-backend scope; A acceptance
 and the earlier two-slice design below remain prerequisites/history.
 
-### Current B verification and handoff gate, 2026-10-05
+### Qualified B and final handoff, 2026-10-05
 
 Final runtime source `95c12101449b0d44527b2da6a49e84f3386e18c3`; final regression
 source `b89a60dfdcd23d54e60015321e4bd826e0b8ef81`; regression carrier and audit
@@ -52,11 +52,15 @@ three emergency retirements, all with failures0/deadlinefalse. Old PID1 zombies 
 prior work/VMs were not touched or claimed cleaned. Application Uncertain remains
 retained even when the independent guardian proves physical fixture cleanup.
 
-Independent actual Sol6.1/xhigh design, implementation, B5 cleanup and B6 regression/
-routing reviews passed. The final combined packet and GitHub-only restoration are
-still pending; do not call B accepted from these intermediate reviews alone.
-The current next step is that final gate and handoff, superseding historical next/WIP
-statements below. No next slice, public Linux rollout, systemd/native Windows/main PTY,
+Independent actual Sol6.1/xhigh final **bounded POOL B PASS** at
+`fdf72cf8997924b693ac3f26f84afe47deb9fe26`, with no unresolved findings. Fresh GitHub-only
+restore verifies all7,038 tracked files (243,887,887 bytes), exact tree
+`62207d7a8f56c6769a5b48fda6b079d025461955`, clean checkout/connectivity/accepted-A
+ancestry and original recovered WIP tree. [Final review and restoration](recovery/evidence/worker-pool-review/manifest.json).
+Spec Kit consistency maps this bounded task to US4/FR-012/014/015; wider success
+criteria remain open. Build servers shut down normally; no active test session.
+The current next step is final metadata carrier publication/readback/fresh restore
+and handoff, superseding historical next/WIP statements below. No next slice, public Linux rollout, systemd/native Windows/main PTY,
 real GM/provider/save or durable restart work is authorized by this completion.
 Operational guide, existing repair example commentary and shared afterlife note are
 synchronized; task/proposal payloads, game schemas, Mortal/afterlife actions and
@@ -228,7 +232,7 @@ Uncertain. No durable reconstruction of a dead owner is invented.
   positive evidence or replace its cleanup authority. Guard ECHILD proves fixture
   cleanup separately from deliberately retained application uncertainty. Publish
   source/evidence checkpoints before each bounded build/test/review boundary.
-- [ ] B6 Acceptance: narrow affected original IPC/native HOST/Windows source and
+- [x] B6 Acceptance: narrow affected original IPC/native HOST/Windows source and
   quarantine-receipt consumers, catalog discovery, provenance/source hashes/results/
   cleanup packet, independent implementation plus final evidence review, non-force
   push/race check/readback and fresh GitHub-only restore; handoff and stop before

@@ -1,0 +1,31 @@
+{
+  "SourceCommit": "fdf72cf8997924b693ac3f26f84afe47deb9fe26",
+  "Reviewer": "/root/native_review",
+  "Model": "gpt-6.1-sol",
+  "ReasoningEffort": "xhigh",
+  "Verdict": "Bounded POOL B PASS",
+  "UnresolvedFindings": [],
+  "ReadOnly": true,
+  "TestsExecutedDuringReview": 0,
+  "NativeProbesDuringReview": 0,
+  "Verified": {
+    "Manifests": 20,
+    "HistoricalSourceHashes": 1240,
+    "Artifacts": 590,
+    "GzipFiles": 220,
+    "TrxFiles": 29,
+    "LatestDistinctPassingCases": 127,
+    "FinalAffectedRegressionsPassed": 36,
+    "CatalogCategories": 291,
+    "CatalogMethodsFiles": 10826,
+    "DefaultSelectionPlanOnlyCases": 27,
+    "LinuxSelectionPlanOnlyCases": 127,
+    "GuardianReportsReachedECHILD": 58,
+    "DeliberateHelperLossEmergencyReports": 3,
+    "GuardianFailures": 0,
+    "GuardianDeadlines": 0,
+    "RestoredTrackedFilesByteCompared": 7038,
+    "RestoredTrackedBytesCompared": 243887887
+  },
+  "Scope": "Internal fixture-root-bound synthetic POOL B only; public Linux admission, systemd/Windows runtime, main PTY/live GM, real saves and durable restart remain unqualified."
+}

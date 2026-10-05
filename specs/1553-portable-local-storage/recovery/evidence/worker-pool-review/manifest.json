@@ -1,0 +1,22 @@
+{
+  "SchemaVersion": 1,
+  "SourceCommit": "fdf72cf8997924b693ac3f26f84afe47deb9fe26",
+  "Inputs": [],
+  "Artifacts": [
+    {
+      "Path": "build-server-shutdown.log",
+      "Bytes": 156,
+      "Sha256": "830e5cd707f90e485d1b96b500318ea1d4c6248cd46f3da146a5887084144dbf"
+    },
+    {
+      "Path": "candidate-restoration.json",
+      "Bytes": 620,
+      "Sha256": "fdae1eca7b029fe43a185301a1cc85149ce8deae387057fb53e1d4c1b04d1c08"
+    },
+    {
+      "Path": "review.json",
+      "Bytes": 1094,
+      "Sha256": "6099de778b843c976d6066e347be7c31950c106b3c8f76118faf320fd1de49d3"
+    }
+  ]
+}

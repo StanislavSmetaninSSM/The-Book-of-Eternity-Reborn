@@ -5,7 +5,7 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## POOL B: проверен, финальная передача готовится, 2026-10-05
+## POOL B: bounded synthetic-срез завершён, 2026-10-05
 
 HOST A принят родителем на `55f43c9e5d81ec0ef1e3944d2932f49f67b22723`.
 Разрешённый B-срез подключает настоящий pool и оба success consumers через
@@ -19,9 +19,12 @@ PASS**, исторически164 исполнения/141PASS/23FAIL; ошиб�
 три намеренных helper-loss требовали независимой аварийной очистки, failures/deadlines0.
 
 Runtime `95c12101`, финальные регрессии `b89a60df`, audit source `b7ca1ba5`.
-Отдельные Sol6.1/xhigh design/implementation/B5/B6 reviews — PASS; финальный combined
-review и свежий GitHub-only restore ещё требуются. Текущий следующий шаг — только
-эта передача; исторические «next» ниже не открывают новые этапы.
+Финальный отдельный **gpt-6.1-sol/xhigh PASS** на `fdf72cf8`, замечаний нет.
+Свежий GitHub-only restore проверил все7,038файлов и точное дерево/историю,
+clean state и fsck. [Review/restore](recovery/evidence/worker-pool-review/manifest.json).
+Build servers остановлены штатно; тестовых сессий нет. Остаётся доставка финального
+metadata carrier с readback/fresh restore и handoff; исторические «next» ниже не
+открывают новые этапы.
 Общий Linux WorkerRelease, systemd/native Windows qualification, durable restart,
 main PTY/live GM и настоящие saves остаются вне закрываемого synthetic-среза.
 

@@ -68,8 +68,8 @@ is not execution or qualification evidence. [Source-backed plan](plan.md#worker-
 Bounded verification now has127 distinct latest passing cases at exact sources in
 [qualification](recovery/worker-pool-qualification.json), including actual pool content,
 lineage stop, original-owner uncertainty, consumer gates and retained cleanup phases.
-Final independent packet review/restoration is pending in the current plan; this does
-not change the admission or product limits below.
+Final actual Sol6.1/xhigh PASS at `fdf72cf8` and fresh7,038-file GitHub restoration
+complete this bounded gate; admission and product limits below remain unchanged.
 
 
 The parent accepted HOST A at `55f43c9e5d81ec0ef1e3944d2932f49f67b22723` and

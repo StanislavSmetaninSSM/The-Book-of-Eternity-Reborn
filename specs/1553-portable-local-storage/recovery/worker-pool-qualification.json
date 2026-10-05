@@ -3,7 +3,7 @@
   "Task": "#1553 T041-FALLBACK-POOL",
   "BaseCommit": "55f43c9e5d81ec0ef1e3944d2932f49f67b22723",
   "CandidateSourceCommit": "b7ca1ba587ef44fe75edbc7cc6331d647b7fb2ae",
-  "Status": "Bounded B verification packet; final independent review and GitHub-only restoration pending",
+  "Status": "Bounded synthetic POOL B qualified with independent gpt-6.1-sol/xhigh PASS and clean GitHub-only candidate restoration; final metadata carrier receives a separate fresh restoration in handoff",
   "Environment": [
     {
       "Command": [
@@ -4348,5 +4348,21 @@
     "EmergencyExplanation": "Deliberate helper loss: pre-Release causal RED, post-Completed pool uncertainty GREEN, and repeated original HOST loss regression GREEN. Physical guardian cleanup never clears application Uncertain."
   },
   "NoRepeatRationale": "Latest per-case passing evidence retained at exact clean sources. Subsequent changes are covered by causal correction cohorts and affected final36 regressions; unchanged IPC34/ENV16/workspace47/receipt41/output48/input37/run-record90/FRAME49 are not replayed.",
-  "InvocationNote": "Effective runner arguments reconstructed from preserved selection, strategy and build phases; activate /workspace/.onboarding/activate.sh and TMPDIR=/workspace/t1553. Native fixture runs set BOE_NATIVE_EVIDENCE_ROOT to the dedicated path recorded by their artifact packet. These are not an instruction to repeat historical cohorts."
+  "InvocationNote": "Effective runner arguments reconstructed from preserved selection, strategy and build phases; activate /workspace/.onboarding/activate.sh and TMPDIR=/workspace/t1553. Native fixture runs set BOE_NATIVE_EVIDENCE_ROOT to the dedicated path recorded by their artifact packet. These are not an instruction to repeat historical cohorts.",
+  "IndependentReview": {
+    "SourceCommit": "fdf72cf8997924b693ac3f26f84afe47deb9fe26",
+    "Verdict": "Bounded POOL B PASS",
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "UnresolvedFindings": [],
+    "Path": "evidence/worker-pool-review/review.json"
+  },
+  "CandidateRestoration": {
+    "Path": "evidence/worker-pool-review/candidate-restoration.json",
+    "Commit": "fdf72cf8997924b693ac3f26f84afe47deb9fe26",
+    "TrackedFilesByteCompared": 7038
+  },
+  "DeliveryEvidenceManifest": "evidence/worker-pool-review/manifest.json",
+  "CurrentBuildSourceCommit": "b89a60dfdcd23d54e60015321e4bd826e0b8ef81",
+  "VerificationArtifactNote": "The 20 verification manifests/590 artifacts exclude the separately linked final review/restoration delivery evidence."
 }
