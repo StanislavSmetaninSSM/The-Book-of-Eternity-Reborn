@@ -1722,7 +1722,7 @@ internal sealed class BridgeHost : IDisposable
         return JsonSerializer.Deserialize<T>(line, PipeJsonOpts);
     }
 
-    private static async Task WriteMessageAsync(NamedPipeServerStream stream, object payload, CancellationToken cancellationToken)
+    private static async Task WriteMessageAsync(Stream stream, object payload, CancellationToken cancellationToken)
     {
         using var writer = new StreamWriter(stream, Encoding.UTF8, 1024, leaveOpen: true)
         {
