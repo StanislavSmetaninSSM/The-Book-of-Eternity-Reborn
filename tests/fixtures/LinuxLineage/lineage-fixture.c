@@ -15,7 +15,7 @@
 /* Per-test emergency authority. Never installed, linked into the helper, or used
  * as its proof oracle. Positive tests require zero emergency lineage retirement. */
 static long long millis(void) {
-    struct timespec t; if (clock_gettime(CLOCK_MONOTONIC, &t)) abort();
+    struct timespec t; if (clock_gettime(CLOCK_MONOTONIC, &t)) return -1;
     return (long long)t.tv_sec * 1000 + t.tv_nsec / 1000000;
 }
 static void event(const char *dir, const char *kind) {
@@ -123,7 +123,8 @@ static int guardian(const char *dir, const char *mode, char **helper_argv) {
         if (snprintf(children, sizeof children, "%s/absent-proc-children", dir) >= (int)sizeof children) return 98;
     } else snprintf(children, sizeof children, "/proc/self/task/%d/children", getpid());
     FILE *result_file = fopen(report, "we"); if (!result_file) return 98;
-    int capability_error = 0, self = pidfd_open(getpid(), 0);
+    long long start_time = millis();
+    int capability_error = start_time < 0 ? errno : 0, self = pidfd_open(getpid(), 0);
     if (self < 0) capability_error = errno;
     else { if (pidfd_send_signal(self, 0, NULL, 0)) capability_error = errno; close(self); }
     FILE *preflight = fopen(children, "re");
@@ -159,9 +160,11 @@ static int guardian(const char *dir, const char *mode, char **helper_argv) {
     close(STDIN_FILENO); close(STDOUT_FILENO);
     if (blocked[1] >= 0) close(blocked[1]);
     int helper_code = -1, emergency = 0, sentinel_alive = 0, sentinel_reaped = 0, deadline = 0, failure = 0;
-    long long end = millis() + 20000;
+    long long end = start_time + 20000;
     for (;;) {
-        if (millis() >= end && !deadline) { deadline = 1; if (stop_fd(helper_fd)) failure = 1; }
+        long long current_time = millis();
+        if (current_time < 0) { failure = 1; stop_fd(helper_fd); if (sentinel_fd >= 0) stop_fd(sentinel_fd); }
+        if ((current_time < 0 || current_time >= end) && !deadline) { deadline = 1; if (stop_fd(helper_fd)) failure = 1; }
         /* Snapshot only to acquire handles before this sole reaper reaps. */
         FILE *f = fopen(children, "re");
         if (!f) {

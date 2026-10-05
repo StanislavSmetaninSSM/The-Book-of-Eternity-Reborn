@@ -21,6 +21,7 @@
 static const char *run_id, *reason = "ready";
 static bool uncertain, stopping, launched, term_sent, kill_sent;
 static bool status_usable = true, exec_pending;
+static bool clock_failed;
 static int root_fd = -1, exec_fd = -1, root_exit = -1, root_signal, last_errno;
 static pid_t root_pid = -1;
 static int grace_ms, deadline_ms;
@@ -30,7 +31,7 @@ static unsigned char exec_error[sizeof(int)];
 static size_t exec_bytes;
 
 static long long now_ms(void) {
-    struct timespec t; if (clock_gettime(CLOCK_MONOTONIC, &t)) abort();
+    struct timespec t; if (clock_gettime(CLOCK_MONOTONIC, &t)) { clock_failed = true; return 0; }
     return (long long)t.tv_sec * 1000 + t.tv_nsec / 1000000;
 }
 static void seal(const char *why) {
@@ -136,9 +137,12 @@ int main(int argc, char **argv) {
     char children[128]; snprintf(children, sizeof children, "/proc/self/task/%d/children", getpid());
     int proc = open(children, O_RDONLY | O_CLOEXEC);
     if (proc < 0) { lose("proc-unavailable", errno); emit("Uncertain", true); return 2; }
-    close(proc); emit("Ready", false);
+    close(proc); (void)now_ms();
+    if (clock_failed) { lose("clock-unavailable", errno); emit("Uncertain", true); return 2; }
+    emit("Ready", false);
     bool stop_reported = false, uncertainty_reported = false;
     for (;;) {
+        (void)now_ms(); if (clock_failed) lose("clock-unavailable", errno);
         if (signal_stop) seal("helper-signal");
         char commands[32]; ssize_t n = read(STDIN_FILENO, commands, sizeof commands);
         if (n == 0) lose("owner-lost", 0);
@@ -154,7 +158,7 @@ int main(int argc, char **argv) {
         if (stopping) {
             if (!stop_reported) { emit("Stopping", false); stop_reported = true; }
             if (!term_sent) { signal_root(SIGTERM); term_sent = true; }
-            if (!kill_sent && now_ms() - stop_at >= grace_ms) { signal_root(SIGKILL); kill_sent = true; }
+            if (!kill_sent && (now_ms() - stop_at >= grace_ms || clock_failed)) { signal_root(SIGKILL); kill_sent = true; }
             if (now_ms() - stop_at >= deadline_ms) lose("stop-timeout", 0);
             if (uncertain && !uncertainty_reported) { emit("Uncertain", false); uncertainty_reported = true; }
         }
