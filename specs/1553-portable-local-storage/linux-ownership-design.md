@@ -6,6 +6,14 @@ Exact source base: `31de2e33a6f44001fee9c0c3b6c4e61c8d3aab0e`.
 by this document. Independent actual gpt-6.1-sol/xhigh design/evidence PASS at reviewed
 `39df05024cecefe7266f41cec1b772895155e576`; no actionable findings.
 
+## Root assessment — backend choice deferred, 2026-10-05
+
+Namespace ownership remains a pending kernel-stop candidate, not the approved sole Linux backend. Do not implement namespace bootstrap now or count negative-only unavailable-route tests as progress toward a qualified backend. Ordinary namespace use by a CLI is legitimate behavior, not an adversarial exception. Compare a systemd user/cgroup backend later without changing security or delegation; preserve the same complete-stop requirement whichever backend is selected.
+
+Compatibility obligations extend beyond making map files writable. The unprivileged single-ID UID/GID map path does not preserve every identity visible to an arbitrary CLI; supplementary groups can remain kernel credentials while their unmapped user-visible IDs become overflow values. GID mapping also constrains setgroups. These are product compatibility issues, not solved by preserving one effective UID: [kernel user_namespace.c](https://github.com/torvalds/linux/blob/v6.18/kernel/user_namespace.c), [groups.c](https://github.com/torvalds/linux/blob/v6.18/kernel/groups.c). An inherited outer proc mount exposes another PID coordinate system and cannot silently stand in for a compatible CLI proc view: [pid_namespaces(7)](https://man7.org/linux/man-pages/man7/pid_namespaces.7.html). Distribution policy also matters: [Ubuntu24.04 release notes](https://discourse.ubuntu.com/t/ubuntu-24-04-lts-noble-numbat-release-notes/39890) describe AppArmor-mediated unprivileged namespace/capability restrictions. This Debian probe establishes no Ubuntu support.
+
+New visible CLI restrictions or system dependencies require an owner decision. No such change, security bypass or additional namespace probe is authorized by the receipt slice below. Earlier proposed namespace slices remain deferred.
+
 ## Recommendation and environment decision
 
 Keep Linux production Release closed. Prefer a fresh per-run **kernel PID
