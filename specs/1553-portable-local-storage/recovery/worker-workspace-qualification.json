@@ -5,7 +5,7 @@
   "Base": "b487526fc5f4d11a2c02816813f870f063e9fdc5",
   "RuntimeSource": "f8c7eeae24cf702b87f581f442ea7c720264bc34",
   "RuntimeTree": "864e680cab4958874f84e828a4c14b00c31dba75",
-  "Status": "Linux runtime GREEN and preliminary independent source PASS; final complete evidence review pending. No execution/lifecycle acceptance.",
+  "Status": "PASS for the bounded process-free Linux T041-WORKSPACE component after independent source/runtime/final evidence review. Execution/lifecycle/native Windows remain unqualified; final verdict carrier is published and freshly restored after this record, identified in handoff.",
   "Environment": {
     "Os": "Debian GNU/Linux13.6",
     "Kernel": "6.18.44",
@@ -188,9 +188,20 @@
   "IndependentFinalReview": {
     "Model": "gpt-6.1-sol",
     "Effort": "xhigh",
-    "Result": "Preliminary source PASS; final evidence pending",
+    "Result": "PASS",
+    "ActionableFindings": 0,
     "ReviewedRuntimeSource": "f8c7eeae24cf702b87f581f442ea7c720264bc34",
-    "ResolvedFinding": "P1 Windows write sharing conflict corrected without weakening expected-byte/single-link checks"
+    "ReviewedEvidenceCarrier": "7309ee4b37666a7c8f4b8b239946b04dc2cacf38",
+    "ResolvedFinding": "P1 Windows staging sharing conflict corrected; existing retained-handle expected-byte and single-link checks preserved.",
+    "VerifiedDistinctPasses": 47,
+    "VerifiedManifests": 9,
+    "VerifiedArtifactHashes": 41,
+    "VerifiedInputBlobs": 9,
+    "VerifiedUnchangedBoundaryBlobs": 14,
+    "VerifiedGeneratedXmlFiles": 9,
+    "RestoredTrackedFiles": 5312,
+    "RestoredChangedFileBlobs": 45,
+    "Scope": "Independent read-only design/source/test/selection/docs plus causal RED/GREEN, audit, exact hashes, publication/readback, clean source clone, cleanup and qualification boundaries. No reviewer build, test or workload process execution."
   },
   "SourceRestoration": {
     "ObservedUtc": "2026-10-05T11:42:13.893939+00:00",

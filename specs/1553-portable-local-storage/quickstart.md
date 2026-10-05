@@ -9,7 +9,10 @@ partial-failure cleanup and disposal. It launches no host, worker, CLI or GM.
 [Qualification and raw command/log manifests](recovery/worker-workspace-qualification.json)
 separate both causal REDs, the intermediate GREEN, Windows source correction,
 final fresh builds/GREEN, discovery-only audit and restoration. Independent
-Sol6.1/xhigh source/runtime evidence PASS; complete final handoff review pending.
+Sol6.1/xhigh complete final source/runtime/evidence review PASS at carrier
+`7309ee4b37666a7c8f4b8b239946b04dc2cacf38`, with no unresolved findings.
+Final verdict metadata is published and freshly restored after recording this
+verdict; its exact carrier SHA is supplied in handoff.
 
 ```sh
 pwsh -NoProfile -File scripts/test-csharp.ps1 -Category worker-detached-workspace -Parallelism 1 -PlanOnly
