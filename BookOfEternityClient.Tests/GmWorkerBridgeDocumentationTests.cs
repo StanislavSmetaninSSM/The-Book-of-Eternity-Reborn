@@ -411,6 +411,7 @@ public sealed class GmWorkerBridgeDocumentationTests
         var executionWorkspace = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs");
         var auditLog = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs");
         var fileSystemManager = ReadRepoFile("BookOfEternityClient/Core/FileSystemManager.cs");
+        var backupLifecycle = ReadRepoFile("BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs");
         var stateManager = ReadRepoFile("BookOfEternityClient/Core/StateManager.cs");
         var processHost = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs");
         var processTree = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs");
@@ -656,23 +657,22 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.DoesNotContain("File.Delete(", executionWorkspace, StringComparison.Ordinal);
         Assert.DoesNotContain("SearchOption.AllDirectories", executionWorkspace, StringComparison.Ordinal);
         Assert.DoesNotContain("Directory.Delete(workspaceRoot, recursive: true)", executionWorkspace, StringComparison.Ordinal);
-        foreach (var methodName in new[]
-                 {
-                     "CreateBackupAsync",
-                     "RestoreBackupAsync",
-                     "ClearCurrentWorldLoreAsync"
-                 })
-        {
-            var methodOffset = fileSystemManager.IndexOf(methodName, StringComparison.Ordinal);
-            Assert.True(methodOffset >= 0, $"Expected FileSystemManager method {methodName}.");
-            var leaseOffset = fileSystemManager.IndexOf(
-                "AcquireCanonicalWriteLeaseAsync",
-                methodOffset,
-                StringComparison.Ordinal);
-            Assert.True(
-                leaseOffset >= 0 && leaseOffset - methodOffset < 300,
-                $"Expected {methodName} to acquire the canonical write lease before mutating state.");
-        }
+        AssertOrdered(fileSystemManager,
+            "public async Task<string?> CreateBackupAsync(string relativePath)",
+            "return await WithOwnedBackupLeaseAsync(lease => CreateBackupWithLeaseAsync(lease, relativePath));");
+        AssertOrdered(fileSystemManager,
+            "public async Task RestoreBackupAsync(string backupFullPath, string originalRelativePath)",
+            "await WithOwnedBackupLeaseAsync(async lease =>",
+            "await RestoreBackupWithLeaseAsync(lease, backupFullPath, originalRelativePath);");
+        AssertOrdered(backupLifecycle,
+            "private async Task<T> WithOwnedBackupLeaseAsync<T>(Func<CanonicalWriteLease, Task<T>> operation)",
+            "lease = await AcquireCanonicalWriteLeaseAsync();",
+            "var result = await operation(lease);",
+            "await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(this, lease, completed, failure);");
+        AssertOrdered(fileSystemManager,
+            "public async Task ClearCurrentWorldLoreAsync()",
+            "await using var writeLock = await AcquireCanonicalWriteLeaseAsync();",
+            "ClearCurrentWorldLoreCore();");
         var clearWrapperOffset = fileSystemManager.IndexOf(
             "public async Task ClearGameStateAsync()",
             StringComparison.Ordinal);

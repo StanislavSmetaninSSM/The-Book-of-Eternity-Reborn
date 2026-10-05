@@ -116,6 +116,16 @@ frozen. Only the corrected four-case docs guard, discovery-only ownership audit,
 evidence/restoration and final independent acceptance remain. Passed runtime owners are
 not repeated after documentation/evidence-only changes.
 
+The docs-only retry at `d1c82071` completed **3/4**, revealing a second obsolete
+assertion in the same pre-cutover guard: backup wrappers now use the accepted
+WithOwnedBackupLeaseAsync helper rather than a direct acquisition within300 characters.
+After this repeated guard failure, the whole remaining method was inspected instead of
+another speculative runtime change. Precise Create/Restore wrapper→owning lease→held
+operation/release assertions replace that distance heuristic; current-world clear and
+lifecycle→replacement checks remain. Every explicit ordered source operation and remaining
+literal assertion was checked read-only before rebuilding. Runtime files/cohorts remain
+unchanged atce0d39f3; this does not weaken exclusion or rerun their passing owners.
+
 1. Diagnose the original Begin failure with a causal test: force the existing
    unsupported before-image backend and a distinct cleanup failure, require both
    exceptions in initiating-first order, and retain the real Linux worker/load
