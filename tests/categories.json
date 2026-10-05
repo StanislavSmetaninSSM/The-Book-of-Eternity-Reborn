@@ -124,6 +124,32 @@
       ]
     },
     {
+      "id": "linux-fallback-build-lifetime",
+      "responsibility": "#1553 native preparation ownership: an observation timeout retains the directly launched process and both output drains until actual exit, then reports the original timeout without worker launch. Controlled finite PowerShell process only.",
+      "excludes": "Forced cleanup or bounded termination of a permanently stalled compiler/tree; production process ownership; native worker launch; unchanged cohorts.",
+      "changeHints": [
+        "native/linux/boe-lineage-supervisor.c",
+        "scripts/build-linux-supervisor.ps1",
+        "tests/fixtures/LinuxLineage/lineage-fixture.c",
+        "BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LinuxFallbackBuildLifetimeTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "linux-fallback-control",
       "responsibility": "#1553 T041-FALLBACK-NATIVE: Staged native launch sealing, cancellation, owner loss and bounded stop timeout retaining authority and typed uncertainty through actual cleanup.",
       "excludes": "Production pool/main Release, systemd positive qualification, namespace migration/external broker containment, Windows Job, PTY/live GM and unchanged prior cohorts. Fails explicitly off Linux.",

@@ -170,9 +170,7 @@ public sealed class LinuxFallbackSupervisorTests
             foreach (var arg in new[] { "-NoProfile", "-File", Path.Combine(root, "scripts", "build-linux-supervisor.ps1"), "-OutputDirectory", directory, "-IncludeFixture" }) build.ArgumentList.Add(arg);
             using (var compiler = Process.Start(build)!)
             {
-                var stdout = compiler.StandardOutput.ReadToEndAsync(); var errors = compiler.StandardError.ReadToEndAsync();
-                await compiler.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(40));
-                var log = await stdout + await errors; await File.WriteAllTextAsync(Path.Combine(directory, "build.log"), log);
+                var log = await ObserveBuild(compiler, TimeSpan.FromSeconds(40), Path.Combine(directory, "build.log"));
                 Assert.True(compiler.ExitCode == 0, "Native preparation failed (not behavioral RED): " + log);
             }
             using (var manifest = JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(directory, "build-provenance.json"))))
@@ -190,6 +188,15 @@ public sealed class LinuxFallbackSupervisorTests
             var args = staleOnly ? new[] { "--pidfd-check" } : new[] { "--guard", directory, guardianMode, Path.Combine(directory, "boe-lineage-supervisor"), id, grace.ToString(), deadline.ToString(), missingCommand ? Path.Combine(directory, "missing-executable") : fixture, "--worker", directory, mode };
             foreach (var arg in args) start.ArgumentList.Add(arg);
             return new NativeRun(Process.Start(start)!, directory, id);
+        }
+        internal static async Task<string> ObserveBuild(Process compiler, TimeSpan observation, string logPath)
+        {
+            var stdout = compiler.StandardOutput.ReadToEndAsync();
+            var errors = compiler.StandardError.ReadToEndAsync();
+            await compiler.WaitForExitAsync().WaitAsync(observation);
+            var log = await stdout + await errors;
+            await File.WriteAllTextAsync(logPath, log);
+            return log;
         }
         public async Task Send(string command) { await process.StandardInput.WriteAsync(command); await process.StandardInput.FlushAsync(); }
         public void CloseOwner() { if (!ownerClosed) { ownerClosed = true; process.StandardInput.Close(); } }
@@ -350,6 +357,35 @@ public sealed class LinuxFallbackSpawnBoundaryTests
     [InlineData("spawn-window")]
     public Task StopAtWaitBoundary_StillCreatesAndRetiresDescendant(string mode) =>
         new LinuxFallbackSupervisorTests().NativeDescendants_RetireWithinDeclaredScope(mode);
+}
+
+public sealed class LinuxFallbackBuildLifetimeTests
+{
+    [Fact]
+    public async Task PreparationTimeout_RetainsProcessAndOutputUntilActualExit()
+    {
+        var evidence = Environment.GetEnvironmentVariable("BOE_NATIVE_EVIDENCE_ROOT") ?? Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "linux-fallback");
+        var directory = Path.Combine(evidence, Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(directory);
+        var start = new ProcessStartInfo("pwsh") { RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false };
+        foreach (var arg in new[] { "-NoProfile", "-Command", "[Threading.Thread]::Sleep(250); [Console]::Out.Write('owned stdout'); [Console]::Error.Write('owned stderr')" }) start.ArgumentList.Add(arg);
+        // One independently finite direct process; no compiler or child tree is
+        // spawned. This outer test retains its wait even on the causal RED.
+        using var compiler = Process.Start(start)!;
+        try
+        {
+            var logPath = Path.Combine(directory, "build.log");
+            await Assert.ThrowsAsync<TimeoutException>(() => LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(compiler, TimeSpan.FromMilliseconds(20), logPath));
+            Assert.True(compiler.HasExited, "Preparation timeout must not abandon its owned process.");
+            Assert.Equal("owned stdoutowned stderr", await File.ReadAllTextAsync(logPath));
+            Assert.Equal(0, compiler.ExitCode);
+        }
+        finally
+        {
+            await compiler.WaitForExitAsync();
+            await File.WriteAllTextAsync(Path.Combine(directory, "cleanup.json"), JsonSerializer.Serialize(new { pid = compiler.Id, exited = compiler.HasExited, exitCode = compiler.ExitCode, nativeWorkerLaunched = false }));
+        }
+    }
 }
 
 public sealed class LinuxFallbackFixtureAdmissionTests

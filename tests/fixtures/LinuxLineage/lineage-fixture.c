@@ -49,6 +49,8 @@ static int worker(const char *dir, const char *mode) {
     if (!strcmp(mode, "spawn") || !strcmp(mode, "spawn-window")) {
         struct sigaction sa = { .sa_handler = on_term }; sigemptyset(&sa.sa_mask);
         if (sigaction(SIGTERM, &sa, NULL)) return 91;
+        sigset_t blocked, previous; sigemptyset(&blocked); sigaddset(&blocked, SIGTERM);
+        if (sigprocmask(SIG_BLOCK, &blocked, &previous)) return 91;
         event(dir, "prepared");
         while (!term_requested) {
             if (!strcmp(mode, "spawn-window")) {
@@ -62,8 +64,11 @@ static int worker(const char *dir, const char *mode) {
                     poll(NULL, 0, 1);
                 }
             }
-            pause();
+            /* Atomically unblock TERM and sleep; a signal queued between the
+             * flag check and this wait is delivered rather than lost. */
+            if (sigsuspend(&previous) != -1 || errno != EINTR) return 91;
         }
+        if (sigprocmask(SIG_SETMASK, &previous, NULL)) return 91;
         pid_t p = fork(); if (p < 0) return 91;
         if (!p) linger(dir, "spawned");
         return 0;

@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "linux-fallback-spawn-boundary"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "cd91d22dd5e32fba77c2931b3d65367c7b314e83",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 44.9180966,
+  "Descriptors": [
+    {
+      "Name": "linux-fallback-spawn-boundary-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "linux-fallback-spawn-boundary",
+      "Categories": [
+        "linux-fallback-spawn-boundary"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSpawnBoundaryTests.StopAtWaitBoundary_StillCreatesAndRetiresDescendant",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 1,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSpawnBoundaryTests.StopAtWaitBoundary_StillCreatesAndRetiresDescendant",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

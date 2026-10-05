@@ -113,6 +113,26 @@ The helper remains byte-identical to restored3e1b11c2. Regression RED next, then
 atomic blocked-signal/sigsuspend correction, affected GREEN and discovery-only audit.
 No final acceptance yet; review and final cleanup/publication/restore remain pending.
 
+### Fixture race causal RED and preparation lifetime correction
+
+At `cd91d22dd5e32fba77c2931b3d65367c7b314e83`, fresh spawn-boundary build/discovery
+passed2planned/0executed. Execution **1PASS/1causalFAIL**,2completed,10.0200473s:
+normal spawn passed; deterministic window lacked `spawned` after TERM arrived
+between flag check and pause. Both guardians actualECHILD/emergency0, no live leak.
+[RED evidence](recovery/evidence/linux-fallback-spawn-red/manifest.json).
+Fixture now blocks TERM across the check and uses sigsuspend(previousMask), then
+restores the mask before spawning. GREEN pending; production helper unchanged.
+
+Second confirmed review finding: native build WaitAsync(40s) previously abandoned
+its process/output on timeout. Smallest correction will retain the original exit
+and concurrent drain tasks until actual exit, then preserve the original preparation
+TimeoutException and launch no worker. Separate reviewer agreed this resolves
+abandonment, without claiming forced cleanup or bounded termination of a permanently
+stalled compiler; current Linux runner outer timeout is only a protective bound.
+A single independently finite direct-PowerShell regression, with an outer owned wait
+on both RED/GREEN, is introduced before the correction. No process-tree kill,
+broad signal, new containment layer or shared mutable fixture is added.
+
 ## Priority handoff — disconnect audit and BLOCKED native slice
 
 Owner requested immediate handoff before further portability design. Exact helper/

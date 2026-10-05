@@ -40,6 +40,13 @@
         "#1553 independent native fixture evidence",
         "FR-014 stop during fork"
       ]
+    },
+    {
+      "category": "linux-fallback-build-lifetime",
+      "reason": "Review regression for compiler observation timeout abandoning its owned process; finite direct-process causal RED/GREEN, no native worker.",
+      "contracts": [
+        "#1553 T041-FALLBACK-NATIVE preparation lifecycle"
+      ]
     }
   ]
 }
