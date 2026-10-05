@@ -5,7 +5,7 @@
   "SourceCommit": "ff7e5a2b08f8fde196151909487c1d94089ea91d",
   "SourceTree": "2c6b270cbf69cd031658bc48e9aa036541ac0306",
   "RuntimeImplementationCommit": "a9472a35ebcc0e3fc0f09c168c49cef0a2629402",
-  "Status": "Bounded actual managed output pump GREEN on Linux; final complete-packet review pending",
+  "Status": "PASS for the bounded actual managed production output pump on Linux; native terminal/lifecycle qualification remains open",
   "Environment": {
     "OS": "Debian13.6",
     "Kernel": "6.18.44",
@@ -222,11 +222,44 @@
     "Model": "gpt-6.1-sol",
     "Effort": "xhigh",
     "Agent": "/root/output_final_review",
-    "Status": "Source/tests/RED/firstGREEN/audit reviewed without actionable findings; final packet pending"
+    "Result": "PASS",
+    "ReviewedEvidenceCarrier": "426b16807cd86efda3ed4d9b7e7acc77435cbc45",
+    "VerifiedTestSource": "ff7e5a2b08f8fde196151909487c1d94089ea91d",
+    "RuntimeImplementationSource": "a9472a35ebcc0e3fc0f09c168c49cef0a2629402",
+    "UnresolvedActionableFindings": [],
+    "ObservedUtc": "2026-10-05T13:38:32.168110+00:00",
+    "Verified": {
+      "CausalRedPassed": 19,
+      "CausalRedExecuted": 48,
+      "DistinctGreenPasses": 48,
+      "FreshActualConsumerBuild": true,
+      "CompleteCleanup": true,
+      "SkipsDuplicatesTimeouts": 0,
+      "CatalogCategories": 242,
+      "CatalogMethods": 10723,
+      "CatalogExecution": 0,
+      "Artifacts": 34,
+      "Manifests": 9,
+      "Inputs": 6,
+      "UnchangedFiles": 14,
+      "ClosureTrees": 3,
+      "GeneratedXmlParses": 11,
+      "RestoredTrackedFiles": 5427,
+      "RestoredChangedFileBytes": 53,
+      "RestoredQualificationInputs": 6,
+      "NonOutputProgramRegionsByteEquivalent": true
+    },
+    "ReviewExecution": "Read-only; no builds/tests/native probes rerun",
+    "Limits": [
+      "Native Windows",
+      "Terminal/CLI/GM",
+      "Readiness/autotrust/manual input",
+      "Ownership/stop/Release/lifecycle"
+    ]
   },
   "ArtifactIntegrity": {
-    "Manifests": 9,
-    "Artifacts": 34,
+    "Manifests": 10,
+    "Artifacts": 37,
     "Evidence": [
       "evidence/gm-output-audit/manifest.json",
       "evidence/gm-output-design/manifest.json",
@@ -236,7 +269,8 @@
       "evidence/gm-output-fixture-preparation/manifest.json",
       "evidence/gm-output-preparation/manifest.json",
       "evidence/gm-output-red/manifest.json",
-      "evidence/gm-output-red-plan/manifest.json"
+      "evidence/gm-output-red-plan/manifest.json",
+      "evidence/gm-output-review/manifest.json"
     ]
   },
   "GeneratedXmlValidation": [
@@ -284,5 +318,19 @@
     "Full B4/#1553/platform acceptance"
   ],
   "NextWork": "Stop at handoff. Parent selects next connected prerequisite; namespace remains pending and backend choice deferred.",
-  "SourceRestoration": "Pending fresh GitHub-only candidate restoration"
+  "SourceRestoration": {
+    "ObservedUtc": "2026-10-05T13:35:33.688593+00:00",
+    "Commit": "426b16807cd86efda3ed4d9b7e7acc77435cbc45",
+    "Tree": "2fee13c0cf0df1773a09186b1f99bc11e07b1792",
+    "Method": "Fresh GitHub-only clone into a new empty directory; no local source/object cache",
+    "RestorationDirectory": "/workspace/linux-1553-output-review-restore",
+    "RemoteShaBeforeAndAfterVerified": true,
+    "Clean": true,
+    "TrackedFiles": 5427,
+    "ChangedFilesBytesVerified": 53,
+    "QualificationInputHashesVerified": 6,
+    "ConnectivityFsck": "PASS",
+    "SourceOnlyNoBuildOrExecution": true
+  },
+  "FinalCarrier": "Final verdict metadata is published/read back and source-restored separately; exact final SHA and restoration result are recorded in local handoff to avoid self-reference."
 }

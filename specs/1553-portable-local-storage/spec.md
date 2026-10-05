@@ -17,7 +17,7 @@
 
 ## Persistent-main output decoding — T041-OUTPUT-UTF8, 2026-10-05
 
-Bounded implementation status: actual managed bridge output pump passes48/48 on Linux at `ff7e5a2b08f8fde196151909487c1d94089ea91d` (runtime source `a9472a35`), after causal19/48 RED. [Qualification](recovery/gm-output-qualification.json). Independent final complete-packet review and source restore pending; no terminal/ownership readiness follows.
+Bounded implementation status: actual managed bridge output pump passes48/48 on Linux at `ff7e5a2b08f8fde196151909487c1d94089ea91d` (runtime source `a9472a35`), after causal19/48 RED. [Qualification](recovery/gm-output-qualification.json). Independent actual Sol6.1/xhigh final PASS at `426b1680`, with clean GitHub-only source restoration. This qualifies only the bounded managed output component; no terminal/ownership readiness follows.
 
 From exact `08e9805d10237d3bc50438e67b58fd33c5509c42`, fix the production-consumed `BridgeHost.PumpOutputAsync`, preserving raw byte forwarding and the current UTF-8 replacement fallback. Each invocation owns one decoder; incomplete scalars span reads and finalize only at a genuine successful zero-byte EOF, never cancellation or read/write/flush failure. Every successfully forwarded nonempty byte read still advances output version and wakes observers even when no character is complete. EOF replacement output wakes text observers without inventing byte activity. Decoder state cannot cross pump invocations.
 
