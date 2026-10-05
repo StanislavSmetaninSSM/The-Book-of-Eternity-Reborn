@@ -14,6 +14,35 @@
 - Latest direction, 18:26 UTC: replace Windows-only mechanisms, remove protection against the owner editing their own saves, demonstrate complete Linux behavior; the owner will execute Windows checks
 - Wound implementation was merged by explicit owner request in [PR #1554](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/pull/1554). Its unfinished acceptance remains deferred under #1536, not declared complete by this feature
 
+## Persistent-main run-record component — T041-RUN-RECORD, 2026-10-05
+
+This bounded internal prerequisite implements US4/FR-014 record interpretation,
+not persistent process execution. A record describes **only the persistent-main
+ownership slot**. Missing or confirmed-stopped main evidence satisfies only that
+slot's admission condition; concurrent worker ownership must independently be
+composed before any whole-root mutation. The worker pool is not fenced by a
+single main record. No production caller is wired in this component slice.
+
+- Persisted identity binds normalized root key, run ID, current existing generation,
+  positive session epoch, ownership backend, host instance and boot identity
+- Malformed, absent and valid evidence are distinct; malformed bytes never authorize
+  startup or mutation. Cold nonterminal evidence remains Uncertain
+- Active same-run operations require exact current identity; second starts and
+  quiescent mutation require missing or confirmed-stopped slot evidence
+- Uncertain cannot become stopped or reusable from PID exit, EOF, timeout or status
+  absence; only an exact identity-bound, trusted complete-scope stop or verified
+  host-reboot observation can produce a retained terminal record
+- The codec never authenticates an observation or acquires a filesystem/path grant.
+  Pure and ordinary-file tests prove interpretation and decisions, not atomic
+  persistence, power-loss/crash durability, canonical integration or native stop
+
+Detailed schema and future consumer obligations are in [data-model.md](data-model.md)
+and the current [plan](plan.md). Atomic record publication outside replaceable
+state, all-writer composition, admission under held leases/actual mutations and
+nonmutating diagnostic reads remain a separate connected prerequisite. This
+client-owned prerequisite changes no GM-authored gameplay field or capability;
+no gameplay prompt/example update is required until operational integration.
+
 ## Local load-filesystem continuation — revision 1, 2026-10-03
 
 The owner requested completing the entire ordinary-load filesystem contour locally,

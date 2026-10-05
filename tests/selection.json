@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "worker-host-frame-contract",
-      "reason": "Permitted pure frame/JSON/diagnostic hardening after native socket creation was denied; no native IPC retry.",
+      "category": "gm-session-run-record",
+      "reason": "New persistent-main slot codec/transitions/admission component only; per-test ordinary files, no native IPC/process or unchanged prior cohorts.",
       "contracts": [
-        "#1553 T041-FRAME FR-012/014/015"
+        "#1553 T041-RUN-RECORD US4 FR-014/015"
       ]
     }
   ]

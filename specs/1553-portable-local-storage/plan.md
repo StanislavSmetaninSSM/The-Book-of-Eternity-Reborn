@@ -4,6 +4,86 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T041-RUN-RECORD design and execution — 2026-10-05
+
+Source/base: #1553, `codex/1553-load-filesystem`, verified local/GitHub
+`c706e2c3efa2c360358f99f1495f11be53c764a5`, tree
+`4ce973b2d7a6a69ae50cc31bc13fdca566bf0ac6`. Sole writer in the existing isolated
+checkout; owner-authorized autonomous spec/plan decisions and direct TDD execution.
+This is one bounded architectural prerequisite, with explicit schema in
+[data-model.md](data-model.md#persistent-main-ownership-slot--schema-1-t041-run-record)
+and scope in [spec.md](spec.md#persistent-main-run-record-component--t041-run-record-2026-10-05).
+
+### Consumer trace and connected follow-on gate
+
+The record is **persistent-main slot evidence only**. `GmWorkerBridgePool` has
+per-profile concurrency; worker Release/import/quarantine retains independent
+ownership. Missing/stopped main evidence cannot authorize whole-root operations.
+Future consumers are `BookOfEternityGMBridge/Program.cs` persistent start/restart
+and queued-input epoch, `GameEngine.TurnLifecycle` restore/delete paths,
+`GameEngine.SessionAndSnapshots` repair-stall promotion, and
+`FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync` before any recovery write.
+`EnsureCanonicalWriteLeaseActive` currently checks activity only; browser restoration
+can reuse a held lease. The connected fence must compose all worker sources and
+order transitions against held leases/actual mutation, without holding its lock
+across supervisor IPC. Diagnostic reads must bypass recovery writes.
+
+Future main authority belongs at `.boe_runtime/gm-runs/main.json`, outside the
+replaceable game_state/save image. Persist Prepared before a process can be released,
+then verified Running before writer release; retain Uncertain and the terminal epoch
+tombstone. Atomic publication, no-follow path/type reads, acquisition ordering,
+complete worker aggregation and authenticated native evidence are **not implemented
+here** and require a separate reviewed connected block before adoption. The codec
+accepts bytes, not a path or mutation grant. No live behavior changes in this slice.
+
+### Implementation plan and acceptance
+
+Files: `Services/GmRuntime/GmSessionRunRecord.cs` owns immutable identity/state and
+transitions; `GmSessionRunRecordCodec.cs` owns the bounded strict codec and explicit
+Missing/Valid/Unreadable observations; `GmSessionRunAdmission.cs` owns trusted-target
+slot-local decisions. Corresponding unit tests in `GmSessionRunRecordTests.cs` and
+`GmSessionRunAdmissionTests.cs` have independent mutable state; ordinary-file tests
+persist bytes to unique directories, cold-decode into the real decision code and
+verify rejected/uncertain bytes remain untouched. No pipes/processes/provider.
+
+- [ ] Write behavior tests first, then a minimal permissive roundtrip/transition/
+  policy baseline solely to obtain causal behavioral RED; never claim baseline safe
+- [ ] Publish reviewed design + RED-source WIP before fresh selected build/run
+- [ ] Observe missing validation/evidence/admission failures in the sole new
+  `gm-session-run-record` category; preserve exact evidence and no unrelated reruns
+- [ ] Implement strict schema, identity-bound transitions and fail-closed matrix;
+  publish candidate before fresh PlanOnly/build and category GREEN
+- [ ] Discovery-only catalog validation, separate gpt-6.1-sol/xhigh source/evidence
+  review, exact remote SHA/readback and clean GitHub-only restoration
+
+Review focus is unknown/duplicate/nested and Unicode-boundary inputs; stale run,
+epoch, generation, host and boot evidence; cross-backend/case-distinct root binding;
+cold active versus stopped evidence; all-zero accepted generation and terminal
+Int64 epoch exhaustion. Each is explicitly tested. Test selection remains bounded;
+no full/Fast/PreMerge/sweep or unchanged FRAME/storage rerun. Native IPC remains
+deferred after the socket-constructor refusal, with all original platform guards.
+
+Spec Kit prerequisite resolves the current feature and complete checklists; focused
+spec/plan/tasks/model consistency maps US4/FR-014 to T041-RUN-RECORD and retains
+FR-012/015 native and verification gates. The global `specify` CLI is absent from
+this cloud PATH; existing installed project skills/scripts work, and no scaffold
+reinitialization or dependency installation is needed. Existing feature artifacts
+are updated in place rather than creating a competing plan. All new behavior is
+client-owned; no GM-authored field or usable gameplay capability changes.
+
+Design review: separate gpt-6.1-sol/xhigh found and closed three contract issues:
+main-slot versus concurrent-worker scope, trusted-target backend comparison and
+preserving all-zero current generation. No remaining design blocker. The focused
+Spec Kit consistency pass is clean after those corrections.
+
+Status: **RED-source WIP, unqualified and unwired**. Tests precede a deliberately
+permissive roundtrip/transition/policy baseline to obtain causal failures. No fresh
+build or test has run; no production consumer invokes these helpers. Publish this
+source, then run PlanOnly/build and the single selected category.
+Acceptance will prove codec/policy and ordinary-file interpretation only, not atomic
+persistence/crash durability, authenticated stop, canonical wiring, Windows/native
+IPC/process/workspace/PTY, live GM, full T041–043 or whole #1553.
+
 ## T041-FRAME verified component — 2026-10-05
 
 Corrected runtime: `e9f9452deb296988a0ced6feb9b8003b54449a19`, tree

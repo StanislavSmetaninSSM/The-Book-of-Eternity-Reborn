@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-session-run-record",
+      "responsibility": "T041-RUN-RECORD strict bounded persistent-main slot record codec, identity-bound transitions/stop evidence and slot-local trusted-target admission; isolated ordinary-file cold decode and retention.",
+      "excludes": "Atomic persistence, no-follow path reader, all-worker/global-root composition, canonical/held-lease wiring, authenticated native stop/IPC/process/workspace/PTY and live GM; no process starts.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecord.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecordCodec.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunAdmission.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmSessionRunRecordTests.*",
+            "BookOfEternityClient.Tests.GmSessionRunAdmissionTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-save-native-names",
       "responsibility": "T032-A4 actual native Linux current Save producer -> typed Load -> Save: exact arbitrary leaf/directory case pairs and bytes, complete manifest/hash claims, fixed whole-file canonical mapping and fixed-authority case collision refusal before publication.",
       "excludes": "Native Windows producer execution, full resource envelope, other load recovery/client/gameplay contracts. This owner requires Linux and asserts that platform rather than returning early.",

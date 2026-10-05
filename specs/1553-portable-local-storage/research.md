@@ -1,5 +1,25 @@
 # Feature research: portable local storage and interactive GM
 
+## Persistent-main run-record design decision — 2026-10-05
+
+The T040 source trace shows recovery and rollback can precede confirmed process
+stop. A strict record and decision contract can be tested without executing a
+process, but cannot fix the live race until the connected canonical fence exists.
+Use one **persistent-main slot**, not a global single-run record: the current worker
+pool permits independent per-profile concurrency. Main missing/stopped evidence
+therefore is only one input to future whole-root all-writer admission. A plural
+worker registry/coordination protocol and a generic durable-state framework would
+broaden this slice; neither is introduced. A file-presence or PID-liveness boolean
+would lose stale epoch and uncertain-stop evidence and is rejected.
+
+The source has canonical lowercase N-format generation IDs, normalized root keys
+with Windows ordinal-ignore-case versus Linux ordinal identity, and a runtime
+`.boe_runtime` area outside replacement payload. Reuse those identity semantics;
+no physical file identity, protection against closed-game owner edits or privileged
+service is added. Future verified process/boot adapters supply observations; serialized
+stop evidence alone is not authentication. Record format is new and has no legacy
+save compatibility promise. No dependency/provider or native IPC probe is needed.
+
 ## Local load-filesystem design research — execution revision 1
 
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
