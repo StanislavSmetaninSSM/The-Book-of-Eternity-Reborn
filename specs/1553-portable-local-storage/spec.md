@@ -39,7 +39,9 @@ is implemented or qualified by this document. [Source-backed plan](plan.md#worke
   identity before any worker Launch payload; Windows keeps its original Process/Job path.
 - Slice A connects packaged helper, private ownership/binding channels, separate
   host output streams, typed backend selection and the real host Ready/owner-close
-  path. It never sends worker Release. Slice B separately exercises synthetic worker
+  path. Ordinary RunTaskAsync requests WorkerRelease and, in A, rejects native before
+  starting helper or host; neutral tests use its same extracted host-preparation method.
+  It never sends worker Release. Slice B separately exercises synthetic worker
   Release/result/stop/quarantine through `GmWorkerBridgePool.RunTaskAsync` and existing
   proposal/generation/lease guards. Production Linux Release and persistent main/PTY
   remain closed pending their explicit integration authorization and restart guard.

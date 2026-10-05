@@ -55,6 +55,13 @@ and bound run/backend; Windows retains the original Process, Linux retains the
 transferred pidfd. Host protocol methods consume this token, never a naked PID.
 The native implementation and protocol parser live in `GmWorkerNativeLineageLaunch.cs`;
 keep WindowsJobProcessTree's actual assignment/termination semantics unchanged.
+Extract the existing start/attach/Ready preparation into
+`GmWorkerProcessHostLaunch.PrepareOwnedAsync(IGmWorkerOwnedLauncher,
+GmWorkerBackendRequest, GmWorkerRequiredCapability, CancellationToken)
+-> Task<GmWorkerOwnedLaunch>`. This is the same method consumed by RunTaskAsync and
+the neutral-host tests, not a second host implementation. It checks the requested
+capability before starting any helper/host and returns only after checked host Ready;
+failed partial startup retains the launch owner as described below.
 
 1. Create the launch owner container and private bootstrap listener before starting
    the verified helper; create two O_CLOEXEC output pipes. Process.Start returns only
@@ -141,8 +148,13 @@ before host launch. Hashes establish package provenance, not protection against 
 trusted player changing their installation. Absolute host executable resolution
 must replace the current possible `dotnet` name before helper execv; never shell-eval.
 
-Slice A may admit NeutralHost only. Actual `GmWorkerBridgePool` must consume the same
-preparation seam; its Linux worker Release remains fail-closed. Slice B exercises
+Slice A may admit NeutralHost only. Actual `GmWorkerBridgePool.RunTaskAsync` consumes
+the same preparation seam but always requests WorkerRelease. Because native only
+advertises NeutralHost in A, ordinary Linux RunTaskAsync rejects it **before starting
+either helper or host**; it cannot enter old bool-based native pool/quarantine cleanup.
+A tests call the shared PrepareOwnedAsync with NeutralHost, use the original managed
+host Ready/owner-close path, and retain the typed launch owner through teardown.
+Existing Windows calls use the wrapper and preserve their path. Slice B exercises
 the actual RunTaskAsync continuation using an internal, explicitly injected synthetic
 qualification capability and isolated filesystem; no public config/environment switch
 can enable production Release. This preserves the real consumer path while keeping
@@ -189,8 +201,9 @@ are separately designed/qualified; synthetic tests never mutate real saves.
 ### Two connected slices and focused proof
 
 **A — T041-FALLBACK-HOST, real neutral host Ready and owner-close.** Modify the helper,
-build script/client publish assets, GmWorkerProcessHost identity parameters, pool's
-preparation call site and Windows factory wrapper; add the three focused managed
+build script/client publish assets, GmWorkerProcessHost identity/preparation methods,
+pool's shared preparation call site/capability rejection and Windows factory wrapper;
+do not activate native pool lifecycle or its legacy bool cleanup. Add the three focused managed
 launch/selector files above. Extend `GmWorkerProcessHostTests`/PeerIdentityTests and
 add `GmWorkerNativeLaunchTests.cs` in integration tests. Real native tests use an
 independent finite guardian; failure cleanup never depends on the adapter under test.
@@ -198,6 +211,8 @@ independent finite guardian; failure cleanup never depends on the adapter under 
 - [ ] Add causal tests around the actual host-preparation path, not a duplicated host:
   two authenticated peers/Ready then graceful owner stop, zero worker starts; helper
   PID/wrong root FD/reused PID/dead pidfd/foreign single channel rejected before Launch.
+  Actual ordinary RunTaskAsync with NativeLineage or Auto must reject WorkerRelease
+  before helper/host start in A; assert zero starts as well as zero worker Release.
 - [ ] Cover pre-fork cancellation, gated binding/ACK/exec failure, cancellation at Ready,
   owner EOF/death and supervisor loss before/after binding; prove own descendant cleanup
   separately from the adapter's intentionally Uncertain result. Reject stale protocol,
@@ -209,8 +224,10 @@ independent finite guardian; failure cleanup never depends on the adapter under 
   fresh-build affected GREEN; independent review/source hashes/cleanup/non-force
   publication/clean restore. Stop for parent handoff before any worker Release.
 
-**B — T041-FALLBACK-POOL, synthetic Release through the real pool.** Consume the same
-launch object in RunTaskAsync completion/cleanup and GmWorkerQuarantinedExecution;
+**B — T041-FALLBACK-POOL, synthetic Release through the real pool.** Atomically admit
+the internal synthetic WorkerRelease capability and consume the same launch object
+in RunTaskAsync completion/cleanup and GmWorkerQuarantinedExecution; no intermediate
+revision may admit native launch while retaining root-only/bool cleanup.
 extend WorkerBridgeStatus/GmWorkerTaskRunResult plus downstream success guards in
 ValidationRepairDelegator/ProposalOnlyDispatchService. Preserve workspace, reservation,
 PublishBundleAsync, audit/receipt and lease/generation algorithms. Add
