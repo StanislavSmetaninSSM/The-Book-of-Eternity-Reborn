@@ -51,7 +51,7 @@ public sealed class GmBridgeDiagnosticsContractTests
         Assert.Contains("WaitForPromptSubmittedAfterEnterAsync", source, StringComparison.Ordinal);
         Assert.Contains("Prompt was visible and Enter was sent, but the CLI did not transition away from the pasted prompt marker", source, StringComparison.Ordinal);
         Assert.True(
-            source.IndexOf("await WriteToPtyAsync(string.Empty, appendEnter: true);", StringComparison.Ordinal) <
+            source.IndexOf("await WriteToPtyAsync(dispatchInput, string.Empty, appendEnter: true, dispatchCancellation.Token);", StringComparison.Ordinal) <
             source.IndexOf("WaitForPromptSubmittedAfterEnterAsync", StringComparison.Ordinal),
             "The bridge must press Enter before waiting for the submitted/working screen.");
     }
@@ -146,9 +146,9 @@ public sealed class GmBridgeDiagnosticsContractTests
 
         Assert.Contains("ClearPendingInputBeforePromptDispatchAsync", source, StringComparison.Ordinal);
         Assert.Contains("\"\\u0015\"", source, StringComparison.Ordinal);
-        Assert.Contains("await ClearPendingInputBeforePromptDispatchAsync();", source, StringComparison.Ordinal);
+        Assert.Contains("await ClearPendingInputBeforePromptDispatchAsync(dispatchInput, dispatchCancellation.Token);", source, StringComparison.Ordinal);
         Assert.True(
-            source.IndexOf("await ClearPendingInputBeforePromptDispatchAsync();", StringComparison.Ordinal) <
+            source.IndexOf("await ClearPendingInputBeforePromptDispatchAsync(dispatchInput, dispatchCancellation.Token);", StringComparison.Ordinal) <
             source.IndexOf("var payload = BuildBracketedPastePayload", StringComparison.Ordinal),
             "Pending CLI drafts must be cleared before the bridge pastes a GM prompt.");
     }
@@ -162,7 +162,7 @@ public sealed class GmBridgeDiagnosticsContractTests
         Assert.Contains("GM CLI is not ready for a new prompt", source, StringComparison.Ordinal);
         Assert.Contains("esc to interrupt", source, StringComparison.Ordinal);
         Assert.True(
-            source.IndexOf("await ClearPendingInputBeforePromptDispatchAsync();", StringComparison.Ordinal) <
+            source.IndexOf("await ClearPendingInputBeforePromptDispatchAsync(dispatchInput, dispatchCancellation.Token);", StringComparison.Ordinal) <
             source.IndexOf("var readiness = ProbeCliPromptReadinessForDispatch();", StringComparison.Ordinal),
             "The bridge should clear idle-line drafts before probing visible CLI readiness.");
         Assert.True(
@@ -244,7 +244,7 @@ public sealed class GmBridgeDiagnosticsContractTests
         Assert.Contains("IsCodexCliUpdatePrompt", source, StringComparison.Ordinal);
         Assert.Contains("Update available!", source, StringComparison.Ordinal);
         Assert.Contains("Skip until next version", source, StringComparison.Ordinal);
-        Assert.Contains("await WriteToPtyAsync(\"3\", appendEnter: true);", source, StringComparison.Ordinal);
+        Assert.Contains("await WriteToPtyAsync(input, \"3\", appendEnter: true, input.Token);", source, StringComparison.Ordinal);
         Assert.Contains("Codex CLI is waiting at an update prompt.", source, StringComparison.Ordinal);
     }
 

@@ -289,9 +289,9 @@ public sealed class GmBridgeInputLifetimeTests
         }
         var pump = host.Keyboard(binding, Read);
         await stream.Flushed.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        // Observe fault handling without a timing race by supplying an owned cancellation after flush.
-        host.ShellTokenSource.Cancel();
-        await Capture(pump);
+        var outcome = await Capture(pump);
+        Assert.Null(outcome);
+        Assert.Equal(1, reads);
         Assert.NotNull(host.InputError);
         Assert.Equal(1, stream.Writes);
     }
@@ -308,6 +308,71 @@ public sealed class GmBridgeInputLifetimeTests
         var doc = Assert.Single(metadata.Documents.Select(metadata.GetDocument), d => metadata.GetString(d.Name).Replace('\\', '/').EndsWith("BookOfEternityGMBridge/Program.cs", StringComparison.Ordinal));
         Assert.Equal(SHA256.HashData(File.ReadAllBytes(Path.Combine(HostFixture.RepoRoot, "BookOfEternityGMBridge/Program.cs"))), metadata.GetBlobBytes(doc.Hash));
         Assert.Null(host.Get("_pty"));
+    }
+
+    [Theory]
+    [InlineData(false, "Failed")]
+    [InlineData(true, "Completed")]
+    public async Task ActualDispatchCompletion_ReflectsActualOperationSuccess(bool success, string expected)
+    {
+        await using var host = new HostFixture();
+        using var stream = new ControlledStream();
+        var binding = host.Attach(stream);
+        host.Complete(binding, success);
+        Assert.Equal(expected, host.Status("LastPromptDispatchState"));
+    }
+
+    [Fact]
+    public async Task ActualLifetime_LateRevokeAndCompletionCannotChangeReplacement()
+    {
+        await using var host = new HostFixture();
+        using var a = new ControlledStream();
+        using var b = new ControlledStream();
+        var first = host.Attach(a);
+        await host.Stop();
+        var next = host.Attach(b);
+        host.Complete(next, true);
+        host.Revoke(first);
+        host.Complete(first, false);
+        Assert.NotNull(await Capture(host.Write(first, "old", false)));
+        Assert.Null(host.InputError);
+        Assert.Equal("Completed", host.Status("LastPromptDispatchState"));
+        await host.Write(next, "new", false);
+        Assert.Equal(Encoding.UTF8.GetBytes("new"), b.Bytes);
+    }
+
+    [Fact]
+    public async Task ActualStop_AwaitsCancellationCallbacksThatReenterTheHost()
+    {
+        await using var host = new HostFixture();
+        using var stream = new ControlledStream();
+        var binding = host.Attach(stream);
+        var seen = Signal();
+        using var registration = host.ShellTokenSource.Token.Register(() =>
+        {
+            // Re-enter the same state lock; callback must not run inline under it.
+            host.Revoke(binding);
+            seen.TrySetResult(true);
+        });
+        await host.Stop().WaitAsync(TimeSpan.FromSeconds(8));
+        Assert.True(seen.Task.IsCompletedSuccessfully);
+        Assert.Empty(stream.Bytes);
+    }
+
+    [Fact]
+    public void ProductionOriginsAndRetirementConsumeTheTestedLifetimeMethods()
+    {
+        var source = File.ReadAllText(Path.Combine(HostFixture.RepoRoot, "BookOfEternityGMBridge/Program.cs"));
+        Assert.Contains("BeginInputLifetime(pty.InputWriter, shellLoopCts)", source, StringComparison.Ordinal);
+        Assert.Contains("PumpKeyboardAsync(input, ReadConsoleKeyAsync, shellToken)", source, StringComparison.Ordinal);
+        Assert.Contains("WriteToPtyAsync(dispatchInput, payload", source, StringComparison.Ordinal);
+        Assert.Contains("WriteToPtyAsync(dispatchInput, string.Empty", source, StringComparison.Ordinal);
+        Assert.Contains("CompletePromptDispatch(dispatchInput, dispatchSucceeded", source, StringComparison.Ordinal);
+        var exit = source[source.IndexOf("private async Task HandlePtyExitedAsync", StringComparison.Ordinal)..source.IndexOf("private void WriteStatusFile", StringComparison.Ordinal)];
+        Assert.Contains("!ReferenceEquals(_inputLifetime, observedInput)", exit, StringComparison.Ordinal);
+        Assert.Contains("await StopShellCoreAsync();", exit, StringComparison.Ordinal);
+        var dispose = source[source.IndexOf("public void Dispose()", StringComparison.Ordinal)..];
+        Assert.True(dispose.IndexOf("_inputClosed = true", StringComparison.Ordinal) < dispose.IndexOf("StopShellAsync()", StringComparison.Ordinal));
     }
 
     private static TaskCompletionSource<bool> Signal() => new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -367,6 +432,8 @@ public sealed class GmBridgeInputLifetimeTests
             return Track(task);
         }
         public Task Stop() => Track((Task)Invoke("StopShellAsync")!);
+        public void Complete(object binding, bool success) => Invoke("CompletePromptDispatch", binding, success, 1L);
+        public object? Status(string name) => Get("_status")!.GetType().GetProperty(name)!.GetValue(Get("_status"));
         private Task Track(Task task) { _tasks.Add(task); return task; }
         public void CancelAllShells() { foreach (var cts in _shells) try { cts.Cancel(); } catch (ObjectDisposedException) { } }
         public void DisposeHost() => ((IDisposable)_host).Dispose();

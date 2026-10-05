@@ -102,6 +102,28 @@ internal sealed class BridgeHost : IDisposable
     private readonly CancellationTokenSource _cts = new();
     private readonly object _sync = new();
     private readonly SemaphoreSlim _ptyWriteLock = new(1, 1);
+    private readonly SemaphoreSlim _shellLifecycleLock = new(1, 1);
+    private InputLifetime? _inputLifetime;
+    private bool _inputClosed;
+    private bool _writeGateDisposed;
+    private static readonly TimeSpan InputDrainTimeout = TimeSpan.FromSeconds(5);
+
+    // Local stream/task identity only; never a persistent run, generation or ownership grant.
+    private sealed class InputLifetime(Stream input, CancellationTokenSource cancellation)
+    {
+        public Stream Input { get; } = input;
+        public CancellationTokenSource Cancellation { get; } = cancellation;
+        public CancellationToken Token { get; } = cancellation.Token;
+        public bool Revoked;
+        public int PendingWrites;
+        public TaskCompletionSource<bool>? WritesDrained;
+        public Task CancellationTask = Task.CompletedTask;
+        public Task? DrainTask;
+    }
+
+    private sealed class InputLifetimeUnavailableException() : InvalidOperationException("PTY input lifetime is no longer active.");
+    private sealed class PtyInputWriteException(Exception inner) : IOException(
+        "PTY input write failed after it started; some bytes may have been delivered.", inner);
     private readonly StringBuilder _recentOutput = new();
 
     private ConPtySession? _pty;
@@ -157,17 +179,21 @@ internal sealed class BridgeHost : IDisposable
         {
             while (!_cts.IsCancellationRequested)
             {
+                ConPtySession? exited;
+                InputLifetime? observedInput;
                 lock (_sync)
                 {
-                    if (_pty is { HasExited: true })
-                        HandlePtyExited_NoThrow();
+                    exited = _pty is { HasExited: true } ? _pty : null;
+                    observedInput = _inputLifetime;
                 }
+                if (exited != null)
+                    await HandlePtyExitedAsync(exited, observedInput);
 
                 await RefreshBridgeAutomationStateAsync();
                 await Task.Delay(250, _cts.Token);
             }
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) when (_cts.IsCancellationRequested)
         {
             // normal shutdown
         }
@@ -258,16 +284,19 @@ internal sealed class BridgeHost : IDisposable
 
             case "addtext":
                 EnsureShellAlive();
-                await WriteToPtyAsync(request.Text ?? string.Empty, appendEnter: false);
+                await WriteToPtyAsync(CaptureInputLifetime(), request.Text ?? string.Empty, appendEnter: false, _cts.Token);
                 return BridgeResponse.Success(SnapshotStatus());
 
             case "sendenter":
                 EnsureShellAlive();
-                await WriteToPtyAsync(string.Empty, appendEnter: true);
+                await WriteToPtyAsync(CaptureInputLifetime(), string.Empty, appendEnter: true, _cts.Token);
                 return BridgeResponse.Success(SnapshotStatus());
 
             case "dispatchprompt":
                 EnsureShellAlive();
+                var dispatchInput = CaptureInputLifetime();
+                using var dispatchCancellation = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, dispatchInput.Token);
+                var dispatchSucceeded = false;
                 var dispatchStartedAt = DateTimeOffset.UtcNow;
                 var dispatchStopwatch = Stopwatch.StartNew();
                 lock (_sync)
@@ -287,7 +316,7 @@ internal sealed class BridgeHost : IDisposable
                 try
                 {
                     var visibilitySettings = LoadBridgeConfig();
-                    await ClearPendingInputBeforePromptDispatchAsync();
+                    await ClearPendingInputBeforePromptDispatchAsync(dispatchInput, dispatchCancellation.Token);
                     var readiness = ProbeCliPromptReadinessForDispatch();
                     if (!readiness.IsReady)
                     {
@@ -305,7 +334,7 @@ internal sealed class BridgeHost : IDisposable
                     }
 
                     var payload = BuildBracketedPastePayload(request.Text ?? string.Empty);
-                    await WriteToPtyAsync(payload, appendEnter: false);
+                    await WriteToPtyAsync(dispatchInput, payload, appendEnter: false, dispatchCancellation.Token);
                     if (request.AppendEnter)
                     {
                         var visible = await WaitForPromptVisibleAsync(
@@ -314,46 +343,37 @@ internal sealed class BridgeHost : IDisposable
                             outputLengthBefore,
                             visibilitySettings,
                             TimeSpan.FromSeconds(visibilitySettings.GmBridgePromptVisibilityTimeoutSeconds),
-                            _cts.Token);
+                            dispatchCancellation.Token);
                         if (!visible)
                         {
                             return FailWithLastError(
                                 "Prompt text was pasted into the PTY, but it never became visible in the CLI output. Enter was not sent to avoid switching the CLI into a wrong mode.");
                         }
 
-                        await WaitForOutputQuietPeriodAsync(TimeSpan.FromMilliseconds(250), TimeSpan.FromSeconds(2), _cts.Token);
+                        await WaitForOutputQuietPeriodAsync(TimeSpan.FromMilliseconds(250), TimeSpan.FromSeconds(2), dispatchCancellation.Token);
                         long outputVersionBeforeEnter;
                         lock (_sync)
                             outputVersionBeforeEnter = _outputVersion;
 
-                        await WriteToPtyAsync(string.Empty, appendEnter: true);
+                        await WriteToPtyAsync(dispatchInput, string.Empty, appendEnter: true, dispatchCancellation.Token);
                         var submitted = await WaitForPromptSubmittedAfterEnterAsync(
                             request.Text ?? string.Empty,
                             outputVersionBeforeEnter,
                             visibilitySettings,
                             TimeSpan.FromSeconds(5),
-                            _cts.Token);
+                            dispatchCancellation.Token);
                         if (!submitted)
                         {
                             return FailWithLastError(
                                 "Prompt was visible and Enter was sent, but the CLI did not transition away from the pasted prompt marker. Dispatch was not confirmed; use diagnostics/sendEnter or restart the shell before retrying.");
                         }
                     }
+                    dispatchSucceeded = true;
                 }
                 finally
                 {
                     dispatchStopwatch.Stop();
-                    lock (_sync)
-                    {
-                        _status.LastPromptDispatchCompletedAtUtc = DateTimeOffset.UtcNow.ToString("O");
-                        _status.LastPromptDispatchElapsedMs = dispatchStopwatch.ElapsedMilliseconds;
-                        _status.LastPromptDispatchState = string.Equals(_status.State, "DispatchFailed", StringComparison.Ordinal)
-                            ? "Failed"
-                            : "Completed";
-                        if (!string.Equals(_status.State, "DispatchFailed", StringComparison.Ordinal))
-                            _status.State = _status.Ready ? "Ready" : "OperatorNotReady";
-                        WriteStatusFile();
-                    }
+                    CompletePromptDispatch(dispatchInput, dispatchSucceeded, dispatchStopwatch.ElapsedMilliseconds);
                 }
 
                 return BridgeResponse.Success(SnapshotStatus());
@@ -381,125 +401,181 @@ internal sealed class BridgeHost : IDisposable
 
     private async Task StartShellAsync()
     {
-        await StopShellAsync();
-
-        var config = LoadBridgeConfig();
-        var shellExe = ResolveShellExecutable();
-        var shellArgs = BuildShellArguments(shellExe);
-        var workingDirectory = ResolveGmBridgeShellWorkingDirectory(config.GmBridgeShellWorkingDirectory);
-        var (width, height) = GetConsoleSize();
-        var pty = ConPtySession.Start(shellExe, shellArgs, workingDirectory, width, height);
-        var outputWriter = Console.OpenStandardOutput();
-
-        _pty = pty;
-        _ptyInput = pty.InputWriter;
-        _shellLoopCts = new CancellationTokenSource();
-        _outputPumpTask = Task.Run(() => PumpOutputAsync(pty.OutputReader, outputWriter, _shellLoopCts.Token), _shellLoopCts.Token);
-        _keyboardPumpTask = Task.Run(() => PumpKeyboardAsync(_shellLoopCts.Token), _shellLoopCts.Token);
-        _resizePumpTask = Task.Run(() => PumpResizeAsync(_shellLoopCts.Token), _shellLoopCts.Token);
-
-        lock (_sync)
+        await _shellLifecycleLock.WaitAsync(_cts.Token);
+        try
         {
-            _status.ShellPid = pty.ProcessId;
-            _status.CliProcessId = null;
-            _status.CliLaunchCommand = config.GmCliLaunchCommand;
-            _status.ShellWorkingDirectory = workingDirectory;
-            _status.WorkerStatuses = GmWorkerBridgePool.BuildInitialStatuses(config.GmWorkerBridgeProfiles).ToList();
-            _status.Ready = false;
-            _status.State = "OperatorNotReady";
-            _status.LastError = null;
-            WriteStatusFile();
-        }
+            lock (_sync)
+                ObjectDisposedException.ThrowIf(_inputClosed, this);
+            await StopShellCoreAsync();
 
-        Console.WriteLine();
-        Console.WriteLine($"[Bridge] Hosted PTY shell started (pid={pty.ProcessId}).");
-        Console.WriteLine($"[Bridge] Working directory: {workingDirectory}");
-        Console.WriteLine($"[Bridge] Shell command: {shellExe} {shellArgs}");
-        if (string.IsNullOrWhiteSpace(config.GmCliLaunchCommand))
-            Console.WriteLine("[Bridge] GmCliLaunchCommand is empty. Type your CLI launch command manually, then mark bridge ready.");
-        else
-        {
-            Console.WriteLine($"[Bridge] Launch command: {config.GmCliLaunchCommand}");
-            var bootstrap = BuildShellBootstrap(config.GmCliLaunchCommand);
-            await Task.Delay(250);
-            await WriteToPtyAsync(bootstrap, appendEnter: true);
-        }
+            var config = LoadBridgeConfig();
+            var shellExe = ResolveShellExecutable();
+            var shellArgs = BuildShellArguments(shellExe);
+            var workingDirectory = ResolveGmBridgeShellWorkingDirectory(config.GmBridgeShellWorkingDirectory);
+            var (width, height) = GetConsoleSize();
+            var pty = ConPtySession.Start(shellExe, shellArgs, workingDirectory, width, height);
+            var outputWriter = Console.OpenStandardOutput();
 
-        await Task.CompletedTask;
+            var shellLoopCts = new CancellationTokenSource();
+            InputLifetime input;
+            try { input = BeginInputLifetime(pty.InputWriter, shellLoopCts); }
+            catch { shellLoopCts.Dispose(); pty.Dispose(); throw; }
+            _pty = pty;
+            var shellToken = shellLoopCts.Token;
+            _outputPumpTask = Task.Run(() => PumpOutputAsync(pty.OutputReader, outputWriter, shellToken), shellToken);
+            _keyboardPumpTask = Task.Run(() => PumpKeyboardAsync(input, ReadConsoleKeyAsync, shellToken), shellToken);
+            _resizePumpTask = Task.Run(() => PumpResizeAsync(shellToken), shellToken);
+
+            lock (_sync)
+            {
+                _status.ShellPid = pty.ProcessId;
+                _status.CliProcessId = null;
+                _status.CliLaunchCommand = config.GmCliLaunchCommand;
+                _status.ShellWorkingDirectory = workingDirectory;
+                _status.WorkerStatuses = GmWorkerBridgePool.BuildInitialStatuses(config.GmWorkerBridgeProfiles).ToList();
+                _status.Ready = false;
+                _status.State = "OperatorNotReady";
+                _status.LastError = null;
+                WriteStatusFile();
+            }
+
+            Console.WriteLine();
+            Console.WriteLine($"[Bridge] Hosted PTY shell started (pid={pty.ProcessId}).");
+            Console.WriteLine($"[Bridge] Working directory: {workingDirectory}");
+            Console.WriteLine($"[Bridge] Shell command: {shellExe} {shellArgs}");
+            if (string.IsNullOrWhiteSpace(config.GmCliLaunchCommand))
+                Console.WriteLine("[Bridge] GmCliLaunchCommand is empty. Type your CLI launch command manually, then mark bridge ready.");
+            else
+            {
+                Console.WriteLine($"[Bridge] Launch command: {config.GmCliLaunchCommand}");
+                var bootstrap = BuildShellBootstrap(config.GmCliLaunchCommand);
+                await Task.Delay(250, input.Token);
+                await WriteToPtyAsync(input, bootstrap, appendEnter: true, input.Token);
+            }
+
+        }
+        finally { _shellLifecycleLock.Release(); }
     }
 
     private async Task StopShellAsync()
     {
-        ConPtySession? pty;
-        Task? outputPump;
-        Task? keyboardPump;
-        Task? resizePump;
-        CancellationTokenSource? shellLoopCts;
+        await _shellLifecycleLock.WaitAsync();
+        try { await StopShellCoreAsync(); }
+        finally { _shellLifecycleLock.Release(); }
+    }
 
+    private async Task StopShellCoreAsync()
+    {
+        InputLifetime? input;
+        ConPtySession? pty;
         lock (_sync)
         {
+            input = _inputLifetime;
             pty = _pty;
-            outputPump = _outputPumpTask;
-            keyboardPump = _keyboardPumpTask;
-            resizePump = _resizePumpTask;
-            shellLoopCts = _shellLoopCts;
             _pty = null;
             _ptyInput = null;
-            _outputPumpTask = null;
-            _keyboardPumpTask = null;
-            _resizePumpTask = null;
-            _shellLoopCts = null;
         }
-
-        if (pty == null)
+        if (input != null)
+            RevokeInputLifetime(input);
+        try { pty?.Dispose(); } catch { /* Native stop remains a separate unqualified contract. */ }
+        if (input == null)
             return;
 
-        try
+        Task drain;
+        lock (_sync)
         {
-            shellLoopCts?.Cancel();
+            drain = input.DrainTask ??= ObserveManagedDrainAsync(
+                input.WritesDrained?.Task ?? Task.CompletedTask,
+                _keyboardPumpTask ?? Task.CompletedTask,
+                _outputPumpTask ?? Task.CompletedTask,
+                _resizePumpTask ?? Task.CompletedTask,
+                input.CancellationTask);
         }
-        catch
+        try { await drain.WaitAsync(InputDrainTimeout); }
+        catch (TimeoutException)
         {
-            // ignored
+            lock (_sync)
+            {
+                if (ReferenceEquals(_inputLifetime, input))
+                {
+                    _status.Ready = false;
+                    _status.LastInputWriteError ??= "PTY input lifetime cleanup is incomplete; replacement remains blocked.";
+                    TryWriteInputStatus();
+                }
+            }
+            throw; // Keep actual tasks, binding and CTS for the next stop attempt.
         }
+        lock (_sync)
+        {
+            if (ReferenceEquals(_inputLifetime, input))
+            {
+                _inputLifetime = null;
+                _shellLoopCts = null;
+                _keyboardPumpTask = null;
+                _outputPumpTask = null;
+                _resizePumpTask = null;
+            }
+        }
+        input.Cancellation.Dispose();
+    }
 
-        try
-        {
-            pty.Dispose();
-        }
-        catch
-        {
-            // ignored
-        }
+    private static async Task ObserveManagedDrainAsync(params Task[] tasks)
+    {
+        try { await Task.WhenAll(tasks); }
+        catch { /* All actual tasks have now settled; write uncertainty is retained at its source. */ }
+    }
 
-        try
+    private InputLifetime BeginInputLifetime(Stream stream, CancellationTokenSource shellLoopCts)
+    {
+        lock (_sync)
         {
-            if (outputPump != null)
-                await outputPump;
+            ObjectDisposedException.ThrowIf(_inputClosed, this);
+            if (_inputLifetime != null)
+                throw new InvalidOperationException("Previous PTY input lifetime has not been drained.");
+            var input = new InputLifetime(stream, shellLoopCts);
+            _inputLifetime = input;
+            _ptyInput = stream;
+            _shellLoopCts = shellLoopCts;
+            _status.LastInputWriteError = null;
+            return input;
         }
-        catch
-        {
-            // ignored
-        }
+    }
 
-        try
+    private InputLifetime CaptureInputLifetime()
+    {
+        lock (_sync)
         {
-            if (keyboardPump != null)
-                await keyboardPump;
+            var input = _inputLifetime;
+            if (_inputClosed || input == null || input.Revoked || input.Token.IsCancellationRequested)
+                throw new InputLifetimeUnavailableException();
+            return input;
         }
-        catch
-        {
-            // ignored
-        }
+    }
 
-        try
+    private void RevokeInputLifetime(InputLifetime input)
+    {
+        lock (_sync)
         {
-            if (resizePump != null)
-                await resizePump;
+            if (!ReferenceEquals(_inputLifetime, input) || input.Revoked)
+                return;
+            input.Revoked = true;
+            // CancelAsync marks the token now and runs callbacks asynchronously, never inline under _sync.
+            input.CancellationTask = input.Cancellation.CancelAsync();
         }
-        catch
+    }
+
+    private void CompletePromptDispatch(InputLifetime input, bool succeeded, long elapsedMilliseconds)
+    {
+        lock (_sync)
         {
-            // ignored
+            if (!ReferenceEquals(_inputLifetime, input))
+                return;
+            _status.LastPromptDispatchCompletedAtUtc = DateTimeOffset.UtcNow.ToString("O");
+            _status.LastPromptDispatchElapsedMs = elapsedMilliseconds;
+            _status.LastPromptDispatchState = succeeded ? "Completed" : "Failed";
+            if (!string.Equals(_status.State, "DispatchFailed", StringComparison.Ordinal))
+                _status.State = _status.Ready ? "Ready" : "OperatorNotReady";
+            WriteStatusFile();
         }
     }
 
@@ -550,16 +626,22 @@ internal sealed class BridgeHost : IDisposable
         }
     }
 
-    private async Task ClearPendingInputBeforePromptDispatchAsync()
+    private async Task ClearPendingInputBeforePromptDispatchAsync(InputLifetime input, CancellationToken cancellationToken)
     {
-        await WriteToPtyAsync("\u0015", appendEnter: false);
-        await WaitForOutputQuietPeriodAsync(TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(1), _cts.Token);
+        await WriteToPtyAsync(input, "\u0015", appendEnter: false, cancellationToken);
+        await WaitForOutputQuietPeriodAsync(TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(1), cancellationToken);
     }
 
     private async Task RefreshBridgeAutomationStateAsync()
     {
-        await AutoAcceptTrustedCodexWorkingDirectoryTrustPromptAsync();
-        await AutoSkipCodexUpdatePromptAsync();
+        try
+        {
+            await AutoAcceptTrustedCodexWorkingDirectoryTrustPromptAsync();
+            await AutoSkipCodexUpdatePromptAsync();
+        }
+        catch (InputLifetimeUnavailableException) { /* Retired input cannot receive automation. */ }
+        catch (PtyInputWriteException) { /* Local uncertainty is retained; status queries remain available. */ }
+        catch (OperationCanceledException) when (!_cts.IsCancellationRequested) { /* Shell lifetime ended. */ }
         AutoMarkNotReadyIfCliWorking();
         AutoMarkReadyIfCliPromptReady();
         RefreshDispatchFailureRecoveryIfCliPromptReady();
@@ -567,6 +649,9 @@ internal sealed class BridgeHost : IDisposable
 
     private async Task AutoAcceptTrustedCodexWorkingDirectoryTrustPromptAsync()
     {
+        InputLifetime input;
+        try { input = CaptureInputLifetime(); }
+        catch (InputLifetimeUnavailableException) { return; }
         var visibleText = ReadVisibleConsoleText();
         if (!IsWorkspaceTrustPrompt(visibleText))
             return;
@@ -586,11 +671,14 @@ internal sealed class BridgeHost : IDisposable
         }
 
         _lastAutoTrustOutputVersion = outputVersion;
-        await WriteToPtyAsync(string.Empty, appendEnter: true);
+        await WriteToPtyAsync(input, string.Empty, appendEnter: true, input.Token);
     }
 
     private async Task AutoSkipCodexUpdatePromptAsync()
     {
+        InputLifetime input;
+        try { input = CaptureInputLifetime(); }
+        catch (InputLifetimeUnavailableException) { return; }
         var visibleText = ReadVisibleConsoleText();
         if (!IsCodexCliUpdatePrompt(visibleText))
             return;
@@ -603,7 +691,7 @@ internal sealed class BridgeHost : IDisposable
             return;
 
         _lastAutoUpdateSkipOutputVersion = outputVersion;
-        await WriteToPtyAsync("3", appendEnter: true);
+        await WriteToPtyAsync(input, "3", appendEnter: true, input.Token);
     }
 
     private void AutoMarkReadyIfCliPromptReady()
@@ -841,27 +929,75 @@ internal sealed class BridgeHost : IDisposable
         }
     }
 
-    private async Task WriteToPtyAsync(string text, bool appendEnter)
+    private async Task WriteToPtyAsync(InputLifetime input, string text, bool appendEnter, CancellationToken cancellationToken)
     {
-        Stream? input;
+        var bytes = Encoding.UTF8.GetBytes(appendEnter ? text + "\r" : text);
         lock (_sync)
-            input = _ptyInput;
-
-        if (input == null)
-            throw new InvalidOperationException("PTY input stream is unavailable.");
-
-        await _ptyWriteLock.WaitAsync(_cts.Token);
+        {
+            if (_inputClosed || !ReferenceEquals(_inputLifetime, input) || input.Revoked)
+                throw new InputLifetimeUnavailableException();
+            cancellationToken.ThrowIfCancellationRequested();
+            input.Token.ThrowIfCancellationRequested();
+            _cts.Token.ThrowIfCancellationRequested();
+            if (input.PendingWrites++ == 0)
+                input.WritesDrained = CreateOutputSignal();
+        }
+        var acquired = false;
+        var started = false;
         try
         {
-            var payload = appendEnter ? text + "\r" : text;
-            var bytes = Encoding.UTF8.GetBytes(payload);
-            await input.WriteAsync(bytes, 0, bytes.Length, _cts.Token);
-            await input.FlushAsync(_cts.Token);
+            using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cts.Token, input.Token);
+            await _ptyWriteLock.WaitAsync(linked.Token);
+            acquired = true;
+            lock (_sync)
+            {
+                linked.Token.ThrowIfCancellationRequested();
+                if (_inputClosed || !ReferenceEquals(_inputLifetime, input) || input.Revoked)
+                    throw new InputLifetimeUnavailableException();
+                started = true; // Reservation linearizes before revocation; failures after it are uncertain.
+            }
+            await input.Input.WriteAsync(bytes, 0, bytes.Length, linked.Token);
+            linked.Token.ThrowIfCancellationRequested();
+            await input.Input.FlushAsync(linked.Token);
+            lock (_sync)
+            {
+                linked.Token.ThrowIfCancellationRequested();
+                if (input.Revoked || !ReferenceEquals(_inputLifetime, input))
+                    throw new InputLifetimeUnavailableException();
+            }
+        }
+        catch (Exception ex) when (started)
+        {
+            var error = new PtyInputWriteException(ex);
+            lock (_sync)
+            {
+                if (ReferenceEquals(_inputLifetime, input))
+                {
+                    _status.Ready = false;
+                    _status.State = "DispatchFailed";
+                    _status.LastInputWriteError = error.Message;
+                    _status.LastError = error.Message;
+                    TryWriteInputStatus();
+                }
+            }
+            RevokeInputLifetime(input);
+            throw error;
         }
         finally
         {
-            _ptyWriteLock.Release();
+            if (acquired) _ptyWriteLock.Release();
+            lock (_sync)
+            {
+                if (--input.PendingWrites == 0)
+                    input.WritesDrained!.TrySetResult(true);
+            }
         }
+    }
+
+    private void TryWriteInputStatus()
+    {
+        try { WriteStatusFile(); }
+        catch { /* In-memory status and the fixed exception still retain input uncertainty. */ }
     }
 
     private async Task PumpOutputAsync(Stream outputReader, Stream consoleWriter, CancellationToken cancellationToken)
@@ -915,27 +1051,29 @@ internal sealed class BridgeHost : IDisposable
         signalToRelease.TrySetResult(true);
     }
 
-    private async Task PumpKeyboardAsync(CancellationToken cancellationToken,
-        Func<CancellationToken, ValueTask<ConsoleKeyInfo?>>? keySource = null)
+    private async Task PumpKeyboardAsync(InputLifetime input,
+        Func<CancellationToken, ValueTask<ConsoleKeyInfo?>> keySource, CancellationToken cancellationToken)
     {
-        while (!cancellationToken.IsCancellationRequested)
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, input.Token, _cts.Token);
+        try
         {
-            var key = await (keySource ?? ReadConsoleKeyAsync)(cancellationToken);
-            if (key == null)
-                continue;
-            var sequence = KeyToSequence(key.Value);
-            if (sequence == null)
-                continue;
-
-            try
+            while (true)
             {
-                await WriteToPtyAsync(sequence, appendEnter: false);
-            }
-            catch
-            {
-                // ignored
+                linked.Token.ThrowIfCancellationRequested();
+                var key = await keySource(linked.Token);
+                linked.Token.ThrowIfCancellationRequested();
+                lock (_sync)
+                    if (_inputClosed || !ReferenceEquals(_inputLifetime, input) || input.Revoked)
+                        return;
+                if (key == null) continue;
+                var sequence = KeyToSequence(key.Value);
+                if (sequence == null) continue;
+                await WriteToPtyAsync(input, sequence, appendEnter: false, linked.Token);
             }
         }
+        catch (OperationCanceledException) when (linked.IsCancellationRequested) { }
+        catch (InputLifetimeUnavailableException) { }
+        catch (PtyInputWriteException) { /* Recorded and revoked by the real writer; no silent retry. */ }
     }
 
     private static async ValueTask<ConsoleKeyInfo?> ReadConsoleKeyAsync(CancellationToken cancellationToken)
@@ -1459,25 +1597,33 @@ internal sealed class BridgeHost : IDisposable
         return BridgeResponse.Failure(error, SnapshotStatus(), SnapshotDiagnostics());
     }
 
-    private void HandlePtyExited_NoThrow()
+    private async Task HandlePtyExitedAsync(ConPtySession observedPty, InputLifetime? observedInput)
     {
-        if (_pty == null)
-            return;
-
-        var exitCode = _pty.ExitCode;
-        _pty.Dispose();
-        _pty = null;
-        _ptyInput = null;
-
-        _status.ShellPid = null;
-        _status.CliProcessId = null;
-        _status.Ready = false;
-        _status.State = "Disconnected";
-        _status.LastError = $"PTY shell exited with code {exitCode}.";
-        WriteStatusFile();
-
-        Console.WriteLine();
-        Console.WriteLine($"[Bridge] Hosted PTY shell exited with code {exitCode}. Use `bookofeternity.ps1 restart-shell` to restart it.");
+        await _shellLifecycleLock.WaitAsync();
+        try
+        {
+            int? exitCode;
+            lock (_sync)
+            {
+                if (!ReferenceEquals(_pty, observedPty) || !ReferenceEquals(_inputLifetime, observedInput))
+                    return;
+                exitCode = observedPty.ExitCode;
+            }
+            try { await StopShellCoreAsync(); }
+            catch (TimeoutException) { return; } // Retained drain blocks replacement; continue serving diagnostics.
+            lock (_sync)
+            {
+                _status.ShellPid = null;
+                _status.CliProcessId = null;
+                _status.Ready = false;
+                _status.State = "Disconnected";
+                _status.LastError = $"PTY shell exited with code {exitCode}.";
+                WriteStatusFile();
+            }
+            Console.WriteLine();
+            Console.WriteLine($"[Bridge] Hosted PTY shell exited with code {exitCode}. Use `bookofeternity.ps1 restart-shell` to restart it.");
+        }
+        finally { _shellLifecycleLock.Release(); }
     }
 
     private void WriteStatusFile()
@@ -1539,10 +1685,18 @@ internal sealed class BridgeHost : IDisposable
 
     public void Dispose()
     {
+        lock (_sync) _inputClosed = true;
         _cts.Cancel();
-        try { StopShellAsync().GetAwaiter().GetResult(); } catch { /* ignored */ }
-        _shellLoopCts?.Dispose();
-        _ptyWriteLock.Dispose();
+        try { StopShellAsync().GetAwaiter().GetResult(); }
+        catch (TimeoutException) { return; } // Retain the gate/CTS and actual tasks for a later drain attempt.
+        lock (_sync)
+        {
+            if (!_writeGateDisposed)
+            {
+                _ptyWriteLock.Dispose();
+                _writeGateDisposed = true;
+            }
+        }
         SafeDeleteStatusFile();
     }
 
@@ -1667,6 +1821,7 @@ internal sealed record BridgeStatus
     public string StartedAtUtc { get; set; } = DateTimeOffset.UtcNow.ToString("O");
     public string UpdatedAtUtc { get; set; } = DateTimeOffset.UtcNow.ToString("O");
     public string? LastError { get; set; }
+    public string? LastInputWriteError { get; set; }
     public List<WorkerBridgeStatus> WorkerStatuses { get; set; } = new();
 }
 
