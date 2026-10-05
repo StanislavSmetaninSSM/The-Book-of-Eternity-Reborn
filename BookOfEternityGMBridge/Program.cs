@@ -257,7 +257,7 @@ internal sealed class BridgeHost : IDisposable
         {
             await processRequest();
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
             return false;
         }
