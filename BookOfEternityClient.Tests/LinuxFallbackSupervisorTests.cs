@@ -139,7 +139,7 @@ public sealed class LinuxFallbackSupervisorTests
         await run.FinishPrimitive();
     }
 
-    private sealed class NativeRun : IAsyncDisposable
+    internal sealed class NativeRun : IAsyncDisposable
     {
         private readonly Process process;
         private readonly string directory;
@@ -278,6 +278,21 @@ public sealed class LinuxFallbackSupervisorTests
             Assert.True(result.RootElement.GetProperty("sentinelAlive").GetBoolean());
             Assert.True(result.RootElement.GetProperty("echild").GetBoolean());
         }
+        public async Task FinishUnavailableFixture()
+        {
+            var text = await process.StandardOutput.ReadToEndAsync().WaitAsync(TimeSpan.FromSeconds(4));
+            await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(4)); finished = true;
+            await File.WriteAllTextAsync(Path.Combine(directory, "stderr.log"), await stderr);
+            Assert.Equal(78, process.ExitCode);
+            Assert.Empty(text);
+            using var result = JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(directory, "guardian.json")));
+            Assert.True(result.RootElement.GetProperty("unavailable").GetBoolean());
+            Assert.Equal(2, result.RootElement.GetProperty("errno").GetInt32());
+            Assert.False(result.RootElement.GetProperty("helperCreated").GetBoolean());
+            Assert.False(result.RootElement.GetProperty("sentinelCreated").GetBoolean());
+            Assert.True(result.RootElement.GetProperty("echild").GetBoolean());
+            Assert.Empty(Events());
+        }
         public async ValueTask DisposeAsync()
         {
             try
@@ -286,5 +301,17 @@ public sealed class LinuxFallbackSupervisorTests
             }
             finally { process.Dispose(); }
         }
+    }
+}
+
+public sealed class LinuxFallbackFixtureAdmissionTests
+{
+    [Fact]
+    public async Task MissingRequiredProcInterface_FailsBeforeAnyFixtureChild()
+    {
+        // Actual open of an absent per-test path. This tests fixture admission,
+        // never counts as a successful native ownership/descendant qualification.
+        await using var run = await LinuxFallbackSupervisorTests.NativeRun.Create(guardianMode: "missing-proc-fixture");
+        await run.FinishUnavailableFixture();
     }
 }

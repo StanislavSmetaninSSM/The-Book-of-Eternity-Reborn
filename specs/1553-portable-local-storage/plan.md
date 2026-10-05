@@ -26,6 +26,39 @@ failures. New category linux-fallback-supervisor is the only execution selection
 Independent design PASS is retained; implementation review and all runtime claims
 are pending. This WIP is published before the first fresh build/selected run.
 
+### BLOCKED native prerequisite and failed fixture cleanup — 2026-10-05
+
+Execution connectivity is healthy despite the15:41 childEnvironmentDisconnected
+notification. Remote/runtime source `690a975593e3696530a355057c761480f3d43e70`
+was confirmed. Native preparation initially failed because PowerShell returned two
+compiler paths; corrected native build PASS. Fresh selected managed PlanOnly PASS:
+19planned/0executed. Native selected execution completed19: **1PASS/18FAIL**,
+not causal RED or fallback GREEN. Only stale-pidfd primitive passed.
+
+Actual helper reports proc-unavailable/ENOENT2 before Ready/worker launch. Read-only
+self checks confirm `/proc/self/task/<getpid>/children` and
+`/proc/thread-self/children` absent, despite matching getpid/procSelf and one NSpid
+coordinate. Cause/configuration is not established; no security denial, setting
+change, alternate mount or privilege retry is inferred. The reviewed algorithm
+requires this worklist, so positive fallback qualification is **BLOCKED**.
+
+Guardian implementation also returned after proc-open failure without reaping its
+already-forked helper.19owned processes became PID1 zombies (18helpers+1sentinel),
+zero live block processes at15:46:44UTC. Runner 'owned-tree cleanup complete' does
+not prove guardian cleanup and must not erase this failure. Existing zombies cannot
+be reaped by this process; no signal/foreign-PID cleanup is attempted.
+
+Independent Sol6.1/XHigh follow-up confirms the P1 guardian defect and BLOCKED
+handoff. No substitute live-child enumeration exists within the reviewed algorithm;
+proc-wide scanning/other designs need separate assessment. Guardian correction now
+preflights before forks, binds each fork behind a pidfd gate, and retains exclusive
+wait/reap across post-fork failures. One isolated fixture-admission regression will
+check rejection with zero forks; no repeat of the19unsupported native cases. That
+negative-only check will not qualify the backend. Production guards remain closed,
+helper remains root-only WIP, descendant retirement/causal RED/GREEN unimplemented.
+Next: retain exact evidence, review correction, publish/readback/freshrestore and
+handoff BLOCKED for parent design/environment assessment without further probes.
+
 ## T041-ENV worker environment — 2026-10-05 (verified component)
 
 Source **`43b60b954265e3bb404bf562cf7b9ff13dc4f953`**, tree

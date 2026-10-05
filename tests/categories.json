@@ -2,6 +2,29 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "linux-fallback-fixture-admission",
+      "responsibility": "#1553 fixture-only regression: native guardian missing required proc interface rejects before any helper/sentinel fork with actual ECHILD. This is preparation safety, not fallback ownership qualification.",
+      "excludes": "Positive native helper/tree stop, systemd, production consumers, earlier cohorts. Linux only; separately owned from the currently BLOCKED native supervisor selection.",
+      "changeHints": [
+        "tests/fixtures/LinuxLineage/lineage-fixture.c"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LinuxFallbackFixtureAdmissionTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "linux-fallback-supervisor",
       "responsibility": "#1553 T041-FALLBACK-NATIVE actual repo-built Linux native ordinary-lineage supervisor: bootstrap/private lifetime, subreaper/pidfd/exclusive reap, scoped stop and retained uncertainty, owned synthetic descendants and independent guardian cleanup.",
       "excludes": "Production pool/main Release, systemd positive qualification, namespace migration/external broker containment, Windows Job, PTY/live GM and unchanged prior cohorts. Fails explicitly off Linux.",
