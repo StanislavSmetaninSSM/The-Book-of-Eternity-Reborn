@@ -587,7 +587,7 @@ public sealed class GmWorkerProcessHostTests
             }
             if (localControl != null)
                 Assert.Equal(0, await localControl.ReadAsync(new byte[1]).AsTask().WaitAsync(TimeSpan.FromSeconds(3)));
-            await foreign.StandardInput.WriteLineAsync("close");
+            if (!foreignControl) await foreign.StandardInput.WriteLineAsync("close");
             await foreign.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5));
             Assert.Equal(0, foreign.ExitCode);
             Assert.Equal(foreignControl ? "-1" : "no-control", (await foreign.StandardOutput.ReadToEndAsync()).Trim());

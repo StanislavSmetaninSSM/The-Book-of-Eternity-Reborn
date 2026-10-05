@@ -162,6 +162,15 @@ isolated task checkout and sole-writer baton. Current state: **WIP, production
 unchanged, new tests/builds not yet run, implementation review pending**. T040's
 source audit is persisted here; T041-IPC and all wider runtime/live gates remain open.
 
+T041-IPC first WIP publication is `df6e0fb129df53c22acee1a24fa1ca04d0c4f8f7`,
+verified remote tree `2bbbe0b23a56a4ed0a8e0460a67636da138c6c5d`. Initial PlanOnly
+stopped in catalog parsing before build/discovery/execution: the new category had
+been inserted into the previous category's selector array. This is a test-selection
+preparation defect, not behavioral RED or an IPC denial. The metadata nesting is
+corrected, and the foreign-control cleanup removes an unnecessary stdin write after
+its EOF-triggered exit. Production remains unchanged. Static catalog parsing now
+checks the corrected top-level owner before publishing the amended test WIP.
+
 ## Accepted T032-A4-NATIVE-NAMES — bounded Linux, 2026-10-05
 
 Current bounded code/verification verdict: **separate gpt-6.1-sol / xhigh PASS**

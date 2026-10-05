@@ -11106,43 +11106,43 @@
         "BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts",
         "BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts"
       ]
+    }
+  ]
+},
+{
+  "id": "worker-host-ipc-admission",
+  "responsibility": "Windows/Linux worker-host named-pipe identity on both channels, bounded strict UTF-8 framing, nonce/schema admission, absolute deadlines and owner-close before Release; native platform only.",
+  "excludes": "Worker execution, Linux process ownership, detached workspace, persistent GM/PTY, gameplay and completion arbitration.",
+  "changeHints": [
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost*.cs",
+    "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs"
+  ],
+  "related": [
+    {
+      "id": "gm-worker-process",
+      "when": "Process-tree, worker release/execution or completion arbitration changes; not required for bounded pre-Release IPC admission."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_*",
+        "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_*",
+        "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Parse*",
+        "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Validate*"
+      ]
     },
     {
-      "id": "worker-host-ipc-admission",
-      "responsibility": "Windows/Linux worker-host named-pipe identity on both channels, bounded strict UTF-8 framing, nonce/schema admission, absolute deadlines and owner-close before Release; native platform only.",
-      "excludes": "Worker execution, Linux process ownership, detached workspace, persistent GM/PTY, gameplay and completion arbitration.",
-      "changeHints": [
-        "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost*.cs",
-        "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs"
-      ],
-      "related": [
-        {
-          "id": "gm-worker-process",
-          "when": "Process-tree, worker release/execution or completion arbitration changes; not required for bounded pre-Release IPC admission."
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true
-      },
-      "timeoutMinutes": 5,
-      "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_*",
-            "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_*",
-            "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Parse*",
-            "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Validate*"
-          ]
-        },
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake"
-          ]
-        }
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake"
       ]
     }
   ]
