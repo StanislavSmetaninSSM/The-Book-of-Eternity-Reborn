@@ -376,7 +376,9 @@ public sealed class GmBridgeInputLifetimeTests
         Assert.Equal(shouldContinue, await host.ConnectedRequest(response, request));
         if (shouldContinue)
         {
-            var reply = Encoding.UTF8.GetString(response.ToArray());
+            response.Position = 0;
+            using var reader = new StreamReader(response, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, leaveOpen: true);
+            var reply = await reader.ReadToEndAsync();
             using var json = System.Text.Json.JsonDocument.Parse(reply);
             Assert.False(json.RootElement.GetProperty("ok").GetBoolean());
             Assert.NotEmpty(json.RootElement.GetProperty("error").GetString()!);
