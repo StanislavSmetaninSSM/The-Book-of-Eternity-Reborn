@@ -8,6 +8,10 @@
 
 Parent authorized only T041-FALLBACK-HOST from exact
 `e7b26f9c8515dd0423388eaa18752e2d496c49a9`; sole writer, same isolated checkout.
+**Current status:** bounded HOST A complete after independent final PASS;
+[qualification](recovery/worker-host-qualification.json). Final carrier publication
+and fresh restoration are reported in handoff. The chronological execution record
+follows; B and all broader rollout gates stay open.
 Use the accepted design below with inline executing-plans/TDD and independent
 actual Sol6.1/xhigh review. Slice B/public Linux WorkerRelease/main PTY remain closed.
 Initial selector scaffold returns unavailable for every platform; its narrow7case
@@ -251,6 +255,22 @@ remote still exact. This proves source restoration,0tests for that operation.
 [Restoration proof](recovery/evidence/worker-host-review/manifest.json).
 Final independent Sol review is in progress; no active test/build/native fixture
 process. Six existing terminated dotnet zombies under PID1 are not claimed reaped.
+
+Independent final actual **gpt-6.1-sol/xhigh PASS** at `b45d6f32467ef9e099fb16f84b0617bea68c523b`,
+metadata-only `7589c50b` and exact Uncertain wording correction reviewed. No remaining
+A source/evidence blockers or required architecture expansion. Reviewer independently
+verified17manifests/469artifact hashes/181gzip/446source-input checks/27TRX,61distinct
+latest PASS and historical93/77/16 classifications; all36guardians ECHILD. Emergency
+retirement belongs to deliberate helper/driver-loss and held-gate fault qualification,
+never ordinary successful launch. Restored6404files match fetched candidate blobs.
+[Final review/restoration packet](recovery/evidence/worker-host-review/manifest.json)
+adds2artifacts, bringing retained proof to18manifests/471artifacts. Metadata now says
+Uncertain retains the original owner/evidence while authority may be lost; never
+accept a task result or release quarantine/slot. Only T041-FALLBACK-HOST is complete.
+Final verdict metadata receives non-force push, exact remote SHA/byte readback and
+another fresh empty-directory GitHub-only restore; exact final proof is supplied
+in handoff. No tests repeat for metadata and no B/Release/main PTY/live GM/canonical
+writes/systemd/Windows runtime qualification or next implementation is implied.
 
 ## Worker-host native integration design — 2026-10-05
 

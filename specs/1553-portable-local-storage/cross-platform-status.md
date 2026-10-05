@@ -5,7 +5,7 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## HOST — проверка реализации A, 2026-10-05
+## HOST — ограниченный этап A завершён, 2026-10-05
 
 Родитель разрешил только T041-FALLBACK-HOST от `e7b26f9c`.
 Подключены реальный native launch и проверенный pidfd neutral host к общему
@@ -20,9 +20,17 @@ Native package — заранее собранный linux-x64/glibc asset, пр
 Последний дополнительный test source — `66ca39bb`,3/3PASS; descriptor/bootstrap/
 output13/13, затронутые native v1/IPC12/12 и package/publish9/9 тоже сохранены
 с точными отдельными source SHA в [журнале](plan.md#host-implementation-authorized--2026-10-05).
-Реальный Ready и StoppedWithinScope доказаны без worker Release; negative fixtures
-имеют независимый guardian и фактический ECHILD. Каталог, итоговое независимое ревью
-и fresh GitHub-only restoration пока завершаются; A ещё не объявлена принятой.
+Реальный Ready и StoppedWithinScope доказаны без worker Release; все36 guardian
+reports подтверждают ECHILD. **61различный итоговый PASS**, каталог269/10784
+без исполнения/пропусков. Независимый **gpt-6.1-sol/xhigh PASS** для `b45d6f32`,
+metadata `7589c50b` и уточнённой формулировки Uncertain; нерешённых замечаний A нет.
+Чистое GitHub-only восстановление кандидата подтвердило все6404файла и точное
+дерево. [Qualification](recovery/worker-host-qualification.json),
+[review/restore](recovery/evidence/worker-host-review/manifest.json). Финальный
+verdict carrier получает отдельный обычный push/readback и fresh restore; точный
+SHA передаётся в handoff. Следующий шаг — передача родителю; B не начинать.
+При Uncertain сохраняются исходный owner и evidence; authority может быть потеряна.
+Это не разрешает принять результат, освободить slot или удалить quarantine.
 
 B/pool Release, main PTY, настоящий CLI/ГМ, canonical writes, Windows runtime и
 systemd-user qualification остаются открыты. Согласованный systemd-primary

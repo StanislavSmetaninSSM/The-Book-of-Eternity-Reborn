@@ -13,6 +13,11 @@
       "Path": "candidate-restoration.json",
       "Bytes": 620,
       "Sha256": "09b260288415b0de3a99203d8a83538fc244956a59198896ee7b92356039a386"
+    },
+    {
+      "Path": "review.json",
+      "Bytes": 1988,
+      "Sha256": "99f128ca331cf1520d8b513b9f550e90c8ed78976051c650f70de68f960c5e33"
     }
   ]
 }

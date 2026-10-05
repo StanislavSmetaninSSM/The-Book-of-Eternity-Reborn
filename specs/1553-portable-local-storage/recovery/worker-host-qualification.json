@@ -3,7 +3,7 @@
   "Task": "#1553 T041-FALLBACK-HOST",
   "BaseCommit": "e7b26f9c8515dd0423388eaa18752e2d496c49a9",
   "CandidateSourceCommit": "85b96e79a55002cd22402f06b72381a62ebe80c7",
-  "Status": "Verification packet; independent final review and final GitHub-only restore pending",
+  "Status": "Bounded HOST A qualified with independent gpt-6.1-sol/xhigh PASS and clean GitHub-only candidate restoration; final verdict carrier is restored separately in handoff",
   "Environment": {
     "DotnetSdk": "10.0.401",
     "InstalledRuntimes": "Microsoft.AspNetCore.App 8.0.31 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.AspNetCore.App 10.0.12 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.NETCore.App 8.0.31 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.NETCore.App]\nMicrosoft.NETCore.App 10.0.12 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.NETCore.App]",
@@ -1688,7 +1688,7 @@
     "Linux x64/glibc only; Windows Job runtime unavailable here",
     "systemd-user backend remains NotImplemented and unavailable for positive qualification in this environment",
     "Ordinary tracked lineage in same PID namespace; no external services or work outside ancestry",
-    "Uncertain retains authority and cannot accept task result or release quarantine/slot",
+    "Uncertain retains the original owner and evidence; authority may be lost, and it cannot accept a task result or release quarantine/slot",
     "No main PTY, real CLI/GM, canonical writes, broad suite or unrelated passing cohorts",
     "Restoration validates source bytes only, not another test execution"
   ],
@@ -1727,5 +1727,22 @@
     "Clean": true,
     "GitHubOnly": true,
     "TestsExecuted": 0
+  },
+  "IndependentFinalReview": {
+    "Verdict": "PASS",
+    "ReviewedCommit": "b45d6f32467ef9e099fb16f84b0617bea68c523b",
+    "MetadataCommit": "7589c50b01587be1ff75db7104959fc499c77fb1",
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "UnresolvedFindings": 0,
+    "Proof": "evidence/worker-host-review/review.json",
+    "MetadataCorrectionReviewed": true
+  },
+  "AdditionalReviewEvidence": {
+    "Manifest": "evidence/worker-host-review/manifest.json",
+    "Sha256": "d686f213ac3c0e898957fb1eb104ba8886b13fa830fd93dde30255b6b0d0e641",
+    "Artifacts": 2,
+    "TotalManifestsIncludingReview": 18,
+    "TotalArtifactsIncludingReview": 471
   }
 }

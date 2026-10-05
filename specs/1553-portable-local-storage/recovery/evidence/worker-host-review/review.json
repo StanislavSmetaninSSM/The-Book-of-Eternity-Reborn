@@ -1,0 +1,42 @@
+{
+  "Verdict": "PASS",
+  "Scope": "#1553 T041-FALLBACK-HOST slice A only",
+  "ReviewedCommit": "b45d6f32467ef9e099fb16f84b0617bea68c523b",
+  "MetadataCommit": "7589c50b01587be1ff75db7104959fc499c77fb1",
+  "RuntimeSourceCommit": "822387cb2a8cb4390f1ca3d8bf8a0a30987ef0f1",
+  "FinalFixtureSourceCommit": "66ca39bb5abdf06431cdfcd0320fb03b1f753989",
+  "Reviewer": {
+    "Agent": "/root/native_review",
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "Independent": true,
+    "ReadOnly": true,
+    "TestsBuildsNativeProbesExecuted": 0
+  },
+  "Verified": {
+    "Manifests": 17,
+    "ArtifactHashes": 469,
+    "GzipStreams": 181,
+    "ExactSourceInputChecks": 446,
+    "TrxFiles": 27,
+    "DistinctLatestPassCases": 61,
+    "HistoricalExecutions": 93,
+    "HistoricalPass": 77,
+    "HistoricalFail": 16,
+    "GuardiansEchild": 36,
+    "RestoredTrackedFiles": 6404,
+    "RestoredTree": "76156200beabf82565ce06e244d41d0ca1fbc63b"
+  },
+  "FindingDisposition": "No remaining A source/evidence blockers. Rejected FD, constructor rollback and uncertainty disposal defects fixed with causal evidence. Metadata-only exact Uncertain wording correction reviewed. Emergency cleanup belongs to deliberate fault qualification, never ordinary successful launch.",
+  "UncertainContract": "Retain the original owner and evidence; authority may be lost. Uncertain cannot accept a task result or release quarantine/slot.",
+  "SelectionVerdict": "Source-specific neutral preparation, descriptor/identity ownership, partial/Uncertain owner retention, package relocation, independent cleanup and narrow affected regressions sufficiently close A. No required architecture expansion.",
+  "NotQualified": [
+    "B/pool worker Release",
+    "main PTY",
+    "live CLI/GM",
+    "canonical writes",
+    "systemd-user runtime",
+    "Windows Job runtime"
+  ],
+  "FinalCarrier": "Publish review metadata normally and perform another fresh GitHub-only restoration; exact SHA/proof supplied in final handoff."
+}
