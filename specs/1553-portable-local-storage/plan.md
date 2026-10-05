@@ -291,6 +291,29 @@ This block is unbuilt/unverified; first selected build and14case GREEN attempt n
 causal tests, complete fault matrix, changed source guards/docs and independent final
 review remain open; B is not accepted. No public rollout or durable restart connected.
 
+B3 source `24f63234bf3182982b96a13a4145db34cfdbd755`: fresh selected build/
+discovery14planned/0executed,84.0326588s; actual execution **14executed,13PASS/
+1FAIL**,12.9832580s, complete selection/cleanup, no skips/duplicates/timeouts.
+All13 scoped-authority regressions GREEN. Actual native pool now reaches Release1,
+workerStarts1, correlated exit0, matching scoped stop (helper root143 is not worker
+exit), actual stdout/stderr settlement and publicationCalls1. Existing
+FileSystemManager.MoveRuntimeDirectoryIntoCanonicalSessionAsync then rejects Linux:
+`Runtime proposal publication requires a descriptor-bound relative publication backend.`
+This is a new existing-publication prerequisite failure, not the former admission
+RED, preparation failure, or successful pool qualification. Result stays Failed,
+Proposal=null/validatedExecution=false; isolated original context unchanged; workspace
+cleaned/quarantine entries0/capacity0. Guardian ECHILD/driverExit0/emergency0/failures0/
+deadlinefalse. [Exact source/build/run/cleanup evidence](recovery/evidence/worker-pool-connected-publication-red/manifest.json).
+
+Root cause source: FileSystemManager lines1685/3889/3924 explicitly restrict directory
+publication to Windows; existing PortableProposalAdmissionTests intentionally expect
+that Linux rejection. Do not remove the general guard or mock a successful import.
+Separate Sol6.1/xhigh focused design consult is checking whether an existing qualified
+portable primitive can fulfill actual PublishBundleAsync under the explicit isolated
+admission, or whether parent scope refinement is required. No filesystem publication
+change made. While this dependency is resolved, continue unaffected B4 real consumer
+boundary extraction/causal negatives. Do not repeat unchanged13 authority checks.
+
 ## HOST implementation authorized — 2026-10-05
 
 Parent authorized only T041-FALLBACK-HOST from exact
