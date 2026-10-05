@@ -149,7 +149,7 @@ public sealed class GmWorkerProposalOnlyDispatchService
         }
 
         var run = await _bridgePool.RunTaskAsync(routing.Profile, task, cancellationToken);
-        if (!CanAcceptExecution(run, task))
+        if (run.Proposal == null || !CanAcceptExecution(run, task))
         {
             var lastError = run.Status.LastError ?? "Worker did not return a valid proposal.";
             var outcome = run.SessionReplaced
@@ -182,7 +182,7 @@ public sealed class GmWorkerProposalOnlyDispatchService
     }
 
     internal static bool CanAcceptExecution(GmWorkerTaskRunResult run, WorkerTaskPacket task) =>
-        run.Proposal != null;
+        run.HasValidatedExecutionFor(task);
 
     private async Task<WorkerTaskPacket> BuildTaskAsync(
         WorkerBridgeProfile profile,

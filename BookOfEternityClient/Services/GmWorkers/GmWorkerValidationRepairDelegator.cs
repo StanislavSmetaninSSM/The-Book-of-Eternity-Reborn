@@ -186,7 +186,7 @@ public sealed class GmWorkerValidationRepairDelegator
             };
         }
 
-        if (!CanAcceptExecution(run, task))
+        if (run.Proposal == null || !CanAcceptExecution(run, task))
         {
             var outcome = run.TimedOut || run.Status.State == WorkerBridgeState.TimedOut
                 ? GmWorkerValidationRepairOutcome.WorkerTimedOut
@@ -265,7 +265,7 @@ public sealed class GmWorkerValidationRepairDelegator
     }
 
     internal static bool CanAcceptExecution(GmWorkerTaskRunResult run, WorkerTaskPacket task) =>
-        !run.TimedOut && run.ExitCode == 0 && run.Status.State == WorkerBridgeState.Stopped && run.Proposal != null;
+        run.HasValidatedExecutionFor(task);
 
     private async Task<bool> IsCurrentSessionGenerationAsync(string expectedSessionGeneration)
     {

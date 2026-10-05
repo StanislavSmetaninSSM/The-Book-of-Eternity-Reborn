@@ -306,6 +306,14 @@ executed;39.0077061s, no timeout, complete runner cleanup. This is preparation
 failure, not causal RED. [Evidence](recovery/evidence/worker-pool-consumer-preparation-failure/manifest.json).
 Set the fixture's explicit Completed status; runtime gates remain unchanged.
 
+B4 causal RED at source `0e4c0688e17ed9c5ecf243267a7c897820d72980`:
+fresh PlanOnly4planned/0executed,37.4464993s; NoBuild **4executed/0PASS/4FAIL**,
+8.0413845s, complete selection/cleanup, no skip/duplicate/timeout. All four failures
+are the old consumers accepting unpermitted records. [Evidence](recovery/evidence/worker-pool-consumer-red/manifest.json).
+Both production-invoked acceptance methods now delegate to HasValidatedExecutionFor;
+explicit proposal-null guards retain compiler flow checking. Fresh selected GREEN
+verification is pending. Native publication and positive consumer proof remain open.
+
 ### B1 execution record
 
 Read-only Spec Kit consistency pass at `0ffb1c45`: B has coverage in spec, this plan,
