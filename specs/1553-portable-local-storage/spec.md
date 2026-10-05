@@ -15,6 +15,14 @@
 - Wound implementation was merged by explicit owner request in [PR #1554](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/pull/1554). Its unfinished acceptance remains deferred under #1536, not declared complete by this feature
 
 
+## Input transport lifetime — T042-INPUT-LIFETIME, 2026-10-05
+
+The owner authorized only the first T042 slice from exact `618a8a20cba345f367a5e15659019d3dec6fd2be`: bind queued writes and keyboard consumption to the originating shell-input lifetime, cancel/reject stale work and settle the old keyboard pump before admitting a replacement. This local binding is not a run/generation/fence. Preserve exact current paste/submit/key bytes and all process/ownership/platform guards. Do not implement transaction arbitration, readiness/trust changes, daemon/QTE outcomes/retry, queue limits or manual takeover policy.
+
+Serialize local start/retirement and write-start/revocation. Retain underlying queued/started I/O and keyboard tasks until settled; a five-second managed drain observation timeout retains context and blocks replacement, never proves process stop. Dispose closes new admission before drain and does not dispose synchronization/token resources under unsettled consumers. A late old key read cannot write into B. Pre-write rejection/cancellation means zero new bytes; failure/cancellation after write-start is conservatively uncertain even if an underlying stream reports success after ignoring cancellation. Retain a fixed local input-error diagnostic, revoke that lifetime, and never report the failed dispatch Completed or swallow keyboard write uncertainty. Old completion/error cannot overwrite replacement status.
+
+Use actual built BridgeHost methods and normal constructor with controlled streams/key source, causal RED/GREEN, narrow catalog and independent actual gpt-6.1-sol/xhigh design/final review. No CLI/PTY/ConPTY/process Release; no native stop qualification. This client-owned transport repair adds no GM-authored gameplay field; its operational limit belongs in the existing plan/quickstart, not a new gameplay example.
+
 ## Persistent-main output decoding — T041-OUTPUT-UTF8, 2026-10-05
 
 Bounded implementation status: actual managed bridge output pump passes48/48 on Linux at `ff7e5a2b08f8fde196151909487c1d94089ea91d` (runtime source `a9472a35`), after causal19/48 RED. [Qualification](recovery/gm-output-qualification.json). Independent actual Sol6.1/xhigh final PASS at `426b1680`, with clean GitHub-only source restoration. This qualifies only the bounded managed output component; no terminal/ownership readiness follows.

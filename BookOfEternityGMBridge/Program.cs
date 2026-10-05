@@ -915,18 +915,15 @@ internal sealed class BridgeHost : IDisposable
         signalToRelease.TrySetResult(true);
     }
 
-    private async Task PumpKeyboardAsync(CancellationToken cancellationToken)
+    private async Task PumpKeyboardAsync(CancellationToken cancellationToken,
+        Func<CancellationToken, ValueTask<ConsoleKeyInfo?>>? keySource = null)
     {
         while (!cancellationToken.IsCancellationRequested)
         {
-            if (!Console.KeyAvailable)
-            {
-                await Task.Delay(15, cancellationToken);
+            var key = await (keySource ?? ReadConsoleKeyAsync)(cancellationToken);
+            if (key == null)
                 continue;
-            }
-
-            var key = Console.ReadKey(intercept: true);
-            var sequence = KeyToSequence(key);
+            var sequence = KeyToSequence(key.Value);
             if (sequence == null)
                 continue;
 
@@ -939,6 +936,14 @@ internal sealed class BridgeHost : IDisposable
                 // ignored
             }
         }
+    }
+
+    private static async ValueTask<ConsoleKeyInfo?> ReadConsoleKeyAsync(CancellationToken cancellationToken)
+    {
+        if (Console.KeyAvailable)
+            return Console.ReadKey(intercept: true);
+        await Task.Delay(15, cancellationToken);
+        return null;
     }
 
     private async Task PumpResizeAsync(CancellationToken cancellationToken)

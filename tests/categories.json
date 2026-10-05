@@ -11341,6 +11341,35 @@
   ],
   "timeoutMinutes": 3,
   "expectedSeconds": null
-}
+},
+    {
+      "id": "gm-bridge-input-lifetime",
+      "responsibility": "Actual bridge input lifetime admission, queued cancellation, partial-write uncertainty and managed keyboard handoff using controlled streams/keys.",
+      "excludes": "Full transaction arbitration, readiness/trust, configured gestures, daemon/QTE retry, durable run fencing, native terminal/process ownership and prior output/worker cohorts.",
+      "changeHints": [
+        "BookOfEternityGMBridge/Program.cs",
+        "BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.*",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ClearsPendingCliInputBeforeDispatchPrompt",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_RefusesPromptDispatchWhileCodexCliIsWorking",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ConfirmsPromptLeavesInputAfterAppendEnter",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_AutoSkipsCodexUpdatePromptWithoutMarkingReady",
+            "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ProductionStartAndDiagnosticsConsumeTheTestedMethods"
+          ]
+        }
+      ]
+    }
 ]
 }

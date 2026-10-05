@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-bridge-output-stream",
-      "reason": "Actual bridge assembly pump and diagnostics suffix only; positive managed synthetic streams, no native terminal/process or prior cohort repeat.",
+      "category": "gm-bridge-input-lifetime",
+      "reason": "Actual local writer/key lifetime plus five exact affected wiring guards; no output algorithm change, native terminal or prior cohort replay.",
       "contracts": [
-        "#1553 T041-OUTPUT-UTF8 US4 FR-012/013/014/015"
+        "#1553 T042-INPUT-LIFETIME US4 FR-012/013/014/015"
       ]
     }
   ]
