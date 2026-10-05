@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "worker-native-host-ready",
+      "responsibility": "#1553 HOST shared production preparation of actual neutral managed host with checked native owner: Ready, named-channel owner-close and scoped ECHILD stop, zero worker Release. Outer independent guardian is mandatory.",
+      "excludes": "WorkerRelease/pool integration B, canonical mutations, real GM, main PTY and unchanged IPC cohorts. Actual Linux x64 glibc/native compiler fixture preparation only.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerOwnedLaunch.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs",
+        "native/linux/boe-lineage-supervisor.c"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerNativeHostTests.ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease"
+          ]
+        }
+      ]
+    },
+    {
       "id": "linux-fallback-proc-discovery",
       "responsibility": "#1553 staged portableproc discovery: after provenbootstrap/guardian cleanup, require actual ownadoptedchild retirement before independentexpiry and scopedterminalstop.",
       "excludes": "Old19case replay, productionRelease, systemd/Windows, PTY/liveGM and unchangedcohorts. Firststageexactlyone realroot+child; furtherexpansionafterGREEN.",

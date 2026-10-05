@@ -53,7 +53,11 @@ normal driver required zero emergency signals, three deliberate loss cases requi
 emergency retirement. Package manifest now matches actual ELF requirements and hash.
 [Evidence](recovery/evidence/worker-host-guardian-package-green/manifest.json).
 This establishes fixture preparation and artifact provenance, not managed host
-admission. Next bounded block adds the actual neutral-host causal RED.
+admission. WIP actual-host scaffold now defines the shared preparation seam and
+throws an explicit unavailable native implementation. The new test runs a managed
+scenario driver beneath the qualified guardian; it must fail the Ready assertion
+causally with zero native helper/host or worker launch and complete cleanup.
+Next: fresh worker-native-host-ready build/RED before implementing the native path.
 
 ## Worker-host native integration design — 2026-10-05
 

@@ -288,6 +288,23 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
 
     internal ProcessStartInfo StartInfo { get; }
 
+    internal async Task<GmWorkerOwnedLaunch> PrepareOwnedAsync(IGmWorkerOwnedLauncher launcher,
+        GmWorkerBackendRequest request, GmWorkerRequiredCapability capability, CancellationToken cancellationToken)
+    {
+        var selection = GmWorkerBackendSelector.Select(request, capability, OperatingSystem.IsWindows(), OperatingSystem.IsLinux());
+        if (!selection.CanStart) throw new PlatformNotSupportedException(selection.Reason);
+        var owner = await launcher.StartAsync(this, selection, cancellationToken);
+        try
+        {
+            await owner.WaitUntilReadyAsync(this, cancellationToken);
+            return owner;
+        }
+        catch (Exception ex)
+        {
+            throw new GmWorkerOwnedLaunchException("Owned worker host did not become ready.", owner, ex);
+        }
+    }
+
     internal static GmWorkerProcessHostLaunch Create(
         ProcessStartInfo workerStartInfo,
         string launchDirectory)

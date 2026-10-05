@@ -112,6 +112,11 @@ static int actor(const char *mode) {
     for (;;) pause();
 }
 int main(int argc, char **argv) {
+    if (argc == 3 && !strcmp(argv[1], "--worker-marker")) {
+        int fd = open(argv[2], O_WRONLY | O_CREAT | O_EXCL | O_CLOEXEC, 0600);
+        if (fd < 0) return 71;
+        close(fd); return 0;
+    }
     if (argc == 2 && !strcmp(argv[1], "--sentinel")) { expire(); for (;;) pause(); }
     if (argc == 3 && !strcmp(argv[1], "--actor")) return actor(argv[2]);
     if (argc >= 3 && !strcmp(argv[1], "--expire-exec")) {

@@ -22,6 +22,13 @@
       "contracts": [
         "#1553 T041-FALLBACK-HOST fixture authority"
       ]
+    },
+    {
+      "category": "worker-native-host-ready",
+      "reason": "Causal actual host Ready RED/GREEN using independently qualified guardian; zero worker Release.",
+      "contracts": [
+        "#1553 T041-FALLBACK-HOST"
+      ]
     }
   ]
 }
