@@ -23,7 +23,12 @@ internal static class NativePoolScenarioDriver
         var terminalMode = mode.StartsWith("pool-terminal-", StringComparison.Ordinal) ? mode[14..] : null;
         var contentMode = mode.StartsWith("pool-content-", StringComparison.Ordinal) ? mode[13..] : null;
         var helperLoss = mode == "pool-helper-loss-before-release";
-        if (!helperLoss && contentMode is not ("valid" or "bad-hash" or "missing") && mode != "pool-happy" && descendantMode is not ("tree" or "root-first" or "doublefork" or "ignore" or "spawn") &&
+        var faultMode = mode.StartsWith("pool-fault-", StringComparison.Ordinal) ? mode[11..] : null;
+        var boundaryMode = mode.StartsWith("pool-boundary-", StringComparison.Ordinal) ? mode[14..] : null;
+        var observationFault = CreateObservationFault(faultMode, boundaryMode);
+        var faultCase = faultMode != null && (observationFault != null || faultMode is "owner-eof" or "status-loss" or "helper-loss");
+        var boundaryCase = boundaryMode is "cancel-completed" or "timeout-completed" or "cancel-stop" or "timeout-stop" or "cancel-output" or "timeout-output";
+        if (!faultCase && !boundaryCase && !helperLoss && contentMode is not ("valid" or "bad-hash" or "missing") && mode != "pool-happy" && descendantMode is not ("tree" or "root-first" or "doublefork" or "ignore" or "spawn") &&
             terminalMode is not ("cancel-release" or "timeout-release" or "cancel-publication" or "timeout-publication" or
                 "generation" or "task-bytes" or "nonzero" or "missing-proposal")) return 64;
         var workerMode = contentMode != null ? "content-" + contentMode : terminalMode is "nonzero" or "missing-proposal" ? terminalMode : descendantMode;
@@ -61,9 +66,35 @@ internal static class NativePoolScenarioDriver
         using var timeout = new CancellationTokenSource();
         GmWorkerNativeLineageLaunch? capturedOwner = null;
         var helperWasLost = false;
+        int? observedCompletion = null; GmWorkerProcessCompletionOutcomeKind? arbiterOutcome = null;
+        var boundaryReached = false;
         var hooks = new GmWorkerBridgePoolHooks
         {
-            AfterOwnerBound = owner => capturedOwner = (GmWorkerNativeLineageLaunch)owner,
+            AfterOwnerBound = owner =>
+            {
+                capturedOwner = (GmWorkerNativeLineageLaunch)owner;
+                if (observationFault != null) capturedOwner.SetSyntheticObservationFault(observationFault);
+            },
+            BeforeCompletionArbitrationAsync = async original =>
+            {
+                if (boundaryMode?.EndsWith("completed", StringComparison.Ordinal) == true || faultMode is "owner-eof" or "status-loss" or "helper-loss")
+                {
+                    observedCompletion = await original.WaitAsync(TimeSpan.FromSeconds(5));
+                    if (boundaryMode != null)
+                    {
+                        boundaryReached = true;
+                        (boundaryMode.StartsWith("cancel-", StringComparison.Ordinal) ? cancellation : timeout).Cancel();
+                    }
+                    else
+                    {
+                        var originalHelper = OriginalSupervisor(capturedOwner!);
+                        if (faultMode == "owner-eof") originalHelper.StandardInput.Close();
+                        else if (faultMode == "status-loss") originalHelper.StandardOutput.Close();
+                        else { originalHelper.Kill(); await originalHelper.WaitForExitAsync(); helperWasLost = true; }
+                    }
+                }
+            },
+            AfterCompletionArbitration = outcome => arbiterOutcome = outcome.Kind,
             BeforeWorkerReleaseAsync = async () =>
             {
                 releases++;
@@ -71,7 +102,7 @@ internal static class NativePoolScenarioDriver
                 if (terminalMode == "timeout-release") timeout.Cancel();
                 if (helperLoss)
                 {
-                    var original = (Process)typeof(GmWorkerNativeLineageLaunch).GetField("_supervisor", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(capturedOwner)!;
+                    var original = OriginalSupervisor(capturedOwner!);
                     original.Kill(); // Original retained Process only; outer guardian owns surviving host.
                     await original.WaitForExitAsync();
                     helperWasLost = true;
@@ -99,9 +130,35 @@ internal static class NativePoolScenarioDriver
             hooks, GmWorkerProcessTreeFactory.Instance, reaper, new GmWorkerNativePoolAdmission(package, fixtureRoot));
         GmWorkerTaskRunResult? result = null; string? failure = null; var canceled = false;
         var executionClock = Stopwatch.StartNew();
-        try { result = await pool.RunTaskAsync(profile, task, cancellation.Token); }
+        try
+        {
+            var pending = pool.RunTaskAsync(profile, task, cancellation.Token);
+            Exception? boundaryFailure = null;
+            if (boundaryCase && observationFault != null)
+            {
+                try
+                {
+                    await observationFault.Reached.WaitAsync(TimeSpan.FromSeconds(5));
+                    boundaryReached = true;
+                    (boundaryMode!.StartsWith("cancel-", StringComparison.Ordinal) ? cancellation : timeout).Cancel();
+                }
+                catch (Exception ex) { boundaryFailure = ex; }
+                finally { observationFault.ReleaseObservation(); }
+            }
+            result = await pending;
+            if (boundaryFailure != null) throw new InvalidOperationException("Boundary fixture did not reach its observation gate.", boundaryFailure);
+        }
         catch (Exception ex) { failure = ex.ToString(); canceled = ex is OperationCanceledException; }
         executionClock.Stop();
+        var beforeLateEntries = reaper.EntryCount;
+        var beforeLateCapacity = reaper.OwnedCapacity;
+        GmWorkerStopEvidence? lateStop = null;
+        if (faultCase)
+        {
+            observationFault?.ReleaseObservation();
+            lateStop = await capturedOwner!.StopAndObserveAsync();
+            await Task.WhenAll(reaper.RunPassAsync(), reaper.RunPassAsync());
+        }
         var stored = result?.Proposal == null ? null : await new GmWorkerProposalStore(fs).ReadProposalAsync(result.Proposal.ProposalId);
         await File.WriteAllTextAsync(Path.Combine(output, "scenario.json"), JsonSerializer.Serialize(new
         {
@@ -109,6 +166,15 @@ internal static class NativePoolScenarioDriver
             failure = failure ?? result?.Status.LastError,
             canceled, resultReturned = result != null,
             mode, helperWasLost, releases, publicationCalls,
+            boundaryReached, observedCompletion, arbiterOutcome,
+            ownerTerminal = capturedOwner == null ? null : typeof(GmWorkerNativeLineageLaunch).GetField("_terminal", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(capturedOwner),
+            ownerUncertainty = capturedOwner == null ? null : typeof(GmWorkerNativeLineageLaunch).GetField("_uncertainty", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(capturedOwner),
+            observationFaultReached = observationFault?.Reached.IsCompletedSuccessfully == true,
+            beforeLateEntries, beforeLateCapacity, lateStop,
+            actualOutputTasksSettled = capturedOwner?.HostStandardOutput.IsCompletedSuccessfully == true && capturedOwner.HostStandardError.IsCompletedSuccessfully,
+            cleanupConfirmedAuditCount = ReadAudit(fs).Count(entry => entry.EventType == "process-tree-cleanup-confirmed"),
+            quarantineReceipts = Directory.Exists(Path.Combine(fixtureRoot, "native-runtime"))
+                ? Directory.GetFiles(Path.Combine(fixtureRoot, "native-runtime"), "*.json", SearchOption.AllDirectories).Count(path => path.Contains("/quarantine-audit/", StringComparison.Ordinal)) : 0,
             retainedWorkspaces = Directory.Exists(Path.Combine(fixtureRoot, "native-runtime"))
                 ? Directory.GetDirectories(Path.Combine(fixtureRoot, "native-runtime"), "game_session", SearchOption.AllDirectories).Length : 0,
             contentImportedExactly = stored?.ChangedFiles.Count == 1 && File.Exists(fs.ResolvePath(stored.ChangedFiles[0].ContentRef!)) &&
@@ -137,6 +203,23 @@ internal static class NativePoolScenarioDriver
         }));
         return 0;
     }
+
+    private static Process OriginalSupervisor(GmWorkerNativeLineageLaunch owner) =>
+        (Process)typeof(GmWorkerNativeLineageLaunch).GetField("_supervisor", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(owner)!;
+
+    private static WorkerAuditEvent[] ReadAudit(FileSystemManager fs) => File.Exists(fs.ResolvePath(GmWorkerAuditLog.AuditLogPath))
+        ? File.ReadAllLines(fs.ResolvePath(GmWorkerAuditLog.AuditLogPath)).Select(line => GmWorkerJson.Deserialize<WorkerAuditEvent>(line)!).ToArray() : [];
+
+    private static GmWorkerNativeObservationFault? CreateObservationFault(string? fault, string? boundary) => (fault ?? boundary) switch
+    {
+        "wrong-run" => new(GmWorkerNativeObservationFaultKind.WrongRun),
+        "wrong-scope" => new(GmWorkerNativeObservationFaultKind.WrongScope),
+        "malformed" => new(GmWorkerNativeObservationFaultKind.MalformedTerminal),
+        "uncertain" => new(GmWorkerNativeObservationFaultKind.ReportUncertain),
+        "late-terminal" or "cancel-stop" or "timeout-stop" => new(GmWorkerNativeObservationFaultKind.HoldTerminal),
+        "late-output" or "cancel-output" or "timeout-output" => new(GmWorkerNativeObservationFaultKind.HoldOutputs),
+        _ => null
+    };
 
     private static bool FailureCopyRejected(GmWorkerTaskRunResult result, WorkerTaskPacket task)
     {

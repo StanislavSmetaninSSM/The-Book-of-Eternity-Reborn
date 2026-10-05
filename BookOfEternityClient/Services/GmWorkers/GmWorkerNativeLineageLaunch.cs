@@ -32,6 +32,14 @@ internal sealed class GmWorkerNativeLineageLaunch : GmWorkerOwnedLaunch
     private string? _uncertainty;
     private GmWorkerStopEvidence? _terminal;
     private int _phase;
+    private GmWorkerNativeObservationFault? _observationFault;
+    private Task? _outputObservation;
+
+    internal void SetSyntheticObservationFault(GmWorkerNativeObservationFault fault)
+    {
+        if (Interlocked.CompareExchange(ref _observationFault, fault, null) != null)
+            throw new InvalidOperationException("A native observation fault is already fixed for this owner.");
+    }
 
     private GmWorkerNativeLineageLaunch()
     {
@@ -159,7 +167,9 @@ internal sealed class GmWorkerNativeLineageLaunch : GmWorkerOwnedLaunch
                     if (used == buffer.Length) throw new InvalidDataException("Native status exceeds its bound.");
                     buffer[used++] = one[0]; continue;
                 }
-                using var frame = JsonDocument.Parse(buffer.AsMemory(0, used)); used = 0;
+                ReadOnlyMemory<byte> bytes = buffer.AsMemory(0, used); used = 0;
+                if (_observationFault != null) bytes = await _observationFault.ObserveFrameAsync(bytes);
+                using var frame = JsonDocument.Parse(bytes);
                 AcceptStatus(frame.RootElement);
             }
             lock (_stateGate) if (used != 0 || _terminal == null) Lose("status-lost");
@@ -252,7 +262,8 @@ internal sealed class GmWorkerNativeLineageLaunch : GmWorkerOwnedLaunch
     {
         try
         {
-            await Task.WhenAll(_outputDrain, _errorDrain).WaitAsync(TimeSpan.FromSeconds(5));
+            _outputObservation ??= ObserveOwnedOutputCompletionAsync();
+            await _outputObservation.WaitAsync(TimeSpan.FromSeconds(5));
             lock (_stateGate)
             {
                 if (_uncertainty != null || _terminal?.State != GmWorkerStopState.StoppedWithinScope)
@@ -262,6 +273,12 @@ internal sealed class GmWorkerNativeLineageLaunch : GmWorkerOwnedLaunch
             return new(await _outputDrain, await _errorDrain);
         }
         catch { Lose("owned-output-observation-failed"); throw; }
+    }
+
+    private async Task ObserveOwnedOutputCompletionAsync()
+    {
+        await Task.WhenAll(_outputDrain, _errorDrain);
+        if (_observationFault != null) await _observationFault.ObserveOutputsAsync();
     }
 
     private async Task<string> CaptureHostOutputAsync(Stream stream)
@@ -305,6 +322,7 @@ internal sealed class GmWorkerNativeLineageLaunch : GmWorkerOwnedLaunch
                 !_statusReader!.IsCompletedSuccessfully || !_outputsSettled || !_outputDrain.IsCompletedSuccessfully || !_errorDrain.IsCompletedSuccessfully)
                 throw new InvalidOperationException("Native launch retains an unconfirmed owner; output EOF and helper exit cannot retire it.");
         }
+        _observationFault?.BeforeDispose();
         // A filesystem failure retains the still-disposable original resources.
         // Repeat deletion is harmless after a partially successful attempt.
         if (Directory.Exists(_bootstrapDirectory)) Directory.Delete(_bootstrapDirectory, recursive: true);

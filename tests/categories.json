@@ -2,6 +2,78 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "worker-native-pool-uncertainty",
+      "responsibility": "#1553 POOL B Original native terminal corruption, explicit uncertainty and late original status/output observations retain workspace, receipt denial and quarantine across concurrent reaper passes.",
+      "excludes": "Synthetic isolated state only; no public Linux Release, systemd, out-of-lineage ownership, live GM, main PTY, durable restart or Windows runtime qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NativeObservationUncertaintySurvivesLateCleanup"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "worker-native-pool-owner-loss",
+      "responsibility": "#1553 POOL B Actual owner-control EOF, status-reader loss and original helper loss after real Completed retain uncertainty and cannot publish or free owned capacity.",
+      "excludes": "Synthetic isolated state only; no public Linux Release, systemd, out-of-lineage ownership, live GM, main PTY, durable restart or Windows runtime qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_AuthorityLossAfterCompletedRetainsOriginalExecution"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "worker-native-pool-completion-boundaries",
+      "responsibility": "#1553 POOL B Actual cancellation/timeout at buffered Completed, original terminal stop and output settlement precede publication while positive physical cleanup is preserved.",
+      "excludes": "Synthetic isolated state only; no public Linux Release, systemd, out-of-lineage ownership, live GM, main PTY, durable restart or Windows runtime qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries"
+          ]
+        }
+      ]
+    },
+    {
       "id": "worker-native-pool-content",
       "responsibility": "#1553 POOL B Actual pool detached content import exact bytes and rejection for missing/hash mismatch, without applying canonical game state.",
       "excludes": "Synthetic isolated state only; no public Linux Release, systemd, out-of-lineage ownership, live GM, main PTY, durable restart or Windows runtime qualification.",

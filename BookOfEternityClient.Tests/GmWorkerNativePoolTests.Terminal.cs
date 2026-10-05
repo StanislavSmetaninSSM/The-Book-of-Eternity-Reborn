@@ -6,6 +6,45 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class GmWorkerNativePoolTests
 {
     [Theory]
+    [InlineData("cancel-completed")]
+    [InlineData("timeout-completed")]
+    [InlineData("cancel-stop")]
+    [InlineData("timeout-stop")]
+    [InlineData("cancel-output")]
+    [InlineData("timeout-output")]
+    public async Task ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(string mode)
+    {
+        var result = await RunScenario("pool-boundary-" + mode);
+        AssertRejectedAndCleaned(result);
+        Assert.True(result.GetProperty("boundaryReached").GetBoolean());
+        Assert.True(result.GetProperty("actualOutputTasksSettled").GetBoolean());
+        Assert.Equal(JsonValueKind.Null, result.GetProperty("ownerUncertainty").ValueKind);
+        Assert.True(result.GetProperty("ownerTerminal").GetProperty("CleanupComplete").GetBoolean());
+        Assert.Equal((int)BookOfEternityClient.Services.GmWorkers.GmWorkerStopState.StoppedWithinScope,
+            result.GetProperty("ownerTerminal").GetProperty("State").GetInt32());
+        Assert.Equal(1, result.GetProperty("workerStarts").GetInt32());
+        Assert.Equal(0, result.GetProperty("publicationCalls").GetInt32());
+        var canceled = mode.StartsWith("cancel-", StringComparison.Ordinal);
+        Assert.Equal(canceled, result.GetProperty("canceled").GetBoolean());
+        if (mode.EndsWith("completed", StringComparison.Ordinal))
+        {
+            Assert.Equal(0, result.GetProperty("observedCompletion").GetInt32());
+            Assert.Equal((int)(canceled
+                ? BookOfEternityClient.Services.GmWorkers.GmWorkerProcessCompletionOutcomeKind.Canceled
+                : BookOfEternityClient.Services.GmWorkers.GmWorkerProcessCompletionOutcomeKind.TimedOut), result.GetProperty("arbiterOutcome").GetInt32());
+        }
+        if (!canceled)
+        {
+            var run = result.GetProperty("result");
+            Assert.True(run.GetProperty("TimedOut").GetBoolean());
+            Assert.True(run.GetProperty("StopEvidence").GetProperty("CleanupComplete").GetBoolean());
+            Assert.True(run.GetProperty("OutputsSettled").GetBoolean());
+            Assert.Equal((int)BookOfEternityClient.Services.GmWorkers.GmWorkerStopState.StoppedWithinScope,
+                run.GetProperty("StopEvidence").GetProperty("State").GetInt32());
+        }
+    }
+
+    [Theory]
     [InlineData("cancel-release", true, 0)]
     [InlineData("timeout-release", false, 0)]
     [InlineData("cancel-publication", true, 1)]

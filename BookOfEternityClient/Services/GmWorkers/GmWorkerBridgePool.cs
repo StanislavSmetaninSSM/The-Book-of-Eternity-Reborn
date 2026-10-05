@@ -16,6 +16,8 @@ internal sealed class GmWorkerBridgePoolHooks
     internal Func<Task>? BeforeProcessTreeAttachAsync { get; init; }
     internal Func<Task>? BeforeWorkerReleaseAsync { get; init; }
     internal Action<GmWorkerOwnedLaunch>? AfterOwnerBound { get; init; }
+    internal Func<Task<int>, Task>? BeforeCompletionArbitrationAsync { get; init; }
+    internal Action<GmWorkerProcessCompletionOutcome>? AfterCompletionArbitration { get; init; }
     internal Func<string, Task>? BeforeWorkspaceCleanupAsync { get; init; }
     internal Func<string, Task>? AfterQuarantineAuditTempCreatedAsync { get; init; }
     internal CancellationToken TimeoutSignal { get; init; }
@@ -772,11 +774,14 @@ public sealed class GmWorkerBridgePool
             var waitTask = ownedLaunch.HostExited;
             workerCompletionTask = ownedLaunch.WaitForWorkerCompletionAsync(processHostLaunch,
                 completionWaitCancellation.Token);
+            if (_hooks?.BeforeCompletionArbitrationAsync != null)
+                await _hooks.BeforeCompletionArbitrationAsync(workerCompletionTask);
             var completionOutcome = await GmWorkerProcessCompletionArbiter.WaitAsync(
                 workerCompletionTask,
                 token => ownedLaunch.WaitForDiagnosticDrainAsync(processHostLaunch, token),
                 waitTask, timeoutCancellation.Token, cancellationToken,
                 waitForDiagnosticDrain: backend.Backend == GmWorkerBackend.WindowsJob);
+            _hooks?.AfterCompletionArbitration?.Invoke(completionOutcome);
 
             if (completionOutcome.Kind == GmWorkerProcessCompletionOutcomeKind.Canceled)
             {

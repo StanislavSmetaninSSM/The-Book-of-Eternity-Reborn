@@ -1,0 +1,55 @@
+{
+  "Categories": [
+    "worker-native-pool-release-authority",
+    "worker-native-pool-happy"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "4cb9b3e9281e32523ca951f36504b82cad4e0abc",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.1275083,
+  "Descriptors": [
+    {
+      "Name": "worker-native-pool-happy-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pool-happy",
+      "Categories": [
+        "worker-native-pool-happy"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_SyntheticAnalysisPublishesAfterOwnedRetirement",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_SyntheticAnalysisPublishesAfterOwnedRetirement",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-pool-release-authority-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pool-release-authority",
+      "Categories": [
+        "worker-native-pool-release-authority"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LostOriginalHelperCannotReleaseWorker",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LostOriginalHelperCannotReleaseWorker",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

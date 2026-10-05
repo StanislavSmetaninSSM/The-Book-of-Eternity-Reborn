@@ -85,6 +85,30 @@
         "#1553 T041-FALLBACK-POOL B5",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-native-pool-uncertainty",
+      "reason": "#1553 POOL B Original native terminal corruption, explicit uncertainty and late original status/output observations retain workspace, receipt denial and quarantine across concurrent reaper passes.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-owner-loss",
+      "reason": "#1553 POOL B Actual owner-control EOF, status-reader loss and original helper loss after real Completed retain uncertainty and cannot publish or free owned capacity.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-completion-boundaries",
+      "reason": "#1553 POOL B Actual cancellation/timeout at buffered Completed, original terminal stop and output settlement precede publication while positive physical cleanup is preserved.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
     }
   ]
 }

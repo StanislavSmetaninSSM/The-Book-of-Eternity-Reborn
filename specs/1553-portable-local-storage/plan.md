@@ -467,6 +467,30 @@ authority inside the control gate immediately before sending Release. Windows re
 path unchanged. Select only loss1 plus happy1 (new release check affects successful
 admission); content3 is unchanged. Corrected build/execution pending.
 
+B5 known-helper-loss correction GREEN at `4cb9b3e9281e32523ca951f36504b82cad4e0abc`:
+Plan2/0exec39.0069826s; loss1+happy1 run2/2PASS14.2327601s, complete selection/
+cleanup, no skip/duplicate/timeout. [Evidence](recovery/evidence/worker-pool-authority-loss-green/manifest.json).
+Loss now starts0, publication0, workspace/quarantine/capacity1; guardian ECHILD,
+emergency0/reaped2 (host exits on closed channel). Happy remains starts1/publication1
+and cleanup0-capacity with ECHILD/emergency0/reaped1. Actual Sol6.1/xhigh source
+review confirms the narrow known-loss correction, not an atomic guarantee against
+loss immediately after the last check.
+
+Next B5 WIP adds sealed negative-only observation fault on original native status
+reader/output-completion task; terminal wrong-run/wrong-scope/malformed/Uncertain,
+and held terminal/output released after original observation timeout must remain
+uncertain after late stop plus concurrent reaper passes. Original owner/stdin/stdout
+faults after actual Completed add3cases; original Process only, helper-loss guardian
+may use emergency cleanup. Six cancellation/timeout cases at buffered Completed,
+terminal and output must still clean via actual positive stop/output and publish0.
+The optional before-arbiter hook observes unchanged original completionTask; its
+fixture callback has independent5s bound then cancels synchronously, with an
+observation-only actual arbiter outcome callback. Separate Sol6.1/xhigh approved this
+finite-hook design. Gates at stop/output cancel before releasing within5s. No positive
+evidence/alternate owner enters any seam; defaultnull. Native DisposeOnce negative
+hook is present after proof guards/before resources and will be exercised in the
+next validated-stop cleanup retry block. These15new cases are not yet built/executed.
+
 B5 observation seam design consultation, actual Sol6.1/xhigh: an internal optional
 capture of the genuinely launched owner is allowed only after pool binding (or with
 OwnedLaunchException preserving that owner). It cannot replace owner/identity or
