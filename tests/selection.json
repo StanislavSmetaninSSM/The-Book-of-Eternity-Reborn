@@ -31,6 +31,13 @@
         "#1553 T041-FALLBACK-POOL B3-P",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-synthetic-bundle-cleanup",
+      "reason": "Causal staging residue after successful native rename; requalify only changed sealed-adapter cleanup and Store callers.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B3-P"
+      ]
     }
   ]
 }

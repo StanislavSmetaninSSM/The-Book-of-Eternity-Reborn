@@ -343,6 +343,21 @@ Sol6.1/xhigh clarification preserves Store task/generation check order: original
 is continuously held; Core revalidates active/no-pending/ambient/ordinary authority
 and namespace after hooks. No extra callback or duplicated generation payload.
 
+B3-P first connected storage run `fde47a7059d35a8de9d430614603efe0dfd6dd82`:
+fresh PlanOnly26planned/0executed,39.7023487s; NoBuild26executed, **25PASS/1FAIL**,
+8.8108138s, complete selection/cleanup, no skip/duplicate/timeout. Actual bundle/
+content/inbox/audit passed; final positive assertion found leftover private staging.
+[Evidence](recovery/evidence/worker-pool-bundle-cleanup-red/manifest.json). Source diagnosis:
+Store finally invokes DeleteRuntimeProposalStagingRoot → DeleteRuntimeDirectory →
+PhysicalFileAuthority.TryDeleteDirectoryTree(StableDirectory) → Windows CreateFile;
+the Store swallows cleanup failure. This is a new cleanup defect, not rename failure.
+Narrow correction: sealed synthetic adapter also delegates cleanup to a Core exact
+fixture-root/direct-GUID staging validator and the already-qualified trusted-local
+DeleteOwnedTree. Default/Windows cleanup unchanged; linked/special trees stay retained,
+missing owned roots are idempotent. Add7new cleanup cases (including actual Store invalid-tree retention) and select only the6existing
+cleanup-affected Store cases in worker-synthetic-bundle-cleanup; unchanged20passing
+Core/syscall/default-guard cases need no repeat. Fresh selected checks/review pending.
+
 ### B1 execution record
 
 Read-only Spec Kit consistency pass at `0ffb1c45`: B has coverage in spec, this plan,

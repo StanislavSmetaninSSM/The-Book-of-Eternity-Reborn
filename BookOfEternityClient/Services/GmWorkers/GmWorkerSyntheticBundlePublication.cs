@@ -10,4 +10,7 @@ internal sealed class GmWorkerSyntheticBundlePublication(string fixtureRoot)
         string sourceDirectory, string destinationRelativePath) =>
         fs.MoveSyntheticRuntimeBundleIntoCanonicalSessionAsync(lease, fixtureRoot,
             sourceDirectory, destinationRelativePath);
+
+    internal void Cleanup(FileSystemManager fs, string stagingRoot) =>
+        fs.DeleteSyntheticRuntimeProposalStagingRoot(fixtureRoot, stagingRoot);
 }

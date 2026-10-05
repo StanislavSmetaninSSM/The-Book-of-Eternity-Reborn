@@ -7,10 +7,7 @@ public partial class FileSystemManager
     internal async Task MoveSyntheticRuntimeBundleIntoCanonicalSessionAsync(CanonicalWriteLease lease,
         string admittedFixtureRoot, string sourceDirectory, string destinationRelativePath)
     {
-        if (!OperatingSystem.IsLinux())
-            throw new PlatformNotSupportedException("Synthetic bundle publication requires Linux.");
-        if (!string.Equals(Path.GetFullPath(admittedFixtureRoot), BasePath, StringComparison.Ordinal))
-            throw new InvalidDataException("Synthetic bundle publication belongs to another fixture root.");
+        ValidateSyntheticFixtureRoot(admittedFixtureRoot);
         ValidateLease();
         EnsureSafeCanonicalRelativePath(destinationRelativePath);
         var destinationParts = destinationRelativePath.Split('/');
@@ -57,6 +54,28 @@ public partial class FileSystemManager
                 throw new IOException("Synthetic bundle destination already exists.");
             canonicalScope.ValidateDirectory(Path.GetDirectoryName(destination)!, allowMissing: false);
         }
+    }
+
+    internal void DeleteSyntheticRuntimeProposalStagingRoot(string admittedFixtureRoot, string stagingRoot)
+    {
+        ValidateSyntheticFixtureRoot(admittedFixtureRoot);
+        var area = Path.Combine(RuntimeRootPath, "proposal-staging");
+        var scope = new TrustedLocalFileScope([area]);
+        var root = scope.ValidateDirectory(stagingRoot);
+        if (!Guid.TryParseExact(Path.GetRelativePath(area, root), "N", out _))
+            throw new InvalidDataException("Synthetic cleanup requires one private proposal staging root.");
+        EnsureRuntimePathIsSafe(root);
+        // Reuse the qualified complete-tree preflight and unlink-only cleanup.
+        // Invalid entries retain the entire owned tree, including diagnostic bytes.
+        scope.DeleteOwnedTree(root);
+    }
+
+    private void ValidateSyntheticFixtureRoot(string admittedFixtureRoot)
+    {
+        if (!OperatingSystem.IsLinux())
+            throw new PlatformNotSupportedException("Synthetic bundle publication requires Linux.");
+        if (!string.Equals(Path.GetFullPath(admittedFixtureRoot), BasePath, StringComparison.Ordinal))
+            throw new InvalidDataException("Synthetic bundle publication belongs to another fixture root.");
     }
 
     private static bool IsBundleId(string value) => value.Length != 0 &&

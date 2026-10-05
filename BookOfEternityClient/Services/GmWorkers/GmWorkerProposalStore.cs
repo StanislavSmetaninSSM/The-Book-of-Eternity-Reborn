@@ -145,7 +145,10 @@ public sealed class GmWorkerProposalStore
         {
             try
             {
-                _fs.DeleteRuntimeProposalStagingRoot(stagingRoot);
+                if (_syntheticPublication == null)
+                    _fs.DeleteRuntimeProposalStagingRoot(stagingRoot);
+                else
+                    _syntheticPublication.Cleanup(_fs, stagingRoot);
             }
             catch (Exception)
             {
