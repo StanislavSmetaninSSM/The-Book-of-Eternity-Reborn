@@ -1,0 +1,1 @@
+{"ready":true,"failure":null,"hostPid":12752,"supervisorPid":12746,"stop":{"RunId":"1dd6b264634447058b2579263d7e750c","Backend":2,"Guarantee":"ordinary-same-namespace-lineage","State":0,"Reason":"stop-requested","CleanupComplete":true,"AuthorityRetained":false,"RootExitCode":143},"workerReleased":false}

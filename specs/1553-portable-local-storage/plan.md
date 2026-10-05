@@ -66,7 +66,13 @@ WIP native v2 path now adds private finite SOCK_SEQPACKET/SCM_RIGHTS bootstrap,
 output pipes, checked original-helper peer plus transferred host pidfd identity,
 ACK-gated exec, a dedicated bounded status reader and sticky typed stop evidence.
 Native package preflight and absolute managed executable resolution are connected.
-Unbuilt/unrun: next fresh worker-native-host-ready preparation and exact-case GREEN.
+At `55cf7bad043ca1e61a08cf09078ef98b3499aac1`, fresh build/discovery
+1planned/0executed,44.0221970s; **exact-case GREEN1/1**,10.8435383s.
+Actual host Ready, distinct bound host/supervisor PID, no worker Release; private
+terminal StoppedWithinScope/cleanupComplete=true/authorityRetained=false, actual
+helper exit awaited, independent guardian ECHILD/emergency0/failures0/driverexit0.
+[Evidence](recovery/evidence/worker-host-ready-first-green/manifest.json).
+This is one bounded positive HOST case, not acceptance of the unfinished slice.
 The actual pool Windows-only adapter extraction and negative matrix remain pending.
 Independent Sol consult confirms original Process/tree/started-state one-way handoff
 from a sealed Windows adapter preserves current cleanup; no native-to-legacy route.
