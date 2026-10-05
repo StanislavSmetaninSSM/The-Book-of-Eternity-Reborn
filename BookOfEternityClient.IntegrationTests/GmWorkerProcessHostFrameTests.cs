@@ -40,6 +40,7 @@ public sealed class GmWorkerProcessHostFrameTests
         Assert.Equal("first", await channel.ReadAsync(64, timeout, CancellationToken.None));
         await Task.Delay(TimeSpan.FromMilliseconds(300));
         await Assert.ThrowsAsync<TimeoutException>(() => channel.ReadAsync(64, timeout, CancellationToken.None, waitForFirstByte));
+        Assert.Equal(1, stream.ReadCalls); // Expired partial frame never reads its tail.
     }
 
     [Fact]
@@ -199,8 +200,12 @@ public sealed class GmWorkerProcessHostFrameTests
 
     private sealed class FragmentedStream(byte[] bytes, int maximumChunk) : MemoryStream(bytes)
     {
-        public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default) =>
-            base.ReadAsync(buffer[..Math.Min(buffer.Length, maximumChunk)], cancellationToken);
+        public int ReadCalls { get; private set; }
+        public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+        {
+            ReadCalls++;
+            return base.ReadAsync(buffer[..Math.Min(buffer.Length, maximumChunk)], cancellationToken);
+        }
     }
 
     private sealed class DelayedStream(byte[] bytes, TimeSpan delay, TimeSpan? firstDelay = null) : Stream

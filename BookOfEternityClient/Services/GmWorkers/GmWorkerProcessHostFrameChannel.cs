@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text;
 
 namespace BookOfEternityClient.Services.GmWorkers;
@@ -12,6 +13,7 @@ internal sealed class GmWorkerProcessHostFrameChannel(Stream stream)
     private readonly byte[] _readBuffer = new byte[4096];
     private int _offset;
     private int _count;
+    private long _bufferReceivedAt;
 
     internal async Task<string?> ReadAsync(
         int maximumBytes,
@@ -22,8 +24,19 @@ internal sealed class GmWorkerProcessHostFrameChannel(Stream stream)
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maximumBytes);
         cancellationToken.ThrowIfCancellationRequested();
         using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-        var started = !waitForFirstByte || _offset < _count;
-        if (started) deadline.CancelAfter(timeout);
+        var buffered = _offset < _count;
+        var started = !waitForFirstByte || buffered;
+        if (started)
+        {
+            // A complete queued frame already met its receive deadline. An unfinished
+            // buffered frame must keep the deadline from its original first-byte arrival.
+            var remaining = buffered && Array.IndexOf(_readBuffer, (byte)'\n', _offset, _count - _offset) < 0
+                ? timeout - Stopwatch.GetElapsedTime(_bufferReceivedAt)
+                : timeout;
+            if (remaining <= TimeSpan.Zero)
+                throw new TimeoutException("Worker process host frame did not finish before its deadline.");
+            deadline.CancelAfter(remaining);
+        }
         using var frame = new MemoryStream(Math.Min(maximumBytes, _readBuffer.Length));
         try
         {
@@ -33,6 +46,7 @@ internal sealed class GmWorkerProcessHostFrameChannel(Stream stream)
                 if (_offset == _count)
                 {
                     _count = await stream.ReadAsync(_readBuffer, deadline.Token);
+                    _bufferReceivedAt = Stopwatch.GetTimestamp();
                     _offset = 0;
                     if (_count == 0)
                     {

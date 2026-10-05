@@ -257,6 +257,24 @@ than reviving the old nonce-only proposal. Native IPC remains excluded. The owne
 2026-10-05 decision defers full Linux live qualification to a separate Linux PC;
 this is not a qualification waiver or permission to operate another computer now.
 
+Buffered-frame review correction RED: test source
+`f21652674773b810152452eeb7c0735c75b8a166`, tree
+`8a59d3207315ea036c4c2ade4e7442409b35a535`, is remotely verified and read back.
+Fresh PlanOnly discovered49 rows in194.204296 seconds; actual **49/49** completed
+in10.648314 seconds: **47 pass / exactly2 expected failures**, no skips or
+duplicates and complete cleanup. Both ordinary and idle-first partial buffered
+frames incorrectly complete after their deadline; complete queued frames still
+pass. [Plan](recovery/evidence/worker-frame-buffered-red-plan/manifest.json),
+[causal run](recovery/evidence/worker-frame-buffered-red/manifest.json).
+
+The minimal correction records monotonic `Stopwatch` arrival time for each received
+buffer. A resumed incomplete frame uses only its remaining original budget and
+fails before tail I/O if expired. A fully delimited buffered frame remains readable,
+as reviewed: first byte and delimiter were already received together. The regression
+also observes that an expired partial frame performs no second underlying read.
+No other host/runtime behavior changes. Corrected source is WIP pending fresh
+pure GREEN, discovery-only catalog audit and focused independent reviewer recheck.
+
 ## Accepted T032-A4-NATIVE-NAMES — bounded Linux, 2026-10-05
 
 Current bounded code/verification verdict: **separate gpt-6.1-sol / xhigh PASS**
