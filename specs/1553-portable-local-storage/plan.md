@@ -14,6 +14,16 @@ for the original worker journal. A4 save-producer names and full gameplay remain
 The owner-authorized autonomous design waiver applies; independent Sol 6.1 XHigh
 review remains required. Spec Kit prerequisite/path check resolves this feature.
 
+Diagnostic RED at `f3732e3f`: native Linux **0/2**, both cases fail because cleanup
+IOException replaces the expected initiating-plus-cleanup AggregateException.
+Fresh PlanOnly/build discovered exactly two cases (2:11.938, zero execution);
+NoBuild execution completed both in 5.712 seconds, no skips/duplicates, cleanup complete.
+A minimal catch correction now retains the initiating exception first and the cleanup
+exception second. This diagnostic-only candidate is unverified; portable migration
+has not begun. Fresh GitHub-only restoration of `f3732e3f` matched HEAD/tree with clean
+checkout and connectivity check. The original 2026-10-04 catalog blob approval completed
+2026-10-05 02:13:26 UTC; no repeated write/cancellation/alternate route was used.
+
 1. Diagnose the original Begin failure with a causal test: force the existing
    unsupported before-image backend and a distinct cleanup failure, require both
    exceptions in initiating-first order, and retain the real Linux worker/load

@@ -4647,14 +4647,18 @@ public partial class FileSystemManager
             WriteWorkerApplyJournal(transactionId, committed: false, rolledBack: false);
             return new CanonicalWorkerApplyTransaction(transactionId, transactionRoot);
         }
-        catch
+        catch (Exception failure)
         {
-            if (!RuntimeFileExists(ActiveWorkerApplyTransactionJournalPath) &&
-                RuntimeDirectoryExists(transactionRoot))
+            try
             {
-                DeleteRuntimeDirectory(transactionRoot);
+                if (!RuntimeFileExists(ActiveWorkerApplyTransactionJournalPath) &&
+                    RuntimeDirectoryExists(transactionRoot))
+                    DeleteRuntimeDirectory(transactionRoot);
             }
-
+            catch (Exception cleanup)
+            {
+                throw new AggregateException("Worker preparation failed and its private cleanup remains pending.", failure, cleanup);
+            }
             throw;
         }
     }
