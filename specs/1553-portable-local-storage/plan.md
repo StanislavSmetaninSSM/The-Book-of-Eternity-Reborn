@@ -92,6 +92,27 @@ No production consumer, Windows Job, pool/main Release, canonical/GM or old acce
 cohort changes. Test fixture name variant is synthetic only; no gameplay prompt/example
 change is required. No systemd native qualification is inferred.
 
+### Staged GREEN and review regression
+
+At `f561a7854a91ebb1fcdcbf9348d4cfa019bfae93`, fresh descendant PlanOnly/build
+PASS48.6300843s; descendants **5/5PASS**15.4442280s, then control **6/6PASS**
+15.7513617s and authority **7/7PASS**15.3162703s using valid NoBuild. All18 native
+guardians reached ECHILD with emergency0/alarmReaps0/deadlinefalse/failurefalse;
+closed/full output cases prove cleanup through guardian without claiming a missing
+terminal report. Timeout retains authority at first Uncertain and remains Uncertain
+after cleanup; sentinel remained alive until its independent guardian retired it.
+[Descendants](recovery/evidence/linux-fallback-staged-descendants/manifest.json),
+[control](recovery/evidence/linux-fallback-staged-control/manifest.json),
+[authority](recovery/evidence/linux-fallback-staged-authority/manifest.json).
+
+Separate actual Sol6.1/xhigh source review confirmed a fixture-only lost wakeup:
+`while (!term_requested) pause()` can miss TERM delivered between check and wait.
+Current source adds a deterministic fixture boundary and two-case spawn owner, with
+normal spawn moved out of descendants to avoid rerunning other passed variants.
+The helper remains byte-identical to restored3e1b11c2. Regression RED next, then
+atomic blocked-signal/sigsuspend correction, affected GREEN and discovery-only audit.
+No final acceptance yet; review and final cleanup/publication/restore remain pending.
+
 ## Priority handoff — disconnect audit and BLOCKED native slice
 
 Owner requested immediate handoff before further portability design. Exact helper/

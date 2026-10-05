@@ -1,0 +1,54 @@
+{
+  "Categories": [
+    "linux-fallback-authority"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "f561a7854a91ebb1fcdcbf9348d4cfa019bfae93",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.5870208,
+  "Descriptors": [
+    {
+      "Name": "linux-fallback-authority-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "linux-fallback-authority",
+      "Categories": [
+        "linux-fallback-authority"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Child_DoesNotInheritOwnerInput_AndPreservesSyntheticEnvironmentAndCwd|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ClosedStatusAfterStart_RetiresOwnedChildrenWithoutBlockingOrSigpipeExit|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ExecFailure_DoesNotClaimStartedOrScopedSuccess|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.FullStatusPipe_BeforeReadyFailsClosedWithoutAnyLaunch|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.MalformedOrRepeatedLaunch_SealsUncertain|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ObservedOutsideContractWork_IsVisibleAndRemainsUncertain",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 1,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Child_DoesNotInheritOwnerInput_AndPreservesSyntheticEnvironmentAndCwd",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ClosedStatusAfterStart_RetiresOwnedChildrenWithoutBlockingOrSigpipeExit",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ExecFailure_DoesNotClaimStartedOrScopedSuccess",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.FullStatusPipe_BeforeReadyFailsClosedWithoutAnyLaunch",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.MalformedOrRepeatedLaunch_SealsUncertain",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ObservedOutsideContractWork_IsVisibleAndRemainsUncertain",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

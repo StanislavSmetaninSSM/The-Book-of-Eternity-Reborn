@@ -73,7 +73,7 @@
     },
     {
       "id": "linux-fallback-descendants",
-      "responsibility": "#1553 T041-FALLBACK-NATIVE: Staged native ordinary-lineage retirement after the single adopted-child GREEN: double fork/setsid, ignored TERM, spawn during stop, early root exit and stat names containing parentheses/newline.",
+      "responsibility": "#1553 T041-FALLBACK-NATIVE: Staged native ordinary-lineage retirement after the single adopted-child GREEN: double fork/setsid, ignored TERM, early root exit and stat names containing parentheses/newline.",
       "excludes": "Production pool/main Release, systemd positive qualification, namespace migration/external broker containment, Windows Job, PTY/live GM and unchanged prior cohorts. Fails explicitly off Linux.",
       "changeHints": [
         "native/linux/boe-lineage-supervisor.c",
@@ -93,6 +93,32 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "linux-fallback-spawn-boundary",
+      "responsibility": "#1553 native fixture lost-wakeup regression: stop arriving between TERM flag observation and blocking wait must still create and retire the owned descendant; normal and deterministic boundary cases.",
+      "excludes": "Production pool/main Release, systemd positive qualification, namespace migration/external broker containment, Windows Job, PTY/live GM and unchanged prior cohorts. Fails explicitly off Linux.",
+      "changeHints": [
+        "native/linux/boe-lineage-supervisor.c",
+        "scripts/build-linux-supervisor.ps1",
+        "tests/fixtures/LinuxLineage/lineage-fixture.c",
+        "BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LinuxFallbackSpawnBoundaryTests.*"
           ]
         }
       ]

@@ -24,7 +24,6 @@ public sealed class LinuxFallbackSupervisorTests
     [Theory]
     [InlineData("doublefork")]
     [InlineData("ignore")]
-    [InlineData("spawn")]
     [InlineData("root-first")]
     [InlineData("named")]
     public async Task NativeDescendants_RetireWithinDeclaredScope(string mode)
@@ -32,10 +31,11 @@ public sealed class LinuxFallbackSupervisorTests
         await using var run = await NativeRun.Create(mode);
         await run.Start();
         await run.WaitEvent(mode == "root-first" ? "leaf" : "prepared");
+        if (mode == "spawn-window") await run.WaitEvent("before-wait");
         if (mode != "root-first") await run.Send("S");
         await run.Finish();
         run.AssertScopedStop();
-        Assert.Contains(run.Events(), e => e.GetProperty("kind").GetString() == (mode == "spawn" ? "spawned" : "leaf"));
+        Assert.Contains(run.Events(), e => e.GetProperty("kind").GetString() == (mode is "spawn" or "spawn-window" ? "spawned" : "leaf"));
         if (mode == "doublefork") Assert.Contains(run.Events(), e => e.GetProperty("kind").GetString() == "detached");
         if (mode == "named") Assert.Contains(run.Events(), e => e.GetProperty("kind").GetString() == "name-set");
         if (mode == "root-first") Assert.Equal(23, run.Records.Last().GetProperty("rootExitCode").GetInt32());
@@ -341,6 +341,15 @@ public sealed class LinuxFallbackProcDiscoveryTests
     [Fact]
     public Task FirstAdoptedChild_MustRetireBeforeIndependentFixtureExpiry() =>
         new LinuxFallbackSupervisorTests().NativeDescendants_RetireWithinDeclaredScope("tree");
+}
+
+public sealed class LinuxFallbackSpawnBoundaryTests
+{
+    [Theory]
+    [InlineData("spawn")]
+    [InlineData("spawn-window")]
+    public Task StopAtWaitBoundary_StillCreatesAndRetiresDescendant(string mode) =>
+        new LinuxFallbackSupervisorTests().NativeDescendants_RetireWithinDeclaredScope(mode);
 }
 
 public sealed class LinuxFallbackFixtureAdmissionTests

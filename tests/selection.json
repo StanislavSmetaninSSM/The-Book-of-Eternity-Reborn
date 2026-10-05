@@ -32,6 +32,14 @@
         "#1553 T041-FALLBACK-PROC / T041-FALLBACK-NATIVE",
         "FR-014 ordinary same-namespace scope and retained Uncertain"
       ]
+    },
+    {
+      "category": "linux-fallback-spawn-boundary",
+      "reason": "Confirmed review fixture lost-wakeup race: deterministic causal RED/GREEN and normal spawn control, only affected cases repeated.",
+      "contracts": [
+        "#1553 independent native fixture evidence",
+        "FR-014 stop during fork"
+      ]
     }
   ]
 }

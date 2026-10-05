@@ -46,11 +46,24 @@ static int worker(const char *dir, const char *mode) {
         if (read(STDIN_FILENO, &c, 1) == 0) event(dir, "stdin-eof");
         if (value && !strcmp(value, "synthetic-marker") && getcwd(cwd, sizeof cwd) && !strcmp(cwd, dir)) event(dir, "metadata-ok");
     }
-    if (!strcmp(mode, "spawn")) {
+    if (!strcmp(mode, "spawn") || !strcmp(mode, "spawn-window")) {
         struct sigaction sa = { .sa_handler = on_term }; sigemptyset(&sa.sa_mask);
         if (sigaction(SIGTERM, &sa, NULL)) return 91;
         event(dir, "prepared");
-        while (!term_requested) pause();
+        while (!term_requested) {
+            if (!strcmp(mode, "spawn-window")) {
+                /* Deterministically deliver/pending-queue TERM after the flag
+                 * check, before the wait. Fixture-only lost-wakeup regression. */
+                event(dir, "before-wait");
+                for (;;) {
+                    sigset_t pending;
+                    if (sigpending(&pending)) return 91;
+                    if (term_requested || sigismember(&pending, SIGTERM)) break;
+                    poll(NULL, 0, 1);
+                }
+            }
+            pause();
+        }
         pid_t p = fork(); if (p < 0) return 91;
         if (!p) linger(dir, "spawned");
         return 0;

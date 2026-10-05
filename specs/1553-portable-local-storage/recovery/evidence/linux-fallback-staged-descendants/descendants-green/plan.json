@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "linux-fallback-descendants"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "f561a7854a91ebb1fcdcbf9348d4cfa019bfae93",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 5.2933788,
+  "Descriptors": [
+    {
+      "Name": "linux-fallback-descendants-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "linux-fallback-descendants",
+      "Categories": [
+        "linux-fallback-descendants"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 1,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope",
+          "Cases": 5
+        }
+      ]
+    }
+  ]
+}
