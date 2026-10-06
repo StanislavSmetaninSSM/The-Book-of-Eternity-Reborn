@@ -41,6 +41,19 @@ Initial GREEN at36f912b4:3/3 PASS,3 guardians ECHILD/emergency0/failures0/deadli
 
 Qualification expansion now keeps two M1 categories and adds only directly affected old methods: atomic bootstrap invalid/exact/repeated/legacy refusal and actual console invalid entrypoint (StateManager wrapper changed); held main lease recheck and two managed stop proof/I/O boundaries (common launch/access/retirement changed). No F1–F3 cohort union. New production controls reuse existing test-support guardian driver with ordinary configuration and factory (never ConfigureNeutral); package is shipped into its own app base. Seven distinct ordinary negative entrypoint cases, manual resize/EOF/fresh epoch, real queued cancel/takeover and uncertainty-retained inventory. First execution of these expanded cases may reveal causal defects; source/command/oracle and cleanup remain pinned separately.
 
+Expanded admission at3fef70d0:26executed14PASS/12FAIL.5causal bootstrap failures,
+7fixture/preparation/cleanup failures (5 missing inert scratch cleanup;2 guardian
+relative execv failures, no scenario launch). Cold/package RED at a4da9d3d:
+6executed2PASS/4causalFAIL (worker namespace file/link,2bootstrap publication intents,
+missing shipped launcher). Two intervening build failures executed0 and are preparation
+failures only. Interim independent Sol6.1/xhigh source review confirmed bootstrap and
+namespace defects, Windows PowerShell platform predicate risk, and the still-unproven
+live console/daemon participating consumer boundary. This is not final acceptance.
+Minimal fixes now preserve atomic bootstrap under an original pin, strictly observe
+worker namespace before recovery/remote acquisition, publish existing launcher files
+and use a Windows PowerShell compatible platform predicate. No new positive cold
+identity authority or journal. Next fresh narrow GREEN then live consumer fixture block.
+
 ## T041-PRODUCTION-MAIN-DESIGN — current design-only continuation
 
 Owner accepted bounded F3 `fc49f271f5cd14ac3b24931cce2c98ef64a61068`.

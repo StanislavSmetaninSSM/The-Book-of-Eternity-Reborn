@@ -132,6 +132,26 @@ internal static class SessionOperationContext
         return result!;
     }
 
+    // Bootstrap itself admits existing config and atomically publishes config +
+    // generation. Acquiring its original main pin must not invent generation first.
+    internal static async Task<string> RunParticipatingBootstrapAsync(FileSystemManager files,Func<Task<string>> bootstrap)
+    {
+        ArgumentNullException.ThrowIfNull(files);ArgumentNullException.ThrowIfNull(bootstrap);
+        await using var main=files.BeginParticipatingMainAdmission();await main.AcquireAsync();
+        Exception? failure=null;string? result=null;
+        try {
+            result=await bootstrap();
+            result=await RunBoundCoreAsync(files,result,()=>Task.FromResult(result!),null);
+        } catch(Exception e){failure=e;throw;}
+        finally {
+            var outcome=OutcomeFor(failure);
+            try {await main.CompleteAsync(outcome,HasClosingFailure(failure));}
+            catch(Exception close) when(failure!=null){failure.Data["MainOperationCloseFailure"]=close;}
+            catch(Exception close){throw new MainOperationContinuationException<string>(result!,outcome,main.DescribeClose(outcome,false),close);}
+        }
+        return result!;
+    }
+
     private static MainOperationOutcome OutcomeFor(Exception? failure)=>failure is IMainOperationContinuationFailure known?known.EstablishedOutcome:failure is OperationCanceledException?MainOperationOutcome.Cancelled:failure!=null?MainOperationOutcome.Failed:MainOperationOutcome.Completed;
     private static bool HasClosingFailure(Exception? failure)=>failure?.Data.Contains("SessionFinalizationFailure")==true;
 

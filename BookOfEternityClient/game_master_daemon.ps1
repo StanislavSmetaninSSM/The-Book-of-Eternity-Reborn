@@ -67,7 +67,7 @@ $ErrorActionPreference = "Stop"
 $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 [Console]::InputEncoding = [System.Text.UTF8Encoding]::new($false)
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
-if ($IsWindows) { chcp 65001 > $null; Add-Type -AssemblyName System.Windows.Forms }
+if (([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT)) { chcp 65001 > $null; Add-Type -AssemblyName System.Windows.Forms }
 
 $script:TurnCount = 0
 $script:ErrorCount = 0
@@ -5214,7 +5214,7 @@ if ((Get-GameConfig).GmBridgeEnabled -and (Get-GameConfig).GmBridgeBackend -in @
     if (Test-Path $BridgeStatusFile) {
         Write-Log "Bridge Status: '$BridgeStatusFile'" -Color Gray
     } else {
-        Write-Log "Bridge Status: bridge not started yet (fallbacks remain available)" -Color Yellow
+        Write-Log "Bridge Status: configured bridge not started yet; dispatch waits or refuses" -Color Yellow
     }
 }
 elseif (Test-Path $CliBindingFile) {
@@ -5244,7 +5244,7 @@ Write-Host ""
 # ═══════════════════════════════════════════════
 
 # Win32 API belongs only to the legacy Windows desktop route.
-if ($IsWindows) { Add-Type @"
+if (([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT)) { Add-Type @"
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -5401,7 +5401,7 @@ function Send-ToCliWindow {
         return (Send-ToGmBridge -Message $Message -Operation $Operation)
     }
 
-    if (-not $IsWindows) { throw 'Linux requires the configured owned bridge; no window/clipboard transport fallback.' }
+    if (-not ([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT)) { throw 'Linux requires the configured owned bridge; no window/clipboard transport fallback.' }
     # Explicit Windows desktop transport only; bridge delivery never falls back.
     Set-Clipboard -Value $Message
     Write-Log "  -> Clipboard: command copied" -Color DarkGray
@@ -6682,7 +6682,7 @@ Register-ObjectEvent $terminalProtocolFailureWatcher "Changed" -Action $terminal
 Write-Log "Watching: $InputDir" -Color DarkGray
 
 try {
-    if (-not $CliWindowTitle) {
+    if (-not $CliWindowTitle -and -not ((Get-GameConfig).GmBridgeEnabled -and (Get-GameConfig).GmBridgeBackend -in @('ConPTYBridge','OwnedTerminal'))) {
         Write-Host ""
         Write-Host "  +-------------------------------------------------+" -ForegroundColor Yellow
         Write-Host "  |  CLIPBOARD MODE                                  |" -ForegroundColor Yellow

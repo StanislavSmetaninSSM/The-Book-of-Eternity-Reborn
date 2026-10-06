@@ -56,15 +56,16 @@ public partial class FileSystemManager
             var observed=GmSessionRunPersistence.Read(_files.BasePath);
             if(observed!=null && GmSessionRunRecordCodec.Decode(observed).Disposition!=GmSessionRunDisposition.Stopped) {
                 if(!_participating || closing)throw GmSessionRunPersistence.Invalid();
+                var knownWorkers=_files.HasKnownMainWorkerInventory();
                 var remote=await GmMainOperationClient.OpenAsync(_files,token);
-                _access=new(null,null,remote,workerObservationRequired:Directory.Exists(new WorkerLedgerTarget(_files.BasePath).DirectoryPath));_retainedRemote=remote;_ownsRemote=true;WasRemote=true;return;
+                _access=new(null,null,remote,workerObservationRequired:knownWorkers);_retainedRemote=remote;_ownsRemote=true;WasRemote=true;return;
             }
             _access=new(await GmMainOwnerGuard.AcquireAsync(_files.BasePath,token,
                 _files._hooks?.MainOwnerLockContendedAsync,CanonicalWriteLockRetryCount,TransientFileAccessRetryDelay),null);
             try{
                 // A known inventory requires its original durable coordinator,
                 // even with disabled helpers, before canonical recovery/leases.
-                if(Directory.Exists(new WorkerLedgerTarget(_files.BasePath).DirectoryPath)) {
+                if(_files.HasKnownMainWorkerInventory()) {
                     var workers=GmWorkerRootContext.Attach(_files,true,null);
                     _access.Workers=workers;workers.RequireOpen();
                 }
@@ -160,6 +161,13 @@ public partial class FileSystemManager
             lock(_state) { if(_references==0)return;release=--_references==0; }
             if(release){Workers?.ReleaseClient();guard?.Dispose();original?.Pin?.Dispose();}
         }
+    }
+    private bool HasKnownMainWorkerInventory()
+    {
+        var observed=new TrustedLocalFileScope([BasePath]).ObserveNamespace(new WorkerLedgerTarget(BasePath).DirectoryPath);
+        if(observed.BlockingFileAncestor!=null || observed.Kind==TrustedLocalNamespaceKind.File)
+            throw GmSessionRunPersistence.Invalid();
+        return observed.Kind!=TrustedLocalNamespaceKind.Missing;
     }
     private void EnsureMainMutationAllowed(CanonicalWriteLease lease)
     {

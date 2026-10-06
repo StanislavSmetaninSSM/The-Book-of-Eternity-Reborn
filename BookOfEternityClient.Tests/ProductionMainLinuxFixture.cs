@@ -30,8 +30,6 @@ internal static class ProductionMainLinuxFixture
             Assert.True(File.Exists(Path.Combine(ship,"BookOfEternityClient/Launcher/bookofeternity.ps1")),"Causal RED: ordinary published layout lacks its real launcher.");
             Assert.True(File.Exists(Path.Combine(ship,"BookOfEternityClient/Launcher/gm_main_operation.ps1")),"Causal RED: ordinary published layout lacks participating helper.");return;
         }
-        Directory.CreateDirectory(Path.Combine(ship,"BookOfEternityClient/Launcher"));
-        foreach(var f in Directory.GetFiles(Path.Combine(repo,"BookOfEternityClient/Launcher"),"*.ps1"))File.Copy(f,Path.Combine(ship,"BookOfEternityClient/Launcher",Path.GetFileName(f)),true);
         Assert.Empty(Directory.GetFiles(ship,"*.cs",SearchOption.AllDirectories));Assert.Empty(Directory.GetFiles(ship,"*.csproj",SearchOption.AllDirectories));
         var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);files.EnsureDirectoryStructure();
         var cwd=Path.Combine(root,"work Ж");Directory.CreateDirectory(cwd);

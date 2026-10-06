@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Launcher/**/*.ps1" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <None Update="game_master_daemon.ps1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

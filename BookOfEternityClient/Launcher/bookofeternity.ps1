@@ -594,7 +594,7 @@ function Get-OriginalMainStopExpectation {
         $backend=switch -CaseSensitive ($id.Backend){'WindowsJob'{1};'LinuxSupervisor'{2};default{throw 'Original main backend unavailable.'}}
         [pscustomobject]@{rootKey=$id.RootKey;runId=$id.RunId;generationId=$id.GenerationId;epoch=$id.Epoch;backend=$backend;hostInstanceId=$id.HostInstanceId;bootId=$id.BootId}
     }
-    $comparison=if($IsWindows){[StringComparison]::OrdinalIgnoreCase}else{[StringComparison]::Ordinal}
+    $comparison=if(([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT)){[StringComparison]::OrdinalIgnoreCase}else{[StringComparison]::Ordinal}
     if(-not [string]::Equals($identity.rootKey,$root,$comparison)){throw 'Original main root expectation does not match requested session.'}
     return [pscustomobject]@{root=$root;identity=$identity}
 }
@@ -708,7 +708,7 @@ function Start-Bridge {
     }
 
     $repoRoot = Get-RepoRoot
-    if (-not $IsWindows) {
+    if (-not ([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT)) {
         if (-not $VisibleBridge -or [Console]::IsInputRedirected) { throw 'Linux owned main requires start-bridge visible in a caller-supplied foreground terminal.' }
         $assembly = Join-Path $repoRoot 'BookOfEternityGMBridge/BookOfEternityGMBridge.dll'
         if (-not (Test-Path -LiteralPath $assembly)) { throw 'Packaged bridge is unavailable; player startup does not compile it.' }
@@ -829,7 +829,7 @@ function Start-Daemon {
         throw "GM daemon script not found: $daemonScript"
     }
 
-    if (-not $IsWindows) {
+    if (-not ([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT)) {
         if (-not $visibleDaemon -or [Console]::IsInputRedirected) { throw 'Linux daemon requires start-daemon visible in its own caller-supplied terminal.' }
         # Foreground in this separate terminal; never share the bridge keyboard.
         $daemonArgs = @('-NoLogo','-NoProfile','-File',$daemonScript,'-GameSessionPath',$ResolvedSessionPath,'-PasteMode',$pasteMode,'-TurnTimeout',[string]$turnTimeout,'-LogFile',$logFile)
