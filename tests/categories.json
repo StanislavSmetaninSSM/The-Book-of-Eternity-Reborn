@@ -47,7 +47,7 @@
         {
           "project": "frontend",
           "runner": "vitest",
-          "files": [
+          "tests": [
             "test/browserLoadSessionLifecycle.test.ts"
           ]
         }
