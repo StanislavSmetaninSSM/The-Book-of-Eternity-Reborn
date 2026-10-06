@@ -28,12 +28,13 @@ public sealed class GmOwnedTerminalLinuxTests
     [InlineData("terminal-root-exit-admission")]
     public async Task OriginalOwner_DescendantsRootExitOrUncertain(string mode) { await RunAsync(mode); }
 
-    internal static async Task RunAsync(string mode)
+    internal static async Task RunAsync(string mode,Action<string>? observeOwnFolder=null)
     {
         Assert.True(OperatingSystem.IsLinux(), "This category requires actual Linux native execution.");
         var root = TestRepoPaths.RepoRoot;
         var folder = Path.Combine(root, "TestResults/native-terminal", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(folder);
+        observeOwnFolder?.Invoke(folder);
         var build = new ProcessStartInfo("pwsh") { UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true };
         foreach (var arg in new[] { "-NoProfile", "-File", Path.Combine(root, "scripts/build-linux-supervisor.ps1"),
             "-OutputDirectory", folder, "-IncludeHostGuardian", "-IncludeTerminalFixture" }) build.ArgumentList.Add(arg);

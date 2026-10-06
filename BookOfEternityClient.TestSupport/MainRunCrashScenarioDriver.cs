@@ -21,8 +21,10 @@ internal static partial class MainRunCrashScenarioDriver
     {
         if(mode.StartsWith(Prefix+"owner-",StringComparison.Ordinal))return await OwnerAsync(mode[(Prefix.Length+6)..],package,folder);
         if(mode.StartsWith(Prefix+"cold-",StringComparison.Ordinal))return await ColdAsync(mode[(Prefix.Length+5)..],folder);
+        if(mode.StartsWith(Prefix+"client-",StringComparison.Ordinal))return await ClientPinAsync(mode[(Prefix.Length+7)..],folder);
         var result=new Dictionary<string,object?>{["Mode"]=mode};
         try {
+            if(mode.StartsWith(Prefix+"pin-",StringComparison.Ordinal))return await WitnessPinAsync(mode[(Prefix.Length+4)..],package,folder,result);
             Require(mode.StartsWith(Prefix+"launch-",StringComparison.Ordinal),"Unknown crash witness mode.");
             var cut=mode[(Prefix.Length+7)..];
             await using var owner=Child(Prefix+"owner-launch-"+cut,package,folder);
@@ -45,6 +47,7 @@ internal static partial class MainRunCrashScenarioDriver
 
     private static async Task<int> OwnerAsync(string mode,string package,string folder)
     {
+        if(mode.StartsWith("pin-",StringComparison.Ordinal))return await OwnerPinAsync(mode[4..],package,folder);
         try {
             var launch=NeutralTerminalLaunch.Create(package,folder);var root=Directory.GetParent(launch.Scratch)!.FullName;
             var files=Files(root);var state=PortableSaveFixture.Seed(files);
@@ -79,6 +82,7 @@ internal static partial class MainRunCrashScenarioDriver
 
     private static async Task<int> ColdAsync(string mode,string folder)
     {
+        if(mode=="fresh")return await FreshAsync(folder);
         var result=new Dictionary<string,object?>{["Mode"]=mode,["Pid"]=Environment.ProcessId};
         try {
             Require(mode=="refuse","Unknown cold actor mode.");var info=ReadInfo(folder);var files=Files(info.Root);
@@ -176,6 +180,7 @@ internal static partial class MainRunCrashScenarioDriver
         internal void Set(string name,object value)=>_type.GetField(name,BindingFlags.Instance|BindingFlags.NonPublic)!.SetValue(_host,value);
         internal GmSessionRunCoordinator Owner=>(GmSessionRunCoordinator)Field("_mainRun")!;
         internal IOwnedTerminalSession Terminal=>(IOwnedTerminalSession)Field("_pty")!;
+        internal Task StartServer(CancellationToken token)=>(Task)_type.GetMethod("RunServerLoopAsync",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(_host,[token])!;
         internal async Task CallAsync(string name)
         {try{await (Task)_type.GetMethod(name,BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(_host,null)!;}catch(TargetInvocationException failure){throw failure.InnerException!;}}
     }

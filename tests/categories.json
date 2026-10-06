@@ -14654,6 +14654,29 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-crash-pins-linux",
+      "responsibility": "#1553 F3 real participating client process death before original close, after ClosedObserved before reply and after validated reply; exact original scoped stop/cold epoch.",
+      "excludes": "Linux x64 fixed neutral fixture; no warm F2 protocol repeat, live/provider/production/realsaves/systemd/Windows/powerloss.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/MainRunCrashScenarioDriver.Pins.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.ClientDeath_OriginalReceiptBoundaryControlsColdContinuation"
+          ]
+        }
+      ]
     }
   ]
 }

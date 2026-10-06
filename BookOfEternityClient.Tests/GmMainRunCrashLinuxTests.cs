@@ -9,5 +9,19 @@ public sealed class GmMainRunCrashLinuxTests
     [InlineData("running")]
     [InlineData("released")]
     public async Task LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(string cut)=>
-        await GmOwnedTerminalLinuxTests.RunAsync("terminal-main-crash-launch-"+cut);
+        await RunBoundedAsync("terminal-main-crash-launch-"+cut);
+
+    [Theory]
+    [InlineData("before")]
+    [InlineData("receipt")]
+    [InlineData("reply")]
+    public async Task ClientDeath_OriginalReceiptBoundaryControlsColdContinuation(string cut)=>
+        await RunBoundedAsync("terminal-main-crash-pin-"+cut);
+
+    private static async Task RunBoundedAsync(string mode)
+    {
+        string? folder=null;
+        try{await GmOwnedTerminalLinuxTests.RunAsync(mode,value=>folder=value);}
+        finally{if(folder!=null)MainRunCrashScenarioDriver.CleanupAfterGuardian(folder);}
+    }
 }
