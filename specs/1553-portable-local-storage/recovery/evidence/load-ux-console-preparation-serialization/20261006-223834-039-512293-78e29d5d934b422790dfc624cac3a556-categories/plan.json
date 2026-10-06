@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-load-console-entry"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "bf802ff8b550a798be2f70a685c4fb53a9ec36f9",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 46.2778841,
+  "Descriptors": [
+    {
+      "Name": "gm-load-console-entry-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-console-entry",
+      "Categories": [
+        "gm-load-console-entry"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_OriginalLiveOwnerStopsBeforeRealReplacement",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_OriginalLiveOwnerStopsBeforeRealReplacement",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

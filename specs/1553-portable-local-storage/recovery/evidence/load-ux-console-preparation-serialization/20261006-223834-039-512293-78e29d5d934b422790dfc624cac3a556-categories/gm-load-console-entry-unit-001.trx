@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="c639e447-33e5-4008-84f7-aafb3b4558fb" name="@c7669543e9c7 2026-10-06 22:39:32" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T22:39:32.6684715+00:00" queuing="2026-10-06T22:39:32.6684715+00:00" start="2026-10-06T22:39:21.7138204+00:00" finish="2026-10-06T22:39:32.6762589+00:00" />
+  <TestSettings name="default" id="ccddcce1-2b7f-43c2-8ac1-7474efbdd6cb">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_22_39_32" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="fc3c811e-7f88-4bd7-839a-2ce2785dcfa8" testId="6c309cf1-4f88-4836-b0b3-566747a96dc0" testName="BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_OriginalLiveOwnerStopsBeforeRealReplacement" computerName="c7669543e9c7" duration="00:00:08.1053105" startTime="2026-10-06T22:39:32.5540398+00:00" endTime="2026-10-06T22:39:32.5540574+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fc3c811e-7f88-4bd7-839a-2ce2785dcfa8">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/workspace/native-1553/TestResults/production-main/47175866b8704589b4c0bb4a5be8a674/scenario.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.File.OpenHandle(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.ReadAllBytes(String path)
+   at BookOfEternityClient.Tests.ProductionMainLinuxFixture.RunAsync(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs:line 76
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_OriginalLiveOwnerStopsBeforeRealReplacement" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6c309cf1-4f88-4836-b0b3-566747a96dc0">
+      <Execution id="fc3c811e-7f88-4bd7-839a-2ce2785dcfa8" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmLoadSessionLifecycleTests" name="ConsoleLoad_OriginalLiveOwnerStopsBeforeRealReplacement" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="6c309cf1-4f88-4836-b0b3-566747a96dc0" executionId="fc3c811e-7f88-4bd7-839a-2ce2785dcfa8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" passed="0" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.29]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.84]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.87]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:10.15]       System.IO.FileNotFoundException : Could not find file '/workspace/native-1553/TestResults/production-main/47175866b8704589b4c0bb4a5be8a674/scenario.json'.
+[xUnit.net 00:00:10.15]       Stack Trace:
+[xUnit.net 00:00:10.15]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:10.15]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:10.15]            at System.IO.File.OpenHandle(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:10.15]            at System.IO.File.ReadAllBytes(String path)
+[xUnit.net 00:00:10.15]         /workspace/native-1553/BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs(76,0): at BookOfEternityClient.Tests.ProductionMainLinuxFixture.RunAsync(String mode)
+[xUnit.net 00:00:10.15]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:10.16]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T22:39:32.5573837+00:00">
+        <Text>[xUnit.net 00:00:10.15]     BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_OriginalLiveOwnerStopsBeforeRealReplacement [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

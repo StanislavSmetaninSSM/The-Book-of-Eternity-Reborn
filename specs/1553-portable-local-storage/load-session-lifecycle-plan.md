@@ -67,3 +67,7 @@ Original retained Load connection/reservation added to the actual pipe accept lo
 ### First bounded GREEN and console RED preparation
 
 At runtime WIP `4a5397db91e490313b000d146502eff193d63980`, first actual browser1/1PASS proves original stop before Committed (without full bundle it correctly stays blocked/no fresh GM); both frontend pending-receipt2/2PASS. Own original retirement and guardian ECHILD/0 emergency confirmed; own fixture removed after capture. Typecheck found one nullable-menu compile failure; corrected and awaits verification. Added a separately selected real console entrypoint oracle against still-unmodified console Load code; it must produce causal Running-refusal RED before console integration. These are partial proofs, not complete lifecycle acceptance.
+
+### Console evidence preparation correction
+
+At `bf802ff8` the real console consumer ran, but the scenario writer attempted to JSON-serialize Exception.TargetSite and aborted134 before writing its result. TRX1FAIL is an evidence-preparation failure, not a verified causal RED; guardian ECHILD/emergency0/failures0/deadlinefalse. Prior commentary prematurely called this causal and is corrected here. New uncommitted console runtime wrapper was removed; console remains unchanged until the corrected oracle proves its actual assertion. Preserve anonymous safe exception text in the fixture. Factory namespace preparation failure at4c5431ad executed0 is separate; frontend typecheck2/2PASS at4c5431ad.

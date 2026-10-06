@@ -25,7 +25,7 @@ internal static partial class OwnedTerminalScenarioDriver
         if(mode=="production-main-load-console") {
             var engine=ProductionLoadGameEngine.Create(files,settings,save);
             var load=(Task<LoadReplacementResult>)typeof(GameEngine).GetMethod("LoadSelectedSaveAndRebindRuntimeAsync",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(engine,[path])!;
-            var console=await load; evidence["ConsoleLoadResult"]=console;
+            var console=await load; evidence["ConsoleLoadResult"]=new{console.Disposition,console.EstablishedGeneration,console.SelectedSourcePath,console.NeedsFollowUp,console.ContinuationBlocked,Failure=console.Failure?.Message};
             if(console.Disposition!=LoadReplacementDisposition.Committed)throw new InvalidOperationException("Causal RED: actual console selected Load refused the original Running GM: "+console.Disposition);
             if(!original.RootExited.IsCompleted)throw new InvalidOperationException("Console replacement preceded original stop.");
             return;
