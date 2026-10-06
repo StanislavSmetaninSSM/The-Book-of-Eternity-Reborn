@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "compiler": "/usr/bin/cc",
+  "compilerVersion": "cc (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+  "flags": [
+    "-std=c11",
+    "-O2",
+    "-g",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-D_FORTIFY_SOURCE=2",
+    "-fstack-protector-strong",
+    "-Wl,-z,relro,-z,now"
+  ],
+  "architecture": "X64",
+  "os": "Debian GNU/Linux 13 (trixie)",
+  "assets": [
+    {
+      "source": "native/linux/boe-lineage-supervisor.c",
+      "sourceSha256": "2fe9c86f6938399a1e5f904026467cf1b6cfb9f54276c68571e602617a035f42",
+      "binary": "boe-lineage-supervisor",
+      "binarySha256": "6062cdab1e91c8dc44c9a21168be160f062cf0b2fb92f5c25dc3effac904d927"
+    },
+    {
+      "source": "tests/fixtures/LinuxHost/host-guardian.c",
+      "sourceSha256": "d7963c86632153ec2bf1adf9a7c30dea29e1cea5c274e5fa0ea311a0518cc3db",
+      "binary": "host-guardian",
+      "binarySha256": "c4d1bc6bbc178b207f54695d7355316fcf4b611d0e18581c79d1d77cc66d857e"
+    },
+    {
+      "source": "tests/fixtures/LinuxTerminal/neutral-cli.c",
+      "sourceSha256": "92c1923cd479860dbe37b1948dec2e7f3810c5a1aef88fa65e50e0360fc8fa87",
+      "binary": "neutral-cli",
+      "binarySha256": "f81decd1906454acfc2dcc74d580a3c961c746d21cc088bab9c9faae33de734b"
+    }
+  ]
+}

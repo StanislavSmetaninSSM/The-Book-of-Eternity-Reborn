@@ -72,5 +72,19 @@
     "Guardian": "ECHILD, emergencySignals=0, failures=0, deadline=false",
     "Evidence": "evidence/t041-terminal-own-root/manifest.json",
     "Scope": "terminal adapter own root; actual BridgeHost integration pending"
+  },
+  "NativeBridgeViewRed": {
+    "Source": "c7a6adc060ebd2c971f7d30621a1df844ae965ca",
+    "Executed": 2,
+    "Passed": 1,
+    "Failed": 1,
+    "Cause": "actual pipe setReady refuses original Linux PTY output because old Win32 reader has no coherent view",
+    "Guardian": "both ECHILD, emergencySignals=0, failures=0, deadline=false; original StopShell scoped retirement before driver exit",
+    "Evidence": "evidence/t041-terminal-bridge-view-red/manifest.json"
+  },
+  "CommandPreparation": {
+    "Error": "Unsupported TestFilter argument rejected before build/tests",
+    "Executed": 0,
+    "Correction": "explicit category wrapper only"
   }
 }
