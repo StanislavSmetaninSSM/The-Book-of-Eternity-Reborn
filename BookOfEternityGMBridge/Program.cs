@@ -398,7 +398,9 @@ internal sealed partial class BridgeHost : IDisposable
             var shellArgs = BuildShellArguments(shellExe);
             var workingDirectory = ResolveGmBridgeShellWorkingDirectory(config.GmBridgeShellWorkingDirectory);
             var (width, height) = GetConsoleSize();
-            var pty = ConPtySession.Start(shellExe, shellArgs, workingDirectory, width, height);
+            ConPtySession pty;
+            try { pty=ConPtySession.Start(shellExe,shellArgs,workingDirectory,width,height); }
+            catch(OwnedTerminalStartException ex) { AttachOwnedTerminal(ex.Owner,Console.OpenStandardOutput()); MarkTerminalUncertain(); throw; }
             var outputWriter = Console.OpenStandardOutput();
 
             var input = AttachOwnedTerminal(pty, outputWriter);
@@ -483,7 +485,7 @@ internal sealed partial class BridgeHost : IDisposable
                 _terminalStopTask ??= ObserveScopedTerminalStopAsync(pty);
                 var proof = await _terminalStopTask.WaitAsync(InputDrainTimeout);
                 if (_terminalUncertain || proof.Identity != pty.Identity ||
-                    proof.State != GmWorkerStopState.StoppedWithinScope || !proof.CleanupComplete)
+                    proof.State != GmWorkerStopState.StoppedWithinScope || !proof.CleanupComplete || proof.AuthorityRetained)
                     throw new InvalidOperationException("Original terminal scoped stop is unconfirmed.");
             }
             catch (Exception ex)
@@ -1009,6 +1011,7 @@ internal sealed partial class BridgeHost : IDisposable
         Func<CancellationToken, ValueTask<ConsoleKeyInfo?>> keySource, CancellationToken cancellationToken)
     {
         using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, input.Token, _cts.Token);
+        char? highSurrogate=null;
         try
         {
             while (true)
@@ -1021,7 +1024,11 @@ internal sealed partial class BridgeHost : IDisposable
                         return;
                 if (key == null) continue;
                 TakeManualInput(input);
-                var sequence = KeyToSequence(key.Value);
+                string? sequence;
+                var character=key.Value.KeyChar;
+                if(char.IsHighSurrogate(character)) { highSurrogate=character; continue; }
+                if(char.IsLowSurrogate(character)) { sequence=highSurrogate is { } high ? new string([high,character]) : null; highSurrogate=null; }
+                else { highSurrogate=null; sequence = KeyToSequence(key.Value); }
                 if (sequence == null) continue;
                 await WriteManualInputAsync(input, sequence, linked.Token);
             }

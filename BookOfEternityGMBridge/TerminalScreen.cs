@@ -11,10 +11,10 @@ internal sealed class TerminalScreen(string bindingId)
     private readonly List<StringBuilder> _lines = [new()];
     private int _row, _column, _scalarBytes, _scalarValue, _scalarMinimum;
     private string? _escape;
-    private bool _invalid = true, _ended;
+    private bool _invalid = true, _ended, _awaitingHome;
     private long _revision;
     internal TerminalViewObservation Capture() => new(bindingId, _revision,
-        string.Join("\n", _lines.Select(l => l.ToString())).TrimEnd('\n'), !_invalid && !_ended && _scalarBytes == 0 && _escape == null);
+        string.Join("\n", _lines.Select(l => l.ToString())).TrimEnd('\n'), !_invalid && !_ended && !_awaitingHome && _scalarBytes == 0 && _escape == null);
     internal void Fault() { _invalid = true; _ended = true; }
     internal void Feed(ReadOnlySpan<byte> bytes, ReadOnlySpan<char> text)
     {
@@ -44,8 +44,8 @@ internal sealed class TerminalScreen(string bindingId)
                 if (_escape.Length <= 2) continue;
                 if (char.IsAsciiLetter(c) || c == '~')
                 {
-                    if (_escape == "\u001b[2J") { _lines.Clear(); _lines.Add(new()); _row=_column=0; _invalid=false; }
-                    else if (_escape is "\u001b[H" or "\u001b[1;1H") _row=_column=0;
+                    if (_escape == "\u001b[2J") { _lines.Clear(); _lines.Add(new()); _invalid=false; _awaitingHome=true; }
+                    else if (_escape is "\u001b[H" or "\u001b[1;1H") { _row=_column=0; _awaitingHome=false; }
                     else _invalid=true;
                     _escape=null;
                 }
@@ -61,6 +61,6 @@ internal sealed class TerminalScreen(string bindingId)
             var line=_lines[_row]; while(line.Length<_column)line.Append(' ');
             if (_column<line.Length)line[_column]=c;else line.Append(c); _column++;
         }
-        if (text.Length>0 && !_invalid && _scalarBytes==0 && _escape==null) _revision++;
+        if (text.Length>0 && !_invalid && !_awaitingHome && _scalarBytes==0 && _escape==null) _revision++;
     }
 }

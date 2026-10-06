@@ -60,7 +60,7 @@ public sealed class GmOwnedTerminalSessionTests
         {
             Entered.TrySetResult();
             await Release.Task.WaitAsync(waitToken);
-            return new(Identity, GmWorkerStopState.StoppedWithinScope, "controlled-scoped-proof", true, true);
+            return new(Identity, GmWorkerStopState.StoppedWithinScope, "controlled-scoped-proof", true, false);
         }
         public async ValueTask DisposeAsync()
         {
