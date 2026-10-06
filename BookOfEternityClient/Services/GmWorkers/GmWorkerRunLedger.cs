@@ -44,7 +44,7 @@ internal static class GmWorkerRunLedger
         Action<WorkerLedgerIoStage>? observeIo = null)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        return WorkerRunLedgerCoordinator.OpenAsync(target);
+        return WorkerRunLedgerCoordinator.OpenAsync(target, observeIo);
     }
 
     internal static WorkerLedgerObservation ObserveState(WorkerLedgerState state) => new(
@@ -61,7 +61,10 @@ internal sealed class WorkerRunLedgerCoordinator : IAsyncDisposable
     private readonly WorkerRunLedgerPersistence _storage;
     private readonly WorkerLedgerTarget _target;
     private readonly SemaphoreSlim _gate = new(1, 1);
-    private bool _disposed, _pending, _authorityLost;
+    private bool _disposed, _authorityLost;
+    private PendingMutation? _pending;
+    private sealed record PendingMutation(WorkerLedgerState Next, byte[] Bytes, WorkerRunEntryHandle? Entry,
+        WorkerRunPhase? Phase, long BeforeSequence);
     private WorkerLedgerState? _state;
     private byte[]? _stateBytes;
     private readonly string _hostInstance = Guid.NewGuid().ToString("N");
@@ -73,8 +76,30 @@ internal sealed class WorkerRunLedgerCoordinator : IAsyncDisposable
     { _storage = storage; _target = target; _state = state; _stateBytes = bytes; }
 
     internal long Sequence => _state?.Sequence ?? 0;
-    internal Task<WorkerLedgerMutationResult> RetryPendingAsync(CancellationToken cancellationToken = default) =>
-        Task.FromResult(new WorkerLedgerMutationResult(WorkerLedgerMutationKind.Blocked));
+    internal async Task<WorkerLedgerMutationResult> RetryPendingAsync(CancellationToken cancellationToken = default)
+    {
+        await _gate.WaitAsync(cancellationToken);
+        try
+        {
+            if (_disposed || _authorityLost || _pending is null) return new(WorkerLedgerMutationKind.Blocked);
+            cancellationToken.ThrowIfCancellationRequested();
+            return Commit(_pending, _storage.RetryPending);
+        }
+        finally { _gate.Release(); }
+    }
+
+    private WorkerLedgerMutationResult Commit(PendingMutation pending, Action publish)
+    {
+        _pending = pending;
+        try { publish(); }
+        catch (WorkerLedgerConflictException) { _authorityLost = true; return new(WorkerLedgerMutationKind.Blocked); }
+        catch (Exception error) when (GmWorkerRunLedger.Unavailable(error)) { return new(WorkerLedgerMutationKind.CommitPending); }
+        _state = pending.Next; _stateBytes = pending.Bytes;
+        if (pending.Phase == WorkerRunPhase.Prepared) _ownedEntries.Add(pending.Entry!.Identity.RunId, pending.Entry);
+        if (pending.Phase == WorkerRunPhase.AbortedBeforeLaunch) _aborted.Add(pending.Entry!.Identity.RunId, pending.BeforeSequence);
+        _pending = null;
+        return new(WorkerLedgerMutationKind.Applied, pending.Phase == WorkerRunPhase.Prepared ? pending.Entry : null);
+    }
     internal Task<WorkerLedgerMutationKind> PlanLaunchAsync(WorkerRunEntryHandle entry, long expectedSequence,
         CancellationToken cancellationToken = default) => TransitionAsync(entry, expectedSequence, WorkerRunPhase.LaunchIntent, cancellationToken);
     internal Task<WorkerLedgerMutationKind> MarkUncertainAsync(WorkerRunEntryHandle entry, long expectedSequence,
@@ -95,7 +120,7 @@ internal sealed class WorkerRunLedgerCoordinator : IAsyncDisposable
         await _gate.WaitAsync(cancellationToken);
         try
         {
-            if (_disposed || _pending || _authorityLost || _state is null || entry is null ||
+            if (_disposed || _pending is not null || _authorityLost || _state is null || entry is null ||
                 !_ownedEntries.TryGetValue(entry.Identity.RunId, out var original) || !ReferenceEquals(original, entry))
                 return WorkerLedgerMutationKind.Blocked;
             cancellationToken.ThrowIfCancellationRequested();
@@ -108,21 +133,17 @@ internal sealed class WorkerRunLedgerCoordinator : IAsyncDisposable
             catch (Exception error) when (GmWorkerRunLedger.Unavailable(error)) { return WorkerLedgerMutationKind.Blocked; }
             // Once launch intent may have reached disk, the original never-Start capability is gone.
             if (phase == WorkerRunPhase.LaunchIntent) _startConsumed.Add(entry.Identity.RunId);
-            try { _storage.PublishTransition(_stateBytes!, entry.Identity, phase); }
-            catch (Exception error) when (GmWorkerRunLedger.Unavailable(error))
-            { _pending = true; return WorkerLedgerMutationKind.CommitPending; }
-            _state = next; _stateBytes = GmWorkerRunLedgerCodec.Encode(next);
-            if (phase == WorkerRunPhase.AbortedBeforeLaunch) _aborted.Add(entry.Identity.RunId, expectedSequence);
-            return WorkerLedgerMutationKind.Applied;
+            return Commit(new(next, GmWorkerRunLedgerCodec.Encode(next), entry, phase, expectedSequence),
+                () => _storage.PublishTransition(_stateBytes!, entry.Identity, phase)).Kind;
         }
         finally { _gate.Release(); }
     }
-    internal static Task<WorkerRunLedgerCoordinator?> OpenAsync(WorkerLedgerTarget target)
+    internal static Task<WorkerRunLedgerCoordinator?> OpenAsync(WorkerLedgerTarget target, Action<WorkerLedgerIoStage>? observeIo)
     {
         WorkerRunLedgerPersistence? storage = null;
         try
         {
-            storage = WorkerRunLedgerPersistence.Open(target);
+            storage = WorkerRunLedgerPersistence.Open(target, observeIo);
             byte[]? bytes = null; WorkerLedgerState? state = null;
             if (!storage.CreatedNamespace)
             {
@@ -143,7 +164,7 @@ internal sealed class WorkerRunLedgerCoordinator : IAsyncDisposable
         await _gate.WaitAsync(cancellationToken);
         try
         {
-            if (_disposed || _authorityLost || _state is null || _pending || preparation is null || expectedSequence != _state.Sequence || !VerifyCurrent())
+            if (_disposed || _authorityLost || _state is null || _pending is not null || preparation is null || expectedSequence != _state.Sequence || !VerifyCurrent())
                 return new(WorkerLedgerMutationKind.Blocked);
             cancellationToken.ThrowIfCancellationRequested();
             WorkerRunRecord record; WorkerLedgerState next;
@@ -155,13 +176,9 @@ internal sealed class WorkerRunLedgerCoordinator : IAsyncDisposable
                 next = GmWorkerRunLedgerCodec.AddPrepared(_state, record);
             }
             catch (Exception error) when (GmWorkerRunLedger.Unavailable(error)) { return new(WorkerLedgerMutationKind.Blocked); }
-            try { _storage.PublishPrepared(_stateBytes!, record); }
-            catch (Exception error) when (GmWorkerRunLedger.Unavailable(error))
-            { _pending = true; return new(WorkerLedgerMutationKind.CommitPending); }
-            _state = next; _stateBytes = GmWorkerRunLedgerCodec.Encode(next);
             var entry = new WorkerRunEntryHandle(record.Identity);
-            _ownedEntries.Add(record.Identity.RunId, entry);
-            return new(WorkerLedgerMutationKind.Applied, entry);
+            return Commit(new(next, GmWorkerRunLedgerCodec.Encode(next), entry, WorkerRunPhase.Prepared, expectedSequence),
+                () => _storage.PublishPrepared(_stateBytes!, record));
         }
         finally { _gate.Release(); }
     }
@@ -172,14 +189,12 @@ internal sealed class WorkerRunLedgerCoordinator : IAsyncDisposable
         try
         {
             if (_disposed || _authorityLost) return WorkerLedgerMutationKind.Blocked;
-            if (_pending) return WorkerLedgerMutationKind.CommitPending;
+            if (_pending is not null) return WorkerLedgerMutationKind.CommitPending;
             if (_state is not null) return VerifyCurrent() ? WorkerLedgerMutationKind.AlreadyExact : WorkerLedgerMutationKind.Blocked;
             cancellationToken.ThrowIfCancellationRequested();
             var initial = GmWorkerRunLedgerCodec.Initial(_target);
             var bytes = GmWorkerRunLedgerCodec.Encode(initial);
-            try { _storage.PublishInitial(bytes); _state = initial; _stateBytes = bytes; return WorkerLedgerMutationKind.Applied; }
-            catch (Exception error) when (GmWorkerRunLedger.Unavailable(error))
-            { _pending = true; return WorkerLedgerMutationKind.CommitPending; }
+            return Commit(new(initial, bytes, null, null, 0), () => _storage.PublishInitial(bytes)).Kind;
         }
         finally { _gate.Release(); }
     }

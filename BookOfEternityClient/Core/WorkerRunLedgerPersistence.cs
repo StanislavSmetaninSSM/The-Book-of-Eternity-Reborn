@@ -11,13 +11,16 @@ internal sealed class WorkerRunLedgerPersistence : IDisposable
     private readonly TrustedLocalFileScope _scope;
     private readonly Descriptor _owner, _journal;
     private readonly WorkerLedgerTarget _target;
+    private readonly Action<WorkerLedgerIoStage>? _observe;
+    private Transaction? _pending;
+    private sealed record Transaction(byte[]? Before, byte[] After, WorkerRunRecord? Archive, string Temporary);
     internal bool CreatedNamespace { get; }
 
     private WorkerRunLedgerPersistence(WorkerLedgerTarget target, TrustedLocalFileScope scope,
-        Descriptor owner, Descriptor journal, bool created)
-    { _target = target; _scope = scope; _owner = owner; _journal = journal; CreatedNamespace = created; }
+        Descriptor owner, Descriptor journal, bool created, Action<WorkerLedgerIoStage>? observe)
+    { _target = target; _scope = scope; _owner = owner; _journal = journal; CreatedNamespace = created; _observe = observe; }
 
-    internal static WorkerRunLedgerPersistence Open(WorkerLedgerTarget target)
+    internal static WorkerRunLedgerPersistence Open(WorkerLedgerTarget target, Action<WorkerLedgerIoStage>? observe = null)
     {
         if (!Supported) throw new PlatformNotSupportedException("Worker ledger durability adapter is unavailable.");
         var scope = Scope(target);
@@ -31,29 +34,36 @@ internal sealed class WorkerRunLedgerPersistence : IDisposable
             {
                 var runtime = Path.GetDirectoryName(target.DirectoryPath)!;
                 if (scope.ObserveNamespace(runtime).Kind == TrustedLocalNamespaceKind.Missing)
+                {
                     CreateDirectory(scope, runtime);
+                    observe?.Invoke(WorkerLedgerIoStage.RuntimeCreated);
+                }
                 else scope.ValidateDirectory(runtime, allowMissing: false);
                 // mkdir, not CreateDirectory: only the original successful creator may bootstrap.
                 CreateDirectory(scope, target.DirectoryPath);
+                observe?.Invoke(WorkerLedgerIoStage.NamespaceCreated);
             }
             else scope.ValidateDirectory(target.DirectoryPath, allowMissing: false);
             owner = Descriptor.OpenLock(scope.ValidateFile(Path.Combine(target.DirectoryPath, "owner.lock"), fresh), fresh);
             owner.Lock();
+            if (fresh) observe?.Invoke(WorkerLedgerIoStage.OwnerCreated);
             journal = Descriptor.OpenLock(scope.ValidateFile(Path.Combine(target.DirectoryPath, "journal.lock"), fresh), fresh);
             if (fresh)
             {
+                observe?.Invoke(WorkerLedgerIoStage.JournalCreated);
                 CreateDirectory(scope, Path.Combine(target.DirectoryPath, "retired"));
+                observe?.Invoke(WorkerLedgerIoStage.RetiredDirectoryCreated);
                 owner.Flush(); journal.Flush(); SyncDirectory(target.DirectoryPath);
             }
             else _ = ReadSnapshot(target) ?? throw Invalid();
-            var result = new WorkerRunLedgerPersistence(target, scope, owner, journal, fresh);
+            var result = new WorkerRunLedgerPersistence(target, scope, owner, journal, fresh, observe);
             result.RequireAuthority();
             return result;
         }
         catch { journal?.Dispose(); owner?.Dispose(); throw; }
     }
 
-    internal static byte[]? ReadSnapshot(WorkerLedgerTarget target)
+    internal static byte[]? ReadSnapshot(WorkerLedgerTarget target, string? allowedTemporary = null)
     {
         if (!Supported) throw new PlatformNotSupportedException("Worker ledger durability adapter is unavailable.");
         var scope = Scope(target);
@@ -66,7 +76,7 @@ internal sealed class WorkerRunLedgerPersistence : IDisposable
         var retired = scope.ValidateDirectory(Path.Combine(target.DirectoryPath, "retired"), allowMissing: false);
         var names = new HashSet<string>(["owner.lock", "journal.lock", "state.json", "retired"], StringComparer.Ordinal);
         foreach (var path in Directory.EnumerateFileSystemEntries(target.DirectoryPath))
-            if (!names.Remove(Path.GetFileName(path))) throw Invalid();
+            if (path != allowedTemporary && !names.Remove(Path.GetFileName(path))) throw Invalid();
         if (names.Count != 0) throw Invalid();
         var statePath = Path.Combine(target.DirectoryPath, "state.json");
         var bytes = ReadBounded(scope, statePath, MaximumStateBytes);
@@ -103,78 +113,135 @@ internal sealed class WorkerRunLedgerPersistence : IDisposable
 
     internal void PublishInitial(byte[] bytes)
     {
-        if (!CreatedNamespace) throw Invalid();
-        PublishExact(null, bytes);
+        if (!CreatedNamespace || !bytes.AsSpan().SequenceEqual(GmWorkerRunLedgerCodec.Encode(GmWorkerRunLedgerCodec.Initial(_target)))) throw Conflict();
+        PublishExact(null, bytes, null);
     }
 
     internal void PublishPrepared(byte[] expected, WorkerRunRecord record)
     {
-        var before = GmWorkerRunLedgerCodec.Decode(_target, expected);
-        var next = GmWorkerRunLedgerCodec.AddPrepared(before, record);
-        PublishExact(expected, GmWorkerRunLedgerCodec.Encode(next));
+        var next = GmWorkerRunLedgerCodec.AddPrepared(GmWorkerRunLedgerCodec.Decode(_target, expected), record);
+        PublishExact(expected, GmWorkerRunLedgerCodec.Encode(next), null);
     }
 
     internal void VerifyExact(byte[] expected)
     {
         RequireAuthority();
         var actual = ReadSnapshot(_target);
-        if (actual is null || !actual.AsSpan().SequenceEqual(expected)) throw Invalid();
+        if (actual is null || !actual.AsSpan().SequenceEqual(expected)) throw Conflict();
         RequireAuthority();
     }
 
     internal void PublishTransition(byte[] expected, WorkerRunIdentity identity, WorkerRunPhase phase)
     {
-        var before = GmWorkerRunLedgerCodec.Decode(_target, expected);
-        var next = GmWorkerRunLedgerCodec.Transition(before, identity, phase);
-        VerifyExact(expected);
-        if (phase == WorkerRunPhase.AbortedBeforeLaunch)
-        {
-            _journal.Lock();
-            try
-            {
-                VerifyExact(expected);
-                var directory = _scope.ValidateDirectory(Path.Combine(_target.DirectoryPath, "retired"), false);
-                var path = _scope.ValidateFile(Path.Combine(directory, identity.RunId + ".json"));
-                var bytes = GmWorkerRunRecordCodec.Encode(new(1, identity, phase));
-                if (File.Exists(path))
-                {
-                    if (!ReadBounded(_scope, path, 64 * 1024).AsSpan().SequenceEqual(bytes)) throw Invalid();
-                }
-                else
-                {
-                    using var stream = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.None);
-                    stream.Write(bytes); stream.Flush(flushToDisk: true);
-                }
-                SyncDirectory(directory);
-                RequireAuthority();
-            }
-            finally { _journal.Unlock(); }
-        }
-        PublishExact(expected, GmWorkerRunLedgerCodec.Encode(next));
+        var next = GmWorkerRunLedgerCodec.Transition(GmWorkerRunLedgerCodec.Decode(_target, expected), identity, phase);
+        PublishExact(expected, GmWorkerRunLedgerCodec.Encode(next),
+            phase == WorkerRunPhase.AbortedBeforeLaunch ? new(1, identity, phase) : null);
+    }
+
+    // Only the original adapter can retry this frozen private plan. No new desired state is accepted.
+    internal void RetryPending()
+    {
+        if (_pending is null) throw Conflict();
+        Execute(_pending);
     }
 
     // Generic byte CAS is private; callers select only closed typed operations.
-    private void PublishExact(byte[]? expected, byte[] bytes)
+    private void PublishExact(byte[]? expected, byte[] bytes, WorkerRunRecord? archive)
     {
-        if (bytes.Length > MaximumStateBytes) throw Invalid();
-        RequireAuthority(); _journal.Lock();
+        if (_pending is not null || bytes.Length > MaximumStateBytes) throw Conflict();
+        _pending = new(expected?.ToArray(), bytes.ToArray(), archive,
+            Path.Combine(_target.DirectoryPath, "state-" + Guid.NewGuid().ToString("N") + ".tmp"));
+        Execute(_pending);
+    }
+
+    private bool ValidateTransaction(Transaction plan)
+    {
+        // Any changed identity/layout/bytes loses write authority. Preserve every artifact.
         try
         {
             RequireAuthority();
             var state = _scope.ValidateFile(Path.Combine(_target.DirectoryPath, "state.json"));
-            if (expected is null ? File.Exists(state) :
-                !ReadBounded(_scope, state, MaximumStateBytes).AsSpan().SequenceEqual(expected)) throw Invalid();
-            var temporary = _scope.ValidateFile(Path.Combine(_target.DirectoryPath, "state-" + Guid.NewGuid().ToString("N") + ".tmp"));
-            using (var stream = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None))
-            { stream.Write(bytes); stream.Flush(flushToDisk: true); }
+            var alreadyNew = false;
+            if (File.Exists(state))
+            {
+                var actual = ReadSnapshot(_target, plan.Temporary) ?? throw Conflict();
+                alreadyNew = actual.AsSpan().SequenceEqual(plan.After);
+                if (!alreadyNew && (plan.Before is null || !actual.AsSpan().SequenceEqual(plan.Before))) throw Conflict();
+            }
+            else
+            {
+                if (plan.Before is not null || !CreatedNamespace) throw Conflict();
+                var names = new HashSet<string>(["owner.lock", "journal.lock", "retired"], StringComparer.Ordinal);
+                foreach (var path in Directory.EnumerateFileSystemEntries(_target.DirectoryPath))
+                    if (path != plan.Temporary && !names.Remove(Path.GetFileName(path))) throw Conflict();
+                if (names.Count != 0 || Directory.EnumerateFileSystemEntries(_scope.ValidateDirectory(Path.Combine(_target.DirectoryPath, "retired"), false)).Any()) throw Conflict();
+            }
+            _scope.ValidateFile(plan.Temporary);
+            if (File.Exists(plan.Temporary) && (alreadyNew ||
+                !ReadBounded(_scope, plan.Temporary, MaximumStateBytes).AsSpan().SequenceEqual(plan.After))) throw Conflict();
             RequireAuthority();
-            if (expected is null ? File.Exists(state) :
-                !ReadBounded(_scope, state, MaximumStateBytes).AsSpan().SequenceEqual(expected)) throw Invalid();
-            File.Move(temporary, state, overwrite: expected is not null);
+            return alreadyNew;
+        }
+        catch (Exception error) when (GmWorkerRunLedger.Unavailable(error)) { throw Conflict(); }
+    }
+
+    private void Execute(Transaction plan)
+    {
+        _ = ValidateTransaction(plan); _journal.Lock();
+        try
+        {
+            var alreadyNew = ValidateTransaction(plan);
+            var statePath = Path.Combine(_target.DirectoryPath, "state.json");
+            if (!alreadyNew)
+            {
+                if (plan.Archive is not null) WriteArchive(plan.Archive);
+                _observe?.Invoke(WorkerLedgerIoStage.BeforeStateWrite);
+                var temporary = _scope.ValidateFile(plan.Temporary);
+                var exists = File.Exists(temporary);
+                using (var stream = new FileStream(temporary, exists ? FileMode.Open : FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None))
+                {
+                    if (!exists) stream.Write(plan.After);
+                    _observe?.Invoke(WorkerLedgerIoStage.StateWritten);
+                    stream.Flush(flushToDisk: true);
+                    _observe?.Invoke(WorkerLedgerIoStage.StateFlushed);
+                }
+                if (ValidateTransaction(plan)) throw Conflict();
+                File.Move(temporary, statePath, overwrite: plan.Before is not null);
+                _observe?.Invoke(WorkerLedgerIoStage.StateRenamed);
+            }
+            else
+            {
+                // Rename may have succeeded without a live ACK. Re-establish durability of the exact bytes.
+                using var descriptor = Descriptor.OpenFile(_scope.ValidateFile(statePath, false));
+                descriptor.RequireName(statePath); descriptor.Flush();
+            }
             SyncDirectory(_target.DirectoryPath);
-            RequireAuthority();
+            _observe?.Invoke(WorkerLedgerIoStage.StateDirectorySynced);
+            VerifyExact(plan.After);
+            _pending = null;
         }
         finally { _journal.Unlock(); }
+    }
+
+    private void WriteArchive(WorkerRunRecord record)
+    {
+        RequireAuthority();
+        var directory = _scope.ValidateDirectory(Path.Combine(_target.DirectoryPath, "retired"), false);
+        var path = _scope.ValidateFile(Path.Combine(directory, record.Identity.RunId + ".json"));
+        var bytes = GmWorkerRunRecordCodec.Encode(record);
+        _observe?.Invoke(WorkerLedgerIoStage.BeforeArchiveWrite);
+        var exists = File.Exists(path);
+        if (exists && !ReadBounded(_scope, path, 64 * 1024).AsSpan().SequenceEqual(bytes)) throw Conflict();
+        using (var stream = new FileStream(path, exists ? FileMode.Open : FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None))
+        {
+            if (!exists) stream.Write(bytes);
+            _observe?.Invoke(WorkerLedgerIoStage.ArchiveWritten);
+            stream.Flush(flushToDisk: true);
+            _observe?.Invoke(WorkerLedgerIoStage.ArchiveFlushed);
+        }
+        SyncDirectory(directory);
+        _observe?.Invoke(WorkerLedgerIoStage.ArchiveDirectorySynced);
+        RequireAuthority();
     }
 
     private static TrustedLocalFileScope Scope(WorkerLedgerTarget target)
@@ -217,6 +284,7 @@ internal sealed class WorkerRunLedgerPersistence : IDisposable
     }
 
     public void Dispose() { _journal.Dispose(); _owner.Dispose(); }
+    internal static WorkerLedgerConflictException Conflict() => new();
     internal static IOException Invalid() => new("Worker ledger storage is unavailable or inconsistent.");
 
     // Linux x64 local adapter: private descriptors explicitly close across exec.
@@ -226,6 +294,7 @@ internal sealed class WorkerRunLedgerPersistence : IDisposable
         public override bool IsInvalid => handle.ToInt64() < 0;
         private int Number => IsClosed || IsInvalid ? throw Invalid() : checked((int)handle);
         internal static Descriptor OpenLock(string path, bool create) => Open(path, 2 | (create ? 0x40 | 0x80 : 0));
+        internal static Descriptor OpenFile(string path) => Open(path, 2);
         internal static Descriptor OpenDirectory(string path) => Open(path, 0x10000);
         private static Descriptor Open(string path, int flags)
         {
@@ -265,3 +334,6 @@ internal sealed class WorkerRunLedgerPersistence : IDisposable
     [DllImport("libc", EntryPoint = "mkdir", SetLastError = true)] private static extern int Mkdir(string path, uint mode);
     [DllImport("libc", EntryPoint = "statx", SetLastError = true)] private static extern int Statx(int descriptor, string path, int flags, uint mask, out FileStatus status);
 }
+
+internal sealed class WorkerLedgerConflictException : IOException
+{ internal WorkerLedgerConflictException() : base("Worker ledger original authority or exact evidence changed.") { } }
