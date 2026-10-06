@@ -201,6 +201,13 @@ Partial staging cleanup retries to bound AbortedBeforeLaunch with required audit
 Evidence: recovery/evidence/worker-r2-boundaries-green/manifest.json. Remaining review
 findings are foreign-pending Busy and cleanup recovery/audit confinement; next bounded
 scaffold uses two actual original epochs in one root for their causal regressions.
+Two-case root scaffold now uses actual independent original epochs: A publication
+ACK pending while previously Published B retires, and B exact cleanup audit against
+a real interrupted canonical member while A loses its actual native status channel.
+It checks original permit/capacity outcomes and exact recovery evidence. Distinct
+synthetic task IDs get distinct proposal IDs; old fixtures retain their output ID.
+Runtime reviewed gaps remain unfixed for causal RED; new category worker-restart-root-linux
+is unbuilt/unrun.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

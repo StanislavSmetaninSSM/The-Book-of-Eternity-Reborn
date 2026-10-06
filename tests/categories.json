@@ -12830,6 +12830,31 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-restart-root-linux",
+      "responsibility": "#1553 R2 cooperating original epochs in one synthetic root: no borrowing foreign pending journal or cleanup recovery authority; actual workers and independent finite guardian.",
+      "excludes": "No R3 crash permutations, product Linux Release, main PTY, live GM or real saves.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerRootContext.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.Live.cs",
+        "BookOfEternityClient/Core/FileSystemManager.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerRestartRootTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

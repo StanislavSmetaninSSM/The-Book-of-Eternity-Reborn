@@ -322,7 +322,8 @@ internal static partial class NativePoolScenarioDriver
             Environment.GetEnvironmentVariable(GmWorkerBridgePool.TaskPathEnvironmentVariable)!))!;
         var proposal = new WorkerProposal
         {
-            ProposalId = "worker_proposal_native_pool_happy", TaskId = task.TaskId, WorkerId = task.WorkerId,
+            ProposalId = task.TaskId.StartsWith("restart_", StringComparison.Ordinal) ? "worker_proposal_" + task.TaskId : "worker_proposal_native_pool_happy",
+            TaskId = task.TaskId, WorkerId = task.WorkerId,
             Status = WorkerProposalStatus.Completed, Summary = "Synthetic isolated pool analysis.",
             ChangedFiles = [], Findings = [new WorkerFinding { Kind = "analysis", Message = "Private fixture context only." }],
             SelfCheck = new WorkerSelfCheck { ScopeReviewed = true, ValidationExpectedToPass = true },

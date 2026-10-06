@@ -40,6 +40,14 @@
         "#1553 T041-WORKER-RESTART-R2",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-restart-root-linux",
+      "reason": "Two original epochs must retain independent cleanup/ACK authority and must not recover through another Uncertain worker.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
     }
   ]
 }
