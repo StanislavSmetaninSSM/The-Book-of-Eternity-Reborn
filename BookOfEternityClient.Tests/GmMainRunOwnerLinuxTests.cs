@@ -30,5 +30,8 @@ public sealed class GmMainRunOwnerLinuxTests
     [InlineData("terminal-main-output-fault")]
     [InlineData("terminal-main-pin-timeout")]
     [InlineData("terminal-main-single-release")]
+    [InlineData("terminal-main-recovery-generation")]
+    [InlineData("terminal-main-recovery-same")]
+    [InlineData("terminal-main-save-load")]
     public async Task OriginalOwner_ConnectedSettlement(string mode)=>await GmOwnedTerminalLinuxTests.RunAsync(mode);
 }

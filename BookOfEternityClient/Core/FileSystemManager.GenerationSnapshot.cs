@@ -23,8 +23,9 @@ public partial class FileSystemManager
         if (!File.Exists(path)) return new(TrustedLocalGeneration.Absent, null);
 
         using var authority=new FileStream(path,FileMode.Open,FileAccess.Read,FileShare.ReadWrite|FileShare.Delete);
-        if(authority.Length is <1 or >65536)throw new InvalidDataException("Session generation authority exceeds its bounded record.");
-        var bytes=new byte[(int)authority.Length];authority.ReadExactly(bytes);
+        var length=authority.Length;
+        if(length is <1 or >65536)throw new InvalidDataException("Session generation authority exceeds its bounded record.");
+        var bytes=new byte[(int)length];authority.ReadExactly(bytes);
         if(authority.ReadByte()!=-1)throw new InvalidDataException("Session generation authority changed while reading.");
         scope.ValidateFile(path, allowMissing: false);
         using var stream = new MemoryStream(bytes, writable: false);

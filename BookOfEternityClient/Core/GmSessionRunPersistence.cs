@@ -38,8 +38,8 @@ internal sealed class GmSessionRunPersistence
     internal static byte[] ReadBounded(TrustedLocalFileScope scope,string path)
     {
         using var f=new FileStream(scope.ValidateFile(path,false),FileMode.Open,FileAccess.Read,FileShare.ReadWrite|FileShare.Delete);
-        if(f.Length is <1 or >GmSessionRunRecordCodec.MaximumBytes)throw Invalid();
-        var bytes=new byte[(int)f.Length];f.ReadExactly(bytes);if(f.ReadByte()!=-1)throw Invalid();
+        var length=f.Length;if(length is <1 or >GmSessionRunRecordCodec.MaximumBytes)throw Invalid();
+        var bytes=new byte[(int)length];f.ReadExactly(bytes);if(f.ReadByte()!=-1)throw Invalid();
         _=GmSessionRunRecordCodec.Decode(bytes);return bytes;
     }
     internal void Publish(byte[]? before,GmSessionRunRecord after)

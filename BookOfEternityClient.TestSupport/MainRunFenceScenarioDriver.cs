@@ -7,6 +7,7 @@ using BookOfEternityClient.Core;
 using BookOfEternityClient.Services.GmRuntime;
 using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Extensions.Logging.Abstractions;
+using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.Tests;
 
@@ -37,6 +38,23 @@ internal static class MainRunFenceScenarioDriver
             type=Assembly.LoadFrom(Path.Combine(repo,"BookOfEternityGMBridge/bin",configuration,"net8.0/BookOfEternityGMBridge.dll")).GetType("BookOfEternityGMBridge.BridgeHost",true)!;
             host=Activator.CreateInstance(type,[launch.Scratch,"f1-"+Guid.NewGuid().ToString("N")]);
             type.GetMethod("ConfigureNeutral",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[launch]);
+            byte[]? recoveryIntent=null,recoveryBefore=null;var recoveryAfter=Encoding.UTF8.GetBytes("retained-after");
+            var seedFiles=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);var recoveryTarget=seedFiles.ResolvePath("game_state/main-recovery.bin");
+            if(mode is "terminal-main-recovery-generation" or "terminal-main-recovery-same") {
+                await using var lease=await seedFiles.AcquireCanonicalWriteLeaseAsync();var generation=seedFiles.GetOrCreateSessionGeneration(lease);
+                await seedFiles.WriteFileAtomicAsync(lease,"game_state/main-recovery.bin","before");recoveryBefore=File.ReadAllBytes(recoveryTarget);
+                var changes=new List<TrustedLocalFileChange>{new(recoveryTarget,recoveryBefore,recoveryAfter)};
+                if(mode=="terminal-main-recovery-generation")changes.Add(new(seedFiles.SessionGenerationPath,File.ReadAllBytes(seedFiles.SessionGenerationPath),JsonSerializer.SerializeToUtf8Bytes(new{schemaVersion=1,generationId=Guid.NewGuid().ToString("N")})));
+                var publisher=new TrustedLocalFilePublication(seedFiles,new TrustedLocalFileScope([root]));var fired=false;
+                try{publisher.Publish(lease,TrustedLocalGeneration.Existing(generation),changes,(s,_)=>{if(s==TrustedLocalPublicationPhase.IntentPublished){fired=true;throw new IOException("retain valid controlled intent");}});}catch(IOException){}
+                Require(fired,"Recovery fixture did not reach its valid retained intent cut.");
+                recoveryIntent=File.ReadAllBytes(Path.Combine(root,".boe_runtime/trusted-local-publication-v1/active.json"));publisher.Recover(lease);
+            }
+            SaveLoadService? save=null;string? archive=null;
+            if(mode=="terminal-main-save-load") {
+                var state=PortableSaveFixture.Seed(seedFiles);save=new(seedFiles,state,NullLogger<SaveLoadService>.Instance);
+                Require(await save.SaveGameAsync("before-main","synthetic F1 fixture"),"Save/load fixture preparation failed.");archive=Directory.GetFiles(seedFiles.ResolvePath("saves/manual_saves"),"*.zip").Single();
+            }
             using var output=new ControlledOutput(mode=="terminal-main-output-fault");
             if(mode is "terminal-main-output-drain" or "terminal-main-output-fault")Set("NeutralOutput",output);
             var stopDebt=true;
@@ -104,14 +122,42 @@ internal static class MainRunFenceScenarioDriver
             await Call("StartShellAsync");
             var owner=(GmSessionRunCoordinator)Field("_mainRun")!;var terminal=(IOwnedTerminalSession)Field("_pty")!;
             var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);var old=Read();
-            if(mode=="terminal-main-unbound") {
+            if(mode=="terminal-main-save-load") {
+                var before=File.ReadAllBytes(seedFiles.SessionGenerationPath);var count=Directory.GetFiles(seedFiles.ResolvePath("saves/manual_saves"),"*.zip").Length;
+                var unbound=await save!.CreateSaveAsync("unbound","synthetic F1 fixture");Require(!unbound.ToBoolean(),"Unbound save acquired Running original main authority.");
+                Require(Directory.GetFiles(seedFiles.ResolvePath("saves/manual_saves"),"*.zip").Length==count,"Unbound save published before admission.");
+                var outside=await save.LoadGameWithOutcomeAsync(archive!);Require(outside.Disposition==LoadReplacementDisposition.NotLoaded,"Unbound Load replaced Running original.");
+                await owner.RunOperationAsync(async()=>{
+                    var inside=await save.LoadGameWithOutcomeAsync(archive!);Require(inside.Disposition==LoadReplacementDisposition.NotLoaded,"Live original pin admitted replacement Load.");
+                    Require(await save.SaveGameAsync("live-main","synthetic F1 fixture"),"Original in-generation snapshot/publication was refused.");return 0;
+                });
+                Require(before.AsSpan().SequenceEqual(File.ReadAllBytes(seedFiles.SessionGenerationPath)) && Read().Identity==old.Identity,"Live Load/save changed original generation/epoch.");
+            }
+            else if(mode is "terminal-main-recovery-generation" or "terminal-main-recovery-same") {
+                var active=Path.Combine(root,".boe_runtime/trusted-local-publication-v1/active.json");var gen=File.ReadAllBytes(files.SessionGenerationPath);
+                void Seed(){File.WriteAllBytes(recoveryTarget,recoveryAfter);File.WriteAllBytes(active,recoveryIntent!);}
+                await owner.RunOperationAsync(async()=>{
+                    await using var lease=await files.AcquireCanonicalWriteLeaseAsync();Seed();Exception? error=null;
+                    try{new TrustedLocalFilePublication(files,new TrustedLocalFileScope([root])).Recover(lease);}catch(Exception e){error=e;}
+                    if(mode=="terminal-main-recovery-generation") {
+                        Require(error!=null && File.ReadAllBytes(recoveryTarget).AsSpan().SequenceEqual(recoveryAfter) && File.ReadAllBytes(active).AsSpan().SequenceEqual(recoveryIntent),"Held generation-changing recovery restored/cleaned before refusal.");
+                    } else Require(error==null && File.ReadAllBytes(recoveryTarget).AsSpan().SequenceEqual(recoveryBefore) && !File.Exists(active),"Held in-generation recovery did not settle exact original rollback.");return 0;
+                });
+                await owner.RunOperationAsync(async()=>{
+                    if(mode=="terminal-main-recovery-same")Seed();Exception? error=null;try{await using var lease=await files.AcquireCanonicalWriteLeaseAsync();}catch(Exception e){error=e;}
+                    if(mode=="terminal-main-recovery-generation")Require(error!=null && File.ReadAllBytes(recoveryTarget).AsSpan().SequenceEqual(recoveryAfter) && File.ReadAllBytes(active).AsSpan().SequenceEqual(recoveryIntent),"Pre-recovery admission changed generation-changing evidence.");
+                    else Require(error==null && File.ReadAllBytes(recoveryTarget).AsSpan().SequenceEqual(recoveryBefore) && !File.Exists(active),"Pre-recovery original admission did not settle same-generation evidence.");return 0;
+                });
+                Require(File.ReadAllBytes(files.SessionGenerationPath).AsSpan().SequenceEqual(gen),"Recovery changed original generation.");
+            }
+            else if(mode=="terminal-main-unbound") {
                 var start=new ProcessStartInfo(Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!,"dotnet")){UseShellExecute=false};
                 foreach(var arg in new[]{typeof(NativeHostScenarioDriver).Assembly.Location,"terminal-main-cold-reader",root,folder})start.ArgumentList.Add(arg);
                 using var child=Process.Start(start)!;await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(4));Require(child.ExitCode==0,"Separate unbound child inherited/minted original authority.");
             }
             else if(mode=="terminal-main-single-release") {
                 var native=terminal.GetType().GetField("_owner",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(terminal)!;
-                Require((int)native.GetType().GetField("_terminalRelease",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(native)!==1,"Original release was not consumed once.");
+                Require((int)native.GetType().GetField("_terminalRelease",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(native)! == 1,"Original release was not consumed once.");
                 Exception? error=null;try{await (Task)native.GetType().GetMethod("ReleaseTerminalAsync",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(native,[CancellationToken.None])!;}catch(Exception e){error=e;}
                 Require(error is InvalidOperationException && !terminal.AuthorityLost.IsCompleted && Read().Disposition==GmSessionRunDisposition.Running,"Repeated release replayed or harmed the original.");
             }

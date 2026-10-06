@@ -408,7 +408,7 @@ internal sealed partial class BridgeHost : IDisposable
                     neutralSession=await _mainRun.LaunchNeutralAsync(_neutralLaunch,_cts.Token,ObserveMainHeldRoot);
                     _neutralLaunch=_neutralLaunch.NextEpoch();
                 }
-                catch(OwnedTerminalStartException ex) { AttachOwnedTerminal(ex.Owner,NeutralOutput??Console.OpenStandardOutput(),false); MarkTerminalUncertain(); throw; }
+                catch(OwnedTerminalStartException ex) { AttachOwnedTerminalCore(ex.Owner,NeutralOutput??Console.OpenStandardOutput(),false); MarkTerminalUncertain(); throw; }
                 catch { if(_mainRun?.RetainsAuthority==true)MarkTerminalUncertain();else _mainRun=null;throw; }
                 AttachOwnedTerminal(neutralSession, NeutralOutput??Console.OpenStandardOutput());
                 return;
@@ -421,7 +421,7 @@ internal sealed partial class BridgeHost : IDisposable
             var (width, height) = GetConsoleSize();
             ConPtySession pty;
             try { pty=ConPtySession.Start(shellExe,shellArgs,workingDirectory,width,height); }
-            catch(OwnedTerminalStartException ex) { AttachOwnedTerminal(ex.Owner,Console.OpenStandardOutput(),false); MarkTerminalUncertain(); throw; }
+            catch(OwnedTerminalStartException ex) { AttachOwnedTerminalCore(ex.Owner,Console.OpenStandardOutput(),false); MarkTerminalUncertain(); throw; }
             var outputWriter = Console.OpenStandardOutput();
 
             var input = AttachOwnedTerminal(pty, outputWriter);
@@ -458,7 +458,8 @@ internal sealed partial class BridgeHost : IDisposable
     }
 
     // All admitted sessions consume the original writer/lifetime/pumps, never a second dispatcher.
-    private InputLifetime AttachOwnedTerminal(IOwnedTerminalSession session, Stream output,bool admitInput=true)
+    private InputLifetime AttachOwnedTerminal(IOwnedTerminalSession session, Stream output)=>AttachOwnedTerminalCore(session,output,true);
+    private InputLifetime AttachOwnedTerminalCore(IOwnedTerminalSession session, Stream output,bool admitInput)
     {
         lock (_sync) { if (_pty != null || _terminalUncertain) throw new InvalidOperationException("Original terminal owner is retained."); _pty = session; }
         var shellLoopCts = new CancellationTokenSource();
