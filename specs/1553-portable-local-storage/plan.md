@@ -15,7 +15,7 @@ helpers enabled, Auto/systemd downgrade, settings/services/security/network/auth
 real saves, automatic Load stop/fresh launch or cold promises. Systemd/native Windows
 and T031-BROWSER-ROLLBACK-LINUX stay open.
 
-Task1 in progress: causal real-entrypoint RED for ordinary bridge, relocated ordinary
+Initial task1: causal real-entrypoint RED for ordinary bridge, relocated ordinary
 launcher and actual daemon startup; two new categories gm-main-production-admission
 and gm-main-linux-launcher. Publisher fixture preparation builds/copies prebuilt assets
 before player launch; no source/compiler invocation in that launch. Task2 connects
@@ -30,7 +30,7 @@ Ruling: obey user/repo narrow-category policy over skill generic full-suite/repe
 instructions; recorded successful covering cohorts are reused by source identity.
 Use this existing tracked ledger instead of duplicating it in a skill-only directory.
 Actual environment observed: SDK10.0.401; runtimes8.0.31/10.0.12; PowerShell7.5.4;
-Debian cc14.2.0-19. No runtime edits or new runs yet. Checkpoints below retain exact
+Debian cc14.2.0-19. At pre-flight no runtime edits or new runs existed. Checkpoints below retain exact
 source hashes/commands/results/owned cleanup; preparation failure is not causal RED.
 
 M1 initial RED at cdf23316: real launcher 2/2 FAIL (missing shipped source-project and unconditional chcp), bridge 1/1 FAIL (ordinary Linux production refusal). No preparation failure; all3 independent guardians ECHILD/emergency0/failures0/deadlinefalse. Runner fail-fast made first selection incomplete2/3; the remaining1 was run separately with NoBuild on the exact freshly built source. Evidence: recovery/evidence/t041-m1-red-{launcher,admission}. Both publish targets already carry helper+manifest through transitive asset plumbing. Fixture stop identity fixed to the actual request-reader numeric enum before that positive path is reached (not a causal runtime failure).
@@ -127,6 +127,20 @@ Fixture records initial Stopping|Uncertain and requires retained/closed logical
 Uncertain before actual same-original metadata settlement and exact durable Uncertain.
 No input replay, authority release, generation/config/worker launch or journal changes.
 Fresh narrow12case GREEN follows; no unrelated cohort repetition.
+
+Final narrow GREEN6d111ccc:12/12PASS,complete1descriptor/cleanup,0skips/duplicates/timeouts,
+126.6306541s with fresh build. All12guardianECHILD/emergency0/failure0/deadlinefalse,
+including new-process cold refusal after physically clean retainedUncertain. Original
+identity/input/worker authority unchanged; initialStopping→settledUncertain recorded.
+Final source-backed distinct union35PASS=12current admission+7installed-cwd launcher+
+16affected old cases. Three zero-test preparation failures and145historical executions
+(120PASS/25FAIL:15runtime-or-behavior,10fixture/preparation/oracle) remain explicit.
+18manifests1559sourcepins/1221artifacts/669gzip hashes verified,90guardianreports cleanup-clean.
+Discovery-only catalog352/10980 and PlanOnly2descriptors/19cases passed,0test execution;
+sharedconsumer selection deduplicated. [Qualification](recovery/production-main-m1-qualification.json)
+and [handoff](production-main-m1-handoff.md) retain exact boundaries and open debts.
+Final independent actual Sol6.1/xhigh evidence/metadata review and GitHub-only restore
+remain before task closure. No Q1/Q2/systemd/Windows/live provider/game-write/LoadUX stage.
 
 ## T041-PRODUCTION-MAIN-DESIGN — current design-only continuation
 

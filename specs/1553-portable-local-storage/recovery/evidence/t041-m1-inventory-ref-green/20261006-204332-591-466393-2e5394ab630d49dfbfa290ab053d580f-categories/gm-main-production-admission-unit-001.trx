@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="db47490e-2964-4d08-8076-22ffad32ec2e" name="@c7669543e9c7 2026-10-06 20:44:30" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T20:44:30.4464325+00:00" queuing="2026-10-06T20:44:30.4464326+00:00" start="2026-10-06T20:44:20.1028549+00:00" finish="2026-10-06T20:45:38.9300721+00:00" />
+  <TestSettings name="default" id="efccd24c-6045-4163-ba96-cbc8ce30f087">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_20_44_30" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="ea2e6c10-2427-4308-b1e7-96e5d8453317" testId="1052364c-c3c0-2158-1577-ac18ccff0ecb" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-storage&quot;)" computerName="c7669543e9c7" duration="00:00:04.8377149" startTime="2026-10-06T20:44:57.0788556+00:00" endTime="2026-10-06T20:44:57.0788563+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ea2e6c10-2427-4308-b1e7-96e5d8453317" />
+    <UnitTestResult executionId="21f89d46-a0d4-4c37-99a9-752821e09fe4" testId="e5269c6c-0020-3490-0c86-d0294f82c8db" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.RealConsoleHealthAndInertDaemonConsumers_BorrowOriginalLiveProductionPins" computerName="c7669543e9c7" duration="00:00:17.0167449" startTime="2026-10-06T20:45:31.1350794+00:00" endTime="2026-10-06T20:45:31.1350798+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="21f89d46-a0d4-4c37-99a9-752821e09fe4" />
+    <UnitTestResult executionId="bb40b292-66fb-4cbe-af8e-dabaf8dbfc2f" testId="6f6d75b9-2935-15f4-3175-217bd876d371" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-worker&quot;)" computerName="c7669543e9c7" duration="00:00:05.8920743" startTime="2026-10-06T20:45:02.9815081+00:00" endTime="2026-10-06T20:45:02.9815612+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bb40b292-66fb-4cbe-af8e-dabaf8dbfc2f" />
+    <UnitTestResult executionId="da3e1279-98ee-428f-a779-e095f6548c89" testId="4ce6a29e-ee49-3b1c-0b2b-2a069373fe2b" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-command&quot;)" computerName="c7669543e9c7" duration="00:00:03.5340675" startTime="2026-10-06T20:44:47.2217594+00:00" endTime="2026-10-06T20:44:47.2217604+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="da3e1279-98ee-428f-a779-e095f6548c89" />
+    <UnitTestResult executionId="174ea2ff-da4f-45e7-8fda-00f391e0d19f" testId="b0713133-41f5-5fbc-071e-bc35eb4b1fe7" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_PipeDraftTakeoverCancelScopedStop" computerName="c7669543e9c7" duration="00:00:11.1216954" startTime="2026-10-06T20:45:14.1163103+00:00" endTime="2026-10-06T20:45:14.1163107+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="174ea2ff-da4f-45e7-8fda-00f391e0d19f" />
+    <UnitTestResult executionId="bb6d654b-0071-492a-89cf-bddecdad170d" testId="2b07806c-491e-3279-4ae5-fabef969211a" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-package&quot;)" computerName="c7669543e9c7" duration="00:00:05.0162090" startTime="2026-10-06T20:44:52.2390446+00:00" endTime="2026-10-06T20:44:52.2390451+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bb6d654b-0071-492a-89cf-bddecdad170d" />
+    <UnitTestResult executionId="6681c1b7-f08a-4534-b85f-1a4101a47512" testId="bc61197e-d193-b96e-2260-27b12ed21d71" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-auto&quot;)" computerName="c7669543e9c7" duration="00:00:04.5581432" startTime="2026-10-06T20:44:39.1431357+00:00" endTime="2026-10-06T20:44:39.1431365+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6681c1b7-f08a-4534-b85f-1a4101a47512" />
+    <UnitTestResult executionId="054a4251-6a84-4dff-bde3-67759c22bb3c" testId="d4e705b9-174d-42b0-f668-28508e9b6433" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.RejectedMainAttempt_ReleasesOnlyItsBorrowedOriginalInventoryClient" computerName="c7669543e9c7" duration="00:00:00.0358650" startTime="2026-10-06T20:45:38.8365610+00:00" endTime="2026-10-06T20:45:38.8365615+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="054a4251-6a84-4dff-bde3-67759c22bb3c" />
+    <UnitTestResult executionId="e1fcfe64-4207-4faa-88f4-166140331405" testId="cca1781a-da0c-f43f-4e7f-7ab9a0f2e003" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-cwd&quot;)" computerName="c7669543e9c7" duration="00:00:04.5428412" startTime="2026-10-06T20:44:43.6867310+00:00" endTime="2026-10-06T20:44:43.6867313+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e1fcfe64-4207-4faa-88f4-166140331405" />
+    <UnitTestResult executionId="3643c3e5-12ec-42cf-8420-f3fc3f023673" testId="390d26ac-4255-dcd8-ebb6-f92d89f74eef" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-systemd&quot;)" computerName="c7669543e9c7" duration="00:00:04.1997837" startTime="2026-10-06T20:44:34.5833654+00:00" endTime="2026-10-06T20:44:34.5833660+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3643c3e5-12ec-42cf-8420-f3fc3f023673" />
+    <UnitTestResult executionId="4248629c-4b73-439d-b77a-85de7a101bfd" testId="bd6bf7bb-6fc7-2284-8ba1-f45493d01662" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute" computerName="c7669543e9c7" duration="00:00:07.6620483" startTime="2026-10-06T20:45:38.7993249+00:00" endTime="2026-10-06T20:45:38.7994010+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4248629c-4b73-439d-b77a-85de7a101bfd" />
+    <UnitTestResult executionId="f8b44eb3-7be3-4c54-8ec1-4672aa7acef2" testId="bdd2472e-2914-dc83-1783-0ce92391b980" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_UncertainRetainsOwnerAndWorkerInventory" computerName="c7669543e9c7" duration="00:00:08.0132701" startTime="2026-10-06T20:44:30.3833373+00:00" endTime="2026-10-06T20:44:30.3834322+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f8b44eb3-7be3-4c54-8ec1-4672aa7acef2" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-cwd&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="cca1781a-da0c-f43f-4e7f-7ab9a0f2e003">
+      <Execution id="e1fcfe64-4207-4faa-88f4-166140331405" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-command&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4ce6a29e-ee49-3b1c-0b2b-2a069373fe2b">
+      <Execution id="da3e1279-98ee-428f-a779-e095f6548c89" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-storage&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1052364c-c3c0-2158-1577-ac18ccff0ecb">
+      <Execution id="ea2e6c10-2427-4308-b1e7-96e5d8453317" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.RejectedMainAttempt_ReleasesOnlyItsBorrowedOriginalInventoryClient" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d4e705b9-174d-42b0-f668-28508e9b6433">
+      <Execution id="054a4251-6a84-4dff-bde3-67759c22bb3c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="RejectedMainAttempt_ReleasesOnlyItsBorrowedOriginalInventoryClient" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-worker&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6f6d75b9-2935-15f4-3175-217bd876d371">
+      <Execution id="bb40b292-66fb-4cbe-af8e-dabaf8dbfc2f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-auto&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="bc61197e-d193-b96e-2260-27b12ed21d71">
+      <Execution id="6681c1b7-f08a-4534-b85f-1a4101a47512" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_PipeDraftTakeoverCancelScopedStop" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b0713133-41f5-5fbc-071e-bc35eb4b1fe7">
+      <Execution id="174ea2ff-da4f-45e7-8fda-00f391e0d19f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="OriginalProduction_PipeDraftTakeoverCancelScopedStop" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-systemd&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="390d26ac-4255-dcd8-ebb6-f92d89f74eef">
+      <Execution id="3643c3e5-12ec-42cf-8420-f3fc3f023673" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="bd6bf7bb-6fc7-2284-8ba1-f45493d01662">
+      <Execution id="4248629c-4b73-439d-b77a-85de7a101bfd" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-package&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2b07806c-491e-3279-4ae5-fabef969211a">
+      <Execution id="bb6d654b-0071-492a-89cf-bddecdad170d" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.RealConsoleHealthAndInertDaemonConsumers_BorrowOriginalLiveProductionPins" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e5269c6c-0020-3490-0c86-d0294f82c8db">
+      <Execution id="21f89d46-a0d4-4c37-99a9-752821e09fe4" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="RealConsoleHealthAndInertDaemonConsumers_BorrowOriginalLiveProductionPins" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_UncertainRetainsOwnerAndWorkerInventory" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="bdd2472e-2914-dc83-1783-0ce92391b980">
+      <Execution id="f8b44eb3-7be3-4c54-8ec1-4672aa7acef2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="OriginalProduction_UncertainRetainsOwnerAndWorkerInventory" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="1052364c-c3c0-2158-1577-ac18ccff0ecb" executionId="ea2e6c10-2427-4308-b1e7-96e5d8453317" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e5269c6c-0020-3490-0c86-d0294f82c8db" executionId="21f89d46-a0d4-4c37-99a9-752821e09fe4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6f6d75b9-2935-15f4-3175-217bd876d371" executionId="bb40b292-66fb-4cbe-af8e-dabaf8dbfc2f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4ce6a29e-ee49-3b1c-0b2b-2a069373fe2b" executionId="da3e1279-98ee-428f-a779-e095f6548c89" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b0713133-41f5-5fbc-071e-bc35eb4b1fe7" executionId="174ea2ff-da4f-45e7-8fda-00f391e0d19f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2b07806c-491e-3279-4ae5-fabef969211a" executionId="bb6d654b-0071-492a-89cf-bddecdad170d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bc61197e-d193-b96e-2260-27b12ed21d71" executionId="6681c1b7-f08a-4534-b85f-1a4101a47512" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d4e705b9-174d-42b0-f668-28508e9b6433" executionId="054a4251-6a84-4dff-bde3-67759c22bb3c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cca1781a-da0c-f43f-4e7f-7ab9a0f2e003" executionId="e1fcfe64-4207-4faa-88f4-166140331405" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="390d26ac-4255-dcd8-ebb6-f92d89f74eef" executionId="3643c3e5-12ec-42cf-8420-f3fc3f023673" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bd6bf7bb-6fc7-2284-8ba1-f45493d01662" executionId="4248629c-4b73-439d-b77a-85de7a101bfd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bdd2472e-2914-dc83-1783-0ce92391b980" executionId="f8b44eb3-7be3-4c54-8ec1-4672aa7acef2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="12" executed="12" passed="12" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.36]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.70]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.74]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:01:18.27]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>
