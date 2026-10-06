@@ -97,7 +97,7 @@ internal static class SessionOperationContext
         try {result=await RunBoundBodyAsync(fileSystem,expectedGeneration,operation,writeLease);}
         catch(Exception e){failure=e;throw;}
         finally {
-            try {await main.CompleteAsync(failure is OperationCanceledException?MainOperationOutcome.Cancelled:failure!=null?MainOperationOutcome.Failed:MainOperationOutcome.Completed,HasClosingFailure(failure));}
+            try {await main.CompleteAsync(OutcomeFor(failure),HasClosingFailure(failure));}
             catch(Exception close) when(failure!=null){failure.Data["MainOperationCloseFailure"]=close;}
             catch(Exception close){throw new MainOperationContinuationException<T>(result!,MainOperationOutcome.Completed,main.DescribeClose(MainOperationOutcome.Completed,false),close);}
         }
@@ -118,7 +118,7 @@ internal static class SessionOperationContext
             outcome=establishedOutcome?.Invoke()??MainOperationOutcome.Completed;
         } catch(Exception e){failure=e;throw;}
         finally {
-            outcome=failure is OperationCanceledException?MainOperationOutcome.Cancelled:failure!=null?MainOperationOutcome.Failed:outcome;
+            outcome=failure==null?outcome:OutcomeFor(failure);
             try {await main.CompleteAsync(outcome,HasClosingFailure(failure));}
             catch(Exception close) when(failure!=null){failure.Data["MainOperationCloseFailure"]=close;}
             catch(Exception close){throw new MainOperationContinuationException<T>(result!,outcome,main.DescribeClose(outcome,false),close);}
@@ -126,6 +126,7 @@ internal static class SessionOperationContext
         return result!;
     }
 
+    private static MainOperationOutcome OutcomeFor(Exception? failure)=>failure is IMainOperationContinuationFailure known?known.EstablishedOutcome:failure is OperationCanceledException?MainOperationOutcome.Cancelled:failure!=null?MainOperationOutcome.Failed:MainOperationOutcome.Completed;
     private static bool HasClosingFailure(Exception? failure)=>failure?.Data.Contains("SessionFinalizationFailure")==true;
 
     internal static Task RunParticipatingCurrentSessionAsync(FileSystemManager files,Func<Task> operation)=>
@@ -167,14 +168,18 @@ internal static class SessionOperationContext
         var previous = CurrentFrame.Value;
         CurrentFrame.Value = new Frame(state, previous);
         Exception? operationFailure = null;
+        T? establishedResult=default;
+        bool established=false;
         try
         {
-            return await RunWithinBindingAsync(
+            establishedResult=await RunWithinBindingAsync(
                 state,
                 fileSystem,
                 operation,
                 writeLease,
                 verifyAfterOperation: writeLease != null);
+            established=true;
+            return establishedResult;
         }
         catch (Exception failure)
         {
@@ -228,6 +233,13 @@ internal static class SessionOperationContext
                 catch (Exception closingFailure)
                 {
                     closingFailure.Data["SessionFinalizationFailure"] = true;
+                    if(established && closingFailure is not SessionReplacedException) {
+                        var retained=new MainOperationContinuationException<T>(establishedResult!,MainOperationOutcome.Completed,
+                            fileSystem.DescribeMainOperationClose(MainOperationOutcome.Completed,true),closingFailure);
+                        retained.Data["SessionFinalizationFailure"]=closingFailure;
+                        throw retained;
+                    }
+                    if(established)closingFailure.Data["EstablishedOperationResult"]=establishedResult;
                     throw;
                 }
                 finally

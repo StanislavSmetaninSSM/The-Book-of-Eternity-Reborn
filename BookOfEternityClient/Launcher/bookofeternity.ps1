@@ -574,9 +574,38 @@ function New-BridgeShutdownResult {
     }
 }
 
+function Get-OriginalMainStopExpectation {
+    param([string]$SessionPath)
+    $root=[IO.Path]::GetDirectoryName([IO.Path]::GetFullPath($SessionPath).TrimEnd([IO.Path]::DirectorySeparatorChar))
+    $record=Join-Path $root '.boe_runtime/gm-runs/main.json'
+    $retained=$global:BoeMainOperationContext.originalClose
+    if(-not (Test-Path -LiteralPath $record) -and -not $retained){return $null}
+    $identity=if($retained){$retained.identity}else{
+        $bytes=[IO.File]::ReadAllBytes($record)
+        if($bytes.Length -eq 0 -or $bytes.Length -gt 65536){throw 'Original main record unavailable.'}
+        $decoded=([Text.UTF8Encoding]::new($false,$true).GetString($bytes) | ConvertFrom-Json -ErrorAction Stop)
+        if($decoded.SchemaVersion -ne 1 -or -not $decoded.Identity){throw 'Original main record unavailable.'}
+        $id=$decoded.Identity
+        $backend=switch -CaseSensitive ($id.Backend){'WindowsJob'{1};'LinuxSupervisor'{2};default{throw 'Original main backend unavailable.'}}
+        [pscustomobject]@{rootKey=$id.RootKey;runId=$id.RunId;generationId=$id.GenerationId;epoch=$id.Epoch;backend=$backend;hostInstanceId=$id.HostInstanceId;bootId=$id.BootId}
+    }
+    $comparison=if($IsWindows){[StringComparison]::OrdinalIgnoreCase}else{[StringComparison]::Ordinal}
+    if(-not [string]::Equals($identity.rootKey,$root,$comparison)){throw 'Original main root expectation does not match requested session.'}
+    return [pscustomobject]@{root=$root;identity=$identity}
+}
+
 function Invoke-BridgeShutdown {
     param([string]$ResolvedSessionPath)
 
+    try {$expected=Get-OriginalMainStopExpectation $ResolvedSessionPath}
+    catch {return New-BridgeShutdownResult $ResolvedSessionPath $false 'original-stop-unconfirmed' $false $null $null 'Original main expectation unavailable; no PID fallback.'}
+    if($expected) {
+        try {
+            $response=Invoke-BridgeRequest $ResolvedSessionPath @{command='shutdown';rootKey=$expected.root;expectedMainIdentity=$expected.identity}
+            Assert-BridgeResponseOk $response
+            return New-BridgeShutdownResult $ResolvedSessionPath $true 'original-scoped-stopped' $false $response $null
+        } catch {return New-BridgeShutdownResult $ResolvedSessionPath $false 'original-stop-unconfirmed' $false $null $null 'Original scoped stop is unconfirmed; no PID fallback or replay.'}
+    }
     $statusBefore = Read-BridgeStatus $ResolvedSessionPath
     if ($null -eq $statusBefore) {
         return New-BridgeShutdownResult `

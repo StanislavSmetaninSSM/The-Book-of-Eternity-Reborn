@@ -105,7 +105,7 @@ internal static class MainOperationScenarioDriver
             if(!activated.RootElement.GetProperty("ok").GetBoolean())throw new InvalidOperationException("Original grant did not activate.");
             Task<JsonElement>? shutdown=null;
             if(mode=="terminal-main-operation-shutdown") {
-                shutdown=Rpc(new{command="shutdown"});
+                shutdown=Rpc(new{command="shutdown",rootKey=root,expectedMainIdentity=owner.Identity});
                 for(var i=0;i<200;i++) {
                     var observed=GmSessionRunRecordCodec.Decode(File.ReadAllBytes(Path.Combine(root,".boe_runtime/gm-runs/main.json"))).Disposition;
                     if(observed==GmSessionRunDisposition.Stopping)break;
@@ -164,7 +164,7 @@ internal static class MainOperationScenarioDriver
                         if(owner.Record?.Disposition!=GmSessionRunDisposition.Stopping)throw new InvalidOperationException("Stop did not durably revoke live helper before drain.");
                         child.StandardInput.WriteLine("continue");child.StandardInput.Flush();
                     }
-                    output=await child.StandardOutput.ReadToEndAsync();await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(7));
+                    output=await child.StandardOutput.ReadToEndAsync().WaitAsync(TimeSpan.FromSeconds(7));await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(7));
                 } finally {if(!child.HasExited){child.Kill();await child.WaitForExitAsync();}}
                 if(child.ExitCode!=0)throw new InvalidOperationException("Actual controlled helper failed: "+await errors);
                 if(stopping!=null)await stopping.WaitAsync(TimeSpan.FromSeconds(3));result["HelperOutput"]=output;

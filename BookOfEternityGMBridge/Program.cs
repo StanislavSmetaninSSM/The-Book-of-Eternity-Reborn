@@ -393,7 +393,7 @@ internal sealed partial class BridgeHost : IDisposable
             case "shutdown":
                 // Keep retained original peers alive through durable Stopping and
                 // actual local closing. Cancel transport only after stop settlement.
-                await StopShellAsync();
+                await StopExpectedMainAsync(request);
                 lock (_sync)
                 {
                     _status.Ready = false;
@@ -515,6 +515,25 @@ internal sealed partial class BridgeHost : IDisposable
         }
         // Exit withdraws only this original input binding; it is never scoped stop proof.
         RevokeInputLifetime(input);
+    }
+
+    private async Task StopExpectedMainAsync(BridgeRequest request)
+    {
+        await _shellLifecycleLock.WaitAsync();
+        try {
+            // Validate after waiting for the lifecycle gate. Metadata is only an
+            // expectation; this exact live original coordinator owns the stop.
+            var original=_mainRun??_lastMainRun;
+            if(original!=null || request.ExpectedMainIdentity!=null) {
+                if(original==null || request.ExpectedMainIdentity==null || request.RootKey!=original.Identity.RootKey ||
+                    !GmSessionRunValidation.IdentityMatches(original.Identity,request.ExpectedMainIdentity))
+                    throw new InvalidDataException("Original main stop identity does not match this terminal owner.");
+                if(_mainRun!=null)original.ValidateStopExpectation(request.ExpectedMainIdentity);
+                else if(original.Record?.Disposition!=GmSessionRunDisposition.Stopped)
+                    throw new InvalidDataException("Original main stop remains unconfirmed.");
+            }
+            await StopShellCoreAsync();
+        } finally {_shellLifecycleLock.Release();}
     }
 
     private async Task StopShellAsync()
@@ -1763,6 +1782,7 @@ internal sealed class BridgeRequest
     public string? Command { get; set; }
     public string? RootKey {get;set;}
     public MainOperationClose? MainOperationClose {get;set;}
+    public GmSessionRunIdentity? ExpectedMainIdentity {get;set;}
     public string? Text { get; set; }
     public bool AppendEnter { get; set; } = true;
     public bool? Ready { get; set; }

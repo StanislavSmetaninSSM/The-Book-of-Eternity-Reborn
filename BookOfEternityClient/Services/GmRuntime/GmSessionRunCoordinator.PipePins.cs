@@ -67,6 +67,13 @@ internal sealed partial class GmSessionRunCoordinator
             return pin.Reply;
         }
     }
+    internal void ValidateStopExpectation(GmSessionRunIdentity expected)
+    {
+        lock(_sync) {
+            if(_retired || !GmSessionRunValidation.IdentityMatches(Identity,expected))throw GmSessionRunPersistence.Invalid();
+            _guard.Validate(); // Uncertain may stop only its retained original scope.
+        }
+    }
     private void ValidateOriginalLive()
     {
         if(_closed || _uncertain || !_released || _retired || _persistence.HasDebt || _record?.Disposition!=GmSessionRunDisposition.Running ||
