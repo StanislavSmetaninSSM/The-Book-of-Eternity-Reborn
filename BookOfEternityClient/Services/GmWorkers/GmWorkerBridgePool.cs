@@ -816,7 +816,7 @@ public sealed class GmWorkerBridgePool
                     await durableExecution.PlanReleaseAsync(_fs, releaseLease);
                     await processHostLaunch.ReleaseAsync(lifecycleCancellation.Token, durableExecution, releaseLease);
                     if (_hooks?.AfterWorkerReleaseAsync != null)
-                        await _hooks.AfterWorkerReleaseAsync().WaitAsync(lifecycleCancellation.Token);
+                        await _hooks.AfterWorkerReleaseAsync();
                     await durableExecution.AcknowledgeReleaseAsync();
                 }
             }

@@ -17,6 +17,8 @@ public sealed class GmWorkerRestartControlTests
         foreach (var key in new[] { "accepted", "proposalConsumer", "repairConsumer" })
         { Assert.False(before.GetProperty(key).GetBoolean()); Assert.False(after.GetProperty(key).GetBoolean()); }
         var sent = mode == "released-ack";
+        Assert.Equal(!sent, r.GetProperty("callerCanceled").GetBoolean());
+        Assert.Equal(sent, r.GetProperty("resultPresent").GetBoolean());
         Assert.Equal(sent ? 1 : 0, r.GetProperty("writes").GetInt32());
         Assert.Equal(sent ? 1 : 0, r.GetProperty("releaseFrames").GetInt32());
         Assert.Equal(sent ? 1 : 0, r.GetProperty("workerStarts").GetInt32());

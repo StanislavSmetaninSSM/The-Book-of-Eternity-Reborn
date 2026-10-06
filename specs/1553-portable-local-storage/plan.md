@@ -355,6 +355,15 @@ Sol6.1/xhigh endorsed the original-host plus unchanged-stream observation approa
 No native/positive evidence is supplied by either hook. Next selected fresh verification:
 worker-restart-witness-linux (2) and worker-restart-control-linux (2). These add required
 negative coverage to the implemented behavior; no fabricated RED claim.
+First witness/control attempt at `04e9d7521e6fb14608e7d5822a11a70131ee15e0`:
+2 executed of4 planned, Released-ACK PASS, cancellation fixture observation FAIL
+(uncaught expected caller OperationCanceledException; driver exit134),46.0589953s.
+Two guardians ECHILD, zero emergency/failure/deadline; witness descriptor unexecuted.
+This is not causal backend RED. Evidence: recovery/evidence/worker-r2-control-observation-failure/manifest.json.
+Corrected only expected cancellation capture: result remains null and no permit is
+fabricated; read actual ledger/reaper/cleanup. Reviewer also required direct awaiting
+of the bounded after-send hook so cancellation cannot abandon its task under the lease.
+Fresh same4 selection pending; default-null production ordering remains unchanged.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

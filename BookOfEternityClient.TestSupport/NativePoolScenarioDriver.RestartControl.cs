@@ -70,7 +70,10 @@ internal static partial class NativePoolScenarioDriver
         var reaper = new GmWorkerQuarantineReaper(1, retrySchedule: [], runInBackground: false);
         using var admission = new GmWorkerNativePoolAdmission(package, root, durable: true, Observe);
         var pool = new GmWorkerBridgePool(fs, null, new GmWorkerAuditLog(fs), hooks, GmWorkerProcessTreeFactory.Instance, reaper, admission);
-        var result = await pool.RunTaskAsync(profile, task, cancel.Token);
+        GmWorkerTaskRunResult? result = null;
+        var callerCanceled = false;
+        try { result = await pool.RunTaskAsync(profile, task, cancel.Token); }
+        catch (OperationCanceledException) when (cancel.IsCancellationRequested) { callerCanceled = true; }
         foreach (var pending in pendingRepeats)
         { try { await pending.Task; } catch (OperationCanceledException) { } finally { pending.Deadline.Dispose(); } }
         var before = BoundarySnapshot(result, task, reaper, statePath, null);
@@ -79,7 +82,7 @@ internal static partial class NativePoolScenarioDriver
         var after = BoundarySnapshot(result, task, reaper, statePath, null);
         await File.WriteAllTextAsync(Path.Combine(output, "restart-control.json"), JsonSerializer.Serialize(new
         {
-            mode, faults, repeatedCalls, pendingRepeats = pendingRepeats.Count, before, after,
+            mode, faults, repeatedCalls, callerCanceled, resultPresent = result != null, pendingRepeats = pendingRepeats.Count, before, after,
             writes = observed?.Writes, releaseFrames = observed?.ReleaseFrames,
             workerStarts = File.Exists(Path.Combine(output, "worker-starts")) ? File.ReadAllLines(Path.Combine(output, "worker-starts")).Length : 0,
             detachedRemaining = Directory.Exists(admission.RuntimeBase) && Directory.EnumerateDirectories(admission.RuntimeBase, "game_session", SearchOption.AllDirectories).Any()

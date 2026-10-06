@@ -106,21 +106,21 @@ internal static partial class NativePoolScenarioDriver
         }));
         return 0;
     }
-    private static object BoundarySnapshot(GmWorkerTaskRunResult result, WorkerTaskPacket task, GmWorkerQuarantineReaper reaper,
+    private static object BoundarySnapshot(GmWorkerTaskRunResult? result, WorkerTaskPacket task, GmWorkerQuarantineReaper reaper,
         string statePath, string? workspace)
     {
         using var state = JsonDocument.Parse(File.ReadAllBytes(statePath));
         return new
         {
-            accepted = result.HasValidatedExecutionFor(task),
-            proposalConsumer = GmWorkerProposalOnlyDispatchService.CanAcceptExecution(result, task),
-            repairConsumer = GmWorkerValidationRepairDelegator.CanAcceptExecution(result, task),
-            stopState = result.StopEvidence?.State.ToString(), outputsSettled = result.OutputsSettled,
+            accepted = result?.HasValidatedExecutionFor(task) == true,
+            proposalConsumer = result != null && GmWorkerProposalOnlyDispatchService.CanAcceptExecution(result, task),
+            repairConsumer = result != null && GmWorkerValidationRepairDelegator.CanAcceptExecution(result, task),
+            stopState = result?.StopEvidence?.State.ToString(), outputsSettled = result?.OutputsSettled,
             entries = reaper.EntryCount, capacity = reaper.OwnedCapacity,
             active = state.RootElement.GetProperty("Entries").GetArrayLength(), retired = state.RootElement.GetProperty("Retired").GetArrayLength(),
             phases = state.RootElement.GetProperty("Entries").EnumerateArray().Select(x => x.GetProperty("Phase").GetString()).ToArray(),
             workspaceExists = workspace != null && Directory.Exists(workspace),
-            lastError = result.Status.LastError, cleanupDeferred = result.Status.CleanupDeferred
+            lastError = result?.Status.LastError, cleanupDeferred = result?.Status.CleanupDeferred
         };
     }
 }
