@@ -64,7 +64,14 @@ explicitly injected fixture contour.
    the same root inventory; it cannot bypass a closed context. Other roots retain
    current behavior. Healthy original warm entries do not themselves mean Uncertain;
    one lost authority/explicit Uncertain/pending admission conflict closes new work
-   across the root. A purpose never grants generic cleanup or another task's rights.
+   across the root. NativeLineageLaunch currently latches Lose independently before
+   ExecutionAuthority can observe it in StopForCleanup/SettleOutputs. Wire an original
+   launch-bound negative-only notification so detected owner/status/output uncertainty
+   synchronously closes context admission, before any best-effort journal write and
+   even before pool BindOwner completes. ExecutionAuthority's uncertainty uses the
+   same close-only latch. The callback cannot supply proof, reopen admission, perform
+   canonical I/O or throw through native cleanup. Checking only the later authority
+   DTO is insufficient. A purpose never grants generic cleanup or another task's rights.
    Required cleanup audit binds its exact event ID/bytes and original positive
    stop/output authority; only its audit operation may use that token. Recovery refusal
    propagates and retains capacity, without converting arbitrary I/O into receipt
@@ -178,6 +185,10 @@ types. These paths are under BookOfEternityClient. Avoid unrelated broad Core re
   the original creation owner, Prepared entry, slot and root locks remain retained;
   exact retry completes physical cleanup before AbortedBeforeLaunch archival. Do not
   treat the existing swallowed staging cleanup error as proof of workspace deletion.
+- Include one actual warm-owner-loss case held before its late Stop: another worker
+  through a second pool/FileSystemManager must start zero after loss was detected.
+  Failed Uncertain persistence, client disposal and transfer to the original reaper
+  must retain the same context/locks/slot; no lease detachment reopens admission.
 - Catalog changes are structural. New bounded categories own R2 admission, connected
   lifecycle and commit-boundary tests, with explicit Linux/guardian requirements.
   Revise explicit Linux selection and portable CI selection by actual contracts.

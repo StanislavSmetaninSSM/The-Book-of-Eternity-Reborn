@@ -143,6 +143,10 @@ unknown task is not retried with a new epoch merely to evade its tombstone.
 A same-process post-stop filesystem/receipt failure keeps the original phase owner
 and may retry exactly as in B. A process death loses that live owner: the same durable
 CleanupPending now blocks; do not manufacture a reaper owner from saved paths.
+Warm detected owner/status/output uncertainty closes the original root context
+synchronously, before best-effort persistence or the pool's later Stop observation.
+The launch-bound notification only revokes admission; it cannot grant authority or
+run canonical I/O. A failed Uncertain write still leaves this live gate closed.
 Retirement uses a frozen exact commit plan and an explicit RetirementCommitPending state.
 Complete all fallible process/channel/workspace-deletion phases first, retaining original
 workspace/runtime authority. Existing B requires cleanup-confirmed audit/fallback only
