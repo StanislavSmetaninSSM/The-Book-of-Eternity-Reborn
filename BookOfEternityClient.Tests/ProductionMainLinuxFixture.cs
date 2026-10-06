@@ -69,7 +69,7 @@ internal static class ProductionMainLinuxFixture
         using var report=JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder,"guardian.json")));
         Assert.True(report.RootElement.GetProperty("echild").GetBoolean());Assert.Equal(0,report.RootElement.GetProperty("emergencySignals").GetInt32());Assert.Equal(0,report.RootElement.GetProperty("failures").GetInt32());Assert.False(report.RootElement.GetProperty("deadline").GetBoolean());
         using var result=JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder,"scenario.json")));
-        Assert.True(result.RootElement.GetProperty("Success").GetBoolean(),result.RootElement.ToString());Assert.Equal(0,guardian.ExitCode);
+        Assert.True(result.RootElement.TryGetProperty("Success",out var succeeded) && succeeded.GetBoolean(),result.RootElement.ToString());Assert.Equal(0,guardian.ExitCode);
         if(mode=="production-main-uncertain") {
             var cold=Path.Combine(folder,"cold-check");Directory.CreateDirectory(cold);
             var retry=new ProcessStartInfo(Path.Combine(package,"host-guardian")){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true};retry.Environment["PATH"]=playerBin;

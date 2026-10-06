@@ -107,13 +107,26 @@ so next repeat is bounded8entrypoint cases, not11admission/oldregression cohort.
 reinforces installed-root lookup and exact profile preservation; runtime unchanged.
 
 Installed cwd f3c570a4:8/8PASS,actual same-root live console/functions from ship,
-unchanged command/model/args/cwd;5guardianECHILD0. Other17current cases and16oldreg
+unchanged command/model/args/cwd;4guardianECHILD0 (five prepared folders include
+one package-layout-only preparation). Other17current cases and16oldreg
 retain source-backed proof. Reviewer identified failure-only production OpenAsync
 leaking its Attach client when an existing original owned Prepared inventory refuses
 main quiescence. Add inert original-coordinator Prepare→main refusal→AbortBeforeLaunch→
 release→foreign coordinator acquisition RED before fix. No executable/worker/model
 launch/config/generation; main refusal must neither close original context nor create
 main record. This is narrow attempt-ref cleanup, not worker production qualification.
+
+Inventory attempt RED at626cfa11:12executed10PASS/2FAIL. One causal unmatched Attach
+reference after exact original prelaunch abort/release; one fixture oracle ordering
+failure, not a runtime acceptance defect: stop may publish Stopping before its scoped
+failure sets logical Uncertain. The original retained owner/admission remains closed;
+next exact original cleanup settles durable Uncertain (post-guardian bytes retained).
+All11guardian reports ECHILD/emergency0/failure0/deadlinefalse. Minimal runtime catch
+now releases only the refused attempt's client, with main guard disposal in finally.
+Fixture records initial Stopping|Uncertain and requires retained/closed logical
+Uncertain before actual same-original metadata settlement and exact durable Uncertain.
+No input replay, authority release, generation/config/worker launch or journal changes.
+Fresh narrow12case GREEN follows; no unrelated cohort repetition.
 
 ## T041-PRODUCTION-MAIN-DESIGN — current design-only continuation
 

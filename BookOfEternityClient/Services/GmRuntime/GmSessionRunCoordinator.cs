@@ -47,9 +47,10 @@ internal sealed partial class GmSessionRunCoordinator
     private static async Task<GmSessionRunCoordinator> OpenAsync(FileSystemManager files,bool production,Action<MainRunIoStage>? observe)
     {
         var guard=await GmMainOwnerGuard.AcquireAsync(files.BasePath);
+        GmSessionRunCoordinator? owner=null;
         try
         {
-            var owner=new GmSessionRunCoordinator(files,guard,observe);
+            owner=new GmSessionRunCoordinator(files,guard,observe);
             lock(files.CanonicalRootAuthorityIdentity.WorkerContextGate)
             {
                 if(files.CanonicalRootAuthorityIdentity.MainCoordinator!=null)throw GmSessionRunPersistence.Invalid();
@@ -65,7 +66,14 @@ internal sealed partial class GmSessionRunCoordinator
             }
             return owner;
         }
-        catch{guard.Dispose();throw;}
+        catch
+        {
+            // Balance only this refused attempt's Attach. The original worker
+            // context still owns nonquiescent/debt/uncertain cleanup authority.
+            try { owner?._productionWorkers?.ReleaseClient(); }
+            finally { guard.Dispose(); }
+            throw;
+        }
     }
     internal sealed record Access(GmSessionRunCoordinator Owner,OperationPin? Pin,bool MetadataOnly);
     private sealed class Scope(Access value) : IDisposable

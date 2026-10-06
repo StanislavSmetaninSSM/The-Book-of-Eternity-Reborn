@@ -201,7 +201,17 @@ internal static class OwnedTerminalScenarioDriver
                 Require(!(await Rpc(new { command="setReady", ready=true })).GetProperty("ok").GetBoolean(),"Uncertain owner became ready.");
                 if(production) {
                     var retained=(GmSessionRunCoordinator)type.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
-                    Require(retained.RetainsAuthority && retained.IsUncertain && retained.Record!.Disposition==GmSessionRunDisposition.Uncertain,"Physical controlled cleanup erased logical main uncertainty.");
+                    var retainedIdentity=retained.Identity;
+                    result["UncertainOriginalMainIdentity"]=retainedIdentity;
+                    Require(retained.RetainsAuthority && retained.IsUncertain && retained.AdmissionClosed && retained.Record!.Disposition is GmSessionRunDisposition.Stopping or GmSessionRunDisposition.Uncertain,"Scoped stop failure reopened logical main authority.");
+                    result["InitialUncertainDurableDisposition"]=retained.Record.Disposition.ToString();
+                    // Failure can arrive after BeginStop published Stopping. The
+                    // same original cleanup may settle metadata; no input replay.
+                    try { await (Task)Invoke("StopShellAsync")!; throw new InvalidOperationException("Uncertain original owner was accepted on cleanup settlement."); }
+                    catch(TimeoutException) { }
+                    Require(retained.RetainsAuthority && retained.IsUncertain && retained.Record.Disposition==GmSessionRunDisposition.Uncertain,"Original cleanup failed to retain durable Uncertain.");
+                    Require(retained.Identity==retainedIdentity && ReferenceEquals(originalSession,type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)),"Uncertain settlement changed its original identity or terminal.");
+                    result["SettledUncertainDurableDisposition"]=retained.Record.Disposition.ToString();
                     await using var excluded=await GmWorkerRunLedger.OpenCoordinatorAsync(new(Path.Combine(folder,"root")));
                     Require(excluded==null,"Uncertain main released original worker inventory.");
                     result["LogicalUncertainOriginalInventoryRetained"]=true;
