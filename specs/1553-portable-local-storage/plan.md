@@ -29,7 +29,11 @@ qualification. No network/auth/security/dependency changes; no HOME-PC.
 
 B adds five actual publication crash cuts using existing hooks only. No backend
 behavior change. A is remotely preserved at `df3820709e8b1d5106ee456e369d4d4ac420ae4e`.
-B has not yet been built or run; next action is only `worker-restart-crash-publication-linux`.
+B initial build succeeded;5/5 failed because the fixture joined canonical paths to the
+root instead of using FileSystemManager.ResolvePath (game_session). Three actual cuts
+were reached, two were never reached; no causal backend RED. All five guardians ECHILD,
+no cleanup failure/deadline. Evidence worker-r3-publication-preparation-failure records
+source148af16c and60.5223417s. Fix only observer path resolution, then rerun only B.
 
 ### Evidence already accepted; exclude unchanged repetitions
 

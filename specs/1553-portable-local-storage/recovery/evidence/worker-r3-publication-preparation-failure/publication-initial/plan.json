@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "worker-restart-crash-publication-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "148af16cf8821da89f1500d84f83057e86bcf186",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 46.0312311,
+  "Descriptors": [
+    {
+      "Name": "worker-restart-crash-publication-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-crash-publication-linux",
+      "Categories": [
+        "worker-restart-crash-publication-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationCrash_ActualArtifactsCannotBecomeColdSuccess",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationCrash_ActualArtifactsCannotBecomeColdSuccess",
+          "Cases": 5
+        }
+      ]
+    }
+  ]
+}

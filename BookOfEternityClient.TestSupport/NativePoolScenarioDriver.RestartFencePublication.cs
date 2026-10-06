@@ -11,11 +11,10 @@ internal static partial class NativePoolScenarioDriver
     {
         var root = Path.Combine(output, "state-copy");
         await BootstrapRestartRoot(root);
+        FileSystemManager fs = null!;
         var task = OwnershipTask("restart_r3_original");
         var statePath = Path.Combine(root, ".boe_runtime", "worker-runs-v1", "state.json");
-        var bundlePath = Path.Combine(root, GmWorkerProposalStore.GetProposalPath("worker_proposal_" + task.TaskId));
-        var inboxPath = Path.Combine(root, GmWorkerBridgePool.GetProposalInboxPath(task.TaskId));
-        var auditPath = Path.Combine(root, GmWorkerAuditLog.AuditLogPath);
+        string bundlePath = null!, inboxPath = null!, auditPath = null!;
         GmWorkerDurableExecution? execution = null;
         var attempts = 0;
         WorkerRunRecord Record() => GmWorkerRunLedgerCodec.Decode(new(root), File.ReadAllBytes(statePath)).Entries.Single();
@@ -32,7 +31,7 @@ internal static partial class NativePoolScenarioDriver
                 publicationAcknowledged = FenceField<bool>(execution, "_publicationAcknowledged"),
                 originalPublicationRecorded = FenceField<object>(authority, "_publication") != null,
                 record.Identity, record.Progress,
-                originalTaskBound = record.Identity.TaskId == task.TaskId && record.Identity.TaskSha256 == Hash(Path.Combine(root, GmWorkerBridgePool.GetTaskPacketPath(task.TaskId))),
+                originalTaskBound = record.Identity.TaskId == task.TaskId && record.Identity.TaskSha256 == Hash(fs.ResolvePath(GmWorkerBridgePool.GetTaskPacketPath(task.TaskId))),
                 workerStarts = FenceWorkerStarts(output), completion = FenceField<int?>(authority, "_completion"),
                 stop = authority.StopEvidence?.State.ToString(), outputsSettled = authority.OutputsSettled,
                 workspaceExists = Directory.Exists(record.Identity.WorkspacePath),
@@ -53,7 +52,7 @@ internal static partial class NativePoolScenarioDriver
                 cut == "published-disk" && stage == WorkerLedgerIoStage.StateDirectorySynced && phase == WorkerRunPhase.Published)
                 Crash();
         }
-        var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
+        fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
             PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
             {
                 BeforeCanonicalMutationBoundaryAsync = path =>
@@ -62,6 +61,9 @@ internal static partial class NativePoolScenarioDriver
                     return Task.CompletedTask;
                 }
             });
+        bundlePath = fs.ResolvePath(GmWorkerProposalStore.GetProposalPath("worker_proposal_" + task.TaskId));
+        inboxPath = fs.ResolvePath(GmWorkerBridgePool.GetProposalInboxPath(task.TaskId));
+        auditPath = fs.ResolvePath(GmWorkerAuditLog.AuditLogPath);
         var hooks = new GmWorkerBridgePoolHooks
         {
             AfterOwnerBound = owner => execution = FenceField<GmWorkerDurableExecution>(owner, "_durable")!,
