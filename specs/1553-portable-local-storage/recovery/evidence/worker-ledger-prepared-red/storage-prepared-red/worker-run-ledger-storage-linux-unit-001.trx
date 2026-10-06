@@ -1,0 +1,476 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="774bc7ce-3f40-45c4-9636-ee0921c83f69" name="@c7669543e9c7 2026-10-06 00:28:38" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T00:28:38.2893061+00:00" queuing="2026-10-06T00:28:38.2893061+00:00" start="2026-10-06T00:28:36.4550112+00:00" finish="2026-10-06T00:28:38.4461699+00:00" />
+  <TestSettings name="default" id="1a256970-4ece-44b2-a243-700848603227">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_00_28_38" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="4fd4419f-e202-4246-8a59-823b35a303c6" testId="9df96784-b734-e2f9-9c23-5bbda8dfbd3e" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;missing&quot;)" computerName="c7669543e9c7" duration="00:00:00.0046381" startTime="2026-10-06T00:28:38.1744387+00:00" endTime="2026-10-06T00:28:38.1744388+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4fd4419f-e202-4246-8a59-823b35a303c6">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException : Worker run record is invalid.</Message>
+          <StackTrace>   at BookOfEternityClient.Services.GmWorkers.GmWorkerRunRecordCodec.Object(JsonElement element, String[] names) in /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerRunRecordCodec.cs:line 95
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerRunLedger.ReadInitial(WorkerLedgerTarget target, Byte[] bytes) in /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs:line 54
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerRunLedger.ObserveAsync(WorkerLedgerTarget target, CancellationToken cancellationToken) in /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs:line 31
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs:line 117
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="60a6af00-7d92-4266-86cd-79770f2baf9b" testId="102bf446-c4d9-a61f-7270-47e989ddc433" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;missing-state&quot;)" computerName="c7669543e9c7" duration="00:00:00.0062899" startTime="2026-10-06T00:28:38.1690416+00:00" endTime="2026-10-06T00:28:38.1690417+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="60a6af00-7d92-4266-86cd-79770f2baf9b" />
+    <UnitTestResult executionId="2bf9f650-daa0-446a-8ab7-81cce1d69a12" testId="a549093d-056e-4f27-18cb-5776e5b79d36" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;oversize&quot;)" computerName="c7669543e9c7" duration="00:00:00.0288954" startTime="2026-10-06T00:28:38.2613839+00:00" endTime="2026-10-06T00:28:38.2613840+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2bf9f650-daa0-446a-8ab7-81cce1d69a12" />
+    <UnitTestResult executionId="26aad262-636d-48a2-b847-8fa54b430aa5" testId="4373aa6a-2f4e-ebd1-fd6c-5bd4c735ba7c" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;wrong-root&quot;)" computerName="c7669543e9c7" duration="00:00:00.0067488" startTime="2026-10-06T00:28:38.2498358+00:00" endTime="2026-10-06T00:28:38.2498358+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="26aad262-636d-48a2-b847-8fa54b430aa5" />
+    <UnitTestResult executionId="ea35e6e9-182b-4c7b-a507-875016100657" testId="345c7f63-d26d-ea91-c4fb-641590bdda7b" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;epoch-negative&quot;)" computerName="c7669543e9c7" duration="00:00:00.0071834" startTime="2026-10-06T00:28:38.1923557+00:00" endTime="2026-10-06T00:28:38.1923559+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ea35e6e9-182b-4c7b-a507-875016100657" />
+    <UnitTestResult executionId="ca4f7ebc-0225-49a7-b0be-d52ec1ca97d7" testId="c5d0ee9c-12e1-2de9-9f5f-1c5fd519aed8" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.Initialize_PersistsBoundRootStateAndStableLocks" computerName="c7669543e9c7" duration="00:00:00.0140847" startTime="2026-10-06T00:28:38.3760108+00:00" endTime="2026-10-06T00:28:38.3760110+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ca4f7ebc-0225-49a7-b0be-d52ec1ca97d7" />
+    <UnitTestResult executionId="aaf3418c-d83b-48d2-b34b-847ef434a6b6" testId="872c4574-3b7c-9b80-45dc-360bd81a75ab" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;extra-temp&quot;)" computerName="c7669543e9c7" duration="00:00:00.0081161" startTime="2026-10-06T00:28:38.2497484+00:00" endTime="2026-10-06T00:28:38.2497487+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aaf3418c-d83b-48d2-b34b-847ef434a6b6" />
+    <UnitTestResult executionId="c2b26d21-241d-4fae-a600-f29d8750222b" testId="0a769d43-87d9-94f0-a764-bf590c854818" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdMissing_IsReadOnlyAndDoesNotCreateNamespace" computerName="c7669543e9c7" duration="00:00:00.0170031" startTime="2026-10-06T00:28:38.0853427+00:00" endTime="2026-10-06T00:28:38.0853567+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c2b26d21-241d-4fae-a600-f29d8750222b" />
+    <UnitTestResult executionId="5419e2bc-5951-4d05-86a4-2a9afc5092c8" testId="73c8a366-5ead-4255-7ad1-a130a2b9fdb5" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: &quot;Prepared&quot;)" computerName="c7669543e9c7" duration="00:00:00.0141485" startTime="2026-10-06T00:28:38.3068845+00:00" endTime="2026-10-06T00:28:38.3068846+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5419e2bc-5951-4d05-86a4-2a9afc5092c8">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs:line 66
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4fd34698-cf42-4157-ae20-191d3c8cb7d8" testId="6fa95718-bda3-5994-4c00-6a74b0c35fbb" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;retired-wrong-type&quot;)" computerName="c7669543e9c7" duration="00:00:00.0058458" startTime="2026-10-06T00:28:38.2914078+00:00" endTime="2026-10-06T00:28:38.2914079+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4fd34698-cf42-4157-ae20-191d3c8cb7d8" />
+    <UnitTestResult executionId="6cba1673-74d4-45b1-a297-c5d787f70265" testId="ed48f25e-6651-25ef-61c2-26056adb59be" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: &quot;ReleaseIntent&quot;)" computerName="c7669543e9c7" duration="00:00:00.0051581" startTime="2026-10-06T00:28:38.3314807+00:00" endTime="2026-10-06T00:28:38.3314807+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6cba1673-74d4-45b1-a297-c5d787f70265">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs:line 66
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="021ad155-541a-4b33-a5e3-f04cabb53718" testId="177ffdac-5d6b-1781-f5b0-3fbc6ad1f77d" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: &quot;LaunchIntent&quot;)" computerName="c7669543e9c7" duration="00:00:00.0049893" startTime="2026-10-06T00:28:38.3367164+00:00" endTime="2026-10-06T00:28:38.3367164+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="021ad155-541a-4b33-a5e3-f04cabb53718">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs:line 66
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="82b8872e-d1ac-4110-b5fd-14a061e018e0" testId="f07d119c-db8f-86da-482a-e85999ef2326" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: &quot;Released&quot;)" computerName="c7669543e9c7" duration="00:00:00.0049354" startTime="2026-10-06T00:28:38.3470325+00:00" endTime="2026-10-06T00:28:38.3470325+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="82b8872e-d1ac-4110-b5fd-14a061e018e0">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs:line 66
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="8c04513f-b03e-4710-afcc-afbf7c96227c" testId="20635ccf-b153-7d97-c785-405ee73132aa" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;epoch-without-inventory&quot;)" computerName="c7669543e9c7" duration="00:00:00.0081737" startTime="2026-10-06T00:28:38.2852268+00:00" endTime="2026-10-06T00:28:38.2852270+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8c04513f-b03e-4710-afcc-afbf7c96227c" />
+    <UnitTestResult executionId="8608fc13-0530-4073-bfc2-c473b343af15" testId="010896b7-85b8-a30d-62ca-f501d81d687e" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;duplicate&quot;)" computerName="c7669543e9c7" duration="00:00:00.0074446" startTime="2026-10-06T00:28:38.2016626+00:00" endTime="2026-10-06T00:28:38.2016628+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8608fc13-0530-4073-bfc2-c473b343af15">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException : Worker run record is invalid.</Message>
+          <StackTrace>   at BookOfEternityClient.Services.GmWorkers.GmWorkerRunRecordCodec.Object(JsonElement element, String[] names) in /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerRunRecordCodec.cs:line 94
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerRunLedger.ReadInitial(WorkerLedgerTarget target, Byte[] bytes) in /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs:line 54
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerRunLedger.ObserveAsync(WorkerLedgerTarget target, CancellationToken cancellationToken) in /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs:line 31
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs:line 117
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4775377d-4467-439e-b36d-0778cd185a55" testId="c4777fc3-446e-4f58-9fbf-a8f4990a67c3" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: &quot;PublicationIntent&quot;)" computerName="c7669543e9c7" duration="00:00:00.0049932" startTime="2026-10-06T00:28:38.3420439+00:00" endTime="2026-10-06T00:28:38.3420440+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4775377d-4467-439e-b36d-0778cd185a55">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs:line 66
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="be8fd4c7-5313-4280-b918-44dfe50991c6" testId="decb7116-f6b6-6df7-6f60-2ef1ab540701" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: &quot;Published&quot;)" computerName="c7669543e9c7" duration="00:00:00.0047439" startTime="2026-10-06T00:28:38.3262593+00:00" endTime="2026-10-06T00:28:38.3262594+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="be8fd4c7-5313-4280-b918-44dfe50991c6">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs:line 66
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1aca98b9-f24e-448d-8d52-f4a1c76cd816" testId="3c44f1ac-9d91-151a-6262-08279d93c46a" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;epoch-overflow&quot;)" computerName="c7669543e9c7" duration="00:00:00.0084549" startTime="2026-10-06T00:28:38.2489278+00:00" endTime="2026-10-06T00:28:38.2489280+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1aca98b9-f24e-448d-8d52-f4a1c76cd816">
+      <Output>
+        <ErrorInfo>
+          <Message>System.FormatException : One of the identified items was in an invalid format.</Message>
+          <StackTrace>   at System.Text.Json.ThrowHelper.ThrowFormatException()
+   at System.Text.Json.JsonElement.GetInt64()
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerRunLedger.ReadInitial(WorkerLedgerTarget target, Byte[] bytes) in /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs:line 55
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerRunLedger.ObserveAsync(WorkerLedgerTarget target, CancellationToken cancellationToken) in /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs:line 31
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs:line 117
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="df51d4d8-f04e-42a7-acf5-5b9a1e4d8208" testId="0fdc486a-814e-244f-6cce-41c21bc0f48a" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: &quot;Uncertain&quot;)" computerName="c7669543e9c7" duration="00:00:00.0047862" startTime="2026-10-06T00:28:38.3520419+00:00" endTime="2026-10-06T00:28:38.3520419+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="df51d4d8-f04e-42a7-acf5-5b9a1e4d8208">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs:line 66
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5bb24ceb-a689-4b9b-b15c-388796379b59" testId="4c1435a4-7f09-3c03-deff-5b930944e858" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;unknown&quot;)" computerName="c7669543e9c7" duration="00:00:00.0702820" startTime="2026-10-06T00:28:38.1666046+00:00" endTime="2026-10-06T00:28:38.1666047+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5bb24ceb-a689-4b9b-b15c-388796379b59">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException : Worker run record is invalid.</Message>
+          <StackTrace>   at BookOfEternityClient.Services.GmWorkers.GmWorkerRunRecordCodec.Object(JsonElement element, String[] names) in /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerRunRecordCodec.cs:line 94
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerRunLedger.ReadInitial(WorkerLedgerTarget target, Byte[] bytes) in /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs:line 54
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerRunLedger.ObserveAsync(WorkerLedgerTarget target, CancellationToken cancellationToken) in /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs:line 31
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs:line 117
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2cf75634-fd16-4850-bf63-6126c2d809c8" testId="da5d1e19-49ab-34e0-a38c-f35fc2f16953" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.PreparedEntry_PersistsIdentityAndColdRestartCannotAdoptIt" computerName="c7669543e9c7" duration="00:00:00.0058319" startTime="2026-10-06T00:28:38.3585330+00:00" endTime="2026-10-06T00:28:38.3585331+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2cf75634-fd16-4850-bf63-6126c2d809c8">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Applied
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.PreparedEntry_PersistsIdentityAndColdRestartCannotAdoptIt() in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs:line 22
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.PreparedEntry_PersistsIdentityAndColdRestartCannotAdoptIt() in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs:line 31
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b80729e4-7fb7-4560-bab8-51f542b3892c" testId="a0ca4a08-0f0e-503a-4ee1-e28185fbff70" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;invalid-utf8&quot;)" computerName="c7669543e9c7" duration="00:00:00.0153124" startTime="2026-10-06T00:28:38.2768770+00:00" endTime="2026-10-06T00:28:38.2768772+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b80729e4-7fb7-4560-bab8-51f542b3892c" />
+    <UnitTestResult executionId="24b8e26c-2dd3-44ef-bd16-be7447bbd2a4" testId="79a20c3a-6500-8307-2893-ded2124d8cbc" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;schema&quot;)" computerName="c7669543e9c7" duration="00:00:00.0055043" startTime="2026-10-06T00:28:38.1795776+00:00" endTime="2026-10-06T00:28:38.1795777+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="24b8e26c-2dd3-44ef-bd16-be7447bbd2a4" />
+    <UnitTestResult executionId="1632f645-aaa8-4b43-8f13-ca2578f1eb27" testId="ab388678-a0fc-ada0-95fa-3ecef6cdf526" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: &quot;StopValidated&quot;)" computerName="c7669543e9c7" duration="00:00:00.0056391" startTime="2026-10-06T00:28:38.3211562+00:00" endTime="2026-10-06T00:28:38.3211563+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1632f645-aaa8-4b43-8f13-ca2578f1eb27">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs:line 66
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="44c15a3c-4507-40c7-84d2-8d5c286eb651" testId="439b009e-4575-55bb-a2a4-3e9620159ead" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: &quot;CleanupPending&quot;)" computerName="c7669543e9c7" duration="00:00:00.0083020" startTime="2026-10-06T00:28:38.3151685+00:00" endTime="2026-10-06T00:28:38.3151686+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="44c15a3c-4507-40c7-84d2-8d5c286eb651">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs:line 66
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7f64c66b-1d76-468c-9fff-45d502025d30" testId="b51870de-8eff-7cb0-588d-4b7880f19303" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;entries-wrong-type&quot;)" computerName="c7669543e9c7" duration="00:00:00.0077640" startTime="2026-10-06T00:28:38.2081984+00:00" endTime="2026-10-06T00:28:38.2081988+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7f64c66b-1d76-468c-9fff-45d502025d30" />
+    <UnitTestResult executionId="d6e24c21-5d95-4d6b-a0ba-12eb5a1d6122" testId="777a9574-4195-4666-524c-2ca674e9d084" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;sequence-zero&quot;)" computerName="c7669543e9c7" duration="00:00:00.0054326" startTime="2026-10-06T00:28:38.1851086+00:00" endTime="2026-10-06T00:28:38.1851087+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d6e24c21-5d95-4d6b-a0ba-12eb5a1d6122" />
+    <UnitTestResult executionId="05b8c5d7-9778-43c3-b385-edaa9442d7e7" testId="9fd2fe9d-2e11-0ac7-2de3-02e149de5220" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ExistingEmptyNamespace_IsBlockedWithoutBootstrapRepair" computerName="c7669543e9c7" duration="00:00:00.0014848" startTime="2026-10-06T00:28:38.3597848+00:00" endTime="2026-10-06T00:28:38.3597848+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="05b8c5d7-9778-43c3-b385-edaa9442d7e7" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: &quot;LaunchIntent&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="177ffdac-5d6b-1781-f5b0-3fbc6ad1f77d">
+      <Execution id="021ad155-541a-4b33-a5e3-f04cabb53718" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: &quot;Prepared&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="73c8a366-5ead-4255-7ad1-a130a2b9fdb5">
+      <Execution id="5419e2bc-5951-4d05-86a4-2a9afc5092c8" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;extra-temp&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="872c4574-3b7c-9b80-45dc-360bd81a75ab">
+      <Execution id="aaf3418c-d83b-48d2-b34b-847ef434a6b6" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="InvalidInventory_IsBlockedAndNeverRepaired" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;epoch-overflow&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3c44f1ac-9d91-151a-6262-08279d93c46a">
+      <Execution id="1aca98b9-f24e-448d-8d52-f4a1c76cd816" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="InvalidInventory_IsBlockedAndNeverRepaired" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;missing&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9df96784-b734-e2f9-9c23-5bbda8dfbd3e">
+      <Execution id="4fd4419f-e202-4246-8a59-823b35a303c6" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="InvalidInventory_IsBlockedAndNeverRepaired" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: &quot;Uncertain&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0fdc486a-814e-244f-6cce-41c21bc0f48a">
+      <Execution id="df51d4d8-f04e-42a7-acf5-5b9a1e4d8208" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;epoch-without-inventory&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="20635ccf-b153-7d97-c785-405ee73132aa">
+      <Execution id="8c04513f-b03e-4710-afcc-afbf7c96227c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="InvalidInventory_IsBlockedAndNeverRepaired" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;unknown&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4c1435a4-7f09-3c03-deff-5b930944e858">
+      <Execution id="5bb24ceb-a689-4b9b-b15c-388796379b59" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="InvalidInventory_IsBlockedAndNeverRepaired" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.Initialize_PersistsBoundRootStateAndStableLocks" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c5d0ee9c-12e1-2de9-9f5f-1c5fd519aed8">
+      <Execution id="ca4f7ebc-0225-49a7-b0be-d52ec1ca97d7" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="Initialize_PersistsBoundRootStateAndStableLocks" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;schema&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="79a20c3a-6500-8307-2893-ded2124d8cbc">
+      <Execution id="24b8e26c-2dd3-44ef-bd16-be7447bbd2a4" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="InvalidInventory_IsBlockedAndNeverRepaired" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;wrong-root&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4373aa6a-2f4e-ebd1-fd6c-5bd4c735ba7c">
+      <Execution id="26aad262-636d-48a2-b847-8fa54b430aa5" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="InvalidInventory_IsBlockedAndNeverRepaired" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: &quot;ReleaseIntent&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ed48f25e-6651-25ef-61c2-26056adb59be">
+      <Execution id="6cba1673-74d4-45b1-a297-c5d787f70265" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: &quot;CleanupPending&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="439b009e-4575-55bb-a2a4-3e9620159ead">
+      <Execution id="44c15a3c-4507-40c7-84d2-8d5c286eb651" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: &quot;StopValidated&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ab388678-a0fc-ada0-95fa-3ecef6cdf526">
+      <Execution id="1632f645-aaa8-4b43-8f13-ca2578f1eb27" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: &quot;PublicationIntent&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c4777fc3-446e-4f58-9fbf-a8f4990a67c3">
+      <Execution id="4775377d-4467-439e-b36d-0778cd185a55" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: &quot;Published&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="decb7116-f6b6-6df7-6f60-2ef1ab540701">
+      <Execution id="be8fd4c7-5313-4280-b918-44dfe50991c6" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;oversize&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a549093d-056e-4f27-18cb-5776e5b79d36">
+      <Execution id="2bf9f650-daa0-446a-8ab7-81cce1d69a12" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="InvalidInventory_IsBlockedAndNeverRepaired" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ExistingEmptyNamespace_IsBlockedWithoutBootstrapRepair" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9fd2fe9d-2e11-0ac7-2de3-02e149de5220">
+      <Execution id="05b8c5d7-9778-43c3-b385-edaa9442d7e7" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="ExistingEmptyNamespace_IsBlockedWithoutBootstrapRepair" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;entries-wrong-type&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b51870de-8eff-7cb0-588d-4b7880f19303">
+      <Execution id="7f64c66b-1d76-468c-9fff-45d502025d30" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="InvalidInventory_IsBlockedAndNeverRepaired" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;missing-state&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="102bf446-c4d9-a61f-7270-47e989ddc433">
+      <Execution id="60a6af00-7d92-4266-86cd-79770f2baf9b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="InvalidInventory_IsBlockedAndNeverRepaired" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;duplicate&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="010896b7-85b8-a30d-62ca-f501d81d687e">
+      <Execution id="8608fc13-0530-4073-bfc2-c473b343af15" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="InvalidInventory_IsBlockedAndNeverRepaired" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: &quot;Released&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f07d119c-db8f-86da-482a-e85999ef2326">
+      <Execution id="82b8872e-d1ac-4110-b5fd-14a061e018e0" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdMissing_IsReadOnlyAndDoesNotCreateNamespace" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0a769d43-87d9-94f0-a764-bf590c854818">
+      <Execution id="c2b26d21-241d-4fae-a600-f29d8750222b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="ColdMissing_IsReadOnlyAndDoesNotCreateNamespace" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;invalid-utf8&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a0ca4a08-0f0e-503a-4ee1-e28185fbff70">
+      <Execution id="b80729e4-7fb7-4560-bab8-51f542b3892c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="InvalidInventory_IsBlockedAndNeverRepaired" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;retired-wrong-type&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6fa95718-bda3-5994-4c00-6a74b0c35fbb">
+      <Execution id="4fd34698-cf42-4157-ae20-191d3c8cb7d8" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="InvalidInventory_IsBlockedAndNeverRepaired" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;sequence-zero&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="777a9574-4195-4666-524c-2ca674e9d084">
+      <Execution id="d6e24c21-5d95-4d6b-a0ba-12eb5a1d6122" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="InvalidInventory_IsBlockedAndNeverRepaired" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.PreparedEntry_PersistsIdentityAndColdRestartCannotAdoptIt" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="da5d1e19-49ab-34e0-a38c-f35fc2f16953">
+      <Execution id="2cf75634-fd16-4850-bf63-6126c2d809c8" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="PreparedEntry_PersistsIdentityAndColdRestartCannotAdoptIt" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: &quot;epoch-negative&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="345c7f63-d26d-ea91-c4fb-641590bdda7b">
+      <Execution id="ea35e6e9-182b-4c7b-a507-875016100657" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="InvalidInventory_IsBlockedAndNeverRepaired" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="9df96784-b734-e2f9-9c23-5bbda8dfbd3e" executionId="4fd4419f-e202-4246-8a59-823b35a303c6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="102bf446-c4d9-a61f-7270-47e989ddc433" executionId="60a6af00-7d92-4266-86cd-79770f2baf9b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a549093d-056e-4f27-18cb-5776e5b79d36" executionId="2bf9f650-daa0-446a-8ab7-81cce1d69a12" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4373aa6a-2f4e-ebd1-fd6c-5bd4c735ba7c" executionId="26aad262-636d-48a2-b847-8fa54b430aa5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="345c7f63-d26d-ea91-c4fb-641590bdda7b" executionId="ea35e6e9-182b-4c7b-a507-875016100657" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c5d0ee9c-12e1-2de9-9f5f-1c5fd519aed8" executionId="ca4f7ebc-0225-49a7-b0be-d52ec1ca97d7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="872c4574-3b7c-9b80-45dc-360bd81a75ab" executionId="aaf3418c-d83b-48d2-b34b-847ef434a6b6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0a769d43-87d9-94f0-a764-bf590c854818" executionId="c2b26d21-241d-4fae-a600-f29d8750222b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="73c8a366-5ead-4255-7ad1-a130a2b9fdb5" executionId="5419e2bc-5951-4d05-86a4-2a9afc5092c8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6fa95718-bda3-5994-4c00-6a74b0c35fbb" executionId="4fd34698-cf42-4157-ae20-191d3c8cb7d8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ed48f25e-6651-25ef-61c2-26056adb59be" executionId="6cba1673-74d4-45b1-a297-c5d787f70265" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="177ffdac-5d6b-1781-f5b0-3fbc6ad1f77d" executionId="021ad155-541a-4b33-a5e3-f04cabb53718" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f07d119c-db8f-86da-482a-e85999ef2326" executionId="82b8872e-d1ac-4110-b5fd-14a061e018e0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="20635ccf-b153-7d97-c785-405ee73132aa" executionId="8c04513f-b03e-4710-afcc-afbf7c96227c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="010896b7-85b8-a30d-62ca-f501d81d687e" executionId="8608fc13-0530-4073-bfc2-c473b343af15" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c4777fc3-446e-4f58-9fbf-a8f4990a67c3" executionId="4775377d-4467-439e-b36d-0778cd185a55" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="decb7116-f6b6-6df7-6f60-2ef1ab540701" executionId="be8fd4c7-5313-4280-b918-44dfe50991c6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3c44f1ac-9d91-151a-6262-08279d93c46a" executionId="1aca98b9-f24e-448d-8d52-f4a1c76cd816" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0fdc486a-814e-244f-6cce-41c21bc0f48a" executionId="df51d4d8-f04e-42a7-acf5-5b9a1e4d8208" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4c1435a4-7f09-3c03-deff-5b930944e858" executionId="5bb24ceb-a689-4b9b-b15c-388796379b59" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="da5d1e19-49ab-34e0-a38c-f35fc2f16953" executionId="2cf75634-fd16-4850-bf63-6126c2d809c8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a0ca4a08-0f0e-503a-4ee1-e28185fbff70" executionId="b80729e4-7fb7-4560-bab8-51f542b3892c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="79a20c3a-6500-8307-2893-ded2124d8cbc" executionId="24b8e26c-2dd3-44ef-bd16-be7447bbd2a4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ab388678-a0fc-ada0-95fa-3ecef6cdf526" executionId="1632f645-aaa8-4b43-8f13-ca2578f1eb27" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="439b009e-4575-55bb-a2a4-3e9620159ead" executionId="44c15a3c-4507-40c7-84d2-8d5c286eb651" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b51870de-8eff-7cb0-588d-4b7880f19303" executionId="7f64c66b-1d76-468c-9fff-45d502025d30" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="777a9574-4195-4666-524c-2ca674e9d084" executionId="d6e24c21-5d95-4d6b-a0ba-12eb5a1d6122" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9fd2fe9d-2e11-0ac7-2de3-02e149de5220" executionId="05b8c5d7-9778-43c3-b385-edaa9442d7e7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="28" executed="28" passed="14" failed="14" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.16]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.14]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.16]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.29]       System.IO.InvalidDataException : Worker run record is invalid.
+[xUnit.net 00:00:01.29]       Stack Trace:
+[xUnit.net 00:00:01.29]         /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerRunRecordCodec.cs(94,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerRunRecordCodec.Object(JsonElement element, String[] names)
+[xUnit.net 00:00:01.29]         /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs(54,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerRunLedger.ReadInitial(WorkerLedgerTarget target, Byte[] bytes)
+[xUnit.net 00:00:01.29]         /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs(31,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerRunLedger.ObserveAsync(WorkerLedgerTarget target, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.29]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs(117,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(String mutation)
+[xUnit.net 00:00:01.29]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.30]       System.IO.InvalidDataException : Worker run record is invalid.
+[xUnit.net 00:00:01.30]       Stack Trace:
+[xUnit.net 00:00:01.30]         /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerRunRecordCodec.cs(95,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerRunRecordCodec.Object(JsonElement element, String[] names)
+[xUnit.net 00:00:01.30]         /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs(54,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerRunLedger.ReadInitial(WorkerLedgerTarget target, Byte[] bytes)
+[xUnit.net 00:00:01.30]         /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs(31,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerRunLedger.ObserveAsync(WorkerLedgerTarget target, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.30]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs(117,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(String mutation)
+[xUnit.net 00:00:01.30]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.33]       System.IO.InvalidDataException : Worker run record is invalid.
+[xUnit.net 00:00:01.33]       Stack Trace:
+[xUnit.net 00:00:01.33]         /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerRunRecordCodec.cs(94,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerRunRecordCodec.Object(JsonElement element, String[] names)
+[xUnit.net 00:00:01.33]         /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs(54,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerRunLedger.ReadInitial(WorkerLedgerTarget target, Byte[] bytes)
+[xUnit.net 00:00:01.33]         /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs(31,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerRunLedger.ObserveAsync(WorkerLedgerTarget target, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.33]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs(117,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(String mutation)
+[xUnit.net 00:00:01.33]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.38]       System.FormatException : One of the identified items was in an invalid format.
+[xUnit.net 00:00:01.38]       Stack Trace:
+[xUnit.net 00:00:01.38]            at System.Text.Json.ThrowHelper.ThrowFormatException()
+[xUnit.net 00:00:01.38]            at System.Text.Json.JsonElement.GetInt64()
+[xUnit.net 00:00:01.38]         /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs(55,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerRunLedger.ReadInitial(WorkerLedgerTarget target, Byte[] bytes)
+[xUnit.net 00:00:01.38]         /workspace/native-1553/BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs(31,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerRunLedger.ObserveAsync(WorkerLedgerTarget target, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.38]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs(117,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(String mutation)
+[xUnit.net 00:00:01.38]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.43]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.43]       Expected: Uncertain
+[xUnit.net 00:00:01.43]       Actual:   Blocked
+[xUnit.net 00:00:01.43]       Stack Trace:
+[xUnit.net 00:00:01.43]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs(66,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(String phase)
+[xUnit.net 00:00:01.43]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.44]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.44]       Expected: Uncertain
+[xUnit.net 00:00:01.44]       Actual:   Blocked
+[xUnit.net 00:00:01.44]       Stack Trace:
+[xUnit.net 00:00:01.44]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs(66,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(String phase)
+[xUnit.net 00:00:01.44]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.45]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.45]       Expected: Uncertain
+[xUnit.net 00:00:01.45]       Actual:   Blocked
+[xUnit.net 00:00:01.45]       Stack Trace:
+[xUnit.net 00:00:01.45]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs(66,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(String phase)
+[xUnit.net 00:00:01.45]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.45]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.45]       Expected: Uncertain
+[xUnit.net 00:00:01.45]       Actual:   Blocked
+[xUnit.net 00:00:01.45]       Stack Trace:
+[xUnit.net 00:00:01.45]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs(66,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(String phase)
+[xUnit.net 00:00:01.45]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.46]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.46]       Expected: Uncertain
+[xUnit.net 00:00:01.46]       Actual:   Blocked
+[xUnit.net 00:00:01.46]       Stack Trace:
+[xUnit.net 00:00:01.46]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs(66,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(String phase)
+[xUnit.net 00:00:01.46]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.46]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.46]       Expected: Uncertain
+[xUnit.net 00:00:01.46]       Actual:   Blocked
+[xUnit.net 00:00:01.46]       Stack Trace:
+[xUnit.net 00:00:01.46]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs(66,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(String phase)
+[xUnit.net 00:00:01.46]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.47]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.47]       Expected: Uncertain
+[xUnit.net 00:00:01.47]       Actual:   Blocked
+[xUnit.net 00:00:01.47]       Stack Trace:
+[xUnit.net 00:00:01.47]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs(66,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(String phase)
+[xUnit.net 00:00:01.47]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.47]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.47]       Expected: Uncertain
+[xUnit.net 00:00:01.47]       Actual:   Blocked
+[xUnit.net 00:00:01.47]       Stack Trace:
+[xUnit.net 00:00:01.47]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs(66,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(String phase)
+[xUnit.net 00:00:01.47]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.48]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.48]       Expected: Uncertain
+[xUnit.net 00:00:01.48]       Actual:   Blocked
+[xUnit.net 00:00:01.48]       Stack Trace:
+[xUnit.net 00:00:01.48]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs(66,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(String phase)
+[xUnit.net 00:00:01.48]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.49]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.49]       Expected: Applied
+[xUnit.net 00:00:01.49]       Actual:   Blocked
+[xUnit.net 00:00:01.49]       Stack Trace:
+[xUnit.net 00:00:01.49]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs(22,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.PreparedEntry_PersistsIdentityAndColdRestartCannotAdoptIt()
+[xUnit.net 00:00:01.49]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs(31,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.PreparedEntry_PersistsIdentityAndColdRestartCannotAdoptIt()
+[xUnit.net 00:00:01.49]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.51]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:28:38.1656639+00:00">
+        <Text>[xUnit.net 00:00:01.29]     BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: "unknown") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:28:38.1744944+00:00">
+        <Text>[xUnit.net 00:00:01.30]     BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: "missing") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:28:38.2016277+00:00">
+        <Text>[xUnit.net 00:00:01.33]     BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: "duplicate") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:28:38.2982605+00:00">
+        <Text>[xUnit.net 00:00:01.38]     BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired(mutation: "epoch-overflow") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:28:38.3069356+00:00">
+        <Text>[xUnit.net 00:00:01.43]     BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: "Prepared") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:28:38.3153517+00:00">
+        <Text>[xUnit.net 00:00:01.44]     BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: "CleanupPending") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:28:38.3212901+00:00">
+        <Text>[xUnit.net 00:00:01.45]     BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: "StopValidated") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:28:38.3264837+00:00">
+        <Text>[xUnit.net 00:00:01.45]     BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: "Published") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:28:38.3316947+00:00">
+        <Text>[xUnit.net 00:00:01.46]     BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: "ReleaseIntent") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:28:38.3368600+00:00">
+        <Text>[xUnit.net 00:00:01.46]     BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: "LaunchIntent") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:28:38.3421787+00:00">
+        <Text>[xUnit.net 00:00:01.47]     BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: "PublicationIntent") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:28:38.3472189+00:00">
+        <Text>[xUnit.net 00:00:01.47]     BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: "Released") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:28:38.3524166+00:00">
+        <Text>[xUnit.net 00:00:01.48]     BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(phase: "Uncertain") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:28:38.3587054+00:00">
+        <Text>[xUnit.net 00:00:01.49]     BookOfEternityClient.Tests.GmWorkerRunLedgerTests.PreparedEntry_PersistsIdentityAndColdRestartCannotAdoptIt [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

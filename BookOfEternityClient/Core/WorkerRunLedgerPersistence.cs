@@ -74,18 +74,35 @@ internal sealed class WorkerRunLedgerPersistence : IDisposable
 
     internal void PublishInitial(byte[] bytes)
     {
-        if (!CreatedNamespace || bytes.Length > MaximumStateBytes) throw Invalid();
+        if (!CreatedNamespace) throw Invalid();
+        PublishExact(null, bytes);
+    }
+
+    internal void PublishPrepared(byte[] expected, WorkerRunRecord record)
+    {
+        var before = GmWorkerRunLedgerCodec.Decode(_target, expected);
+        var next = GmWorkerRunLedgerCodec.AddPrepared(before, record);
+        PublishExact(expected, GmWorkerRunLedgerCodec.Encode(next));
+    }
+
+    // Generic byte CAS is private; callers select only closed typed operations.
+    private void PublishExact(byte[]? expected, byte[] bytes)
+    {
+        if (bytes.Length > MaximumStateBytes) throw Invalid();
         RequireAuthority(); _journal.Lock();
         try
         {
             RequireAuthority();
             var state = _scope.ValidateFile(Path.Combine(_target.DirectoryPath, "state.json"));
-            if (File.Exists(state)) throw Invalid();
+            if (expected is null ? File.Exists(state) :
+                !ReadBounded(_scope, state, MaximumStateBytes).AsSpan().SequenceEqual(expected)) throw Invalid();
             var temporary = _scope.ValidateFile(Path.Combine(_target.DirectoryPath, "state-" + Guid.NewGuid().ToString("N") + ".tmp"));
             using (var stream = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None))
             { stream.Write(bytes); stream.Flush(flushToDisk: true); }
             RequireAuthority();
-            File.Move(temporary, state, overwrite: false);
+            if (expected is null ? File.Exists(state) :
+                !ReadBounded(_scope, state, MaximumStateBytes).AsSpan().SequenceEqual(expected)) throw Invalid();
+            File.Move(temporary, state, overwrite: expected is not null);
             SyncDirectory(_target.DirectoryPath);
             RequireAuthority();
         }

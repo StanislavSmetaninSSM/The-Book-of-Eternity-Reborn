@@ -61,8 +61,15 @@ GREEN at `f8be8c5fb55981ba09c673c641a88ecf6b36afcc`:3/3PASS,40.5206171s, cleanup
 complete, no timeout. Evidence: recovery/evidence/worker-ledger-init-green/manifest.json.
 No access/environment blocker. Stateful preparation/transitions/archive
 are still unavailable. Prepared reservation scaffold plus nine seeded cold phases and15 inventory corruption
-checks are now added. The28-case storage selection will distinguish causal unsupported
-preparation/cold records from passing corruption guards. Next run is only
+checks are now added. Source `c581ba1a9599a3e988e9d5242f5a5b79974cca86` executed28:14PASS/14FAIL,
+42.7395790s, cleanup complete. Ten causal missing Prepared/cold-progress cases and
+four causal typed-refusal defects: InvalidDataException/FormatException escaped the
+storage observation filter. Those are actual executed behavior failures, not build
+preparation failures. Evidence: recovery/evidence/worker-ledger-prepared-red/manifest.json.
+Added closed Prepared persistence, bounded state codec and explicit refusal for those
+exception types; GREEN pending. State accounts for every allocated epoch, preventing
+an incomplete inventory from looking quiescent. Archives remain unsupported until the
+prelaunch-only retirement test block. Next run is only
 `-Category worker-run-ledger-storage-linux`; no unchanged44-record rerun. Parent status request answered in commentary;
 this durable checkpoint records actual progress independently of delegation status UI. Default CI selection retains the
 portable record category; explicit Linux selection adds the native storage category.

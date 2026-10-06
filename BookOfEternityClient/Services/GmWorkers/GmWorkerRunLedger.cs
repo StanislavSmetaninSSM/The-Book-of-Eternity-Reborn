@@ -1,4 +1,3 @@
-using System.Text;
 using System.Text.Json;
 using BookOfEternityClient.Core;
 
@@ -28,7 +27,7 @@ internal static class GmWorkerRunLedger
         try
         {
             var bytes = WorkerRunLedgerPersistence.ReadSnapshot(target);
-            return Task.FromResult(bytes is null ? new WorkerLedgerObservation(WorkerRunObservationKind.Missing, 0, 0, []) : ReadInitial(target, bytes));
+            return Task.FromResult(bytes is null ? new WorkerLedgerObservation(WorkerRunObservationKind.Missing, 0, 0, []) : ObserveState(GmWorkerRunLedgerCodec.Decode(target, bytes)));
         }
         catch (Exception error) when (Unavailable(error))
         { return Task.FromResult(new WorkerLedgerObservation(WorkerRunObservationKind.Blocked, 0, 0, [])); }
@@ -37,30 +36,16 @@ internal static class GmWorkerRunLedger
     internal static Task<WorkerRunLedgerCoordinator?> OpenCoordinatorAsync(WorkerLedgerTarget target, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        WorkerRunLedgerPersistence? storage = null;
-        try
-        {
-            storage = WorkerRunLedgerPersistence.Open(target);
-            if (!storage.CreatedNamespace) _ = ReadInitial(target, WorkerRunLedgerPersistence.ReadSnapshot(target)!);
-            return Task.FromResult<WorkerRunLedgerCoordinator?>(new(storage, target));
-        }
-        catch (Exception error) when (Unavailable(error))
-        { storage?.Dispose(); return Task.FromResult<WorkerRunLedgerCoordinator?>(null); }
+        return WorkerRunLedgerCoordinator.OpenAsync(target);
     }
 
-    private static WorkerLedgerObservation ReadInitial(WorkerLedgerTarget target, byte[] bytes)
-    {
-        using var json = JsonDocument.Parse(new UTF8Encoding(false, true).GetString(bytes), new JsonDocumentOptions { MaxDepth = 8 });
-        var root = GmWorkerRunRecordCodec.Object(json.RootElement, "SchemaVersion", "RootKey", "Sequence", "EpochHighWater", "Entries", "Retired");
-        if (root.GetProperty("SchemaVersion").GetInt32() != 1 || GmWorkerRunRecordCodec.String(root, "RootKey") != target.RootPath ||
-            root.GetProperty("Sequence").GetInt64() != 1 || root.GetProperty("EpochHighWater").GetInt64() != 0 ||
-            root.GetProperty("Entries").GetArrayLength() != 0 || root.GetProperty("Retired").GetArrayLength() != 0)
-            throw WorkerRunLedgerPersistence.Invalid();
-        return new(WorkerRunObservationKind.Quiescent, 1, 0, []);
-    }
+    internal static WorkerLedgerObservation ObserveState(WorkerLedgerState state) => new(
+        state.Entries.Length == 0 ? WorkerRunObservationKind.Quiescent : WorkerRunObservationKind.Uncertain,
+        state.Sequence, state.EpochHighWater, Array.AsReadOnly(state.Entries));
 
-    internal static bool Unavailable(Exception error) => error is IOException or UnauthorizedAccessException or
-        JsonException or ArgumentException or InvalidOperationException or OverflowException or PlatformNotSupportedException;
+    internal static bool Unavailable(Exception error) => error is IOException or InvalidDataException or UnauthorizedAccessException or
+        JsonException or ArgumentException or InvalidOperationException or FormatException or OverflowException or
+        PlatformNotSupportedException or EntryPointNotFoundException or DllNotFoundException;
 }
 
 internal sealed class WorkerRunLedgerCoordinator : IAsyncDisposable
@@ -68,14 +53,64 @@ internal sealed class WorkerRunLedgerCoordinator : IAsyncDisposable
     private readonly WorkerRunLedgerPersistence _storage;
     private readonly WorkerLedgerTarget _target;
     private readonly SemaphoreSlim _gate = new(1, 1);
-    private bool _disposed, _pending, _initialized;
-    internal WorkerRunLedgerCoordinator(WorkerRunLedgerPersistence storage, WorkerLedgerTarget target)
-    { _storage = storage; _target = target; _initialized = !storage.CreatedNamespace; }
+    private bool _disposed, _pending;
+    private WorkerLedgerState? _state;
+    private byte[]? _stateBytes;
+    private readonly string _hostInstance = Guid.NewGuid().ToString("N");
+    private readonly Dictionary<string, WorkerRunEntryHandle> _ownedEntries = new(StringComparer.Ordinal);
+    private WorkerRunLedgerCoordinator(WorkerRunLedgerPersistence storage, WorkerLedgerTarget target,
+        WorkerLedgerState? state, byte[]? bytes)
+    { _storage = storage; _target = target; _state = state; _stateBytes = bytes; }
 
-    internal long Sequence => 1;
-    // Prepared storage is not implemented yet: causal R1 reservation RED scaffold.
-    internal Task<WorkerLedgerMutationResult> PrepareAsync(WorkerRunPreparation preparation, long expectedSequence,
-        CancellationToken cancellationToken = default) => Task.FromResult(new WorkerLedgerMutationResult(WorkerLedgerMutationKind.Blocked));
+    internal long Sequence => _state?.Sequence ?? 0;
+    internal static Task<WorkerRunLedgerCoordinator?> OpenAsync(WorkerLedgerTarget target)
+    {
+        WorkerRunLedgerPersistence? storage = null;
+        try
+        {
+            storage = WorkerRunLedgerPersistence.Open(target);
+            byte[]? bytes = null; WorkerLedgerState? state = null;
+            if (!storage.CreatedNamespace)
+            {
+                bytes = WorkerRunLedgerPersistence.ReadSnapshot(target) ?? throw WorkerRunLedgerPersistence.Invalid();
+                state = GmWorkerRunLedgerCodec.Decode(target, bytes);
+                // R1 cannot adopt cold active entries. This is not a pool/root dispatch policy.
+                if (state.Entries.Length != 0) throw WorkerRunLedgerPersistence.Invalid();
+            }
+            return Task.FromResult<WorkerRunLedgerCoordinator?>(new(storage, target, state, bytes));
+        }
+        catch (Exception error) when (GmWorkerRunLedger.Unavailable(error))
+        { storage?.Dispose(); return Task.FromResult<WorkerRunLedgerCoordinator?>(null); }
+    }
+
+    internal async Task<WorkerLedgerMutationResult> PrepareAsync(WorkerRunPreparation preparation, long expectedSequence,
+        CancellationToken cancellationToken = default)
+    {
+        await _gate.WaitAsync(cancellationToken);
+        try
+        {
+            if (_disposed || _state is null || _pending || expectedSequence != _state.Sequence)
+                return new(WorkerLedgerMutationKind.Blocked);
+            cancellationToken.ThrowIfCancellationRequested();
+            WorkerRunRecord record; WorkerLedgerState next;
+            try
+            {
+                record = new(1, new(_target.RootPath, checked(_state.EpochHighWater + 1), Guid.NewGuid().ToString("N"),
+                    preparation.GenerationId, preparation.WorkerId, preparation.TaskId, preparation.TaskSha256,
+                    preparation.Backend, preparation.Scope, _hostInstance, preparation.WorkspacePath), WorkerRunPhase.Prepared);
+                next = GmWorkerRunLedgerCodec.AddPrepared(_state, record);
+            }
+            catch (Exception error) when (GmWorkerRunLedger.Unavailable(error)) { return new(WorkerLedgerMutationKind.Blocked); }
+            try { _storage.PublishPrepared(_stateBytes!, record); }
+            catch (Exception error) when (GmWorkerRunLedger.Unavailable(error))
+            { _pending = true; return new(WorkerLedgerMutationKind.CommitPending); }
+            _state = next; _stateBytes = GmWorkerRunLedgerCodec.Encode(next);
+            var entry = new WorkerRunEntryHandle(record.Identity);
+            _ownedEntries.Add(record.Identity.RunId, entry);
+            return new(WorkerLedgerMutationKind.Applied, entry);
+        }
+        finally { _gate.Release(); }
+    }
 
     internal async Task<WorkerLedgerMutationKind> InitializeAsync(CancellationToken cancellationToken = default)
     {
@@ -84,11 +119,11 @@ internal sealed class WorkerRunLedgerCoordinator : IAsyncDisposable
         {
             if (_disposed) return WorkerLedgerMutationKind.Blocked;
             if (_pending) return WorkerLedgerMutationKind.CommitPending;
-            if (_initialized) return WorkerLedgerMutationKind.AlreadyExact;
+            if (_state is not null) return WorkerLedgerMutationKind.AlreadyExact;
             cancellationToken.ThrowIfCancellationRequested();
-            var bytes = JsonSerializer.SerializeToUtf8Bytes(new { SchemaVersion = 1, RootKey = _target.RootPath,
-                Sequence = 1L, EpochHighWater = 0L, Entries = Array.Empty<WorkerRunRecord>(), Retired = Array.Empty<object>() });
-            try { _storage.PublishInitial(bytes); _initialized = true; return WorkerLedgerMutationKind.Applied; }
+            var initial = GmWorkerRunLedgerCodec.Initial(_target);
+            var bytes = GmWorkerRunLedgerCodec.Encode(initial);
+            try { _storage.PublishInitial(bytes); _state = initial; _stateBytes = bytes; return WorkerLedgerMutationKind.Applied; }
             catch (Exception error) when (GmWorkerRunLedger.Unavailable(error))
             { _pending = true; return WorkerLedgerMutationKind.CommitPending; }
         }
