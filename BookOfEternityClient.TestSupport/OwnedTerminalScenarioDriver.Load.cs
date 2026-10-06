@@ -16,7 +16,8 @@ internal static partial class OwnedTerminalScenarioDriver
         var files=new FileSystemManager(Path.Combine(folder,"root"),NullLogger<FileSystemManager>.Instance);
         var settings=JsonSerializer.Deserialize<GameSettings>(File.ReadAllBytes(files.ResolvePath("config.json")))!;
         var state=new StateManager(files,settings,NullLogger<StateManager>.Instance);
-        var save=new SaveLoadService(files,state,NullLogger<SaveLoadService>.Instance);
+        var save=new SaveLoadService(files,state,NullLogger<SaveLoadService>.Instance,mode.EndsWith("debt",StringComparison.Ordinal)?new SaveLoadServiceHooks{
+            BeforeLoadPreparationCleanupAsync=_=>Task.FromException(new IOException("controlled committed preparation cleanup debt"))}:null);
         var writes=new BrowserLocalWriteCoordinator(files,new LocalUiSessionLockService(files));
         var status=new LocalWebUiSessionStatusService(files,writes);
         var dashboard=new BrowserLifecycleDashboardService(files,status,new ValidationService(files,NullLogger<ValidationService>.Instance));
@@ -25,12 +26,17 @@ internal static partial class OwnedTerminalScenarioDriver
         if(mode.Contains("http",StringComparison.Ordinal)) {
             await RunBrowserHttpLoadAsync(mode,folder,host,hostType,rpc,original,evidence,files,settings,path);return;
         }
-        if(mode=="production-main-load-console") {
+        if(mode.StartsWith("production-main-load-console",StringComparison.Ordinal)) {
             var engine=ProductionLoadGameEngine.Create(files,settings,save);
             var load=(Task<LoadReplacementResult>)typeof(GameEngine).GetMethod("LoadSelectedSaveWithMainLifecycleAsync",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(engine,[path])!;
             var console=await load; evidence["ConsoleLoadResult"]=new{console.Disposition,console.EstablishedGeneration,console.SelectedSourcePath,console.NeedsFollowUp,console.ContinuationBlocked,Failure=console.Failure?.ToString()};
             if(console.Disposition!=LoadReplacementDisposition.Committed)throw new InvalidOperationException("Causal RED: actual console selected Load refused the original Running GM: "+console.Disposition);
             if(!original.RootExited.IsCompleted)throw new InvalidOperationException("Console replacement preceded original stop.");
+            if(mode.EndsWith("debt",StringComparison.Ordinal)) {
+                if(!console.NeedsFollowUp || !console.ContinuationBlocked || hostType.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!=null)
+                    throw new InvalidOperationException("Causal RED: committed cleanup debt freshly launched a GM instead of retaining the decision and stopping continuation.");
+                return;
+            }
             var current=(GmSessionRunCoordinator?)hostType.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host);
             if(console.ContinuationBlocked || current?.Record?.Disposition!=GmSessionRunDisposition.Running || current.Identity.GenerationId!=console.EstablishedGeneration)
                 throw new InvalidOperationException("Console mandatory refresh/fresh launch is unconfirmed: "+console.Failure?.Message);

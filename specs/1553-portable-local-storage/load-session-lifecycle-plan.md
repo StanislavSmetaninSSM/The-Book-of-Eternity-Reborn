@@ -87,3 +87,7 @@ At clean ebdf6b99 the console case1FAIL confirms Committed but correctly refuses
 ### Independent source-review causal gaps
 
 Pinned ebdf independent Sol identified premature null-generation completion before full bundle, malformed fresh receipt navigation and cleanup-debt launch mismatch. Added actual HTTP early-ACK oracle and real frontend malformed/lost receipt oracles before fixes. Console fixture schema refinements affect only isolated archive, not runtime. New causal tests pending; no completion claim.
+
+### Review gaps causal RED and minimal fixes
+
+At8d71b38a actual early ACK1FAIL authorized fresh launch before bundle application; both handlers4FAIL/2PASS proved malformed receipt navigation and lost reply message defects. Guardians clean. Added explicit AwaitingApplication + required nonempty matching generation and normalized fresh identity/notice validation. Added next cleanup-debt and explicit-receipt-field oracles before corresponding fixes. Console isolated archive now matches existing accepted achievement/codex seed contract rather than weakening validator; positive console remains pending.

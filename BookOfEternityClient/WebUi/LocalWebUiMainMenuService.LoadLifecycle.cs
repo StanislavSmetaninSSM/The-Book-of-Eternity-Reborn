@@ -13,7 +13,7 @@ public sealed partial class LocalWebUiMainMenuService
         internal readonly TaskCompletionSource<bool> Applied=new(TaskCreationOptions.RunContinuationsAsynchronously);
         internal Task<BrowserLoadSaveResultDto> Execution=null!;
         internal BrowserLoadSaveResultDto? Retained;
-        internal bool CompletionSent,Cancelled,Restarting;
+        internal bool AwaitingApplication,CompletionSent,Cancelled,Restarting;
     }
     private readonly object _loadGate=new();
     private BrowserLoad? _browserLoad;
@@ -52,7 +52,8 @@ public sealed partial class LocalWebUiMainMenuService
                 if(original.HadSession && result.Disposition==LoadReplacementDisposition.Committed && !result.ContinuationBlocked) {
                     if(result.State==null)result=BlockLoad(result,"Сохранение загружено. Полное обновление интерфейса не подготовлено; новый ГМ не запущен.");
                     else {
-                        result=result with{FreshLaunchRequired=true};operation.Retained=result;
+                        result=result with{FreshLaunchRequired=true};
+                        lock(operation.Gate){operation.Retained=result;operation.AwaitingApplication=true;}
                         operation.Ready.TrySetResult(result);
                         try {applied=await operation.Applied.Task.WaitAsync(TimeSpan.FromSeconds(30));}
                         catch(TimeoutException){CancelOriginal(operation);}
@@ -90,7 +91,8 @@ public sealed partial class LocalWebUiMainMenuService
         BrowserLoad? operation;lock(_loadGate)operation=_browserLoad;
         if(operation==null || operation.Id!=request.OperationId)return LoadRefusal(request.OperationId,"Исходная операция загрузки больше не ожидает подтверждения.");
         lock(operation.Gate) {
-            if(operation.CompletionSent || operation.Retained?.EstablishedGeneration!=request.EstablishedGeneration)
+            if(!operation.AwaitingApplication || operation.CompletionSent || operation.Retained?.FreshLaunchRequired!=true ||
+                string.IsNullOrWhiteSpace(request.EstablishedGeneration) || operation.Retained.EstablishedGeneration!=request.EstablishedGeneration)
                 return BlockLoad(operation.Retained??LoadRefusal(operation.Id,""),"Устаревшее или повторное подтверждение загрузки отклонено.");
             operation.CompletionSent=true;
             if(!request.RefreshConfirmed)operation.Cancelled=true;

@@ -2,6 +2,52 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-load-protocol",
+      "responsibility": "Causal real console selected-Load original owner stop/replacement/refresh/fresh session; isolated configured neutral CLI only",
+      "excludes": "No provider/model/EnterGameLoop/native Windows/systemd or unrelated console cohorts",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmLoadSessionProtocolTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-load-cleanup-debt",
+      "responsibility": "Causal real console selected-Load original owner stop/replacement/refresh/fresh session; isolated configured neutral CLI only",
+      "excludes": "No provider/model/EnterGameLoop/native Windows/systemd or unrelated console cohorts",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_CommittedCleanupDebtCannotLaunchFresh"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-load-early-ack",
       "responsibility": "Actual loopback Load/full-bundle completion endpoints and installed production original GM stop/current refresh/fresh epoch; configured neutral CLI",
       "excludes": "No live browser/provider/native Windows/systemd or broad prior cohorts",

@@ -55,9 +55,9 @@ export async function executeBrowserLoad(
   const abandon = async () => { if (lifecycle) try { await lifecycle.cancel(notice.establishedGeneration); } catch { /* No retry. */ } };
   retain(notice);
   const publish = () => { if (isCurrent()) apply(notice); };
-  const stop = () => {
+  const stop = (reason = 'Обновление текущего состояния не подтверждено.') => {
     notice = { ...notice, needsFollowUp: true, continuationBlocked: true,
-      message: `${notice.message} Обновление текущего состояния не подтверждено. Продолжение остановлено до проверки книги.` };
+      message: `${notice.message} ${reason} Продолжение остановлено до проверки книги.` };
     retain(notice); publish(); block(notice);
   };
   publish();
@@ -78,12 +78,14 @@ export async function executeBrowserLoad(
     let completed: BrowserApiResult<BrowserLoadSaveResultDto> | undefined;
     try { completed = await lifecycle.complete(notice.establishedGeneration); } catch { /* Preserve Committed. */ }
     const fresh = completed?.ok ? completed.data : completed?.payload as BrowserLoadSaveResultDto | undefined;
+    const completedNotice = toLoadNotice(completed);
     if (!fresh || fresh.lifecycleOperationId !== lifecycle.operationId || fresh.disposition !== notice.disposition ||
         fresh.establishedGeneration !== notice.establishedGeneration || fresh.freshLaunchRequired !== false ||
-        fresh.mainSessionState !== 'Running' || fresh.continuationBlocked !== false || !isCurrent()) {
-      stop(); return notice;
+        fresh.mainSessionState !== 'Running' || completedNotice.continuationBlocked ||
+        completedNotice.loadedSaveId !== notice.loadedSaveId || completedNotice.selectedSourcePath !== notice.selectedSourcePath || !isCurrent()) {
+      stop('Новая сессия ГМа не подтверждена; неизвестная команда не повторяется.'); return notice;
     }
-    notice = toLoadNotice(completed); retain(notice); publish();
+    notice = completedNotice; retain(notice); publish();
   }
   if (notice.disposition === 'Committed') navigate();
   return notice;

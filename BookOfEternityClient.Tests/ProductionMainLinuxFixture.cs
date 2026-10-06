@@ -55,13 +55,13 @@ internal static class ProductionMainLinuxFixture
         json["GmMainOwnerBackend"]=JsonSerializer.SerializeToElement("NativeLineage");File.WriteAllText(Path.Combine(files.GameSessionPath,"config.json"),JsonSerializer.Serialize(json));
         if(mode.StartsWith("production-main-load-",StringComparison.Ordinal)) {
             var archiveState=PortableSaveFixture.Seed(files);
-            if(mode=="production-main-load-console") {
+            if(mode.StartsWith("production-main-load-console",StringComparison.Ordinal)) {
                 // Complete isolated Mortal fixture; the real required-refresh validator remains active.
                 var extra=new Dictionary<string,string> {
                     ["game_state/core/player_status.json"]="{\"currentCondition\":\"neutral fixture\",\"money\":0}",
                     ["game_state/inventory/item_identity_index.json"]="{\"schemaVersion\":1,\"entries\":[]}",
-                    ["game_state/meta/achievements.json"]="{\"unlockedAchievements\":[]}",
-                    ["lore/codex_entries.json"]="{\"entries\":[],\"categories\":[],\"totalEntries\":0}"
+                    ["game_state/meta/achievements.json"]="{\"unlockedAchievements\":[],\"trackedProgress\":[],\"stats\":{\"totalUnlocked\":0,\"byCategory\":{\"combat\":0,\"exploration\":0,\"story\":0,\"social\":0,\"crafting\":0,\"meta\":0,\"death\":0,\"secret\":0},\"byRarity\":{\"common\":0,\"uncommon\":0,\"rare\":0,\"epic\":0,\"legendary\":0}}}",
+                    ["lore/codex_entries.json"]="{\"entries\":[],\"categories\":{\"cosmology\":0,\"geography\":0,\"history\":0,\"cultures\":0,\"creatures\":0,\"characters\":0,\"artifacts\":0,\"factions\":0,\"magic\":0,\"other\":0},\"totalEntries\":0}"
                 };
                 foreach(var name in new[]{"cultures","geography","history","threats","world_setting"})extra["lore/current_world/"+name+".json"]="{\"fixture\":\"neutral\"}";
                 foreach(var entry in extra) {
