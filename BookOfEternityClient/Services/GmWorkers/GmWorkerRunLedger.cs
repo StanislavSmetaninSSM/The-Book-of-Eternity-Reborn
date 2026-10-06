@@ -9,6 +9,13 @@ internal sealed record WorkerLedgerTarget(string RootPath)
 }
 
 internal enum WorkerLedgerMutationKind { Applied, AlreadyExact, Blocked, CommitPending }
+// Observation/failure injection only; no callback can supply ownership or stop evidence.
+internal enum WorkerLedgerIoStage
+{
+    RuntimeCreated, NamespaceCreated, OwnerCreated, JournalCreated, RetiredDirectoryCreated,
+    BeforeStateWrite, StateWritten, StateFlushed, StateRenamed, StateDirectorySynced,
+    BeforeArchiveWrite, ArchiveWritten, ArchiveFlushed, ArchiveDirectorySynced
+}
 internal sealed record WorkerLedgerObservation(WorkerRunObservationKind Kind, long Sequence, long EpochHighWater,
     IReadOnlyList<WorkerRunRecord> Entries);
 internal sealed record WorkerRunPreparation(string GenerationId, string WorkerId, string TaskId, string TaskSha256,
@@ -33,7 +40,8 @@ internal static class GmWorkerRunLedger
         { return Task.FromResult(new WorkerLedgerObservation(WorkerRunObservationKind.Blocked, 0, 0, [])); }
     }
 
-    internal static Task<WorkerRunLedgerCoordinator?> OpenCoordinatorAsync(WorkerLedgerTarget target, CancellationToken cancellationToken = default)
+    internal static Task<WorkerRunLedgerCoordinator?> OpenCoordinatorAsync(WorkerLedgerTarget target, CancellationToken cancellationToken = default,
+        Action<WorkerLedgerIoStage>? observeIo = null)
     {
         cancellationToken.ThrowIfCancellationRequested();
         return WorkerRunLedgerCoordinator.OpenAsync(target);
@@ -65,6 +73,8 @@ internal sealed class WorkerRunLedgerCoordinator : IAsyncDisposable
     { _storage = storage; _target = target; _state = state; _stateBytes = bytes; }
 
     internal long Sequence => _state?.Sequence ?? 0;
+    internal Task<WorkerLedgerMutationResult> RetryPendingAsync(CancellationToken cancellationToken = default) =>
+        Task.FromResult(new WorkerLedgerMutationResult(WorkerLedgerMutationKind.Blocked));
     internal Task<WorkerLedgerMutationKind> PlanLaunchAsync(WorkerRunEntryHandle entry, long expectedSequence,
         CancellationToken cancellationToken = default) => TransitionAsync(entry, expectedSequence, WorkerRunPhase.LaunchIntent, cancellationToken);
     internal Task<WorkerLedgerMutationKind> MarkUncertainAsync(WorkerRunEntryHandle entry, long expectedSequence,
