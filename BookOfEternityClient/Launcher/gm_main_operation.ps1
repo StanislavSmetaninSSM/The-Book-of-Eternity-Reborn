@@ -33,8 +33,11 @@ function Open-GmParticipatingOperation {
         $process.StandardInput.Dispose()
         if (-not $process.WaitForExit(4000)) { $process.Kill(); $process.WaitForExit() }
         $code=$process.ExitCode
+        $diagnostic=$context.errorRead.GetAwaiter().GetResult()
+        $kind='Unspecified'
+        if ($diagnostic -match '^Original participating operation refused or continuation unconfirmed \(([A-Za-z0-9]+)\)\.\s*$') { $kind=$Matches[1] }
         $process.Dispose()
-        throw "Original participating admission unavailable (helper exit $code)."
+        throw "Original participating admission unavailable (helper exit $code, $kind)."
     }
 }
 
