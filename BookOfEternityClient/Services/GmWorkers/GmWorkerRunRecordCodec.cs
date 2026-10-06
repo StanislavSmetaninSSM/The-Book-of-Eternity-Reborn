@@ -74,7 +74,7 @@ internal static class GmWorkerRunRecordCodec
         (allowEmpty || id != Guid.Empty) && id.ToString("N") == value;
     internal static bool CanonicalPath(string? value)
     {
-        if (!Text(value, 4096) || !Path.IsPathFullyQualified(value)) return false;
+        if (!Text(value, 4096) || !Path.IsPathFullyQualified(value!)) return false;
         try { return Path.TrimEndingDirectorySeparator(Path.GetFullPath(value!)) == value; }
         catch (Exception error) when (error is ArgumentException or NotSupportedException or PathTooLongException) { return false; }
     }

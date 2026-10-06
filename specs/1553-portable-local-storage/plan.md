@@ -51,7 +51,16 @@ executions gave1PASS/2causalFAIL (real state absent; existing namespace falsely 
 41.4172160s, cleanup complete, no preparation failure. Evidence:
 recovery/evidence/worker-ledger-init-red/manifest.json. Minimal Linux x64 initialization
 now persists state with file/parent synchronization and original non-inherited locks;
-GREEN pending. Stateful preparation/transitions/archive are still unavailable. Default CI selection retains the
+First GREEN attempt at `8b349558c9acea06bb70040f3c317a62b492c801` stopped in build:
+0 tests executed,20.1477934s, cleanup complete. CS1501: inherited SafeHandle.Close hid
+the outer libc Close method in Descriptor.ReleaseHandle. Qualified that exact call;
+also annotated the already-null-checked path (`value!`) without changing codec behavior.
+Existing unrelated native-launch CA1416 warning is unchanged. Evidence:
+recovery/evidence/worker-ledger-init-preparation-failure/manifest.json. Fresh initialization
+GREEN pending; no access/environment blocker. Stateful preparation/transitions/archive
+are still unavailable. No active test session at this checkpoint; next run is only
+`-Category worker-run-ledger-storage-linux`. Parent status request answered in commentary;
+this durable checkpoint records actual progress independently of delegation status UI. Default CI selection retains the
 portable record category; explicit Linux selection adds the native storage category.
 
 Persistence implementation notes (R1 technical refinement, no R2 admission decision):

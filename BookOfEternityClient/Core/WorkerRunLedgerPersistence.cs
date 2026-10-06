@@ -161,7 +161,7 @@ internal sealed class WorkerRunLedgerPersistence : IDisposable
                 owned.Inode != named.Inode || owned.DeviceMajor != named.DeviceMajor || owned.DeviceMinor != named.DeviceMinor)
                 throw Invalid();
         }
-        protected override bool ReleaseHandle() => Close(checked((int)handle)) == 0;
+        protected override bool ReleaseHandle() => WorkerRunLedgerPersistence.Close(checked((int)handle)) == 0;
     }
 
     [StructLayout(LayoutKind.Explicit, Size = 256)]
