@@ -27,6 +27,33 @@
       ]
     },
     {
+      "id": "browser-rollback-linux-boundaries",
+      "responsibility": "#1553 T031 real browser cumulative intent/recovery/typed closing debt, external QTE participant and main-worker-generation conjunction in isolated Linux roots",
+      "excludes": "No historical F2 four reruns/native Windows/live browser/providers/real saves/Load UX or unrelated cohorts.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager",
+        "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts",
+        "BookOfEternityClient/Services/DarenRewardProfileFileStore",
+        "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator",
+        "BookOfEternityClient/WebUi/QteWebInteractionService"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-main-production-admission",
       "responsibility": "M1 ordinary configured production admission, retained original worker/storage conjunction, real live console bootstrap/health and inert daemon/turn/QTE/repair consumers; native scoped stop and Uncertain",
       "excludes": "No neutralPackage bypass, provider/Codex Q1/Q2, real saves, helpers enabled, Auto/systemd/native Windows/cold guarantees or browser rollback migration.",

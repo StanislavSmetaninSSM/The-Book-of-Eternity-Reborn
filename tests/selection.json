@@ -7,6 +7,13 @@
       "contracts": [
         "#1553 T031 trusted-local browser original main/worker/generation/UI lease rollback"
       ]
+    },
+    {
+      "category": "browser-rollback-linux-boundaries",
+      "reason": "T031 next bounded actual recovery/closing/directory consumer gaps after first three causal RED\u2192GREEN; no old cohort reruns.",
+      "contracts": [
+        "#1553 T031 original browser record byte intent + scoped recovery + exact outcome retention"
+      ]
     }
   ]
 }
