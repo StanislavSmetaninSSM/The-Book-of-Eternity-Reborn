@@ -100,6 +100,14 @@
         "T041-LOAD-SESSION-LIFECYCLE",
         "worker/main/storage conjunction"
       ]
+    },
+    {
+      "category": "gm-load-rollback-cut",
+      "reason": "Single original replacement publication cut with actual rollback; separated from already passed Uncertain cut",
+      "contracts": [
+        "T041-LOAD-SESSION-LIFECYCLE",
+        "typed rollback and no false fresh session"
+      ]
     }
   ]
 }

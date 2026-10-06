@@ -20,24 +20,25 @@ internal static partial class OwnedTerminalScenarioDriver
         var faultName=mode.Contains("-fault-",StringComparison.Ordinal)?mode[(mode.LastIndexOf("-fault-",StringComparison.Ordinal)+7)..]:null;
         var storageFault=faultName is "rollback" or "uncertain";
         var publicationArmed=false;var replacing=false;var cuts=0;
-        var lockOpens=0;var lockContentions=0;var closes=0;var borrows=0;var mainContentions=0;
+        var lockOpens=0;var lockContentions=0;var closes=0;var borrows=0;var mainContentions=0;var bundleArmed=0;
+        bool Observe()=>publicationArmed && (faultName!="load-reply-loss" || Volatile.Read(ref bundleArmed)==1);
         string? contendedAt=null;string? mainContendedAt=null;
         var reads=new System.Collections.Concurrent.ConcurrentQueue<string>();
         var marker=files.ResolvePath("game_state/world/test_fixture_state.json");
         var hooks=storageFault || faultName=="load-reply-loss"?new FileSystemManagerHooks{
-            BeforeMainBorrowRetainAsync=()=>{if(publicationArmed)Interlocked.Increment(ref borrows);return Task.CompletedTask;},
-            MainOwnerLockContendedAsync=()=>{if(publicationArmed){Interlocked.Increment(ref mainContentions);mainContendedAt=new System.Diagnostics.StackTrace().ToString();}return Task.CompletedTask;},
-            BeforeCanonicalReadOpenAsync=p=>{if(publicationArmed && reads.Count<100)reads.Enqueue(p);return Task.CompletedTask;},
-            BeforeCanonicalWriteLockOpenAsync=()=>{if(publicationArmed)Interlocked.Increment(ref lockOpens);return Task.CompletedTask;},
-            CanonicalWriteLockContendedAsync=()=>{if(publicationArmed){Interlocked.Increment(ref lockContentions);contendedAt=new System.Diagnostics.StackTrace().ToString();}return Task.CompletedTask;},
-            SessionOperationClosingAsync=()=>{if(publicationArmed)Interlocked.Increment(ref closes);return Task.CompletedTask;},
+            BeforeMainBorrowRetainAsync=()=>{if(Observe())Interlocked.Increment(ref borrows);return Task.CompletedTask;},
+            MainOwnerLockContendedAsync=()=>{if(Observe()){Interlocked.Increment(ref mainContentions);mainContendedAt=new System.Diagnostics.StackTrace().ToString();}return Task.CompletedTask;},
+            BeforeCanonicalReadOpenAsync=p=>{if(Observe() && reads.Count<100)reads.Enqueue(p);return Task.CompletedTask;},
+            BeforeCanonicalWriteLockOpenAsync=()=>{if(Observe())Interlocked.Increment(ref lockOpens);return Task.CompletedTask;},
+            CanonicalWriteLockContendedAsync=()=>{if(Observe()){Interlocked.Increment(ref lockContentions);contendedAt=new System.Diagnostics.StackTrace().ToString();}return Task.CompletedTask;},
+            SessionOperationClosingAsync=()=>{if(Observe())Interlocked.Increment(ref closes);return Task.CompletedTask;},
             LocalPublicationObserver=(phase,_)=>{
             if(!publicationArmed || !storageFault)return;
             if(phase==TrustedLocalPublicationPhase.IntentPublished) {
                 using var journal=File.OpenRead(Path.Combine(files.RuntimeRootPath,"trusted-local-publication-v1/active.json"));
                 Span<byte> magic=stackalloc byte[8];journal.ReadExactly(magic);replacing=magic.SequenceEqual("BOELP3\r\n"u8);
             }
-            if(replacing && phase==TrustedLocalPublicationPhase.CommitStaged) {
+            if(replacing && phase==TrustedLocalPublicationPhase.CommitStaged && cuts==0) {
                 cuts++;if(faultName=="uncertain")File.WriteAllText(marker,"{\"state\":\"unknown-cut\"}");
                 throw new IOException("controlled actual Load commit cut");
             }
@@ -70,9 +71,9 @@ internal static partial class OwnedTerminalScenarioDriver
         }
         if(mode.Contains("-fault-",StringComparison.Ordinal)) {
             publicationArmed=true;
-            try {await RunLoadHttpFaultAsync(faultName!,app,http,host,type,rpc,original,prior,request,evidence,files,transportAborted.Task);}
+            try {await RunLoadHttpFaultAsync(faultName!,app,http,host,type,rpc,original,prior,request,evidence,files,transportAborted.Task,()=>Interlocked.Exchange(ref bundleArmed,1));}
             finally {if(faultName=="load-reply-loss")evidence["BundlePhase"]=new{lockOpens,lockContentions,closes,borrows,mainContentions,contendedAt,mainContendedAt,Reads=reads.ToArray()};}
-            if(storageFault)Require(cuts==1,"Preparation failure: real replacement publication cut not reached.");
+            if(storageFault){evidence["PublicationCutCount"]=cuts;Require(cuts==1,"Preparation failure: real replacement publication cut not reached exactly once.");}
             await app.StopAsync();return;
         }
         if(mode.EndsWith("early-ack",StringComparison.Ordinal)) {

@@ -2,6 +2,29 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-load-rollback-cut",
+      "responsibility": "Single actual replacement cut reaches real typed RolledBack, exact restored generation/world, no fresh terminal",
+      "excludes": "No provider/model/EnterGameLoop/native Windows/systemd or unrelated console cohorts",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_ActualRollbackCutOutcome"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-load-admission-faults",
       "responsibility": "No-active Load/full refresh and independent actual Prepared worker inventory refusal",
       "excludes": "No provider/model/EnterGameLoop/native Windows/systemd or unrelated console cohorts",

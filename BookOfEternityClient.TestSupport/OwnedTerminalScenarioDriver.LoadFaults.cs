@@ -16,7 +16,7 @@ internal static partial class OwnedTerminalScenarioDriver
 {
     private static async Task RunLoadHttpFaultAsync(string fault,WebApplication app,HttpClient http,object host,Type type,
         Func<object,Task<JsonElement>> rpc,IOwnedTerminalSession original,GmSessionRunIdentity prior,BrowserLoadSaveRequest request,
-        Dictionary<string,object?> evidence,FileSystemManager files,Task transportAborted)
+        Dictionary<string,object?> evidence,FileSystemManager files,Task transportAborted,Action startBundleObservation)
     {
         object? Field(string name)=>type.GetField(name,BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host);
         void Set(string name,object hook)=>type.GetField(name,BindingFlags.Instance|BindingFlags.NonPublic)!.SetValue(host,hook);
@@ -56,7 +56,7 @@ internal static partial class OwnedTerminalScenarioDriver
         if(fault=="load-reply-loss") {
             var service=app.Services.GetRequiredService<LocalWebUiMainMenuService>();
             var hookReturned=0;
-            service.BeforeCommittedMenuRefresh=async()=>{entered.TrySetResult();await release.Task;Interlocked.Exchange(ref hookReturned,1);};
+            service.BeforeCommittedMenuRefresh=async()=>{entered.TrySetResult();await release.Task;Interlocked.Exchange(ref hookReturned,1);startBundleObservation();};
             // Own real HTTP connection: an explicit RST proves server RequestAborted, rather than
             // treating HttpClient's local cancellation receipt as remote cancellation evidence.
             using var connection=new TcpClient();await connection.ConnectAsync(http.BaseAddress!.Host,http.BaseAddress.Port);
@@ -75,7 +75,8 @@ internal static partial class OwnedTerminalScenarioDriver
             try {await transportAborted.WaitAsync(TimeSpan.FromSeconds(5));evidence["ActualRequestAborted"]=true;}
             finally {release.TrySetResult();}
             evidence["OriginalLoadAfterAbort"]=Phase();
-            try {loaded=await originalExecution.WaitAsync(TimeSpan.FromSeconds(5));}
+            var refreshElapsed=System.Diagnostics.Stopwatch.StartNew();
+            try {loaded=await originalExecution.WaitAsync(http.Timeout);evidence["AbortToCompletedMilliseconds"]=refreshElapsed.ElapsedMilliseconds;}
             catch {evidence["OriginalLoadAtTimeout"]=Phase();throw;}
         } else loaded=await Post("/api/saves/load",request);
         evidence["InitialFaultLoad"]=loaded;

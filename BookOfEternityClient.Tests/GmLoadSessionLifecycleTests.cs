@@ -27,8 +27,9 @@ public sealed class GmLoadSessionLifecycleTests
     public Task BrowserHttp_OriginalRestartFaults(string fault)=>ProductionMainLinuxFixture.RunAsync("production-main-load-http-fault-"+fault);
     [Fact]
     public Task BrowserHttp_LostLoadReplyNeverStartsFresh()=>ProductionMainLinuxFixture.RunAsync("production-main-load-http-fault-load-reply-loss");
+    [Fact]
+    public Task BrowserHttp_ActualRollbackCutOutcome()=>ProductionMainLinuxFixture.RunAsync("production-main-load-http-fault-rollback");
     [Theory]
-    [InlineData("rollback")]
     [InlineData("uncertain")]
     public Task BrowserHttp_ActualStorageCutOutcomes(string fault)=>ProductionMainLinuxFixture.RunAsync("production-main-load-http-fault-"+fault);
     [Theory]
