@@ -5,16 +5,16 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## Current: bounded T041-RUN-FENCE-F3 final review candidate
+## Current: bounded T041-RUN-FENCE-F3 independent PASS; stop before next stage
 
 Accepted F2 `8b0c416e` → F3 execution complete:23 distinct latest PASS
 (2portable admission +21actual Linux),41historical executions27PASS/14FAIL
 (2causal admission RED +12fixture/oracle failures, excluded from acceptance).
 All37 historical guardians ECHILD/emergency0/failure0/deadlinefalse. Core runtime
 unchanged; fixed-neutral same-root fresh fixture seam is the sole production delta.
-Discovery-only catalog350/10968 and F3 plan7/23 both0execution. Final independent
-Sol6.1/xhigh source/evidence review and final publication/GitHub-only restore are
-pending writer closure. [Handoff](main-run-fence-f3-handoff.md) ·
+Discovery-only catalog350/10968 and F3 plan7/23 both0execution. Independent actual Sol6.1/xhigh source/evidence/metadata/selection PASS at
+`9dd5bae0`, no bounded blockers. Only F3 closes. Final verdict-carrier
+publication/GitHub-only restore follows as writer closure. [Handoff](main-run-fence-f3-handoff.md) ·
 [qualification](recovery/main-run-fence-f3-qualification.json) · [ledger](main-run-fence-f3-plan.md).
 Four F2 Windows-only cases remain unqualified; actual Linux browser rollback
 consumer debt T031-BROWSER-ROLLBACK-LINUX stays open outside F3. FullT041,

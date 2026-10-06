@@ -1,6 +1,6 @@
 # T041-RUN-FENCE-F3 bounded neutral handoff
 
-Accepted F2 `8b0c416e1ec5c132d82776b4fdc348ee90cfdbe5`, F1 `f4e7621f`, design `0658e440`. Independent actual Sol6.1/xhigh plan PASS at `36fb4f9e`; bounded A/B/C review PASS. Final source/evidence review is pending on this candidate. Latest runtime/test source `2fb042eee6e6cce2c793ddd9446e5e2c37423cde`. Only this neutral F3 qualification can close; full T041, production/backend/live and Linux browser storage debt remain open. No merge/issue closure or subsequent implementation is authorized here.
+Accepted F2 `8b0c416e1ec5c132d82776b4fdc348ee90cfdbe5`, F1 `f4e7621f`, design `0658e440`. Independent actual Sol6.1/xhigh plan PASS at `36fb4f9e`; bounded A/B/C review PASS. Independent actual Sol6.1/xhigh final source/evidence/metadata/selection PASS at `9dd5bae06051051bf1dc2d97e6486f087f13b4ec`, no confirmed bounded blockers. [Review](recovery/main-run-fence-f3-review.json). Latest runtime/test source `2fb042eee6e6cce2c793ddd9446e5e2c37423cde`. Only this neutral F3 qualification can close; full T041, production/backend/live and Linux browser storage debt remain open. No merge/issue closure or subsequent implementation is authorized here.
 
 ## Result and preserved contract
 
@@ -49,4 +49,4 @@ Prior F2 diagnostic only: `/opt/codex/bin/codex`, `codex-cli 0.159.0-alpha.3`, h
 
 ## Writer closure
 
-Record the actual independent final verdict, publish ordinary non-force final carrier and verify exact remote SHA/changed bytes; perform a fresh GitHub-only clone with exact SHA/tree/history/clean/fsck/all tracked bytes and0restoration tests. These closure actions are pending here; the final response supplies the executed final SHA/proof, avoiding a self-referential commit. Stop before any production/backend/live implementation.
+Actual independent final PASS is recorded; publish ordinary non-force final carrier and verify exact remote SHA/changed bytes; perform a fresh GitHub-only clone with exact SHA/tree/history/clean/fsck/all tracked bytes and0restoration tests. These closure actions are pending here; the final response supplies the executed final SHA/proof, avoiding a self-referential commit. Stop before any production/backend/live implementation.

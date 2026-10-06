@@ -169,8 +169,8 @@ design review and published checkpoint, then stop before implementation.
 
 From accepted F2, F3 latest23distinctPASS qualify only isolated neutral actual process
 crash/restart/replacement boundaries of the connected F1/F2 path. FullT041 and
-production main/selected backend/live remain open. Final independent review and
-remote closure pending; [handoff](main-run-fence-f3-handoff.md). No new gameplay,
+production main/selected backend/live remain open. Independent actual Sol6.1/xhigh final PASS at `9dd5bae0`; final
+remote closure follows; [handoff](main-run-fence-f3-handoff.md). No new gameplay,
 save-security, reboot/replay or cold exactly-once requirement.
 
 ## Design-only continuation from accepted R3
