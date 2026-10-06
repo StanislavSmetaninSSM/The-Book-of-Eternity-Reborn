@@ -1,9 +1,13 @@
 using System.Collections.Concurrent;
+using BookOfEternityClient.Services.GmWorkers;
 
 namespace BookOfEternityClient.Core;
 
 internal sealed class CanonicalRootIdentity
 {
+    internal object WorkerContextGate { get; } = new();
+    internal GmWorkerRootContext? WorkerContext { get; set; }
+
     private readonly SemaphoreSlim _gmWorkerAuditAppendAdmission = new(1, 1);
     private WeakReference<CanonicalRootIdentity>? _registration;
     private long _sessionGenerationRevision;

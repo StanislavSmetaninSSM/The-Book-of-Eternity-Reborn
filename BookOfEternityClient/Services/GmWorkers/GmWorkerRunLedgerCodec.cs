@@ -86,6 +86,22 @@ internal static class GmWorkerRunLedgerCodec
         Validate(result); return result;
     }
 
+    // A live operation is minted by the original registered execution, never by
+    // decoding a phase or supplying a generic byte/state replacement.
+    internal static WorkerLedgerState TransitionLive(WorkerLedgerState state, GmWorkerDurableExecution.Mutation mutation)
+    {
+        Validate(state);
+        var current = state.Entries.SingleOrDefault(item => item.Identity == mutation.Identity)
+            ?? throw GmWorkerRunRecordCodec.Invalid();
+        var next = mutation.ApplyTo(current);
+        var terminal = next.Phase is WorkerRunPhase.Retired or WorkerRunPhase.AbortedBeforeLaunch;
+        var result = terminal
+            ? state with { Sequence = checked(state.Sequence + 1), Entries = state.Entries.Where(item => item != current).ToArray(),
+                Retired = [.. state.Retired, new(next.Identity.RunId, next.Identity.Epoch, TaskKey(next.Identity), Hash(GmWorkerRunRecordCodec.Encode(next)))] }
+            : state with { Sequence = checked(state.Sequence + 1), Entries = state.Entries.Select(item => item == current ? next : item).ToArray() };
+        Validate(result); return result;
+    }
+
     private static WorkerRunRetiredReference ReadReference(JsonElement element)
     {
         var item = GmWorkerRunRecordCodec.Object(element, "RunId", "Epoch", "TaskKeySha256", "RecordSha256");

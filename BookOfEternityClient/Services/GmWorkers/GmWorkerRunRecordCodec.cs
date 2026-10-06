@@ -100,7 +100,8 @@ internal static class GmWorkerRunRecordCodec
                 : cleanup.AuditEventId is not null || cleanup.AuditSha256 is not null)) throw Invalid();
         var valid = record.Phase switch
         {
-            WorkerRunPhase.Prepared or WorkerRunPhase.LaunchIntent or WorkerRunPhase.ReleaseIntent or
+            WorkerRunPhase.Prepared => publication == null,
+            WorkerRunPhase.LaunchIntent or WorkerRunPhase.ReleaseIntent or
                 WorkerRunPhase.Released or WorkerRunPhase.StopValidated => progress is null,
             WorkerRunPhase.PublicationIntent => publication is { Committed: false } && cleanup is null,
             WorkerRunPhase.Published => publication is { Committed: true } && cleanup is null,

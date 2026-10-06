@@ -41,7 +41,7 @@ internal sealed class GmWorkerOwnedLaunchException(string message, GmWorkerOwned
 }
 
 internal sealed class GmWorkerNativeLineageLauncher(string? packageDirectory = null,
-    GmWorkerNativePoolAdmission? admission = null) : IGmWorkerOwnedLauncher
+    GmWorkerNativePoolAdmission? admission = null, GmWorkerDurableExecution? durable = null) : IGmWorkerOwnedLauncher
 {
     public Task<GmWorkerOwnedLaunch> StartAsync(GmWorkerProcessHostLaunch host,
         GmWorkerBackendSelection selection, CancellationToken cancellationToken)
@@ -51,6 +51,6 @@ internal sealed class GmWorkerNativeLineageLauncher(string? packageDirectory = n
              !(selection.Capability == GmWorkerRequiredCapability.SyntheticWorkerRelease && admission != null && host.HasAdmission(admission))))
             throw new PlatformNotSupportedException("Native launcher requires NeutralHost or matching explicit synthetic admission.");
         var executable = GmWorkerNativePackage.Validate(packageDirectory);
-        return GmWorkerNativeLineageLaunch.StartOwnedAsync(host, executable, cancellationToken);
+        return GmWorkerNativeLineageLaunch.StartOwnedAsync(host, executable, cancellationToken, durable);
     }
 }

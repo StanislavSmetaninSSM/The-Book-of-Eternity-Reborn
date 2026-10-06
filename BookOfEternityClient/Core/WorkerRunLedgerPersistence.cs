@@ -119,7 +119,7 @@ internal sealed class WorkerRunLedgerPersistence : IDisposable
             if (!GmWorkerRunRecordCodec.Id(runId) || !seen.Add(runId)) throw Invalid();
             var archive = ReadBounded(scope, path, 64 * 1024);
             var record = GmWorkerRunRecordCodec.Decode(archive);
-            if (record.Phase != WorkerRunPhase.AbortedBeforeLaunch || record.Identity.RunId != runId ||
+            if (record.Phase is not (WorkerRunPhase.AbortedBeforeLaunch or WorkerRunPhase.Retired) || record.Identity.RunId != runId ||
                 !GmWorkerRunLedgerCodec.RootMatches(record.Identity.RootKey, target.RootPath)) throw Invalid();
             if (required.Remove(runId, out var reference))
             {
@@ -130,8 +130,7 @@ internal sealed class WorkerRunLedgerPersistence : IDisposable
             {
                 // A candidate alone never removes its still-active reservation.
                 var active = state.Entries.SingleOrDefault(item => item.Identity == record.Identity);
-                if (active?.Phase != WorkerRunPhase.Prepared ||
-                    !archive.AsSpan().SequenceEqual(GmWorkerRunRecordCodec.Encode(active with { Phase = WorkerRunPhase.AbortedBeforeLaunch }))) throw Invalid();
+                if (active is null || !GmWorkerDurableExecution.IsConsistentTerminalCandidate(active, record)) throw Invalid();
             }
         }
         if (required.Count != 0 || !ReadBounded(scope, statePath, MaximumStateBytes).AsSpan().SequenceEqual(bytes)) throw Invalid();
@@ -164,6 +163,15 @@ internal sealed class WorkerRunLedgerPersistence : IDisposable
         var next = GmWorkerRunLedgerCodec.Transition(GmWorkerRunLedgerCodec.Decode(_target, expected), identity, phase);
         PublishExact(expected, GmWorkerRunLedgerCodec.Encode(next),
             phase == WorkerRunPhase.AbortedBeforeLaunch ? new(2, identity, phase) : null);
+    }
+
+    internal void PublishLiveTransition(byte[] expected, GmWorkerDurableExecution.Mutation mutation)
+    {
+        var before = GmWorkerRunLedgerCodec.Decode(_target, expected);
+        var next = GmWorkerRunLedgerCodec.TransitionLive(before, mutation);
+        var record = mutation.ApplyTo(before.Entries.Single(item => item.Identity == mutation.Identity));
+        PublishExact(expected, GmWorkerRunLedgerCodec.Encode(next),
+            record.Phase is WorkerRunPhase.Retired or WorkerRunPhase.AbortedBeforeLaunch ? record : null);
     }
 
     // Only the original adapter can retry this frozen private plan. No new desired state is accepted.

@@ -12,6 +12,12 @@ public partial class FileSystemManager
     internal LocalSessionGenerationSnapshot ReadLocalGenerationSnapshot(CanonicalWriteLease lease)
     {
         EnsureCanonicalWriteLeaseActive(lease);
+        return ReadLocalGenerationSnapshotBelowWorkerFence(lease);
+    }
+
+    internal LocalSessionGenerationSnapshot ReadLocalGenerationSnapshotBelowWorkerFence(CanonicalWriteLease lease)
+    {
+        EnsurePhysicalCanonicalWriteLease(lease);
         var scope = new TrustedLocalFileScope([RuntimeRootPath]);
         var path = scope.ValidateFile(SessionGenerationPath);
         if (!File.Exists(path)) return new(TrustedLocalGeneration.Absent, null);

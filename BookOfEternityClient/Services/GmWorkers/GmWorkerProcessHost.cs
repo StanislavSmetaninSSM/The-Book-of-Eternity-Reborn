@@ -270,6 +270,7 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
     private int _connected;
     private int _launchSent;
     private int _released;
+    private int _releaseAttempted;
     private GmWorkerHostIdentity? _readyIdentity;
     private int _disposed;
     private GmWorkerRequiredCapability _capability = GmWorkerRequiredCapability.WorkerRelease;
@@ -460,7 +461,8 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
         }
     }
 
-    internal async Task ReleaseAsync(CancellationToken cancellationToken)
+    internal async Task ReleaseAsync(CancellationToken cancellationToken,
+        GmWorkerDurableExecution? durable = null, BookOfEternityClient.Core.FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         if (_capability != GmWorkerRequiredCapability.WorkerRelease &&
             !(_capability == GmWorkerRequiredCapability.SyntheticWorkerRelease && _nativeAdmission != null))
@@ -473,6 +475,7 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
             await _controlGate.WaitAsync(deadline.Token);
             entered = true;
             if (Volatile.Read(ref _released) != 0) return;
+            if (Volatile.Read(ref _releaseAttempted) != 0) throw new InvalidOperationException("Original Release send was already attempted.");
             // Revalidate the original admitted pidfd/helper authority after the
             // control gate and every caller hook, before sending native Release.
             if (_capability == GmWorkerRequiredCapability.SyntheticWorkerRelease)
@@ -481,17 +484,26 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
                 GmWorkerProcessHostProtocol.SchemaVersion, _launchNonce, GmWorkerProcessHostControlKind.Release);
             var controlChannel = _controlChannel ?? throw new InvalidOperationException(
                 "Worker process host control channel is not connected.");
+            if (durable != null)
+            {
+                if (writeLease == null) throw new InvalidOperationException("Durable Release requires its original canonical lease.");
+                durable.ConsumeRelease(writeLease.Owner, writeLease);
+            }
+            Interlocked.Exchange(ref _releaseAttempted, 1);
             await controlChannel.WriteAsync(GmWorkerProcessHostProtocol.SerializeControl(frame),
                 GmWorkerProcessHostFrameChannel.SmallMaximumBytes, OwnershipReleaseTimeout, deadline.Token);
             Interlocked.Exchange(ref _released, 1);
         }
         catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested && deadline.IsCancellationRequested)
         {
+            durable?.CloseForUncertainty();
             CloseChannels();
             throw new TimeoutException("Worker process host release did not finish before its deadline.");
         }
         catch
         {
+            durable?.CloseForUncertainty();
+            durable?.CloseForUncertainty();
             CloseChannels();
             throw;
         }

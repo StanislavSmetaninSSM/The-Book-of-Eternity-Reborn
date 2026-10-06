@@ -78,7 +78,7 @@ internal sealed class WorkerLegacyFixtureOwner : IDisposable
     public void Dispose() => Interlocked.Exchange(ref _storage, null)?.Dispose();
 }
 
-internal sealed class WorkerRunLedgerCoordinator : IAsyncDisposable
+internal sealed partial class WorkerRunLedgerCoordinator : IAsyncDisposable
 {
     private readonly WorkerRunLedgerPersistence _storage;
     private readonly WorkerLedgerTarget _target;
@@ -115,9 +115,9 @@ internal sealed class WorkerRunLedgerCoordinator : IAsyncDisposable
         _pending = pending;
         try { publish(); }
         catch (WorkerLedgerConflictException) { _authorityLost = true; return new(WorkerLedgerMutationKind.Blocked); }
-        catch (Exception error) when (GmWorkerRunLedger.Unavailable(error)) { return new(WorkerLedgerMutationKind.CommitPending); }
+        catch (Exception error) when (GmWorkerRunLedger.Unavailable(error)) { return new(WorkerLedgerMutationKind.CommitPending, pending.Entry); }
         _state = pending.Next; _stateBytes = pending.Bytes;
-        if (pending.Phase == WorkerRunPhase.Prepared) _ownedEntries.Add(pending.Entry!.Identity.RunId, pending.Entry);
+        if (pending.Phase == WorkerRunPhase.Prepared && !_ownedEntries.ContainsKey(pending.Entry!.Identity.RunId)) _ownedEntries.Add(pending.Entry!.Identity.RunId, pending.Entry);
         if (pending.Phase == WorkerRunPhase.AbortedBeforeLaunch) _aborted.Add(pending.Entry!.Identity.RunId, pending.BeforeSequence);
         _pending = null;
         return new(WorkerLedgerMutationKind.Applied, pending.Phase == WorkerRunPhase.Prepared ? pending.Entry : null);

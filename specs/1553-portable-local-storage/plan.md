@@ -129,6 +129,13 @@ and exact durable bindings. Independent guardian ECHILD, exit0, no emergency/fai
 deadline. Evidence: recovery/evidence/worker-r2-lifecycle-red/manifest.json.
 Next is connected implementation under the accepted design; both integration REDs
 remain open. No new qualification claimed from this baseline.
+Connected implementation WIP now adds original execution-minted transition plans,
+Retired candidate consistency, root-shared immutable mode admission, canonical fence
+before recovery/held-lease checks, native RunId binding and atomic loss notification.
+Prepared may freeze cleanup-only progress before never-Start archival, preserving
+candidate/index agreement; this refinement still needs focused schema tests. Pool,
+partial workspace, Store and quarantine wiring is incomplete; no fresh build or GREEN
+yet. Internal durable option is not exercised until all lifecycle boundaries connect.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

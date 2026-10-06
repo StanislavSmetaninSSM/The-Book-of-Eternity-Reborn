@@ -11,7 +11,8 @@ namespace BookOfEternityClient.Services.GmWorkers;
 // bounded reader from Process.Start onward; host output never enters this parser.
 internal sealed class GmWorkerNativeLineageLaunch : GmWorkerOwnedLaunch
 {
-    private readonly string _run = Guid.NewGuid().ToString("N");
+    private readonly string _run;
+    private readonly GmWorkerDurableExecution? _durable;
     private readonly string _bootstrapDirectory;
     private readonly Socket _listener;
     private Socket? _bootstrap;
@@ -41,8 +42,9 @@ internal sealed class GmWorkerNativeLineageLaunch : GmWorkerOwnedLaunch
             throw new InvalidOperationException("A native observation fault is already fixed for this owner.");
     }
 
-    private GmWorkerNativeLineageLaunch()
+    private GmWorkerNativeLineageLaunch(GmWorkerDurableExecution? durable)
     {
+        _durable = durable; _run = durable?.Identity.RunId ?? Guid.NewGuid().ToString("N");
         _bootstrapDirectory = Path.Combine(Path.GetTempPath(), "boe-native-" + _run);
         var socketPath = Path.Combine(_bootstrapDirectory, "owner");
         if (Encoding.UTF8.GetByteCount(socketPath) > 107)
@@ -80,11 +82,12 @@ internal sealed class GmWorkerNativeLineageLaunch : GmWorkerOwnedLaunch
     internal Task<string> HostStandardError => _errorDrain;
     internal Task SupervisorExited => _supervisorExit ?? Task.CompletedTask;
 
-    internal static async Task<GmWorkerOwnedLaunch> StartOwnedAsync(GmWorkerProcessHostLaunch host, string executable, CancellationToken cancellationToken)
+    internal static async Task<GmWorkerOwnedLaunch> StartOwnedAsync(GmWorkerProcessHostLaunch host, string executable, CancellationToken cancellationToken, GmWorkerDurableExecution? durable = null)
     {
         if (!Path.IsPathFullyQualified(host.StartInfo.FileName)) throw new InvalidDataException("Native host executable must be absolute.");
         cancellationToken.ThrowIfCancellationRequested();
-        var owner = new GmWorkerNativeLineageLaunch();
+        durable?.ConsumeNativeStart(host);
+        var owner = new GmWorkerNativeLineageLaunch(durable);
         try { await owner.StartAsync(host, executable, cancellationToken); return owner; }
         catch (Exception ex)
         {
@@ -150,6 +153,7 @@ internal sealed class GmWorkerNativeLineageLaunch : GmWorkerOwnedLaunch
     private bool AuthorityValid() { lock (_stateGate) return _uncertainty == null && _terminal == null && !_sealed; }
     private void Lose(string reason)
     {
+        _durable?.CloseForUncertainty();
         lock (_stateGate) _uncertainty ??= reason;
         _ready.TrySetException(new InvalidDataException("Native supervisor authority became uncertain."));
         _startedHost.TrySetException(new InvalidDataException("Native supervisor authority became uncertain."));

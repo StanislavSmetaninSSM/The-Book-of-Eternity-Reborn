@@ -14,14 +14,15 @@ internal sealed class GmWorkerExecutionAuthority
     private readonly object _sync = new();
     private readonly string _reservedBytesDigest, _taskModelDigest, _workerId, _taskId, _generation;
     private readonly bool _noLaunch;
+    private readonly GmWorkerDurableExecution? _durable;
     private string? _uncertainty;
     private GmWorkerStopEvidence? _observedStop, _validatedStop;
     private GmWorkerOwnedOutputs? _outputs;
     private int? _completion;
     private Publication? _publication;
 
-    internal GmWorkerExecutionAuthority(GmWorkerExecutionIdentity identity, WorkerTaskPacket task, byte[]? reservedBytes = null)
-        : this(identity, task, reservedBytes, noLaunch: false) { }
+    internal GmWorkerExecutionAuthority(GmWorkerExecutionIdentity identity, WorkerTaskPacket task, byte[]? reservedBytes = null, GmWorkerDurableExecution? durable = null)
+        : this(identity, task, reservedBytes, noLaunch: false) { _durable = durable; }
 
     private GmWorkerExecutionAuthority(GmWorkerExecutionIdentity? identity, WorkerTaskPacket task, byte[]? reservedBytes, bool noLaunch)
     {
@@ -78,6 +79,7 @@ internal sealed class GmWorkerExecutionAuthority
                 evidence.State != GmWorkerStopState.StoppedWithinScope || !evidence.CleanupComplete || evidence.AuthorityRetained)
             {
                 _uncertainty = "Stop evidence is uncertain, malformed or does not match the original execution.";
+                _durable?.CloseForUncertainty();
                 return false;
             }
             _validatedStop = evidence;
@@ -85,7 +87,7 @@ internal sealed class GmWorkerExecutionAuthority
         }
     }
 
-    internal void ObserveUncertainty(string reason) { lock (_sync) _uncertainty ??= reason; }
+    internal void ObserveUncertainty(string reason) { _durable?.CloseForUncertainty(); lock (_sync) _uncertainty ??= reason; }
     internal void ObserveCompletion(int exitCode) { lock (_sync) _completion = exitCode; }
 
     internal async Task<GmWorkerCleanupEvidence> StopForCleanupAsync(GmWorkerOwnedLaunch? owner)
@@ -156,6 +158,7 @@ internal sealed class GmWorkerExecutionAuthority
             RequirePublication();
             if (proposal.WorkerId != _workerId || proposal.TaskId != _taskId || _publication != null)
                 throw new InvalidOperationException("Publication does not match the original execution or was already recorded.");
+            _durable?.RequireAcknowledgedPublication(proposal, publishedBytes);
             _publication = new(proposal.ProposalId, _reservedBytesDigest, Digest(publishedBytes), ModelDigest(proposal));
         }
     }

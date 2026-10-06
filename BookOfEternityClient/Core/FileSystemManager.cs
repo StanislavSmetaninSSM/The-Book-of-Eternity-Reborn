@@ -1,3 +1,4 @@
+using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Text;
@@ -282,6 +283,8 @@ public partial class FileSystemManager
 
         internal FileSystemManager Owner { get; }
         internal CanonicalWritePurpose Purpose { get; }
+        internal GmWorkerCanonicalPurpose? WorkerPurpose { get; set; }
+        internal IDisposable? WorkerRootPin { get; set; }
         internal object? ExternalPublicationContext { get; set; }
         internal object? PendingLocalDecision { get; set; }
         internal void EnsureNoPendingLocalDecision()
@@ -327,6 +330,8 @@ public partial class FileSystemManager
             }
             catch (Exception ex) { RetainFailure(ex); }
             try { parentAuthority?.Dispose(); }
+            catch (Exception ex) { RetainFailure(ex); }
+            try { WorkerRootPin?.Dispose(); WorkerRootPin = null; }
             catch (Exception ex) { RetainFailure(ex); }
             try { Owner.ReleaseAmbientCanonicalLease(_ambientRegistration); }
             catch (Exception ex) { RetainFailure(ex); }
@@ -3549,7 +3554,8 @@ public partial class FileSystemManager
 
     internal Task<CanonicalWriteLease> AcquireCanonicalWriteLeaseAsync(
         CanonicalWritePurpose purpose = CanonicalWritePurpose.SessionMutation,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        GmWorkerCanonicalPurpose? workerPurpose = null)
     {
         if (purpose == CanonicalWritePurpose.SessionReplacement)
         {
@@ -3559,7 +3565,7 @@ public partial class FileSystemManager
 
         return AcquireCanonicalWriteLeaseWithAmbientAsync(
             purpose,
-            cancellationToken);
+            cancellationToken, workerPurpose);
     }
 
     internal Task<CanonicalWriteLease> AcquireSessionReplacementWriteLeaseAsync(
@@ -3582,7 +3588,7 @@ public partial class FileSystemManager
     private Task<CanonicalWriteLease>
         AcquireCanonicalWriteLeaseWithAmbientAsync(
             CanonicalWritePurpose purpose,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose = null)
     {
         var registration = new AmbientCanonicalLeaseRegistration(
             CompactAmbientCanonicalLeaseHead());
@@ -3590,20 +3596,20 @@ public partial class FileSystemManager
         return CompleteCanonicalWriteLeaseAcquisitionAsync(
             registration,
             purpose,
-            cancellationToken);
+            cancellationToken, workerPurpose);
     }
 
     private async Task<CanonicalWriteLease>
         CompleteCanonicalWriteLeaseAcquisitionAsync(
             AmbientCanonicalLeaseRegistration registration,
             CanonicalWritePurpose purpose,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose = null)
     {
         try
         {
             var writeLease = await AcquireCanonicalWriteLeaseCoreAsync(
                 purpose,
-                cancellationToken);
+                cancellationToken, workerPurpose);
             registration.Activate();
             writeLease.AmbientRegistration = registration;
             return writeLease;
@@ -3617,7 +3623,7 @@ public partial class FileSystemManager
 
     private async Task<CanonicalWriteLease> AcquireCanonicalWriteLeaseCoreAsync(
         CanonicalWritePurpose purpose,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose = null)
     {
         EnsureCanonicalSessionRootIsNotReparsePoint();
         var lockPath = CanonicalWriteLockPath;
@@ -3678,9 +3684,12 @@ public partial class FileSystemManager
                 this,
                 stream,
                 parentAuthority,
-                purpose);
+                purpose) { WorkerPurpose = workerPurpose };
             try
             {
+                var workerContext = CanonicalRootAuthorityIdentity.WorkerContext;
+                workerContext?.ValidateCanonical(this, writeLease);
+                writeLease.WorkerRootPin = workerContext?.PinCanonical();
                 if (!OperatingSystem.IsWindows()) EnsureNoLegacyStorageEvidence();
                 await RunLegacyStorageRecoveryAsync(writeLease, async () =>
                 {
@@ -3850,6 +3859,12 @@ public partial class FileSystemManager
     }
 
     private void EnsureValidCanonicalWriteLease(CanonicalWriteLease writeLease)
+    {
+        EnsurePhysicalCanonicalWriteLease(writeLease);
+        CanonicalRootAuthorityIdentity.WorkerContext?.ValidateCanonical(this, writeLease);
+    }
+
+    private void EnsurePhysicalCanonicalWriteLease(CanonicalWriteLease writeLease)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         if (!ReferenceEquals(writeLease.Owner, this) || !writeLease.IsActive)
