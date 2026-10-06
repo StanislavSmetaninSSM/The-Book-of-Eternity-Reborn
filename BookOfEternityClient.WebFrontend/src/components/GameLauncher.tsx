@@ -76,10 +76,12 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
     setLoadingSaveId(slot.saveId);
     setLauncherNotice('Загружаем выбранное сохранение…');
     try {
-      await executeBrowserLoad(() => browserApi.loadSave({ saveId: slot.saveId }), ownsLoad,
+      await executeBrowserLoad(() => browserApi.loadSave({ saveId: slot.saveId, operationId: owner.operationId, expectedGeneration: menu.loadGeneration ?? null }), ownsLoad,
         notice => setLauncherNotice(notice.message), notice => blockLoadContinuation?.(notice),
         (generation, allowNoActive, state) => refreshAfterLoad?.(generation, ownsLoad, allowNoActive, state) ?? Promise.resolve(false),
-        () => onActiveRouteChange('game'), notice => reportLoadNotice?.(notice));
+        () => onActiveRouteChange('game'), notice => reportLoadNotice?.(notice), { operationId: owner.operationId,
+          complete: establishedGeneration => browserApi.completeLoad({ operationId: owner.operationId, establishedGeneration, refreshConfirmed: true }),
+          cancel: establishedGeneration => browserApi.cancelLoad({ operationId: owner.operationId, establishedGeneration, refreshConfirmed: false }) });
     } finally {
       if (isLauncherMountedRef.current && loadEpoch.current === epoch) setLoadingSaveId(null);
       finishLoad?.(owner);

@@ -116,14 +116,16 @@ export function SettingsView() {
     setLoadingSaveId(slot.saveId);
     setSaveNotice('Загружаем выбранное сохранение…');
     try {
-      await executeBrowserLoad(() => browserApi.loadSave({ saveId: slot.saveId }), ownsLoad,
+      await executeBrowserLoad(() => browserApi.loadSave({ saveId: slot.saveId, operationId: owner.operationId, expectedGeneration: menu.loadGeneration ?? null }), ownsLoad,
         notice => setSaveNotice(notice.message), notice => {
           saveContinuationBlocked.current = true;
           invalidatePendingSettings();
           blockLoadContinuation?.(notice);
         },
         (established, allowNoActive, state) => refreshAfterLoad?.(established, ownsLoad, allowNoActive, state) ?? Promise.resolve(false),
-        () => setActiveRoute('game'), notice => reportLoadNotice?.(notice));
+        () => setActiveRoute('game'), notice => reportLoadNotice?.(notice), { operationId: owner.operationId,
+          complete: establishedGeneration => browserApi.completeLoad({ operationId: owner.operationId, establishedGeneration, refreshConfirmed: true }),
+          cancel: establishedGeneration => browserApi.cancelLoad({ operationId: owner.operationId, establishedGeneration, refreshConfirmed: false }) });
     } finally {
       if (isMountedRef.current && writeScope.current.generation === generation) setLoadingSaveId(null);
       finishLoad?.(owner);

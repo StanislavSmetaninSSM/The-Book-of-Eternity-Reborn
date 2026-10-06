@@ -45,11 +45,14 @@ export async function executeBrowserLoad(
   block: (notice: LoadPersistenceNotice) => void,
   refresh: (generation: string | null, allowNoActiveSession: boolean, state: BrowserLoadStateDto | null) => Promise<boolean>,
   navigate: () => void,
-  retain: (notice: LoadPersistenceNotice) => void = () => {}
+  retain: (notice: LoadPersistenceNotice) => void = () => {},
+  lifecycle?: { operationId: string; complete: (generation: string | null) => Promise<BrowserApiResult<BrowserLoadSaveResultDto>>; cancel: (generation: string | null) => Promise<unknown> }
 ): Promise<LoadPersistenceNotice> {
   let result: BrowserApiResult<BrowserLoadSaveResultDto> | undefined;
   try { result = await load(); } catch { /* A dispatched request can commit without its response. */ }
   let notice = toLoadNotice(result);
+  const data = result?.ok ? result.data : result?.payload as BrowserLoadSaveResultDto | undefined;
+  const abandon = async () => { if (lifecycle) try { await lifecycle.cancel(notice.establishedGeneration); } catch { /* No retry. */ } };
   retain(notice);
   const publish = () => { if (isCurrent()) apply(notice); };
   const stop = () => {
@@ -58,21 +61,35 @@ export async function executeBrowserLoad(
     retain(notice); publish(); block(notice);
   };
   publish();
-  if (notice.continuationBlocked) { block(notice); return notice; }
+  if (notice.continuationBlocked) { await abandon(); block(notice); return notice; }
   // Safe non-loading has no replacement to publish into a view which no longer owns it.
-  if (notice.disposition === 'NotLoaded' && !isCurrent()) return notice;
+  if (notice.disposition === 'NotLoaded' && !isCurrent()) { await abandon(); return notice; }
   if (!isCurrent() || (notice.disposition === 'RolledBack' && !notice.establishedGeneration)) {
-    stop(); return notice;
+    await abandon(); stop(); return notice;
   }
   let confirmed = false;
   try { confirmed = await refresh(notice.disposition === 'NotLoaded' ? null : notice.establishedGeneration,
     notice.disposition !== 'Committed', ((result?.ok ? result.data : result?.payload) as BrowserLoadSaveResultDto | undefined)?.state ?? null); } catch { /* Preserve the established decision. */ }
-  if (!confirmed || !isCurrent()) { stop(); return notice; }
+  if (!confirmed || !isCurrent()) { await abandon(); stop(); return notice; }
+  if (data?.freshLaunchRequired === true) {
+    if (!lifecycle || data.lifecycleOperationId !== lifecycle.operationId || notice.disposition !== 'Committed' || !data.state) {
+      await abandon(); stop(); return notice;
+    }
+    let completed: BrowserApiResult<BrowserLoadSaveResultDto> | undefined;
+    try { completed = await lifecycle.complete(notice.establishedGeneration); } catch { /* Preserve Committed. */ }
+    const fresh = completed?.ok ? completed.data : completed?.payload as BrowserLoadSaveResultDto | undefined;
+    if (!fresh || fresh.lifecycleOperationId !== lifecycle.operationId || fresh.disposition !== notice.disposition ||
+        fresh.establishedGeneration !== notice.establishedGeneration || fresh.freshLaunchRequired !== false ||
+        fresh.mainSessionState !== 'Running' || fresh.continuationBlocked !== false || !isCurrent()) {
+      stop(); return notice;
+    }
+    notice = toLoadNotice(completed); retain(notice); publish();
+  }
   if (notice.disposition === 'Committed') navigate();
   return notice;
 }
 
-export interface BrowserLoadOwner { readonly sequence: number; readonly navigation: number }
+export interface BrowserLoadOwner { readonly sequence: number; readonly navigation: number; readonly operationId: string }
 
 /** Owns admission and interruption evidence across route/component lifetimes. */
 export function createBrowserLoadController() {
@@ -82,7 +99,7 @@ export function createBrowserLoadController() {
   return {
     begin(): BrowserLoadOwner | null {
       if (active || blocked) return null;
-      active = { sequence: ++sequence, navigation }; return active;
+      active = { sequence: ++sequence, navigation, operationId: crypto.randomUUID().replaceAll('-', '') }; return active;
     },
     isCurrent: (owner: BrowserLoadOwner) => active === owner && owner.navigation === navigation && !blocked,
     navigate: () => { navigation++; },

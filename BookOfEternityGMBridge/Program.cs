@@ -298,6 +298,10 @@ internal sealed partial class BridgeHost : IDisposable
                         if(reader.LastFrameBytes>65536)throw new InvalidDataException("Operation begin exceeds bound.");
                         await ServeMainOperationAsync(server,reader,request,cancellationToken);return;
                     }
+                    if(string.Equals(request.Command,"beginLoadSession",StringComparison.OrdinalIgnoreCase)) {
+                        if(reader.LastFrameBytes>65536)throw new InvalidDataException("Load begin exceeds bound.");
+                        await ServeLoadSessionAsync(server,reader,request,cancellationToken);return;
+                    }
                     if(string.Equals(request.Command,"mainOperationStatus",StringComparison.OrdinalIgnoreCase)) {
                         if(reader.LastFrameBytes>65536)throw new InvalidDataException("Operation lookup exceeds bound.");
                         var known=(_mainRun??_lastMainRun)?.QueryRemoteOperation(request.MainOperationClose??throw new InvalidDataException("Missing close identity.")) ?? new MainOperationReply(false,Error:"Unknown original operation.");
@@ -347,6 +351,7 @@ internal sealed partial class BridgeHost : IDisposable
     private async Task<BridgeResponse> HandleRequestAsync(BridgeRequest request)
     {
         var command = (request.Command ?? string.Empty).Trim().ToLowerInvariant();
+        if(command=="cancelloadsession")return CancelLoadSession(request);
         if((_neutralLaunch!=null || _productionConfig!=null) && command=="dispatchworkertask")return BridgeResponse.Failure("This main admission has no production worker execution capability.",SnapshotStatus());
         await RefreshBridgeAutomationStateAsync();
 
@@ -415,6 +420,15 @@ internal sealed partial class BridgeHost : IDisposable
         await _shellLifecycleLock.WaitAsync(_cts.Token);
         try
         {
+            lock(_sync)if(_loadSession!=null)throw new InvalidOperationException("An original Load operation retains this terminal lifecycle.");
+            await StartShellCoreAsync();
+        }
+        finally { _shellLifecycleLock.Release(); }
+    }
+
+    // Only the original retained Load connection may call this with a generation.
+    private async Task StartShellCoreAsync(string? expectedGeneration=null)
+    {
             lock (_sync)
                 ObjectDisposedException.ThrowIf(_inputClosed, this);
             await StopShellCoreAsync();
@@ -442,7 +456,9 @@ internal sealed partial class BridgeHost : IDisposable
                 IOwnedTerminalSession session;
                 try {
                     _mainRun=await GmSessionRunCoordinator.OpenProductionAsync(_neutralFiles,ObserveMainMetadata);
-                    session=await _mainRun.LaunchProductionAsync(configuration,_cts.Token,ObserveMainHeldRoot);
+                    session=expectedGeneration==null
+                        ? await _mainRun.LaunchProductionAsync(configuration,_cts.Token,ObserveMainHeldRoot)
+                        : await _mainRun.LaunchProductionBoundAsync(configuration,expectedGeneration,_cts.Token,ObserveMainHeldRoot);
                 }
                 catch(OwnedTerminalStartException ex) { AttachOwnedTerminalCore(ex.Owner,Console.OpenStandardOutput(),false);MarkTerminalUncertain();throw; }
                 catch { if(_mainRun?.RetainsAuthority==true)MarkTerminalUncertain();else _mainRun=null;throw; }
@@ -455,6 +471,12 @@ internal sealed partial class BridgeHost : IDisposable
             var shellArgs = BuildShellArguments(shellExe);
             var workingDirectory = ResolveGmBridgeShellWorkingDirectory(config.GmBridgeShellWorkingDirectory);
             var (width, height) = GetConsoleSize();
+            using var legacyAdmission=expectedGeneration==null?null:_neutralFiles!.BeginMainAdmission();
+            if(legacyAdmission!=null) {
+                await legacyAdmission.AcquireAsync(quiescentOnly:true);
+                await using var lease=await _neutralFiles!.AcquireCanonicalWriteLeaseAsync();
+                if(_neutralFiles.ReadExistingSessionGeneration(lease)!=expectedGeneration)throw new InvalidDataException("Loaded generation changed before legacy terminal creation.");
+            }
             ConPtySession pty;
             try { pty=ConPtySession.Start(shellExe,shellArgs,workingDirectory,width,height); }
             catch(OwnedTerminalStartException ex) { AttachOwnedTerminalCore(ex.Owner,Console.OpenStandardOutput(),false); MarkTerminalUncertain(); throw; }
@@ -489,8 +511,6 @@ internal sealed partial class BridgeHost : IDisposable
                 await WriteShellBootstrapAsync(input, bootstrap, input.Token);
             }
 
-        }
-        finally { _shellLifecycleLock.Release(); }
     }
 
     // All admitted sessions consume the original writer/lifetime/pumps, never a second dispatcher.
@@ -1801,6 +1821,9 @@ internal sealed class BridgeRequest
     public string? RootKey {get;set;}
     public MainOperationClose? MainOperationClose {get;set;}
     public GmSessionRunIdentity? ExpectedMainIdentity {get;set;}
+    public string? ExpectedGeneration {get;set;}
+    public string? ExpectedTerminalRunId {get;set;}
+    public string? LoadSourceKey {get;set;}
     public string? Text { get; set; }
     public bool AppendEnter { get; set; } = true;
     public bool? Ready { get; set; }

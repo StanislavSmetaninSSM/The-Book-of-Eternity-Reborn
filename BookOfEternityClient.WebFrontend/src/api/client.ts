@@ -57,6 +57,8 @@ export interface BrowserApiClient {
   validateLifecycle(): Promise<BrowserApiResult<BrowserValidationSummaryDto>>;
   createSave(request: BrowserCreateSaveRequest): Promise<BrowserApiResult<BrowserCreateSaveResultDto>>;
   loadSave(request: BrowserLoadSaveRequest): Promise<BrowserApiResult<BrowserLoadSaveResultDto>>;
+  completeLoad(request: { operationId: string; establishedGeneration: string | null; refreshConfirmed: boolean }): Promise<BrowserApiResult<BrowserLoadSaveResultDto>>;
+  cancelLoad(request: { operationId: string; establishedGeneration: string | null; refreshConfirmed: boolean }): Promise<BrowserApiResult<BrowserLoadSaveResultDto>>;
   getLoadState(request: BrowserLoadStateRequest): Promise<BrowserApiResult<BrowserLoadStateDto>>;
   executeExplorerCommand(request: ExplorerWebCommandRequest): Promise<BrowserApiResult<ExplorerCommandResult>>;
   getPromptSession(sessionId: string): Promise<BrowserApiResult<ExplorerCommandResult>>;
@@ -90,6 +92,8 @@ export const browserApiEndpointDocs = [
   { id: 'audio-asset', method: 'GET', path: '/api/audio/assets/{assetId}', playerSurface: 'player-default', response: 'Audio stream' },
   { id: 'save-create', method: 'POST', path: '/api/saves/create', playerSurface: 'player-default', response: 'BrowserCreateSaveResultDto' },
   { id: 'save-load-state', method: 'POST', path: '/api/saves/load-state', playerSurface: 'player-default', response: 'BrowserLoadStateDto' },
+  { id: 'save-load-complete', method: 'POST', path: '/api/saves/load-complete', playerSurface: 'player-default', response: 'BrowserLoadSaveResultDto' },
+  { id: 'save-load-cancel', method: 'POST', path: '/api/saves/load-cancel', playerSurface: 'player-default', response: 'BrowserLoadSaveResultDto' },
   { id: 'save-load', method: 'POST', path: '/api/saves/load', playerSurface: 'player-default', response: 'BrowserLoadSaveResultDto' },
   { id: 'lifecycle-dashboard', method: 'GET', path: '/api/lifecycle/dashboard', playerSurface: 'advanced-only', response: 'BrowserLifecycleDashboardDto' },
   { id: 'lifecycle-validate', method: 'POST', path: '/api/lifecycle/validate', playerSurface: 'advanced-only', response: 'BrowserValidationSummaryDto' },
@@ -138,6 +142,8 @@ export function createBrowserApiClient(options: BrowserApiClientOptions = {}): B
     getCommandCoverage: () => requestJson<BrowserCommandCoverageDto>(fetcher, baseUrl, '/api/explorer/command-coverage'),
     validateLifecycle: () => requestJson<BrowserValidationSummaryDto>(fetcher, baseUrl, '/api/lifecycle/validate', jsonInit('POST')),
     createSave: (request) => requestJson<BrowserCreateSaveResultDto>(fetcher, baseUrl, '/api/saves/create', jsonInit('POST', request)),
+    completeLoad: (request) => requestJson<BrowserLoadSaveResultDto>(fetcher, baseUrl, '/api/saves/load-complete', jsonInit('POST', request)),
+    cancelLoad: (request) => requestJson<BrowserLoadSaveResultDto>(fetcher, baseUrl, '/api/saves/load-cancel', jsonInit('POST', request)),
     getLoadState: (request) => requestJson<BrowserLoadStateDto>(fetcher, baseUrl, '/api/saves/load-state', jsonInit('POST', request)),
     loadSave: (request) => requestJson<BrowserLoadSaveResultDto>(fetcher, baseUrl, '/api/saves/load', jsonInit('POST', request)),
     executeExplorerCommand: (request) => requestJson<ExplorerCommandResult>(fetcher, baseUrl, '/api/explorer/command', jsonInit('POST', request)),

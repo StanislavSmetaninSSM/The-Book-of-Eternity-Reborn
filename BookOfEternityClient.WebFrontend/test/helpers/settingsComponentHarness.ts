@@ -35,6 +35,7 @@ export function createSettingsComponentHarness() {
   const load = deferred<any>();
   const loadComplete = deferred<any>();
   let loadCompletions = 0;
+  let loadRequest: any;
   const save = deferred<any>();
   const audioWrite = deferred<any>();
   const command = deferred<any>();
@@ -70,7 +71,7 @@ export function createSettingsComponentHarness() {
     executeExplorerCommand: () => { commandPosts++; return command.promise; },
     submitPlayerAction: () => { actionPosts++; return action.promise; },
     updateClientSettings: async () => { settingsPosts++; return ok(persistedSettings); },
-    loadSave: () => { loadPosts++; return load.promise; },
+    loadSave: (request: any) => { loadRequest = request; loadPosts++; return load.promise; },
     completeLoad: () => { loadCompletions++; return loadComplete.promise; },
     cancelLoad: async () => ok({}),
     createSave: () => { savePosts++; return save.promise; },
@@ -83,7 +84,7 @@ export function createSettingsComponentHarness() {
     setActiveRoute(route: string) { navigations++; navigation++; shell.activeRoute = route; },
     beginLoad: () => {
       if (loadOwner || shell.loadContinuationNotice || saveLatch?.isBlocked()) return null;
-      loadOwner = { navigation }; return loadOwner;
+      loadOwner = { navigation, operationId: crypto.randomUUID().replaceAll('-', '') }; return loadOwner;
     },
     isLoadInProgress: () => loadOwner !== null,
     isLoadCurrent: (owner: any) => loadOwner === owner && owner.navigation === navigation && !shell.loadContinuationNotice,
@@ -193,7 +194,7 @@ export function createSettingsComponentHarness() {
       if (id === './ErrorNotice') return { EmptyOrFailure: () => null };
       throw new Error(`Uncontrolled component dependency: ${id}`);
     };
-    runInNewContext(output, { require, exports: result.exports, module: result, console,
+    runInNewContext(output, { require, exports: result.exports, module: result, console, crypto: globalThis.crypto,
       setTimeout: (callback: () => void) => { timers.set(++timerId, callback); return timerId; },
       clearTimeout: (id: number) => timers.delete(id) });
     cache.set(file, result.exports);
@@ -212,7 +213,7 @@ export function createSettingsComponentHarness() {
   const launcher = () => renderer('src/components/GameLauncher.tsx', 'GameLauncher', { menu: shell.menu });
   const settings = () => renderer('src/components/SettingsView.tsx', 'SettingsView');
   const audio = (writeScope: { generation: number }) => renderer('src/components/AudioPanel.tsx', 'AudioPanel', { writeScope });
-  return { settings, launcher, provider, audio, shell, load, loadComplete, save, command, action, audioWrite, initialAudio, persistedSettings, timers,
+  return { settings, launcher, provider, audio, shell, loadRequest: () => loadRequest, load, loadComplete, save, command, action, audioWrite, initialAudio, persistedSettings, timers,
     setRefreshFailure: () => { refreshFailure = true; },
     setRealRefreshClient: (client: unknown) => { realRefreshClient = client; },
     realRefreshState: () => realRefreshState,

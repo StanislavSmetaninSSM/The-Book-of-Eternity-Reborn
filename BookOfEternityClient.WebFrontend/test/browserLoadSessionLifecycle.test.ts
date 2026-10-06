@@ -9,7 +9,7 @@ describe('actual Load handlers await original fresh-launch receipt after applyin
       button.props.onClick();
       h.load.resolve(ok({ success: true, disposition: 'Committed', error: '', loadedSaveId: 'save',
         selectedSourcePath: '/isolated/source.zip', establishedGeneration: 'loaded-generation',
-        needsFollowUp: false, continuationBlocked: false, lifecycleOperationId: '0123456789abcdef0123456789abcdef',
+        needsFollowUp: false, continuationBlocked: false, lifecycleOperationId: h.loadRequest().operationId, state: { establishedGeneration: 'loaded-generation', menu: h.shell.menu, session: {}, game: null, noActiveSession: true, settings: h.persistedSettings, audio: h.initialAudio },
         mainSessionState: 'Stopped', freshLaunchRequired: true }));
       await flushPromises();
       expect(h.counts().refreshes).toBe(1);

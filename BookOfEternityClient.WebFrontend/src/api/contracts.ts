@@ -63,6 +63,7 @@ export interface BrowserMainMenuDto {
   options: BrowserOptionsSummaryDto;
   about: BrowserAboutDto;
   advancedShell: BrowserAdvancedShellDto;
+  loadGeneration?: string | null;
 }
 
 export interface BrowserMainMenuSessionDto {
@@ -128,6 +129,8 @@ export interface BrowserAdvancedShellDto {
 
 export interface BrowserLoadSaveRequest {
   saveId: string | null;
+  operationId?: string;
+  expectedGeneration?: string | null;
 }
 
 export interface BrowserLoadSaveResultDto {
@@ -142,6 +145,9 @@ export interface BrowserLoadSaveResultDto {
   needsFollowUp: boolean;
   continuationBlocked: boolean;
   state?: BrowserLoadStateDto | null;
+  lifecycleOperationId?: string | null;
+  mainSessionState?: 'NoActiveSession' | 'Stopped' | 'Running' | 'StartedNotReady' | 'Refused' | 'Cancelled' | 'Uncertain';
+  freshLaunchRequired?: boolean;
 }
 
 export interface BrowserLoadStateRequest {

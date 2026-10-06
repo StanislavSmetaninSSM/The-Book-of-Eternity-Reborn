@@ -124,12 +124,14 @@ internal sealed partial class GmSessionRunCoordinator
     internal Task<IOwnedTerminalSession> LaunchNeutralAsync(NeutralTerminalLaunch launch,CancellationToken token,Action<int>? held=null)=>LaunchAsync((id)=>OwnedTerminalSessionFactory.PrepareNeutralAsync(launch,id,token,held),token);
     internal Task<IOwnedTerminalSession> LaunchProductionAsync(ProductionMainConfiguration configuration,CancellationToken token,Action<int>? held=null)=>
         LaunchAsync(id=>OwnedTerminalSessionFactory.PrepareProductionAsync(new(this,configuration),id,token,held),token);
+    internal Task<IOwnedTerminalSession> LaunchProductionBoundAsync(ProductionMainConfiguration configuration,string generation,CancellationToken token,Action<int>? held=null)=>
+        LaunchAsync(id=>OwnedTerminalSessionFactory.PrepareProductionAsync(new(this,configuration),id,token,held),token,generation);
     internal void ValidateProductionPrepared()
     {
         _guard.Validate(); _productionWorkers?.RequireMainQuiescence();
         if(_productionWorkers==null || _retired || _closed || _uncertain || _released || _terminal!=null || _persistence.HasDebt || _record?.Disposition!=GmSessionRunDisposition.Prepared)throw GmSessionRunPersistence.Invalid();
     }
-    private async Task<IOwnedTerminalSession> LaunchAsync(Func<string,Task<OwnedTerminalSessionFactory.PreparedTerminal>> prepare,CancellationToken token)
+    private async Task<IOwnedTerminalSession> LaunchAsync(Func<string,Task<OwnedTerminalSessionFactory.PreparedTerminal>> prepare,CancellationToken token,string? expectedGeneration=null)
     {
         using var original=Enter(false);
         try
@@ -137,7 +139,8 @@ internal sealed partial class GmSessionRunCoordinator
         await using var lifecycle=await _files.AcquireSessionLifecycleLeaseAsync();
         await using(var lease=await _files.AcquireCanonicalWriteLeaseAsync(cancellationToken:token))
         {
-            var generation=_files.GetOrCreateSessionGeneration(lease);
+            var generation=expectedGeneration==null ? _files.GetOrCreateSessionGeneration(lease) : _files.ReadExistingSessionGeneration(lease);
+            if(generation==null || (expectedGeneration!=null && generation!=expectedGeneration))throw GmSessionRunPersistence.Invalid();
             var boot=ReadBootIdentity();
             var identity=new GmSessionRunIdentity(_files.BasePath,Guid.NewGuid().ToString("N"),generation,
                 _record==null?1:checked(_record.Identity.Epoch+1),GmSessionRunBackend.LinuxSupervisor,Guid.NewGuid().ToString("N"),boot);

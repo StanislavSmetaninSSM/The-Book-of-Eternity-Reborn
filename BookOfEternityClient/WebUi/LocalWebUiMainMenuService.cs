@@ -8,7 +8,7 @@ using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.WebUi;
 
-public sealed class LocalWebUiMainMenuService
+public sealed partial class LocalWebUiMainMenuService
 {
     private readonly FileSystemManager _fs;
     private readonly BrowserLifecycleDashboardService _lifecycle;
@@ -30,7 +30,8 @@ public sealed class LocalWebUiMainMenuService
         _writeCoordinator = writeCoordinator;
     }
 
-    public async Task<BrowserMainMenuDto> BuildAsync()
+    public Task<BrowserMainMenuDto> BuildAsync()=>SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs,BuildCoreAsync);
+    private async Task<BrowserMainMenuDto> BuildCoreAsync()
     {
         var dashboard = await _lifecycle.BuildDashboardAsync();
         var terminalSoulDissipationMessage = await TryReadTerminalSoulDissipationMessageAsync();
@@ -48,12 +49,13 @@ public sealed class LocalWebUiMainMenuService
             AdvancedShell: new BrowserAdvancedShellDto(
                 Label: "Расширенный режим",
                 Description: "Служебные сведения и перенесённые команды скрыты от обычного главного меню, но остаются доступны для проверки в расширенном режиме.",
-                InitiallyExpanded: false));
+                InitiallyExpanded: false),
+            LoadGeneration: SessionOperationContext.TryGetExpectedGeneration(_fs.BasePath,out var generation)?generation:null);
     }
 
     /// <summary>Loads a menu-issued archive without losing its decision during required menu refresh.</summary>
     internal Func<Task>? BeforeCommittedMenuRefresh {get;set;}
-    public async Task<BrowserLoadSaveResultDto> LoadSaveAsync(BrowserLoadSaveRequest request,
+    private async Task<BrowserLoadSaveResultDto> LoadSaveCoreAsync(BrowserLoadSaveRequest request,
         Func<BrowserLoadStateRequest, Task<BrowserLoadStateDto>>? buildState = null)
     {
         ArgumentNullException.ThrowIfNull(request);
@@ -662,7 +664,8 @@ public sealed record BrowserMainMenuDto(
     IReadOnlyList<BrowserSaveSlotDto> Saves,
     BrowserOptionsSummaryDto Options,
     BrowserAboutDto About,
-    BrowserAdvancedShellDto AdvancedShell);
+    BrowserAdvancedShellDto AdvancedShell,
+    string? LoadGeneration = null);
 
 public sealed record BrowserMainMenuSessionDto(
     bool GameSessionExists,
@@ -714,7 +717,8 @@ public sealed record BrowserAboutDto(string Title, string Body);
 
 public sealed record BrowserAdvancedShellDto(string Label, string Description, bool InitiallyExpanded);
 
-public sealed record BrowserLoadSaveRequest(string? SaveId);
+public sealed record BrowserLoadSaveRequest(string? SaveId,string? OperationId=null,string? ExpectedGeneration=null);
+public sealed record BrowserLoadCompletionRequest(string OperationId,string? EstablishedGeneration,bool RefreshConfirmed);
 
 public sealed record BrowserLoadSaveResultDto(
     bool Success,
@@ -727,7 +731,10 @@ public sealed record BrowserLoadSaveResultDto(
     string? EstablishedGeneration,
     bool NeedsFollowUp,
     bool ContinuationBlocked,
-    BrowserLoadStateDto? State = null);
+    BrowserLoadStateDto? State = null,
+    string? LifecycleOperationId = null,
+    BookOfEternityClient.Services.GmRuntime.GmLoadMainState MainSessionState = BookOfEternityClient.Services.GmRuntime.GmLoadMainState.NoActiveSession,
+    bool FreshLaunchRequired = false);
 
 public sealed record BrowserCreateSaveRequest(string? SaveName);
 
