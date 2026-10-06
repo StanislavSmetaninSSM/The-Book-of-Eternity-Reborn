@@ -36,7 +36,19 @@ explicitly injected fixture contour.
    close the original locks. Replacement is permitted only after no clients/executions
    remain and acknowledged quiescent disposal; cold state is checked again. Original
    execution owners retain the same context through cleanup. A second process cannot
-   acquire owner.lock. Existing B-only injection remains explicitly legacy synthetic;
+   acquire owner.lock. Both internal native fixture modes use that same original
+   retained non-inherited lock and a create-only immutable `mode.json` binding inside
+   the fixed namespace, checked under the lock before capacity or Start. Reuse the
+   native persistence adapter; do not add a second lifetime lock. Legacy mode exposes
+   only an opaque exclusion lease, never a ledger execution/result authority. A legacy
+   namespace is never upgraded to durable; missing/partial/unknown/conflicting mode
+   in an existing namespace fails closed. Atomically share the same mode/context by
+   CanonicalRootIdentity, including initial attachment and original quarantine leases.
+   Durable mode rejects legacy dispatch even while its inventory is healthy, and
+   legacy in-flight/retained ownership rejects R2 attachment. Different legacy roots
+   keep their behavior. This closes first-attach races across processes as well as
+   in-process bypass; mode metadata supplies exclusion only, never stop evidence.
+   Existing B-only injection remains explicitly legacy synthetic;
    only the new R2 option claims durable admission, and it stays closed until every
    lifecycle boundary below is connected. Public construction never enables it.
 
@@ -79,7 +91,8 @@ explicitly injected fixture contour.
 4. **Closed connected transitions.** Extend worker record/state to current schema2,
    retaining the fixed namespace and strict bounds. Add required bounded nullable
    progress: immutable publication identity/digests plus frozen terminal cleanup/audit
-   facts and a Retired phase. Old schema1 records fail closed; pre-release compatibility
+   facts and a Retired phase. Require exact mode binding in namespace validation.
+   Old schema1 records fail closed; pre-release compatibility
    is not introduced. Update active tests to current syntax, preserving historical
    R1 evidence unchanged. Main schema1 is untouched. Coordinator registers the exact
    execution authority/entry at original owner binding; stop/output/publication/
@@ -144,7 +157,9 @@ types. These paths are under BookOfEternityClient. Avoid unrelated broad Core re
   minimal connected path and run initial cold-refusal GREEN plus one real content
   publication/cleanup/terminal proof. Fresh process admits a distinct new task only;
   old exact or changed-body task identity remains refused.
-- Expand only after positive cleanup: actual second-process owner exclusion; queued
+- Expand only after positive cleanup: actual second-process owner exclusion; both
+  legacy/durable first-attach races and mode orders, retained legacy owner rejection,
+  normal legacy operation on another root; queued
   old-generation Release; two concurrent valid entries/epochs; an attempted Release
   cannot be repeated; already-held lease observes a closed root after an await; exact
   cleanup audit cannot borrow another entry. Prove one ambiguous Published commit and

@@ -197,6 +197,14 @@ No managed `WaitAsync` timeout abandons an underlying ledger or pipe write and t
 releases its fence; original I/O must settle, or ownership remains retained/blocked.
 
 For the later explicitly injected fixture contour:
+- R2 refinement after source review: legacy B and durable R2 modes cannot share a
+  fixture root. Both cooperate through the same original non-inherited owner.lock
+  and immutable create-only mode binding, checked before capacity/Start. A healthy
+  R2 inventory cannot let an unrecorded legacy worker enter. Initial attach races,
+  same-process shared instances and retained legacy quarantine use the same root
+  registration/lock. Existing missing/partial/conflicting mode fails closed; no mode
+  upgrade or reset. Legacy metadata is exclusion only and never durable stop/result
+  authority. Distinct legacy roots preserve B behavior. R2 tests both process orders.
 - Split canonical lock acquisition from recovery just enough to invoke a typed worker
   admission predicate after exact lock-handle validation and before legacy/local
   recovery. The typed purposes are ColdAdmission, TaskReservation, Release,
