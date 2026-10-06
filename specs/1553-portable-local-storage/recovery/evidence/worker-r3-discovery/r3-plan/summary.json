@@ -1,0 +1,122 @@
+{
+  "Categories": [
+    "worker-restart-crash-launch-linux",
+    "worker-restart-crash-publication-linux",
+    "worker-restart-crash-retirement-linux",
+    "worker-restart-publication-races-linux",
+    "worker-restart-cleanup-loss-linux",
+    "worker-restart-inventory-linux"
+  ],
+  "Reasons": [
+    {
+      "category": "worker-restart-crash-launch-linux",
+      "reason": "R3 cohort A: actual app-loss boundaries not proved by inert R1 or live R2 checks; run one cohort at a time.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R3",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-crash-publication-linux",
+      "reason": "R3 cohort B: five new actual publication crash cuts; execute alone after A cleanup.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R3",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-crash-retirement-linux",
+      "reason": "R3 cohort C: original conditional cleanup and five retirement crash cuts; execute alone after B cleanup.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R3",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-publication-races-linux",
+      "reason": "R3 cohort D: one actual queued and two held publication races; execute alone after C cleanup.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R3",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-cleanup-loss-linux",
+      "reason": "Exactly two causal partitions from independent D diagnosis: post-confirmation await and failed original ACK retry.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R3",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-inventory-linux",
+      "reason": "R3 cohort E: four remaining inventory partitions; run alone after proven D/regression cleanup.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R3",
+        "FR-012/014/015"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "8f0d52dea55f2bfcef5736295abab926e294c0d5",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.1059765,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0357365,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0704679,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0089613,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 23,
+  "WallTime": "00:00:04.7060213",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 6,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 27,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "worker-restart-cleanup-loss-linux-unit-001",
+      "worker-restart-crash-launch-linux-unit-002",
+      "worker-restart-crash-publication-linux-unit-003",
+      "worker-restart-crash-retirement-linux-unit-004",
+      "worker-restart-inventory-linux-unit-005",
+      "worker-restart-publication-races-linux-unit-006"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

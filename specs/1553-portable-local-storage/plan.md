@@ -123,6 +123,18 @@ Next discovery-only catalog/R3/portable plans, Spec Kit consistency and final re
 Previous regression evidence carrier f29a9157 verified remotely; actual guardian count33
 (the prior plan line32 was a transcription error, corrected against all JSON reports).
 
+### Final candidate for independent review
+
+Discovery at8f0d52de: catalog317categories/10885methods-files valid; R3 plan6descriptors/27cases,
+portable plan13/232; all0executions. Native/managed fresh builds preceded NoBuild plans.
+Full evidence audit12manifests/234input blobs/1928artifacts/229gzip verified, all41latestPASS.
+[Qualification packet](recovery/worker-restart-r3.json) contains exact sources, historical
+failure classification, guardian attribution, source-specific latest cases and limits.
+Spec Kit consistency: US4/FR-012/014/015, existing1553feature and bounded design align;
+R3 remains client-owned synthetic, no GM payload/prompt/example change. Cumulative R2
+portable selection reviewed and retained; no unchanged232-case replay. Final review
+and fresh GitHub-only candidate/carrier restoration remain pending; no integration.
+
 ### Evidence already accepted; exclude unchanged repetitions
 
 - R1: exact old/new/Blocked persistence cuts at write/flush/rename/directory sync,
@@ -211,7 +223,7 @@ a claim that current code already satisfies it; runtime fixes still need causal 
 - [x] C: repeat for conditional cleanup/retirement, with exact post-live-ACK observation.
 - [x] D: repeat for queued/held publication fences; retain original authority on uncertainty.
 - [x] E: repeat for whole parallel inventory and the unmasked canonical journal conflict.
-- [ ] Discovery-only ValidateCatalog and exact PlanOnly after matching fresh builds;
+- [x] Discovery-only ValidateCatalog and exact PlanOnly after matching fresh builds;
   read-only Spec Kit consistency review, final independent source/evidence review.
 - [ ] Ordinary commit/push/readback at every boundary, fresh GitHub-only candidate and
   final carrier restore; handoff with precise remaining integration/native/platform tasks.

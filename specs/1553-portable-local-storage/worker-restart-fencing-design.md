@@ -355,11 +355,11 @@ Depends on positive R2 cleanup. Add narrow `GmWorkerRestartFenceTests` and only 
 negative/observation hooks. Change runtime only to fix causal defects found by this
 matrix; do not introduce reconnect or new cold cleanup authority.
 
-- [ ] Extend one bounded cohort at a time: crash after Prepared, helper bind, Release
+- [x] Extend one bounded cohort at a time: crash after Prepared, helper bind, Release
   intent/write/ack, Completed, scoped stop and output settlement. Fresh process blocks
   every nonterminal case and sends zero repeated Release; guardian proves independent
   physical cleanup without clearing ledger uncertainty.
-- [ ] Cut before/after bundle move, derived inbox/audit, terminal candidate archive,
+- [x] Cut before/after bundle move, derived inbox/audit, terminal candidate archive,
   exact commit/ack and capacity release. Preserve committed canonical bytes, frozen
   terminal bytes/conditional audit requirements and uncertain workspace. Publication
   commit ambiguity grants no success; retirement-only ambiguity preserves an already
@@ -367,18 +367,25 @@ matrix; do not introduce reconnect or new cold cleanup authority.
   inventory retains capacity despite an archive; consistent fully committed retirement
   may admit a new task without recreating a result permit. No duplicate import or
   tombstone mutation on retry.
-- [ ] Race generation replacement with queued Release and Store publication. Prove
+- [x] Race generation replacement with queued Release and Store publication. Prove
   all unbound/recovery entrypoints block before mutation, and already-held leases
   recheck the same binding after awaits. Old epoch/coordinator/same-ID changed body
   cannot borrow a live permit; existing original journal recovery conflicts still block.
-- [ ] Crash with active parallel workers, valid and corrupt inventory, changed profile
+- [x] Crash with active parallel workers, valid and corrupt inventory, changed profile
   limits, changed runtime base and lost owner lock. Preserve all reservations; no
   per-root inventory claims to replace the existing process-wide reaper capacity bound.
-- [ ] Qualify selected B uncertainty/receipt/consumer regressions only when changed.
+- [x] Qualify selected B uncertainty/receipt/consumer regressions only when changed.
   Do not replay all127, main-record90 or unrelated passing cohorts by default.
 - [ ] Preserve exact source/commands/counts/cleanup, catalog discovery, separate
   Sol6.1/xhigh final review, non-force publication/readback and fresh GitHub restore.
   No public rollout, reboot-based clear or autonomous salvage follows R3.
+
+R3 implementation note: two causal owner-loss partitions expanded the initial25 to27.
+Unresolved publication retains actual source bytes before cleanup; authority is rechecked
+at destructive entry/after awaited hook, and failed own ACK retry latches detected loss.
+Legitimate generation rotation retains its original ledger identity/hash while removing
+old canonical artifacts according to its existing contract. Latest41distinctPASS include
+14source-affected previous cases; final review/restoration remain pending.
 
 ## Product decisions versus technical choices
 

@@ -1,0 +1,638 @@
+{
+  "Categories": [
+    "worker-run-ledger-record",
+    "worker-restart-record",
+    "worker-detached-workspace",
+    "worker-quarantine-audit-receipt",
+    "worker-pool-regression-managed-policy",
+    "worker-execution-scoped-evidence",
+    "worker-consumer-execution-evidence",
+    "portable-session-generation",
+    "portable-load-lease-consumers",
+    "portable-coordinated-lease-consumers",
+    "worker-restart-default-controls"
+  ],
+  "Reasons": [
+    {
+      "category": "worker-run-ledger-record",
+      "reason": "R2 schema2 and strict worker record semantics; main run-record contract unchanged.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-record",
+      "reason": "R2 schema2 frozen publication and terminal cleanup progress, cold syntax only.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-detached-workspace",
+      "reason": "Original workspace creation now retains acquired partial authority; staging, reads and cleanup use that shared implementation.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-quarantine-audit-receipt",
+      "reason": "Shared original cleanup phases and conditional terminal audit changed; exact receipt and owner-slot lifetime remain required.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-pool-regression-managed-policy",
+      "reason": "Portable managed Windows selection/drain/retained-Job policy only; no native Windows qualification.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-execution-scoped-evidence",
+      "reason": "CurrentUncertainty, ObserveStop and original cleanup authority gates changed on shared execution authority.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-consumer-execution-evidence",
+      "reason": "Both actual acceptance consumers must still require the original live publication permit.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "portable-session-generation",
+      "reason": "The nonrecursive generation snapshot parser now sits below the worker lease predicate.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "portable-load-lease-consumers",
+      "reason": "Default unbound recovery, generation and replacement admission must retain behavior with optional worker fences.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "portable-coordinated-lease-consumers",
+      "reason": "Shared canonical validation still rejects disposed/foreign owners and preserves original operation lock ordering.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-default-controls",
+      "reason": "Two existing positive ordinary null-worker-purpose controls for exact logical mutations and prepared complete publication after shared R2 guard insertion.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "8f0d52dea55f2bfcef5736295abab926e294c0d5",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 9.3967011,
+  "Descriptors": [
+    {
+      "Name": "portable-coordinated-lease-consumers-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-coordinated-lease-consumers",
+      "Categories": [
+        "portable-coordinated-lease-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening|FullyQualifiedName=BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter|FullyQualifiedName=BookOfEternityClient.Tests.TradeRequestLockOrderingTests.GuardianTrade_LeaseBoundWriteDoesNotWaitBehindUnboundCanonicalContention|FullyQualifiedName=BookOfEternityClient.Tests.TradeRequestLockOrderingTests.ShiningTrade_LeaseBoundWriteDoesNotWaitBehindUnboundCanonicalContention|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RequiresItsOwnActiveCanonicalLease",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TradeRequestLockOrderingTests.GuardianTrade_LeaseBoundWriteDoesNotWaitBehindUnboundCanonicalContention",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TradeRequestLockOrderingTests.ShiningTrade_LeaseBoundWriteDoesNotWaitBehindUnboundCanonicalContention",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RequiresItsOwnActiveCanonicalLease",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-load-lease-consumers-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-lease-consumers",
+      "Categories": [
+        "portable-load-lease-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.SessionMutationLease_CannotRotateSessionGeneration|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_CanRotateGenerationWhileLifecycleAuthorityIsActive|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_RequiresActiveLifecycleAuthority",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.SessionMutationLease_CannotRotateSessionGeneration",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_CanRotateGenerationWhileLifecycleAuthorityIsActive",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_RequiresActiveLifecycleAuthority",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-load-lease-consumers-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-load-lease-consumers",
+      "Categories": [
+        "portable-load-lease-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterRejectsStaleBoundGenerationWithoutChangingContent|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.OriginalRecoveryCallbackDoesNotCreatePortableJournalOrGenerationAndRestoresLeaseMode|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterRejectsStaleBoundGenerationWithoutChangingContent",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.OriginalRecoveryCallbackDoesNotCreatePortableJournalOrGenerationAndRestoresLeaseMode",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "portable-session-generation-unit-004",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-session-generation",
+      "Categories": [
+        "portable-session-generation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionGenerationTests.BoundGenerationReadDoesNotReenterItsOwnFenceInColdProcess|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_AbsenceIsExplicitAndDoesNotCreateGeneration|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_ExistingReadersAndBoundWriteAcceptHardLinkedGeneration|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsForeignOrDisposedLeaseBeforeReading|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 24,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionGenerationTests.BoundGenerationReadDoesNotReenterItsOwnFenceInColdProcess",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers",
+          "Cases": 5
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_AbsenceIsExplicitAndDoesNotCreateGeneration",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_ExistingReadersAndBoundWriteAcceptHardLinkedGeneration",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension",
+          "Cases": 5
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsForeignOrDisposedLeaseBeforeReading",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "worker-consumer-execution-evidence-unit-005",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-consumer-execution-evidence",
+      "Categories": [
+        "worker-consumer-execution-evidence"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "worker-detached-workspace-integration-006",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "worker-detached-workspace",
+      "Categories": [
+        "worker-detached-workspace"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.ArtifactReadEnforcesExactByteLimit|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.CancellationAfterReadBoundaryIsObservedBeforeOpening|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.CancellationAtTransferBoundaryCannotReturnSuccess|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.CancellationBeforeOrDuringStagingRemovesPartialWorkspace|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.ContextPinFailureAfterFirstWriteRollsBackOnlyOwnedWorkspace|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.DisposeFailureCanRetryAndNeverDeletesSiblingWorkspace|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.DuplicateContextPathCannotOverwriteAndPartialStagingIsRemoved|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxCaseDistinctNamesKeepTheirExactBytes|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxChangedImageAtTransferBoundaryIsRejected|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxCreateNewRejectsHardlinkWithoutChangingOutsideBytes|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxDisposePreflightsWholeTreeThenRetriesAfterObstructionRemoved|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxHardlinkedArtifactReadAndUnlinkCleanupPreserveOutsideBytes|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxReadRejectsLinkAndSpecialKindsWithoutFollowingOrOpening|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxRuntimeBaseLinkIsRejectedBeforeCreatingOutsideDescendants|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxWriteRevalidatesParentAfterBoundaryAndRetainsUnexpectedLink|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.MissingContextAndMissingNestedReadRemainAbsent|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.PartialCreationFailureKeepsOriginalErrorAndCleansOwnedTree|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.RuntimeInsideCanonicalSessionIsRejectedWithoutMutation|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.Stage_Read_Dispose_PreservesExactBinaryEmptyUnicodeAndTaskBytes|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.UnsafeContextAndArtifactPathsAreRejected",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 44,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.ArtifactReadEnforcesExactByteLimit",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.CancellationAfterReadBoundaryIsObservedBeforeOpening",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.CancellationAtTransferBoundaryCannotReturnSuccess",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.CancellationBeforeOrDuringStagingRemovesPartialWorkspace",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.ContextPinFailureAfterFirstWriteRollsBackOnlyOwnedWorkspace",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.DisposeFailureCanRetryAndNeverDeletesSiblingWorkspace",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.DuplicateContextPathCannotOverwriteAndPartialStagingIsRemoved",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxCaseDistinctNamesKeepTheirExactBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxChangedImageAtTransferBoundaryIsRejected",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxCreateNewRejectsHardlinkWithoutChangingOutsideBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxDisposePreflightsWholeTreeThenRetriesAfterObstructionRemoved",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxHardlinkedArtifactReadAndUnlinkCleanupPreserveOutsideBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxReadRejectsLinkAndSpecialKindsWithoutFollowingOrOpening",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxRuntimeBaseLinkIsRejectedBeforeCreatingOutsideDescendants",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxWriteRevalidatesParentAfterBoundaryAndRetainsUnexpectedLink",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.MissingContextAndMissingNestedReadRemainAbsent",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.PartialCreationFailureKeepsOriginalErrorAndCleansOwnedTree",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.RuntimeInsideCanonicalSessionIsRejectedWithoutMutation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.Stage_Read_Dispose_PreservesExactBinaryEmptyUnicodeAndTaskBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.UnsafeContextAndArtifactPathsAreRejected",
+          "Cases": 4
+        }
+      ]
+    },
+    {
+      "Name": "worker-detached-workspace-unit-007",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-detached-workspace",
+      "Categories": [
+        "worker-detached-workspace",
+        "worker-quarantine-audit-receipt"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-execution-scoped-evidence-unit-008",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-execution-scoped-evidence",
+      "Categories": [
+        "worker-execution-scoped-evidence"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MatchingScopedStop_IsAcceptedAsCleanupEvidence|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.OutputObservationFailure_RevokesPreviouslyValidatedStop",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 13,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MatchingScopedStop_IsAcceptedAsCleanupEvidence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord",
+          "Cases": 9
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.OutputObservationFailure_RevokesPreviouslyValidatedStop",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-pool-regression-managed-policy-unit-009",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-pool-regression-managed-policy",
+      "Categories": [
+        "worker-pool-regression-managed-policy"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.WindowsAuto_PreservesJobCapabilityWithoutNativePreflight|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.DefaultWindowsCompletion_PreservesDiagnosticDrainBeforeStop|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.NativeCompletion_DoesNotWaitForDiagnosticDrainBeforeScopedStop|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.ObservationException_RetriesOnlyRetainedAssignedWindowsJob|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.WindowsOwner_DoesNotTreatArbitraryProcessTreeAsRetainedJob",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.WindowsAuto_PreservesJobCapabilityWithoutNativePreflight",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.DefaultWindowsCompletion_PreservesDiagnosticDrainBeforeStop",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.NativeCompletion_DoesNotWaitForDiagnosticDrainBeforeScopedStop",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.ObservationException_RetriesOnlyRetainedAssignedWindowsJob",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.WindowsOwner_DoesNotTreatArbitraryProcessTreeAsRetainedJob",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-quarantine-audit-receipt-integration-010",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "worker-quarantine-audit-receipt",
+      "Categories": [
+        "worker-quarantine-audit-receipt"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.CanonicalAppendSuccessNeedsNoFallbackAndReleasesExactlyOnce|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.DestinationAppearingBeforePublishIsComparedNeverOverwritten|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExactReceiptAndStableRetrySurviveDetachedWorkspaceDeletion|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExistingIdentityRejectsDifferentExactBytesWithoutReplacement|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExistingOrdinaryHardlinkAllowsSameBytesAndNeverChangesOutsideAlias|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.MissingGenerationCannotCreateReceipt|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.NonRegularReceiptIsRejectedBeforeOpening|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PartialTemporaryFailurePreservesExceptionCleansTempAndRetries|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PublishedTamperRemainsConflictAndCannotReleaseRetainedSlot|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReceiptDirectoryOrRuntimeAncestorLinkCannotRedirectEvidence|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedBytesAreCheckedAgainstSuppliedReceiptBeforePublish|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.TemporaryReplacedWithLinkBeforeWriteCannotModifyOutsideBytes|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnconfirmedOwnerCannotCleanWorkspaceRecordReceiptOrReleaseSlot|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnsafeEventIdentityCannotCreateReceipt",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 39,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.CanonicalAppendSuccessNeedsNoFallbackAndReleasesExactlyOnce",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.DestinationAppearingBeforePublishIsComparedNeverOverwritten",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExactReceiptAndStableRetrySurviveDetachedWorkspaceDeletion",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExistingIdentityRejectsDifferentExactBytesWithoutReplacement",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExistingOrdinaryHardlinkAllowsSameBytesAndNeverChangesOutsideAlias",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.MissingGenerationCannotCreateReceipt",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.NonRegularReceiptIsRejectedBeforeOpening",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PartialTemporaryFailurePreservesExceptionCleansTempAndRetries",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PublishedTamperRemainsConflictAndCannotReleaseRetainedSlot",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReceiptDirectoryOrRuntimeAncestorLinkCannotRedirectEvidence",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedBytesAreCheckedAgainstSuppliedReceiptBeforePublish",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.TemporaryReplacedWithLinkBeforeWriteCannotModifyOutsideBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnconfirmedOwnerCannotCleanWorkspaceRecordReceiptOrReleaseSlot",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnsafeEventIdentityCannotCreateReceipt",
+          "Cases": 5
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-default-controls-unit-011",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-default-controls",
+      "Categories": [
+        "worker-restart-default-controls"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriteAppendCompareExchangeAndDeleteUseExactLogicalContent|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.PreparedCanonicalSetPublishesOneLogicalResultWithoutPhysicalReceipt",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriteAppendCompareExchangeAndDeleteUseExactLogicalContent",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.PreparedCanonicalSetPublishesOneLogicalResultWithoutPhysicalReceipt",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-record-unit-012",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-record",
+      "Categories": [
+        "worker-restart-record"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartRecordTests.PreparedCleanupFacts_StayColdUncertainUntilExactAbort|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 37,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority",
+          "Cases": 9
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked",
+          "Cases": 22
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartRecordTests.PreparedCleanupFacts_StayColdUncertainUntilExactAbort",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution",
+          "Cases": 4
+        }
+      ]
+    },
+    {
+      "Name": "worker-run-ledger-record-unit-013",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-run-ledger-record",
+      "Categories": [
+        "worker-run-ledger-record"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunRecordTests.PrelaunchAbort_RetainsExactIdentityWithoutLiveAuthority",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 44,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain",
+          "Cases": 9
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic",
+          "Cases": 34
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunRecordTests.PrelaunchAbort_RetainsExactIdentityWithoutLiveAuthority",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

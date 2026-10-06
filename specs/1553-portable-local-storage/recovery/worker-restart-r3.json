@@ -1,0 +1,1041 @@
+{
+  "SchemaVersion": 1,
+  "Task": "#1553 T041-WORKER-RESTART-R3",
+  "Date": "2026-10-06",
+  "Branch": "codex/1553-load-filesystem",
+  "AcceptedR2": "6992e812f5917315bc789c0eeff9bbc0677cdd33",
+  "FinalRuntimeSource": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+  "FinalFixtureSource": "6d441cc0defe7bb92647930086e879a985934d81",
+  "DiscoverySource": "8f0d52dea55f2bfcef5736295abab926e294c0d5",
+  "Status": "All bounded tests GREEN; candidate awaiting independent final review and GitHub-only restoration",
+  "Scope": "Application-process crash/restart and original retirement in explicitly injected Linux x64 synthetic native pool only. Root-wide cold refusal; no reconstruction of execution authority from metadata.",
+  "DesignReview": {
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "Source": "1545bf4a8a110fc2605efffad6af0080300a5240",
+    "Verdict": "PASS"
+  },
+  "SourceInputs": [
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.Restart.cs",
+      "GitBlob": "7521b1fd8006273485a4a070029144d09b6b6c79",
+      "Sha256": "f8e94fceefe5bcd87a8b022bc714d61ed7390b4b282b21b28477c4850bb836c1"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.RestartFence.cs",
+      "GitBlob": "23ae6a01119245940619181da0b1364c246da180",
+      "Sha256": "354e0f78240b4b5f3077a98f22b0d619a034758f89a932a48fda1e455328756e"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.RestartFenceCleanupLoss.cs",
+      "GitBlob": "8cb2a4dc94236ff02dfac8b944e8f51bdc39c12a",
+      "Sha256": "de72fd66de5fd6e3402870572c4190e7c0b99ec02a8fa25ade6d78a44937a085"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.RestartFenceInventory.cs",
+      "GitBlob": "5ba6ae20c8727cf58a4c02c2430149fe953500c3",
+      "Sha256": "e799bf8a86e041eae1a6c852b40133d9b73d036e6638f6bf6ef84663f78c22fc"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.RestartFencePublication.cs",
+      "GitBlob": "1ddad94b26bce0a5282e47f2daac5722e4e20581",
+      "Sha256": "6d301d535f02c4c1af1e0407cf4160cf93b85c44b70e65fef51996f16c56fd38"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.RestartFenceRaces.cs",
+      "GitBlob": "5f1243624b6a213781b826440c8cdc8f1871040a",
+      "Sha256": "18717375b1624f29b4239b23545af9c3c325b4f4f87e051372e9d85e598ad77f"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.RestartFenceRetirement.cs",
+      "GitBlob": "45b98a3a4bb162c846fb427773157322083ab328",
+      "Sha256": "55f4e71617fa65d79a4ad6efbe71e3f60c8686aa24d33c30dc4b782a0cb4cbca"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.cs",
+      "GitBlob": "c918aa603eeabb0489a28f2a6d35161d23d5d9e8",
+      "Sha256": "2da67d613fb4db5f9209d1e814a18fb05259be039e7ea3c159fab1b5767c524e"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRestartAdmissionTests.cs",
+      "GitBlob": "7e646033905c50bca398e661efbb369bfcf33a72",
+      "Sha256": "dcb4596b31d86392e1c06baf16071636bb8223327e65ed7d2dcc1e1e6178838f"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRestartFenceTests.CleanupLoss.cs",
+      "GitBlob": "2efc38720dc8a22e94cdd70031c152dacca0afc3",
+      "Sha256": "81cdd8043a21bcec928ec2617171889ba2304ae725ffb1f5fac950b534eb6126"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRestartFenceTests.Inventory.cs",
+      "GitBlob": "3eb331d06655e703192411845d0c8ae87db36b75",
+      "Sha256": "e103bf3125c9aaeb395e72187e8ec993d6557a8588f424bd22bb3ac88b89d4ee"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRestartFenceTests.Publication.cs",
+      "GitBlob": "201587e6f37503f67dd6d5f901dc6c2f400072c0",
+      "Sha256": "b09f4f2c7db0512717d4937d803f90a8efe903ff56afd9cea9d53fcc384d56f8"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRestartFenceTests.Races.cs",
+      "GitBlob": "3c451059de2b6d358dd06fe9535366cbfc6489a0",
+      "Sha256": "fbd558bf8267c0642cb92e65f104b0ac17a0f3cc48132d446df2212196e3ef22"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRestartFenceTests.Retirement.cs",
+      "GitBlob": "c04dbc04b794a43342d9838f62c6dc8c81234b23",
+      "Sha256": "d62042758ffc32e76cc52d768911b4b3d59a82ce663a0dd45c2f527c2a3fd303"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRestartFenceTests.cs",
+      "GitBlob": "fbbea343a69a320c28f931091bcfca1e980d9eda",
+      "Sha256": "c7633ed5e87348d0585658010a8ef3161a2230ac90e15ea74ce1b3c56e8ca9b4"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+      "GitBlob": "82ac9359de050c2820c4d3d6bb996d4cce0e65f1",
+      "Sha256": "36165a3ac7513339d8a50207aea8693ae71d8f640ccdafeeece402d32f6a28aa"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerDurableExecution.cs",
+      "GitBlob": "59cda771f7a0ae4b5009fceedeed0c98ce6ac856",
+      "Sha256": "ae6af3a0854ba562a10c5efc4c056a6ff809976b7f458782fe9b1472c8d9d7cb"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs",
+      "GitBlob": "125bfb9ac3423406bd2c3e62b261ff71f85d9415",
+      "Sha256": "b3891e2140029ff71bf392e0d461677dd1444dbe7f9fc94fc0c8b259f28dc269"
+    },
+    {
+      "Path": "tests/categories.json",
+      "GitBlob": "e100866854727dd66e55240df82f164d3f613b58",
+      "Sha256": "d42f2e7d2b11bb88b557285fcec39fdf4894cb0b145bb002557156c4efdabf9d"
+    },
+    {
+      "Path": "tests/selections/1553-worker-restart-r3-linux.json",
+      "GitBlob": "4e3afe34cbf49b09f750097f18e016612652e398",
+      "Sha256": "faea4f4262222edb105bcaa2935268ee82690433e321bdd9840f988250e78e94"
+    }
+  ],
+  "Matrix": {
+    "A": 8,
+    "B": 5,
+    "C": 5,
+    "D": 5,
+    "E": 4,
+    "TotalNewDistinctCases": 27,
+    "AdditionalAffectedOldCases": 14,
+    "LatestDistinctPassed": 41,
+    "Note": "Initial approved25 plus exactly2 causally reproduced cleanup-loss partitions identified by independent review. Each mutable fixture is separate. No aggregate R3 test execution."
+  },
+  "CausalFixes": [
+    {
+      "Finding": "Acknowledged unresolved PublicationIntent permitted physical workspace deletion before retirement refusal.",
+      "RedSource": "9708698fb737a7b52fcb2167da115ecba0284c0f",
+      "Fix": "Require original coordinator authority and resolved publication before destructive cleanup; retain original workspace bytes, quarantine and capacity."
+    },
+    {
+      "Finding": "Owner-lock loss was not sticky during ordinary cleanup or a failed original Published ACK retry.",
+      "RedSources": [
+        "9708698fb737a7b52fcb2167da115ecba0284c0f",
+        "0577964cd469c62a3ec5a47a4a89a574e12b8604"
+      ],
+      "Fix": "Latch confirmed coordinator loss even if own ACK retry throws, keep actual bounded Stop before metadata checks."
+    },
+    {
+      "Finding": "Existing awaited workspace cleanup hook could invalidate authority after ConfirmDeath, allowing source deletion.",
+      "RedSource": "0577964cd469c62a3ec5a47a4a89a574e12b8604",
+      "Fix": "Recheck at actual cleanup entry and after awaited hook. Added checks stay inside durable branch; null-durable legacy path remains unchanged."
+    }
+  ],
+  "FailureClassification": {
+    "HistoricalFailedCases": 11,
+    "FixtureObservationOrPreparationFailures": 7,
+    "CausalBackendFailures": 4,
+    "Details": [
+      "A initial lock observation/retry defect:8executed7reportedPASS1FAIL; whole initial A excluded from accepted qualification.",
+      "B initial incorrect canonical path resolution:5FAIL; fixture-only correction.",
+      "D initial:2causalFAIL plus1queued oracle failure because existing legitimate generation replacement clears old task artifacts.",
+      "D follow-up:2causalFAIL, held cleanup await and pending Published ACK authority loss."
+    ],
+    "QueuedGenerationContract": "Legitimate rotation keeps original ledger identity/task hash and intentionally removes old canonical worker artifacts. Held raw generation corruption must preserve exact source/task bytes."
+  },
+  "EvidenceAudit": {
+    "SchemaVersion": 1,
+    "ManifestCount": 12,
+    "VerifiedUniqueInputBlobs": 234,
+    "VerifiedArtifacts": 1928,
+    "VerifiedGzipArtifacts": 229,
+    "HistoricalExecuted": 72,
+    "HistoricalPassed": 61,
+    "HistoricalFailed": 11,
+    "LatestDistinctCases": 41,
+    "LatestPassed": 41,
+    "LatestNonPass": [],
+    "Guardians": {
+      "Count": 116,
+      "ECHILD": 116,
+      "EmergencySignals": 21,
+      "Failures": 0,
+      "Deadlines": 0
+    },
+    "Manifests": [
+      {
+        "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/manifest.json",
+        "Sha256": "f8836dd2f0bb7fa3d35722d873133a19915ce2bb76728fba2f60078a7c501dfd",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6"
+      },
+      {
+        "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-cleanup-loss-causal-red/manifest.json",
+        "Sha256": "234d03e972c3b720e843ddcc9470229cec1508b2457befc88fdc065eb15f664c",
+        "SourceCommit": "0577964cd469c62a3ec5a47a4a89a574e12b8604"
+      },
+      {
+        "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-discovery/manifest.json",
+        "Sha256": "0deeb90d56feab0742ca7bd3b4747bd871c996348416f6b5dc13b4edfbc3c009",
+        "SourceCommit": "8f0d52dea55f2bfcef5736295abab926e294c0d5"
+      },
+      {
+        "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-inventory-green/manifest.json",
+        "Sha256": "c7bc6797bd0b2f05171ebc98f004aff4b1f4af4955f9404cc49441bf84e018e8",
+        "SourceCommit": "6d441cc0defe7bb92647930086e879a985934d81"
+      },
+      {
+        "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-launch-green/manifest.json",
+        "Sha256": "fb05d6032c3a489ba311ca1a932ac6da349519d625aaafbdb374324be41ad467",
+        "SourceCommit": "e2cb68201ece9b4768375db56de8370b56b6af45"
+      },
+      {
+        "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-launch-observation-failure/manifest.json",
+        "Sha256": "e6985dedf3cfb2cc39eb66e3461197e3da2a05c9ef28f6afbad169eefbf61a7e",
+        "SourceCommit": "1fd2360059515f9c7acfe6736ed8968e7e725724"
+      },
+      {
+        "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-publication-green/manifest.json",
+        "Sha256": "5d33485e4ab5efa6c3ed2a74788236db98e004772b7ab758eeaab2669be871e4",
+        "SourceCommit": "000499cd0c3600ac38a953f707faff0cd1f0566c"
+      },
+      {
+        "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-publication-preparation-failure/manifest.json",
+        "Sha256": "32b2e4dfd087415e168ef8b2e012cb46eb58feaa1379a8758e86aea6954fdfc2",
+        "SourceCommit": "148af16cf8821da89f1500d84f83057e86bcf186"
+      },
+      {
+        "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-races-causal-red/manifest.json",
+        "Sha256": "420d1b3c0a4a33306f7d973e49f6b29a523514d7e5c6b8eeb65da0b07d7b8513",
+        "SourceCommit": "9708698fb737a7b52fcb2167da115ecba0284c0f"
+      },
+      {
+        "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-races-complete-green/manifest.json",
+        "Sha256": "92c32f097288da75bd34d03536ee6c65af88f0cc65ebe39f5c6eb4742e52b427",
+        "SourceCommit": "45f2f4426d84bc65e82444016c68cd75b5432479"
+      },
+      {
+        "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-races-first-green/manifest.json",
+        "Sha256": "8ac0b04f1a8171f016dcd21cdc7860ef6fa5dbe88771cccd0bfbb14be3ab47aa",
+        "SourceCommit": "4e8e4f18d5e35146a76d95906dc4f465854d8f77"
+      },
+      {
+        "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-retirement-green/manifest.json",
+        "Sha256": "98e728c21aeb3e92f1eb6d1824788a618b22b44caf5c42e76b954cf63d8bd31b",
+        "SourceCommit": "52cf923feabefa7680e66deffeb709b129b388fd"
+      }
+    ],
+    "Runs": [
+      {
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/summary.json",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Categories": [
+          "worker-restart-publication-races-linux",
+          "worker-restart-cleanup-loss-linux",
+          "worker-restart-boundaries-linux",
+          "worker-restart-root-linux",
+          "worker-restart-control-linux",
+          "worker-restart-launch-linux",
+          "worker-restart-lifecycle-linux",
+          "worker-restart-warm-linux",
+          "worker-restart-crash-retirement-linux"
+        ],
+        "DiscoveryOnly": false,
+        "PlanOnly": false,
+        "ExitCode": 0,
+        "WallTime": "00:02:25.9106193",
+        "Tests": {
+          "Total": 24,
+          "Executed": 24,
+          "Passed": 24,
+          "Failed": 0
+        },
+        "Selection": {
+          "PlannedDescriptors": 9,
+          "CompletedDescriptors": 9,
+          "PlannedCases": 24,
+          "CompletedCases": 24,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "TimedOut": false
+      },
+      {
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-cleanup-loss-causal-red/cleanup-loss-red/summary.json",
+        "SourceCommit": "0577964cd469c62a3ec5a47a4a89a574e12b8604",
+        "Categories": [
+          "worker-restart-cleanup-loss-linux"
+        ],
+        "DiscoveryOnly": false,
+        "PlanOnly": false,
+        "ExitCode": 1,
+        "WallTime": "00:00:52.4132634",
+        "Tests": {
+          "Total": 2,
+          "Executed": 2,
+          "Passed": 0,
+          "Failed": 2
+        },
+        "Selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 2,
+          "CompletedCases": 2,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "TimedOut": false
+      },
+      {
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-discovery/catalog/summary.json",
+        "SourceCommit": "8f0d52dea55f2bfcef5736295abab926e294c0d5",
+        "Categories": [
+          null
+        ],
+        "DiscoveryOnly": true,
+        "PlanOnly": false,
+        "ExitCode": 0,
+        "WallTime": "00:01:13.3789349",
+        "Tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "Selection": {
+          "PlannedDescriptors": 0,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 0,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [],
+          "Complete": false
+        },
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "TimedOut": false
+      },
+      {
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-discovery/portable-plan/summary.json",
+        "SourceCommit": "8f0d52dea55f2bfcef5736295abab926e294c0d5",
+        "Categories": [
+          "worker-run-ledger-record",
+          "worker-restart-record",
+          "worker-detached-workspace",
+          "worker-quarantine-audit-receipt",
+          "worker-pool-regression-managed-policy",
+          "worker-execution-scoped-evidence",
+          "worker-consumer-execution-evidence",
+          "portable-session-generation",
+          "portable-load-lease-consumers",
+          "portable-coordinated-lease-consumers",
+          "worker-restart-default-controls"
+        ],
+        "DiscoveryOnly": false,
+        "PlanOnly": true,
+        "ExitCode": 0,
+        "WallTime": "00:00:09.6826929",
+        "Tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "Selection": {
+          "PlannedDescriptors": 13,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 232,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [
+            "portable-coordinated-lease-consumers-unit-001",
+            "portable-load-lease-consumers-integration-002",
+            "portable-load-lease-consumers-unit-003",
+            "portable-session-generation-unit-004",
+            "worker-consumer-execution-evidence-unit-005",
+            "worker-detached-workspace-integration-006",
+            "worker-detached-workspace-unit-007",
+            "worker-execution-scoped-evidence-unit-008",
+            "worker-pool-regression-managed-policy-unit-009",
+            "worker-quarantine-audit-receipt-integration-010",
+            "worker-restart-default-controls-unit-011",
+            "worker-restart-record-unit-012",
+            "worker-run-ledger-record-unit-013"
+          ],
+          "Complete": false
+        },
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "TimedOut": false
+      },
+      {
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-discovery/r3-plan/summary.json",
+        "SourceCommit": "8f0d52dea55f2bfcef5736295abab926e294c0d5",
+        "Categories": [
+          "worker-restart-crash-launch-linux",
+          "worker-restart-crash-publication-linux",
+          "worker-restart-crash-retirement-linux",
+          "worker-restart-publication-races-linux",
+          "worker-restart-cleanup-loss-linux",
+          "worker-restart-inventory-linux"
+        ],
+        "DiscoveryOnly": false,
+        "PlanOnly": true,
+        "ExitCode": 0,
+        "WallTime": "00:00:04.7060213",
+        "Tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "Selection": {
+          "PlannedDescriptors": 6,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 27,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [
+            "worker-restart-cleanup-loss-linux-unit-001",
+            "worker-restart-crash-launch-linux-unit-002",
+            "worker-restart-crash-publication-linux-unit-003",
+            "worker-restart-crash-retirement-linux-unit-004",
+            "worker-restart-inventory-linux-unit-005",
+            "worker-restart-publication-races-linux-unit-006"
+          ],
+          "Complete": false
+        },
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "TimedOut": false
+      },
+      {
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-inventory-green/inventory-initial/summary.json",
+        "SourceCommit": "6d441cc0defe7bb92647930086e879a985934d81",
+        "Categories": [
+          "worker-restart-inventory-linux"
+        ],
+        "DiscoveryOnly": false,
+        "PlanOnly": false,
+        "ExitCode": 0,
+        "WallTime": "00:01:00.9148854",
+        "Tests": {
+          "Total": 4,
+          "Executed": 4,
+          "Passed": 4,
+          "Failed": 0
+        },
+        "Selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 4,
+          "CompletedCases": 4,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "TimedOut": false
+      },
+      {
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-launch-green/launch-exact/summary.json",
+        "SourceCommit": "e2cb68201ece9b4768375db56de8370b56b6af45",
+        "Categories": [
+          "worker-restart-crash-launch-linux"
+        ],
+        "DiscoveryOnly": false,
+        "PlanOnly": false,
+        "ExitCode": 0,
+        "WallTime": "00:01:08.7425731",
+        "Tests": {
+          "Total": 8,
+          "Executed": 8,
+          "Passed": 8,
+          "Failed": 0
+        },
+        "Selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 8,
+          "CompletedCases": 8,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "TimedOut": false
+      },
+      {
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-launch-observation-failure/launch-initial/summary.json",
+        "SourceCommit": "1fd2360059515f9c7acfe6736ed8968e7e725724",
+        "Categories": [
+          "worker-restart-crash-launch-linux"
+        ],
+        "DiscoveryOnly": false,
+        "PlanOnly": false,
+        "ExitCode": 1,
+        "WallTime": "00:01:56.5388258",
+        "Tests": {
+          "Total": 8,
+          "Executed": 8,
+          "Passed": 7,
+          "Failed": 1
+        },
+        "Selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 8,
+          "CompletedCases": 8,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "TimedOut": false
+      },
+      {
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-publication-green/publication-exact/summary.json",
+        "SourceCommit": "000499cd0c3600ac38a953f707faff0cd1f0566c",
+        "Categories": [
+          "worker-restart-crash-publication-linux"
+        ],
+        "DiscoveryOnly": false,
+        "PlanOnly": false,
+        "ExitCode": 0,
+        "WallTime": "00:01:04.5285515",
+        "Tests": {
+          "Total": 5,
+          "Executed": 5,
+          "Passed": 5,
+          "Failed": 0
+        },
+        "Selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 5,
+          "CompletedCases": 5,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "TimedOut": false
+      },
+      {
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-publication-preparation-failure/publication-initial/summary.json",
+        "SourceCommit": "148af16cf8821da89f1500d84f83057e86bcf186",
+        "Categories": [
+          "worker-restart-crash-publication-linux"
+        ],
+        "DiscoveryOnly": false,
+        "PlanOnly": false,
+        "ExitCode": 1,
+        "WallTime": "00:01:00.5223417",
+        "Tests": {
+          "Total": 5,
+          "Executed": 5,
+          "Passed": 0,
+          "Failed": 5
+        },
+        "Selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 5,
+          "CompletedCases": 5,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "TimedOut": false
+      },
+      {
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-races-causal-red/races-initial/summary.json",
+        "SourceCommit": "9708698fb737a7b52fcb2167da115ecba0284c0f",
+        "Categories": [
+          "worker-restart-publication-races-linux"
+        ],
+        "DiscoveryOnly": false,
+        "PlanOnly": false,
+        "ExitCode": 1,
+        "WallTime": "00:00:51.7612724",
+        "Tests": {
+          "Total": 3,
+          "Executed": 3,
+          "Passed": 0,
+          "Failed": 3
+        },
+        "Selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 3,
+          "CompletedCases": 3,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "TimedOut": false
+      },
+      {
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-races-complete-green/races-complete/summary.json",
+        "SourceCommit": "45f2f4426d84bc65e82444016c68cd75b5432479",
+        "Categories": [
+          "worker-restart-publication-races-linux",
+          "worker-restart-cleanup-loss-linux"
+        ],
+        "DiscoveryOnly": false,
+        "PlanOnly": false,
+        "ExitCode": 0,
+        "WallTime": "00:01:00.2319572",
+        "Tests": {
+          "Total": 5,
+          "Executed": 5,
+          "Passed": 5,
+          "Failed": 0
+        },
+        "Selection": {
+          "PlannedDescriptors": 2,
+          "CompletedDescriptors": 2,
+          "PlannedCases": 5,
+          "CompletedCases": 5,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "TimedOut": false
+      },
+      {
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-races-first-green/races-fixed/summary.json",
+        "SourceCommit": "4e8e4f18d5e35146a76d95906dc4f465854d8f77",
+        "Categories": [
+          "worker-restart-publication-races-linux"
+        ],
+        "DiscoveryOnly": false,
+        "PlanOnly": false,
+        "ExitCode": 0,
+        "WallTime": "00:00:55.9948933",
+        "Tests": {
+          "Total": 3,
+          "Executed": 3,
+          "Passed": 3,
+          "Failed": 0
+        },
+        "Selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 3,
+          "CompletedCases": 3,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "TimedOut": false
+      },
+      {
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-retirement-green/retirement-initial/summary.json",
+        "SourceCommit": "52cf923feabefa7680e66deffeb709b129b388fd",
+        "Categories": [
+          "worker-restart-crash-retirement-linux"
+        ],
+        "DiscoveryOnly": false,
+        "PlanOnly": false,
+        "ExitCode": 0,
+        "WallTime": "00:01:03.5024820",
+        "Tests": {
+          "Total": 5,
+          "Executed": 5,
+          "Passed": 5,
+          "Failed": 0
+        },
+        "Selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 5,
+          "CompletedCases": 5,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "TimedOut": false
+      }
+    ],
+    "LatestResults": [
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.LaunchCrash_ActualCutNeverReconstructsAuthority(cut: \"completed\", phase: \"Released\", starts: 1)",
+        "startTime": "2026-10-06T05:35:42.6996612+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "e2cb68201ece9b4768375db56de8370b56b6af45",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-launch-green/launch-exact/worker-restart-crash-launch-linux-unit-001.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.LaunchCrash_ActualCutNeverReconstructsAuthority(cut: \"outputs-stop-record\", phase: \"StopValidated\", starts: 1)",
+        "startTime": "2026-10-06T05:35:45.3427987+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "e2cb68201ece9b4768375db56de8370b56b6af45",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-launch-green/launch-exact/worker-restart-crash-launch-linux-unit-001.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.LaunchCrash_ActualCutNeverReconstructsAuthority(cut: \"released-ack\", phase: \"Released\", starts: 1)",
+        "startTime": "2026-10-06T05:35:47.6883556+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "e2cb68201ece9b4768375db56de8370b56b6af45",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-launch-green/launch-exact/worker-restart-crash-launch-linux-unit-001.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.LaunchCrash_ActualCutNeverReconstructsAuthority(cut: \"release-intent\", phase: \"ReleaseIntent\", starts: 0)",
+        "startTime": "2026-10-06T05:35:49.9440366+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "e2cb68201ece9b4768375db56de8370b56b6af45",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-launch-green/launch-exact/worker-restart-crash-launch-linux-unit-001.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.LaunchCrash_ActualCutNeverReconstructsAuthority(cut: \"release-sent\", phase: \"ReleaseIntent\", starts: 1)",
+        "startTime": "2026-10-06T05:35:52.3601767+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "e2cb68201ece9b4768375db56de8370b56b6af45",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-launch-green/launch-exact/worker-restart-crash-launch-linux-unit-001.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.LaunchCrash_ActualCutNeverReconstructsAuthority(cut: \"prepared\", phase: \"Prepared\", starts: 0)",
+        "startTime": "2026-10-06T05:35:54.2809627+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "e2cb68201ece9b4768375db56de8370b56b6af45",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-launch-green/launch-exact/worker-restart-crash-launch-linux-unit-001.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.LaunchCrash_ActualCutNeverReconstructsAuthority(cut: \"scoped-stop\", phase: \"Released\", starts: 1)",
+        "startTime": "2026-10-06T05:35:57.1556960+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "e2cb68201ece9b4768375db56de8370b56b6af45",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-launch-green/launch-exact/worker-restart-crash-launch-linux-unit-001.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.LaunchCrash_ActualCutNeverReconstructsAuthority(cut: \"helper\", phase: \"LaunchIntent\", starts: 0)",
+        "startTime": "2026-10-06T05:36:00.0395436+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "e2cb68201ece9b4768375db56de8370b56b6af45",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-launch-green/launch-exact/worker-restart-crash-launch-linux-unit-001.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationCrash_ActualArtifactsCannotBecomeColdSuccess(cut: \"bundle\", phase: \"PublicationIntent\", bundle: True, inbox: False, acknowledged: False)",
+        "startTime": "2026-10-06T05:45:19.5814718+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "000499cd0c3600ac38a953f707faff0cd1f0566c",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-publication-green/publication-exact/worker-restart-crash-publication-linux-unit-001.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationCrash_ActualArtifactsCannotBecomeColdSuccess(cut: \"live-publication\", phase: \"Published\", bundle: True, inbox: True, acknowledged: True)",
+        "startTime": "2026-10-06T05:45:22.1136061+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "000499cd0c3600ac38a953f707faff0cd1f0566c",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-publication-green/publication-exact/worker-restart-crash-publication-linux-unit-001.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationCrash_ActualArtifactsCannotBecomeColdSuccess(cut: \"published-disk\", phase: \"Published\", bundle: True, inbox: False, acknowledged: False)",
+        "startTime": "2026-10-06T05:45:24.7939747+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "000499cd0c3600ac38a953f707faff0cd1f0566c",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-publication-green/publication-exact/worker-restart-crash-publication-linux-unit-001.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationCrash_ActualArtifactsCannotBecomeColdSuccess(cut: \"inbox\", phase: \"Published\", bundle: True, inbox: True, acknowledged: True)",
+        "startTime": "2026-10-06T05:45:27.4646201+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "000499cd0c3600ac38a953f707faff0cd1f0566c",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-publication-green/publication-exact/worker-restart-crash-publication-linux-unit-001.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationCrash_ActualArtifactsCannotBecomeColdSuccess(cut: \"intent\", phase: \"PublicationIntent\", bundle: False, inbox: False, acknowledged: False)",
+        "startTime": "2026-10-06T05:45:30.0913294+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "000499cd0c3600ac38a953f707faff0cd1f0566c",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-publication-green/publication-exact/worker-restart-crash-publication-linux-unit-001.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.RetirementCrash_ExactTerminalCommitGatesNewTask(cut: \"cleanup-pending\", terminal: False, acknowledged: False)",
+        "startTime": "2026-10-06T06:07:09.6103557+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-crash-retirement-linux-unit-004.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.RetirementCrash_ExactTerminalCommitGatesNewTask(cut: \"archive\", terminal: False, acknowledged: False)",
+        "startTime": "2026-10-06T06:07:12.6541664+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-crash-retirement-linux-unit-004.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.RetirementCrash_ExactTerminalCommitGatesNewTask(cut: \"capacity-released\", terminal: True, acknowledged: True)",
+        "startTime": "2026-10-06T06:07:17.0518977+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-crash-retirement-linux-unit-004.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.RetirementCrash_ExactTerminalCommitGatesNewTask(cut: \"terminal-ack\", terminal: True, acknowledged: True)",
+        "startTime": "2026-10-06T06:07:21.4303331+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-crash-retirement-linux-unit-004.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.RetirementCrash_ExactTerminalCommitGatesNewTask(cut: \"terminal-disk\", terminal: True, acknowledged: False)",
+        "startTime": "2026-10-06T06:07:25.3331970+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-crash-retirement-linux-unit-004.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationRace_PreservesUnresolvedWorkspaceAndAuthority(mode: \"queued-generation\")",
+        "startTime": "2026-10-06T06:07:52.3882496+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-publication-races-linux-unit-007.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationRace_PreservesUnresolvedWorkspaceAndAuthority(mode: \"held-owner-loss\")",
+        "startTime": "2026-10-06T06:07:55.4215624+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-publication-races-linux-unit-007.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationRace_PreservesUnresolvedWorkspaceAndAuthority(mode: \"held-generation\")",
+        "startTime": "2026-10-06T06:07:58.4036099+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-publication-races-linux-unit-007.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty(mode: \"pending-ack\")",
+        "startTime": "2026-10-06T06:06:51.4748987+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-cleanup-loss-linux-unit-002.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty(mode: \"cleanup-await\")",
+        "startTime": "2026-10-06T06:06:54.4817364+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-cleanup-loss-linux-unit-002.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary(mode: \"retirement-authority-loss\")",
+        "startTime": "2026-10-06T06:06:37.0004109+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-boundaries-linux-unit-001.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary(mode: \"prepared-registration-loss\")",
+        "startTime": "2026-10-06T06:06:38.7006624+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-boundaries-linux-unit-001.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary(mode: \"retirement-ack\")",
+        "startTime": "2026-10-06T06:06:41.1825061+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-boundaries-linux-unit-001.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary(mode: \"publication-ack\")",
+        "startTime": "2026-10-06T06:06:43.5742143+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-boundaries-linux-unit-001.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary(mode: \"partial-workspace\")",
+        "startTime": "2026-10-06T06:06:45.2927126+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-boundaries-linux-unit-001.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartControlTests.OriginalRelease_OneSendAndNoLateSuccessAfterAckLossOrCancellation(mode: \"cancel\")",
+        "startTime": "2026-10-06T06:07:00.2473195+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-control-linux-unit-003.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartControlTests.OriginalRelease_OneSendAndNoLateSuccessAfterAckLossOrCancellation(mode: \"released-ack\")",
+        "startTime": "2026-10-06T06:07:03.0002854+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-control-linux-unit-003.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease(mode: \"omitted\")",
+        "startTime": "2026-10-06T06:07:31.2004856+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-launch-linux-unit-005.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease(mode: \"busy\")",
+        "startTime": "2026-10-06T06:07:33.8784561+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-launch-linux-unit-005.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease(mode: \"foreign\")",
+        "startTime": "2026-10-06T06:07:36.8317939+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-launch-linux-unit-005.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartLifecycleTests.ActualContentPool_PublishesAndCommitsBoundRetirementBeforeCapacityRelease",
+        "startTime": "2026-10-06T06:07:44.0993564+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-lifecycle-linux-unit-006.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartRootTests.IndependentOriginalEpochs_DoNotBorrowJournalOrRecoveryAuthority(mode: \"uncertain-recovery\")",
+        "startTime": "2026-10-06T06:08:05.4770226+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-root-linux-unit-008.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartRootTests.IndependentOriginalEpochs_DoNotBorrowJournalOrRecoveryAuthority(mode: \"foreign-pending\")",
+        "startTime": "2026-10-06T06:08:09.5655678+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-root-linux-unit-008.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartWarmTests.DetectedNativeLoss_ClosesSharedRootBeforeStopAndSurvivesFailedJournalAndClientDisposal",
+        "startTime": "2026-10-06T06:08:15.2527860+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-affected-regression-green/affected-regression/worker-restart-warm-linux-unit-009.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.ColdInventory_FencesWholeRootAndOriginalJournalConflict(mode: \"parallel-lower-limit\")",
+        "startTime": "2026-10-06T06:11:49.0141440+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "6d441cc0defe7bb92647930086e879a985934d81",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-inventory-green/inventory-initial/worker-restart-inventory-linux-unit-001.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.ColdInventory_FencesWholeRootAndOriginalJournalConflict(mode: \"runtime-missing\")",
+        "startTime": "2026-10-06T06:11:51.0359647+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "6d441cc0defe7bb92647930086e879a985934d81",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-inventory-green/inventory-initial/worker-restart-inventory-linux-unit-001.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.ColdInventory_FencesWholeRootAndOriginalJournalConflict(mode: \"parallel-corrupt\")",
+        "startTime": "2026-10-06T06:11:53.5176266+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "6d441cc0defe7bb92647930086e879a985934d81",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-inventory-green/inventory-initial/worker-restart-inventory-linux-unit-001.trx"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.ColdInventory_FencesWholeRootAndOriginalJournalConflict(mode: \"journal-conflict\")",
+        "startTime": "2026-10-06T06:11:56.0966974+00:00",
+        "outcome": "Passed",
+        "SourceCommit": "6d441cc0defe7bb92647930086e879a985934d81",
+        "Artifact": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-inventory-green/inventory-initial/worker-restart-inventory-linux-unit-001.trx"
+      }
+    ]
+  },
+  "Discovery": {
+    "Catalog": {
+      "Categories": 317,
+      "MethodsOrFiles": 10885,
+      "Executed": 0
+    },
+    "R3Plan": {
+      "Descriptors": 6,
+      "Cases": 27,
+      "Executed": 0
+    },
+    "PortableCIPlan": {
+      "Descriptors": 13,
+      "Cases": 232,
+      "Executed": 0,
+      "Review": "Existing cumulative R2 portable selection remains relevant to branch changes; R3 behavior changes are explicitly injected durable guards, with legacy null-durable path preserved. Linux-only crash categories stay in their separate discovery selection. No unchanged portable cohort replay."
+    }
+  },
+  "Toolchain": {
+    "SDK": "10.0.401",
+    "TargetRuntime": "8.0.31",
+    "PowerShell": "7.5.4",
+    "GCC": "Debian14.2.0-19",
+    "Readelf": "2.44",
+    "Platform": "Linux x86_64",
+    "Evidence": "Exact observed toolchain and per-fixture native compiler/managed binary provenance retained in every run manifest."
+  },
+  "Cleanup": {
+    "AllGuardiansECHILD": true,
+    "HistoricalGuardians": 116,
+    "HistoricalEmergencySignals": 21,
+    "SignalAttribution": {
+      "InitialAObservationAttempt": 5,
+      "AcceptedA": 8,
+      "AcceptedE": 8
+    },
+    "SignalMeaning": "Only independent guardian signals to its own adopted children after deliberate driver exit77; never durable stop authority or permission to clear reservations.",
+    "Failures": 0,
+    "Deadlines": 0,
+    "Scope": "Only fixtures and descendants owned by these runs. No claim about old VM/PID1 zombies or unrelated processes."
+  },
+  "SpecKitConsistency": {
+    "Task": "US4 / FR-012/014/015; existing1553feature, constitution2.1.0, workflow1.6",
+    "Result": "Requirements, accepted bounded contract, five cohorts plus2causal follow-ups, exact category ownership and limits aligned. No new feature/branch, GM-authored payload, prompt/example or public capability.",
+    "GMDocumentation": "No GM-facing update required for explicitly injected client-owned synthetic qualification and cleanup authority fixes."
+  },
+  "IndependentReview": {
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "Mode": "Read-only source/evidence review; no edits/tests/native probes",
+    "Status": "Pending"
+  },
+  "CandidateRestoration": null,
+  "FinalCarrier": "Ordinary non-force push, exact remote SHA and changed-file byte readback; then a separate fresh GitHub-only clone with all tracked bytes/tree/history/clean/fsck checks. Final carrier SHA/proof reported in handoff without self-reference.",
+  "RemainingIntegrationTasks": [
+    "Review/authorize production Linux worker Release and actual product pool connection separately.",
+    "Integrate main process/PTY lifecycle and restart policy only in a separately authorized stage.",
+    "Qualify user-systemd backend in an environment with a working user manager; it is unavailable here.",
+    "Obtain native Windows and other target-platform evidence without inferring it from Linux fixtures.",
+    "Power-loss/reboot durability and any reconnect/salvage/force-clear/reboot-clearing policy need separate design, authorization and evidence.",
+    "Live GM and real save qualification remain outside this stage."
+  ],
+  "Limits": [
+    "Ordinary same-PID-namespace descendants only for native fallback; external services and escaped lineage are outside tracked scope.",
+    "No namespaces/root/cgroup/security/network/auth changes.",
+    "No full suite/Fast/PreMerge/all-category bypass, production rollout, main PTY/live GM/real saves, merge/force push/branch deletion/issue closure."
+  ],
+  "HandoffBoundary": "Stop after R3 final reviewed and restored carrier; do not start integration."
+}
