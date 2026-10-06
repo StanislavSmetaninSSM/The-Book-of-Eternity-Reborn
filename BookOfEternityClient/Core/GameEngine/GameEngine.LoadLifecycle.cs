@@ -24,7 +24,7 @@ public partial class GameEngine
                 result=await LoadSelectedSaveAndRebindRuntimeAsync(source);
                 result=await PrepareLoadedConsoleContinuationAsync(result);
             }
-            var refreshed=result.Disposition==LoadReplacementDisposition.Committed && !result.ContinuationBlocked;
+            var refreshed=result.Disposition==LoadReplacementDisposition.Committed && !result.ContinuationBlocked && !result.NeedsFollowUp;
             _consoleLoadMainState=await original.FinishAsync(refreshed,refreshed,result.EstablishedGeneration);
             if(original.HadSession && _consoleLoadMainState!=GmLoadMainState.Running)
                 result=result.WithFollowUp(new InvalidOperationException("Исходный ГМ завершён; запуск нового ГМа не подтверждён."),true);

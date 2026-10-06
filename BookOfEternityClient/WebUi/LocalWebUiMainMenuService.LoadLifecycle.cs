@@ -48,6 +48,8 @@ public sealed partial class LocalWebUiMainMenuService
                 lock(operation.Gate)if(operation.Cancelled)throw new OperationCanceledException("Load cancelled before mutation.");
                 result=await LoadSaveCoreAsync(request,buildState);
                 result=result with {LifecycleOperationId=operation.Id,MainSessionState=original.State};
+                if(original.HadSession && result.Disposition==LoadReplacementDisposition.Committed && result.NeedsFollowUp)
+                    result=BlockLoad(result,"Сохранение загружено. Завершение служебной очистки требует проверки; новая сессия ГМа не запущена.");
                 operation.Retained=result;
                 if(original.HadSession && result.Disposition==LoadReplacementDisposition.Committed && !result.ContinuationBlocked) {
                     if(result.State==null)result=BlockLoad(result,"Сохранение загружено. Полное обновление интерфейса не подготовлено; новый ГМ не запущен.");

@@ -95,3 +95,7 @@ At8d71b38a actual early ACK1FAIL authorized fresh launch before bundle applicati
 ### Explicit receipt and cleanup-debt fixture correction
 
 Clean33c6b18e frontend6/6PASS after reviewed fixes; explicit stop/completion receipt fields3/3FAIL before JsonRequired correction. Console debt oracle at33c6b18e did **not inject debt** (hook applies failed preparation only), so its1FAIL is preparation failure, not causal cleanup RED. It incidentally proves valid console refresh/fresh execution but is not positive-case verdict. Correct fault injection adds an owned staging link only after Committed; real candidate disposal must report debt before runtime admission changes. Guardian clean.
+
+### Cleanup debt causal RED → admission fix; bounded interruption groups
+
+At9cb3481c debt injection reached1: actual candidate disposal returned Committed/NeedsFollowUp/nonblocked and console launched fresh;1FAIL causal. Correct only fresh authorization: NeedsFollowUp blocks a new GM while preserving storage decision. Added four-case controlled HTTP stop/refresh, restart/cancel/response-loss, and storage/admission groups; null receipt observer closes only the original fixture stream. Broader frontend original-owner/fault tests added; all new work pending build/run/review. Positive category remains three cases, not a growing full matrix.

@@ -2,6 +2,75 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-load-storage-faults",
+      "responsibility": "Actual installed production-neutral original Load HTTP/pipe fault boundary: BrowserHttp_TypedStorageAndIndependentAdmission",
+      "excludes": "No provider/model/EnterGameLoop/native Windows/systemd or unrelated console cohorts",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_TypedStorageAndIndependentAdmission"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-load-restart-faults",
+      "responsibility": "Actual installed production-neutral original Load HTTP/pipe fault boundary: BrowserHttp_OriginalRestartFaults",
+      "excludes": "No provider/model/EnterGameLoop/native Windows/systemd or unrelated console cohorts",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_OriginalRestartFaults"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-load-stop-faults",
+      "responsibility": "Actual installed production-neutral original Load HTTP/pipe fault boundary: BrowserHttp_OriginalStopAndRefreshFaults",
+      "excludes": "No provider/model/EnterGameLoop/native Windows/systemd or unrelated console cohorts",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_OriginalStopAndRefreshFaults"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-load-protocol",
       "responsibility": "Causal real console selected-Load original owner stop/replacement/refresh/fresh session; isolated configured neutral CLI only",
       "excludes": "No provider/model/EnterGameLoop/native Windows/systemd or unrelated console cohorts",
@@ -139,7 +208,9 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.*"
+            "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserLoad_OriginalLiveOwnerStopsBeforeRealReplacement",
+            "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_OriginalLiveOwnerStopsBeforeRealReplacement",
+            "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LoadFullBundleCurrentAckFreshEpoch"
           ]
         }
       ]

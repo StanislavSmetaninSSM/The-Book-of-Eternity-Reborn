@@ -15,7 +15,22 @@ internal static partial class OwnedTerminalScenarioDriver
     {
         var assets=Path.Combine(folder,"frontend");Directory.CreateDirectory(assets);
         await File.WriteAllTextAsync(Path.Combine(assets,"index.html"),"<!doctype html><title>isolated Load fixture</title>");
-        await using var app=LocalWebUiHost.Build([],new(files.BasePath,"http://127.0.0.1:0",assets));
+        var storageFault=mode.EndsWith("rollback",StringComparison.Ordinal)||mode.EndsWith("uncertain",StringComparison.Ordinal);
+        var loading=false;var replacing=false;var cuts=0;
+        var marker=files.ResolvePath("game_state/world/test_fixture_state.json");
+        if(storageFault)await files.WriteFileAtomicAsync("game_state/world/test_fixture_state.json","{\"state\":\"before-load\"}");
+        var hooks=storageFault?new FileSystemManagerHooks{LocalPublicationObserver=(phase,_)=>{
+            if(!loading)return;
+            if(phase==TrustedLocalPublicationPhase.IntentPublished) {
+                using var journal=File.OpenRead(Path.Combine(files.RuntimeRootPath,"trusted-local-publication-v1/active.json"));
+                Span<byte> magic=stackalloc byte[8];journal.ReadExactly(magic);replacing=magic.SequenceEqual("BOELP3\r\n"u8);
+            }
+            if(replacing && phase==TrustedLocalPublicationPhase.CommitStaged) {
+                cuts++;if(mode.EndsWith("uncertain",StringComparison.Ordinal))File.WriteAllText(marker,"{\"state\":\"unknown-cut\"}");
+                throw new IOException("controlled actual Load commit cut");
+            }
+        }}:null;
+        await using var app=LocalWebUiHost.Build([],new(files.BasePath,"http://127.0.0.1:0",assets),hooks);
         await app.StartAsync();
         using var http=new HttpClient{BaseAddress=new Uri(app.Urls.Single()),Timeout=TimeSpan.FromSeconds(20)};
         void Require(bool yes,string failure){if(!yes)throw new InvalidOperationException(failure);}
@@ -28,6 +43,12 @@ internal static partial class OwnedTerminalScenarioDriver
         var prior=run.Identity;
         var oldBinding=(await rpc(new{command="status"})).GetProperty("status").GetProperty("inputBindingId").GetString();
         var request=new BrowserLoadSaveRequest("manual:"+Path.GetFileName(path),Guid.NewGuid().ToString("N"),menu!.LoadGeneration);
+        if(mode.Contains("-fault-",StringComparison.Ordinal)) {
+            loading=true;
+            await RunLoadHttpFaultAsync(mode[(mode.LastIndexOf("-fault-",StringComparison.Ordinal)+7)..],app,http,host,type,rpc,original,prior,request,evidence,files);
+            if(storageFault)Require(cuts==1,"Preparation failure: real replacement publication cut not reached.");
+            await app.StopAsync();return;
+        }
         if(mode.EndsWith("early-ack",StringComparison.Ordinal)) {
             var entered=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
             var release=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);

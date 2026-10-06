@@ -18,6 +18,7 @@ internal sealed partial class BridgeHost
     internal Func<Task>? BeforeLoadStopReply;
     internal Func<Task>? BeforeLoadRestart;
     internal Func<Task>? BeforeLoadRestartReply;
+    internal Action<Stream,GmLoadMainState>? BeforeLoadReceipt;
 
     private BridgeResponse CancelLoadSession(BridgeRequest request)
     {
@@ -70,6 +71,7 @@ internal sealed partial class BridgeHost
                     throw new InvalidOperationException("Original stop/disposal/Stopped ACK remains unconfirmed.");
             } finally {_shellLifecycleLock.Release();}
             if(BeforeLoadStopReply!=null)await BeforeLoadStopReply();
+            BeforeLoadReceipt?.Invoke(stream,operation!.Terminal==null?GmLoadMainState.NoActiveSession:GmLoadMainState.Stopped);
             using(var response=CancellationTokenSource.CreateLinkedTokenSource(token)) {
                 response.CancelAfter(TimeSpan.FromSeconds(3));
                 await MainOperationReader.WriteAsync(stream,Reply(operation!.Terminal==null?GmLoadMainState.NoActiveSession:GmLoadMainState.Stopped),response.Token);
@@ -100,6 +102,7 @@ internal sealed partial class BridgeHost
                 }
             } finally {_shellLifecycleLock.Release();}
             if(BeforeLoadRestartReply!=null)await BeforeLoadRestartReply();
+            BeforeLoadReceipt?.Invoke(stream,result);
             using var reply=CancellationTokenSource.CreateLinkedTokenSource(token);reply.CancelAfter(TimeSpan.FromSeconds(3));
             await MainOperationReader.WriteAsync(stream,Reply(result),reply.Token);
         } catch {

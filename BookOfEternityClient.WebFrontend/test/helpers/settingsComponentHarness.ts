@@ -35,6 +35,7 @@ export function createSettingsComponentHarness() {
   const load = deferred<any>();
   const loadComplete = deferred<any>();
   let loadCompletions = 0;
+  let loadCancels = 0;
   let loadRequest: any;
   const save = deferred<any>();
   const audioWrite = deferred<any>();
@@ -73,7 +74,7 @@ export function createSettingsComponentHarness() {
     updateClientSettings: async () => { settingsPosts++; return ok(persistedSettings); },
     loadSave: (request: any) => { loadRequest = request; loadPosts++; return load.promise; },
     completeLoad: () => { loadCompletions++; return loadComplete.promise; },
-    cancelLoad: async () => ok({}),
+    cancelLoad: async () => { loadCancels++;return ok({}); },
     createSave: () => { savePosts++; return save.promise; },
     updateAudioSettings: () => { audioPosts++; return audioWrite.promise; }
   };
@@ -217,5 +218,5 @@ export function createSettingsComponentHarness() {
     setRefreshFailure: () => { refreshFailure = true; },
     setRealRefreshClient: (client: unknown) => { realRefreshClient = client; },
     realRefreshState: () => realRefreshState,
-    counts: () => ({ refreshes, settingsPosts, audioPosts, savePosts, loadPosts, loadCompletions, navigations, ordinaryReads, commandPosts, actionPosts }) };
+    counts: () => ({ refreshes, settingsPosts, audioPosts, savePosts, loadPosts, loadCompletions, loadCancels, navigations, ordinaryReads, commandPosts, actionPosts }) };
 }
