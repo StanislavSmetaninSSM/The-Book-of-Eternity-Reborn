@@ -191,6 +191,16 @@ registration after pool assignment/retention and made the durable atomic uncerta
 latch participate in both success consumers and positive stop/output diagnostics.
 Fresh five-case GREEN pending. Recovery/audit confinement and foreign Busy remain
 open review findings; the remaining minimal R2 matrix and final review are pending.
+Boundary GREEN at `2b681548f7a9a1193da20a4edfc22b80097ddc2b`:5/5 PASS,
+53.4740737s, fresh build/complete selection and cleanup/no timeout. All five guardians
+ECHILD/exit0, zero emergency/failure/deadline. Both consumers now reject late durable
+authority loss permanently; Prepared failure holds the original reaper capacity.
+Publication pending never creates later success; retirement-only pending preserves
+the prior permit and retries exact unchanged state/archive bytes without new audit.
+Partial staging cleanup retries to bound AbortedBeforeLaunch with required audit.
+Evidence: recovery/evidence/worker-r2-boundaries-green/manifest.json. Remaining review
+findings are foreign-pending Busy and cleanup recovery/audit confinement; next bounded
+scaffold uses two actual original epochs in one root for their causal regressions.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing
