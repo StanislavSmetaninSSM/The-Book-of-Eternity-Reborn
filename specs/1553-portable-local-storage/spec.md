@@ -110,6 +110,21 @@ Mortal World/afterlife schema, mechanic, save, prompt/model or worked-example co
 changes; existing GM guidance remains applicable. Operational proof and limits are
 in the plan and [qualification](recovery/gm-input-transaction-qualification.json).
 
+## Authorized owned main terminal design
+
+From accepted T042 `1bc9d67536dccbcc6672d8e7cd71ad885c2a946c`, the owner
+authorizes source-backed design plus only necessary safe capability probes, with
+own cleanup. Define the consumed terminal session, Linux PTY/controlling-terminal
+ownership and preserved Windows ConPTY/Job, and a neutral-only first slice for a
+persistent interactive test process/manual input/scoped stop. Reuse accepted
+audits. Existing systemd-user is primary; no manager is available here and no
+positive systemd qualification or environment setup is authorized. Native fallback
+has its agreed ordinary same-PID-namespace scope. Main run fence precedes
+production launch with write authority. No runtime/test changes, game-writing GM,
+public rollout/provider/real saves/cold exactly-once. Independent Sol6.1/xhigh
+design review and published checkpoint, then stop before implementation.
+[Design](owned-main-terminal-design.md).
+
 ## Design-only continuation from accepted R3
 
 The owner accepted bounded synthetic R3 at `bd2acebf9c070e484434d1332ee80c99bf1c66b6`

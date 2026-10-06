@@ -182,6 +182,15 @@ Do not repeat untouched INPUT37/OUTPUT48 or worker/native cohorts.
   Stop before the next stage. Raw-read settlement/live CLI/native/main/systemd/
   production/cold/fullT042 remain unqualified; no GM/save/prompt/model contract change.
 
+## Owned main terminal — current design-only block
+
+Accepted T042 `1bc9d67536dccbcc6672d8e7cd71ad885c2a946c` closes only its
+controlled input transaction. Current authorization is T041 source-backed owned
+terminal design and necessary isolated capability probes, no runtime/test changes.
+[Connected interface and neutral first-slice plan](owned-main-terminal-design.md).
+Separate Sol6.1/xhigh design review and ordinary publication/readback/restore
+precede handoff. No implementation or production launch is authorized by this block.
+
 ## Ordinary Linux console with persistent interactive GM — design-only continuation
 
 Historical accepted design checkpoint; current input-only authorization and proof are
