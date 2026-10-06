@@ -18,7 +18,7 @@
 ## Authorized main run-fence design from accepted neutral terminal
 
 Accepted neutral terminal `14888663d608355098cc1a329d97ab61de0e6016` feeds the
-design-only [T041-RUN-FENCE connection](main-run-fence-design.md), US4 /
+[T041-RUN-FENCE connection](main-run-fence-design.md), US4 /
 FR-009/012/013/014/015. Consume existing schema1/main.json and authentic original
 terminal owner before normal game-writing launch; enforce pre-recovery and actual
 held-lease admission, preserving separate worker inventory and selected cold refusal.
@@ -26,10 +26,16 @@ No decoded terminal record/PID/EOF permits old-session continuation. Clear/load/
 replacement/generation-changing recovery require quiescent main; active in-generation
 rollback/save/finalization requires original live capability and current generation.
 Retain epoch outside replaceable game_state; no second journal or protection from
-the player editing saves. Planned F1 neutral connection, F2 real client pins and
-F3 process-crash/replacement qualification do not imply implementation authorization.
-Systemd remains a separate required backend stage; no environment/service changes,
-new tests/runtime edits, public rollout, real saves or reboot/power-loss salvage now.
+the player editing saves. The owner accepted design `0658e440` and authorized only
+F1 connected neutral durable owner/fence: same original fixed terminal, schema1
+Prepared/Running/Stopping/Stopped ACK ordering, isolated root and actual common
+filesystem gates. An admitted held storage decision may settle before persisted
+revocation; unknown owner/I/O/debt never authorizes replacement or a fresh epoch.
+This is client-owned neutral infrastructure, with no new GM prompt/schema/example
+or game-writing capability. F2 separate client pins and F3 process-crash/replacement
+qualification remain unauthorized. Systemd remains a separate required backend
+stage; no environment/service changes, public rollout, real saves, provider or
+reboot/power-loss/cold guarantees. Later stop/load/fresh-start UX is unchanged.
 
 ## Approved two-backend Linux ownership — 2026-10-05 15:12 UTC
 

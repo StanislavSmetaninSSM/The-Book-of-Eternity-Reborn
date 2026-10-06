@@ -20,17 +20,23 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.*"
+            "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.*",
+            "BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard",
+            "BookOfEternityClient.Tests.GmMainRunFenceTests.InitializationParentBarrier_IsReplayedBeforeRetryAck",
+            "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OwnedRoot_TwoUnicodeInputsResizeCanonicalEof_ExactScopedCleanup"
           ]
         }
       ]
     },
     {
       "id": "gm-main-run-fence",
-      "responsibility": "#1553 F1 real pre-recovery and held-lease main admission, isolated canonical consumers and retained tombstone",
-      "excludes": "No F2/F3, live GM/saves, systemd/Windows native/cold qualification.",
+      "responsibility": "#1553 F1 portable real pre-recovery/held admission and exactly affected lease, namespace, generation, browser Load and terminal/input regressions.",
+      "excludes": "No Linux native/durability qualification in this category; no F2/F3, live provider/GM/saves or unrelated accepted cohorts.",
       "changeHints": [
-        "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs"
+        "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+        "BookOfEternityClient/Core/FileSystemManager.cs",
+        "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs"
       ],
       "related": [],
       "requirements": {
@@ -43,7 +49,20 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmMainRunFenceTests.*"
+            "BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation",
+            "BookOfEternityClient.Tests.GmMainRunFenceTests.InitializedMissingOrInvalid_RefusesClearBeforeEffects",
+            "BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite",
+            "BookOfEternityClient.Tests.GmMainRunFenceTests.StoppedTombstone_ClearRetainsEpochOutsideReplacement",
+            "BookOfEternityClient.Tests.GmMainRunFenceTests.BoundedGeneration_RejectsOversizeBeforeAllocatingAuthority",
+            "BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing",
+            "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission",
+            "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterFirstWrite_DoesNotRollbackConcurrentAcceptedWriter",
+            "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_BackupCleanupFailure_DoesNotRollbackCommittedDistribution",
+            "BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension",
+            "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentV3FrameKeepsCompletePendingOrCommittedDecision",
+            "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.PublishWithOutcome_SeparatesRollbackFromDurableCommitCleanupFailure",
+            "BookOfEternityClient.Tests.GmOwnedTerminalSessionTests.ActualStop_RetainsOriginalOwnerWhileScopedStopAndOutputAreUnfinished",
+            "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_WriteFailureIsRecordedAndPumpStops"
           ]
         }
       ]

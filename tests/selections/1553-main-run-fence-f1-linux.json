@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "gm-main-run-fence",
+      "reason": "F1 new portable admission plus exact changed common lease/generation/publication/browser/terminal methods. Windows CI verifies source/portable behavior only; Linux native qualification is in explicit separate selection.",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F1 FR-009/012/013/014/015; T042 original input lifetime"
+      ]
+    },
+    {
+      "category": "gm-main-run-owner-linux",
+      "reason": "Actual Linux-x64 fixed neutral original owner, one schema1 persistence, frozen metadata debt, real output/input/stop, in-generation held settlement, independent guardian; exactly affected native primitive only.",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F1 FR-009/012/013/014/015; T042 original input lifetime"
+      ]
+    }
+  ]
+}

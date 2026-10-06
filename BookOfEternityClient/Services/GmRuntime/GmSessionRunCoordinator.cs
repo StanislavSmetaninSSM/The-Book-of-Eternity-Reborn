@@ -37,6 +37,7 @@ internal sealed class GmSessionRunCoordinator
     internal bool AdmissionClosed {get{lock(_sync)return _closed;}}
     internal bool HasMetadataDebt=>_persistence.HasDebt;
     internal bool RetainsAuthority=>!_retired;
+    internal bool IsUncertain {get{lock(_sync)return _uncertain;}}
     internal GmSessionRunRecord? Record=>_record;
     private GmSessionRunCoordinator(FileSystemManager files,GmMainOwnerGuard guard,Action<MainRunIoStage>? observe)
     {_files=files;_guard=guard;_persistence=new(guard,observe);}

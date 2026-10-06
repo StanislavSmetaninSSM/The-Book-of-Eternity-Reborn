@@ -22,4 +22,13 @@ public sealed class GmMainRunOwnerLinuxTests
     public async Task OriginalOwner_ReviewBoundary(string mode)=>await GmOwnedTerminalLinuxTests.RunAsync(mode);
     [Fact]
     public async Task StagedIntent_SettlesOriginalBeforeDecision()=>await GmOwnedTerminalLinuxTests.RunAsync("terminal-main-staged-rollback");
+    [Theory]
+    [InlineData("terminal-main-unbound")]
+    [InlineData("terminal-main-held-rollback")]
+    [InlineData("terminal-main-held-commit")]
+    [InlineData("terminal-main-output-drain")]
+    [InlineData("terminal-main-output-fault")]
+    [InlineData("terminal-main-pin-timeout")]
+    [InlineData("terminal-main-single-release")]
+    public async Task OriginalOwner_ConnectedSettlement(string mode)=>await GmOwnedTerminalLinuxTests.RunAsync(mode);
 }

@@ -112,6 +112,7 @@ internal sealed partial class BridgeHost : IDisposable
     private BookOfEternityClient.Core.FileSystemManager? _neutralFiles;
     internal Action<BookOfEternityClient.Core.MainRunIoStage>? ObserveMainMetadata;
     internal Action<int>? ObserveMainHeldRoot;
+    internal Stream? NeutralOutput;
     internal void ConfigureNeutral(NeutralTerminalLaunch launch) {
         if(_sessionPath!=launch.Scratch)throw new InvalidOperationException("Neutral host requires its fresh admitted scratch."); _neutralLaunch=launch;
         _neutralFiles=new(_clientRoot,Microsoft.Extensions.Logging.Abstractions.NullLogger<BookOfEternityClient.Core.FileSystemManager>.Instance);
@@ -407,9 +408,9 @@ internal sealed partial class BridgeHost : IDisposable
                     neutralSession=await _mainRun.LaunchNeutralAsync(_neutralLaunch,_cts.Token,ObserveMainHeldRoot);
                     _neutralLaunch=_neutralLaunch.NextEpoch();
                 }
-                catch(OwnedTerminalStartException ex) { AttachOwnedTerminal(ex.Owner,Console.OpenStandardOutput()); MarkTerminalUncertain(); throw; }
+                catch(OwnedTerminalStartException ex) { AttachOwnedTerminal(ex.Owner,NeutralOutput??Console.OpenStandardOutput(),false); MarkTerminalUncertain(); throw; }
                 catch { if(_mainRun?.RetainsAuthority==true)MarkTerminalUncertain();else _mainRun=null;throw; }
-                AttachOwnedTerminal(neutralSession, Console.OpenStandardOutput());
+                AttachOwnedTerminal(neutralSession, NeutralOutput??Console.OpenStandardOutput());
                 return;
             }
             if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("Production main launch remains fenced; only fixed neutral terminal admission is available here.");
@@ -420,7 +421,7 @@ internal sealed partial class BridgeHost : IDisposable
             var (width, height) = GetConsoleSize();
             ConPtySession pty;
             try { pty=ConPtySession.Start(shellExe,shellArgs,workingDirectory,width,height); }
-            catch(OwnedTerminalStartException ex) { AttachOwnedTerminal(ex.Owner,Console.OpenStandardOutput()); MarkTerminalUncertain(); throw; }
+            catch(OwnedTerminalStartException ex) { AttachOwnedTerminal(ex.Owner,Console.OpenStandardOutput(),false); MarkTerminalUncertain(); throw; }
             var outputWriter = Console.OpenStandardOutput();
 
             var input = AttachOwnedTerminal(pty, outputWriter);
@@ -457,11 +458,12 @@ internal sealed partial class BridgeHost : IDisposable
     }
 
     // All admitted sessions consume the original writer/lifetime/pumps, never a second dispatcher.
-    private InputLifetime AttachOwnedTerminal(IOwnedTerminalSession session, Stream output)
+    private InputLifetime AttachOwnedTerminal(IOwnedTerminalSession session, Stream output,bool admitInput=true)
     {
         lock (_sync) { if (_pty != null || _terminalUncertain) throw new InvalidOperationException("Original terminal owner is retained."); _pty = session; }
         var shellLoopCts = new CancellationTokenSource();
         var input = BeginInputLifetime(session.InputWriter, shellLoopCts);
+        if(!admitInput)MarkTerminalUncertain(); // revoke before any keyboard/resize task can run
         lock (_sync) { _terminalScreen = new(input.Id); _promptScreenReader = () => { var view=CaptureTerminalView(); return view.Reliable ? view.Text : ""; }; }
         // Output has its own lifetime: revoking input must not discard final terminal bytes.
         _outputPumpTask = Task.Run(async () => { try { await PumpOutputAsync(session.OutputReader, output, CancellationToken.None); } catch { MarkTerminalUncertain(); throw; } });
@@ -470,7 +472,7 @@ internal sealed partial class BridgeHost : IDisposable
         _keyboardPumpTask = Task.Run(() => PumpKeyboardAsync(input, ReadConsoleKeyAsync, shellLoopCts.Token));
         _resizePumpTask = Task.Run(() => PumpResizeAsync(shellLoopCts.Token));
         _mainRun?.BindActualBridgeRetirement(session,[_outputPumpTask,_keyboardPumpTask,_resizePumpTask,_terminalRootTask,_terminalAuthorityTask],()=>input.Revoked?input.DrainTask:null);
-        lock (_sync) { _status.ShellPid = session.Identity.RootPid; _status.Backend = session.Identity.Backend; _status.TerminalRunId=session.Identity.RunId; _status.TerminalGuarantee=session.Identity.Guarantee; _status.State = "OperatorNotReady"; WriteStatusFile(); }
+        lock (_sync) { _status.ShellPid = session.Identity.RootPid; _status.Backend = session.Identity.Backend; _status.TerminalRunId=session.Identity.RunId; _status.TerminalGuarantee=session.Identity.Guarantee; _status.State = _terminalUncertain?"TerminalUncertain":"OperatorNotReady"; WriteStatusFile(); }
         return input;
     }
 
@@ -514,7 +516,7 @@ internal sealed partial class BridgeHost : IDisposable
         if (input != null)
             RevokeInputLifetime(input);
         Exception? metadataFailure=null;
-        if(_mainRun!=null)try { await _mainRun.BeginStopAsync(); } catch(Exception ex){metadataFailure=ex;}
+        if(_mainRun!=null)try { await _mainRun.BeginStopAsync(); } catch(Exception ex){metadataFailure=ex;if(_mainRun.IsUncertain)MarkTerminalUncertain();}
         if (pty != null)
         {
             try
@@ -617,7 +619,8 @@ internal sealed partial class BridgeHost : IDisposable
             throw new TimeoutException("Original terminal resources remain retained.", ex);
         }
         if(_mainRun!=null) {
-            await _mainRun.ConfirmSettledStopAsync(session,await _terminalStopTask!);
+            try { await _mainRun.ConfirmSettledStopAsync(session,await _terminalStopTask!); }
+            catch { if(_mainRun.IsUncertain)MarkTerminalUncertain();throw; }
             _mainRun=null;
         }
         lock (_sync)

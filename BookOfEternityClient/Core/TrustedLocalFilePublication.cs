@@ -279,7 +279,6 @@ internal sealed partial class TrustedLocalFilePublication
                 throw Conflict("A publication scratch name already exists.");
 
         journal = WriteJournal(IntentStage, journal);
-        if(attempt!=null)attempt.Prepared=journal;
         Observe(lease, observer, TrustedLocalPublicationPhase.IntentStaged);
         File.Move(_journalScope.ValidateFile(IntentStage, false), _journalScope.ValidateFile(Active), overwrite: false);
         if (attempt != null) attempt.IntentPublished = true;
@@ -331,17 +330,7 @@ internal sealed partial class TrustedLocalFilePublication
         if(!Directory.Exists(_journalRoot))return;
         ValidateJournalDirectory();
         if(!File.Exists(_journalScope.ValidateFile(Active))) {
-            var entries=Directory.EnumerateFileSystemEntries(_journalRoot).ToArray();
-            if(entries.Length==0)return;
-            // Only a fully validated in-generation staged intent can authorize
-            // its existing pre-intent cleanup. Unknown/partial/commit debt stays.
-            if(entries.Length!=1 || entries[0]!=IntentStage)throw GmSessionRunPersistence.Invalid();
-            if(HasNamespaceJournalMagic(IntentStage)) {
-                var staged=ReadNamespaceJournal(IntentStage);_files.EnsureMainRecoveryGeneration(lease,staged.GenerationBefore,staged.GenerationAfter);
-            } else {
-                var staged=ReadJournal(IntentStage);_files.EnsureMainRecoveryGeneration(lease,staged.GenerationBefore,staged.GenerationAfter);
-            }
-            return;
+            if(Directory.EnumerateFileSystemEntries(_journalRoot).Any())throw GmSessionRunPersistence.Invalid();return;
         }
         if(HasNamespaceJournalMagic(Active)) {
             var j=ReadNamespaceJournal(Active);_files.EnsureMainRecoveryGeneration(lease,j.GenerationBefore,j.GenerationAfter);

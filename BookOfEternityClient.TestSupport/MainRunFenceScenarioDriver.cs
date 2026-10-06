@@ -14,6 +14,14 @@ internal static class MainRunFenceScenarioDriver
 {
     internal static async Task<int> RunAsync(string mode,string package,string folder)
     {
+        if(mode=="terminal-main-cold-reader") {
+            var files=new FileSystemManager(package,NullLogger<FileSystemManager>.Instance);
+            var path=Path.Combine(package,".boe_runtime/gm-runs/main.json");var record=File.ReadAllBytes(path);var generation=File.ReadAllBytes(files.SessionGenerationPath);
+            var refused=0;try{await using var lease=await files.AcquireCanonicalWriteLeaseAsync();}catch(IOException){refused++;}
+            try{await files.ClearGameStateAsync();}catch(IOException){refused++;}
+            var unchanged=record.AsSpan().SequenceEqual(File.ReadAllBytes(path)) && generation.AsSpan().SequenceEqual(File.ReadAllBytes(files.SessionGenerationPath));
+            await File.WriteAllTextAsync(Path.Combine(folder,"unbound.json"),JsonSerializer.Serialize(new{Refused=refused,Unchanged=unchanged}));return refused==2 && unchanged?0:1;
+        }
         var result=new Dictionary<string,object?>(){["Mode"]=mode};object? host=null;Type? type=null;
         object? Field(string name)=>type!.GetField(name,BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host);
         void Set(string name,object value)=>type!.GetField(name,BindingFlags.Instance|BindingFlags.NonPublic|BindingFlags.Public)!.SetValue(host,value);
@@ -29,6 +37,8 @@ internal static class MainRunFenceScenarioDriver
             type=Assembly.LoadFrom(Path.Combine(repo,"BookOfEternityGMBridge/bin",configuration,"net8.0/BookOfEternityGMBridge.dll")).GetType("BookOfEternityGMBridge.BridgeHost",true)!;
             host=Activator.CreateInstance(type,[launch.Scratch,"f1-"+Guid.NewGuid().ToString("N")]);
             type.GetMethod("ConfigureNeutral",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[launch]);
+            using var output=new ControlledOutput(mode=="terminal-main-output-fault");
+            if(mode is "terminal-main-output-drain" or "terminal-main-output-fault")Set("NeutralOutput",output);
             var stopDebt=true;
             if(mode is "terminal-main-stopped-debt-epoch" or "terminal-main-stop-late-authority")
                 Set("ObserveMainMetadata",(Action<MainRunIoStage>)(s=>{
@@ -94,7 +104,59 @@ internal static class MainRunFenceScenarioDriver
             await Call("StartShellAsync");
             var owner=(GmSessionRunCoordinator)Field("_mainRun")!;var terminal=(IOwnedTerminalSession)Field("_pty")!;
             var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);var old=Read();
-            if(mode=="terminal-main-stopped-debt-epoch") {
+            if(mode=="terminal-main-unbound") {
+                var start=new ProcessStartInfo(Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!,"dotnet")){UseShellExecute=false};
+                foreach(var arg in new[]{typeof(NativeHostScenarioDriver).Assembly.Location,"terminal-main-cold-reader",root,folder})start.ArgumentList.Add(arg);
+                using var child=Process.Start(start)!;await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(4));Require(child.ExitCode==0,"Separate unbound child inherited/minted original authority.");
+            }
+            else if(mode=="terminal-main-single-release") {
+                var native=terminal.GetType().GetField("_owner",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(terminal)!;
+                Require((int)native.GetType().GetField("_terminalRelease",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(native)!==1,"Original release was not consumed once.");
+                Exception? error=null;try{await (Task)native.GetType().GetMethod("ReleaseTerminalAsync",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(native,[CancellationToken.None])!;}catch(Exception e){error=e;}
+                Require(error is InvalidOperationException && !terminal.AuthorityLost.IsCompleted && Read().Disposition==GmSessionRunDisposition.Running,"Repeated release replayed or harmed the original.");
+            }
+            else if(mode is "terminal-main-output-drain" or "terminal-main-output-fault") {
+                await output.Entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
+                if(mode=="terminal-main-output-fault") {
+                    output.Release.SetResult();try{await (Task)Field("_outputPumpTask")!;}catch(IOException){}
+                    Exception? error=null;try{await Call("StopShellAsync");}catch(Exception e){error=e;}
+                    Require(error!=null && (bool)Field("_terminalUncertain")! && Field("_mainRun")!=null && Read().Disposition!=GmSessionRunDisposition.Stopped,"Actual output fault upgraded uncertain main to Stopped.");
+                } else {
+                    var stop=Call("StopShellAsync");
+                    try {
+                        await terminal.RootExited.WaitAsync(TimeSpan.FromSeconds(2));
+                        Require(!stop.IsCompleted && Field("_mainRun")!=null && ReferenceEquals(terminal,Field("_pty")) && Read().Disposition!=GmSessionRunDisposition.Stopped,"Actual blocked output/disposal did not retain original main.");
+                    } finally {output.Release.TrySetResult();await stop;}
+                    Require(Read().Disposition==GmSessionRunDisposition.Stopped && Field("_mainRun")==null,"Actual output settlement did not durably retire original.");
+                }
+            }
+            else if(mode is "terminal-main-held-rollback" or "terminal-main-held-commit") {
+                Task? stop=null;
+                await owner.RunOperationAsync(async()=>{
+                    await using var lease=await files.AcquireCanonicalWriteLeaseAsync();var target=files.ResolvePath("game_state/main-held.bin");
+                    await files.WriteFileAtomicAsync(lease,"game_state/main-held.bin","before");var before=File.ReadAllBytes(target);var after=Encoding.UTF8.GetBytes("after");
+                    var publisher=new TrustedLocalFilePublication(files,new TrustedLocalFileScope([root]));
+                    var cut=mode=="terminal-main-held-commit"?TrustedLocalPublicationPhase.Committed:TrustedLocalPublicationPhase.MemberPublished;
+                    var fired=false;var outcome=publisher.PublishWithOutcome(lease,TrustedLocalGeneration.Existing(owner.Identity.GenerationId),[new(target,before,after)],(s,_)=>{
+                        if(s!=cut || fired)return;fired=true;
+                        using(ExecutionContext.SuppressFlow())stop=Task.Run(()=>Call("StopShellAsync"));
+                        for(var i=0;i<100 && !owner.AdmissionClosed;i++)Thread.Sleep(5);
+                        Require(owner.AdmissionClosed && Read().Disposition==GmSessionRunDisposition.Running,"Held canonical decision lost its earlier linearization.");throw new IOException("owned held decision interruption");
+                    });
+                    Require(fired && outcome.Disposition==(mode=="terminal-main-held-commit"?TrustedLocalPublicationDisposition.Committed:TrustedLocalPublicationDisposition.RolledBack),"Closed new pins aborted original held storage decision.");
+                    Require(File.ReadAllBytes(target).AsSpan().SequenceEqual(mode=="terminal-main-held-commit"?after:before),"Held storage decision changed exact established result.");return 0;
+                });
+                await stop!;Require(Read().Disposition==GmSessionRunDisposition.Stopped,"Held decision prevented confirmed main stop.");
+            }
+            else if(mode=="terminal-main-pin-timeout") {
+                var entered=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);var finish=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+                var operation=owner.RunOperationAsync(async()=>{entered.SetResult();await finish.Task;return 0;});await entered.Task;
+                try {
+                    Exception? error=null;try{await Call("StopShellAsync");}catch(Exception e){error=e;}
+                    Require(error!=null && (bool)Field("_terminalUncertain")! && owner.RetainsAuthority && Read().Disposition!=GmSessionRunDisposition.Stopped,"Pin timeout retired main or hid uncertainty.");
+                } finally {finish.SetResult();await operation;}
+            }
+            else if(mode=="terminal-main-stopped-debt-epoch") {
                 Exception? error=null;try{await Call("StopShellAsync");}catch(Exception e){error=e;}
                 Require(error!=null && owner.HasMetadataDebt && Read().Disposition==GmSessionRunDisposition.Stopped && ReferenceEquals(terminal,Field("_pty")),"Visible Stopped retired original before ACK.");
                 Require(terminal.RootExited.IsCompletedSuccessfully,"Stopped ACK debt preceded real root exit.");
@@ -117,8 +179,9 @@ internal static class MainRunFenceScenarioDriver
                     await using var lease=await files.AcquireCanonicalWriteLeaseAsync();
                     var target=files.ResolvePath("game_state/main-stage.txt");await files.WriteFileAtomicAsync(lease,"game_state/main-stage.txt","before");
                     var publisher=new TrustedLocalFilePublication(files,new TrustedLocalFileScope([root]));
-                    var change=new TrustedLocalFileChange(target,Encoding.UTF8.GetBytes("before"),Encoding.UTF8.GetBytes("after"));
-                    var outcome=publisher.PublishWithOutcome(lease,TrustedLocalGeneration.Existing(owner.Identity.GenerationId),[change],(s,_)=>{if(s==TrustedLocalPublicationPhase.IntentStaged)throw new IOException("owned staged interruption");});
+                    var change=new TrustedLocalFileChange(target,File.ReadAllBytes(target),Encoding.UTF8.GetBytes("after"));var fired=false;
+                    var outcome=publisher.PublishWithOutcome(lease,TrustedLocalGeneration.Existing(owner.Identity.GenerationId),[change],(s,_)=>{if(s==TrustedLocalPublicationPhase.IntentStaged){fired=true;throw new IOException("owned staged interruption");}});
+                    Require(fired,"Staged fixture failed preparation before its causal cut.");
                     result["Disposition"]=outcome.Disposition.ToString();result["PublicationFailure"]=outcome.Failure?.ToString();Require(outcome.Disposition==TrustedLocalPublicationDisposition.RolledBack,"Known original staged before-decision did not settle rollback.");
                     Require(File.ReadAllText(target)=="before" && !Directory.EnumerateFileSystemEntries(Path.Combine(root,".boe_runtime/trusted-local-publication-v1")).Any(),"Original staged rollback left intent or changed before bytes.");return 0;
                 });
@@ -208,4 +271,12 @@ internal static class MainRunFenceScenarioDriver
         }
     }
     private static string FindRepoRoot(){var d=new DirectoryInfo(AppContext.BaseDirectory);while(d!=null){if(File.Exists(Path.Combine(d.FullName,"AGENTS.md")))return d.FullName;d=d.Parent;}throw new InvalidOperationException();}
+    private sealed class ControlledOutput(bool fail) : Stream
+    {
+        internal TaskCompletionSource Entered=new(TaskCreationOptions.RunContinuationsAsynchronously),Release=new(TaskCreationOptions.RunContinuationsAsynchronously);
+        public override async ValueTask WriteAsync(ReadOnlyMemory<byte> bytes,CancellationToken token=default){Entered.TrySetResult();await Release.Task.WaitAsync(token);if(fail)throw new IOException("controlled actual output write fault");}
+        protected override void Dispose(bool disposing){Release.TrySetResult();base.Dispose(disposing);}
+        public override bool CanRead=>false;public override bool CanSeek=>false;public override bool CanWrite=>true;public override long Length=>throw new NotSupportedException();public override long Position{get=>throw new NotSupportedException();set=>throw new NotSupportedException();}
+        public override void Flush(){}public override Task FlushAsync(CancellationToken token)=>Task.CompletedTask;public override int Read(byte[] b,int o,int c)=>throw new NotSupportedException();public override void Write(byte[] b,int o,int c)=>throw new NotSupportedException();public override long Seek(long o,SeekOrigin s)=>throw new NotSupportedException();public override void SetLength(long l)=>throw new NotSupportedException();
+    }
 }

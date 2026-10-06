@@ -18,15 +18,30 @@ held writes, clear and strict initialized namespace refusal without recovery sid
 owner with independent guardian. Existing evidence is reused until a source change
 selects an exact affected regression. All execution uses scripts/test-csharp.ps1.
 Original guard precedes lifecycle/canonical; one schema1 main.json and frozen metadata
-retry; no filesystem locks across IPC/child/I/O/pin drain. Runtime qualification remains
+retry; no canonical/transition lock across child release/I/O, no lifecycle/canonical
+lock across pin drain/status IPC. Retain the designed lifecycle during original
+launch/retirement. Runtime qualification remains
 bounded Linux native fallback; Windows source/build only. SDK10.0.401, PowerShell7.5.4,
 GCC14.2.0-19 observed before the first new run. Execution/evidence checkpoints follow.
 
 Causal RED: main fence8executed/1PASS/7FAIL at7388c2ac (pre-recovery/cold/held effects);
 actual released neutral bridge1executed/1FAIL atfcb96abe due to missing Running record.
 Both complete, skips0, owned cleanup complete; neutral guardian ECHILD/emergency0.
-First implementation WIP is unqualified: compilation/preparation and new fault/ordering
-coverage pending. Historical passing carriers are not reused as evidence for changed code.
+Connected implementation is still WIP until final review/qualification. Initial9
+GREEN was followed by targeted reviewer RED: parent barrier retry, browser Load
+guard lifetime, early active replacement, closing admission, pin refcount, forged
+stop and independent worker metadata. c07 preparation failed before tests (CS0122);
+fixed at dfa9912d. Partial owner23 executed/22PASS/1RED. Generation initial10 ran
+6PASS/4FAIL, but namespace fixtures were incomplete and do not establish causal
+namespace RED. Corrected full-root fixture at a435d79e proves namespace admission
+RED; unit17/16PASS/1RED oversized generation, native15/7PASS/8FAIL. All native
+guardians ECHILD/emergency0/failures0/deadlinefalse. f769 preparation CS1503 ran0
+tests; this is separate from causal failure. a57551d5 fresh32/31PASS/1FAIL leaves
+original staged rollback unresolved. No completed F1 verdict yet. Evidence under
+`recovery/evidence/t041-f1-*` preserves exact source inputs, commands, runner counts
+and individually named guardians. Earlier flattened report capture is repaired
+from original fixtures; ignored runtime metadata is now tracked explicitly.
+Historical passing carriers do not qualify changed code.
 
 ## T041-RUN-FENCE — current design-only checkpoint
 

@@ -16,7 +16,7 @@ public sealed class GmMainRunFenceTests : IDisposable
     private GmSessionRunRecord Write(GmSessionRunDisposition state)
     {
         var id=new GmSessionRunIdentity(_files.BasePath,Guid.NewGuid().ToString("N"),Guid.Empty.ToString("N"),1,
-            GmSessionRunBackend.LinuxSupervisor,Guid.NewGuid().ToString("N"),"fixture-boot");
+            OperatingSystem.IsWindows()?GmSessionRunBackend.WindowsJob:GmSessionRunBackend.LinuxSupervisor,Guid.NewGuid().ToString("N"),"fixture-boot");
         var r=new GmSessionRunRecord(1,id,state,state==GmSessionRunDisposition.Stopped?new(id,GmSessionRunStopKind.OwnedScopeEmpty,id.BootId):null);
         Directory.CreateDirectory(Path.GetDirectoryName(RecordPath)!);File.WriteAllBytes(RecordPath,GmSessionRunRecordCodec.Encode(r));return r;
     }
