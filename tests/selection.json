@@ -7,6 +7,13 @@
       "contracts": [
         "#1553 T041-RUN-FENCE-F3 original isolated root, single-use new admission, no mint from record"
       ]
+    },
+    {
+      "category": "gm-main-crash-launch-linux",
+      "reason": "F3 missing actual process-death and new-process cold admission boundaries; reuse existing F1 fault/terminal evidence",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F3 Prepared/held/Running/single release, original root identity, exact nonmutating cold refusal"
+      ]
     }
   ]
 }

@@ -14631,6 +14631,29 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-crash-launch-linux",
+      "responsibility": "#1553 F3 actual original application death at namespace/Prepared/held/Running/release, new process nonmutating cold refusal, independent guardian.",
+      "excludes": "Linux x64 fixed neutral fixture; no warm F1/F2 repetition, Windows/systemd/live/provider/production/saves/powerloss.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/MainRunCrashScenarioDriver.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects"
+          ]
+        }
+      ]
     }
   ]
 }
