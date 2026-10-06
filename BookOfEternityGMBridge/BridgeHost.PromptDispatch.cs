@@ -28,7 +28,7 @@ internal sealed partial class BridgeHost
 
     private static PromptDeliveryResult PromptResult(BridgeRequest request, PromptDeliveryDisposition disposition, string reason) =>
         new(request.OperationId ?? "", request.OperationKind ?? "", request.OperationRevision ?? "",
-            request.InputBindingId ?? "", disposition, PromptDeliveryPhase.Terminal, reason);
+            request.InputBindingId ?? "", ContentHash(request.Text ?? "", request.AppendEnter), disposition, PromptDeliveryPhase.Terminal, reason);
 
     private async Task<BridgeResponse> DispatchPromptAsync(BridgeRequest request)
     {
@@ -56,6 +56,8 @@ internal sealed partial class BridgeHost
                     retained.Phase = PromptDeliveryPhase.Queued;
                     AdmitPrompt(retained);
                 }
+                if (!retained.Task.IsCompleted)
+                    return PromptResponse(retained.Result ?? OperationResult(retained, null, "in-progress"));
                 task = retained.Task;
             }
             else
@@ -98,7 +100,8 @@ internal sealed partial class BridgeHost
         {
             if (!_promptOperations.TryGetValue(request.OperationId ?? "", out var operation) ||
                 operation.Snapshot.BindingId != request.InputBindingId || operation.Snapshot.Kind != request.OperationKind ||
-                operation.Snapshot.Revision != request.OperationRevision)
+                operation.Snapshot.Revision != request.OperationRevision || operation.Snapshot.Text != request.Text ||
+                operation.Snapshot.Submit != request.AppendEnter)
                 return PromptResponse(PromptResult(request, PromptDeliveryDisposition.UnknownOutcome, "operation-not-retained"));
             if (cancel && operation.Result == null)
                 _ = operation.Cancellation.CancelAsync();
@@ -108,7 +111,10 @@ internal sealed partial class BridgeHost
 
     private static PromptDeliveryResult OperationResult(PromptOperation operation, PromptDeliveryDisposition? disposition, string reason) =>
         new(operation.Snapshot.Id, operation.Snapshot.Kind, operation.Snapshot.Revision, operation.Snapshot.BindingId,
-            disposition, operation.Phase, reason);
+            ContentHash(operation.Snapshot.Text, operation.Snapshot.Submit), disposition, operation.Phase, reason);
+
+    private static string ContentHash(string text, bool submit) => Convert.ToHexString(
+        SHA256.HashData(Encoding.UTF8.GetBytes((submit ? "1\n" : "0\n") + text)));
 
     private bool PromptStillOwned(PromptOperation op) => !_inputClosed && ReferenceEquals(_inputLifetime, op.Input) &&
         !op.Input.Revoked && !op.Input.Token.IsCancellationRequested && !op.Input.ManualTakeover &&
@@ -249,10 +255,47 @@ internal sealed partial class BridgeHost
         {
             if (!ReferenceEquals(_inputLifetime, input) || input.Revoked) throw new InputLifetimeUnavailableException();
             input.ManualTakeover = true;
+            if (input.BootstrapCancellation != null) _ = input.BootstrapCancellation.CancelAsync();
             _status.Ready = false;
             foreach (var operation in _promptOperations.Values.Where(o => ReferenceEquals(o.Input, input) && o.Result == null))
                 _ = operation.Cancellation.CancelAsync();
             TryWriteInputStatus();
+        }
+    }
+
+    // Shell launch is a frozen local automatic frame, not a GM prompt or submission receipt.
+    // Manual takeover before its byte boundary aborts it; original writer retains any started-I/O uncertainty.
+    private Task WriteShellBootstrapAsync(InputLifetime input, string bootstrap, CancellationToken token)
+    {
+        lock (_sync)
+        {
+            if (!ReferenceEquals(_inputLifetime, input) || input.Revoked || input.ManualTakeover || _inputClosed)
+                return Task.CompletedTask;
+            var cancellation = CancellationTokenSource.CreateLinkedTokenSource(token, input.Token, _cts.Token);
+            input.BootstrapCancellation = cancellation;
+            var task = Task.Run(async () =>
+            {
+                var held = false;
+                try
+                {
+                    await _promptGate.WaitAsync(cancellation.Token);
+                    held = true;
+                    lock (_sync)
+                        if (!ReferenceEquals(_inputLifetime, input) || input.Revoked || input.ManualTakeover || _inputClosed)
+                            throw new OperationCanceledException(cancellation.Token);
+                    await WriteToPtyAsync(input, bootstrap, true, cancellation.Token);
+                }
+                catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { }
+                finally
+                {
+                    if (held) _promptGate.Release();
+                    lock (_sync)
+                        if (ReferenceEquals(input.BootstrapCancellation, cancellation)) input.BootstrapCancellation = null;
+                    cancellation.Dispose();
+                }
+            });
+            input.PromptTasks.Add(task); // Original Stop joins this task before replacement.
+            return task;
         }
     }
 
@@ -272,4 +315,4 @@ internal sealed partial class BridgeHost
 internal enum PromptDeliveryDisposition { NotWritten, QueuedCancelled, DraftUncertain, SubmissionObserved, UnknownOutcome }
 internal enum PromptDeliveryPhase { Queued, PasteStarted, AwaitingPaste, SubmitStarted, AwaitingSubmission, Terminal }
 internal sealed record PromptDeliveryResult(string OperationId, string OperationKind, string OperationRevision,
-    string InputBindingId, PromptDeliveryDisposition? Disposition, PromptDeliveryPhase Phase, string Reason);
+    string InputBindingId, string ContentHash, PromptDeliveryDisposition? Disposition, PromptDeliveryPhase Phase, string Reason);

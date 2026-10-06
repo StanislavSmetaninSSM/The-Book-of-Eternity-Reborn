@@ -113,6 +113,7 @@ internal sealed partial class BridgeHost : IDisposable
     {
         public string Id { get; } = Guid.NewGuid().ToString("N");
         public bool ManualTakeover;
+        public CancellationTokenSource? BootstrapCancellation;
         public readonly List<Task> PromptTasks = new();
         public Stream Input { get; } = input;
         public CancellationTokenSource Cancellation { get; } = cancellation;
@@ -261,9 +262,9 @@ internal sealed partial class BridgeHost : IDisposable
                         deadline.CancelAfter(TimeSpan.FromSeconds(3));
                         await WriteMessageAsync(server, response, deadline.Token);
                         if (response.ShutdownAfterResponse) _cts.Cancel();
-                    }, cancellationToken);
+                    }, deadline.Token);
                 }
-                catch (Exception ex) when (ex is OperationCanceledException or IOException or ObjectDisposedException) { }
+                catch (Exception) { /* The accepted peer owns a bounded read/response; no second unbounded write. */ }
                 finally { capacity.Release(); }
             }
         }
@@ -395,7 +396,7 @@ internal sealed partial class BridgeHost : IDisposable
                 Console.WriteLine($"[Bridge] Launch command: {config.GmCliLaunchCommand}");
                 var bootstrap = BuildShellBootstrap(config.GmCliLaunchCommand);
                 await Task.Delay(250, input.Token);
-                await WriteExclusiveInputAsync(input, bootstrap, appendEnter: true, input.Token);
+                await WriteShellBootstrapAsync(input, bootstrap, input.Token);
             }
 
         }
@@ -561,6 +562,12 @@ internal sealed partial class BridgeHost : IDisposable
             {
                 _status.Ready = true;
                 _status.State = "Ready";
+                TryWriteInputStatus();
+            }
+            else if (_admittedPrompts == 0)
+            {
+                _status.Ready = false;
+                if (!_automaticInputPaused) _status.State = "OperatorNotReady";
                 TryWriteInputStatus();
             }
         }
@@ -894,6 +901,7 @@ internal sealed partial class BridgeHost : IDisposable
                     if (_inputClosed || !ReferenceEquals(_inputLifetime, input) || input.Revoked)
                         return;
                 if (key == null) continue;
+                TakeManualInput(input);
                 var sequence = KeyToSequence(key.Value);
                 if (sequence == null) continue;
                 await WriteManualInputAsync(input, sequence, linked.Token);
@@ -1539,15 +1547,14 @@ internal sealed partial class BridgeHost : IDisposable
         return JsonSerializer.Deserialize<T>(line, PipeJsonOpts);
     }
 
-    private static async Task WriteMessageAsync(Stream stream, object payload, CancellationToken cancellationToken)
+    private static async Task WriteMessageAsync<T>(Stream stream, T payload, CancellationToken cancellationToken)
     {
-        using var writer = new StreamWriter(stream, Encoding.UTF8, 1024, leaveOpen: true)
-        {
-            AutoFlush = true
-        };
-        var json = JsonSerializer.Serialize(payload, PipeJsonOpts);
-        await writer.WriteLineAsync(json.AsMemory(), cancellationToken);
+        // No StreamWriter.Dispose synchronous flush after a timed-out response.
+        var bytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(payload, PipeJsonOpts) + "\n");
+        await stream.WriteAsync(bytes, cancellationToken);
+        await stream.FlushAsync(cancellationToken);
     }
+
 }
 
 internal sealed class BridgeRequest

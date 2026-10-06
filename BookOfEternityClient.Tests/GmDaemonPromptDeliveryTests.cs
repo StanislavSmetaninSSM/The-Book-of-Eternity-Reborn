@@ -107,6 +107,41 @@ public sealed class GmDaemonPromptDeliveryTests
         Assert.Equal("<paste>connected prompt</paste><submit>", System.Text.Encoding.UTF8.GetString(host.Input.Bytes));
     }
 
+    [Fact]
+    public async Task ReplacedAfterProvenZeroWrite_CancelsWithoutReplaying() => await Run("source-replaced", result =>
+    {
+        Assert.Single(result.GetProperty("commands").EnumerateArray());
+        Assert.Equal("cancelled",result.GetProperty("status").GetString());
+        Assert.Equal(0,result.GetProperty("readyFiles").GetInt32());
+    });
+
+    [Fact]
+    public async Task RealRepairConsumers_DistinctRevisionsKeepDistinctIdentities() => await Run("repair-revisions", result =>
+    {
+        var commands=result.GetProperty("commands").EnumerateArray().ToArray();
+        Assert.Equal(2,commands.Length);
+        Assert.Equal(new[] {"1","2"},commands.Select(c=>c.GetProperty("operationRevision").GetString()));
+        Assert.NotEqual(commands[0].GetProperty("operationId").GetString(),commands[1].GetProperty("operationId").GetString());
+        Assert.Empty(result.GetProperty("errors").EnumerateArray());
+    });
+
+    [Fact]
+    public async Task RealLauncherTimeout_HeldInputReturnsUnknownWithoutReplay()
+    {
+        await using var host=new GmBridgePromptOperationTests.PromptHostFixture();
+        host.Input.Hold=true;
+        await host.Rpc(new {command="status"});
+        await Run("connected-held-pipe",result=>
+        {
+            Assert.Equal("bridge-unknown-outcome",result.GetProperty("first").GetString());
+            Assert.Equal("bridge-unknown-outcome",result.GetProperty("second").GetString());
+            Assert.Equal(result.GetProperty("firstId").GetString(),result.GetProperty("secondId").GetString());
+        },host.Root);
+        Assert.Equal("<paste>connected prompt</paste>",System.Text.Encoding.UTF8.GetString(host.Input.Bytes));
+        host.Invoke("RevokeInputLifetime",host.Binding);
+        host.Input.Release.TrySetResult(true);
+    }
+
     internal static async Task Run(string scenario, Action<JsonElement> assert, string sessionRoot = "")
     {
         var root = GmBridgePromptOperationTests.PromptHostFixture.Repo;

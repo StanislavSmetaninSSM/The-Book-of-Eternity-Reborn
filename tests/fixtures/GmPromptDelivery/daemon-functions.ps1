@@ -7,7 +7,7 @@ try {
     $tokens = $null; $errors = $null
     $ast = [Management.Automation.Language.Parser]::ParseFile($source, [ref]$tokens, [ref]$errors)
     if ($errors.Count) { throw 'Daemon source parsing failed.' }
-    $names = @('Dispatch-WithRetry', 'Send-ToGmBridge', 'New-GmPromptOperation', 'New-GmPromptDelivery', 'Test-GmPromptDeliveryIdentity', 'Invoke-GmPromptControl', 'Complete-GmPromptDispatch', 'Test-GmPromptDispatchPaused', 'Send-ToCliWindow', 'Process-Turn', 'Process-QteEffectResolutionRequest', 'Process-RepairRequest', 'Process-TerminalProtocolFailureRequest')
+    $names = @('Dispatch-WithRetry', 'Send-ToGmBridge', 'Read-GmPromptPending', 'Test-GmPromptSourceCurrent', 'Get-GmPromptContentHash', 'New-GmPromptOperation', 'New-GmPromptDelivery', 'Test-GmPromptDeliveryIdentity', 'Invoke-GmPromptControl', 'Complete-GmPromptDispatch', 'Test-GmPromptDispatchPaused', 'Send-ToCliWindow', 'Process-Turn', 'Process-QteEffectResolutionRequest', 'Process-RepairRequest', 'Process-TerminalProtocolFailureRequest')
     foreach ($function in $ast.FindAll({ param($node) $node -is [Management.Automation.Language.FunctionDefinitionAst] }, $true)) {
         if ($function.Name -in $names) { . ([scriptblock]::Create($function.Extent.Text)) }
     }
@@ -37,7 +37,7 @@ param([string]$Action, [Parameter(ValueFromRemainingArguments=$true)]$Arguments,
 [IO.File]::AppendAllText($env:BOE_PROMPT_FIXTURE_COMMANDS, $Action + "`n")
 $payload = ($Arguments -join ' ') | ConvertFrom-Json
 [ordered]@{ ok=$true; promptDelivery=[ordered]@{ operationId=$payload.operationId; operationKind=$payload.operationKind;
-operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindingId; disposition='submission-observed' } } | ConvertTo-Json -Compress
+operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindingId; contentHash=([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes("1`n"+[string]$payload.text)))); disposition='submission-observed' } } | ConvertTo-Json -Compress
 '@ | Set-Content -LiteralPath $BridgeControlScript
         function Get-GameConfig { [pscustomobject]@{ GmBridgeEnabled=$true; GmBridgeBackend='ConPTYBridge' } }
         function Ensure-GmBridgeStarted { }
@@ -46,7 +46,7 @@ operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindi
         $null = Send-ToGmBridge -Message 'controlled bootstrap' -AllowNotReady
         [ordered]@{ commands=@([IO.File]::ReadAllLines($env:BOE_PROMPT_FIXTURE_COMMANDS)) } | ConvertTo-Json -Compress
     }
-    elseif ($Scenario -in @('typed-retry','source-replaced','callback-replaced','turn-packet-replaced','autostart-binding','consumer-turn','consumer-qte','consumer-repair','consumer-terminal','qte-idle','connected-pipe','launcher-lost-response')) {
+    elseif ($Scenario -in @('typed-retry','repair-revisions','source-replaced','callback-replaced','turn-packet-replaced','autostart-binding','consumer-turn','consumer-qte','consumer-repair','consumer-terminal','qte-idle','connected-pipe','connected-held-pipe','launcher-lost-response')) {
         $BridgeControlScript = Join-Path $fixtureRoot 'controlled-launcher.ps1'
         $GameSessionPath = $fixtureRoot
         $env:BOE_PROMPT_FIXTURE_COMMANDS = Join-Path $fixtureRoot 'commands.txt'
@@ -63,7 +63,7 @@ $r = 'controlled'
 if ($env:BOE_PROMPT_FIXTURE_SCENARIO -in @('typed-retry','source-replaced') -and $count -eq 1) { $d='not-written'; $r='busy' }
 if ($env:BOE_PROMPT_FIXTURE_SCENARIO -in @('source-replaced','callback-replaced') -and $count -eq 1) { [IO.File]::WriteAllText($env:BOE_PROMPT_FIXTURE_PENDING, '{"replaced":true}') }
 [ordered]@{ ok=$true; promptDelivery=[ordered]@{ operationId=$payload.operationId; operationKind=$payload.operationKind;
-operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindingId; disposition=$d; reason=$r; phase='terminal' } } | ConvertTo-Json -Compress
+operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindingId; contentHash=([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes("1`n"+[string]$payload.text)))); disposition=$d; reason=$r; phase='terminal' } } | ConvertTo-Json -Compress
 '@ | Set-Content -LiteralPath $BridgeControlScript
         function Ensure-GmBridgeStarted { $script:FixtureStarted=$true }
         if ($Scenario -eq 'autostart-binding') {
@@ -78,6 +78,11 @@ operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindi
         function Get-CorrelatedTerminalSignal { param($TurnRequest,$CompletionPath,$ErrorPath) $null }
         function Write-GmTrajectoryRecord { param($Dispatch) $script:FixtureTrajectory = $Dispatch.Status }
         function Write-DaemonStatus { param($Status,$Reason) }
+        function New-GmValidationRepairArtifactWatchState { param($RepairRequest,$DispatchStatus) [pscustomobject]@{ controlled=$true } }
+        function Get-GmTrajectoryIssueKinds { param($RequestObject) @() }
+        function Get-GmTrajectoryRepairPacketRefs { param($RequestObject) @() }
+        function Get-GmTrajectoryValidationDiagnostics { param($RequestObject) '' }
+        function Get-GmTrajectoryRepairPacketDiagnostics { param($RequestObject) '' }
         function Test-ProtocolRequestUsesDiagnosticOnlyMetadata { param($RequestObject) $false }
         function Get-QteEffectResolutionRequestKey { param($Request) 'wave-1' }
         function Test-QteEffectResolutionReadyMatchesRequest { param($Request,$ReadyPath) $false }
@@ -90,12 +95,12 @@ operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindi
         $ReadyDir = Join-Path $fixtureRoot 'ready'; [void][IO.Directory]::CreateDirectory($ReadyDir)
         $QteEffectResolutionReadyFile=Join-Path $ReadyDir 'qte.json'
         [IO.File]::WriteAllText($Pending, '{"requestKind":"qte_deferred_effect_resolution","safePacket":{},"sessionId":"fixture","requestId":"request","turnNumber":1,"playerAction":"controlled","waveOrdinal":1,"acceptedSourceTurn":1}')
-        if ($Scenario -in @('connected-pipe','launcher-lost-response')) {
+        if ($Scenario -in @('connected-pipe','connected-held-pipe','launcher-lost-response')) {
             # Extract real launcher functions; the shim executes no launcher/main startup statements.
             $launcher = Join-Path $RepoRoot 'BookOfEternityClient/Launcher/bookofeternity.ps1'
             $launcherAst = [Management.Automation.Language.Parser]::ParseFile($launcher, [ref]$tokens, [ref]$errors)
             if ($errors.Count) { throw 'Launcher source parsing failed.' }
-            $lnames = @('Get-BridgeStatusPath','Test-BridgeHelperAlive','Read-BridgeStatus','Invoke-BridgeRequest','Invoke-BridgePromptDelivery')
+            $lnames = @('Get-BridgeStatusPath','Test-BridgeHelperAlive','Read-BridgeStatus','Invoke-BridgeRequest','Invoke-BridgePromptDelivery','Get-BridgePromptContentHash')
             $defs = $launcherAst.FindAll({param($n) $n -is [Management.Automation.Language.FunctionDefinitionAst] -and $n.Name -in $lnames}, $true)
             foreach ($f in $defs) { . ([scriptblock]::Create($f.Extent.Text)) }
             if ($Scenario -eq 'launcher-lost-response') {
@@ -105,7 +110,7 @@ operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindi
                     $script:LauncherCommands += $Payload.command
                     if ($Payload.command -eq 'dispatchPrompt') { throw 'Controlled lost response after submit.' }
                     [pscustomobject]@{ ok=$true; promptDelivery=[pscustomobject]@{ operationId=$Payload.operationId; operationKind=$Payload.operationKind;
-                        operationRevision=$Payload.operationRevision; inputBindingId=$Payload.inputBindingId; disposition='submission-observed' } }
+                        operationRevision=$Payload.operationRevision; inputBindingId=$Payload.inputBindingId; contentHash=(Get-BridgePromptContentHash $Payload); disposition='submission-observed' } }
                 }
                 $payload = @{command='dispatchPrompt'; text='text'; operationId='lost'; operationKind='turn'; operationRevision='one'; inputBindingId='binding'}
                 $reply = Invoke-BridgePromptDelivery -ResolvedSessionPath $fixtureRoot -Payload $payload
@@ -115,11 +120,10 @@ operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindi
                 $GameSessionPath=$SessionRoot
                 function Get-GmBridgeStatus { Read-BridgeStatus $GameSessionPath }
                 # Function-backed launcher shim still executes the real Send-ToGmBridge invocation and real RPC helpers.
-                $shim = "param([string]`$Action,[Parameter(ValueFromRemainingArguments=`$true)]`$Arguments,[string]`$SessionPath)\n"
+                $shim = "param([string]`$Action,[Parameter(ValueFromRemainingArguments=`$true)]`$Arguments,[string]`$SessionPath)`n"
                 $shim += ($defs.Extent.Text -join "`n") + "`n"
                 $shim += 'Invoke-BridgePromptDelivery -ResolvedSessionPath $SessionPath -Payload (($Arguments -join " ") | ConvertFrom-Json -AsHashtable) | ConvertTo-Json -Depth 8'
                 # Preserve actual newlines; no executable launcher startup copied.
-                $shim = $shim.Replace('\n', "`n")
                 [IO.File]::WriteAllText($BridgeControlScript,$shim)
                 $first=Dispatch-WithRetry -Message 'connected prompt' -PendingPath $Pending -ReturnDetails -MaxWaitSeconds 2
                 $second=Dispatch-WithRetry -Message 'connected prompt' -PendingPath $Pending -ReturnDetails -MaxWaitSeconds 2
@@ -134,6 +138,12 @@ operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindi
                 'consumer-repair' { Process-RepairRequest $Pending }
                 'consumer-terminal' { Process-TerminalProtocolFailureRequest $Pending }
                 'qte-idle' { Process-QteEffectResolutionRequest $Pending }
+                'repair-revisions' {
+                    Process-RepairRequest $Pending
+                    [IO.File]::WriteAllText($Pending,'{"requestId":"request","turnNumber":1,"revalidationAttempt":2}')
+                    [IO.File]::SetLastWriteTimeUtc($Pending,[datetime]::UtcNow.AddSeconds(1))
+                    Process-RepairRequest $Pending
+                }
                 default { $reply=Dispatch-WithRetry -Message 'controlled packet' -PendingPath $Pending -ReturnDetails -MaxWaitSeconds 10 }
             }
             $commands = if (Test-Path $env:BOE_PROMPT_FIXTURE_COMMANDS) { @([IO.File]::ReadAllLines($env:BOE_PROMPT_FIXTURE_COMMANDS) | ForEach-Object { $_ | ConvertFrom-Json }) } else { @() }

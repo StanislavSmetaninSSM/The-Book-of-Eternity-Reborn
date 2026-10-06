@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "gm-bridge-prompt-operation",
-      "reason": "Current live-owner input transaction and actual pipe control only; accepted output/worker/native cohorts are unchanged.",
+      "reason": "Live-owner whole input transaction, actual pipe control, changed keyboard/managed Stop and exact affected guards only; no replay of whole INPUT37/output/worker/native cohorts.",
       "contracts": [
         "#1553 T042-INPUT-TRANSACTION",
         "US4 / FR-012/013/014/015"

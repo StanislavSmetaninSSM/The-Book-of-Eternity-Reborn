@@ -3636,17 +3636,39 @@ function Stop-GmBridgeAfterTurnTimeout {
     return [pscustomobject]$cleanup
 }
 
+function Read-GmPromptPending {
+    param([string]$Path)
+    $bytes = [IO.File]::ReadAllBytes($Path)
+    [pscustomobject]@{ Hash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes));
+        Request=([Text.Encoding]::UTF8.GetString($bytes).TrimStart([char]0xFEFF) | ConvertFrom-Json) }
+}
+
+function Test-GmPromptSourceCurrent {
+    param([string]$Path, [string]$Hash)
+    if (-not $Path) { return $true }
+    try { return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([IO.File]::ReadAllBytes($Path))) -ceq $Hash }
+    catch { return $false }
+}
+
+function Get-GmPromptContentHash {
+    param([object]$Payload)
+    $prefix = if ($Payload.appendEnter) { "1`n" } else { "0`n" }
+    return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($prefix + [string]$Payload.text)))
+}
+
 function New-GmPromptOperation {
-    param([string]$Message, [string]$PendingPath = '', [string]$OperationKind = 'turn', [string]$OperationRevision = 'live')
+    param([string]$Message, [string]$PendingPath = '', [string]$OperationKind = 'turn', [string]$OperationRevision = 'live', [string]$ExpectedSourceHash = '')
     $sourceHash = ''
     if ($PendingPath) {
-        $sourceHash = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([IO.File]::ReadAllBytes($PendingPath)))
+        $sourceHash = if ($ExpectedSourceHash) { $ExpectedSourceHash } else { (Read-GmPromptPending $PendingPath).Hash }
+        if (-not (Test-GmPromptSourceCurrent $PendingPath $sourceHash)) { return $null }
     }
     $key = $OperationKind + '|' + $OperationRevision + '|' + $PendingPath + '|' + $sourceHash
     if (-not $PendingPath) { $key += '|' + [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($Message))) }
     if ($null -eq $script:GmPromptOperations) { $script:GmPromptOperations = @{} }
     if ($script:GmPromptOperations.ContainsKey($key)) { return $script:GmPromptOperations[$key] }
     $status = Get-GmBridgeStatus
+    if (-not $status -or [string]::IsNullOrWhiteSpace([string]$status.inputBindingId)) { return $null }
     $operation = [pscustomobject]@{
         PayloadJson = ([ordered]@{ command='dispatchPrompt'; operationId=[guid]::NewGuid().ToString('N');
             operationKind=$OperationKind; operationRevision=$OperationRevision; inputBindingId=[string]$status.inputBindingId;
@@ -3664,14 +3686,15 @@ function New-GmPromptDelivery {
     $p = if ($Operation) { $Operation.PayloadJson | ConvertFrom-Json } else { $null }
     return [pscustomobject]@{ operationId=[string]$p.operationId; operationKind=[string]$p.operationKind;
         operationRevision=[string]$p.operationRevision; inputBindingId=[string]$p.inputBindingId;
-        disposition=$Disposition; phase='terminal'; reason=$Reason }
+        contentHash=(Get-GmPromptContentHash $p); disposition=$Disposition; phase='terminal'; reason=$Reason }
 }
 
 function Test-GmPromptDeliveryIdentity {
     param([object]$Operation, [object]$Delivery)
     $p = $Operation.PayloadJson | ConvertFrom-Json
     return $Delivery -and $Delivery.operationId -ceq $p.operationId -and $Delivery.operationKind -ceq $p.operationKind -and
-        $Delivery.operationRevision -ceq $p.operationRevision -and $Delivery.inputBindingId -ceq $p.inputBindingId
+        $Delivery.operationRevision -ceq $p.operationRevision -and $Delivery.inputBindingId -ceq $p.inputBindingId -and
+        $Delivery.contentHash -ceq (Get-GmPromptContentHash $p)
 }
 
 function Invoke-GmPromptControl {
@@ -5437,31 +5460,43 @@ function Send-ToCliWindow {
 
 function Dispatch-WithRetry {
     param([string]$Message, [string]$PendingPath = '', [switch]$ReturnDetails, [int]$MaxWaitSeconds = 0,
-        [string]$OperationKind = 'turn', [string]$OperationRevision = 'live', [object]$Operation)
+        [string]$OperationKind = 'turn', [string]$OperationRevision = 'live', [object]$Operation, [string]$ExpectedSourceHash = '')
     $attempts = 0; $busyRetries = 0; $startedAt = Get-Date
     $config = Get-GameConfig
     $bridge = $config.GmBridgeEnabled -and $config.GmBridgeBackend -eq 'ConPTYBridge'
     if ($bridge -and -not $Operation) {
         if ($PendingPath -and !(Test-Path $PendingPath)) { return (Complete-GmPromptDispatch 'cancelled' $null $ReturnDetails 0 0) }
-        $Operation = New-GmPromptOperation -Message $Message -PendingPath $PendingPath -OperationKind $OperationKind -OperationRevision $OperationRevision
+        if (-not $ExpectedSourceHash -and $PendingPath) { $ExpectedSourceHash = (Read-GmPromptPending $PendingPath).Hash }
+        if (-not (Test-GmPromptSourceCurrent $PendingPath $ExpectedSourceHash)) { return (Complete-GmPromptDispatch 'cancelled' $null $ReturnDetails 0 0) }
+        Ensure-GmBridgeStarted
+        $Operation = New-GmPromptOperation -Message $Message -PendingPath $PendingPath -OperationKind $OperationKind -OperationRevision $OperationRevision -ExpectedSourceHash $ExpectedSourceHash
+        if (-not $Operation) { return (Complete-GmPromptDispatch 'bridge-not-written' (New-GmPromptDelivery $null 'not-written' 'binding-unavailable-or-retention-full') $ReturnDetails 0 0) }
     }
     while ($true) {
-        $replaced = $PendingPath -and (!(Test-Path $PendingPath) -or ($Operation -and
-            [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([IO.File]::ReadAllBytes($PendingPath))) -cne $Operation.SourceHash))
-        if ($replaced) {
-            if ($Operation -and $Operation.MayHaveReached) {
-                $delivery = Invoke-GmPromptControl -Operation $Operation -Command 'cancelPrompt'
-                if ($delivery.disposition -notin @('not-written','queued-cancelled')) {
-                    $script:GmPromptInputPaused = $true
-                    $delivery = New-GmPromptDelivery $Operation 'unknown-outcome' 'pending-source-replaced-after-dispatch'
-                    $Operation.LastDelivery = $delivery
-                    return (Complete-GmPromptDispatch 'bridge-unknown-outcome' $delivery $ReturnDetails $attempts $busyRetries)
-                }
+        $hash = if ($Operation) { $Operation.SourceHash } else { $ExpectedSourceHash }
+        if (-not (Test-GmPromptSourceCurrent $PendingPath $hash)) {
+            if ($Operation -and $Operation.MayHaveReached -and $Operation.LastDelivery.disposition -notin @('not-written','queued-cancelled')) {
+                $null = Invoke-GmPromptControl -Operation $Operation -Command 'cancelPrompt'
+                $script:GmPromptInputPaused = $true
+                $delivery = New-GmPromptDelivery $Operation 'unknown-outcome' 'pending-source-replaced-after-dispatch'
+                $Operation.LastDelivery = $delivery
+                return (Complete-GmPromptDispatch 'bridge-unknown-outcome' $delivery $ReturnDetails $attempts $busyRetries)
             }
             return (Complete-GmPromptDispatch 'cancelled' $null $ReturnDetails $attempts $busyRetries)
         }
         $attempts++
         $dispatch = Send-ToCliWindow -Message $Message -Operation $Operation
+        # An old remote callback cannot complete a replacement pending packet.
+        if (-not (Test-GmPromptSourceCurrent $PendingPath $hash)) {
+            if ($dispatch -isnot [string] -and $dispatch.disposition -in @('not-written','queued-cancelled')) {
+                return (Complete-GmPromptDispatch 'cancelled' $dispatch $ReturnDetails $attempts $busyRetries)
+            }
+            if ($Operation -and $Operation.MayHaveReached) { $null = Invoke-GmPromptControl -Operation $Operation -Command 'cancelPrompt' }
+            $script:GmPromptInputPaused = $true
+            $delivery = New-GmPromptDelivery $Operation 'unknown-outcome' 'pending-source-replaced-during-dispatch'
+            if ($Operation) { $Operation.LastDelivery = $delivery }
+            return (Complete-GmPromptDispatch 'bridge-unknown-outcome' $delivery $ReturnDetails $attempts $busyRetries)
+        }
         if ($dispatch -is [string]) {
             # Untyped bridge failures cannot authorize a retry, even for legacy collaborators.
             $status = if ($dispatch -like 'bridge-*') { 'bridge-unknown-outcome' } else { $dispatch }
@@ -5631,7 +5666,8 @@ function Process-QteEffectResolutionRequest {
             return
         }
 
-        $request = Get-Content -Path $RequestPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $pendingSnapshot = Read-GmPromptPending -Path $RequestPath
+        $request = $pendingSnapshot.Request
         if (-not [string]::Equals(
                 [string]$request.requestKind,
                 "qte_deferred_effect_resolution",
@@ -5669,7 +5705,7 @@ function Process-QteEffectResolutionRequest {
         }
         $dispatch = Dispatch-WithRetry `
             -Message $message `
-            -PendingPath $RequestPath `
+            -PendingPath $RequestPath -ExpectedSourceHash $pendingSnapshot.Hash `
             -OperationKind qte-effect -OperationRevision $requestKey `
             -ReturnDetails `
             -MaxWaitSeconds $dispatchMaxWaitSeconds
@@ -5706,7 +5742,7 @@ function Process-QteEffectResolutionRequest {
             if ($elapsed % 15 -eq 0 -and
                 (Test-GmBridgeReturnedIdleWithoutTerminalSignal -ElapsedSeconds $elapsed)) {
                 Write-Log "  GM bridge returned idle without the correlated QTE ready marker; preserving the original delivery without replay." -Level "WARN" -Color Yellow
-                $operation = New-GmPromptOperation -Message $message -PendingPath $RequestPath -OperationKind qte-effect -OperationRevision $requestKey
+                $operation = New-GmPromptOperation -Message $message -PendingPath $RequestPath -ExpectedSourceHash $pendingSnapshot.Hash -OperationKind qte-effect -OperationRevision $requestKey
                 if ($operation) { $operation.LastDelivery = Invoke-GmPromptControl -Operation $operation -Command 'promptStatus' }
                 $script:GmPromptInputPaused = $true
                 return
@@ -5745,7 +5781,8 @@ function Process-Turn {
     }
 
     try {
-        $turnRequest = Get-Content -Path $RequestPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $pendingSnapshot = Read-GmPromptPending -Path $RequestPath
+        $turnRequest = $pendingSnapshot.Request
         $turnNumber = $turnRequest.turnNumber
         $turnRequestKey = Get-TurnRequestKey -TurnRequest $turnRequest
         if (Test-ObservedTerminalRequestKey -Key $turnRequestKey) {
@@ -5797,7 +5834,7 @@ function Process-Turn {
 
         if ($null -eq $terminalSignal) {
             $dispatchMaxWaitSeconds = if ($TurnTimeout -gt 0 -and $TurnTimeout -lt $script:BridgeDispatchMaxWaitSeconds) { $TurnTimeout } else { $script:BridgeDispatchMaxWaitSeconds }
-            $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $RequestPath -OperationKind turn -ReturnDetails -MaxWaitSeconds $dispatchMaxWaitSeconds
+            $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $RequestPath -ExpectedSourceHash $pendingSnapshot.Hash -OperationKind turn -ReturnDetails -MaxWaitSeconds $dispatchMaxWaitSeconds
             if (Test-GmPromptDispatchPaused $dispatchDiagnostics) {
                 Write-Log "  Turn cancelled while waiting for bridge turn dispatch" -Level "WARN" -Color Yellow
                 Write-GmTrajectoryRecord `
@@ -5813,8 +5850,7 @@ function Process-Turn {
                 return
             }
 
-            if (Test-GmPromptDispatchPaused $dispatchDiagnostics) { return }
-        if ($dispatchDiagnostics.Status -eq "bridge-dispatch-timeout") {
+            if ($dispatchDiagnostics.Status -eq "bridge-dispatch-timeout") {
                 $script:ErrorCount++
                 Write-Log "  GM bridge did not accept dispatch before the dispatch timeout; emitting daemon terminal error." -Level "ERROR" -Color Red
                 $missingHarnessTool = "gm_bridge_dispatch_unavailable"
@@ -6083,7 +6119,8 @@ function Process-RepairRequest {
         if ($fileInfo.LastWriteTimeUtc -le $script:LastRepairRequestWrite) { return }
         $script:LastRepairRequestWrite = $fileInfo.LastWriteTimeUtc
 
-        $repair = Get-Content -Path $RepairPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $pendingSnapshot = Read-GmPromptPending -Path $RepairPath
+        $repair = $pendingSnapshot.Request
         $turnNumber = if ($repair.turnNumber) { [int]$repair.turnNumber } else { -1 }
         $requestId = if ($repair.requestId) { $repair.requestId } else { "<missing-requestId>" }
         $attempt = if ($repair.revalidationAttempt) { [int]$repair.revalidationAttempt } else { 1 }
@@ -6230,7 +6267,7 @@ function Process-RepairRequest {
         }
 
         $repairDispatchMaxWaitSeconds = if ($TurnTimeout -gt 0 -and $TurnTimeout -lt $script:BridgeDispatchMaxWaitSeconds) { $TurnTimeout } else { $script:BridgeDispatchMaxWaitSeconds }
-        $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $RepairPath -OperationKind repair -OperationRevision ([string]$attempt) -ReturnDetails -MaxWaitSeconds $repairDispatchMaxWaitSeconds
+        $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $RepairPath -ExpectedSourceHash $pendingSnapshot.Hash -OperationKind repair -OperationRevision ([string]$attempt) -ReturnDetails -MaxWaitSeconds $repairDispatchMaxWaitSeconds
         if (Test-GmPromptDispatchPaused $dispatchDiagnostics) { return }
         if ($dispatchDiagnostics.Status -eq "bridge-dispatch-timeout") {
             $script:ErrorCount++
@@ -6334,7 +6371,8 @@ function Process-TerminalProtocolFailureRequest {
         if ($fileInfo.LastWriteTimeUtc -le $script:LastTerminalProtocolFailureWrite) { return }
         $script:LastTerminalProtocolFailureWrite = $fileInfo.LastWriteTimeUtc
 
-        $failure = Get-Content -Path $FailurePath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $pendingSnapshot = Read-GmPromptPending -Path $FailurePath
+        $failure = $pendingSnapshot.Request
         $turnNumber = if ($failure.turnNumber) { [int]$failure.turnNumber } else { -1 }
         $requestId = if ($failure.requestId) { $failure.requestId } else { "<missing-requestId>" }
         $hasDiagnosticOnlyMetadata = Test-ProtocolRequestUsesDiagnosticOnlyMetadata -RequestObject $failure
@@ -6379,7 +6417,7 @@ function Process-TerminalProtocolFailureRequest {
 
         $null = Write-GmExperienceLessons
 
-        $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $FailurePath -OperationKind terminal-repair -ReturnDetails
+        $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $FailurePath -ExpectedSourceHash $pendingSnapshot.Hash -OperationKind terminal-repair -ReturnDetails
         if (Test-GmPromptDispatchPaused $dispatchDiagnostics) { return }
         Write-GmTrajectoryRecord `
             -Kind "terminal" `

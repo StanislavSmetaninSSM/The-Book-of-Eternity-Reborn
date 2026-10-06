@@ -1,13 +1,9 @@
 {
   "SchemaVersion": 1,
-  "SourceCommit": "e164dade80d9be09a3bb219d9998817349f95664",
+  "SourceCommit": "56162ecc8e196cfdd46ec710937c67996ebd23b6",
   "Commands": [
     {
-      "Log": "reviewer-red.log.gz",
-      "Entrypoint": "scripts/test-csharp.ps1; exact category/options and counts in retained runner artifacts"
-    },
-    {
-      "Log": "reviewer-daemon-red.log.gz",
+      "Log": "peer-deadline-red.log.gz",
       "Entrypoint": "scripts/test-csharp.ps1; exact category/options and counts in retained runner artifacts"
     }
   ],
@@ -44,8 +40,8 @@
     },
     {
       "Path": "BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs",
-      "Sha256": "93ae86335b9bb553a5340da1995eb44d81fdd71a6d1f825a9cb05e4c73f478e8",
-      "GitBlob": "fe1f09dc40ad7383492bac65fb8234ffd93b6203"
+      "Sha256": "40c7e7bc8c1159ba5ce48dee1d9a2cf10cffaa47b78546f0e315f39dc6d6b11c",
+      "GitBlob": "3c4b0586dfc4c60e8270629fe333663891984a80"
     },
     {
       "Path": "BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs",
@@ -109,8 +105,8 @@
     },
     {
       "Path": "tests/fixtures/GmPromptDelivery/daemon-functions.ps1",
-      "Sha256": "2d0d24c6453be76873c03a8a0952149e446bf1402df8552f4a4f93e320d135a1",
-      "GitBlob": "3abbb5998167207154615ca277103a72190f9578"
+      "Sha256": "9dd05f36037cae2686b30a28dbc091bef702ec1451608165c1d19f884deb8dc4",
+      "GitBlob": "b5678c3a99a40066467042c987a826b1a1dfd0de"
     },
     {
       "Path": "tests/selection.json",
@@ -122,155 +118,117 @@
     {
       "Path": "BookOfEternityGMBridge/bin/Debug/net8.0-windows/BookOfEternityGMBridge.dll",
       "Bytes": 112128,
-      "Sha256": "d3367d6b7d13aabcf6ea062ee78e68b238864ee66b091a47fe42a3c5f3f849b5"
+      "Sha256": "2f98492d254d38a21249fe80654d59f78aa833e3072d21a9d3a7a6c6adcb694a"
     },
     {
       "Path": "BookOfEternityGMBridge/bin/Debug/net8.0-windows/BookOfEternityClient.pdb",
       "Bytes": 5481892,
-      "Sha256": "45dc2f1d86a02722f38011d5ecaa24b89e0eab18bd7baeb76ba07aaf3d2f744e"
+      "Sha256": "77f73a6036922492edd49901f00b3652a1bc8e09ce9c49ff41d332db9d7d9c91"
     },
     {
       "Path": "BookOfEternityGMBridge/bin/Debug/net8.0-windows/BookOfEternityClient.dll",
       "Bytes": 24404992,
-      "Sha256": "019e82f4a242980902752d929a0822108dba3da1d4f63d79b25061ea9bf4376b"
+      "Sha256": "c64c76dd9a8a1b6c3f476fc0d9ef0e0af2633a2e7277539acd14d6dbca1672e3"
     },
     {
       "Path": "BookOfEternityGMBridge/bin/Debug/net8.0-windows/BookOfEternityGMBridge.pdb",
-      "Bytes": 47668,
-      "Sha256": "2f717c143fdb38d1f02a60e9a38d033049013b7018529f8f79b883ecd7952cd6"
+      "Bytes": 47664,
+      "Sha256": "6fdd38e93abf4afff82e80534e3ec6db3a64f2de8abeb5ad6fdadac157fae265"
     },
     {
       "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.pdb",
-      "Bytes": 1682532,
-      "Sha256": "02bf304238b9068946352c572c69c1ab6deb90833618f1ddae38706e3ed57533"
+      "Bytes": 1683412,
+      "Sha256": "1e764ec251ad7977c14bfb4eebb9cda61afa7a1d27dfb7e3d6f4a0a99c85dfb9"
     },
     {
       "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
       "Bytes": 771584,
-      "Sha256": "71fea83b61f5bcef40acedef6085a0af0d1bd10a50a98bff30f4d5bc39846be1"
+      "Sha256": "7edfb448908c675f0816f3f1fa947ffd3d2c907228c929a943778aa901ae593a"
     },
     {
       "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb",
       "Bytes": 139936,
-      "Sha256": "9f5feacdfd4ad99643871f13a1d5c1c571d31f9290dc0b42eadca4223dd0899e"
+      "Sha256": "56deac97fec8afebccb30af5b0708e94deaf385b6c8069f417a46d7a29f9e852"
     },
     {
       "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.pdb",
       "Bytes": 5481892,
-      "Sha256": "45dc2f1d86a02722f38011d5ecaa24b89e0eab18bd7baeb76ba07aaf3d2f744e"
+      "Sha256": "77f73a6036922492edd49901f00b3652a1bc8e09ce9c49ff41d332db9d7d9c91"
     },
     {
       "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
-      "Bytes": 8495104,
-      "Sha256": "8e89e256d78591b0eb601165e1ab1d581f9a653cf606080120e67f6ddc44726a"
+      "Bytes": 8499712,
+      "Sha256": "202713fd0c00a874c1a739fe7ca4a3b355216d0341e2df1565432ce9c3610940"
     },
     {
       "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
       "Bytes": 24404992,
-      "Sha256": "019e82f4a242980902752d929a0822108dba3da1d4f63d79b25061ea9bf4376b"
+      "Sha256": "c64c76dd9a8a1b6c3f476fc0d9ef0e0af2633a2e7277539acd14d6dbca1672e3"
     },
     {
       "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
       "Bytes": 771584,
-      "Sha256": "71fea83b61f5bcef40acedef6085a0af0d1bd10a50a98bff30f4d5bc39846be1"
+      "Sha256": "1f2c6088ac9175a46fec9a76981d7505c3def5b14f3e26e5ce0c218653e86cf3"
     },
     {
       "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb",
-      "Bytes": 139936,
-      "Sha256": "9f5feacdfd4ad99643871f13a1d5c1c571d31f9290dc0b42eadca4223dd0899e"
+      "Bytes": 139940,
+      "Sha256": "41bee8cd2bd9ea7c37ba7ab60ea23be7ffd8bd28821a6747bfb764a19b3207f1"
     },
     {
       "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.pdb",
       "Bytes": 4048208,
-      "Sha256": "f83f0960b4a6e96d6de275e1e9b1d14de5b25a1b21431e2deec3a008d7f2fcc6"
+      "Sha256": "4337f010092b1a13c72ecb87e1487e2ec461467edaf0dff4c6cf6892cf89279b"
     },
     {
       "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.pdb",
       "Bytes": 5481892,
-      "Sha256": "45dc2f1d86a02722f38011d5ecaa24b89e0eab18bd7baeb76ba07aaf3d2f744e"
+      "Sha256": "f4e1c036cf767ccecdc4ead32064b7d1f236be6e68ec63e2fc3bd3abf7158d29"
     },
     {
       "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
       "Bytes": 24994304,
-      "Sha256": "a2aed3a0f679098a624a47577337119e486011c8d1614117e3ee2ca250170221"
+      "Sha256": "b94516360e630c8377e779d85f5cace52d165e219a9a362cda0991a3610b103a"
     },
     {
       "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
       "Bytes": 24404992,
-      "Sha256": "019e82f4a242980902752d929a0822108dba3da1d4f63d79b25061ea9bf4376b"
+      "Sha256": "6720f48101cc2fadd7f30d66d280c9ede7c346e68044ac7377e3da14f8782be3"
     }
   ],
   "Artifacts": [
     {
-      "Path": "reviewer-daemon-red/dotnet-test.log.gz",
-      "Bytes": 341216,
-      "Sha256": "7abc068ec224151882dead302c0323938acd786d39ae7c79d23637bc3abb089b",
-      "DecompressedSha256": "9940d76f660bc7fce276ec8dfe471ea55cb0f84a58dcdb098ee032f576f37e63"
+      "Path": "peer-deadline-red/Build-unit.log.gz",
+      "Bytes": 1283,
+      "Sha256": "a058221cad639de1af2a7b16c3010a0b4a099dcded16ce49b244113541f0bafa",
+      "DecompressedSha256": "ccce5007776d98174d02bdf8cc21dab14e3d70de64ff8d051ccb78b3a9613903"
     },
     {
-      "Path": "reviewer-daemon-red/gm-daemon-prompt-delivery-integration-001.trx",
-      "Bytes": 7507,
-      "Sha256": "e19eab2759090ddfcd82c761fcd4a2bab9a66baed2174d34b82fe6a7f028a2c8"
+      "Path": "peer-deadline-red/dotnet-test.log.gz",
+      "Bytes": 173101,
+      "Sha256": "7f21b6f39bf167bd4014aecb22811c74e4aab6c424646fde692a75f1fb4b5ee4",
+      "DecompressedSha256": "dbcc939ee85d3a2bebc1119d34a34d572113f57b5147bfaba9aec40fe699d7b9"
     },
     {
-      "Path": "reviewer-daemon-red/gm-daemon-prompt-delivery-unit-002.trx",
-      "Bytes": 40880,
-      "Sha256": "544b7f7d7aadc2a5de7a74e73e89607ff0e470ed426528d9e23fd38b896d9cfb"
+      "Path": "peer-deadline-red/gm-bridge-prompt-operation-unit-001.trx",
+      "Bytes": 69313,
+      "Sha256": "7825bd2aefc8ad3544f2e6238cd146709e6956f124aae73ace41830df025d4ff"
     },
     {
-      "Path": "reviewer-daemon-red/plan.json",
-      "Bytes": 5764,
-      "Sha256": "16910dc53e99d9dae959a42f634d540849be2435d248c0dc72ab1c802486f72b"
+      "Path": "peer-deadline-red/plan.json",
+      "Bytes": 10353,
+      "Sha256": "ed84d90eaab945af9d7c523a957d24f226caf19ca9d518f0ea67c9993195eab7"
     },
     {
-      "Path": "reviewer-daemon-red/summary.json",
-      "Bytes": 1365,
-      "Sha256": "5133b19f68d28c2d0b4af1d93a92ebc08b514e604c402a633a0c2acd0062f8f1"
+      "Path": "peer-deadline-red/summary.json",
+      "Bytes": 1462,
+      "Sha256": "e5c6a73bbc613d8b820df9a51ff5cd7c735ebcd13851fb40ee9fbe2a79cf05bb"
     },
     {
-      "Path": "reviewer-daemon-red.log.gz",
-      "Bytes": 2068,
-      "Sha256": "77b5bf7924e52eac3e27734614c1c8d05bda1233f3f1f022799dcb825958a5c0",
-      "DecompressedSha256": "1d563a87bceb7d686c2077ce4dcd1018dd3b581dbec2ba4613fb4df102da35eb"
-    },
-    {
-      "Path": "reviewer-red/Build-integration.log.gz",
-      "Bytes": 1005,
-      "Sha256": "d58b5c74df78f8d19226e13b8ec1ec0b24ddeb3d88e8d5fc18ad384d7597f3ae",
-      "DecompressedSha256": "b8a98692e2480800688a463b0b1ad534cfa5d3dc1d7f084dd07ec491fcaf029b"
-    },
-    {
-      "Path": "reviewer-red/Build-unit.log.gz",
-      "Bytes": 1067,
-      "Sha256": "a1cb75ba029ac9ff14b4e58d92ed3c48adf190ae13b3f81375ec09ff75cb838e",
-      "DecompressedSha256": "26ab8781394a70d768ade367703f049c649681091db0e101957e7614c120978e"
-    },
-    {
-      "Path": "reviewer-red/dotnet-test.log.gz",
-      "Bytes": 342859,
-      "Sha256": "f9418df64d53fa151124c4739cdb830483eb16c5dd3d0b538a27c02de6542323",
-      "DecompressedSha256": "c61cb0d1b563ff1679ef15931505cb8b7f8f486380d0e627e388de210fc8b97c"
-    },
-    {
-      "Path": "reviewer-red/gm-bridge-prompt-operation-unit-001.trx",
-      "Bytes": 61989,
-      "Sha256": "e970495e78c0d3c2d0849f4a435a5b050cbf8ff05c664bce7eb55e0ecf8dbb38"
-    },
-    {
-      "Path": "reviewer-red/plan.json",
-      "Bytes": 15223,
-      "Sha256": "e9cf535631e82bcbbfea8c01aadae5c2b8c4756bf9dd81aec7b9612b74469cb1"
-    },
-    {
-      "Path": "reviewer-red/summary.json",
-      "Bytes": 1695,
-      "Sha256": "f4f702363e154fbee48430cfb5d6c8b2d469e92ae18715fe80c0f6812332f53b"
-    },
-    {
-      "Path": "reviewer-red.log.gz",
-      "Bytes": 2649,
-      "Sha256": "6e676e9b07e35244ddc5b104a06559688200dfabffa9d5246ce1eed21ebdb8a2",
-      "DecompressedSha256": "b0d78dc8d3f47d2bc446ca0b523192e1f2df4455dd6b2104c92440803e1b87c2"
+      "Path": "peer-deadline-red.log.gz",
+      "Bytes": 2279,
+      "Sha256": "8b6d826e93c1f12e3c92886eeb2c1c6443131ec3ae5e409282a773e62c4aefd5",
+      "DecompressedSha256": "23aca83627f06ce87976f34b919d980a3968e119c3dd335cd83a347e502805d6"
     },
     {
       "Path": "toolchain.txt",

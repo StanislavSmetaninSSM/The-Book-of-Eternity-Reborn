@@ -5208,7 +5208,7 @@ public sealed class GmTurnHelperContractTests
         var functionBlock = ExtractFunctionBlock(daemon, "function Process-RepairRequest");
 
         Assert.Contains("$repairDispatchMaxWaitSeconds", functionBlock, StringComparison.Ordinal);
-        Assert.Contains("Dispatch-WithRetry -Message $message -PendingPath $RepairPath -OperationKind repair -OperationRevision ([string]$attempt) -ReturnDetails -MaxWaitSeconds $repairDispatchMaxWaitSeconds", functionBlock, StringComparison.Ordinal);
+        Assert.Contains("Dispatch-WithRetry -Message $message -PendingPath $RepairPath -ExpectedSourceHash $pendingSnapshot.Hash -OperationKind repair -OperationRevision ([string]$attempt) -ReturnDetails -MaxWaitSeconds $repairDispatchMaxWaitSeconds", functionBlock, StringComparison.Ordinal);
         Assert.Contains("$dispatchDiagnostics.Status -eq \"bridge-dispatch-timeout\"", functionBlock, StringComparison.Ordinal);
         Assert.Contains("gm_validation_repair_dispatch_unavailable", functionBlock, StringComparison.Ordinal);
         Assert.Contains("Write-DaemonJsonFileBestEffort -Path $ValidationRepairArtifactStallReportFile", functionBlock, StringComparison.Ordinal);

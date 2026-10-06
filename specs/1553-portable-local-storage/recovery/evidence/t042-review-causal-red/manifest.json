@@ -63,6 +63,11 @@
       "GitBlob": "eab5078234b144a88a7e38484fe6843bb565dee0"
     },
     {
+      "Path": "BookOfEternityClient/Configuration/GmCliInputProfile.cs",
+      "Sha256": "d3a5b5b91d9e9e1621214ee87314b1519308ce548a7d948e5c9a8bdb7e8eabf9",
+      "GitBlob": "301ec89f509fa67d9982c878ec8ee9fc08865c32"
+    },
+    {
       "Path": "BookOfEternityClient/Launcher/bookofeternity.ps1",
       "Sha256": "c9b51cbb67e1426489b83f630a53263e307515671a9033a835b153f0627dfdfc",
       "GitBlob": "eb8e84c924a27edc079a4ee508aeecd673d1a592"
@@ -272,5 +277,6 @@
       "Bytes": 413,
       "Sha256": "ee2714bcee59ae98bc32bbcb42e0e22eaf61380bf3024c06c620fe0bbad32f98"
     }
-  ]
+  ],
+  "MetadataCorrection": "Added omitted directly-consumed profile source input; original source, artifacts and binary hashes unchanged."
 }

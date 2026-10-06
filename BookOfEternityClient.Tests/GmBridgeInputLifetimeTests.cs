@@ -305,8 +305,11 @@ public sealed class GmBridgeInputLifetimeTests
         using var stream = File.OpenRead(Path.ChangeExtension(HostFixture.BridgePath, ".pdb"));
         using var provider = MetadataReaderProvider.FromPortablePdbStream(stream);
         var metadata = provider.GetMetadataReader();
-        var doc = Assert.Single(metadata.Documents.Select(metadata.GetDocument), d => metadata.GetString(d.Name).Replace('\\', '/').EndsWith("BookOfEternityGMBridge/Program.cs", StringComparison.Ordinal));
-        Assert.Equal(SHA256.HashData(File.ReadAllBytes(Path.Combine(HostFixture.RepoRoot, "BookOfEternityGMBridge/Program.cs"))), metadata.GetBlobBytes(doc.Hash));
+        foreach (var name in new[] { "Program.cs", "BridgeHost.PromptDispatch.cs" })
+        {
+            var doc = Assert.Single(metadata.Documents.Select(metadata.GetDocument), d => metadata.GetString(d.Name).Replace('\\', '/').EndsWith("BookOfEternityGMBridge/" + name, StringComparison.Ordinal));
+            Assert.Equal(SHA256.HashData(File.ReadAllBytes(Path.Combine(HostFixture.RepoRoot, "BookOfEternityGMBridge/" + name))), metadata.GetBlobBytes(doc.Hash));
+        }
         Assert.Null(host.Get("_pty"));
     }
 
@@ -399,7 +402,7 @@ public sealed class GmBridgeInputLifetimeTests
         var server = source[source.IndexOf("private async Task RunServerLoopAsync", StringComparison.Ordinal)..source.IndexOf("private async Task<bool> ProcessConnectedRequestAsync", StringComparison.Ordinal)];
         Assert.Contains("await ProcessConnectedRequestAsync(server, async () =>", server, StringComparison.Ordinal);
         Assert.Contains("var response = await HandleRequestAsync(request);", server, StringComparison.Ordinal);
-        Assert.Contains("}, cancellationToken);", server, StringComparison.Ordinal);
+        Assert.Contains("}, deadline.Token);", server, StringComparison.Ordinal);
         Assert.Contains("finally { await Task.WhenAll(peers); }", server, StringComparison.Ordinal);
         Assert.Contains("PumpKeyboardAsync(input, ReadConsoleKeyAsync, shellToken)", source, StringComparison.Ordinal);
         Assert.Contains("return await DispatchPromptAsync(request);", source, StringComparison.Ordinal);

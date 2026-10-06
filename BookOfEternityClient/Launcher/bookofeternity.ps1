@@ -316,12 +316,12 @@ function Invoke-BridgeRequest {
     }
 
     $pipe = New-Object System.IO.Pipes.NamedPipeClientStream(".", [string]$status.pipeName, [System.IO.Pipes.PipeDirection]::InOut, [System.IO.Pipes.PipeOptions]::Asynchronous)
+    $read=$null; $write=$null; $reader=$null
     try {
         $pipe.Connect(3000)
-        $writer = New-Object System.IO.StreamWriter($pipe, [System.Text.Encoding]::UTF8, 1024, $true)
-        $writer.AutoFlush = $true
         $json = $Payload | ConvertTo-Json -Depth 8 -Compress
-        $write = $writer.WriteLineAsync($json)
+        $requestBytes = [Text.Encoding]::UTF8.GetBytes($json + "`n")
+        $write = $pipe.WriteAsync($requestBytes, 0, $requestBytes.Length)
         if (-not $write.Wait($ResponseTimeoutMilliseconds)) { throw "Bridge request write timed out." }
         $write.GetAwaiter().GetResult()
 
@@ -337,7 +337,17 @@ function Invoke-BridgeRequest {
     }
     finally {
         $pipe.Dispose()
+        foreach ($pending in @($write,$read)) {
+            if ($pending) { try { if ($pending.Wait(2000)) { $pending.GetAwaiter().GetResult() | Out-Null } } catch { } }
+        }
+        if ($reader) { $reader.Dispose() }
     }
+}
+
+function Get-BridgePromptContentHash {
+    param([object]$Payload)
+    $prefix = if ($Payload.appendEnter) { "1`n" } else { "0`n" }
+    return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($prefix + [string]$Payload.text)))
 }
 
 function Invoke-BridgePromptDelivery {
@@ -347,12 +357,13 @@ function Invoke-BridgePromptDelivery {
         [pscustomobject]@{ ok=$true; promptDelivery=[pscustomobject]@{
             operationId=[string]$original.operationId; operationKind=[string]$original.operationKind;
             operationRevision=[string]$original.operationRevision; inputBindingId=[string]$original.inputBindingId;
-            disposition='unknown-outcome'; phase='terminal'; reason='transport-or-response-ambiguous' } }
+            contentHash=(Get-BridgePromptContentHash $original); disposition='unknown-outcome'; phase='terminal'; reason='transport-or-response-ambiguous' } }
     }
     function Test-ReplyIdentity($response) {
         $d = $response.promptDelivery
         return $d -and $d.operationId -ceq $original.operationId -and $d.operationKind -ceq $original.operationKind -and
-            $d.operationRevision -ceq $original.operationRevision -and $d.inputBindingId -ceq $original.inputBindingId
+            $d.operationRevision -ceq $original.operationRevision -and $d.inputBindingId -ceq $original.inputBindingId -and
+            $d.contentHash -ceq (Get-BridgePromptContentHash $original)
     }
     try {
         $response = Invoke-BridgeRequest -ResolvedSessionPath $ResolvedSessionPath -Payload $original

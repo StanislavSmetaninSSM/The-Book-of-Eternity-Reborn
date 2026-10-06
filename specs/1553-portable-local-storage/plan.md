@@ -80,6 +80,22 @@ Do not repeat untouched INPUT37/OUTPUT48 or worker/native cohorts.
   [Causal review manifest](recovery/evidence/t042-review-causal-red/manifest.json).
   No timeout/skips/duplicates; owned cleanup complete. One more actual non-reading-peer
   deadline scenario added before the final bounded error-response fix.
+  At 56162ecc8e196cfdd46ec710937c67996ebd23b6: bridge41executed37PASS/4causalFAIL;
+  additional actual non-reading16peers reproduces second error-response deadline loss.
+  Cleanup complete, no runner timeout/skips/duplicates.
+  [Peer deadline RED](recovery/evidence/t042-peer-deadline-red/manifest.json).
+  Corrections now WIP: body-bound query/cancel + content hash receipts; immediate
+  retained in-progress duplicate; peer read/response/error share deadline, raw async
+  newline framing avoids synchronous disposal flush. Frozen caller packet bytes/hash,
+  after-call source check, startup before actual nonempty binding capture. Automatic
+  shell-launch frame checks manual takeover and is joined by original lifetime Stop;
+  automatic GM reminders retain the full prompt transaction. Raw launcher async
+  request/response tasks are observed after closing its owned pipe.
+  Added real keyboard queued takeover, whole-operation Stop/replacement, profile
+  snapshot, zero-write pending cancellation, distinct real repair revisions and actual
+  launcher response-timeout/held-input cases. Fresh GREEN/review still pending.
+  Metadata correction adds omitted directly consumed profile GitBlob/hash to historical
+  T042 manifests; historical source/artifacts/binary hashes remain unchanged.
 - [ ] Connect typed launcher/daemon/ordinary/QTE/repair outcomes, no ambiguity replay.
 - [ ] Focused fresh GREEN and discovery; exact source/binary/artifact evidence.
 - [ ] Independent Sol source/evidence PASS, ordinary publication/readback and fresh restore.

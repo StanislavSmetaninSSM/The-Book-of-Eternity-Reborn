@@ -43,7 +43,7 @@ public sealed class GmBridgePromptOperationTests
 
     private static string? Disposition(JsonElement response) => response.GetProperty("promptDelivery").GetProperty("disposition").GetString();
     private static object Control(PromptHostFixture host, string command, string id) => new
-    { command, operationId = id, operationKind = "turn", operationRevision = "revision-1", inputBindingId = host.BindingId };
+    { command, operationId = id, operationKind = "turn", operationRevision = "revision-1", inputBindingId = host.BindingId, text = "автоматический запрос", appendEnter = true };
 
     [Fact]
     public async Task TwoPromptsOneBinding_CustomSequences_OneSubmitEach()
@@ -221,6 +221,70 @@ public sealed class GmBridgePromptOperationTests
         Assert.Empty(host.Input.Bytes);
     }
 
+    [Fact]
+    public async Task RealKeyboard_TakesOverQueuedOperationBeforeAnyPaste()
+    {
+        await using var host = new PromptHostFixture();
+        var gate = (SemaphoreSlim)host.Get("_promptGate")!;
+        await gate.WaitAsync();
+        var keys = System.Threading.Channels.Channel.CreateUnbounded<ConsoleKeyInfo?>();
+        var keyboard = (Task)host.Invoke("PumpKeyboardAsync", host.Binding,
+            (Func<CancellationToken, ValueTask<ConsoleKeyInfo?>>)(token => keys.Reader.ReadAsync(token)), host.Shell.Token)!;
+        try
+        {
+            var operation = host.Rpc(host.Request("queued-key"));
+            for (var i=0; i<100 && (int)host.Get("_admittedPrompts")! == 0; i++) await Task.Delay(5);
+            await keys.Writer.WriteAsync(new ConsoleKeyInfo('m', ConsoleKey.M, false, false, false));
+            Assert.Equal("queued-cancelled", Disposition(await operation.WaitAsync(TimeSpan.FromSeconds(2))));
+        }
+        finally { gate.Release(); }
+        await host.Input.Entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
+        await host.Shell.CancelAsync();
+        await keyboard.WaitAsync(TimeSpan.FromSeconds(2));
+        Assert.Equal("m", Encoding.UTF8.GetString(host.Input.Bytes));
+    }
+
+    [Fact]
+    public async Task ActualStop_JoinsWholeOperationBeforeReplacement()
+    {
+        await using var host = new PromptHostFixture();
+        host.Input.Hold=true;
+        var operation = host.Rpc(host.Request("retiring", "text"));
+        await host.Input.Entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
+        var stop = (Task)host.Invoke("StopShellAsync")!;
+        await Task.Delay(50);
+        Assert.False(stop.IsCompleted);
+        Assert.Same(host.Binding, host.Get("_inputLifetime"));
+        host.Input.Release.TrySetResult(true);
+        Assert.Equal("draft-uncertain", Disposition(await operation));
+        await stop.WaitAsync(TimeSpan.FromSeconds(2));
+        var replacementInput = new RecordingInput();
+        var replacementShell = new CancellationTokenSource();
+        host.Owned.Add(replacementInput); host.Owned.Add(replacementShell);
+        host.Invoke("BeginInputLifetime", replacementInput, replacementShell);
+        Assert.NotSame(host.Binding, host.Get("_inputLifetime"));
+        Assert.Equal("draft-uncertain", Disposition(await host.Rpc(host.Request("retiring", "text"))));
+        Assert.Empty(replacementInput.Bytes);
+    }
+
+    [Fact]
+    public async Task ProfileMutation_DoesNotChangeFrozenSubmitSequence()
+    {
+        await using var host = new PromptHostFixture();
+        host.Input.Written = bytes =>
+        {
+            if (bytes.StartsWith("<paste>"))
+            {
+                var path=Path.Combine(host.Root,"config.json");
+                File.WriteAllText(path,File.ReadAllText(path).Replace("<submit>","CHANGED"));
+                host.Observe("CONTROLLED CLI\n› text");
+            }
+            else host.Observe("WORKING");
+        };
+        Assert.Equal("submission-observed",Disposition(await host.Rpc(host.Request("frozen", "text"))));
+        Assert.Equal("<paste>text</paste><submit>",Encoding.UTF8.GetString(host.Input.Bytes));
+    }
+
     internal sealed class PromptHostFixture : IAsyncDisposable
     {
         internal static readonly string Repo = FindRepo();
@@ -233,6 +297,7 @@ public sealed class GmBridgePromptOperationTests
         internal readonly RecordingInput Input = new();
         internal readonly CancellationTokenSource Shell = new();
         internal readonly object Binding;
+        internal readonly List<IDisposable> Owned = [];
         private readonly List<Task> _clients = [];
         private readonly List<NamedPipeClientStream> _pipes = [];
         private readonly Task _server;
@@ -308,7 +373,7 @@ public sealed class GmBridgePromptOperationTests
         public async ValueTask DisposeAsync()
         {
             Input.Release.TrySetResult(true);
-            await Shell.CancelAsync();
+            try { await Shell.CancelAsync(); } catch (ObjectDisposedException) { }
             await HostCancellation.CancelAsync();
             lock (_pipes) foreach (var pipe in _pipes) pipe.Dispose();
             Task[] tasks;
@@ -320,6 +385,7 @@ public sealed class GmBridgePromptOperationTests
             }
             ((IDisposable)Host).Dispose();
             Shell.Dispose(); Input.Dispose();
+            foreach (var item in Owned) item.Dispose();
             Directory.Delete(Root, true);
             Assert.False(Directory.Exists(Root));
         }

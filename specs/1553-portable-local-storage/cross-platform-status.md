@@ -8,8 +8,9 @@ qualification — доказательствами конкретного огр
 ## Current authorized work: T042 live-owner input transaction
 
 Design `dc4a5111` accepted; only the first connected input slice is authorized.
-Causal RED fixtures and two new bounded category owners are being prepared;
-no implementation or GREEN claimed yet. Native/main/live/cold/production boundaries
+Consumed runtime WIP and causal RED evidence are published; independent interim
+Sol6.1/xhigh review found six boundaries, now corrected pending fresh GREEN/review.
+Only two narrow category owners plus exact affected guards are selected; no acceptance yet. Native/main/live/cold/production boundaries
 remain closed. [Execution ledger](plan.md#t042-input-transaction--authorized-execution-ledger).
 
 ## Current design-only continuation toward normal Linux GM launch
