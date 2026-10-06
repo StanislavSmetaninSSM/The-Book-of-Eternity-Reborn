@@ -23,6 +23,7 @@ public sealed class GmWorkerRestartWarmTests
             var snapshot = r.GetProperty(phase);
             Assert.Equal(1, snapshot.GetProperty("capacity").GetInt32());
             Assert.Equal(1, snapshot.GetProperty("entries").GetInt32());
+            Assert.True(snapshot.GetProperty("workspaceExists").GetBoolean(), r.ToString());
             foreach (var key in new[] { "accepted", "proposalConsumer", "repairConsumer" }) Assert.False(snapshot.GetProperty(key).GetBoolean());
         }
     }

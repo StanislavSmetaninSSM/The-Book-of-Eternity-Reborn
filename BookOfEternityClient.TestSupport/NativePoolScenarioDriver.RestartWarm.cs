@@ -80,14 +80,14 @@ internal static partial class NativePoolScenarioDriver
         var preservedBeforeStop = before.SequenceEqual(RecoverySnapshot(root));
         var result = await running;
         await owner!.SupervisorExited.WaitAsync(TimeSpan.FromSeconds(5));
-        var beforeRetry = BoundarySnapshot(result, task, reaper, statePath, null);
+        var beforeRetry = BoundarySnapshot(result, task, reaper, statePath, execution.Identity.WorkspacePath);
         await using var competing = await GmWorkerRunLedger.OpenCoordinatorAsync(new(root));
         var lockRetained = competing == null;
         fault = false; await reaper.RunPassAsync();
         await File.WriteAllTextAsync(Path.Combine(output, "restart-warm.json"), JsonSerializer.Serialize(new
         {
             beforeLateStop, canonicalRefused, slots, reservations, preservedBeforeStop, faults, lockRetained,
-            beforeRetry, afterRetry = BoundarySnapshot(result, task, reaper, statePath, null),
+            beforeRetry, afterRetry = BoundarySnapshot(result, task, reaper, statePath, execution.Identity.WorkspacePath),
             absorbingUncertain = execution.IsUncertain, recoveryPreserved = before.SequenceEqual(RecoverySnapshot(root)),
             poolAttemptedStop = typeof(GmWorkerNativeLineageLaunch).GetField("_stopControl", flags)!.GetValue(owner) != null,
             workerStarts = File.Exists(Path.Combine(output, "worker-starts")) ? File.ReadAllLines(Path.Combine(output, "worker-starts")).Length : 0

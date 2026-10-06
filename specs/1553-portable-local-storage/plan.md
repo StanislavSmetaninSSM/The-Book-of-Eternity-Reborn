@@ -421,6 +421,12 @@ Evidence audit currently verifies30 manifests/237 unique source-bound blobs/2647
 348gzip, latest235 distinct PASS, historical494executions429PASS65FAIL. All131guardians
 ECHILD;2 historical emergency signals remain recorded from the initial failed root
 fixture. No final R2 PASS yet; final source/evidence review and GitHub-only restore pending.
+Independent Sol6.1/xhigh verified ownership/warm110inputs210artifacts25gzip and6PASS
+with6clean guardians. Ownership5 is sufficient. One warm observation gap remains:
+BoundarySnapshot had received null rather than the original workspace, reporting
+workspaceExists=false without checking the retained tree. Pass the live original
+execution.Identity.WorkspacePath and assert presence before/after retry. No runtime
+change; repeat only warm1 alongside the selected final regressions, not ownership5.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing
