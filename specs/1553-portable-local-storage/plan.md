@@ -98,8 +98,21 @@ null-durable/legacy behavior. This last scope-only change requires fresh build; 
 selected24 affected cases once at that exact source, then E4. No extra legacy/Windows
 cohort is warranted. Exact final runtime source `a7370fd0b7eb789079a307ee0c04538499bbfdc6`: selected24/24PASS,
 9/9complete descriptors,145.9106193s,0duplicate/skip/timeout, owned cleanup complete.
-Evidence worker-r3-affected-regression-green. Guardian32/32ECHILD,0signals/failure/deadline.
+Evidence worker-r3-affected-regression-green. Guardian33/33ECHILD,0signals/failure/deadline.
 Final independent source/evidence acceptance is still pending; next only E4.
+
+### Cohort E source checkpoint — WIP
+
+Four actual crash seeds: two separately bound original epochs before Release under
+limit2, same inventory followed by corruption of one owned member, one bound epoch
+followed by renaming its original runtime namespace after guardian ECHILD, and a fully
+retired actual task followed by an ordinary canonical journal at Committed. The latter
+receives third conflicting member bytes after guardian ECHILD, so cold refusal must
+show the original handler unknown-bytes error with Quiescent worker ledger (no masking
+active entry). Fresh distinct-task probe uses the existing actual profile limit1.
+No new runtime change; source unbuilt/unrun. Next only worker-restart-inventory-linux.
+Previous regression evidence carrier f29a9157 verified remotely; actual guardian count33
+(the prior plan line32 was a transcription error, corrected against all JSON reports).
 
 ### Evidence already accepted; exclude unchanged repetitions
 

@@ -13274,6 +13274,29 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-restart-inventory-linux",
+      "responsibility": "#1553 R3 cold whole-root inventory after two actual bound epochs/lower limit, one corrupt member, missing original runtime namespace, and committed original-handler journal conflict on fully retired quiescent root.",
+      "excludes": "No replay of A-D or R1/R2 cohorts, no reconnect, salvage, force-clear, production Linux Release, main PTY, live GM, real saves, reboot or Windows native.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.RestartFenceInventory.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.ColdInventory_FencesWholeRootAndOriginalJournalConflict"
+          ]
+        }
+      ]
     }
   ]
 }
