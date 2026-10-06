@@ -670,7 +670,7 @@ function Start-Bridge {
         throw "Bridge project not found: $projectPath"
     }
 
-    $bridgeExe = Join-Path $repoRoot "BookOfEternityGMBridge\bin\Debug\net8.0-windows\BookOfEternityGMBridge.exe"
+    $bridgeExe = Join-Path $repoRoot "BookOfEternityGMBridge\bin\Debug\net8.0\BookOfEternityGMBridge.exe"
     $bridgeCommand = if (Test-Path $bridgeExe) {
         'Set-Location "{0}"; & "{1}" --host --sessionPath "{2}" --pipeName "{3}"' -f $repoRoot, $bridgeExe, $ResolvedSessionPath, $pipeName
     }

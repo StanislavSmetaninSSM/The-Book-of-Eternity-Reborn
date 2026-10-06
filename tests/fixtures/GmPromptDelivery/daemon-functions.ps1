@@ -17,7 +17,35 @@ try {
     function New-GmDispatchDiagnostics { param($Status, $Attempts, $BusyRetries, [switch]$Timeout) [pscustomobject]@{ Status=$Status; Attempts=$Attempts; Timeout=[bool]$Timeout } }
     function Get-GameConfig { [pscustomobject]@{ GmBridgeEnabled=$true; GmBridgeBackend='ConPTYBridge' } }
     function Get-GmBridgeStatus { [pscustomobject]@{ ready=$false; inputBindingId='controlled-binding' } }
-    if ($Scenario -eq 'transport-ambiguity') {
+    if ($Scenario -eq 'terminal-launcher-path') {
+        $launcher = Join-Path $RepoRoot 'BookOfEternityClient/Launcher/bookofeternity.ps1'
+        $ast = [Management.Automation.Language.Parser]::ParseFile($launcher, [ref]$tokens, [ref]$errors)
+        if ($errors.Count) { throw 'Launcher source parsing failed.' }
+        $function = $ast.Find({ param($n) $n -is [Management.Automation.Language.FunctionDefinitionAst] -and $n.Name -eq 'Start-Bridge' }, $true)
+        . ([scriptblock]::Create($function.Extent.Text))
+        $script:TerminalRepo = Join-Path $fixtureRoot 'inert-repo'
+        $project = Join-Path $script:TerminalRepo 'BookOfEternityGMBridge/BookOfEternityGMBridge.csproj'
+        $exe = Join-Path $script:TerminalRepo 'BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.exe'
+        [void][IO.Directory]::CreateDirectory((Split-Path $exe -Parent))
+        [IO.File]::WriteAllText($project, '')
+        [IO.File]::WriteAllText($exe, '')
+        $script:TerminalCommands = @()
+        function Read-BridgeStatus { param($Path) $null }
+        function Read-GameConfig { param($Path) [pscustomobject]@{ GmBridgePipeNameOverride='inert-pipe' } }
+        function Get-RepoRoot { $script:TerminalRepo }
+        function Write-Host { param($Object, $ForegroundColor) }
+        function Start-Process {
+            param($FilePath, $ArgumentList, $WorkingDirectory, $WindowStyle)
+            if ($FilePath -ne 'powershell.exe' -or $WorkingDirectory -ne $script:TerminalRepo) { throw 'Unexpected inert launcher invocation.' }
+            $index = [array]::IndexOf($ArgumentList, '-EncodedCommand')
+            $script:TerminalCommands += [Text.Encoding]::Unicode.GetString([Convert]::FromBase64String($ArgumentList[$index+1]))
+        }
+        Start-Bridge -ResolvedSessionPath $fixtureRoot
+        Remove-Item -LiteralPath $exe
+        Start-Bridge -ResolvedSessionPath $fixtureRoot
+        [ordered]@{ commands=$script:TerminalCommands } | ConvertTo-Json -Compress
+    }
+    elseif ($Scenario -eq 'transport-ambiguity') {
         function Ensure-GmBridgeStarted { }
         $script:Calls = 0
         function Send-ToCliWindow {

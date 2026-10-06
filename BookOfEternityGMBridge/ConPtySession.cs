@@ -56,7 +56,7 @@ internal sealed class ConPtySession : IDisposable, IOwnedTerminalSession
                 IntPtr.Zero,workingDirectory,ref si,out var process))throw new IOException("ConPTY suspended process creation failed.");
             owner._processHandle=process.hProcess;owner._threadHandle=process.hThread;
             owner.Identity=owner.Identity with{RootPid=checked((int)process.dwProcessId)};
-            owner._process=Process.GetProcessById(owner.ProcessId);owner.RootExited=ObserveRootAsync(owner._process);
+            owner._process=Process.GetProcessById(owner.ProcessId);owner.RootExited=owner.ObserveRootAsync(owner._process);
             owner._job=new WindowsJobProcessTree(owner._process);
             if(ConPtyNativeMethods.ResumeThread(owner._threadHandle)!=1)throw new IOException("ConPTY original suspended thread release failed.");
             owner._released=true;return owner;

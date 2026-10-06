@@ -11,6 +11,19 @@ namespace BookOfEternityClient.Tests;
 public sealed class GmOwnedTerminalBoundaryTests
 {
     [Fact]
+    public async Task ActualLauncher_UsesRetargetedBridgeAndKeepsProjectFallback() =>
+        await GmDaemonPromptDeliveryTests.Run("terminal-launcher-path", result =>
+        {
+            var commands=result.GetProperty("commands").EnumerateArray().Select(x=>x.GetString()!).ToArray();
+            Assert.Equal(2,commands.Length);
+            Assert.Contains("net8.0",commands[0]);
+            Assert.DoesNotContain("net8.0-windows",commands[0]);
+            Assert.DoesNotContain("dotnet run",commands[0]);
+            Assert.Contains("dotnet run --project",commands[1]);
+            Assert.Contains("--host --sessionPath",commands[0]);
+            Assert.Contains("--host --sessionPath",commands[1]);
+        });
+    [Fact]
     public void WindowsMainSource_HoldsJobBeforeReleaseAndOwnedPseudoConsoleClose()
     {
         var source=File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot,"BookOfEternityGMBridge/ConPtySession.cs"));
