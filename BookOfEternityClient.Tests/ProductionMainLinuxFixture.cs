@@ -55,6 +55,19 @@ internal static class ProductionMainLinuxFixture
         json["GmMainOwnerBackend"]=JsonSerializer.SerializeToElement("NativeLineage");File.WriteAllText(Path.Combine(files.GameSessionPath,"config.json"),JsonSerializer.Serialize(json));
         if(mode.StartsWith("production-main-load-",StringComparison.Ordinal)) {
             var archiveState=PortableSaveFixture.Seed(files);
+            if(mode=="production-main-load-console") {
+                // Complete isolated Mortal fixture; the real required-refresh validator remains active.
+                var extra=new Dictionary<string,string> {
+                    ["game_state/core/player_status.json"]="{\"currentCondition\":\"neutral fixture\",\"money\":0}",
+                    ["game_state/inventory/item_identity_index.json"]="{\"schemaVersion\":1,\"entries\":[]}",
+                    ["game_state/meta/achievements.json"]="{\"achievements\":[]}",
+                    ["lore/codex_entries.json"]="{\"entries\":[]}"
+                };
+                foreach(var name in new[]{"cultures","geography","history","threats","world_setting"})extra["lore/current_world/"+name+".json"]="{\"fixture\":\"neutral\"}";
+                foreach(var entry in extra) {
+                    var local=files.ResolvePath(entry.Key);Directory.CreateDirectory(Path.GetDirectoryName(local)!);File.WriteAllText(local,entry.Value);
+                }
+            }
             var saves=new BookOfEternityClient.Services.SaveLoadService(files,archiveState,NullLogger<BookOfEternityClient.Services.SaveLoadService>.Instance);
             Assert.True(await saves.SaveGameAsync("load-neutral","original configured neutral CLI"),"Preparation: real archive creation failed.");
         }

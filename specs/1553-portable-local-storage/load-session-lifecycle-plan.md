@@ -79,3 +79,7 @@ Clean tested `6f28d36134c665b787d985e404fe06c4aa7f16a9` corrected oracle1/1FAIL:
 ### Connected positive set —2PASS/1FAIL at d69e4404
 
 Real browser basic and HTTP full-bundle/current ACK/fresh epoch passed2/2, including duplicate Load/manual restart/stale cancel refusal and two fresh neutral inputs with Unicode in one process; profile command/model/args/cwd preserved. Console storage committed but required refresh reached validation error display and attempted a real redirected Console.ReadKey in the fixture, therefore failed/no new GM (1/1FAIL). Preserve failure pending diagnosis; do not claim console fresh qualification. All3 guardians ECHILD/0 emergency/failures/deadline; own fixtures removed after capture. [Evidence](recovery/evidence/load-ux-connected-positive-first/manifest.json). Fixture now uses inert real IConsoleInputSource and records actual validation errors plus safe exception text; runtime validator is unchanged. Next run only the failing console case.
+
+### Console isolated archive diagnosis
+
+At clean ebdf6b99 the console case1FAIL confirms Committed but correctly refuses refresh due nine missing required fixture artifacts (Mortal item index/player status/lore). Inert input and logger produced exact codes; no runtime validator changes. Guardian ECHILD/0emergency/failures/deadline. [Evidence](recovery/evidence/load-ux-console-fixture-validation/manifest.json). Complete only the positive console fixture archive and rerun that exact case.
