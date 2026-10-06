@@ -12915,6 +12915,36 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-restart-dispatch-linux",
+      "responsibility": "R2 fresh-process committed retirement refuses duplicate task identity before recovery/capacity but admits a distinct task; gated native Release revalidates original task bytes and generation.",
+      "excludes": "R3 crash matrix, mixed mode races, product Linux release and unrelated acceptance contracts.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerRootContext.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerDurableExecution.cs"
+      ],
+      "related": [
+        {
+          "id": "worker-restart-admission-linux",
+          "when": "Pre-recovery root admission changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerRestartDispatchTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

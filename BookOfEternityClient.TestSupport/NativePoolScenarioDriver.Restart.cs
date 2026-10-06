@@ -22,8 +22,11 @@ internal static partial class NativePoolScenarioDriver
         if (mode.StartsWith("restart-boundary-", StringComparison.Ordinal)) return await RunRestartBoundary(mode[17..], package, output);
         var root = Path.Combine(output, "state-copy");
         if (mode == "restart-seed-cold") return await SeedColdRestart(root, output);
-        if (mode is not ("restart-cold-run" or "restart-happy-run")) return 64;
-        if (mode == "restart-happy-run") await BootstrapRestartRoot(root);
+        if (mode is not ("restart-cold-run" or "restart-happy-run" or "restart-retired-seed" or
+            "restart-retired-exact" or "restart-retired-changed" or "restart-retired-new" or
+            "restart-release-task" or "restart-release-generation")) return 64;
+        if (mode is "restart-happy-run" or "restart-retired-seed" or "restart-release-task" or "restart-release-generation")
+            await BootstrapRestartRoot(root);
 
         // This is deliberately a fresh FS and actual pool. No bootstrap, generation
         // write, recovery, ledger rewrite or hand-made result precedes admission.
@@ -47,13 +50,27 @@ internal static partial class NativePoolScenarioDriver
             ContextFiles = [new WorkerFileReference
             { Path = RestartContextPath, Sha256 = GmWorkerRunLedgerCodec.Hash(RestartContextBytes) }]
         };
+        if (mode == "restart-retired-new") task = task with { TaskId = "restart_distinct_new_task" };
+        if (mode == "restart-retired-changed") task = task with { Instructions = task.Instructions + " Changed body." };
         var releases = 0; var boundOwners = 0; var publicationCalls = 0;
-        var reservationCalls = 0; string? workspace = null;
+        var reservationCalls = 0; var slotWaits = 0; string? workspace = null;
         var hooks = new GmWorkerBridgePoolHooks
         {
             AfterOwnerBound = _ => boundOwners++,
+            BeforeWorkerSlotWaitAsync = () => { slotWaits++; return Task.CompletedTask; },
             BeforeTaskReservationAsync = () => { reservationCalls++; return Task.CompletedTask; },
-            BeforeWorkerReleaseAsync = () => { releases++; return Task.CompletedTask; },
+            BeforeWorkerReleaseAsync = async () =>
+            {
+                releases++;
+                if (mode == "restart-release-task")
+                    await fs.WriteFileAtomicBytesAsync(GmWorkerBridgePool.GetTaskPacketPath(task.TaskId), Encoding.UTF8.GetBytes("changed reserved task bytes"));
+                if (mode == "restart-release-generation")
+                {
+                    await using var lifecycle = await fs.AcquireSessionLifecycleLeaseAsync();
+                    await using var replacement = await fs.AcquireSessionReplacementWriteLeaseAsync(lifecycle);
+                    fs.RotateSessionGeneration(replacement);
+                }
+            },
             BeforeProposalPublicationAsync = () => { publicationCalls++; return Task.CompletedTask; },
             BeforeWorkspaceCleanupAsync = path => { workspace = path; return Task.CompletedTask; }
         };
@@ -69,12 +86,14 @@ internal static partial class NativePoolScenarioDriver
         elapsed.Stop();
         var after = RestartSnapshot(root);
         var observed = await GmWorkerRunLedger.ObserveAsync(new(root));
-        var proposalPath = fs.ResolvePath(GmWorkerProposalStore.GetProposalPath("worker_proposal_native_pool_happy"));
+        var proposalPath = fs.ResolvePath(GmWorkerProposalStore.GetProposalPath(result?.Proposal?.ProposalId ?? "worker_proposal_native_pool_happy"));
         var statePath = Path.Combine(root, ".boe_runtime", "worker-runs-v1", "state.json");
         var state = File.Exists(statePath) ? GmWorkerRunLedgerCodec.Decode(new(root), File.ReadAllBytes(statePath)) : null;
         WorkerRunRecord? retired = null;
-        if (state?.Retired.Length == 1)
-            retired = GmWorkerRunRecordCodec.Decode(File.ReadAllBytes(Path.Combine(root, ".boe_runtime", "worker-runs-v1", "retired", state.Retired[0].RunId + ".json")));
+        if (state != null)
+            retired = state.Retired.Select(reference => GmWorkerRunRecordCodec.Decode(File.ReadAllBytes(Path.Combine(root,
+                ".boe_runtime", "worker-runs-v1", "retired", reference.RunId + ".json"))))
+                .SingleOrDefault(record => record.Identity.TaskId == task.TaskId);
         var taskPath = fs.ResolvePath(GmWorkerBridgePool.GetTaskPacketPath(task.TaskId));
         var publication = retired?.Progress?.Publication;
         var contentImportedExactly = result?.Proposal?.ChangedFiles.Count == 1 &&
@@ -82,7 +101,7 @@ internal static partial class NativePoolScenarioDriver
             File.ReadAllBytes(fs.ResolvePath(result.Proposal.ChangedFiles[0].ContentRef!)).AsSpan().SequenceEqual(ProposedContent);
         await File.WriteAllTextAsync(Path.Combine(output, "restart-result.json"), JsonSerializer.Serialize(new
         {
-            mode, failure, boundOwners, releases, publicationCalls, reservationCalls,
+            mode, failure, boundOwners, releases, publicationCalls, reservationCalls, slotWaits,
             recoveryObservations, before, after,
             preservedRoot = before.SequenceEqual(after),
             workerStarts = File.Exists(Path.Combine(output, "worker-starts"))
@@ -103,6 +122,26 @@ internal static partial class NativePoolScenarioDriver
             normalCleanupWithoutAudit = retired?.Progress?.Cleanup is { RequiredAudit: false, AuditEventId: null, AuditSha256: null },
             elapsedMilliseconds = elapsed.ElapsedMilliseconds, result
         }));
+        if (mode == "restart-retired-seed")
+        {
+            if (result?.HasValidatedExecutionFor(task) != true || state?.Entries.Length != 0 || state.Retired.Length != 1)
+                throw new InvalidOperationException("Cold retired fixture requires actual completed original lifecycle.");
+            var interrupted = false;
+            await using var lease = await fs.AcquireCanonicalWriteLeaseAsync();
+            try
+            {
+                new TrustedLocalFilePublication(fs, new TrustedLocalFileScope([root])).Publish(lease,
+                    TrustedLocalGeneration.Existing(task.SessionGeneration),
+                    [new(fs.ResolvePath(RestartContextPath), RestartContextBytes, Encoding.UTF8.GetBytes("{\"fixture\":\"pending-after-retired\"}"))],
+                    (phase, _) =>
+                    {
+                        if (phase == TrustedLocalPublicationPhase.MemberPublished)
+                        { interrupted = true; throw new IOException("Retired admission recovery boundary."); }
+                    });
+            }
+            catch (IOException) when (interrupted) { }
+            if (!interrupted) throw new InvalidOperationException("Canonical recovery evidence was not installed.");
+        }
         return 0;
     }
 

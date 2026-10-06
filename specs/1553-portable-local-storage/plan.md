@@ -294,6 +294,12 @@ original publication/retirement ACK retries remain functional. Evidence:
 recovery/evidence/worker-r2-cleanup-green/manifest.json. Remaining: closed-witness
 foreign/forged checks, typed early admission/reservation/exact Release binding,
 minimal remaining mode/cold/warm matrix, affected categories and final Sol review.
+Next dispatch scaffold adds five cases: three fresh-process continuations after
+actual Retired plus interrupted canonical member (same task, changed body, distinct
+new task), and task-byte/generation replacement while original host remains gated.
+They assert before-recovery/capacity refusal for retired identity and no worker Start
+for changed original Release binding. Seeds require actual full positive lifecycle
+and independent guardian cleanup. Runtime remains unchanged for causal RED; unrun.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

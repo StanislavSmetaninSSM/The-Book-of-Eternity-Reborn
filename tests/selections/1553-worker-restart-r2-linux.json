@@ -64,6 +64,14 @@
         "#1553 T041-WORKER-RESTART-R2",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-restart-dispatch-linux",
+      "reason": "R2 original dispatch/task key admission must precede recovery and capacity; original bytes/generation must still authorize Release.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
     }
   ]
 }
