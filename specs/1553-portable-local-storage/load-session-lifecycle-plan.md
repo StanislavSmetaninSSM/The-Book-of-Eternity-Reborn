@@ -2,7 +2,7 @@
 
 Issue: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
 Branch: `codex/1553-load-filesystem`. Accepted base: `dc62a88a630ba20eacd65f7bdab138ba129123ff`.
-Status: design WIP; no new runtime changes or tests yet. Actual independent Sol6.1/xhigh review is required before implementation.
+Status: implementation WIP after independent actual Sol6.1/xhigh design PASS. Runtime source review PASS at8aa96165; final qualification/evidence review and GitHub restoration remain pending.
 
 ## Contract and source delta
 
@@ -111,3 +111,7 @@ Cleanff500224 native/portable10/10PASS and actual frontend handler18/18PASS. All
 ### Stop/refresh faults and affected frontend GREEN
 
 CLEANecd14793 stop/receipt/refresh/manualcancel4/4PASS; logical original Uncertain retained even with independent guardian cleanup. All4 guardians clean. Exact affected frontend62 plus two typecheck receipts64/64PASS. Console finish now reports its confirmed storage Committed independently of fresh permission (debt/refresh still send false RefreshConfirmed); server stop/launch behavior unchanged. Recheck only two actual console cases for this narrow truthfulness correction along with remaining new restart/storage/profile groups.
+
+### Restart set and final source review
+
+At clean8aa96165 six executed: console positive/debt2PASS; restart faults3PASS (lost restart receipt, generation race, post-decision cancel); lost Load reply1FAIL on fixture timeout awaiting original execution. All6 guardians reached ECHILD/0emergency/failures/deadline; captured and removed only own roots. [Evidence](recovery/evidence/load-ux-restart-faults-first/manifest.json). Local HttpClient cancellation was not yet proof that server RequestAborted was observed, so this timeout is not claimed as causal runtime RED. Replaced only that fixture transport with its own raw HTTP connection/reset and an explicit real RequestAborted observation; split the exact failed case to avoid repeating unchanged successful faults. Independent Sol6.1/xhigh final source review8aa96165 PASS, including installed-profile contract and test selection. Per reviewer, archived-vs-active profile fixture now additionally checks child-reported actual argv/cwd, pending execution. No runtime changes in this checkpoint.

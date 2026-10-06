@@ -2,6 +2,29 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-load-lost-reply",
+      "responsibility": "Lost actual HTTP Load response: observed server RequestAborted, retained Committed and no unacknowledged fresh terminal",
+      "excludes": "No provider/model/EnterGameLoop/native Windows/systemd or unrelated console cohorts",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LostLoadReplyNeverStartsFresh"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-load-affected-frontend",
       "responsibility": "Exact existing real Load handler/complete bundle/settings reconciliation consumers affected by new lifecycle",
       "excludes": "No live browser/provider or unrelated frontend tests",

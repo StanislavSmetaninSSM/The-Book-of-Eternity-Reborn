@@ -1,4 +1,6 @@
 using System.Net.Http.Json;
+using System.Net.Sockets;
+using System.Text;
 using System.Reflection;
 using System.Text.Json;
 using BookOfEternityClient.Core;
@@ -14,7 +16,7 @@ internal static partial class OwnedTerminalScenarioDriver
 {
     private static async Task RunLoadHttpFaultAsync(string fault,WebApplication app,HttpClient http,object host,Type type,
         Func<object,Task<JsonElement>> rpc,IOwnedTerminalSession original,GmSessionRunIdentity prior,BrowserLoadSaveRequest request,
-        Dictionary<string,object?> evidence,FileSystemManager files)
+        Dictionary<string,object?> evidence,FileSystemManager files,Task transportAborted)
     {
         object? Field(string name)=>type.GetField(name,BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host);
         void Set(string name,object hook)=>type.GetField(name,BindingFlags.Instance|BindingFlags.NonPublic)!.SetValue(host,hook);
@@ -54,12 +56,19 @@ internal static partial class OwnedTerminalScenarioDriver
         if(fault=="load-reply-loss") {
             var service=app.Services.GetRequiredService<LocalWebUiMainMenuService>();
             service.BeforeCommittedMenuRefresh=async()=>{entered.TrySetResult();await release.Task;};
-            using var abort=new CancellationTokenSource();var sending=http.PostAsJsonAsync("/api/saves/load",request,abort.Token);
+            // Own real HTTP connection: an explicit RST proves server RequestAborted, rather than
+            // treating HttpClient's local cancellation receipt as remote cancellation evidence.
+            using var connection=new TcpClient();await connection.ConnectAsync(http.BaseAddress!.Host,http.BaseAddress.Port);
+            var body=JsonSerializer.SerializeToUtf8Bytes(request,new JsonSerializerOptions(JsonSerializerDefaults.Web));
+            var header=Encoding.ASCII.GetBytes($"POST /api/saves/load HTTP/1.1\r\nHost: {http.BaseAddress.Authority}\r\nContent-Type: application/json\r\nContent-Length: {body.Length}\r\nConnection: close\r\n\r\n");
+            await connection.GetStream().WriteAsync(header);await connection.GetStream().WriteAsync(body);
             await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
             var operation=typeof(LocalWebUiMainMenuService).GetField("_browserLoad",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(service)!;
             var originalExecution=(Task<BrowserLoadSaveResultDto>)operation.GetType().GetField("Execution",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(operation)!;
-            abort.Cancel();try{using var ignored=await sending;throw new InvalidOperationException("Lost Load reply fixture did not cancel transport.");}catch(OperationCanceledException){}
-            await Task.Delay(100);release.TrySetResult();loaded=await originalExecution.WaitAsync(TimeSpan.FromSeconds(5));
+            connection.Client.LingerState=new(true,0);connection.Dispose();
+            try {await transportAborted.WaitAsync(TimeSpan.FromSeconds(5));evidence["ActualRequestAborted"]=true;}
+            finally {release.TrySetResult();}
+            loaded=await originalExecution.WaitAsync(TimeSpan.FromSeconds(5));
         } else loaded=await Post("/api/saves/load",request);
         evidence["InitialFaultLoad"]=loaded;
         if(fault=="worker-debt") {

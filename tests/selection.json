@@ -84,6 +84,14 @@
       "contracts": [
         "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
       ]
+    },
+    {
+      "category": "gm-load-lost-reply",
+      "reason": "Exact unconfirmed HTTP Load transport boundary; separate from three already qualified restart faults",
+      "contracts": [
+        "T041-LOAD-SESSION-LIFECYCLE",
+        "original connection and no replay"
+      ]
     }
   ]
 }

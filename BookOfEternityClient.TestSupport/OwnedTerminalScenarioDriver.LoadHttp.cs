@@ -6,6 +6,7 @@ using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services.GmRuntime;
 using BookOfEternityClient.WebUi;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BookOfEternityClient.Tests;
@@ -33,6 +34,11 @@ internal static partial class OwnedTerminalScenarioDriver
             }
         }}:null;
         await using var app=LocalWebUiHost.Build([],new(files.BasePath,"http://127.0.0.1:0",assets),hooks);
+        var transportAborted=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        if(faultName=="load-reply-loss")app.Use(async(context,next)=>{
+            using var observed=context.RequestAborted.Register(()=>transportAborted.TrySetResult());
+            await next(context);
+        });
         await app.StartAsync();
         using var http=new HttpClient{BaseAddress=new Uri(app.Urls.Single()),Timeout=TimeSpan.FromSeconds(20)};
         void Require(bool yes,string failure){if(!yes)throw new InvalidOperationException(failure);}
@@ -45,9 +51,16 @@ internal static partial class OwnedTerminalScenarioDriver
         var prior=run.Identity;
         var oldBinding=(await rpc(new{command="status"})).GetProperty("status").GetProperty("inputBindingId").GetString();
         var request=new BrowserLoadSaveRequest("manual:"+Path.GetFileName(path),Guid.NewGuid().ToString("N"),menu!.LoadGeneration);
+        var profileCase=mode.EndsWith("profile-from-archive",StringComparison.Ordinal);
+        if(profileCase) {
+            var output=(await rpc(new{command="diagnostics"})).GetProperty("diagnostics").GetProperty("recentOutputTail").GetString()!;
+            Require(output.Contains("CONFIGURED_ARG2:active-model-sentinel") && output.Contains("CONFIGURED_CWD:"+profile.GmBridgeShellWorkingDirectory),
+                "Preparation failure: original child did not report active configured argv/cwd.");
+            evidence["OriginalChildProfileOutput"]=output;
+        }
         if(mode.Contains("-fault-",StringComparison.Ordinal)) {
             publicationArmed=true;
-            await RunLoadHttpFaultAsync(faultName!,app,http,host,type,rpc,original,prior,request,evidence,files);
+            await RunLoadHttpFaultAsync(faultName!,app,http,host,type,rpc,original,prior,request,evidence,files,transportAborted.Task);
             if(storageFault)Require(cuts==1,"Preparation failure: real replacement publication cut not reached.");
             await app.StopAsync();return;
         }
@@ -105,6 +118,12 @@ internal static partial class OwnedTerminalScenarioDriver
             for(var i=0;i<150;i++){if((await rpc(new{command="status"})).GetProperty("status").GetProperty("ready").GetBoolean())break;await Task.Delay(10);}
         }
         Require(ReferenceEquals(terminal,type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)),"Fresh inputs used different processes.");
+        if(profileCase) {
+            var output=(await rpc(new{command="diagnostics"})).GetProperty("diagnostics").GetProperty("recentOutputTail").GetString()!;
+            Require(output.Contains("CONFIGURED_ARG2:gm-model-sentinel") && output.Contains("CONFIGURED_ARG4:a b") &&
+                output.Contains("CONFIGURED_CWD:"+expectedProfile.GmBridgeShellWorkingDirectory),"Fresh child did not consume installed configured argv/cwd.");
+            evidence["FreshChildProfileOutput"]=output;
+        }
         var staleCancel=await Post("/api/saves/load-cancel",new BrowserLoadCompletionRequest(request.OperationId!,loaded.EstablishedGeneration,false));
         Require(staleCancel.ContinuationBlocked && ReferenceEquals(terminal,type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)),"Stale cancel stopped a later epoch.");
         evidence["FreshEpoch"]=next.Identity;evidence["TwoFreshInputsOneProcess"]=true;evidence["ProfilePreserved"]=true;

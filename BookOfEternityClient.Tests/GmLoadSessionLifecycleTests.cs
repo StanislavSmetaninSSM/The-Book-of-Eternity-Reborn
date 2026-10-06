@@ -23,9 +23,10 @@ public sealed class GmLoadSessionLifecycleTests
     [Theory]
     [InlineData("restart-reply-loss")]
     [InlineData("generation-race")]
-    [InlineData("load-reply-loss")]
     [InlineData("cancel-after-decision")]
     public Task BrowserHttp_OriginalRestartFaults(string fault)=>ProductionMainLinuxFixture.RunAsync("production-main-load-http-fault-"+fault);
+    [Fact]
+    public Task BrowserHttp_LostLoadReplyNeverStartsFresh()=>ProductionMainLinuxFixture.RunAsync("production-main-load-http-fault-load-reply-loss");
     [Theory]
     [InlineData("rollback")]
     [InlineData("uncertain")]
