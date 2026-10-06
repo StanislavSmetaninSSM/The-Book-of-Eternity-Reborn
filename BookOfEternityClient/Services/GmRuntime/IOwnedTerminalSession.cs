@@ -14,6 +14,7 @@ internal interface IOwnedTerminalSession : IAsyncDisposable
     Stream InputWriter { get; }
     Stream OutputReader { get; }
     Task<TerminalRootExit> RootExited { get; }
+    Task<string> AuthorityLost { get; }
     ValueTask ResizeAsync(TerminalSize size, CancellationToken waitToken);
     Task<TerminalStopEvidence> StopAndObserveAsync(CancellationToken waitToken);
 }

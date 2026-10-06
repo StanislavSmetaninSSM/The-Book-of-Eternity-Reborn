@@ -13,6 +13,8 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
 {
     private readonly bool _terminalMode;
     private Task? _terminalIoSettlement;
+    private readonly TaskCompletionSource<string> _authorityLost = new(TaskCreationOptions.RunContinuationsAsynchronously);
+    internal Task<string> AuthorityLost => _authorityLost.Task;
     internal string? Uncertainty { get { lock(_stateGate)return _uncertainty; } }
     internal void RegisterTerminalSettlement(Task task) {
         lock(_stateGate) { if(!_terminalMode || _terminalIoSettlement!=null)throw new InvalidOperationException("Terminal settlement already bound."); _terminalIoSettlement=task; }
@@ -178,6 +180,7 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
     {
         _durable?.CloseForUncertainty();
         lock (_stateGate) _uncertainty ??= reason;
+        _authorityLost.TrySetResult(reason);
         _ready.TrySetException(new InvalidDataException("Native supervisor authority became uncertain."));
         _startedHost.TrySetException(new InvalidDataException("Native supervisor authority became uncertain."));
     }

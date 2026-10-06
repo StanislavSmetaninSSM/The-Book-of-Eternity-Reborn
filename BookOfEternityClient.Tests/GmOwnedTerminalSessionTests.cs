@@ -50,6 +50,7 @@ public sealed class GmOwnedTerminalSessionTests
         public TerminalIdentity Identity { get; } = new(Guid.NewGuid().ToString("N"), "controlled-owner", "fixture-only", 1);
         public Stream InputWriter { get; } = new MemoryStream();
         public Stream OutputReader { get; } = new MemoryStream();
+        public Task<string> AuthorityLost { get; } = new TaskCompletionSource<string>().Task;
         public Task<TerminalRootExit> RootExited { get; } = new TaskCompletionSource<TerminalRootExit>().Task;
         public TaskCompletionSource Entered { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public TaskCompletionSource Release { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);

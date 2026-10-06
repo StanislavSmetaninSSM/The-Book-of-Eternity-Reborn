@@ -10,6 +10,7 @@ internal sealed class LinuxPtyStream : Stream
     private readonly SafeFileHandle _fd;
     private readonly bool _write;
     private readonly Action<string> _fault;
+    private readonly Func<bool> _authority;
     private readonly object _state = new();
     private int _active;
     private bool _sealed;
@@ -19,10 +20,10 @@ internal sealed class LinuxPtyStream : Stream
     internal Task Settlement => ObserveSettlementAsync();
     private async Task ObserveSettlementAsync() { if(!_write)await _eof.Task; Task idle;lock(_state)idle=_idle.Task;await idle; }
     internal void SealInput() { lock(_state) _sealed=true; }
-    private void Enter() { lock(_state) { if(_sealed && (_write || !_eof.Task.IsCompleted))throw new IOException("PTY operation admission closed."); if(_active++==0)_idle=new(TaskCreationOptions.RunContinuationsAsynchronously); } }
+    private void Enter() { lock(_state) { if((_write && !_authority()) || (_sealed && (_write || !_eof.Task.IsCompleted)))throw new IOException("PTY operation admission closed."); if(_active++==0)_idle=new(TaskCreationOptions.RunContinuationsAsynchronously); } }
     private void Leave() { lock(_state) { if(--_active==0)_idle.TrySetResult(); } }
     private readonly SemaphoreSlim _gate = new(1);
-    internal LinuxPtyStream(SafeFileHandle fd, bool write, Action<string> fault) { _fd = fd; _write = write; _fault = fault; }
+    internal LinuxPtyStream(SafeFileHandle fd, bool write, Action<string> fault, Func<bool> authority) { _fd = fd; _write = write; _fault = fault; _authority=authority; }
     public override bool CanRead => !_write;
     public override bool CanWrite => _write;
     public override bool CanSeek => false;
@@ -88,6 +89,7 @@ internal sealed class LinuxPtyStream : Stream
     internal void Resize(TerminalSize size)
     {
         if (size.Columns is < 1 or > 32767 || size.Rows is < 1 or > 32767) throw new ArgumentOutOfRangeException(nameof(size));
+        if(!_authority())throw new IOException("Original terminal authority is uncertain.");
         var w = new WinSize { Columns = (ushort)size.Columns, Rows = (ushort)size.Rows };
         if (Ioctl(_fd, 0x5414, ref w) != 0) { _fault("terminal-resize-fault"); throw new IOException("PTY resize failed."); }
     }

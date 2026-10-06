@@ -121,7 +121,7 @@ internal sealed partial class BridgeHost
 
     private bool PromptStillOwned(PromptOperation op) => !_inputClosed && ReferenceEquals(_inputLifetime, op.Input) &&
         !op.Input.Revoked && !op.Input.Token.IsCancellationRequested && !op.Input.ManualTakeover &&
-        !op.Cancellation.IsCancellationRequested && !_cts.IsCancellationRequested;
+        !op.Cancellation.IsCancellationRequested && !_cts.IsCancellationRequested && _pty?.AuthorityLost.IsCompleted != true;
 
     private async Task<PromptDeliveryResult> RunPromptOperationAsync(PromptOperation operation)
     {
@@ -310,7 +310,7 @@ internal sealed partial class BridgeHost
     private async Task WriteExclusiveInputAsync(InputLifetime input, string text, bool appendEnter, CancellationToken token)
     {
         await _promptGate.WaitAsync(token);
-        try { await WriteToPtyAsync(input, text, appendEnter, token); }
+        try { lock(_sync) { if(input.ManualTakeover && _terminalScreen!=null)input.ManualObservationAfter=PromptObservationVersion; } await WriteToPtyAsync(input, text, appendEnter, token); }
         finally { _promptGate.Release(); }
     }
 }

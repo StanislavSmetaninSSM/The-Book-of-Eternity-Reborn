@@ -175,6 +175,7 @@ internal static class OwnedTerminalScenarioDriver
                 Require(Disposition(await queued)=="queued-cancelled","Real pipe manual takeover failed."); result["TakeoverViaPipe"]=true;
             } finally { gate.Release(); }
             await manual!;
+            for(var i=0;i<100;i++) { var view=(await Rpc(new {command="diagnostics"})).GetProperty("diagnostics").GetProperty("visibleScreenText").GetString();if(view?.Contains("> m",StringComparison.Ordinal)==true)break;await Task.Delay(5); }
             Require(!(await Rpc(new { command="setReady", ready=true })).GetProperty("ok").GetBoolean(),"Manual takeover draft was discarded.");
             await Rpc(new { command="resize", columns=93, rows=31 });
             result["ActualResizeViaPipe"]=true;

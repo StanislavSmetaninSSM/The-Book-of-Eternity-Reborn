@@ -18,6 +18,7 @@ internal sealed class ConPtySession : IDisposable, IOwnedTerminalSession
     public bool HasExited => _process?.HasExited ?? true;
     public int? ExitCode => _process is { HasExited: true } ? _process.ExitCode : null;
     public TerminalIdentity Identity { get; }
+    public Task<string> AuthorityLost { get; } = new TaskCompletionSource<string>().Task;
     public Task<TerminalRootExit> RootExited { get; }
     public ValueTask ResizeAsync(TerminalSize size, CancellationToken waitToken)
     {

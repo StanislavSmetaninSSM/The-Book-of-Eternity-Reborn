@@ -15,6 +15,7 @@ internal sealed class LinuxOwnedTerminalSession : IOwnedTerminalSession
     public TerminalIdentity Identity { get; }
     public Stream InputWriter { get; }
     public Stream OutputReader { get; }
+    public Task<string> AuthorityLost => _owner.AuthorityLost;
     public Task<TerminalRootExit> RootExited { get; }
     internal LinuxOwnedTerminalSession(NativeLineageOwner owner)
     {
@@ -25,8 +26,8 @@ internal sealed class LinuxOwnedTerminalSession : IOwnedTerminalSession
         try
         {
             output = Duplicate(master);
-            InputWriter = new LinuxPtyStream(input, true, owner.ReportTerminalFault);
-            OutputReader = new LinuxPtyStream(output, false, owner.ReportTerminalFault);
+            InputWriter = new LinuxPtyStream(input, true, owner.ReportTerminalFault, () => owner.Uncertainty == null);
+            OutputReader = new LinuxPtyStream(output, false, owner.ReportTerminalFault, () => owner.Uncertainty == null);
             RootExited = ObserveRootAsync(owner);
             owner.RegisterTerminalSettlement(ObserveIoSettlementAsync());
         }

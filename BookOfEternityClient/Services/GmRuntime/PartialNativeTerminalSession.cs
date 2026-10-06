@@ -9,6 +9,7 @@ internal sealed class PartialNativeTerminalSession(NativeLineageOwner owner) : I
     public TerminalIdentity Identity { get; } = new(owner.Identity.RunId,"native-lineage",owner.Identity.Guarantee,owner.AdmittedHostProcessId??0);
     public Stream InputWriter => Stream.Null;
     public Stream OutputReader => Stream.Null;
+    public Task<string> AuthorityLost => owner.AuthorityLost;
     public Task<TerminalRootExit> RootExited { get; } = Task.FromResult(new TerminalRootExit(null));
     public ValueTask ResizeAsync(TerminalSize size,CancellationToken token) => throw new InvalidOperationException("Partial original terminal has no resize admission.");
     public async Task<TerminalStopEvidence> StopAndObserveAsync(CancellationToken token)

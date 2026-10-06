@@ -122,6 +122,7 @@ internal sealed partial class BridgeHost : IDisposable
     {
         public string Id { get; } = Guid.NewGuid().ToString("N");
         public bool ManualTakeover;
+        public long ManualObservationAfter = -1;
         public CancellationTokenSource? BootstrapCancellation;
         public readonly List<Task> PromptTasks = new();
         public Stream Input { get; } = input;
@@ -147,10 +148,11 @@ internal sealed partial class BridgeHost : IDisposable
     private TerminalViewObservation CaptureTerminalView()
     {
         lock (_sync) { var view = _terminalScreen?.Capture() ?? new("", 0, "", false);
-            return view with { Reliable = view.Reliable && !_terminalUncertain && _inputLifetime is { Revoked: false } input && input.Id == view.BindingId }; }
+            return view with { Reliable = view.Reliable && !_terminalUncertain && _pty?.AuthorityLost.IsCompleted != true && _inputLifetime is { Revoked: false } input && input.Id == view.BindingId }; }
     }
     private Stream? _ptyInput;
     private Task? _outputPumpTask;
+    private Task? _terminalAuthorityTask;
     private Task? _keyboardPumpTask;
     private Task? _resizePumpTask;
     private CancellationTokenSource? _shellLoopCts;
@@ -246,21 +248,24 @@ internal sealed partial class BridgeHost : IDisposable
     {
         var peers = new List<Task>();
         using var capacity = new SemaphoreSlim(16, 16);
+        NamedPipeServerStream NewListener() => new(_pipeName,PipeDirection.InOut,NamedPipeServerStream.MaxAllowedServerInstances,PipeTransmissionMode.Byte,PipeOptions.Asynchronous);
+        var listener=NewListener();
         try
         {
             while (!cancellationToken.IsCancellationRequested)
             {
                 await capacity.WaitAsync(cancellationToken);
-                var server = new NamedPipeServerStream(_pipeName, PipeDirection.InOut,
-                    NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+                var server=listener;
                 try { await server.WaitForConnectionAsync(cancellationToken); }
                 catch { server.Dispose(); capacity.Release(); throw; }
+                // Keep the Unix pipe listener alive before a completed handler can dispose its peer.
+                listener=NewListener();
                 peers.RemoveAll(t => t.IsCompleted);
                 peers.Add(ServePeerAsync(server));
             }
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { }
-        finally { await Task.WhenAll(peers); }
+        finally { listener.Dispose(); await Task.WhenAll(peers); }
 
         async Task ServePeerAsync(NamedPipeServerStream server)
         {
@@ -438,10 +443,19 @@ internal sealed partial class BridgeHost : IDisposable
         lock (_sync) { _terminalScreen = new(input.Id); _promptScreenReader = () => { var view=CaptureTerminalView(); return view.Reliable ? view.Text : ""; }; }
         // Output has its own lifetime: revoking input must not discard final terminal bytes.
         _outputPumpTask = Task.Run(async () => { try { await PumpOutputAsync(session.OutputReader, output, CancellationToken.None); } catch { MarkTerminalUncertain(); throw; } });
+        _terminalAuthorityTask = ObserveTerminalAuthorityAsync(session,input);
         _keyboardPumpTask = Task.Run(() => PumpKeyboardAsync(input, ReadConsoleKeyAsync, shellLoopCts.Token));
         _resizePumpTask = Task.Run(() => PumpResizeAsync(shellLoopCts.Token));
-        lock (_sync) { _status.ShellPid = session.Identity.RootPid; _status.Backend = session.Identity.Backend; _status.State = "OperatorNotReady"; WriteStatusFile(); }
+        lock (_sync) { _status.ShellPid = session.Identity.RootPid; _status.Backend = session.Identity.Backend; _status.TerminalRunId=session.Identity.RunId; _status.TerminalGuarantee=session.Identity.Guarantee; _status.State = "OperatorNotReady"; WriteStatusFile(); }
         return input;
+    }
+
+    private async Task ObserveTerminalAuthorityAsync(IOwnedTerminalSession session, InputLifetime input)
+    {
+        try { await session.AuthorityLost.WaitAsync(input.Token); }
+        catch(OperationCanceledException) when(input.Token.IsCancellationRequested) { return; }
+        lock(_sync) { if(!ReferenceEquals(_pty,session)||!ReferenceEquals(_inputLifetime,input))return; MarkTerminalUncertain(); }
+        RevokeInputLifetime(input);
     }
 
     private async Task StopShellAsync()
@@ -490,6 +504,7 @@ internal sealed partial class BridgeHost : IDisposable
             drain = input.DrainTask ??= ObserveManagedDrainAsync(
                 input.WritesDrained?.Task ?? Task.CompletedTask,
                 _keyboardPumpTask ?? Task.CompletedTask,
+                _terminalAuthorityTask ?? Task.CompletedTask,
                 _outputPumpTask ?? Task.CompletedTask,
                 _resizePumpTask ?? Task.CompletedTask,
                 input.CancellationTask,
@@ -518,6 +533,7 @@ internal sealed partial class BridgeHost : IDisposable
                 _inputLifetime = null;
                 _shellLoopCts = null;
                 _keyboardPumpTask = null;
+                _terminalAuthorityTask = null;
                 _outputPumpTask = null;
                 _resizePumpTask = null;
             }
@@ -533,6 +549,7 @@ internal sealed partial class BridgeHost : IDisposable
         lock (_sync)
         {
             _terminalUncertain = true;
+            _status.TerminalUncertain=true;
             _status.Ready = false;
             _status.State = "TerminalUncertain";
             _status.LastError = "Original terminal ownership or I/O settlement is uncertain; replacement remains blocked.";
@@ -629,7 +646,7 @@ internal sealed partial class BridgeHost : IDisposable
         lock (_sync)
         {
             if (ready && (_terminalUncertain || _automaticInputPaused || _admittedPrompts != 0 || _inputLifetime == null ||
-                _inputLifetime.Revoked || !IsEmptyIdleView(LoadBridgeConfig().GmCliInputProfile.Snapshot(), _promptScreenReader())))
+                _inputLifetime.Revoked || (_inputLifetime.ManualTakeover && PromptObservationVersion <= _inputLifetime.ManualObservationAfter) || !IsEmptyIdleView(LoadBridgeConfig().GmCliInputProfile.Snapshot(), _promptScreenReader())))
                 return BridgeResponse.Failure("Fresh empty supported idle view is required; uncertain operations remain paused.", SnapshotStatus());
             if (ready) _inputLifetime!.ManualTakeover = false;
             _status.Ready = ready;
@@ -867,7 +884,7 @@ internal sealed partial class BridgeHost : IDisposable
         var bytes = Encoding.UTF8.GetBytes(appendEnter ? text + "\r" : text);
         lock (_sync)
         {
-            if (_inputClosed || !ReferenceEquals(_inputLifetime, input) || input.Revoked)
+            if (_inputClosed || !ReferenceEquals(_inputLifetime, input) || input.Revoked || _pty?.AuthorityLost.IsCompleted == true)
                 throw new InputLifetimeUnavailableException();
             cancellationToken.ThrowIfCancellationRequested();
             input.Token.ThrowIfCancellationRequested();
@@ -885,7 +902,7 @@ internal sealed partial class BridgeHost : IDisposable
             lock (_sync)
             {
                 linked.Token.ThrowIfCancellationRequested();
-                if (_inputClosed || !ReferenceEquals(_inputLifetime, input) || input.Revoked)
+                if (_inputClosed || !ReferenceEquals(_inputLifetime, input) || input.Revoked || _pty?.AuthorityLost.IsCompleted == true)
                     throw new InputLifetimeUnavailableException();
                 started = true; // Reservation linearizes before revocation; failures after it are uncertain.
             }
@@ -1000,7 +1017,7 @@ internal sealed partial class BridgeHost : IDisposable
                 var key = await keySource(linked.Token);
                 linked.Token.ThrowIfCancellationRequested();
                 lock (_sync)
-                    if (_inputClosed || !ReferenceEquals(_inputLifetime, input) || input.Revoked)
+                    if (_inputClosed || !ReferenceEquals(_inputLifetime, input) || input.Revoked || _pty?.AuthorityLost.IsCompleted == true)
                         return;
                 if (key == null) continue;
                 TakeManualInput(input);
@@ -1748,6 +1765,9 @@ internal sealed class BridgeResponse
 
 internal sealed record BridgeStatus
 {
+    public string? TerminalRunId { get; set; }
+    public string? TerminalGuarantee { get; set; }
+    public bool TerminalUncertain { get; set; }
     public string? InputBindingId { get; set; }
     public PromptDeliveryResult? PromptDelivery { get; set; }
     public string Backend { get; set; } = "ConPTYBridge";
