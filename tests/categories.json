@@ -13154,6 +13154,30 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-restart-crash-launch-linux",
+      "responsibility": "#1553 R3 actual producing-pool abrupt death at Prepared, bound host, Release intent/send/live ACK, original Completed, scoped stop and output-settled record; fresh distinct-task cold admission and independent physical guardian cleanup.",
+      "excludes": "No unchanged R1/R2 cohort replay, publication/retirement cuts, product Linux Release, reconnect, main PTY, live GM, saves, reboot/power-loss or Windows-native qualification.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.RestartFence.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.LaunchCrash_ActualCutNeverReconstructsAuthority"
+          ]
+        }
+      ]
     }
   ]
 }

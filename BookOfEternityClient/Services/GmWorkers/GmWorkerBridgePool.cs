@@ -20,6 +20,7 @@ internal sealed class GmWorkerBridgePoolHooks
     internal Action<GmWorkerProcessHostLaunch>? AfterHostPrepared { get; init; }
     internal Func<Task<int>, Task>? BeforeCompletionArbitrationAsync { get; init; }
     internal Action<GmWorkerProcessCompletionOutcome>? AfterCompletionArbitration { get; init; }
+    internal Action? AfterScopedStop { get; init; }
     internal Func<string, Task>? BeforeWorkspaceFileCreateAsync { get; init; }
     internal Func<string, Task>? BeforeWorkspaceCleanupAsync { get; init; }
     internal Func<string, Task>? AfterQuarantineAuditTempCreatedAsync { get; init; }
@@ -862,6 +863,7 @@ public sealed class GmWorkerBridgePool
             completedExitCode = completionOutcome.ExitCode!.Value;
             executionAuthority!.ObserveCompletion(completedExitCode.Value);
             _ = await executionAuthority.StopForCleanupAsync(ownedLaunch);
+            _hooks?.AfterScopedStop?.Invoke();
             var settled = await executionAuthority.SettleOutputsAsync(ownedLaunch);
             if (durableExecution != null) await durableExecution.ObserveStoppedAsync();
             completedStandardOutput = settled.StandardOutput;

@@ -105,7 +105,7 @@ a claim that current code already satisfies it; runtime fixes still need causal 
 
 ### Execution / acceptance steps
 
-- [ ] Publish this documentation-only matrix, independent actual Sol6.1/xhigh plan PASS.
+- [x] Publish this documentation-only matrix, independent actual Sol6.1/xhigh plan PASS.
 - [ ] A: publish only required scaffold/negative hook, fresh build then run A; classify
   preparation errors separately. On causal RED fix minimally, rerun A and only affected
   accepted consumers justified by the source delta. Capture exact source/commands/counts.
@@ -131,6 +131,18 @@ and workflow1.6 retained. Matrix maps to US4/FR-012/014/015, without changing th
 product contract. Optional analysis commit hook is satisfied by the published plan;
 no new feature/spec/branch initialization. GM-authored payloads and prompts/examples
 remain unchanged in this explicitly injected client-owned qualification.
+
+R3 plan received independent actual **gpt-6.1-sol/xhigh PASS** at
+`1545bf4a8a110fc2605efffad6af0080300a5240`; both plan corrections closed, no remaining
+blocking plan finding. Proceed only cohort A. New unrun eight-case scaffold records
+actual on-disk/live phase, original completion/stop/output evidence and real Release
+frames before `_exit(77)`, then compares a fresh distinct-task cold probe after guardian
+ECHILD. A finite5s test-worker hold separates Released ACK from Completed. Only runtime
+change is the reviewed null-by-default negative AfterScopedStop observer. Existing
+RestartFixture zero-emergency default remains; abrupt seeds explicitly permit and retain
+guardian-owned signals. No behavior fix or GREEN claim before execution. Category
+worker-restart-crash-launch-linux owns8; R3 selection currently contains only that cohort.
+SDK10.0.401/runtime8.0.31/PowerShell7.5.4/GCC14.2.0-19/readelf2.44 rechecked locally.
 
 ## Authorized R2: connected synthetic lifecycle — 2026-10-06
 

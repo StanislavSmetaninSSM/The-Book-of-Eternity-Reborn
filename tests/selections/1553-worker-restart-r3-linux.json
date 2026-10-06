@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "worker-restart-crash-launch-linux",
+      "reason": "R3 cohort A: actual app-loss boundaries not proved by inert R1 or live R2 checks; run one cohort at a time.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R3",
+        "FR-012/014/015"
+      ]
+    }
+  ]
+}

@@ -297,6 +297,8 @@ internal static partial class NativePoolScenarioDriver
     private static async Task<int> Worker(string package, string output, string? descendantMode)
     {
         await File.AppendAllTextAsync(Path.Combine(output, "worker-starts"), "started\n");
+        // Finite test-only hold separates the Released ACK cut from Completed.
+        if (descendantMode == "content-held") await Task.Delay(TimeSpan.FromSeconds(5));
         if (descendantMode == "missing-proposal") return 0;
         if (descendantMode != null && descendantMode != "nonzero" && !descendantMode.StartsWith("content-", StringComparison.Ordinal))
         {

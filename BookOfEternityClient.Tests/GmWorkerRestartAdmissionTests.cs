@@ -61,7 +61,7 @@ public sealed class GmWorkerRestartAdmissionTests
             { driver, driverSha256 = Hash(driver), client, clientSha256 = Hash(client) }));
             return fixture;
         }
-        internal async Task Run(string mode, int expectedExit)
+        internal async Task Run(string mode, int expectedExit, bool allowGuardianCleanup = false)
         {
             var id = (++_runs).ToString("D2");
             var start = new ProcessStartInfo(Path.Combine(Output, "host-guardian"))
@@ -76,7 +76,7 @@ public sealed class GmWorkerRestartAdmissionTests
             using var report = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Output, id + "-guardian.json")));
             Assert.True(report.RootElement.GetProperty("echild").GetBoolean());
             Assert.Equal(0, report.RootElement.GetProperty("failures").GetInt32());
-            Assert.Equal(0, report.RootElement.GetProperty("emergencySignals").GetInt32());
+            if (!allowGuardianCleanup) Assert.Equal(0, report.RootElement.GetProperty("emergencySignals").GetInt32());
             Assert.False(report.RootElement.GetProperty("deadline").GetBoolean());
             Assert.Equal(expectedExit, report.RootElement.GetProperty("driverExitCode").GetInt32());
             Assert.Equal("outside", File.ReadAllText(Path.Combine(Output, "outside.txt")));
