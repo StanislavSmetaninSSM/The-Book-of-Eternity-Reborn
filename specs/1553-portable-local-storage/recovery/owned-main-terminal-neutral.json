@@ -10,7 +10,8 @@
     "Authorization checkpoint before code/tests. Accepted design remains historical; current execution authorization is recorded in spec/plan/tasks.",
     "Preparation missing type/entry/DLL/unavailable factory is not causal RED. Compile-ready consumed seam preserves original StopShell disposal order before actual retirement assertion.",
     "Runtime/tests executed in this implementation so far: 0.",
-    "Compile-ready IOwnedTerminalSession consumed by original _pty/input/output. ConPTY facade retains legacy Dispose; actualStop controlled fixture written first. gm-owned-terminal-session owns the one new assertion. Causal RED not run yet."
+    "Compile-ready IOwnedTerminalSession consumed by original _pty/input/output. ConPTY facade retains legacy Dispose; actualStop controlled fixture written first. gm-owned-terminal-session owns the one new assertion. Causal RED not run yet.",
+    "Preparation failure at8ef8d646: catalog.related requires {id,when}, supplied strings. Runner rejected before build/test;0executions, no causal RED. Corrected structurally at source after comparing parser/working catalog entries."
   ],
   "Cohorts": [],
   "ProductionMainReleaseEnabled": false,

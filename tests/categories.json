@@ -10,9 +10,18 @@
         "BookOfEternityClient/Services/GmRuntime/IOwnedTerminalSession.cs"
       ],
       "related": [
-        "gm-bridge-input-lifetime",
-        "gm-bridge-output-stream",
-        "gm-bridge-prompt-operation"
+        {
+          "id": "gm-bridge-input-lifetime",
+          "when": "Selected only if terminal implementation changes this accepted input/output/view contract."
+        },
+        {
+          "id": "gm-bridge-output-stream",
+          "when": "Selected only if terminal implementation changes this accepted input/output/view contract."
+        },
+        {
+          "id": "gm-bridge-prompt-operation",
+          "when": "Selected only if terminal implementation changes this accepted input/output/view contract."
+        }
       ],
       "requirements": {
         "frontendBuild": false,
