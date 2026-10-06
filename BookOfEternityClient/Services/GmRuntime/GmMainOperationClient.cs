@@ -40,7 +40,7 @@ internal sealed class GmMainOperationClient : IAsyncDisposable
             var active=await reader.ReadAsync<MainOperationReply>(bounded.Token)??throw GmSessionRunPersistence.Invalid();
             if(active!=(grant with{State=MainOperationState.Active}))throw GmSessionRunPersistence.Invalid();
             var client=new GmMainOperationClient(pipe,reader,active);client._readTask=client.ReadRepliesAsync();return client;
-        } catch {pipe.Dispose();throw;}
+        } catch(Exception failure) {failure.Data["ParticipatingAdmissionPhase"]="original-connection";pipe.Dispose();throw;}
     }
     private async Task ReadRepliesAsync()
     {
