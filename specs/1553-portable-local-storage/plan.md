@@ -23,7 +23,12 @@ Sequence: **F1 connected neutral owner/persistence/common filesystem fence**, th
 **F2 actual separate client/daemon operation pins and mutation consumers**, then
 **F3 process-crash/replacement qualification**. F1 is first proposed implementation:
 Prepared before helper creation; held original owner → durable Running → one release;
-input/pin revocation → Stopping → scoped stop + actual I/O/disposal → durable Stopped.
+close new input/pins → durable Stopping → original pin drain/closing → scoped stop
++ actual I/O/disposal → durable Stopped. Shared main-owner guard precedes lifecycle
+and canonical locks and spans quiescent operations, including browser UI guard,
+Load, refresh and refusal/rollback release. Visible Stopped does not bypass a
+publishing owner's pending durability ACK. Notifications do not provide atomic
+cross-process revocation; the persisted transition is its write linearization point.
 Actual clear/load/recovery and held rollback/save writes use the same gate. Release
 filesystem locks before IPC/child/drain waits; lifecycle precedes canonical lease,
 original client pins precede both. Retain terminal epoch outside replaceable state.

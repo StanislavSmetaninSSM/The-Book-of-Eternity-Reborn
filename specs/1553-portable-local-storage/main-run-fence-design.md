@@ -43,14 +43,22 @@ integration boundaries, not a new whole-file correctness audit.
 | Replacement / clear / load | `Core/FileSystemManager.SessionReplacement.cs:24–87`, `LoadReplacement.cs:26–93`; `FileSystemManager.cs:5876–5888`; `Services/SaveLoadService.Loading.cs:176–224` | Lifecycle → replacement lease; generation and members share existing publication. Load callback is **after** acquisition/recovery, hence cannot be the sole gate. Keep typed load outcomes. Main tombstone is not part of the replaceable image. |
 | Live rollback / saves | `Core/GameEngine/GameEngine.TurnLifecycle.cs:332–339`; `GameEngine.SessionAndSnapshots.cs`; `IO/StateDistributor.cs:638–667`; `Services/RealmSegregationAutoRollbackService.cs:199–234`; `SaveLoadService.Creation.cs:251–255,351–365`; `Core/SessionOperationContext.cs:145–163` | Actual restore/delete/report/save/finalization writes use filesystem leases, sometimes an already-held lease. Classify active-run repair separately from quiescent replacement; a pending-turn file is not live owner proof. |
 | Worker composition | `Services/GmWorkers/GmWorkerRootContext.cs:89–135`; `Core/FileSystemManager.WorkerCanonicalFence.cs`; `Core/WorkerRunLedgerPersistence.cs:9–13`; `GmWorkerBridgePool.cs:388–425` | R1–R3 inventory/pins/metadata debt and narrow dispatch/cleanup are separate. Public Linux Release remains closed. Main Stopped never removes worker reservations or grants a worker permit. |
-| Other processes | `BookOfEternityClient/Launcher/bookofeternity.ps1:306–401,642`; `game_master_daemon.ps1:3716,3807–3830,5867–6031,6523–6586`; `Core/GameEngine/GameEngine.MainMenu.cs:3295–3330`, `WebUi/BrowserLoadStateService.cs` | Status discovers an endpoint, not authority. Real launcher/daemon clients, raw script control writes/deletions and both load consumers must participate before production. T042 keeps its original operation body and ambiguous-outcome behavior. |
+| Other processes | `BookOfEternityClient/Launcher/bookofeternity.ps1:306–401,642`; `game_master_daemon.ps1:3716,3807–3830,5867–6031,6523–6586`; `Core/GameEngine/GameEngine.MainMenu.cs:3295–3330` | Status discovers an endpoint, not authority. Real launcher/daemon clients and raw script control writes/deletions must participate before production. T042 keeps its original operation body and ambiguous-outcome behavior. |
+| Actual browser Load | `BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs:55–81` → `BrowserLocalWriteCoordinator.cs:76–136` | The first UI-guard acquisition can recover/write **before** Load; refused/rolled-back guard release takes another recovery lease. Hold quiescent root admission through both, actual Load, and post-load bound menu refresh/finalization. `BrowserLoadStateService` is reconciliation, not this entry. |
 
 ## One record, one original authority
 
 Use the already planned `<BasePath>/.boe_runtime/gm-runs/main.json`; no second
-history log, worker entry, receipt authority or new state envelope. Add a stable
-non-inherited `owner.lock` for the original main coordinator. It is never renamed
-or deleted. The existing canonical lock serializes the single-record CAS; a short
+history log, worker entry, receipt authority or new state envelope. Add stable
+non-inherited `<BasePath>/.boe_runtime/locks/gm-main-owner.lock`, outside the main
+initialization namespace. It is never renamed or deleted. The original coordinator
+holds its exclusive handle through owner lifetime and metadata debt. An unbound
+quiescent consumer must acquire the same original exclusive guard **before**
+lifecycle/canonical locks and retain it through its whole operation; probing then
+unlocking is insufficient. Visible Stopped bytes do not grant quiescence while the
+publishing owner retains an unacknowledged flush/barrier/readback. Same-owner
+quiescent access requires its recorded durable ACK, not merely expected bytes.
+The existing canonical lock serializes the single-record CAS; a short
 in-process coordinator gate freezes transitions, not another durable journal.
 Standalone bounded ordinary-file I/O reuses trusted-local scope/publication
 primitives **below canonical recovery**; main metadata must never recursively call
@@ -61,9 +69,10 @@ qualified adapter refuses admission; this is application-process crash ordering,
 not power-loss/reboot salvage. Metadata retry repeats only that same frozen write,
 never launch, input, stop signal or an unknown command.
 
-Missing means a verified absent entire main namespace under the canonical lease.
-Only its original successful creator may bootstrap epoch1. Once `owner.lock` or
-any namespace evidence exists, missing/truncated/unreadable `main.json` is blocked,
+Missing means a verified absent entire `gm-runs` namespace under the original guard
+and canonical lease. Only its original successful creator may bootstrap epoch1.
+The external stable lock alone is not an initialized main namespace. Once any
+`gm-runs` namespace evidence exists, missing/truncated/unreadable `main.json` is blocked,
 including an initialization crash. The same live creator can retry its exact
 pending bytes; a cold reader cannot guess freshness. A valid Stopped tombstone is
 retained forever in this stage; next run uses epoch+1/new RunId, overflow blocks.
@@ -75,6 +84,8 @@ trusted platform startup reader (failure refuses, no guessed reboot evidence).
 For Linux the planned reader is bounded `/proc/sys/kernel/random/boot_id`;
 Windows identity/durability execution remains a later native qualification.
 `LinuxSupervisor` remains the schema1 platform family, **not** a systemd guarantee.
+Held factories consume the coordinator-allocated RunId; native bootstrap and
+terminal stop/status retain that same run, not a second internally generated ID.
 Live binding also retains exact `TerminalIdentity` backend/scope and the actual
 session object; neither is reconstructed from JSON. Systemd adapts this binding
 in its separate required backend stage; no manager is installed here.
@@ -90,15 +101,20 @@ automatic command retry is implemented.
 
 ## Launch, stop, restart and lock order
 
-Lifetime `owner.lock` is acquired before coordinator use and retained through any
-uncertainty or metadata debt. It is not acquired opportunistically under a held
-canonical lease. Routine order: obtain an original active operation pin **before**
-filesystem locks; when needed take session-lifecycle → canonical-write → short
+The lifetime main-owner guard is acquired before coordinator use and retained
+through any uncertainty or metadata debt. It is not acquired opportunistically
+under a held canonical lease. Routine order: obtain the original active operation
+pin **or** the original quiescent guard before filesystem locks; when needed take
+session-lifecycle → canonical-write → short
 main transition gate. Existing worker journal/purpose checks stay in their accepted
 order below the canonical lease; no worker path waits for a main lock while holding
 its journal. Release short gates/canonical lease before supervisor or bridge IPC,
 pipe waits, child waits, terminal disposal or pin-drain waits. Lifecycle may span
 owned start/stop to serialize replacement, but no pin is awaited while holding it.
+Thread the original guard through lifecycle-first APIs and ambient/nested helpers;
+never reacquire it while holding lifecycle/canonical. Browser replacement retains
+one guard through initial UI lock, Load, generation-bound refresh/finalization and
+exact refused/rolled-back UI lock release. It must not unlock between these helpers.
 
 1. **Launch:** close input/automatic readiness; acquire original main coordinator;
    under lifecycle+canonical compose quiescent main, independent worker admission,
@@ -111,11 +127,21 @@ owned start/stop to serialize replacement, but no pin is awaited while holding i
    capability for A1/ResumeThread, never retry it. Attach actual InputLifetime/output/
    T042 to that original session; only after release is confirmed may live pins and
    input open. Loss/partial start retains original cleanup authority and closes admission.
+   Revalidate original held state/AuthorityLost immediately before release, including
+   after exact metadata retry: `native/linux/boe-lineage-supervisor.c:228–229,321`
+   expires held bootstrap after5000ms. A late Running ACK cannot revive that owner.
 2. **Stop:** close new pins and revoke the exact T042/input binding immediately.
-   Drain admitted client mutations before taking lifecycle; unresolved drain blocks
-   retirement but does not prevent independent original scope cleanup. Under
-   lifecycle+metadata-only canonical lease publish Stopping (or persist Uncertain
-   if already uncertain). Release canonical/short gate; stop via the same session,
+   Under a short metadata-only canonical lease publish Stopping (or Uncertain
+   if already uncertain) **before pin drain**; the original main-owner guard and
+   coordinator serialize this initial transition, without taking lifecycle yet.
+   This durable publication is the cross-process ordinary-write revocation point.
+   An earlier held lease may settle its current decision before that boundary;
+   delayed pipe notifications cannot authorize a later lease after it.
+   Release canonical/short gate, drain admitted pins, then take lifecycle for
+   original terminal retirement. Wait for neither pins nor IPC under filesystem
+   locks. Unresolved record publication/drain blocks retirement; independent
+   original scope cleanup can still run without any canonical authority.
+   Stop via the same session,
    join actual input/output/root/resize tasks and terminal disposal. TerminalStopEvidence
    alone is insufficient: require exact identity, scoped empty, complete cleanup,
    no retained/lost authority and no late I/O/disposal uncertainty. Then under the
@@ -135,6 +161,15 @@ The metadata-only lease can read the exact generation/main record and publish on
 main metadata; it cannot recover, mutate canonical members, alter generation or
 borrow a worker cleanup purpose. It can record this main owner's stop even when a
 separate worker is unresolved; that never makes the overall root quiescent.
+An original-pin **closing lease** after persisted Stopping is distinct: bounded
+no-recovery read of its exact root/run/generation for SessionOperationContext closing,
+not an ActiveRunMutation grant. It cannot perform new writes, generic recovery or
+invent/replace generation. Settle an already-linearized storage decision under its
+original still-held lease before the revocation boundary; preserve Committed,
+RolledBack, Uncertain and cleanup-debt classifications. After lease disposal, closing
+reports that result/failure without repeating effects. Unresolved storage debt stays
+an independent root condition. Local cancellation must not abort required settlement
+and manufacture a pin that can never close; unknown completion still refuses drain.
 
 ## Actual mutation admission, including separate client processes
 
@@ -159,17 +194,31 @@ bounded begin/finish operation-pin exchange. The live owner mints an opaque pin 
 an original control connection; capability factories are internal and bind the
 returned full identity plus original connection. Request fields and a status-file
 pipe name alone do not mint it. Acquire this pin before filesystem locks; no RPC
-while holding a canonical/worker journal lock. The client checks pin revocation,
-exact persisted Running bytes and generation at pre-recovery and held writes,
-holds the pin through publication **and SessionOperationContext finalization**,
-then finishes after lease disposal. Stop closes admission and waits for every
-admitted pin's confirmed completion; response loss/disconnect/timeout retains an
-unresolved pin and closes both sides, never silently releases it or infers completion
-from client PID/EOF. An in-flight atomic storage decision retains its established
-typed outcome; missing pin ACK cannot turn it into a replayable operation.
+while holding a canonical/worker journal lock. The client checks exact persisted
+Running bytes and generation at pre-recovery and held writes; notifications are
+only an acceleration of closure, not atomic cross-process permission. The pin
+spans publication **and SessionOperationContext finalization**. Stop first commits
+Stopping under the canonical lock, so a later ordinary lease refuses even with
+delayed notification. The narrow closing lease above lets the original pin finish.
 
-Revocation stops new effects, while an already linearized mutation is allowed to
-settle its current decision; stop cannot claim quiescence until it settles. These
+F2 must implement a bounded typed state machine: owner PreparedGrant → Active →
+Closing → ClosedObserved, with Unresolved on lost authority before observed close.
+Client Active → Closing → **irreversibly locally closed** after operation,
+finalization and every lease disposal, then sends one immutable terminal close frame
+on the original connection (pin/run identity, typed outcome/closing failure). Owner
+retires the pin only on receipt/validation of that exact frame, not on WriteAsync
+success or sending its reply. Loss **before owner receipt** retains Unresolved and
+blocks drain; loss **after receipt** leaves client continuation failure while owner
+already knows no more effects are possible. Querying that original close identity
+may report existing state; it never repeats the game operation or revives the local
+capability. There is no mutually acknowledged last message or cold exactly-once
+claim. Bound concurrent pins at32 per root, one active per original connection;
+unknown/evicted status refuses continuation. This is a controlled technical budget,
+not final live-client UX. PID/EOF/client exit never substitutes for the close frame.
+
+Revocation of ordinary writes linearizes at the persisted transition; an earlier
+held lease settles its decision before it. Stop cannot claim quiescence until every
+original pin is ClosedObserved. These
 pins coordinate cooperating callers, not hostile clients. Daemon terminal input
 uses its actual T042 dispatch binding; daemon canonical control writes/deletions
 must use the same participating C# mutation adapter/pin, not add a PowerShell lock
@@ -190,6 +239,9 @@ adapter, existing BridgeHost start/input/stop and root/lease boundaries. Add int
 consuming schema1, exact source transitions and actual original terminal, not a new
 ledger. Isolated fixture root must contain its own `game_session` under fresh BasePath;
 current neutral scratch must never derive a canonical root from shared `/tmp`/parent.
+Keep that originally admitted fixture root across tested epochs; only its internal
+fixture admission can mint a fresh single-use launch capability for the same fixed
+CLI, rather than reusing a consumed launch or accepting arbitrary paths/commands.
 Use actual FileSystemManager APIs in same-process controlled consumers and a separate
 unbound child reader to prove cold refusal; public launch remains closed.
 
@@ -204,9 +256,11 @@ replacement or a fresh run. No usable game-writing launch is exposed.
 - [ ] GREEN proves Prepared before actual process creation, Running before exact
       A1/Resume boundary, original capability (forged/copied identity denied), two
       inputs same process, input retirement, stop+actual I/O/disposal+Stopped ACK,
-      epoch advancement, retained metadata debt and absorbing uncertainty.
+      epoch advancement, expired held-bootstrap refusal after late metadata ACK,
+      visible-Stopped/pending-ACK refusal and absorbing uncertainty.
 - [ ] Through real lease/writers prove refusal before recovery side effects,
-      held-lease revocation before a new mutation, generation-changing versus
+      held-lease revocation before a new mutation without aborting its already
+      linearized storage decision, generation-changing versus
       in-generation recovery, clear/load/rollback/save boundaries, preserved tombstone,
       separate worker refusal and original narrow cleanup purpose. Fault frozen
       metadata writes/readback, release ACK, late I/O and scoped stop; own guardian
@@ -220,8 +274,10 @@ replacement or a fresh run. No usable game-writing launch is exposed.
 and no-recovery filesystem gate. Implement actual pipe begin/finish/revocation,
 retained unresolved pins, C# client binding through SessionOperationContext and
 real launcher/daemon/QTE/repair/status consumers. RED→GREEN: stop races a held
-client lease, client/response loss, stale run/epoch/generation, finalization/rollback,
-two UI Load entrypoints and raw daemon writes. Inert real PowerShell functions,
+client lease/delayed notification, loss before and after observed close, stale
+run/epoch/generation, no-recovery finalization/rollback, both UI Load entrypoints
+including browser guard acquisition/release/refresh, and raw daemon writes.
+Inert real PowerShell functions,
 controlled processes/screens; no live provider. Same original T042 dispatcher.
 
 **F3 — process-crash and replacement qualification.** Consumes F1/F2 connected

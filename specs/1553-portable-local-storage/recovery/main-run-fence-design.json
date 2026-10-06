@@ -5,7 +5,7 @@
   "BaseCommit": "14888663d608355098cc1a329d97ab61de0e6016",
   "Branch": "codex/1553-load-filesystem",
   "Design": "../main-run-fence-design.md",
-  "Status": "WIP design; independent review pending; no implementation authorized",
+  "Status": "WIP design corrections after independent review; focused readback pending; implementation unauthorized",
   "SourceReferences": [
     {
       "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecord.cs",
@@ -176,6 +176,21 @@
       "Path": "BookOfEternityClient/game_master_daemon.ps1",
       "GitBlob": "e92db3ec014719e3a572a2b5535c59c2552689d6",
       "Sha256": "3621d1a9ccc5d35052935cc3e97e67140e6b67fe1c5cc20d435da23525f0505d"
+    },
+    {
+      "Path": "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs",
+      "GitBlob": "e2cc437859319e87eaae92c1e42bfd6c0605daf3",
+      "Sha256": "8fc2497c82464be33c7877c8f5f6995967255dae6f5c1d09eeb70603098e0058"
+    },
+    {
+      "Path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+      "GitBlob": "231dec61faf3b56e2c1928296587a9106dc45c83",
+      "Sha256": "d30f1844f20f7476f435255f71a44f1a469a8333e98f939bb3ca346169c0de9d"
+    },
+    {
+      "Path": "native/linux/boe-lineage-supervisor.c",
+      "GitBlob": "d9ef317bdf599a2cc761688d53630568f39e0487",
+      "Sha256": "939622a025260f29fec105d2a0dff58f10e9a1f3ded5a6fb9d0866930b9c50ce"
     }
   ],
   "ReuseOnly": [
@@ -236,7 +251,19 @@
   "Review": {
     "Model": "gpt-6.1-sol",
     "ReasoningEffort": "xhigh",
-    "Verdict": "Pending"
+    "Verdict": "Focused correction review pending",
+    "Reviewer": "/root/run_fence_review",
+    "InitialCandidate": "d0a0a954b28e45452789f5eb984912f26a5b4fcd",
+    "InitialVerdict": "Request design corrections before acceptance",
+    "Corrections": [
+      "Quiescent original shared main-owner guard precedes lifecycle/canonical and spans full operation; visible Stopped cannot bypass pending durable ACK.",
+      "Persist Stopping before pin drain; record transition is cross-process revocation point; narrow no-recovery closing lease preserves established decisions and permits finalization.",
+      "Irreversible local pin closure after finalization/lease disposal precedes immutable close frame; owner receipt retires, loss before vs after receipt distinguished; no command replay.",
+      "Actual browser Load/UI guard acquire-release-refresh paths mapped; original held bootstrap expires after5000ms and release revalidates authority."
+    ],
+    "ReviewerExecutedTestsBuildsProbes": 0,
+    "ReviewerWrites": 0,
+    "ImplementationConcern": "When wiring bridge status publication, avoid acquiring filesystem locks under BridgeHost _sync; snapshot under _sync and publish after releasing it."
   },
   "FirstProposedSlice": "T041-RUN-FENCE-F1: connected fixed neutral original owner, existing schema1 main.json persistence and real common filesystem pre-recovery/held-lease gates; no public game-writing launch.",
   "NextSlices": [
