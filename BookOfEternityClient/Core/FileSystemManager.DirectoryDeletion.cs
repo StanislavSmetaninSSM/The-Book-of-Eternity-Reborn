@@ -12,7 +12,7 @@ public partial class FileSystemManager
     {
         VerifyCurrentSessionOperation(lease);
         EnsureSafeCanonicalRelativePath(relativePath);
-        EnsureNoLegacyStorageEvidence();
+        EnsureNoLegacyStorageEvidence(lease);
         // A previous call can commit and retain cleanup debt on this same lease.
         // Resolve it before even empty-tree pruning can remove its scratch parents.
         RecoverTrustedLocalStorage(lease);

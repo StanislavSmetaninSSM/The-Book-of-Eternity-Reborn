@@ -1,3 +1,4 @@
+using BookOfEternityClient.Services.GmRuntime;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 
@@ -153,14 +154,14 @@ public sealed partial class BrowserLocalWriteCoordinator
         try
         {
             return await RunBoundTransactionAsync(
-                writeLease => ExecuteAtomicCoreAsync(
+                async writeLease => CaptureBrowserResult(await ExecuteAtomicCoreAsync(
                     writeLease,
                     request,
                     rollbackPaths,
                     writeOperation,
                     prepareAfterRollback,
                     rollbackCleanupDirectories,
-                    rollbackExternalFileIds));
+                    rollbackExternalFileIds)));
         }
         catch (SessionReplacedException)
         {
@@ -185,14 +186,14 @@ public sealed partial class BrowserLocalWriteCoordinator
 
         try
         {
-            return await ExecuteAtomicCoreAsync(
+            return CaptureBrowserResult(await ExecuteAtomicCoreAsync(
                 writeLease,
                 request,
                 rollbackPaths,
                 writeOperation,
                 prepareAfterRollback,
                 rollbackCleanupDirectories,
-                rollbackExternalFileIds);
+                rollbackExternalFileIds));
         }
         catch (SessionReplacedException)
         {
@@ -207,15 +208,53 @@ public sealed partial class BrowserLocalWriteCoordinator
         return SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, operation);
     }
 
-    internal Task<T> RunBoundTransactionAsync<T>(Func<FileSystemManager.CanonicalWriteLease, Task<T>> operation)
+    private sealed class BrowserDecisionCapture
+    {
+        internal MainOperationOutcome Outcome = MainOperationOutcome.Completed;
+        internal BrowserLocalWriteResult? Result;
+    }
+    private readonly AsyncLocal<BrowserDecisionCapture?> _browserDecision = new();
+    private BrowserLocalWriteResult CaptureBrowserResult(BrowserLocalWriteResult result)
+    {
+        if (_browserDecision.Value is { } captured)
+        {
+            captured.Result = result;
+            captured.Outcome = result.Disposition switch
+            {
+                BrowserPreparedWriteDisposition.Committed => MainOperationOutcome.Committed,
+                BrowserPreparedWriteDisposition.RolledBack => MainOperationOutcome.RolledBack,
+                BrowserPreparedWriteDisposition.Uncertain => MainOperationOutcome.Uncertain,
+                _ => MainOperationOutcome.Failed
+            };
+        }
+        return result;
+    }
+
+    internal async Task<T> RunBoundTransactionAsync<T>(Func<FileSystemManager.CanonicalWriteLease, Task<T>> operation)
     {
         ArgumentNullException.ThrowIfNull(operation);
-        return SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
+        var previous = _browserDecision.Value;
+        var captured = previous ?? new BrowserDecisionCapture();
+        _browserDecision.Value = captured;
+        try
         {
-            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            var generation = _fs.ReadExistingSessionGeneration(writeLease) ?? throw new InvalidDataException("Original transaction generation is missing.");
-            return await SessionOperationContext.RunBoundAsync(_fs, generation, writeLease, () => operation(writeLease));
-        });
+            return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
+            {
+                await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                var generation = _fs.ReadExistingSessionGeneration(writeLease) ?? throw new InvalidDataException("Original transaction generation is missing.");
+                return await SessionOperationContext.RunBoundAsync(_fs, generation, writeLease,
+                    () => operation(writeLease), () => captured.Outcome);
+            }, () => captured.Outcome);
+        }
+        catch (MainOperationContinuationException<T> failure) when (failure.EstablishedResult is BrowserLocalWriteResult)
+        {
+            return (T)(object)((BrowserLocalWriteResult)(object)failure.EstablishedResult!).WithFollowUp();
+        }
+        catch (SessionReplacedException) when (captured.Result != null && typeof(T) == typeof(BrowserLocalWriteResult))
+        {
+            return (T)(object)captured.Result.WithFollowUp();
+        }
+        finally { _browserDecision.Value = previous; }
     }
 
     internal async Task RunBoundTransactionAsync(
@@ -327,9 +366,9 @@ public sealed partial class BrowserLocalWriteCoordinator
                     $"Browser-write отменён до применения изменений: {ex.Message}")
                 : rollbackFailure == null
                 ? BrowserLocalWriteResult.Failed(
-                    $"Browser-write отменён, rollback восстановлен: {ex.Message}")
+                    $"Browser-write отменён, rollback восстановлен: {ex.Message}", BrowserPreparedWriteDisposition.RolledBack)
                 : BrowserLocalWriteResult.Failed(
-                    $"Browser-write отменён; rollback завершён не полностью: {ex.Message}; {rollbackFailure.Message}");
+                    $"Browser-write отменён; rollback завершён не полностью: {ex.Message}; {rollbackFailure.Message}", BrowserPreparedWriteDisposition.Uncertain);
         }
 
         var rollbackEvidenceCleaned = backups == null ||
@@ -348,7 +387,7 @@ public sealed partial class BrowserLocalWriteCoordinator
         return BrowserLocalWriteResult.Completed(
             released && rollbackEvidenceCleaned
                 ? "Browser-write завершён."
-                : "Browser-write завершён; служебная очистка будет повторена после устранения блокирующего файлового доступа.");
+                : "Browser-write завершён; служебная очистка будет повторена после устранения блокирующего файлового доступа.") with { NeedsFollowUp = !released || !rollbackEvidenceCleaned };
     }
 
     private async Task<bool> TryReleaseAsync(
@@ -438,7 +477,21 @@ public sealed record BrowserLocalWriteResult(
 
     public static BrowserLocalWriteResult Blocked(string message) => new(false, true, message);
 
-    public static BrowserLocalWriteResult Failed(string message) => new(false, false, message);
+    public BrowserPreparedWriteDisposition Disposition { get; init; } = Success
+        ? BrowserPreparedWriteDisposition.Committed : BrowserPreparedWriteDisposition.Blocked;
+    public bool NeedsFollowUp { get; init; }
+    public bool ContinuationBlocked { get; init; }
+
+    public static BrowserLocalWriteResult Failed(string message,
+        BrowserPreparedWriteDisposition disposition = BrowserPreparedWriteDisposition.Blocked) => new(false, false, message)
+        { Disposition = disposition, NeedsFollowUp = disposition == BrowserPreparedWriteDisposition.Uncertain,
+          ContinuationBlocked = disposition == BrowserPreparedWriteDisposition.Uncertain };
+
+    internal BrowserLocalWriteResult WithFollowUp() => this with
+    {
+        NeedsFollowUp = true, ContinuationBlocked = true,
+        Message = Message + " Продолжение не подтверждено; требуется проверка текущего состояния. Не повторяйте неизвестную операцию."
+    };
 }
 
 public sealed record BrowserLocalWriteStatus(

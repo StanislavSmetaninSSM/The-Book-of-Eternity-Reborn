@@ -29,6 +29,27 @@ internal sealed class BrowserLocalStorageAccess(FileSystemManager files,
 
 public partial class FileSystemManager
 {
+    internal IReadOnlyList<string> ListBrowserStorageEvidence(CanonicalWriteLease lease)
+    {
+        EnsureCanonicalWriteLeaseActive(lease);
+        VerifyCurrentSessionOperation(lease);
+        return EnumerateLocalTreeFiles(new TrustedLocalFileScope([GameSessionPath]), ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root))
+            .Select(path => GetLocalRelativePath(GameSessionPath, path, false)).ToArray();
+    }
+
+    internal byte[]? ReadBrowserStorageEvidence(CanonicalWriteLease lease, string relativePath)
+    {
+        EnsureCanonicalWriteLeaseActive(lease);
+        VerifyCurrentSessionOperation(lease);
+        var scope = new TrustedLocalFileScope([GameSessionPath]);
+        var path = scope.ValidateFile(ResolvePath(relativePath));
+        if (!File.Exists(path)) return null;
+        var bytes = File.ReadAllBytes(path);
+        scope.ValidateFile(path, allowMissing: false);
+        VerifyCurrentSessionOperation(lease);
+        return bytes;
+    }
+
     internal BrowserLocalStorageAccess BeginBrowserLocalStorage(CanonicalWriteLease lease, string root, string generation)
     {
         EnsureCanonicalWriteLeaseActive(lease);

@@ -56,14 +56,16 @@ internal static class SessionOperationContext
         FileSystemManager fileSystem,
         string expectedGeneration,
         FileSystemManager.CanonicalWriteLease writeLease,
-        Func<Task<T>> operation)
+        Func<Task<T>> operation,
+        Func<MainOperationOutcome>? establishedOutcome = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         return await RunBoundCoreAsync(
             fileSystem,
             expectedGeneration,
             operation,
-            writeLease);
+            writeLease,
+            establishedOutcome);
     }
 
     /// <summary>

@@ -1680,6 +1680,11 @@ public partial class FileSystemManager
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         EnsureSafeCanonicalRelativePath(relativePath);
+        if (OperatingSystem.IsLinux() && writeLease.BrowserLocalAccess != null)
+        {
+            DeleteTrustedLocalDirectoryTreeAsync(writeLease, relativePath).GetAwaiter().GetResult();
+            return;
+        }
         var fullPath = ResolvePath(relativePath);
         InvokeBeforeCanonicalMutationBoundaryAsync(relativePath).GetAwaiter().GetResult();
         using var parentAuthority = EnsureStableCanonicalParent(
@@ -3718,10 +3723,29 @@ public partial class FileSystemManager
                 workerContext?.ValidateCanonical(this, writeLease);
                 workerContext?.ValidateBeforeRecovery();
                 writeLease.WorkerRootPin = workerContext?.PinCanonical();
-                if(purpose==CanonicalWritePurpose.SessionFinalization && writeLease.MainAdmission!.Closing) {
+                if(purpose==CanonicalWritePurpose.SessionFinalization && (writeLease.MainAdmission!.Closing || writeLease.MainAdmission.BoundClosing)) {
                     writeLease.MainAdmission.Validate(writeLease);return writeLease;
                 }
                 EnsureMainBeforeRecovery(writeLease);
+                if (OperatingSystem.IsLinux())
+                {
+                    EnsureNoLegacyStorageEvidence(allowPortableBrowser: true);
+                    ExplorerLocalTurnRollbackArtifacts.PreflightLocalBrowserEvidence(this, writeLease);
+                    try
+                    {
+                        // A pending member/manifest publication must settle before browser rollback.
+                        RecoverTrustedLocalStorage(writeLease);
+                        if (purpose is CanonicalWritePurpose.SessionMutation or CanonicalWritePurpose.SessionReplacement)
+                            await ExplorerLocalTurnRollbackArtifacts.RecoverLocalBrowserEvidenceAsync(this, writeLease);
+                    }
+                    catch (Exception failure) when (purpose == CanonicalWritePurpose.SessionReplacement)
+                    {
+                        throw new CoordinatedStatePublicationUncertainException(failure);
+                    }
+                    EnsureNoLegacyStorageEvidence();
+                }
+                else
+                {
                 if (!OperatingSystem.IsWindows()) EnsureNoLegacyStorageEvidence();
                 await RunLegacyStorageRecoveryAsync(writeLease, async () =>
                 {
@@ -3743,6 +3767,7 @@ public partial class FileSystemManager
                 {
                     // Recovery reached retained decision evidence; an admission refusal is not a safe retry.
                     throw new CoordinatedStatePublicationUncertainException(failure);
+                }
                 }
                 if (purpose == CanonicalWritePurpose.SessionMutation)
                     EnsureBoundSessionOperationCanWrite(writeLease);

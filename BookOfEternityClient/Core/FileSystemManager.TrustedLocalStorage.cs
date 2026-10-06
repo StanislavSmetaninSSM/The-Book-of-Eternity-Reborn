@@ -38,11 +38,22 @@ public partial class FileSystemManager
         return Directory.EnumerateFileSystemEntries(root).Any();
     }
 
-    private void EnsureNoLegacyStorageEvidence()
+    private void EnsureNoLegacyStorageEvidence(CanonicalWriteLease? ownedBrowser = null, bool allowPortableBrowser = false)
     {
         foreach (var root in LegacyStorageRoots)
-            if (HasStorageEvidence(root))
-                throw new InvalidDataException("Unresolved legacy storage evidence requires its original supported recovery handler: " + root);
+        {
+            if (!HasStorageEvidence(root)) continue;
+            if (OperatingSystem.IsLinux() && root == ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root))
+            {
+                if (allowPortableBrowser) continue; // The original handler preflights schema7 before any recovery.
+                if (ownedBrowser?.BrowserLocalAccess is { } access)
+                {
+                    access.Validate();
+                    if (ListBrowserStorageEvidence(ownedBrowser).All(path => access.OwnsArtifact(path))) continue;
+                }
+            }
+            throw new InvalidDataException("Unresolved legacy storage evidence requires its original supported recovery handler: " + root);
+        }
     }
 
     internal bool UsesTrustedLocalWriter(CanonicalWriteLease lease, string relativePath)

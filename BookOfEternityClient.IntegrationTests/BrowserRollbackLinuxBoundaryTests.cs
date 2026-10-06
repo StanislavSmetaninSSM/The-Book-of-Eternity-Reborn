@@ -99,6 +99,9 @@ public sealed partial class BrowserRollbackLinuxBoundaryTests(ITestOutputHelper 
             : await coordinator.ExecuteAtomicAsync(Request, [Member], Write);
         output.WriteLine(result.Message);
         Assert.Equal(decision == "commit", result.Success);
+        Assert.Equal(decision == "commit" ? BrowserPreparedWriteDisposition.Committed : decision == "rollback"
+            ? BrowserPreparedWriteDisposition.RolledBack : BrowserPreparedWriteDisposition.Uncertain, result.Disposition);
+        Assert.True(result.NeedsFollowUp); Assert.True(result.ContinuationBlocked);
         Assert.Equal(decision == "rollback" ? Before : decision == "commit" ? After : new byte[] { 111, 0 }, File.ReadAllBytes(files.ResolvePath(Member)));
         Assert.Contains("подтверж", result.Message, StringComparison.OrdinalIgnoreCase);
     }
