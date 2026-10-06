@@ -286,6 +286,7 @@ static void launch(char **argv) {
         sigset_t mask; sigemptyset(&mask); if (sigprocmask(SIG_SETMASK, &mask, NULL)) child_error(error[1], errno);
         if (terminal_v1) {
             close(terminal_master); close(bootstrap_fd);
+            close(STDIN_FILENO); close(STDOUT_FILENO); close(STDERR_FILENO);
         } else {
             int null = open("/dev/null", O_RDONLY | O_CLOEXEC);
             if (null < 0 || dup2(null, STDIN_FILENO) < 0) child_error(error[1], errno);

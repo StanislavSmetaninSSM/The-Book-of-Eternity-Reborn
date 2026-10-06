@@ -25,9 +25,10 @@ internal static class Program
 
         try
         {
-            using var host = new BridgeHost(sessionPath, pipeName);
             var neutral = Array.IndexOf(args, "--neutralPackage");
-            if (neutral >= 0 && neutral + 1 < args.Length) host.ConfigureNeutral(args[neutral + 1]);
+            var launch = neutral >= 0 && neutral+1<args.Length ? NeutralTerminalLaunch.Create(args[neutral+1],Path.GetTempPath()) : null;
+            using var host = new BridgeHost(launch?.Scratch ?? sessionPath, pipeName);
+            if(launch!=null)host.ConfigureNeutral(launch);
             return await host.RunAsync();
         }
         catch (Exception ex)
@@ -106,8 +107,11 @@ internal sealed partial class BridgeHost : IDisposable
     private readonly object _sync = new();
     private readonly SemaphoreSlim _ptyWriteLock = new(1, 1);
     private readonly SemaphoreSlim _shellLifecycleLock = new(1, 1);
-    private string? _neutralPackage;
-    internal void ConfigureNeutral(string package) => _neutralPackage = Path.GetFullPath(package);
+    private NeutralTerminalLaunch? _neutralLaunch;
+    internal void ConfigureNeutral(NeutralTerminalLaunch launch) {
+        if(_sessionPath!=launch.Scratch)throw new InvalidOperationException("Neutral host requires its fresh admitted scratch."); _neutralLaunch=launch;
+        File.WriteAllText(_configPath, JsonSerializer.Serialize(new { GmCliInputProfile = new { IdleMarker="NEUTRAL READY", PromptPrefix="> ", WorkingMarker="NEUTRAL WORKING", ObservationTimeoutMilliseconds=1500 } }));
+    }
     private InputLifetime? _inputLifetime;
     private bool _inputClosed;
     private bool _writeGateDisposed;
@@ -187,7 +191,7 @@ internal sealed partial class BridgeHost : IDisposable
         UpdateConsoleTitle();
         PrintBanner();
 
-        await StartShellAsync();
+        try { await StartShellAsync(); } catch(OwnedTerminalStartException) { /* Original owner retained; keep diagnostics/control alive. */ }
         var serverTask = RunServerLoopAsync(_cts.Token);
 
         try
@@ -376,8 +380,10 @@ internal sealed partial class BridgeHost : IDisposable
                 ObjectDisposedException.ThrowIf(_inputClosed, this);
             await StopShellCoreAsync();
 
-            if (_neutralPackage != null) {
-                var neutralSession = await OwnedTerminalSessionFactory.StartNeutralAsync(_neutralPackage, _sessionPath, _cts.Token);
+            if (_neutralLaunch != null) {
+                IOwnedTerminalSession neutralSession;
+                try { neutralSession=await OwnedTerminalSessionFactory.StartNeutralAsync(_neutralLaunch, _cts.Token); }
+                catch(OwnedTerminalStartException ex) { AttachOwnedTerminal(ex.Owner,Console.OpenStandardOutput()); MarkTerminalUncertain(); throw; }
                 AttachOwnedTerminal(neutralSession, Console.OpenStandardOutput());
                 return;
             }
@@ -474,7 +480,7 @@ internal sealed partial class BridgeHost : IDisposable
         }
         if (input == null)
         {
-            if (pty != null) await RetireTerminalHandlesAsync(pty);
+            if(pty!=null) { await Task.WhenAll(_outputPumpTask??Task.CompletedTask,_resizePumpTask??Task.CompletedTask).WaitAsync(InputDrainTimeout); await RetireTerminalHandlesAsync(pty); }
             return;
         }
 

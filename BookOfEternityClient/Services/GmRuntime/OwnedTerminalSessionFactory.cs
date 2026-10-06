@@ -7,8 +7,9 @@ namespace BookOfEternityClient.Services.GmRuntime;
 
 internal static class OwnedTerminalSessionFactory
 {
-    internal static async Task<IOwnedTerminalSession> StartNeutralAsync(string package, string scratch, CancellationToken token, Action<int>? observeHeldRoot = null)
+    internal static async Task<IOwnedTerminalSession> StartNeutralAsync(NeutralTerminalLaunch launch, CancellationToken token, Action<int>? observeHeldRoot = null)
     {
+        var package=launch.Package; var scratch=launch.Scratch;
         var supervisor = GmWorkerNativePackage.Validate(package);
         var manifest = Path.Combine(package, "neutral-terminal-manifest.json");
         if (new FileInfo(manifest).Length > 8192) throw new InvalidDataException("Neutral fixture manifest exceeds bound.");
@@ -21,8 +22,17 @@ internal static class OwnedTerminalSessionFactory
         using (var f = File.OpenRead(cli))
             if (Convert.ToHexString(SHA256.HashData(f)).ToLowerInvariant() != r.GetProperty("binarySha256").GetString()) throw new InvalidDataException("Neutral fixture binary mismatch.");
         var start = new ProcessStartInfo(cli) { WorkingDirectory = Path.GetFullPath(scratch), UseShellExecute = false };
-        var owner = await NativeLineageOwner.StartTerminalAsync(start, supervisor, 80, 25, token, observeHeldRoot);
+        launch.Consume();
+        NativeLineageOwner owner;
+        try { owner = await NativeLineageOwner.StartTerminalAsync(start, supervisor, 80, 25, token, observeHeldRoot); }
+        catch (GmWorkerOwnedLaunchException ex) {
+            owner=(NativeLineageOwner)ex.Owner;
+            IOwnedTerminalSession retained;
+            try { retained=new LinuxOwnedTerminalSession(owner); }
+            catch { retained=new PartialNativeTerminalSession(owner); }
+            throw new OwnedTerminalStartException(retained,ex);
+        }
         try { return new LinuxOwnedTerminalSession(owner); }
-        catch (Exception ex) { throw new GmWorkerOwnedLaunchException("Terminal adapter retains original owner.", owner, ex); }
+        catch (Exception ex) { throw new OwnedTerminalStartException(new PartialNativeTerminalSession(owner),ex); }
     }
 }

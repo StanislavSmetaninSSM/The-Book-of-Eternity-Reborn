@@ -16,7 +16,7 @@ internal static class OwnedTerminalScenarioDriver
         IOwnedTerminalSession? session = null;
         try
         {
-            session = await OwnedTerminalSessionFactory.StartNeutralAsync(package, output, CancellationToken.None,
+            session = await OwnedTerminalSessionFactory.StartNeutralAsync(NeutralTerminalLaunch.Create(package,output), CancellationToken.None,
                 mode == "terminal-gated-fds" ? pid => {
                     var descriptors=Directory.GetFiles($"/proc/{pid}/fd").Select(Path.GetFileName).ToArray();
                     result["HeldRootHasNoHelperChannels"] = !descriptors.Any(d=>d is "0" or "1" or "2");
@@ -71,8 +71,7 @@ internal static class OwnedTerminalScenarioDriver
         catch (Exception ex)
         {
             result["Failure"] = ex.GetType().Name + ": " + ex.Message;
-            if (ex is BookOfEternityClient.Services.GmWorkers.GmWorkerOwnedLaunchException partial)
-                try { result["PartialOwnerCleanup"] = await partial.Owner.StopAndObserveAsync(); } catch { }
+            if(ex is OwnedTerminalStartException partial) try { result["PartialOwnerCleanup"]=await partial.Owner.StopAndObserveAsync(CancellationToken.None); } catch { }
             if (session != null) try { result["Cleanup"] = await session.StopAndObserveAsync(CancellationToken.None); } catch { }
             return 1;
         }
@@ -103,7 +102,8 @@ internal static class OwnedTerminalScenarioDriver
         {
             await File.WriteAllTextAsync(Path.Combine(folder, "config.json"), JsonSerializer.Serialize(new { GmCliInputProfile = new {
                 IdleMarker="NEUTRAL READY", PromptPrefix="> ", WorkingMarker="NEUTRAL WORKING", ObservationTimeoutMilliseconds=1500 } }));
-            host = Activator.CreateInstance(type, [folder, pipe]); Invoke("ConfigureNeutral", package);
+            var launch=NeutralTerminalLaunch.Create(package,folder);
+            host = Activator.CreateInstance(type, [launch.Scratch, pipe]); Invoke("ConfigureNeutral", launch);
             await (Task)Invoke("StartShellAsync")!;
             server = (Task)Invoke("RunServerLoopAsync", serverCancellation.Token)!;
             for (var i=0;i<100;i++) {

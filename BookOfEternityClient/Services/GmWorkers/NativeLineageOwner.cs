@@ -12,6 +12,11 @@ namespace BookOfEternityClient.Services.GmWorkers;
 internal class NativeLineageOwner : GmWorkerOwnedLaunch
 {
     private readonly bool _terminalMode;
+    private Task? _terminalIoSettlement;
+    internal string? Uncertainty { get { lock(_stateGate)return _uncertainty; } }
+    internal void RegisterTerminalSettlement(Task task) {
+        lock(_stateGate) { if(!_terminalMode || _terminalIoSettlement!=null)throw new InvalidOperationException("Terminal settlement already bound."); _terminalIoSettlement=task; }
+    }
     private SafeFileHandle? _terminalMaster;
     internal SafeFileHandle TakeTerminalMaster() => Interlocked.Exchange(ref _terminalMaster, null) ?? throw new InvalidOperationException("Terminal master missing.");
     internal void ReportTerminalFault(string reason) => Lose(reason);
@@ -299,6 +304,7 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
 
     private async Task ObserveOwnedOutputCompletionAsync()
     {
+        if (_terminalMode) await (_terminalIoSettlement ?? throw new InvalidOperationException("Original PTY settlement not bound."));
         await Task.WhenAll(_outputDrain, _errorDrain);
         if (_observationFault != null) await _observationFault.ObserveOutputsAsync();
     }
@@ -341,7 +347,7 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         {
             if (_uncertainty != null || _terminal?.State != GmWorkerStopState.StoppedWithinScope ||
                 !_processStarted || !_supervisorExit!.IsCompletedSuccessfully || _supervisor.ExitCode != 0 ||
-                !_statusReader!.IsCompletedSuccessfully || !_outputsSettled || !_outputDrain.IsCompletedSuccessfully || !_errorDrain.IsCompletedSuccessfully)
+                !_statusReader!.IsCompletedSuccessfully || (_terminalMode && _terminalIoSettlement?.IsCompletedSuccessfully != true) || !_outputsSettled || !_outputDrain.IsCompletedSuccessfully || !_errorDrain.IsCompletedSuccessfully)
                 throw new InvalidOperationException("Native launch retains an unconfirmed owner; output EOF and helper exit cannot retire it.");
         }
         _observationFault?.BeforeDispose();
