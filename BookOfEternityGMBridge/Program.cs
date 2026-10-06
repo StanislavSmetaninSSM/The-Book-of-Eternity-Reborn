@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Services.GmWorkers;
+using BookOfEternityClient.Services.GmRuntime;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Win32.SafeHandles;
 
@@ -130,7 +131,7 @@ internal sealed partial class BridgeHost : IDisposable
         "PTY input write failed after it started; some bytes may have been delivered.", inner);
     private readonly StringBuilder _recentOutput = new();
 
-    private ConPtySession? _pty;
+    private IOwnedTerminalSession? _pty;
     private Stream? _ptyInput;
     private Task? _outputPumpTask;
     private Task? _keyboardPumpTask;
@@ -181,11 +182,11 @@ internal sealed partial class BridgeHost : IDisposable
         {
             while (!_cts.IsCancellationRequested)
             {
-                ConPtySession? exited;
+                IOwnedTerminalSession? exited;
                 InputLifetime? observedInput;
                 lock (_sync)
                 {
-                    exited = _pty is { HasExited: true } ? _pty : null;
+                    exited = _pty?.RootExited.IsCompletedSuccessfully == true ? _pty : null;
                     observedInput = _inputLifetime;
                 }
                 if (exited != null)
@@ -416,7 +417,7 @@ internal sealed partial class BridgeHost : IDisposable
     private async Task StopShellCoreAsync()
     {
         InputLifetime? input;
-        ConPtySession? pty;
+        IOwnedTerminalSession? pty;
         lock (_sync)
         {
             input = _inputLifetime;
@@ -426,7 +427,7 @@ internal sealed partial class BridgeHost : IDisposable
         }
         if (input != null)
             RevokeInputLifetime(input);
-        try { pty?.Dispose(); } catch { /* Native stop remains a separate unqualified contract. */ }
+        try { if (pty != null) await pty.DisposeAsync(); } catch { /* Preparation preserves old retirement behavior. */ }
         if (input == null)
             return;
 
@@ -549,7 +550,7 @@ internal sealed partial class BridgeHost : IDisposable
     {
         lock (_sync)
         {
-            if (_pty == null || _pty.HasExited || _ptyInput == null)
+            if (_pty == null || _pty.RootExited.IsCompleted || _ptyInput == null)
                 throw new InvalidOperationException("Hosted PTY shell is not running.");
         }
     }
@@ -935,7 +936,7 @@ internal sealed partial class BridgeHost : IDisposable
 
             lock (_sync)
             {
-                _pty?.Resize(current.width, current.height);
+                if (_pty != null) _pty.ResizeAsync(new(current.width, current.height), CancellationToken.None).GetAwaiter().GetResult();
             }
 
             last = current;
@@ -1437,7 +1438,7 @@ internal sealed partial class BridgeHost : IDisposable
         return BridgeResponse.Failure(error, SnapshotStatus(), SnapshotDiagnostics());
     }
 
-    private async Task HandlePtyExitedAsync(ConPtySession observedPty, InputLifetime? observedInput)
+    private async Task HandlePtyExitedAsync(IOwnedTerminalSession observedPty, InputLifetime? observedInput)
     {
         await _shellLifecycleLock.WaitAsync();
         try
@@ -1447,7 +1448,7 @@ internal sealed partial class BridgeHost : IDisposable
             {
                 if (!ReferenceEquals(_pty, observedPty) || !ReferenceEquals(_inputLifetime, observedInput))
                     return;
-                exitCode = observedPty.ExitCode;
+                exitCode = observedPty.RootExited.IsCompletedSuccessfully ? observedPty.RootExited.Result.ExitCode : null;
             }
             try { await StopShellCoreAsync(); }
             catch (TimeoutException) { return; } // Retained drain blocks replacement; continue serving diagnostics.

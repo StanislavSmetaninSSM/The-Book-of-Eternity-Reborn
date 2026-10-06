@@ -2,18 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-bridge-prompt-operation",
-      "reason": "Live-owner whole input transaction, actual pipe control, changed keyboard/managed Stop and exact affected guards only; no replay of whole INPUT37/output/worker/native cohorts.",
+      "category": "gm-owned-terminal-session",
+      "reason": "T041 compile-ready actual BridgeHost retained-owner causal baseline and later portable terminal/view/input retirement contract. No unrelated cohorts.",
       "contracts": [
-        "#1553 T042-INPUT-TRANSACTION",
-        "US4 / FR-012/013/014/015"
-      ]
-    },
-    {
-      "category": "gm-daemon-prompt-delivery",
-      "reason": "Actual launcher/daemon/QTE/repair identity and ambiguity handling; inert extracted functions, no daemon/provider startup. Frozen-source checks around late ordinary-turn effects and five exact affected guards.",
-      "contracts": [
-        "#1553 T042-INPUT-TRANSACTION",
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL",
         "US4 / FR-012/013/014/015"
       ]
     }

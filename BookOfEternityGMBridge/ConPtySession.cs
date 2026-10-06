@@ -1,10 +1,11 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using BookOfEternityClient.Services.GmRuntime;
 using Microsoft.Win32.SafeHandles;
 
 namespace BookOfEternityGMBridge;
 
-internal sealed class ConPtySession : IDisposable
+internal sealed class ConPtySession : IDisposable, IOwnedTerminalSession
 {
     private IntPtr _pseudoConsole;
     private IntPtr _processHandle;
@@ -16,6 +17,20 @@ internal sealed class ConPtySession : IDisposable
     public int ProcessId { get; }
     public bool HasExited => _process?.HasExited ?? true;
     public int? ExitCode => _process is { HasExited: true } ? _process.ExitCode : null;
+    public TerminalIdentity Identity { get; }
+    public Task<TerminalRootExit> RootExited { get; }
+    public ValueTask ResizeAsync(TerminalSize size, CancellationToken waitToken)
+    {
+        waitToken.ThrowIfCancellationRequested(); Resize(size.Columns, size.Rows);
+        return ValueTask.CompletedTask;
+    }
+    public Task<TerminalStopEvidence> StopAndObserveAsync(CancellationToken waitToken) =>
+        throw new NotSupportedException("Main ConPTY scoped Job stop is not yet implemented.");
+    public ValueTask DisposeAsync() { Dispose(); return ValueTask.CompletedTask; }
+    private static async Task<TerminalRootExit> ObserveRootAsync(Process process)
+    {
+        await process.WaitForExitAsync(); return new(process.ExitCode);
+    }
 
     private ConPtySession(
         IntPtr pseudoConsole,
@@ -30,6 +45,8 @@ internal sealed class ConPtySession : IDisposable
         _threadHandle = threadHandle;
         ProcessId = processId;
         _process = Process.GetProcessById(processId);
+        Identity = new(Guid.NewGuid().ToString("N"), "windows-conpty-unqualified", "unqualified-main", processId);
+        RootExited = ObserveRootAsync(_process);
         InputWriter = new FileStream(inputWriterHandle, FileAccess.Write, 4096, isAsync: false);
         OutputReader = new FileStream(outputReaderHandle, FileAccess.Read, 4096, isAsync: false);
     }
