@@ -617,8 +617,7 @@ public partial class GameEngine
     }
 
     private bool IsConPtyBridgeRuntimeExpected() =>
-        _stateManager.Settings.GmBridgeEnabled &&
-        string.Equals(_stateManager.Settings.GmBridgeBackend, "ConPTYBridge", StringComparison.OrdinalIgnoreCase);
+        _stateManager.Settings.UsesOwnedGmBridge;
 
     private async Task<string?> DetectUnavailableRuntimeProcessAsync(
         string statusPath,

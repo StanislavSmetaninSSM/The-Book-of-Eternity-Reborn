@@ -17,7 +17,8 @@ function Open-GmParticipatingOperation {
     if ([IO.Path]::GetFileName($session) -cne 'game_session') { throw 'An explicit game_session root is required.' }
     $root = [IO.Path]::GetDirectoryName($session)
     if (-not [IO.Directory]::Exists($root)) { throw 'Participating root must already exist.' }
-    $assembly = @('Debug','Release') | ForEach-Object { Join-Path $global:BoeMainOperationCodeRoot "bin/$_/net8.0/BookOfEternityClient.dll" } | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+    $candidates = @(Join-Path $global:BoeMainOperationCodeRoot 'BookOfEternityClient.dll') + @(@('Debug','Release') | ForEach-Object { Join-Path $global:BoeMainOperationCodeRoot "bin/$_/net8.0/BookOfEternityClient.dll" })
+    $assembly = $candidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
     if (-not $assembly) { throw 'Built participating client is unavailable.' }
     $start = [Diagnostics.ProcessStartInfo]::new('dotnet')
     $start.UseShellExecute = $false

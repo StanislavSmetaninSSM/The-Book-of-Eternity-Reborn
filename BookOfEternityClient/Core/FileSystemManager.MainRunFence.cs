@@ -1,4 +1,5 @@
 using BookOfEternityClient.Services.GmRuntime;
+using BookOfEternityClient.Services.GmWorkers;
 
 namespace BookOfEternityClient.Core;
 
@@ -56,11 +57,19 @@ public partial class FileSystemManager
             if(observed!=null && GmSessionRunRecordCodec.Decode(observed).Disposition!=GmSessionRunDisposition.Stopped) {
                 if(!_participating || closing)throw GmSessionRunPersistence.Invalid();
                 var remote=await GmMainOperationClient.OpenAsync(_files,token);
-                _access=new(null,null,remote);_retainedRemote=remote;_ownsRemote=true;WasRemote=true;return;
+                _access=new(null,null,remote,workerObservationRequired:Directory.Exists(new WorkerLedgerTarget(_files.BasePath).DirectoryPath));_retainedRemote=remote;_ownsRemote=true;WasRemote=true;return;
             }
             _access=new(await GmMainOwnerGuard.AcquireAsync(_files.BasePath,token,
                 _files._hooks?.MainOwnerLockContendedAsync,CanonicalWriteLockRetryCount,TransientFileAccessRetryDelay),null);
-            try{Validate(null);}catch{Dispose();throw;}
+            try{
+                // A known inventory requires its original durable coordinator,
+                // even with disabled helpers, before canonical recovery/leases.
+                if(Directory.Exists(new WorkerLedgerTarget(_files.BasePath).DirectoryPath)) {
+                    var workers=GmWorkerRootContext.Attach(_files,true,null);
+                    _access.Workers=workers;workers.RequireOpen();
+                }
+                Validate(null);
+            }catch{Dispose();throw;}
         }
         internal GmSessionRunCoordinator.Access? Original=>_access?.Original;
         internal bool MetadataOnly=>_requested?.MetadataOnly==true;
@@ -81,6 +90,12 @@ public partial class FileSystemManager
             if(_access.Remote is { } remote) {
                 if(lease?.Purpose==CanonicalWritePurpose.SessionReplacement)throw GmSessionRunPersistence.Invalid();
                 remote.Validate(_files.BasePath,lease?.Purpose==CanonicalWritePurpose.SessionFinalization);
+                if(_access.WorkerObservationRequired && !(Closing && lease?.Purpose==CanonicalWritePurpose.SessionFinalization)) {
+                    // This observation can only withdraw an already granted
+                    // original connection. It cannot grant/replace inventory authority.
+                    var observed=GmWorkerRunLedger.ObserveAsync(new(_files.BasePath)).GetAwaiter().GetResult();
+                    if(observed.Kind!=WorkerRunObservationKind.Quiescent)throw GmSessionRunPersistence.Invalid();
+                }
                 if(lease!=null && _files.ReadLocalGenerationSnapshotBelowWorkerFence(lease).Binding.Id!=remote.Identity.GenerationId)throw GmSessionRunPersistence.Invalid();
                 return;
             }
@@ -94,6 +109,7 @@ public partial class FileSystemManager
                 return;
             }
             _access.Guard!.Validate();
+            _access.Workers?.RequireOpen();
             var bytes=GmSessionRunPersistence.Read(_files.BasePath);
             if(bytes==null)return;
             var r=GmSessionRunRecordCodec.Decode(bytes);
@@ -112,11 +128,13 @@ public partial class FileSystemManager
             if(MainAdmissions.Value==this)MainAdmissions.Value=_parent;
         }
     }
-    private sealed class MainAccess(GmMainOwnerGuard? guard,GmSessionRunCoordinator.Access? original,GmMainOperationClient? remote=null) : IDisposable
+    private sealed class MainAccess(GmMainOwnerGuard? guard,GmSessionRunCoordinator.Access? original,GmMainOperationClient? remote=null,bool workerObservationRequired=false) : IDisposable
     {
         private readonly object _state = new();
         private int _references=1;
         private bool _frozen;
+        internal GmWorkerRootContext? Workers;
+        internal bool WorkerObservationRequired=>workerObservationRequired;
         internal GmMainOperationClient? Remote=>remote;
         internal GmMainOwnerGuard? Guard=>guard;
         internal GmSessionRunCoordinator.Access? Original=>original;
@@ -140,7 +158,7 @@ public partial class FileSystemManager
         {
             bool release;
             lock(_state) { if(_references==0)return;release=--_references==0; }
-            if(release){guard?.Dispose();original?.Pin?.Dispose();}
+            if(release){Workers?.ReleaseClient();guard?.Dispose();original?.Pin?.Dispose();}
         }
     }
     private void EnsureMainMutationAllowed(CanonicalWriteLease lease)

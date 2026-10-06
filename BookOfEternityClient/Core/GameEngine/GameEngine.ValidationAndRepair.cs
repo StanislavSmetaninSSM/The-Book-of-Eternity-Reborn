@@ -130,7 +130,9 @@ public partial class GameEngine
             "wound_acquisition_narration_missing" or
             "wound_acquisition_narration_contradiction";
 
-    private async Task EnsureClientOwnedSystemFilesHealthyAsync(bool ordinaryEntry = false)
+    private Task EnsureClientOwnedSystemFilesHealthyAsync(bool ordinaryEntry = false)=>
+        SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs,()=>EnsureClientOwnedSystemFilesHealthyCoreAsync(ordinaryEntry));
+    private async Task EnsureClientOwnedSystemFilesHealthyCoreAsync(bool ordinaryEntry)
     {
         await CleanupOrphanedTurnRequestBeforeValidationAsync();
         await _stateManager.RefreshGameStateAsync();

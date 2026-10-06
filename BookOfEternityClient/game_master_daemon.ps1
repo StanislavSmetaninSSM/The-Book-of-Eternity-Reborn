@@ -67,8 +67,7 @@ $ErrorActionPreference = "Stop"
 $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 [Console]::InputEncoding = [System.Text.UTF8Encoding]::new($false)
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
-chcp 65001 > $null
-Add-Type -AssemblyName System.Windows.Forms
+if ($IsWindows) { chcp 65001 > $null; Add-Type -AssemblyName System.Windows.Forms }
 
 $script:TurnCount = 0
 $script:ErrorCount = 0
@@ -2932,7 +2931,7 @@ function Get-GmBridgeStatus {
 
 function Ensure-GmBridgeStarted {
     $config = Get-GameConfig
-    if (-not $config.GmBridgeEnabled -or $config.GmBridgeBackend -ne "ConPTYBridge") {
+    if (-not $config.GmBridgeEnabled -or $config.GmBridgeBackend -notin @('ConPTYBridge','OwnedTerminal')) {
         return
     }
 
@@ -2989,7 +2988,7 @@ function Refresh-GmBridgeReadiness {
 
 function Get-GmBridgeDiagnosticsSnapshot {
     $config = Get-GameConfig
-    if (-not $config.GmBridgeEnabled -or $config.GmBridgeBackend -ne "ConPTYBridge") {
+    if (-not $config.GmBridgeEnabled -or $config.GmBridgeBackend -notin @('ConPTYBridge','OwnedTerminal')) {
         return $null
     }
 
@@ -3728,7 +3727,7 @@ function Invoke-GmPromptControl {
 function Send-ToGmBridge {
     param([string]$Message, [switch]$AllowNotReady, [object]$Operation)
     $config = Get-GameConfig
-    if (-not $config.GmBridgeEnabled -or $config.GmBridgeBackend -ne 'ConPTYBridge') { return $null }
+    if (-not $config.GmBridgeEnabled -or $config.GmBridgeBackend -notin @('ConPTYBridge','OwnedTerminal')) { return $null }
     Ensure-GmBridgeStarted
     if (-not $Operation) { $Operation = New-GmPromptOperation -Message $Message -OperationKind 'automatic' }
     if (-not $Operation) { return (New-GmPromptDelivery $null 'not-written' 'retention-full') }
@@ -5210,8 +5209,8 @@ Write-Host "  |  Book of Eternity: Game Master Daemon         |" -ForegroundColo
 Write-Host "  +===============================================+" -ForegroundColor Cyan
 Write-Host ""
 Write-Log "Game Session : $GameSessionPath" -Color Gray
-if ((Get-GameConfig).GmBridgeEnabled -and (Get-GameConfig).GmBridgeBackend -eq "ConPTYBridge") {
-    Write-Log "GM Backend   : ConPTYBridge" -Color Gray
+if ((Get-GameConfig).GmBridgeEnabled -and (Get-GameConfig).GmBridgeBackend -in @('ConPTYBridge','OwnedTerminal')) {
+    Write-Log "GM Backend   : $((Get-GameConfig).GmBridgeBackend)" -Color Gray
     if (Test-Path $BridgeStatusFile) {
         Write-Log "Bridge Status: '$BridgeStatusFile'" -Color Gray
     } else {
@@ -5244,8 +5243,8 @@ Write-Host ""
 # CLI Window Communication
 # ═══════════════════════════════════════════════
 
-# Win32 API for window activation
-Add-Type @"
+# Win32 API belongs only to the legacy Windows desktop route.
+if ($IsWindows) { Add-Type @"
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -5301,7 +5300,8 @@ public class Win32Window {
     public const uint MOUSEEVENTF_RIGHTDOWN = 0x0008;
     public const uint MOUSEEVENTF_RIGHTUP = 0x0010;
 }
-"@ -ErrorAction SilentlyContinue
+"@
+} -ErrorAction SilentlyContinue
 
 function Invoke-RightClickPaste {
     param([System.IntPtr]$WindowHandle)
@@ -5397,11 +5397,12 @@ function Send-ToCliWindow {
     )
 
     $config = Get-GameConfig
-    if ($config.GmBridgeEnabled -and $config.GmBridgeBackend -eq "ConPTYBridge") {
+    if ($config.GmBridgeEnabled -and $config.GmBridgeBackend -in @('ConPTYBridge','OwnedTerminal')) {
         return (Send-ToGmBridge -Message $Message -Operation $Operation)
     }
 
-    # Clipboard is the universal fallback for every bridge/window failure path.
+    if (-not $IsWindows) { throw 'Linux requires the configured owned bridge; no window/clipboard transport fallback.' }
+    # Explicit Windows desktop transport only; bridge delivery never falls back.
     Set-Clipboard -Value $Message
     Write-Log "  -> Clipboard: command copied" -Color DarkGray
 
@@ -5458,7 +5459,7 @@ function Dispatch-WithRetry {
         [string]$OperationKind = 'turn', [string]$OperationRevision = 'live', [object]$Operation, [string]$ExpectedSourceHash = '')
     $attempts = 0; $busyRetries = 0; $startedAt = Get-Date
     $config = Get-GameConfig
-    $bridge = $config.GmBridgeEnabled -and $config.GmBridgeBackend -eq 'ConPTYBridge'
+    $bridge = $config.GmBridgeEnabled -and $config.GmBridgeBackend -in @('ConPTYBridge','OwnedTerminal')
     if ($bridge -and -not $Operation) {
         if ($PendingPath -and !(Test-Path $PendingPath)) { return (Complete-GmPromptDispatch 'cancelled' $null $ReturnDetails 0 0) }
         if (-not $ExpectedSourceHash -and $PendingPath) { $ExpectedSourceHash = (Read-GmPromptPending $PendingPath).Hash }

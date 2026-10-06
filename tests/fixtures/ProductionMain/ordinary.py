@@ -46,7 +46,7 @@ try:
   for n,text in enumerate(['one Ж😀','two'],1):
    os.write(master,(text+'\r').encode());until(('RESULT'+str(n)+':'+text).encode())
   same=rpc({'command':'status'})['status'];assert same['shellPid']==pid and same['inputBindingId']==binding;result['TwoInputsOneOriginal']=True
-  identity={k[0].lower()+k[1:]:v for k,v in record['Identity'].items()}; identity['backend']='linux-supervisor'
+  identity={k[0].lower()+k[1:]:v for k,v in record['Identity'].items()}; identity['backend']=2
   stopped=rpc({'command':'shutdown','rootKey':identity['rootKey'],'expectedMainIdentity':identity})
   assert stopped['ok'],stopped
   process.wait(timeout=4);assert process.returncode==0

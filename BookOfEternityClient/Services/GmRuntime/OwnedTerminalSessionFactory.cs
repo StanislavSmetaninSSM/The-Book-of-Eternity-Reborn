@@ -18,6 +18,20 @@ internal static class OwnedTerminalSessionFactory
         internal IOwnedTerminalSession Session=>session;
         internal Task ReleaseAsync(CancellationToken token)=>owner.ReleaseTerminalAsync(token);
     }
+    internal static async Task<PreparedTerminal> PrepareProductionAsync(ProductionMainLaunch launch,string runId,CancellationToken token,Action<int>? observeHeldRoot=null)
+    {
+        var c=launch.Configuration; launch.Consume();
+        NativeLineageOwner owner;
+        try { owner=await NativeLineageOwner.PrepareTerminalAsync(c.CreateStart(),c.Supervisor,runId,c.Size.Columns,c.Size.Rows,token,observeHeldRoot); }
+        catch(GmWorkerOwnedLaunchException ex) {
+            owner=(NativeLineageOwner)ex.Owner;
+            IOwnedTerminalSession retained;
+            try { retained=new LinuxOwnedTerminalSession(owner); } catch { retained=new PartialNativeTerminalSession(owner); }
+            throw new OwnedTerminalStartException(retained,ex);
+        }
+        try { return new(new LinuxOwnedTerminalSession(owner),owner); }
+        catch(Exception ex) { throw new OwnedTerminalStartException(new PartialNativeTerminalSession(owner),ex); }
+    }
     internal static async Task<PreparedTerminal> PrepareNeutralAsync(NeutralTerminalLaunch launch,string runId,CancellationToken token,Action<int>? observeHeldRoot=null)
     {
         var package=launch.Package; var scratch=launch.Scratch;

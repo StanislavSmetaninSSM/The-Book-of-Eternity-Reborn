@@ -1,0 +1,74 @@
+{
+  "Categories": [
+    "gm-main-production-admission",
+    "gm-main-linux-launcher"
+  ],
+  "Reasons": [
+    {
+      "category": "gm-main-production-admission",
+      "reason": "#1553 M1 Consumed production main/root admission and retained independent worker/storage conjunction, configured neutral-only Linux fixture; causal RED from accepted design checkpoint before production corrections",
+      "contracts": [
+        "#1553 T041-PRODUCTION-MAIN-M1 original authority/run fence/T042, shipped no-build ordinary Linux entrypoint"
+      ]
+    },
+    {
+      "category": "gm-main-linux-launcher",
+      "reason": "#1553 M1 Actual ordinary Linux launcher/daemon/console entrypoints in relocated shipped layout, configured neutral-only fixture; causal RED from accepted design checkpoint before production corrections",
+      "contracts": [
+        "#1553 T041-PRODUCTION-MAIN-M1 original authority/run fence/T042, shipped no-build ordinary Linux entrypoint"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "cdf23316d4144effd171d03c91ce56fe2012a776",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 110.626995,
+  "Descriptors": [
+    {
+      "Name": "gm-main-linux-launcher-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-linux-launcher",
+      "Categories": [
+        "gm-main-linux-launcher"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualDaemonStartup_PortableOwnedBridgeWithoutWindowsDesktop|FullyQualifiedName=BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryLauncher_ShippedLayoutWithoutSourceRunsConfiguredCli",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualDaemonStartup_PortableOwnedBridgeWithoutWindowsDesktop",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryLauncher_ShippedLayoutWithoutSourceRunsConfiguredCli",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-production-admission-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-production-admission",
+      "Categories": [
+        "gm-main-production-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

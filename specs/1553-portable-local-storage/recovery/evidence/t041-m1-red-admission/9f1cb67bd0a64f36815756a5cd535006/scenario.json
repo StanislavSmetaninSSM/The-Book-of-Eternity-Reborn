@@ -1,0 +1,16 @@
+{
+  "Success": false,
+  "Mode": "bridge",
+  "Argv": [
+    "dotnet",
+    "/workspace/native-1553/TestResults/production-main/9f1cb67bd0a64f36815756a5cd535006/ship/BookOfEternityGMBridge/BookOfEternityGMBridge.dll",
+    "--host",
+    "--sessionPath",
+    "/workspace/native-1553/TestResults/production-main/9f1cb67bd0a64f36815756a5cd535006/root/game_session",
+    "--pipeName",
+    "m1-f9f5ffc9d8da462593581a7c5f6bd16a"
+  ],
+  "Failure": "RuntimeError: Entrypoint exited before b'NEUTRAL READY'; \r\n==============================================\r\n Book of Eternity GM Bridge\r\n==============================================\r\nSession : /workspace/native-1553/TestResults/production-main/9f1cb67bd0a64f36815756a5cd535006/root/game_session\r\nClient  : /workspace/native-1553/TestResults/production-main/9f1cb67bd0a64f36815756a5cd535006/root\r\nRepo    : /workspace/native-1553/TestResults/production-main/9f1cb67bd0a64f36815756a5cd535006/ship\r\nPipe    : m1-f9f5ffc9d8da462593581a7c5f6bd16a\r\nThis window is the GM CLI host.\r\nYou can type here manually at any time.\r\nUse `bookofeternity.ps1 ready` after the CLI is fully ready to receive prompts.\r\n\r\nBridge fatal error:\r\nSystem.PlatformNotSupportedException: Production main launch remains fenced; only fixed neutral terminal admission is available here.\r\n   at BookOfEternityGMBridge.BridgeHost.StartShellAsync() in /workspace/native-1553/BookOfEternityGMBridge/Program.cs:line 435\r\n   at BookOfEternityGMBridge.BridgeHost.RunAsync() in /workspace/native-1553/BookOfEternityGMBridge/Program.cs:line 205\r\n   at BookOfEternityGMBridge.Program.Main(String[] args) in /workspace/native-1553/BookOfEternityGMBridge/Program.cs:line 32\r\n",
+  "EntrypointExitCode": 1,
+  "ElapsedSeconds": 0.18904211498738732
+}

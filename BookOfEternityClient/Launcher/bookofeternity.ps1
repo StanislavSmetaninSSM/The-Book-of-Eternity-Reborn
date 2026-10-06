@@ -708,6 +708,14 @@ function Start-Bridge {
     }
 
     $repoRoot = Get-RepoRoot
+    if (-not $IsWindows) {
+        if (-not $VisibleBridge -or [Console]::IsInputRedirected) { throw 'Linux owned main requires start-bridge visible in a caller-supplied foreground terminal.' }
+        $assembly = Join-Path $repoRoot 'BookOfEternityGMBridge/BookOfEternityGMBridge.dll'
+        if (-not (Test-Path -LiteralPath $assembly)) { throw 'Packaged bridge is unavailable; player startup does not compile it.' }
+        & dotnet $assembly --host --sessionPath $ResolvedSessionPath --pipeName $pipeName
+        if ($LASTEXITCODE -ne 0) { throw "Packaged bridge exited with code $LASTEXITCODE." }
+        return
+    }
     $projectPath = Join-Path $repoRoot "BookOfEternityGMBridge\BookOfEternityGMBridge.csproj"
     if (!(Test-Path $projectPath)) {
         throw "Bridge project not found: $projectPath"
@@ -819,6 +827,16 @@ function Start-Daemon {
     $daemonScript = Join-Path (Get-ClientRoot) "game_master_daemon.ps1"
     if (!(Test-Path $daemonScript)) {
         throw "GM daemon script not found: $daemonScript"
+    }
+
+    if (-not $IsWindows) {
+        if (-not $visibleDaemon -or [Console]::IsInputRedirected) { throw 'Linux daemon requires start-daemon visible in its own caller-supplied terminal.' }
+        # Foreground in this separate terminal; never share the bridge keyboard.
+        $daemonArgs = @('-NoLogo','-NoProfile','-File',$daemonScript,'-GameSessionPath',$ResolvedSessionPath,'-PasteMode',$pasteMode,'-TurnTimeout',[string]$turnTimeout,'-LogFile',$logFile)
+        if ($autoPaste) { $daemonArgs += '-AutoPaste' }
+        & pwsh @daemonArgs
+        if ($LASTEXITCODE -ne 0) { throw "Daemon exited with code $LASTEXITCODE." }
+        return
     }
 
     $daemonInvocation = "& {0} -GameSessionPath {1} -PasteMode {2} -TurnTimeout {3} -LogFile {4}" -f `

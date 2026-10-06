@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-main-production-admission"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "cdf23316d4144effd171d03c91ce56fe2012a776",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 5.4281776,
+  "Descriptors": [
+    {
+      "Name": "gm-main-production-admission-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-production-admission",
+      "Categories": [
+        "gm-main-production-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

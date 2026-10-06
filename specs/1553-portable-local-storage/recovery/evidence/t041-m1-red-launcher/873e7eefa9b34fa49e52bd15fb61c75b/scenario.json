@@ -1,0 +1,20 @@
+{
+  "Success": false,
+  "Mode": "daemon",
+  "Argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "/workspace/native-1553/TestResults/production-main/873e7eefa9b34fa49e52bd15fb61c75b/ship/BookOfEternityClient/game_master_daemon.ps1",
+    "-GameSessionPath",
+    "/workspace/native-1553/TestResults/production-main/873e7eefa9b34fa49e52bd15fb61c75b/root/game_session",
+    "-PollingInterval",
+    "50",
+    "-LogFile",
+    "/workspace/native-1553/TestResults/production-main/873e7eefa9b34fa49e52bd15fb61c75b/daemon.log"
+  ],
+  "Failure": "RuntimeError: Entrypoint exited before b'Waiting for turns...'; chcp: /workspace/native-1553/TestResults/production-main/873e7eefa9b34fa49e52bd15fb61c75b/ship/BookOfEternityClient/game_master_daemon.ps1:70\r\nLine |\r\n  70 |  chcp 65001 > $null\r\n     |  ~~~~\r\n     | The term 'chcp' is not recognized as a name of a cmdlet, function,\r\n     | script file, or executable program. Check the spelling of the name, or\r\n     | if a path was included, verify that the path is correct and try again.\r\n",
+  "EntrypointExitCode": 1,
+  "ElapsedSeconds": 0.8279673349898076
+}

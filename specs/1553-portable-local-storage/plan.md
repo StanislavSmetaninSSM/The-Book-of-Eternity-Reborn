@@ -33,6 +33,10 @@ Actual environment observed: SDK10.0.401; runtimes8.0.31/10.0.12; PowerShell7.5.
 Debian cc14.2.0-19. No runtime edits or new runs yet. Checkpoints below retain exact
 source hashes/commands/results/owned cleanup; preparation failure is not causal RED.
 
+M1 initial RED at cdf23316: real launcher 2/2 FAIL (missing shipped source-project and unconditional chcp), bridge 1/1 FAIL (ordinary Linux production refusal). No preparation failure; all3 independent guardians ECHILD/emergency0/failures0/deadlinefalse. Runner fail-fast made first selection incomplete2/3; the remaining1 was run separately with NoBuild on the exact freshly built source. Evidence: recovery/evidence/t041-m1-red-{launcher,admission}. Both publish targets already carry helper+manifest through transitive asset plumbing. Fixture stop identity fixed to the actual request-reader numeric enum before that positive path is reached (not a causal runtime failure).
+
+Implementation checkpoint: one original coordinator/factory pipeline, new bound one-use production capability and configuration value, explicit NativeLineage only. Retain existing original worker inventory before Prepared; cold known inventory binds original coordinator before recovery; a live remote pin borrows the main owner's inventory, with a negative-only observation check. Disabled helpers have no execution capability. Linux foreground launcher/portable daemon plus installed participating-helper resolver; separate foreground stdin and preserved Windows branch. Initial implementation is unverified until selected GREEN; no new live/provider/renderer qualification.
+
 ## T041-PRODUCTION-MAIN-DESIGN — current design-only continuation
 
 Owner accepted bounded F3 `fc49f271f5cd14ac3b24931cce2c98ef64a61068`.

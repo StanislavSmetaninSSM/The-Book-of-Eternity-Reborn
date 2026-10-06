@@ -105,6 +105,14 @@ internal sealed class GmWorkerRootContext
             }
         }
     }
+    internal void RequireMainQuiescence()
+    {
+        lock(_root.WorkerContextGate) {
+            RequireOpen();
+            if(_coordinator==null || !_coordinator.VerifyAdmission(requireQuiescent:true))
+                throw new InvalidOperationException("Production main requires the retained original quiescent worker inventory.");
+        }
+    }
     internal void RequireCanonicalRoot(FileSystemManager fs)
     {
         if (!ReferenceEquals(fs.CanonicalRootAuthorityIdentity, _root) || !ReferenceEquals(_root.WorkerContext, this))

@@ -43,9 +43,13 @@ public class GameSettings
     /// </summary>
     public bool GmBridgeEnabled { get; set; } = true;
     /// <summary>
-    /// Preferred GM daemon backend: ConPTYBridge, Clipboard, or WindowAutoPaste.
+    /// Preferred GM transport: OwnedTerminal (Linux), ConPTYBridge (Windows), Clipboard, or WindowAutoPaste.
     /// </summary>
     public string GmBridgeBackend { get; set; } = "ConPTYBridge";
+    /// <summary>Explicit Linux main owner request; Auto never silently downgrades to native.</summary>
+    public string GmMainOwnerBackend { get; set; } = "Auto";
+    /// <summary>Transport selection only; this value never grants process or write authority.</summary>
+    public bool UsesOwnedGmBridge => GmBridgeEnabled && (string.Equals(GmBridgeBackend,"ConPTYBridge",StringComparison.OrdinalIgnoreCase) || string.Equals(GmBridgeBackend,"OwnedTerminal",StringComparison.OrdinalIgnoreCase));
     /// <summary>
     /// Arbitrary shell command line started inside the GM bridge shell session, for example "codex -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox".
     /// </summary>

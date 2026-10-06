@@ -110,6 +110,7 @@ internal sealed partial class BridgeHost : IDisposable
     private NeutralTerminalLaunch? _neutralLaunch;
     private GmSessionRunCoordinator? _mainRun;
     private GmSessionRunCoordinator? _lastMainRun;
+    private GameSettings? _productionConfig;
     internal Func<MainOperationClose,Task>? BeforeMainCloseReply;
     private BookOfEternityClient.Core.FileSystemManager? _neutralFiles;
     internal Action<BookOfEternityClient.Core.MainRunIoStage>? ObserveMainMetadata;
@@ -346,7 +347,7 @@ internal sealed partial class BridgeHost : IDisposable
     private async Task<BridgeResponse> HandleRequestAsync(BridgeRequest request)
     {
         var command = (request.Command ?? string.Empty).Trim().ToLowerInvariant();
-        if(_neutralLaunch!=null && command=="dispatchworkertask")return BridgeResponse.Failure("Neutral fixture has no worker or game-writing admission.",SnapshotStatus());
+        if((_neutralLaunch!=null || _productionConfig!=null) && command=="dispatchworkertask")return BridgeResponse.Failure("This main admission has no production worker execution capability.",SnapshotStatus());
         await RefreshBridgeAutomationStateAsync();
 
         switch (command)
@@ -432,7 +433,23 @@ internal sealed partial class BridgeHost : IDisposable
                 await _firstStatus.Task;
                 return;
             }
-            if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("Production main launch remains fenced; only fixed neutral terminal admission is available here.");
+            if (!OperatingSystem.IsWindows()) {
+                var settings=LoadBridgeConfig();
+                var (columns,rows)=GetConsoleSize();
+                var configuration=ProductionMainConfiguration.Resolve(settings,_sessionPath,new(columns,rows));
+                _productionConfig=settings; _productionConfig.GmCliInputProfile=settings.GmCliInputProfile.Snapshot();
+                _neutralFiles=new BookOfEternityClient.Core.FileSystemManager(_clientRoot,Microsoft.Extensions.Logging.Abstractions.NullLogger<BookOfEternityClient.Core.FileSystemManager>.Instance);
+                IOwnedTerminalSession session;
+                try {
+                    _mainRun=await GmSessionRunCoordinator.OpenProductionAsync(_neutralFiles,ObserveMainMetadata);
+                    session=await _mainRun.LaunchProductionAsync(configuration,_cts.Token,ObserveMainHeldRoot);
+                }
+                catch(OwnedTerminalStartException ex) { AttachOwnedTerminalCore(ex.Owner,Console.OpenStandardOutput(),false);MarkTerminalUncertain();throw; }
+                catch { if(_mainRun?.RetainsAuthority==true)MarkTerminalUncertain();else _mainRun=null;throw; }
+                lock(_sync) { _status.CliLaunchCommand=configuration.Command; _status.ShellWorkingDirectory=configuration.Cwd; _status.WorkerStatuses=GmWorkerBridgePool.BuildInitialStatuses(settings.GmWorkerBridgeProfiles).ToList(); }
+                OpenOriginalStatusPublication(); AttachOwnedTerminal(session,Console.OpenStandardOutput());
+                await _firstStatus.Task; return;
+            }
             var config = LoadBridgeConfig();
             var shellExe = ResolveShellExecutable();
             var shellArgs = BuildShellArguments(shellExe);
@@ -663,7 +680,7 @@ internal sealed partial class BridgeHost : IDisposable
         if(_mainRun!=null) {
             try { await _mainRun.ConfirmSettledStopAsync(session,await _terminalStopTask!); }
             catch { if(_mainRun.IsUncertain)MarkTerminalUncertain();throw; }
-            _lastMainRun=_mainRun;_mainRun=null;
+            _lastMainRun=_mainRun;_mainRun=null;_productionConfig=null;
         }
         lock (_sync)
         {
@@ -1449,6 +1466,7 @@ internal sealed partial class BridgeHost : IDisposable
 
     private GameSettings LoadBridgeConfig()
     {
+        if(_productionConfig!=null)return _productionConfig;
         try
         {
             if (!File.Exists(_configPath))

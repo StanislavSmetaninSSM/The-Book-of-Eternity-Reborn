@@ -48,7 +48,8 @@ public partial class StateManager
     }
 
     /// <summary>Admits current local storage and atomically ensures config plus session generation.</summary>
-    public async Task<string> BootstrapLocalStorageAsync()
+    public Task<string> BootstrapLocalStorageAsync()=>SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs,BootstrapLocalStorageCoreAsync);
+    private async Task<string> BootstrapLocalStorageCoreAsync()
     {
         await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
         _fs.EnsureDirectoryStructure(lease);

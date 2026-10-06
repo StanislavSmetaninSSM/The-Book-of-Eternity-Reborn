@@ -79,6 +79,7 @@ internal sealed partial class GmSessionRunCoordinator
         if(_closed || _uncertain || !_released || _retired || _persistence.HasDebt || _record?.Disposition!=GmSessionRunDisposition.Running ||
             _terminal==null || _terminal.AuthorityLost.IsCompleted || _terminal.RootExited.IsCompleted)throw GmSessionRunPersistence.Invalid();
         _guard.Validate();
+        _productionWorkers?.RequireMainQuiescence();
     }
     private OperationPin CreateOperationPin()
     {

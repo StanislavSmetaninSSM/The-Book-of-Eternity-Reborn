@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="a82fe9e8-9615-45da-aafd-dab804541ff6" name="@c7669543e9c7 2026-10-06 19:44:18" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T19:44:18.2479433+00:00" queuing="2026-10-06T19:44:18.2479433+00:00" start="2026-10-06T19:44:10.6655488+00:00" finish="2026-10-06T19:44:18.2569477+00:00" />
+  <TestSettings name="default" id="12bee890-a9c3-4bd6-844f-06a449ea8ada">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_19_44_18" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="bef57611-7a0c-4d6f-bbe8-4d1a3180d6a6" testId="bd6bf7bb-6fc7-2284-8ba1-f45493d01662" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute" computerName="c7669543e9c7" duration="00:00:05.0023735" startTime="2026-10-06T19:44:18.1192220+00:00" endTime="2026-10-06T19:44:18.1192401+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bef57611-7a0c-4d6f-bbe8-4d1a3180d6a6">
+      <Output>
+        <ErrorInfo>
+          <Message>{
+  "Success": false,
+  "Mode": "bridge",
+  "Argv": [
+    "dotnet",
+    "/workspace/native-1553/TestResults/production-main/9f1cb67bd0a64f36815756a5cd535006/ship/BookOfEternityGMBridge/BookOfEternityGMBridge.dll",
+    "--host",
+    "--sessionPath",
+    "/workspace/native-1553/TestResults/production-main/9f1cb67bd0a64f36815756a5cd535006/root/game_session",
+    "--pipeName",
+    "m1-f9f5ffc9d8da462593581a7c5f6bd16a"
+  ],
+  "Failure": "RuntimeError: Entrypoint exited before b'NEUTRAL READY'; \r\n==============================================\r\n Book of Eternity GM Bridge\r\n==============================================\r\nSession : /workspace/native-1553/TestResults/production-main/9f1cb67bd0a64f36815756a5cd535006/root/game_session\r\nClient  : /workspace/native-1553/TestResults/production-main/9f1cb67bd0a64f36815756a5cd535006/root\r\nRepo    : /workspace/native-1553/TestResults/production-main/9f1cb67bd0a64f36815756a5cd535006/ship\r\nPipe    : m1-f9f5ffc9d8da462593581a7c5f6bd16a\r\nThis window is the GM CLI host.\r\nYou can type here manually at any time.\r\nUse `bookofeternity.ps1 ready` after the CLI is fully ready to receive prompts.\r\n\r\nBridge fatal error:\r\nSystem.PlatformNotSupportedException: Production main launch remains fenced; only fixed neutral terminal admission is available here.\r\n   at BookOfEternityGMBridge.BridgeHost.StartShellAsync() in /workspace/native-1553/BookOfEternityGMBridge/Program.cs:line 435\r\n   at BookOfEternityGMBridge.BridgeHost.RunAsync() in /workspace/native-1553/BookOfEternityGMBridge/Program.cs:line 205\r\n   at BookOfEternityGMBridge.Program.Main(String[] args) in /workspace/native-1553/BookOfEternityGMBridge/Program.cs:line 32\r\n",
+  "EntrypointExitCode": 1,
+  "ElapsedSeconds": 0.18904211498738732
+}</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.ProductionMainLinuxFixture.RunAsync(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs:line 47
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="bd6bf7bb-6fc7-2284-8ba1-f45493d01662">
+      <Execution id="bef57611-7a0c-4d6f-bbe8-4d1a3180d6a6" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="bd6bf7bb-6fc7-2284-8ba1-f45493d01662" executionId="bef57611-7a0c-4d6f-bbe8-4d1a3180d6a6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" passed="0" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.25]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.84]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.86]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:06.93]       {
+[xUnit.net 00:00:06.93]         "Success": false,
+[xUnit.net 00:00:06.93]         "Mode": "bridge",
+[xUnit.net 00:00:06.93]         "Argv": [
+[xUnit.net 00:00:06.93]           "dotnet",
+[xUnit.net 00:00:06.93]           "/workspace/native-1553/TestResults/production-main/9f1cb67bd0a64f36815756a5cd535006/ship/BookOfEternityGMBridge/BookOfEternityGMBridge.dll",
+[xUnit.net 00:00:06.93]           "--host",
+[xUnit.net 00:00:06.93]           "--sessionPath",
+[xUnit.net 00:00:06.93]           "/workspace/native-1553/TestResults/production-main/9f1cb67bd0a64f36815756a5cd535006/root/game_session",
+[xUnit.net 00:00:06.93]           "--pipeName",
+[xUnit.net 00:00:06.93]           "m1-f9f5ffc9d8da462593581a7c5f6bd16a"
+[xUnit.net 00:00:06.93]         ],
+[xUnit.net 00:00:06.93]         "Failure": "RuntimeError: Entrypoint exited before b'NEUTRAL READY'; \r\n==============================================\r\n Book of Eternity GM Bridge\r\n==============================================\r\nSession : /workspace/native-1553/TestResults/production-main/9f1cb67bd0a64f36815756a5cd535006/root/game_session\r\nClient  : /workspace/native-1553/TestResults/production-main/9f1cb67bd0a64f36815756a5cd535006/root\r\nRepo    : /workspace/native-1553/TestResults/production-main/9f1cb67bd0a64f36815756a5cd535006/ship\r\nPipe    : m1-f9f5ffc9d8da462593581a7c5f6bd16a\r\nThis window is the GM CLI host.\r\nYou can type here manually at any time.\r\nUse `bookofeternity.ps1 ready` after the CLI is fully ready to receive prompts.\r\n\r\nBridge fatal error:\r\nSystem.PlatformNotSupportedException: Production main launch remains fenced; only fixed neutral terminal admission is available here.\r\n   at BookOfEternityGMBridge.BridgeHost.StartShellAsync() in /workspace/native-1553/BookOfEternityGMBridge/Program.cs:line 435\r\n   at BookOfEternityGMBridge.BridgeHost.RunAsync() in /workspace/native-1553/BookOfEternityGMBridge/Program.cs:line 205\r\n   at BookOfEternityGMBridge.Program.Main(String[] args) in /workspace/native-1553/BookOfEternityGMBridge/Program.cs:line 32\r\n",
+[xUnit.net 00:00:06.93]         "EntrypointExitCode": 1,
+[xUnit.net 00:00:06.93]         "ElapsedSeconds": 0.18904211498738732
+[xUnit.net 00:00:06.93]       }
+[xUnit.net 00:00:06.93]       Stack Trace:
+[xUnit.net 00:00:06.93]         /workspace/native-1553/BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs(47,0): at BookOfEternityClient.Tests.ProductionMainLinuxFixture.RunAsync(String mode)
+[xUnit.net 00:00:06.93]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:06.95]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T19:44:18.1206278+00:00">
+        <Text>[xUnit.net 00:00:06.93]     BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

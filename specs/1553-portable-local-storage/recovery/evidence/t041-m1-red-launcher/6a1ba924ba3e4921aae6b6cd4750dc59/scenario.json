@@ -1,0 +1,18 @@
+{
+  "Success": false,
+  "Mode": "launcher",
+  "Argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "/workspace/native-1553/TestResults/production-main/6a1ba924ba3e4921aae6b6cd4750dc59/ship/BookOfEternityClient/Launcher/bookofeternity.ps1",
+    "start-bridge",
+    "visible",
+    "-SessionPath",
+    "/workspace/native-1553/TestResults/production-main/6a1ba924ba3e4921aae6b6cd4750dc59/root/game_session"
+  ],
+  "Failure": "RuntimeError: Entrypoint exited before b'NEUTRAL READY'; Exception: /workspace/native-1553/TestResults/production-main/6a1ba924ba3e4921aae6b6cd4750dc59/ship/BookOfEternityClient/Launcher/bookofeternity.ps1:713\r\nLine |\r\n 713 |          throw \"Bridge project not found: $projectPath\"\r\n     |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n     | Bridge project not found:\r\n     | /workspace/native-1553/TestResults/production-main/6a1ba924ba3e4921aae6b6cd4750dc59/ship/BookOfEternityGMBridge/BookOfEternityGMBridge.csproj\r\n",
+  "EntrypointExitCode": 1,
+  "ElapsedSeconds": 0.8211347369942814
+}
