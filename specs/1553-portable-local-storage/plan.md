@@ -100,6 +100,14 @@ production behavior weakened.43.3185723s, cleanup complete, no timeout; runner s
 before the remaining96 planned storage/failure cases. Evidence:
 recovery/evidence/worker-r2-mode-observation-failure/manifest.json. Fresh affected
 selection retry is required; no corruption GREEN claim yet.
+The sharing hypothesis was disproved at `1abfa1e0e231577ca95acd1aa68d45132a368d07`:
+the same6 snapshot errors persisted,2PASS/6FAIL,46.0870869s, cleanup complete; the
+remaining96 cases again did not run. Stopped that approach after the repeat. The
+storage observer reads state bytes, not the locked owner file, so its sharing mode
+was not applicable. Corrected the test boundary instead: while owner is held, compare
+exact mode/state bytes around live refusal; release it normally, then snapshot all
+files (including locks) around cold refusal. No alternate/native lock read or
+production change. Evidence: recovery/evidence/worker-r2-mode-observation-sharing-failure/manifest.json.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="4a71be33-dca8-4703-acdf-c8e4e62f7078" name="@c7669543e9c7 2026-10-06 02:26:28" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T02:26:28.3237810+00:00" queuing="2026-10-06T02:26:28.3237810+00:00" start="2026-10-06T02:26:25.7177191+00:00" finish="2026-10-06T02:26:28.3330908+00:00" />
+  <TestSettings name="default" id="711e7aea-7564-4d13-8e06-556e92323080">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_02_26_28" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="5c8ef019-3e44-45d7-8db6-39d779790643" testId="300259a8-b402-b47e-f63a-be099be854b4" testName="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;duplicate-field&quot;)" computerName="c7669543e9c7" duration="00:00:00.0088854" startTime="2026-10-06T02:26:28.2064490+00:00" endTime="2026-10-06T02:26:28.2064492+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5c8ef019-3e44-45d7-8db6-39d779790643">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.IOException : The process cannot access the file '/workspace/t1553/boe-ledger-53bc780912c14440b40c23a0309eccbb/root/.boe_runtime/worker-runs-v1/owner.lock' because it is being used by another process.</Message>
+          <StackTrace>   at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64&amp; fileLength, UnixFileMode&amp; filePermissions)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.SnapshotHash(String path) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 100
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.&lt;&gt;c__DisplayClass3_0.&lt;Snapshot&gt;b__0(String path) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 93
+   at System.Linq.Enumerable.SelectIPartitionIterator`2.LazyToArray()
+   at System.Linq.Enumerable.SelectIPartitionIterator`2.ToArray()
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.Snapshot(WorkerLedgerTarget target) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 92
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 82
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 89
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="392a6359-108b-41d4-baff-bfa55c3173cd" testId="a38fe69b-705e-9939-b2dc-dbd171e50374" testName="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;unknown-field&quot;)" computerName="c7669543e9c7" duration="00:00:00.1449820" startTime="2026-10-06T02:26:28.1638217+00:00" endTime="2026-10-06T02:26:28.1638516+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="392a6359-108b-41d4-baff-bfa55c3173cd">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.IOException : The process cannot access the file '/workspace/t1553/boe-ledger-62256542f7fe4d69bb34a17d2c55a3c9/root/.boe_runtime/worker-runs-v1/owner.lock' because it is being used by another process.</Message>
+          <StackTrace>   at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64&amp; fileLength, UnixFileMode&amp; filePermissions)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.SnapshotHash(String path) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 100
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.&lt;&gt;c__DisplayClass3_0.&lt;Snapshot&gt;b__0(String path) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 93
+   at System.Linq.Enumerable.SelectIPartitionIterator`2.LazyToArray()
+   at System.Linq.Enumerable.SelectIPartitionIterator`2.ToArray()
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.Snapshot(WorkerLedgerTarget target) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 92
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 82
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 89
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="cdbc65f6-dcde-4fd3-9aeb-0bc598c4df00" testId="9445fcad-ce34-5649-938e-ec0a08e3e9da" testName="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DurableMode_BindsRootBeforeInitializationAndAlwaysRejectsLegacy" computerName="c7669543e9c7" duration="00:00:00.0104174" startTime="2026-10-06T02:26:28.2366929+00:00" endTime="2026-10-06T02:26:28.2366931+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cdbc65f6-dcde-4fd3-9aeb-0bc598c4df00" />
+    <UnitTestResult executionId="a6eb388c-a667-4cdd-8d5e-0a154081605e" testId="1e18656f-bdfc-ba68-8840-012bcf01a8e4" testName="BookOfEternityClient.Tests.GmWorkerRestartModeTests.LegacyMode_RetainsCommonLockAndNeverUpgradesToDurable" computerName="c7669543e9c7" duration="00:00:00.0201214" startTime="2026-10-06T02:26:28.2266148+00:00" endTime="2026-10-06T02:26:28.2266150+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a6eb388c-a667-4cdd-8d5e-0a154081605e" />
+    <UnitTestResult executionId="d39bc6f4-72da-4ac7-abeb-4ebbca477d83" testId="578dee10-2779-d99c-6aa4-b501193c600f" testName="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;unknown-mode&quot;)" computerName="c7669543e9c7" duration="00:00:00.0118791" startTime="2026-10-06T02:26:28.1894322+00:00" endTime="2026-10-06T02:26:28.1894324+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d39bc6f4-72da-4ac7-abeb-4ebbca477d83">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.IOException : The process cannot access the file '/workspace/t1553/boe-ledger-f213c2540cc549e4b96ae8bc8c82aff0/root/.boe_runtime/worker-runs-v1/owner.lock' because it is being used by another process.</Message>
+          <StackTrace>   at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64&amp; fileLength, UnixFileMode&amp; filePermissions)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.SnapshotHash(String path) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 100
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.&lt;&gt;c__DisplayClass3_0.&lt;Snapshot&gt;b__0(String path) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 93
+   at System.Linq.Enumerable.SelectIPartitionIterator`2.LazyToArray()
+   at System.Linq.Enumerable.SelectIPartitionIterator`2.ToArray()
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.Snapshot(WorkerLedgerTarget target) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 92
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 82
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 89
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1ee4a8a5-d1bd-4672-b34c-0975ba50e171" testId="b6622347-17c4-c9f4-e926-7fadc0a3f5ca" testName="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;missing&quot;)" computerName="c7669543e9c7" duration="00:00:00.0135948" startTime="2026-10-06T02:26:28.1758284+00:00" endTime="2026-10-06T02:26:28.1758286+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1ee4a8a5-d1bd-4672-b34c-0975ba50e171">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.IOException : The process cannot access the file '/workspace/t1553/boe-ledger-25a71d9a4dd246839d31589d664a7d9e/root/.boe_runtime/worker-runs-v1/owner.lock' because it is being used by another process.</Message>
+          <StackTrace>   at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64&amp; fileLength, UnixFileMode&amp; filePermissions)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.SnapshotHash(String path) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 100
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.&lt;&gt;c__DisplayClass3_0.&lt;Snapshot&gt;b__0(String path) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 93
+   at System.Linq.Enumerable.SelectIPartitionIterator`2.LazyToArray()
+   at System.Linq.Enumerable.SelectIPartitionIterator`2.ToArray()
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.Snapshot(WorkerLedgerTarget target) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 92
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 82
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 89
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c1e6b054-32b8-448a-b770-b93d99855412" testId="71c2b540-4ed8-8239-074a-74af2fb25cc6" testName="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;wrong-root&quot;)" computerName="c7669543e9c7" duration="00:00:00.0092834" startTime="2026-10-06T02:26:28.1971510+00:00" endTime="2026-10-06T02:26:28.1971512+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c1e6b054-32b8-448a-b770-b93d99855412">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.IOException : The process cannot access the file '/workspace/t1553/boe-ledger-8577dbdb53434bd484d4e5ac6c99e48c/root/.boe_runtime/worker-runs-v1/owner.lock' because it is being used by another process.</Message>
+          <StackTrace>   at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64&amp; fileLength, UnixFileMode&amp; filePermissions)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.SnapshotHash(String path) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 100
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.&lt;&gt;c__DisplayClass3_0.&lt;Snapshot&gt;b__0(String path) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 93
+   at System.Linq.Enumerable.SelectIPartitionIterator`2.LazyToArray()
+   at System.Linq.Enumerable.SelectIPartitionIterator`2.ToArray()
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.Snapshot(WorkerLedgerTarget target) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 92
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 82
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 89
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="05c02c77-1992-4c36-963d-5910200d1ce2" testId="570654ef-28da-0b7e-8206-e903118a4658" testName="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;empty&quot;)" computerName="c7669543e9c7" duration="00:00:00.0094462" startTime="2026-10-06T02:26:28.1698456+00:00" endTime="2026-10-06T02:26:28.1698458+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="05c02c77-1992-4c36-963d-5910200d1ce2">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.IOException : The process cannot access the file '/workspace/t1553/boe-ledger-1f2f56679a534878906441964eb2e00a/root/.boe_runtime/worker-runs-v1/owner.lock' because it is being used by another process.</Message>
+          <StackTrace>   at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64&amp; fileLength, UnixFileMode&amp; filePermissions)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.SnapshotHash(String path) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 100
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.&lt;&gt;c__DisplayClass3_0.&lt;Snapshot&gt;b__0(String path) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 93
+   at System.Linq.Enumerable.SelectIPartitionIterator`2.LazyToArray()
+   at System.Linq.Enumerable.SelectIPartitionIterator`2.ToArray()
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.Snapshot(WorkerLedgerTarget target) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 92
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 82
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 89
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartModeTests.LegacyMode_RetainsCommonLockAndNeverUpgradesToDurable" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1e18656f-bdfc-ba68-8840-012bcf01a8e4">
+      <Execution id="a6eb388c-a667-4cdd-8d5e-0a154081605e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartModeTests" name="LegacyMode_RetainsCommonLockAndNeverUpgradesToDurable" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;duplicate-field&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="300259a8-b402-b47e-f63a-be099be854b4">
+      <Execution id="5c8ef019-3e44-45d7-8db6-39d779790643" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartModeTests" name="DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;empty&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="570654ef-28da-0b7e-8206-e903118a4658">
+      <Execution id="05c02c77-1992-4c36-963d-5910200d1ce2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartModeTests" name="DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DurableMode_BindsRootBeforeInitializationAndAlwaysRejectsLegacy" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9445fcad-ce34-5649-938e-ec0a08e3e9da">
+      <Execution id="cdbc65f6-dcde-4fd3-9aeb-0bc598c4df00" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartModeTests" name="DurableMode_BindsRootBeforeInitializationAndAlwaysRejectsLegacy" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;unknown-mode&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="578dee10-2779-d99c-6aa4-b501193c600f">
+      <Execution id="d39bc6f4-72da-4ac7-abeb-4ebbca477d83" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartModeTests" name="DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;wrong-root&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="71c2b540-4ed8-8239-074a-74af2fb25cc6">
+      <Execution id="c1e6b054-32b8-448a-b770-b93d99855412" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartModeTests" name="DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;missing&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b6622347-17c4-c9f4-e926-7fadc0a3f5ca">
+      <Execution id="1ee4a8a5-d1bd-4672-b34c-0975ba50e171" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartModeTests" name="DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;unknown-field&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a38fe69b-705e-9939-b2dc-dbd171e50374">
+      <Execution id="392a6359-108b-41d4-baff-bfa55c3173cd" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartModeTests" name="DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="300259a8-b402-b47e-f63a-be099be854b4" executionId="5c8ef019-3e44-45d7-8db6-39d779790643" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a38fe69b-705e-9939-b2dc-dbd171e50374" executionId="392a6359-108b-41d4-baff-bfa55c3173cd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9445fcad-ce34-5649-938e-ec0a08e3e9da" executionId="cdbc65f6-dcde-4fd3-9aeb-0bc598c4df00" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1e18656f-bdfc-ba68-8840-012bcf01a8e4" executionId="a6eb388c-a667-4cdd-8d5e-0a154081605e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="578dee10-2779-d99c-6aa4-b501193c600f" executionId="d39bc6f4-72da-4ac7-abeb-4ebbca477d83" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b6622347-17c4-c9f4-e926-7fadc0a3f5ca" executionId="1ee4a8a5-d1bd-4672-b34c-0975ba50e171" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="71c2b540-4ed8-8239-074a-74af2fb25cc6" executionId="c1e6b054-32b8-448a-b770-b93d99855412" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="570654ef-28da-0b7e-8206-e903118a4658" executionId="05c02c77-1992-4c36-963d-5910200d1ce2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="8" executed="8" passed="2" failed="6" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.28]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.64]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.67]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.88]       System.IO.IOException : The process cannot access the file '/workspace/t1553/boe-ledger-62256542f7fe4d69bb34a17d2c55a3c9/root/.boe_runtime/worker-runs-v1/owner.lock' because it is being used by another process.
+[xUnit.net 00:00:01.88]       Stack Trace:
+[xUnit.net 00:00:01.88]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64&amp; fileLength, UnixFileMode&amp; filePermissions)
+[xUnit.net 00:00:01.88]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:01.88]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:01.88]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+[xUnit.net 00:00:01.88]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(100,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.SnapshotHash(String path)
+[xUnit.net 00:00:01.88]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(93,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.&lt;&gt;c__DisplayClass3_0.&lt;Snapshot&gt;b__0(String path)
+[xUnit.net 00:00:01.88]            at System.Linq.Enumerable.SelectIPartitionIterator`2.LazyToArray()
+[xUnit.net 00:00:01.88]            at System.Linq.Enumerable.SelectIPartitionIterator`2.ToArray()
+[xUnit.net 00:00:01.88]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(92,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.Snapshot(WorkerLedgerTarget target)
+[xUnit.net 00:00:01.88]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(82,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.88]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(89,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.88]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.89]       System.IO.IOException : The process cannot access the file '/workspace/t1553/boe-ledger-1f2f56679a534878906441964eb2e00a/root/.boe_runtime/worker-runs-v1/owner.lock' because it is being used by another process.
+[xUnit.net 00:00:01.89]       Stack Trace:
+[xUnit.net 00:00:01.89]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64&amp; fileLength, UnixFileMode&amp; filePermissions)
+[xUnit.net 00:00:01.89]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:01.89]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:01.89]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+[xUnit.net 00:00:01.89]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(100,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.SnapshotHash(String path)
+[xUnit.net 00:00:01.89]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(93,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.&lt;&gt;c__DisplayClass3_0.&lt;Snapshot&gt;b__0(String path)
+[xUnit.net 00:00:01.89]            at System.Linq.Enumerable.SelectIPartitionIterator`2.LazyToArray()
+[xUnit.net 00:00:01.89]            at System.Linq.Enumerable.SelectIPartitionIterator`2.ToArray()
+[xUnit.net 00:00:01.89]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(92,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.Snapshot(WorkerLedgerTarget target)
+[xUnit.net 00:00:01.89]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(82,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.89]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(89,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.89]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.89]       System.IO.IOException : The process cannot access the file '/workspace/t1553/boe-ledger-25a71d9a4dd246839d31589d664a7d9e/root/.boe_runtime/worker-runs-v1/owner.lock' because it is being used by another process.
+[xUnit.net 00:00:01.89]       Stack Trace:
+[xUnit.net 00:00:01.89]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64&amp; fileLength, UnixFileMode&amp; filePermissions)
+[xUnit.net 00:00:01.89]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:01.89]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:01.89]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+[xUnit.net 00:00:01.89]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(100,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.SnapshotHash(String path)
+[xUnit.net 00:00:01.89]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(93,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.&lt;&gt;c__DisplayClass3_0.&lt;Snapshot&gt;b__0(String path)
+[xUnit.net 00:00:01.89]            at System.Linq.Enumerable.SelectIPartitionIterator`2.LazyToArray()
+[xUnit.net 00:00:01.89]            at System.Linq.Enumerable.SelectIPartitionIterator`2.ToArray()
+[xUnit.net 00:00:01.89]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(92,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.Snapshot(WorkerLedgerTarget target)
+[xUnit.net 00:00:01.90]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(82,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.90]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(89,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.90]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.91]       System.IO.IOException : The process cannot access the file '/workspace/t1553/boe-ledger-f213c2540cc549e4b96ae8bc8c82aff0/root/.boe_runtime/worker-runs-v1/owner.lock' because it is being used by another process.
+[xUnit.net 00:00:01.91]       Stack Trace:
+[xUnit.net 00:00:01.91]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64&amp; fileLength, UnixFileMode&amp; filePermissions)
+[xUnit.net 00:00:01.91]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:01.91]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:01.91]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+[xUnit.net 00:00:01.91]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(100,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.SnapshotHash(String path)
+[xUnit.net 00:00:01.91]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(93,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.&lt;&gt;c__DisplayClass3_0.&lt;Snapshot&gt;b__0(String path)
+[xUnit.net 00:00:01.91]            at System.Linq.Enumerable.SelectIPartitionIterator`2.LazyToArray()
+[xUnit.net 00:00:01.91]            at System.Linq.Enumerable.SelectIPartitionIterator`2.ToArray()
+[xUnit.net 00:00:01.91]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(92,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.Snapshot(WorkerLedgerTarget target)
+[xUnit.net 00:00:01.91]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(82,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.91]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(89,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.91]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.92]       System.IO.IOException : The process cannot access the file '/workspace/t1553/boe-ledger-8577dbdb53434bd484d4e5ac6c99e48c/root/.boe_runtime/worker-runs-v1/owner.lock' because it is being used by another process.
+[xUnit.net 00:00:01.92]       Stack Trace:
+[xUnit.net 00:00:01.92]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64&amp; fileLength, UnixFileMode&amp; filePermissions)
+[xUnit.net 00:00:01.92]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:01.92]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:01.92]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+[xUnit.net 00:00:01.92]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(100,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.SnapshotHash(String path)
+[xUnit.net 00:00:01.92]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(93,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.&lt;&gt;c__DisplayClass3_0.&lt;Snapshot&gt;b__0(String path)
+[xUnit.net 00:00:01.92]            at System.Linq.Enumerable.SelectIPartitionIterator`2.LazyToArray()
+[xUnit.net 00:00:01.92]            at System.Linq.Enumerable.SelectIPartitionIterator`2.ToArray()
+[xUnit.net 00:00:01.92]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(92,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.Snapshot(WorkerLedgerTarget target)
+[xUnit.net 00:00:01.92]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(82,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.92]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(89,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.92]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.93]       System.IO.IOException : The process cannot access the file '/workspace/t1553/boe-ledger-53bc780912c14440b40c23a0309eccbb/root/.boe_runtime/worker-runs-v1/owner.lock' because it is being used by another process.
+[xUnit.net 00:00:01.93]       Stack Trace:
+[xUnit.net 00:00:01.93]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64&amp; fileLength, UnixFileMode&amp; filePermissions)
+[xUnit.net 00:00:01.93]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:01.93]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:01.93]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+[xUnit.net 00:00:01.93]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(100,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.SnapshotHash(String path)
+[xUnit.net 00:00:01.93]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(93,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.&lt;&gt;c__DisplayClass3_0.&lt;Snapshot&gt;b__0(String path)
+[xUnit.net 00:00:01.93]            at System.Linq.Enumerable.SelectIPartitionIterator`2.LazyToArray()
+[xUnit.net 00:00:01.93]            at System.Linq.Enumerable.SelectIPartitionIterator`2.ToArray()
+[xUnit.net 00:00:01.93]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(92,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.Snapshot(WorkerLedgerTarget target)
+[xUnit.net 00:00:01.93]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(82,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.93]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(89,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.93]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.96]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:26:28.1585811+00:00">
+        <Text>[xUnit.net 00:00:01.88]     BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: "unknown-field") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:26:28.1712316+00:00">
+        <Text>[xUnit.net 00:00:01.89]     BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: "empty") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:26:28.1746235+00:00">
+        <Text>[xUnit.net 00:00:01.89]     BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: "missing") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:26:28.1876012+00:00">
+        <Text>[xUnit.net 00:00:01.91]     BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: "unknown-mode") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:26:28.1970140+00:00">
+        <Text>[xUnit.net 00:00:01.92]     BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: "wrong-root") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:26:28.2085275+00:00">
+        <Text>[xUnit.net 00:00:01.92]     BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: "duplicate-field") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>
