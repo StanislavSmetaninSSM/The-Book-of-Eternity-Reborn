@@ -5,6 +5,10 @@ public sealed class GmMainOperationLinuxTests
     [Fact]
     public async Task OriginalOwner_ActualPipeRetainsParticipatingOperation()=>await GmOwnedTerminalLinuxTests.RunAsync("terminal-main-operation-positive");
     [Theory]
+    [InlineData("terminal-main-operation-status-fault")]
+    [InlineData("terminal-main-operation-status-stall")]
+    public async Task OriginalOwner_StatusRetirementFaultBoundary(string mode)=>await GmOwnedTerminalLinuxTests.RunAsync(mode);
+    [Theory]
     [InlineData("terminal-main-operation-omitted-close")]
     [InlineData("terminal-main-operation-activation-exit")]
     [InlineData("terminal-main-operation-client-positive")]

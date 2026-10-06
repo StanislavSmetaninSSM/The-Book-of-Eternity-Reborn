@@ -37,6 +37,40 @@ internal static class MainOperationScenarioDriver
                 running=(Task<int>)type.GetMethod("RunAsync")!.Invoke(host,null)!;
                 for(var i=0;i<200 && type.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host) is not GmSessionRunCoordinator {Record.Disposition:GmSessionRunDisposition.Running};i++)await Task.Delay(5);
             } else await Call("StartShellAsync");
+            if (mode is "terminal-main-operation-status-fault" or "terminal-main-operation-status-stall") {
+                var terminal=(IOwnedTerminalSession)type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
+                var statusOwner=(GmSessionRunCoordinator)type.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
+                var entered=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+                var release=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+                type.GetField("BeforeStatusPublication",BindingFlags.Instance|BindingFlags.NonPublic)!.SetValue(host,(Func<Task>)(async()=>{
+                    entered.TrySetResult();await release.Task;
+                    if(mode.EndsWith("fault",StringComparison.Ordinal))throw new IOException("Controlled status failure.");
+                }));
+                type.GetMethod("WriteStatusFile",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,null);
+                await entered.Task.WaitAsync(TimeSpan.FromSeconds(1));
+                Task? stopping=null;
+                try {
+                    if(mode.EndsWith("fault",StringComparison.Ordinal)) {
+                        release.TrySetResult();
+                        try {await (Task)type.GetField("_statusPublisher",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;}catch(IOException){}
+                        try {await Call("StopShellAsync");}catch(Exception){}
+                        if(!terminal.RootExited.IsCompleted || !statusOwner.IsUncertain || statusOwner.Record?.Disposition!=GmSessionRunDisposition.Uncertain)
+                            throw new InvalidOperationException("Status fault bypassed durable refusal and independent original physical stop.");
+                    } else {
+                        stopping=Call("StopShellAsync");await Task.Delay(150);
+                        var input=type.GetField("_inputLifetime",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
+                        if(!statusOwner.AdmissionClosed || !(bool)input.GetType().GetField("Revoked")!.GetValue(input)! || statusOwner.Record?.Disposition!=GmSessionRunDisposition.Stopping)
+                            throw new InvalidOperationException("Stalled status publisher left new admissions/input open before drain.");
+                        release.TrySetResult();await stopping.WaitAsync(TimeSpan.FromSeconds(3));
+                        if(statusOwner.Record?.Disposition!=GmSessionRunDisposition.Stopped)throw new InvalidOperationException("Revoked queued status did not settle without new writes.");
+                    }
+                    result["Success"]=true;return 0;
+                } finally {
+                    release.TrySetResult();if(stopping!=null)try{await stopping.WaitAsync(TimeSpan.FromSeconds(3));}catch{}
+                    // Independent physical cleanup is not a logical Stopped claim.
+                    await terminal.StopAndObserveAsync(CancellationToken.None);result["IndependentPhysicalCleanup"]=true;
+                }
+            }
             if(running==null)server=(Task)type.GetMethod("RunServerLoopAsync",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[control.Token])!;
             async Task<JsonElement> Rpc(object message) {
                 using var bounded=new CancellationTokenSource(TimeSpan.FromSeconds(7));

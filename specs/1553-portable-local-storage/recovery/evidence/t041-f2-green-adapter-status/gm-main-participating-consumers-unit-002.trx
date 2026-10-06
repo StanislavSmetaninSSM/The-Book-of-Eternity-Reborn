@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="6ad6858b-5459-4e98-befb-4ef32ff13a32" name="@c7669543e9c7 2026-10-06 15:39:02" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T15:39:02.3305632+00:00" queuing="2026-10-06T15:39:02.3305633+00:00" start="2026-10-06T15:38:56.2076080+00:00" finish="2026-10-06T15:39:08.0552643+00:00" />
+  <TestSettings name="default" id="58a2b675-1f5a-4d94-b357-15708949a25a">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_15_39_02" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="72f5d619-f74c-48db-a37b-4739a54f0940" testId="6be7f35f-ba17-325f-7b59-e38e06b95f01" testName="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;daemon-stale&quot;, preexisting: True)" computerName="c7669543e9c7" duration="00:00:01.0593112" startTime="2026-10-06T15:39:06.8058596+00:00" endTime="2026-10-06T15:39:06.8058601+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="72f5d619-f74c-48db-a37b-4739a54f0940" />
+    <UnitTestResult executionId="2723d3da-80ec-48fb-b0be-cefef8a32dca" testId="e5fec112-02da-73fb-078c-5d0283d99338" testName="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;daemon-status&quot;, preexisting: False)" computerName="c7669543e9c7" duration="00:00:01.6294119" startTime="2026-10-06T15:39:04.6681706+00:00" endTime="2026-10-06T15:39:04.6681710+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2723d3da-80ec-48fb-b0be-cefef8a32dca" />
+    <UnitTestResult executionId="ee55b4b0-1f78-48ee-8670-ed44176308a1" testId="b28bc208-84f7-66bd-d3a5-ced86229526f" testName="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;context-copy&quot;, preexisting: False)" computerName="c7669543e9c7" duration="00:00:01.0504425" startTime="2026-10-06T15:39:05.7211599+00:00" endTime="2026-10-06T15:39:05.7211601+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ee55b4b0-1f78-48ee-8670-ed44176308a1" />
+    <UnitTestResult executionId="8266d529-743a-4a50-b502-1b79cd0f9ace" testId="3b1b5aa9-94a8-e26d-447c-d5c4c43973bb" testName="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;bootstrap&quot;, preexisting: False)" computerName="c7669543e9c7" duration="00:00:01.1063810" startTime="2026-10-06T15:39:07.9104348+00:00" endTime="2026-10-06T15:39:07.9104351+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8266d529-743a-4a50-b502-1b79cd0f9ace" />
+    <UnitTestResult executionId="75e83d09-3a6e-418e-81e3-d33a2194c1bd" testId="a15df3a5-e563-ba75-c94f-d7b5c1e71765" testName="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;launcher-delete&quot;, preexisting: True)" computerName="c7669543e9c7" duration="00:00:01.2126914" startTime="2026-10-06T15:39:03.0352574+00:00" endTime="2026-10-06T15:39:03.0352578+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="75e83d09-3a6e-418e-81e3-d33a2194c1bd" />
+    <UnitTestResult executionId="092f3fe7-8853-4213-8a3c-03fa7c7f796b" testId="b1421ab2-ba1a-6e8d-3825-886ad083b9af" testName="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;launcher-stale&quot;, preexisting: True)" computerName="c7669543e9c7" duration="00:00:01.3077178" startTime="2026-10-06T15:39:01.7542308+00:00" endTime="2026-10-06T15:39:01.7542536+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="092f3fe7-8853-4213-8a3c-03fa7c7f796b" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;launcher-stale&quot;, preexisting: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b1421ab2-ba1a-6e8d-3825-886ad083b9af">
+      <Execution id="092f3fe7-8853-4213-8a3c-03fa7c7f796b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests" name="RealPowerShell_StoppingHasNoCanonicalEffect" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;launcher-delete&quot;, preexisting: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a15df3a5-e563-ba75-c94f-d7b5c1e71765">
+      <Execution id="75e83d09-3a6e-418e-81e3-d33a2194c1bd" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests" name="RealPowerShell_StoppingHasNoCanonicalEffect" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;daemon-stale&quot;, preexisting: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6be7f35f-ba17-325f-7b59-e38e06b95f01">
+      <Execution id="72f5d619-f74c-48db-a37b-4739a54f0940" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests" name="RealPowerShell_StoppingHasNoCanonicalEffect" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;bootstrap&quot;, preexisting: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3b1b5aa9-94a8-e26d-447c-d5c4c43973bb">
+      <Execution id="8266d529-743a-4a50-b502-1b79cd0f9ace" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests" name="RealPowerShell_StoppingHasNoCanonicalEffect" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;daemon-status&quot;, preexisting: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e5fec112-02da-73fb-078c-5d0283d99338">
+      <Execution id="2723d3da-80ec-48fb-b0be-cefef8a32dca" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests" name="RealPowerShell_StoppingHasNoCanonicalEffect" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;context-copy&quot;, preexisting: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b28bc208-84f7-66bd-d3a5-ced86229526f">
+      <Execution id="ee55b4b0-1f78-48ee-8670-ed44176308a1" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests" name="RealPowerShell_StoppingHasNoCanonicalEffect" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="6be7f35f-ba17-325f-7b59-e38e06b95f01" executionId="72f5d619-f74c-48db-a37b-4739a54f0940" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e5fec112-02da-73fb-078c-5d0283d99338" executionId="2723d3da-80ec-48fb-b0be-cefef8a32dca" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b28bc208-84f7-66bd-d3a5-ced86229526f" executionId="ee55b4b0-1f78-48ee-8670-ed44176308a1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3b1b5aa9-94a8-e26d-447c-d5c4c43973bb" executionId="8266d529-743a-4a50-b502-1b79cd0f9ace" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a15df3a5-e563-ba75-c94f-d7b5c1e71765" executionId="75e83d09-3a6e-418e-81e3-d33a2194c1bd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b1421ab2-ba1a-6e8d-3825-886ad083b9af" executionId="092f3fe7-8853-4213-8a3c-03fa7c7f796b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="6" executed="6" passed="6" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.34]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:03.39]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:03.45]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:11.03]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

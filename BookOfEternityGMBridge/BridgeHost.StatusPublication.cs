@@ -6,6 +6,7 @@ namespace BookOfEternityGMBridge;
 
 internal sealed partial class BridgeHost
 {
+    internal Func<Task>? BeforeStatusPublication;
     private sealed record StatusPublication(GmSessionRunCoordinator Owner, byte[] Bytes);
     private StatusPublication? _pendingStatus;
     private TaskCompletionSource _firstStatus = SettledStatus();
@@ -62,6 +63,7 @@ internal sealed partial class BridgeHost
                 }
                 await publication.Owner.RunOperationAsync(async () =>
                 {
+                    if (BeforeStatusPublication != null) await BeforeStatusPublication();
                     await _neutralFiles!.WriteFileAtomicBytesAsync("game_state/control/gm_bridge_status.json", publication.Bytes);
                     return true;
                 });
