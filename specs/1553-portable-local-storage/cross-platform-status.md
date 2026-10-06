@@ -5,27 +5,27 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## R2 разрешён; планирование подключения lifecycle
+## R2 реализован в synthetic-контуре; финальные регрессии и ревью впереди
 
-Родитель принял R1 на `25c16dcb513de8b09fc67059465d9dcfb6b96224`. Пользователь
-выбрал рекомендованную политику: unresolved worker блокирует новые задания всего
-root. Допустимый cleanup сохраняется; Uncertain не становится подтверждённым stop.
-Работа T041-WORKER-RESTART-R2: одним связанным контуром admission до recovery,
-Release, публикация и retirement реального synthetic pool. Sol 6.1/xhigh DESIGN PASS
-на `4536638d`, открытых замечаний нет. На `73207b8f` получен причинный RED1/1:
-неизменённый pool сделал recovery4, reservation/Start/Release/publication по1 при
-cold Prepared. Два guardian ECHILD, без emergency/deadline/failures, baseline cleanup
-завершён. Отдельный первый catalog preparation failure исполнил0 тестов и сохранён.
-Следующий шаг: закрытые R2 storage/progress prerequisites и связанная реализация.
-Schema2 progress prerequisite GREEN на `215ed8c8`:35 новых +44 record +42 storage
-+54 failure =175/175 PASS,61.011s, cleanup complete. Mode binding теперь реализован:
-GREEN на `b86c6251`,8 mode +42 storage +54 failure =104/104 PASS,52.096s, cleanup
-complete. Два промежуточных fixture observation FAIL сохранены отдельно; исправлена
-граница снимка относительно held lock, production lock не менялся. Closed started-run
-transitions, root context и connected pool ещё впереди; cold pool RED остаётся.
-Доказательства и точные source hashes в плане.
-R3, public Linux Release, main PTY, live GM и реальные saves закрыты.
-Старые формулировки «R2 не разрешён» ниже относятся к истории завершения R1.
+Принятая база R1 — `25c16dcb513de8b09fc67059465d9dcfb6b96224`. Owner выбрал
+отказ новым заданиям всего root при unresolved worker; допустимый cleanup сохраняется,
+а Uncertain остаётся поглощающим. Подключены pre-recovery admission, original task/root,
+однократный Release, точная публикация и terminal ACK перед освобождением capacity.
+Обнаруженные ревьюером обходы cleanup/R1 API/audit/foreign purpose закрыты с сохранённым
+причинным RED→GREEN. Последний исходный блок `76240578`: ownership/warm6/6 PASS,
+6 guardian ECHILD, без emergency/failure/deadline; metadata `08038783` прочитана из GitHub.
+Все30 R2 manifests проверены:237 unique input blobs с привязкой к source:path,
+2,647 artifacts/348 gzip hashes; последние результаты235 различных случаев — PASS.
+Исторические494 исполнения включают429PASS/65FAIL; fixture preparation/observation
+ошибки выделены.131 guardian достиг ECHILD;2 исторических emergency signals относятся
+к первому неудачному root fixture, они не скрыты и не засчитаны как GREEN.
+Точные источники/команды/результаты — в [плане](plan.md) и `recovery/evidence/worker-r2-*`.
+
+Следующий шаг: согласованные узкие регрессии затронутого общего кода, discovery-only
+catalog/PlanOnly, независимый final Sol6.1/xhigh review и fresh GitHub-only restoration.
+T041-WORKER-RESTART-R2 ещё не отмечен выполненным. R3, public Linux Release, main PTY,
+live GM, реальные saves и Windows/systemd native qualification остаются вне этого блока.
+Старые формулировки «R2 не разрешён» ниже — история завершения R1.
 
 ## История: R1 завершён; остановка перед R2
 

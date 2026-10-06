@@ -405,6 +405,22 @@ root lock/capacity/absorbing Uncertain with zero Start and no success consumers.
 No running test sessions. Remaining: source/evidence review of this bounded fixture
 block, affected regression selection, catalog/selection audit, final independent R2
 review and fresh GitHub-only restoration. R2 remains unchecked pending those gates.
+Final regression selection reviewed by independent Sol6.1/xhigh: storage42 +failure54
+(original PrepareCore/live claims), workspace47 +receipt41 (changed shared original
+creation/cleanup), focused host9 +Linux policy13, scoped execution evidence13 +consumer4.
+Keep generation and the two narrow lease-consumer categories plus two exact existing
+positive null-purpose mutation/publication controls. Combined selection deduplicates
+workspace/receipt shared guards; no catalog split solely for overlap. Separate reaper
+category omitted: four cases overlap receipt; two distinct fake-owner scheduler tests
+exercise unchanged lower-level scheduling. No unchanged ledger-process34, IPC/ENV/
+FRAME/output/input/main-record or all-B replay. Portable CI uses managed-policy only,
+not Linux-only admission/host fixtures. Both explicit selection files now describe R2.
+Next fresh combined selected regression run, then PlanOnly of final explicit selections
+and ValidateCatalog discovery only. These do not imply Windows native qualification.
+Evidence audit currently verifies30 manifests/237 unique source-bound blobs/2647artifacts/
+348gzip, latest235 distinct PASS, historical494executions429PASS65FAIL. All131guardians
+ECHILD;2 historical emergency signals remain recorded from the initial failed root
+fixture. No final R2 PASS yet; final source/evidence review and GitHub-only restore pending.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

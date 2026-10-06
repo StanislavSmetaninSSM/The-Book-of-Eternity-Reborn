@@ -13095,6 +13095,32 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-restart-default-controls",
+      "responsibility": "Two existing positive ordinary null-worker-purpose controls for exact logical mutations and prepared complete publication after shared R2 guard insertion.",
+      "excludes": "No worker admission, native execution, full storage matrix or unrelated gameplay.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.cs",
+        "BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs",
+        "BookOfEternityClient/Core/TrustedLocalFilePublication.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriteAppendCompareExchangeAndDeleteUseExactLogicalContent",
+            "BookOfEternityClient.Tests.PortableClientStorageTests.PreparedCanonicalSetPublishesOneLogicalResultWithoutPhysicalReceipt"
+          ]
+        }
+      ]
     }
   ]
 }
