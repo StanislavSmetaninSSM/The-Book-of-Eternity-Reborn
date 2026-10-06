@@ -3,7 +3,7 @@
   "Task": "T041-OWNED-MAIN-TERMINAL-NEUTRAL",
   "Issue": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553",
   "AcceptedDesign": "3b21dba7410284cb4b471e7b3c3e4be970139c27",
-  "Status": "WIP authorized execution; runtime not implemented or qualified",
+  "Status": "WIP actual retained-owner causal RED proved; scoped retirement GREEN pending",
   "Method": "Spec Kit existing feature, Superpowers executing-plans/TDD, bridge; sole writer and separate Sol6.1/xhigh review",
   "Preflight": "Existing isolated linked worktree, exact remote base and clean tree. One shared session feeds original input/output/dispatch; original native reaper remains the sole ownership engine. No interface conflict found.",
   "Ledger": [
@@ -12,7 +12,8 @@
     "Runtime/tests executed in this implementation so far: 0.",
     "Compile-ready IOwnedTerminalSession consumed by original _pty/input/output. ConPTY facade retains legacy Dispose; actualStop controlled fixture written first. gm-owned-terminal-session owns the one new assertion. Causal RED not run yet.",
     "Preparation failure at8ef8d646: catalog.related requires {id,when}, supplied strings. Runner rejected before build/test;0executions, no causal RED. Corrected structurally at source after comparing parser/working catalog entries.",
-    "Preparation at80cbc62a: C# adapter passed int dimensions to existing short ConPTY Resize (CS1503 x2). Fresh build failed before discovery/test,0executions/runnercleanupcomplete. Checked narrowing added; no retirement fix yet. Pre-existing CS1587 warnings in three unrelated game/UI files remain."
+    "Preparation at80cbc62a: C# adapter passed int dimensions to existing short ConPTY Resize (CS1503 x2). Fresh build failed before discovery/test,0executions/runnercleanupcomplete. Checked narrowing added; no retirement fix yet. Pre-existing CS1587 warnings in three unrelated game/UI files remain.",
+    "Causal RED96791f71: actual BridgeHost StopShell1/1 executed FAIL, Assert.Same expected original HeldTerminal but _pty null before scoped/output completion. Fixture finally settled original tasks; runner owned cleanup complete. Changed StopShell to retained once-owned stop/dispose tasks, matching scoped proof plus actual drain before clearing; timeout/error absorbs Uncertain."
   ],
   "Cohorts": [
     {
@@ -26,6 +27,15 @@
       "Source": "80cbc62a98aa31cc69b8a1ea3ce1b2784bd576b9",
       "Executed": 0,
       "Manifest": "recovery/evidence/t041-terminal-build-preparation/manifest.json"
+    },
+    {
+      "Kind": "causal RED",
+      "Source": "96791f713c5572579abfda613598d3155c151529",
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1,
+      "Manifest": "recovery/evidence/t041-terminal-retirement-red/manifest.json",
+      "Cleanup": "complete, controlled tasks settled"
     }
   ],
   "ProductionMainReleaseEnabled": false,

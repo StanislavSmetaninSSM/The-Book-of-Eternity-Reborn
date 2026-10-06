@@ -132,6 +132,9 @@ internal sealed partial class BridgeHost : IDisposable
     private readonly StringBuilder _recentOutput = new();
 
     private IOwnedTerminalSession? _pty;
+    private Task<TerminalStopEvidence>? _terminalStopTask;
+    private Task? _terminalDisposeTask;
+    private bool _terminalUncertain;
     private Stream? _ptyInput;
     private Task? _outputPumpTask;
     private Task? _keyboardPumpTask;
@@ -422,14 +425,30 @@ internal sealed partial class BridgeHost : IDisposable
         {
             input = _inputLifetime;
             pty = _pty;
-            _pty = null;
-            _ptyInput = null;
         }
         if (input != null)
             RevokeInputLifetime(input);
-        try { if (pty != null) await pty.DisposeAsync(); } catch { /* Preparation preserves old retirement behavior. */ }
+        if (pty != null)
+        {
+            try
+            {
+                _terminalStopTask ??= ObserveScopedTerminalStopAsync(pty);
+                var proof = await _terminalStopTask.WaitAsync(InputDrainTimeout);
+                if (_terminalUncertain || proof.Identity != pty.Identity ||
+                    proof.State != GmWorkerStopState.StoppedWithinScope || !proof.CleanupComplete)
+                    throw new InvalidOperationException("Original terminal scoped stop is unconfirmed.");
+            }
+            catch (Exception ex)
+            {
+                MarkTerminalUncertain();
+                throw new TimeoutException("Original terminal owner is retained as Uncertain.", ex);
+            }
+        }
         if (input == null)
+        {
+            if (pty != null) await RetireTerminalHandlesAsync(pty);
             return;
+        }
 
         Task drain;
         lock (_sync)
@@ -445,6 +464,7 @@ internal sealed partial class BridgeHost : IDisposable
         try { await drain.WaitAsync(InputDrainTimeout); }
         catch (TimeoutException)
         {
+            if (pty != null) MarkTerminalUncertain();
             lock (_sync)
             {
                 if (ReferenceEquals(_inputLifetime, input))
@@ -456,6 +476,7 @@ internal sealed partial class BridgeHost : IDisposable
             }
             throw; // Keep actual tasks, binding and CTS for the next stop attempt.
         }
+        if (pty != null) await RetireTerminalHandlesAsync(pty);
         lock (_sync)
         {
             if (ReferenceEquals(_inputLifetime, input))
@@ -468,6 +489,43 @@ internal sealed partial class BridgeHost : IDisposable
             }
         }
         input.Cancellation.Dispose();
+    }
+
+    private static async Task<TerminalStopEvidence> ObserveScopedTerminalStopAsync(IOwnedTerminalSession session) =>
+        await session.StopAndObserveAsync(CancellationToken.None);
+
+    private void MarkTerminalUncertain()
+    {
+        lock (_sync)
+        {
+            _terminalUncertain = true;
+            _status.Ready = false;
+            _status.State = "TerminalUncertain";
+            _status.LastError = "Original terminal ownership or I/O settlement is uncertain; replacement remains blocked.";
+            TryWriteInputStatus();
+        }
+    }
+
+    private async Task RetireTerminalHandlesAsync(IOwnedTerminalSession session)
+    {
+        try
+        {
+            _terminalDisposeTask ??= session.DisposeAsync().AsTask();
+            await _terminalDisposeTask.WaitAsync(InputDrainTimeout);
+        }
+        catch (Exception ex)
+        {
+            MarkTerminalUncertain();
+            throw new TimeoutException("Original terminal resources remain retained.", ex);
+        }
+        lock (_sync)
+        {
+            if (!ReferenceEquals(_pty, session)) throw new InvalidOperationException("Terminal retirement identity changed.");
+            _pty = null;
+            _ptyInput = null;
+            _terminalStopTask = null;
+            _terminalDisposeTask = null;
+        }
     }
 
     private static async Task ObserveManagedDrainAsync(params Task[] tasks)
