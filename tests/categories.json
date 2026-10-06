@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-main-participating-consumers",
+      "responsibility": "#1553 F2 actual inert PowerShell/client/browser consumers and mutation/finalization boundaries.",
+      "excludes": "No F3, production GM, actual saves, systemd or native Windows qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "BookOfEternityClient/Launcher/",
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "BookOfEternityClient/WebUi/"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-main-operation-pins",
       "responsibility": "#1553 F2 real pipe protocol/client identity and preserved T042 transport boundaries.",
       "excludes": "No F3, production GM, actual saves, systemd or native Windows qualification.",

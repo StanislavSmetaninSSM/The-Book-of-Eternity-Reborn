@@ -28,6 +28,11 @@ internal static class MainOperationScenarioDriver
             type=Assembly.LoadFrom(Path.Combine(repo,"BookOfEternityGMBridge/bin",configuration,"net8.0/BookOfEternityGMBridge.dll")).GetType("BookOfEternityGMBridge.BridgeHost",true)!;
             var pipeName="f2-"+Guid.NewGuid().ToString("N");host=Activator.CreateInstance(type,[launch.Scratch,pipeName]);
             type.GetMethod("ConfigureNeutral",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[launch]);
+            if(mode=="terminal-main-operation-status-admission") {
+                type.GetMethod("WriteStatusFile",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,null);
+                if(File.Exists(Path.Combine(launch.Scratch,"game_state/control/gm_bridge_status.json")))throw new InvalidOperationException("Canonical status published before original admission.");
+                result["Success"]=true;return 0;
+            }
             if(mode=="terminal-main-operation-shutdown") {
                 running=(Task<int>)type.GetMethod("RunAsync")!.Invoke(host,null)!;
                 for(var i=0;i<200 && type.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host) is not GmSessionRunCoordinator {Record.Disposition:GmSessionRunDisposition.Running};i++)await Task.Delay(5);
