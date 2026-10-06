@@ -1,0 +1,7 @@
+10.0.401
+Microsoft.AspNetCore.App 8.0.31 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.AspNetCore.App]
+Microsoft.AspNetCore.App 10.0.12 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.AspNetCore.App]
+Microsoft.NETCore.App 8.0.31 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.NETCore.App]
+Microsoft.NETCore.App 10.0.12 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.NETCore.App]
+7.5.4
+cc (Debian 14.2.0-19) 14.2.0

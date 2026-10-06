@@ -3,7 +3,7 @@
   "Task": "T041-OWNED-MAIN-TERMINAL-NEUTRAL",
   "Issue": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553",
   "AcceptedDesign": "3b21dba7410284cb4b471e7b3c3e4be970139c27",
-  "Status": "WIP actual retained-owner RED1/1\u2192GREEN1/1; native terminal/view/Windows owner not implemented yet",
+  "Status": "WIP native connected9/9 PASS; Windows/portable controls/final review pending",
   "Method": "Spec Kit existing feature, Superpowers executing-plans/TDD, bridge; sole writer and separate Sol6.1/xhigh review",
   "Preflight": "Existing isolated linked worktree, exact remote base and clean tree. One shared session feeds original input/output/dispatch; original native reaper remains the sole ownership engine. No interface conflict found.",
   "Ledger": [
@@ -93,5 +93,36 @@
     "Passed": 2,
     "Evidence": "evidence/t041-terminal-bridge-view-green/manifest.json",
     "Scope": "actual native BridgeHost initial reliable idle view; prompt sequences and Windows still pending"
+  },
+  "NativeReviewRed": {
+    "Source": "fa73c4b7af8433805e29e12a1eb5fd458a377200",
+    "Executed": 8,
+    "Passed": 5,
+    "Failed": 3,
+    "Evidence": "evidence/t041-terminal-native-review-red/manifest.json",
+    "Causes": [
+      "actual EOF retirement",
+      "late I/O uncertainty overrides cached stop",
+      "gated stdio descriptors"
+    ]
+  },
+  "NativeAuthorityRed": {
+    "Source": "31268a4d9d278037a9c0fc5c74e005046e11ab29",
+    "Executed": 9,
+    "Passed": 7,
+    "Failed": 2,
+    "Evidence": "evidence/t041-terminal-live-authority-red/manifest.json",
+    "Causes": [
+      "actual closed status reader with live root permits old readiness",
+      "manual stale idle observation"
+    ]
+  },
+  "NativeConnectedGreen": {
+    "Source": "340889ce460a189dfeee7d113d140292df446d1b",
+    "Executed": 9,
+    "Passed": 9,
+    "Evidence": "evidence/t041-terminal-connected-native-green/manifest.json",
+    "Guardian": "all9 ECHILD, emergency0, failures0, deadlinefalse",
+    "Scope": "bounded linux-x64/glibc neutral fixture, actual bridge/T042 view/input/pipe; no production main/systemd/Windows"
   }
 }
