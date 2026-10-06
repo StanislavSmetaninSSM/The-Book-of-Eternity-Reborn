@@ -21,7 +21,7 @@ internal sealed class ConPtySession : IDisposable, IOwnedTerminalSession
     public Task<TerminalRootExit> RootExited { get; }
     public ValueTask ResizeAsync(TerminalSize size, CancellationToken waitToken)
     {
-        waitToken.ThrowIfCancellationRequested(); Resize(size.Columns, size.Rows);
+        waitToken.ThrowIfCancellationRequested(); Resize(checked((short)size.Columns), checked((short)size.Rows));
         return ValueTask.CompletedTask;
     }
     public Task<TerminalStopEvidence> StopAndObserveAsync(CancellationToken waitToken) =>
