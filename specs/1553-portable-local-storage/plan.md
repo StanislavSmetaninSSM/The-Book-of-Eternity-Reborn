@@ -370,6 +370,16 @@ same-owner completion has identical true cleanup facts but differs from the priv
 cached instance. It must not grant terminal ACK or release capacity; cached original
 cleanup then retries successfully. This isolates the instance check from incomplete
 cleanup rejection and adds no native children. Source test-only refinement is unrun.
+At `a50d1dd714b8acc525633bd90699bfe271a46063`,4/4 executed: both control cases
+PASS; both witness cases failed before their probe because the generic task fixture
+pinned different weather bytes from BootstrapRestartRoot.51.8276156s, complete2
+descriptors/cleanup, no timeout;4 guardians ECHILD, zero emergency/failure/deadline
+(two expected-unhandled preparation exits134). Evidence:
+recovery/evidence/worker-r2-control-green-witness-preparation/manifest.json.
+Corrected witness task to pin this fixture's actual immutable context bytes, as the
+existing cleanup driver does. Runtime unchanged. Next fresh2-witness only; successful
+control cases are not repeated for this isolated staging fix. Independent narrow
+source review passed all prior cancellation/hook/retained-instance refinements.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

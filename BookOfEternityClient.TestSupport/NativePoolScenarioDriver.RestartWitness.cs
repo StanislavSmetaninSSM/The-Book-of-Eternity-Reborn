@@ -33,7 +33,8 @@ internal static partial class NativePoolScenarioDriver
             }
             var context = GmWorkerRootContext.Attach(fs, durable: true, Observe);
             var retained = context.Enter(); retained.RetainForCleanup();
-            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
+            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with
+            { ContextFiles = [new WorkerFileReference { Path = RestartContextPath, Sha256 = GmWorkerRunLedgerCodec.Hash(RestartContextBytes) }] };
             var workspace = GmWorkerExecutionWorkspace.PlanCreation(fs, task, null, Path.Combine(output, name + "-detached"));
             var execution = await context.PrepareAsync(retained, task, Encoding.UTF8.GetBytes(GmWorkerJson.Serialize(task)), workspace);
             await execution.EnsurePreparedAsync();
