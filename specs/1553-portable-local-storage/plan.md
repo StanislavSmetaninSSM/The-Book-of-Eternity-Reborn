@@ -24,7 +24,7 @@ Sequence: **F1 connected neutral owner/persistence/common filesystem fence**, th
 **F3 process-crash/replacement qualification**. F1 is first proposed implementation:
 Prepared before helper creation; held original owner → durable Running → one release;
 close new input/pins → durable Stopping → original pin drain/closing → scoped stop
-+ actual I/O/disposal → durable Stopped. Shared main-owner guard precedes lifecycle
+with actual I/O/disposal → durable Stopped. Shared main-owner guard precedes lifecycle
 and canonical locks and spans quiescent operations, including browser UI guard,
 Load, refresh and refusal/rollback release. Visible Stopped does not bypass a
 publishing owner's pending durability ACK. Notifications do not provide atomic

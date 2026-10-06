@@ -115,6 +115,9 @@ Thread the original guard through lifecycle-first APIs and ambient/nested helper
 never reacquire it while holding lifecycle/canonical. Browser replacement retains
 one guard through initial UI lock, Load, generation-bound refresh/finalization and
 exact refused/rolled-back UI lock release. It must not unlock between these helpers.
+Bridge status integration snapshots under `_sync` and publishes after releasing it;
+do not acquire lifecycle/canonical/main filesystem locks while holding `_sync` or
+hold those filesystem locks across status IPC. Volatile diagnostics remain available.
 
 1. **Launch:** close input/automatic readiness; acquire original main coordinator;
    under lifecycle+canonical compose quiescent main, independent worker admission,
@@ -183,7 +186,9 @@ existing worker-purpose/inventory condition AND generation/storage condition**.
 
 | Operation | Required main condition and preserved behavior |
 | --- | --- |
-| Normal turn, accepted publication, in-generation rollback/repair, save snapshot/retention, bound finalization | Running + original active operation capability; current generation and exact held lease at each writer. A copied identity is insufficient. Existing rollback/receipt/storage decision rules continue; no new snapshots or log. |
+| Active-main turn, accepted publication, in-generation rollback/repair, save snapshot/retention and its normal bound finalization | Running + original active operation capability; current generation and exact held lease at each writer. A copied identity is insufficient. Existing rollback/receipt/storage decision rules continue; no new snapshots or log. |
+| Quiescent canonical work and bound finalization, including post-Load menu refresh | Verified absent main namespace or acknowledged Stopped + original retained quiescent guard, independent worker/storage condition and exact established generation. It does not require Running or invent an active main capability; carry the same guard through refresh and finalization. |
+| Revoked original-pin closing/finalization | Exact original pin/root/run/generation and the narrow no-recovery closing lease after Stopping. Report the already-established decision/failure; no generic recovery, new write, generation change or renewed active permission. |
 | Replacement, clear, selected Load, generation-changing recovery | Quiescent main + selected worker condition + lifecycle/replacement lease. Refuse while old main is active; optional UI stop must occur first outside filesystem locks. Gate before acquisition recovery, before live capture and at actual publication/delete boundary. |
 | Recovery without generation change | May run under the same original Running capability and generation; otherwise quiescent. Inspect retained intent without writing first. Unknown or generation-changing evidence requires quiescence; block before its first mutation, not after a partly recovered tree. |
 | Worker task/audit/publication | Main condition additionally applies, without broadening existing exact worker purposes or recreating accepted permits. Worker state still owns its reservation/slot. Original worker process/workspace cleanup remains independently possible without canonical writes. |
