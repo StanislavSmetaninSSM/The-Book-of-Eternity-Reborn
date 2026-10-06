@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun>
+  <Results>
+    <UnitTestResult testId="551431C3201E5E229B92B70288FB65EB25F95974AF68CE4A32582A0D10950701" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh launcher: cannot navigate while fresh launch remains unconfirmed)" outcome="Passed" />
+    <UnitTestResult testId="342C111C184E57F80B37CB33DC1CE303898598D22134A2A61FEB30A84F34C1E4" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh settings: cannot navigate while fresh launch remains unconfirmed)" outcome="Passed" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest id="551431C3201E5E229B92B70288FB65EB25F95974AF68CE4A32582A0D10950701" storage="category-vitest" />
+    <UnitTest id="342C111C184E57F80B37CB33DC1CE303898598D22134A2A61FEB30A84F34C1E4" storage="category-vitest" />
+  </TestDefinitions>
+  <ResultSummary>
+    <Counters total="2" executed="2" passed="2" failed="0" />
+  </ResultSummary>
+</TestRun>

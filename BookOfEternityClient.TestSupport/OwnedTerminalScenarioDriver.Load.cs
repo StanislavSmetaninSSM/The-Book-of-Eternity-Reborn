@@ -22,6 +22,14 @@ internal static partial class OwnedTerminalScenarioDriver
         var dashboard=new BrowserLifecycleDashboardService(files,status,new ValidationService(files,NullLogger<ValidationService>.Instance));
         var menu=new LocalWebUiMainMenuService(files,dashboard,save,state,writes);
         var path=Directory.GetFiles(files.ResolvePath("saves/manual_saves"),"*.zip").Single();
+        if(mode=="production-main-load-console") {
+            var engine=ProductionLoadGameEngine.Create(files,settings,save);
+            var load=(Task<LoadReplacementResult>)typeof(GameEngine).GetMethod("LoadSelectedSaveAndRebindRuntimeAsync",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(engine,[path])!;
+            var console=await load; evidence["ConsoleLoadResult"]=console;
+            if(console.Disposition!=LoadReplacementDisposition.Committed)throw new InvalidOperationException("Causal RED: actual console selected Load refused the original Running GM: "+console.Disposition);
+            if(!original.RootExited.IsCompleted)throw new InvalidOperationException("Console replacement preceded original stop.");
+            return;
+        }
         var loaded=await menu.LoadSaveAsync(new("manual:"+Path.GetFileName(path)));
         evidence["LoadResult"]=loaded;
         if(loaded.Disposition!=LoadReplacementDisposition.Committed)

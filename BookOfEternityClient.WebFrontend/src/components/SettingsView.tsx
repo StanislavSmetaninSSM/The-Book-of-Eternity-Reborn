@@ -116,7 +116,7 @@ export function SettingsView() {
     setLoadingSaveId(slot.saveId);
     setSaveNotice('Загружаем выбранное сохранение…');
     try {
-      await executeBrowserLoad(() => browserApi.loadSave({ saveId: slot.saveId, operationId: owner.operationId, expectedGeneration: menu.loadGeneration ?? null }), ownsLoad,
+      await executeBrowserLoad(() => browserApi.loadSave({ saveId: slot.saveId, operationId: owner.operationId, expectedGeneration: menu?.loadGeneration ?? null }), ownsLoad,
         notice => setSaveNotice(notice.message), notice => {
           saveContinuationBlocked.current = true;
           invalidatePendingSettings();
