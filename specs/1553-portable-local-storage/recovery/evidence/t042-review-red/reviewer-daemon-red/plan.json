@@ -1,0 +1,106 @@
+{
+  "Categories": [
+    "gm-daemon-prompt-delivery"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "e164dade80d9be09a3bb219d9998817349f95664",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 10.2522808,
+  "Descriptors": [
+    {
+      "Name": "gm-daemon-prompt-delivery-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "gm-daemon-prompt-delivery",
+      "Categories": [
+        "gm-daemon-prompt-delivery"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonRepairDispatch_RetriesWhenGmBridgeIsBusy|FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonRepairDispatch_TimesOutAndPublishesStallReportWhenBridgeNeverAcceptsPrompt|FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTerminalProtocolDispatch_RetriesWhenGmBridgeIsBusy|FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnDispatch_EmitsTerminalErrorWhenBridgePipeNeverAcceptsDispatch",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonRepairDispatch_RetriesWhenGmBridgeIsBusy",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonRepairDispatch_TimesOutAndPublishesStallReportWhenBridgeNeverAcceptsPrompt",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTerminalProtocolDispatch_RetriesWhenGmBridgeIsBusy",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnDispatch_EmitsTerminalErrorWhenBridgePipeNeverAcceptsDispatch",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-daemon-prompt-delivery-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-daemon-prompt-delivery",
+      "Categories": [
+        "gm-daemon-prompt-delivery"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.DaemonBridgeDispatch_UsesTypedOperationWithoutReadinessBypass|FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ActualRetry_TransportAmbiguityDoesNotRepeat|FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.CallerSnapshotReplacedBeforeAllocation_CannotSendOldMessage|FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.DormantAllowNotReady_UsesOneImmutableOperation|FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.FirstAutostart_CapturesOnlyActualStartedBinding|FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.LauncherLostResponse_OnlyQueriesSameOperation|FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.PendingReplacedDuringRemoteCall_CannotReturnSent|FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ProvenBusy_RetriesIdenticalFrozenOperation|FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.QteIdle_QueriesOriginalWithoutRepaste|FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal|FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealDaemonLauncherRpc_RetainsOneOperationAndOneSubmit",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 14,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.DaemonBridgeDispatch_UsesTypedOperationWithoutReadinessBypass",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ActualRetry_TransportAmbiguityDoesNotRepeat",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.CallerSnapshotReplacedBeforeAllocation_CannotSendOldMessage",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.DormantAllowNotReady_UsesOneImmutableOperation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.FirstAutostart_CapturesOnlyActualStartedBinding",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.LauncherLostResponse_OnlyQueriesSameOperation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.PendingReplacedDuringRemoteCall_CannotReturnSent",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ProvenBusy_RetriesIdenticalFrozenOperation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.QteIdle_QueriesOriginalWithoutRepaste",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealDaemonLauncherRpc_RetainsOneOperationAndOneSubmit",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

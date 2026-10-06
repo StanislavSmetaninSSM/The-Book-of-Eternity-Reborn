@@ -190,6 +190,18 @@ public sealed class GmBridgePromptOperationTests
         Assert.Equal("<paste>text</paste>", Encoding.UTF8.GetString(host.Input.Bytes));
     }
 
+    [Fact]
+    public async Task ManualTakeover_BlocksAutomaticShellBootstrap()
+    {
+        await using var host = new PromptHostFixture();
+        host.Invoke("TakeManualInput", host.Binding);
+        var method = host.Method("WriteShellBootstrapAsync");
+        var write = method != null ? (Task)method.Invoke(host.Host, [host.Binding, "shell-command", CancellationToken.None])! :
+            (Task)host.Invoke("WriteExclusiveInputAsync", host.Binding, "shell-command", true, CancellationToken.None)!;
+        await write;
+        Assert.Empty(host.Input.Bytes);
+    }
+
     internal sealed class PromptHostFixture : IAsyncDisposable
     {
         internal static readonly string Repo = FindRepo();

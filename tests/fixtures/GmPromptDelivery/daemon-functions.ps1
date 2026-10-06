@@ -58,7 +58,7 @@ param([string]$Action, [Parameter(ValueFromRemainingArguments=$true)]$Arguments,
 $payload = ($Arguments -join ' ') | ConvertFrom-Json
 [IO.File]::AppendAllText($env:BOE_PROMPT_FIXTURE_COMMANDS, ($payload | ConvertTo-Json -Compress) + "`n")
 $count = [IO.File]::ReadAllLines($env:BOE_PROMPT_FIXTURE_COMMANDS).Count
-$d = if ($env:BOE_PROMPT_FIXTURE_SCENARIO -like 'consumer-*') { 'unknown-outcome' } else { 'submission-observed' }
+$d = if ($env:BOE_PROMPT_FIXTURE_SCENARIO -like 'consumer-*' -or $env:BOE_PROMPT_FIXTURE_SCENARIO -eq 'turn-packet-replaced') { 'unknown-outcome' } else { 'submission-observed' }
 $r = 'controlled'
 if ($env:BOE_PROMPT_FIXTURE_SCENARIO -in @('typed-retry','source-replaced') -and $count -eq 1) { $d='not-written'; $r='busy' }
 if ($env:BOE_PROMPT_FIXTURE_SCENARIO -in @('source-replaced','callback-replaced') -and $count -eq 1) { [IO.File]::WriteAllText($env:BOE_PROMPT_FIXTURE_PENDING, '{"replaced":true}') }
@@ -137,7 +137,7 @@ operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindi
                 default { $reply=Dispatch-WithRetry -Message 'controlled packet' -PendingPath $Pending -ReturnDetails -MaxWaitSeconds 10 }
             }
             $commands = if (Test-Path $env:BOE_PROMPT_FIXTURE_COMMANDS) { @([IO.File]::ReadAllLines($env:BOE_PROMPT_FIXTURE_COMMANDS) | ForEach-Object { $_ | ConvertFrom-Json }) } else { @() }
-            [ordered]@{ commands=$commands; status=$reply.Status; pending=[IO.File]::Exists($Pending);
+            [ordered]@{ commands=@($commands); status=$reply.Status; pending=[IO.File]::Exists($Pending);
                 readyFiles=@([IO.Directory]::GetFiles($ReadyDir)).Count; errors=$script:FixtureErrors;
                 errorCount=$script:ErrorCount; processing=$script:IsProcessing; paused=[bool]$script:GmPromptInputPaused } | ConvertTo-Json -Depth 8 -Compress
         }

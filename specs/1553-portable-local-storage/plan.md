@@ -61,7 +61,18 @@ Do not repeat untouched INPUT37/OUTPUT48 or worker/native cohorts.
   exact ownership; no causal count claimed. Safe error retained below.
   Reviewer also found post-call pending replacement, caller-read/allocation mismatch,
   and pre-autostart empty binding. Added inert causal scenarios before runtime fixes.
-  Next rerun corrected two categories, separate fail-fast daemon if necessary.
+  At e164dade80d9be09a3bb219d9998817349f95664 fresh selected build succeeded:
+  bridge39executed,37PASS/2causalFAIL exactly contentless query and duplicate starvation;
+  planned57/completed39 due fail-fast. Separate unchanged-build daemon18executed:
+  11PASS/7FAIL: one causal stale remote callback returned sent; six fixture JSON
+  array-shape errors (single-command pipeline unrolled), not six runtime REDs.
+  Both cleanup complete, no timeout/skips/duplicates.
+  [Reviewer RED evidence](recovery/evidence/t042-review-red/manifest.json).
+  Corrected fixture array shape before remaining source/binding RED; added active
+  shell-bootstrap takeover case. Independent interim review at df21035c rejects
+  six boundaries: body identity, peer starvation, caller/postcall source, startup
+  binding order, shell-bootstrap takeover, deadline on error response. No tests run
+  by reviewer. These remain pending corrections; no acceptance claimed.
 - [ ] Connect typed launcher/daemon/ordinary/QTE/repair outcomes, no ambiguity replay.
 - [ ] Focused fresh GREEN and discovery; exact source/binary/artifact evidence.
 - [ ] Independent Sol source/evidence PASS, ordinary publication/readback and fresh restore.
