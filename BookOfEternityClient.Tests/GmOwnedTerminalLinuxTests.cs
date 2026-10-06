@@ -21,6 +21,7 @@ public sealed class GmOwnedTerminalLinuxTests
     [InlineData("terminal-late-fault")]
     [InlineData("terminal-gated-fds")]
     [InlineData("terminal-authority-loss")]
+    [InlineData("terminal-partial-start")]
     public async Task OriginalOwner_DescendantsRootExitOrUncertain(string mode) { await RunAsync(mode); }
 
     private static async Task RunAsync(string mode)
@@ -54,10 +55,11 @@ public sealed class GmOwnedTerminalLinuxTests
         if (mode == "terminal-retirement") { Assert.True(scenario.RootElement.GetProperty("OwnerHeldBeforeEof").GetBoolean()); return; }
         if (mode == "terminal-late-fault") { Assert.True(scenario.RootElement.GetProperty("LateFaultUncertain").GetBoolean()); return; }
         if (mode == "terminal-gated-fds") Assert.True(scenario.RootElement.GetProperty("HeldRootHasNoHelperChannels").GetBoolean());
+        if(mode=="terminal-partial-start") { Assert.True(scenario.RootElement.GetProperty("PartialExceptionOriginal").GetBoolean());Assert.True(scenario.RootElement.GetProperty("PartialOwnerRetained").GetBoolean());return; }
         if (mode == "terminal-authority-loss") { Assert.True(scenario.RootElement.GetProperty("LiveAuthorityLossBlocked").GetBoolean()); return; }
         if (mode == "terminal-uncertain") { Assert.True(scenario.RootElement.GetProperty("UncertainRetained").GetBoolean()); return; }
         if (mode == "terminal-bridge") {
-            foreach(var proof in new[]{"ScopedRetired","TwoDispatchesOneSession","DraftPreserved","CancelledViaPipe","TakeoverViaPipe","ActualResizeViaPipe"}) Assert.True(scenario.RootElement.GetProperty(proof).GetBoolean()); return;
+            foreach(var proof in new[]{"ScopedRetired","TwoDispatchesOneSession","DraftPreserved","CancelledViaPipe","TakeoverViaPipe","ActualResizeViaPipe","ScopedStopViaPipe"}) Assert.True(scenario.RootElement.GetProperty(proof).GetBoolean()); return;
         }
         Assert.True(scenario.RootElement.GetProperty("TwoInputs").GetBoolean());
         Assert.True(scenario.RootElement.GetProperty("Resize").GetBoolean());

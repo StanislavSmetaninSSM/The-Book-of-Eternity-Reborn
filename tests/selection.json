@@ -3,10 +3,65 @@
   "selections": [
     {
       "category": "gm-owned-terminal-session",
-      "reason": "T041 compile-ready actual BridgeHost retained-owner causal baseline and later portable terminal/view/input retirement contract. No unrelated cohorts.",
+      "reason": "actual original session/view/keyboard/proof/timeout plus Windows source guard",
       "contracts": [
-        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL",
-        "US4 / FR-012/013/014/015"
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "gm-owned-terminal-native-linux",
+      "reason": "real fixed native PTY, actual bridge/T042 pipe, descendants/loss/partial startup/guardian",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "gm-bridge-input-lifetime",
+      "reason": "changed original attach/retire/keyboard call sites, actual source/PDB and concurrency",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "gm-bridge-output-stream",
+      "reason": "changed original output pump commits coherent owned view and EOF while preserving raw UTF8/tail semantics",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "gm-bridge-prompt-operation",
+      "reason": "changed original revision/readiness/control loop; preserve frozen T042 operations and no ambiguous replay",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "worker-pool-regression-host",
+      "reason": "shared NativeLineageOwner extraction must preserve existing host-v2 typed owner and retire boundary",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "worker-native-bootstrap-output",
+      "reason": "shared C descriptor-bootstrap branch and held child transports",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "worker-native-owner-retention",
+      "reason": "shared original owner constructor/pidfd/disposal after loss",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "worker-native-v1-transport-regression",
+      "reason": "shared helper branch/version/argv/bootstrap must preserve legacy v1 discovery/stop",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
       ]
     }
   ]

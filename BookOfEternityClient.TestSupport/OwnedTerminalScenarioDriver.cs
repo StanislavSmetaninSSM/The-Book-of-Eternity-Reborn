@@ -11,7 +11,7 @@ internal static class OwnedTerminalScenarioDriver
 {
     internal static async Task<int> RunAsync(string mode, string package, string output)
     {
-        if (mode is "terminal-bridge" or "terminal-uncertain" or "terminal-authority-loss") return await RunBridgeAsync(mode, package, output);
+        if (mode is "terminal-bridge" or "terminal-uncertain" or "terminal-authority-loss" or "terminal-partial-start") return await RunBridgeAsync(mode, package, output);
         var result = new Dictionary<string, object?>();
         IOwnedTerminalSession? session = null;
         try
@@ -104,8 +104,19 @@ internal static class OwnedTerminalScenarioDriver
                 IdleMarker="NEUTRAL READY", PromptPrefix="> ", WorkingMarker="NEUTRAL WORKING", ObservationTimeoutMilliseconds=1500 } }));
             var launch=NeutralTerminalLaunch.Create(package,folder);
             host = Activator.CreateInstance(type, [launch.Scratch, pipe]); Invoke("ConfigureNeutral", launch);
-            await (Task)Invoke("StartShellAsync")!;
+            if(mode=="terminal-partial-start")File.SetUnixFileMode(Path.Combine(package,"neutral-cli"),UnixFileMode.UserRead|UnixFileMode.UserWrite);
+            try { await (Task)Invoke("StartShellAsync")!; }
+            catch(OwnedTerminalStartException ex) when(mode=="terminal-partial-start") {
+                result["PartialExceptionOriginal"]=ReferenceEquals(ex.Owner,type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host));
+            }
             server = (Task)Invoke("RunServerLoopAsync", serverCancellation.Token)!;
+            if(mode=="terminal-partial-start") {
+                var status=await Rpc(new {command="status"});
+                if(!status.GetProperty("status").GetProperty("terminalUncertain").GetBoolean())throw new InvalidOperationException("Partial original owner not visible as Uncertain.");
+                if((await Rpc(new {command="addText",text="must-not-write"})).GetProperty("ok").GetBoolean())throw new InvalidOperationException("Partial owner admitted manual input.");
+                result["PartialOwnerRetained"]=type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!=null;
+                return 0;
+            }
             for (var i=0;i<100;i++) {
                 var status=(await Rpc(new { command="status" })).GetProperty("status");
                 if (status.GetProperty("ready").GetBoolean()) break;
@@ -179,6 +190,10 @@ internal static class OwnedTerminalScenarioDriver
             Require(!(await Rpc(new { command="setReady", ready=true })).GetProperty("ok").GetBoolean(),"Manual takeover draft was discarded.");
             await Rpc(new { command="resize", columns=93, rows=31 });
             result["ActualResizeViaPipe"]=true;
+            var stopped=await Rpc(new {command="stopTerminal"});
+            var proof=stopped.GetProperty("status").GetProperty("terminalStop");
+            Require(proof.GetProperty("state").GetString()=="stopped-within-scope" && proof.GetProperty("cleanupComplete").GetBoolean() && !stopped.GetProperty("status").GetProperty("terminalOwnerRetained").GetBoolean(),"Real scoped-stop RPC did not retire its original owner.");
+            result["ScopedStopViaPipe"]=true;
             return 0;
         }
         catch (Exception ex) { result["Failure"] = ex.ToString(); return 1; }

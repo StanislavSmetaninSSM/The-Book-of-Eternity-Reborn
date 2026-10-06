@@ -17,7 +17,8 @@ internal sealed class ConPtySession : IDisposable, IOwnedTerminalSession
     private Task<TerminalStopEvidence>? _stopTask;
     private Task? _closeTask, _disposeTask;
     private readonly TaskCompletionSource<string> _authorityLost=new(TaskCreationOptions.RunContinuationsAsynchronously);
-    private bool _uncertain, _released, _stopping;
+    private volatile bool _uncertain, _stopping;
+    private bool _released;
     public Stream InputWriter {get;}
     public Stream OutputReader {get;}
     public int ProcessId=>Identity.RootPid;
@@ -31,7 +32,7 @@ internal sealed class ConPtySession : IDisposable, IOwnedTerminalSession
         OutputReader=new FaultStream(new FileStream(new SafeFileHandle(output,true),FileAccess.Read,4096,false),Lose,()=>true);
     }
     private void Lose(string reason) { lock(_gate)_uncertain=true;_authorityLost.TrySetResult(reason); }
-    private static async Task<TerminalRootExit> ObserveRootAsync(Process process) { await process.WaitForExitAsync();return new(process.ExitCode); }
+    private async Task<TerminalRootExit> ObserveRootAsync(Process process) { try { await process.WaitForExitAsync();return new(process.ExitCode); } catch { Lose("conpty-root-observation-fault");throw; } }
     public static ConPtySession Start(string shellExe,string shellArguments,string workingDirectory,short width,short height)
     {
         if(!OperatingSystem.IsWindows())throw new PlatformNotSupportedException("ConPTY requires Windows.");
@@ -96,7 +97,7 @@ internal sealed class ConPtySession : IDisposable, IOwnedTerminalSession
     {
         var proof=await StopAndObserveAsync(CancellationToken.None);
         if(proof.State!=GmWorkerStopState.StoppedWithinScope || !proof.CleanupComplete || proof.AuthorityRetained)throw new InvalidOperationException("Uncertain ConPTY retains original Job/session.");
-        try { await Task.WhenAll(_closeTask!,((FaultStream)InputWriter).Settlement,((FaultStream)OutputReader).Settlement).WaitAsync(TimeSpan.FromSeconds(5)); }
+        try { await Task.WhenAll(_closeTask!,RootExited,((FaultStream)InputWriter).Settlement,((FaultStream)OutputReader).Settlement).WaitAsync(TimeSpan.FromSeconds(5)); }
         catch { Lose("conpty-close-unsettled");throw; }
         // Actual EOF and all admitted I/O, plus the one original close task, are joined.
         await InputWriter.DisposeAsync();await OutputReader.DisposeAsync();

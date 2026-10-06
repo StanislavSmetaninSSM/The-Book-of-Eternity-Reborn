@@ -323,6 +323,7 @@ internal sealed partial class BridgeHost : IDisposable
     private async Task<BridgeResponse> HandleRequestAsync(BridgeRequest request)
     {
         var command = (request.Command ?? string.Empty).Trim().ToLowerInvariant();
+        if(_neutralLaunch!=null && command=="dispatchworkertask")return BridgeResponse.Failure("Neutral fixture has no worker or game-writing admission.",SnapshotStatus());
         await RefreshBridgeAutomationStateAsync();
 
         switch (command)
@@ -976,9 +977,7 @@ internal sealed partial class BridgeHost : IDisposable
             {
                 // Only a real EOF finalizes pending bytes. Faults/cancellation propagate above.
                 var finalCount = decoder.GetChars(buffer, 0, 0, characters, 0, flush: true);
-                if (finalCount > 0)
-                    RecordOutputChunk(characters, finalCount, hasByteActivity: false);
-                lock (_sync) screen?.Fault();
+                lock(_sync) { if(finalCount>0)RecordOutputChunk(characters,finalCount,hasByteActivity:false); screen?.Fault(); }
                 return;
             }
 
@@ -987,8 +986,7 @@ internal sealed partial class BridgeHost : IDisposable
 
             var count = decoder.GetChars(buffer, 0, read, characters, 0, flush: false);
             // A partial scalar is still byte activity, even when it produces no text yet.
-            RecordOutputChunk(characters, count, hasByteActivity: true);
-            lock (_sync) { if (ReferenceEquals(_terminalScreen, screen)) screen?.Feed(buffer.AsSpan(0, read), characters.AsSpan(0,count)); }
+            lock(_sync) { RecordOutputChunk(characters,count,hasByteActivity:true); if(ReferenceEquals(_terminalScreen,screen))screen?.Feed(buffer.AsSpan(0,read),characters.AsSpan(0,count)); }
         }
     }
 
