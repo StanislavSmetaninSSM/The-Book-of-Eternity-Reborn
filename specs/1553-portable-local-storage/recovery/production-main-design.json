@@ -10,9 +10,25 @@
     "spec-kit-superpowers-bridge"
   ],
   "review": {
-    "status": "pending",
-    "requestedModel": "gpt-6.1-sol",
-    "requestedReasoningEffort": "xhigh"
+    "status": "initial-needs-clarification; narrow correction pending reinspection",
+    "actualModel": "gpt-6.1-sol",
+    "actualReasoningEffort": "xhigh",
+    "agent": "/root/production_main_design_review",
+    "reviewedCandidate": "d7c640a3dec1e7432f1e72591337deeb5433a5f5",
+    "findings": [
+      {
+        "id": "D1",
+        "severity": "material design wording",
+        "location": "production-main-admission-design.md:46",
+        "scenario": "Blanket ban on pin/IPC/drain waits under lifecycle contradicts accepted original lifecycle span across held prepare/release and owned stop/I/O/disposal/Stopped publication.",
+        "sourceVerification": "GmSessionRunCoordinator.LaunchNeutralAsync retains lifecycle; BeginStopAsync drains pins before acquiring stop lifecycle; ConfirmSettledStopAsync retains lifecycle through owned retirement and publication.",
+        "correction": "Canonical/short transition gates released before external/child/I/O/drain waits; operation-pin drain never under lifecycle; accepted original lifecycle span explicitly retained."
+      }
+    ],
+    "otherMaterialFindings": 0,
+    "reviewerVerifiedSourceGuardianPins": 37,
+    "reviewerVerifiedArtifacts": 5,
+    "reviewerBuildsTestsProbes": 0
   },
   "inputs": [
     {
