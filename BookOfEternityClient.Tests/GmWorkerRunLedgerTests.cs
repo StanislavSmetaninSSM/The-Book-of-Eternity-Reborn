@@ -1,4 +1,6 @@
 using System.Text.Json;
+using System.Text;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Services.GmWorkers;
 using Xunit;
 
@@ -6,6 +8,121 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class GmWorkerRunLedgerTests
 {
+    [Fact]
+    public async Task PreparedEntry_PersistsIdentityAndColdRestartCannotAdoptIt()
+    {
+        using var fixture = new LedgerFixture();
+        WorkerRunIdentity identity;
+        await using (var owner = await GmWorkerRunLedger.OpenCoordinatorAsync(fixture.Target))
+        {
+            Assert.NotNull(owner);
+            Assert.Equal(WorkerLedgerMutationKind.Applied, await owner.InitializeAsync());
+            var request = fixture.Preparation();
+            var prepared = await owner.PrepareAsync(request, owner.Sequence);
+            Assert.Equal(WorkerLedgerMutationKind.Applied, prepared.Kind);
+            Assert.NotNull(prepared.Entry);
+            identity = prepared.Entry.Identity;
+            Assert.Equal(1, identity.Epoch);
+            Assert.Equal(fixture.Target.RootPath, identity.RootKey);
+            Assert.Equal(request.TaskSha256, identity.TaskSha256);
+            Assert.Equal(request.WorkspacePath, identity.WorkspacePath);
+            Assert.True(Guid.TryParseExact(identity.RunId, "N", out _));
+            Assert.Equal(2, owner.Sequence);
+        }
+        var bytes = File.ReadAllBytes(fixture.StatePath);
+        var observed = await GmWorkerRunLedger.ObserveAsync(fixture.Target);
+        Assert.Equal(WorkerRunObservationKind.Uncertain, observed.Kind);
+        Assert.Equal(2, observed.Sequence);
+        Assert.Equal(1, observed.EpochHighWater);
+        Assert.Equal(new WorkerRunRecord(1, identity, WorkerRunPhase.Prepared), Assert.Single(observed.Entries));
+        await using var replacement = await GmWorkerRunLedger.OpenCoordinatorAsync(fixture.Target);
+        Assert.Null(replacement);
+        Assert.Equal(bytes, File.ReadAllBytes(fixture.StatePath));
+        fixture.AssertSentinel();
+    }
+
+    [Theory]
+    [InlineData("Prepared")]
+    [InlineData("LaunchIntent")]
+    [InlineData("ReleaseIntent")]
+    [InlineData("Released")]
+    [InlineData("StopValidated")]
+    [InlineData("PublicationIntent")]
+    [InlineData("Published")]
+    [InlineData("CleanupPending")]
+    [InlineData("Uncertain")]
+    public async Task ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner(string phase)
+    {
+        using var fixture = new LedgerFixture();
+        await fixture.Initialize();
+        var record = new WorkerRunRecord(1, GmWorkerRunRecordTests.Identity() with
+        { RootKey = fixture.Target.RootPath, WorkspacePath = fixture.Preparation().WorkspacePath }, Enum.Parse<WorkerRunPhase>(phase));
+        var state = JsonNode.Parse(File.ReadAllBytes(fixture.StatePath))!.AsObject();
+        state["Sequence"] = 2; state["EpochHighWater"] = 1;
+        state["Entries"] = new JsonArray(JsonNode.Parse(GmWorkerRunRecordTests.Bytes(record)));
+        var bytes = Encoding.UTF8.GetBytes(state.ToJsonString());
+        File.WriteAllBytes(fixture.StatePath, bytes); // Cold schema fixture, never a live permit.
+        var observed = await GmWorkerRunLedger.ObserveAsync(fixture.Target);
+        Assert.Equal(WorkerRunObservationKind.Uncertain, observed.Kind);
+        Assert.Equal(record, Assert.Single(observed.Entries));
+        await using var owner = await GmWorkerRunLedger.OpenCoordinatorAsync(fixture.Target);
+        Assert.Null(owner);
+        Assert.Equal(bytes, File.ReadAllBytes(fixture.StatePath));
+        fixture.AssertSentinel();
+    }
+
+    [Theory]
+    [InlineData("wrong-root")]
+    [InlineData("schema")]
+    [InlineData("unknown")]
+    [InlineData("missing")]
+    [InlineData("duplicate")]
+    [InlineData("sequence-zero")]
+    [InlineData("epoch-negative")]
+    [InlineData("epoch-without-inventory")]
+    [InlineData("epoch-overflow")]
+    [InlineData("entries-wrong-type")]
+    [InlineData("retired-wrong-type")]
+    [InlineData("oversize")]
+    [InlineData("invalid-utf8")]
+    [InlineData("missing-state")]
+    [InlineData("extra-temp")]
+    public async Task InvalidInventory_IsBlockedAndNeverRepaired(string mutation)
+    {
+        using var fixture = new LedgerFixture();
+        await fixture.Initialize();
+        var state = JsonNode.Parse(File.ReadAllBytes(fixture.StatePath))!.AsObject();
+        byte[]? bytes = null;
+        switch (mutation)
+        {
+            case "wrong-root": state["RootKey"] = fixture.Target.RootPath + "-other"; break;
+            case "schema": state["SchemaVersion"] = 2; break;
+            case "unknown": state["unknown"] = "private-payload"; break;
+            case "missing": state.Remove("Retired"); break;
+            case "duplicate": bytes = Encoding.UTF8.GetBytes(state.ToJsonString().Replace("\"Sequence\":1", "\"Sequence\":1,\"Sequence\":1")); break;
+            case "sequence-zero": state["Sequence"] = 0; break;
+            case "epoch-negative": state["EpochHighWater"] = -1; break;
+            case "epoch-without-inventory": state["EpochHighWater"] = 1; state["Sequence"] = 2; break;
+            case "epoch-overflow": bytes = Encoding.UTF8.GetBytes(state.ToJsonString().Replace("\"EpochHighWater\":0", "\"EpochHighWater\":9223372036854775808")); break;
+            case "entries-wrong-type": state["Entries"] = false; break;
+            case "retired-wrong-type": state["Retired"] = false; break;
+            case "oversize": bytes = new byte[4 * 1024 * 1024 + 1]; break;
+            case "invalid-utf8": bytes = [0xff]; break;
+            case "missing-state": break;
+            case "extra-temp": File.WriteAllText(Path.Combine(fixture.Target.DirectoryPath, "old.tmp"), "retained-evidence"); break;
+            default: throw new InvalidOperationException("Unknown mutation.");
+        }
+        bytes ??= Encoding.UTF8.GetBytes(state.ToJsonString());
+        if (mutation == "missing-state") File.Delete(fixture.StatePath); else File.WriteAllBytes(fixture.StatePath, bytes);
+        Assert.Equal(WorkerRunObservationKind.Blocked, (await GmWorkerRunLedger.ObserveAsync(fixture.Target)).Kind);
+        await using var owner = await GmWorkerRunLedger.OpenCoordinatorAsync(fixture.Target);
+        Assert.Null(owner);
+        if (mutation == "missing-state") Assert.False(File.Exists(fixture.StatePath));
+        else Assert.Equal(bytes, File.ReadAllBytes(fixture.StatePath));
+        if (mutation == "extra-temp") Assert.Equal("retained-evidence", File.ReadAllText(Path.Combine(fixture.Target.DirectoryPath, "old.tmp")));
+        fixture.AssertSentinel();
+    }
+
     [Fact]
     public async Task Initialize_PersistsBoundRootStateAndStableLocks()
     {
@@ -56,6 +173,7 @@ public sealed class GmWorkerRunLedgerTests
     {
         private readonly string _container = Path.Combine(Path.GetTempPath(), "boe-ledger-" + Guid.NewGuid().ToString("N"));
         internal WorkerLedgerTarget Target { get; }
+        internal string StatePath => Path.Combine(Target.DirectoryPath, "state.json");
         internal LedgerFixture()
         {
             Assert.True(OperatingSystem.IsLinux(), "Select this native persistence category only on Linux.");
@@ -64,6 +182,16 @@ public sealed class GmWorkerRunLedgerTests
             File.WriteAllText(Path.Combine(_container, "outside.txt"), "outside-sentinel");
         }
         internal void AssertSentinel() => Assert.Equal("outside-sentinel", File.ReadAllText(Path.Combine(_container, "outside.txt")));
+        internal WorkerRunPreparation Preparation(string task = "task") => new(
+            "22222222222222222222222222222222", "worker", task, new string('a', 64),
+            WorkerRunBackend.LinuxNativeLineage, WorkerRunScope.OrdinarySamePidNamespace,
+            Path.Combine(_container, "workspace"));
+        internal async Task Initialize()
+        {
+            await using var owner = await GmWorkerRunLedger.OpenCoordinatorAsync(Target);
+            Assert.NotNull(owner);
+            Assert.Equal(WorkerLedgerMutationKind.Applied, await owner.InitializeAsync());
+        }
         public void Dispose() => Directory.Delete(_container, recursive: true);
     }
 }

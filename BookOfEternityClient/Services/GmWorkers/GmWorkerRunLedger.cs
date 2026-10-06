@@ -12,6 +12,13 @@ internal sealed record WorkerLedgerTarget(string RootPath)
 internal enum WorkerLedgerMutationKind { Applied, AlreadyExact, Blocked, CommitPending }
 internal sealed record WorkerLedgerObservation(WorkerRunObservationKind Kind, long Sequence, long EpochHighWater,
     IReadOnlyList<WorkerRunRecord> Entries);
+internal sealed record WorkerRunPreparation(string GenerationId, string WorkerId, string TaskId, string TaskSha256,
+    WorkerRunBackend Backend, WorkerRunScope Scope, string WorkspacePath);
+internal sealed class WorkerRunEntryHandle(WorkerRunIdentity identity)
+{
+    internal WorkerRunIdentity Identity { get; } = identity;
+}
+internal sealed record WorkerLedgerMutationResult(WorkerLedgerMutationKind Kind, WorkerRunEntryHandle? Entry = null);
 
 internal static class GmWorkerRunLedger
 {
@@ -64,6 +71,11 @@ internal sealed class WorkerRunLedgerCoordinator : IAsyncDisposable
     private bool _disposed, _pending, _initialized;
     internal WorkerRunLedgerCoordinator(WorkerRunLedgerPersistence storage, WorkerLedgerTarget target)
     { _storage = storage; _target = target; _initialized = !storage.CreatedNamespace; }
+
+    internal long Sequence => 1;
+    // Prepared storage is not implemented yet: causal R1 reservation RED scaffold.
+    internal Task<WorkerLedgerMutationResult> PrepareAsync(WorkerRunPreparation preparation, long expectedSequence,
+        CancellationToken cancellationToken = default) => Task.FromResult(new WorkerLedgerMutationResult(WorkerLedgerMutationKind.Blocked));
 
     internal async Task<WorkerLedgerMutationKind> InitializeAsync(CancellationToken cancellationToken = default)
     {

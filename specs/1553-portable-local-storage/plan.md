@@ -57,9 +57,13 @@ the outer libc Close method in Descriptor.ReleaseHandle. Qualified that exact ca
 also annotated the already-null-checked path (`value!`) without changing codec behavior.
 Existing unrelated native-launch CA1416 warning is unchanged. Evidence:
 recovery/evidence/worker-ledger-init-preparation-failure/manifest.json. Fresh initialization
-GREEN pending; no access/environment blocker. Stateful preparation/transitions/archive
-are still unavailable. No active test session at this checkpoint; next run is only
-`-Category worker-run-ledger-storage-linux`. Parent status request answered in commentary;
+GREEN at `f8be8c5fb55981ba09c673c641a88ecf6b36afcc`:3/3PASS,40.5206171s, cleanup
+complete, no timeout. Evidence: recovery/evidence/worker-ledger-init-green/manifest.json.
+No access/environment blocker. Stateful preparation/transitions/archive
+are still unavailable. Prepared reservation scaffold plus nine seeded cold phases and15 inventory corruption
+checks are now added. The28-case storage selection will distinguish causal unsupported
+preparation/cold records from passing corruption guards. Next run is only
+`-Category worker-run-ledger-storage-linux`; no unchanged44-record rerun. Parent status request answered in commentary;
 this durable checkpoint records actual progress independently of delegation status UI. Default CI selection retains the
 portable record category; explicit Linux selection adds the native storage category.
 
