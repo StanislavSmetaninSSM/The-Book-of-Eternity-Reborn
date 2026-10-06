@@ -46,7 +46,7 @@ operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindi
         $null = Send-ToGmBridge -Message 'controlled bootstrap' -AllowNotReady
         [ordered]@{ commands=@([IO.File]::ReadAllLines($env:BOE_PROMPT_FIXTURE_COMMANDS)) } | ConvertTo-Json -Compress
     }
-    elseif ($Scenario -in @('typed-retry','source-replaced','consumer-turn','consumer-qte','consumer-repair','consumer-terminal','qte-idle','connected-pipe','launcher-lost-response')) {
+    elseif ($Scenario -in @('typed-retry','source-replaced','callback-replaced','turn-packet-replaced','autostart-binding','consumer-turn','consumer-qte','consumer-repair','consumer-terminal','qte-idle','connected-pipe','launcher-lost-response')) {
         $BridgeControlScript = Join-Path $fixtureRoot 'controlled-launcher.ps1'
         $GameSessionPath = $fixtureRoot
         $env:BOE_PROMPT_FIXTURE_COMMANDS = Join-Path $fixtureRoot 'commands.txt'
@@ -61,17 +61,20 @@ $count = [IO.File]::ReadAllLines($env:BOE_PROMPT_FIXTURE_COMMANDS).Count
 $d = if ($env:BOE_PROMPT_FIXTURE_SCENARIO -like 'consumer-*') { 'unknown-outcome' } else { 'submission-observed' }
 $r = 'controlled'
 if ($env:BOE_PROMPT_FIXTURE_SCENARIO -in @('typed-retry','source-replaced') -and $count -eq 1) { $d='not-written'; $r='busy' }
-if ($env:BOE_PROMPT_FIXTURE_SCENARIO -eq 'source-replaced' -and $count -eq 1) { [IO.File]::WriteAllText($env:BOE_PROMPT_FIXTURE_PENDING, '{"replaced":true}') }
+if ($env:BOE_PROMPT_FIXTURE_SCENARIO -in @('source-replaced','callback-replaced') -and $count -eq 1) { [IO.File]::WriteAllText($env:BOE_PROMPT_FIXTURE_PENDING, '{"replaced":true}') }
 [ordered]@{ ok=$true; promptDelivery=[ordered]@{ operationId=$payload.operationId; operationKind=$payload.operationKind;
 operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindingId; disposition=$d; reason=$r; phase='terminal' } } | ConvertTo-Json -Compress
 '@ | Set-Content -LiteralPath $BridgeControlScript
-        function Ensure-GmBridgeStarted { }
+        function Ensure-GmBridgeStarted { $script:FixtureStarted=$true }
+        if ($Scenario -eq 'autostart-binding') {
+            function Get-GmBridgeStatus { if ($script:FixtureStarted) { [pscustomobject]@{ready=$true; inputBindingId='started-binding'} } }
+        }
         function Get-TurnRequestKey { param($TurnRequest) 'controlled-turn' }
         function Test-ObservedTerminalRequestKey { param($Key) $false }
         function Test-TurnRequestHasPendingSnapshotContext { param($TurnRequest) $true }
         function Write-GmExperienceLessons { }
         function Get-GmExperiencePromptDigest { '' }
-        function Get-FirstMortalBootstrapPrompt { param($TurnRequest) '' }
+        function Get-FirstMortalBootstrapPrompt { param($TurnRequest) if ($Scenario -eq 'turn-packet-replaced') { [IO.File]::WriteAllText($Pending,'{"replaced":true}') }; '' }
         function Get-CorrelatedTerminalSignal { param($TurnRequest,$CompletionPath,$ErrorPath) $null }
         function Write-GmTrajectoryRecord { param($Dispatch) $script:FixtureTrajectory = $Dispatch.Status }
         function Write-DaemonStatus { param($Status,$Reason) }
@@ -126,6 +129,7 @@ operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindi
         else {
             switch ($Scenario) {
                 'consumer-turn' { Process-Turn $Pending }
+                'turn-packet-replaced' { Process-Turn $Pending }
                 'consumer-qte' { Process-QteEffectResolutionRequest $Pending }
                 'consumer-repair' { Process-RepairRequest $Pending }
                 'consumer-terminal' { Process-TerminalProtocolFailureRequest $Pending }

@@ -4154,9 +4154,7 @@
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonPendingSnapshotAuthority_AcceptsVersionedExactByteHashContracts",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonPrompt_ExposesSessionLocalGmContextPack",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonPrompt_ExposesSessionLocalGmTurnHelper",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonRepairDispatch_RetriesWhenGmBridgeIsBusy",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonRepairDispatch_SkipsDiagnosticOnlyRepairRequests",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonRepairDispatch_TimesOutAndPublishesStallReportWhenBridgeNeverAcceptsPrompt",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonRepairPrompt_ExplainsMortalSkillProgressionShapePacket",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonSource_ValidationRepairArtifactWatchTreatsBridgeOutputAsProgress",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonSource_ValidationRepairWatchClearsWhenRequestIsGoneOrChanged",
@@ -4165,7 +4163,6 @@
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonStatus_RecoversAfterSessionResetAndTurnCompletion",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonStatus_RefreshesWhileWaitingForGmTurnResponse",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTerminalObservation_DoesNotDeleteClientOwnedTurnRequest",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTerminalProtocolDispatch_RetriesWhenGmBridgeIsBusy",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTerminalSignalConflict_PrefersRealSuccessOverDaemonTimeoutArtifact",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTrajectoryLedger_BackfillsLiveTestNoteRecordIdsForSameRequest",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTrajectoryLedger_IncludesProposalOnlyWorkerEvents",
@@ -4177,7 +4174,6 @@
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTrajectoryLedger_UnknownRealmIncludesResolutionReason",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnAndRepairPrompts_PreferCompactTemplatesOverLargeExamples",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnCounter_IncrementsOnlyForAcceptedTurnProcessing",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnDispatch_EmitsTerminalErrorWhenBridgePipeNeverAcceptsDispatch",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnDispatch_RequiresMatchingPendingSnapshotContext",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnDispatch_ValidatesDetachedPendingSnapshotAuthorityBeforeDispatch",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnPrompt_AddsFirstMortalBootstrapOutputChecklist",
@@ -13366,10 +13362,10 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.IntegrationTests.GmTurnHelperContractTests.DaemonRepairDispatch_RetriesWhenGmBridgeIsBusy",
-            "BookOfEternityClient.IntegrationTests.GmTurnHelperContractTests.DaemonRepairDispatch_TimesOutAndPublishesStallReportWhenBridgeNeverAcceptsPrompt",
-            "BookOfEternityClient.IntegrationTests.GmTurnHelperContractTests.DaemonTerminalProtocolDispatch_RetriesWhenGmBridgeIsBusy",
-            "BookOfEternityClient.IntegrationTests.GmTurnHelperContractTests.DaemonTurnDispatch_EmitsTerminalErrorWhenBridgePipeNeverAcceptsDispatch"
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonRepairDispatch_RetriesWhenGmBridgeIsBusy",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonRepairDispatch_TimesOutAndPublishesStallReportWhenBridgeNeverAcceptsPrompt",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTerminalProtocolDispatch_RetriesWhenGmBridgeIsBusy",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnDispatch_EmitsTerminalErrorWhenBridgePipeNeverAcceptsDispatch"
           ]
         }
       ]

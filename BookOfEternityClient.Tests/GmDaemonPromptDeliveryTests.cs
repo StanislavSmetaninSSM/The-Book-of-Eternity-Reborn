@@ -31,6 +31,31 @@ public sealed class GmDaemonPromptDeliveryTests
         Assert.Equal("sent", result.GetProperty("status").GetString());
     });
 
+    [Fact]
+    public async Task PendingReplacedDuringRemoteCall_CannotReturnSent() => await Run("callback-replaced", result =>
+    {
+        Assert.Equal("bridge-unknown-outcome", result.GetProperty("status").GetString());
+        Assert.True(result.GetProperty("pending").GetBoolean());
+        Assert.True(result.GetProperty("paused").GetBoolean());
+        Assert.Equal(0, result.GetProperty("readyFiles").GetInt32());
+    });
+
+    [Fact]
+    public async Task CallerSnapshotReplacedBeforeAllocation_CannotSendOldMessage() => await Run("turn-packet-replaced", result =>
+    {
+        Assert.Empty(result.GetProperty("commands").EnumerateArray());
+        Assert.Equal(0, result.GetProperty("readyFiles").GetInt32());
+        Assert.True(result.GetProperty("pending").GetBoolean());
+        Assert.Empty(result.GetProperty("errors").EnumerateArray());
+    });
+
+    [Fact]
+    public async Task FirstAutostart_CapturesOnlyActualStartedBinding() => await Run("autostart-binding", result =>
+    {
+        var command = Assert.Single(result.GetProperty("commands").EnumerateArray());
+        Assert.Equal("started-binding", command.GetProperty("inputBindingId").GetString());
+    });
+
     [Theory]
     [InlineData("turn")]
     [InlineData("qte")]

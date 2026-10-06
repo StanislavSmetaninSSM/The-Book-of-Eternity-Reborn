@@ -55,7 +55,13 @@ Do not repeat untouched INPUT37/OUTPUT48 or worker/native cohorts.
   can borrow changed-body success after lost conflict response, and 15 held duplicates
   can consume all16peer slots. Added two actual-pipe causal cases before fixing runtime.
   More inert real consumer/connected RPC scenarios and exact affected guards added;
-  unrun, no qualification claim. Next run the two reviewer cases against unchanged runtime.
+  unrun, no qualification claim. Preparation failed before any build/test at5bc1fb9f:
+  four new integration selectors used assembly-name namespace instead of actual
+  BookOfEternityClient.Tests namespace. Corrected metadata and moved their existing
+  exact ownership; no causal count claimed. Safe error retained below.
+  Reviewer also found post-call pending replacement, caller-read/allocation mismatch,
+  and pre-autostart empty binding. Added inert causal scenarios before runtime fixes.
+  Next rerun corrected two categories, separate fail-fast daemon if necessary.
 - [ ] Connect typed launcher/daemon/ordinary/QTE/repair outcomes, no ambiguity replay.
 - [ ] Focused fresh GREEN and discovery; exact source/binary/artifact evidence.
 - [ ] Independent Sol source/evidence PASS, ordinary publication/readback and fresh restore.
