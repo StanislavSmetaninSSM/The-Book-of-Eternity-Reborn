@@ -12885,6 +12885,36 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-restart-cleanup-linux",
+      "responsibility": "R2 original cleanup completion authority: no premature retirement or R1 transition/retry bypass; native uncertainty still attempts bounded original stop while retaining quarantine and capacity.",
+      "excludes": "Product integration, full restart crash matrix and unrelated process qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerDurableExecution.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger*.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs"
+      ],
+      "related": [
+        {
+          "id": "worker-restart-boundaries-linux",
+          "when": "Retirement, ACK retry and cleanup ownership change."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

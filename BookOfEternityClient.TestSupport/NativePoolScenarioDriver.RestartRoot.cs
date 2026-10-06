@@ -108,6 +108,8 @@ internal static partial class NativePoolScenarioDriver
             resultB = await poolB.RunTaskAsync(profile, taskB);
             resume.TrySetResult(); resultA = await pendingA;
         }
+        var poolAttemptedStop = ownerA != null && typeof(GmWorkerNativeLineageLaunch)
+            .GetField("_stopControl", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(ownerA) != null;
         GmWorkerStopEvidence? lateOriginalStop = null;
         if (mode == "uncertain-recovery")
         {
@@ -127,7 +129,7 @@ internal static partial class NativePoolScenarioDriver
         var retired = state.Retired.Select(x => GmWorkerRunRecordCodec.Decode(File.ReadAllBytes(Path.Combine(root, ".boe_runtime", "worker-runs-v1", "retired", x.RunId + ".json")))).ToArray();
         await File.WriteAllTextAsync(Path.Combine(output, "restart-root.json"), JsonSerializer.Serialize(new
         {
-            mode, faults, seeded, lateOriginalStop, beforeA, beforeB,
+            mode, faults, seeded, lateOriginalStop, poolAttemptedStop, beforeA, beforeB,
             afterA = BoundarySnapshot(resultA, taskA, reaperA, statePath, null),
             afterB = BoundarySnapshot(resultB, taskB, reaperB, statePath, null),
             recoveryWrites = recovery - beforeRecovery, recoveryEvidencePreserved = before.SequenceEqual(RecoverySnapshot(root)),

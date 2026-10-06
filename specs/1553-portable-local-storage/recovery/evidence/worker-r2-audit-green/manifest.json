@@ -204,6 +204,36 @@
       "GitBlob": "1445bf5f6cc3c3c5bb8145983974336446a53604"
     },
     {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Deferred.cs",
+      "Sha256": "f8c6db40f934bdafd08ff781b0aa657753c538b119dd6703a197bdff1f30141b",
+      "GitBlob": "4c48476debc4415525e62449f66e9bdacd48c16b"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs",
+      "Sha256": "f500283845a561cd2066bcc930d159a4d597c365e2c370d45d86b007162b8739",
+      "GitBlob": "9fcf0b3eba7d3c33bd327ab41691925a76036b6d"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Images.cs",
+      "Sha256": "7ecc1654cf23caaaca167f7610367cd6e5a4883d9a4b50542f899cd7fbc7ebfc",
+      "GitBlob": "afc0758fba37504221b3cd82905275451fca7681"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+      "Sha256": "4d00cbfdcca3863067c6398ec28175c78288197e095d394efdb13069daa0e0fc",
+      "GitBlob": "418b8da4bdd6c8f3f41f82cd313d600fb234db63"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs",
+      "Sha256": "8b68eb6a517b981953a24e8063329562c68b3fc941eb8c410f12ccdd72d0d087",
+      "GitBlob": "a5704e0c22d45dd010746cf883b88d118feba6f2"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFilePublication.NamespaceJournal.cs",
+      "Sha256": "53ef98ee56954be24b95e49ba470127f9d343a953bcd010d3170386875ba5f91",
+      "GitBlob": "f8a990edc821b0758b03145a4cacbf27710d1b93"
+    },
+    {
       "Path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
       "Sha256": "575b7f2c8de6034621b955a5cc187b865a58cd5d4efbe87fe35f6f8cfa800cf7",
       "GitBlob": "3ea449301abd648ce1239f96000031104e71e7f8"

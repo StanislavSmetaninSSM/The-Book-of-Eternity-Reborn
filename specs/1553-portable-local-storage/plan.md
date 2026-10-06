@@ -265,6 +265,13 @@ and all constrained mutation refusals executed, including held lease after await
 legacy rejection now comes from operation authority, not platform availability.
 Evidence: recovery/evidence/worker-r2-audit-green/manifest.json. Independent source
 follow-up on this finding is in progress. Other R2 obligations remain open.
+Independent actual Sol6.1/xhigh source follow-up marks audit finding source-resolved
+at2f728f23; this is not final R2 acceptance. Expanded retained input hashes to include
+all participating TrustedLocalFilePublication partials. Next five-case cleanup scaffold
+checks premature retirement with retained actual workspace, R1 Abort/Start/live retry
+bypass and actual pool stop attempt on native status loss. Native fixture retains
+its independent late-stop safety fallback, so missing pool attempt can be causal RED
+without guardian emergency cleanup. New scaffold unbuilt/unrun, runtime unchanged.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

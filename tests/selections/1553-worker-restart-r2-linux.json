@@ -56,6 +56,14 @@
         "#1553 T041-WORKER-RESTART-R2",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-restart-cleanup-linux",
+      "reason": "R2 closed original cleanup witness and bounded stop cannot be bypassed by generic ledger or missing completion evidence.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
     }
   ]
 }
