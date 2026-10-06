@@ -2,7 +2,7 @@
 
 Issue: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
 Branch: `codex/1553-load-filesystem`. Accepted base: `dc62a88a630ba20eacd65f7bdab138ba129123ff`.
-Status: implementation WIP after independent actual Sol6.1/xhigh design PASS. Runtime source review PASS at8aa96165; final qualification/evidence review and GitHub restoration remain pending.
+Status: bounded PASS after independent actual Sol6.1/xhigh design/source/evidence/selection review. Runtime d4cfb195;132distinct successful scoped checks (130cases+2typechecks). Candidate734cb8cf fresh GitHub-only restoration independently confirmed; final metadata carrier publication/readback/exact-tip restoration are writer closure. Stop before another stage.
 
 ## Contract and source delta
 
@@ -151,3 +151,11 @@ Cleand4cfb19521/21PASS: causal schema7GREEN + previously unrun12unit + exact non
 ### Discovery and qualification candidate
 
 At clean19dc27ea catalog discovery372categories/11018methods/files valid, no unmapped/stale selectors;0tests. Selection plan17descriptors/57estimated cases,0executed; frontend discovery counts selected files, not actual18+62case execution. Complete handoff/qualification distinguish130executed cases and2typecheck receipts, mixed exact source sets and historical failures. Final independent evidence review and fresh restoration pending; runtime/tests frozen.
+
+### Final independent evidence PASS and candidate restoration
+
+Independent fresh-context **gpt-6.1-sol/xhigh** review at `734cb8cf3a877c174b066936a600bc74e2646c94` returns **PASS** for bounded source/evidence/selection; no functional or evidence defects. Independently confirms132distinct successful checks (130cases+2typechecks;41new+91affected), all17selected descriptors,36manifests/4619sourcepins/680artifacts/352gzip with no hash/Git-blob mismatches, and42clean guardian receipts/absent own roots. Two successful console rechecks are excluded from duplicate counting. Discovery57 estimates are not132executions. Historical causal/preparation/transient-fault classifications remain in this ledger.
+
+Fresh clone from GitHub HTTPS only into a new own directory restored candidate734cb8cf, with no local source/object/cache reuse. Writer and reviewer independently byte-compared20,546tracked files to restored Git blobs; tree/parent/accepted ancestry/clean/noalternates/remoteSHA/fullfsck match. [Safe proof](recovery/load-session-lifecycle-candidate-restore.json);0tests executed for restoration. Runtime/tests have no delta afterd4cfb195. Metadata-only correction: actual Load HashSet has a128-operation identity budget, rather than a128queue; T042 bounded queue/profile is not final live-client UX.
+
+The final verdict carrier receives ordinary non-force push, independent remote byte readback, a focused metadata-only review and a separate fresh GitHub-only restoration of its exact tip. Its self-SHA cannot be embedded in its own contents and is returned in the writer's closing response. No runtime/test rerun is needed for this carrier. Hand off bounded results and stop before another implementation stage; open direct-gacha/standaloneDaren/systemd/nativeWindows/Q1Q2/liveGM/saves/cold boundaries are unchanged.

@@ -1,6 +1,6 @@
-# T041-LOAD-SESSION-LIFECYCLE — bounded handoff candidate
+# T041-LOAD-SESSION-LIFECYCLE — bounded PASS handoff
 
-Issue: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553). Accepted T031 base `dc62a88a`. Runtime `d4cfb195b4df67af090e0b54357cdb0d6419ef65`; independent actual Sol6.1/xhigh source PASS. Final evidence review/restoration pending.
+Issue: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553). Accepted T031 base `dc62a88a`. Runtime `d4cfb195b4df67af090e0b54357cdb0d6419ef65`; independent actual Sol6.1/xhigh design/source/evidence/selection PASS. Evidence candidate `734cb8cf3a877c174b066936a600bc74e2646c94` is restored and independently byte-verified from GitHub. This final verdict carrier changes only metadata; its exact publication/restoration SHA is supplied in the writer's closing handoff.
 
 Existing real console and both browser handlers now connect original owned stop → actual typed Load → mandatory full refresh → one fresh configured CLI at installed generation. The retained original pipe/owner references grant authority; JSON/status/PID do not. Filesystem admission is acquired after stop and released before finish IPC; original quiescent/UI guard spans Load, release and bundle. Independent worker/storage conditions stay mandatory.
 
@@ -32,12 +32,16 @@ The complete [execution ledger](load-session-lifecycle-plan.md) retains causal f
 
 Writer integrity audit:36manifests/4619sourcepins/680artifacts/352gzip/42guardianreceipts all verified against exact Git blobs, raw/gzip hashes and ECHILD/emergency0/failures0/deadlinefalse. Own guarded fixture roots were removed after capture; logical Uncertain is not cleared by this physical proof.
 
+Final fresh-context independent **gpt-6.1-sol/xhigh PASS** at `734cb8cf`: all audit counts, actual TRX/frontend summaries, 132unique successful identities and all17selected descriptors independently agree. No functional/evidence defect found; no runtime/test delta follows d4cfb195. All42 recorded guardian roots are absent. Reviewer executed no tests or configured CLI.
+
+[Candidate GitHub-only restoration proof](recovery/load-session-lifecycle-candidate-restore.json):20,546tracked files match both writer checkout and independently fetched Git blobs; exact SHA/tree/parent/accepted ancestry, clean checkout, full fsck and no alternates. Reviewer independently rechecked all20,546files (336,690,503bytes). Restoration executes0tests and proves source/evidence recovery, not another runtime qualification. Exact final carrier gets a separate fresh GitHub-only restore before writer closure.
+
 Catalog372/11018 has no unmapped/stale selectors, discovery-only0tests. Selection17descriptors/57discovery estimates executes0tests; frontend file estimates expand to actual execution cases. [Qualification](recovery/load-session-lifecycle-qualification.json) names every source and remaining boundary.
 
 ## Remaining boundaries and stop
 
-This qualifies configured persistent **neutral** CLI through explicit packaged NativeLineage/M1 in isolated roots. No neutralPackage bypass, provider/model request, real saves, public rollout or whole-game claim. The accepted bounded VT subset does not qualify arbitrary TUI. Queue128 and input-profile schema are controlled implementation choices, not final live-client UX. No filesystem scope spans stop/restart IPC; refusal helper detects registered ambient/bound/main scopes, not arbitrary separately held explicit leases.
+This qualifies configured persistent **neutral** CLI through explicit packaged NativeLineage/M1 in isolated roots. No neutralPackage bypass, provider/model request, real saves, public rollout or whole-game claim. The accepted bounded VT subset does not qualify arbitrary TUI. Load has a128-operation identity budget; T042's bounded input queue/profile remain controlled implementation choices, not final live-client UX. No filesystem scope spans stop/restart IPC; refusal helper detects registered ambient/bound/main scopes, not arbitrary separately held explicit leases.
 
 Primary existing systemd-user remains mandatory and unqualified here; no manager/setup/downgrade. Native Windows, CodexQ1/Q2/TERM and live-GM acceptance remain separate. Gacha **T031-BROWSER-DIRECT-GACHA-LINUX** and standalone **T031-DAREN-STANDALONE-LINUX** remain real open consumers; this task does not erase them. Four historical F2 Windows-only IDs, exact original reasons and0newexecutions remain in qualification. Cold/nonterminal refusal, no old-session mint/replay, no cold exactly-once/reboot/power-loss salvage remain unchanged.
 
-Final independent evidence verdict, ordinary checkpoint/readback and fresh GitHub-only restore precede writer closure. Stop before another implementation stage.
+Final independent verdict is PASS. Ordinary final carrier push/remote byte readback, metadata-only review and exact final fresh GitHub-only restoration precede writer closure; their SHA/result are supplied in the closing response. Runtime/tests remain frozen. Stop before another implementation stage; no next slice is authorized by this handoff.

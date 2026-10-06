@@ -3,7 +3,7 @@
   "Issue": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553",
   "AcceptedBase": "dc62a88a630ba20eacd65f7bdab138ba129123ff",
   "RuntimeSource": "d4cfb195b4df67af090e0b54357cdb0d6419ef65",
-  "Status": "Narrow GREEN candidate; final independent evidence review and fresh restoration pending",
+  "Status": "Bounded PASS; independent design/source/evidence/selection confirmed; final metadata carrier publication and exact-tip restoration are writer closure",
   "DistinctSuccessfulChecks": 132,
   "ExecutedTestCases": 130,
   "TypecheckReceipts": 2,
@@ -123,7 +123,13 @@
       "55ac46ac"
     ],
     "FixtureVerdict": "PASS; minor metadata corrections applied",
-    "FinalEvidenceVerdict": "PENDING"
+    "FinalEvidenceVerdict": "PASS",
+    "FinalEvidenceSource": "734cb8cf3a877c174b066936a600bc74e2646c94",
+    "FinalSelectionVerdict": "PASS; all17 descriptors have retained successful evidence; discovery57 is not132 executions",
+    "FinalEvidenceReviewer": "/root/load_ux_final_evidence_review",
+    "FinalEvidenceAuditIndependent": true,
+    "NoFunctionalOrEvidenceFindings": true,
+    "NoTestsOrConfiguredCliInvokedDuringReview": true
   },
   "PromptDocumentationRationale": "Client-owned lifecycle, no new GM-authored schema/mechanic/field; no Mortal World/afterlife prompt/example changes needed. Installed game profile remains authority; executor model is never injected.",
   "Scope": {
@@ -141,7 +147,7 @@
     "no systemd-user positive qualification or manager/service/settings setup",
     "no native Windows execution; ConPTY/Job source preserved and legacy StartedNotReady is not Running/CLI readiness",
     "no Q1/Q2/TERM/Codex acceptance",
-    "bounded technical queue/profile are not final live-client UX",
+    "Load128-operation identity budget; T042 bounded input queue/profile remain controlled implementation choices, not final live-client UX",
     "no cold exactly-once/reboot/power-loss salvage or unknown command replay",
     "no public rollout/whole-game qualification"
   ],
@@ -184,5 +190,21 @@
     "AllSourceBytesAndGitBlobsMatched": true,
     "AllArtifactsAndGzipMatched": true,
     "AllGuardianScopesEmpty": true
+  },
+  "CandidateRestoration": {
+    "Commit": "734cb8cf3a877c174b066936a600bc74e2646c94",
+    "Artifact": "load-session-lifecycle-candidate-restore.json",
+    "Transport": "fresh GitHub HTTPS only; no local source/object/cache reuse",
+    "TrackedFilesByteCompared": 20546,
+    "IndependentReviewerByteComparison": true,
+    "IndependentReviewerBytesCompared": 336690503,
+    "ExactTreeParentAcceptedAncestryCleanRemoteFullFsckNoAlternates": true,
+    "TestsExecuted": 0
+  },
+  "FinalCarrierClosure": {
+    "Changes": "metadata only; no runtime/test delta afterd4cfb195",
+    "Required": "ordinary non-force push, exact remote SHA and byte readback, focused metadata review, separate fresh GitHub-only restoration of final tip",
+    "ResultLocation": "Writer closing handoff provides exact final SHA/restoration; self-SHA cannot be embedded in its own commit",
+    "StopBoundary": "No next implementation stage"
   }
 }

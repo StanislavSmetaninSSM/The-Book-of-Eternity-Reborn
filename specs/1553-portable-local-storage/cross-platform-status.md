@@ -5,9 +5,9 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## Current: Load session lifecycle bounded GREEN candidate
+## Current: Load session lifecycle bounded PASS
 
-Runtime d4cfb195 connects real console/both browser handlers to original owned stop, typed Load/full current refresh and fresh installed-profile launch. No-active leaves GM absent; unknown outcome/cleanup debt/stale callback/generation blocks fresh and never replays.132scoped successes (130cases+2typechecks),41new+91affected. Independent Sol6.1/xhigh design/source PASS; final evidence/restoration pending. [Handoff](load-session-lifecycle-handoff.md) · [qualification](recovery/load-session-lifecycle-qualification.json). Historical pending-UX/low-level-only notes below describe their own checkpoints, not current runtime. Systemd/native Windows/Q1Q2/liveGM/saves/cold, direct-gacha and standalone Daren remain open.
+Runtime d4cfb195 connects real console/both browser handlers to original owned stop, typed Load/full current refresh and fresh installed-profile launch. No-active leaves GM absent; unknown outcome/cleanup debt/stale callback/generation blocks fresh and never replays.132scoped successes (130cases+2typechecks),41new+91affected. Independent Sol6.1/xhigh design/source/evidence/selection PASS at candidate734cb8cf;36manifests/4619pins/680artifacts/352gzip/42guardians independently match. Candidate GitHub-only restore20,546files independently byte-verified; final metadata carrier receives ordinary remote/readback/exact-tip restoration before writer closure. [Handoff](load-session-lifecycle-handoff.md) · [qualification](recovery/load-session-lifecycle-qualification.json). Historical pending-UX/low-level-only notes below describe their own checkpoints, not current runtime. Systemd/native Windows/Q1Q2/liveGM/saves/cold, direct-gacha and standalone Daren remain open. Stop before a new stage.
 
 ## Accepted bounded T031 browser rollback Linux PASS
 
