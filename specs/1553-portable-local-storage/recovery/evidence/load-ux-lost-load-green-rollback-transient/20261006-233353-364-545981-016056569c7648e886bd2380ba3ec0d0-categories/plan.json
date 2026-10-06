@@ -1,0 +1,55 @@
+{
+  "Categories": [
+    "gm-load-lost-reply",
+    "gm-load-rollback-cut"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "555711c17ebcba14878285136e6ea775a9d2634e",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 42.9314264,
+  "Descriptors": [
+    {
+      "Name": "gm-load-lost-reply-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-lost-reply",
+      "Categories": [
+        "gm-load-lost-reply"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LostLoadReplyNeverStartsFresh",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LostLoadReplyNeverStartsFresh",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-rollback-cut-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-rollback-cut",
+      "Categories": [
+        "gm-load-rollback-cut"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_ActualRollbackCutOutcome",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_ActualRollbackCutOutcome",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

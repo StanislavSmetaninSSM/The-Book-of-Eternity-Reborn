@@ -40,7 +40,7 @@ internal static partial class OwnedTerminalScenarioDriver
             }
             if(replacing && phase==TrustedLocalPublicationPhase.CommitStaged && cuts==0) {
                 cuts++;if(faultName=="uncertain")File.WriteAllText(marker,"{\"state\":\"unknown-cut\"}");
-                throw new IOException("controlled actual Load commit cut");
+                throw new InvalidOperationException("controlled nontransient actual Load commit cut");
             }
         }}:null;
         await using var app=LocalWebUiHost.Build([],new(files.BasePath,"http://127.0.0.1:0",assets),hooks);
