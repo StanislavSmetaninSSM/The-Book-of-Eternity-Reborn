@@ -5,7 +5,19 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## R1 завершён; остановка перед R2
+## R2 разрешён; планирование подключения lifecycle
+
+Родитель принял R1 на `25c16dcb513de8b09fc67059465d9dcfb6b96224`. Пользователь
+выбрал рекомендованную политику: unresolved worker блокирует новые задания всего
+root. Допустимый cleanup сохраняется; Uncertain не становится подтверждённым stop.
+Работа T041-WORKER-RESTART-R2: одним связанным контуром admission до recovery,
+Release, публикация и retirement реального synthetic pool. Текущий код всё ещё R1;
+R2-тестов и runtime изменений пока нет. Следующий шаг: независимое Sol 6.1/xhigh
+ревью уточнений в начале plan.md, затем причинный RED через scripts/test-csharp.ps1.
+R3, public Linux Release, main PTY, live GM и реальные saves закрыты.
+Старые формулировки «R2 не разрешён» ниже относятся к истории завершения R1.
+
+## История: R1 завершён; остановка перед R2
 
 На `b57c674e` завершены закрытые записи Prepared/LaunchIntent/Uncertain,
 исходные coordinator/entry handles, долговечный prelaunch-abort archive/index,

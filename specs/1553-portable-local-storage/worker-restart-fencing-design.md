@@ -5,10 +5,13 @@ T041-WORKER-RESTART-DESIGN / US4 / FR-012/014/015.
 Base: `30ab292d46f6a8fc88b03ee8f3d0731523788e8d`, accepted bounded synthetic POOL B.
 Status: independent actual gpt-6.1-sol/xhigh DESIGN PASS at
 `e90d5e4dbae51f6d9ba4601bdba3a060f29720dc`, no unresolved findings;
-implementation requires the parent's separate launch instruction. This document is the architectural brief and
+R1 accepted at `25c16dcb513de8b09fc67059465d9dcfb6b96224`; parent now authorizes R2
+with owner-selected root-wide new-job refusal for unresolved workers (2026-10-06).
+R3 still requires a separate launch instruction. This document is the architectural brief and
 sequential plan; existing Spec Kit spec/plan/tasks remain the durable source of scope.
 Use Superpowers executing-plans/TDD for each later authorized slice, sole writer and
-independent review. No new runtime, tests, probes, dependency or permission changes here.
+independent review. Current technical R2 refinements and execution checkpoints live at
+the start of plan.md; no dependency or permission changes are authorized.
 
 ## Intent and preserved scope
 
@@ -237,7 +240,7 @@ R2/R3 must exercise all relevant pre-recovery/held-lease routes in the injected 
 Until those routes are actually connected and qualified, documentation must say
 "durable metadata prerequisite", not "restart-safe pool" or "all writers fenced".
 
-## Sequential implementation plan (R1 completed; R2–R3 not authorized)
+## Sequential implementation plan (R1 completed; R2 authorized; R3 not authorized)
 
 ### R1 — completed worker durable ledger prerequisite
 
@@ -294,11 +297,12 @@ mutation starts retains/settles original I/O before reporting its result.
   Sol6.1/xhigh review and GitHub restoration. Handoff as a prerequisite only.
 
 Qualification: independent actual gpt-6.1-sol/xhigh R1 PASS at `c7e801f1`;
-[bounded source-specific evidence](recovery/worker-ledger-r1.json). No R2 policy selected.
+[bounded source-specific evidence](recovery/worker-ledger-r1.json). The later R2 policy
+choice below does not enlarge R1's qualification.
 
 ### R2 — atomic connection of the complete synthetic lifecycle
 
-Depends on R1 and the product admission choice below. Connect durable admission,
+Authorized from accepted R1 and the owner-selected root-wide policy below. Connect durable admission,
 pre-recovery checks, launch/Release/publication intent and terminal retirement as one
 bounded implementation. Never enable durable pool admission while later lifecycle
 stages still use the unfenced B route. Default public Linux admission stays closed.
@@ -359,9 +363,11 @@ matrix; do not introduce reconnect or new cold cleanup authority.
 ## Product decisions versus technical choices
 
 No new product decision blocks R1, which is inert outside synthetic tests.
-Before R2, ask the parent to choose restart admission after a valid unresolved worker:
-**recommended first bound: block new synthetic pool dispatch for that root**, while
-preserving per-worker/quarantine reservation counts and diagnostic access. Allowing
+On 2026-10-06 the owner explicitly chose the recommended R2 policy, relayed by the
+parent with the accepted R1 SHA: **block new synthetic pool dispatch for that root
+when an unresolved worker remains**, while preserving per-worker/quarantine
+reservation counts and diagnostic access. This is not a ban on legitimate cleanup
+and does not relax absorbing Uncertain. Allowing
 unrelated workers to continue while reconstructing only affected capacity is a useful
 later product policy, but requires a reviewed complete-inventory/limit-change contract.
 Malformed or incomplete inventory blocks the whole pool in either policy.

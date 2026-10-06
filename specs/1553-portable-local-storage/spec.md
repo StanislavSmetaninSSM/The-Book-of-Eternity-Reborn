@@ -63,7 +63,25 @@ is not execution or qualification evidence. [Source-backed plan](plan.md#worker-
   admission and unresolved quarantine recovery remain a rollout prerequisite, not a
   claimed consequence of these two synthetic integration slices.
 
-## Completed inert worker ledger R1 — 2026-10-06
+## Authorized connected worker lifecycle R2 — 2026-10-06
+
+Parent accepted R1 at `25c16dcb513de8b09fc67059465d9dcfb6b96224` and authorized
+T041-WORKER-RESTART-R2. The owner explicitly chose the recommended policy:
+**an unresolved worker blocks new jobs throughout that root until its state is resolved**.
+This does not forbid legitimate cleanup and does not turn Uncertain into confirmed
+completion. Absorbing execution Uncertain, original authority and retained capacity
+remain required. Selective continuation is not this contract.
+
+Connect pre-recovery admission, original identity/one Release, exact task/result
+publication and acknowledged terminal retirement in the existing isolated synthetic
+pool contour. No intermediate partially connected route is qualified. R3, public
+Linux Release, main PTY, live GM and real saves remain separately closed. The plan
+records the source-backed R2 refinements and bounded causal RED/GREEN sequence;
+independent actual Sol 6.1/xhigh design and final review are required. No GM-facing
+prompt/example update is needed: this is client-owned synthetic execution bookkeeping,
+without a changed GM-authored payload or available product capability.
+
+## History: completed inert worker ledger R1 — 2026-10-06
 
 Parent accepted design checkpoint `89bf200d` and authorized only T041-WORKER-RESTART-R1:
 strict worker ledger/closed transitions, retained locks, cold refusal and proven live

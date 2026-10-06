@@ -5,7 +5,172 @@
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
 
-## Completed bounded R1 — 2026-10-06
+## Authorized R2: connected synthetic lifecycle — 2026-10-06
+
+Task T041-WORKER-RESTART-R2 / #1553 / US4 / FR-012/014/015. Parent accepted exact
+R1 `25c16dcb513de8b09fc67059465d9dcfb6b96224` and separately authorized R2.
+The owner chose **root-wide refusal of new jobs while an unresolved worker remains**.
+Legitimate cleanup is allowed; no observation clears absorbing execution Uncertain.
+Remote branch and writer were verified equal and clean before this block. Spec Kit
+prerequisite discovery resolved this existing feature/tasks successfully; do not
+reinitialize its plan. Use Superpowers/Spec Kit bridge, sole writer, independent
+actual Sol 6.1/xhigh design and final review. R3 remains unapproved.
+
+Current checkpoint: design/plan refinement only; zero R2 runtime changes or tests.
+The older R1/design statements below are history, superseded only as to authorization.
+No product Linux Release, main PTY, live GM, real saves, dependency installation,
+permission/network/security changes or Windows runtime qualification. GM-facing
+payloads are unchanged; no prompt/example update is needed for this client-owned,
+explicitly injected fixture contour.
+
+### Source-backed technical refinements for independent design review
+
+1. **Root lifetime and admission.** Add a sealed internal durable pool context, shared
+   by cooperating admissions through `CanonicalRootIdentity` for the exact normalized
+   fixture root. The weak root interner remains the lifetime boundary, not a new
+   unbounded static strong-key cache. The context opens/initializes the R1 coordinator
+   before slot/reaper capacity and before any canonical operation that can recover.
+   Cold active/corrupt/missing-initialized state produces a refusal context, never an
+   adopted entry. Reference-counted admission clients and original execution/quarantine
+   leases retain the coordinator. Busy/uncertain disposal cannot detach the fence or
+   close the original locks. Replacement is permitted only after no clients/executions
+   remain and acknowledged quiescent disposal; cold state is checked again. Original
+   execution owners retain the same context through cleanup. A second process cannot
+   acquire owner.lock. Existing B-only injection remains explicitly legacy synthetic;
+   only the new R2 option claims durable admission, and it stays closed until every
+   lifecycle boundary below is connected. Public construction never enables it.
+
+2. **Canonical entrypoints and lock order.** Bind the explicit context to the fixture
+   root identity so another cooperating FileSystemManager for that admitted root
+   cannot recover through an unbound instance. Add sealed purpose tokens to the
+   canonical lease: ColdAdmission, TaskReservation, Release, ProposalPublication,
+   ConfirmedCleanupAudit. DiagnosticObservation remains a standalone ledger read.
+   Validate immediately after actual canonical lock-handle/name validation and before
+   both legacy and trusted-local recovery. Validate held leases at existing mutation
+   checks and after awaited preparation, including workspace context reads, Store and
+   audit. Default/unbound acquisition in this explicitly admitted root must consult
+   the same root inventory; it cannot bypass a closed context. Other roots retain
+   current behavior. Healthy original warm entries do not themselves mean Uncertain;
+   one lost authority/explicit Uncertain/pending admission conflict closes new work
+   across the root. A purpose never grants generic cleanup or another task's rights.
+   Required cleanup audit binds its exact event ID/bytes and original positive
+   stop/output authority; only its audit operation may use that token. Recovery refusal
+   propagates and retains capacity, without converting arbitrary I/O into receipt
+   fallback. Ordinary physical cleanup does not require opening canonical recovery.
+   Generation reads used by the predicate must use the existing nonmutating parser
+   below the lease predicate, avoiding recursive lease validation/recovery. Lock order
+   stays lifecycle (if any) → canonical → serialized context/journal; no journal or
+   context transaction gate acquires canonical. Slot waits hold none of those locks.
+
+3. **Preallocation and exact identity.** Workspace chooses a sealed path plan before
+   creation; Prepared persists that path and coordinator-minted RunId before Start.
+   The launch token carries that exact entry through ProcessHost and native owner;
+   native `_run` uses it, rather than a later unrelated GUID. Consume the original
+   start attempt before any helper Process.Start. Original partial-launch owner still
+   transfers to cleanup; a cold record is never an owner. The existing task validator
+   already enforces lowercase IDs and ordinal profile/task identity: reuse the
+   validated immutable snapshot without invented case-folding. Bind exact serialized
+   reserved task bytes, generation, root, epoch, RunId, worker/task and workspace.
+   Reject duplicate task identity even with changed body; high-water N+1 does not
+   invalidate a still-original entry N. Early failures after Prepared use the same
+   retained cleanup owner and capacity: only unconsumed Prepared can abort after its
+   fallible prelaunch cleanup, and ambiguous metadata cannot drop those reservations.
+
+4. **Closed connected transitions.** Extend worker record/state to current schema2,
+   retaining the fixed namespace and strict bounds. Add required bounded nullable
+   progress: immutable publication identity/digests plus frozen terminal cleanup/audit
+   facts and a Retired phase. Old schema1 records fail closed; pre-release compatibility
+   is not introduced. Update active tests to current syntax, preserving historical
+   R1 evidence unchanged. Main schema1 is untouched. Coordinator registers the exact
+   execution authority/entry at original owner binding; stop/output/publication/
+   retirement transitions consume sealed witnesses from that same object, never a
+   decoded record, public stop DTO, `trusted=true`, or arbitrary callback. Persistence
+   retains private exact-byte CAS and validates closed typed transitions and candidate
+   archive consistency. Same-entry phase/progress checks and the current serialized
+   state sequence permit unrelated live epochs to advance independently.
+
+5. **Release and publication.** Under the original canonical lease persist
+   ReleaseIntent, then recheck actual owner liveness, entry and generation immediately
+   before the framed send. Latch the send attempt before writing; no partial-write or
+   ACK-loss retransmission. Original I/O settles while the lease stays held. Lost send
+   certainty closes root admission and durably attempts absorbing Uncertain through
+   the standalone journal; failed persistence does not reopen the gate. Only correlated
+   completion zero plus original scoped stop and settled outputs mints a sealed Store
+   permit. Store stages then acquires the typed lease, rechecks task/generation after
+   awaits, persists immutable PublicationIntent, performs its real create-only bundle
+   boundary, and acknowledges Published with exact proposal/content digests before
+   creating the live success permit. Ambiguous Published metadata preserves the bundle
+   and suppresses new success. Exact metadata retry cannot later manufacture a success
+   response for the failed caller. No saved result is automatically accepted cold.
+
+6. **Cleanup and retirement.** Extend the existing QuarantinedExecution phase owner,
+   rather than constructing one from disk. Finish fallible owner/channel/waiter cleanup,
+   detached workspace deletion and any already-required quarantine audit/fallback
+   before freezing the terminal plan. Keep workspace/runtime authority, root execution
+   lease and slot/reaper reservation until archive plus state removal are acknowledged.
+   RetainForRetry may require the existing audit only before the terminal plan freezes;
+   it cannot change that requirement after ambiguous commit. Retry frozen terminal
+   bytes and archive exactly. Post-commit local disposal failure retains the same owner
+   and plan. An already acknowledged Published permit survives retirement-only pending
+   cleanup with CleanupDeferred; PublicationCommitPending never grants it. Cold active
+   entries plus candidate archive still block; a consistent fully committed retirement
+   may admit a NEW task after lost ACK, without recreating the old result permit.
+
+Files affected: `Core/{CanonicalRootIdentity,FileSystemManager,
+FileSystemManager.TrustedLocalStorage,GenerationSnapshot,WorkerRunLedgerPersistence}.cs`;
+`Services/GmWorkers/{GmWorkerRunRecord,GmWorkerRunRecordCodec,GmWorkerRunLedgerCodec,
+GmWorkerRunLedger,GmWorkerNativePoolAdmission,GmWorkerBridgePool,
+GmWorkerExecutionWorkspace,GmWorkerOwnedLaunch,GmWorkerNativeLineageLaunch,
+GmWorkerProcessHost,GmWorkerExecutionAuthority,GmWorkerProposalStore,
+GmWorkerAuditLog,GmWorkerQuarantineReaper}.cs` and new sealed durable-context/witness
+types. These paths are under BookOfEternityClient. Avoid unrelated broad Core refactors.
+
+### Bounded execution and verification sequence
+
+- Publish this plan/refinement checkpoint, verify remote SHA and byte readback, then
+  independent Sol 6.1/xhigh design review. Resolve confirmed findings before runtime
+  edits. No generic additional owner confirmation is needed for the authorized R2.
+- Add `GmWorkerRestartAdmissionTests` and a finite TestSupport restart driver using
+  the existing independent C guardian. First one causal RED: an abruptly exiting app
+  leaves durable Prepared; a fresh actual pool must refuse before capacity, recovery,
+  Start/Release or saved-result acceptance. Bootstrap the isolated fixture once before
+  the crash, not via EnsureDirectoryStructure in the cold admission path. The baseline
+  may run and clean its own synthetic worker; assert that unwanted launch/publication,
+  not a build/fixture failure, is the RED. Every driver has a guardian deadline and
+  ECHILD proof, and mutable roots are per test. Do not add the whole R3 crash matrix.
+- Connect all six boundaries while the durable internal route remains unavailable.
+  Add focused closed-transition/codec tests first for new progress/Retired and original
+  witness refusals; run causal RED before implementing those operations. Then implement
+  minimal connected path and run initial cold-refusal GREEN plus one real content
+  publication/cleanup/terminal proof. Fresh process admits a distinct new task only;
+  old exact or changed-body task identity remains refused.
+- Expand only after positive cleanup: actual second-process owner exclusion; queued
+  old-generation Release; two concurrent valid entries/epochs; an attempted Release
+  cannot be repeated; already-held lease observes a closed root after an await; exact
+  cleanup audit cannot borrow another entry. Prove one ambiguous Published commit and
+  one ambiguous retirement commit using observation/failure-only hooks, exact retry,
+  held authority/capacity and distinct success-permit semantics. This minimal connected
+  matrix is R2; all crash-cut permutations/environment/limit variants remain R3.
+- Catalog changes are structural. New bounded categories own R2 admission, connected
+  lifecycle and commit-boundary tests, with explicit Linux/guardian requirements.
+  Revise explicit Linux selection and portable CI selection by actual contracts.
+  Re-run affected record/storage/failure tests only after the schema/coordinator change;
+  choose existing canonical lease/recovery/generation and B cleanup/consumer categories
+  from the actual final diff. Do not rerun unchanged IPC34/ENV16/workspace47/receipt41/
+  output48/input37/main-record90/FRAME49 or all127 B cases without source cause.
+- Commands: `pwsh -NoProfile -File scripts/test-csharp.ps1 -Category <owned-id>`;
+  multiple selected IDs use `pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1
+  -Category @("id1", "id2")'`. Fresh build before any NoBuild. Run category PlanOnly
+  for exact membership and final ValidateCatalog for discovery only, no broad execution.
+  Record verified SDK/runtime/PowerShell/compiler provenance, exact source hashes,
+  manifests, commands, planned/executed counts, preparation failures vs causal RED,
+  guardian ECHILD and remaining owned resources. No power-loss/systemd/Windows claim.
+- Publish each bounded WIP/checkpoint before long tests/reviews, normal non-force push,
+  remote exact SHA/readback. Final independent Sol 6.1/xhigh review covers full connected
+  path and selection sufficiency. Finish with a fresh GitHub-only clone, all tracked
+  bytes/tree/parent/clean/fsck/ancestry check and handoff to parent before R3/integration.
+
+## History: completed bounded R1 — 2026-10-06
 
 Outcome: independent actual gpt-6.1-sol/xhigh **R1 PASS** at
 `c7e801f10444960e6e34543a6c8870c3c6162ffa`; no confirmed critical/important defects or
