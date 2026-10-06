@@ -5,28 +5,31 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## R2: проверки пройдены; итоговое ревью и восстановление кандидата впереди
+## R2 завершён в ограниченном synthetic-контуре; передача родителю
 
+Независимый actual **gpt-6.1-sol/xhigh Bounded R2 PASS**: кандидат
+`c0880fb2319e37f0591beb21fe23529e214783d2`, runtime source
+`7439bfc7683000cfb856252d7889d1bce2d54219`. Подтверждённых блокеров нет.
 Принятая база R1 — `25c16dcb513de8b09fc67059465d9dcfb6b96224`.
-Подключён только разрешённый synthetic-контур: pre-recovery admission, исходная
-идентичность root/task/host, однократный Release, точная публикация и terminal ACK
-перед освобождением capacity. При unresolved worker новые задания всего root
-отклоняются; исходный cleanup разрешён, Uncertain остаётся поглощающим.
 
-Последний runtime source `7439bfc7`:34/34 затронутых проверок PASS после причинного
-RED3/3; Busy до LaunchIntent сохраняет never-Start cleanup, первый Release требует
-execution именно своего host. Независимый Sol6.1/xhigh завершил source review без
-оставшихся runtime-блокеров; принятие полного пакета ещё ожидается.
-Проверены35 manifests,331 unique source-bound blobs,3182 artifacts/438 gzip hashes;
-последние результаты403 различных случаев PASS, это отдельные ограниченные когорты.
-164 guardian достигли ECHILD;4 исторических emergency signals сохранены и объяснены
-в [qualification](recovery/worker-restart-r2.json), failures/deadlines0.
-Catalog311/10879 valid; Linux plan403 и portable CI plan232,0 исполнений discovery.
+Подключены pre-recovery admission, исходная идентичность root/task/host, однократный
+Release, точная публикация и terminal ACK перед освобождением capacity. Unresolved
+worker блокирует новые задания всего root; исходный cleanup разрешён, Uncertain
+остаётся поглощающим. Busy до LaunchIntent сохраняет never-Start cleanup; первый
+Release требует execution именно своего host. Последние дефекты закрыты RED3→GREEN34.
 
-Следующий шаг: публикация кандидата, fresh GitHub-only restoration и final review
-полного пакета. T041-WORKER-RESTART-R2 ещё не отмечен выполненным. R3, product Linux
-Release, main PTY, live GM, реальные saves и Windows/systemd native qualification
-остаются вне этого блока. Точные source/evidence — в [плане](plan.md).
+Ревьюер независимо проверил35 manifests,331 source blobs,3182 artifacts/438 gzip;
+последние403 различных PASS точно покрывают Linux selection отдельными ограниченными
+когортами.164 guardian ECHILD;4 исторических emergency signals объяснены и сохранены,
+failures/deadlines0. Catalog311/10879 valid; Linux plan403/portable CI232,0exec discovery.
+Fresh GitHub-only кандидат:11019 файлов побайтово сверены в обоих clean checkout,
+история/tree/fsck/remote совпадают. [Qualification и пределы](recovery/worker-restart-r2.json).
+
+T041-WORKER-RESTART-R2 выполнен. Финальный metadata carrier публикуется обычным
+non-force push/readback и отдельно восстанавливается из GitHub; SHA/proof — в передаче.
+Активных тестовых сессий нет. Следующий шаг — handoff родителю, без начала R3.
+R3, product Linux Release, main PTY, live GM, реальные saves, Windows/systemd runtime
+и power-loss durability не квалифицированы. GM payloads/prompts/examples не менялись.
 Старые формулировки «R2 не разрешён» ниже — история завершения R1.
 
 ## История: R1 завершён; остановка перед R2

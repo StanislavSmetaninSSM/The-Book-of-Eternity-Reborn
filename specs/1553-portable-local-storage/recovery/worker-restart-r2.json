@@ -5,7 +5,7 @@
   "Branch": "codex/1553-load-filesystem",
   "AcceptedR1": "25c16dcb513de8b09fc67059465d9dcfb6b96224",
   "FinalRuntimeSource": "7439bfc7683000cfb856252d7889d1bce2d54219",
-  "Status": "Implementation and selected checks complete; complete-packet independent review and fresh GitHub-only candidate restoration pending",
+  "Status": "Bounded synthetic R2 complete; independent final PASS; handoff before R3/integration",
   "Scope": "Explicitly injected Linux x64 synthetic connected native pool lifecycle. Root-wide new-job refusal with unresolved workers; legitimate original cleanup remains possible; Uncertain is absorbing.",
   "DesignReview": {
     "Model": "gpt-6.1-sol",
@@ -745,10 +745,13 @@
     "Agent": "/root/native_review",
     "Model": "gpt-6.1-sol",
     "ReasoningEffort": "xhigh",
-    "Mode": "read-only; no edits/tests/probes",
-    "Status": "Source review complete, complete-packet final acceptance pending",
-    "SourceFindingsClosedAt": "7439bfc7683000cfb856252d7889d1bce2d54219",
-    "ConfirmedReviewScope": "32-file connected authority/error/lifetime/storage/canonical review; no remaining runtime blocker after Busy and original host Release fixes."
+    "Mode": "Independent read-only; no edits/tests/probes",
+    "Verdict": "Bounded R2 PASS",
+    "ReviewedCandidate": "c0880fb2319e37f0591beb21fe23529e214783d2",
+    "ReviewedRuntime": "7439bfc7683000cfb856252d7889d1bce2d54219",
+    "RemainingConfirmedBlockers": [],
+    "Confirmed": "Both final launch findings closed by actual causal RED/GREEN. Independently verified35manifests331source blobs3182artifacts438gzip;403latest distinct cases exactly cover Linux selection; affected regression selection sufficient.164guardians ECHILD with4disclosed historical emergency signals and0failure/deadline. Independently compared11019candidate files to restored Git blobs in both clean checkouts.",
+    "AcceptanceScope": "Explicitly injected Linux x64 synthetic R2 only; other limits below remain."
   },
   "Limits": [
     "No R3 crash/restart expansion, production Linux Release, main PTY wiring, live GM, real game saves, merge or issue closure.",
@@ -758,6 +761,21 @@
     "No late observation, timeout, death evidence or journal DTO clears absorbing Uncertain or grants publication/retirement authority."
   ],
   "GmDocsRationale": "Client-owned explicitly injected synthetic contour; GM-authored payloads, prompts and examples unchanged.",
-  "Next": "Complete independent packet review and GitHub-only restoration, then handoff to parent; stop before R3/integration.",
-  "FinalCarrier": "Publish with ordinary non-force push, exact remote SHA and byte readback. Restore final metadata carrier independently from GitHub; report its final SHA/proof in handoff without self-referential metadata."
+  "Next": "Handoff to parent. R3 and production/main/live integration remain unapproved and were not started.",
+  "FinalCarrier": "Publish with ordinary non-force push, exact remote SHA and byte readback. Restore final metadata carrier independently from GitHub; report its final SHA/proof in handoff without self-referential metadata.",
+  "ReviewedCandidate": "c0880fb2319e37f0591beb21fe23529e214783d2",
+  "CandidateRestoration": {
+    "Commit": "c0880fb2319e37f0591beb21fe23529e214783d2",
+    "Tree": "805bcb537e008aee855dcabc26ad75785ce6bb6c",
+    "Parent": "7439bfc7683000cfb856252d7889d1bce2d54219",
+    "RestoredDirectory": "/workspace/r2-candidate-github-c0880fb2",
+    "Transport": "fresh clone from GitHub HTTPS only; no local source/object/cache reuse",
+    "Clean": true,
+    "TrackedFilesByteCompared": 11019,
+    "Comparison": "each restored and writer checkout file byte-identical to independent GitHub-fetched blob",
+    "ConnectivityFsck": true,
+    "RemoteAfterRestoration": "c0880fb2319e37f0591beb21fe23529e214783d2",
+    "TestsExecutedForRestoration": 0
+  },
+  "ActiveTestSessions": []
 }

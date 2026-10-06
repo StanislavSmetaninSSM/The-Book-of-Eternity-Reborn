@@ -493,6 +493,20 @@ fixture and2intentional host-loss regressions),0failure/deadline. No active test
 [Qualification/handoff](recovery/worker-restart-r2.json) records the source closure,
 cohorts, limits and manifest hashes. Ordinary candidate push/readback, fresh GitHub-only
 restoration and final independent complete-packet verdict remain before R2 completion.
+Independent actual gpt-6.1-sol/xhigh **Bounded R2 PASS** at candidate
+`c0880fb2319e37f0591beb21fe23529e214783d2`, runtime `7439bfc7`: no remaining
+confirmed blockers. Reviewer independently verified35manifests331source blobs3182artifacts/
+438gzip, latest403PASS exactly covering Linux selection, selection sufficiency and
+all164guardian reports with the4disclosed historical emergency signals/0failure/deadline.
+Fresh GitHub-only restore tree805bcb537e008aee855dcabc26ad75785ce6bb6c:11019tracked
+files in both clean checkouts byte-identical to independent Git blobs; parent/history/
+connectivityfsck/exact remote verified. Reviewer independently repeated the complete
+byte comparison. Qualification records exact candidate proof and final verdict.
+Only T041-WORKER-RESTART-R2 is completed; R3/integration remain unapproved/unstarted.
+This final verdict/status/tasks metadata carrier is published by ordinary non-force
+push/readback and restored again from GitHub into another empty directory; final SHA
+and proof are reported in handoff, avoiding a self-referential artifact. Zero new tests
+for metadata; no active test sessions. No main/GM/save/native systemd/Windows rollout.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing
