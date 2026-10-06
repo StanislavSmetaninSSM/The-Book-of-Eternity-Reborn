@@ -139,8 +139,16 @@ Final source-backed distinct union35PASS=12current admission+7installed-cwd laun
 Discovery-only catalog352/10980 and PlanOnly2descriptors/19cases passed,0test execution;
 sharedconsumer selection deduplicated. [Qualification](recovery/production-main-m1-qualification.json)
 and [handoff](production-main-m1-handoff.md) retain exact boundaries and open debts.
-Final independent actual Sol6.1/xhigh evidence/metadata review and GitHub-only restore
-remain before task closure. No Q1/Q2/systemd/Windows/live provider/game-write/LoadUX stage.
+Independent actual Sol6.1/xhigh BOUNDED M1 PASS atd498d608, runtime6d111ccc;
+no remaining material findings. Reviewer independently checked all18manifests/pins/
+stored+decompressedhashes/90guardians/35TRXcase map,14unchanged operationalassets,
+3oldtestsupplements and selection. Candidate fresh GitHub-only restore19718files:
+writer/restored bytes==GitHub blobs, exactSHA/tree/parent/accepted ancestry,clean/
+fullfsck/noalternates/remoteSHA,0tests. [Review](recovery/production-main-m1-review.json)
+and [restore](recovery/production-main-m1-restoration.json). Only bounded M1 closes;
+final metadata carrier gets ordinary push/readback/fresh final restore, supplied in
+writer handoff without self-reference. No Q1/Q2/systemd/Windows/live/provider/game-write/
+LoadUX stage or unrelated repeat; stop before next authorization.
 
 ## T041-PRODUCTION-MAIN-DESIGN — current design-only continuation
 

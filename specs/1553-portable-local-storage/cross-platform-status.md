@@ -5,22 +5,25 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## Current: production main/ordinary Linux launcher design only
+## Current: bounded M1 ordinary Linux production route PASS
 
-Owner accepted bounded F3 **fc49f271f5cd14ac3b24931cce2c98ef64a61068**.
-[First connected M1 proposal](production-main-admission-design.md) reuses the original
-terminal/schema1 fence/T042, adds required production root/worker registration and
-actual launcher/console/daemon/QTE/repair boundaries with a prebuilt helper and
-explicit NativeLineage. No runtime/test/catalog/config change; implementation pending.
-Separate real-Codex qualification and primary systemd/native Windows remain open.
-One permitted startup in empty scratch stopped at unanswered TERM=dumb confirmation;
-Ctrl+C exit, guardian ECHILD/emergency0/failure0/deadlinefalse; no ready/VT/model request.
-Load UX answer pending; T031-BROWSER-ROLLBACK-LINUX retained.
-[Exact source/probe evidence](recovery/production-main-design.json).
-Independent actual Sol6.1/xhigh DESIGN PASS at `8d6a6896`; D1 closed, no remaining
-material findings,37source/guardian pins+5probe artifacts verified. Final verdict
-carrier/readback/fresh GitHub-only source restoration follows as writer closure.
-Stop before M1 implementation.
+Owner accepted design **cdc3b10ca5cbff5b4d9cbc935609cdff29a95e68** and authorized M1.
+Existing ordinary launcher/production root admission consumes original terminal,
+schema1 fence/T042 and retained worker inventory with disabled helpers. Published
+prebuilt NativeLineage layout, actual installed console/daemon/QTE/repair bootstrap,
+transport/health and foreground separate stdin are qualified with a configured neutral
+CLI in isolated roots; arbitrary command/model/args/cwd preserved. Debug publication,
+not Release gameplay/live-GM acceptance. [Qualification](recovery/production-main-m1-qualification.json).
+Independent actual Sol6.1/xhigh **BOUNDED M1 PASS** at `d498d608`, runtime `6d111ccc`:
+35distinctPASS (19new+16affectedold),18manifests1559sourcepins/1221artifacts/669gzip,
+90guardianECHILD/emergency0/failure0/deadlinefalse. Discovery352/10980 and19-case
+M1 selection execute0tests. Candidate fresh GitHub-only restore19718trackedfiles,
+byte/tree/parent/clean/fullfsck/accepted ancestry/remote verified. Final carrier SHA and
+fresh restoration supplied by writer closure. [Handoff](production-main-m1-handoff.md).
+No Q1/Q2/Codex/TERM/provider/model/game-writing/saves acceptance in M1. Primary systemd
+and native Windows remain unqualified; workers stay disabled, no Auto/Systemd downgrade.
+T031-BROWSER-ROLLBACK-LINUX remains real debt; Load UX unanswered/low-level refusal kept.
+Full T041/T043/public rollout/cold/reboot guarantees stay open. Stop before Q1/next stage.
 
 ## Accepted bounded T041-RUN-FENCE-F3 independent PASS
 

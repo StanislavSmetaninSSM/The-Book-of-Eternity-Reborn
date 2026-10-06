@@ -1,7 +1,7 @@
 {
   "SchemaVersion": 1,
   "Task": "T041-PRODUCTION-MAIN-M1",
-  "State": "Bounded configured-neutral production-route qualification; independent final metadata/evidence review pending",
+  "State": "Bounded M1 independent source/evidence/metadata/selection PASS; final writer carrier publication/restoration closure",
   "AcceptedDesign": "cdc3b10ca5cbff5b4d9cbc935609cdff29a95e68",
   "LatestRuntimeAndTestSource": "6d111cccf9ad740a12cd466fe9be32a11957a65f",
   "Latest": {
@@ -388,8 +388,24 @@
     "Git": "git version 2.52.0"
   },
   "ProductDecisions": "No additional UX/game-model/save-protection requirement. bounded input queue/profile settings remain technical controlled-slice choices, not final live-client UX. Executor/reviewer Sol model does not choose game GM model.",
-  "IndependentReview": "production-main-m1-review.json (actual gpt-6.1-sol/xhigh, read-only; final candidate review pending)",
-  "Restoration": "Final writer push/remote SHA/byte readback and fresh GitHub-only restoration supplied after candidate publication; no self-referential SHA claim.",
+  "IndependentReview": {
+    "Report": "production-main-m1-review.json",
+    "Agent": "/root/m1_source_review",
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "Verdict": "BOUNDED M1 PASS",
+    "CandidateCommit": "d498d608aef20e61e9ee60007bdfd2025cb01395",
+    "RemainingMaterialFindings": 0,
+    "ReadOnly": true
+  },
+  "Restoration": {
+    "CandidateProof": "production-main-m1-restoration.json",
+    "CandidateCommit": "d498d608aef20e61e9ee60007bdfd2025cb01395",
+    "TrackedFilesByteCompared": 19718,
+    "FreshGithubOnly": true,
+    "TestsExecuted": 0,
+    "FinalCarrier": "Separately ordinary-pushed/read back and freshly restored by writer; exact final SHA/restore is supplied in final handoff without self-reference."
+  },
   "DiscoveryOnly": {
     "Catalog": {
       "Valid": true,

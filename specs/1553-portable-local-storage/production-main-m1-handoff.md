@@ -4,6 +4,13 @@ Accepted design: `cdc3b10ca5cbff5b4d9cbc935609cdff29a95e68`. Latest runtime/test
 `6d111cccf9ad740a12cd466fe9be32a11957a65f`. Only M1 is implemented; final independent
 source/evidence review and GitHub preservation closure are recorded separately.
 
+Independent actual **gpt-6.1-sol/xhigh BOUNDED M1 PASS** at `d498d608`, no remaining
+material findings. [Review](recovery/production-main-m1-review.json) verified all18
+manifests/1559sourcepins/1221artifacts/669gzip and35TRXcase map. [Candidate restore](recovery/production-main-m1-restoration.json)
+verifies19718trackedfiles from GitHub only, exact bytes/tree/parent/clean/fullfsck,
+accepted ancestry/noalternates/remoteSHA,0tests. Final metadata carrier is separately
+pushed/read back/freshly restored; exact final SHA/restore is supplied at handoff.
+
 The existing ordinary Linux launcher now consumes production main/root admission and
 starts the configured CLI through the original terminal/schema1 fence/T042. NativeLineage
 is explicit; Auto/SystemdUser do not downgrade. The original worker inventory stays
