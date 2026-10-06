@@ -2,34 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "worker-execution-scoped-evidence",
-      "reason": "Windows CI runs only platform-independent B evidence/consumer/order/documentation contracts; actual Linux qualification has explicit tests/selections/1553-worker-pool-linux.json and source-specific evidence.",
+      "category": "worker-run-ledger-record",
+      "reason": "R1 new strict worker record; no existing main or pool behavior changes.",
       "contracts": [
-        "#1553 T041-FALLBACK-POOL B6",
-        "FR-012/014/015"
-      ]
-    },
-    {
-      "category": "worker-consumer-execution-evidence",
-      "reason": "Windows CI runs only platform-independent B evidence/consumer/order/documentation contracts; actual Linux qualification has explicit tests/selections/1553-worker-pool-linux.json and source-specific evidence.",
-      "contracts": [
-        "#1553 T041-FALLBACK-POOL B6",
-        "FR-012/014/015"
-      ]
-    },
-    {
-      "category": "worker-pool-regression-managed-policy",
-      "reason": "Windows CI runs only platform-independent B evidence/consumer/order/documentation contracts; actual Linux qualification has explicit tests/selections/1553-worker-pool-linux.json and source-specific evidence.",
-      "contracts": [
-        "#1553 T041-FALLBACK-POOL B6",
-        "FR-012/014/015"
-      ]
-    },
-    {
-      "category": "worker-pool-regression-docs",
-      "reason": "Windows CI runs only platform-independent B evidence/consumer/order/documentation contracts; actual Linux qualification has explicit tests/selections/1553-worker-pool-linux.json and source-specific evidence.",
-      "contracts": [
-        "#1553 T041-FALLBACK-POOL B6",
+        "#1553 T041-WORKER-RESTART-R1",
         "FR-012/014/015"
       ]
     }

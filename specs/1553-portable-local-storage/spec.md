@@ -63,6 +63,14 @@ is not execution or qualification evidence. [Source-backed plan](plan.md#worker-
   admission and unresolved quarantine recovery remain a rollout prerequisite, not a
   claimed consequence of these two synthetic integration slices.
 
+## Authorized inert worker ledger R1 — 2026-10-06
+
+Parent accepted design checkpoint `89bf200d` and authorized only T041-WORKER-RESTART-R1:
+strict worker ledger/closed transitions, retained locks, cold refusal and proven live
+prelaunch-abort archival, with bounded storage/crash qualification. No pool integration,
+public Linux Release or existing pure main-record change. Root-wide versus selective
+restart admission before R2 remains undecided; R1 must not encode it as a user choice.
+
 ## Worker durable restart/fencing — design-only continuation, 2026-10-05
 
 The parent accepted bounded synthetic POOL B at `30ab292d46f6a8fc88b03ee8f3d0731523788e8d`

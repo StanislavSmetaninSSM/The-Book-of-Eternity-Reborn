@@ -5,6 +5,13 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
+## Текущий этап: разрешён только inert ledger R1
+
+2026-10-06 родитель принял `89bf200d` и разрешил R1. Записи/codec, закрытые переходы,
+удерживаемые locks, cold refusal и только доказанный live prelaunch-abort; ограниченные
+storage/crash проверки. Актуальный ход — в начале plan.md. Pool/public Release/main
+run-record не подключать. Политика root-block перед R2 не выбрана. Остановиться после R1.
+
 ## Текущий этап: только дизайн durable worker restart/fencing
 
 Родитель принял POOL B на `30ab292d` и поручил отдельный design-only этап.

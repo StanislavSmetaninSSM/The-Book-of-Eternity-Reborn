@@ -5,6 +5,35 @@
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
 
+## Active R1 implementation — 2026-10-06
+
+Parent accepted `89bf200d513b30079daa9c3b6236a1f4f9a7c6af` and authorized only
+T041-WORKER-RESTART-R1. Existing isolated worktree/branch verified against GitHub.
+Use inline Superpowers executing-plans/TDD and Spec Kit bridge; this section is the
+durable execution ledger. No pool/public Release/main run-record change, no R2 policy
+choice and no implementation after R1. Separate actual gpt-6.1-sol/xhigh final review.
+
+Pre-flight: record/codec feeds the private persistence/coordinator; coordinator alone
+mints live entry handles and enforces immutable identity/sequence. Cold observations
+never become handles. Archive mutation is limited to original Prepared/never-Start
+abort. Shared-scope primitives are reused without modifying their existing contracts.
+Ruling: the accepted Spec Kit plan/checkpoint is the execution ledger instead of a
+second disposable Superpowers plan workspace; remote recovery requirements take priority.
+User/category policy overrides generic skill full-suite/baseline reruns.
+
+Sequence: (1) strict record/cold RED→GREEN, (2) real retained-lock ledger and prelaunch
+abort RED→GREEN, (3) finite cold/crash/lock/identity/failure qualification, (4) independent
+final review and source-specific GitHub restoration. No unrelated passing cohort repeat.
+R1 Linux persistence must fail closed on platforms without a qualified durability
+adapter; pure model checks remain portable. This does not qualify native Windows.
+Verified environment: SDK10.0.401, runtime8.0.31 (+10.0.12 installed), PowerShell7.5.4,
+GCC14.2.0-19, readelf2.44, Linux6.18.44 x64. No installation/network/auth/security changes.
+
+Current WIP: new declaration-only worker record and intentionally missing cold reader,
+nine cold nonterminal assertions, owned `worker-run-ledger-record` category/selection.
+Build/PlanOnly and causal RED pending; compile/preparation failures will be separate.
+Next: fresh selected build/discovery, execute the nine assertions, then implement codec.
+
 ## Active worker restart/fencing design-only continuation, 2026-10-05
 
 Parent accepted POOL B at `30ab292d46f6a8fc88b03ee8f3d0731523788e8d` and explicitly
