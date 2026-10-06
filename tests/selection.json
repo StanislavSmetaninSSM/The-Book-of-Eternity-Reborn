@@ -70,6 +70,13 @@
       "contracts": [
         "#1553 T041-RUN-FENCE-F2; original browser transaction remains fenced"
       ]
+    },
+    {
+      "category": "gm-main-affected-load-outcomes",
+      "reason": "F2 changed browser admission/follow-up: exact NotLoaded, RolledBack, Committed, Uncertain and exact lease/token preservation",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F2 typed load/rollback and original quiescent guard"
+      ]
     }
   ]
 }

@@ -14583,6 +14583,31 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-affected-load-outcomes",
+      "responsibility": "F2 changed browser admission/follow-up: exact NotLoaded, RolledBack, Committed, Uncertain and exact lease/token preservation",
+      "excludes": "Previously qualified wire cases, live GM, arbitrary launch, other F1 cohorts",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmMainOperation",
+        "BookOfEternityGMBridge/",
+        "BookOfEternityClient.TestSupport/MainOperationScenarioDriver.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission"
+          ]
+        }
+      ]
     }
   ]
 }
