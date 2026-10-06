@@ -28,10 +28,10 @@ internal static class GmMainParticipatingControl
             return await RunAsync(new FileSystemManager(args[2], NullLogger<FileSystemManager>.Instance),
                 Console.OpenStandardInput(), Console.OpenStandardOutput());
         }
-        catch (Exception)
+        catch (Exception failure)
         {
             // Fixed diagnostic: no source data, credentials or uncontrolled exception text.
-            Console.Error.WriteLine("Original participating operation refused or continuation unconfirmed.");
+            Console.Error.WriteLine($"Original participating operation refused or continuation unconfirmed ({failure.GetType().Name}).");
             return 2;
         }
     }

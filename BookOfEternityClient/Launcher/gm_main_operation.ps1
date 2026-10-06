@@ -32,8 +32,9 @@ function Open-GmParticipatingOperation {
     } catch {
         $process.StandardInput.Dispose()
         if (-not $process.WaitForExit(4000)) { $process.Kill(); $process.WaitForExit() }
+        $code=$process.ExitCode
         $process.Dispose()
-        throw
+        throw "Original participating admission unavailable (helper exit $code)."
     }
 }
 
