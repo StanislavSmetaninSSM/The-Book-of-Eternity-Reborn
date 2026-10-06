@@ -2,6 +2,55 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-load-affected-refresh",
+      "responsibility": "Exact existing complete refresh/read/close and console committed-refresh-failure integration consumers",
+      "excludes": "No provider/model/EnterGameLoop/native Windows/systemd or unrelated console cohorts",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredUiRefreshFailureCannotEraseCommit"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-load-ordinary-schema",
+      "responsibility": "Actual console menu and HTTP Load/full-bundle consumers of the existing canonical schema1 generation",
+      "excludes": "No provider/model/EnterGameLoop/native Windows/systemd or unrelated console cohorts",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard",
+            "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InGameMenuReportsCommitAndResumesOnlyAfterRequiredRefresh"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-load-rollback-cut",
       "responsibility": "Single actual replacement cut reaches real typed RolledBack, exact restored generation/world, no fresh terminal",
       "excludes": "No provider/model/EnterGameLoop/native Windows/systemd or unrelated console cohorts",
@@ -101,7 +150,7 @@
     },
     {
       "id": "gm-load-affected-backend",
-      "responsibility": "Exact existing Load/storage/refresh/original guard consumers affected by lifecycle integration",
+      "responsibility": "Exact existing portable Load/admission/typed-storage/original guard unit consumers affected by lifecycle",
       "excludes": "No provider/model/EnterGameLoop/native Windows/systemd or unrelated console cohorts",
       "changeHints": [
         "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs"
@@ -119,16 +168,6 @@
           "tests": [
             "BookOfEternityClient.Tests.PortableBrowserLoadTests.*",
             "BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing"
-          ]
-        },
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard",
-            "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration",
-            "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InGameMenuReportsCommitAndResumesOnlyAfterRequiredRefresh",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredUiRefreshFailureCannotEraseCommit"
           ]
         }
       ]

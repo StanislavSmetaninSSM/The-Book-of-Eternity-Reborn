@@ -108,6 +108,22 @@
         "T041-LOAD-SESSION-LIFECYCLE",
         "typed rollback and no false fresh session"
       ]
+    },
+    {
+      "category": "gm-load-ordinary-schema",
+      "reason": "Seven actual no-active console/HTTP causal RED cases for existing canonical writer schema; rerun after shared parser fix",
+      "contracts": [
+        "T041-LOAD-SESSION-LIFECYCLE",
+        "schema1 generation and complete refresh"
+      ]
+    },
+    {
+      "category": "gm-load-affected-refresh",
+      "reason": "Eight exact affected refresh integrations already passed before schema fix; preserve separate scope without repeating them",
+      "contracts": [
+        "T041-LOAD-SESSION-LIFECYCLE",
+        "original guard and committed refresh"
+      ]
     }
   ]
 }

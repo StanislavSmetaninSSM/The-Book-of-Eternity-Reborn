@@ -77,8 +77,8 @@ internal sealed class GmLoadSessionOperation : IAsyncDisposable
     private string? ReadGenerationExpectation()
     {
         if(!File.Exists(_files.SessionGenerationPath))return null;
-        using var doc=JsonDocument.Parse(File.ReadAllBytes(_files.SessionGenerationPath));
-        return doc.RootElement.GetProperty("generationId").GetString(); // refusal only; actual lease validates below
+        // Share the actual writer/reader schema; this expectation cannot grant authority.
+        return FileSystemManager.ParseSessionGenerationText(File.ReadAllText(_files.SessionGenerationPath));
     }
     internal async Task ValidateLoadGenerationAsync()
     {

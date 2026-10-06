@@ -36,7 +36,7 @@ public partial class FileSystemManager
 
     // The original load reader keeps its physical open/completion contract and
     // shares only this existing BOM-decoded schema interpretation.
-    private static string ParseSessionGenerationText(string json)
+    internal static string ParseSessionGenerationText(string json)
     {
         try
         {
