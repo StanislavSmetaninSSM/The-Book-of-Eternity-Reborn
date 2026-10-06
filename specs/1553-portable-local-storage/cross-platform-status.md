@@ -22,7 +22,7 @@ byte/tree/parent/clean/fullfsck/accepted ancestry/remote verified. Final carrier
 fresh restoration supplied by writer closure. [Handoff](production-main-m1-handoff.md).
 No Q1/Q2/Codex/TERM/provider/model/game-writing/saves acceptance in M1. Primary systemd
 and native Windows remain unqualified; workers stay disabled, no Auto/Systemd downgrade.
-T031-BROWSER-ROLLBACK-LINUX remains real debt; Load UX unanswered/low-level refusal kept.
+T031-BROWSER-ROLLBACK-LINUX is the active authorized migration. Load UX accepted 2026-10-06: confirmed stop + confirmed successful load → fresh session; uncertainty halts. Implementation is a separate next slice; current low-level refusal remains.
 Full T041/T043/public rollout/cold/reboot guarantees stay open. Stop before Q1/next stage.
 
 ## Accepted bounded T041-RUN-FENCE-F3 independent PASS
