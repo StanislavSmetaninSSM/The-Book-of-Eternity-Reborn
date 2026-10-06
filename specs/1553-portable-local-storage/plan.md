@@ -5,6 +5,125 @@
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
 
+## Authorized R3: application-process crash/restart qualification — 2026-10-06
+
+Task T041-WORKER-RESTART-R3 / #1553 / US4 / FR-012/014/015. Parent explicitly
+accepted R2 `6992e812f5917315bc789c0eeff9bbc0677cdd33` and authorized R3 within
+the accepted [design](worker-restart-fencing-design.md#r3--gradual-crashrestart-and-retirement-qualification).
+This is bounded qualification of the existing connected contour, not a new backend.
+Use Superpowers writing-plans then executing-plans/TDD/systematic debugging in this
+existing isolated checkout; root remains sole writer, independent actual Sol6.1/xhigh
+reviews this plan before execution and the final evidence. User supplied the execution
+method and authorized execution after independent plan review; no renewed approval
+is required. Source/remote exact accepted SHA and clean state were verified first.
+
+Goal: qualify application-process loss at the remaining meaningful boundaries without
+reconstructing authority from metadata. Root-wide refusal, original bytes/reservations,
+absorbing Uncertain and permitted original-owner cleanup remain unchanged. Only
+negative/observation hooks may be added initially; runtime behavior changes require
+an actual causal failure. No reconnect, automatic salvage, force-clear, reboot clear,
+public Linux Release, main PTY, live GM/real saves, power-cut/reboot or Windows-native
+qualification. No network/auth/security/dependency changes; no HOME-PC.
+
+### Evidence already accepted; exclude unchanged repetitions
+
+- R1: exact old/new/Blocked persistence cuts at write/flush/rename/directory sync,
+  prelaunch archive cuts, retained/inheritance-safe locks, malformed/schema/root/epoch
+  bounds and cold syntax. Do not replay29 inert abrupt cuts or34 process cases.
+- R2: actual cold Prepared with interrupted canonical decision; positive actual content
+  lifecycle; exact/changed/new retired task; mixed-mode/process owner lifetime; queued
+  pre-lease Release generation/task rejection; original live publication/retirement ACK
+  retry; foreign pending epochs; cleanup/audit/private-witness identity and sticky warm
+  native loss. Source-specific403 latest PASS in recovery/worker-restart-r2.json.
+- Therefore no new bare Prepared crash (already actual R2), mode/ownership race, generic
+  live ACK retry, old-task-only rejection or old release-generation cohort. The tests
+  below assert these invariants only when reaching a previously unqualified crash cut.
+  Do not rerun unrelated IPC34/ENV16/FRAME49/output48/input37/main90 or all pool tests.
+
+### Minimal remaining matrix: 24 cases in five sequential cohorts
+
+| Cohort/category | New cases and exact observation | Required distinction/result |
+| --- | --- | --- |
+| A `worker-restart-crash-launch-linux` (7) | original helper Ready/bound; ReleaseIntent StateDirectorySynced before send; actual sent Release plus observed worker-start before Released ACK; BeforeCompletionArbitration after Released ACK; original correlated Completed; after real scoped Stop before output settlement; StopValidated StateDirectorySynced after real output settlement | Abrupt `_exit(77)`, no pool finally/Dispose. Each fresh distinct-task dispatch refuses before recovery/capacity/reservation/owner/Release; state remains nonterminal and physical guardian cleanup grants no durable authority. |
+| B `worker-restart-crash-publication-linux` (5) | PublicationIntent before bundle move; real bundle exists before Published state write; Published StateDirectorySynced before caller ACK; derived inbox exists before derived audit; original publication permit recorded and derived audit complete before workspace cleanup | Preserve actual bundle/inbox/audit bytes reached at the cut; no cold import/repeated Release/success. Disk installation is labelled separately from live ACK. |
+| C `worker-restart-crash-retirement-linux` (5) | CleanupPending; exact terminal archive synced before state removal; terminal state synced before live ACK; actual RetireAsync returned before runtime/slot release; actual original reaper pass finished/capacity0 | First retain one real cleanup failure to exercise conditional quarantine audit. Retry only the original owner, then crash at the cut. Active inventory plus candidate archive refuses; fully consistent terminal inventory admits a distinct new actual content task, preserves old tombstone/task/bundle and cannot accept the old result. Post-ACK cut records capacity retained; final cut records capacity0. |
+| D `worker-restart-publication-races-linux` (3) | queued Store publication after legitimate generation rotation; generation identity invalidated during awaited held bundle-mutation hook; original owner.lock pathname replaced during that awaited held hook | No bundle move or stale success; preserve exact original task. Healthy original authority cleans after generation rejection; lost root authority remains Uncertain/retained. An observation or later native stop cannot clear it. |
+| E `worker-restart-inventory-linux` (4) | two actual bound worker epochs followed by crash/lower current profile limit; same actual inventory with one corrupted member; original runtime namespace renamed away after independent cleanup; fully retired root plus committed canonical journal with original-handler conflict | Distinct new-task dispatch refuses whole root before allocation and preserves all evidence. RuntimeBase is fixed by fixture admission: test missing/renamed original namespace, not a fake TMPDIR/config change. Journal-conflict case has no nonterminal worker to mask the recovery conflict. Healthy terminal/new-task companions are in C. |
+
+These are meaningful boundary partitions, not every instruction/syscall interleaving.
+Cohorts run one at a time, only after the previous cohort's finite guardian cleanup is
+proved. More cases require a concrete uncovered requirement or causal finding recorded
+here, not a Cartesian expansion. Guardian may signal its own adopted children after
+intentional app death: report every signal; it is independent physical cleanup, not
+native terminal proof or permission to release a persisted reservation. Require ECHILD,
+expected driver exit, zero guardian failures/deadlines, outside sentinel unchanged.
+
+### Fixture and source map
+
+- Create `BookOfEternityClient.Tests/GmWorkerRestartFenceTests.cs`: five separately
+  selectable theories/methods for A–E. Fresh mutable fixture per case; no shared owner.
+- Create TestSupport partials `NativePoolScenarioDriver.RestartFence.cs` plus
+  `.RestartFencePublication.cs`, `.RestartFenceRetirement.cs`, `.RestartFenceRaces.cs`,
+  `.RestartFenceInventory.cs` only as each cohort needs them. Common entrypoint:
+  `RunRestartFence(string mode, string package, string output) -> Task<int>` routed
+  by `restart-fence-` before older restart modes. Use existing worker content mode with
+  `restart_r3_` task IDs (already yields distinct proposal IDs).
+- Reuse RestartFixture compilation/provenance and unchanged independent host-guardian.
+  Add a crash-specific Run overload allowing *reported* guardian-owned signals only
+  for abrupt seeds; preserve zero-signal default for ordinary fixtures/cold probes.
+  Each crash writes its exact reached stage, raw ledger/archive/task/canonical hashes,
+  original workspace identity and actual counters before `_exit`. Test parent then
+  snapshots immutable evidence AFTER guardian ECHILD and before the fresh probe.
+- Fresh child creates ordinary FileSystemManager and explicit durable admission for
+  the same root, invokes actual RunTaskAsync with a distinct ID and instruments existing
+  recovery/slot/reservation/owner/Release hooks. It never bootstraps/reinitializes,
+  restores locks, clears quarantine or infers authority from persisted files. Cold
+  negative cases require exact all-file hashes for ledger/archive/canonical/workspace;
+  healthy terminal cases permit only the new task's effects and exact append-only audit.
+- Existing hooks cover most cuts. A requires only `Action? AfterScopedStop` on internal
+  GmWorkerBridgePoolHooks, invoked after the real StopForCleanupAsync await. C requires
+  only `Action? AfterRetirementAcknowledged` passed to original GmWorkerQuarantinedExecution,
+  invoked immediately after real RetireAsync returns and before Dispose/root/slot release.
+  Neither callback returns or manufactures evidence; no detached callbacks or new public API.
+- B uses current FileSystemManager mutation hooks and negative WorkerLedgerIoStage
+  observer; no new publication bypass. D uses current awaited mutation hooks and original
+  generation/root-lock files only. E uses actual two original epochs then cold-only
+  corruption/namespace mutation; no arbitrary PID/foreign process reads or broad signals.
+- Catalog edits are structural append of five categories with exact method selectors,
+  explicit exclusions and Linux guardian requirement; proposed protective budget3min
+  each. Create `tests/selections/1553-worker-restart-r3-linux.json` for discovery only;
+  do not execute it as an aggregate. Portable CI selection is reassessed only against
+  actual causal runtime changes; Linux-only crash descriptors never run on Windows.
+
+### Execution / acceptance steps
+
+- [ ] Publish this documentation-only matrix, independent actual Sol6.1/xhigh plan PASS.
+- [ ] A: publish only required scaffold/negative hook, fresh build then run A; classify
+  preparation errors separately. On causal RED fix minimally, rerun A and only affected
+  accepted consumers justified by the source delta. Capture exact source/commands/counts.
+- [ ] B: repeat the bounded workflow for publication cuts after A's ECHILD evidence.
+- [ ] C: repeat for conditional cleanup/retirement, with exact post-live-ACK observation.
+- [ ] D: repeat for queued/held publication fences; retain original authority on uncertainty.
+- [ ] E: repeat for whole parallel inventory and the unmasked canonical journal conflict.
+- [ ] Discovery-only ValidateCatalog and exact PlanOnly after matching fresh builds;
+  read-only Spec Kit consistency review, final independent source/evidence review.
+- [ ] Ordinary commit/push/readback at every boundary, fresh GitHub-only candidate and
+  final carrier restore; handoff with precise remaining integration/native/platform tasks.
+
+Commands per cohort: `pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category
+"<one category above>"'`, with TMPDIR=/workspace/t1553 and isolated
+BOE_RESTART_EVIDENCE_ROOT=/workspace/qualification-1553-r3/<cohort-attempt>.
+Use `-NoBuild` only after an unchanged successful fresh build of the selected project.
+Do not require an artificial RED if an accepted runtime already satisfies a new case;
+report first-pass qualification, and change behavior only after a causal failure.
+Every checkpoint/source/evidence record is published before the next long test/review.
+
+Spec Kit prerequisite discovery resolves the existing1553spec/plan/tasks. Constitution2.1.0
+and workflow1.6 retained. Matrix maps to US4/FR-012/014/015, without changing the accepted
+product contract. Optional analysis commit hook is satisfied by the published plan;
+no new feature/spec/branch initialization. GM-authored payloads and prompts/examples
+remain unchanged in this explicitly injected client-owned qualification.
+
 ## Authorized R2: connected synthetic lifecycle — 2026-10-06
 
 Task T041-WORKER-RESTART-R2 / #1553 / US4 / FR-012/014/015. Parent accepted exact

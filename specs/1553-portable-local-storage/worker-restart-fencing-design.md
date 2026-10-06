@@ -7,7 +7,8 @@ Status: independent actual gpt-6.1-sol/xhigh DESIGN PASS at
 `e90d5e4dbae51f6d9ba4601bdba3a060f29720dc`, no unresolved findings;
 R1 accepted at `25c16dcb513de8b09fc67059465d9dcfb6b96224`; parent now authorizes R2
 with owner-selected root-wide new-job refusal for unresolved workers (2026-10-06).
-R3 still requires a separate launch instruction. This document is the architectural brief and
+Parent accepted R2 `6992e812f5917315bc789c0eeff9bbc0677cdd33` and explicitly authorized
+bounded R3 on 2026-10-06; the minimal unproven matrix and execution journal are in plan.md. This document is the architectural brief and
 sequential plan; existing Spec Kit spec/plan/tasks remain the durable source of scope.
 Use Superpowers executing-plans/TDD for each later authorized slice, sole writer and
 independent review. Current technical R2 refinements and execution checkpoints live at
@@ -256,7 +257,7 @@ R2/R3 must exercise all relevant pre-recovery/held-lease routes in the injected 
 Until those routes are actually connected and qualified, documentation must say
 "durable metadata prerequisite", not "restart-safe pool" or "all writers fenced".
 
-## Sequential implementation plan (R1 completed; R2 authorized; R3 not authorized)
+## Sequential implementation plan (R1/R2 completed; bounded R3 authorized)
 
 ### R1 — completed worker durable ledger prerequisite
 
@@ -346,6 +347,9 @@ restart driver under the existing independent guardian.
   No intermediate build is qualified as restart-safe merely because metadata exists.
 
 ### R3 — gradual crash/restart and retirement qualification
+
+Authorized from accepted R2 `6992e812` on 2026-10-06. Execute only the residual
+matrix in plan.md after independent plan review; do not repeat unchanged R1/R2 evidence.
 
 Depends on positive R2 cleanup. Add narrow `GmWorkerRestartFenceTests` and only required
 negative/observation hooks. Change runtime only to fix causal defects found by this

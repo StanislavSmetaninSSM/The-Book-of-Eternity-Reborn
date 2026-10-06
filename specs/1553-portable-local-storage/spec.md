@@ -81,6 +81,19 @@ independent actual Sol 6.1/xhigh design and final review are required. No GM-fac
 prompt/example update is needed: this is client-owned synthetic execution bookkeeping,
 without a changed GM-authored payload or available product capability.
 
+## Authorized bounded worker R3 qualification — 2026-10-06
+
+Parent accepted synthetic R2 at `6992e812f5917315bc789c0eeff9bbc0677cdd33` and
+explicitly authorized T041-WORKER-RESTART-R3 within the existing accepted design:
+application-process crash/restart and retirement only, progressively qualifying the
+remaining launch/Release/completion/stop/output/publication/retirement/lease/inventory
+boundaries. The [plan](plan.md) excludes unchanged R1/R2 successes. Runtime behavior
+changes require causal failures; independent Sol6.1/xhigh plan and final review apply.
+Root-wide refusal, original bytes/reservations, strict Uncertain and legitimate original
+cleanup remain required. No reconnect/salvage/force-clear/reboot release, public Linux
+Release/main PTY/live GM/real saves, power-cut or native Windows qualification.
+R3 stops at handoff before another integration stage; no GM-authored contract change.
+
 ## History: completed inert worker ledger R1 — 2026-10-06
 
 Parent accepted design checkpoint `89bf200d` and authorized only T041-WORKER-RESTART-R1:
