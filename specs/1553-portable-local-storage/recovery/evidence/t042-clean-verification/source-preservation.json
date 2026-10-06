@@ -1,0 +1,80 @@
+{
+  "AcceptedDesign": "dc4a5111f7e2b196c06565c294a28fc240fe8356",
+  "RuntimeSource": "db5864c2b2fcecb6958ff7842fc1cf885f688772",
+  "Unchanged": [
+    {
+      "Path": "BookOfEternityGMBridge/ConPtySession.cs",
+      "GitBlob": "9f23aba595233798908a1f211c05534574c2f293",
+      "Sha256": "8c609242e9c9f6fe2e29526184c7350058a959b56bf02852826572b762d152c7"
+    },
+    {
+      "Path": "BookOfEternityClient/Launcher/Start_GM_Daemon.ps1",
+      "GitBlob": "754ff59125dbdf0d197a01afc1f959fe89e2b402",
+      "Sha256": "cc91d89c18a144987442ee09f03c062d6d01311961d44713db5593eb5f6d128e"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs",
+      "GitBlob": "b104fa202efd54b616e8f04b9b2e324411db7668",
+      "Sha256": "70d56db7e8f3ce129310c7e207c9c38bff8a450ecfaa43ddec1a515582162ba1"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+      "GitBlob": "82ac9359de050c2820c4d3d6bb996d4cce0e65f1",
+      "Sha256": "36165a3ac7513339d8a50207aea8693ae71d8f640ccdafeeece402d32f6a28aa"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs",
+      "GitBlob": "1649315c04d082a4abcca8498da409e2e72da972",
+      "Sha256": "eec1069daa3b96d482441caaa90d67ec6b94a786d74ff635f31d9781fa3f7413"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs",
+      "GitBlob": "1f4b19d783d9f44b241a15b3857575091ce707db",
+      "Sha256": "8423cf82b8d7c844f43b5e5964df69b6ec079526379ed1056cd388bf780d2b56"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs",
+      "GitBlob": "125bfb9ac3423406bd2c3e62b261ff71f85d9415",
+      "Sha256": "b3891e2140029ff71bf392e0d461677dd1444dbe7f9fc94fc0c8b259f28dc269"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "GitBlob": "f85e65c780e9e285696cdb9b11e85e421fd21b74",
+      "Sha256": "18cb332b5f2d6c833526e396335dfa4dacfdf1193143d7c15c7841b808732963"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+      "GitBlob": "1a5499d7dd65caf5aa04a4e6ed2ea4fcfc2e5675",
+      "Sha256": "87ef33e7bf8ae33b692148bd4a5b8023c3f470fe83561597dcdccad54c896473"
+    },
+    {
+      "Path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "GitBlob": "e6e78f3b5797ed6367763878790309e48041befe",
+      "Sha256": "009f4dbfe71f80887561227b708af0abb9a153a8de2a75c10af0be1487f6e4c6"
+    }
+  ],
+  "Regions": {
+    "WriteToPtyAsync": {
+      "ByteIdentical": true,
+      "Sha256": "7a4c30b2dd919de4eb82a10f711318fb4ed9bd0e1e5d6c53486d4223829b80fc"
+    },
+    "PumpOutputAsync": {
+      "ByteIdentical": true,
+      "Sha256": "8f01d37dcb4325dc217c991d590bafd81345ac5dc9397d1411d29f1026af8266"
+    },
+    "RecordOutputChunk": {
+      "ByteIdentical": true,
+      "Sha256": "a38c1b4ba694f60448224f2e418d40c677e1317545cefb85b670e2879b3f49e2"
+    },
+    "KeyToSequence": {
+      "ByteIdentical": true,
+      "Sha256": "5a851e13b86ea3427925daf73a8276f44d66d82431dbd731191b8d94f48cdac3"
+    }
+  },
+  "DaemonNoBuild": {
+    "FreshManagedBuildSource": "e1cad8ec69a0e198d6c44aa61efea95ce645a51c",
+    "OnlyRuntimeChange": "BookOfEternityClient/game_master_daemon.ps1",
+    "ManagedCompileInputsChanged": false,
+    "Proof": "All current compiled C# source unchanged; real daemon functions parsed from current repository PS source, not stale output copies."
+  }
+}

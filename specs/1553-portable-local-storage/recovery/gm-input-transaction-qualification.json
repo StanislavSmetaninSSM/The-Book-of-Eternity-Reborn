@@ -1,0 +1,235 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T042-INPUT-TRANSACTION",
+  "Issue": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553",
+  "AcceptedDesign": "dc4a5111f7e2b196c06565c294a28fc240fe8356",
+  "Status": "Focused GREEN; independent final source/evidence verdict pending",
+  "RuntimeSource": "db5864c2b2fcecb6958ff7842fc1cf885f688772",
+  "SourceTree": "0f5ef09271f1fea5736167f93999701d7c0b833d",
+  "ImplementationModel": "gpt-6.1-sol",
+  "Effort": "xhigh",
+  "Toolchain": {
+    "SDK": "10.0.401",
+    "TargetRuntime": "8.0.31",
+    "PowerShell": "7.5.4",
+    "RawEvidence": "evidence/t042-clean-verification/toolchain.txt",
+    "NativeCompiler": "Not used: no native compilation in this slice",
+    "EnvironmentChanges": false
+  },
+  "VerificationInputs": [
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Sha256": "9788117b2081320c7df37fa79114ccc876b2e4e16cca45d933197c99a663bba8",
+      "GitBlob": "913fb07886ccbd776a2b0011740f24dc334eef0e"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/GmTurnHelperContractTests.cs",
+      "Sha256": "a41b22bc611ff9be1f693d54169cca131f277e91fe45a1c60f546b757cc9fd50",
+      "GitBlob": "cb51316b4eec8ba24d8d147aac3dcfe756691b5a"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Sha256": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0",
+      "GitBlob": "8d5df04ac73689ac01baf7a225afc68adb6f1d18"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmBridgeDiagnosticsContractTests.cs",
+      "Sha256": "059cf1cbbc74d0ef54f017999d5d1ed1cf419b1200cd3e3506a00efb90bd0c87",
+      "GitBlob": "c0e6bc101e58f06015366fec2f62c890c9ce2954"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs",
+      "Sha256": "8ae8a9629ff143c20b0598f77c606b63dd0a74baef5719a496fc1d8b0c502608",
+      "GitBlob": "482a156dc73fb1af9987aa8b35ca29e02b8006b0"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs",
+      "Sha256": "210c46a2b7cd79cb540af8d78f9ccd3975957ce9ba4a386b476a9063ff228fd6",
+      "GitBlob": "a809342747e17e3e98579896fdb963723838758c"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs",
+      "Sha256": "b84e7a1f6010e7c6e2fe38e8fb255f7cba2cd4e08665418a67134092bfc139d2",
+      "GitBlob": "30ce0c5a91393e120fca8972e018a0ede29a33a1"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs",
+      "Sha256": "e6765b1213a6057d4f302107b2bb3049fd33d9ef44804f4b9ed833d67fcd5a43",
+      "GitBlob": "dcd32bdca7911d27a05e4e72f701fc5df35ac7f7"
+    },
+    {
+      "Path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "Sha256": "009f4dbfe71f80887561227b708af0abb9a153a8de2a75c10af0be1487f6e4c6",
+      "GitBlob": "e6e78f3b5797ed6367763878790309e48041befe"
+    },
+    {
+      "Path": "BookOfEternityClient/Configuration/GameSettings.cs",
+      "Sha256": "040927689b8e7b458483f3368ddc75e52926cf04ab916d815561eacf326df8d7",
+      "GitBlob": "ed83440b8413db4549347d5de40dc785ca04ca39"
+    },
+    {
+      "Path": "BookOfEternityClient/Configuration/GmCliInputProfile.cs",
+      "Sha256": "d3a5b5b91d9e9e1621214ee87314b1519308ce548a7d948e5c9a8bdb7e8eabf9",
+      "GitBlob": "301ec89f509fa67d9982c878ec8ee9fc08865c32"
+    },
+    {
+      "Path": "BookOfEternityClient/Launcher/bookofeternity.ps1",
+      "Sha256": "5350874c9d4f1721500c407c9a7c263f76f85e7c40aae282092aa348cf0cf4aa",
+      "GitBlob": "0ca887411c46dae183542f78b05289db7369f9a1"
+    },
+    {
+      "Path": "BookOfEternityClient/game_master_daemon.ps1",
+      "Sha256": "3621d1a9ccc5d35052935cc3e97e67140e6b67fe1c5cc20d435da23525f0505d",
+      "GitBlob": "e92db3ec014719e3a572a2b5535c59c2552689d6"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BookOfEternityGMBridge.csproj",
+      "Sha256": "aea4e886f3f2209b32e3f79ab37b62793567d6e7510109a6622be31f2af9de4d",
+      "GitBlob": "603f4886992cc8326a72d4249e9042390cf539f4"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
+      "Sha256": "0d1a690eccd1fa66712bb66066f4c86702c85effbe69aad664e74c18497d8536",
+      "GitBlob": "b8f49428e1eba155963679009d5c803a3776f2f7"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/ConPtySession.cs",
+      "Sha256": "8c609242e9c9f6fe2e29526184c7350058a959b56bf02852826572b762d152c7",
+      "GitBlob": "9f23aba595233798908a1f211c05534574c2f293"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/Program.cs",
+      "Sha256": "43dc3a6477afa4240e6b537001972a7869006da57b8fdadd06ae038dcbcbd7bc",
+      "GitBlob": "3b2398e45ea394551a21e546e3e9fa2db18c60e9"
+    },
+    {
+      "Path": "scripts/test-csharp.ps1",
+      "Sha256": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1",
+      "GitBlob": "0576b2e34e5c0c5d164c173a9961a67c965c5509"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Sha256": "2e8f0d3c2c6a31d829fd441dee9897ed0bc66a646d822220e6f96f87ec45641c",
+      "GitBlob": "f1cc62f95ea2f5a5f498972991af954b8dcc4225"
+    },
+    {
+      "Path": "tests/fixtures/GmPromptDelivery/daemon-functions.ps1",
+      "Sha256": "bb7db8b53d1411a2de9a6cdc56e30e4db017970fc261c333559ea278c0693cc2",
+      "GitBlob": "1bf935ab22659f0f0eb07e78fe2589c394825942"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Sha256": "5368fc330a4b0719b118ba0e1fe26ff7f612338ad27be7a702feeecdcddb5d18",
+      "GitBlob": "543e1e298a04268f754ebdb03d3c25fc17eca0c3"
+    }
+  ],
+  "LiveOwnerContract": {
+    "Identity": "Frozen kind/revision/local binding/raw body plus SHA256 UTF8(submit flag + newline + raw body), retained immutable PayloadJson in daemon. No durable run authority.",
+    "Transaction": "Whole-operation exclusion: supported positive idle/empty composer, paste, newer exact paste observation, ownership/manual/cancel check and SubmitStarted before first submit byte, newer working observation.",
+    "Manual": "Manual draft is never auto-cleared; actual keyboard/RPC takeover precedes competing writes. Explicit ready can resume manual-only pause on positive empty-idle evidence, cannot clear uncertain delivery.",
+    "Queue": "One active and one pending; overflow is typed zero-write busy; live retention256 without eviction. Controlled technical choices, not final live UX.",
+    "Profile": "Empty positive markers fail closed. Controlled paste/newline/submit/positive observations are used; interrupt/exit schema fields do not qualify configurable native key gestures.",
+    "Outcomes": [
+      "not-written",
+      "queued-cancelled",
+      "draft-uncertain",
+      "submission-observed",
+      "unknown-outcome"
+    ],
+    "Retry": "Only matching proven-zero-write busy/not-ready can retry frozen identity; in-progress/transport ambiguity/partial I/O pauses without repaste. Launcher queries original identity only after uncertainty.",
+    "Consumers": "Real launcher/daemon/ordinary/QTE/repair/terminal-repair functions and real RPC accept loop; no daemon/main startup.",
+    "Terminal": "SubmissionObserved is not game-turn acceptance. Replaced pending bytes cannot drive old late terminal/report effects; already captured correlated terminal may be logged after normal client consumption."
+  },
+  "LatestDistinctCoverage": {
+    "Total": 83,
+    "Bridge": {
+      "Passed": 46,
+      "Source": "773f5e9ee510a9bb49e15a91e5cb50076240f400",
+      "Evidence": "evidence/t042-core-green/manifest.json"
+    },
+    "DaemonAndExactIntegration": {
+      "Passed": 37,
+      "Source": "db5864c2b2fcecb6958ff7842fc1cf885f688772",
+      "Evidence": "evidence/t042-terminal-final-green/manifest.json"
+    },
+    "SingleLaterSource83CaseRunClaimed": false,
+    "OwnedCleanupComplete": true,
+    "Timeouts": 0,
+    "Skips": 0,
+    "Duplicates": 0
+  },
+  "ManagedBuildReuse": {
+    "FreshManagedBuildSource": "e1cad8ec69a0e198d6c44aa61efea95ce645a51c",
+    "OnlyRuntimeChange": "BookOfEternityClient/game_master_daemon.ps1",
+    "ManagedCompileInputsChanged": false,
+    "Proof": "All current compiled C# source unchanged; real daemon functions parsed from current repository PS source, not stale output copies."
+  },
+  "Discovery": {
+    "Source": "1a3d936d8e8be1ad14eb342e489c96c247bb4247",
+    "Clean": true,
+    "PlanCases": 83,
+    "CatalogCategories": 319,
+    "CatalogMethods": 10918,
+    "Unmapped": [],
+    "StaleSelectors": [],
+    "ExecutedTests": 0,
+    "Evidence": "evidence/t042-clean-verification/manifest.json",
+    "PreliminaryDirtyDiscovery": "evidence/t042-preliminary-discovery/manifest.json; eight newly retained evidence files only, all consumed inputs unchanged; not used for clean discovery claim"
+  },
+  "ArtifactIntegrity": {
+    "Manifests": 13,
+    "Inputs": 271,
+    "Artifacts": 133,
+    "Gzip": 54,
+    "Valid": true,
+    "Report": "gm-input-transaction-source-evidence-audit.json",
+    "Validator": "gm-input-transaction-evidence-audit.py",
+    "HistoricalExecuted": 475,
+    "HistoricalPassed": 439,
+    "HistoricalFailed": 36,
+    "HistoricalCountsAreRepeatedRuns": true
+  },
+  "HistoricalFailureClassification": {
+    "Preparation": "t042-catalog-preparation: wrong integration namespace;0 build/test execution",
+    "FixtureOnly": [
+      "t042-first-attempt: fault toggled within same paste callback",
+      "t042-review-red: six JSON single-command array-shape failures",
+      "t042-review-fixes-attempt: missing inert startup stub before behavior assertion"
+    ],
+    "CausalEvidence": [
+      "t042-initial-red",
+      "t042-review-causal-red",
+      "t042-peer-deadline-red",
+      "t042-residual-causal-red",
+      "t042-terminal-consumption-red"
+    ],
+    "NoHistoricalFailuresErased": true
+  },
+  "SourcePreservation": "evidence/t042-clean-verification/source-preservation.json;10 exact unchanged files +4 byte-identical writer/output/key regions",
+  "GeneratedXmlValidation": "evidence/t042-clean-verification/xml-validation.json;11 parsed",
+  "Cleanup": "evidence/t042-clean-verification/cleanup.json; own fixture roots absent, no active test/native sessions; unrelated PID1 zombies not touched",
+  "TransportProofLimit": "Bounded responsiveness and joined owned fixture/accept wrappers are proven. Not every underlying raw read task is proven settled before every caller returns.",
+  "SpecKit": "Existing feature1553, constitution2.1.0, authorized US4 slice; prerequisites successful. No new scaffold/hooks/environment setup. Read-only consistency review and final independent verdict follow.",
+  "NoGMUpdateRationale": "Client-owned operational delivery only. No Mortal World/afterlife mechanic, GM-authored input/output schema, canonical state, save, prompt payload/model or worked-example contract changes; existing gameplay guidance remains unchanged. Operational limits live in spec/plan/checkpoint.",
+  "IndependentFinalReview": {
+    "Model": "gpt-6.1-sol",
+    "Effort": "xhigh",
+    "Agent": "/root/native_review",
+    "Verdict": "Pending final source/evidence packet",
+    "SourceDeltaAt": "db5864c2b2fcecb6958ff7842fc1cf885f688772",
+    "ConfirmedRemainingSourceBlockers": 0,
+    "ReviewerExecution": "Read-only; no edits/tests/native probes"
+  },
+  "QualificationLimits": [
+    "Controlled renderer/streams only; arbitrary live CLI/TUI, wrapped/collapsed/paged/large-screen profiles and final manual-resume/queue/retention UX unqualified",
+    "Native Windows ConPTY/Job and Linux main PTY/backend/process ownership/stop/restart/systemd not executed",
+    "No normal console launcher/daemon startup, production GM or worker public Release, real game/saves/main run admission/fence integration",
+    "No cold operation retention/reconciliation/exactly-once/reboot/power-loss guarantee; local binding is not durable run authority",
+    "Full T042/T041/#1553/cross-platform game acceptance remains open"
+  ],
+  "SourceRestoration": {
+    "Result": "Pending reviewed candidate restoration",
+    "FinalCarrier": "Normal non-force push, remote SHA/byte readback and fresh GitHub-only restoration; exact final SHA/proof in handoff without self-reference"
+  },
+  "NextWork": "Stop after this bounded handoff; no next stage implementation"
+}

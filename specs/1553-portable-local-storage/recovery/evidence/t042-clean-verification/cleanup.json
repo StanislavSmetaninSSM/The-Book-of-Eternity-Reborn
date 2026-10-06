@@ -1,0 +1,16 @@
+{
+  "OwnPromptFixtureRootsRemaining": [],
+  "KnownExecutionSessionsCompleted": [
+    84333,
+    36175,
+    85534,
+    68138,
+    33398,
+    2472,
+    29590
+  ],
+  "OwnedNativeGMOrDaemonStarted": false,
+  "UnrelatedPid1Zombies": "Not touched; no reaping or global cleanup claim",
+  "RawTransportTaskSettlement": "Bounded caller responsiveness/owned fixture cleanup proven; not every underlying raw read task is proven settled before each caller returns.",
+  "ActiveTestOrNativeSessionIds": []
+}

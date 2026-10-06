@@ -7,6 +7,10 @@
 
 ## T042-INPUT-TRANSACTION — authorized execution ledger
 
+Current closure candidate:83distinct focused PASS (bridge46at773f5e9e plus daemon37atdb5864c2),
+source delta independently confirmed; final source/evidence verdict and restoration pending.
+[Qualification](recovery/gm-input-transaction-qualification.json) and final evidence ledger below.
+
 Accepted design `dc4a5111f7e2b196c06565c294a28fc240fe8356`; user authorized only this
 live-owner slice. Same branch, sole Sol6.1/xhigh writer, independent Sol6.1/xhigh review.
 Spec Kit/Superpowers/bridge apply; source/remote/clean base verified before edits.
@@ -36,7 +40,7 @@ Do not repeat untouched INPUT37/OUTPUT48 or worker/native cohorts.
   Evidence: [initial RED manifest](recovery/evidence/t042-initial-red/manifest.json).
   SDK10.0.401/runtime8.0.31/PowerShell7.5.4, no installation/native compiler use.
   Runtime unchanged; next implement consumed operation/typed transport.
-- [ ] Implement immutable live operation and actual RPC/manual/profile consumers.
+- [x] Implement immutable live operation and actual RPC/manual/profile consumers.
   WIP first consumed runtime block: partial existing BridgeHost; copied identity/body/profile,
   one active+one pending, pre-submit linearization, retained typed phases/results,
   manual arbitration, responsive bounded peer accepts, local lifetime drain.
@@ -156,11 +160,19 @@ Do not repeat untouched INPUT37/OUTPUT48 or worker/native cohorts.
   [Preliminary metadata-only discovery](recovery/evidence/t042-preliminary-discovery/manifest.json).
   Clean published checkpoint discovery follows. XML11valid; own fixture roots absent;
   accepted main/worker/native/storage sources and writer/output/key regions unchanged.
-- [ ] Connect typed launcher/daemon/ordinary/QTE/repair outcomes, no ambiguity replay.
-- [ ] Focused fresh GREEN and discovery; exact source/binary/artifact evidence.
+- [x] Connect typed launcher/daemon/ordinary/QTE/repair outcomes, no ambiguity replay.
+- [x] Focused fresh GREEN and discovery; exact source/binary/artifact evidence.
+  Clean1a3d936d discovery:319categories/10918methods,83planned/0executed;
+  no unmapped/stale selectors.13manifests271inputs133artifacts54gzip verify;
+  historical475executions439PASS/36FAIL include repeated runs and separately classified
+  preparation/fixture failures. All known sessions finished; own fixture roots absent.
+  [Clean verification](recovery/evidence/t042-clean-verification/manifest.json).
 - [ ] Independent Sol source/evidence PASS, ordinary publication/readback and fresh restore.
 
 ## Ordinary Linux console with persistent interactive GM — design-only continuation
+
+Historical accepted design checkpoint; current input-only authorization and proof are
+in the execution ledger above. Later stages still require their own authorization.
 
 **Base:** accepted R3 `bd2acebf9c070e484434d1332ee80c99bf1c66b6`, #1553,
 US4 / FR-009/012/013/014/015 / SC-004; task T041-LINUX-MAIN-DESIGN.
@@ -216,8 +228,8 @@ This completes the residual connected T042 input design, not a new coordinator/b
 
 **Files/interfaces:** add `BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs` as a
 partial of the existing BridgeHost; keep its original InputLifetime and writer.
-`DispatchPromptAsync(BridgeRequest, InputLifetime, CancellationToken)` returns a typed
-PromptDeliveryResult (operation identity, disposition, reason), consumed by the real
+`DispatchPromptAsync(BridgeRequest)` captures the actual InputLifetime and returns
+a BridgeResponse carrying typed PromptDeliveryResult (identity, disposition, reason), consumed by the real
 HandleRequestAsync/BridgeResponse, launcher and daemon, never only by a test API.
 Add a snapshot CLI input profile under existing Configuration/GameSettings for required
 paste/newline/submit/interrupt/exit sequences and positive idle/empty-composer/paste/
@@ -225,14 +237,14 @@ submission observations. Application sequences and terminal clipboard gestures r
 separate; unknown/auth/trust/update screens pause for the operator. Any manual takeover
 and cancellation are checked before the submit linearization point.
 
-- [ ] Add causal actual-bridge and inert real-PowerShell-function fixtures: positive
+- [x] Add causal actual-bridge and inert real-PowerShell-function fixtures: positive
   TwoPromptsOneBinding_CustomSequences_OneSubmitEach; ManualDraft_NotWritten;
   TakeoverBeforeSubmit_NoEnter; TakeoverAfterSubmit_NoObservation_UnknownOutcome;
   StatusAndCancelRemainResponsive; LostResponse_NoDaemonOrQteReplay.
   Status/cancel must traverse the actual BridgeHost pipe accept loop while dispatch is
   held, with controlled streams/screens; direct HandleRequest calls alone are insufficient.
   Invoke extracted real dispatch functions with inert collaborators, never daemon startup.
-- [ ] Connect a bounded whole-operation arbiter to dispatch/manual/bootstrap writers,
+- [x] Connect a bounded whole-operation arbiter to dispatch/manual/bootstrap writers,
   keep status/cancel service responsive and observe request-specific fresh profile evidence.
   Remove automatic Ctrl+U/trust/update input; preserve manual draft and accepted input
   lifetime retirement. Mark SubmitStarted before its first write, not after success.
@@ -241,24 +253,24 @@ and cancellation are checked before the submit linearization point.
   AllowNotReady addText+sendEnter branch is dormant (no current switch callers, unchanged
   from the retained audit); route it through that boundary or refuse automatic use.
   Include a future-path negative fixture so it cannot later activate an interleaving bypass.
-- [ ] Carry immutable request kind/revision/content identity plus actual local binding
-  through BridgeRequest/Response, Invoke-BridgeRequestChecked, Send-ToGmBridge,
+- [x] Carry immutable request kind/revision/content identity plus actual local binding
+  through BridgeRequest/Response, Invoke-BridgePromptDelivery/Invoke-BridgeRequest, Send-ToGmBridge,
   Dispatch-WithRetry and ordinary/QTE/repair/terminal-repair callers. Distinct repair
   revision/wave is a distinct operation; an old callback cannot finish a replacement.
   Never invent a durable run epoch from request JSON or this local input binding.
-- [ ] Return NotWritten/QueuedCancelled/DraftUncertain/SubmissionObserved/UnknownOutcome
+- [x] Return NotWritten/QueuedCancelled/DraftUncertain/SubmissionObserved/UnknownOutcome
   distinctly. Permit bounded retry only on matching explicit NotWritten/busy; ambiguous
   transport failure, partial I/O, cancel/timeout after possible submit preserve uncertainty
   and pause automatic delivery. Bound launcher response waits; query retained identity
   instead of re-pasting. SubmissionObserved is not an accepted game turn.
-- [ ] Prove queue cancellation/overflow, duplicate/same-ID-changed-body, partial paste
+- [x] Prove queue cancellation/overflow, duplicate/same-ID-changed-body, partial paste
   and submit, stale binding, blank/unknown/auth/trust screens, manual keys at every
   pre-submit boundary, replaced pending request and QTE idle retry in those consumers.
   Retention in this slice is live-owner only. Cold operation retention/reconciliation
   must connect to stage3 before restart-safe automatic delivery is claimed.
-- [ ] Use proposed narrow categories `gm-bridge-prompt-operation` and
+- [x] Use proposed narrow categories `gm-bridge-prompt-operation` and
   `gm-daemon-prompt-delivery`, structural catalog/selection edits and exactly affected
-  operational guards. Future commands through `scripts/test-csharp.ps1 -Category
+  operational guards. Verified commands through `scripts/test-csharp.ps1 -Category
   <those IDs> -PlanOnly`, then causal RED/GREEN and discovery-only ValidateCatalog.
   Determine counts after actual discovery. Do not replay unchanged OUTPUT48/INPUT37,
   IPC34/ENV16/FRAME49/main90/workspace47/receipt41 or R1/R2/R3.

@@ -5,15 +5,20 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## Current authorized work: T042 live-owner input transaction
+## T042 live-owner input transaction: focused GREEN, final review pending
 
-Design `dc4a5111` accepted; only the first connected input slice is authorized.
-Consumed runtime WIP and causal RED evidence are published; independent interim
-Sol6.1/xhigh review found six boundaries, now corrected pending fresh GREEN/review.
-Only two narrow category owners plus exact affected guards are selected; no acceptance yet. Native/main/live/cold/production boundaries
-remain closed. [Execution ledger](plan.md#t042-input-transaction--authorized-execution-ledger).
+Design `dc4a5111` accepted; only the connected input slice is implemented.
+83distinctPASS: bridge46at`773f5e9e` + daemon37at`db5864c2`, with actual pipe
+control and real inert launcher/daemon/QTE/repair consumers. Causal review findings
+resolved; independent actual Sol6.1/xhigh source delta confirmed, final evidence
+verdict and GitHub-only restoration pending. Clean discovery319/10918,0execution.
+[Qualification](recovery/gm-input-transaction-qualification.json) ·
+[Execution ledger](plan.md#t042-input-transaction--authorized-execution-ledger).
+Queue/profile/retention are controlled technical choices; live UX, arbitrary CLI,
+native/main PTY/systemd/production GM/main fences/real saves and cold delivery remain
+unqualified. No next implementation stage begins here.
 
-## Current design-only continuation toward normal Linux GM launch
+## Accepted roadmap toward normal Linux GM launch (historical design checkpoint)
 
 R3 accepted by the owner at `bd2acebf9c070e484434d1332ee80c99bf1c66b6`.
 [Source-backed roadmap and first slice](plan.md#ordinary-linux-console-with-persistent-interactive-gm--design-only-continuation):
@@ -23,7 +28,8 @@ Primary systemd adapter and native main PTY are still absent, production Linux W
 still closed; accepted worker/output/input evidence is reused. Independent actual
 Sol6.1/xhigh Design PASS at `a4c425b3`, no confirmed blocking defect; exact final
 checkpoint/readback/restoration are reported in handoff.
-No new runtime, tests, rollout or environment changes; stop at design handoff.
+That design-only checkpoint changed no runtime/tests/rollout/environment. The current
+authorized input slice is above; later stages remain separately gated.
 
 ## R3: bounded acceptance and metadata PASS; final carrier handoff
 

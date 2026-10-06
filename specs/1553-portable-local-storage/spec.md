@@ -105,6 +105,10 @@ Removal of automatic Ctrl+U/trust/update is authorized. Bounded queue/profile sc
 are technical choices for controlled proof, not final live UX. No cold exactly-once,
 main PTY/production GM/systemd/environment/GM-model/real-save changes. The existing
 roadmap remains authoritative for later stages; stop after focused reviewed delivery.
+This is intentionally client-owned operational delivery. No GM-authored gameplay or
+Mortal World/afterlife schema, mechanic, save, prompt/model or worked-example contract
+changes; existing GM guidance remains applicable. Operational proof and limits are
+in the plan and [qualification](recovery/gm-input-transaction-qualification.json).
 
 ## Design-only continuation from accepted R3
 
