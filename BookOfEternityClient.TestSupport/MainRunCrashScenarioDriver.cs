@@ -27,6 +27,7 @@ internal static partial class MainRunCrashScenarioDriver
             if(mode.StartsWith(Prefix+"pin-",StringComparison.Ordinal))return await WitnessPinAsync(mode[(Prefix.Length+4)..],package,folder,result);
             if(mode.StartsWith(Prefix+"stop-",StringComparison.Ordinal))return await WitnessStopAsync(mode[(Prefix.Length+5)..],package,folder,result);
             if(mode.StartsWith(Prefix+"replacement-",StringComparison.Ordinal))return await WitnessReplacementAsync(mode[(Prefix.Length+12)..],package,folder,result);
+            if(mode.StartsWith(Prefix+"conjunction-",StringComparison.Ordinal))return await WitnessConjunctionAsync(mode[(Prefix.Length+12)..],package,folder,result);
             Require(mode.StartsWith(Prefix+"launch-",StringComparison.Ordinal),"Unknown crash witness mode.");
             var cut=mode[(Prefix.Length+7)..];
             await using var owner=Child(Prefix+"owner-launch-"+cut,package,folder);
@@ -89,6 +90,7 @@ internal static partial class MainRunCrashScenarioDriver
         if(mode=="warm-blocked")return await WarmBlockedAsync(folder);
         if(mode.StartsWith("replace-",StringComparison.Ordinal))return await ReplacementAsync(mode[8..],folder);
         if(mode.StartsWith("debt-",StringComparison.Ordinal))return await DebtAsync(mode[5..],folder);
+        if(mode.StartsWith("seed-",StringComparison.Ordinal))return await SeedDebtAsync(mode[5..],folder);
         var result=new Dictionary<string,object?>{["Mode"]=mode,["Pid"]=Environment.ProcessId};
         try {
             Require(mode=="refuse","Unknown cold actor mode.");var info=ReadInfo(folder);var files=Files(info.Root);

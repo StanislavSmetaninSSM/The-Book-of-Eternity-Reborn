@@ -35,6 +35,12 @@ public sealed class GmMainRunCrashLinuxTests
     public async Task Replacement_FreshProcessRetainsExactTypedDecisionAndConjunction(string decision)=>
         await RunBoundedAsync("terminal-main-crash-replacement-"+decision);
 
+    [Theory]
+    [InlineData("worker")]
+    [InlineData("storage")]
+    public async Task IndependentDebt_AfterStoppedAndSeedDeathRefusesBeforeNewCreation(string kind)=>
+        await RunBoundedAsync("terminal-main-crash-conjunction-"+kind);
+
     private static async Task RunBoundedAsync(string mode)
     {
         string? folder=null;

@@ -14723,6 +14723,29 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-crash-conjunction-linux",
+      "responsibility": "#1553 F3 actual original stopped root plus separate actual durable worker/storage decision seed death; fresh cooperating actor retains independent refusal before Prepared/creation.",
+      "excludes": "Linux x64 fixed neutral fixture; post-disposal private fault injection is not a live producer; no powerloss/coldguarantees/systemd/Windows/live/provider/production/real saves.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/MainRunCrashScenarioDriver.Conjunction.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.IndependentDebt_AfterStoppedAndSeedDeathRefusesBeforeNewCreation"
+          ]
+        }
+      ]
     }
   ]
 }
