@@ -678,25 +678,25 @@
       "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
       "Bytes": 8637952,
       "Sha256": "82f42ef584543353a383a9fc57baf9ba6cf117fb51bb7609e799499fbeb90a7c",
-      "Basis": "fresh successful runner build at this exact source; captured before later edits"
+      "Basis": "Pre-existing binary observed before later edits; unit project was not built or executed by this integration-only run. Not current-source qualification."
     },
     {
       "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.pdb",
       "Bytes": 1710884,
       "Sha256": "a34561c4feeebd49d25d99871d202e04339970612c14a81deb2ad9a7d0b7659b",
-      "Basis": "fresh successful runner build at this exact source; captured before later edits"
+      "Basis": "Pre-existing binary observed before later edits; unit project was not built or executed by this integration-only run. Not current-source qualification."
     },
     {
       "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.deps.json",
       "Bytes": 23901,
       "Sha256": "6309a4ebea552e4f9fe4537108cd86ceccc997fb126a50d9f3dfc0cf8cd0c1a0",
-      "Basis": "fresh successful runner build at this exact source; captured before later edits"
+      "Basis": "Pre-existing binary observed before later edits; unit project was not built or executed by this integration-only run. Not current-source qualification."
     },
     {
       "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.runtimeconfig.json",
       "Bytes": 366,
       "Sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad",
-      "Basis": "fresh successful runner build at this exact source; captured before later edits"
+      "Basis": "Pre-existing binary observed before later edits; unit project was not built or executed by this integration-only run. Not current-source qualification."
     },
     {
       "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",

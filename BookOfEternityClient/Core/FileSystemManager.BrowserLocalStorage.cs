@@ -42,7 +42,9 @@ public partial class FileSystemManager
     {
         EnsureCanonicalWriteLeaseActive(lease);
         VerifyCurrentSessionOperation(lease);
-        var scope = new TrustedLocalFileScope([], [RegisteredDarenProfilePath]);
+        // Validate the exact registered name within the existing player root.
+        // A fresh profile parent may be absent; reads must not create it.
+        var scope = new TrustedLocalFileScope([BasePath]);
         var path = scope.ValidateFile(RegisteredDarenProfilePath);
         if (!File.Exists(path)) return null;
         var bytes = await File.ReadAllBytesAsync(path, token);
@@ -57,7 +59,7 @@ public partial class FileSystemManager
         access.Validate();
         if (access.ProfilePath != RegisteredDarenProfilePath)
             throw new InvalidOperationException("Daren profile is not a declared member of the original browser transaction.");
-        new TrustedLocalFileScope([], [RegisteredDarenProfilePath]).ValidateFile(RegisteredDarenProfilePath);
+        new TrustedLocalFileScope([BasePath]).ValidateFile(RegisteredDarenProfilePath);
     }
     internal async Task PublishLocalDarenProfileAsync(CanonicalWriteLease lease, byte[]? content, CancellationToken token = default)
     {

@@ -135,6 +135,6 @@ First two originally timed out before callback; last two refused descriptor-boun
 create-only publication. They are not native Windows passes. [Original F3 handoff](main-run-fence-f3-handoff.md#four-unavailable-windows-ids-and-real-linux-debt).
 
 No new product decision is identified: this ports existing cooperating transaction
-behavior. Load UX is pending, so keep low-level refusal. No live provider/saves/Q1/Q2,
+behavior. Load UX was accepted on 2026-10-06: confirmed stop, then confirmed Load, then fresh launch; uncertainty stops automatic continuation. Its implementation is a separate next slice, so this slice keeps low-level refusal. No live provider/saves/Q1/Q2,
 TERM acceptance, settings/auth/network/service changes, native Windows/systemd claim,
 cold command exactly-once, reboot salvage or protection from the player.
