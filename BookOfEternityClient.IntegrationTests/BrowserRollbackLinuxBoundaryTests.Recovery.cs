@@ -85,4 +85,54 @@ public sealed partial class BrowserRollbackLinuxBoundaryTests
         Assert.Equal(Before, File.ReadAllBytes(fresh.ResolvePath(Member)));
         AssertNoBrowserEvidence(fresh);
     }
+    [Fact]
+    public async Task PendingManifestScratch_OriginalPublisherSettlesBeforeBrowserRecovery()
+    {
+        var (files, _) = await CreateAsync();
+        await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+        {
+            var transaction = await ExplorerLocalTurnRollbackArtifacts.StageBrowserWriteTransactionAsync(files, lease, [Member], "browser_write");
+            var manifest = files.ResolvePath(transaction.ManifestPath);
+            var before = File.ReadAllBytes(manifest);
+            var selected = false;
+            _mutation = path => { selected = path == transaction.ManifestPath; return Task.CompletedTask; };
+            _publication = (phase, _) =>
+            {
+                if (selected && phase == TrustedLocalPublicationPhase.MemberStaged)
+                {
+                    File.WriteAllBytes(manifest, [42]);
+                    throw new InvalidOperationException("owned metadata stage cut");
+                }
+            };
+            await Assert.ThrowsAsync<InvalidDataException>(() => files.WriteFileAtomicBytesAsync(lease, Member, After));
+            Assert.True(Directory.EnumerateFiles(files.ResolvePath(transaction.TransactionRoot), ".boe-local-*.stage").Any());
+            File.WriteAllBytes(manifest, before); // Restore declared current image while retaining exact owned scratch.
+        }
+        var fresh = new FileSystemManager(_root, NullLogger<FileSystemManager>.Instance);
+        await using var recovered = await fresh.AcquireCanonicalWriteLeaseAsync();
+        Assert.Equal(Before, File.ReadAllBytes(fresh.ResolvePath(Member)));
+        AssertNoBrowserEvidence(fresh);
+    }
+
+    [Fact]
+    public async Task ConfirmedRollbackWithCleanupDebt_RemainsRolledBackAndFreshManagerCleans()
+    {
+        var (files, coordinator) = await CreateAsync();
+        var result = await coordinator.ExecuteAtomicAsync(Request, [Member], async lease =>
+        {
+            await files.WriteFileAtomicBytesAsync(lease, Member, After);
+            _mutation = path => path.EndsWith(".rollback", StringComparison.Ordinal)
+                ? Task.FromException(new IOException("rollback cleanup cut")) : Task.CompletedTask;
+            throw new InvalidOperationException("callback cut");
+        });
+        Assert.Equal(Before, File.ReadAllBytes(files.ResolvePath(Member)));
+        Assert.Equal(BookOfEternityClient.WebUi.BrowserPreparedWriteDisposition.RolledBack, result.Disposition);
+        Assert.True(result.NeedsFollowUp); Assert.False(result.Success);
+        _mutation = null;
+        var fresh = new FileSystemManager(_root, NullLogger<FileSystemManager>.Instance);
+        await using var recovered = await fresh.AcquireCanonicalWriteLeaseAsync();
+        Assert.Equal(Before, File.ReadAllBytes(fresh.ResolvePath(Member)));
+        AssertNoBrowserEvidence(fresh);
+    }
+
 }
