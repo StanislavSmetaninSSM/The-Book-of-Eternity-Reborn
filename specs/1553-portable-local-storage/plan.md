@@ -121,6 +121,14 @@ content import, one launch/Release/publication and complete workspace/reaper cle
 It then requires exact durable Retired identity/publication/normal-cleanup facts and
 zero active entries. Baseline has no connected ledger; fresh causal RED pending in
 new category worker-restart-lifecycle-linux. No runtime edits in this scaffold.
+Positive lifecycle RED at `f32a9fcfbe5824bb3d1f4912289eaee043ba8bee`: fresh build,
+1 executed/1 causal FAIL,46.8590637s, complete descriptor and cleanup/no timeout.
+Actual content import and live validated result succeeded, one Start/Release/publication,
+workspace removed, reaper entries/capacity zero. Failure is missing ledger/Retired
+and exact durable bindings. Independent guardian ECHILD, exit0, no emergency/failure/
+deadline. Evidence: recovery/evidence/worker-r2-lifecycle-red/manifest.json.
+Next is connected implementation under the accepted design; both integration REDs
+remain open. No new qualification claimed from this baseline.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing
