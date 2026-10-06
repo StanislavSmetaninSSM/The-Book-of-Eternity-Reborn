@@ -404,7 +404,7 @@
     "TrackedFilesByteCompared": 19718,
     "FreshGithubOnly": true,
     "TestsExecuted": 0,
-    "FinalCarrier": "Separately ordinary-pushed/read back and freshly restored by writer; exact final SHA/restore is supplied in final handoff without self-reference."
+    "FinalCarrier": "Separate ordinary non-force push, remote SHA/byte readback and fresh GitHub-only restore are required for the final carrier; exact final SHA/result is supplied after completion in the writer handoff without self-reference."
   },
   "DiscoveryOnly": {
     "Catalog": {
