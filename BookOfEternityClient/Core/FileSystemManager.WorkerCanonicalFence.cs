@@ -13,6 +13,7 @@ public partial class FileSystemManager
     internal void EnsureWorkerGeneralMutationAllowed(CanonicalWriteLease lease)
     {
         EnsureValidCanonicalWriteLease(lease);
+        EnsureMainMutationAllowed(lease);
         if (IsWorkerCleanupAudit(lease) || lease.WorkerPurpose?.Dispatch != null)
             throw new InvalidOperationException("Original worker purpose cannot perform this canonical mutation.");
     }
@@ -32,6 +33,7 @@ public partial class FileSystemManager
     internal void EnsureWorkerPurposePublication(CanonicalWriteLease lease, TrustedLocalGeneration generation,
         IReadOnlyList<TrustedLocalFileChange> changes)
     {
+        EnsureMainMutationAllowed(lease);
         if (lease.WorkerPurpose?.Dispatch is { } dispatch)
         {
             EnsureWorkerRecoveryAdmission(lease);

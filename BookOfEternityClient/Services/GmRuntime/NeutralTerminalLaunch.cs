@@ -11,9 +11,11 @@ internal sealed class NeutralTerminalLaunch
     internal static NeutralTerminalLaunch Create(string package, string scratchParent)
     {
         var scratch=Path.Combine(Path.GetFullPath(scratchParent),"neutral-session-"+Guid.NewGuid().ToString("N"));
+        scratch=Path.Combine(scratch,"game_session");
         Directory.CreateDirectory(scratch);
         return new(Path.GetFullPath(package),scratch);
     }
+    internal NeutralTerminalLaunch NextEpoch()=>new(Package,Scratch);
     internal void Consume() { if(Interlocked.Exchange(ref _consumed,1)!=0)throw new InvalidOperationException("Neutral original session admission already consumed."); }
 }
 

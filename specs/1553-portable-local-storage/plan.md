@@ -22,6 +22,12 @@ retry; no filesystem locks across IPC/child/I/O/pin drain. Runtime qualification
 bounded Linux native fallback; Windows source/build only. SDK10.0.401, PowerShell7.5.4,
 GCC14.2.0-19 observed before the first new run. Execution/evidence checkpoints follow.
 
+Causal RED: main fence8executed/1PASS/7FAIL at7388c2ac (pre-recovery/cold/held effects);
+actual released neutral bridge1executed/1FAIL atfcb96abe due to missing Running record.
+Both complete, skips0, owned cleanup complete; neutral guardian ECHILD/emergency0.
+First implementation WIP is unqualified: compilation/preparation and new fault/ordering
+coverage pending. Historical passing carriers are not reused as evidence for changed code.
+
 ## T041-RUN-FENCE — current design-only checkpoint
 
 Owner accepted neutral terminal `14888663d608355098cc1a329d97ab61de0e6016` and

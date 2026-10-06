@@ -1,0 +1,186 @@
+{
+  "SchemaVersion": 1,
+  "SourceCommit": "7388c2ace7ad71a71ec9eb4eb4c1cffd38550d48",
+  "Command": "scripts/test-csharp.ps1 -Category gm-main-run-fence -NoBuild",
+  "Inputs": [
+    {
+      "Path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.cs",
+      "Bytes": 19483,
+      "Sha256": "11793524c18c4b3cde7aef6b7f96ccc04563d3b92e2ed7d1d76b3edf8e048557",
+      "GitBlob": "c1a5f2123fff52693fc15476ba8be9ced381aa3c"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmMainRunFenceTests.cs",
+      "Bytes": 3392,
+      "Sha256": "91cab34fce8fc217164c27d9d6bef5ecf4c89be5164b1ca395ee01b22f8cbffd",
+      "GitBlob": "bf6c25eabbcc4a895ece97721415864d553525e6"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs",
+      "Bytes": 11593,
+      "Sha256": "9e060dbf302df244d69cd99587bda0cc70f4ee5eb0490d61cd8034276d8861a9",
+      "GitBlob": "84578fe2f596138a80b3650e8868d60f6dab3186"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs",
+      "Bytes": 6160,
+      "Sha256": "e3f6eb254fd259ced066eb139e1d897e8e4ba2e56fafbccfa187e27896f8730b",
+      "GitBlob": "580d7c60c7b51239ed7bf566ac2fb39ed51d99ff"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalSessionTests.cs",
+      "Bytes": 4241,
+      "Sha256": "ec2802ed5463118980767db317059d862cd52a3ca3888eb9f5a2e5e6cac4d755",
+      "GitBlob": "31e3caedbddfae1b779aedaef65cf325efb870ee"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmSessionRunAdmissionTests.cs",
+      "Bytes": 7644,
+      "Sha256": "232f0c8a1a691424969efc95585f7ddec62d0aa79c8f8a4ea3b14cfe16b41667",
+      "GitBlob": "47af198aaec594d663d0964c874f681f8fe45fd2"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmSessionRunRecordTests.cs",
+      "Bytes": 16141,
+      "Sha256": "4203e8b0df8774bdc46856f1cf8caf8ade9479cabf72e12e03f04776a2cb8311",
+      "GitBlob": "1e0c9733dbdad4ff3bfbdc2ebb1bac212fbda9dd"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/CanonicalRootIdentity.cs",
+      "Bytes": 4751,
+      "Sha256": "929edd6e627803e06ef89539dc207ff6d9a373e682d6ce4fd9bb0935af03bec9",
+      "GitBlob": "547258b91edd7af4b072a135a39ec0aadc95e2ce"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "Bytes": 232370,
+      "Sha256": "18cb332b5f2d6c833526e396335dfa4dacfdf1193143d7c15c7841b808732963",
+      "GitBlob": "f85e65c780e9e285696cdb9b11e85e421fd21b74"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "Bytes": 13532,
+      "Sha256": "f1dcc2a8169631bcd4c06a9631e7fe0fc6e623f2891c2c042e17cb5050efec55",
+      "GitBlob": "9957f602122a08a414ca225c84f7f36de77348ab"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunAdmission.cs",
+      "Bytes": 4093,
+      "Sha256": "aa1338fbfa3ba4b8a89851acaa41b4a5bfa3b95c8cc3239116fc24057add621a",
+      "GitBlob": "aaa6433bb7ca0caa687f66d660be85ff82f83983"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecord.cs",
+      "Bytes": 7342,
+      "Sha256": "d31a714f9485647ab68b6ee7b7d07da852cb1e88edb3f0df7a1e6bf5ff9ec8c8",
+      "GitBlob": "877b16da222a4326d3228d08a1a253b0b81ecbbb"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecordCodec.cs",
+      "Bytes": 5526,
+      "Sha256": "7e269f884c4ca2dd9277d9b1e3813dc8f15d405bd163160d6fc671247849ad63",
+      "GitBlob": "19f6293794a283e666c220912c2ea6cb47a535ab"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/IOwnedTerminalSession.cs",
+      "Bytes": 901,
+      "Sha256": "d368c7be21cb2edb72935d8a86fb0f25da2f7f714792c66fab4d9b1ff389cbb7",
+      "GitBlob": "4e0a4ed2348738b309be07482038fb923bf9ee64"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/LinuxOwnedTerminalSession.cs",
+      "Bytes": 4102,
+      "Sha256": "69b9943d4e3ce1e6b271508019936c4849a7585cb03391c06116d8bc4c1f5d60",
+      "GitBlob": "5a46c4fe05f2392ee34f93ce392e36819c6aacd3"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/OwnedTerminalSessionFactory.cs",
+      "Bytes": 2410,
+      "Sha256": "6c0d06ba550153aa971662d2328b2dc1fdbc38063f06ede1abd8aa60d8526a3a",
+      "GitBlob": "efe19132057a32385c4c755369adcb79b97fa324"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
+      "Bytes": 20694,
+      "Sha256": "4974b5aeb2bda63cf148e0af81b87897d1da2d8dbd6c00e6a4a4636558ea8db1",
+      "GitBlob": "4d70f8f22e424324e17c7dc6f763fa0bef5d72fb"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/ConPtySession.cs",
+      "Bytes": 16069,
+      "Sha256": "5366a0127e072dd73c6d6816cfcab0e4bde5e25c99a11bf12a2a4725dffe0e9b",
+      "GitBlob": "f143340443a6e2729f3f6752efa55eef619060dd"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/Program.cs",
+      "Bytes": 77897,
+      "Sha256": "22ef46f9e23edf9e229c0fa3a1084696eb616b2659a295c6dc416f3a2d3ab309",
+      "GitBlob": "b26537e25a438a8938f12c1516558459575f6178"
+    },
+    {
+      "Path": "native/linux/boe-lineage-supervisor.c",
+      "Bytes": 24326,
+      "Sha256": "939622a025260f29fec105d2a0dff58f10e9a1f3ded5a6fb9d0866930b9c50ce",
+      "GitBlob": "d9ef317bdf599a2cc761688d53630568f39e0487"
+    },
+    {
+      "Path": "scripts/build-linux-supervisor.ps1",
+      "Bytes": 4556,
+      "Sha256": "ed7f9ed701801e95562afc76ead02c4e4887aee054c873d162bc0f81f3c15914",
+      "GitBlob": "0208a3793088ebe5802e512a022ee1ab73993e3f"
+    },
+    {
+      "Path": "scripts/test-csharp.ps1",
+      "Bytes": 81475,
+      "Sha256": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1",
+      "GitBlob": "0576b2e34e5c0c5d164c173a9961a67c965c5509"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1069085,
+      "Sha256": "8d7fba203af2618cb3950163399fbfa61049a3edc23f5224cfe2583537d9d32c",
+      "GitBlob": "639bbd71f5a4aae5223ee79e96188eefa4e5a7dd"
+    },
+    {
+      "Path": "tests/fixtures/LinuxHost/host-guardian.c",
+      "Bytes": 9240,
+      "Sha256": "d7963c86632153ec2bf1adf9a7c30dea29e1cea5c274e5fa0ea311a0518cc3db",
+      "GitBlob": "6c3ddbc42282d9b0ee2251764fda61250f97984c"
+    },
+    {
+      "Path": "tests/fixtures/LinuxTerminal/neutral-cli.c",
+      "Bytes": 4038,
+      "Sha256": "c2e5d411ea12e10dcb6ea9b24f724ff9a71494c0218567133b5e5c789e8dc60d",
+      "GitBlob": "c5a7c20fdceae15cf0e31cb4f7df59dea779c443"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 229,
+      "Sha256": "d0c5547e45afe82b2cbc37cf17752cbc1134dd22dbb82a0bd0f99ac0e5c13587",
+      "GitBlob": "da80cfddf8de4f95d9c7eb7ad659d46eecc586d4"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log.gz",
+      "Bytes": 172575,
+      "Sha256": "f11713edf9234ee597e1a1117d18415cba101d110181f2361d401f62c544bca1",
+      "DecompressedSha256": "878c23a9e71609a98e653c8110153201e8307d29cd033dfa0953e9794decd4be"
+    },
+    {
+      "Path": "gm-main-run-fence-unit-001.trx",
+      "Bytes": 21233,
+      "Sha256": "78bd612f1b52646b1df11ce88571cc387f48b0187375a39142364dbdaf235047"
+    },
+    {
+      "Path": "plan.json",
+      "Bytes": 1846,
+      "Sha256": "89244ff8c761702dd777e0307e13999db7d4675103893e52dca4462c9d7e07df"
+    },
+    {
+      "Path": "summary.json",
+      "Bytes": 1344,
+      "Sha256": "0879b4f3b211c236dbff6df47c574ecb84dddf090ef46ace226be1184f6824d3"
+    }
+  ]
+}

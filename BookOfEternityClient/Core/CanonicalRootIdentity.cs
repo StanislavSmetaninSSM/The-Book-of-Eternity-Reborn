@@ -7,6 +7,7 @@ internal sealed class CanonicalRootIdentity
 {
     internal object WorkerContextGate { get; } = new();
     internal GmWorkerRootContext? WorkerContext { get; set; }
+    internal BookOfEternityClient.Services.GmRuntime.GmSessionRunCoordinator? MainCoordinator { get; set; }
 
     private readonly SemaphoreSlim _gmWorkerAuditAppendAdmission = new(1, 1);
     private WeakReference<CanonicalRootIdentity>? _registration;

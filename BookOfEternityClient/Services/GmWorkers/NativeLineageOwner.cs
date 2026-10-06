@@ -53,9 +53,9 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
             throw new InvalidOperationException("A native observation fault is already fixed for this owner.");
     }
 
-    protected NativeLineageOwner(GmWorkerDurableExecution? durable, bool terminal = false)
+    protected NativeLineageOwner(GmWorkerDurableExecution? durable, bool terminal = false,string? terminalRunId=null)
     {
-        _terminalMode = terminal; _durable = durable; _run = durable?.Identity.RunId ?? Guid.NewGuid().ToString("N");
+        _terminalMode = terminal; _durable = durable; _run = durable?.Identity.RunId ?? terminalRunId ?? Guid.NewGuid().ToString("N");
         _bootstrapDirectory = Path.Combine(Path.GetTempPath(), "boe-native-" + _run);
         var socketPath = Path.Combine(_bootstrapDirectory, "owner");
         if (Encoding.UTF8.GetByteCount(socketPath) > 107)
@@ -117,7 +117,28 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         catch (Exception ex) { owner.Lose("partial-terminal-launch"); owner.CloseBootstrap(); throw new GmWorkerOwnedLaunchException("Terminal partial launch retains owner.", owner, ex); }
     }
 
-    private async Task StartAsync(ProcessStartInfo host, string executable, CancellationToken cancellationToken, int columns = 80, int rows = 25, Action<int>? observeHeldRoot = null)
+    private int _terminalRelease;
+    private long _heldDeadline;
+    internal static async Task<NativeLineageOwner> PrepareTerminalAsync(ProcessStartInfo fixture,string executable,string runId,int columns,int rows,CancellationToken token,Action<int>? held=null)
+    {
+        if(!Guid.TryParseExact(runId,"N",out var id) || id==Guid.Empty)throw new InvalidDataException("Terminal run identity is invalid.");
+        var owner=new NativeLineageOwner(null,true,runId);
+        try {await owner.StartAsync(fixture,executable,token,columns,rows,held,true);return owner;}
+        catch(Exception ex){owner.Lose("partial-terminal-prepare");owner.CloseBootstrap();throw new GmWorkerOwnedLaunchException("Terminal prepare retains original owner.",owner,ex);}
+    }
+    internal async Task ReleaseTerminalAsync(CancellationToken token)
+    {
+        if(!_terminalMode || Interlocked.Exchange(ref _terminalRelease,1)!=0)throw new InvalidOperationException("Original terminal release is single-use.");
+        try {
+            token.ThrowIfCancellationRequested();
+            if(Stopwatch.GetTimestamp()>=_heldDeadline || _bootstrap==null || !AuthorityValid())throw new IOException("Original held terminal expired or lost authority.");
+            _identity!.EnsureLive();GmWorkerNativeDescriptors.Send(_bootstrap,"A1:"+_run);
+            _bootstrap.Dispose();_bootstrap=null;
+            await _startedHost.Task.WaitAsync(TimeSpan.FromSeconds(5),token);_identity.EnsureLive();
+        }catch{Lose("terminal-release-unconfirmed");CloseBootstrap();throw;}
+    }
+
+    private async Task StartAsync(ProcessStartInfo host, string executable, CancellationToken cancellationToken, int columns = 80, int rows = 25, Action<int>? observeHeldRoot = null,bool holdTerminal=false)
     {
         var start = new ProcessStartInfo(executable)
         {
@@ -150,6 +171,7 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         // Ready proves the helper owns its copies. Closing ours makes output EOF
         // depend only on actual host/descendant holders after the helper forks.
         _output?.DisposeLocalCopyOfClientHandle(); _error?.DisposeLocalCopyOfClientHandle();
+        _heldDeadline=Stopwatch.GetTimestamp()+5*Stopwatch.Frequency;
         await SendControlAsync('L');
         var rights = await GmWorkerNativeDescriptors.ReceiveAsync(_bootstrap, (_terminalMode ? "B1:" : "B2:") + _run, _terminalMode ? 2 : 1, deadline.Token);
         _hostPidfd = rights[0];
@@ -157,6 +179,7 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         _identity = GmWorkerHostIdentity.FromTransferredPidfd(_supervisor, _hostPidfd, AuthorityValid);
         _hostExit = ObserveHostExitAsync();
         observeHeldRoot?.Invoke(_identity.ProcessId);
+        if(holdTerminal)return;
         GmWorkerNativeDescriptors.Send(_bootstrap, (_terminalMode ? "A1:" : "A2:") + _run);
         _bootstrap.Dispose(); _bootstrap = null;
         await _startedHost.Task.WaitAsync(deadline.Token);

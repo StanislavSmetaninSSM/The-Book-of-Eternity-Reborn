@@ -33,8 +33,14 @@ internal sealed class ConPtySession : IDisposable, IOwnedTerminalSession
     private async Task<TerminalRootExit> ObserveRootAsync(Process process) { try { await process.WaitForExitAsync();return new(process.ExitCode); } catch { Lose("conpty-root-observation-fault");throw; } }
     public static ConPtySession Start(string shellExe,string shellArguments,string workingDirectory,short width,short height)
     {
+        var owner=Prepare(shellExe,shellArguments,workingDirectory,width,height,Guid.NewGuid().ToString("N"));
+        try {owner.ReleaseOriginal();return owner;}catch(Exception ex){owner.Lose("conpty-release-unconfirmed");throw new OwnedTerminalStartException(owner,ex);}
+    }
+    internal static ConPtySession Prepare(string shellExe,string shellArguments,string workingDirectory,short width,short height,string runId)
+    {
         if(!OperatingSystem.IsWindows())throw new PlatformNotSupportedException("ConPTY requires Windows.");
-        var owner=new ConPtySession(); // Original resource owner exists before fallible stream acquisition.
+        var owner=new ConPtySession();
+        owner.Identity=owner.Identity with{RunId=runId}; // Original resource owner exists before fallible stream acquisition.
         if(!ConPtyNativeMethods.CreatePipe(out var inputRead,out var inputWrite,IntPtr.Zero,0))throw new IOException("ConPTY input pipe failed.");
         if(!ConPtyNativeMethods.CreatePipe(out var outputRead,out var outputWrite,IntPtr.Zero,0)) {
             ConPtyNativeMethods.CloseHandle(inputRead);ConPtyNativeMethods.CloseHandle(inputWrite);throw new IOException("ConPTY output pipe failed."); }
@@ -61,10 +67,19 @@ internal sealed class ConPtySession : IDisposable, IOwnedTerminalSession
             owner.Identity=owner.Identity with{RootPid=checked((int)process.dwProcessId)};
             owner._process=Process.GetProcessById(owner.ProcessId);owner.RootExited=owner.ObserveRootAsync(owner._process);
             owner._job=new WindowsJobProcessTree(owner._process);
-            if(ConPtyNativeMethods.ResumeThread(owner._threadHandle)!=1)throw new IOException("ConPTY original suspended thread release failed.");
-            owner._released=true;return owner;
+            return owner;
         } catch(Exception ex) { owner.Lose("partial-conpty-start");throw new OwnedTerminalStartException(owner,ex); }
         finally { if(si.lpAttributeList!=IntPtr.Zero) { if(initialized)ConPtyNativeMethods.DeleteProcThreadAttributeList(si.lpAttributeList);Marshal.FreeHGlobal(si.lpAttributeList); } }
+    }
+    private int _releaseConsumed;
+    internal void ReleaseOriginal()
+    {
+        lock(_gate) {
+            if(Interlocked.Exchange(ref _releaseConsumed,1)!=0 || _uncertain || _stopping || _job==null || RootExited.IsCompleted)
+                throw new IOException("Original ConPTY release unavailable.");
+            if(ConPtyNativeMethods.ResumeThread(_threadHandle)!=1){Lose("conpty-release-unconfirmed");throw new IOException("ConPTY original suspended thread release failed.");}
+            _released=true;
+        }
     }
     public ValueTask ResizeAsync(TerminalSize size,CancellationToken token)
     {

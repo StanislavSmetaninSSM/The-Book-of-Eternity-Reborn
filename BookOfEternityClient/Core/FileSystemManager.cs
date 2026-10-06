@@ -63,7 +63,8 @@ internal enum CanonicalWritePurpose
     SessionMutation,
     SessionReplacement,
     SessionFinalization,
-    PublicationReadQuiescence
+    PublicationReadQuiescence,
+    MainMetadata
 }
 
 internal sealed record CanonicalLoadTransactionPaths(
@@ -240,6 +241,7 @@ public partial class FileSystemManager
             _parentAuthority = parentAuthority;
         }
 
+        internal MainAdmission? MainAdmission {get;set;}
         internal FileSystemManager Owner { get; }
         internal bool IsActive =>
             _stream != null &&
@@ -258,7 +260,7 @@ public partial class FileSystemManager
             }
             finally
             {
-                parentAuthority?.Dispose();
+                try { parentAuthority?.Dispose(); } finally { MainAdmission?.Dispose(); MainAdmission=null; }
             }
         }
     }
@@ -281,6 +283,7 @@ public partial class FileSystemManager
             _parentAuthority = parentAuthority;
         }
 
+        internal MainAdmission? MainAdmission {get;set;}
         internal FileSystemManager Owner { get; }
         internal CanonicalWritePurpose Purpose { get; }
         internal GmWorkerCanonicalPurpose? WorkerPurpose { get; set; }
@@ -330,6 +333,8 @@ public partial class FileSystemManager
             }
             catch (Exception ex) { RetainFailure(ex); }
             try { parentAuthority?.Dispose(); }
+            catch (Exception ex) { RetainFailure(ex); }
+            try { MainAdmission?.Dispose(); MainAdmission=null; }
             catch (Exception ex) { RetainFailure(ex); }
             try { WorkerRootPin?.Dispose(); WorkerRootPin = null; }
             catch (Exception ex) { RetainFailure(ex); }
@@ -3594,32 +3599,36 @@ public partial class FileSystemManager
             CanonicalWritePurpose purpose,
             CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose = null)
     {
+        var mainAdmission=BeginMainAdmission();
         var registration = new AmbientCanonicalLeaseRegistration(
             CompactAmbientCanonicalLeaseHead());
         _ambientCanonicalLease.Value = registration;
         return CompleteCanonicalWriteLeaseAcquisitionAsync(
             registration,
             purpose,
-            cancellationToken, workerPurpose);
+            cancellationToken, workerPurpose, mainAdmission);
     }
 
     private async Task<CanonicalWriteLease>
         CompleteCanonicalWriteLeaseAcquisitionAsync(
             AmbientCanonicalLeaseRegistration registration,
             CanonicalWritePurpose purpose,
-            CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose = null)
+            CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose, MainAdmission mainAdmission)
     {
         try
         {
+            await mainAdmission.AcquireAsync(cancellationToken);
             var writeLease = await AcquireCanonicalWriteLeaseCoreAsync(
                 purpose,
                 cancellationToken, workerPurpose);
+            writeLease.MainAdmission=mainAdmission;
             registration.Activate();
             writeLease.AmbientRegistration = registration;
             return writeLease;
         }
         catch
         {
+            mainAdmission.Dispose();
             ReleaseAmbientCanonicalLease(registration);
             throw;
         }
@@ -3688,7 +3697,7 @@ public partial class FileSystemManager
                 this,
                 stream,
                 parentAuthority,
-                purpose) { WorkerPurpose = workerPurpose };
+                purpose) { WorkerPurpose = workerPurpose, MainAdmission=MainAdmissions.Value };
             try
             {
                 workerPurpose?.ValidateRoot(this);
@@ -3696,6 +3705,14 @@ public partial class FileSystemManager
                 workerContext?.ValidateCanonical(this, writeLease);
                 workerContext?.ValidateBeforeRecovery();
                 writeLease.WorkerRootPin = workerContext?.PinCanonical();
+                if(purpose==CanonicalWritePurpose.MainMetadata) {
+                    if(writeLease.MainAdmission?.MetadataOnly!=true)throw GmSessionRunPersistence.Invalid();
+                    writeLease.MainAdmission.Validate(writeLease);return writeLease;
+                }
+                if(purpose==CanonicalWritePurpose.SessionFinalization && writeLease.MainAdmission!.Closing) {
+                    writeLease.MainAdmission.Validate(writeLease);return writeLease;
+                }
+                EnsureMainBeforeRecovery(writeLease);
                 if (!OperatingSystem.IsWindows()) EnsureNoLegacyStorageEvidence();
                 await RunLegacyStorageRecoveryAsync(writeLease, async () =>
                 {
@@ -3778,7 +3795,19 @@ public partial class FileSystemManager
     internal Task InvokeSessionOperationClosingHookAsync() =>
         _hooks?.SessionOperationClosingAsync?.Invoke() ?? Task.CompletedTask;
 
-    internal async Task<SessionLifecycleLease> AcquireSessionLifecycleLeaseAsync()
+    internal Task<SessionLifecycleLease> AcquireSessionLifecycleLeaseAsync()
+    {
+        var main=BeginMainAdmission();
+        return AcquireMainLifecycleAsync(main);
+    }
+
+    private async Task<SessionLifecycleLease> AcquireMainLifecycleAsync(MainAdmission main)
+    {
+        try { await main.AcquireAsync();return await AcquireSessionLifecycleLeaseCoreAsync(main); }
+        catch { main.Dispose();throw; }
+    }
+
+    private async Task<SessionLifecycleLease> AcquireSessionLifecycleLeaseCoreAsync(MainAdmission main)
     {
         EnsureCanonicalSessionRootIsNotReparsePoint();
         var lockPath = SessionLifecycleLockPath;
@@ -3829,7 +3858,7 @@ public partial class FileSystemManager
                 return new SessionLifecycleLease(
                     this,
                     stream,
-                    parentAuthority);
+                    parentAuthority) { MainAdmission=main };
             }
             catch
             {
@@ -3867,6 +3896,7 @@ public partial class FileSystemManager
     private void EnsureValidCanonicalWriteLease(CanonicalWriteLease writeLease)
     {
         EnsurePhysicalCanonicalWriteLease(writeLease);
+        writeLease.MainAdmission?.Validate(writeLease);
         writeLease.WorkerPurpose?.ValidateRoot(this);
         CanonicalRootAuthorityIdentity.WorkerContext?.ValidateCanonical(this, writeLease);
     }
@@ -3882,6 +3912,7 @@ public partial class FileSystemManager
     {
         EnsureValidCanonicalWriteLease(writeLease);
         CanonicalRootAuthorityIdentity.WorkerContext?.ValidateBeforeRecovery();
+        EnsureMainBeforeRecovery(writeLease);
     }
 
     internal void EnsureCanonicalWriteLeaseActive(CanonicalWriteLease writeLease) =>

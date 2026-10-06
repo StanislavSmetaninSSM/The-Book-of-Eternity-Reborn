@@ -9,6 +9,17 @@ internal static class OwnedTerminalSessionFactory
 {
     internal static async Task<IOwnedTerminalSession> StartNeutralAsync(NeutralTerminalLaunch launch, CancellationToken token, Action<int>? observeHeldRoot = null)
     {
+        var held=await PrepareNeutralAsync(launch,Guid.NewGuid().ToString("N"),token,observeHeldRoot);
+        try { await held.ReleaseAsync(token);return held.Session; }
+        catch(Exception ex){throw new OwnedTerminalStartException(held.Session,ex);}
+    }
+    internal sealed class PreparedTerminal(IOwnedTerminalSession session,NativeLineageOwner owner)
+    {
+        internal IOwnedTerminalSession Session=>session;
+        internal Task ReleaseAsync(CancellationToken token)=>owner.ReleaseTerminalAsync(token);
+    }
+    internal static async Task<PreparedTerminal> PrepareNeutralAsync(NeutralTerminalLaunch launch,string runId,CancellationToken token,Action<int>? observeHeldRoot=null)
+    {
         var package=launch.Package; var scratch=launch.Scratch;
         var supervisor = GmWorkerNativePackage.Validate(package);
         var manifest = Path.Combine(package, "neutral-terminal-manifest.json");
@@ -24,7 +35,7 @@ internal static class OwnedTerminalSessionFactory
         var start = new ProcessStartInfo(cli) { WorkingDirectory = Path.GetFullPath(scratch), UseShellExecute = false };
         launch.Consume();
         NativeLineageOwner owner;
-        try { owner = await NativeLineageOwner.StartTerminalAsync(start, supervisor, 80, 25, token, observeHeldRoot); }
+        try { owner = await NativeLineageOwner.PrepareTerminalAsync(start, supervisor,runId, 80, 25, token, observeHeldRoot); }
         catch (GmWorkerOwnedLaunchException ex) {
             owner=(NativeLineageOwner)ex.Owner;
             IOwnedTerminalSession retained;
@@ -32,7 +43,7 @@ internal static class OwnedTerminalSessionFactory
             catch { retained=new PartialNativeTerminalSession(owner); }
             throw new OwnedTerminalStartException(retained,ex);
         }
-        try { return new LinuxOwnedTerminalSession(owner); }
+        try { return new(new LinuxOwnedTerminalSession(owner),owner); }
         catch (Exception ex) { throw new OwnedTerminalStartException(new PartialNativeTerminalSession(owner),ex); }
     }
 }

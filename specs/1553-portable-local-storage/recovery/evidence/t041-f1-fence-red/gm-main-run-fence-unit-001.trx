@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="c838065c-8ded-4461-b0fa-ac54ad0250be" name="@c7669543e9c7 2026-10-06 12:16:55" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T12:16:55.6755756+00:00" queuing="2026-10-06T12:16:55.6755757+00:00" start="2026-10-06T12:16:52.6751921+00:00" finish="2026-10-06T12:16:55.6890427+00:00" />
+  <TestSettings name="default" id="e39fb554-3fb5-4116-82da-bd9c491827b1">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_12_16_55" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="dcc609e8-8b62-4c8f-b31f-2320160227ce" testId="2db5d628-a267-c6a6-353a-0638e377e1c1" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite" computerName="c7669543e9c7" duration="00:00:00.0146466" startTime="2026-10-06T12:16:55.4564890+00:00" endTime="2026-10-06T12:16:55.4564891+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dcc609e8-8b62-4c8f-b31f-2320160227ce">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.NotNull() Failure: Value is null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite() in /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunFenceTests.cs:line 48
+   at BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite() in /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunFenceTests.cs:line 48
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c179705e-484c-423e-ab92-0ea7f6b755be" testId="582cdbef-47e6-64ce-dc61-e43c839e2edc" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(disposition: 3)" computerName="c7669543e9c7" duration="00:00:00.0041212" startTime="2026-10-06T12:16:55.4264359+00:00" endTime="2026-10-06T12:16:55.4264360+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c179705e-484c-423e-ab92-0ea7f6b755be">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.NotNull() Failure: Value is null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(Int32 disposition) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunFenceTests.cs:line 30
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4e401df0-9b23-45f5-8c74-2a3ff065206e" testId="267ccb79-1f63-5ede-3a27-6cca7d902cf7" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.InitializedMissingOrInvalid_RefusesClearBeforeEffects(corrupt: False)" computerName="c7669543e9c7" duration="00:00:00.1481211" startTime="2026-10-06T12:16:55.3526002+00:00" endTime="2026-10-06T12:16:55.3526228+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4e401df0-9b23-45f5-8c74-2a3ff065206e">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.NotNull() Failure: Value is null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmMainRunFenceTests.InitializedMissingOrInvalid_RefusesClearBeforeEffects(Boolean corrupt) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunFenceTests.cs:line 41
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ca3945e8-c206-488a-b764-3b3cf9a11040" testId="d7d791a4-1a84-98c7-dab9-637a69e70c6f" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(disposition: 4)" computerName="c7669543e9c7" duration="00:00:00.0465138" startTime="2026-10-06T12:16:55.4123999+00:00" endTime="2026-10-06T12:16:55.4124001+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ca3945e8-c206-488a-b764-3b3cf9a11040">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.NotNull() Failure: Value is null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(Int32 disposition) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunFenceTests.cs:line 30
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="164df23a-3caa-4489-836d-51b49923c869" testId="14260092-98af-a3ed-6a51-8f8be1f52b47" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.StoppedTombstone_ClearRetainsEpochOutsideReplacement" computerName="c7669543e9c7" duration="00:00:00.0147032" startTime="2026-10-06T12:16:55.4412908+00:00" endTime="2026-10-06T12:16:55.4412910+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="164df23a-3caa-4489-836d-51b49923c869" />
+    <UnitTestResult executionId="39a35741-7dab-4d2f-b10c-a7a3f1d4fa71" testId="0d686bb0-a97b-a7c6-1dbc-2e3377f05631" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.InitializedMissingOrInvalid_RefusesClearBeforeEffects(corrupt: True)" computerName="c7669543e9c7" duration="00:00:00.0147067" startTime="2026-10-06T12:16:55.3641441+00:00" endTime="2026-10-06T12:16:55.3641443+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="39a35741-7dab-4d2f-b10c-a7a3f1d4fa71">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.NotNull() Failure: Value is null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmMainRunFenceTests.InitializedMissingOrInvalid_RefusesClearBeforeEffects(Boolean corrupt) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunFenceTests.cs:line 41
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="127353e6-34d7-4fd2-94ba-c3e753a0c782" testId="69b8ded8-abc1-dde3-e16c-59bc6c9945bf" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(disposition: 1)" computerName="c7669543e9c7" duration="00:00:00.0032031" startTime="2026-10-06T12:16:55.4213402+00:00" endTime="2026-10-06T12:16:55.4213402+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="127353e6-34d7-4fd2-94ba-c3e753a0c782">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.NotNull() Failure: Value is null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(Int32 disposition) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunFenceTests.cs:line 30
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a69ff073-a8dd-41b7-b447-0bd4b6f1c0eb" testId="18603c11-9b43-c79d-52ad-0a25004c9298" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(disposition: 2)" computerName="c7669543e9c7" duration="00:00:00.0051801" startTime="2026-10-06T12:16:55.4179005+00:00" endTime="2026-10-06T12:16:55.4179006+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a69ff073-a8dd-41b7-b447-0bd4b6f1c0eb">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.NotNull() Failure: Value is null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(Int32 disposition) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunFenceTests.cs:line 30
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.InitializedMissingOrInvalid_RefusesClearBeforeEffects(corrupt: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="267ccb79-1f63-5ede-3a27-6cca7d902cf7">
+      <Execution id="4e401df0-9b23-45f5-8c74-2a3ff065206e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="InitializedMissingOrInvalid_RefusesClearBeforeEffects" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.StoppedTombstone_ClearRetainsEpochOutsideReplacement" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="14260092-98af-a3ed-6a51-8f8be1f52b47">
+      <Execution id="164df23a-3caa-4489-836d-51b49923c869" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="StoppedTombstone_ClearRetainsEpochOutsideReplacement" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.InitializedMissingOrInvalid_RefusesClearBeforeEffects(corrupt: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0d686bb0-a97b-a7c6-1dbc-2e3377f05631">
+      <Execution id="39a35741-7dab-4d2f-b10c-a7a3f1d4fa71" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="InitializedMissingOrInvalid_RefusesClearBeforeEffects" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(disposition: 1)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="69b8ded8-abc1-dde3-e16c-59bc6c9945bf">
+      <Execution id="127353e6-34d7-4fd2-94ba-c3e753a0c782" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="ColdNonterminal_RefusesBeforeRecoveryAndMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(disposition: 2)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="18603c11-9b43-c79d-52ad-0a25004c9298">
+      <Execution id="a69ff073-a8dd-41b7-b447-0bd4b6f1c0eb" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="ColdNonterminal_RefusesBeforeRecoveryAndMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(disposition: 3)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="582cdbef-47e6-64ce-dc61-e43c839e2edc">
+      <Execution id="c179705e-484c-423e-ab92-0ea7f6b755be" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="ColdNonterminal_RefusesBeforeRecoveryAndMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2db5d628-a267-c6a6-353a-0638e377e1c1">
+      <Execution id="dcc609e8-8b62-4c8f-b31f-2320160227ce" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="HeldLease_RechecksMainRecordBeforeWrite" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(disposition: 4)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d7d791a4-1a84-98c7-dab9-637a69e70c6f">
+      <Execution id="ca3945e8-c206-488a-b764-3b3cf9a11040" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="ColdNonterminal_RefusesBeforeRecoveryAndMutation" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="2db5d628-a267-c6a6-353a-0638e377e1c1" executionId="dcc609e8-8b62-4c8f-b31f-2320160227ce" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="582cdbef-47e6-64ce-dc61-e43c839e2edc" executionId="c179705e-484c-423e-ab92-0ea7f6b755be" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="267ccb79-1f63-5ede-3a27-6cca7d902cf7" executionId="4e401df0-9b23-45f5-8c74-2a3ff065206e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d7d791a4-1a84-98c7-dab9-637a69e70c6f" executionId="ca3945e8-c206-488a-b764-3b3cf9a11040" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="14260092-98af-a3ed-6a51-8f8be1f52b47" executionId="164df23a-3caa-4489-836d-51b49923c869" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0d686bb0-a97b-a7c6-1dbc-2e3377f05631" executionId="39a35741-7dab-4d2f-b10c-a7a3f1d4fa71" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="69b8ded8-abc1-dde3-e16c-59bc6c9945bf" executionId="127353e6-34d7-4fd2-94ba-c3e753a0c782" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="18603c11-9b43-c79d-52ad-0a25004c9298" executionId="a69ff073-a8dd-41b7-b447-0bd4b6f1c0eb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="8" executed="8" passed="1" failed="7" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.38]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.91]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.95]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:02.15]       Assert.NotNull() Failure: Value is null
+[xUnit.net 00:00:02.15]       Stack Trace:
+[xUnit.net 00:00:02.16]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunFenceTests.cs(41,0): at BookOfEternityClient.Tests.GmMainRunFenceTests.InitializedMissingOrInvalid_RefusesClearBeforeEffects(Boolean corrupt)
+[xUnit.net 00:00:02.16]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.17]       Assert.NotNull() Failure: Value is null
+[xUnit.net 00:00:02.17]       Stack Trace:
+[xUnit.net 00:00:02.17]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunFenceTests.cs(41,0): at BookOfEternityClient.Tests.GmMainRunFenceTests.InitializedMissingOrInvalid_RefusesClearBeforeEffects(Boolean corrupt)
+[xUnit.net 00:00:02.17]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.22]       Assert.NotNull() Failure: Value is null
+[xUnit.net 00:00:02.22]       Stack Trace:
+[xUnit.net 00:00:02.22]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunFenceTests.cs(30,0): at BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(Int32 disposition)
+[xUnit.net 00:00:02.22]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.22]       Assert.NotNull() Failure: Value is null
+[xUnit.net 00:00:02.22]       Stack Trace:
+[xUnit.net 00:00:02.22]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunFenceTests.cs(30,0): at BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(Int32 disposition)
+[xUnit.net 00:00:02.22]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.23]       Assert.NotNull() Failure: Value is null
+[xUnit.net 00:00:02.23]       Stack Trace:
+[xUnit.net 00:00:02.23]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunFenceTests.cs(30,0): at BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(Int32 disposition)
+[xUnit.net 00:00:02.23]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.23]       Assert.NotNull() Failure: Value is null
+[xUnit.net 00:00:02.23]       Stack Trace:
+[xUnit.net 00:00:02.23]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunFenceTests.cs(30,0): at BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(Int32 disposition)
+[xUnit.net 00:00:02.23]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.26]       Assert.NotNull() Failure: Value is null
+[xUnit.net 00:00:02.26]       Stack Trace:
+[xUnit.net 00:00:02.26]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunFenceTests.cs(48,0): at BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite()
+[xUnit.net 00:00:02.26]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunFenceTests.cs(48,0): at BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite()
+[xUnit.net 00:00:02.26]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.27]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T12:16:55.3458915+00:00">
+        <Text>[xUnit.net 00:00:02.15]     BookOfEternityClient.Tests.GmMainRunFenceTests.InitializedMissingOrInvalid_RefusesClearBeforeEffects(corrupt: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T12:16:55.3642952+00:00">
+        <Text>[xUnit.net 00:00:02.17]     BookOfEternityClient.Tests.GmMainRunFenceTests.InitializedMissingOrInvalid_RefusesClearBeforeEffects(corrupt: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T12:16:55.4126685+00:00">
+        <Text>[xUnit.net 00:00:02.22]     BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(disposition: 4) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T12:16:55.4180402+00:00">
+        <Text>[xUnit.net 00:00:02.22]     BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(disposition: 2) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T12:16:55.4215723+00:00">
+        <Text>[xUnit.net 00:00:02.23]     BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(disposition: 1) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T12:16:55.4265639+00:00">
+        <Text>[xUnit.net 00:00:02.23]     BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(disposition: 3) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T12:16:55.4567334+00:00">
+        <Text>[xUnit.net 00:00:02.26]     BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

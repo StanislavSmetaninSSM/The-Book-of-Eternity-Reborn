@@ -79,6 +79,8 @@ public sealed partial class BrowserLocalWriteCoordinator
     {
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(replacementOperation);
+        using var mainAdmission=_fs.BeginMainAdmission();
+        await mainAdmission.AcquireAsync();
         LocalUiSessionLockLease? replacementGuard = null;
         LoadReplacementResult? retained = null;
         var dispatched = false;

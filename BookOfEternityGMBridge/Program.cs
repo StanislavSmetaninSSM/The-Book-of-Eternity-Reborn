@@ -108,8 +108,13 @@ internal sealed partial class BridgeHost : IDisposable
     private readonly SemaphoreSlim _ptyWriteLock = new(1, 1);
     private readonly SemaphoreSlim _shellLifecycleLock = new(1, 1);
     private NeutralTerminalLaunch? _neutralLaunch;
+    private GmSessionRunCoordinator? _mainRun;
+    private BookOfEternityClient.Core.FileSystemManager? _neutralFiles;
+    internal Action<BookOfEternityClient.Core.MainRunIoStage>? ObserveMainMetadata;
+    internal Action<int>? ObserveMainHeldRoot;
     internal void ConfigureNeutral(NeutralTerminalLaunch launch) {
         if(_sessionPath!=launch.Scratch)throw new InvalidOperationException("Neutral host requires its fresh admitted scratch."); _neutralLaunch=launch;
+        _neutralFiles=new(_clientRoot,Microsoft.Extensions.Logging.Abstractions.NullLogger<BookOfEternityClient.Core.FileSystemManager>.Instance);
         File.WriteAllText(_configPath, JsonSerializer.Serialize(new { GmCliInputProfile = new { IdleMarker="NEUTRAL READY", PromptPrefix="> ", WorkingMarker="NEUTRAL WORKING", ObservationTimeoutMilliseconds=1500 } }));
     }
     private InputLifetime? _inputLifetime;
@@ -395,7 +400,11 @@ internal sealed partial class BridgeHost : IDisposable
 
             if (_neutralLaunch != null) {
                 IOwnedTerminalSession neutralSession;
-                try { neutralSession=await OwnedTerminalSessionFactory.StartNeutralAsync(_neutralLaunch, _cts.Token); }
+                try {
+                    _mainRun=await GmSessionRunCoordinator.OpenNeutralAsync(_neutralFiles!,ObserveMainMetadata);
+                    neutralSession=await _mainRun.LaunchNeutralAsync(_neutralLaunch,_cts.Token,ObserveMainHeldRoot);
+                    _neutralLaunch=_neutralLaunch.NextEpoch();
+                }
                 catch(OwnedTerminalStartException ex) { AttachOwnedTerminal(ex.Owner,Console.OpenStandardOutput()); MarkTerminalUncertain(); throw; }
                 AttachOwnedTerminal(neutralSession, Console.OpenStandardOutput());
                 return;
@@ -500,6 +509,8 @@ internal sealed partial class BridgeHost : IDisposable
         }
         if (input != null)
             RevokeInputLifetime(input);
+        Exception? metadataFailure=null;
+        if(_mainRun!=null)try { await _mainRun.BeginStopAsync(); } catch(Exception ex){metadataFailure=ex;}
         if (pty != null)
         {
             try
@@ -552,6 +563,7 @@ internal sealed partial class BridgeHost : IDisposable
             throw; // Keep actual tasks, binding and CTS for the next stop attempt.
         }
         if (pty != null) await RetireTerminalHandlesAsync(pty);
+        if(metadataFailure!=null)throw metadataFailure;
         lock (_sync)
         {
             if (ReferenceEquals(_inputLifetime, input))
@@ -575,6 +587,7 @@ internal sealed partial class BridgeHost : IDisposable
     {
         lock (_sync)
         {
+            _mainRun?.NotifyUncertain();
             _terminalUncertain = true;
             _status.TerminalUncertain=true;
             _status.Ready = false;
@@ -595,6 +608,10 @@ internal sealed partial class BridgeHost : IDisposable
         {
             MarkTerminalUncertain();
             throw new TimeoutException("Original terminal resources remain retained.", ex);
+        }
+        if(_mainRun!=null) {
+            await _mainRun.ConfirmSettledStopAsync(session,await _terminalStopTask!);
+            _mainRun=null;
         }
         lock (_sync)
         {

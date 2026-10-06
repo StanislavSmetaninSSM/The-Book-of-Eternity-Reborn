@@ -324,6 +324,20 @@ internal sealed partial class TrustedLocalFilePublication
         return result;
     }
 
+    internal void ValidateMainRecoveryGeneration(FileSystemManager.CanonicalWriteLease lease)
+    {
+        if(!Directory.Exists(_journalRoot))return;
+        ValidateJournalDirectory();
+        if(!File.Exists(_journalScope.ValidateFile(Active))) {
+            if(Directory.EnumerateFileSystemEntries(_journalRoot).Any())throw GmSessionRunPersistence.Invalid();return;
+        }
+        if(HasNamespaceJournalMagic(Active)) {
+            var j=ReadNamespaceJournal(Active);_files.EnsureMainRecoveryGeneration(lease,j.GenerationBefore,j.GenerationAfter);
+        } else {
+            var j=ReadJournal(Active);_files.EnsureMainRecoveryGeneration(lease,j.GenerationBefore,j.GenerationAfter);
+        }
+    }
+
     internal void Recover(FileSystemManager.CanonicalWriteLease lease,
         Action<TrustedLocalPublicationPhase, int>? observer = null)
     {
