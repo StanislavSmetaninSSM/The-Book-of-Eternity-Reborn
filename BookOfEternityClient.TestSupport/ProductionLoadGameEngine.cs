@@ -4,12 +4,14 @@ using BookOfEternityClient.IO;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 namespace BookOfEternityClient.Tests;
 internal static class ProductionLoadGameEngine
 {
     internal static GameEngine Create(FileSystemManager fs,GameSettings settings,SaveLoadService? suppliedSave=null)
     {
-        IConsoleInputSource inputSource=SystemConsoleInputSource.Instance;
+        IConsoleInputSource inputSource=new FixtureInput();
+        using var fixtureLog=LoggerFactory.Create(b=>b.AddSimpleConsole().SetMinimumLevel(LogLevel.Warning));
         var stateManager = new StateManager(fs, settings, NullLogger<StateManager>.Instance);
         var localization = new LocalizationManager { CurrentLanguage = "ru" };
         var gameLoop = new GameLoop();
@@ -78,8 +80,16 @@ internal static class ProductionLoadGameEngine
             pendingTurnState,
             qteSceneService,
             clipboardService,
-            NullLogger<GameEngine>.Instance,
+            fixtureLog.CreateLogger<GameEngine>(),
             inputSource);
         return engine;
+    }
+    private sealed class FixtureInput : IConsoleInputSource
+    {
+        public bool IsScripted=>true;
+        public bool KeyAvailable=>false;
+        public ConsoleKeyInfo ReadKey(bool intercept=true)=>new('\r',ConsoleKey.Enter,false,false,false);
+        public string? ReadLine()=>null;
+        public void AssertCompleted() { }
     }
 }
