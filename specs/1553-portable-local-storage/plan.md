@@ -124,6 +124,15 @@ Do not repeat untouched INPUT37/OUTPUT48 or worker/native cohorts.
   Ordinary turn waits recheck the frozen packet around observations and after mockable
   Stop before old report/terminal publication. No native Stop authority changed.
   Late-fixture assertions also reject incidental errors; fresh GREEN remains unrun.
+  Fresh core GREEN at773f5e9ee510a9bb49e15a91e5cb50076240f400:
+  all79planned/executedPASS (bridge46, daemon24, exact integration9), exit0,
+  no timeout/skips/duplicates, cleanup complete;214.2531799seconds.
+  [Core GREEN](recovery/evidence/t042-core-green/manifest.json).
+  Sol source delta confirms the three corrections. It requests normal correlated
+  completion/timeout positives and a controlled oracle for historical logging when
+  the client consumes pending after the terminal was already captured. Added four
+  inert real Process-Turn controls before any further runtime correction; unrun WIP.
+  Only affected daemon category will be rebuilt/run; bridge source remains unchanged.
 - [ ] Connect typed launcher/daemon/ordinary/QTE/repair outcomes, no ambiguity replay.
 - [ ] Focused fresh GREEN and discovery; exact source/binary/artifact evidence.
 - [ ] Independent Sol source/evidence PASS, ordinary publication/readback and fresh restore.

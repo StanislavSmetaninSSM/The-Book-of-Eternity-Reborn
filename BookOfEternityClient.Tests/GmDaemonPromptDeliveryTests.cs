@@ -77,6 +77,27 @@ public sealed class GmDaemonPromptDeliveryTests
         });
 
     [Theory]
+    [InlineData("normal-complete", 1, 0, "accepted", true)]
+    [InlineData("normal-timeout", 1, 1, "rejected", true)]
+    [InlineData("consumed-preexisting", 0, 0, "accepted", false)]
+    [InlineData("consumed-after-dispatch", 1, 0, "accepted", false)]
+    public async Task RealTurn_OriginalTerminalRetainsCompletionAndTimeoutBehavior(
+        string scenario, int dispatches, int stops, string validation, bool pending) => await Run(scenario, result =>
+        {
+            Assert.Equal(dispatches, result.GetProperty("commands").GetArrayLength());
+            Assert.Equal(stops, result.GetProperty("stops").GetInt32());
+            Assert.Equal(stops, result.GetProperty("errorCount").GetInt32());
+            Assert.Equal(validation, result.GetProperty("validation").GetString());
+            Assert.Equal(new[] { "controlled-turn" }, result.GetProperty("observed").EnumerateArray().Select(x => x.GetString()));
+            Assert.Equal(pending, result.GetProperty("pending").GetBoolean());
+            Assert.Equal(1, result.GetProperty("readyFiles").GetInt32());
+            Assert.Equal("fixture", result.GetProperty("terminal").GetProperty("sessionId").GetString());
+            Assert.Equal("request", result.GetProperty("terminal").GetProperty("requestId").GetString());
+            Assert.Equal(1, result.GetProperty("terminal").GetProperty("turnNumber").GetInt32());
+            Assert.False(result.GetProperty("processing").GetBoolean());
+        });
+
+    [Theory]
     [InlineData("turn")]
     [InlineData("qte")]
     [InlineData("repair")]

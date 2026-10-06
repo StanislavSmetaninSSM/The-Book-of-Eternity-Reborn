@@ -47,7 +47,7 @@ operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindi
         $null = Send-ToGmBridge -Message 'controlled bootstrap' -AllowNotReady
         [ordered]@{ commands=@([IO.File]::ReadAllLines($env:BOE_PROMPT_FIXTURE_COMMANDS)) } | ConvertTo-Json -Compress
     }
-    elseif ($Scenario -like 'late-*' -or $Scenario -in @('typed-retry','repair-revisions','source-replaced','callback-replaced','turn-packet-replaced','autostart-binding','consumer-turn','consumer-qte','consumer-repair','consumer-terminal','qte-idle','connected-pipe','connected-held-pipe','launcher-lost-response')) {
+    elseif ($Scenario -like 'late-*' -or $Scenario -in @('normal-complete','normal-timeout','consumed-preexisting','consumed-after-dispatch','typed-retry','repair-revisions','source-replaced','callback-replaced','turn-packet-replaced','autostart-binding','consumer-turn','consumer-qte','consumer-repair','consumer-terminal','qte-idle','connected-pipe','connected-held-pipe','launcher-lost-response')) {
         $BridgeControlScript = Join-Path $fixtureRoot 'controlled-launcher.ps1'
         $GameSessionPath = $fixtureRoot
         $env:BOE_PROMPT_FIXTURE_COMMANDS = Join-Path $fixtureRoot 'commands.txt'
@@ -77,7 +77,7 @@ operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindi
         function Get-GmExperiencePromptDigest { '' }
         function Get-FirstMortalBootstrapPrompt { param($TurnRequest) if ($Scenario -eq 'turn-packet-replaced') { [IO.File]::WriteAllText($Pending,'{"replaced":true}') }; '' }
         function Get-CorrelatedTerminalSignal { param($TurnRequest,$CompletionPath,$ErrorPath) $null }
-        function Write-GmTrajectoryRecord { param($Dispatch) $script:FixtureTrajectory = $Dispatch.Status }
+        function Write-GmTrajectoryRecord { param($Dispatch,$ValidationStatus) $script:FixtureTrajectory = $Dispatch.Status; $script:FixtureValidation=$ValidationStatus }
         function Write-DaemonStatus { param($Status,$Reason) }
         function New-GmValidationRepairArtifactWatchState { param($RepairRequest,$DispatchStatus) [pscustomobject]@{ controlled=$true } }
         function Get-GmTrajectoryIssueKinds { param($RequestObject) @() }
@@ -97,6 +97,25 @@ operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindi
         $QteEffectResolutionReadyFile=Join-Path $ReadyDir 'qte.json'
         [IO.File]::WriteAllText($Pending, '{"requestKind":"qte_deferred_effect_resolution","safePacket":{},"sessionId":"fixture","requestId":"request","turnNumber":1,"playerAction":"controlled","waveOrdinal":1,"acceptedSourceTurn":1}')
         $script:FixtureStops=0; $script:FixtureObserved=@()
+        if ($Scenario -in @('normal-complete','normal-timeout','consumed-preexisting','consumed-after-dispatch')) {
+            $TurnTimeout=2; $script:FixtureTerminalReads=0
+            function New-GmOutputWithoutTerminalWatchState { @{} }
+            function Add-ObservedTerminalRequestKey { param($Key) $script:FixtureObserved += $Key }
+            function Wait-CorrelatedValidationRepairRequest { param($TurnRequest,$GraceMilliseconds) $null }
+            function Test-GmBridgeReturnedIdleWithoutTerminalSignal { param($ElapsedSeconds) $false }
+            function Stop-GmBridgeAfterTurnTimeout { param($TurnRequest,$ElapsedSeconds,$Reason) $script:FixtureStops++; [pscustomobject]@{controlled=$true} }
+            function Get-CorrelatedTerminalSignal {
+                param($TurnRequest,$CompletionPath,$ErrorPath)
+                $script:FixtureTerminalReads++
+                if ($Scenario -ne 'normal-timeout' -and ($Scenario -eq 'consumed-preexisting' -or $script:FixtureTerminalReads -gt 1)) {
+                    $signal=[pscustomobject]@{sessionId=$TurnRequest.sessionId; requestId=$TurnRequest.requestId; turnNumber=$TurnRequest.turnNumber; status='success'}
+                    [IO.File]::WriteAllText($CompletionPath,($signal | ConvertTo-Json -Compress))
+                    if ($Scenario -like 'consumed-*') { [IO.File]::Delete($Pending) }
+                    return [pscustomobject]@{Path=$CompletionPath; Kind='success'; Signal=$signal}
+                }
+                return $null
+            }
+        }
         if ($Scenario -like 'late-*') {
             function New-GmOutputWithoutTerminalWatchState { @{} }
             function Add-ObservedTerminalRequestKey { param($Key) $script:FixtureObserved += $Key }
@@ -178,11 +197,12 @@ operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindi
                     [IO.File]::SetLastWriteTimeUtc($Pending,[datetime]::UtcNow.AddSeconds(1))
                     Process-RepairRequest $Pending
                 }
-                default { if ($Scenario -like 'late-*') { Process-Turn $Pending } else { $reply=Dispatch-WithRetry -Message 'controlled packet' -PendingPath $Pending -ReturnDetails -MaxWaitSeconds 10 } }
+                default { if ($Scenario -like 'late-*' -or $Scenario -in @('normal-complete','normal-timeout','consumed-preexisting','consumed-after-dispatch')) { Process-Turn $Pending } else { $reply=Dispatch-WithRetry -Message 'controlled packet' -PendingPath $Pending -ReturnDetails -MaxWaitSeconds 10 } }
             }
             $commands = if (Test-Path $env:BOE_PROMPT_FIXTURE_COMMANDS) { @([IO.File]::ReadAllLines($env:BOE_PROMPT_FIXTURE_COMMANDS) | ForEach-Object { $_ | ConvertFrom-Json }) } else { @() }
             [ordered]@{ commands=@($commands); status=$reply.Status; pending=[IO.File]::Exists($Pending);
-                readyFiles=@([IO.Directory]::GetFiles($ReadyDir)).Count; errors=$script:FixtureErrors; stops=$script:FixtureStops; observed=@($script:FixtureObserved);
+                readyFiles=@([IO.Directory]::GetFiles($ReadyDir)).Count; errors=$script:FixtureErrors; stops=$script:FixtureStops; observed=@($script:FixtureObserved); validation=$script:FixtureValidation;
+                terminal=$(if ($Scenario -in @('normal-complete','normal-timeout','consumed-preexisting','consumed-after-dispatch')) { [IO.File]::ReadAllText(@([IO.Directory]::GetFiles($ReadyDir))[0]) | ConvertFrom-Json } else { $null });
                 errorCount=$script:ErrorCount; processing=$script:IsProcessing; paused=[bool]$script:GmPromptInputPaused } | ConvertTo-Json -Depth 8 -Compress
         }
     }
