@@ -22,6 +22,9 @@ internal static partial class OwnedTerminalScenarioDriver
         var dashboard=new BrowserLifecycleDashboardService(files,status,new ValidationService(files,NullLogger<ValidationService>.Instance));
         var menu=new LocalWebUiMainMenuService(files,dashboard,save,state,writes);
         var path=Directory.GetFiles(files.ResolvePath("saves/manual_saves"),"*.zip").Single();
+        if(mode.Contains("http",StringComparison.Ordinal)) {
+            await RunBrowserHttpLoadAsync(mode,folder,host,hostType,rpc,original,evidence,files,settings,path);return;
+        }
         if(mode=="production-main-load-console") {
             var engine=ProductionLoadGameEngine.Create(files,settings,save);
             var load=(Task<LoadReplacementResult>)typeof(GameEngine).GetMethod("LoadSelectedSaveWithMainLifecycleAsync",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(engine,[path])!;

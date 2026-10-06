@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-load-browser-entry",
+      "responsibility": "Actual loopback Load/full-bundle completion endpoints and installed production original GM stop/current refresh/fresh epoch; configured neutral CLI",
+      "excludes": "No live browser/provider/native Windows/systemd or broad prior cohorts",
+      "changeHints": [
+        "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
+        "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.LoadLifecycle.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LoadFullBundleCurrentAckFreshEpoch"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-load-console-entry",
       "responsibility": "Causal real console selected-Load original owner stop/replacement/refresh/fresh session; isolated configured neutral CLI only",
       "excludes": "No provider/model/EnterGameLoop/native Windows/systemd or unrelated console cohorts",

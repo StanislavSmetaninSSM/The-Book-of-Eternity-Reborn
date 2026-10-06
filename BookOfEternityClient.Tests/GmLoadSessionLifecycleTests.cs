@@ -6,4 +6,6 @@ public sealed class GmLoadSessionLifecycleTests
     public Task BrowserLoad_OriginalLiveOwnerStopsBeforeRealReplacement()=>ProductionMainLinuxFixture.RunAsync("production-main-load-browser");
     [Fact]
     public Task ConsoleLoad_OriginalLiveOwnerStopsBeforeRealReplacement()=>ProductionMainLinuxFixture.RunAsync("production-main-load-console");
+    [Fact]
+    public Task BrowserHttp_LoadFullBundleCurrentAckFreshEpoch()=>ProductionMainLinuxFixture.RunAsync("production-main-load-browser-http");
 }
