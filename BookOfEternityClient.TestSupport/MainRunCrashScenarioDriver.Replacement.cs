@@ -65,6 +65,9 @@ internal static partial class MainRunCrashScenarioDriver
                 var expectedCanonical=new Dictionary<string,string>(before,StringComparer.Ordinal);
                 expectedCanonical.Remove("game_session/lore/f3-absent-after-load.txt");
                 expectedCanonical["game_session/"+ReplacementMarker]=Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(archived));
+                using(var archive=System.IO.Compression.ZipFile.OpenRead(info.Archive))
+                using(var metadata=archive.GetEntry("save_metadata.json")!.Open())
+                    expectedCanonical["game_session/save_metadata.json"]=Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(metadata));
                 Require(Equal(expectedCanonical,CanonicalSnapshot(info.Root)),"Committed Load changed unexpected canonical members.");
             } else if(decision=="rollback") {
                 Require(cuts==1 && load.EstablishedGeneration==info.Generation && !load.ContinuationBlocked && generation.SequenceEqual(File.ReadAllBytes(files.SessionGenerationPath)) &&
@@ -103,15 +106,21 @@ internal static partial class MainRunCrashScenarioDriver
             }
             await Refuse(async()=>{await using var lease=await files.AcquireCanonicalWriteLeaseAsync();},"CanonicalLease");
             await Refuse(()=>files.ClearGameStateAsync(),"Clear");
-            var state=new StateManager(files,new GameSettings(),NullLogger<StateManager>.Instance);
-            var load=await new SaveLoadService(files,state,NullLogger<SaveLoadService>.Instance).LoadGameWithOutcomeAsync(info.Archive);
+            var state=new StateManager(files,new GameSettings(),NullLogger<StateManager>.Instance);string? privateStage=null;
+            var load=await new SaveLoadService(files,state,NullLogger<SaveLoadService>.Instance,new SaveLoadServiceHooks {
+                AfterLoadArchiveExtractedAsync=path=>{privateStage=path;return Task.CompletedTask;}
+            }).LoadGameWithOutcomeAsync(info.Archive);
             Require(load.Disposition==(kind=="worker"?LoadReplacementDisposition.NotLoaded:LoadReplacementDisposition.Uncertain),"Independent debt lost typed Load decision.");
             if(kind=="storage")Require(load.EstablishedGeneration==null && load.ContinuationBlocked,"Storage conflict admitted continuation.");
             var held=false;var prepared=false;
             var owner=await GmSessionRunCoordinator.OpenNeutralAsync(files,stage=>{if(stage==MainRunIoStage.Readback)prepared=true;});
             await Refuse(async()=>{_ =await owner.LaunchNeutralAsync(NeutralTerminalLaunch.CreateForFixtureRoot(folder,folder,info.Root),CancellationToken.None,_=>held=true);},"NewLaunch");
             result["Before"]=before;result["After"]=Snapshot(info.Root);result["PreparedObserved"]=prepared;result["HeldObserved"]=held;result["OwnerRetainsAuthority"]=owner.RetainsAuthority;
-            Require(!held && !prepared && !owner.RetainsAuthority && Equal(before,Snapshot(info.Root)),"Independent debt allowed launch/recovery side effects before admission.");
+            var after=Snapshot(info.Root);var stagePrefix=privateStage==null?null:Path.GetRelativePath(info.Root,privateStage)+"/";
+            Require(privateStage!=null && Path.GetDirectoryName(privateStage)==Path.Combine(files.RuntimeRootPath,"load-staging") && Guid.TryParseExact(Path.GetFileName(privateStage),"N",out _),"Load preparation escaped its actual private scratch.");
+            var authorityAfter=after.Where(p=>!p.Key.StartsWith(stagePrefix!,StringComparison.Ordinal)).ToDictionary(p=>p.Key,p=>p.Value,StringComparer.Ordinal);
+            Require(!held && !prepared && !owner.RetainsAuthority && Equal(before,authorityAfter),"Independent debt allowed launch/recovery authority side effects before admission.");
+            result["ActualPrivateLoadPreparation"]=privateStage;result["PrivatePreparationRetained"]=Directory.Exists(privateStage);result["AuthorityEvidenceUnchanged"]=true;
             result["Load"]=DescribeLoad(load);result["Before"]=before;result["After"]=Snapshot(info.Root);result["NoPreparedOrCreation"]=true;result["Success"]=true;return 0;
         } catch(Exception failure){result["Failure"]=failure.ToString();return 1;}
         finally{workers?.ReleaseClient();WriteJson(Path.Combine(folder,"debt.json"),result);}
