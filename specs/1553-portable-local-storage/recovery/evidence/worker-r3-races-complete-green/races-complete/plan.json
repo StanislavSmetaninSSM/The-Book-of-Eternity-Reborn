@@ -1,0 +1,55 @@
+{
+  "Categories": [
+    "worker-restart-publication-races-linux",
+    "worker-restart-cleanup-loss-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "45f2f4426d84bc65e82444016c68cd75b5432479",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 41.7957533,
+  "Descriptors": [
+    {
+      "Name": "worker-restart-cleanup-loss-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-cleanup-loss-linux",
+      "Categories": [
+        "worker-restart-cleanup-loss-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartFenceTests.CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-publication-races-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-publication-races-linux",
+      "Categories": [
+        "worker-restart-publication-races-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationRace_PreservesUnresolvedWorkspaceAndAuthority",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationRace_PreservesUnresolvedWorkspaceAndAuthority",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

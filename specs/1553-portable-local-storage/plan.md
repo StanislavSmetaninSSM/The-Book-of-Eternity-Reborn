@@ -91,6 +91,13 @@ loss on failed original ACK retry. Source unbuilt/unrun; next D5 fresh, then19 a
 Reviewer selected affected D5 + boundaries5 + root2 + control2 + launch3 + lifecycle1
 + warm1 + retirement5 =24; no A/B replay or unrelated primitive/Windows sweeps.
 
+D full fix45f2f442:5/5PASS,60.2319572s,9guardianECHILD/0signals/failure/deadline;
+evidence worker-r3-races-complete-green. Independent source review approved narrowing
+the repeated post-hook evidence assertion inside the durable branch, preserving prior
+null-durable/legacy behavior. This last scope-only change requires fresh build; run the
+selected24 affected cases once at that exact source, then E4. No extra legacy/Windows
+cohort is warranted. Final independent source/evidence acceptance is still pending.
+
 ### Evidence already accepted; exclude unchanged repetitions
 
 - R1: exact old/new/Blocked persistence cuts at write/flush/rename/directory sync,

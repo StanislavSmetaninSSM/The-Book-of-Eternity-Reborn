@@ -1,0 +1,80 @@
+{
+  "Categories": [
+    "worker-restart-publication-races-linux",
+    "worker-restart-cleanup-loss-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "45f2f4426d84bc65e82444016c68cd75b5432479",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "worker-restart-cleanup-loss-linux",
+      "Seconds": 7.8733767,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-restart-publication-races-linux",
+      "Seconds": 10.2407763,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.058702,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.023497,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0498683,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 37.7563604,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0036139,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:01:00.2319572",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 5,
+    "CompletedCases": 5,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 5,
+    "Executed": 5,
+    "Passed": 5,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

@@ -123,8 +123,11 @@ internal sealed class GmWorkerQuarantinedExecution : IGmWorkerQuarantineOwner
             if (_workspace != null)
             {
                 // The awaited hook cannot carry earlier authority into deletion.
-                if (_durable != null) await _durable.RequireCleanupAuthorityAsync();
-                _ = _authority.RequireCleanupEvidence();
+                if (_durable != null)
+                {
+                    await _durable.RequireCleanupAuthorityAsync();
+                    _ = _authority.RequireCleanupEvidence();
+                }
                 await _workspace.DeleteDetachedSessionRetainingRuntimeAuthorityAsync();
             }
             _workspaceDeletionCompleted = true;
