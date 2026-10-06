@@ -1,0 +1,76 @@
+{
+  "Categories": [
+    "gm-load-lost-reply",
+    "gm-load-installed-profile",
+    "gm-load-storage-faults"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "5671d19c31b941e776c7e9181140a803d0f6186f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 44.2329636,
+  "Descriptors": [
+    {
+      "Name": "gm-load-installed-profile-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-installed-profile",
+      "Categories": [
+        "gm-load-installed-profile"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_FreshLaunchConsumesInstalledArchiveProfile",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_FreshLaunchConsumesInstalledArchiveProfile",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-lost-reply-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-lost-reply",
+      "Categories": [
+        "gm-load-lost-reply"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LostLoadReplyNeverStartsFresh",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LostLoadReplyNeverStartsFresh",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-storage-faults-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-storage-faults",
+      "Categories": [
+        "gm-load-storage-faults"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_TypedStorageAndIndependentAdmission",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_TypedStorageAndIndependentAdmission",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

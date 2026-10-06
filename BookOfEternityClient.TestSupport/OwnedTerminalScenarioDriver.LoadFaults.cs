@@ -65,10 +65,17 @@ internal static partial class OwnedTerminalScenarioDriver
             await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
             var operation=typeof(LocalWebUiMainMenuService).GetField("_browserLoad",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(service)!;
             var originalExecution=(Task<BrowserLoadSaveResultDto>)operation.GetType().GetField("Execution",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(operation)!;
+            object Phase() {
+                object? Get(string name)=>operation.GetType().GetField(name,BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(operation);
+                return new{Cancelled=Get("Cancelled"),AwaitingApplication=Get("AwaitingApplication"),Restarting=Get("Restarting"),
+                    Applied=((TaskCompletionSource<bool>)Get("Applied")!).Task.Status,Execution=originalExecution.Status,Retained=Get("Retained")};
+            }
             connection.Client.LingerState=new(true,0);connection.Dispose();
             try {await transportAborted.WaitAsync(TimeSpan.FromSeconds(5));evidence["ActualRequestAborted"]=true;}
             finally {release.TrySetResult();}
-            loaded=await originalExecution.WaitAsync(TimeSpan.FromSeconds(5));
+            evidence["OriginalLoadAfterAbort"]=Phase();
+            try {loaded=await originalExecution.WaitAsync(TimeSpan.FromSeconds(5));}
+            catch {evidence["OriginalLoadAtTimeout"]=Phase();throw;}
         } else loaded=await Post("/api/saves/load",request);
         evidence["InitialFaultLoad"]=loaded;
         if(fault=="worker-debt") {
