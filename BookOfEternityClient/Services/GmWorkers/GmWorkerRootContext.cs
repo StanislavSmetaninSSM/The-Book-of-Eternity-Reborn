@@ -105,6 +105,12 @@ internal sealed class GmWorkerRootContext
             }
         }
     }
+    internal void RequireCanonicalRoot(FileSystemManager fs)
+    {
+        if (!ReferenceEquals(fs.CanonicalRootAuthorityIdentity, _root) || !ReferenceEquals(_root.WorkerContext, this))
+            throw new InvalidOperationException("Worker purpose belongs to another original canonical root.");
+    }
+
     internal void ValidateBeforeRecovery()
     {
         lock (_root.WorkerContextGate)

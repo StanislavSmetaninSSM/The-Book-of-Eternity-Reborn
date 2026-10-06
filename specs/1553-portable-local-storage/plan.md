@@ -323,6 +323,16 @@ untyped or wrong-operation lease. Next six-case purpose scaffold targets three
 foreign operations plus own/foreign/unrelated-purpose gated native Release. It is
 unbuilt/unrun; production source unchanged since dispatch GREEN. Preserve causal
 RED before adding unconditional original-root and exact Release-operation checks.
+Purpose RED at `30c57ae0f35121a55728a1b59451f1c9f784398a`:6/6 causal FAIL,
+103.6364122s fresh build, complete selection/cleanup, no timeout. All three foreign
+purposes recovered target evidence, and all three invalid Release leases changed
+ReleaseIntent; no worker started in the bounded probes. Six guardians ECHILD/exit0,
+zero emergency/failure/deadline. Evidence: recovery/evidence/worker-r2-purpose-red/manifest.json.
+Minimal fix adds unconditional original root/current context identity validation at
+acquisition and held lease checks, plus exact Release purpose/execution validation
+before reads, intent and consume. Independent reviewer endorsed this design. WIP
+unbuilt; fresh6-purpose plus5-dispatch and1-positive lifecycle selected because the
+root and Release fences changed. Prior audit mutation fencing is untouched.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

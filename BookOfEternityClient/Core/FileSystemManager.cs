@@ -3691,6 +3691,7 @@ public partial class FileSystemManager
                 purpose) { WorkerPurpose = workerPurpose };
             try
             {
+                workerPurpose?.ValidateRoot(this);
                 var workerContext = CanonicalRootAuthorityIdentity.WorkerContext;
                 workerContext?.ValidateCanonical(this, writeLease);
                 workerContext?.ValidateBeforeRecovery();
@@ -3866,6 +3867,7 @@ public partial class FileSystemManager
     private void EnsureValidCanonicalWriteLease(CanonicalWriteLease writeLease)
     {
         EnsurePhysicalCanonicalWriteLease(writeLease);
+        writeLease.WorkerPurpose?.ValidateRoot(this);
         CanonicalRootAuthorityIdentity.WorkerContext?.ValidateCanonical(this, writeLease);
     }
 

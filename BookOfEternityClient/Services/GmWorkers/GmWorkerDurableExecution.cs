@@ -104,22 +104,31 @@ internal sealed class GmWorkerDurableExecution
     }
     internal async Task PlanReleaseAsync(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease)
     {
-        RequireBound(); fs.EnsureCanonicalWriteLeaseActive(lease);
+        RequireReleaseLease(fs, lease);
         await RequireOriginalTaskAsync(fs, lease);
         await MoveAsync(WorkerRunPhase.ReleaseIntent, null);
         await RequireOriginalTaskAsync(fs, lease);
         fs.EnsureCanonicalWriteLeaseActive(lease);
     }
+    private void RequireReleaseLease(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease)
+    {
+        RequireBound();
+        if (lease.WorkerPurpose is not { Operation: GmWorkerCanonicalOperation.Release, Dispatch: null } purpose ||
+            !ReferenceEquals(purpose.Execution, this))
+            throw new InvalidOperationException("Release requires this execution's original operation lease.");
+        fs.EnsureCanonicalWriteLeaseActive(lease);
+    }
     internal async Task RequireOriginalTaskAsync(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease)
     {
+        RequireReleaseLease(fs, lease);
         var bytes = await fs.ReadFileBytesAsync(lease, GmWorkerBridgePool.GetTaskPacketPath(Identity.TaskId));
-        fs.EnsureCanonicalWriteLeaseActive(lease);
+        RequireReleaseLease(fs, lease);
         if (bytes == null || !_taskBytes.AsSpan().SequenceEqual(bytes))
             throw new InvalidOperationException("Original reserved task bytes changed before Release.");
     }
     internal void ConsumeRelease(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease)
     {
-        RequireBound(); fs.EnsureCanonicalWriteLeaseActive(lease);
+        RequireReleaseLease(fs, lease);
         if (_releaseAttempted || _record.Phase != WorkerRunPhase.ReleaseIntent)
             throw new InvalidOperationException("Release is not a fresh original attempt.");
         _releaseAttempted = true;
@@ -360,6 +369,7 @@ internal sealed class GmWorkerCanonicalPurpose
     internal GmWorkerDispatchAdmission? Dispatch { get; }
     internal GmWorkerCanonicalOperation Operation { get; }
     internal WorkerRunCleanup? Audit { get; }
+    internal void ValidateRoot(FileSystemManager fs) => (Dispatch?.Context ?? Execution.Context).RequireCanonicalRoot(fs);
     internal GmWorkerCanonicalPurpose(GmWorkerDurableExecution execution, GmWorkerCanonicalOperation operation, WorkerRunCleanup? audit)
     { _execution = execution; Operation = operation; Audit = audit; }
     internal GmWorkerCanonicalPurpose(GmWorkerDispatchAdmission dispatch, GmWorkerCanonicalOperation operation)

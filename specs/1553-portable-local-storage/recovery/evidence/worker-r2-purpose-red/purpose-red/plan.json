@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "worker-restart-purpose-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "30c57ae0f35121a55728a1b59451f1c9f784398a",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 88.6628061,
+  "Descriptors": [
+    {
+      "Name": "worker-restart-purpose-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-purpose-linux",
+      "Categories": [
+        "worker-restart-purpose-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartPurposeTests.OriginalPurpose_RefusesForeignUnboundRootBeforeRecovery|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartPurposeTests.Release_RequiresOriginalTypedOperationLease",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartPurposeTests.OriginalPurpose_RefusesForeignUnboundRootBeforeRecovery",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartPurposeTests.Release_RequiresOriginalTypedOperationLease",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}
