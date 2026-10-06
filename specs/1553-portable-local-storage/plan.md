@@ -38,8 +38,17 @@ checkpoint. Existing-manager systemd is still a separate required backend stage;
 no manager is available here or installed. Production admission/live GM/real saves/
 reboot/power-loss/cold guarantees remain closed. Only later stop/load/start UX needs
 a product decision; it does not block F1 technical implementation. Independent
-review pending at first WIP publication; no implementation task is complete.
-Next: review and publish design, then return handoff and stop before F1 authorization.
+review pending at first WIP publication was completed by actual Sol6.1/xhigh:
+**Focused design PASS** at `4cfd9b14d51e890268ac949322eb352e40dd4a00`, no remaining
+blocking contradictions. Three initial findings were closed: quiescent guard versus
+visible-Stopped/pending ACK, persisted revocation before drain with narrow closing,
+and exact pin close-frame receipt versus lost finish reply. Browser entry/guard
+lifetime, held-bootstrap expiry and status lock order are explicit.37source refs
+and7reused carriers unchanged; writer/reviewer tests/builds/probes0. Incremental
+Spec Kit consistency covers this design delta, not a repeated full feature audit.
+Only design task closes; F1/F2/F3/fullT041 remain open and unauthorized.
+Next: final carrier ordinary push/readback and clean GitHub-only restoration,
+then return handoff and stop before F1 authorization. Exact final SHA/restore in handoff.
 
 
 ## T042-INPUT-TRANSACTION — authorized execution ledger

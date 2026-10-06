@@ -13,9 +13,12 @@ not implementation. Reuse main-record/R1–R3/input/terminal audits and proofs.
 First proposed slice F1 connects the fixed neutral owner, existing main.json and
 actual pre-recovery/held-lease consumers; F2 binds real separate clients/daemon;
 F3 qualifies process crash/replacement. No new journal, runtime/test/probe/settings
-change or execution. Independent Sol6.1/xhigh review pending at WIP publication;
+change or execution. Independent actual Sol6.1/xhigh **Focused design PASS** at
+`4cfd9b14d51e890268ac949322eb352e40dd4a00`, three initial findings closed;
 [source checkpoint](recovery/main-run-fence-design.json). Stop before implementation.
 Primary systemd/production/main live acceptance/real saves/cold gates remain open.
+Final metadata carrier ordinary push/readback and fresh GitHub-only restoration
+are reported with the exact final SHA in handoff, without self-reference.
 
 ## Owned main terminal: bounded neutral PASS; final carrier handoff
 

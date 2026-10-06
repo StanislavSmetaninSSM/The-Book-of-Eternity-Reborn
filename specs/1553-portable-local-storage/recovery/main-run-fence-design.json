@@ -5,7 +5,7 @@
   "BaseCommit": "14888663d608355098cc1a329d97ab61de0e6016",
   "Branch": "codex/1553-load-filesystem",
   "Design": "../main-run-fence-design.md",
-  "Status": "WIP design corrections after independent review; focused readback pending; implementation unauthorized",
+  "Status": "Design PASS after focused independent corrections; implementation not authorized",
   "SourceReferences": [
     {
       "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecord.cs",
@@ -251,7 +251,7 @@
   "Review": {
     "Model": "gpt-6.1-sol",
     "ReasoningEffort": "xhigh",
-    "Verdict": "Focused correction review pending",
+    "Verdict": "Focused design PASS",
     "Reviewer": "/root/run_fence_review",
     "InitialCandidate": "d0a0a954b28e45452789f5eb984912f26a5b4fcd",
     "InitialVerdict": "Request design corrections before acceptance",
@@ -263,7 +263,12 @@
     ],
     "ReviewerExecutedTestsBuildsProbes": 0,
     "ReviewerWrites": 0,
-    "ImplementationConcern": "When wiring bridge status publication, avoid acquiring filesystem locks under BridgeHost _sync; snapshot under _sync and publish after releasing it."
+    "ImplementationConcern": "When wiring bridge status publication, avoid acquiring filesystem locks under BridgeHost _sync; snapshot under _sync and publish after releasing it.",
+    "ReviewedCommit": "4cfd9b14d51e890268ac949322eb352e40dd4a00",
+    "UnresolvedBlockingFindings": [],
+    "Scope": "Three initial blockers and affected contracts; actual browser guard/Load/finalization, original held expiry and status lock order. Existing runtime/evidence audits not repeated.",
+    "HashVerification": "37 source refs and7 reused carriers match accepted base; reviewer verified3 additions and prior refs/carriers unchanged.",
+    "MetadataCarrier": "Pending narrow review of status/consistency updates; no runtime/test changes."
   },
   "FirstProposedSlice": "T041-RUN-FENCE-F1: connected fixed neutral original owner, existing schema1 main.json persistence and real common filesystem pre-recovery/held-lease gates; no public game-writing launch.",
   "NextSlices": [
@@ -277,5 +282,45 @@
     "arbitrary configured CLI/provider/VT/TUI and final queue/profile/live stop-load-start UX",
     "real saves, cold/reboot/power-loss/exactly-once guarantees"
   ],
-  "NextAction": "Return reviewed published design handoff and stop before implementation."
+  "NextAction": "Return reviewed published design handoff and stop before implementation.",
+  "SpecKitConsistency": {
+    "Scope": "Incremental T041-RUN-FENCE delta only; not a repeat of accepted full-feature or runtime audits",
+    "Prerequisite": "Existing feature/plan/tasks resolved by check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks; exit0",
+    "RequirementsCoverage": {
+      "FR-009": [
+        "F1 existing storage/root/lease gates",
+        "F2 actual clients",
+        "F3 replacement outcome qualification"
+      ],
+      "FR-012": [
+        "F1 original terminal/run identity",
+        "separate primary systemd qualification"
+      ],
+      "FR-013": [
+        "F2 actual input/daemon consumers",
+        "ordinary live acceptance remains later"
+      ],
+      "FR-014": [
+        "F1 durable owner/stop/Uncertain",
+        "F2 pins/refusal",
+        "F3 process-crash/cold interpretation"
+      ],
+      "FR-015": [
+        "future causal RED→GREEN narrow categories and affected exact regressions",
+        "actual Sol6.1/xhigh design review and ordinary persistence/restoration"
+      ]
+    },
+    "SC-004": "Full live arbitrary interactive CLI acceptance stays open; no design/runtime qualification conflation",
+    "DesignTaskComplete": true,
+    "ImplementationTasksOpen": [
+      "T041-RUN-FENCE",
+      "T041-RUN-FENCE-F1",
+      "T041-RUN-FENCE-F2",
+      "T041-RUN-FENCE-F3"
+    ],
+    "Constitution": "Issue1553, trusted local player, existing accepted-turn/generation/typed outcomes preserved; no new service/security/save-protection contract",
+    "Hooks": "Only optional before/after plan/tasks/analyze hooks apply; considered, no automatic scaffolding overwrite or AGENTS/feature switch. Explicit normal commits preserve checkpoint.",
+    "BlockingCrossArtifactFindings": [],
+    "TestsBuildsProbesExecuted": 0
+  }
 }
