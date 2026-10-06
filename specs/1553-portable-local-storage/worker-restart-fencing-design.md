@@ -237,9 +237,9 @@ R2/R3 must exercise all relevant pre-recovery/held-lease routes in the injected 
 Until those routes are actually connected and qualified, documentation must say
 "durable metadata prerequisite", not "restart-safe pool" or "all writers fenced".
 
-## Sequential implementation plan (not authorized yet)
+## Sequential implementation plan (R1 completed; R2–R3 not authorized)
 
-### R1 — worker durable ledger prerequisite; first implementable slice
+### R1 — completed worker durable ledger prerequisite
 
 Goal: a real disk-backed, exact-identity worker ledger whose cold reader and concurrent
 writers cannot forget ambiguous reservations. It does not launch processes or connect
@@ -276,22 +276,25 @@ its live no-launch abort path; actual stopped-run retirement is R2's responsibil
 Unsupported platform durability returns Blocked before publication. Cancellation after
 mutation starts retains/settles original I/O before reporting its result.
 
-- [ ] Add a coherent `worker-run-ledger` category and explicit selection for this slice.
+- [x] Add a coherent `worker-run-ledger` category and explicit selection for this slice.
   Write cold tests for Prepared/ReleaseIntent/Published/CleanupPending/Uncertain;
   each blocks, preserves exact evidence and cannot return a success permit.
-- [ ] Add pure and real-file tests: wrong root/generation/epoch, malformed/duplicate/
+- [x] Add pure and real-file tests: wrong root/generation/epoch, malformed/duplicate/
   oversize JSON, epoch overflow, two-process same-root contender, exact CAS conflict,
   missing initialized state, env workspace-base change, nonordinary paths, cancellation
   around publication, exact terminal archive retry/conflict and descriptor inheritance.
-- [ ] Add finite child-process abrupt-exit cuts before/after temp flush, rename and
+- [x] Add finite child-process abrupt-exit cuts before/after temp flush, rename and
   parent sync; fresh child sees the exact old or new snapshot or explicit Blocked,
   never false Missing/retired. Preserve outside sentinels. Injected syscall failures
   test refusal paths; they are not a power-loss qualification.
-- [ ] Publish scaffold and PlanOnly; distinguish build preparation failure from causal
+- [x] Publish scaffold and PlanOnly; distinguish build preparation failure from causal
   assertions. Minimal implementation then focused GREEN through `scripts/test-csharp.ps1`.
   No pool Release, native descendants, main-record90 or old passing cohorts in R1.
-- [ ] Verify catalog discovery, exact source/commands/counts/cleanup, separate
+- [x] Verify catalog discovery, exact source/commands/counts/cleanup, separate
   Sol6.1/xhigh review and GitHub restoration. Handoff as a prerequisite only.
+
+Qualification: independent actual gpt-6.1-sol/xhigh R1 PASS at `c7e801f1`;
+[bounded source-specific evidence](recovery/worker-ledger-r1.json). No R2 policy selected.
 
 ### R2 — atomic connection of the complete synthetic lifecycle
 

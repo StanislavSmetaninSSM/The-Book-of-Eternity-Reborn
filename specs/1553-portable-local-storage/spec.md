@@ -63,13 +63,16 @@ is not execution or qualification evidence. [Source-backed plan](plan.md#worker-
   admission and unresolved quarantine recovery remain a rollout prerequisite, not a
   claimed consequence of these two synthetic integration slices.
 
-## Authorized inert worker ledger R1 — 2026-10-06
+## Completed inert worker ledger R1 — 2026-10-06
 
 Parent accepted design checkpoint `89bf200d` and authorized only T041-WORKER-RESTART-R1:
 strict worker ledger/closed transitions, retained locks, cold refusal and proven live
 prelaunch-abort archival, with bounded storage/crash qualification. No pool integration,
 public Linux Release or existing pure main-record change. Root-wide versus selective
 restart admission before R2 remains undecided; R1 must not encode it as a user choice.
+R1 received independent gpt-6.1-sol/xhigh PASS at `c7e801f1`,174 distinct source-specific
+cases passing and68 clean guardian ECHILD reports. It remains inert outside synthetic
+tests; no rollout or R2 authorization follows. Evidence: [worker-ledger-r1.json](recovery/worker-ledger-r1.json).
 
 ## Worker durable restart/fencing — design-only continuation, 2026-10-05
 

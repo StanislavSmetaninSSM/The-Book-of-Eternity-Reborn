@@ -1,11 +1,11 @@
 # Cross-platform: текущий статус и восстановление
 
-2026-10-05 · [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553) · ветка `codex/1553-load-filesystem`.
+2026-10-06 · [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553) · ветка `codex/1553-load-filesystem`.
 Этот документ — точка входа после потери контекста. Исторические «next» в старых
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## R1: реализация проверена выбранными категориями, финальное ревью ожидается
+## R1 завершён; остановка перед R2
 
 На `b57c674e` завершены закрытые записи Prepared/LaunchIntent/Uncertain,
 исходные coordinator/entry handles, долговечный prelaunch-abort archive/index,
@@ -15,16 +15,24 @@ qualification — доказательствами конкретного огр
 29 abrupt exits, без emergency cleanup/deadline. Доказательства в plan.md и
 recovery/evidence/worker-ledger-*. Native storage квалифицирован только Linux x64;
 неподдерживаемый адаптер блокирует запись. Power-loss и Windows durability не заявляются.
-R1 ещё не объявлен завершённым: ожидаются catalog discovery, Sol6.1/xhigh и fresh restore.
+Независимый actual gpt-6.1-sol/xhigh **R1 PASS** на `c7e801f1`: существенных дефектов
+и открытых гипотез нет; metadata `5ddf82e6` также подтверждена. Catalog discovery:
+295 категорий/10856 методов-файлов,0 выполненных тестов; PlanOnly174 случая.
+Fresh GitHub-only candidate:7755 файлов побайтово, tree/parent/clean/fsck/remote совпали.
+[Handoff и хеши](recovery/worker-ledger-r1.json). Финальный metadata carrier отдельно
+проверяется push/readback/fresh restore, его SHA и результат — в итоговой передаче.
+Следующий шаг — передача родителю. R2 не разрешён, root-wide/selective policy не выбрана.
+R2 также обязан связать resolved canonical WorkerId/task с точной identity ledger;
+case-insensitive pool gate сам по себе не задаёт преобразование этого контракта.
 
-## Текущий этап: разрешён только inert ledger R1
+## История: разрешение inert ledger R1
 
 2026-10-06 родитель принял `89bf200d` и разрешил R1. Записи/codec, закрытые переходы,
 удерживаемые locks, cold refusal и только доказанный live prelaunch-abort; ограниченные
 storage/crash проверки. Актуальный ход — в начале plan.md. Pool/public Release/main
 run-record не подключать. Политика root-block перед R2 не выбрана. Остановиться после R1.
 
-## Текущий этап: только дизайн durable worker restart/fencing
+## История: дизайн durable worker restart/fencing
 
 Родитель принял POOL B на `30ab292d` и поручил отдельный design-only этап.
 [Дизайн и последовательные срезы](worker-restart-fencing-design.md): отдельный
