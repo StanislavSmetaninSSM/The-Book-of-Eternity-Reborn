@@ -19,6 +19,81 @@ public sealed class GmWorkerRunLedgerProcessTests
         Assert.False(observed.GetProperty("runtimeBaseCreated").GetBoolean());
     }
 
+    public static IEnumerable<object[]> CrashCuts()
+    {
+        foreach (var stage in new[] { "RuntimeCreated", "NamespaceCreated", "OwnerCreated", "JournalCreated", "RetiredDirectoryCreated" })
+            yield return ["bootstrap", stage];
+        foreach (var operation in new[] { "initialize", "prepare", "launch", "abort" })
+        foreach (var stage in new[] { "BeforeStateWrite", "StateWritten", "StateFlushed", "StateRenamed", "StateDirectorySynced" })
+            yield return [operation, stage];
+        foreach (var stage in new[] { "BeforeArchiveWrite", "ArchiveWritten", "ArchiveFlushed", "ArchiveDirectorySynced" }) yield return ["abort", stage];
+    }
+
+    [Theory, MemberData(nameof(CrashCuts))]
+    public async Task AbruptExit_ColdProcessPreservesExactOldOrNewStateOrBlocks(string operation, string cut)
+    {
+        using var fixture = await ProcessFixture.Create();
+        await fixture.Write(operation, cut, 77);
+        using var cutReport = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(fixture.Output, "cut.json")));
+        Assert.Equal(cut, cutReport.RootElement.GetProperty("stage").GetString());
+        var observed = await fixture.Observe();
+        var kind = observed.GetProperty("kind").GetString();
+        Assert.True(observed.GetProperty("coldDenied").GetBoolean());
+        Assert.False(observed.GetProperty("runtimeBaseCreated").GetBoolean());
+        var expected = operation == "bootstrap" ? (cut == "RuntimeCreated" ? "Missing" : "Blocked") :
+            cut is "StateWritten" or "StateFlushed" ? "Blocked" :
+            cut is "StateRenamed" or "StateDirectorySynced" ? (operation is "initialize" or "abort" ? "Quiescent" : "Uncertain") :
+            operation == "initialize" ? "Blocked" : operation == "prepare" ? "Quiescent" : "Uncertain";
+        // An abrupt exit before the FileStream buffer flush may leave an empty candidate;
+        // that is explicit Blocked, never a terminal observation.
+        if (cut == "ArchiveWritten") Assert.Contains(kind, new[] { "Blocked", "Uncertain" });
+        else Assert.Equal(expected, kind);
+        var statePath = Path.Combine(fixture.Target.DirectoryPath, "state.json");
+        var before = Path.Combine(fixture.Output, "before.bin");
+        var renamed = cut is "StateRenamed" or "StateDirectorySynced";
+        if (!renamed && File.Exists(before)) Assert.Equal(File.ReadAllBytes(before), File.ReadAllBytes(statePath));
+        if (renamed)
+        {
+            var state = GmWorkerRunLedgerCodec.Decode(fixture.Target, File.ReadAllBytes(statePath));
+            Assert.Equal(operation == "initialize" ? 1 : operation == "prepare" ? 2 : 3, state.Sequence);
+            Assert.Equal(operation == "initialize" ? 0 : 1, state.EpochHighWater);
+            if (operation is "initialize" or "abort") Assert.Empty(state.Entries);
+            else Assert.Equal(operation == "prepare" ? WorkerRunPhase.Prepared : WorkerRunPhase.LaunchIntent, Assert.Single(state.Entries).Phase);
+            Assert.Equal(operation == "abort" ? 1 : 0, state.Retired.Length);
+        }
+    }
+
+    [Theory]
+    [InlineData("prepare", "Prepared")]
+    [InlineData("launch", "LaunchIntent")]
+    [InlineData("uncertain", "Uncertain")]
+    public async Task OriginalProcessExit_CannotReconstructLiveEntry(string operation, string phase)
+    {
+        using var fixture = await ProcessFixture.Create(); await fixture.Write(operation, null, 0);
+        var observed = await fixture.Observe();
+        Assert.Equal("Uncertain", observed.GetProperty("kind").GetString());
+        Assert.Equal(phase, Assert.Single(observed.GetProperty("phases").EnumerateArray()).GetString());
+        Assert.True(observed.GetProperty("coldDenied").GetBoolean());
+    }
+
+    [Fact]
+    public async Task LiveOwner_ExcludesAnotherProcessAndDescriptorsDoNotSurviveExec()
+    {
+        using var fixture = await ProcessFixture.Create();
+        await using (var owner = await GmWorkerRunLedger.OpenCoordinatorAsync(fixture.Target))
+        {
+            Assert.NotNull(owner); Assert.Equal(WorkerLedgerMutationKind.Applied, await owner.InitializeAsync());
+            await fixture.Run("ledger-probe", 0);
+            using var probe = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(fixture.Output, "probe.json")));
+            Assert.False(probe.RootElement.GetProperty("opened").GetBoolean());
+            Assert.Empty(probe.RootElement.GetProperty("inherited").EnumerateArray());
+        }
+        await fixture.Run("ledger-probe", 0);
+        using var reopened = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(fixture.Output, "probe.json")));
+        Assert.True(reopened.RootElement.GetProperty("opened").GetBoolean());
+        Assert.Empty(reopened.RootElement.GetProperty("inherited").EnumerateArray());
+    }
+
     internal sealed class ProcessFixture : IDisposable
     {
         internal string Output { get; } = Path.Combine(Environment.GetEnvironmentVariable("BOE_LEDGER_EVIDENCE_ROOT") ??

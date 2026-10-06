@@ -168,6 +168,47 @@ public sealed class GmWorkerRunLedgerFailureTests
         Assert.Equal(before, File.ReadAllBytes(fixture.State)); fixture.AssertSentinel();
     }
 
+    [Theory]
+    [InlineData("root")]
+    [InlineData("runtime")]
+    [InlineData("namespace")]
+    [InlineData("owner.lock")]
+    [InlineData("journal.lock")]
+    [InlineData("state.json")]
+    [InlineData("retired")]
+    public async Task NonordinaryLedgerPath_IsBlockedWithoutFollowingOutsideLink(string component)
+    {
+        using var fixture = new Fixture();
+        await using (var owner = await fixture.Open()) await owner.InitializeAsync();
+        var path = component switch { "root" => fixture.Target.RootPath, "runtime" => Path.GetDirectoryName(fixture.Target.DirectoryPath)!,
+            "namespace" => fixture.Target.DirectoryPath, _ => Path.Combine(fixture.Target.DirectoryPath, component) };
+        var destination = Path.Combine(fixture.Container, "retained-original");
+        if (Directory.Exists(path)) { Directory.Move(path, destination); Directory.CreateSymbolicLink(path, fixture.Container); }
+        else { File.Move(path, destination); File.CreateSymbolicLink(path, fixture.Sentinel); }
+        Assert.Equal(WorkerRunObservationKind.Blocked, (await GmWorkerRunLedger.ObserveAsync(fixture.Target)).Kind);
+        await using var cold = await GmWorkerRunLedger.OpenCoordinatorAsync(fixture.Target); Assert.Null(cold);
+        fixture.AssertSentinel();
+    }
+
+    [Fact]
+    public async Task SequenceOverflowAndLifetimeInventoryBound_RefuseNewAllocation()
+    {
+        using var fixture = new Fixture();
+        await using (var owner = await fixture.Open())
+        { await owner.InitializeAsync(); var entry = await fixture.Prepare(owner); await owner.AbortBeforeLaunchAsync(entry, owner.Sequence); }
+        var json = JsonNode.Parse(File.ReadAllBytes(fixture.State))!; json["Sequence"] = long.MaxValue;
+        File.WriteAllText(fixture.State, json.ToJsonString()); var before = File.ReadAllBytes(fixture.State);
+        await using (var reopened = await fixture.Open())
+            Assert.Equal(WorkerLedgerMutationKind.Blocked, (await reopened.PrepareAsync(fixture.Request("next"), reopened.Sequence)).Kind);
+        Assert.Equal(before, File.ReadAllBytes(fixture.State));
+        var references = Enumerable.Range(1, 4096).Select(i => new WorkerRunRetiredReference(i.ToString("x32"), i,
+            i.ToString("x64"), new string('a', 64))).ToArray();
+        var full = new WorkerLedgerState(1, fixture.Target.RootPath, 4097, 4096, [], references);
+        var record = new WorkerRunRecord(1, GmWorkerRunRecordTests.Identity() with
+            { RootKey = fixture.Target.RootPath, Epoch = 4097, RunId = 4097.ToString("x32") }, WorkerRunPhase.Prepared);
+        Assert.Throws<InvalidDataException>(() => GmWorkerRunLedgerCodec.AddPrepared(full, record));
+    }
+
     internal sealed class Fixture : IDisposable
     {
         internal string Container { get; } = Path.Combine(Path.GetTempPath(), "boe-ledger-fault-" + Guid.NewGuid().ToString("N"));
