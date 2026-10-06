@@ -44,7 +44,7 @@ Proposed new category `gm-load-session-lifecycle`: real bridge pipe accept loop 
 
 - Positive: console and each browser entrypoint stop → actual Committed → required complete refresh → one fresh configured neutral CLI; two inputs prove a new persistent run, not a replayed prior command.
 - Storage: NotLoaded, RolledBack, Uncertain, committed cleanup debt and failed refresh retain exact typed outcome; no fresh launch. No-active path refreshes without creating a transport.
-- Ownership: repeat click/request, stale callback/UI generation, same-mount navigation/unmount, manual cancel before load and during refresh, stop/load/restart reply loss, generation replacement before fresh launch; never false Running/replay/second mint.
+- Ownership: repeat click/request, stale callback/UI generation, same-mount navigation/unmount, manual cancel before load and during refresh, stop/load/restart reply loss, generation replacement before fresh launch; actual competing `restartcli`/`restartshell` while reservation survives stop and filesystem-guard release must refuse; never false Running/replay/second mint.
 - Order: no mutation before stop receipt; no held canonical/replacement/quiescent leases during stop/restart IPC; original guard present through Load/release/refresh; independent unresolved worker/storage refuses; lost logical authority remains Uncertain even after guardian cleanup.
 - Affected regressions selected from changed shared coordinator/pin/input/load bundle/helper contracts only. Reuse accepted cohorts as evidence; do not rerun F1–F3/M1/T031 wholesale. Historical four F2 Windows-only IDs remain unpassed; native Windows/systemd not qualified.
 
