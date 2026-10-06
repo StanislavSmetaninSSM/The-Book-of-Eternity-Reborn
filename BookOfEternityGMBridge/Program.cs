@@ -297,6 +297,11 @@ internal sealed partial class BridgeHost : IDisposable
                         if(reader.LastFrameBytes>65536)throw new InvalidDataException("Operation begin exceeds bound.");
                         await ServeMainOperationAsync(server,reader,request,cancellationToken);return;
                     }
+                    if(string.Equals(request.Command,"mainOperationStatus",StringComparison.OrdinalIgnoreCase)) {
+                        if(reader.LastFrameBytes>65536)throw new InvalidDataException("Operation lookup exceeds bound.");
+                        var known=(_mainRun??_lastMainRun)?.QueryRemoteOperation(request.MainOperationClose??throw new InvalidDataException("Missing close identity.")) ?? new MainOperationReply(false,Error:"Unknown original operation.");
+                        await MainOperationReader.WriteAsync(server,known,deadline.Token);return;
+                    }
                     await shortCapacity.WaitAsync(deadline.Token);
                     deadline.CancelAfter(Timeout.InfiniteTimeSpan);
                     try { await ProcessConnectedRequestAsync(server, async () =>
@@ -346,8 +351,6 @@ internal sealed partial class BridgeHost : IDisposable
 
         switch (command)
         {
-            case "mainoperationstatus":
-                return new BridgeResponse { Ok=true, MainOperation=(_mainRun??_lastMainRun)?.QueryRemoteOperation(request.MainOperationClose??throw new InvalidDataException("Missing close identity.")) };
             case "status":
                 return BridgeResponse.Success(SnapshotStatus());
 
@@ -388,6 +391,9 @@ internal sealed partial class BridgeHost : IDisposable
                 if(_neutralLaunch==null)return BridgeResponse.Failure("Scoped terminal harness control requires fixed neutral admission.",SnapshotStatus());
                 await StopShellAsync();return BridgeResponse.Success(SnapshotStatus());
             case "shutdown":
+                // Keep retained original peers alive through durable Stopping and
+                // actual local closing. Cancel transport only after stop settlement.
+                await StopShellAsync();
                 lock (_sync)
                 {
                     _status.Ready = false;
