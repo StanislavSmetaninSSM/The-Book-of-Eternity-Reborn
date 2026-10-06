@@ -14508,6 +14508,31 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-explicit-outcome-linux",
+      "responsibility": "Actual participating adapter explicit Failed/Cancelled with finalization failure on original pipe",
+      "excludes": "Previously qualified wire cases, live GM, arbitrary launch, other F1 cohorts",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmMainOperation",
+        "BookOfEternityGMBridge/",
+        "BookOfEternityClient.TestSupport/MainOperationScenarioDriver.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualAdapter_ExplicitOutcomeSurvivesFinalization"
+          ]
+        }
+      ]
     }
   ]
 }

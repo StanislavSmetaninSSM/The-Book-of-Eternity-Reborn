@@ -2,6 +2,10 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 public sealed class GmMainOperationLinuxTests
 {
+    [Theory]
+    [InlineData("terminal-main-operation-explicit-failed-finalization")]
+    [InlineData("terminal-main-operation-explicit-cancelled-finalization")]
+    public async Task ActualAdapter_ExplicitOutcomeSurvivesFinalization(string mode)=>await GmOwnedTerminalLinuxTests.RunAsync(mode);
     [Fact]
     public async Task OriginalOwner_ActualPipeRetainsParticipatingOperation()=>await GmOwnedTerminalLinuxTests.RunAsync("terminal-main-operation-positive");
     [Theory]

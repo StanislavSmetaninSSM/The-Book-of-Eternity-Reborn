@@ -134,6 +134,18 @@ internal static class MainOperationScenarioDriver
                 if(!(await shutdown).GetProperty("ok").GetBoolean())throw new InvalidOperationException("Actual shutdown did not settle original closing.");
                 await running!.WaitAsync(TimeSpan.FromSeconds(3));
             }
+            if(mode is "terminal-main-operation-explicit-failed-finalization" or "terminal-main-operation-explicit-cancelled-finalization") {
+                MainOperationClose? receipt=null;
+                type.GetField("BeforeMainCloseReply",BindingFlags.Instance|BindingFlags.NonPublic)!.SetValue(host,(Func<MainOperationClose,Task>)(close=>{receipt=close;return Task.CompletedTask;}));
+                var intended=mode.Contains("cancelled",StringComparison.Ordinal)?MainOperationOutcome.Cancelled:MainOperationOutcome.Failed;
+                var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance,PhysicalLoadTransactionOperations.Instance,new FileSystemManagerHooks{SessionOperationClosingAsync=()=>throw new IOException("Controlled explicit-close finalization failure.")});
+                using var input=new MemoryStream(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new{sequence=1,action="close",outcome=intended})+"\n"));
+                using var output=new MemoryStream();Exception? failed=null;
+                try {await GmMainParticipatingControl.RunAsync(files,input,output);}catch(Exception e){failed=e;}
+                if(failed?.Data["EstablishedOperationResult"] is not int n || n!=0 || failed.Data["EstablishedOperationOutcome"] is not MainOperationOutcome retained || retained!=intended || receipt?.Outcome!=intended || !receipt.ClosingFailed)
+                    throw new InvalidOperationException("Explicit adapter close outcome lost before actual finalization receipt.");
+                result["EstablishedResult"]=n;result["EstablishedOutcome"]=retained;result["ActualFinalizationFailed"]=true;
+            }
             if(mode=="terminal-main-operation-successful-finalization") {
                 MainOperationClose? receipt=null;
                 type.GetField("BeforeMainCloseReply",BindingFlags.Instance|BindingFlags.NonPublic)!.SetValue(host,(Func<MainOperationClose,Task>)(close=>{receipt=close;return Task.CompletedTask;}));
