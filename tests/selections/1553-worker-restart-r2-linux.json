@@ -96,6 +96,22 @@
         "#1553 T041-WORKER-RESTART-R2",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-restart-ownership-linux",
+      "reason": "R2 actual cross-process durable/legacy mode admission, first attach race, retained quarantine exclusion after client disposal and unaffected healthy legacy root.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-warm-linux",
+      "reason": "R2 detected native status loss fences another actual pool and unbound FS before original late Stop; failed Uncertain journal and client disposal retain authority and capacity.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
     }
   ]
 }

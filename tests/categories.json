@@ -13035,6 +13035,66 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-restart-ownership-linux",
+      "responsibility": "R2 actual cross-process durable/legacy mode admission, first attach race, retained quarantine exclusion after client disposal and unaffected healthy legacy root.",
+      "excludes": "No R3 crash matrix, real saves, production Release or Windows native qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerRootContext.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerDurableExecution.cs"
+      ],
+      "related": [
+        {
+          "id": "worker-restart-admission-linux",
+          "when": "Pre-recovery root admission changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerRestartOwnershipTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "worker-restart-warm-linux",
+      "responsibility": "R2 detected native status loss fences another actual pool and unbound FS before original late Stop; failed Uncertain journal and client disposal retain authority and capacity.",
+      "excludes": "No R3 crash matrix, real saves, production Release or Windows native qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerRootContext.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerDurableExecution.cs"
+      ],
+      "related": [
+        {
+          "id": "worker-restart-admission-linux",
+          "when": "Pre-recovery root admission changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerRestartWarmTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

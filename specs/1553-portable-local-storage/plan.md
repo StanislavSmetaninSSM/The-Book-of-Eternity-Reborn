@@ -380,6 +380,19 @@ Corrected witness task to pin this fixture's actual immutable context bytes, as 
 existing cleanup driver does. Runtime unchanged. Next fresh2-witness only; successful
 control cases are not repeated for this isolated staging fix. Independent narrow
 source review passed all prior cancellation/hook/retained-instance refinements.
+Witness GREEN at `efe634449a22a6757793f09b77d3053e82347ac0`:2/2 PASS,
+48.1465823s fresh build, complete descriptor/cleanup/no timeout. Two guardians ECHILD,
+zero emergency/failure/deadline. Evidence: recovery/evidence/worker-r2-witness-green/manifest.json.
+Next bounded scaffold (unrun, no runtime change):5 ownership cases cover four mode
+orders through actual second-process pools while original is held before Release,
+then after client disposal with original cleanup quarantine; another healthy legacy
+root remains positive. Fifth case releases two fresh process admissions together and
+requires one mode winner/one preallocation refusal. A separate warm-loss case closes
+actual status stream while original pool is gated before Stop, then tests another
+pool/FS, client disposal, failed Uncertain ACK and retained quarantine after retry.
+All children remain beneath the existing independent guardian; only captured original
+objects are acted upon. Categories worker-restart-ownership-linux and worker-restart-warm-linux
+own these6 cases. Root/task profile helpers pin actual immutable context bytes.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing
