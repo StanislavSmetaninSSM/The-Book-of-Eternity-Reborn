@@ -30,24 +30,26 @@ qualification. No network/auth/security/dependency changes; no HOME-PC.
 - R1: exact old/new/Blocked persistence cuts at write/flush/rename/directory sync,
   prelaunch archive cuts, retained/inheritance-safe locks, malformed/schema/root/epoch
   bounds and cold syntax. Do not replay29 inert abrupt cuts or34 process cases.
-- R2: actual cold Prepared with interrupted canonical decision; positive actual content
+- R2: actual cold-pool refusal of directly seeded Prepared with an interrupted canonical decision; positive actual content
   lifecycle; exact/changed/new retired task; mixed-mode/process owner lifetime; queued
   pre-lease Release generation/task rejection; original live publication/retirement ACK
   retry; foreign pending epochs; cleanup/audit/private-witness identity and sticky warm
   native loss. Source-specific403 latest PASS in recovery/worker-restart-r2.json.
-- Therefore no new bare Prepared crash (already actual R2), mode/ownership race, generic
-  live ACK retry, old-task-only rejection or old release-generation cohort. The tests
+- R2's initial seed called coordinator.PrepareAsync directly; it did not crash the
+  actual producing RunTaskAsync at Prepared. Add that one connected seed in A.
+  Exclude mode/ownership races, generic live ACK retry, old-task-only rejection and the
+  old release-generation cohort. The tests
   below assert these invariants only when reaching a previously unqualified crash cut.
   Do not rerun unrelated IPC34/ENV16/FRAME49/output48/input37/main90 or all pool tests.
 
-### Minimal remaining matrix: 24 cases in five sequential cohorts
+### Minimal remaining matrix: 25 cases in five sequential cohorts
 
 | Cohort/category | New cases and exact observation | Required distinction/result |
 | --- | --- | --- |
-| A `worker-restart-crash-launch-linux` (7) | original helper Ready/bound; ReleaseIntent StateDirectorySynced before send; actual sent Release plus observed worker-start before Released ACK; BeforeCompletionArbitration after Released ACK; original correlated Completed; after real scoped Stop before output settlement; StopValidated StateDirectorySynced after real output settlement | Abrupt `_exit(77)`, no pool finally/Dispose. Each fresh distinct-task dispatch refuses before recovery/capacity/reservation/owner/Release; state remains nonterminal and physical guardian cleanup grants no durable authority. |
+| A `worker-restart-crash-launch-linux` (8) | actual RunTask Prepared at BeforeLiveRegistration; original helper Ready/bound; ReleaseIntent StateDirectorySynced before send; actual sent Release plus observed worker-start before Released ACK; BeforeCompletionArbitration after Released ACK; original correlated Completed; after real scoped Stop before output settlement; StopValidated StateDirectorySynced after real output settlement | Abrupt `_exit(77)`, no pool finally/Dispose. Each fresh distinct-task dispatch refuses before recovery/capacity/reservation/owner/Release; state remains nonterminal and physical guardian cleanup grants no durable authority. |
 | B `worker-restart-crash-publication-linux` (5) | PublicationIntent before bundle move; real bundle exists before Published state write; Published StateDirectorySynced before caller ACK; derived inbox exists before derived audit; original publication permit recorded and derived audit complete before workspace cleanup | Preserve actual bundle/inbox/audit bytes reached at the cut; no cold import/repeated Release/success. Disk installation is labelled separately from live ACK. |
 | C `worker-restart-crash-retirement-linux` (5) | CleanupPending; exact terminal archive synced before state removal; terminal state synced before live ACK; actual RetireAsync returned before runtime/slot release; actual original reaper pass finished/capacity0 | First retain one real cleanup failure to exercise conditional quarantine audit. Retry only the original owner, then crash at the cut. Active inventory plus candidate archive refuses; fully consistent terminal inventory admits a distinct new actual content task, preserves old tombstone/task/bundle and cannot accept the old result. Post-ACK cut records capacity retained; final cut records capacity0. |
-| D `worker-restart-publication-races-linux` (3) | queued Store publication after legitimate generation rotation; generation identity invalidated during awaited held bundle-mutation hook; original owner.lock pathname replaced during that awaited held hook | No bundle move or stale success; preserve exact original task. Healthy original authority cleans after generation rejection; lost root authority remains Uncertain/retained. An observation or later native stop cannot clear it. |
+| D `worker-restart-publication-races-linux` (3) | queued Store publication after legitimate generation rotation; raw generation identity invalidated during awaited held bundle-mutation hook (negative corruption, not a legitimate competing writer); original owner.lock pathname replaced during that awaited held hook | No bundle move or stale success; preserve exact original task. Queued generation rejection before PublicationIntent may clean/retire. Held invalidation follows acknowledged PublicationIntent and must retain actual workspace bytes/quarantine/capacity, not merely a retained object; lost root authority additionally remains absorbing Uncertain. A later native stop cannot clear either unresolved boundary. |
 | E `worker-restart-inventory-linux` (4) | two actual bound worker epochs followed by crash/lower current profile limit; same actual inventory with one corrupted member; original runtime namespace renamed away after independent cleanup; fully retired root plus committed canonical journal with original-handler conflict | Distinct new-task dispatch refuses whole root before allocation and preserves all evidence. RuntimeBase is fixed by fixture admission: test missing/renamed original namespace, not a fake TMPDIR/config change. Journal-conflict case has no nonterminal worker to mask the recovery conflict. Healthy terminal/new-task companions are in C. |
 
 These are meaningful boundary partitions, not every instruction/syscall interleaving.
@@ -94,6 +96,12 @@ expected driver exit, zero guardian failures/deadlines, outside sentinel unchang
   each. Create `tests/selections/1553-worker-restart-r3-linux.json` for discovery only;
   do not execute it as an aggregate. Portable CI selection is reassessed only against
   actual causal runtime changes; Linux-only crash descriptors never run on Windows.
+
+Plan review refinement: distinguish the R2 directly seeded Prepared from an actual
+producing-pool crash (A now8/total25), and queued pre-intent generation rejection from
+held post-intent negative generation corruption. The latter may not discard the
+original workspace before terminal refusal. This is a required test assertion, not
+a claim that current code already satisfies it; runtime fixes still need causal RED.
 
 ### Execution / acceptance steps
 
