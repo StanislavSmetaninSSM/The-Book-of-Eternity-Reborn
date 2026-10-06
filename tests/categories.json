@@ -12945,6 +12945,36 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-restart-purpose-linux",
+      "responsibility": "R2 original purpose cannot transfer to a foreign unbound canonical root; native Release requires its exact original operation lease before intent or worker Start.",
+      "excludes": "R3 crash matrix, product release and unrelated native process semantics.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerRootContext.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerDurableExecution.cs"
+      ],
+      "related": [
+        {
+          "id": "worker-restart-admission-linux",
+          "when": "Pre-recovery root admission changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerRestartPurposeTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

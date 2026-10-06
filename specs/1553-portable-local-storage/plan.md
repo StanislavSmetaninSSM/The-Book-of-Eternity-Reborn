@@ -313,6 +313,16 @@ expire after their original phase and cannot perform other mutations. Release ch
 exact original task bytes under its lease before/after intent and after control gate,
 beside the existing root/generation predicate. WIP unbuilt; next fresh selection5
 dispatch +1 cold Prepared +15 purpose-confinement cases (canonical purpose path changed).
+Dispatch GREEN at `9c3b3ffb1aefa4ac06c9c0766cb52330f0d0efaa`: fresh build,
+21/21 PASS (5 dispatch,1 cold admission,15 audit confinement),83.1640904s;
+three descriptors and cleanup complete, no timeout;25 guardians reached ECHILD
+without emergency/failure/deadline. Evidence: recovery/evidence/worker-r2-dispatch-green/manifest.json.
+Independent Sol6.1/xhigh nevertheless found two source-backed capability gaps:
+foreign unbound target roots skip purpose validation, and Release accepts an active
+untyped or wrong-operation lease. Next six-case purpose scaffold targets three
+foreign operations plus own/foreign/unrelated-purpose gated native Release. It is
+unbuilt/unrun; production source unchanged since dispatch GREEN. Preserve causal
+RED before adding unconditional original-root and exact Release-operation checks.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

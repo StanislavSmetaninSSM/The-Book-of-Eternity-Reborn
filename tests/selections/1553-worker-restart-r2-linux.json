@@ -72,6 +72,14 @@
         "#1553 T041-WORKER-RESTART-R2",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-restart-purpose-linux",
+      "reason": "Original root and operation capability must be checked independently of target context presence and before native Release intent.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
     }
   ]
 }

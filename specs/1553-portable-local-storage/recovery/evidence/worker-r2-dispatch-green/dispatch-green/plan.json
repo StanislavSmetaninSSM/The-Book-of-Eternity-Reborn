@@ -1,0 +1,80 @@
+{
+  "Categories": [
+    "worker-restart-dispatch-linux",
+    "worker-restart-admission-linux",
+    "worker-restart-audit-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "9c3b3ffb1aefa4ac06c9c0766cb52330f0d0efaa",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 37.3180851,
+  "Descriptors": [
+    {
+      "Name": "worker-restart-admission-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-admission-linux",
+      "Categories": [
+        "worker-restart-admission-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartAdmissionTests.ColdPrepared_ActualPoolRefusesBeforeRecoveryCapacityAndLaunch",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartAdmissionTests.ColdPrepared_ActualPoolRefusesBeforeRecoveryCapacityAndLaunch",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-audit-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-audit-linux",
+      "Categories": [
+        "worker-restart-audit-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 15,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce",
+          "Cases": 15
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-dispatch-linux-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-dispatch-linux",
+      "Categories": [
+        "worker-restart-dispatch-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartDispatchTests.ColdRetired_OnlyDistinctTaskMayRecoverAndDispatch|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartDispatchTests.GatedHost_ChangedOriginalBindingRefusesRelease",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartDispatchTests.ColdRetired_OnlyDistinctTaskMayRecoverAndDispatch",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartDispatchTests.GatedHost_ChangedOriginalBindingRefusesRelease",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

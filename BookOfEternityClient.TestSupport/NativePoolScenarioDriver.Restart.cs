@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -16,6 +17,7 @@ internal static partial class NativePoolScenarioDriver
 
     internal static async Task<int> RunRestart(string mode, string package, string output)
     {
+        if (mode.StartsWith("restart-purpose-", StringComparison.Ordinal)) return await RunRestartPurpose(mode[16..], output);
         if (mode.StartsWith("restart-cleanup-", StringComparison.Ordinal)) return await RunRestartCleanup(mode[16..], output);
         if (mode.StartsWith("restart-audit-", StringComparison.Ordinal)) return await RunRestartAudit(mode[14..], output);
         if (mode.StartsWith("restart-root-", StringComparison.Ordinal)) return await RunRestartRoot(mode[13..], package, output);
@@ -24,8 +26,9 @@ internal static partial class NativePoolScenarioDriver
         if (mode == "restart-seed-cold") return await SeedColdRestart(root, output);
         if (mode is not ("restart-cold-run" or "restart-happy-run" or "restart-retired-seed" or
             "restart-retired-exact" or "restart-retired-changed" or "restart-retired-new" or
-            "restart-release-task" or "restart-release-generation")) return 64;
-        if (mode is "restart-happy-run" or "restart-retired-seed" or "restart-release-task" or "restart-release-generation")
+            "restart-release-task" or "restart-release-generation" or "restart-release-lease-own" or
+            "restart-release-lease-foreign" or "restart-release-lease-wrong-purpose")) return 64;
+        if (mode is "restart-happy-run" or "restart-retired-seed" || mode.StartsWith("restart-release-", StringComparison.Ordinal))
             await BootstrapRestartRoot(root);
 
         // This is deliberately a fresh FS and actual pool. No bootstrap, generation
@@ -53,15 +56,41 @@ internal static partial class NativePoolScenarioDriver
         if (mode == "restart-retired-new") task = task with { TaskId = "restart_distinct_new_task" };
         if (mode == "restart-retired-changed") task = task with { Instructions = task.Instructions + " Changed body." };
         var releases = 0; var boundOwners = 0; var publicationCalls = 0;
+        GmWorkerNativeLineageLaunch? boundOwner = null;
+        var releaseProbeRefused = false; var releaseProbePreserved = false;
         var reservationCalls = 0; var slotWaits = 0; string? workspace = null;
         var hooks = new GmWorkerBridgePoolHooks
         {
-            AfterOwnerBound = _ => boundOwners++,
+            AfterOwnerBound = owner => { boundOwners++; boundOwner = (GmWorkerNativeLineageLaunch)owner; },
             BeforeWorkerSlotWaitAsync = () => { slotWaits++; return Task.CompletedTask; },
             BeforeTaskReservationAsync = () => { reservationCalls++; return Task.CompletedTask; },
             BeforeWorkerReleaseAsync = async () =>
             {
                 releases++;
+                if (mode.StartsWith("restart-release-lease-", StringComparison.Ordinal))
+                {
+                    var execution = (GmWorkerDurableExecution)typeof(GmWorkerNativeLineageLaunch)
+                        .GetField("_durable", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(boundOwner)!;
+                    var target = fs;
+                    if (mode == "restart-release-lease-foreign")
+                    {
+                        var foreignRoot = Path.Combine(output, "foreign-copy");
+                        await BootstrapRestartRoot(foreignRoot);
+                        target = new(foreignRoot, NullLogger<FileSystemManager>.Instance);
+                        await target.WriteFileAtomicBytesAsync(GmWorkerBridgePool.GetTaskPacketPath(task.TaskId),
+                            (await fs.ReadFileBytesAsync(GmWorkerBridgePool.GetTaskPacketPath(task.TaskId)))!);
+                    }
+                    using var probeRoot = mode == "restart-release-lease-wrong-purpose" ? execution.Context.Enter() : null;
+                    using var probeDispatch = probeRoot == null ? null : execution.Context.CreateDispatch(probeRoot,
+                        task with { TaskId = "restart_probe" }, Encoding.UTF8.GetBytes(GmWorkerJson.Serialize(task with { TaskId = "restart_probe" })));
+                    await using var untyped = await target.AcquireCanonicalWriteLeaseAsync(workerPurpose: probeDispatch?.ColdPurpose);
+                    var statePath = Path.Combine(root, ".boe_runtime", "worker-runs-v1", "state.json");
+                    var beforeIntent = File.ReadAllBytes(statePath);
+                    try { await execution.PlanReleaseAsync(target, untyped); }
+                    catch (Exception error) when (GmWorkerRunLedger.Unavailable(error)) { releaseProbeRefused = true; }
+                    releaseProbePreserved = beforeIntent.SequenceEqual(File.ReadAllBytes(statePath));
+                    throw new IOException("Synthetic lease probe stops before actual Release.");
+                }
                 if (mode == "restart-release-task")
                     await fs.WriteFileAtomicBytesAsync(GmWorkerBridgePool.GetTaskPacketPath(task.TaskId), Encoding.UTF8.GetBytes("changed reserved task bytes"));
                 if (mode == "restart-release-generation")
@@ -101,7 +130,7 @@ internal static partial class NativePoolScenarioDriver
             File.ReadAllBytes(fs.ResolvePath(result.Proposal.ChangedFiles[0].ContentRef!)).AsSpan().SequenceEqual(ProposedContent);
         await File.WriteAllTextAsync(Path.Combine(output, "restart-result.json"), JsonSerializer.Serialize(new
         {
-            mode, failure, boundOwners, releases, publicationCalls, reservationCalls, slotWaits,
+            mode, failure, boundOwners, releases, publicationCalls, reservationCalls, slotWaits, releaseProbeRefused, releaseProbePreserved,
             recoveryObservations, before, after,
             preservedRoot = before.SequenceEqual(after),
             workerStarts = File.Exists(Path.Combine(output, "worker-starts"))
