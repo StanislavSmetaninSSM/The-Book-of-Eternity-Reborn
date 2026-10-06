@@ -11,6 +11,7 @@ internal static class OwnedTerminalScenarioDriver
 {
     internal static async Task<int> RunAsync(string mode, string package, string output)
     {
+        if(mode.StartsWith("production-main-",StringComparison.Ordinal))return await RunBridgeAsync(mode,package,output);
         if (mode is "terminal-fence" or "terminal-bridge" or "terminal-uncertain" or "terminal-authority-loss" or "terminal-partial-start" or "terminal-root-exit-admission") return await RunBridgeAsync(mode, package, output);
         var result = new Dictionary<string, object?>();
         IOwnedTerminalSession? session = null;
@@ -91,8 +92,9 @@ internal static class OwnedTerminalScenarioDriver
         var result = new Dictionary<string, object?>(); object? host = null; Task? server = null;
         using var serverCancellation = new CancellationTokenSource();
         var configuration = new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
-        var repo = TestRepoPaths.RepoRoot;
-        var type = Assembly.LoadFrom(Path.Combine(repo, "BookOfEternityGMBridge/bin", configuration, "net8.0/BookOfEternityGMBridge.dll"))
+        var repo = mode.StartsWith("production-main-",StringComparison.Ordinal)?folder:TestRepoPaths.RepoRoot;
+        var bridgeAssembly=mode.StartsWith("production-main-",StringComparison.Ordinal)?Path.Combine(folder,"ship/BookOfEternityGMBridge/BookOfEternityGMBridge.dll"):Path.Combine(repo,"BookOfEternityGMBridge/bin",configuration,"net8.0/BookOfEternityGMBridge.dll");
+        var type = Assembly.LoadFrom(bridgeAssembly)
             .GetType("BookOfEternityGMBridge.BridgeHost", true)!;
         var pipe = "neutral-" + Guid.NewGuid().ToString("N");
         object? Invoke(string name, params object?[] args) => type.GetMethod(name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)!.Invoke(host, args);
@@ -109,17 +111,24 @@ internal static class OwnedTerminalScenarioDriver
         }
         try
         {
-            await File.WriteAllTextAsync(Path.Combine(folder, "config.json"), JsonSerializer.Serialize(new { GmCliInputProfile = new {
-                IdleMarker="NEUTRAL READY", PromptPrefix="> ", WorkingMarker="NEUTRAL WORKING", ObservationTimeoutMilliseconds=1500 } }));
-            var launch=NeutralTerminalLaunch.Create(package,folder);
-            host = Activator.CreateInstance(type, [launch.Scratch, pipe]); Invoke("ConfigureNeutral", launch);
+            NeutralTerminalLaunch? launch=null;
+            var production=mode.StartsWith("production-main-",StringComparison.Ordinal);
+            if(production) {
+                type=Assembly.LoadFrom(Path.Combine(folder,"ship/BookOfEternityGMBridge/BookOfEternityGMBridge.dll")).GetType("BookOfEternityGMBridge.BridgeHost",true)!;
+                host=Activator.CreateInstance(type,[Path.Combine(folder,"root/game_session"),pipe]);
+            } else {
+                await File.WriteAllTextAsync(Path.Combine(folder, "config.json"), JsonSerializer.Serialize(new { GmCliInputProfile = new {
+                    IdleMarker="NEUTRAL READY", PromptPrefix="> ", WorkingMarker="NEUTRAL WORKING", ObservationTimeoutMilliseconds=1500 } }));
+                launch=NeutralTerminalLaunch.Create(package,folder);
+                host = Activator.CreateInstance(type, [launch.Scratch, pipe]); Invoke("ConfigureNeutral", launch);
+            }
             if(mode=="terminal-partial-start")File.SetUnixFileMode(Path.Combine(package,"neutral-cli"),UnixFileMode.UserRead|UnixFileMode.UserWrite);
             try { await (Task)Invoke("StartShellAsync")!; }
             catch(OwnedTerminalStartException ex) when(mode=="terminal-partial-start") {
                 result["PartialExceptionOriginal"]=ReferenceEquals(ex.Owner,type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host));
             }
             if(mode=="terminal-fence") {
-                var record=Path.Combine(Directory.GetParent(launch.Scratch)!.FullName,".boe_runtime/gm-runs/main.json");
+                var record=Path.Combine(Directory.GetParent(launch!.Scratch)!.FullName,".boe_runtime/gm-runs/main.json");
                 if(!File.Exists(record))throw new InvalidOperationException("Causal RED: actual released terminal has no durable main record.");
                 var run=BookOfEternityClient.Services.GmRuntime.GmSessionRunRecordCodec.Decode(File.ReadAllBytes(record));
                 var original=(IOwnedTerminalSession)type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
@@ -151,6 +160,11 @@ internal static class OwnedTerminalScenarioDriver
                 for (var i=0;i<150;i++) { if ((await Rpc(new { command="status" })).GetProperty("status").GetProperty("ready").GetBoolean()) return; await Task.Delay(10); }
                 throw new TimeoutException("Actual view did not return to empty idle.");
             }
+            if(production) {
+                await using var competing=await GmWorkerRunLedger.OpenCoordinatorAsync(new(Path.Combine(folder,"root")));
+                Require(competing==null,"Disabled helpers lost the retained original worker inventory.");
+                result["OriginalWorkerInventoryRetained"]=true;
+            }
             var originalSession=type.GetField("_pty", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(host)!;
             if(mode=="terminal-root-exit-admission") {
                 Require((await Rpc(new {command="addText",text="root-exit\r"})).GetProperty("ok").GetBoolean(),"Controlled root-exit command refused.");
@@ -177,14 +191,14 @@ internal static class OwnedTerminalScenarioDriver
                 Require(ReferenceEquals(originalSession,type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)),"Authority loss removed original session.");
                 result["LiveAuthorityLossBlocked"]=true;return 0;
             }
-            if (mode == "terminal-uncertain") {
+            if (mode is "terminal-uncertain" or "production-main-uncertain") {
                 var owner=typeof(LinuxOwnedTerminalSession).GetField("_owner", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(originalSession)!;
                 await (Task)owner.GetType().GetMethod("SendControlAsync", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(owner, ['U'])!;
                 try { await (Task)Invoke("StopShellAsync")!; throw new InvalidOperationException("Uncertain original owner was accepted."); }
                 catch (TimeoutException) { }
                 Require(ReferenceEquals(originalSession,type.GetField("_pty", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(host)),"Original Uncertain owner lost.");
                 Require(!(await Rpc(new { command="setReady", ready=true })).GetProperty("ok").GetBoolean(),"Uncertain owner became ready.");
-                result["UncertainRetained"]=true; return 0;
+                result["UncertainRetained"]=true; result["Success"]=true; return 0;
             }
             var first=await Rpc(Prompt("dispatchPrompt","first","one Ж😀"));
             Require(Disposition(first)=="submission-observed","First original T042 submission not observed: "+first); await Idle();
@@ -219,10 +233,11 @@ internal static class OwnedTerminalScenarioDriver
             Require(!(await Rpc(new { command="setReady", ready=true })).GetProperty("ok").GetBoolean(),"Manual takeover draft was discarded.");
             await Rpc(new { command="resize", columns=93, rows=31 });
             result["ActualResizeViaPipe"]=true;
-            var stopped=await Rpc(new {command="stopTerminal"});
+            var main=(GmSessionRunCoordinator?)type.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host);
+            var stopped=production?await Rpc(new {command="shutdown",rootKey=main!.Identity.RootKey,expectedMainIdentity=main.Identity}):await Rpc(new {command="stopTerminal"});
             var proof=stopped.GetProperty("status").GetProperty("terminalStop");
             Require(proof.GetProperty("state").GetString()=="stopped-within-scope" && proof.GetProperty("cleanupComplete").GetBoolean() && !stopped.GetProperty("status").GetProperty("terminalOwnerRetained").GetBoolean(),"Real scoped-stop RPC did not retire its original owner.");
-            result["ScopedStopViaPipe"]=true;
+            result["ScopedStopViaPipe"]=true; result["Success"]=true;
             return 0;
         }
         catch (Exception ex) { result["Failure"] = ex.ToString(); return 1; }

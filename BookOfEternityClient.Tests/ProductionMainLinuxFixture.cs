@@ -5,6 +5,8 @@ using BookOfEternityClient.Core;
 using BookOfEternityClient.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
+using BookOfEternityClient.Services.GmRuntime;
+using BookOfEternityClient.Services.GmWorkers;
 namespace BookOfEternityClient.Tests;
 internal static class ProductionMainLinuxFixture
 {
@@ -22,7 +24,7 @@ internal static class ProductionMainLinuxFixture
         await Prepare("pwsh",["-NoProfile","-File",Path.Combine(repo,"scripts/build-linux-supervisor.ps1"),"-OutputDirectory",package,"-IncludeHostGuardian"],"helper-build");
         var fixture=Path.Combine(package,"configured-neutral-cli");var source=Path.Combine(repo,"tests/fixtures/ProductionMain/configured-neutral-cli.c");
         await Prepare("cc",["-std=c11","-O2","-g","-Wall","-Wextra","-Werror",source,"-o",fixture],"fixture-build");
-        foreach(var name in new[]{"BookOfEternityClient","BookOfEternityGMBridge"})
+        foreach(var name in new[]{"BookOfEternityClient","BookOfEternityGMBridge"}.Concat(mode.StartsWith("production-main-",StringComparison.Ordinal)?new[]{"BookOfEternityClient.TestSupport"}:Array.Empty<string>()))
             await Prepare("dotnet",["publish",Path.Combine(repo,name,name+".csproj"),"--no-build","--no-restore","-c",new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name,"-o",Path.Combine(ship,name),"-p:BoeNativePackageDirectory="+package,"-p:BoeRequireNativePackage=true"],"publish-"+name);
         Directory.CreateDirectory(Path.Combine(ship,"BookOfEternityClient/Launcher"));
         foreach(var f in Directory.GetFiles(Path.Combine(repo,"BookOfEternityClient/Launcher"),"*.ps1"))File.Copy(f,Path.Combine(ship,"BookOfEternityClient/Launcher",Path.GetFileName(f)),true);
@@ -33,13 +35,21 @@ internal static class ProductionMainLinuxFixture
         var settings=new GameSettings{GmBridgeBackend="OwnedTerminal",GmCliLaunchCommand=command,GmBridgeShellWorkingDirectory=cwd,GmBridgeAutoStart=false,
             GmCliInputProfile=new(){IdleMarker="NEUTRAL READY",PromptPrefix="> ",WorkingMarker="NEUTRAL WORKING",ObservationTimeoutMilliseconds=1800}};
         var config=JsonSerializer.SerializeToUtf8Bytes(settings);File.WriteAllBytes(Path.Combine(files.GameSessionPath,"config.json"),config);
-        await new StateManager(files,settings,NullLogger<StateManager>.Instance).BootstrapLocalStorageAsync();
+        var initialGeneration=await new StateManager(files,settings,NullLogger<StateManager>.Instance).BootstrapLocalStorageAsync();
         // Proposed setting is carried as ordinary profile JSON before the property exists.
         var json=JsonSerializer.Deserialize<Dictionary<string,JsonElement>>(File.ReadAllText(Path.Combine(files.GameSessionPath,"config.json")))!;
         json["GmMainOwnerBackend"]=JsonSerializer.SerializeToElement("NativeLineage");File.WriteAllText(Path.Combine(files.GameSessionPath,"config.json"),JsonSerializer.Serialize(json));
+        if(mode=="refuse-worker") {
+            await using var ledger=await GmWorkerRunLedger.OpenCoordinatorAsync(new(root));Assert.NotNull(ledger);
+            Assert.Equal(WorkerLedgerMutationKind.Applied,await ledger.InitializeAsync());
+            var generation=initialGeneration;
+            Assert.Equal(WorkerLedgerMutationKind.Applied,(await ledger.PrepareAsync(new(generation,"inert_worker","inert_task",new string('a',64),WorkerRunBackend.LinuxNativeLineage,WorkerRunScope.OrdinarySamePidNamespace,files.GameSessionPath),ledger.Sequence)).Kind);
+        }
+        if(mode=="refuse-storage") { var evidence=Path.Combine(files.RuntimeRootPath,"load-transactions/unknown-journal");Directory.CreateDirectory(Path.GetDirectoryName(evidence)!);File.WriteAllBytes(evidence,[0xfe,0]); }
         File.WriteAllText(Path.Combine(folder,"fixture-preparation.json"),JsonSerializer.Serialize(new{Source=source,SourceSha256=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(source))).ToLowerInvariant(),Binary=fixture,BinarySha256=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(fixture))).ToLowerInvariant(),Command=command,Cwd=cwd,ShippedSourceFiles=0,PublisherOnlyCompile=true}));
         var start=new ProcessStartInfo(Path.Combine(package,"host-guardian")){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true};
-        foreach(var a in new[]{Path.Combine(folder,"guardian.json"),"30000","/usr/bin/python3",Path.Combine(repo,"tests/fixtures/ProductionMain/ordinary.py"),mode,folder,ship,files.GameSessionPath})start.ArgumentList.Add(a);
+        var scenarioArgs=mode.StartsWith("production-main-",StringComparison.Ordinal)?new[]{"dotnet",Path.Combine(ship,"BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.dll"),mode,package,folder}:new[]{"/usr/bin/python3",Path.Combine(repo,"tests/fixtures/ProductionMain/ordinary.py"),mode,folder,ship,files.GameSessionPath};
+        foreach(var a in new[]{Path.Combine(folder,"guardian.json"),"30000"}.Concat(scenarioArgs))start.ArgumentList.Add(a);
         using var guardian=Process.Start(start)!;await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(guardian,TimeSpan.FromSeconds(35),Path.Combine(folder,"guardian.log"));
         using var report=JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder,"guardian.json")));
         Assert.True(report.RootElement.GetProperty("echild").GetBoolean());Assert.Equal(0,report.RootElement.GetProperty("emergencySignals").GetInt32());Assert.Equal(0,report.RootElement.GetProperty("failures").GetInt32());Assert.False(report.RootElement.GetProperty("deadline").GetBoolean());
