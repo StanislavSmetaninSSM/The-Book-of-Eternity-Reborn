@@ -1,0 +1,220 @@
+{
+  "Categories": [
+    "gm-load-session-lifecycle",
+    "gm-load-cleanup-debt",
+    "gm-load-early-ack",
+    "gm-load-protocol",
+    "gm-load-stop-faults",
+    "gm-load-restart-faults",
+    "gm-load-storage-faults",
+    "gm-load-installed-profile",
+    "browser-load-session-lifecycle",
+    "gm-load-affected-backend",
+    "gm-load-affected-frontend",
+    "frontend-shell-types",
+    "gm-load-lost-reply",
+    "gm-load-admission-faults",
+    "gm-load-rollback-cut",
+    "gm-load-ordinary-schema",
+    "gm-load-affected-refresh"
+  ],
+  "Reasons": [
+    {
+      "category": "gm-load-session-lifecycle",
+      "reason": "T041 Load UX original production terminal stop/replacement/refresh/fresh epoch in isolated Linux roots and real entrypoints",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-cleanup-debt",
+      "reason": "Causal real console selected-Load original owner stop/replacement/refresh/fresh session; isolated configured neutral CLI only",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-early-ack",
+      "reason": "Actual loopback Load/full-bundle completion endpoints and installed production original GM stop/current refresh/fresh epoch; configured neutral CLI",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-protocol",
+      "reason": "Strict original Load receipt fields and refusal of bound filesystem scopes before stop IPC; portable inert fixtures",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-stop-faults",
+      "reason": "Actual installed production-neutral original Load HTTP/pipe fault boundary: BrowserHttp_OriginalStopAndRefreshFaults",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-restart-faults",
+      "reason": "Actual installed production-neutral original Load HTTP/pipe fault boundary: BrowserHttp_OriginalRestartFaults",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-storage-faults",
+      "reason": "Actual nontransient conflicting-marker Uncertain Load cut retains logical evidence and prevents fresh launch",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-installed-profile",
+      "reason": "Actual production fresh Load consumes installed archive command/model/args/cwd without executor override; configured neutral CLI only",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "browser-load-session-lifecycle",
+      "reason": "Actual launcher/settings Load handlers: immutable owner, complete refresh/fresh-launch receipt, stale/cancel/lost reply",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-affected-backend",
+      "reason": "Twelve exact existing unit Load/admission/original-guard consumers; integration schema and refresh are separately selected",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-affected-frontend",
+      "reason": "Exact existing real Load handler/complete bundle/settings reconciliation consumers affected by new lifecycle",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "frontend-shell-types",
+      "reason": "Compile-time contracts for extracted app routes and shell context component shapes.",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-lost-reply",
+      "reason": "Exact unconfirmed HTTP Load transport boundary; separate from three already qualified restart faults",
+      "contracts": [
+        "T041-LOAD-SESSION-LIFECYCLE",
+        "original connection and no replay"
+      ]
+    },
+    {
+      "category": "gm-load-admission-faults",
+      "reason": "Exact no-active/full refresh and retained worker admission conjunction, separated from storage cuts to avoid repeats",
+      "contracts": [
+        "T041-LOAD-SESSION-LIFECYCLE",
+        "worker/main/storage conjunction"
+      ]
+    },
+    {
+      "category": "gm-load-rollback-cut",
+      "reason": "Single original replacement publication cut with actual rollback; separated from already passed Uncertain cut",
+      "contracts": [
+        "T041-LOAD-SESSION-LIFECYCLE",
+        "typed rollback and no false fresh session"
+      ]
+    },
+    {
+      "category": "gm-load-ordinary-schema",
+      "reason": "Seven actual no-active console/HTTP causal RED cases for existing canonical writer schema; rerun after shared parser fix",
+      "contracts": [
+        "T041-LOAD-SESSION-LIFECYCLE",
+        "schema1 generation and complete refresh"
+      ]
+    },
+    {
+      "category": "gm-load-affected-refresh",
+      "reason": "Eight exact affected refresh integrations already passed before schema fix; preserve separate scope without repeating them",
+      "contracts": [
+        "T041-LOAD-SESSION-LIFECYCLE",
+        "original guard and committed refresh"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "19dc27ea9ada6dbccd22bbf637b60b02d829876a",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0705101,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0753854,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1267282,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0058849,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 30,
+  "WallTime": "00:00:11.2742939",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 17,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 57,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "browser-load-session-lifecycle-frontend-001",
+      "frontend-shell-types-frontend-002",
+      "gm-load-admission-faults-unit-003",
+      "gm-load-affected-backend-unit-004",
+      "gm-load-affected-frontend-frontend-005",
+      "gm-load-affected-refresh-integration-006",
+      "gm-load-cleanup-debt-unit-007",
+      "gm-load-early-ack-unit-008",
+      "gm-load-installed-profile-unit-009",
+      "gm-load-lost-reply-unit-010",
+      "gm-load-ordinary-schema-integration-011",
+      "gm-load-protocol-unit-012",
+      "gm-load-restart-faults-unit-013",
+      "gm-load-rollback-cut-unit-014",
+      "gm-load-session-lifecycle-unit-015",
+      "gm-load-stop-faults-unit-016",
+      "gm-load-storage-faults-unit-017"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

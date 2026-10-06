@@ -5,7 +5,11 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## Current: bounded T031 browser rollback Linux PASS
+## Current: Load session lifecycle bounded GREEN candidate
+
+Runtime d4cfb195 connects real console/both browser handlers to original owned stop, typed Load/full current refresh and fresh installed-profile launch. No-active leaves GM absent; unknown outcome/cleanup debt/stale callback/generation blocks fresh and never replays.132scoped successes (130cases+2typechecks),41new+91affected. Independent Sol6.1/xhigh design/source PASS; final evidence/restoration pending. [Handoff](load-session-lifecycle-handoff.md) · [qualification](recovery/load-session-lifecycle-qualification.json). Historical pending-UX/low-level-only notes below describe their own checkpoints, not current runtime. Systemd/native Windows/Q1Q2/liveGM/saves/cold, direct-gacha and standalone Daren remain open.
+
+## Accepted bounded T031 browser rollback Linux PASS
 
 Actual original BrowserLocalWriteCoordinator schema7 stages/records/commits/rolls back/
 cleans via the existing trusted-local publication journal on Linux, with original main+

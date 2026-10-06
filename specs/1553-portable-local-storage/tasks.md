@@ -157,7 +157,7 @@ Dependencies: R0 before B1; B1 before B2; B2 before B3; B4 investigation may run
 
 ### Load UX decision — accepted 2026-10-06 21:11 UTC
 
-- [ ] T041-LOAD-SESSION-LIFECYCLE [US3/US4] Authorized from accepted T031 `dc62a88a`: real console and both browser Load handlers stop the original GM, retain exact Load/refresh outcomes, and freshly launch the configured CLI only after confirmed stop + Committed + current-owner refresh on the established generation. Immutable live connection, duplicate/stale/cancel/lost-reply refusal; no replay/cold mint. [Source-backed implementation plan](load-session-lifecycle-plan.md). Independent Sol6.1/xhigh design review precedes runtime changes; source/evidence review, narrow causal qualification and GitHub-only restoration precede completion.
+- [ ] T041-LOAD-SESSION-LIFECYCLE [US3/US4] Authorized from accepted T031 `dc62a88a`: real console and both browser Load handlers stop the original GM, retain exact Load/refresh outcomes, and freshly launch the configured CLI only after confirmed stop + Committed + current-owner refresh on the established generation. Immutable live connection, duplicate/stale/cancel/lost-reply refusal; no replay/cold mint. [Source-backed implementation plan](load-session-lifecycle-plan.md). Independent actual Sol6.1/xhigh design/source PASS; runtime d4cfb195,132scoped successful checks (130cases+2typechecks),41new+91affected; final evidence review/restoration pending. [Qualification](recovery/load-session-lifecycle-qualification.json) · [handoff](load-session-lifecycle-handoff.md).
 
 The user accepted automatic stop on Load, followed by fresh GM launch only after
 confirmed stop and confirmed successful load. Uncertain stop/load must halt automatic

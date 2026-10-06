@@ -1,0 +1,188 @@
+{
+  "Task": "T041-LOAD-SESSION-LIFECYCLE",
+  "Issue": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553",
+  "AcceptedBase": "dc62a88a630ba20eacd65f7bdab138ba129123ff",
+  "RuntimeSource": "d4cfb195b4df67af090e0b54357cdb0d6419ef65",
+  "Status": "Narrow GREEN candidate; final independent evidence review and fresh restoration pending",
+  "DistinctSuccessfulChecks": 132,
+  "ExecutedTestCases": 130,
+  "TypecheckReceipts": 2,
+  "NewChecks": 41,
+  "AffectedChecks": 91,
+  "SkippedInQualification": 0,
+  "EvidenceSets": [
+    {
+      "Manifest": "evidence/load-ux-reviewed-positive-green/manifest.json",
+      "QualifiedCount": 10,
+      "SourcePrefix": "ff500224",
+      "Kind": "new",
+      "Scope": "5protocol +3actual selected Load +early ACK +console cleanup debt"
+    },
+    {
+      "Manifest": "evidence/load-ux-frontend-matrix-green/manifest.json",
+      "QualifiedCount": 18,
+      "SourcePrefix": "ff500224",
+      "Kind": "new",
+      "Scope": "Actual launcher/settings handlers; refresh effect is controlled, not a live renderer"
+    },
+    {
+      "Manifest": "evidence/load-ux-stop-faults-green/manifest.json",
+      "QualifiedCount": 4,
+      "SourcePrefix": "ecd14793",
+      "Kind": "new",
+      "Scope": "stop receipt loss, logical Uncertain, failed refresh, manual cancel"
+    },
+    {
+      "Manifest": "evidence/load-ux-restart-faults-first/manifest.json",
+      "QualifiedCount": 3,
+      "SourcePrefix": "8aa96165",
+      "Kind": "new",
+      "Scope": "Only the three passing restart fault rows; failed lost Load row superseded"
+    },
+    {
+      "Manifest": "evidence/load-ux-profile-green-lost-load-timeout/manifest.json",
+      "QualifiedCount": 1,
+      "SourcePrefix": "5671d19c",
+      "Kind": "new",
+      "Scope": "Only profile PASS; actual active/fresh child argv/cwd"
+    },
+    {
+      "Manifest": "evidence/load-ux-storage-admission-first/manifest.json",
+      "QualifiedCount": 2,
+      "SourcePrefix": "1ffda2e8",
+      "Kind": "new",
+      "Scope": "Only no-active/worker-debt PASS rows; preparation failures excluded"
+    },
+    {
+      "Manifest": "evidence/load-ux-lost-load-green-rollback-transient/manifest.json",
+      "QualifiedCount": 1,
+      "SourcePrefix": "555711c1",
+      "Kind": "new",
+      "Scope": "Only lost Load PASS; real server abort and eventual retained Committed/no fresh"
+    },
+    {
+      "Manifest": "evidence/load-ux-schema-and-storage-green/manifest.json",
+      "QualifiedCount": 2,
+      "SourcePrefix": "d4cfb195",
+      "Kind": "new",
+      "Scope": "Actual nontransient RolledBack/Uncertain cut rows"
+    },
+    {
+      "Manifest": "evidence/load-ux-ordinary-schema-causal-red/manifest.json",
+      "QualifiedCount": 8,
+      "SourcePrefix": "55ac46ac",
+      "Kind": "affected",
+      "Scope": "Only eight passing refresh integration rows; seven RED superseded"
+    },
+    {
+      "Manifest": "evidence/load-ux-schema-and-storage-green/manifest.json",
+      "QualifiedCount": 19,
+      "SourcePrefix": "d4cfb195",
+      "Kind": "affected",
+      "Scope": "Twelve portable unit consumers and seven actual schema GREEN"
+    },
+    {
+      "Manifest": "evidence/load-ux-affected-frontend-green/manifest.json",
+      "QualifiedCount": 64,
+      "SourcePrefix": "ecd14793",
+      "Kind": "affected",
+      "Scope": "62Vitest cases +2typecheck receipts"
+    }
+  ],
+  "LatestConsoleTruthfulnessRecheck": {
+    "Manifest": "evidence/load-ux-restart-faults-first/manifest.json",
+    "SourcePrefix": "8aa96165",
+    "Passed": 2,
+    "DuplicateOfPositiveAndDebt": true,
+    "Reason": "Finish carries actual Committed independently of refresh permission"
+  },
+  "Discovery": {
+    "Source": "19dc27ea9ada6dbccd22bbf637b60b02d829876a",
+    "Categories": 372,
+    "MethodsOrFiles": 11018,
+    "Unmapped": 0,
+    "StaleSelectors": 0,
+    "TestsExecuted": 0,
+    "SelectionDescriptors": 17,
+    "SelectionEstimatedCases": 57,
+    "Note": "Frontend discovery counts selected files; execution reports 80actual frontend cases plus2typechecks. Plan is not132executions."
+  },
+  "Review": {
+    "Model": "gpt-6.1-sol",
+    "Reasoning": "xhigh",
+    "DesignSource": "c91adc00267e131d0f0dc7676e5d222ccd2cfa0f",
+    "DesignVerdict": "PASS",
+    "FullSource": "8aa961659233929a5f5dd8ebd94e19ebe8a31f59",
+    "FullSourceVerdict": "PASS",
+    "FinalRuntimeDeltaSource": "d4cfb195b4df67af090e0b54357cdb0d6419ef65",
+    "FinalRuntimeDeltaVerdict": "PASS",
+    "FixtureDeltaSources": [
+      "5671d19c",
+      "03ee6d95",
+      "555711c1",
+      "55ac46ac"
+    ],
+    "FixtureVerdict": "PASS; minor metadata corrections applied",
+    "FinalEvidenceVerdict": "PENDING"
+  },
+  "PromptDocumentationRationale": "Client-owned lifecycle, no new GM-authored schema/mechanic/field; no Mortal World/afterlife prompt/example changes needed. Installed game profile remains authority; executor model is never injected.",
+  "Scope": {
+    "Backend": "explicit NativeLineage ordinary same-PID-namespace lineage",
+    "Route": "existing M1 packaged production path, configured neutral CLI in isolated roots; no neutralPackage bypass",
+    "NoActive": "quiescent Load/full refresh, NoActiveSession, no bootstrap/fresh process",
+    "Fresh": "confirmed original stop + Committed/no debt + current-owner full refresh + exact installed generation; one existing launch",
+    "InstalledProfile": "Archive config command/model/args/cwd/input profile consumed by existing M1 route; contradictory old active config not retained",
+    "Failure": "Storage disposition and session result separate; unknown response never replayed. Logical Uncertain persists even after physical guardian cleanup.",
+    "Cancellation": "Before decision prevents fresh; accepted restart decision can settle, stale old operation cannot stop later epoch",
+    "Frontend": "actual TSX handler ownership/order with controlled refresh; existing bundle/reconciliation tests supply affected evidence; no live browser"
+  },
+  "Limits": [
+    "no live provider/model request/real save",
+    "no systemd-user positive qualification or manager/service/settings setup",
+    "no native Windows execution; ConPTY/Job source preserved and legacy StartedNotReady is not Running/CLI readiness",
+    "no Q1/Q2/TERM/Codex acceptance",
+    "bounded technical queue/profile are not final live-client UX",
+    "no cold exactly-once/reboot/power-loss salvage or unknown command replay",
+    "no public rollout/whole-game qualification"
+  ],
+  "OpenTasks": [
+    "T031-BROWSER-DIRECT-GACHA-LINUX",
+    "T031-DAREN-STANDALONE-LINUX",
+    "primary existing systemd-user backend qualification",
+    "native Windows qualification",
+    "real configured CLI Q1/Q2 and live-GM acceptance separately authorized"
+  ],
+  "HistoricalF2Unpassed": [
+    {
+      "Id": "BrowserLocalWriteCoordinatorTests.ExecuteAsync_SessionReplacementWaitsForWholeLegacyTransaction",
+      "Reason": "Original Linux timeout before callback; legacy physical fixture",
+      "NewExecutions": 0
+    },
+    {
+      "Id": "BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ConcurrentReplacementWaitsForCompleteTransaction",
+      "Reason": "Original Linux timeout before callback; legacy physical fixture",
+      "NewExecutions": 0
+    },
+    {
+      "Id": "BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_LockReleaseFailureDoesNotRollbackCommittedMutation",
+      "Reason": "Original Windows physical creation unavailable on Linux; legacy fixture",
+      "NewExecutions": 0
+    },
+    {
+      "Id": "BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ExplicitLeaseWritesWithoutAmbientAuthority",
+      "Reason": "Original Windows physical creation unavailable on Linux; legacy fixture",
+      "NewExecutions": 0
+    }
+  ],
+  "EvidenceIntegrityAudit": {
+    "Artifact": "load-session-lifecycle-evidence-audit.json",
+    "Manifests": 36,
+    "Inputs": 4619,
+    "Artifacts": 680,
+    "Gzip": 352,
+    "Guardians": 42,
+    "AllSourceBytesAndGitBlobsMatched": true,
+    "AllArtifactsAndGzipMatched": true,
+    "AllGuardianScopesEmpty": true
+  }
+}

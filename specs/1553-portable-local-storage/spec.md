@@ -1,5 +1,10 @@
 # Feature Specification: Trusted local storage and cross-platform runtime
 
+## Current authorized Load session lifecycle — bounded GREEN candidate
+
+From accepted T031 `dc62a88a`, T041-LOAD-SESSION-LIFECYCLE connects the original terminal/run fence/T042 to real console and both browser Load consumers. Confirmed original stop + Committed + current-owner full refresh + exact installed generation permit one existing configured launch; no-active Load leaves GM absent. Storage commitment survives later fresh failure; unknown/stale/cancelled outcomes never replay or resume an old run. Installed archive command/model/args/cwd/input profile remain authoritative. Runtime d4cfb195 has independent Sol source PASS;132scoped checks pass, final evidence/restoration pending. [Plan](load-session-lifecycle-plan.md) · [handoff](load-session-lifecycle-handoff.md). Client-owned flow adds no GM-authored contract. This current section supersedes historical pending-UX/next-stage notes below; systemd/native Windows/Q1Q2/liveGM/saves/cold/fullUS4 remain open.
+
+
 **Feature Branch**: `codex/1553-load-filesystem` (local continuation from `codex/1553-save-windows`)
 **Created**: 2026-09-30
 **Status**: Original feature approved; ordinary-save capability accepted at `ddaade72`. The owner approved the exact local load-filesystem specification revision 1 below. The owner subsequently waived further written spec/plan/revision review and authorized recommended autonomous decisions; execution plan revision 1 and its namespace-frame design addendum are authorized; full Load and remaining B3/B4/B5/platform acceptance remain open.

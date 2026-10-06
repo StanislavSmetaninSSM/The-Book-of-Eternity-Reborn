@@ -147,3 +147,7 @@ Independent actual Sol6.1/xhigh approved the minimal source plan. Share unchange
 ### Complete narrow GREEN candidate
 
 Cleand4cfb19521/21PASS: causal schema7GREEN + previously unrun12unit + exact nontransient rollback/Uncertain2. Both new guardians ECHILD/emergency0/failures0/deadlinefalse, exact own roots captured/removed. [Evidence](recovery/evidence/load-ux-schema-and-storage-green/manifest.json). All latest distinct selected proofs now132PASS (130executed test cases +2typecheck receipts),41new +91affected; no skips, no broad suite. Eight unaffected integration passes at55ac and all prior unchanged successful boundary proofs retained without rerun. Runtime source d4cfb195 has focused independent Sol SOURCE PASS after full source8aaPASS. Final discovery-only catalog/selection, complete evidence audit, independent evidence review and GitHub restoration remain pending.
+
+### Discovery and qualification candidate
+
+At clean19dc27ea catalog discovery372categories/11018methods/files valid, no unmapped/stale selectors;0tests. Selection plan17descriptors/57estimated cases,0executed; frontend discovery counts selected files, not actual18+62case execution. Complete handoff/qualification distinguish130executed cases and2typecheck receipts, mixed exact source sets and historical failures. Final independent evidence review and fresh restoration pending; runtime/tests frozen.
