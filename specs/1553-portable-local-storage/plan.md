@@ -96,7 +96,10 @@ evidence worker-r3-races-complete-green. Independent source review approved narr
 the repeated post-hook evidence assertion inside the durable branch, preserving prior
 null-durable/legacy behavior. This last scope-only change requires fresh build; run the
 selected24 affected cases once at that exact source, then E4. No extra legacy/Windows
-cohort is warranted. Final independent source/evidence acceptance is still pending.
+cohort is warranted. Exact final runtime source `a7370fd0b7eb789079a307ee0c04538499bbfdc6`: selected24/24PASS,
+9/9complete descriptors,145.9106193s,0duplicate/skip/timeout, owned cleanup complete.
+Evidence worker-r3-affected-regression-green. Guardian32/32ECHILD,0signals/failure/deadline.
+Final independent source/evidence acceptance is still pending; next only E4.
 
 ### Evidence already accepted; exclude unchanged repetitions
 
@@ -184,7 +187,7 @@ a claim that current code already satisfies it; runtime fixes still need causal 
   accepted consumers justified by the source delta. Capture exact source/commands/counts.
 - [x] B: repeat the bounded workflow for publication cuts after A's ECHILD evidence.
 - [x] C: repeat for conditional cleanup/retirement, with exact post-live-ACK observation.
-- [ ] D: repeat for queued/held publication fences; retain original authority on uncertainty.
+- [x] D: repeat for queued/held publication fences; retain original authority on uncertainty.
 - [ ] E: repeat for whole parallel inventory and the unmasked canonical journal conflict.
 - [ ] Discovery-only ValidateCatalog and exact PlanOnly after matching fresh builds;
   read-only Spec Kit consistency review, final independent source/evidence review.
