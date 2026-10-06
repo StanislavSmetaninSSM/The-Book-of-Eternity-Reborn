@@ -194,14 +194,36 @@ Sol6.1/xhigh review. Native Windows qualification requires an actual Windows run
 supported VT subset is bounded, not arbitrary TUI support. No public arbitrary
 GM launch/systemd manager/privileges/settings/live provider/game-writing/saves/cold.
 
-- [ ] Compile-ready consumed session seam, preserving old retirement behavior.
-- [ ] Actual BridgeHost retained-owner causal RED, then GREEN/typed retirement.
-- [ ] Original native supervisor terminal mode, fixed neutral fixture; own-root
+- [x] Compile-ready consumed session seam, preserving old retirement behavior.
+- [x] Actual BridgeHost retained-owner causal RED, then GREEN/typed retirement.
+- [x] Original native supervisor terminal mode, fixed neutral fixture; own-root
   positive cleanup before controlled descendants/uncertainty cases.
-- [ ] Session-scoped actual output view and T042/real pipe/manual/resize consumers;
+- [x] Session-scoped actual output view and T042/real pipe/manual/resize consumers;
   preserve ConPTY/Job contract and retained transport shutdown.
 - [ ] Narrow affected regressions, exact sources/artifacts/cleanup, independent
   source/evidence verdict, checkpoint/readback/fresh GitHub-only restore; handoff.
+
+Current bounded outcome (2026-10-06): **160 distinct PASS**, review/restore pending.
+Original retirement causal RED→GREEN precedes native own-root positive cleanup;
+source-backed review gaps added genuine EOF and root-exit admission RED→GREEN.
+Runtime source `c3ef9693`, corrected foreground fixture source `6061df63`.
+Reuse completed input33/output47/T04236 at c3ef (116); no runtime/test source change
+to6061 except test-only outer UI Python setup. Remaining selected six descriptors
+44/44 at6061: native12, portable13, affected shared-helper/host-v2/v1 regressions19.
+Actual Program/Console.ReadKey outer foreground PTY proves two manual inputs/Unicode,
+resize, canonical EOF, same session, scoped stop and restored UI input mode.
+Native direct/actual pipe cases prove descendants/early root exit, unrelated own
+sentinel, draft/takeover/cancel, partial startup and sticky Uncertain original owner.
+12 terminal guardians ECHILD/no emergency;12 host guardians ECHILD, exactly1 expected
+independent emergency signal in the existing deliberate helper-loss negative;
+7 v1 guardians ECHILD/no emergency. All failure/deadline0, own fixtures only.
+Catalog321/10932 and full selected plan9/160 are discovery-only,0 executions.
+Default CI selection is four portable categories; explicit Linux manifest holds
+nine impacted owners. No CI workflow change. Exact commands/source hashes/DLL/PDB/
+ELF/compiler/source manifests and compressed raw logs/TRX in the current ledger.
+All former WIP/next wording in historical sections below remains historical.
+Final independent source/evidence review, remote checkpoint/readback and fresh
+GitHub-only restoration still pending; no production/main fence stage starts.
 
 ## Owned main terminal — accepted design-only block
 

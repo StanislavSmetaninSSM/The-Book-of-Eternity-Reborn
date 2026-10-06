@@ -5,23 +5,22 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## Owned main terminal: current design-only block
+## Owned main terminal: bounded neutral implementation; final review pending
 
-T042 accepted at `1bc9d67536dccbcc6672d8e7cd71ad885c2a946c`. Current work is
-T041-OWNED-MAIN-TERMINAL-DESIGN: one consumed owned session feeding original
-BridgeHost/input transaction, with a neutral-only proposed next implementation.
-[Design/first slice](owned-main-terminal-design.md) ·
-[Source/evidence](recovery/owned-main-terminal-design.json).
-One necessary isolated PTY primitive probe:1driver/8checks PASS, probe+independent
-guardian ECHILD,0emergency/failure/deadline. This is availability evidence only;
-no runtime/tests/catalog/settings changes, integrated fallback/main/systemd/Windows
-native/live/fence qualification or production launch. Actual independent
-Sol6.1/xhigh **DESIGN PASS** at `ed435a6062e1a0b5554e3d1374f29b2a3412cd33`;
-two lifecycle/staging findings closed, no unresolved substantial defect. Candidate
-`63c13838` restored from GitHub only:13,137files/exact tree/bytes/clean/fsck/remote.
-Final verdict carrier receives ordinary push/readback/fresh restore, exact SHA in
-handoff. [Review](recovery/owned-main-terminal-design-review.json).
-T041-OWNED-MAIN-TERMINAL-NEUTRAL remains unchecked/unimplemented; stop here.
+Accepted design `3b21dba7410284cb4b471e7b3c3e4be970139c27` now feeds actual original
+BridgeHost/InputLifetime/output/T042 through the existing native owner in terminal
+mode. Fixed inert fixture only, one original session/owner. Runtime `c3ef9693`,
+foreground test setup `6061df63`:160 distinctPASS (116 unchanged managed +44 remaining).
+Actual foreground console/manual Unicode/two inputs/resize/EOF and real pipe
+transactions/stop/uncertainty tested; no second dispatcher or managed reaper.
+[Current evidence/limits](recovery/owned-main-terminal-neutral.json) ·
+[Execution ledger](plan.md#t041-owned-main-terminal-neutral--authorized-execution) ·
+[Accepted design](owned-main-terminal-design.md).
+Independent Sol6.1/xhigh final source/evidence verdict and fresh GitHub-only restore
+pending. ConPTY/Job consumed and guarded/build checked; native Windows unqualified.
+Existing systemd-user remains primary contract, no manager here/no qualification.
+No arbitrary TUI/live provider/public GM launch/main run fence/real saves/cold guarantee.
+Next stage not started. FullT041/T042/#1553 stay open beyond this controlled slice.
 
 ## T042 live-owner input transaction: bounded PASS; accepted at1bc9d675
 
@@ -37,8 +36,8 @@ ordinary push/readback/narrow metadata check/fresh restore; exact final SHA in h
 [Execution ledger](plan.md#t042-input-transaction--authorized-execution-ledger).
 
 Unqualified: every raw read settled before caller return; arbitrary live CLI/TUI
-profiles and final queue/manual-resume UX; native Windows/Linux terminal ownership,
-main PTY/systemd/stop/restart; ordinary production GM/worker Release/main run fences/
+profiles and final queue/manual-resume UX; native Windows and live main/systemd/stop/restart; controlled Linux neutral
+terminal proof is now recorded above; ordinary production GM/worker Release/main run fences/
 real saves; cold retention/reconciliation/exactly-once/reboot/power-loss. FullT042,
 T041 and#1553 remain open. No new implementation stage begins here.
 
