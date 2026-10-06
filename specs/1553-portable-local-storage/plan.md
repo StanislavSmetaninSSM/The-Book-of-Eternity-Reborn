@@ -239,6 +239,13 @@ GitHub push initially lacked a Git credential helper; existing gh authorization
 remained valid. One-command existing gh credential helper restored ordinary non-force
 push without configuration/auth changes; exact remote and67 changed bytes verified.
 Next: exact cleanup operation confinement tests and implementation; R2 remains WIP.
+Audit confinement scaffold now adds nine isolated never-Start/original Prepared cases:
+exact append twice/idempotent, wrong path/bytes, replacement, extra member, empty
+prune, direct publisher, legacy route and root closure after an awaited boundary.
+It holds real native journal/root authority but starts no worker. Independent guardian
+verifies ECHILD. Unbuilt/unrun; runtime remains intentionally unchanged for causal RED.
+Intermediate reviewer also confirmed missing closed cleanup witness, R1 API bypass
+and skipped bounded stop on Uncertain; address before final R2 review.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

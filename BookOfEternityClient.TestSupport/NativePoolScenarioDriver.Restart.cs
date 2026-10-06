@@ -16,6 +16,7 @@ internal static partial class NativePoolScenarioDriver
 
     internal static async Task<int> RunRestart(string mode, string package, string output)
     {
+        if (mode.StartsWith("restart-audit-", StringComparison.Ordinal)) return await RunRestartAudit(mode[14..], output);
         if (mode.StartsWith("restart-root-", StringComparison.Ordinal)) return await RunRestartRoot(mode[13..], package, output);
         if (mode.StartsWith("restart-boundary-", StringComparison.Ordinal)) return await RunRestartBoundary(mode[17..], package, output);
         var root = Path.Combine(output, "state-copy");

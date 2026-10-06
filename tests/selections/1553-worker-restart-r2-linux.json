@@ -48,6 +48,14 @@
         "#1553 T041-WORKER-RESTART-R2",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-restart-audit-linux",
+      "reason": "R2 cleanup purpose must authorize exactly one bound audit line and no unrelated mutations, including post-await revocation.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
     }
   ]
 }
