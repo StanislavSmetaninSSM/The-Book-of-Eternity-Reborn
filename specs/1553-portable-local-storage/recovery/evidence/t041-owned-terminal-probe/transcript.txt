@@ -1,0 +1,7 @@
+READY owned=1 size=25x80
+alpha π
+LINE1:alpha π
+beta
+LINE2:beta
+RESIZE 31x93
+INPUT_EOF_STILL_ALIVE

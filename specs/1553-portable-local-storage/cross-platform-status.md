@@ -5,7 +5,20 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## T042 live-owner input transaction: bounded PASS; handoff before next stage
+## Owned main terminal: current design-only block
+
+T042 accepted at `1bc9d67536dccbcc6672d8e7cd71ad885c2a946c`. Current work is
+T041-OWNED-MAIN-TERMINAL-DESIGN: one consumed owned session feeding original
+BridgeHost/input transaction, with a neutral-only proposed next implementation.
+[Design/first slice](owned-main-terminal-design.md) ·
+[Source/evidence](recovery/owned-main-terminal-design.json).
+One necessary isolated PTY primitive probe:1driver/8checks PASS, probe+independent
+guardian ECHILD,0emergency/failure/deadline. This is availability evidence only;
+no runtime/tests/catalog/settings changes, integrated fallback/main/systemd/Windows
+native/live/fence qualification or production launch. Candidate independent
+Sol6.1/xhigh design review pending; stop before implementation.
+
+## T042 live-owner input transaction: bounded PASS; accepted at1bc9d675
 
 Design `dc4a5111` accepted; only the connected controlled input slice is complete.
 83distinctPASS: bridge46at`773f5e9e` + daemon37at`db5864c2`, actual pipe control
