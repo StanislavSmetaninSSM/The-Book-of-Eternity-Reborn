@@ -12,9 +12,12 @@ qualification — доказательствами конкретного огр
 root. Допустимый cleanup сохраняется; Uncertain не становится подтверждённым stop.
 Работа T041-WORKER-RESTART-R2: одним связанным контуром admission до recovery,
 Release, публикация и retirement реального synthetic pool. Sol 6.1/xhigh DESIGN PASS
-на `4536638d`, открытых замечаний нет. Добавлен один причинный cold admission test
-на неизменённом pool, ещё не собран/не запущен. Следующий шаг: RED через
-scripts/test-csharp.ps1, затем закрытая связанная реализация. Runtime пока R1/B.
+на `4536638d`, открытых замечаний нет. На `73207b8f` получен причинный RED1/1:
+неизменённый pool сделал recovery4, reservation/Start/Release/publication по1 при
+cold Prepared. Два guardian ECHILD, без emergency/deadline/failures, baseline cleanup
+завершён. Отдельный первый catalog preparation failure исполнил0 тестов и сохранён.
+Следующий шаг: закрытые R2 storage/progress prerequisites и связанная реализация.
+R2 GREEN пока нет; runtime всё ещё R1/B. Доказательства и точные source hashes в плане.
 R3, public Linux Release, main PTY, live GM и реальные saves закрыты.
 Старые формулировки «R2 не разрешён» ниже относятся к истории завершения R1.
 

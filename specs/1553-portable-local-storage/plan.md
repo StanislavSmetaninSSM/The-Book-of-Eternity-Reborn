@@ -38,6 +38,17 @@ preparation: related-category string needed a structured id/when object. Zero te
 zero native fixtures started; this is not causal RED. Retained log/source manifest:
 recovery/evidence/worker-r2-cold-preparation-catalog/manifest.json. Corrected only that
 catalog object; fresh build/discovery and causal execution remain pending.
+Fresh build/PlanOnly at `73207b8fe957249107277b93b1fb0c3d75cf0d10` passed: one
+descriptor/one case discovered, zero executed,93.6655116s. Then NoBuild executed
+one case: **1 causal FAIL / 0 PASS**,10.1509866s. Actual unchanged pool performed
+four recovery observations, one reservation, one owner bind, one Release, one worker
+start and one valid content publication despite cold Prepared. Root bytes changed;
+the ledger itself remained Prepared/Uncertain. This is the intended R1 connection gap,
+not preparation failure. The baseline worker cleaned its workspace, reaper entries/
+capacity returned zero; two independent guardians reached ECHILD with zero emergency,
+failure or deadline (seed exit77, pool exit0). Evidence/source/commands:
+recovery/evidence/worker-r2-cold-red/manifest.json. Next: closed R2 storage/progress
+prerequisites and complete connected lifecycle; no R2 GREEN or qualification yet.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing
