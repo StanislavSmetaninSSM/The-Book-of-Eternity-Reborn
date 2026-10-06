@@ -111,6 +111,13 @@ Do not repeat untouched INPUT37/OUTPUT48 or worker/native cohorts.
   These additions are unrun WIP. Existing accepted cohorts remain unselected.
   Transport proof is bounded responsiveness and owned fixture cleanup, not a claim
   that every raw read task settled before every caller returned.
+  Residual causal RED at4cae3eed048b5507a3d2df599bc0f970d4c30e81:
+  fresh selected build succeeded, bridge46executed44PASS/2FAIL; daemon descriptors
+  unexecuted by fail-fast (79planned/46completed). Separate unchanged-build daemon
+  -NoBuild33/33executed:26PASS/7FAIL, all seven late ordinary-turn cases causal.
+  Corrected ambiguity fixture now PASS. No preparation/fixture failures, runner
+  timeout/skips/duplicates; both owned cleanups complete.
+  [Residual causal evidence](recovery/evidence/t042-residual-causal-red/manifest.json).
 - [ ] Connect typed launcher/daemon/ordinary/QTE/repair outcomes, no ambiguity replay.
 - [ ] Focused fresh GREEN and discovery; exact source/binary/artifact evidence.
 - [ ] Independent Sol source/evidence PASS, ordinary publication/readback and fresh restore.

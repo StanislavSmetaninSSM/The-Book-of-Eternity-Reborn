@@ -1,0 +1,335 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="5a816678-f092-46ac-a77e-120baac5765a" name="@c7669543e9c7 2026-10-06 08:09:09" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T08:09:09.6583528+00:00" queuing="2026-10-06T08:09:09.6583528+00:00" start="2026-10-06T08:09:05.2970069+00:00" finish="2026-10-06T08:09:34.7416485+00:00" />
+  <TestSettings name="default" id="4dba3021-31af-4213-b7ec-a4da6962667b">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_08_09_09" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="6f2e2ea4-0252-4c24-b983-ef643ed7c467" testId="f3e27d0f-ba2f-8ed4-8441-46d1c68845a4" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: &quot;stop-payload&quot;, allowedStops: 1)" computerName="c7669543e9c7" duration="00:00:00.8509379" startTime="2026-10-06T08:09:21.2744851+00:00" endTime="2026-10-06T08:09:21.2744855+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6f2e2ea4-0252-4c24-b983-ef643ed7c467">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   2</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c__DisplayClass6_0.&lt;RealTurn_LateReplacementCannotPublishOldTerminal&gt;b__0(JsonElement result) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 72
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert, String sessionRoot) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 186
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(String boundary, Int32 allowedStops) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 68
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="01255b8d-f207-4275-917a-f29b053a8a2a" testId="2ce1ce28-fec1-e224-c329-55ead057391e" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ReplacedAfterProvenZeroWrite_CancelsWithoutReplaying" computerName="c7669543e9c7" duration="00:00:00.8018327" startTime="2026-10-06T08:09:24.5966520+00:00" endTime="2026-10-06T08:09:24.5966555+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="01255b8d-f207-4275-917a-f29b053a8a2a" />
+    <UnitTestResult executionId="f64d5d8a-649b-4007-b15b-d28fee3653e1" testId="9ce5d7d0-baf1-389e-548c-13c7ad1d2e25" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: &quot;payload&quot;, allowedStops: 0)" computerName="c7669543e9c7" duration="00:00:00.8228788" startTime="2026-10-06T08:09:20.4227949+00:00" endTime="2026-10-06T08:09:20.4227952+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f64d5d8a-649b-4007-b15b-d28fee3653e1">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c__DisplayClass6_0.&lt;RealTurn_LateReplacementCannotPublishOldTerminal&gt;b__0(JsonElement result) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 71
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert, String sessionRoot) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 186
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(String boundary, Int32 allowedStops) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 68
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="14149ea8-3a05-4e8d-bb2d-6530007eb186" testId="bd832e0d-5aa7-d2bb-b37c-6db745685ef7" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealDaemonLauncherRpc_RetainsOneOperationAndOneSubmit" computerName="c7669543e9c7" duration="00:00:00.8440328" startTime="2026-10-06T08:09:31.0033689+00:00" endTime="2026-10-06T08:09:31.0033691+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="14149ea8-3a05-4e8d-bb2d-6530007eb186" />
+    <UnitTestResult executionId="55030965-db48-4a93-9e12-8dff658815b6" testId="b5feeaa0-46bf-f3c8-dc06-a96544bdb13e" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ActualRetry_TransportAmbiguityDoesNotRepeat" computerName="c7669543e9c7" duration="00:00:00.6800826" startTime="2026-10-06T08:09:21.9557214+00:00" endTime="2026-10-06T08:09:21.9557216+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="55030965-db48-4a93-9e12-8dff658815b6" />
+    <UnitTestResult executionId="0cdf005f-1173-4bd4-853c-cc7de2098979" testId="38164a12-b76c-f43f-76fc-6479e846205e" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealRepairConsumers_DistinctRevisionsKeepDistinctIdentities" computerName="c7669543e9c7" duration="00:00:00.8399664" startTime="2026-10-06T08:09:32.7805319+00:00" endTime="2026-10-06T08:09:32.7805324+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0cdf005f-1173-4bd4-853c-cc7de2098979" />
+    <UnitTestResult executionId="d9d5f083-70c9-4171-8e2a-8c84da66dabf" testId="d343cb74-86fe-79c8-7d95-99df53aafd1e" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: &quot;stop-timeout&quot;, allowedStops: 1)" computerName="c7669543e9c7" duration="00:00:01.0689401" startTime="2026-10-06T08:09:19.5988498+00:00" endTime="2026-10-06T08:09:19.5988501+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d9d5f083-70c9-4171-8e2a-8c84da66dabf">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c__DisplayClass6_0.&lt;RealTurn_LateReplacementCannotPublishOldTerminal&gt;b__0(JsonElement result) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 72
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert, String sessionRoot) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 186
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(String boundary, Int32 allowedStops) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 68
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7e199b13-cb88-4153-b506-a08636906867" testId="78481c0a-d760-e4df-37a2-62f2a1676980" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.QteIdle_QueriesOriginalWithoutRepaste" computerName="c7669543e9c7" duration="00:00:01.1168195" startTime="2026-10-06T08:09:33.8981441+00:00" endTime="2026-10-06T08:09:33.8982188+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7e199b13-cb88-4153-b506-a08636906867" />
+    <UnitTestResult executionId="8a9f90c4-b173-415a-8760-163860ba8b4a" testId="2effeb7a-cbc4-274b-81dd-f6fe52f29bd9" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.LauncherLostResponse_OnlyQueriesSameOperation" computerName="c7669543e9c7" duration="00:00:00.7011264" startTime="2026-10-06T08:09:22.6581638+00:00" endTime="2026-10-06T08:09:22.6581640+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8a9f90c4-b173-415a-8760-163860ba8b4a" />
+    <UnitTestResult executionId="fa5a5f08-e62b-45bf-a709-24bc044cc2a2" testId="874ffa86-7e58-7329-a05f-62cdd1b1b966" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.DormantAllowNotReady_UsesOneImmutableOperation" computerName="c7669543e9c7" duration="00:00:00.9330309" startTime="2026-10-06T08:09:31.9384282+00:00" endTime="2026-10-06T08:09:31.9384287+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fa5a5f08-e62b-45bf-a709-24bc044cc2a2" />
+    <UnitTestResult executionId="593b92dc-721c-4aca-8467-21194bc70752" testId="b11e0447-cdba-7fa0-888b-eebe1b579b10" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: &quot;terminal&quot;)" computerName="c7669543e9c7" duration="00:00:00.9389522" startTime="2026-10-06T08:09:28.3583485+00:00" endTime="2026-10-06T08:09:28.3583488+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="593b92dc-721c-4aca-8467-21194bc70752" />
+    <UnitTestResult executionId="d97a1c91-914a-4623-9078-96b34c120512" testId="33d392fe-2765-942a-bcaa-951aa5ceae2f" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: &quot;repair&quot;)" computerName="c7669543e9c7" duration="00:00:01.0345008" startTime="2026-10-06T08:09:27.4179876+00:00" endTime="2026-10-06T08:09:27.4179882+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d97a1c91-914a-4623-9078-96b34c120512" />
+    <UnitTestResult executionId="bdf6959e-a402-42b8-9ef6-ef6dc8928ba4" testId="ecc312c4-3fc0-f141-16b7-62840c7b1092" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: &quot;stop-artifact&quot;, allowedStops: 1)" computerName="c7669543e9c7" duration="00:00:00.9190629" startTime="2026-10-06T08:09:18.5262485+00:00" endTime="2026-10-06T08:09:18.5262488+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bdf6959e-a402-42b8-9ef6-ef6dc8928ba4">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   2</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c__DisplayClass6_0.&lt;RealTurn_LateReplacementCannotPublishOldTerminal&gt;b__0(JsonElement result) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 72
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert, String sessionRoot) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 186
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(String boundary, Int32 allowedStops) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 68
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0b9454a3-174c-4690-888b-99bf1dcda3ba" testId="3ced723d-7dca-83c2-1ac4-fd277646d31d" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.FirstAutostart_CapturesOnlyActualStartedBinding" computerName="c7669543e9c7" duration="00:00:01.0354260" startTime="2026-10-06T08:09:25.6352524+00:00" endTime="2026-10-06T08:09:25.6352529+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0b9454a3-174c-4690-888b-99bf1dcda3ba" />
+    <UnitTestResult executionId="ac8f951d-b880-40e7-90b7-192383ea1be6" testId="4ac763c9-8b0b-ce4b-f003-34f5065b2463" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: &quot;idle&quot;, allowedStops: 0)" computerName="c7669543e9c7" duration="00:00:00.8450007" startTime="2026-10-06T08:09:16.6298390+00:00" endTime="2026-10-06T08:09:16.6298393+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ac8f951d-b880-40e7-90b7-192383ea1be6">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c__DisplayClass6_0.&lt;RealTurn_LateReplacementCannotPublishOldTerminal&gt;b__0(JsonElement result) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 72
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert, String sessionRoot) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 186
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(String boundary, Int32 allowedStops) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 68
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="42edbf0f-272d-4d13-841b-ae8cbb13c99c" testId="72190c63-1fba-c55d-cac1-89e85e7165cf" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.CallerSnapshotReplacedBeforeAllocation_CannotSendOldMessage" computerName="c7669543e9c7" duration="00:00:00.7470479" startTime="2026-10-06T08:09:26.3815699+00:00" endTime="2026-10-06T08:09:26.3815701+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="42edbf0f-272d-4d13-841b-ae8cbb13c99c" />
+    <UnitTestResult executionId="d4ea9072-3782-46cf-9083-42c69157d172" testId="5c3399c7-0fd9-0849-d0e4-6cc3f227b362" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealLauncherTimeout_HeldInputReturnsUnknownWithoutReplay" computerName="c7669543e9c7" duration="00:00:06.8989830" startTime="2026-10-06T08:09:14.8520314+00:00" endTime="2026-10-06T08:09:14.8520318+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d4ea9072-3782-46cf-9083-42c69157d172" />
+    <UnitTestResult executionId="8969d7b4-746b-48f6-9faa-063eacd56a72" testId="25d8f82d-598a-f973-50a1-087d74cb0831" testName="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.DaemonBridgeDispatch_UsesTypedOperationWithoutReadinessBypass" computerName="c7669543e9c7" duration="00:00:00.1167465" startTime="2026-10-06T08:09:08.1163383+00:00" endTime="2026-10-06T08:09:08.1163598+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8969d7b4-746b-48f6-9faa-063eacd56a72" />
+    <UnitTestResult executionId="67d98c76-641b-43a2-be58-0912765fe3d1" testId="2e462267-dbe4-fbaf-3f27-b542b86bdbbf" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: &quot;qte&quot;)" computerName="c7669543e9c7" duration="00:00:00.8780702" startTime="2026-10-06T08:09:29.2372862+00:00" endTime="2026-10-06T08:09:29.2372864+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="67d98c76-641b-43a2-be58-0912765fe3d1" />
+    <UnitTestResult executionId="1d4143a4-3dff-400a-8976-eea782751f4a" testId="49a530c9-303b-c911-17c0-12c9fda835e6" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: &quot;turn&quot;)" computerName="c7669543e9c7" duration="00:00:00.9196987" startTime="2026-10-06T08:09:30.1576709+00:00" endTime="2026-10-06T08:09:30.1576716+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1d4143a4-3dff-400a-8976-eea782751f4a" />
+    <UnitTestResult executionId="9c9805a0-6ada-4ed9-a60b-14b0b64b01af" testId="0c9c5e98-a66e-585d-11c7-697d3f27d94f" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ProvenBusy_RetriesIdenticalFrozenOperation" computerName="c7669543e9c7" duration="00:00:01.1332488" startTime="2026-10-06T08:09:23.7946241+00:00" endTime="2026-10-06T08:09:23.7946243+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9c9805a0-6ada-4ed9-a60b-14b0b64b01af" />
+    <UnitTestResult executionId="7e061e9f-6da0-42d3-81e3-995122fb91c8" testId="d4fa378e-7d10-5203-b917-866ac129601a" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: &quot;wait&quot;, allowedStops: 0)" computerName="c7669543e9c7" duration="00:00:01.0052683" startTime="2026-10-06T08:09:17.6055339+00:00" endTime="2026-10-06T08:09:17.6055344+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7e061e9f-6da0-42d3-81e3-995122fb91c8">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c__DisplayClass6_0.&lt;RealTurn_LateReplacementCannotPublishOldTerminal&gt;b__0(JsonElement result) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 71
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert, String sessionRoot) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 186
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(String boundary, Int32 allowedStops) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 68
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e5ab898a-9a0c-4d51-bed9-74eefc4e1232" testId="2323371b-3477-f82b-7e77-6fdb0f38a219" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: &quot;artifact&quot;, allowedStops: 0)" computerName="c7669543e9c7" duration="00:00:00.8786458" startTime="2026-10-06T08:09:15.7525330+00:00" endTime="2026-10-06T08:09:15.7525336+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e5ab898a-9a0c-4d51-bed9-74eefc4e1232">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c__DisplayClass6_0.&lt;RealTurn_LateReplacementCannotPublishOldTerminal&gt;b__0(JsonElement result) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 71
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert, String sessionRoot) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 186
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(String boundary, Int32 allowedStops) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 68
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="34d650b1-ee1e-4bc0-b009-53fc132e3f60" testId="a5a6b93a-ac77-61bb-2266-583ed25eeb00" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.PendingReplacedDuringRemoteCall_CannotReturnSent" computerName="c7669543e9c7" duration="00:00:00.7513682" startTime="2026-10-06T08:09:34.6513769+00:00" endTime="2026-10-06T08:09:34.6513773+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="34d650b1-ee1e-4bc0-b009-53fc132e3f60" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: &quot;qte&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2e462267-dbe4-fbaf-3f27-b542b86bdbbf">
+      <Execution id="67d98c76-641b-43a2-be58-0912765fe3d1" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.DormantAllowNotReady_UsesOneImmutableOperation" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="874ffa86-7e58-7329-a05f-62cdd1b1b966">
+      <Execution id="fa5a5f08-e62b-45bf-a709-24bc044cc2a2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="DormantAllowNotReady_UsesOneImmutableOperation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: &quot;turn&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="49a530c9-303b-c911-17c0-12c9fda835e6">
+      <Execution id="1d4143a4-3dff-400a-8976-eea782751f4a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealDaemonLauncherRpc_RetainsOneOperationAndOneSubmit" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="bd832e0d-5aa7-d2bb-b37c-6db745685ef7">
+      <Execution id="14149ea8-3a05-4e8d-bb2d-6530007eb186" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="RealDaemonLauncherRpc_RetainsOneOperationAndOneSubmit" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: &quot;stop-artifact&quot;, allowedStops: 1)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ecc312c4-3fc0-f141-16b7-62840c7b1092">
+      <Execution id="bdf6959e-a402-42b8-9ef6-ef6dc8928ba4" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="RealTurn_LateReplacementCannotPublishOldTerminal" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.DaemonBridgeDispatch_UsesTypedOperationWithoutReadinessBypass" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="25d8f82d-598a-f973-50a1-087d74cb0831">
+      <Execution id="8969d7b4-746b-48f6-9faa-063eacd56a72" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests" name="DaemonBridgeDispatch_UsesTypedOperationWithoutReadinessBypass" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.PendingReplacedDuringRemoteCall_CannotReturnSent" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a5a6b93a-ac77-61bb-2266-583ed25eeb00">
+      <Execution id="34d650b1-ee1e-4bc0-b009-53fc132e3f60" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="PendingReplacedDuringRemoteCall_CannotReturnSent" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: &quot;wait&quot;, allowedStops: 0)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d4fa378e-7d10-5203-b917-866ac129601a">
+      <Execution id="7e061e9f-6da0-42d3-81e3-995122fb91c8" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="RealTurn_LateReplacementCannotPublishOldTerminal" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.LauncherLostResponse_OnlyQueriesSameOperation" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2effeb7a-cbc4-274b-81dd-f6fe52f29bd9">
+      <Execution id="8a9f90c4-b173-415a-8760-163860ba8b4a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="LauncherLostResponse_OnlyQueriesSameOperation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealRepairConsumers_DistinctRevisionsKeepDistinctIdentities" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="38164a12-b76c-f43f-76fc-6479e846205e">
+      <Execution id="0cdf005f-1173-4bd4-853c-cc7de2098979" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="RealRepairConsumers_DistinctRevisionsKeepDistinctIdentities" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: &quot;stop-timeout&quot;, allowedStops: 1)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d343cb74-86fe-79c8-7d95-99df53aafd1e">
+      <Execution id="d9d5f083-70c9-4171-8e2a-8c84da66dabf" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="RealTurn_LateReplacementCannotPublishOldTerminal" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealLauncherTimeout_HeldInputReturnsUnknownWithoutReplay" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5c3399c7-0fd9-0849-d0e4-6cc3f227b362">
+      <Execution id="d4ea9072-3782-46cf-9083-42c69157d172" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="RealLauncherTimeout_HeldInputReturnsUnknownWithoutReplay" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ActualRetry_TransportAmbiguityDoesNotRepeat" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b5feeaa0-46bf-f3c8-dc06-a96544bdb13e">
+      <Execution id="55030965-db48-4a93-9e12-8dff658815b6" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="ActualRetry_TransportAmbiguityDoesNotRepeat" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ReplacedAfterProvenZeroWrite_CancelsWithoutReplaying" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2ce1ce28-fec1-e224-c329-55ead057391e">
+      <Execution id="01255b8d-f207-4275-917a-f29b053a8a2a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="ReplacedAfterProvenZeroWrite_CancelsWithoutReplaying" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.CallerSnapshotReplacedBeforeAllocation_CannotSendOldMessage" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="72190c63-1fba-c55d-cac1-89e85e7165cf">
+      <Execution id="42edbf0f-272d-4d13-841b-ae8cbb13c99c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="CallerSnapshotReplacedBeforeAllocation_CannotSendOldMessage" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: &quot;payload&quot;, allowedStops: 0)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9ce5d7d0-baf1-389e-548c-13c7ad1d2e25">
+      <Execution id="f64d5d8a-649b-4007-b15b-d28fee3653e1" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="RealTurn_LateReplacementCannotPublishOldTerminal" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.FirstAutostart_CapturesOnlyActualStartedBinding" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3ced723d-7dca-83c2-1ac4-fd277646d31d">
+      <Execution id="0b9454a3-174c-4690-888b-99bf1dcda3ba" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="FirstAutostart_CapturesOnlyActualStartedBinding" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ProvenBusy_RetriesIdenticalFrozenOperation" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0c9c5e98-a66e-585d-11c7-697d3f27d94f">
+      <Execution id="9c9805a0-6ada-4ed9-a60b-14b0b64b01af" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="ProvenBusy_RetriesIdenticalFrozenOperation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: &quot;idle&quot;, allowedStops: 0)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4ac763c9-8b0b-ce4b-f003-34f5065b2463">
+      <Execution id="ac8f951d-b880-40e7-90b7-192383ea1be6" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="RealTurn_LateReplacementCannotPublishOldTerminal" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: &quot;stop-payload&quot;, allowedStops: 1)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f3e27d0f-ba2f-8ed4-8441-46d1c68845a4">
+      <Execution id="6f2e2ea4-0252-4c24-b983-ef643ed7c467" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="RealTurn_LateReplacementCannotPublishOldTerminal" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.QteIdle_QueriesOriginalWithoutRepaste" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="78481c0a-d760-e4df-37a2-62f2a1676980">
+      <Execution id="7e199b13-cb88-4153-b506-a08636906867" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="QteIdle_QueriesOriginalWithoutRepaste" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: &quot;artifact&quot;, allowedStops: 0)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2323371b-3477-f82b-7e77-6fdb0f38a219">
+      <Execution id="e5ab898a-9a0c-4d51-bed9-74eefc4e1232" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="RealTurn_LateReplacementCannotPublishOldTerminal" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: &quot;terminal&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b11e0447-cdba-7fa0-888b-eebe1b579b10">
+      <Execution id="593b92dc-721c-4aca-8467-21194bc70752" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: &quot;repair&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="33d392fe-2765-942a-bcaa-951aa5ceae2f">
+      <Execution id="d97a1c91-914a-4623-9078-96b34c120512" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="f3e27d0f-ba2f-8ed4-8441-46d1c68845a4" executionId="6f2e2ea4-0252-4c24-b983-ef643ed7c467" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2ce1ce28-fec1-e224-c329-55ead057391e" executionId="01255b8d-f207-4275-917a-f29b053a8a2a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9ce5d7d0-baf1-389e-548c-13c7ad1d2e25" executionId="f64d5d8a-649b-4007-b15b-d28fee3653e1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bd832e0d-5aa7-d2bb-b37c-6db745685ef7" executionId="14149ea8-3a05-4e8d-bb2d-6530007eb186" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b5feeaa0-46bf-f3c8-dc06-a96544bdb13e" executionId="55030965-db48-4a93-9e12-8dff658815b6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="38164a12-b76c-f43f-76fc-6479e846205e" executionId="0cdf005f-1173-4bd4-853c-cc7de2098979" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d343cb74-86fe-79c8-7d95-99df53aafd1e" executionId="d9d5f083-70c9-4171-8e2a-8c84da66dabf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="78481c0a-d760-e4df-37a2-62f2a1676980" executionId="7e199b13-cb88-4153-b506-a08636906867" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2effeb7a-cbc4-274b-81dd-f6fe52f29bd9" executionId="8a9f90c4-b173-415a-8760-163860ba8b4a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="874ffa86-7e58-7329-a05f-62cdd1b1b966" executionId="fa5a5f08-e62b-45bf-a709-24bc044cc2a2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b11e0447-cdba-7fa0-888b-eebe1b579b10" executionId="593b92dc-721c-4aca-8467-21194bc70752" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="33d392fe-2765-942a-bcaa-951aa5ceae2f" executionId="d97a1c91-914a-4623-9078-96b34c120512" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ecc312c4-3fc0-f141-16b7-62840c7b1092" executionId="bdf6959e-a402-42b8-9ef6-ef6dc8928ba4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3ced723d-7dca-83c2-1ac4-fd277646d31d" executionId="0b9454a3-174c-4690-888b-99bf1dcda3ba" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4ac763c9-8b0b-ce4b-f003-34f5065b2463" executionId="ac8f951d-b880-40e7-90b7-192383ea1be6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="72190c63-1fba-c55d-cac1-89e85e7165cf" executionId="42edbf0f-272d-4d13-841b-ae8cbb13c99c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5c3399c7-0fd9-0849-d0e4-6cc3f227b362" executionId="d4ea9072-3782-46cf-9083-42c69157d172" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="25d8f82d-598a-f973-50a1-087d74cb0831" executionId="8969d7b4-746b-48f6-9faa-063eacd56a72" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2e462267-dbe4-fbaf-3f27-b542b86bdbbf" executionId="67d98c76-641b-43a2-be58-0912765fe3d1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="49a530c9-303b-c911-17c0-12c9fda835e6" executionId="1d4143a4-3dff-400a-8976-eea782751f4a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0c9c5e98-a66e-585d-11c7-697d3f27d94f" executionId="9c9805a0-6ada-4ed9-a60b-14b0b64b01af" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d4fa378e-7d10-5203-b917-866ac129601a" executionId="7e061e9f-6da0-42d3-81e3-995122fb91c8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2323371b-3477-f82b-7e77-6fdb0f38a219" executionId="e5ab898a-9a0c-4d51-bed9-74eefc4e1232" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a5a6b93a-ac77-61bb-2266-583ed25eeb00" executionId="34d650b1-ee1e-4bc0-b009-53fc132e3f60" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="24" executed="24" passed="17" failed="7" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.31]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.78]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.80]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:09.67]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:09.67]       Expected: 0
+[xUnit.net 00:00:09.67]       Actual:   1
+[xUnit.net 00:00:09.67]       Stack Trace:
+[xUnit.net 00:00:09.67]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(71,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c__DisplayClass6_0.&lt;RealTurn_LateReplacementCannotPublishOldTerminal&gt;b__0(JsonElement result)
+[xUnit.net 00:00:09.67]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(186,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert, String sessionRoot)
+[xUnit.net 00:00:09.67]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(68,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(String boundary, Int32 allowedStops)
+[xUnit.net 00:00:09.67]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:10.55]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:10.55]       Expected: 0
+[xUnit.net 00:00:10.55]       Actual:   1
+[xUnit.net 00:00:10.55]       Stack Trace:
+[xUnit.net 00:00:10.55]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(72,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c__DisplayClass6_0.&lt;RealTurn_LateReplacementCannotPublishOldTerminal&gt;b__0(JsonElement result)
+[xUnit.net 00:00:10.55]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(186,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert, String sessionRoot)
+[xUnit.net 00:00:10.55]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(68,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(String boundary, Int32 allowedStops)
+[xUnit.net 00:00:10.55]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:11.52]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:11.52]       Expected: 0
+[xUnit.net 00:00:11.52]       Actual:   1
+[xUnit.net 00:00:11.52]       Stack Trace:
+[xUnit.net 00:00:11.52]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(71,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c__DisplayClass6_0.&lt;RealTurn_LateReplacementCannotPublishOldTerminal&gt;b__0(JsonElement result)
+[xUnit.net 00:00:11.52]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(186,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert, String sessionRoot)
+[xUnit.net 00:00:11.52]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(68,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(String boundary, Int32 allowedStops)
+[xUnit.net 00:00:11.52]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:12.44]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:12.44]       Expected: 0
+[xUnit.net 00:00:12.45]       Actual:   2
+[xUnit.net 00:00:12.45]       Stack Trace:
+[xUnit.net 00:00:12.45]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(72,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c__DisplayClass6_0.&lt;RealTurn_LateReplacementCannotPublishOldTerminal&gt;b__0(JsonElement result)
+[xUnit.net 00:00:12.45]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(186,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert, String sessionRoot)
+[xUnit.net 00:00:12.45]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(68,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(String boundary, Int32 allowedStops)
+[xUnit.net 00:00:12.45]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:13.52]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:13.52]       Expected: 0
+[xUnit.net 00:00:13.52]       Actual:   1
+[xUnit.net 00:00:13.52]       Stack Trace:
+[xUnit.net 00:00:13.52]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(72,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c__DisplayClass6_0.&lt;RealTurn_LateReplacementCannotPublishOldTerminal&gt;b__0(JsonElement result)
+[xUnit.net 00:00:13.52]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(186,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert, String sessionRoot)
+[xUnit.net 00:00:13.52]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(68,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(String boundary, Int32 allowedStops)
+[xUnit.net 00:00:13.52]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:14.34]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:14.34]       Expected: 0
+[xUnit.net 00:00:14.34]       Actual:   1
+[xUnit.net 00:00:14.34]       Stack Trace:
+[xUnit.net 00:00:14.34]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(71,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c__DisplayClass6_0.&lt;RealTurn_LateReplacementCannotPublishOldTerminal&gt;b__0(JsonElement result)
+[xUnit.net 00:00:14.34]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(186,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert, String sessionRoot)
+[xUnit.net 00:00:14.34]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(68,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(String boundary, Int32 allowedStops)
+[xUnit.net 00:00:14.34]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:15.19]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:15.19]       Expected: 0
+[xUnit.net 00:00:15.19]       Actual:   2
+[xUnit.net 00:00:15.19]       Stack Trace:
+[xUnit.net 00:00:15.19]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(72,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c__DisplayClass6_0.&lt;RealTurn_LateReplacementCannotPublishOldTerminal&gt;b__0(JsonElement result)
+[xUnit.net 00:00:15.19]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(186,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert, String sessionRoot)
+[xUnit.net 00:00:15.19]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(68,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(String boundary, Int32 allowedStops)
+[xUnit.net 00:00:15.19]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:28.58]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T08:09:15.7501807+00:00">
+        <Text>[xUnit.net 00:00:09.67]     BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: "artifact", allowedStops: 0) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T08:09:16.6373680+00:00">
+        <Text>[xUnit.net 00:00:10.54]     BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: "idle", allowedStops: 0) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T08:09:17.6062525+00:00">
+        <Text>[xUnit.net 00:00:11.52]     BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: "wait", allowedStops: 0) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T08:09:18.5264750+00:00">
+        <Text>[xUnit.net 00:00:12.44]     BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: "stop-artifact", allowedStops: 1) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T08:09:19.5988647+00:00">
+        <Text>[xUnit.net 00:00:13.52]     BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: "stop-timeout", allowedStops: 1) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T08:09:20.4227047+00:00">
+        <Text>[xUnit.net 00:00:14.34]     BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: "payload", allowedStops: 0) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T08:09:21.2747608+00:00">
+        <Text>[xUnit.net 00:00:15.19]     BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: "stop-payload", allowedStops: 1) [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>
