@@ -13,6 +13,8 @@ internal static class NativeHostScenarioDriver
 {
     internal static async Task<int> Main(string[] args)
     {
+        if (args.Length == 3 && args[0].StartsWith("restart-", StringComparison.Ordinal))
+            return await NativePoolScenarioDriver.RunRestart(args[0], args[1], args[2]);
         if (args.Length == 3 && args[0].StartsWith("ledger-", StringComparison.Ordinal))
             return await WorkerRunLedgerScenarioDriver.Run(args[0], args[1], args[2]);
         if (args.Length == 3 && args[0].StartsWith("pool-", StringComparison.Ordinal))

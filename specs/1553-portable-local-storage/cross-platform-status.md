@@ -11,9 +11,10 @@ qualification — доказательствами конкретного огр
 выбрал рекомендованную политику: unresolved worker блокирует новые задания всего
 root. Допустимый cleanup сохраняется; Uncertain не становится подтверждённым stop.
 Работа T041-WORKER-RESTART-R2: одним связанным контуром admission до recovery,
-Release, публикация и retirement реального synthetic pool. Текущий код всё ещё R1;
-R2-тестов и runtime изменений пока нет. Следующий шаг: независимое Sol 6.1/xhigh
-ревью уточнений в начале plan.md, затем причинный RED через scripts/test-csharp.ps1.
+Release, публикация и retirement реального synthetic pool. Sol 6.1/xhigh DESIGN PASS
+на `4536638d`, открытых замечаний нет. Добавлен один причинный cold admission test
+на неизменённом pool, ещё не собран/не запущен. Следующий шаг: RED через
+scripts/test-csharp.ps1, затем закрытая связанная реализация. Runtime пока R1/B.
 R3, public Linux Release, main PTY, live GM и реальные saves закрыты.
 Старые формулировки «R2 не разрешён» ниже относятся к истории завершения R1.
 

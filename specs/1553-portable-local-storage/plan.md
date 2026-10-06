@@ -16,7 +16,23 @@ prerequisite discovery resolved this existing feature/tasks successfully; do not
 reinitialize its plan. Use Superpowers/Spec Kit bridge, sole writer, independent
 actual Sol 6.1/xhigh design and final review. R3 remains unapproved.
 
-Current checkpoint: design/plan refinement only; zero R2 runtime changes or tests.
+Current checkpoint: independent actual gpt-6.1-sol/xhigh DESIGN PASS at
+`4536638de8369c555f251feb30f485ad1bfa0dd1`, no open defects/hypotheses. Three
+source-backed gaps were closed before implementation: mixed-mode ownership, original
+partial workspace creation authority and immediate root closure on native uncertainty.
+The close-only notification must be a nonblocking atomic latch; persist separately
+from native state locks. Runtime remained unchanged during that review; zero probes.
+
+Initial causal test scaffold now added, not yet built/run. One fresh-process test
+leaves actual Prepared plus an interrupted canonical member publication through
+abrupt `_exit(77)`, then invokes actual RunTaskAsync in a second guarded process.
+For this initial RED it uses the unchanged accepted B injection; no R2 admission
+exists yet. It asserts no recovery, reservation, launch, Release or success and exact
+root preservation, after independently checking cleanup/ECHILD. This establishes
+the absent connection in the accepted baseline; later GREEN must use the complete
+explicit R2 context and its positive companion before any qualification claim.
+New category `worker-restart-admission-linux` owns this test. Prior catalog objects
+are unchanged; portable default selection remains unchanged until its contracts change.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing
