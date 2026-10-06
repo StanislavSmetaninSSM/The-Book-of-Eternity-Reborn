@@ -12632,6 +12632,30 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-run-ledger-storage-linux",
+      "responsibility": "#1553 R1 actual Linux local worker ledger initialization, retained locks, exact state transactions and live prelaunch-only archival.",
+      "excludes": "Pool/main/Release integration, provider processes, root dispatch policy and Windows native qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger*.cs",
+        "BookOfEternityClient/Core/WorkerRunLedgerPersistence.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

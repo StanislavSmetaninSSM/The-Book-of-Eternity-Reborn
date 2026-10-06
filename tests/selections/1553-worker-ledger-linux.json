@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "worker-run-ledger-record",
+      "reason": "R1 new strict worker record; no existing main or pool behavior changes.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R1",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-run-ledger-storage-linux",
+      "reason": "R1 Linux persistence; actual new ledger mutation contracts only, no worker launch.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R1",
+        "FR-012/014/015"
+      ]
+    }
+  ]
+}

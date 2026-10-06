@@ -45,7 +45,9 @@ Record codec GREEN at `6ab35591a83e1634eb969ac3222edf5481a56a1f`: fresh selected
 44/44PASS,41.0397245s, no timeout, cleanup complete. Evidence:
 recovery/evidence/worker-ledger-record-green/manifest.json. Only prelaunch-abort terminal
 syntax is supported; started-run retirement remains unavailable. Do not repeat this
-cohort unless codec/shared validation changes. Next: real persistence causal tests.
+cohort unless codec/shared validation changes. Next: real persistence causal tests. Storage scaffold and three initialization/absence
+assertions added; fresh native category RED pending. Default CI selection retains the
+portable record category; explicit Linux selection adds the native storage category.
 
 Persistence implementation notes (R1 technical refinement, no R2 admission decision):
 - Fixed root-relative namespace, ordinary-path scope checks, original non-inherited
