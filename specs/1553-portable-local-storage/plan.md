@@ -142,6 +142,20 @@ Do not repeat untouched INPUT37/OUTPUT48 or worker/native cohorts.
   terminal after pending is absent. Replaced bytes remain rejected; every new daemon
   terminal/report write still requires the exact source. No new game acceptance permit.
   Fresh daemon GREEN/review pending; bridge46PASS evidence is reused unchanged.
+  Final daemon GREEN at db5864c2b2fcecb6958ff7842fc1cf885f688772:
+  37planned/executedPASS (unit28 + exact integration9), exit0;53.8494018seconds;
+  no timeout/skips/duplicates, all owned cleanup complete.
+  -NoBuild follows the successful fresh builds at e1cad8ec; all compiled C# inputs
+  remain byte-identical, only actual repository PS source changed and is AST-extracted.
+  [Final daemon GREEN](recovery/evidence/t042-terminal-final-green/manifest.json).
+  Latest distinct coverage is bridge46PASS at773f5e9e + daemon37PASS atdb5864c2,
+  83positions, not a single83case run at the later source. No unrelated cohorts rerun.
+  Sol source review confirms the correction and sufficient narrow selection; final
+  source/evidence verdict remains pending. Preliminary discovery319/10918valid,
+  PlanOnly83selected/0executed, source unchanged but eight new evidence files visible.
+  [Preliminary metadata-only discovery](recovery/evidence/t042-preliminary-discovery/manifest.json).
+  Clean published checkpoint discovery follows. XML11valid; own fixture roots absent;
+  accepted main/worker/native/storage sources and writer/output/key regions unchanged.
 - [ ] Connect typed launcher/daemon/ordinary/QTE/repair outcomes, no ambiguity replay.
 - [ ] Focused fresh GREEN and discovery; exact source/binary/artifact evidence.
 - [ ] Independent Sol source/evidence PASS, ordinary publication/readback and fresh restore.
