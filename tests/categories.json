@@ -12531,10 +12531,6 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.*",
-            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ClearsPendingCliInputBeforeDispatchPrompt",
-            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_RefusesPromptDispatchWhileCodexCliIsWorking",
-            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ConfirmsPromptLeavesInputAfterAppendEnter",
-            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_AutoSkipsCodexUpdatePromptWithoutMarkingReady",
             "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ProductionStartAndDiagnosticsConsumeTheTestedMethods"
           ]
         }
@@ -13319,7 +13315,25 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmBridgePromptOperationTests.*"
+            "BookOfEternityClient.Tests.GmBridgePromptOperationTests.*",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_PreservesPendingCliDraftBeforeAutomaticDispatch",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DispatchUsesPositiveProfileAndEmptyComposer",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DispatchRequiresFreshPasteAndSubmissionEvidence",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ManualReadyCannotClearUncertainDelivery",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ActiveOperationCannotBeMarkedReady",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_IdleObservationCannotClearUncertainDelivery",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DoesNotAutoAcceptTrustPrompt",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DoesNotAutoAnswerUpdatePrompt",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_AutoReadyRequiresSupportedEmptyIdleView",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ManualTakeoverPrecedesCompetingWrite",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_StatusAndCancelReachRealPromptOperation",
+            "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ProductionOriginsAndRetirementConsumeTheTestedLifetimeMethods",
+            "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualAssemblyAndPortablePdbMatchProductionSource",
+            "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes",
+            "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_WriteFailureIsRecordedAndPumpStops",
+            "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_NullPtyStopWaitsForLateKeyReadBeforeReplacementConsumesKeys",
+            "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_RetainsStartedAndQueuedWritesUntilSettledBeforeNewBinding",
+            "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_TimeoutRetainsSameDrainAndBlocksReplacementUntilLateCompletion"
           ]
         }
       ]
@@ -13345,7 +13359,17 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.*"
+            "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.*",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.DaemonBridgeDispatch_UsesTypedOperationWithoutReadinessBypass"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.IntegrationTests.GmTurnHelperContractTests.DaemonRepairDispatch_RetriesWhenGmBridgeIsBusy",
+            "BookOfEternityClient.IntegrationTests.GmTurnHelperContractTests.DaemonRepairDispatch_TimesOutAndPublishesStallReportWhenBridgeNeverAcceptsPrompt",
+            "BookOfEternityClient.IntegrationTests.GmTurnHelperContractTests.DaemonTerminalProtocolDispatch_RetriesWhenGmBridgeIsBusy",
+            "BookOfEternityClient.IntegrationTests.GmTurnHelperContractTests.DaemonTurnDispatch_EmitsTerminalErrorWhenBridgePipeNeverAcceptsDispatch"
           ]
         }
       ]

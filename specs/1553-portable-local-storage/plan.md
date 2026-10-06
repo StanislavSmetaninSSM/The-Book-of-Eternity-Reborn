@@ -44,6 +44,18 @@ Do not repeat untouched INPUT37/OUTPUT48 or worker/native cohorts.
   daemon caches frozen pending bytes and pauses uncertain outcomes, QTE idle queries only.
   Added controlled behavioral tests. Fresh build/GREEN and independent review not yet run;
   altered source guards and remaining inert consumer scenarios are still pending.
+  First attempt at `df21035c079fbfa09efea6e3770f805b882b6fac`: fresh build;
+  bridge16executed,15PASS/1FAIL, daemon unexecuted by fail-fast (18planned/16completed).
+  The partial-submit fixture changed Fail inside the paste callback and then threw on
+  the same paste; this is a fixture phase setup error, not a causal runtime RED.
+  Separate unchanged-build daemon `-NoBuild`:2/2PASS. Both exit without timeout,
+  all owned cleanup complete. [Attempt evidence](recovery/evidence/t042-first-attempt/manifest.json).
+  Correction snapshots the per-write fault before callbacks; no timeout/budget increase.
+  Interim independent Sol6.1/xhigh source review at df21035c found contentless query
+  can borrow changed-body success after lost conflict response, and 15 held duplicates
+  can consume all16peer slots. Added two actual-pipe causal cases before fixing runtime.
+  More inert real consumer/connected RPC scenarios and exact affected guards added;
+  unrun, no qualification claim. Next run the two reviewer cases against unchanged runtime.
 - [ ] Connect typed launcher/daemon/ordinary/QTE/repair outcomes, no ambiguity replay.
 - [ ] Focused fresh GREEN and discovery; exact source/binary/artifact evidence.
 - [ ] Independent Sol source/evidence PASS, ordinary publication/readback and fresh restore.

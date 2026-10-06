@@ -159,6 +159,37 @@ public sealed class GmBridgePromptOperationTests
         Assert.Empty(host.Input.Bytes);
     }
 
+    [Fact]
+    public async Task ChangedBodyQuery_CannotBorrowOriginalSuccess()
+    {
+        await using var host = new PromptHostFixture();
+        host.Input.Written = bytes => host.Observe(bytes == "<submit>" ? "WORKING" : "CONTROLLED CLI\n› original");
+        Assert.Equal("submission-observed", Disposition(await host.Rpc(host.Request("content", "original"))));
+        var changed = new { command = "promptStatus", operationId = "content", operationKind = "turn", operationRevision = "revision-1",
+            inputBindingId = host.BindingId, text = "changed", appendEnter = true };
+        Assert.NotEqual("submission-observed", Disposition(await host.Rpc(changed)));
+        Assert.Equal("<paste>original</paste><submit>", Encoding.UTF8.GetString(host.Input.Bytes));
+    }
+
+    [Fact]
+    public async Task DuplicateFlood_HeldInputCannotOccupyControlService()
+    {
+        await using var host = new PromptHostFixture();
+        host.Input.Hold = true;
+        var active = host.Rpc(host.Request("flood", "text"));
+        await host.Input.Entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
+        var duplicates = Enumerable.Range(0, 15).Select(_ => host.Rpc(host.Request("flood", "text"))).ToArray();
+        await Task.Delay(200);
+        var error = await Record.ExceptionAsync(async () => await host.Rpc(new { command = "status" }).WaitAsync(TimeSpan.FromSeconds(2)));
+        Assert.Null(error);
+        await host.Rpc(new { command = "cancelPrompt", operationId="flood", operationKind="turn", operationRevision="revision-1",
+            inputBindingId=host.BindingId, text="text", appendEnter=true }).WaitAsync(TimeSpan.FromSeconds(2));
+        host.Input.Release.TrySetResult(true);
+        await active;
+        await Task.WhenAll(duplicates);
+        Assert.Equal("<paste>text</paste>", Encoding.UTF8.GetString(host.Input.Bytes));
+    }
+
     internal sealed class PromptHostFixture : IAsyncDisposable
     {
         internal static readonly string Repo = FindRepo();
@@ -280,11 +311,12 @@ public sealed class GmBridgePromptOperationTests
         internal byte[] Bytes { get { lock (_bytes) return _bytes.ToArray(); } }
         public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken token)
         {
-            lock (_bytes) _bytes.Write(buffer, offset, Fail ? Math.Min(1, count) : count);
+            var failThisWrite = Fail;
+            lock (_bytes) _bytes.Write(buffer, offset, failThisWrite ? Math.Min(1, count) : count);
             Written?.Invoke(Encoding.UTF8.GetString(buffer, offset, count));
             Entered.TrySetResult(true);
             if (Hold) await Release.Task; // Deliberately retains actual in-flight I/O despite cancellation.
-            if (Fail) throw new IOException("Controlled partial input failure.");
+            if (failThisWrite) throw new IOException("Controlled partial input failure.");
         }
         public override Task FlushAsync(CancellationToken token) => Task.CompletedTask;
         public override void Flush() { }
