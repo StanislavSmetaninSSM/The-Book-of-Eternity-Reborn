@@ -143,3 +143,7 @@ Clean55ac46ac selected affected integration15 executed:8PASS/7FAIL; subsequent u
 ### Reviewed existing-schema reader fix WIP
 
 Independent actual Sol6.1/xhigh approved the minimal source plan. Share unchanged strict case-insensitive schema1 parser (including duplicate/schema/GUID rejection and BOM decoding); expectation remains refusal-only and canonical validation after original stop remains mandatory. Split exact7 failed integration methods from8passed to avoid replay; pending fresh build and7GREEN+unrun12unit+2nontransientcuts. No other runtime changes.
+
+### Complete narrow GREEN candidate
+
+Cleand4cfb19521/21PASS: causal schema7GREEN + previously unrun12unit + exact nontransient rollback/Uncertain2. Both new guardians ECHILD/emergency0/failures0/deadlinefalse, exact own roots captured/removed. [Evidence](recovery/evidence/load-ux-schema-and-storage-green/manifest.json). All latest distinct selected proofs now132PASS (130executed test cases +2typecheck receipts),41new +91affected; no skips, no broad suite. Eight unaffected integration passes at55ac and all prior unchanged successful boundary proofs retained without rerun. Runtime source d4cfb195 has focused independent Sol SOURCE PASS after full source8aaPASS. Final discovery-only catalog/selection, complete evidence audit, independent evidence review and GitHub restoration remain pending.

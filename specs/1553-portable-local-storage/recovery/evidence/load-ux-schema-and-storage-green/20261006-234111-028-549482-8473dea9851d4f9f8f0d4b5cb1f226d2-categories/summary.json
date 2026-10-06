@@ -1,0 +1,99 @@
+{
+  "Categories": [
+    "gm-load-ordinary-schema",
+    "gm-load-affected-backend",
+    "gm-load-rollback-cut",
+    "gm-load-storage-faults"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "d4cfb195b4df67af090e0b54357cdb0d6419ef65",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "gm-load-affected-backend",
+      "Seconds": 5.9775218,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "gm-load-ordinary-schema",
+      "Seconds": 18.5865415,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "gm-load-rollback-cut",
+      "Seconds": 22.9132485,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-load-storage-faults",
+      "Seconds": 16.4063801,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0536393,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0581846,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1071746,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 50.4791576,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 12.2190019,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0056325,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 21,
+  "WallTime": "00:02:15.8243338",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 4,
+    "PlannedCases": 21,
+    "CompletedCases": 21,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 21,
+    "Executed": 21,
+    "Passed": 21,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

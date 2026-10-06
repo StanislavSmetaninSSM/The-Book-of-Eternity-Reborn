@@ -45,7 +45,7 @@
     },
     {
       "category": "gm-load-storage-faults",
-      "reason": "Actual installed production-neutral original Load HTTP/pipe fault boundary: BrowserHttp_TypedStorageAndIndependentAdmission",
+      "reason": "Actual nontransient conflicting-marker Uncertain Load cut retains logical evidence and prevents fresh launch",
       "contracts": [
         "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
       ]
@@ -66,7 +66,7 @@
     },
     {
       "category": "gm-load-affected-backend",
-      "reason": "Exact existing Load/storage/refresh/original guard consumers affected by lifecycle integration",
+      "reason": "Twelve exact existing unit Load/admission/original-guard consumers; integration schema and refresh are separately selected",
       "contracts": [
         "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
       ]
