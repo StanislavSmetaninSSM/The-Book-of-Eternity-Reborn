@@ -1,0 +1,42 @@
+{
+  "Categories": [
+    "browser-rollback-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "b0d07b4a8820687bb19b28c100832e5bc70857ed",
+    "WorkingTreeFingerprint": "725F8A0EDE44296C51E3B123A9C99804AC44FB523FDB32033030F66C266F4389",
+    "ChangedFiles": 1
+  },
+  "PreparationSeconds": 119.0775213,
+  "Descriptors": [
+    {
+      "Name": "browser-rollback-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "browser-rollback-linux",
+      "Categories": [
+        "browser-rollback-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_CallbackFailureRestoresExactBaselineAndAbsence|FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_CommitsExistingAndAbsentMembers|FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_ExplicitOriginalLeasePublishesWithoutAmbientAuthority",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_CallbackFailureRestoresExactBaselineAndAbsence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_CommitsExistingAndAbsentMembers",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_ExplicitOriginalLeasePublishesWithoutAmbientAuthority",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

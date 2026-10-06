@@ -50,6 +50,12 @@ public partial class FileSystemManager
         if (lease.MutationIntentRecorder != null || lease.IsLegacyStorageRecovery) return false;
         // The old browser recorder owns its own manifest/before-image namespace,
         // including recorder-free cleanup. Do not journal those artifacts anew.
+        if (lease.BrowserLocalAccess is { } access)
+        {
+            access.Validate();
+            var relative = GetLocalRelativePath(GameSessionPath, ResolvePath(relativePath), false);
+            if (access.OwnsArtifact(relative)) return true;
+        }
         var path = ResolvePath(relativePath);
         var root = ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root);
         var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
@@ -127,6 +133,12 @@ public partial class FileSystemManager
     {
         lease.EnsureNoPendingLocalDecision();
         EnsureWorkerPurposePublication(lease, generation, changes);
+        if (lease.BrowserLocalAccess is { } browser)
+        {
+            browser.Validate();
+            foreach (var change in changes)
+                if (browser.RecordIntent != null) await browser.RecordIntent(change.Path, change.After);
+        }
         var scope = new TrustedLocalFileScope([BasePath]);
         var registrations = new List<InProcessMutationRegistration>();
         try

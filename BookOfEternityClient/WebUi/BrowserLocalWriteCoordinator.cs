@@ -268,6 +268,7 @@ public sealed partial class BrowserLocalWriteCoordinator
             writeLease.ExternalPublicationContext = null;
             writeLease.MutationIntentRecorder = null;
             backups?.DarenTransaction?.Dispose();
+            backups?.LocalTransaction?.Access.Dispose();
             await TryReleaseAsync(writeLease, lockLease);
             throw;
         }
@@ -317,6 +318,7 @@ public sealed partial class BrowserLocalWriteCoordinator
                 writeLease.ExternalPublicationContext = null;
                 writeLease.MutationIntentRecorder = null;
                 backups?.DarenTransaction?.Dispose();
+            backups?.LocalTransaction?.Access.Dispose();
                 await TryReleaseAsync(writeLease, lockLease);
             }
 
@@ -341,6 +343,7 @@ public sealed partial class BrowserLocalWriteCoordinator
         writeLease.ExternalPublicationContext = null;
         writeLease.MutationIntentRecorder = null;
         backups?.DarenTransaction?.Dispose();
+        backups?.LocalTransaction?.Access.Dispose();
         var released = await TryReleaseAsync(writeLease, lockLease);
         return BrowserLocalWriteResult.Completed(
             released && rollbackEvidenceCleaned

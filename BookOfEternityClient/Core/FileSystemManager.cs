@@ -299,6 +299,7 @@ public partial class FileSystemManager
         }
         internal ICanonicalMutationIntentRecorder? MutationIntentRecorder { get; set; }
         internal bool IsLegacyStorageRecovery { get; set; }
+        internal BrowserLocalStorageAccess? BrowserLocalAccess { get; set; }
         internal AmbientCanonicalLeaseRegistration? AmbientRegistration
         {
             get => _ambientRegistration;
@@ -319,6 +320,7 @@ public partial class FileSystemManager
             ExternalPublicationContext = null;
             PendingLocalDecision = null;
             MutationIntentRecorder = null;
+            BrowserLocalAccess?.Dispose();
             var mainForFailure = MainAdmission;
             Exception? failure = null;
             void RetainFailure(Exception next) =>

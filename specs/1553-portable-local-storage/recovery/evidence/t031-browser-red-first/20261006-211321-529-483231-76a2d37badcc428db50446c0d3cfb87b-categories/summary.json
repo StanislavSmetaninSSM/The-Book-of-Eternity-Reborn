@@ -1,0 +1,68 @@
+{
+  "Categories": [
+    "browser-rollback-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "b0d07b4a8820687bb19b28c100832e5bc70857ed",
+    "WorkingTreeFingerprint": "725F8A0EDE44296C51E3B123A9C99804AC44FB523FDB32033030F66C266F4389",
+    "ChangedFiles": 1
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "browser-rollback-linux",
+      "Seconds": 5.0944069,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0931133,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0688115,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1344347,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 112.6787987,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 8,
+  "WallTime": "00:02:04.7300748",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 3,
+    "CompletedCases": 3,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 3,
+    "Executed": 3,
+    "Passed": 0,
+    "Failed": 3
+  },
+  "DuplicateTests": []
+}

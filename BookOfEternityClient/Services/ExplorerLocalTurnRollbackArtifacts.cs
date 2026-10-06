@@ -6,7 +6,7 @@ using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 
-public static class ExplorerLocalTurnRollbackArtifacts
+public static partial class ExplorerLocalTurnRollbackArtifacts
 {
     public const string Root = "game_state/control/explorer_local_turn_rollback";
     internal const string DarenRewardProfileExternalFileId = "daren_reward_profile";
@@ -87,6 +87,8 @@ public static class ExplorerLocalTurnRollbackArtifacts
             get;
             init;
         }
+
+        internal LocalBrowserTransaction? LocalTransaction { get; init; }
 
         internal int SchemaVersion
         {
@@ -361,6 +363,9 @@ public static class ExplorerLocalTurnRollbackArtifacts
         IEnumerable<string>? rollbackCleanupDirectories = null,
         IEnumerable<string>? rollbackExternalFileIds = null)
     {
+        if (OperatingSystem.IsLinux())
+            return await StageLocalBrowserTransactionAsync(fs, writeLease, trackedFiles, scope,
+                rollbackCleanupDirectories, rollbackExternalFileIds);
         var normalizedPaths = trackedFiles
             .Where(static path => !string.IsNullOrWhiteSpace(path))
             .Select(static path => path.Replace('\\', '/').Trim())
@@ -588,6 +593,8 @@ public static class ExplorerLocalTurnRollbackArtifacts
         FileSystemManager.CanonicalWriteLease writeLease,
         BrowserWriteRollbackTransaction transaction)
     {
+        if (transaction.LocalTransaction != null)
+            return MarkLocalBrowserCommittedAsync(fs, writeLease, transaction);
         fs.EnsureCanonicalWriteLeaseActive(writeLease);
         var darenTransaction = transaction.DarenTransaction;
         try
@@ -794,6 +801,8 @@ public static class ExplorerLocalTurnRollbackArtifacts
         BrowserWriteCleanupOutcome outcome,
         out Exception? failure)
     {
+        if (transaction.LocalTransaction != null)
+            return TryDeleteLocalBrowserTransaction(fs, writeLease, transaction, outcome, out failure);
         try
         {
             EnsureDarenPublicationResolvedForCleanup(
@@ -1236,6 +1245,11 @@ public static class ExplorerLocalTurnRollbackArtifacts
         FileSystemManager.CanonicalWriteLease writeLease,
         BrowserWriteRollbackTransaction transaction)
     {
+        if (transaction.LocalTransaction != null)
+        {
+            await RestoreLocalBrowserTransactionAsync(fs, writeLease, transaction);
+            return;
+        }
         if (transaction.SchemaVersion <
             CurrentBrowserWriteManifestSchemaVersion)
         {
