@@ -29,7 +29,7 @@
     },
     {
       "id": "gm-main-linux-launcher",
-      "responsibility": "#1553 M1 Actual ordinary Linux launcher/daemon/console entrypoints in relocated shipped layout, configured neutral-only fixture",
+      "responsibility": "#1553 M1 Actual ordinary Linux launcher/daemon/console entrypoints in relocated shipped layout, configured neutral-only fixture; live companion console/daemon consumer pins from installed cwd, no inherited checkout lookup (shared ownership deduplicated when both categories selected)",
       "excludes": "No neutralPackage bypass, provider/Codex Q1/Q2, real saves, helpers enabled, Auto/systemd/native Windows/cold guarantees or browser rollback migration.",
       "changeHints": [
         "BookOfEternityClient/Services/GmRuntime/",
@@ -48,7 +48,8 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.*"
+            "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.*",
+            "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.RealConsoleHealthAndInertDaemonConsumers_BorrowOriginalLiveProductionPins"
           ]
         }
       ]

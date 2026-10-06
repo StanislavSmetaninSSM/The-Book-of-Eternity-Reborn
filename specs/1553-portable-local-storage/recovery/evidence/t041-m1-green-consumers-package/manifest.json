@@ -1,0 +1,1753 @@
+{
+  "SourceCommit": "5e9e7c127859190d0d52320455762951714d9ed1",
+  "Command": "source /workspace/.onboarding/activate.sh; pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+  "Inputs": [
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "Bytes": 10787,
+      "Sha256": "498c333ffad6544e7534fb6d0539ca62a1446a3dcae9948a5b5942725bf00846",
+      "GitBlob": "f3936a438ebc46a7af706318370d7babd288666a"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.cs",
+      "Bytes": 26657,
+      "Sha256": "3bd9b7cb35a679575d789c38d5c386f73d6a722dbcb3c4b7deadfe7eb39b7b2b",
+      "GitBlob": "fa4233991bbfb53649d3a0dc358f2325def0e8e0"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Bytes": 1682,
+      "Sha256": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0",
+      "GitBlob": "8d5df04ac73689ac01baf7a225afc68adb6f1d18"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmMainLinuxLauncherTests.cs",
+      "Bytes": 2842,
+      "Sha256": "0a539c6e96ffaaaac0fd7286e8519c4915148bf6aa5728329d557074428952f4",
+      "GitBlob": "0fb3434053c9ad9d79427fe5aa684860be284388"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmMainProductionAdmissionTests.cs",
+      "Bytes": 1096,
+      "Sha256": "edabc7bef64cc8585b3665c62b10db12293ae6c20c3a355a4818ded22e7b1663",
+      "GitBlob": "d835ea8e832afe80eed524826ae6e1ce01d4a3a3"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmMainRunFenceTests.cs",
+      "Bytes": 7850,
+      "Sha256": "d13434775f875de39120d1adf9ed72d39c1821b916781096b12329ada8c18903",
+      "GitBlob": "d925ad80b566b4cb21419b55faa7af2c4f5bc641"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs",
+      "Bytes": 11726,
+      "Sha256": "6ceecee5fbe93cb9f45636a7ce222f9144e27f951c37e7a1950c06d65bbd5de0",
+      "GitBlob": "8f7671b1dfdb9e979021600e14c6201cac58ff01"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/PortableClientStorageTests.cs",
+      "Bytes": 23010,
+      "Sha256": "5904a4fb5f8acbcc718bc3f38268d849726a67dbd7c23c300bbf5313d7cf3a4b",
+      "GitBlob": "8bbd969308d14cf2a1782369a37da6a731a65675"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs",
+      "Bytes": 10310,
+      "Sha256": "e7ce39ca9bf568f42972363b3f1fb405a80d464ac48daebf0fe07b5a55bd3f65",
+      "GitBlob": "5545979578487c1266e20487465d96d3270bd497"
+    },
+    {
+      "Path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "Bytes": 5737,
+      "Sha256": "d94bd0c3606a710e58166e7085bff7d0cc5bc00be6402201690ea5ace4aec8ec",
+      "GitBlob": "d4e6e0b02c8d9c874588d5a240639291ed47bf28"
+    },
+    {
+      "Path": "BookOfEternityClient/Configuration/GameSettings.cs",
+      "Bytes": 16393,
+      "Sha256": "0191f2f8bc0dead66da78c8e539d09366fc9e30774a7263b2623a94568f5a7c6",
+      "GitBlob": "da1a0e0fcba71a3cfbcdcce86947dcd019289c52"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "Bytes": 12629,
+      "Sha256": "97b1a69542547630831ec6f3f3bab290e4a1cc85c8906402430434f5e50e04d9",
+      "GitBlob": "baf494d2c0fbc36aa64f7299cbe0614f4603d6c5"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "Bytes": 234549,
+      "Sha256": "94eada9841afcffb0f2e484df1a6d280f0a40fb94c45a64d501efd3e44fa6ef2",
+      "GitBlob": "a9c895f8ffed3946a757a6fba772836742567083"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "Bytes": 261781,
+      "Sha256": "37fb56069ed240ea45f6109476c858fb46864bab235c899fa3890ba215aa1f1d",
+      "GitBlob": "b7824ed8f9a6d1cc79922ffd617dcf3d1958dbd6"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "Bytes": 479836,
+      "Sha256": "704e7e7e0445654f2ba2c375bf78d5b612a53c7b51ccfc1cc0acafa7b0983d97",
+      "GitBlob": "75ac03e9180393c6b8dc6e0ec8d6295469cfc1fa"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GmSessionRunPersistence.cs",
+      "Bytes": 7977,
+      "Sha256": "e64d6de3a210fef5426537636d48a8a8e67b52aad98f10d873c819684ca66f09",
+      "GitBlob": "3f56cc94576fad3a16fd65d5936fd5352e9ebd80"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "Bytes": 19312,
+      "Sha256": "fb89eae579d0a42bdb1e86fc5eec7003b38b0e9db3da45e45e7b31e6de395804",
+      "GitBlob": "2537169a14b485660a5eb6c8395a55272fb90a11"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/StateManager.cs",
+      "Bytes": 27067,
+      "Sha256": "fdf7fa9d071c750a18a27eab0d0ac25dd2d036a3eec06544fe639fd699c4d997",
+      "GitBlob": "5cd3ff535c7a49b71e5a620ba8a1ff3d962ba786"
+    },
+    {
+      "Path": "BookOfEternityClient/Launcher/bookofeternity.ps1",
+      "Bytes": 42049,
+      "Sha256": "13b2e1582d7459b135047557286912f9ab1f887bcb2e604573094e5ce70d47e6",
+      "GitBlob": "57cfceb9f7c54e8ae23cae97f7b7bb6a46c86b5d"
+    },
+    {
+      "Path": "BookOfEternityClient/Launcher/gm_main_operation.ps1",
+      "Bytes": 9952,
+      "Sha256": "47b93542d18d3b32a3460af796d11053762cc537e2e81884bb7df0951f75d58f",
+      "GitBlob": "6c09fd7fd0e65bc7258853f32275fec6d550317a"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmMainOperationClient.cs",
+      "Bytes": 6421,
+      "Sha256": "a835f855f27cb883b60374c8555cc99a42df8b45fef593d36e69067d48ade37a",
+      "GitBlob": "acb36162fa471842b9c0e767a42962d7ca9ad4f3"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmMainOperationProtocol.cs",
+      "Bytes": 2993,
+      "Sha256": "199378d4f0477a2cfdd7e7afc6745ffdebe58935f49b5169342e0e58d0b9b2c9",
+      "GitBlob": "a54deb686b6a85de26f37821fdf67456c2bffd30"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
+      "Bytes": 6734,
+      "Sha256": "387dae9d0878a0c6862128e2b2477c6dc339be586245c5c34380a4d3351aab51",
+      "GitBlob": "b67186b69bfbeddf10e58de92817bf8177b1a5f6"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunAdmission.cs",
+      "Bytes": 4093,
+      "Sha256": "aa1338fbfa3ba4b8a89851acaa41b4a5bfa3b95c8cc3239116fc24057add621a",
+      "GitBlob": "aaa6433bb7ca0caa687f66d660be85ff82f83983"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+      "Bytes": 4891,
+      "Sha256": "98e456b253365465eaa213d86747ab545dbe907643adfbb10ee940763a568d22",
+      "GitBlob": "873ba30e7f4cd66f52104fe5f072d28adf4d6154"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "Bytes": 15941,
+      "Sha256": "861a7c914b03c049b0779758f819222998c71b164951107d79a4c93609044884",
+      "GitBlob": "d87cba0091c9a7e387de353a9f4ef5cc328377b1"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecord.cs",
+      "Bytes": 7342,
+      "Sha256": "d31a714f9485647ab68b6ee7b7d07da852cb1e88edb3f0df7a1e6bf5ff9ec8c8",
+      "GitBlob": "877b16da222a4326d3228d08a1a253b0b81ecbbb"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecordCodec.cs",
+      "Bytes": 5526,
+      "Sha256": "7e269f884c4ca2dd9277d9b1e3813dc8f15d405bd163160d6fc671247849ad63",
+      "GitBlob": "19f6293794a283e666c220912c2ea6cb47a535ab"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/IOwnedTerminalSession.cs",
+      "Bytes": 901,
+      "Sha256": "d368c7be21cb2edb72935d8a86fb0f25da2f7f714792c66fab4d9b1ff389cbb7",
+      "GitBlob": "4e0a4ed2348738b309be07482038fb923bf9ee64"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/LinuxOwnedTerminalSession.cs",
+      "Bytes": 4102,
+      "Sha256": "69b9943d4e3ce1e6b271508019936c4849a7585cb03391c06116d8bc4c1f5d60",
+      "GitBlob": "5a46c4fe05f2392ee34f93ce392e36819c6aacd3"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/LinuxPtyStream.cs",
+      "Bytes": 7869,
+      "Sha256": "8af14b69d3235041e9bc44203eb736917be6db9d86e35bd82c458130f46590af",
+      "GitBlob": "1009d9ea61abcfa24468042e167b5d2d2af14805"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/NeutralTerminalLaunch.cs",
+      "Bytes": 2396,
+      "Sha256": "327652cb6c5c4085e0c665aff68e135b1838210218bf301cba3aa9ebe12a56e0",
+      "GitBlob": "ad1e6e89ba3d47f6b9a316a97c623bfda61f8a3d"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/OwnedTerminalSessionFactory.cs",
+      "Bytes": 4086,
+      "Sha256": "746b8ad1878d6edff43b1ffc8d14da90835cfea89285ca7133521d5cb795b896",
+      "GitBlob": "8b13fd2c0f5a64d9082a3f08f6bc41f097154241"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/PartialNativeTerminalSession.cs",
+      "Bytes": 1355,
+      "Sha256": "26fd5e7f39d3b910c8f07ed480c084205d0194e459df6c25e8302da8a00e0998",
+      "GitBlob": "23406bc81b8070a56266b25f1cce0e04aa1731d1"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/ProductionMainLaunch.cs",
+      "Bytes": 2819,
+      "Sha256": "66d9bdd12751cc6379f99d65cff43dfeafbc2e80d8ce2e1ec7cfe6d64d10a68b",
+      "GitBlob": "1b27e5ec7d05d3974fe6c2a7639f072bfa9367d7"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/ActorMaterializationRepairPreservationGuard.cs",
+      "Bytes": 34502,
+      "Sha256": "8e29dbce0a4f4fa9c74afc28974ada3823b695f527e30c51f2a81d0057152eb3",
+      "GitBlob": "4f1d1c31fd902b9af3009facb5ff196aa280f0ab"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/AfterlifeRealmAuthorityContract.cs",
+      "Bytes": 3879,
+      "Sha256": "100cd7d703c7204a11282fd0328ff986d5a7edbbd72ed297a2b10df523b0f006",
+      "GitBlob": "777ca951f083eabc3711e66a876ed1d120658f59"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.SpiritualContinuation.cs",
+      "Bytes": 5566,
+      "Sha256": "2d338f219e79ca34b470730ba2705a7d9473938e8923f4fda59900c8e5a4620d",
+      "GitBlob": "90ea55a7cdf255dacabac8e999be61f7fe3f21ae"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs",
+      "Bytes": 26748,
+      "Sha256": "64aeba548d807aed0142f5af62dc37dbd11acc27b5e593fe84f9a8331b589d62",
+      "GitBlob": "b2f0a4a5ebf7a6f2e63f2660dfb7e04d8ee2fcaa"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerAuditEventIdGenerator.cs",
+      "Bytes": 480,
+      "Sha256": "d86ecfec2c6f412e9c0f7828ccef2ab9b98de6a6484eda3f08c13680af785437",
+      "GitBlob": "224569b2f94c50cc8349a6594f3f41738f34b9f4"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs",
+      "Bytes": 14151,
+      "Sha256": "401100aa4874634d50d1528d9c12808d7db6c92d8ce7d2d75c27f72e410eff5a",
+      "GitBlob": "35299ea975160e25e8e94c5aeaf85add0f088304"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBackendSelector.cs",
+      "Bytes": 2990,
+      "Sha256": "fdc63764d17b50c37477c900b9a8fea0c97ec7eaaab84b1a25c0703dacd2a7a1",
+      "GitBlob": "855114bfafa9981c76cb2f15c04accaffc7629c7"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+      "Bytes": 64482,
+      "Sha256": "36165a3ac7513339d8a50207aea8693ae71d8f640ccdafeeece402d32f6a28aa",
+      "GitBlob": "82ac9359de050c2820c4d3d6bb996d4cce0e65f1"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgeProfileTemplates.cs",
+      "Bytes": 9800,
+      "Sha256": "262b9f8e27639fd791e4a60ee32cadf9e5fc66e71a24cab2daf183197989e265",
+      "GitBlob": "1e7e6c23d152607259a6c80de2126aef5e6e733b"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerContractValidator.cs",
+      "Bytes": 84104,
+      "Sha256": "2a1ed15b35058beb8c3415dce783e0e551f0be211bf6ff69a451b694e9eef472",
+      "GitBlob": "49f384b6f6f7c6c62397c0acf4ab14bc9c49ee3f"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerDispatchAdmission.cs",
+      "Bytes": 3330,
+      "Sha256": "92d8c35eb7f1977a55252b294b1658cbec83251feee14a36e370eb11f464ee70",
+      "GitBlob": "203b3961c10a05a0798427d4100c234f4c16cad6"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerDurableExecution.cs",
+      "Bytes": 23367,
+      "Sha256": "ae6af3a0854ba562a10c5efc4c056a6ff809976b7f458782fe9b1472c8d9d7cb",
+      "GitBlob": "59cda771f7a0ae4b5009fceedeed0c98ce6ac856"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionAuthority.cs",
+      "Bytes": 9818,
+      "Sha256": "6b35e4929e0c3786b34ae8fa7adbf049354b6f97b91f959261c8bf82c50aec08",
+      "GitBlob": "eb844a6f5d545c812831d38fe57fa16b7d686e32"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs",
+      "Bytes": 47505,
+      "Sha256": "8423cf82b8d7c844f43b5e5964df69b6ec079526379ed1056cd388bf780d2b56",
+      "GitBlob": "1f4b19d783d9f44b241a15b3857575091ce707db"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerHostIdentity.cs",
+      "Bytes": 5328,
+      "Sha256": "e8d62a1d41a2ebdb8c800e4b903b592353bfeadd5c6183b80875cb06f2ce7f01",
+      "GitBlob": "0d5fa2b4fd822dda90f884d75ad254baeeac8e0f"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerJson.cs",
+      "Bytes": 2451,
+      "Sha256": "f33387bea8124a10ab220d09e2e0b29adbc9d3a7af1a56fd62370efa5e6e1c6a",
+      "GitBlob": "85921f5cd9a9e3b5bf5421ea43dd0d75e96c8e26"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerModels.cs",
+      "Bytes": 18522,
+      "Sha256": "16331789f5a39b4c01cb1584f61266b698fea67ed5348398fc710885d8747ba4",
+      "GitBlob": "e4b395e7e2c64ba93719fdb442ae86a56a1e7f89"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeDescriptors.cs",
+      "Bytes": 5729,
+      "Sha256": "59540c43658b8a079ae842eb252196ad3878c3912a3726a4a6b2c1a1f8a62160",
+      "GitBlob": "0d889a1d4cc5f1048c50122feebb85082d119808"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs",
+      "Bytes": 309,
+      "Sha256": "9709b5558b66d87a5e8f7914aacc2078eb6b57d0f670223f14cab69e741390b6",
+      "GitBlob": "fe0d6a9c26038f78939c3121757c5ecd4a12aa0f"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeObservationFault.cs",
+      "Bytes": 3176,
+      "Sha256": "1b424a44e7cd6e465714ecd5ae0f8d3b5a027027078b5ce869cae88fc3902300",
+      "GitBlob": "d318760cdac59ea7fa57d3913fe0eb9175d69f26"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativePackage.cs",
+      "Bytes": 3124,
+      "Sha256": "20fcd945a355ab36c09ea1aecc7c3438a2eaa93fe65fe73b4eab1c0d5525a9c4",
+      "GitBlob": "ff2ad06c6c5e57fc55b2fd249f600822bf34a676"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativePoolAdmission.cs",
+      "Bytes": 3014,
+      "Sha256": "e72723e9756778f745683dfcd5a38956a155289cc5cfe00debec2e7ded8b3f53",
+      "GitBlob": "b47e30a4ef857c732cd94812f3a192f200099e56"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerOwnedLaunch.cs",
+      "Bytes": 2991,
+      "Sha256": "632fd3b046ff0732351341e78f49b2af5334766f69169e6d2e367e50b408ccac",
+      "GitBlob": "7b8fb1555d1f73b098718e11c06cf312ac4750f2"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs",
+      "Bytes": 36511,
+      "Sha256": "eec1069daa3b96d482441caaa90d67ec6b94a786d74ff635f31d9781fa3f7413",
+      "GitBlob": "1649315c04d082a4abcca8498da409e2e72da972"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostFrameChannel.cs",
+      "Bytes": 5850,
+      "Sha256": "91527d69d2ec77494aba09fbf06c3c719d156e9b108dd6fb89a16052c6e09d29",
+      "GitBlob": "ab8002ba2ce4be75bbe383b72b4dd71a2863ecae"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs",
+      "Bytes": 4098,
+      "Sha256": "8bd8b3103b6c09f2dd375480d910ca8515018c291963681901edd7896e0fa58c",
+      "GitBlob": "c38e4115e90dc24a68ea496e7bcbb6fec8ee15db"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs",
+      "Bytes": 10947,
+      "Sha256": "70d56db7e8f3ce129310c7e207c9c38bff8a450ecfaa43ddec1a515582162ba1",
+      "GitBlob": "b104fa202efd54b616e8f04b9b2e324411db7668"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalInboxService.cs",
+      "Bytes": 8656,
+      "Sha256": "fc607a6bc8d2f7ed6aa6917b7869e05bd632a9da8f65cc8dfebb931644afe08b",
+      "GitBlob": "e14926aa606bb2482905a865843646a043014b69"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalOnlyDispatchService.cs",
+      "Bytes": 13633,
+      "Sha256": "c763c2093174ffceecf4c5a90f574e833b0a17d9f7fb1e8179f49d3a5ecbdcce",
+      "GitBlob": "12218e1ad3bab3e3686947a2d288559f98def9a1"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalStore.cs",
+      "Bytes": 11190,
+      "Sha256": "58857a7a221813701967626bd6dfcbaadfacea31823bd2f36cc9bccf3ea10471",
+      "GitBlob": "7063abe4a1b47894d91a0e75f0db6a4dc3c67717"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs",
+      "Bytes": 16918,
+      "Sha256": "b3891e2140029ff71bf392e0d461677dd1444dbe7f9fc94fc0c8b259f28dc269",
+      "GitBlob": "125bfb9ac3423406bd2c3e62b261ff71f85d9415"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRootContext.cs",
+      "Bytes": 10459,
+      "Sha256": "b187fc0cd1c802526ba1e71872aab476b8f92bf9ff6d476683db2ed410c47e45",
+      "GitBlob": "be01e986d2c832fecc77a4facb2c41d55886d065"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.Live.cs",
+      "Bytes": 7452,
+      "Sha256": "7cb48318758a847e606590c5f98448be855478c952526214c5e0bf29955584a9",
+      "GitBlob": "38d5adecdb2ad720a259eb22fd635827c282db5e"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs",
+      "Bytes": 14013,
+      "Sha256": "78323e87cade8ccc5c27871783cacac6cd086bd235f88883f888f0cdcf91c610",
+      "GitBlob": "727224040a095d96a5c781ca2c87fd7ced5eea7b"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedgerCodec.cs",
+      "Bytes": 9206,
+      "Sha256": "9be3446206a21e618662ccec4ef1f0948d5cbb46dead257f05a5b63678b10f0f",
+      "GitBlob": "ca2d0d5c2cbf16a56d696afe1117a40d3c982367"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunRecord.cs",
+      "Bytes": 1515,
+      "Sha256": "915adb12c606de413d22db64244a7fa2358b8881671bcb9a4faf887bdbad153d",
+      "GitBlob": "98c5dc6effa02fafee1c3baf4543d1a249828a92"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunRecordCodec.cs",
+      "Bytes": 8428,
+      "Sha256": "6084fea6d064d4856e2d866f237631fa6a1bb8ca326e60c193ca4e506b95fec7",
+      "GitBlob": "70472fd1a5f649dbad59fe232f72f5bcd61efe7c"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerSyntheticBundlePublication.cs",
+      "Bytes": 782,
+      "Sha256": "d6552bef4445890e8f26c40c942fa16077afb4cda7aa91ad18b86fba51c6a0b0",
+      "GitBlob": "2a7622a5ea56acc8b87b03a9d529c34016615a5d"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerTaskPacketBuilder.cs",
+      "Bytes": 39874,
+      "Sha256": "4b31c7f2ac645c299b3050f0f89e01dcfa8fcfbec25d3d1dc76d1ab4e1a6d89e",
+      "GitBlob": "1d75eff41232345abb664dc821b07cfff97cf691"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs",
+      "Bytes": 24337,
+      "Sha256": "f6982c4340a6cdc2942b56763f3738df2b0c91f158318c21dbb8e14d470cae50",
+      "GitBlob": "66702543107f9633a85c625cefaea077dad695b4"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerWindowsOwnedLaunch.cs",
+      "Bytes": 4602,
+      "Sha256": "2960a8393c651768896bee1867aa971dff40c4d33000320b0cfb9454e3086056",
+      "GitBlob": "7336881118fcbeb0268db2eca36ebed3dd73deb5"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/MortalCharacteristicAuthorityContract.cs",
+      "Bytes": 3296,
+      "Sha256": "9702e39dd5b48c585d27f600a167a91b24452684e84180f34afc6d892f708973",
+      "GitBlob": "aced0f5669e6f67a8c12e4d78dc1a89d18a953b4"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
+      "Bytes": 22418,
+      "Sha256": "cac9672ce457e406ad77dadf823656b55bf6a2079296d69d957735c32fa46eda",
+      "GitBlob": "40874a26d7576e61e8d0832fc2f7e7d427f2ff3d"
+    },
+    {
+      "Path": "BookOfEternityClient/game_master_daemon.ps1",
+      "Bytes": 391949,
+      "Sha256": "8b6c57e4768ba8cdbee60dd2378b7d01f5c339bb43973c85dcaa60128c0c661a",
+      "GitBlob": "204b111c0457aa8824550700ac4fd83cc1c507ab"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BookOfEternityGMBridge.csproj",
+      "Bytes": 470,
+      "Sha256": "c49d352dbfb3bb464e0a5bd456366222e0abe792b1264d665d60c8d545e487d4",
+      "GitBlob": "d4594f6b45086b9b40a805cf7a7a718c3658be41"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/Program.cs",
+      "Bytes": 85136,
+      "Sha256": "75d79abe1b5af737fa92f7f6951e3139d11958237df39ba4de2d9d528083b082",
+      "GitBlob": "4d03f3fe7291cb73317da30117f715383fdd4b54"
+    },
+    {
+      "Path": "native/linux/boe-lineage-supervisor.c",
+      "Bytes": 24326,
+      "Sha256": "939622a025260f29fec105d2a0dff58f10e9a1f3ded5a6fb9d0866930b9c50ce",
+      "GitBlob": "d9ef317bdf599a2cc761688d53630568f39e0487"
+    },
+    {
+      "Path": "scripts/build-linux-supervisor.ps1",
+      "Bytes": 4556,
+      "Sha256": "ed7f9ed701801e95562afc76ead02c4e4887aee054c873d162bc0f81f3c15914",
+      "GitBlob": "0208a3793088ebe5802e512a022ee1ab73993e3f"
+    },
+    {
+      "Path": "scripts/test-csharp.ps1",
+      "Bytes": 81475,
+      "Sha256": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1",
+      "GitBlob": "0576b2e34e5c0c5d164c173a9961a67c965c5509"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1101465,
+      "Sha256": "3c2f39aa1af455e0f5fd5441016a4ad38a757379c43cd06454b7343fc8316157",
+      "GitBlob": "a75a66bb145272bf7044cd49575dc59fc9441288"
+    },
+    {
+      "Path": "tests/fixtures/LinuxHost/host-guardian.c",
+      "Bytes": 9240,
+      "Sha256": "d7963c86632153ec2bf1adf9a7c30dea29e1cea5c274e5fa0ea311a0518cc3db",
+      "GitBlob": "6c3ddbc42282d9b0ee2251764fda61250f97984c"
+    },
+    {
+      "Path": "tests/fixtures/ProductionMain/configured-neutral-cli.c",
+      "Bytes": 4302,
+      "Sha256": "2c1ceacece43d0ba92dd3ed7ac7421f60e59aec9a9d52cfa2d588ceab3b6795b",
+      "GitBlob": "97f11cfcf2d147ba1fe7e1346947620ec41898fb"
+    },
+    {
+      "Path": "tests/fixtures/ProductionMain/consumer-boundaries.ps1",
+      "Bytes": 6228,
+      "Sha256": "d1778143420df91335a8135ae9817384e868cb59eb9a6a6a019b7d81114985ce",
+      "GitBlob": "bba8a312e82c2be582dc02129b9ecfe386457078"
+    },
+    {
+      "Path": "tests/fixtures/ProductionMain/ordinary.py",
+      "Bytes": 8097,
+      "Sha256": "ba346d9c3d57b2ee78d343cc8d880a9af0342909092e5fc699ea82feadab093a",
+      "GitBlob": "6f5a76610b188a2f1177afb0bdf0ecd39a264aaf"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 1285,
+      "Sha256": "56b92a2f6c0920d1cb1e1f150fc2dbe0f603a221140b43f78d551cdc8a579068",
+      "GitBlob": "c29fed89e1f338d4656560c23a2af3910c2fe254"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "18162a1e85754115b04ef4d2e84437b5/fixture-build.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "DecompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "18162a1e85754115b04ef4d2e84437b5/fixture-compiler-version.log.gz",
+      "Bytes": 203,
+      "Sha256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "DecompressedSha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc"
+    },
+    {
+      "Path": "18162a1e85754115b04ef4d2e84437b5/fixture-preparation.json",
+      "Bytes": 1030,
+      "Sha256": "382f97f047f1be9c146a32bd7fd57e455138c60ce683ceeccaad3d12827c1afc"
+    },
+    {
+      "Path": "18162a1e85754115b04ef4d2e84437b5/guardian.json",
+      "Bytes": 97,
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "Path": "18162a1e85754115b04ef4d2e84437b5/guardian.log.gz",
+      "Bytes": 350,
+      "Sha256": "04d3b1248ff71e9f905a79668b20ebd048b8c69bc3ecac5bd7fe75c653da61f6",
+      "DecompressedSha256": "0a4e3e11a1f1225268de4312db76db3f28c2dc06d9a92e0c3d7cb7a2815f0de5"
+    },
+    {
+      "Path": "18162a1e85754115b04ef4d2e84437b5/helper-build.log.gz",
+      "Bytes": 119,
+      "Sha256": "01db27b74443d7a26b2adb01d0742ab44234fb4d3405d74521d6424d33cefee5",
+      "DecompressedSha256": "4fcf7911559a8e46705ab1e9eb66502baefb16815cd65cc92649d47d831f0e7a"
+    },
+    {
+      "Path": "18162a1e85754115b04ef4d2e84437b5/ordinary.log.gz",
+      "Bytes": 569,
+      "Sha256": "1730eced1402faff5f720dd57c9e676b02b7663a81e6af1c4443dcd95be4e3ee",
+      "DecompressedSha256": "5f5556a362b1281eb6fb7197f9ed3d070ffb7985d2036e3d1695493b3a87abfe"
+    },
+    {
+      "Path": "18162a1e85754115b04ef4d2e84437b5/package/build-provenance.json",
+      "Bytes": 1153,
+      "Sha256": "de9bc3bcf67c70f2e73243c2c8e8fb5f19ca06d21dc3a88180877b10e4e7a4a8"
+    },
+    {
+      "Path": "18162a1e85754115b04ef4d2e84437b5/package/package-manifest.json",
+      "Bytes": 968,
+      "Sha256": "a0273e72b8a08dee3117e6963d0627004ae36b04448dffcbb83e4a526b4ee95e"
+    },
+    {
+      "Path": "18162a1e85754115b04ef4d2e84437b5/publish-BookOfEternityClient.log.gz",
+      "Bytes": 133,
+      "Sha256": "c83165608c588f3b02fce80b7325864288a851570e462826118be1e28058ec36",
+      "DecompressedSha256": "1c7b2b9deac8943a8283d9bf7774ad592bda7b988b848d8b83d02f90f9f54ff0"
+    },
+    {
+      "Path": "18162a1e85754115b04ef4d2e84437b5/publish-BookOfEternityGMBridge.log.gz",
+      "Bytes": 137,
+      "Sha256": "4b347b2effc7b122a29c150baaa68aef9ea857d7f7a704c8c305bb341a5b8c12",
+      "DecompressedSha256": "b765b8e059cf92d7d6f80aae6e9f8551124db19e77b066cb94cc68c0a67905ac"
+    },
+    {
+      "Path": "18162a1e85754115b04ef4d2e84437b5/scenario.json",
+      "Bytes": 612,
+      "Sha256": "8454937c950e13f0665261c88f27cc3b76649c3fbb5da4e51f1d18a16f8c458a"
+    },
+    {
+      "Path": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/Build-unit.log.gz",
+      "Bytes": 1694,
+      "Sha256": "74d187822db82ee5b235665c2e81995fb188e8c8e135d5cda7412ef1daceb38e",
+      "DecompressedSha256": "780c523397a95b2e11d94d6f2ef82459270938da9247e6887ee8ca845615cca4"
+    },
+    {
+      "Path": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/dotnet-test.log.gz",
+      "Bytes": 175581,
+      "Sha256": "c9e21c391a2368dea44687254f5d55861025e0575f066dd4197735a547b24650",
+      "DecompressedSha256": "929dd283d0e87f4a606253ebfbeba57c9376256c704e53fd52004bec64381dc5"
+    },
+    {
+      "Path": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/gm-main-linux-launcher-unit-001.trx",
+      "Bytes": 11531,
+      "Sha256": "dfc1da57e5535331e86497b558a3ddc784c27f523e6af0cb9427da4a9b631082"
+    },
+    {
+      "Path": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/gm-main-production-admission-unit-002.trx",
+      "Bytes": 17698,
+      "Sha256": "c2d69f6d1d5afc17d2cb9c6e2f1f7c2347ca8e6b46d80a261e83af8e58796b1e"
+    },
+    {
+      "Path": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/plan.json",
+      "Bytes": 5948,
+      "Sha256": "e10a1a7362270098e7b918574309c19cded5bfe77ed79a607c4fd549fb203711"
+    },
+    {
+      "Path": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/summary.json",
+      "Bytes": 2970,
+      "Sha256": "91dad07608ec06fb8dd437f57d758a566e464d861d5aa3d062ce80a9a0b0239a"
+    },
+    {
+      "Path": "41fe6429b08b49c19fb9dc146ba7f4ae/first-epoch.log.gz",
+      "Bytes": 517,
+      "Sha256": "cbd0c05e97c72ace4feadd8817b638a3842ae9f14b8a9f688e7e89f2106b266c",
+      "DecompressedSha256": "3ae36bbc067119d4b622f1a9c8ed742eb2edfc1738a3a0df65de2803b895ddd7"
+    },
+    {
+      "Path": "41fe6429b08b49c19fb9dc146ba7f4ae/fixture-build.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "DecompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "41fe6429b08b49c19fb9dc146ba7f4ae/fixture-compiler-version.log.gz",
+      "Bytes": 203,
+      "Sha256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "DecompressedSha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc"
+    },
+    {
+      "Path": "41fe6429b08b49c19fb9dc146ba7f4ae/fixture-preparation.json",
+      "Bytes": 1030,
+      "Sha256": "8d1298cbfa396e4ca34446851e5538aa1f2038fb0c677f8e2efb18c4273f05c5"
+    },
+    {
+      "Path": "41fe6429b08b49c19fb9dc146ba7f4ae/guardian.json",
+      "Bytes": 97,
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "Path": "41fe6429b08b49c19fb9dc146ba7f4ae/guardian.log.gz",
+      "Bytes": 910,
+      "Sha256": "53a7a88648092c0ed1ced5aafa0610aa6616898522774d02c702cef568d7cc15",
+      "DecompressedSha256": "aae86f6d164b87420f048bfa8d13c58091d93d534607dcb3565efd6fafbd0a2d"
+    },
+    {
+      "Path": "41fe6429b08b49c19fb9dc146ba7f4ae/helper-build.log.gz",
+      "Bytes": 120,
+      "Sha256": "b18d25191cc22c824d0b2f60f829d80041cd533a3e8f40497e1ce6361ce685b1",
+      "DecompressedSha256": "2365a29187f9cd57dc9ca437c7e66042231d91258606b1eb521b8896becd14b1"
+    },
+    {
+      "Path": "41fe6429b08b49c19fb9dc146ba7f4ae/ordinary.log.gz",
+      "Bytes": 235,
+      "Sha256": "898eb4bc9659a9ae876bab750159e82ef449645a2be276920ff52a8e22062b2b",
+      "DecompressedSha256": "0722e5871d394d87d05b6101e3c736a795757b1b45f0693a20fa106337c0c144"
+    },
+    {
+      "Path": "41fe6429b08b49c19fb9dc146ba7f4ae/package/build-provenance.json",
+      "Bytes": 1153,
+      "Sha256": "de9bc3bcf67c70f2e73243c2c8e8fb5f19ca06d21dc3a88180877b10e4e7a4a8"
+    },
+    {
+      "Path": "41fe6429b08b49c19fb9dc146ba7f4ae/package/package-manifest.json",
+      "Bytes": 968,
+      "Sha256": "a0273e72b8a08dee3117e6963d0627004ae36b04448dffcbb83e4a526b4ee95e"
+    },
+    {
+      "Path": "41fe6429b08b49c19fb9dc146ba7f4ae/publish-BookOfEternityClient.log.gz",
+      "Bytes": 134,
+      "Sha256": "20dd7f12645d7118d6c0fddb264efaaf9f50c8241bea8185e2820d99fa154ae7",
+      "DecompressedSha256": "1a178c59347ee73ce06b8fa9cfd2ae311fa2f8d4d2702cfaf86e18060742fe87"
+    },
+    {
+      "Path": "41fe6429b08b49c19fb9dc146ba7f4ae/publish-BookOfEternityGMBridge.log.gz",
+      "Bytes": 137,
+      "Sha256": "1482dec2e4d73250165dc9e2bf03ceb1a3a7cca77c57a29c376be20aa832b7ae",
+      "DecompressedSha256": "e6c06e9a90306e2363bcb23b8388910ee92dec9e3469897cd1aff79ef8e98fda"
+    },
+    {
+      "Path": "41fe6429b08b49c19fb9dc146ba7f4ae/scenario.json",
+      "Bytes": 3726,
+      "Sha256": "8c54def5e7454dbd2725051bfd901366d0c743097ecc6335b73e49b0ea4f66e6"
+    },
+    {
+      "Path": "6706e9d7392546c7844f318f00b8d347/fixture-build.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "DecompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "6706e9d7392546c7844f318f00b8d347/fixture-compiler-version.log.gz",
+      "Bytes": 203,
+      "Sha256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "DecompressedSha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc"
+    },
+    {
+      "Path": "6706e9d7392546c7844f318f00b8d347/helper-build.log.gz",
+      "Bytes": 120,
+      "Sha256": "a0d30d5794bacef6852b5fdb769dea044f517c645587078f91824647fdc3be65",
+      "DecompressedSha256": "8ba94b94588a8373dd89b2ec2dd92b16bc61bca03bcaaf02793bf7a735ca9b1a"
+    },
+    {
+      "Path": "6706e9d7392546c7844f318f00b8d347/package/build-provenance.json",
+      "Bytes": 1153,
+      "Sha256": "de9bc3bcf67c70f2e73243c2c8e8fb5f19ca06d21dc3a88180877b10e4e7a4a8"
+    },
+    {
+      "Path": "6706e9d7392546c7844f318f00b8d347/package/package-manifest.json",
+      "Bytes": 968,
+      "Sha256": "a0273e72b8a08dee3117e6963d0627004ae36b04448dffcbb83e4a526b4ee95e"
+    },
+    {
+      "Path": "6706e9d7392546c7844f318f00b8d347/publish-BookOfEternityClient.log.gz",
+      "Bytes": 134,
+      "Sha256": "6cb549d4377ad3cc280025f162a23778a79b6d5d38188730d94b075e0266d860",
+      "DecompressedSha256": "af98e7e9ffb56036e24f469f34fd9ba4906eb76798c898ffa13b84f62955dae2"
+    },
+    {
+      "Path": "6706e9d7392546c7844f318f00b8d347/publish-BookOfEternityGMBridge.log.gz",
+      "Bytes": 137,
+      "Sha256": "959ac751e4a914f06a1abcbe17e84d43d6177a2bebabb197db846b99e6e1a2c6",
+      "DecompressedSha256": "9ab78fbc53f6db2381b0f171f6ca20fd5c1024e1e396e2b45fc0c06a60426a2b"
+    },
+    {
+      "Path": "6d4eaa0c04ab49579d07651e820713ca/fixture-build.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "DecompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "6d4eaa0c04ab49579d07651e820713ca/fixture-compiler-version.log.gz",
+      "Bytes": 203,
+      "Sha256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "DecompressedSha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc"
+    },
+    {
+      "Path": "6d4eaa0c04ab49579d07651e820713ca/fixture-preparation.json",
+      "Bytes": 1030,
+      "Sha256": "2d8ec63e242c700cf2994d8b906bff8d741cc2b27fe300ddccba83ccfffdf28e"
+    },
+    {
+      "Path": "6d4eaa0c04ab49579d07651e820713ca/guardian.json",
+      "Bytes": 97,
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "Path": "6d4eaa0c04ab49579d07651e820713ca/guardian.log.gz",
+      "Bytes": 352,
+      "Sha256": "e42b1f6359fcd451c41fe9abc0d2cab5ecdc285c5559cf1876ed28ec690c1189",
+      "DecompressedSha256": "5ab5ab4ade44070a95aa050d030a832ea580b3cc2b8f0ca718e62ca4e9d116f4"
+    },
+    {
+      "Path": "6d4eaa0c04ab49579d07651e820713ca/helper-build.log.gz",
+      "Bytes": 119,
+      "Sha256": "7619b50d7c1e4e8180b0796dcaf3998809170b5ac2d22b1468377143d7dbf86a",
+      "DecompressedSha256": "d04ad58456587ba420fe347b27f4720a85257cd6106893448cce2e0cb0c803ac"
+    },
+    {
+      "Path": "6d4eaa0c04ab49579d07651e820713ca/ordinary.log.gz",
+      "Bytes": 589,
+      "Sha256": "c8d554198139633b97bdf43c4df4fd0eeaddf88b3b9b9d937a99e7e6a56629cc",
+      "DecompressedSha256": "eab8abecc33bb33beca3717b4156a0acc32107d511eaa54e0e67b27d1312c402"
+    },
+    {
+      "Path": "6d4eaa0c04ab49579d07651e820713ca/package/build-provenance.json",
+      "Bytes": 1153,
+      "Sha256": "de9bc3bcf67c70f2e73243c2c8e8fb5f19ca06d21dc3a88180877b10e4e7a4a8"
+    },
+    {
+      "Path": "6d4eaa0c04ab49579d07651e820713ca/package/package-manifest.json",
+      "Bytes": 968,
+      "Sha256": "a0273e72b8a08dee3117e6963d0627004ae36b04448dffcbb83e4a526b4ee95e"
+    },
+    {
+      "Path": "6d4eaa0c04ab49579d07651e820713ca/publish-BookOfEternityClient.log.gz",
+      "Bytes": 134,
+      "Sha256": "634e3d0303da5388aeecd6386bda4c3a64b4fe367d857d04fb8f38c19df10e02",
+      "DecompressedSha256": "086e92428e3136a28941de4fab0e34abcaeef78b11349267d781e63a75a49490"
+    },
+    {
+      "Path": "6d4eaa0c04ab49579d07651e820713ca/publish-BookOfEternityGMBridge.log.gz",
+      "Bytes": 137,
+      "Sha256": "69569b296e58634a4062812af9ecf0127a18bb8ac168e09331f7dd7a7619921c",
+      "DecompressedSha256": "d81cc1ba2510001ba7715258450349a19cc8ad985403aa04995379197b13c374"
+    },
+    {
+      "Path": "6d4eaa0c04ab49579d07651e820713ca/scenario.json",
+      "Bytes": 615,
+      "Sha256": "a4b8a5b62ae0e54124f447f90ca7819087ee6f92fd1e4ffbf335f74ef1573486"
+    },
+    {
+      "Path": "7eb21f312f944707b5acf06dd89f2662/fixture-build.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "DecompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "7eb21f312f944707b5acf06dd89f2662/fixture-compiler-version.log.gz",
+      "Bytes": 203,
+      "Sha256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "DecompressedSha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc"
+    },
+    {
+      "Path": "7eb21f312f944707b5acf06dd89f2662/fixture-preparation.json",
+      "Bytes": 1030,
+      "Sha256": "90fb6dba3736735087b2dc756e6d0b27f0881575a3ffb3ca8ca15732a08c240f"
+    },
+    {
+      "Path": "7eb21f312f944707b5acf06dd89f2662/guardian.json",
+      "Bytes": 97,
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "Path": "7eb21f312f944707b5acf06dd89f2662/guardian.log.gz",
+      "Bytes": 352,
+      "Sha256": "e93829c3fb0f890cd5d2a80a1da90b5b17836dfd8b7e73799e1f8ae3e9e1bd17",
+      "DecompressedSha256": "48265d691c380d8344b875014ab2f5ca4c02eb1124124a93356e97f8cbd8fb58"
+    },
+    {
+      "Path": "7eb21f312f944707b5acf06dd89f2662/helper-build.log.gz",
+      "Bytes": 120,
+      "Sha256": "7145b654abd6a59859901b3b2a26296986936f11edcf9e19d6c565a023f6baa3",
+      "DecompressedSha256": "c53a8193f75c39713f476b422924da7602906df507615b2080b5c2bc3ed3e9e4"
+    },
+    {
+      "Path": "7eb21f312f944707b5acf06dd89f2662/ordinary.log.gz",
+      "Bytes": 799,
+      "Sha256": "ba54ec312c34902998976d47e59fb011d76b3a0e658d4140aac3d62dfa6015d9",
+      "DecompressedSha256": "cb8f213ff29c7790a5ad65fee099978022051f13430173d9808c234d2f2671bc"
+    },
+    {
+      "Path": "7eb21f312f944707b5acf06dd89f2662/package/build-provenance.json",
+      "Bytes": 1153,
+      "Sha256": "de9bc3bcf67c70f2e73243c2c8e8fb5f19ca06d21dc3a88180877b10e4e7a4a8"
+    },
+    {
+      "Path": "7eb21f312f944707b5acf06dd89f2662/package/package-manifest.json",
+      "Bytes": 968,
+      "Sha256": "a0273e72b8a08dee3117e6963d0627004ae36b04448dffcbb83e4a526b4ee95e"
+    },
+    {
+      "Path": "7eb21f312f944707b5acf06dd89f2662/publish-BookOfEternityClient.log.gz",
+      "Bytes": 134,
+      "Sha256": "6a742191921c945ad7fd565e473d0a68e8f310baf9fe8e41895f951c678abc38",
+      "DecompressedSha256": "13638cd7adb6ea357878258dbf9bd3fb61314b8f62d83ec0c7159fee03457ebe"
+    },
+    {
+      "Path": "7eb21f312f944707b5acf06dd89f2662/publish-BookOfEternityGMBridge.log.gz",
+      "Bytes": 138,
+      "Sha256": "b1009ca37e7b0f8a64903a907c247a510a354413c1b1d99e048016322bda055d",
+      "DecompressedSha256": "6a5fa4952660897bd9108954f1ee29d1d830b8e301707b3d32df6c85f72f7119"
+    },
+    {
+      "Path": "7eb21f312f944707b5acf06dd89f2662/scenario.json",
+      "Bytes": 616,
+      "Sha256": "73f701adcf119bf937e28f389a041ea2e70ea4efcdd75d49f20d19bd1f986cd6"
+    },
+    {
+      "Path": "8e33077ae9e943909f0e285a8683e879/cold-check/guardian.json",
+      "Bytes": 97,
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "Path": "8e33077ae9e943909f0e285a8683e879/cold-check/guardian.log.gz",
+      "Bytes": 347,
+      "Sha256": "dd2ae8763fa1215761f1319be5314ea958128af409e5f4d466cc3959fe0a3324",
+      "DecompressedSha256": "0e8ccffdad2ac006e7d9e2c586d93cf41020486b7f3a14dba9b7e941cb5a4c33"
+    },
+    {
+      "Path": "8e33077ae9e943909f0e285a8683e879/cold-check/ordinary.log.gz",
+      "Bytes": 559,
+      "Sha256": "75890cb47f22f23c28ce2fc29a449812c644b107ce7aef7e83d1570e4e9f9c9d",
+      "DecompressedSha256": "6ac8931e5c7da637027acb6cd9c508f985dc7d1bf9c6b6731298e26f67fd349a"
+    },
+    {
+      "Path": "8e33077ae9e943909f0e285a8683e879/cold-check/scenario.json",
+      "Bytes": 612,
+      "Sha256": "998671ef4a299fc3059d807b1136fecdaf4149985a393142b0003628072e3268"
+    },
+    {
+      "Path": "8e33077ae9e943909f0e285a8683e879/fixture-build.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "DecompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "8e33077ae9e943909f0e285a8683e879/fixture-compiler-version.log.gz",
+      "Bytes": 203,
+      "Sha256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "DecompressedSha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc"
+    },
+    {
+      "Path": "8e33077ae9e943909f0e285a8683e879/fixture-preparation.json",
+      "Bytes": 1030,
+      "Sha256": "035e717a501c80e02869f89c2c947e7892cb465d6a538bf2dd720de0fc414413"
+    },
+    {
+      "Path": "8e33077ae9e943909f0e285a8683e879/guardian.json",
+      "Bytes": 97,
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "Path": "8e33077ae9e943909f0e285a8683e879/guardian.log.gz",
+      "Bytes": 231,
+      "Sha256": "04c2cf10711538158999fc95f22a0baac0bd1067650dc6a9a9d93336a347fb5b",
+      "DecompressedSha256": "66dab0383663eff2e33bf268248ab2222faa7b562120688407c015b54713f6dc"
+    },
+    {
+      "Path": "8e33077ae9e943909f0e285a8683e879/helper-build.log.gz",
+      "Bytes": 119,
+      "Sha256": "a2ee9905751a7c63faf2989bd913718748882c1bb8f4e87e2d3e578aafe438d8",
+      "DecompressedSha256": "c5258872d8f11ba9d44ce180b9e42d3dd182d04a7f5e0788afe82b3f471ea6fa"
+    },
+    {
+      "Path": "8e33077ae9e943909f0e285a8683e879/package/build-provenance.json",
+      "Bytes": 1153,
+      "Sha256": "de9bc3bcf67c70f2e73243c2c8e8fb5f19ca06d21dc3a88180877b10e4e7a4a8"
+    },
+    {
+      "Path": "8e33077ae9e943909f0e285a8683e879/package/package-manifest.json",
+      "Bytes": 968,
+      "Sha256": "a0273e72b8a08dee3117e6963d0627004ae36b04448dffcbb83e4a526b4ee95e"
+    },
+    {
+      "Path": "8e33077ae9e943909f0e285a8683e879/publish-BookOfEternityClient.TestSupport.log.gz",
+      "Bytes": 140,
+      "Sha256": "e8ceed49c31016042e6ad256fe0b4fbe9f693ec7773cdaed056c10ea3d7ec3f4",
+      "DecompressedSha256": "07c47fabf7fd02af70f749b939192b6cae787cb25c84184c54c7afe70b03ea7a"
+    },
+    {
+      "Path": "8e33077ae9e943909f0e285a8683e879/publish-BookOfEternityClient.log.gz",
+      "Bytes": 133,
+      "Sha256": "38b45ff90f9e103f605828f576b82d43e948de19221a64d324f1526baf5fe2d4",
+      "DecompressedSha256": "430389a282d48d5c943a55fd6004b687c63ec107095dad0f1a7c84f0ee592fe7"
+    },
+    {
+      "Path": "8e33077ae9e943909f0e285a8683e879/publish-BookOfEternityGMBridge.log.gz",
+      "Bytes": 137,
+      "Sha256": "b97670bd7f0e10710b7341faad40d496475e33218414bf942e2637a579f644f9",
+      "DecompressedSha256": "dc28416232f8a4217acdd060beac4d6d3b811f5ac31ee4ba3c76fcd70becfe16"
+    },
+    {
+      "Path": "8e33077ae9e943909f0e285a8683e879/scenario.json",
+      "Bytes": 3433,
+      "Sha256": "e5ac08969c7c023764d9bf4074bac0235ba330eb3315841d996c64315755a70f"
+    },
+    {
+      "Path": "926a4c2115da440b9791b6494d6bcca7/fixture-build.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "DecompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "926a4c2115da440b9791b6494d6bcca7/fixture-compiler-version.log.gz",
+      "Bytes": 203,
+      "Sha256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "DecompressedSha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc"
+    },
+    {
+      "Path": "926a4c2115da440b9791b6494d6bcca7/fixture-preparation.json",
+      "Bytes": 1030,
+      "Sha256": "932426606ee1734cc7ce6329fb8126d8f7cd832108e87267963eeca1e9b8a89e"
+    },
+    {
+      "Path": "926a4c2115da440b9791b6494d6bcca7/guardian.json",
+      "Bytes": 97,
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "Path": "926a4c2115da440b9791b6494d6bcca7/guardian.log.gz",
+      "Bytes": 300,
+      "Sha256": "3d747cee8ed99da92f8e624ce81ff122b0590b92178c0787b9aa5f1af7f291b8",
+      "DecompressedSha256": "cb675c7e4d77a51a4751cbbd5e733e9e7b89e338f24636875e6d49cbb2499543"
+    },
+    {
+      "Path": "926a4c2115da440b9791b6494d6bcca7/helper-build.log.gz",
+      "Bytes": 119,
+      "Sha256": "c6a750e9073c122b04c9d81443ba03557c0bc6a2f99093684e14be0997bf5d7f",
+      "DecompressedSha256": "c778ee32ab08177fee4230c8f9238f9cc10f81d07a6855db33c81734aa2d526f"
+    },
+    {
+      "Path": "926a4c2115da440b9791b6494d6bcca7/package/build-provenance.json",
+      "Bytes": 1153,
+      "Sha256": "de9bc3bcf67c70f2e73243c2c8e8fb5f19ca06d21dc3a88180877b10e4e7a4a8"
+    },
+    {
+      "Path": "926a4c2115da440b9791b6494d6bcca7/package/package-manifest.json",
+      "Bytes": 968,
+      "Sha256": "a0273e72b8a08dee3117e6963d0627004ae36b04448dffcbb83e4a526b4ee95e"
+    },
+    {
+      "Path": "926a4c2115da440b9791b6494d6bcca7/publish-BookOfEternityClient.TestSupport.log.gz",
+      "Bytes": 142,
+      "Sha256": "2c35944ff22c6c87a6898b2ff2ad8e7b6558228f6a31521bafc16ea7eeb06c1d",
+      "DecompressedSha256": "8342782a194b6e59f7572d9122ea367f94906b7cd405bb302974810b13149de0"
+    },
+    {
+      "Path": "926a4c2115da440b9791b6494d6bcca7/publish-BookOfEternityClient.log.gz",
+      "Bytes": 133,
+      "Sha256": "318dc44f7c8f840f4f9a78671917eb6e7bec353b58560250e22fd8f12d74a5e1",
+      "DecompressedSha256": "d4bff6b0347a753c4fe0666b1ea3b8433b7f0c8452752edcb5aef94c4e1d05b6"
+    },
+    {
+      "Path": "926a4c2115da440b9791b6494d6bcca7/publish-BookOfEternityGMBridge.log.gz",
+      "Bytes": 137,
+      "Sha256": "880fe5d4d4ac74d8ccd2fca9240588aaef4f1516ae03ee3d26cbe9bae4754f38",
+      "DecompressedSha256": "8f1ec06c6539696735e775e24715a957709f409842250a082ed739160fe9a4f4"
+    },
+    {
+      "Path": "926a4c2115da440b9791b6494d6bcca7/scenario.json",
+      "Bytes": 2690,
+      "Sha256": "afbf748e605e6bcc5eb0d3bc030670d2b3a0782b6e4cc596f6faa2660196f298"
+    },
+    {
+      "Path": "af35a4b3e2b9437a9e4081379775336a/fixture-build.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "DecompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "af35a4b3e2b9437a9e4081379775336a/fixture-compiler-version.log.gz",
+      "Bytes": 203,
+      "Sha256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "DecompressedSha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc"
+    },
+    {
+      "Path": "af35a4b3e2b9437a9e4081379775336a/fixture-preparation.json",
+      "Bytes": 1030,
+      "Sha256": "4d4e9bdf6c9b8e64e0e0686c72a906a999b49645d9fbb660b61bb514104ff30a"
+    },
+    {
+      "Path": "af35a4b3e2b9437a9e4081379775336a/guardian.json",
+      "Bytes": 97,
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "Path": "af35a4b3e2b9437a9e4081379775336a/guardian.log.gz",
+      "Bytes": 351,
+      "Sha256": "5f814f39f0959c1fc46a9eba9b0ae5cdaef2ea06f13997c47ebee6e355876b78",
+      "DecompressedSha256": "cc34afbf020fb82ad9abf2933bfefe90207ebcbb59bdd10d4d7d1b4e900af854"
+    },
+    {
+      "Path": "af35a4b3e2b9437a9e4081379775336a/helper-build.log.gz",
+      "Bytes": 119,
+      "Sha256": "22a8fd773602b516a82db35630975a712ee68e0e734d4fe4a99cd7d5211b50df",
+      "DecompressedSha256": "8722bd28fb2ecc1a5b2005d3f68f8aefe6f4cf6f4a2d6ff576264b2aa0ecffba"
+    },
+    {
+      "Path": "af35a4b3e2b9437a9e4081379775336a/ordinary.log.gz",
+      "Bytes": 628,
+      "Sha256": "d073ccb817b38a4fa384beae1fce9dd78c0ef756f6138d27e680fe7ef4701b90",
+      "DecompressedSha256": "bb0c5b124305ace9ad52718a39bb99c5282738106f37c418ae37d151e3da2c7e"
+    },
+    {
+      "Path": "af35a4b3e2b9437a9e4081379775336a/package/build-provenance.json",
+      "Bytes": 1153,
+      "Sha256": "de9bc3bcf67c70f2e73243c2c8e8fb5f19ca06d21dc3a88180877b10e4e7a4a8"
+    },
+    {
+      "Path": "af35a4b3e2b9437a9e4081379775336a/package/package-manifest.json",
+      "Bytes": 968,
+      "Sha256": "a0273e72b8a08dee3117e6963d0627004ae36b04448dffcbb83e4a526b4ee95e"
+    },
+    {
+      "Path": "af35a4b3e2b9437a9e4081379775336a/publish-BookOfEternityClient.log.gz",
+      "Bytes": 133,
+      "Sha256": "87edcc4779694b7dc553cd9c04c2a9e6e6586014f06568756fd809098da2c4a5",
+      "DecompressedSha256": "b4219f5cfa02dd7bc21df68c034705db6fc4d95dd6d7ff82f137efb4f2e28b61"
+    },
+    {
+      "Path": "af35a4b3e2b9437a9e4081379775336a/publish-BookOfEternityGMBridge.log.gz",
+      "Bytes": 137,
+      "Sha256": "40c925795867097ad1c1c6edfeef0872fefd4ec132e36b4e2fe4cd51432284cf",
+      "DecompressedSha256": "01e585bc1a35cf17dcef7563a27457b3f417bf1235004bd6ba755a90e5147065"
+    },
+    {
+      "Path": "af35a4b3e2b9437a9e4081379775336a/scenario.json",
+      "Bytes": 615,
+      "Sha256": "819799eb52cf0d99dd0b1ca4e4d9a164a59a76bc89dc5468ca46dffb3ef75407"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/actual-console-health.log.gz",
+      "Bytes": 482,
+      "Sha256": "aa768155ca38e5015384747dcde0ffd14e6b2fffb8e6e5c90d08d9e0672137fc",
+      "DecompressedSha256": "f4a1f20aa77f3e122de3830123f954c3741a889fc8420e68323f432fa40b3a07"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/actual-daemon-consumers.log.gz",
+      "Bytes": 21,
+      "Sha256": "34d5848c995803cfd00c2f7f02d807e2069b51ffca60a40f05d2d7229ef13b69",
+      "DecompressedSha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/ambiguous-launcher-calls.txt",
+      "Bytes": 19,
+      "Sha256": "d5a6a8a887f02d11276ce49413b5f60e2e4b81cc130dcb9198da254cf92af2be"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/console-input.json",
+      "Bytes": 66,
+      "Sha256": "f2437618bfbb095cfe7c123e0db6f2fb936d57d4f5baa49ed176f452d9acc1d8"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/console-observations/screens/000-main-menu.json",
+      "Bytes": 2537,
+      "Sha256": "37ee8334f08f86f516a90c1e566712aa3db1985a46c1ea8235de985446d5dbb6"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/console-observations/screens/000-main-menu.txt",
+      "Bytes": 958,
+      "Sha256": "de02c070cab6b04ff51465dbf7d87e702185c04740c757eca230bbbe5faa0e12"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/console-observations/screens/001-main-menu.json",
+      "Bytes": 2437,
+      "Sha256": "90b1ceee51206227f0a41af99f92a78f517d454427e711949ddd13db7ef74657"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/console-observations/screens/001-main-menu.txt",
+      "Bytes": 922,
+      "Sha256": "3d29fae4f9f01ec8cc4d4c9d2d8b99491e8f292a38318beab60d11d28d37173b"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/console-observations/screens/002-exit.json",
+      "Bytes": 2437,
+      "Sha256": "6f419a35eb4346d414cabbbe90957ec57c36d349995e849831cd374cf15eb1ef"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/console-observations/screens/002-exit.txt",
+      "Bytes": 922,
+      "Sha256": "e3211b75bda84fe059df7f92853b5d758b284dbc51e6359feab6427a730876eb"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/consumer-boundaries.json",
+      "Bytes": 7156,
+      "Sha256": "3dc91843dccd575ebe2047e104e53488a4cab936b98cdcf1594ac1b1a3933686"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/fixture-build.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "DecompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/fixture-compiler-version.log.gz",
+      "Bytes": 203,
+      "Sha256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "DecompressedSha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/fixture-preparation.json",
+      "Bytes": 1030,
+      "Sha256": "5c616855d927eefebfc52fc8908356762ddf8bab5780427d10095a8651a5c833"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/guardian.json",
+      "Bytes": 97,
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/guardian.log.gz",
+      "Bytes": 275,
+      "Sha256": "e19c557318f683d0349ecd15475fe43c3e2dfff23abc44ea872bf4de75530257",
+      "DecompressedSha256": "1c5c6b856b0a1d32d6b68c2be5274b486a8bc8b93dbc62961e07aaaaee0794d0"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/helper-build.log.gz",
+      "Bytes": 120,
+      "Sha256": "90454b91a4c95d1472fdf8f82dd392692391d12f2eac8257691b0f4266382134",
+      "DecompressedSha256": "43d0b8d4cef8e44098d1bf9dadb05cb7f325510d89dadba1221af312a7dbb70f"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/package/build-provenance.json",
+      "Bytes": 1153,
+      "Sha256": "de9bc3bcf67c70f2e73243c2c8e8fb5f19ca06d21dc3a88180877b10e4e7a4a8"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/package/package-manifest.json",
+      "Bytes": 968,
+      "Sha256": "a0273e72b8a08dee3117e6963d0627004ae36b04448dffcbb83e4a526b4ee95e"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/publish-BookOfEternityClient.TestSupport.log.gz",
+      "Bytes": 142,
+      "Sha256": "5c41349f4812a14eaaec48f945fe3a2078764a2201a7bbc2c902c5b86c0e2ebe",
+      "DecompressedSha256": "9ce8f58afa9d3871aa4c3a0a1a5bbb61fd7aa5efe79a33228e82a072cdcf5f2c"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/publish-BookOfEternityClient.log.gz",
+      "Bytes": 134,
+      "Sha256": "4e3a2ca16c068eb33c8a16438414ba75446c3899e4c22ab0c56739e6e25b4aeb",
+      "DecompressedSha256": "c0ae27671b8a7c26d071f83c66588cbb17f55649e05469ceb4580eba9b2e8de1"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/publish-BookOfEternityGMBridge.log.gz",
+      "Bytes": 137,
+      "Sha256": "682ca05a1c921322e5eee7dabf08b6034026c05fa1719a4659c380bb31e3f11c",
+      "DecompressedSha256": "e4ae5f8ebf75326183075c954b38c06c55ff148faad55444826e74115239bd4f"
+    },
+    {
+      "Path": "d38960b833a3404fbda546039c71d8f9/scenario.json",
+      "Bytes": 2635,
+      "Sha256": "3a811adf52013e7a4358268f7266d537e7f77aacd2767142e3d53ee338c8c839"
+    },
+    {
+      "Path": "e64ac15b38d14d369e0ded4834ebba7e/fixture-build.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "DecompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "e64ac15b38d14d369e0ded4834ebba7e/fixture-compiler-version.log.gz",
+      "Bytes": 203,
+      "Sha256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "DecompressedSha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc"
+    },
+    {
+      "Path": "e64ac15b38d14d369e0ded4834ebba7e/fixture-preparation.json",
+      "Bytes": 1030,
+      "Sha256": "054cd907fad86465eb093d07c0b235c206d67970bef05e46104b86a1e07bf0cb"
+    },
+    {
+      "Path": "e64ac15b38d14d369e0ded4834ebba7e/guardian.json",
+      "Bytes": 97,
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "Path": "e64ac15b38d14d369e0ded4834ebba7e/guardian.log.gz",
+      "Bytes": 347,
+      "Sha256": "c27be4533bcd9abf181820251959d2086f8996fdfa9f4a96b2bbad3de2f08daa",
+      "DecompressedSha256": "217cd3ce0975a71fe8b6005385de4ebb893ef7d7ea287f67465e2c632e6bf71e"
+    },
+    {
+      "Path": "e64ac15b38d14d369e0ded4834ebba7e/helper-build.log.gz",
+      "Bytes": 119,
+      "Sha256": "c5c45077df1bf5b7109236e08057f937359e3b9cc257c71322177147c137d266",
+      "DecompressedSha256": "4d48bbbd5dcb29252d6e41150df78af1fc3825d75e7ae57c7d783603020f5fe7"
+    },
+    {
+      "Path": "e64ac15b38d14d369e0ded4834ebba7e/ordinary.log.gz",
+      "Bytes": 587,
+      "Sha256": "d589d9c6e514e488fe9e174cfe1b3a4de994a58e83fda079ce47edafad9c1d98",
+      "DecompressedSha256": "4f52c30609a3c83e8fcfea0c3fadb17c857350b057ea8b40307f7b26785a5a2c"
+    },
+    {
+      "Path": "e64ac15b38d14d369e0ded4834ebba7e/package/build-provenance.json",
+      "Bytes": 1153,
+      "Sha256": "de9bc3bcf67c70f2e73243c2c8e8fb5f19ca06d21dc3a88180877b10e4e7a4a8"
+    },
+    {
+      "Path": "e64ac15b38d14d369e0ded4834ebba7e/package/package-manifest.json",
+      "Bytes": 968,
+      "Sha256": "a0273e72b8a08dee3117e6963d0627004ae36b04448dffcbb83e4a526b4ee95e"
+    },
+    {
+      "Path": "e64ac15b38d14d369e0ded4834ebba7e/publish-BookOfEternityClient.log.gz",
+      "Bytes": 133,
+      "Sha256": "d0df16e4720524daf794882d4f91508d656b798571c01a0de07cb7b18fcd2e1e",
+      "DecompressedSha256": "aec9e88103cd099cc8a0569721166176518b8b721557eab9f120b5a226033561"
+    },
+    {
+      "Path": "e64ac15b38d14d369e0ded4834ebba7e/publish-BookOfEternityGMBridge.log.gz",
+      "Bytes": 136,
+      "Sha256": "ce8fede4cc06117b27fdb4c89842cf2fe35fcf3d98184a4bd52881fb7f63be64",
+      "DecompressedSha256": "dc6c57cb024f924c10448d4c380fd5cc8d6b165cc3620645f7090201a3e54804"
+    },
+    {
+      "Path": "e64ac15b38d14d369e0ded4834ebba7e/scenario.json",
+      "Bytes": 610,
+      "Sha256": "a8146cdbf1034afaf5cf6bc2d692c6b08e2e0d37b0cc003a01a9c14957726105"
+    },
+    {
+      "Path": "e669c78fe60f4b1d8410bde94ae567db/fixture-build.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "DecompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "e669c78fe60f4b1d8410bde94ae567db/fixture-compiler-version.log.gz",
+      "Bytes": 203,
+      "Sha256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "DecompressedSha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc"
+    },
+    {
+      "Path": "e669c78fe60f4b1d8410bde94ae567db/fixture-preparation.json",
+      "Bytes": 1030,
+      "Sha256": "e7dfaf643f5768eb090bb0b024735dcec7143819eb29544cf3d2a5bde354342e"
+    },
+    {
+      "Path": "e669c78fe60f4b1d8410bde94ae567db/guardian.json",
+      "Bytes": 97,
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "Path": "e669c78fe60f4b1d8410bde94ae567db/guardian.log.gz",
+      "Bytes": 912,
+      "Sha256": "6aa4e75859d87b21204386ae79be448a7dff61c443e0323bb4fcf39af61cc44b",
+      "DecompressedSha256": "76e2bf1368034b46413a772c715d81a17180ac4a85a45b9578fb4170af4042cc"
+    },
+    {
+      "Path": "e669c78fe60f4b1d8410bde94ae567db/helper-build.log.gz",
+      "Bytes": 120,
+      "Sha256": "037eb1e1c5c59bb12e80b283e9c38defa715615549267936c1041e1475745246",
+      "DecompressedSha256": "715219396ce512aee7ab5f7dc6c6264cb570a74510ef469ed2645a6609453719"
+    },
+    {
+      "Path": "e669c78fe60f4b1d8410bde94ae567db/ordinary.log.gz",
+      "Bytes": 520,
+      "Sha256": "70ca27d28876274dcebb9e7bf49b721b07054601748d9d288a2c39f89bc47411",
+      "DecompressedSha256": "ccf3ed927ebd812fb4181a5083c4b4bf256bb5f5b5e5538613e1d56b19957d2c"
+    },
+    {
+      "Path": "e669c78fe60f4b1d8410bde94ae567db/package/build-provenance.json",
+      "Bytes": 1153,
+      "Sha256": "de9bc3bcf67c70f2e73243c2c8e8fb5f19ca06d21dc3a88180877b10e4e7a4a8"
+    },
+    {
+      "Path": "e669c78fe60f4b1d8410bde94ae567db/package/package-manifest.json",
+      "Bytes": 968,
+      "Sha256": "a0273e72b8a08dee3117e6963d0627004ae36b04448dffcbb83e4a526b4ee95e"
+    },
+    {
+      "Path": "e669c78fe60f4b1d8410bde94ae567db/publish-BookOfEternityClient.log.gz",
+      "Bytes": 134,
+      "Sha256": "22610b12a7620e47558247cd5877f11afde9e84320ec5efbb252c3693f9f6a59",
+      "DecompressedSha256": "e6fe73c9bfb3b148a65686793015845349c67532652a5ff03487c260a33e568c"
+    },
+    {
+      "Path": "e669c78fe60f4b1d8410bde94ae567db/publish-BookOfEternityGMBridge.log.gz",
+      "Bytes": 137,
+      "Sha256": "4f8367655c17b32933d2c998d10c92726500ecde4a3e5b2c4199c7215120ebc0",
+      "DecompressedSha256": "9cf0bfc0d224ae1e0163e4abea640615eb53f2016512604ea1bc01241ca34b34"
+    },
+    {
+      "Path": "e669c78fe60f4b1d8410bde94ae567db/scenario.json",
+      "Bytes": 3683,
+      "Sha256": "3a8827b459b8292c6dbaf2f9c28dbcbbafd55076d3acf8dbd9c2729d7623aee4"
+    },
+    {
+      "Path": "e7f392ae3a3d419e85610cc193cc7f54/daemon.log.gz",
+      "Bytes": 330,
+      "Sha256": "1f25701f7e0faab19e9f2644ead5df2dfb74e9d9d9744425230c984a347b3813",
+      "DecompressedSha256": "a1967ad9763e16996a3a378f92b88ece875f9ae67e69fdb900b6a2f15818dab0"
+    },
+    {
+      "Path": "e7f392ae3a3d419e85610cc193cc7f54/fixture-build.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "DecompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "e7f392ae3a3d419e85610cc193cc7f54/fixture-compiler-version.log.gz",
+      "Bytes": 203,
+      "Sha256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "DecompressedSha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc"
+    },
+    {
+      "Path": "e7f392ae3a3d419e85610cc193cc7f54/fixture-preparation.json",
+      "Bytes": 1030,
+      "Sha256": "a67ea838cbf19fb77b625418f593e16f89ae2c5ee178c17b9b5e923581c483b3"
+    },
+    {
+      "Path": "e7f392ae3a3d419e85610cc193cc7f54/guardian.json",
+      "Bytes": 97,
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "Path": "e7f392ae3a3d419e85610cc193cc7f54/guardian.log.gz",
+      "Bytes": 395,
+      "Sha256": "db3e9d204f969ac87441c9d4162d36331018bfca90c47f708acda8701c924e76",
+      "DecompressedSha256": "942da2ad2470a85b6f33991e2e86715e05031a35b9bd7e92dd9eea93ec8c7dcc"
+    },
+    {
+      "Path": "e7f392ae3a3d419e85610cc193cc7f54/helper-build.log.gz",
+      "Bytes": 119,
+      "Sha256": "f6ae3183a95f05ee8862d5af64132355d0f5ed032a8fbb23ba615dcccbee9644",
+      "DecompressedSha256": "62a0bb9aa89f17aae9090b5a1f6044cc4ca82cbe34593d3a2cdaaa5094a0f293"
+    },
+    {
+      "Path": "e7f392ae3a3d419e85610cc193cc7f54/ordinary.log.gz",
+      "Bytes": 379,
+      "Sha256": "71f13bdfe35c6a672a256d72f2476715c526f125f30b4ae4d39c51ec0d441361",
+      "DecompressedSha256": "d7732834db7fce8921cc572e278f90393e0d8b7e759fbef8cd1ef4cfd3e4e427"
+    },
+    {
+      "Path": "e7f392ae3a3d419e85610cc193cc7f54/package/build-provenance.json",
+      "Bytes": 1153,
+      "Sha256": "de9bc3bcf67c70f2e73243c2c8e8fb5f19ca06d21dc3a88180877b10e4e7a4a8"
+    },
+    {
+      "Path": "e7f392ae3a3d419e85610cc193cc7f54/package/package-manifest.json",
+      "Bytes": 968,
+      "Sha256": "a0273e72b8a08dee3117e6963d0627004ae36b04448dffcbb83e4a526b4ee95e"
+    },
+    {
+      "Path": "e7f392ae3a3d419e85610cc193cc7f54/publish-BookOfEternityClient.log.gz",
+      "Bytes": 133,
+      "Sha256": "6f579737c15172dc9266b384fe8ed04dee5b51e534419de14ac39decd850be46",
+      "DecompressedSha256": "c82cd01551fa8e20f11568dd017f12a8da5efa8315c4b611da8cf8d48e151c49"
+    },
+    {
+      "Path": "e7f392ae3a3d419e85610cc193cc7f54/publish-BookOfEternityGMBridge.log.gz",
+      "Bytes": 136,
+      "Sha256": "97dcf98634fbb36802fd075f554f7c740a41f3924440e217b7990f1c8882068a",
+      "DecompressedSha256": "0958f017aed62fc463d40855b9c00cd9b1d77967c49479fe9770a60e83d9ffc4"
+    },
+    {
+      "Path": "e7f392ae3a3d419e85610cc193cc7f54/scenario.json",
+      "Bytes": 808,
+      "Sha256": "b9f620f3e495ba0e3f573bad572cdd5217be49a4fe416d5c8b4d24f343fd7ee0"
+    },
+    {
+      "Path": "e99a8b3d116144fe8d2eec2174f08d96/fixture-build.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "DecompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "e99a8b3d116144fe8d2eec2174f08d96/fixture-compiler-version.log.gz",
+      "Bytes": 203,
+      "Sha256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "DecompressedSha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc"
+    },
+    {
+      "Path": "e99a8b3d116144fe8d2eec2174f08d96/fixture-preparation.json",
+      "Bytes": 1030,
+      "Sha256": "11f121fd59ff105f4516918d5b98e27386ac09d2ee2ae85cddc43ccea270a317"
+    },
+    {
+      "Path": "e99a8b3d116144fe8d2eec2174f08d96/guardian.json",
+      "Bytes": 97,
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "Path": "e99a8b3d116144fe8d2eec2174f08d96/guardian.log.gz",
+      "Bytes": 351,
+      "Sha256": "e06ee30cc8ae4304ef8b59aeda3f3d8ffc333c2a80567275b0db85f626bad4a7",
+      "DecompressedSha256": "fff0048bf5e0d068e5b599f187f74f7cda4ed2040f1e12ba6dbf4cc375efe323"
+    },
+    {
+      "Path": "e99a8b3d116144fe8d2eec2174f08d96/helper-build.log.gz",
+      "Bytes": 120,
+      "Sha256": "a0d0a0d6895813f2eb3338af36da84ea6c96d07ad3537d57883bd17388d7d669",
+      "DecompressedSha256": "dfc4c2f05df952ffe0355e17f0f8d471f15bd1b7042fd4fd7dc22daa9937fd04"
+    },
+    {
+      "Path": "e99a8b3d116144fe8d2eec2174f08d96/ordinary.log.gz",
+      "Bytes": 563,
+      "Sha256": "b4a60ee3a7a2e5d2e8bcbf16824d3dc6c2374307d6ddd945579c1a9d3d537707",
+      "DecompressedSha256": "b471f4f422af2cb941f69349b4998021972a492491bbcd1ae2a34a0763fca51c"
+    },
+    {
+      "Path": "e99a8b3d116144fe8d2eec2174f08d96/package/build-provenance.json",
+      "Bytes": 1153,
+      "Sha256": "de9bc3bcf67c70f2e73243c2c8e8fb5f19ca06d21dc3a88180877b10e4e7a4a8"
+    },
+    {
+      "Path": "e99a8b3d116144fe8d2eec2174f08d96/package/package-manifest.json",
+      "Bytes": 968,
+      "Sha256": "a0273e72b8a08dee3117e6963d0627004ae36b04448dffcbb83e4a526b4ee95e"
+    },
+    {
+      "Path": "e99a8b3d116144fe8d2eec2174f08d96/publish-BookOfEternityClient.log.gz",
+      "Bytes": 134,
+      "Sha256": "b807f8e39461b2303e792355464c996fec88538d4ad32c1c9f5c106de4d341a0",
+      "DecompressedSha256": "5ea459aeefb5443306b0e0caa71b954ad0c273bd7686c4bc530764059829bd09"
+    },
+    {
+      "Path": "e99a8b3d116144fe8d2eec2174f08d96/publish-BookOfEternityGMBridge.log.gz",
+      "Bytes": 137,
+      "Sha256": "70cf202c2cc3f0153bdf9c4fcf14b001de4fb351e6a79836a2a33b33d4ea5191",
+      "DecompressedSha256": "56075513a41e762fba91668e2a13beb4e5e3113d2531b57d09f48d7eeeebdc29"
+    },
+    {
+      "Path": "e99a8b3d116144fe8d2eec2174f08d96/scenario.json",
+      "Bytes": 616,
+      "Sha256": "177fcaa778af913ba4dc30dfa168e97071111ce2f0c6fc98057ca27e9abad267"
+    },
+    {
+      "Path": "ebe1ece311824d798f1610daf7ecbbe7/daemon.log.gz",
+      "Bytes": 340,
+      "Sha256": "ce74f3b79195f5f19517b957cd4573dccc3a141006fa4b7fdde6ad9927258bfb",
+      "DecompressedSha256": "51d026ab06074b781e81ae26a4e63f593646a5a42ce395fcc7136d36f6907931"
+    },
+    {
+      "Path": "ebe1ece311824d798f1610daf7ecbbe7/fixture-build.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "DecompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "ebe1ece311824d798f1610daf7ecbbe7/fixture-compiler-version.log.gz",
+      "Bytes": 203,
+      "Sha256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "DecompressedSha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc"
+    },
+    {
+      "Path": "ebe1ece311824d798f1610daf7ecbbe7/fixture-preparation.json",
+      "Bytes": 1030,
+      "Sha256": "45cc8d5fc12b09233dbf534ba6df1286798a01ec27af44e5e2232b474df615c3"
+    },
+    {
+      "Path": "ebe1ece311824d798f1610daf7ecbbe7/guardian.json",
+      "Bytes": 97,
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "Path": "ebe1ece311824d798f1610daf7ecbbe7/guardian.log.gz",
+      "Bytes": 375,
+      "Sha256": "f08d7e892410a4a32b71ddc9cb23cec34a653878597ed633f56087607f14edda",
+      "DecompressedSha256": "219da8e13307c435856d9e73ee58041bf2bf618e3a9d8617625f45979f783b9a"
+    },
+    {
+      "Path": "ebe1ece311824d798f1610daf7ecbbe7/helper-build.log.gz",
+      "Bytes": 119,
+      "Sha256": "2a45a02d8f99ed576c8fd8bdc80593a79d3192d93b2eaf990dbd369079367b7c",
+      "DecompressedSha256": "ac11214804504127378896b59a92ce11e6599c9c771210b525e90e42fb552799"
+    },
+    {
+      "Path": "ebe1ece311824d798f1610daf7ecbbe7/ordinary.log.gz",
+      "Bytes": 388,
+      "Sha256": "a2e226c3ce301ffda2b3d16f34132cd099ea54467fc275372f3f338bb953aca6",
+      "DecompressedSha256": "7670db81ff1210c8ed3ce81e69374b7fcec3840389d4f8e3f31f09027d8b9e35"
+    },
+    {
+      "Path": "ebe1ece311824d798f1610daf7ecbbe7/package/build-provenance.json",
+      "Bytes": 1153,
+      "Sha256": "de9bc3bcf67c70f2e73243c2c8e8fb5f19ca06d21dc3a88180877b10e4e7a4a8"
+    },
+    {
+      "Path": "ebe1ece311824d798f1610daf7ecbbe7/package/package-manifest.json",
+      "Bytes": 968,
+      "Sha256": "a0273e72b8a08dee3117e6963d0627004ae36b04448dffcbb83e4a526b4ee95e"
+    },
+    {
+      "Path": "ebe1ece311824d798f1610daf7ecbbe7/publish-BookOfEternityClient.log.gz",
+      "Bytes": 133,
+      "Sha256": "18fcae679c84b387e8b76efb087faa1f1d7f6d3a598bd9ea921649df00b890fe",
+      "DecompressedSha256": "6cdc26ca99f47c3f1e0be79d45086b089f05b8120c75c4e4f2d64e7244e7597f"
+    },
+    {
+      "Path": "ebe1ece311824d798f1610daf7ecbbe7/publish-BookOfEternityGMBridge.log.gz",
+      "Bytes": 137,
+      "Sha256": "213f03c5b3bdd7d7a040daf79c0e234593ac72f50b22093ef32508d176cfc709",
+      "DecompressedSha256": "31e9141cb4f67680de2183a066007e6d16664062ac96be42b6089db765a6ba82"
+    },
+    {
+      "Path": "ebe1ece311824d798f1610daf7ecbbe7/scenario.json",
+      "Bytes": 763,
+      "Sha256": "76a9030f7173b138c3f6137d74e37e241868193edc636575d15da94f59b4baf6"
+    },
+    {
+      "Path": "f6f01427bf154044bf89ed542a211706/fixture-build.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "DecompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "f6f01427bf154044bf89ed542a211706/fixture-compiler-version.log.gz",
+      "Bytes": 203,
+      "Sha256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "DecompressedSha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc"
+    },
+    {
+      "Path": "f6f01427bf154044bf89ed542a211706/fixture-preparation.json",
+      "Bytes": 1030,
+      "Sha256": "578451cd427472e92fd1277f7ea9f13c1c65407b0d7e55e28454ad539b73855e"
+    },
+    {
+      "Path": "f6f01427bf154044bf89ed542a211706/guardian.json",
+      "Bytes": 97,
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "Path": "f6f01427bf154044bf89ed542a211706/guardian.log.gz",
+      "Bytes": 353,
+      "Sha256": "23165b5b193800357d2381c8545e571025af94c883c6e2fcadf8ffd098809893",
+      "DecompressedSha256": "531f46d0b8eff19506dcc0c052e31243f903ef69c02adcd27f5b402cdcb798fa"
+    },
+    {
+      "Path": "f6f01427bf154044bf89ed542a211706/helper-build.log.gz",
+      "Bytes": 120,
+      "Sha256": "f8a18d0e11b28732000f613872691b70595e2976f5dd3c918e51c7d0c39e7d26",
+      "DecompressedSha256": "15b923b4138eb5bad7c7401712f40d95bf7a8d49a7a00fd7e53f5fbc16af5511"
+    },
+    {
+      "Path": "f6f01427bf154044bf89ed542a211706/ordinary.log.gz",
+      "Bytes": 930,
+      "Sha256": "a65ef7068b505903e16d4f407a0976608a37730c30e7dd5f6ed1a5475bbed5d9",
+      "DecompressedSha256": "422b754a29edee4b90d802e945be462fb54657b7e76378891e54eb36dc3fd057"
+    },
+    {
+      "Path": "f6f01427bf154044bf89ed542a211706/package/build-provenance.json",
+      "Bytes": 1153,
+      "Sha256": "de9bc3bcf67c70f2e73243c2c8e8fb5f19ca06d21dc3a88180877b10e4e7a4a8"
+    },
+    {
+      "Path": "f6f01427bf154044bf89ed542a211706/package/package-manifest.json",
+      "Bytes": 968,
+      "Sha256": "a0273e72b8a08dee3117e6963d0627004ae36b04448dffcbb83e4a526b4ee95e"
+    },
+    {
+      "Path": "f6f01427bf154044bf89ed542a211706/publish-BookOfEternityClient.log.gz",
+      "Bytes": 134,
+      "Sha256": "d7b95bbc2687bc03dc70fef162bf07c72d74acc422423de22017480b1fe17ce4",
+      "DecompressedSha256": "23b2bfd0fccf08d1b824ef4762749d9235797265311736300e57193275a80ef2"
+    },
+    {
+      "Path": "f6f01427bf154044bf89ed542a211706/publish-BookOfEternityGMBridge.log.gz",
+      "Bytes": 138,
+      "Sha256": "a363917e86fc99cf65bf51a021df2571fede5cf92f1af24f03382145a503975a",
+      "DecompressedSha256": "41b77eaf94c8fa1cd92c408239e0d9e66f067b4ec03014174099ad102149a77b"
+    },
+    {
+      "Path": "f6f01427bf154044bf89ed542a211706/scenario.json",
+      "Bytes": 616,
+      "Sha256": "58e588fbc51644000a96c3451c9c980d07350dc5a79d06c77216bbbb85a31c94"
+    }
+  ],
+  "CompiledInputs": [
+    {
+      "Path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "Bytes": 24552960,
+      "Sha256": "ced3a4bd922fd034c064bc53ef8c4076707a1e9365f57900d2329c4e9eb0541e",
+      "Basis": "fresh successful runner build at this exact source; captured before later edits"
+    },
+    {
+      "Path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.pdb",
+      "Bytes": 5520108,
+      "Sha256": "4f43b00b5fd5458aa7a9fd63fa585b0d36b5b776734f36f65ababec1b8e8f6be",
+      "Basis": "fresh successful runner build at this exact source; captured before later edits"
+    },
+    {
+      "Path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.deps.json",
+      "Bytes": 6350,
+      "Sha256": "92c90a7124c995a9c9cc3e90b42604a68b172f812522b3c3349fe551a08722d5",
+      "Basis": "fresh successful runner build at this exact source; captured before later edits"
+    },
+    {
+      "Path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.runtimeconfig.json",
+      "Bytes": 366,
+      "Sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad",
+      "Basis": "fresh successful runner build at this exact source; captured before later edits"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+      "Bytes": 171008,
+      "Sha256": "af57e6d5de13bd0d33fbacce7a4c292b932f4ff56d32c752d74331e9e5b5764e",
+      "Basis": "fresh successful runner build at this exact source; captured before later edits"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.pdb",
+      "Bytes": 59840,
+      "Sha256": "dd3b4845c30f648ce54b55e2bf37bb72ca2453b74a332f89d4215d7e711eeceb",
+      "Basis": "fresh successful runner build at this exact source; captured before later edits"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.deps.json",
+      "Bytes": 6768,
+      "Sha256": "c13cd7548607ededfa3b296f22051fb3803be84a094889dde82101518aa0b841",
+      "Basis": "fresh successful runner build at this exact source; captured before later edits"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.runtimeconfig.json",
+      "Bytes": 366,
+      "Sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad",
+      "Basis": "fresh successful runner build at this exact source; captured before later edits"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "Bytes": 1108480,
+      "Sha256": "d879b11c4787c75dca430674c965f91f13329a52b453080721758761a2459e3c",
+      "Basis": "fresh successful runner build at this exact source; captured before later edits"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb",
+      "Bytes": 195064,
+      "Sha256": "e07fd263cad9740f7c694f44772a4335f7de9702f58325432697a87974466948",
+      "Basis": "fresh successful runner build at this exact source; captured before later edits"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.deps.json",
+      "Bytes": 6798,
+      "Sha256": "48226bd5f823bf1ffb911985160cbfb17cd2c47a460f7497b496c45544b1e6e3",
+      "Basis": "fresh successful runner build at this exact source; captured before later edits"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.runtimeconfig.json",
+      "Bytes": 366,
+      "Sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad",
+      "Basis": "fresh successful runner build at this exact source; captured before later edits"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "Bytes": 8634880,
+      "Sha256": "1ce104bb9752a97ec16c25a25a1e180d5cd229934210dd711efa97de34935400",
+      "Basis": "fresh successful runner build at this exact source; captured before later edits"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.pdb",
+      "Bytes": 1710264,
+      "Sha256": "d3e0c7578964349adfc9ebce0df0530372129d620eed254b62065773e7ff46a8",
+      "Basis": "fresh successful runner build at this exact source; captured before later edits"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.deps.json",
+      "Bytes": 23901,
+      "Sha256": "6309a4ebea552e4f9fe4537108cd86ceccc997fb126a50d9f3dfc0cf8cd0c1a0",
+      "Basis": "fresh successful runner build at this exact source; captured before later edits"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.runtimeconfig.json",
+      "Bytes": 366,
+      "Sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad",
+      "Basis": "fresh successful runner build at this exact source; captured before later edits"
+    }
+  ]
+}

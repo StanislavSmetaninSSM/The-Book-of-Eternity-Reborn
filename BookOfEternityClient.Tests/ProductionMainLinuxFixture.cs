@@ -61,7 +61,7 @@ internal static class ProductionMainLinuxFixture
         }
         if(mode=="refuse-storage") { var evidence=Path.Combine(files.RuntimeRootPath,"load-transactions/unknown-journal");Directory.CreateDirectory(Path.GetDirectoryName(evidence)!);File.WriteAllBytes(evidence,[0xfe,0]); }
         File.WriteAllText(Path.Combine(folder,"fixture-preparation.json"),JsonSerializer.Serialize(new{Source=source,SourceSha256=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(source))).ToLowerInvariant(),Binary=fixture,BinarySha256=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(fixture))).ToLowerInvariant(),Command=command,Cwd=cwd,ShippedSourceFiles=0,PublisherOnlyCompile=true,CompilerPath=compiler,CompilerSha256=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(compiler))).ToLowerInvariant(),CompilerAbsentAtPlayerStartup=true,PlayerPath=playerBin}));
-        var start=new ProcessStartInfo(Path.Combine(package,"host-guardian")){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true};
+        var start=new ProcessStartInfo(Path.Combine(package,"host-guardian")){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true,WorkingDirectory=ship};
         start.Environment["PATH"]=playerBin;
         var scenarioArgs=mode.StartsWith("production-main-",StringComparison.Ordinal)?new[]{Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!,"dotnet"),Path.Combine(ship,"BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.dll"),mode,package,folder}:new[]{"/usr/bin/python3",Path.Combine(repo,"tests/fixtures/ProductionMain/ordinary.py"),mode,folder,ship,files.GameSessionPath};
         foreach(var a in new[]{Path.Combine(folder,"guardian.json"),"30000"}.Concat(scenarioArgs))start.ArgumentList.Add(a);

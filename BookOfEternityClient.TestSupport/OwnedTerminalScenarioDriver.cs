@@ -212,7 +212,7 @@ internal static class OwnedTerminalScenarioDriver
                 var root=Path.Combine(folder,"root");
                 var consumerMain=(GmSessionRunCoordinator)type.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
                 async Task Execute(string exe,string[] args,string name) {
-                    var start=new System.Diagnostics.ProcessStartInfo(exe){UseShellExecute=false,RedirectStandardInput=true,RedirectStandardOutput=true,RedirectStandardError=true};
+                    var start=new System.Diagnostics.ProcessStartInfo(exe){UseShellExecute=false,RedirectStandardInput=true,RedirectStandardOutput=true,RedirectStandardError=true,WorkingDirectory=Path.Combine(folder,"ship")};
                     foreach(var arg in args)start.ArgumentList.Add(arg);
                     using var child=System.Diagnostics.Process.Start(start)!;child.StandardInput.Close();
                     var stdout=child.StandardOutput.ReadToEndAsync();var stderr=child.StandardError.ReadToEndAsync();
@@ -237,6 +237,13 @@ internal static class OwnedTerminalScenarioDriver
                     Require(GmSessionRunValidation.IdentityMatches(close.Identity,consumerMain.Identity) && consumerMain.QueryRemoteOperation(close).State==MainOperationState.ClosedObserved,"Consumer receipt belongs to another original main or is not ClosedObserved.");
                 }
                 await Idle();
+                var loadedConfig=JsonDocument.Parse(await File.ReadAllBytesAsync(Path.Combine(root,"game_session/config.json")));
+                using(loadedConfig) {
+                    var settings=JsonSerializer.Deserialize<BookOfEternityClient.Configuration.GameSettings>(loadedConfig.RootElement,new JsonSerializerOptions{PropertyNameCaseInsensitive=true})!;
+                    Require(settings.GmCliLaunchCommand==ready.GetProperty("status").GetProperty("cliLaunchCommand").GetString() && settings.GmBridgeShellWorkingDirectory==ready.GetProperty("status").GetProperty("shellWorkingDirectory").GetString(),"Consumer changed configured command/model/arguments/cwd.");
+                }
+                result["InstalledConsumerWorkingDirectory"]=Path.Combine(folder,"ship");
+                result["ConfiguredCommandModelArgumentsCwdPreservedAfterConsumers"]=true;
                 result["ActualDaemonTurnQteRepairBootstrapStatusPins"]=5;
                 Require(ReferenceEquals(originalSession,type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)),"Real consumers switched original terminal.");
                 var stop=await Rpc(new {command="shutdown",rootKey=consumerMain.Identity.RootKey,expectedMainIdentity=consumerMain.Identity});

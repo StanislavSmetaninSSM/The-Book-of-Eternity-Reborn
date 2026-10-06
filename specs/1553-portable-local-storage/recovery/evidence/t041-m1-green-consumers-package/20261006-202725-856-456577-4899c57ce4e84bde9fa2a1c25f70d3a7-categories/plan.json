@@ -1,0 +1,106 @@
+{
+  "Categories": [
+    "gm-main-production-admission",
+    "gm-main-linux-launcher"
+  ],
+  "Reasons": [
+    {
+      "category": "gm-main-production-admission",
+      "reason": "#1553 M1 Consumed production main/root admission and retained independent worker/storage conjunction, configured neutral-only Linux fixture; causal RED from accepted design checkpoint before production corrections. Current fixture delta qualifies compiler-absent shipped startup and live original consumer pins; successful sixteen directly affected old cases at ee5d62b1 are retained without rerun.",
+      "contracts": [
+        "#1553 T041-PRODUCTION-MAIN-M1 original authority/run fence/T042, shipped no-build ordinary Linux entrypoint"
+      ]
+    },
+    {
+      "category": "gm-main-linux-launcher",
+      "reason": "#1553 M1 Actual ordinary Linux launcher/daemon/console entrypoints in relocated shipped layout, configured neutral-only fixture; causal RED from accepted design checkpoint before production corrections. Current fixture delta qualifies compiler-absent shipped startup and live original consumer pins; successful sixteen directly affected old cases at ee5d62b1 are retained without rerun.",
+      "contracts": [
+        "#1553 T041-PRODUCTION-MAIN-M1 original authority/run fence/T042, shipped no-build ordinary Linux entrypoint"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "5e9e7c127859190d0d52320455762951714d9ed1",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 46.773716,
+  "Descriptors": [
+    {
+      "Name": "gm-main-linux-launcher-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-linux-launcher",
+      "Categories": [
+        "gm-main-linux-launcher"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualBootstrap_ConfigAndGenerationUseOneAtomicPublication|FullyQualifiedName=BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualDaemonStartup_PortableOwnedBridgeWithoutWindowsDesktop|FullyQualifiedName=BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ColdMalformedWorkerNamespace_RefusesBootstrapBeforeEffects|FullyQualifiedName=BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryDaemonLauncher_ForegroundSeparateStdinInstalledContext|FullyQualifiedName=BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryLauncher_ShippedLayoutWithoutSourceRunsConfiguredCli|FullyQualifiedName=BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ShippedPublicationContainsRealLauncherAndParticipatingHelper",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualBootstrap_ConfigAndGenerationUseOneAtomicPublication",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualDaemonStartup_PortableOwnedBridgeWithoutWindowsDesktop",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ColdMalformedWorkerNamespace_RefusesBootstrapBeforeEffects",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryDaemonLauncher_ForegroundSeparateStdinInstalledContext",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryLauncher_ShippedLayoutWithoutSourceRunsConfiguredCli",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ShippedPublicationContainsRealLauncherAndParticipatingHelper",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-production-admission-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-production-admission",
+      "Categories": [
+        "gm-main-production-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation|FullyQualifiedName=BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute|FullyQualifiedName=BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_PipeDraftTakeoverCancelScopedStop|FullyQualifiedName=BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_UncertainRetainsOwnerAndWorkerInventory|FullyQualifiedName=BookOfEternityClient.Tests.GmMainProductionAdmissionTests.RealConsoleHealthAndInertDaemonConsumers_BorrowOriginalLiveProductionPins",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 11,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation",
+          "Cases": 7
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_PipeDraftTakeoverCancelScopedStop",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_UncertainRetainsOwnerAndWorkerInventory",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.RealConsoleHealthAndInertDaemonConsumers_BorrowOriginalLiveProductionPins",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

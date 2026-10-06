@@ -65,6 +65,6 @@ function Set-Clipboard {param($Value) throw 'OwnedTerminal fell through to clipb
 $unknown=Dispatch-WithRetry -Message 'inert ambiguous' -OperationKind 'repair' -OperationRevision 'M1-unknown' -ReturnDetails
 $paused=Dispatch-WithRetry -Message 'inert ambiguous' -OperationKind 'repair' -OperationRevision 'M1-unknown' -ReturnDetails
 if($unknown.Status -ne 'bridge-unknown-outcome' -or $unknown.PromptDelivery.disposition -ne 'unknown-outcome' -or
- $unknown.Attempts -ne 1 -or $paused.Status -ne 'bridge-unknown-outcome' -or -not $script:GmPromptInputPaused -or
+ $unknown.Attempts -ne 1 -or $paused.Status -ne 'bridge-unknown-outcome' -or $paused.PromptDelivery.operationId -cne $unknown.PromptDelivery.operationId -or $paused.PromptDelivery.inputBindingId -cne $unknown.PromptDelivery.inputBindingId -or -not $script:GmPromptInputPaused -or
  [IO.File]::ReadAllLines($counter).Count -ne 1){throw 'OwnedTerminal ambiguity replayed or failed to pause.'}
 [IO.File]::WriteAllText($EvidencePath,([ordered]@{connections=$connections;dispatch=$dispatch;retained=$again;unknown=$unknown;paused=$paused;ambiguousLauncherCalls=1;realFunctions=$names;gameRequests=0;modelRequests=0}|ConvertTo-Json -Depth 20))

@@ -96,6 +96,16 @@ Actual daemon must copy14existing context docs. Add ordinary foreground daemon l
 probe with separate caller terminal and Ctrl+C cleanup of only that own terminal. Runtime
 owner/fence/bootstrap remains ee5d62b1; minimal runtime delta is resource-path selection.
 
+Latest5e9e7c12:18/18PASS,15guardian reportsECHILD/emergency0/failure0/deadlinefalse,
+actual14daemon context docs +realforegroundlauncher, consolebootstrap/health and five
+original ClosedObserved consumer receipts, retained duplicate/ambiguity pause, exact
+coldUncertain refusal. Source/evidence integrity review pending closure. Reviewer found
+fixture host/consumers inherited checkout cwd; set ship cwd explicitly and retain other
+17current passes/16oldregressions by source. Runner exposes category selection only:
+Linux entrypoint category owns shared exact live-consumer method (deduplicated combined),
+so next repeat is bounded8entrypoint cases, not11admission/oldregression cohort. This
+reinforces installed-root lookup and exact profile preservation; runtime unchanged.
+
 ## T041-PRODUCTION-MAIN-DESIGN — current design-only continuation
 
 Owner accepted bounded F3 `fc49f271f5cd14ac3b24931cce2c98ef64a61068`.
