@@ -30,6 +30,19 @@ public sealed class GmWorkerRestartRecordTests
     }
 
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void PreparedCleanupFacts_StayColdUncertainUntilExactAbort(bool auditRequired)
+    {
+        var payload = Record("Prepared");
+        payload["Progress"] = Progress("AbortedBeforeLaunch", auditRequired);
+        var bytes = Bytes(payload);
+        var observation = GmWorkerRunRecordCodec.Observe(bytes);
+        Assert.Equal(WorkerRunObservationKind.Uncertain, observation.Kind);
+        Assert.Equal(bytes, GmWorkerRunRecordCodec.Encode(observation.Record!));
+    }
+
+    [Theory]
     [InlineData("Retired", false)]
     [InlineData("Retired", true)]
     [InlineData("AbortedBeforeLaunch", false)]

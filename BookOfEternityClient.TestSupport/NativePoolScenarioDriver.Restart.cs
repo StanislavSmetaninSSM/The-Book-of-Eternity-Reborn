@@ -54,10 +54,7 @@ internal static partial class NativePoolScenarioDriver
             BeforeWorkspaceCleanupAsync = path => { workspace = path; return Task.CompletedTask; }
         };
         var reaper = new GmWorkerQuarantineReaper(capacity: 1, retrySchedule: [], runInBackground: false);
-        // Initial causal RED intentionally exercises the accepted B injection before
-        // R2 exists. The connected R2 context will replace this admission at GREEN;
-        // the behavioral assertions and actual RunTaskAsync path stay the same.
-        var admission = new GmWorkerNativePoolAdmission(package, root);
+        using var admission = new GmWorkerNativePoolAdmission(package, root, durable: true);
         var pool = new GmWorkerBridgePool(fs, null, new GmWorkerAuditLog(fs), hooks,
             GmWorkerProcessTreeFactory.Instance, reaper, admission);
         var before = RestartSnapshot(root);

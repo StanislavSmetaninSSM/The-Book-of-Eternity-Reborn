@@ -34,7 +34,7 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
     private readonly string _runtimeRoot;
     private readonly string _workspaceRoot;
     private readonly TrustedLocalFileScope _fileScope;
-    private readonly PhysicalFileAuthority.FileIdentity?
+    private PhysicalFileAuthority.FileIdentity?
         _workspaceRootIdentity;
     private readonly GmWorkerExecutionWorkspaceHooks? _hooks;
     private readonly SemaphoreSlim _disposeGate = new(1, 1);
@@ -43,6 +43,8 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
     private PhysicalFileAuthority.StableDirectory? _gameSessionAuthority;
     private int _disposeState;
     private bool _workspaceDeleted;
+    private bool _partialCreationUncertain;
+    private bool _workspaceCreated;
     private bool _workspaceDeleteHookCompleted;
 
     private GmWorkerExecutionWorkspace(
@@ -51,9 +53,9 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
         string gameSessionPath,
         string taskPath,
         string proposalPath,
-        PhysicalFileAuthority.StableDirectory runtimeRootAuthority,
-        PhysicalFileAuthority.StableDirectory workspaceRootAuthority,
-        PhysicalFileAuthority.StableDirectory gameSessionAuthority,
+        PhysicalFileAuthority.StableDirectory? runtimeRootAuthority,
+        PhysicalFileAuthority.StableDirectory? workspaceRootAuthority,
+        PhysicalFileAuthority.StableDirectory? gameSessionAuthority,
         PhysicalFileAuthority.FileIdentity? workspaceRootIdentity,
         GmWorkerExecutionWorkspaceHooks? hooks)
     {
@@ -65,6 +67,7 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
         _gameSessionAuthority = gameSessionAuthority;
         _workspaceRootIdentity = workspaceRootIdentity;
         _hooks = hooks;
+        _workspaceCreated = workspaceRootAuthority != null;
         GameSessionPath = gameSessionPath;
         TaskPath = taskPath;
         ProposalPath = proposalPath;
@@ -74,19 +77,39 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
     internal string TaskPath { get; }
     internal string ProposalPath { get; }
 
+    internal static GmWorkerExecutionWorkspace PlanCreation(FileSystemManager fs, WorkerTaskPacket task,
+        GmWorkerExecutionWorkspaceHooks? hooks, string runtimeBase)
+    {
+        var runtime = ResolveRuntimeRoot(fs.BasePath, runtimeBase);
+        var workspace = Path.GetFullPath(Path.Combine(runtime, $"{SanitizeSegment(task.TaskId)}-{Guid.NewGuid():N}"));
+        EnsureWorkspaceIsInsideRuntime(runtime, workspace);
+        var session = Path.Combine(workspace, "game_session");
+        return new(runtime, workspace, session,
+            ResolveWorkspacePath(session, GmWorkerBridgePool.GetTaskPacketPath(task.TaskId)),
+            ResolveWorkspacePath(session, GmWorkerBridgePool.GetProposalInboxPath(task.TaskId)), null, null, null, null, hooks);
+    }
+
+    internal async Task CreateRetainingAuthorityAsync(FileSystemManager fs, WorkerTaskPacket task, CancellationToken cancellationToken)
+    {
+        if (_runtimeRootAuthority != null || _workspaceCreated || _partialCreationUncertain || Volatile.Read(ref _disposeState) != 0)
+            throw new InvalidOperationException("Original workspace creation may be attempted only once.");
+        _ = await CreateAsync(fs, task, cancellationToken, _hooks, retainedCreation: this);
+    }
+
     internal static async Task<GmWorkerExecutionWorkspace> CreateAsync(
         FileSystemManager fs,
         WorkerTaskPacket task,
         CancellationToken cancellationToken,
         GmWorkerExecutionWorkspaceHooks? hooks = null,
-        string? configuredRuntimeBase = null)
+        string? configuredRuntimeBase = null,
+        GmWorkerExecutionWorkspace? retainedCreation = null)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        var runtimeRoot = configuredRuntimeBase == null
+        var runtimeRoot = retainedCreation?._runtimeRoot ?? (configuredRuntimeBase == null
             ? ResolveRuntimeRoot(fs.BasePath)
-            : ResolveRuntimeRoot(fs.BasePath, configuredRuntimeBase);
+            : ResolveRuntimeRoot(fs.BasePath, configuredRuntimeBase));
         var safeTaskId = SanitizeSegment(task.TaskId);
-        var workspaceRoot = Path.GetFullPath(
+        var workspaceRoot = retainedCreation?._workspaceRoot ?? Path.GetFullPath(
             Path.Combine(
                 runtimeRoot,
                 $"{safeTaskId}-{Guid.NewGuid():N}"));
@@ -144,30 +167,42 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
                     runtimeRoot,
                     "Worker runtime root",
                     requireNew: false);
+            if (retainedCreation != null)
+            {
+                retainedCreation._runtimeRootAuthority = runtimeRootAuthority;
+                runtimeRootAuthority = null;
+                retainedCreation._partialCreationUncertain = true;
+            }
             new TrustedLocalFileScope([workspaceRoot]).ValidateDirectory(workspaceRoot);
             workspaceRootAuthority =
                 PhysicalFileAuthority.CreateStableChildDirectory(
-                    runtimeRootAuthority,
+                    retainedCreation?._runtimeRootAuthority ?? runtimeRootAuthority!,
                     workspaceRoot,
                     "Worker workspace root",
                     requireNew: true);
+            if (retainedCreation != null)
+            {
+                retainedCreation._workspaceRootAuthority = workspaceRootAuthority;
+                retainedCreation._workspaceCreated = true; retainedCreation._partialCreationUncertain = false;
+                workspaceRootAuthority = null;
+            }
             new TrustedLocalFileScope([gameSessionPath]).ValidateDirectory(gameSessionPath);
             gameSessionAuthority =
                 PhysicalFileAuthority.CreateStableChildDirectory(
-                    workspaceRootAuthority,
+                    retainedCreation?._workspaceRootAuthority ?? workspaceRootAuthority!,
                     gameSessionPath,
                     "Worker detached session root",
                     requireNew: true);
             var workspaceRootIdentity =
                 OperatingSystem.IsWindows()
                     ? PhysicalFileAuthority.CaptureFileIdentity(
-                        workspaceRootAuthority.Handle
+                        (retainedCreation?._workspaceRootAuthority ?? workspaceRootAuthority!).Handle
                         ?? throw new InvalidOperationException(
                             "Worker workspace authority has no retained handle."),
                         "Worker workspace root")
                     : null;
 
-            workspace = new GmWorkerExecutionWorkspace(
+            workspace = retainedCreation ?? new GmWorkerExecutionWorkspace(
                 runtimeRoot,
                 workspaceRoot,
                 gameSessionPath,
@@ -178,6 +213,11 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
                 gameSessionAuthority,
                 workspaceRootIdentity,
                 hooks);
+            if (retainedCreation != null)
+            {
+                retainedCreation._gameSessionAuthority = gameSessionAuthority;
+                retainedCreation._workspaceRootIdentity = workspaceRootIdentity;
+            }
             runtimeRootAuthority = null;
             workspaceRootAuthority = null;
             gameSessionAuthority = null;
@@ -190,6 +230,9 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
         }
         catch
         {
+            // R2 already owns this object before the first fallible creation.
+            // Leave every acquired authority with that original cleanup owner.
+            if (retainedCreation != null) throw;
             if (workspace != null)
             {
                 try
@@ -569,6 +612,7 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
 
     private async Task<List<Exception>?> DeleteDetachedSessionCoreAsync()
     {
+        if (_partialCreationUncertain) throw new InvalidOperationException("Original partial workspace creation authority is uncertain.");
         List<Exception>? failures = null;
         TryDisposeAuthority(
             ref _gameSessionAuthority,
@@ -577,7 +621,7 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
             ref _workspaceRootAuthority,
             ref failures);
         if (failures != null ||
-            _runtimeRootAuthority == null ||
+            _runtimeRootAuthority == null || !_workspaceCreated ||
             _workspaceDeleted)
         {
             return failures;

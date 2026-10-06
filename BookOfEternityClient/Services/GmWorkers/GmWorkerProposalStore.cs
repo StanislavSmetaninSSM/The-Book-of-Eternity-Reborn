@@ -35,7 +35,7 @@ public sealed class GmWorkerProposalStore
         string expectedSessionGeneration,
         string proposalInboxPath,
         Func<FileSystemManager.CanonicalWriteLease, Task>? publishDerivedAuditAsync = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default, GmWorkerDurableExecution? durableExecution = null)
     {
         if (!IsSafeId(proposal.ProposalId))
             return WorkerProposalPublicationResult.Rejected("Worker proposal id is unsafe.");
@@ -71,7 +71,7 @@ public sealed class GmWorkerProposalStore
             }
 
             await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(
-                cancellationToken: cancellationToken);
+                cancellationToken: cancellationToken, workerPurpose: durableExecution?.PublicationPurpose());
             if (!_fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
             {
                 return WorkerProposalPublicationResult.SessionWasReplaced(
@@ -79,6 +79,7 @@ public sealed class GmWorkerProposalStore
             }
 
             var currentTaskBytes = await _fs.ReadFileBytesAsync(taskPath);
+            _fs.EnsureCanonicalWriteLeaseActive(writeLease);
             if (!ExactBytesEqual(currentTaskBytes, expectedTaskBytes))
             {
                 return WorkerProposalPublicationResult.Rejected(
@@ -95,6 +96,8 @@ public sealed class GmWorkerProposalStore
             if (!publicationAuthority.TryBeginPublication())
                 throw new OperationCanceledException(cancellationToken);
 
+            if (durableExecution != null) await durableExecution.BeginPublicationAsync(proposal, proposalBytes, importedContent);
+            _fs.EnsureCanonicalWriteLeaseActive(writeLease);
             try
             {
                 if (_syntheticPublication == null)
@@ -110,6 +113,7 @@ public sealed class GmWorkerProposalStore
                     $"Worker proposal id already exists and cannot be overwritten: {proposal.ProposalId}.");
             }
 
+            if (durableExecution != null) await durableExecution.AcknowledgePublicationAsync();
             string? warning = null;
             try
             {
@@ -143,6 +147,7 @@ public sealed class GmWorkerProposalStore
         }
         finally
         {
+            durableExecution?.HoldUnresolvedPublication();
             try
             {
                 if (_syntheticPublication == null)

@@ -136,6 +136,12 @@ Prepared may freeze cleanup-only progress before never-Start archival, preservin
 candidate/index agreement; this refinement still needs focused schema tests. Pool,
 partial workspace, Store and quarantine wiring is incomplete; no fresh build or GREEN
 yet. Internal durable option is not exercised until all lifecycle boundaries connect.
+Connected implementation WIP now wires the actual pool and Store/quarantine path:
+original preallocated workspace retained before fallible creation, Prepared before
+Start, lease-held single Release, publication ACK before live success, exact terminal
+archive ACK before workspace/root/slot release. Restart drivers now explicitly select
+the durable route. Added two frozen Prepared cleanup syntax cases. Fresh preparation
+and initial integration checks pending; this checkpoint is unbuilt and unreviewed.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

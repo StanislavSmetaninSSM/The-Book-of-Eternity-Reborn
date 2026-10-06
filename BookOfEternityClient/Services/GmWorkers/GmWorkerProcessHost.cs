@@ -503,7 +503,6 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
         catch
         {
             durable?.CloseForUncertainty();
-            durable?.CloseForUncertainty();
             CloseChannels();
             throw;
         }

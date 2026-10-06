@@ -17,6 +17,8 @@ internal sealed class GmWorkerQuarantinedExecution : IGmWorkerQuarantineOwner
     private readonly SemaphoreSlim _confirmationGate = new(1, 1);
     private readonly SemaphoreSlim _cleanupGate = new(1, 1);
     private readonly GmWorkerExecutionAuthority _authority;
+    private readonly GmWorkerDurableExecution? _durable;
+    private readonly GmWorkerRootExecutionLease? _rootLease;
     private readonly Func<string, Task>? _beforeWorkspaceCleanupAsync;
     private readonly Func<Task<GmWorkerAuditAppendDisposition>> _recordCleanupConfirmedAsync;
     private readonly Func<Exception, Task> _recordFailureAsync;
@@ -37,24 +39,26 @@ internal sealed class GmWorkerQuarantinedExecution : IGmWorkerQuarantineOwner
         Func<string, Task>? beforeWorkspaceCleanupAsync, string sessionGeneration,
         WorkerAuditEvent cleanupConfirmedAuditEvent,
         Func<Task<GmWorkerAuditAppendDisposition>> recordCleanupConfirmedAsync,
-        Func<Exception, Task> recordFailureAsync, bool quarantined = true)
+        Func<Exception, Task> recordFailureAsync, bool quarantined = true,
+        GmWorkerDurableExecution? durable = null, GmWorkerRootExecutionLease? rootLease = null)
     {
         Identity = identity; _authority = authority; _owner = owner;
         _processHostLaunch = processHostLaunch; _workspace = workspace; _workerSlot = workerSlot;
         _workerCompletionTask = workerCompletionTask; _beforeWorkspaceCleanupAsync = beforeWorkspaceCleanupAsync;
         _sessionGeneration = sessionGeneration; _cleanupConfirmedAuditEvent = cleanupConfirmedAuditEvent;
         _recordCleanupConfirmedAsync = recordCleanupConfirmedAsync; _recordFailureAsync = recordFailureAsync;
-        _quarantined = quarantined;
+        _quarantined = quarantined; _durable = durable; _rootLease = rootLease;
     }
 
     public string Identity { get; }
-    internal void RetainForRetry() => _quarantined = true;
+    internal void RetainForRetry() { if (_durable?.TerminalPlanFrozen != true) _quarantined = true; }
 
     public async Task<GmWorkerCleanupEvidence> ConfirmDeathAsync()
     {
         await _confirmationGate.WaitAsync();
         try
         {
+            if (_durable != null) await _durable.RequireCleanupAuthorityAsync();
             var evidence = await _authority.StopForCleanupAsync(_owner);
             if (!evidence.NoLaunch && !_authority.OutputsSettled)
                 await _authority.SettleOutputsAsync(_owner ?? throw new InvalidOperationException("Original output owner is missing."));
@@ -102,7 +106,9 @@ internal sealed class GmWorkerQuarantinedExecution : IGmWorkerQuarantineOwner
                 }
                 _terminalAuditRecorded = true;
             }
+            if (_durable != null) await _durable.RetireAsync(_quarantined, _cleanupConfirmedAuditEvent);
             if (_workspace != null) { await _workspace.DisposeAsync(); _workspace = null; }
+            if (_durable != null) _durable.ReleaseRootAfterCleanup(); else _rootLease?.ReleaseAfterCleanup();
             _workerSlot?.Dispose(); _workerSlot = null;
             Volatile.Write(ref _cleanupCompleted, 1);
         }

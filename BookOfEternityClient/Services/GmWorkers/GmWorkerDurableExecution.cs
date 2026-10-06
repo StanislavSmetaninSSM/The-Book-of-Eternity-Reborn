@@ -19,7 +19,7 @@ internal sealed class GmWorkerDurableExecution
     private GmWorkerExecutionAuthority? _authority;
     private bool _registered, _startAttempted, _releaseAttempted, _publicationAcknowledged, _retirementAcknowledged;
     private int _uncertain;
-    private WorkerRunCleanup? _cleanup;
+    private WorkerRunCleanup? _cleanup, _boundAudit;
 
     private GmWorkerDurableExecution(WorkerRunLedgerCoordinator coordinator, GmWorkerRootExecutionLease root,
         WorkerRunEntryHandle entry, WorkerTaskPacket task, byte[] taskBytes, bool prepared)
@@ -68,8 +68,8 @@ internal sealed class GmWorkerDurableExecution
     {
         await EnsurePreparedAsync();
         if (_startAttempted || _cleanup != null) throw new InvalidOperationException("This execution cannot attempt another Start.");
-        await MoveAsync(WorkerRunPhase.LaunchIntent, null);
         _startAttempted = true;
+        await MoveAsync(WorkerRunPhase.LaunchIntent, null);
     }
     internal void ConsumeNativeStart(GmWorkerProcessHostLaunch host)
     {
@@ -139,10 +139,36 @@ internal sealed class GmWorkerDurableExecution
             throw new InvalidOperationException("Original caller has no acknowledged publication permit.");
     }
 
+    internal void HoldUnresolvedPublication()
+    {
+        if (_record.Phase == WorkerRunPhase.PublicationIntent) Context.MarkMetadataPending(this);
+    }
+    internal async Task RequireCleanupAuthorityAsync()
+    {
+        if (!IsUncertain) return;
+        await _gate.WaitAsync();
+        try
+        {
+            await EnsurePreparedAsync();
+            await RetryOriginalPendingAsync();
+            if (_record.Phase != WorkerRunPhase.Uncertain) await MoveUnderGateAsync(WorkerRunPhase.Uncertain, _record.Progress);
+        }
+        finally { _gate.Release(); }
+        throw new InvalidOperationException("Execution uncertainty retains its original quarantine and capacity.");
+    }
+
     internal GmWorkerCanonicalPurpose ReleasePurpose() => new(this, GmWorkerCanonicalOperation.Release, null);
     internal GmWorkerCanonicalPurpose PublicationPurpose() => new(this, GmWorkerCanonicalOperation.ProposalPublication, null);
+    internal void BindCleanupAudit(WorkerAuditEvent audit)
+    {
+        if (_boundAudit != null || audit.WorkerId != Identity.WorkerId || audit.TaskId != Identity.TaskId ||
+            audit.EventType != "process-tree-cleanup-confirmed")
+            throw new InvalidOperationException("Cleanup audit must bind once to the original task.");
+        _boundAudit = AuditFacts(audit);
+    }
     internal GmWorkerCanonicalPurpose CleanupPurpose(WorkerAuditEvent audit)
     {
+        if (_boundAudit != AuditFacts(audit)) throw new InvalidOperationException("Cleanup audit is not the original frozen event.");
         _ = Authority.RequireCleanupEvidence();
         return new(this, GmWorkerCanonicalOperation.ConfirmedCleanupAudit, AuditFacts(audit));
     }
@@ -153,7 +179,10 @@ internal sealed class GmWorkerDurableExecution
         if (!ReferenceEquals(purpose.Execution, this) || _retirementAcknowledged || !_registered || IsUncertain)
             throw new InvalidOperationException("Original worker canonical purpose is no longer valid.");
         if (purpose.Operation == GmWorkerCanonicalOperation.ConfirmedCleanupAudit)
+        {
+            if (purpose.Audit == null || purpose.Audit != _boundAudit) throw new InvalidOperationException("Cleanup token belongs to another audit event.");
             _ = Authority.RequireCleanupEvidence();
+        }
         else if (purpose.Operation == GmWorkerCanonicalOperation.ProposalPublication)
             Authority.RequirePublication();
         else RequireBound();
@@ -178,6 +207,7 @@ internal sealed class GmWorkerDurableExecution
                 throw new IOException("Publication boundary is unresolved; terminal cleanup cannot accept or discard it.");
             if (_record.Phase == WorkerRunPhase.Retired || _record.Phase == WorkerRunPhase.AbortedBeforeLaunch)
             { _retirementAcknowledged = true; return; }
+            if (quarantined && _boundAudit != AuditFacts(audit)) throw new InvalidOperationException("Terminal audit facts do not match original cleanup.");
             _cleanup ??= quarantined ? AuditFacts(audit) : new(false, null, null);
             var progress = new WorkerRunProgress(_record.Progress?.Publication, _cleanup);
             if (!_startAttempted)
@@ -188,6 +218,7 @@ internal sealed class GmWorkerDurableExecution
             }
             else
             {
+                RequireBound();
                 if (_record.Phase is WorkerRunPhase.LaunchIntent or WorkerRunPhase.ReleaseIntent or WorkerRunPhase.Released)
                     await MoveUnderGateAsync(WorkerRunPhase.StopValidated, null);
                 if (_record.Phase != WorkerRunPhase.CleanupPending) await MoveUnderGateAsync(WorkerRunPhase.CleanupPending, progress);
@@ -200,7 +231,7 @@ internal sealed class GmWorkerDurableExecution
     internal void ReleaseRootAfterCleanup()
     {
         if (!_retirementAcknowledged) throw new InvalidOperationException("Retirement ACK is required before releasing root capacity.");
-        _root.Dispose();
+        _root.ReleaseAfterCleanup();
     }
     private void RequireBound()
     {
@@ -262,7 +293,7 @@ internal sealed class GmWorkerDurableExecution
                 (WorkerRunPhase.LaunchIntent, WorkerRunPhase.ReleaseIntent) or (WorkerRunPhase.ReleaseIntent, WorkerRunPhase.Released) => after.Progress == null,
                 (WorkerRunPhase.LaunchIntent or WorkerRunPhase.ReleaseIntent or WorkerRunPhase.Released, WorkerRunPhase.StopValidated) => after.Progress == null,
                 (WorkerRunPhase.StopValidated, WorkerRunPhase.PublicationIntent) => after.Progress is { Publication.Committed: false, Cleanup: null },
-                (WorkerRunPhase.PublicationIntent, WorkerRunPhase.Published) => after.Progress?.Publication == before.Progress?.Publication! with { Committed = true } && after.Progress?.Cleanup == null,
+                (WorkerRunPhase.PublicationIntent, WorkerRunPhase.Published) => after.Progress?.Publication == (before.Progress!.Publication! with { Committed = true }) && after.Progress?.Cleanup == null,
                 (WorkerRunPhase.StopValidated or WorkerRunPhase.Published, WorkerRunPhase.CleanupPending) => after.Progress?.Publication == before.Progress?.Publication && after.Progress?.Cleanup != null,
                 (WorkerRunPhase.CleanupPending, WorkerRunPhase.Retired) => before.Progress == after.Progress && before.Progress?.Cleanup != null,
                 _ => false

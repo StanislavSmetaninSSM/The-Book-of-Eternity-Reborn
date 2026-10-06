@@ -131,7 +131,10 @@ internal sealed class GmWorkerRootContext
 internal sealed class GmWorkerRootExecutionLease : IDisposable
 {
     private int _released;
+    private bool _transferred;
+    internal void RetainForCleanup() => _transferred = true;
+    internal void ReleaseAfterCleanup() { if (Interlocked.Exchange(ref _released, 1) == 0) Context.ReleaseExecution(); }
     internal GmWorkerRootContext Context { get; }
     internal GmWorkerRootExecutionLease(GmWorkerRootContext context) { Context = context; }
-    public void Dispose() { if (Interlocked.Exchange(ref _released, 1) == 0) Context.ReleaseExecution(); }
+    public void Dispose() { if (!_transferred) ReleaseAfterCleanup(); }
 }

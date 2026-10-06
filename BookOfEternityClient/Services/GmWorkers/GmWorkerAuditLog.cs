@@ -71,14 +71,14 @@ public sealed class GmWorkerAuditLog
         AppendRequiredEventOnceIfCurrentSessionAsync(
             string expectedSessionGeneration,
             WorkerAuditEvent auditEvent,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default, GmWorkerDurableExecution? durableExecution = null)
     {
         ValidateAuditEvent(auditEvent);
         await using var admission = await _fs
             .CanonicalRootAuthorityIdentity
             .EnterGmWorkerAuditAppendAdmissionAsync(cancellationToken);
         await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(
-            cancellationToken: cancellationToken);
+            cancellationToken: cancellationToken, workerPurpose: durableExecution?.CleanupPurpose(auditEvent));
         if (!_fs.IsCurrentSessionGeneration(
                 writeLease,
                 expectedSessionGeneration))
