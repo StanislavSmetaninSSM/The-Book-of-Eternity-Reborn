@@ -13201,6 +13201,30 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-restart-crash-retirement-linux",
+      "responsibility": "#1553 R3 original quarantined cleanup crash at CleanupPending, candidate archive, terminal disk/pre-ACK, exact live ACK and completed capacity release; required audit identity, cold refusal vs distinct actual new task and immutable old bytes.",
+      "excludes": "No replay of passing launch/publication cohorts, no reconnect, force-clear, production Linux Release, main PTY, live GM, saves, reboot or Windows native.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.RestartFenceRetirement.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.RetirementCrash_ExactTerminalCommitGatesNewTask"
+          ]
+        }
+      ]
     }
   ]
 }

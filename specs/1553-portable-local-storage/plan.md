@@ -38,6 +38,14 @@ B5/5PASS,64.5285515s;10guardianECHILD/0signals/failure/deadline. Full exact cold
 snapshots unchanged, no allocation/import/repeated Release or consumers. Evidence
 worker-r3-publication-green; next only C. No runtime behavior change.
 
+### Cohort C source checkpoint — WIP
+
+Five original reaper retirement crash cuts follow a one-shot actual workspace-cleanup
+failure. Add only the reviewed nullable Action after actual RetireAsync return and before
+runtime/root/slot release; no positive witness or behavior change. RequiredAudit exact
+event/digest and old archive/task/bundle/audit prefix are asserted. Source unbuilt/unrun;
+next only worker-restart-crash-retirement-linux. B carrier d473f021 is remotely verified.
+
 ### Evidence already accepted; exclude unchanged repetitions
 
 - R1: exact old/new/Blocked persistence cuts at write/flush/rename/directory sync,

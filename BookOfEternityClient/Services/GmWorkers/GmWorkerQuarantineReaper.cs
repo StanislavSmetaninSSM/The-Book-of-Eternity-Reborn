@@ -20,6 +20,7 @@ internal sealed class GmWorkerQuarantinedExecution : IGmWorkerQuarantineOwner
     private readonly GmWorkerExecutionAuthority _authority;
     private readonly GmWorkerDurableExecution? _durable;
     private readonly GmWorkerRootExecutionLease? _rootLease;
+    private readonly Action? _afterRetirementAcknowledged;
     private readonly Func<string, Task>? _beforeWorkspaceCleanupAsync;
     private readonly Func<Task<GmWorkerAuditAppendDisposition>> _recordCleanupConfirmedAsync;
     private readonly Func<Exception, Task> _recordFailureAsync;
@@ -44,7 +45,8 @@ internal sealed class GmWorkerQuarantinedExecution : IGmWorkerQuarantineOwner
         WorkerAuditEvent cleanupConfirmedAuditEvent,
         Func<Task<GmWorkerAuditAppendDisposition>> recordCleanupConfirmedAsync,
         Func<Exception, Task> recordFailureAsync, bool quarantined = true,
-        GmWorkerDurableExecution? durable = null, GmWorkerRootExecutionLease? rootLease = null)
+        GmWorkerDurableExecution? durable = null, GmWorkerRootExecutionLease? rootLease = null,
+        Action? afterRetirementAcknowledged = null)
     {
         Identity = identity; _authority = authority; _owner = owner;
         _processHostLaunch = processHostLaunch; _workspace = workspace; _workerSlot = workerSlot;
@@ -52,7 +54,7 @@ internal sealed class GmWorkerQuarantinedExecution : IGmWorkerQuarantineOwner
         _sessionGeneration = sessionGeneration; _cleanupConfirmedAuditEvent = cleanupConfirmedAuditEvent;
         _recordCleanupConfirmedAsync = recordCleanupConfirmedAsync; _recordFailureAsync = recordFailureAsync;
         _quarantined = quarantined; _durable = durable; _rootLease = rootLease;
-        _originalWorkspace = workspace;
+        _originalWorkspace = workspace; _afterRetirementAcknowledged = afterRetirementAcknowledged;
         durable?.BindCleanupOwner(this, workspace, authority);
     }
 
@@ -133,6 +135,8 @@ internal sealed class GmWorkerQuarantinedExecution : IGmWorkerQuarantineOwner
             {
                 _completion ??= new(this);
                 await _durable.RetireAsync(_completion);
+                // Negative/observation only: actual original retirement has returned.
+                _afterRetirementAcknowledged?.Invoke();
             }
             if (_workspace != null) { await _workspace.DisposeAsync(); _workspace = null; }
             if (_durable != null) _durable.ReleaseRootAfterCleanup(); else _rootLease?.ReleaseAfterCleanup();

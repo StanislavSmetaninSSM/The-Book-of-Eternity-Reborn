@@ -21,6 +21,7 @@ internal sealed class GmWorkerBridgePoolHooks
     internal Func<Task<int>, Task>? BeforeCompletionArbitrationAsync { get; init; }
     internal Action<GmWorkerProcessCompletionOutcome>? AfterCompletionArbitration { get; init; }
     internal Action? AfterScopedStop { get; init; }
+    internal Action? AfterRetirementAcknowledged { get; init; }
     internal Func<string, Task>? BeforeWorkspaceFileCreateAsync { get; init; }
     internal Func<string, Task>? BeforeWorkspaceCleanupAsync { get; init; }
     internal Func<string, Task>? AfterQuarantineAuditTempCreatedAsync { get; init; }
@@ -625,7 +626,7 @@ public sealed class GmWorkerBridgePool
                 cleanupConfirmedAuditEvent,
                 () => RecordRequiredTerminalEventOnceAsync(task.SessionGeneration, cleanupConfirmedAuditEvent, durableExecution),
                 failure => RecordTerminalEventAsync("process-tree-cleanup-retry-failed", profile, task,
-                    failure.Message, [failure.GetType().Name]), quarantined: false, durableExecution, rootExecutionLease);
+                    failure.Message, [failure.GetType().Name]), quarantined: false, durableExecution, rootExecutionLease, _hooks?.AfterRetirementAcknowledged);
             try
             {
                 _ = await cleanup.ConfirmDeathAsync();

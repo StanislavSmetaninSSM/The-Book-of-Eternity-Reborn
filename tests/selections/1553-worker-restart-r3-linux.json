@@ -16,6 +16,14 @@
         "#1553 T041-WORKER-RESTART-R3",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-restart-crash-retirement-linux",
+      "reason": "R3 cohort C: original conditional cleanup and five retirement crash cuts; execute alone after B cleanup.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R3",
+        "FR-012/014/015"
+      ]
     }
   ]
 }
