@@ -18,6 +18,7 @@ public sealed partial class BrowserRollbackLinuxBoundaryTests(ITestOutputHelper 
     private static readonly byte[] After = Encoding.UTF8.GetBytes("Привет 世界\n");
     private Func<string, Task>? _mutation;
     private Func<Task>? _closing;
+    private Func<Task>? _contended;
     private Action<TrustedLocalPublicationPhase, int>? _publication;
     private BrowserLocalWriteRequest Request => new("linux-browser", "Fixture", "boundary");
 
@@ -29,6 +30,7 @@ public sealed partial class BrowserRollbackLinuxBoundaryTests(ITestOutputHelper 
             {
                 BeforeCanonicalMutationBoundaryAsync = path => _mutation?.Invoke(path) ?? Task.CompletedTask,
                 SessionOperationClosingAsync = () => _closing?.Invoke() ?? Task.CompletedTask,
+                MainOwnerLockContendedAsync = () => _contended?.Invoke() ?? Task.CompletedTask,
                 LocalPublicationObserver = (phase, index) => _publication?.Invoke(phase, index)
             });
         await new StateManager(files, new GameSettings(), NullLogger<StateManager>.Instance).BootstrapLocalStorageAsync();
