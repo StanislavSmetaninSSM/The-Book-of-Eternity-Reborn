@@ -37,7 +37,13 @@ passed (9 discovered,0 executed,96.4130651s); then NoBuild executed9/9 causal FA
 failure. Evidence: recovery/evidence/worker-ledger-record-initial-red/manifest.json.
 Added34 strict malformed cases and one prelaunch terminal case before implementing
 codec; expanded causal RED pending. Catalog formatting restored without changing any
-existing category object. Next: build/execute expanded45-case RED, implement strict codec.
+existing category object. Expanded source `8c7c5e5b4cf39968b2f3ca0f35e41db058ea6b9c`: fresh build and44/44
+causal FAIL,49.8333019s, no preparation error or timeout, cleanup complete. Nine active,
+one terminal syntax and34 malformed cases all reject the scaffold's false Missing.
+Evidence: recovery/evidence/worker-ledger-record-expanded-red/manifest.json.
+Strict bounded UTF-8/JSON codec now implemented; GREEN pending. Only prelaunch-abort
+terminal syntax is supported in R1; started-run retirement remains unavailable.
+Next: fresh selected build and44-case GREEN; then begin real persistence tests.
 
 ## Active worker restart/fencing design-only continuation, 2026-10-05
 
