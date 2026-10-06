@@ -63,6 +63,13 @@
       "contracts": [
         "#1553 T041-RUN-FENCE-F2; original T042 identity; exact typed Load outcome"
       ]
+    },
+    {
+      "category": "gm-main-affected-browser-native-windows",
+      "reason": "Four affected legacy browser rollback/transaction checks requiring existing native Windows reversible publication backend; unavailable in Linux qualification",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F2; original browser transaction remains fenced"
+      ]
     }
   ]
 }
