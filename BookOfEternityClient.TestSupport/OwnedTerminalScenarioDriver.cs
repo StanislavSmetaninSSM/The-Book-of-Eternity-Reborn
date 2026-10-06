@@ -199,7 +199,49 @@ internal static class OwnedTerminalScenarioDriver
                 catch (TimeoutException) { }
                 Require(ReferenceEquals(originalSession,type.GetField("_pty", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(host)),"Original Uncertain owner lost.");
                 Require(!(await Rpc(new { command="setReady", ready=true })).GetProperty("ok").GetBoolean(),"Uncertain owner became ready.");
+                if(production) {
+                    var retained=(GmSessionRunCoordinator)type.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
+                    Require(retained.RetainsAuthority && retained.IsUncertain && retained.Record!.Disposition==GmSessionRunDisposition.Uncertain,"Physical controlled cleanup erased logical main uncertainty.");
+                    await using var excluded=await GmWorkerRunLedger.OpenCoordinatorAsync(new(Path.Combine(folder,"root")));
+                    Require(excluded==null,"Uncertain main released original worker inventory.");
+                    result["LogicalUncertainOriginalInventoryRetained"]=true;
+                }
                 result["UncertainRetained"]=true; result["Success"]=true; return 0;
+            }
+            if(mode=="production-main-consumers") {
+                var root=Path.Combine(folder,"root");
+                var main=(GmSessionRunCoordinator)type.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
+                async Task Execute(string exe,string[] args,string name) {
+                    var start=new System.Diagnostics.ProcessStartInfo(exe){UseShellExecute=false,RedirectStandardInput=true,RedirectStandardOutput=true,RedirectStandardError=true};
+                    foreach(var arg in args)start.ArgumentList.Add(arg);
+                    using var child=System.Diagnostics.Process.Start(start)!;child.StandardInput.Close();
+                    var stdout=child.StandardOutput.ReadToEndAsync();var stderr=child.StandardError.ReadToEndAsync();
+                    try {await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(8));}
+                    catch {child.Kill();await child.WaitForExitAsync();throw;}
+                    var output=await stdout;var error=await stderr;
+                    await File.WriteAllTextAsync(Path.Combine(folder,name+".log"),output+"\n"+error);
+                    Require(child.ExitCode==0,"Real "+name+" failed: "+output+error);
+                    Require(!((IOwnedTerminalSession)originalSession).RootExited.IsCompleted,"Consumer ended original configured CLI.");
+                }
+                var script=Path.Combine(folder,"console-input.json");
+                await File.WriteAllTextAsync(script,"{\"steps\":[{\"kind\":\"key\",\"key\":\"Up\"},{\"kind\":\"key\",\"key\":\"Enter\"}]}");
+                await Execute("dotnet",[Path.Combine(folder,"ship/BookOfEternityClient/BookOfEternityClient.dll"),root,"--plain-output","--e2e-script",script,"--e2e-artifacts",Path.Combine(folder,"console-observations")],"actual-console-health");
+                var pins=(System.Collections.IDictionary)typeof(GmSessionRunCoordinator).GetField("_remotePins",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(main)!;
+                Require(pins.Count>=2,"Actual console bootstrap/health did not use original remote pins.");
+                foreach(var p in pins.Values)Require((MainOperationState)p!.GetType().GetField("State",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(p)! == MainOperationState.ClosedObserved,"Console pin did not reach ClosedObserved.");
+                result["RealConsoleBootstrapAndHealthClosedObserved"]=pins.Count;
+                await Execute("pwsh",["-NoProfile","-File",Path.Combine(folder,"ship/BookOfEternityClient/m1-consumers.ps1"),"-SessionPath",Path.Combine(root,"game_session"),"-EvidencePath",Path.Combine(folder,"consumer-boundaries.json")],"actual-daemon-consumers");
+                using var observations=JsonDocument.Parse(await File.ReadAllBytesAsync(Path.Combine(folder,"consumer-boundaries.json")));
+                foreach(var item in observations.RootElement.GetProperty("connections").EnumerateArray()) {
+                    var close=JsonSerializer.Deserialize<MainOperationClose>(item.GetProperty("close"),MainOperationReader.Json)!;
+                    Require(GmSessionRunValidation.IdentityMatches(close.Identity,main.Identity) && main.QueryRemoteOperation(close).State==MainOperationState.ClosedObserved,"Consumer receipt belongs to another original main or is not ClosedObserved.");
+                }
+                await Idle();
+                result["ActualDaemonTurnQteRepairBootstrapStatusPins"]=5;
+                Require(ReferenceEquals(originalSession,type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)),"Real consumers switched original terminal.");
+                var stop=await Rpc(new {command="shutdown",rootKey=main.Identity.RootKey,expectedMainIdentity=main.Identity});
+                Require(stop.GetProperty("ok").GetBoolean(),"Consumer original scoped stop unconfirmed.");
+                result["Success"]=true;return 0;
             }
             var first=await Rpc(Prompt("dispatchPrompt","first","one Ж😀"));
             Require(Disposition(first)=="submission-observed","First original T042 submission not observed: "+first); await Idle();

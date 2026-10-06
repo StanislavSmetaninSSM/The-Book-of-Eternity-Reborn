@@ -26,7 +26,10 @@ def rpc(payload):
    reply.extend(b)
   return json.loads(reply)
 try:
+ assert not any((folder/'player-bin'/name).exists() for name in ['cc','gcc','clang','c++'])
+ result['CompilerAbsentAtPlayerStartup']=True
  if mode.startswith('refuse-'):
+  originalRecord=session.parent/'.boe_runtime/gm-runs/main.json';recordBefore=originalRecord.read_bytes() if originalRecord.exists() else None
   configPath=session/'config.json';cfg=json.loads(configPath.read_text())
   if mode=='refuse-auto':cfg['GmMainOwnerBackend']='Auto'
   if mode=='refuse-systemd':cfg['GmMainOwnerBackend']='SystemdUser'
@@ -44,7 +47,9 @@ try:
  process=subprocess.Popen(args,cwd=ship,stdin=slave,stdout=slave,stderr=slave,preexec_fn=own_terminal);pidfd=os.pidfd_open(process.pid)
  if mode.startswith('refuse-'):
   process.wait(timeout=5);receive();assert process.returncode!=0
-  assert b'TTY_READY' not in capture and not (session.parent/'.boe_runtime/gm-runs/main.json').exists()
+  assert b'TTY_READY' not in capture
+  if mode=='refuse-cold':assert originalRecord.read_bytes()==recordBefore and json.loads(recordBefore)['Disposition']=='Uncertain'
+  else:assert not originalRecord.exists()
   assert not (folder/'must-not-create').exists()
   assert {str(p):p.read_bytes() for p in session.rglob('*') if p.is_file()}==before
   result['RefusedBeforeCreationAndCanonicalEffects']=True

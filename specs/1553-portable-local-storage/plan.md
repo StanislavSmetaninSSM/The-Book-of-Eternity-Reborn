@@ -61,6 +61,18 @@ inventory and actual shipped launcher allGREEN. No runtime change is planned for
 next consumer proof unless it reveals a causal defect. Already successful16directly
 affected old cases are retained by source identity, not rerun with new fixture-only work.
 
+Consumer fixture WIP: real shipped console Program/GameEngine bootstrap+ordinary-entry
+health followed by scripted menu Exit, on separate stdin while original production main
+lives. AST-load actual daemon function definitions only; real bootstrap/status publication
+and absent-request turn/QTE/repair early-return cores acquire five actual helper connections;
+verify exact original ClosedObserved receipts/disposal. Actual OwnedTerminal transport uses
+real installed launcher/pipe/T042 for inert neutral text and retained duplicate. This proves
+bootstrap/consumer transport/admission boundaries, not provider-backed game mechanics.
+Publisher controller removes compiler from child-only PATH (only dotnet/pwsh), records
+fixture compiler provenance. Fresh actual bridge must refuse retained Uncertain after
+independent physical guardian cleanup. Runtime unchanged from ee5d62b1; unrun until next
+narrow qualification. Systemd, browser rollback, pending Load UX/Q1/Q2 remain excluded.
+
 ## T041-PRODUCTION-MAIN-DESIGN — current design-only continuation
 
 Owner accepted bounded F3 `fc49f271f5cd14ac3b24931cce2c98ef64a61068`.

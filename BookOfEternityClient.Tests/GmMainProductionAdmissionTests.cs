@@ -16,5 +16,7 @@ public sealed class GmMainProductionAdmissionTests
     [Fact]
     public Task OriginalProduction_PipeDraftTakeoverCancelScopedStop()=>ProductionMainLinuxFixture.RunAsync("production-main-controls");
     [Fact]
+    public Task RealConsoleHealthAndInertDaemonConsumers_BorrowOriginalLiveProductionPins()=>ProductionMainLinuxFixture.RunAsync("production-main-consumers");
+    [Fact]
     public Task OriginalProduction_UncertainRetainsOwnerAndWorkerInventory()=>ProductionMainLinuxFixture.RunAsync("production-main-uncertain");
 }

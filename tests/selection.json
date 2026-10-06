@@ -3,14 +3,14 @@
   "selections": [
     {
       "category": "gm-main-production-admission",
-      "reason": "#1553 M1 Consumed production main/root admission and retained independent worker/storage conjunction, configured neutral-only Linux fixture; causal RED from accepted design checkpoint before production corrections",
+      "reason": "#1553 M1 Consumed production main/root admission and retained independent worker/storage conjunction, configured neutral-only Linux fixture; causal RED from accepted design checkpoint before production corrections. Current fixture delta qualifies compiler-absent shipped startup and live original consumer pins; successful sixteen directly affected old cases at ee5d62b1 are retained without rerun.",
       "contracts": [
         "#1553 T041-PRODUCTION-MAIN-M1 original authority/run fence/T042, shipped no-build ordinary Linux entrypoint"
       ]
     },
     {
       "category": "gm-main-linux-launcher",
-      "reason": "#1553 M1 Actual ordinary Linux launcher/daemon/console entrypoints in relocated shipped layout, configured neutral-only fixture; causal RED from accepted design checkpoint before production corrections",
+      "reason": "#1553 M1 Actual ordinary Linux launcher/daemon/console entrypoints in relocated shipped layout, configured neutral-only fixture; causal RED from accepted design checkpoint before production corrections. Current fixture delta qualifies compiler-absent shipped startup and live original consumer pins; successful sixteen directly affected old cases at ee5d62b1 are retained without rerun.",
       "contracts": [
         "#1553 T041-PRODUCTION-MAIN-M1 original authority/run fence/T042, shipped no-build ordinary Linux entrypoint"
       ]

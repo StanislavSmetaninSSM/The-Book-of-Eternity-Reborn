@@ -3,7 +3,7 @@
   "categories": [
     {
       "id": "gm-main-production-admission",
-      "responsibility": "#1553 M1 Consumed production main/root admission and retained independent worker/storage conjunction, configured neutral-only Linux fixture",
+      "responsibility": "M1 ordinary configured production admission, retained original worker/storage conjunction, real live console bootstrap/health and inert daemon/turn/QTE/repair consumers; native scoped stop and Uncertain",
       "excludes": "No neutralPackage bypass, provider/Codex Q1/Q2, real saves, helpers enabled, Auto/systemd/native Windows/cold guarantees or browser rollback migration.",
       "changeHints": [
         "BookOfEternityClient/Services/GmRuntime/",
@@ -22,15 +22,7 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.*",
-            "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_CreatesConfigAndGenerationUnderOneLeaseAndInvalidatesGenerationRevision",
-            "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration",
-            "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_RepeatedAndNewManagerLoadsExistingValuesWithoutRewritingExactConfigOrGeneration",
-            "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained",
-            "BookOfEternityClient.Tests.PortableClientStorageTests.ActualConsoleEntrypointRejectsInvalidConfigBeforeMainMenuAndKeepsEvidence",
-            "BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite",
-            "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority",
-            "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_ScopedProofStillRequiresActualOutputEof"
+            "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.*"
           ]
         }
       ]
