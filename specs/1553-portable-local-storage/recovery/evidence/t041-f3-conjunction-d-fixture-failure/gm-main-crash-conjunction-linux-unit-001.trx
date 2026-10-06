@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="f819b6cd-87d9-4776-a40a-7576de84aa40" name="@c7669543e9c7 2026-10-06 18:43:08" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T18:43:08.3679210+00:00" queuing="2026-10-06T18:43:08.3679210+00:00" start="2026-10-06T18:43:03.1354509+00:00" finish="2026-10-06T18:43:12.2926422+00:00" />
+  <TestSettings name="default" id="e55ed63e-3f84-458a-8e11-aa40ccc1d76d">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_18_43_08" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="62315fd2-95f1-4549-abdc-f0e02ab0cfc7" testId="343cd70c-b6e8-d07b-9cc2-dccf7ab0f152" testName="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.IndependentDebt_AfterStoppedAndSeedDeathRefusesBeforeNewCreation(kind: &quot;storage&quot;)" computerName="c7669543e9c7" duration="00:00:03.8577284" startTime="2026-10-06T18:43:12.1809618+00:00" endTime="2026-10-06T18:43:12.1809621+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="62315fd2-95f1-4549-abdc-f0e02ab0cfc7" />
+    <UnitTestResult executionId="45cc5840-c8b1-4705-8857-1e61e433a40c" testId="3b7588d7-4b13-0194-271b-2888e524e160" testName="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.IndependentDebt_AfterStoppedAndSeedDeathRefusesBeforeNewCreation(kind: &quot;worker&quot;)" computerName="c7669543e9c7" duration="00:00:02.8635802" startTime="2026-10-06T18:43:08.3214340+00:00" endTime="2026-10-06T18:43:08.3214477+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="45cc5840-c8b1-4705-8857-1e61e433a40c">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode, Action`1 observeOwnFolder) in /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs:line 62
+   at BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.RunBoundedAsync(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunCrashLinuxTests.cs:line 53
+   at BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.IndependentDebt_AfterStoppedAndSeedDeathRefusesBeforeNewCreation(String kind) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunCrashLinuxTests.cs:line 42
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.IndependentDebt_AfterStoppedAndSeedDeathRefusesBeforeNewCreation(kind: &quot;storage&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="343cd70c-b6e8-d07b-9cc2-dccf7ab0f152">
+      <Execution id="62315fd2-95f1-4549-abdc-f0e02ab0cfc7" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests" name="IndependentDebt_AfterStoppedAndSeedDeathRefusesBeforeNewCreation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.IndependentDebt_AfterStoppedAndSeedDeathRefusesBeforeNewCreation(kind: &quot;worker&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3b7588d7-4b13-0194-271b-2888e524e160">
+      <Execution id="45cc5840-c8b1-4705-8857-1e61e433a40c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests" name="IndependentDebt_AfterStoppedAndSeedDeathRefusesBeforeNewCreation" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="343cd70c-b6e8-d07b-9cc2-dccf7ab0f152" executionId="62315fd2-95f1-4549-abdc-f0e02ab0cfc7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3b7588d7-4b13-0194-271b-2888e524e160" executionId="45cc5840-c8b1-4705-8857-1e61e433a40c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="2" executed="2" passed="1" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.23]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.65]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.68]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:04.61]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:04.61]       Expected: 0
+[xUnit.net 00:00:04.61]       Actual:   1
+[xUnit.net 00:00:04.61]       Stack Trace:
+[xUnit.net 00:00:04.61]         /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs(62,0): at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode, Action`1 observeOwnFolder)
+[xUnit.net 00:00:04.61]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunCrashLinuxTests.cs(53,0): at BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.RunBoundedAsync(String mode)
+[xUnit.net 00:00:04.61]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunCrashLinuxTests.cs(42,0): at BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.IndependentDebt_AfterStoppedAndSeedDeathRefusesBeforeNewCreation(String kind)
+[xUnit.net 00:00:04.61]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:08.49]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T18:43:08.3266573+00:00">
+        <Text>[xUnit.net 00:00:04.61]     BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.IndependentDebt_AfterStoppedAndSeedDeathRefusesBeforeNewCreation(kind: "worker") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>
