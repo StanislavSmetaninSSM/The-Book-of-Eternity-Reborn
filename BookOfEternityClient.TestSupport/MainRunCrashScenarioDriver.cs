@@ -28,6 +28,7 @@ internal static partial class MainRunCrashScenarioDriver
             if(mode.StartsWith(Prefix+"stop-",StringComparison.Ordinal))return await WitnessStopAsync(mode[(Prefix.Length+5)..],package,folder,result);
             if(mode.StartsWith(Prefix+"replacement-",StringComparison.Ordinal))return await WitnessReplacementAsync(mode[(Prefix.Length+12)..],package,folder,result);
             if(mode.StartsWith(Prefix+"conjunction-",StringComparison.Ordinal))return await WitnessConjunctionAsync(mode[(Prefix.Length+12)..],package,folder,result);
+            if(mode.StartsWith(Prefix+"boundary-",StringComparison.Ordinal))return await WitnessColdBoundaryAsync(mode[(Prefix.Length+9)..],package,folder,result);
             Require(mode.StartsWith(Prefix+"launch-",StringComparison.Ordinal),"Unknown crash witness mode.");
             var cut=mode[(Prefix.Length+7)..];
             await using var owner=Child(Prefix+"owner-launch-"+cut,package,folder);
@@ -52,6 +53,7 @@ internal static partial class MainRunCrashScenarioDriver
     {
         if(mode.StartsWith("pin-",StringComparison.Ordinal))return await OwnerPinAsync(mode[4..],package,folder);
         if(mode.StartsWith("stop-",StringComparison.Ordinal))return await OwnerStopAsync(mode[5..],package,folder);
+        if(mode=="input")return await OwnerQueuedInputAsync(package,folder);
         try {
             var launch=NeutralTerminalLaunch.Create(package,folder);var root=Directory.GetParent(launch.Scratch)!.FullName;
             var files=Files(root);var state=PortableSaveFixture.Seed(files);
@@ -91,6 +93,7 @@ internal static partial class MainRunCrashScenarioDriver
         if(mode.StartsWith("replace-",StringComparison.Ordinal))return await ReplacementAsync(mode[8..],folder);
         if(mode.StartsWith("debt-",StringComparison.Ordinal))return await DebtAsync(mode[5..],folder);
         if(mode.StartsWith("seed-",StringComparison.Ordinal))return await SeedDebtAsync(mode[5..],folder);
+        if(mode=="clear")return await ClearStoppedAsync(folder);
         var result=new Dictionary<string,object?>{["Mode"]=mode,["Pid"]=Environment.ProcessId};
         try {
             Require(mode=="refuse","Unknown cold actor mode.");var info=ReadInfo(folder);var files=Files(info.Root);

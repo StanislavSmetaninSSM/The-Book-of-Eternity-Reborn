@@ -41,6 +41,12 @@ public sealed class GmMainRunCrashLinuxTests
     public async Task IndependentDebt_AfterStoppedAndSeedDeathRefusesBeforeNewCreation(string kind)=>
         await RunBoundedAsync("terminal-main-crash-conjunction-"+kind);
 
+    [Theory]
+    [InlineData("clear")]
+    [InlineData("input")]
+    public async Task ColdBoundary_ConfirmedStopAllowsClearOrFreshEpochWithoutOriginalInputReplay(string boundary)=>
+        await RunBoundedAsync("terminal-main-crash-boundary-"+boundary);
+
     private static async Task RunBoundedAsync(string mode)
     {
         string? folder=null;

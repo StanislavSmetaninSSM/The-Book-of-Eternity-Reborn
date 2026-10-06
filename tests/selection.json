@@ -42,6 +42,13 @@
       "contracts": [
         "#1553 T041-RUN-FENCE-F3 independent inventory/recovery retained decision; no native creation or worker requalification"
       ]
+    },
+    {
+      "category": "gm-main-crash-cold-boundary-linux",
+      "reason": "F3 specific missing cold Clear and actually queued original T042 input after process death; accepted warm T042 reused",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F3 actual stopped new generation, original binding revocation/settlement, no queued old replay"
+      ]
     }
   ]
 }
