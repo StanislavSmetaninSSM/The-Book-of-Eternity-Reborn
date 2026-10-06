@@ -106,7 +106,7 @@ a claim that current code already satisfies it; runtime fixes still need causal 
 ### Execution / acceptance steps
 
 - [x] Publish this documentation-only matrix, independent actual Sol6.1/xhigh plan PASS.
-- [ ] A: publish only required scaffold/negative hook, fresh build then run A; classify
+- [x] A: publish only required scaffold/negative hook, fresh build then run A; classify
   preparation errors separately. On causal RED fix minimally, rerun A and only affected
   accepted consumers justified by the source delta. Capture exact source/commands/counts.
 - [ ] B: repeat the bounded workflow for publication cuts after A's ECHILD evidence.
@@ -155,6 +155,19 @@ files, record/require exactly first callback attempt, and pre-stop cuts require 
 stop observation. Post-guardian cold snapshots still compare the complete data tree.
 Repeat A8 because shared cut reachability was invalid, not because unchanged successes
 need replay. No runtime behavior change. Subsequent cohorts remain unstarted.
+
+Cohort A exact-observation GREEN at `e2cb68201ece9b4768375db56de8370b56b6af45`:
+fresh build,8/8 PASS,68.7425731s, one complete descriptor, no skips/duplicates/timeout,
+owned cleanup complete. Eight actual `_exit(77)` seeds plus eight fresh probes:
+16/16guardian ECHILD,8guardian-owned signals after deliberate app death,0failure/deadline.
+Every cut reached exactly once; pre-stop cuts had no stop evidence. Released ACK had
+an incomplete original completion task; Completed came from that task; scoped stop had
+original completion0/outputs unsettled; StopValidated cut had both stop and real outputs.
+All fresh distinct-task probes: Uncertain inventory, one preserved reservation, zero
+recovery/slot/reservation/owner/Release/new success and exact post-guardian data snapshots.
+Evidence worker-r3-launch-green. This is first-pass runtime qualification after a fixture
+observation correction, not a backend RED-to-GREEN fix. A cleanup gate is satisfied;
+next only cohort B publication cuts. No active test session after A.
 
 ## Authorized R2: connected synthetic lifecycle — 2026-10-06
 
