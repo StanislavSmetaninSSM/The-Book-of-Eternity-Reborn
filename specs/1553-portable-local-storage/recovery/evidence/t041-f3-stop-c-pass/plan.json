@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-main-crash-stop-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "082ba6f1036a666b935f31ab26357b13f6d55be4",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 45.4987286,
+  "Descriptors": [
+    {
+      "Name": "gm-main-crash-stop-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-crash-stop-linux",
+      "Categories": [
+        "gm-main-crash-stop-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.StopDeath_ActualSettlementAndDurableAckControlNewEpoch",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.StopDeath_ActualSettlementAndDurableAckControlNewEpoch",
+          "Cases": 6
+        }
+      ]
+    }
+  ]
+}
