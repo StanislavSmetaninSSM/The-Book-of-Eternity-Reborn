@@ -53,6 +53,11 @@ internal static class ProductionMainLinuxFixture
         // Proposed setting is carried as ordinary profile JSON before the property exists.
         var json=JsonSerializer.Deserialize<Dictionary<string,JsonElement>>(File.ReadAllText(Path.Combine(files.GameSessionPath,"config.json")))!;
         json["GmMainOwnerBackend"]=JsonSerializer.SerializeToElement("NativeLineage");File.WriteAllText(Path.Combine(files.GameSessionPath,"config.json"),JsonSerializer.Serialize(json));
+        if(mode.StartsWith("production-main-load-",StringComparison.Ordinal)) {
+            var archiveState=PortableSaveFixture.Seed(files);
+            var saves=new BookOfEternityClient.Services.SaveLoadService(files,archiveState,NullLogger<BookOfEternityClient.Services.SaveLoadService>.Instance);
+            Assert.True(await saves.SaveGameAsync("load-neutral","original configured neutral CLI"),"Preparation: real archive creation failed.");
+        }
         if(mode=="refuse-worker") {
             await using var ledger=await GmWorkerRunLedger.OpenCoordinatorAsync(new(root));Assert.NotNull(ledger);
             Assert.Equal(WorkerLedgerMutationKind.Applied,await ledger.InitializeAsync());

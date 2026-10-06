@@ -2,17 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "browser-rollback-linux",
-      "reason": "T031 first causal RED against actual existing consumer, bootstrapped isolated Linux root. New positive oracles reach staging and record callback execution; no unrelated cohort.",
+      "category": "gm-load-session-lifecycle",
+      "reason": "T041 Load UX original production terminal stop/replacement/refresh/fresh epoch in isolated Linux roots and real entrypoints; new causal boundary only.",
       "contracts": [
-        "#1553 T031 trusted-local browser original main/worker/generation/UI lease rollback"
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction"
       ]
     },
     {
-      "category": "browser-rollback-linux-boundaries",
-      "reason": "T031 connected trusted-local browser recorder/recovery/external participant and original outcome finalization. Include only independent-review-selected exact affected ordinary publication/admission/closing and both actual Browser Load full-bundle regressions, once after final source fixes; no old class/cohort reruns.",
+      "category": "browser-load-session-lifecycle",
+      "reason": "Actual launcher/settings Load handlers: immutable owner, complete refresh/fresh-launch receipt, stale/cancel/lost reply; new causal boundary only.",
       "contracts": [
-        "#1553 T031 original browser record byte intent + scoped recovery + exact outcome retention"
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction"
       ]
     }
   ]

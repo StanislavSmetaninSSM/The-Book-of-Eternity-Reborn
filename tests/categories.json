@@ -2,6 +2,58 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-load-session-lifecycle",
+      "responsibility": "T041 Load UX original production terminal stop/replacement/refresh/fresh epoch in isolated Linux roots and real entrypoints",
+      "excludes": "No provider/model/live browser/native Windows/systemd/cold guarantee or broad M1/F1-F3 replay",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime",
+        "BookOfEternityGMBridge",
+        "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "browser-load-session-lifecycle",
+      "responsibility": "Actual launcher/settings Load handlers: immutable owner, complete refresh/fresh-launch receipt, stale/cancel/lost reply",
+      "excludes": "No live browser/provider or unrelated frontend tests",
+      "changeHints": [
+        "BookOfEternityClient.WebFrontend/src/utils/loadPersistenceNotice.ts",
+        "BookOfEternityClient.WebFrontend/src/components/GameLauncher.tsx",
+        "BookOfEternityClient.WebFrontend/src/components/SettingsView.tsx"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "frontend",
+          "runner": "vitest",
+          "files": [
+            "test/browserLoadSessionLifecycle.test.ts"
+          ]
+        }
+      ]
+    },
+    {
       "id": "browser-rollback-linux",
       "responsibility": "#1553 T031 actual bootstrapped Linux browser coordinator backup/manifest/recorder/rollback/cleanup positive oracles",
       "excludes": "No native Windows/live browser/provider/real saves/Load UX or broad browser cohort. Historical four F2 IDs remain unpassed.",

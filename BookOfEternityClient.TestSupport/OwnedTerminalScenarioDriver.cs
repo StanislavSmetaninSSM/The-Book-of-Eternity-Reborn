@@ -8,7 +8,7 @@ using BookOfEternityClient.Services.GmWorkers;
 namespace BookOfEternityClient.Tests;
 
 // Each invocation is a fresh process beneath the unchanged independent guardian.
-internal static class OwnedTerminalScenarioDriver
+internal static partial class OwnedTerminalScenarioDriver
 {
     internal static async Task<int> RunAsync(string mode, string package, string output)
     {
@@ -167,6 +167,10 @@ internal static class OwnedTerminalScenarioDriver
                 result["OriginalWorkerInventoryRetained"]=true;
             }
             var originalSession=type.GetField("_pty", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(host)!;
+            if(mode.StartsWith("production-main-load-",StringComparison.Ordinal)) {
+                await RunProductionLoadAsync(mode,folder,host,type,Rpc,(IOwnedTerminalSession)originalSession,result);
+                result["Success"]=true; return 0;
+            }
             if(mode=="terminal-root-exit-admission") {
                 Require((await Rpc(new {command="addText",text="root-exit\r"})).GetProperty("ok").GetBoolean(),"Controlled root-exit command refused.");
                 await ((IOwnedTerminalSession)originalSession).RootExited.WaitAsync(TimeSpan.FromSeconds(2));

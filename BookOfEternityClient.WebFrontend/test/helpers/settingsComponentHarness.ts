@@ -33,6 +33,8 @@ export function createSettingsComponentHarness() {
   const timers = new Map<number, () => void>();
   const cache = new Map<string, any>();
   const load = deferred<any>();
+  const loadComplete = deferred<any>();
+  let loadCompletions = 0;
   const save = deferred<any>();
   const audioWrite = deferred<any>();
   const command = deferred<any>();
@@ -69,6 +71,8 @@ export function createSettingsComponentHarness() {
     submitPlayerAction: () => { actionPosts++; return action.promise; },
     updateClientSettings: async () => { settingsPosts++; return ok(persistedSettings); },
     loadSave: () => { loadPosts++; return load.promise; },
+    completeLoad: () => { loadCompletions++; return loadComplete.promise; },
+    cancelLoad: async () => ok({}),
     createSave: () => { savePosts++; return save.promise; },
     updateAudioSettings: () => { audioPosts++; return audioWrite.promise; }
   };
@@ -208,9 +212,9 @@ export function createSettingsComponentHarness() {
   const launcher = () => renderer('src/components/GameLauncher.tsx', 'GameLauncher', { menu: shell.menu });
   const settings = () => renderer('src/components/SettingsView.tsx', 'SettingsView');
   const audio = (writeScope: { generation: number }) => renderer('src/components/AudioPanel.tsx', 'AudioPanel', { writeScope });
-  return { settings, launcher, provider, audio, shell, load, save, command, action, audioWrite, initialAudio, persistedSettings, timers,
+  return { settings, launcher, provider, audio, shell, load, loadComplete, save, command, action, audioWrite, initialAudio, persistedSettings, timers,
     setRefreshFailure: () => { refreshFailure = true; },
     setRealRefreshClient: (client: unknown) => { realRefreshClient = client; },
     realRefreshState: () => realRefreshState,
-    counts: () => ({ refreshes, settingsPosts, audioPosts, savePosts, loadPosts, navigations, ordinaryReads, commandPosts, actionPosts }) };
+    counts: () => ({ refreshes, settingsPosts, audioPosts, savePosts, loadPosts, loadCompletions, navigations, ordinaryReads, commandPosts, actionPosts }) };
 }
