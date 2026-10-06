@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-load-lost-reply"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "63ac56aee281ac4a405345fc616b0760c5cb134d",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 45.1638245,
+  "Descriptors": [
+    {
+      "Name": "gm-load-lost-reply-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-lost-reply",
+      "Categories": [
+        "gm-load-lost-reply"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LostLoadReplyNeverStartsFresh",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LostLoadReplyNeverStartsFresh",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

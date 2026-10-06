@@ -119,3 +119,7 @@ At clean8aa96165 six executed: console positive/debt2PASS; restart faults3PASS (
 ### Installed child profile PASS; actual lost Load interruption diagnosis
 
 At5671d19c profile1PASS proves both actual active/fresh child argv/cwd. Exact lost Load1FAIL despite observed server RequestAborted:true; original Execution still timed out after refresh release. Planned storage4 not executed (runner fail-fast). Both guardians clean/removed after capture. [Evidence](recovery/evidence/load-ux-profile-green-lost-load-timeout/manifest.json). Add only own operation-phase diagnostic fields before/at timeout, then rerun exact lost case to distinguish cancellation binding from guard/finish latency. No guessed timeout increase or runtime fix. Narrow fixture source review5671 PASS.
+
+### Lost-response phase isolated
+
+Clean63ac56ae exact lost1FAIL: real RequestAborted; original Cancelled:true, Applied:RanToCompletion, AwaitingApplication:false, Restarting:false, Retained:null unchanged after5s. This excludes missing cancellation/30s ACK/finish IPC; pending work is core required bundle or its admission close after the controlled hook. Guardian clean/removed. [Evidence](recovery/evidence/load-ux-lost-load-phase-red/manifest.json). Add only hook-return and existing canonical/open/contention/closing hook witnesses, with abort observer restricted to the exact Load route. Next exact diagnosis plus previously unrun storage4; no runtime fix or timeout change yet.

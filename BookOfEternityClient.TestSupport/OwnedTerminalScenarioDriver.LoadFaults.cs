@@ -55,7 +55,7 @@ internal static partial class OwnedTerminalScenarioDriver
         BrowserLoadSaveResultDto loaded;
         if(fault=="load-reply-loss") {
             var service=app.Services.GetRequiredService<LocalWebUiMainMenuService>();
-            service.BeforeCommittedMenuRefresh=async()=>{entered.TrySetResult();await release.Task;};
+            service.BeforeCommittedMenuRefresh=async()=>{entered.TrySetResult();await release.Task;evidence["RefreshHookReturned"]=true;};
             // Own real HTTP connection: an explicit RST proves server RequestAborted, rather than
             // treating HttpClient's local cancellation receipt as remote cancellation evidence.
             using var connection=new TcpClient();await connection.ConnectAsync(http.BaseAddress!.Host,http.BaseAddress.Port);

@@ -20,10 +20,15 @@ internal static partial class OwnedTerminalScenarioDriver
         var faultName=mode.Contains("-fault-",StringComparison.Ordinal)?mode[(mode.LastIndexOf("-fault-",StringComparison.Ordinal)+7)..]:null;
         var storageFault=faultName is "rollback" or "uncertain";
         var publicationArmed=false;var replacing=false;var cuts=0;
+        var lockOpens=0;var lockContentions=0;var closes=0;string? contendedAt=null;
         var marker=files.ResolvePath("game_state/world/test_fixture_state.json");
         if(storageFault)await files.WriteFileAtomicAsync("game_state/world/test_fixture_state.json","{\"state\":\"before-load\"}");
-        var hooks=storageFault?new FileSystemManagerHooks{LocalPublicationObserver=(phase,_)=>{
-            if(!publicationArmed)return;
+        var hooks=storageFault || faultName=="load-reply-loss"?new FileSystemManagerHooks{
+            BeforeCanonicalWriteLockOpenAsync=()=>{if(publicationArmed)Interlocked.Increment(ref lockOpens);return Task.CompletedTask;},
+            CanonicalWriteLockContendedAsync=()=>{if(publicationArmed){Interlocked.Increment(ref lockContentions);contendedAt=new System.Diagnostics.StackTrace().ToString();}return Task.CompletedTask;},
+            SessionOperationClosingAsync=()=>{if(publicationArmed)Interlocked.Increment(ref closes);return Task.CompletedTask;},
+            LocalPublicationObserver=(phase,_)=>{
+            if(!publicationArmed || !storageFault)return;
             if(phase==TrustedLocalPublicationPhase.IntentPublished) {
                 using var journal=File.OpenRead(Path.Combine(files.RuntimeRootPath,"trusted-local-publication-v1/active.json"));
                 Span<byte> magic=stackalloc byte[8];journal.ReadExactly(magic);replacing=magic.SequenceEqual("BOELP3\r\n"u8);
@@ -36,6 +41,7 @@ internal static partial class OwnedTerminalScenarioDriver
         await using var app=LocalWebUiHost.Build([],new(files.BasePath,"http://127.0.0.1:0",assets),hooks);
         var transportAborted=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         if(faultName=="load-reply-loss")app.Use(async(context,next)=>{
+            if(context.Request.Path!="/api/saves/load"){await next(context);return;}
             using var observed=context.RequestAborted.Register(()=>transportAborted.TrySetResult());
             await next(context);
         });
@@ -60,7 +66,8 @@ internal static partial class OwnedTerminalScenarioDriver
         }
         if(mode.Contains("-fault-",StringComparison.Ordinal)) {
             publicationArmed=true;
-            await RunLoadHttpFaultAsync(faultName!,app,http,host,type,rpc,original,prior,request,evidence,files,transportAborted.Task);
+            try {await RunLoadHttpFaultAsync(faultName!,app,http,host,type,rpc,original,prior,request,evidence,files,transportAborted.Task);}
+            finally {if(faultName=="load-reply-loss")evidence["BundlePhase"]=new{lockOpens,lockContentions,closes,contendedAt};}
             if(storageFault)Require(cuts==1,"Preparation failure: real replacement publication cut not reached.");
             await app.StopAsync();return;
         }
