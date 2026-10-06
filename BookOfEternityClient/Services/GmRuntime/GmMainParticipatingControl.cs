@@ -31,7 +31,7 @@ internal static class GmMainParticipatingControl
         catch (Exception failure)
         {
             // Fixed diagnostic: no source data, credentials or uncontrolled exception text.
-            var phase=failure.Data["ParticipatingAdmissionPhase"] is "original-connection" ? "original-connection" : "local-admission";
+            var phase=failure.Data["ParticipatingAdmissionPhase"] is "original-connection" or "read-record" or "read-endpoint" ? (string)failure.Data["ParticipatingAdmissionPhase"]! : "local-admission";
             Console.Error.WriteLine($"Original participating operation refused or continuation unconfirmed ({failure.GetType().Name}; {phase}).");
             return 2;
         }

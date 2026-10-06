@@ -21,10 +21,16 @@ internal sealed class GmMainOperationClient : IAsyncDisposable
     private GmMainOperationClient(NamedPipeClientStream pipe,MainOperationReader reader,MainOperationReply grant){_pipe=pipe;_reader=reader;_grant=grant;}
     internal static async Task<GmMainOperationClient> OpenAsync(FileSystemManager files,CancellationToken token)
     {
-        var bytes=GmSessionRunPersistence.Read(files.BasePath)??throw GmSessionRunPersistence.Invalid();
-        var expected=GmSessionRunRecordCodec.Decode(bytes);
-        if(expected.Disposition!=GmSessionRunDisposition.Running)throw GmSessionRunPersistence.Invalid();
-        using var doc=JsonDocument.Parse(await files.ReadDiagnosticStatusAsync("game_state/control/gm_bridge_status.json")??throw GmSessionRunPersistence.Invalid());
+        GmSessionRunRecord expected;
+        try {
+            var bytes=GmSessionRunPersistence.Read(files.BasePath)??throw GmSessionRunPersistence.Invalid();
+            expected=GmSessionRunRecordCodec.Decode(bytes);
+            if(expected.Disposition!=GmSessionRunDisposition.Running)throw GmSessionRunPersistence.Invalid();
+        } catch(Exception failure){failure.Data["ParticipatingAdmissionPhase"]="read-record";throw;}
+        string status;
+        try {status=await files.ReadDiagnosticStatusAsync("game_state/control/gm_bridge_status.json")??throw GmSessionRunPersistence.Invalid();}
+        catch(Exception failure){failure.Data["ParticipatingAdmissionPhase"]="read-endpoint";throw;}
+        using var doc=JsonDocument.Parse(status);
         var name=doc.RootElement.GetProperty("pipeName").GetString();
         if(string.IsNullOrWhiteSpace(name) || name.Length>128)throw GmSessionRunPersistence.Invalid();
         var pipe=new NamedPipeClientStream(".",name,PipeDirection.InOut,PipeOptions.Asynchronous);
