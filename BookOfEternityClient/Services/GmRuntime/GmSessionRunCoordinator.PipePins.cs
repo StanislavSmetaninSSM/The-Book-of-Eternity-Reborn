@@ -1,3 +1,4 @@
+using BookOfEternityClient.Core;
 namespace BookOfEternityClient.Services.GmRuntime;
 
 internal sealed partial class GmSessionRunCoordinator
