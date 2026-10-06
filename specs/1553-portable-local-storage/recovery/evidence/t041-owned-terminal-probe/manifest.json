@@ -63,9 +63,12 @@
       "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
     },
     {
-      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-owned-terminal-probe/transcript.txt",
-      "Bytes": 107,
-      "Sha256": "b0d9198c441d3f3da3997dfa7fcb0d954d889649d3c1daac3d6b26942fc08f37"
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-owned-terminal-probe/transcript.txt.gz",
+      "Bytes": 110,
+      "Sha256": "a6afcf20c7d91d311310b4bd939393d0c2b6960deddf7e032d022567212ad7ed",
+      "UncompressedBytes": 107,
+      "UncompressedSha256": "b0d9198c441d3f3da3997dfa7fcb0d954d889649d3c1daac3d6b26942fc08f37",
+      "Encoding": "gzip; exact CRLF PTY bytes retained"
     }
   ],
   "Result": {
