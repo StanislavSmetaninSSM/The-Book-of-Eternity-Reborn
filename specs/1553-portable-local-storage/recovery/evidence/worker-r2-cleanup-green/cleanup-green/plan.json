@@ -1,0 +1,76 @@
+{
+  "Categories": [
+    "worker-restart-cleanup-linux",
+    "worker-restart-boundaries-linux",
+    "worker-restart-lifecycle-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "b8f01ca4974ccf2780bc90de622766b61ddb61c9",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 38.2400323,
+  "Descriptors": [
+    {
+      "Name": "worker-restart-boundaries-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-boundaries-linux",
+      "Categories": [
+        "worker-restart-boundaries-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary",
+          "Cases": 5
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-cleanup-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-cleanup-linux",
+      "Categories": [
+        "worker-restart-cleanup-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced",
+          "Cases": 5
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-lifecycle-linux-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-lifecycle-linux",
+      "Categories": [
+        "worker-restart-lifecycle-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartLifecycleTests.ActualContentPool_PublishesAndCommitsBoundRetirementBeforeCapacityRelease",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartLifecycleTests.ActualContentPool_PublishesAndCommitsBoundRetirementBeforeCapacityRelease",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

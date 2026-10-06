@@ -284,6 +284,16 @@ them, while only the retained original execution retries Prepared/live metadata.
 Cleanup attempts original stop first and still validates/persists metadata after any
 stop error. Completion facts freeze before terminal retry; Uncertain remains absorbing.
 Fresh GREEN pending:5 cleanup +5 affected boundary +1 normal lifecycle.
+Cleanup GREEN at `b8f01ca4974ccf2780bc90de622766b61ddb61c9`:11/11 PASS
+(5 cleanup +5 affected ACK/staging/authority boundaries +1 normal lifecycle),67.5386093s.
+Fresh build, all three descriptors complete, owned cleanup complete/no timeout. All11
+guardians ECHILD/exit0/reap1, zero emergency/failure/deadline. Original pool now
+attempts bounded stop on native status loss while keeping both capacities and exact
+recovery evidence; premature retirement and R1 bypasses refuse. Normal Retired and
+original publication/retirement ACK retries remain functional. Evidence:
+recovery/evidence/worker-r2-cleanup-green/manifest.json. Remaining: closed-witness
+foreign/forged checks, typed early admission/reservation/exact Release binding,
+minimal remaining mode/cold/warm matrix, affected categories and final Sol review.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing
