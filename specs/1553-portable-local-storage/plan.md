@@ -25,6 +25,12 @@ an actual causal failure. No reconnect, automatic salvage, force-clear, reboot c
 public Linux Release, main PTY, live GM/real saves, power-cut/reboot or Windows-native
 qualification. No network/auth/security/dependency changes; no HOME-PC.
 
+### Cohort B source checkpoint — WIP
+
+B adds five actual publication crash cuts using existing hooks only. No backend
+behavior change. A is remotely preserved at `df3820709e8b1d5106ee456e369d4d4ac420ae4e`.
+B has not yet been built or run; next action is only `worker-restart-crash-publication-linux`.
+
 ### Evidence already accepted; exclude unchanged repetitions
 
 - R1: exact old/new/Blocked persistence cuts at write/flush/rename/directory sync,

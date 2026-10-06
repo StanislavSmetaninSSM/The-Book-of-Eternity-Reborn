@@ -13178,6 +13178,29 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-restart-crash-publication-linux",
+      "responsibility": "#1553 R3 actual application loss across publication intent, installed bundle, Published disk/pre-ACK, derived inbox and original live publication; exact artifact retention and distinct cold refusal.",
+      "excludes": "No unchanged R1/R2 or launch replay, retirement/race inventory cases, public Linux Release, live GM, main PTY, real saves, reboot or Windows native qualification.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.RestartFencePublication.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationCrash_ActualArtifactsCannotBecomeColdSuccess"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -3,7 +3,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class GmWorkerRestartFenceTests
+public sealed partial class GmWorkerRestartFenceTests
 {
     [Theory]
     [InlineData("prepared", "Prepared", 0)]
