@@ -3,7 +3,7 @@
   "Task": "T041-OWNED-MAIN-TERMINAL-NEUTRAL",
   "Issue": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553",
   "AcceptedDesign": "3b21dba7410284cb4b471e7b3c3e4be970139c27",
-  "Status": "Bounded neutral source/evidence PASS; final metadata carrier publication/restore pending",
+  "Status": "Bounded neutral source/evidence and metadata PASS; final carrier SHA/remote/fresh-restoration proof in handoff",
   "Method": "Spec Kit existing feature, Superpowers executing-plans/TDD, bridge; sole writer and separate Sol6.1/xhigh review",
   "Preflight": "Existing isolated linked worktree, exact remote base and clean tree. One shared session feeds original input/output/dispatch; original native reaper remains the sole ownership engine. No interface conflict found.",
   "Ledger": [
@@ -66,7 +66,8 @@
     "ReasoningEffort": "xhigh",
     "Source": "595436cf31a9c184faa5a3a021441222b6e6ea51",
     "Evidence": "owned-main-terminal-neutral-review.json",
-    "UnresolvedConfirmedBlockers": 0
+    "UnresolvedConfirmedBlockers": 0,
+    "Metadata": "owned-main-terminal-neutral-review.json; d9757fae narrow metadata review, only restoration attribution wording corrected."
   },
   "NativePreparation": {
     "Source": "9348f8d5c79e86c08b31a19326c266214a2c5261",
@@ -241,7 +242,7 @@
     }
   },
   "NativeNeutralQualified": true,
-  "CurrentNext": "Publish/review metadata-only final carrier, verify remote SHA/byte readback and fresh GitHub-only restore; then handoff and stop before production/main fence/next stage.",
+  "CurrentNext": "Handoff after final carrier non-force push, exact remote SHA/byte readback and fresh GitHub-only restore. Stop before production/main fence/systemd/live/next stage; no implementation or repeated tests authorized by this checkpoint.",
   "NotQualified": [
     "native Windows ConPTY/Job execution",
     "existing-user-manager systemd terminal adapter",
