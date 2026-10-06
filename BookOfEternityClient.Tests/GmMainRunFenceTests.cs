@@ -2,6 +2,8 @@ using BookOfEternityClient.Core;
 using BookOfEternityClient.Services.GmRuntime;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
+using BookOfEternityClient.Services;
+using BookOfEternityClient.WebUi;
 
 namespace BookOfEternityClient.Tests;
 
@@ -82,6 +84,26 @@ public sealed class GmMainRunFenceTests : IDisposable
         var id=new GmSessionRunIdentity(_files.BasePath,Guid.NewGuid().ToString("N"),Guid.Empty.ToString("N"),1,GmSessionRunBackend.LinuxSupervisor,Guid.NewGuid().ToString("N"),"fixture-boot");
         Assert.Throws<IOException>(()=>disk.Publish(null,new(1,id,GmSessionRunDisposition.Prepared,null)));
         disk.Retry();Assert.Equal(2,calls);
+    }
+    [Fact]
+    public async Task ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing()
+    {
+        var state=PortableSaveFixture.Seed(_files);
+        var save=new SaveLoadService(_files,state,NullLogger<SaveLoadService>.Instance);
+        Assert.True(await save.SaveGameAsync("main-fence","synthetic fixture"));
+        var path=Assert.Single(Directory.GetFiles(_files.ResolvePath("saves/manual_saves"),"*.zip"));
+        var writes=new BrowserLocalWriteCoordinator(_files,new LocalUiSessionLockService(_files));
+        var session=new LocalWebUiSessionStatusService(_files,writes);
+        var dashboard=new BrowserLifecycleDashboardService(_files,session,new ValidationService(_files,NullLogger<ValidationService>.Instance));
+        var menu=new LocalWebUiMainMenuService(_files,dashboard,save,state,writes);var guarded=false;
+        menu.BeforeCommittedMenuRefresh=async()=>{
+            Task<bool> competitor;
+            using(ExecutionContext.SuppressFlow())competitor=Task.Run(async()=>{try{using var g=await GmMainOwnerGuard.AcquireAsync(_files.BasePath);return false;}catch(IOException){return true;}});
+            guarded=await competitor;
+        };
+        var result=await menu.LoadSaveAsync(new("manual:"+Path.GetFileName(path)));
+        Assert.True(result.Success);Assert.False(result.ContinuationBlocked);Assert.True(guarded);
+        using var after=await GmMainOwnerGuard.AcquireAsync(_files.BasePath);
     }
     public void Dispose(){if(Directory.Exists(_root))Directory.Delete(_root,true);}
 }

@@ -52,6 +52,7 @@ public sealed class LocalWebUiMainMenuService
     }
 
     /// <summary>Loads a menu-issued archive without losing its decision during required menu refresh.</summary>
+    internal Func<Task>? BeforeCommittedMenuRefresh {get;set;}
     public async Task<BrowserLoadSaveResultDto> LoadSaveAsync(BrowserLoadSaveRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
@@ -78,6 +79,7 @@ public sealed class LocalWebUiMainMenuService
             {
                 if (string.IsNullOrWhiteSpace(retained.EstablishedGeneration))
                     throw new InvalidOperationException("Committed load did not establish a generation.");
+                if(BeforeCommittedMenuRefresh!=null)await BeforeCommittedMenuRefresh();
                 menu = await SessionOperationContext.RunBoundAsync(_fs, retained.EstablishedGeneration, BuildAsync);
             }
         }
