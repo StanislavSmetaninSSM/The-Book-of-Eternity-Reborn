@@ -80,7 +80,8 @@ Primary API facts checked 2026-10-06: Linux man-pages
 [termios](https://man7.org/linux/man-pages/man3/termios.3.html);
 Microsoft [ConPTY creation](https://learn.microsoft.com/en-us/windows/console/creating-a-pseudoconsole-session),
 [creation flags](https://learn.microsoft.com/en-us/windows/win32/procthread/process-creation-flags),
-[Job objects](https://learn.microsoft.com/en-us/windows/win32/procthread/job-objects).
+[Job objects](https://learn.microsoft.com/en-us/windows/win32/procthread/job-objects),
+[ClosePseudoConsole](https://learn.microsoft.com/en-us/windows/console/closepseudoconsole).
 Inference from APIs/probe: neutral native PTY needs no environment setup here.
 User-manager absence is retained from handoff; no positive systemd claim/setup.
 
@@ -171,8 +172,10 @@ Stop: revoke input origin, retain started writes; request original stop independ
 of caller wait cancellation; retain session/master/native authority/actual I/O tasks.
 Helper TERM/KILLs only held own pidfds, discovers direct/adopted children, exclusively
 reaps to ECHILD. Output task has its own retained lifetime so input revocation does
-not discard final output; drain to real EOF, then settle managed tasks. Only matching
-confirmed scoped stop AND drain allow disposal/binding removal/replacement. Bounded
+not discard final output. Backend-owned transport shutdown may precede output EOF,
+as below; it never releases original stop authority. Drain to real EOF and settle
+actual tasks. Only matching confirmed scoped stop AND drain allow final owner
+disposal/binding removal/replacement. Bounded
 timeout returns Uncertain retaining same retirement task/owner, no automatic second
 session. Uncertainty stays absorbing even if cleanupComplete later becomes true.
 Status/cancel/diagnostics remain responsive while native stop/drain is pending.
@@ -183,6 +186,16 @@ ResumeThread/input release, no breakaway; original Job terminate/query-empty evi
 Assignment/resume/stop errors retain partial resources/Uncertain. No Process.Kill
 fallback reporting Job-empty. Neutral Linux slice may add the consumed Windows adapter
 and guarded/build checks; Windows native qualification requires a Windows environment.
+
+Windows retirement first obtains retained matching Job-empty proof, then starts one
+owned retained ClosePseudoConsole task, on a thread separate from the still-running
+output reader. Retain original Job/process/session authority through this transport
+shutdown. Older Windows may block ClosePseudoConsole while clients/output settle;
+do not wait for output EOF before beginning it. Join its actual task and real output
+EOF/I/O drain before final owner release/removal/replacement. Timeout/error preserves
+that same close task, Job and session as Uncertain; never retry closing the same handle
+or cancel/drop the reader while the close task still needs it. HPCON/pipe closure,
+CTRL_CLOSE_EVENT and root exit are transport events, not Job-empty proof.
 
 Future SystemdOwnedTerminalSession owns transient unit and terminal broker inside it,
 reuses PTY transport; authentic unit/cgroup empty evidence, not broker-lineage ECHILD,
