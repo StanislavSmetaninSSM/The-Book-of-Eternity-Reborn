@@ -48,7 +48,7 @@
           "project": "frontend",
           "runner": "vitest",
           "tests": [
-            "test/browserLoadSessionLifecycle.test.ts"
+            "BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts"
           ]
         }
       ]
