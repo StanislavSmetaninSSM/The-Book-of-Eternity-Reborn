@@ -64,5 +64,13 @@
     "Classification": "preparation compiler failure, not causal RED",
     "Evidence": "evidence/t041-terminal-native-build-preparation/manifest.json",
     "Correction": "newline single-character literal"
+  },
+  "NativeOwnRoot": {
+    "Source": "978e9f9a2599adaeab1162c153feebedebb9bad8",
+    "Executed": 1,
+    "Passed": 1,
+    "Guardian": "ECHILD, emergencySignals=0, failures=0, deadline=false",
+    "Evidence": "evidence/t041-terminal-own-root/manifest.json",
+    "Scope": "terminal adapter own root; actual BridgeHost integration pending"
   }
 }
