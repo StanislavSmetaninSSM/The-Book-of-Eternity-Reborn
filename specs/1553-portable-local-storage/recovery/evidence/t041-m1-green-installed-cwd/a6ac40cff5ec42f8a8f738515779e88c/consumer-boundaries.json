@@ -1,0 +1,217 @@
+{
+  "connections": [
+    {
+      "close": {
+        "pinId": "ffc43ee537304656848fd354d8f9658b",
+        "closeId": "a091e1a6565e47899005ddff0d2ee647",
+        "operationId": "2dd32d78e4574277b4ceb7ba78d7249f",
+        "identity": {
+          "rootKey": "/workspace/native-1553/TestResults/production-main/a6ac40cff5ec42f8a8f738515779e88c/root",
+          "runId": "b6dadbc312fc4365b6fa4ccb8ac6c020",
+          "generationId": "39fc3205712a482f97be110eb5780bb9",
+          "epoch": 1,
+          "backend": 2,
+          "hostInstanceId": "044c92d424ae4edb87ad4abf673c2896",
+          "bootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+        },
+        "outcome": 0,
+        "closingFailed": false
+      },
+      "closeObserved": true,
+      "disposed": true,
+      "exitCode": 0,
+      "sequence": 2
+    },
+    {
+      "close": {
+        "pinId": "4640a779bedc479daad8edf0ed600d08",
+        "closeId": "c81ccd758ae34d4bb32f178c8bd6ecae",
+        "operationId": "aeab9a2bb1694ac086427b4b9c932bb8",
+        "identity": {
+          "rootKey": "/workspace/native-1553/TestResults/production-main/a6ac40cff5ec42f8a8f738515779e88c/root",
+          "runId": "b6dadbc312fc4365b6fa4ccb8ac6c020",
+          "generationId": "39fc3205712a482f97be110eb5780bb9",
+          "epoch": 1,
+          "backend": 2,
+          "hostInstanceId": "044c92d424ae4edb87ad4abf673c2896",
+          "bootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+        },
+        "outcome": 0,
+        "closingFailed": false
+      },
+      "closeObserved": true,
+      "disposed": true,
+      "exitCode": 0,
+      "sequence": 2
+    },
+    {
+      "close": {
+        "pinId": "01b1aa3044454373ab0891c85f6380c1",
+        "closeId": "e920d29f113c4f6fb3b46b1f75e5adc6",
+        "operationId": "b8b86c46d6394546a80b4d1381046b76",
+        "identity": {
+          "rootKey": "/workspace/native-1553/TestResults/production-main/a6ac40cff5ec42f8a8f738515779e88c/root",
+          "runId": "b6dadbc312fc4365b6fa4ccb8ac6c020",
+          "generationId": "39fc3205712a482f97be110eb5780bb9",
+          "epoch": 1,
+          "backend": 2,
+          "hostInstanceId": "044c92d424ae4edb87ad4abf673c2896",
+          "bootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+        },
+        "outcome": 0,
+        "closingFailed": false
+      },
+      "closeObserved": true,
+      "disposed": true,
+      "exitCode": 0,
+      "sequence": 1
+    },
+    {
+      "close": {
+        "pinId": "d867936fd3b1442e943d838298e0b224",
+        "closeId": "e83168c9b5574d468c762d7196bbf13b",
+        "operationId": "2b5a5229070048d08234123082f745d6",
+        "identity": {
+          "rootKey": "/workspace/native-1553/TestResults/production-main/a6ac40cff5ec42f8a8f738515779e88c/root",
+          "runId": "b6dadbc312fc4365b6fa4ccb8ac6c020",
+          "generationId": "39fc3205712a482f97be110eb5780bb9",
+          "epoch": 1,
+          "backend": 2,
+          "hostInstanceId": "044c92d424ae4edb87ad4abf673c2896",
+          "bootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+        },
+        "outcome": 0,
+        "closingFailed": false
+      },
+      "closeObserved": true,
+      "disposed": true,
+      "exitCode": 0,
+      "sequence": 2
+    },
+    {
+      "close": {
+        "pinId": "7660bee7941c4a8484c676b0dbea9f68",
+        "closeId": "aa7bfeb4774e4cbba91e2efe0c9fc8dd",
+        "operationId": "c8d844c0a6a8462b880f91f7979bd97e",
+        "identity": {
+          "rootKey": "/workspace/native-1553/TestResults/production-main/a6ac40cff5ec42f8a8f738515779e88c/root",
+          "runId": "b6dadbc312fc4365b6fa4ccb8ac6c020",
+          "generationId": "39fc3205712a482f97be110eb5780bb9",
+          "epoch": 1,
+          "backend": 2,
+          "hostInstanceId": "044c92d424ae4edb87ad4abf673c2896",
+          "bootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+        },
+        "outcome": 0,
+        "closingFailed": false
+      },
+      "closeObserved": true,
+      "disposed": true,
+      "exitCode": 0,
+      "sequence": 1
+    }
+  ],
+  "dispatch": {
+    "Status": "sent",
+    "Attempts": 1,
+    "BusyRetries": 0,
+    "Timeout": false,
+    "PromptDelivery": [
+      null,
+      {
+        "operationId": "72115b1372bd4c75a2c0bbc47c1ff4a5",
+        "operationKind": "turn",
+        "operationRevision": "M1",
+        "inputBindingId": "5f1931532695411ea9414db8ebc5bce6",
+        "contentHash": "B17A899D9B018F6AFFA4BE83D2A1683A1F76E55343E1C6CE361317F8DC2F995F",
+        "disposition": "submission-observed",
+        "phase": "terminal",
+        "reason": "fresh-submission-observed"
+      }
+    ]
+  },
+  "retained": {
+    "Status": "sent",
+    "Attempts": 1,
+    "BusyRetries": 0,
+    "Timeout": false,
+    "PromptDelivery": [
+      null,
+      {
+        "operationId": "72115b1372bd4c75a2c0bbc47c1ff4a5",
+        "operationKind": "turn",
+        "operationRevision": "M1",
+        "inputBindingId": "5f1931532695411ea9414db8ebc5bce6",
+        "contentHash": "B17A899D9B018F6AFFA4BE83D2A1683A1F76E55343E1C6CE361317F8DC2F995F",
+        "disposition": "submission-observed",
+        "phase": "terminal",
+        "reason": "fresh-submission-observed"
+      }
+    ]
+  },
+  "unknown": {
+    "Status": "bridge-unknown-outcome",
+    "Attempts": 1,
+    "BusyRetries": 0,
+    "Timeout": false,
+    "PromptDelivery": {
+      "operationId": "57a32dc7b73244c2b4693d1c1bc3944e",
+      "operationKind": "repair",
+      "operationRevision": "M1-unknown",
+      "inputBindingId": "5f1931532695411ea9414db8ebc5bce6",
+      "contentHash": "B0AF5C4A44E65B6A76407E5C3A8C5C1DAA199AA9433C7B36E00D0A7E9EE20F41",
+      "disposition": "unknown-outcome",
+      "phase": "terminal",
+      "reason": "launcher-or-transport-ambiguous"
+    }
+  },
+  "paused": {
+    "Status": "bridge-unknown-outcome",
+    "Attempts": 1,
+    "BusyRetries": 0,
+    "Timeout": false,
+    "PromptDelivery": {
+      "operationId": "57a32dc7b73244c2b4693d1c1bc3944e",
+      "operationKind": "repair",
+      "operationRevision": "M1-unknown",
+      "inputBindingId": "5f1931532695411ea9414db8ebc5bce6",
+      "contentHash": "B0AF5C4A44E65B6A76407E5C3A8C5C1DAA199AA9433C7B36E00D0A7E9EE20F41",
+      "disposition": "unknown-outcome",
+      "phase": "terminal",
+      "reason": "automatic-input-paused"
+    }
+  },
+  "ambiguousLauncherCalls": 1,
+  "realFunctions": [
+    "Quote-PowerShellSingleQuotedString",
+    "Write-GmTurnHelperBootstrap",
+    "Write-DaemonJsonFileBestEffort",
+    "Write-DaemonStatus",
+    "Process-Turn",
+    "Process-TurnCore",
+    "Process-QteEffectResolutionRequest",
+    "Process-QteEffectResolutionRequestCore",
+    "Process-RepairRequest",
+    "Process-RepairRequestCore",
+    "Get-GameConfig",
+    "Convert-RetiredCodexLaunchDefaults",
+    "New-DefaultGmWorkerBridgeProfiles",
+    "Get-GmBridgeStatus",
+    "Ensure-GmBridgeStarted",
+    "Send-ToCliWindow",
+    "Send-ToGmBridge",
+    "Dispatch-WithRetry",
+    "New-GmDispatchDiagnostics",
+    "Read-GmPromptPending",
+    "Test-GmPromptSourceCurrent",
+    "Get-GmPromptContentHash",
+    "New-GmPromptOperation",
+    "New-GmPromptDelivery",
+    "Test-GmPromptDeliveryIdentity",
+    "Invoke-GmPromptControl",
+    "Complete-GmPromptDispatch",
+    "Test-GmPromptDispatchPaused"
+  ],
+  "gameRequests": 0,
+  "modelRequests": 0
+}

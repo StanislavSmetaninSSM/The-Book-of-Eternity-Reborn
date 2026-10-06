@@ -106,6 +106,15 @@ Linux entrypoint category owns shared exact live-consumer method (deduplicated c
 so next repeat is bounded8entrypoint cases, not11admission/oldregression cohort. This
 reinforces installed-root lookup and exact profile preservation; runtime unchanged.
 
+Installed cwd f3c570a4:8/8PASS,actual same-root live console/functions from ship,
+unchanged command/model/args/cwd;5guardianECHILD0. Other17current cases and16oldreg
+retain source-backed proof. Reviewer identified failure-only production OpenAsync
+leaking its Attach client when an existing original owned Prepared inventory refuses
+main quiescence. Add inert original-coordinator Prepare→main refusal→AbortBeforeLaunch→
+release→foreign coordinator acquisition RED before fix. No executable/worker/model
+launch/config/generation; main refusal must neither close original context nor create
+main record. This is narrow attempt-ref cleanup, not worker production qualification.
+
 ## T041-PRODUCTION-MAIN-DESIGN — current design-only continuation
 
 Owner accepted bounded F3 `fc49f271f5cd14ac3b24931cce2c98ef64a61068`.
