@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([Parameter(Mandatory)][string]$OutputDirectory, [switch]$IncludeFixture, [switch]$IncludeHostGuardian)
+param([Parameter(Mandatory)][string]$OutputDirectory, [switch]$IncludeFixture, [switch]$IncludeHostGuardian, [switch]$IncludeTerminalFixture)
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 if (-not $IsLinux) { throw 'Native lineage build requires Linux.' }
@@ -13,6 +13,7 @@ $flags = @('-std=c11', '-O2', '-g', '-Wall', '-Wextra', '-Werror', '-D_FORTIFY_S
 $inputs = @(@{ source = 'native/linux/boe-lineage-supervisor.c'; binary = 'boe-lineage-supervisor' })
 if ($IncludeFixture) { $inputs += @{ source = 'tests/fixtures/LinuxLineage/lineage-fixture.c'; binary = 'lineage-fixture' } }
 if ($IncludeHostGuardian) { $inputs += @{ source = 'tests/fixtures/LinuxHost/host-guardian.c'; binary = 'host-guardian' } }
+if ($IncludeTerminalFixture) { $inputs += @{ source = 'tests/fixtures/LinuxTerminal/neutral-cli.c'; binary = 'neutral-cli' } }
 $assets = @()
 foreach ($inputFile in $inputs) {
     $source = Join-Path $root $inputFile.source

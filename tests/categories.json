@@ -39,6 +39,31 @@
       ]
     },
     {
+      "id": "gm-owned-terminal-native-linux",
+      "responsibility": "#1553 T041 real fixed neutral Linux PTY session, original native owner/bootstrap/scoped stop and independent guardian cleanup.",
+      "excludes": "Requires Linux-x64/glibc native compiler; no systemd/Windows qualification, arbitrary GM/TUI, production fence/saves/cold.",
+      "changeHints": [
+        "native/linux/boe-lineage-supervisor.c",
+        "BookOfEternityClient/Services/GmRuntime/",
+        "tests/fixtures/LinuxTerminal/"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "worker-pool-regression-managed-policy",
       "responsibility": "#1553 B6 platform-independent Windows selection/native drain bypass/default diagnostic drain and original retained-Job policy. Safe for default Windows CI; no native runtime qualification.",
       "excludes": "Only explicitly affected contracts; no full HOST/IPC/receipt sweep, real GM, public Linux Release or Windows native qualification.",
