@@ -7,10 +7,15 @@ try {
     $tokens = $null; $errors = $null
     $ast = [Management.Automation.Language.Parser]::ParseFile($source, [ref]$tokens, [ref]$errors)
     if ($errors.Count) { throw 'Daemon source parsing failed.' }
-    $names = @('Dispatch-WithRetry', 'Send-ToGmBridge', 'Read-GmPromptPending', 'Test-GmPromptSourceCurrent', 'Get-GmPromptContentHash', 'New-GmPromptOperation', 'New-GmPromptDelivery', 'Test-GmPromptDeliveryIdentity', 'Invoke-GmPromptControl', 'Complete-GmPromptDispatch', 'Test-GmPromptDispatchPaused', 'Send-ToCliWindow', 'Process-Turn', 'Process-QteEffectResolutionRequest', 'Process-RepairRequest', 'Process-TerminalProtocolFailureRequest')
+    $names = @('Dispatch-WithRetry', 'Send-ToGmBridge', 'Read-GmPromptPending', 'Test-GmPromptSourceCurrent', 'Get-GmPromptContentHash', 'New-GmPromptOperation', 'New-GmPromptDelivery', 'Test-GmPromptDeliveryIdentity', 'Invoke-GmPromptControl', 'Complete-GmPromptDispatch', 'Test-GmPromptDispatchPaused', 'Send-ToCliWindow', 'Process-Turn', 'Process-QteEffectResolutionRequest', 'Process-RepairRequest', 'Process-TerminalProtocolFailureRequest', 'Process-TurnCore', 'Process-QteEffectResolutionRequestCore', 'Process-RepairRequestCore', 'Process-TerminalProtocolFailureRequestCore')
     foreach ($function in $ast.FindAll({ param($node) $node -is [Management.Automation.Language.FunctionDefinitionAst] }, $true)) {
         if ($function.Name -in $names) { . ([scriptblock]::Create($function.Extent.Text)) }
     }
+    # This fixture verifies unchanged T042 delivery identity only. It does not
+    # qualify main pins; its controlled file effects remain in fixtureRoot.
+    function Invoke-GmParticipatingConsumer {param($SessionPath,[scriptblock]$Body) & $Body}
+    function Write-GmCanonicalText {param($SessionPath,$Path,$Value,[switch]$Append) if($Append){Add-Content -LiteralPath $Path -Value $Value -Encoding utf8}else{Set-Content -LiteralPath $Path -Value $Value -Encoding utf8}}
+    function Remove-GmCanonicalFile {param($SessionPath,$Path) Remove-Item -LiteralPath $Path -ErrorAction SilentlyContinue}
     $script:FixtureErrors = @()
     function Write-Log { param($Message, $Level, $Color) if ($Level -eq 'ERROR') { $script:FixtureErrors += $Message } }
     function Start-Sleep { param($Seconds, $Milliseconds) }
@@ -181,7 +186,7 @@ operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindi
             $launcher = Join-Path $RepoRoot 'BookOfEternityClient/Launcher/bookofeternity.ps1'
             $launcherAst = [Management.Automation.Language.Parser]::ParseFile($launcher, [ref]$tokens, [ref]$errors)
             if ($errors.Count) { throw 'Launcher source parsing failed.' }
-            $lnames = @('Get-BridgeStatusPath','Test-BridgeHelperAlive','Read-BridgeStatus','Invoke-BridgeRequest','Invoke-BridgePromptDelivery','Get-BridgePromptContentHash')
+            $lnames = @('Get-BridgeStatusPath','Test-BridgeHelperAlive','Read-BridgeStatus','Invoke-BridgeRequest','Invoke-BridgePromptDelivery','Invoke-BridgePromptDeliveryCore','Get-BridgePromptContentHash')
             $defs = $launcherAst.FindAll({param($n) $n -is [Management.Automation.Language.FunctionDefinitionAst] -and $n.Name -in $lnames}, $true)
             foreach ($f in $defs) { . ([scriptblock]::Create($f.Extent.Text)) }
             if ($Scenario -eq 'launcher-lost-response') {

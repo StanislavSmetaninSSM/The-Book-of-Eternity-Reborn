@@ -24,7 +24,7 @@ function Open-GmParticipatingOperation {
     $start.RedirectStandardInput = $true; $start.RedirectStandardOutput = $true; $start.RedirectStandardError = $true
     foreach ($arg in @($assembly,'--gm-main-operation','--root',$root)) { [void]$start.ArgumentList.Add($arg) }
     $process = [Diagnostics.Process]::Start($start)
-    $context = [pscustomobject]@{ process=$process; errorRead=$process.StandardError.ReadToEndAsync(); session=$session; sequence=0L; closed=$false; lost=$false; disposed=$false; pendingRead=$null; originalClose=$null; closeObserved=$false; closeOutcome=0 }
+    $context = [pscustomobject]@{ process=$process; errorRead=$process.StandardError.ReadToEndAsync(); session=$session; sequence=0L; closed=$false; lost=$false; disposed=$false; pendingRead=$null; originalClose=$null; closeObserved=$false; closeOutcome=0; terminalClose=$null }
     try {
         $ready = Read-GmOperationReply $context
         if (-not $ready.ok -or $ready.state -cne 'active' -or $ready.sequence -ne 0) { throw 'Participating admission refused.' }
@@ -61,6 +61,7 @@ function Close-GmParticipatingOperation {
     param($Context,[int]$Outcome=0)
     if ($Context.closed -or $Context.lost) { throw 'Original operation cannot be closed with confirmed receipt.' }
     $Context.closeOutcome=$Outcome
+    if($Context.originalClose){$Context.terminalClose=$Context.originalClose.PSObject.Copy();$Context.terminalClose.outcome=$Outcome}
     try {
         $reply = Send-GmOperationCommand $Context @{action='close';outcome=$Outcome}
         if ($reply.state -cne 'closed-observed') { throw 'Original terminal close is unconfirmed.' }
@@ -101,7 +102,7 @@ function Invoke-GmParticipatingConsumer {
                 $continuation=[IO.IOException]::new('Original operation established a result but continuation is unconfirmed; no replay.',$_.Exception)
                 $continuation.Data['EstablishedOperationResult']=$result
                 $continuation.Data['EstablishedOperationOutcome']=$context.closeOutcome
-                $continuation.Data['OriginalOperationClose']=$context.originalClose
+                $continuation.Data['OriginalOperationClose']=$(if($context.terminalClose){$context.terminalClose}else{$context.originalClose})
                 $failure=[Management.Automation.ErrorRecord]::new($continuation,'OriginalOperationContinuationUnconfirmed',[Management.Automation.ErrorCategory]::OperationStopped,$null)
             } else {$failure.Exception.Data['MainOperationCloseFailure']=$_.Exception}
         }
@@ -114,7 +115,7 @@ function Invoke-GmParticipatingConsumer {
         $continuation=[IO.IOException]::new('Original operation established a result but continuation is unconfirmed; no replay.')
         $continuation.Data['EstablishedOperationResult']=$result
         $continuation.Data['EstablishedOperationOutcome']=$context.closeOutcome
-        $continuation.Data['OriginalOperationClose']=$context.originalClose
+        $continuation.Data['OriginalOperationClose']=$(if($context.terminalClose){$context.terminalClose}else{$context.originalClose})
         $failure=[Management.Automation.ErrorRecord]::new($continuation,'OriginalOperationContinuationUnconfirmed',[Management.Automation.ErrorCategory]::OperationStopped,$null)
     }
     if ($failure) { throw $failure }

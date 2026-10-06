@@ -581,8 +581,13 @@ function Get-OriginalMainStopExpectation {
     $retained=$global:BoeMainOperationContext.originalClose
     if(-not (Test-Path -LiteralPath $record) -and -not $retained){return $null}
     $identity=if($retained){$retained.identity}else{
-        $bytes=[IO.File]::ReadAllBytes($record)
-        if($bytes.Length -eq 0 -or $bytes.Length -gt 65536){throw 'Original main record unavailable.'}
+        $stream=[IO.File]::Open($record,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::ReadWrite -bor [IO.FileShare]::Delete)
+        try {
+            $buffer=[byte[]]::new(65537);$count=0
+            while($count -lt $buffer.Length){$read=$stream.Read($buffer,$count,$buffer.Length-$count);if($read -eq 0){break};$count+=$read}
+            if($count -eq 0 -or $count -gt 65536){throw 'Original main record unavailable.'}
+            $bytes=$buffer[0..($count-1)]
+        } finally {$stream.Dispose()}
         $decoded=([Text.UTF8Encoding]::new($false,$true).GetString($bytes) | ConvertFrom-Json -ErrorAction Stop)
         if($decoded.SchemaVersion -ne 1 -or -not $decoded.Identity){throw 'Original main record unavailable.'}
         $id=$decoded.Identity
@@ -607,6 +612,9 @@ function Invoke-BridgeShutdown {
         } catch {return New-BridgeShutdownResult $ResolvedSessionPath $false 'original-stop-unconfirmed' $false $null $null 'Original scoped stop is unconfirmed; no PID fallback or replay.'}
     }
     $statusBefore = Read-BridgeStatus $ResolvedSessionPath
+    if($statusBefore -and $statusBefore.terminalRunId) {
+        return New-BridgeShutdownResult $ResolvedSessionPath $false 'original-stop-unconfirmed' $false $null $null 'Owned terminal expectation unavailable; no PID fallback.'
+    }
     if ($null -eq $statusBefore) {
         return New-BridgeShutdownResult `
             -ResolvedSessionPath $ResolvedSessionPath `

@@ -2,10 +2,66 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-main-run-fence",
-      "reason": "F1 new portable admission plus exact changed common lease/generation/publication/browser/terminal methods. Windows CI verifies source/portable behavior only; Linux native qualification is in explicit separate selection.",
+      "category": "gm-main-participating-consumers",
+      "reason": "F2 new boundary or explicitly changed consumer; controlled fixtures only, no full suite or native Windows qualification",
       "contracts": [
-        "#1553 T041-RUN-FENCE-F1 FR-009/012/013/014/015; T042 original input lifetime"
+        "#1553 T041-RUN-FENCE-F2; original T042 identity; exact typed Load outcome"
+      ]
+    },
+    {
+      "category": "gm-main-operation-pins",
+      "reason": "F2 new boundary or explicitly changed consumer; controlled fixtures only, no full suite or native Windows qualification",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F2; original T042 identity; exact typed Load outcome"
+      ]
+    },
+    {
+      "category": "gm-main-preparation-boundaries",
+      "reason": "F2 new boundary or explicitly changed consumer; controlled fixtures only, no full suite or native Windows qualification",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F2; original T042 identity; exact typed Load outcome"
+      ]
+    },
+    {
+      "category": "gm-main-ancillary-preparation",
+      "reason": "F2 new boundary or explicitly changed consumer; controlled fixtures only, no full suite or native Windows qualification",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F2; original T042 identity; exact typed Load outcome"
+      ]
+    },
+    {
+      "category": "gm-main-browser-bundle",
+      "reason": "F2 new boundary or explicitly changed consumer; controlled fixtures only, no full suite or native Windows qualification",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F2; original T042 identity; exact typed Load outcome"
+      ]
+    },
+    {
+      "category": "gm-main-browser-bundle-client",
+      "reason": "F2 new boundary or explicitly changed consumer; controlled fixtures only, no full suite or native Windows qualification",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F2; original T042 identity; exact typed Load outcome"
+      ]
+    },
+    {
+      "category": "gm-main-affected-managed",
+      "reason": "F2 new boundary or explicitly changed consumer; controlled fixtures only, no full suite or native Windows qualification",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F2; original T042 identity; exact typed Load outcome"
+      ]
+    },
+    {
+      "category": "gm-main-affected-browser",
+      "reason": "F2 new boundary or explicitly changed consumer; controlled fixtures only, no full suite or native Windows qualification",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F2; original T042 identity; exact typed Load outcome"
+      ]
+    },
+    {
+      "category": "gm-main-affected-browser-client",
+      "reason": "F2 new boundary or explicitly changed consumer; controlled fixtures only, no full suite or native Windows qualification",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F2; original T042 identity; exact typed Load outcome"
       ]
     }
   ]

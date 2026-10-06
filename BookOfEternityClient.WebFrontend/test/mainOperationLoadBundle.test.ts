@@ -24,4 +24,16 @@ describe('F2 original Load guard publishes its same-response bundle',()=>{
       expect(h.counts().loadPosts).toBe(1);expect(h.counts().navigations).toBe(disposition==='Committed'?1:0);
     });
   }
+  for(const component of ['settings','launcher'] as const) for(const bad of ['missing','stale','incomplete']) {
+    it(`${component} ${bad}: keeps committed decision without publishing, navigating or refetching`,async()=>{
+      const h=createSettingsComponentHarness();const view=h[component]();let reads=0;let published=0;
+      h.shell.refreshAfterLoad=async(generation:string|null,current:()=>boolean,allow:boolean,state:unknown)=>
+        (refreshShellAfterLoad as any)({getLoadState:async()=>{reads++;return ok(bundle);}},()=>{published++;},{current:0},generation,current,allow,state);
+      const result=decision('Committed');
+      (result as any).state=bad==='missing'?null:bad==='stale'?{...bundle,establishedGeneration:'other'}:{...bundle,settings:null};
+      view.render();nodes(view.tree).find(n=>n.type==='button'&&n.props.children==='Загрузить сохранение')!.props.onClick();
+      h.load.resolve(ok(result));await flushPromises();
+      expect(reads).toBe(0);expect(published).toBe(0);expect(h.counts().loadPosts).toBe(1);expect(h.counts().navigations).toBe(0);
+    });
+  }
 });
