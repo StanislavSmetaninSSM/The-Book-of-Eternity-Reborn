@@ -11,7 +11,6 @@ internal static class ProductionLoadGameEngine
     internal static GameEngine Create(FileSystemManager fs,GameSettings settings,SaveLoadService? suppliedSave=null)
     {
         IConsoleInputSource inputSource=new FixtureInput();
-        using var fixtureLog=LoggerFactory.Create(b=>b.AddSimpleConsole().SetMinimumLevel(LogLevel.Warning));
         var stateManager = new StateManager(fs, settings, NullLogger<StateManager>.Instance);
         var localization = new LocalizationManager { CurrentLanguage = "ru" };
         var gameLoop = new GameLoop();
@@ -80,9 +79,16 @@ internal static class ProductionLoadGameEngine
             pendingTurnState,
             qteSceneService,
             clipboardService,
-            fixtureLog.CreateLogger<GameEngine>(),
+            new FixtureLogger(),
             inputSource);
         return engine;
+    }
+    private sealed class FixtureLogger : ILogger<GameEngine>
+    {
+        public IDisposable? BeginScope<TState>(TState state) where TState:notnull=>null;
+        public bool IsEnabled(LogLevel level)=>level>=LogLevel.Warning;
+        public void Log<TState>(LogLevel level,EventId id,TState state,Exception? error,Func<TState,Exception?,string> format)
+        { if(IsEnabled(level))Console.Error.WriteLine(format(state,error)); }
     }
     private sealed class FixtureInput : IConsoleInputSource
     {
