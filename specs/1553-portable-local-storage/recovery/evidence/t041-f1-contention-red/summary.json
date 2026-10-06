@@ -1,0 +1,86 @@
+{
+  "Categories": [
+    "gm-main-run-fence",
+    "gm-main-run-owner-linux"
+  ],
+  "Reasons": [
+    {
+      "category": "gm-main-run-fence",
+      "reason": "F1 new portable admission plus exact changed common lease/generation/publication/browser/terminal methods. Windows CI verifies source/portable behavior only; Linux native qualification is in explicit separate selection.",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F1 FR-009/012/013/014/015; T042 original input lifetime"
+      ]
+    },
+    {
+      "category": "gm-main-run-owner-linux",
+      "reason": "Actual Linux-x64 fixed neutral original owner, one schema1 persistence, frozen metadata debt, real output/input/stop, in-generation held settlement, independent guardian; exactly affected native primitive only.",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F1 FR-009/012/013/014/015; T042 original input lifetime"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "07c21ba04faa41e1ae9de8e8062bd5a643edd040",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "gm-main-run-fence",
+      "Seconds": 10.9279976,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.1048013,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0657272,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0833657,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 58.8767487,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:01:16.5259931",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 81,
+    "CompletedCases": 48,
+    "UnderfilledDescriptors": [
+      "gm-main-run-owner-linux-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 48,
+    "Executed": 48,
+    "Passed": 47,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

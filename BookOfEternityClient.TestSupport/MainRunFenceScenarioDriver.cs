@@ -124,7 +124,10 @@ internal static class MainRunFenceScenarioDriver
             var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);var old=Read();
             if(mode=="terminal-main-save-load") {
                 var before=File.ReadAllBytes(seedFiles.SessionGenerationPath);var count=Directory.GetFiles(seedFiles.ResolvePath("saves/manual_saves"),"*.zip").Length;
-                var unbound=await save!.CreateSaveAsync("unbound","synthetic F1 fixture");Require(!unbound.ToBoolean(),"Unbound save acquired Running original main authority.");
+                var unbound=await save!.CreateSaveAsync("unbound","synthetic F1 fixture");
+                Require(unbound.Disposition==SaveCreationDisposition.Uncertain,"Unbound save acquired Running original main authority or hid retained refusal.");
+                try{unbound.ToBoolean();throw new InvalidOperationException("Boolean save hid typed uncertainty.");}
+                catch(CoordinatedStatePublicationUncertainException){}
                 Require(Directory.GetFiles(seedFiles.ResolvePath("saves/manual_saves"),"*.zip").Length==count,"Unbound save published before admission.");
                 var outside=await save.LoadGameWithOutcomeAsync(archive!);Require(outside.Disposition==LoadReplacementDisposition.NotLoaded,"Unbound Load replaced Running original.");
                 await owner.RunOperationAsync(async()=>{

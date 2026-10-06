@@ -1,0 +1,270 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="a68d5a17-02e2-46f9-a8ab-1f258f8d1e5f" name="@c7669543e9c7 2026-10-06 13:36:34" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T13:36:34.2947210+00:00" queuing="2026-10-06T13:36:34.2947210+00:00" start="2026-10-06T13:36:26.9128640+00:00" finish="2026-10-06T13:37:56.3583759+00:00" />
+  <TestSettings name="default" id="d0ffaf04-3670-434c-8bdd-72476bc70261">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_13_36_34" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="4809b596-ac30-49ec-b5b5-646a8910aef8" testId="07864c76-b1f6-c4dc-7384-c96dd25670a6" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-pin-refusal&quot;)" computerName="c7669543e9c7" duration="00:00:02.6569737" startTime="2026-10-06T13:37:23.7624678+00:00" endTime="2026-10-06T13:37:23.7624682+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4809b596-ac30-49ec-b5b5-646a8910aef8" />
+    <UnitTestResult executionId="162acde0-b643-4d82-ac8f-47fd7728342e" testId="16a54e6a-c372-62fb-eaf3-328d184d1bc6" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.InitializationParentBarrier_IsReplayedBeforeRetryAck" computerName="c7669543e9c7" duration="00:00:00.0161773" startTime="2026-10-06T13:36:38.7659321+00:00" endTime="2026-10-06T13:36:38.7659323+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="162acde0-b643-4d82-ac8f-47fd7728342e" />
+    <UnitTestResult executionId="dc3e6373-a4bb-4b72-8bc8-6bea82e8728c" testId="b258279e-430d-7ab0-f9fe-5f840814a182" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(mode: &quot;terminal-main-held-commit&quot;)" computerName="c7669543e9c7" duration="00:00:03.3316435" startTime="2026-10-06T13:37:08.4441423+00:00" endTime="2026-10-06T13:37:08.4441427+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dc3e6373-a4bb-4b72-8bc8-6bea82e8728c" />
+    <UnitTestResult executionId="c009c5d4-1164-4cba-a0b8-8fec9c726e32" testId="27e0c704-3ac1-f101-f06e-0c681cb71831" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(mode: &quot;terminal-main-output-fault&quot;)" computerName="c7669543e9c7" duration="00:00:03.1824773" startTime="2026-10-06T13:37:05.1100120+00:00" endTime="2026-10-06T13:37:05.1100132+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c009c5d4-1164-4cba-a0b8-8fec9c726e32" />
+    <UnitTestResult executionId="27ee7f8c-4c38-4bf8-a365-f7da32661363" testId="c85fa03d-d641-589e-2fb0-1916c1c4792f" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(mode: &quot;terminal-main-recovery-same&quot;)" computerName="c7669543e9c7" duration="00:00:02.8729778" startTime="2026-10-06T13:36:50.7748776+00:00" endTime="2026-10-06T13:36:50.7748779+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="27ee7f8c-4c38-4bf8-a365-f7da32661363" />
+    <UnitTestResult executionId="4ae359c5-a58e-4ccf-9cb6-887560f6a383" testId="a5a3b99a-045c-215d-2eed-88d4af068b09" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 5)" computerName="c7669543e9c7" duration="00:00:01.2806826" startTime="2026-10-06T13:36:36.3687037+00:00" endTime="2026-10-06T13:36:36.3687041+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4ae359c5-a58e-4ccf-9cb6-887560f6a383" />
+    <UnitTestResult executionId="a9625fd7-e591-4a25-9528-54d12ed18975" testId="ecda82e9-6edf-2362-8018-78a2916c2901" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-closing&quot;)" computerName="c7669543e9c7" duration="00:00:02.9302454" startTime="2026-10-06T13:37:36.9866504+00:00" endTime="2026-10-06T13:37:36.9866510+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a9625fd7-e591-4a25-9528-54d12ed18975" />
+    <UnitTestResult executionId="ce4bb1e7-cee0-425f-aec1-84765b005063" testId="0aed4adb-299a-6d95-1483-ef421fc1035f" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-namespace-validate&quot;)" computerName="c7669543e9c7" duration="00:00:02.5958510" startTime="2026-10-06T13:37:45.2910584+00:00" endTime="2026-10-06T13:37:45.2910588+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ce4bb1e7-cee0-425f-aec1-84765b005063" />
+    <UnitTestResult executionId="6587f489-6147-4298-a0b4-e211589aac4d" testId="5e3ca326-1eac-39cf-ebd3-743231240502" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-running-debt&quot;)" computerName="c7669543e9c7" duration="00:00:02.8151520" startTime="2026-10-06T13:37:39.8003430+00:00" endTime="2026-10-06T13:37:39.8003435+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6587f489-6147-4298-a0b4-e211589aac4d" />
+    <UnitTestResult executionId="3a37af62-1f2a-4b07-bc99-c8baff21ff6c" testId="10047d6a-c2dc-f49d-c044-fc14e911abc0" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 3)" computerName="c7669543e9c7" duration="00:00:01.1874974" startTime="2026-10-06T13:36:35.0793395+00:00" endTime="2026-10-06T13:36:35.0793398+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3a37af62-1f2a-4b07-bc99-c8baff21ff6c" />
+    <UnitTestResult executionId="9911614a-4569-4a25-82cf-027ee6878e3f" testId="9735af27-a220-8126-23ae-0269941ff966" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 4)" computerName="c7669543e9c7" duration="00:00:01.1225036" startTime="2026-10-06T13:36:37.4983774+00:00" endTime="2026-10-06T13:36:37.4983777+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9911614a-4569-4a25-82cf-027ee6878e3f" />
+    <UnitTestResult executionId="2c6e938c-dc41-4284-a0d2-9fc9c0d5cff8" testId="6cbb4f86-07a2-549f-0bee-5b1c36c326aa" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(mode: &quot;terminal-main-single-release&quot;)" computerName="c7669543e9c7" duration="00:00:02.1174209" startTime="2026-10-06T13:37:10.5632805+00:00" endTime="2026-10-06T13:37:10.5632810+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2c6e938c-dc41-4284-a0d2-9fc9c0d5cff8" />
+    <UnitTestResult executionId="43558054-e3e7-4cc7-b127-867630d94227" testId="3d856032-101b-ec59-3a3d-8936d1b7e5de" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(mode: &quot;terminal-main-pin-timeout&quot;)" computerName="c7669543e9c7" duration="00:00:08.0621481" startTime="2026-10-06T13:37:01.9261150+00:00" endTime="2026-10-06T13:37:01.9261156+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="43558054-e3e7-4cc7-b127-867630d94227" />
+    <UnitTestResult executionId="822a042e-ec92-4493-a034-00a0ab9e555f" testId="24d4156b-365e-112a-b111-02a260009d52" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(mode: &quot;terminal-main-held-rollback&quot;)" computerName="c7669543e9c7" duration="00:00:03.0824208" startTime="2026-10-06T13:36:53.8587105+00:00" endTime="2026-10-06T13:36:53.8587108+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="822a042e-ec92-4493-a034-00a0ab9e555f" />
+    <UnitTestResult executionId="517341c7-4d9c-4622-b446-bdfd2a0ccf4b" testId="f42c88d3-19ad-b5a3-005b-87afec0cb724" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 6)" computerName="c7669543e9c7" duration="00:00:01.2398955" startTime="2026-10-06T13:36:38.7444355+00:00" endTime="2026-10-06T13:36:38.7444357+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="517341c7-4d9c-4622-b446-bdfd2a0ccf4b" />
+    <UnitTestResult executionId="6d2f1315-1ed5-4f52-a6cb-3426fc616078" testId="7f33993a-c992-3d84-0147-6578a81897cf" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(mode: &quot;terminal-main-unbound&quot;)" computerName="c7669543e9c7" duration="00:00:05.4647645" startTime="2026-10-06T13:36:43.2267042+00:00" endTime="2026-10-06T13:36:43.2267047+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6d2f1315-1ed5-4f52-a6cb-3426fc616078" />
+    <UnitTestResult executionId="3c286cb6-caeb-4f89-a07a-6896de4d1399" testId="3b563784-a648-1691-a86d-a5b67e81bcb0" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-namespace-publish&quot;)" computerName="c7669543e9c7" duration="00:00:02.1708770" startTime="2026-10-06T13:37:17.3875847+00:00" endTime="2026-10-06T13:37:17.3875850+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3c286cb6-caeb-4f89-a07a-6896de4d1399" />
+    <UnitTestResult executionId="7c40221f-f148-4ae6-84e4-f9c0413837c5" testId="fe856996-42cc-c2f3-ee5d-6de7519cd8c8" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 0)" computerName="c7669543e9c7" duration="00:00:01.6324466" startTime="2026-10-06T13:36:32.7564822+00:00" endTime="2026-10-06T13:36:32.7565114+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7c40221f-f148-4ae6-84e4-f9c0413837c5" />
+    <UnitTestResult executionId="2cbe115a-1b86-4ee4-a71e-a76a34af2510" testId="b774b505-310a-2c02-d21b-cefb17e6b838" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-launch-generation&quot;)" computerName="c7669543e9c7" duration="00:00:02.1937739" startTime="2026-10-06T13:37:12.7585772+00:00" endTime="2026-10-06T13:37:12.7585776+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2cbe115a-1b86-4ee4-a71e-a76a34af2510" />
+    <UnitTestResult executionId="4ac1fe8b-02df-45a5-9a94-79942bd3d977" testId="6f928cba-d4a4-b47c-0eb4-710f45244eca" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.ActualBridge_DurableOriginalOwnerBeforeInteractiveReleaseAndScopedRetirement" computerName="c7669543e9c7" duration="00:00:03.4711562" startTime="2026-10-06T13:37:56.2187922+00:00" endTime="2026-10-06T13:37:56.2187924+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4ac1fe8b-02df-45a5-9a94-79942bd3d977" />
+    <UnitTestResult executionId="c7db9262-75e8-4deb-9573-b80d77d6c3be" testId="34a5163f-38ab-6f7c-9a80-3c4f42736d41" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-worker&quot;)" computerName="c7669543e9c7" duration="00:00:02.8854666" startTime="2026-10-06T13:37:42.6904572+00:00" endTime="2026-10-06T13:37:42.6904578+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c7db9262-75e8-4deb-9573-b80d77d6c3be" />
+    <UnitTestResult executionId="6a27eef2-cdee-41c0-9c0d-10f4e56d23d4" testId="136e3fc6-d0bf-5bd3-9e0e-b7012c052d86" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(mode: &quot;terminal-main-output-drain&quot;)" computerName="c7669543e9c7" duration="00:00:03.8072414" startTime="2026-10-06T13:36:34.9092790+00:00" endTime="2026-10-06T13:36:34.9092792+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6a27eef2-cdee-41c0-9c0d-10f4e56d23d4" />
+    <UnitTestResult executionId="afe2cb65-dc6d-4328-bb0f-7af226142967" testId="734e48f3-d45d-f65e-4683-04681176ff4f" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(mode: &quot;terminal-main-recovery-generation&quot;)" computerName="c7669543e9c7" duration="00:00:02.8456163" startTime="2026-10-06T13:36:37.7547263+00:00" endTime="2026-10-06T13:36:37.7547267+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="afe2cb65-dc6d-4328-bb0f-7af226142967" />
+    <UnitTestResult executionId="a0380869-c639-401d-9ca3-47f4a9eccc7a" testId="399c62f4-1a29-8cf8-cfaf-6e92df2c471a" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-forged-stop&quot;)" computerName="c7669543e9c7" duration="00:00:02.4025433" startTime="2026-10-06T13:37:26.1666561+00:00" endTime="2026-10-06T13:37:26.1666566+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a0380869-c639-401d-9ca3-47f4a9eccc7a" />
+    <UnitTestResult executionId="36251fd0-51c3-4104-b68c-e3a313def89d" testId="57cb512a-6300-0b6a-0568-24fbf3061e2b" testName="BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OwnedRoot_TwoUnicodeInputsResizeCanonicalEof_ExactScopedCleanup" computerName="c7669543e9c7" duration="00:00:04.0619287" startTime="2026-10-06T13:36:35.1624018+00:00" endTime="2026-10-06T13:36:35.1624022+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="36251fd0-51c3-4104-b68c-e3a313def89d" />
+    <UnitTestResult executionId="fda1ad3d-e07d-4108-a9af-0946e915a197" testId="c70ee764-5a95-11a9-038e-02c577b86097" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-stop-late-authority&quot;)" computerName="c7669543e9c7" duration="00:00:02.4559184" startTime="2026-10-06T13:37:15.2155028+00:00" endTime="2026-10-06T13:37:15.2155034+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fda1ad3d-e07d-4108-a9af-0946e915a197" />
+    <UnitTestResult executionId="b1120f46-14af-4163-98cb-cf4b451d4f14" testId="900a92d3-3025-872d-68f9-16b488c230f4" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-prepared-debt&quot;)" computerName="c7669543e9c7" duration="00:00:02.4528656" startTime="2026-10-06T13:37:50.2009071+00:00" endTime="2026-10-06T13:37:50.2009089+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b1120f46-14af-4163-98cb-cf4b451d4f14" />
+    <UnitTestResult executionId="8618de9b-e5b2-466c-85ef-c99d0d2f2b06" testId="6f0093a6-1f7c-a221-7bec-9cb10bf67b6d" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-replacement&quot;)" computerName="c7669543e9c7" duration="00:00:02.4522147" startTime="2026-10-06T13:37:47.7467756+00:00" endTime="2026-10-06T13:37:47.7467760+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8618de9b-e5b2-466c-85ef-c99d0d2f2b06" />
+    <UnitTestResult executionId="4f08bc93-bbad-45a9-8715-29e5e3870594" testId="2dab1f7c-5cd1-d4af-73ce-9d36c665a7ad" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 2)" computerName="c7669543e9c7" duration="00:00:01.1339927" startTime="2026-10-06T13:36:33.8938146+00:00" endTime="2026-10-06T13:36:33.8938149+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4f08bc93-bbad-45a9-8715-29e5e3870594" />
+    <UnitTestResult executionId="8bfaa59b-ecc5-4d7b-b648-c1d5f67eddd0" testId="3189f3ef-4644-db20-a816-81deb5db1b56" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-held-expiry&quot;)" computerName="c7669543e9c7" duration="00:00:07.8790983" startTime="2026-10-06T13:37:34.0494829+00:00" endTime="2026-10-06T13:37:34.0494835+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8bfaa59b-ecc5-4d7b-b648-c1d5f67eddd0" />
+    <UnitTestResult executionId="414d6a31-ffdd-480c-9242-046bdbb99c1f" testId="7342be82-5598-261d-f170-92403efdfa04" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(mode: &quot;terminal-main-save-load&quot;)" computerName="c7669543e9c7" duration="00:00:04.6411094" startTime="2026-10-06T13:36:47.9113516+00:00" endTime="2026-10-06T13:36:47.9113518+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="414d6a31-ffdd-480c-9242-046bdbb99c1f">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs:line 61
+   at BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunOwnerLinuxTests.cs:line 36
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4e212b9f-46f9-4b11-9e3c-cd9b69628f73" testId="e030c86d-ce63-587f-4ede-1600c68a218c" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.StagedIntent_SettlesOriginalBeforeDecision" computerName="c7669543e9c7" duration="00:00:02.5355222" startTime="2026-10-06T13:37:52.7435837+00:00" endTime="2026-10-06T13:37:52.7435840+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4e212b9f-46f9-4b11-9e3c-cd9b69628f73">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs:line 61
+   at BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.StagedIntent_SettlesOriginalBeforeDecision() in /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunOwnerLinuxTests.cs:line 24
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f00cec22-f91a-44a3-a08b-bd7140f024f8" testId="96646cf4-09b2-4f7f-0c51-bd3b30f6767b" testName="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-stopped-debt-epoch&quot;)" computerName="c7669543e9c7" duration="00:00:03.7125542" startTime="2026-10-06T13:37:21.1032197+00:00" endTime="2026-10-06T13:37:21.1032200+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f00cec22-f91a-44a3-a08b-bd7140f024f8" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-stopped-debt-epoch&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="96646cf4-09b2-4f7f-0c51-bd3b30f6767b">
+      <Execution id="f00cec22-f91a-44a3-a08b-bd7140f024f8" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ReviewBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-stop-late-authority&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c70ee764-5a95-11a9-038e-02c577b86097">
+      <Execution id="fda1ad3d-e07d-4108-a9af-0946e915a197" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ReviewBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 3)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="10047d6a-c2dc-f49d-c044-fc14e911abc0">
+      <Execution id="3a37af62-1f2a-4b07-bc99-c8baff21ff6c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="MetadataFault_RetainsFrozenPlanAndOriginalGuard" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(mode: &quot;terminal-main-held-rollback&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="24d4156b-365e-112a-b111-02a260009d52">
+      <Execution id="822a042e-ec92-4493-a034-00a0ab9e555f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ConnectedSettlement" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(mode: &quot;terminal-main-pin-timeout&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3d856032-101b-ec59-3a3d-8936d1b7e5de">
+      <Execution id="43558054-e3e7-4cc7-b127-867630d94227" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ConnectedSettlement" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OwnedRoot_TwoUnicodeInputsResizeCanonicalEof_ExactScopedCleanup" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="57cb512a-6300-0b6a-0568-24fbf3061e2b">
+      <Execution id="36251fd0-51c3-4104-b68c-e3a313def89d" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests" name="OwnedRoot_TwoUnicodeInputsResizeCanonicalEof_ExactScopedCleanup" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 5)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a5a3b99a-045c-215d-2eed-88d4af068b09">
+      <Execution id="4ae359c5-a58e-4ccf-9cb6-887560f6a383" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="MetadataFault_RetainsFrozenPlanAndOriginalGuard" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(mode: &quot;terminal-main-single-release&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6cbb4f86-07a2-549f-0bee-5b1c36c326aa">
+      <Execution id="2c6e938c-dc41-4284-a0d2-9fc9c0d5cff8" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ConnectedSettlement" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-worker&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="34a5163f-38ab-6f7c-9a80-3c4f42736d41">
+      <Execution id="c7db9262-75e8-4deb-9573-b80d77d6c3be" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ReviewBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-launch-generation&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b774b505-310a-2c02-d21b-cefb17e6b838">
+      <Execution id="2cbe115a-1b86-4ee4-a71e-a76a34af2510" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ReviewBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-closing&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ecda82e9-6edf-2362-8018-78a2916c2901">
+      <Execution id="a9625fd7-e591-4a25-9528-54d12ed18975" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ReviewBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 4)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9735af27-a220-8126-23ae-0269941ff966">
+      <Execution id="9911614a-4569-4a25-82cf-027ee6878e3f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="MetadataFault_RetainsFrozenPlanAndOriginalGuard" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 2)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2dab1f7c-5cd1-d4af-73ce-9d36c665a7ad">
+      <Execution id="4f08bc93-bbad-45a9-8715-29e5e3870594" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="MetadataFault_RetainsFrozenPlanAndOriginalGuard" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-replacement&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6f0093a6-1f7c-a221-7bec-9cb10bf67b6d">
+      <Execution id="8618de9b-e5b2-466c-85ef-c99d0d2f2b06" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ReviewBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(mode: &quot;terminal-main-save-load&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7342be82-5598-261d-f170-92403efdfa04">
+      <Execution id="414d6a31-ffdd-480c-9242-046bdbb99c1f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ConnectedSettlement" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-running-debt&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5e3ca326-1eac-39cf-ebd3-743231240502">
+      <Execution id="6587f489-6147-4298-a0b4-e211589aac4d" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ReviewBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(mode: &quot;terminal-main-output-drain&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="136e3fc6-d0bf-5bd3-9e0e-b7012c052d86">
+      <Execution id="6a27eef2-cdee-41c0-9c0d-10f4e56d23d4" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ConnectedSettlement" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-namespace-validate&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0aed4adb-299a-6d95-1483-ef421fc1035f">
+      <Execution id="ce4bb1e7-cee0-425f-aec1-84765b005063" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ReviewBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(mode: &quot;terminal-main-output-fault&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="27e0c704-3ac1-f101-f06e-0c681cb71831">
+      <Execution id="c009c5d4-1164-4cba-a0b8-8fec9c726e32" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ConnectedSettlement" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-pin-refusal&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="07864c76-b1f6-c4dc-7384-c96dd25670a6">
+      <Execution id="4809b596-ac30-49ec-b5b5-646a8910aef8" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ReviewBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-namespace-publish&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3b563784-a648-1691-a86d-a5b67e81bcb0">
+      <Execution id="3c286cb6-caeb-4f89-a07a-6896de4d1399" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ReviewBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(mode: &quot;terminal-main-recovery-generation&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="734e48f3-d45d-f65e-4683-04681176ff4f">
+      <Execution id="afe2cb65-dc6d-4328-bb0f-7af226142967" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ConnectedSettlement" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-prepared-debt&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="900a92d3-3025-872d-68f9-16b488c230f4">
+      <Execution id="b1120f46-14af-4163-98cb-cf4b451d4f14" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ReviewBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 0)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fe856996-42cc-c2f3-ee5d-6de7519cd8c8">
+      <Execution id="7c40221f-f148-4ae6-84e4-f9c0413837c5" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="MetadataFault_RetainsFrozenPlanAndOriginalGuard" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-forged-stop&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="399c62f4-1a29-8cf8-cfaf-6e92df2c471a">
+      <Execution id="a0380869-c639-401d-9ca3-47f4a9eccc7a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ReviewBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(mode: &quot;terminal-main-held-commit&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b258279e-430d-7ab0-f9fe-5f840814a182">
+      <Execution id="dc3e6373-a4bb-4b72-8bc8-6bea82e8728c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ConnectedSettlement" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.ActualBridge_DurableOriginalOwnerBeforeInteractiveReleaseAndScopedRetirement" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6f928cba-d4a4-b47c-0eb4-710f45244eca">
+      <Execution id="4ac1fe8b-02df-45a5-9a94-79942bd3d977" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="ActualBridge_DurableOriginalOwnerBeforeInteractiveReleaseAndScopedRetirement" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.StagedIntent_SettlesOriginalBeforeDecision" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e030c86d-ce63-587f-4ede-1600c68a218c">
+      <Execution id="4e212b9f-46f9-4b11-9e3c-cd9b69628f73" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="StagedIntent_SettlesOriginalBeforeDecision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(mode: &quot;terminal-main-recovery-same&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c85fa03d-d641-589e-2fb0-1916c1c4792f">
+      <Execution id="27ee7f8c-4c38-4bf8-a365-f7da32661363" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ConnectedSettlement" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 6)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f42c88d3-19ad-b5a3-005b-87afec0cb724">
+      <Execution id="517341c7-4d9c-4622-b446-bdfd2a0ccf4b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="MetadataFault_RetainsFrozenPlanAndOriginalGuard" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.InitializationParentBarrier_IsReplayedBeforeRetryAck" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="16a54e6a-c372-62fb-eaf3-328d184d1bc6">
+      <Execution id="162acde0-b643-4d82-ac8f-47fd7728342e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="InitializationParentBarrier_IsReplayedBeforeRetryAck" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary(mode: &quot;terminal-main-held-expiry&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3189f3ef-4644-db20-a816-81deb5db1b56">
+      <Execution id="8bfaa59b-ecc5-4d7b-b648-c1d5f67eddd0" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ReviewBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(mode: &quot;terminal-main-unbound&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7f33993a-c992-3d84-0147-6578a81897cf">
+      <Execution id="6d2f1315-1ed5-4f52-a6cb-3426fc616078" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests" name="OriginalOwner_ConnectedSettlement" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="07864c76-b1f6-c4dc-7384-c96dd25670a6" executionId="4809b596-ac30-49ec-b5b5-646a8910aef8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="16a54e6a-c372-62fb-eaf3-328d184d1bc6" executionId="162acde0-b643-4d82-ac8f-47fd7728342e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b258279e-430d-7ab0-f9fe-5f840814a182" executionId="dc3e6373-a4bb-4b72-8bc8-6bea82e8728c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="27e0c704-3ac1-f101-f06e-0c681cb71831" executionId="c009c5d4-1164-4cba-a0b8-8fec9c726e32" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c85fa03d-d641-589e-2fb0-1916c1c4792f" executionId="27ee7f8c-4c38-4bf8-a365-f7da32661363" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a5a3b99a-045c-215d-2eed-88d4af068b09" executionId="4ae359c5-a58e-4ccf-9cb6-887560f6a383" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ecda82e9-6edf-2362-8018-78a2916c2901" executionId="a9625fd7-e591-4a25-9528-54d12ed18975" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0aed4adb-299a-6d95-1483-ef421fc1035f" executionId="ce4bb1e7-cee0-425f-aec1-84765b005063" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5e3ca326-1eac-39cf-ebd3-743231240502" executionId="6587f489-6147-4298-a0b4-e211589aac4d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="10047d6a-c2dc-f49d-c044-fc14e911abc0" executionId="3a37af62-1f2a-4b07-bc99-c8baff21ff6c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9735af27-a220-8126-23ae-0269941ff966" executionId="9911614a-4569-4a25-82cf-027ee6878e3f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6cbb4f86-07a2-549f-0bee-5b1c36c326aa" executionId="2c6e938c-dc41-4284-a0d2-9fc9c0d5cff8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3d856032-101b-ec59-3a3d-8936d1b7e5de" executionId="43558054-e3e7-4cc7-b127-867630d94227" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="24d4156b-365e-112a-b111-02a260009d52" executionId="822a042e-ec92-4493-a034-00a0ab9e555f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f42c88d3-19ad-b5a3-005b-87afec0cb724" executionId="517341c7-4d9c-4622-b446-bdfd2a0ccf4b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7f33993a-c992-3d84-0147-6578a81897cf" executionId="6d2f1315-1ed5-4f52-a6cb-3426fc616078" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3b563784-a648-1691-a86d-a5b67e81bcb0" executionId="3c286cb6-caeb-4f89-a07a-6896de4d1399" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fe856996-42cc-c2f3-ee5d-6de7519cd8c8" executionId="7c40221f-f148-4ae6-84e4-f9c0413837c5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b774b505-310a-2c02-d21b-cefb17e6b838" executionId="2cbe115a-1b86-4ee4-a71e-a76a34af2510" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6f928cba-d4a4-b47c-0eb4-710f45244eca" executionId="4ac1fe8b-02df-45a5-9a94-79942bd3d977" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="34a5163f-38ab-6f7c-9a80-3c4f42736d41" executionId="c7db9262-75e8-4deb-9573-b80d77d6c3be" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="136e3fc6-d0bf-5bd3-9e0e-b7012c052d86" executionId="6a27eef2-cdee-41c0-9c0d-10f4e56d23d4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="734e48f3-d45d-f65e-4683-04681176ff4f" executionId="afe2cb65-dc6d-4328-bb0f-7af226142967" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="399c62f4-1a29-8cf8-cfaf-6e92df2c471a" executionId="a0380869-c639-401d-9ca3-47f4a9eccc7a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="57cb512a-6300-0b6a-0568-24fbf3061e2b" executionId="36251fd0-51c3-4104-b68c-e3a313def89d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c70ee764-5a95-11a9-038e-02c577b86097" executionId="fda1ad3d-e07d-4108-a9af-0946e915a197" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="900a92d3-3025-872d-68f9-16b488c230f4" executionId="b1120f46-14af-4163-98cb-cf4b451d4f14" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6f0093a6-1f7c-a221-7bec-9cb10bf67b6d" executionId="8618de9b-e5b2-466c-85ef-c99d0d2f2b06" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2dab1f7c-5cd1-d4af-73ce-9d36c665a7ad" executionId="4f08bc93-bbad-45a9-8715-29e5e3870594" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3189f3ef-4644-db20-a816-81deb5db1b56" executionId="8bfaa59b-ecc5-4d7b-b648-c1d5f67eddd0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7342be82-5598-261d-f170-92403efdfa04" executionId="414d6a31-ffdd-480c-9242-046bdbb99c1f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e030c86d-ce63-587f-4ede-1600c68a218c" executionId="4e212b9f-46f9-4b11-9e3c-cd9b69628f73" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="96646cf4-09b2-4f7f-0c51-bd3b30f6767b" executionId="f00cec22-f91a-44a3-a08b-bd7140f024f8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="33" executed="33" passed="31" failed="2" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.54]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:03.38]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:03.45]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:20.38]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:20.38]       Expected: 0
+[xUnit.net 00:00:20.38]       Actual:   1
+[xUnit.net 00:00:20.38]       Stack Trace:
+[xUnit.net 00:00:20.38]         /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs(61,0): at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode)
+[xUnit.net 00:00:20.38]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunOwnerLinuxTests.cs(36,0): at BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(String mode)
+[xUnit.net 00:00:20.38]         --- End of stack trace from previous location ---
+[xUnit.net 00:01:25.22]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:01:25.22]       Expected: 0
+[xUnit.net 00:01:25.22]       Actual:   1
+[xUnit.net 00:01:25.22]       Stack Trace:
+[xUnit.net 00:01:25.22]         /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs(61,0): at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode)
+[xUnit.net 00:01:25.22]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunOwnerLinuxTests.cs(24,0): at BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.StagedIntent_SettlesOriginalBeforeDecision()
+[xUnit.net 00:01:25.22]         --- End of stack trace from previous location ---
+[xUnit.net 00:01:28.70]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T13:36:47.9189975+00:00">
+        <Text>[xUnit.net 00:00:20.38]     BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement(mode: "terminal-main-save-load") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T13:37:52.7464712+00:00">
+        <Text>[xUnit.net 00:01:25.21]     BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.StagedIntent_SettlesOriginalBeforeDecision [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

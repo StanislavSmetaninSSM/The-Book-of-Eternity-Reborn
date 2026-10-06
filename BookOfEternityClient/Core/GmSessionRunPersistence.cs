@@ -110,20 +110,22 @@ internal sealed class GmMainOwnerGuard : IDisposable
     private readonly string _path;
     internal string Root {get;}
     private GmMainOwnerGuard(string root,string path,FileStream stream){Root=root;_path=path;_stream=stream;}
-    internal static async Task<GmMainOwnerGuard> AcquireAsync(string root,CancellationToken token=default)
+    internal static async Task<GmMainOwnerGuard> AcquireAsync(string root,CancellationToken token=default,
+        Func<Task>? contended=null,int attempts=40,TimeSpan? retryDelay=null)
     {
         var scope=new TrustedLocalFileScope([root]);var dir=scope.EnsureDirectory(Path.Combine(root,".boe_runtime/locks"));
         var path=scope.ValidateFile(Path.Combine(dir,"gm-main-owner.lock"));
         for(var i=0;;i++)
         {
             token.ThrowIfCancellationRequested();
-            try
-            {
-                var stream=new FileStream(path,FileMode.OpenOrCreate,FileAccess.ReadWrite,FileShare.None,1,FileOptions.Asynchronous);
-                var guard=new GmMainOwnerGuard(root,path,stream);
-                try{guard.Validate();return guard;}catch{guard.Dispose();throw;}
+            FileStream stream;
+            try{stream=new FileStream(path,FileMode.OpenOrCreate,FileAccess.ReadWrite,FileShare.None,1,FileOptions.Asynchronous);}
+            catch(IOException) when(i<attempts-1){
+                if(contended!=null)await contended();
+                await Task.Delay(retryDelay??TimeSpan.FromMilliseconds(25),token);continue;
             }
-            catch(IOException) when(i<39){await Task.Delay(25,token);}
+            var guard=new GmMainOwnerGuard(root,path,stream);
+            try{guard.Validate();return guard;}catch{guard.Dispose();throw;}
         }
     }
     internal void Validate()

@@ -33,7 +33,13 @@ public partial class FileSystemManager
                 {_access=p._access.Retain();return;}
             if(_requested!=null && _requested.Owner.RootIdentity==_files.CanonicalRootAuthorityIdentity)
             {_requested.Pin?.Retain();_access=new(null,_requested);return;}
-            _access=new(await GmMainOwnerGuard.AcquireAsync(_files.BasePath,token),null);
+            // This read can only refuse. Absent/Stopped still requires the original
+            // physical guard and validation below, including a pending Stopped ACK.
+            var observed=GmSessionRunPersistence.Read(_files.BasePath);
+            if(observed!=null && GmSessionRunRecordCodec.Decode(observed).Disposition!=GmSessionRunDisposition.Stopped)
+                throw GmSessionRunPersistence.Invalid();
+            _access=new(await GmMainOwnerGuard.AcquireAsync(_files.BasePath,token,
+                _files._hooks?.MainOwnerLockContendedAsync,CanonicalWriteLockRetryCount,TransientFileAccessRetryDelay),null);
             try{Validate(null);}catch{Dispose();throw;}
         }
         internal GmSessionRunCoordinator.Access? Original=>_access?.Original;

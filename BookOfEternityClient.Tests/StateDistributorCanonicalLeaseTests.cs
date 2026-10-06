@@ -44,6 +44,11 @@ public sealed class StateDistributorCanonicalLeaseTests : IDisposable
             });
         var writerFs = CreateFileSystem(new FileSystemManagerHooks
         {
+            MainOwnerLockContendedAsync = () =>
+            {
+                writerContended.TrySetResult(true);
+                return Task.CompletedTask;
+            },
             CanonicalWriteLockContendedAsync = () =>
             {
                 writerContended.TrySetResult(true);

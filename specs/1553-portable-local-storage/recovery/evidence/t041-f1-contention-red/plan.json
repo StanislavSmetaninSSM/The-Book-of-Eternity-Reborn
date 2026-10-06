@@ -1,0 +1,170 @@
+{
+  "Categories": [
+    "gm-main-run-fence",
+    "gm-main-run-owner-linux"
+  ],
+  "Reasons": [
+    {
+      "category": "gm-main-run-fence",
+      "reason": "F1 new portable admission plus exact changed common lease/generation/publication/browser/terminal methods. Windows CI verifies source/portable behavior only; Linux native qualification is in explicit separate selection.",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F1 FR-009/012/013/014/015; T042 original input lifetime"
+      ]
+    },
+    {
+      "category": "gm-main-run-owner-linux",
+      "reason": "Actual Linux-x64 fixed neutral original owner, one schema1 persistence, frozen metadata debt, real output/input/stop, in-generation held settlement, independent guardian; exactly affected native primitive only.",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F1 FR-009/012/013/014/015; T042 original input lifetime"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "07c21ba04faa41e1ae9de8e8062bd5a643edd040",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 65.0990809,
+  "Descriptors": [
+    {
+      "Name": "gm-main-run-fence-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-run-fence",
+      "Categories": [
+        "gm-main-run-fence"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_WriteFailureIsRecordedAndPumpStops|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.BoundedGeneration_RejectsOversizeBeforeAllocatingAuthority|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.InitializedMissingOrInvalid_RefusesClearBeforeEffects|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.StoppedTombstone_ClearRetainsEpochOutsideReplacement|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedKeyboard_PairsUnicodeScalarsBeforeWriting|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_OutputTimeoutIsAbsorbingWithOriginalOwner|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_ScopedProofStillRequiresActualOutputEof|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedView_EraseWithoutHomeCannotCertifyIdle|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedView_PartialUtf8AndUnsupportedVtCannotBorrowIdle|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalSessionTests.ActualStop_RetainsOriginalOwnerWhileScopedStopAndOutputAreUnfinished|FullyQualifiedName=BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension|FullyQualifiedName=BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_BackupCleanupFailure_DoesNotRollbackCommittedDistribution|FullyQualifiedName=BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterFirstWrite_DoesNotRollbackConcurrentAcceptedWriter|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.PublishWithOutcome_SeparatesRollbackFromDurableCommitCleanupFailure|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentV3FrameKeepsCompletePendingOrCommittedDecision",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 48,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_WriteFailureIsRecordedAndPumpStops",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.BoundedGeneration_RejectsOversizeBeforeAllocatingAuthority",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.InitializedMissingOrInvalid_RefusesClearBeforeEffects",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.StoppedTombstone_ClearRetainsEpochOutsideReplacement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedKeyboard_PairsUnicodeScalarsBeforeWriting",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_OutputTimeoutIsAbsorbingWithOriginalOwner",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_ScopedProofStillRequiresActualOutputEof",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedView_EraseWithoutHomeCannotCertifyIdle",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedView_PartialUtf8AndUnsupportedVtCannotBorrowIdle",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalSessionTests.ActualStop_RetainsOriginalOwnerWhileScopedStopAndOutputAreUnfinished",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission",
+          "Cases": 11
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension",
+          "Cases": 5
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_BackupCleanupFailure_DoesNotRollbackCommittedDistribution",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterFirstWrite_DoesNotRollbackConcurrentAcceptedWriter",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.PublishWithOutcome_SeparatesRollbackFromDurableCommitCleanupFailure",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentV3FrameKeepsCompletePendingOrCommittedDecision",
+          "Cases": 6
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-run-owner-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-run-owner-linux",
+      "Categories": [
+        "gm-main-run-owner-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.InitializationParentBarrier_IsReplayedBeforeRetryAck|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.ActualBridge_DurableOriginalOwnerBeforeInteractiveReleaseAndScopedRetirement|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.StagedIntent_SettlesOriginalBeforeDecision|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OwnedRoot_TwoUnicodeInputsResizeCanonicalEof_ExactScopedCleanup",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 33,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.InitializationParentBarrier_IsReplayedBeforeRetryAck",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.ActualBridge_DurableOriginalOwnerBeforeInteractiveReleaseAndScopedRetirement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement",
+          "Cases": 10
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary",
+          "Cases": 13
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.StagedIntent_SettlesOriginalBeforeDecision",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OwnedRoot_TwoUnicodeInputsResizeCanonicalEof_ExactScopedCleanup",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
