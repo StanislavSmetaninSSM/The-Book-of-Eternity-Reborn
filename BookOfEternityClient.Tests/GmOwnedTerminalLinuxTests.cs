@@ -63,6 +63,7 @@ public sealed class GmOwnedTerminalLinuxTests
         if(foreground) {
             foreach(var proof in new[]{"Success","TwoActualConsoleInputsOneSession","ActualConsoleResize","CanonicalEofRootAlive","ActualScopedStop","OuterInputModeRestored"})Assert.True(scenario.RootElement.GetProperty(proof).GetBoolean());return;
         }
+        if(mode.StartsWith("terminal-main-",StringComparison.Ordinal)){Assert.True(scenario.RootElement.GetProperty("Success").GetBoolean());return;}
         if (mode == "terminal-retirement") { Assert.True(scenario.RootElement.GetProperty("OwnerHeldBeforeEof").GetBoolean()); return; }
         if (mode == "terminal-late-fault") { Assert.True(scenario.RootElement.GetProperty("LateFaultUncertain").GetBoolean()); return; }
         if (mode == "terminal-gated-fds") Assert.True(scenario.RootElement.GetProperty("HeldRootHasNoHelperChannels").GetBoolean());

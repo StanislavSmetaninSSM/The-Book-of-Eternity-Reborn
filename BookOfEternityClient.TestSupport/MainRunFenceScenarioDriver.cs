@@ -1,0 +1,90 @@
+using System.Diagnostics;
+using System.Reflection;
+using System.Text.Json;
+using BookOfEternityClient.Core;
+using BookOfEternityClient.Services.GmRuntime;
+using BookOfEternityClient.Services.GmWorkers;
+using Microsoft.Extensions.Logging.Abstractions;
+
+namespace BookOfEternityClient.Tests;
+
+internal static class MainRunFenceScenarioDriver
+{
+    internal static async Task<int> RunAsync(string mode,string package,string folder)
+    {
+        var result=new Dictionary<string,object?>();object? host=null;Type? type=null;
+        object? Field(string name)=>type!.GetField(name,BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host);
+        void Set(string name,object value)=>type!.GetField(name,BindingFlags.Instance|BindingFlags.NonPublic|BindingFlags.Public)!.SetValue(host,value);
+        async Task Call(string name){try{await (Task)type!.GetMethod(name,BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,null)!;}catch(TargetInvocationException e){throw e.InnerException!;}}
+        void Require(bool condition,string message){if(!condition)throw new InvalidOperationException(message);}
+        try
+        {
+            var launch=NeutralTerminalLaunch.Create(package,folder);var root=Directory.GetParent(launch.Scratch)!.FullName;
+            var recordPath=Path.Combine(root,".boe_runtime/gm-runs/main.json");
+            GmSessionRunRecord Read()=>GmSessionRunRecordCodec.Decode(File.ReadAllBytes(recordPath));
+            var repo=FindRepoRoot();var configuration=new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
+            type=Assembly.LoadFrom(Path.Combine(repo,"BookOfEternityGMBridge/bin",configuration,"net8.0/BookOfEternityGMBridge.dll")).GetType("BookOfEternityGMBridge.BridgeHost",true)!;
+            host=Activator.CreateInstance(type,[launch.Scratch,"f1-"+Guid.NewGuid().ToString("N")]);
+            type.GetMethod("ConfigureNeutral",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[launch]);
+            await Call("StartShellAsync");
+            var owner=(GmSessionRunCoordinator)Field("_mainRun")!;var terminal=(IOwnedTerminalSession)Field("_pty")!;
+            var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);var old=Read();
+            if(mode=="terminal-main-replacement")
+            {
+                await owner.RunOperationAsync(async()=>{await using var l=await files.AcquireCanonicalWriteLeaseAsync();await files.WriteFileAtomicAsync(l,"game_state/marker.txt","original");return 0;});
+                var before=File.ReadAllBytes(files.ResolvePath("game_state/marker.txt"));
+                await owner.RunOperationAsync(async()=>{
+                    Exception? error=null;try{await files.ClearGameStateAsync();}catch(Exception e){error=e;}
+                    Require(error!=null,"Active clear was admitted.");
+                    Require(File.Exists(files.ResolvePath("game_state/marker.txt")) && File.ReadAllBytes(files.ResolvePath("game_state/marker.txt")).AsSpan().SequenceEqual(before),"Active clear changed members before refusal.");
+                    return 0;
+                });
+            }
+            else if(mode=="terminal-main-forged-stop")
+            {
+                await owner.BeginStopAsync();
+                Exception? error=null;try{await owner.ConfirmSettledStopAsync(terminal,new(terminal.Identity,GmWorkerStopState.StoppedWithinScope,"forged",true,false));}catch(Exception e){error=e;}
+                Require(error!=null,"Caller proof retired a live original terminal.");
+                Require(Read().Disposition!=GmSessionRunDisposition.Stopped,"Caller proof published Stopped.");
+                Require(!terminal.RootExited.IsCompleted,"Forged proof stopped or replaced root.");
+            }
+            else if(mode=="terminal-main-closing" || mode=="terminal-main-pin-refusal")
+            {
+                var entered=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+                var resume=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+                var refused=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+                var finish=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+                var operation=owner.RunOperationAsync(async()=>{
+                    if(mode=="terminal-main-closing")return await SessionOperationContext.RunBoundAsync(files,owner.Identity.GenerationId,async()=>{entered.SetResult();await resume.Task;return 0;});
+                    entered.SetResult();await resume.Task;
+                    try{await using var l=await files.AcquireCanonicalWriteLeaseAsync();throw new InvalidOperationException("Closed owner admitted a new lease.");}
+                    catch(IOException){refused.SetResult();}
+                    await finish.Task;return 0;
+                });
+                await entered.Task;var stop=owner.BeginStopAsync();
+                for(var i=0;i<100 && Read().Disposition!=GmSessionRunDisposition.Stopping;i++)await Task.Delay(5);
+                Require(Read().Disposition==GmSessionRunDisposition.Stopping,"Stopping not durable before pin drain.");resume.SetResult();
+                try {
+                    if(mode=="terminal-main-pin-refusal") {await refused.Task.WaitAsync(TimeSpan.FromSeconds(2));await Task.Delay(30);Require(!stop.IsCompleted,"Refused acquisition stole original operation reference.");finish.SetResult();}
+                    await operation;await stop;
+                } finally {resume.TrySetResult();finish.TrySetResult();try{await operation;}catch{}try{await stop;}catch{}}
+            }
+            else if(mode=="terminal-main-worker")
+            {
+                var workers=GmWorkerRootContext.Attach(files,true,null);workers.CloseForUncertainty();
+                var path=Path.Combine(root,".boe_runtime/gm-workers/state.json");
+                await Call("StopShellAsync");Require(Read().Disposition==GmSessionRunDisposition.Stopped,"Separate worker blocked main metadata settlement.");
+                Exception? error=null;try{await using var l=await files.AcquireCanonicalWriteLeaseAsync();}catch(Exception e){error=e;}
+                Require(error!=null,"Main Stopped bypassed independent worker refusal.");workers.ReleaseClient();
+            }
+            result["Success"]=true;return 0;
+        }
+        catch(Exception e){result["Failure"]=e.ToString();return 1;}
+        finally
+        {
+            if(host!=null){try{await Call("StopShellAsync");result["CleanupAttempted"]=true;}catch(Exception e){result["CleanupFailure"]=e.ToString();}try{((IDisposable)host).Dispose();}catch(Exception e){result["DisposeFailure"]=e.ToString();}}
+            await File.WriteAllTextAsync(Path.Combine(folder,"scenario.json"),JsonSerializer.Serialize(result));
+        }
+    }
+    private static string FindRepoRoot(){var d=new DirectoryInfo(AppContext.BaseDirectory);while(d!=null){if(File.Exists(Path.Combine(d.FullName,"AGENTS.md")))return d.FullName;d=d.Parent;}throw new InvalidOperationException();}
+}

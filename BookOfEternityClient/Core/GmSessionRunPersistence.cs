@@ -4,7 +4,7 @@ using Microsoft.Win32.SafeHandles;
 
 namespace BookOfEternityClient.Core;
 
-internal enum MainRunIoStage { NamespaceCreated, Staged, FileFlushed, Renamed, DirectoryFlushed, Readback }
+internal enum MainRunIoStage { NamespaceCreated, BeforeNamespaceParentFlush, Staged, FileFlushed, Renamed, DirectoryFlushed, Readback }
 
 // One bounded schema1 metadata CAS, below canonical recovery. The original guard
 // lives outside the initialization namespace and is never released on metadata debt.
@@ -58,7 +58,7 @@ internal sealed class GmSessionRunPersistence
         {
             // Only this live plan that observed the whole namespace absent can initialize.
             if(p.Before!=null || _created || Mkdir(scope.ValidateDirectory(DirectoryPath),0x1c0)!=0)throw Invalid();
-            _created=true;Sync(DirectoryPath);Sync(Path.GetDirectoryName(DirectoryPath)!);_observe?.Invoke(MainRunIoStage.NamespaceCreated);
+            _created=true;Sync(DirectoryPath);_observe?.Invoke(MainRunIoStage.BeforeNamespaceParentFlush);Sync(Path.GetDirectoryName(DirectoryPath)!);_observe?.Invoke(MainRunIoStage.NamespaceCreated);
         }
         scope.ValidateDirectory(DirectoryPath,false);
         byte[]? actual;

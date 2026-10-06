@@ -53,5 +53,35 @@ public sealed class GmMainRunFenceTests : IDisposable
         Write(GmSessionRunDisposition.Stopped);var before=File.ReadAllBytes(RecordPath);
         await _files.ClearGameStateAsync();Assert.Equal(before,File.ReadAllBytes(RecordPath));
     }
+    [Theory]
+    [InlineData((int)MainRunIoStage.NamespaceCreated)]
+    [InlineData((int)MainRunIoStage.Staged)]
+    [InlineData((int)MainRunIoStage.FileFlushed)]
+    [InlineData((int)MainRunIoStage.Renamed)]
+    [InlineData((int)MainRunIoStage.DirectoryFlushed)]
+    [InlineData((int)MainRunIoStage.Readback)]
+    public async Task MetadataFault_RetainsFrozenPlanAndOriginalGuard(int stage)
+    {
+        using var guard=await GmMainOwnerGuard.AcquireAsync(_files.BasePath);
+        var fired=false;var disk=new GmSessionRunPersistence(guard,s=>{if(!fired && (int)s==stage){fired=true;throw new IOException("owned metadata fault");}});
+        var id=new GmSessionRunIdentity(_files.BasePath,Guid.NewGuid().ToString("N"),Guid.Empty.ToString("N"),1,
+            GmSessionRunBackend.LinuxSupervisor,Guid.NewGuid().ToString("N"),"fixture-boot");
+        var prepared=new GmSessionRunRecord(1,id,GmSessionRunDisposition.Prepared,null);
+        Assert.Throws<IOException>(()=>disk.Publish(null,prepared));Assert.True(disk.HasDebt);
+        Assert.Throws<IOException>(()=>disk.Publish(null,prepared with{Disposition=GmSessionRunDisposition.Running}));
+        Task<Exception?> contender;
+        using(ExecutionContext.SuppressFlow())contender=Task.Run(()=>Record.ExceptionAsync(async()=>{await using var l=await _files.AcquireCanonicalWriteLeaseAsync();}));
+        Assert.NotNull(await contender);
+        disk.Retry();Assert.False(disk.HasDebt);Assert.Equal(GmSessionRunRecordCodec.Encode(prepared),File.ReadAllBytes(RecordPath));
+    }
+    [Fact]
+    public async Task InitializationParentBarrier_IsReplayedBeforeRetryAck()
+    {
+        using var guard=await GmMainOwnerGuard.AcquireAsync(_files.BasePath);var calls=0;
+        var disk=new GmSessionRunPersistence(guard,s=>{if(s==MainRunIoStage.BeforeNamespaceParentFlush && ++calls==1)throw new IOException("parent barrier unavailable");});
+        var id=new GmSessionRunIdentity(_files.BasePath,Guid.NewGuid().ToString("N"),Guid.Empty.ToString("N"),1,GmSessionRunBackend.LinuxSupervisor,Guid.NewGuid().ToString("N"),"fixture-boot");
+        Assert.Throws<IOException>(()=>disk.Publish(null,new(1,id,GmSessionRunDisposition.Prepared,null)));
+        disk.Retry();Assert.Equal(2,calls);
+    }
     public void Dispose(){if(Directory.Exists(_root))Directory.Delete(_root,true);}
 }
