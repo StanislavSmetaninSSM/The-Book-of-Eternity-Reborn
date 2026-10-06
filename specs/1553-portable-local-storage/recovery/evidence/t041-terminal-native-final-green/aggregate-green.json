@@ -1,0 +1,819 @@
+{
+  "DistinctPassed": 160,
+  "DuplicateTestIds": 0,
+  "Cohorts": [
+    {
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "ExecutedPassed": 116,
+      "RunnerDirectory": "20261006-110440-366-248316-c4f595343fef4620ab9bbd2d07d8616a-categories"
+    },
+    {
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "ExecutedPassed": 44,
+      "RunnerDirectory": "20261006-110949-010-251102-86081beca6cd457a9a874d0e9ac3d2f0-categories"
+    }
+  ],
+  "SourceDelta": "No C#/C/PowerShell/project/catalog/selection changes between GREEN sources; foreground.py UI fixture setup and evidence ledger only.116 managed successes reused,44 remaining fresh.",
+  "Tests": {
+    "3b31a1eb-754a-14ba-2de8-04e4c6045076": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ProductionOriginsAndRetirementConsumeTheTestedLifetimeMethods",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "7e3003b2-2a34-029e-24cb-ecd32b050b55": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(source: \"shell\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "35a25386-8a7a-4d8f-38ec-7a15074196c0": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualRequestBoundary_OnlyHostCancellationStopsServing(source: \"host\", shouldContinue: False)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "fc98e1e7-d467-b68a-5bc6-b8c7d8f12d97": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StaleOriginCannotWriteToReplacementEvenWithReusedStream(reuse: False)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "67dcc87e-7907-162b-48c4-165818f931f6": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(source: \"host\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "17dc696d-51ae-dc3e-b7cd-242981ea40c2": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(source: \"revoke\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "681e8165-8264-8bed-a759-0aae066d76aa": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(phase: \"cancel-flush\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "41da4987-5452-6bcd-1c4a-8d4339e02a5d": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(phase: \"cancel-write\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "17bea770-1747-a1a2-6f22-f81727d6bfa8": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(phase: \"write\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "fd4cec92-4e29-4e79-b982-cc6b4858d037": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_PreservesUnicodeMultilineAndAppendEnter(append: False)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "d22effea-b333-8ca7-09cf-36c1d4ad2b4b": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_PreservesUnicodeMultilineAndAppendEnter(append: True)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "9d742c78-4d05-b719-56dc-c403d4804cd9": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_CancelBeforeEntryIsZeroBytesAndDoesNotPoisonActiveBinding",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "f063ee4e-a422-5438-2150-9066a88ed7dd": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: '\\0', key: UpArrow, control: False, expected: \"\\x1b[A\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "71509e50-9b04-cb20-2bd8-bf39f4dc954f": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualDispatchCompletion_ReflectsActualOperationSuccess(success: False, expected: \"Failed\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "c6bc03db-95df-5c3f-ecc9-eda1877861cb": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_TimeoutRetainsSameDrainAndBlocksReplacementUntilLateCompletion",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "9f0bbf73-1960-b1aa-23c0-ca6a9d0f4648": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualDispatchCompletion_ReflectsActualOperationSuccess(success: True, expected: \"Completed\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "a15376ac-1bde-d280-2b08-6b0efc010220": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualLifetime_LateRevokeAndCompletionCannotChangeReplacement",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "16749874-6ed6-63c8-e87d-32d12dce1af2": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_NullPtyStopWaitsForLateKeyReadBeforeReplacementConsumesKeys",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "447238c8-46f6-6d5c-b3e2-ace1b90ad6b3": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ProductionStartAndDiagnosticsConsumeTheTestedMethods",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "ac4216f9-16a6-8d0f-fdee-b64134216bf6": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: '\\0', key: C, control: True, expected: \"\\x03\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "2b74bf3c-bed3-375c-82e0-57fa5edc2bc7": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_RetainsStartedAndQueuedWritesUntilSettledBeforeNewBinding",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "ac3c119c-803c-e670-736d-e8b3140ae837": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_AwaitsCancellationCallbacksThatReenterTheHost",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "5d4c4008-6205-5c8e-3bc9-927572990467": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: 'a', key: A, control: False, expected: \"a\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "f327c563-4bb9-17f6-269e-a97950245dd9": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualDispose_ClosesAdmissionAndDoesNotDisposeGateUnderUnsettledWrite",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "db702672-dc77-1be9-a746-57e75ca53a04": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StaleOriginCannotWriteToReplacementEvenWithReusedStream(reuse: True)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "f6c12789-23be-7cba-f77f-e43e1163ef25": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(phase: \"flush\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "84fc3f31-b120-6439-7d5d-abf857ad0165": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(source: \"caller\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "3c0956cb-4a77-8e18-3ce7-2593ecf733c4": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualRequestBoundary_OnlyHostCancellationStopsServing(source: \"io\", shouldContinue: True)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "51e52993-cce0-5f2f-5874-da59b4998677": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_ConcurrentStopsJoinOneRetiringLifetime",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "075cfaaf-8bbb-1e6b-6f10-29310934483f": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualAssemblyAndPortablePdbMatchProductionSource",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "f6bd1efe-637a-9202-2f50-67145d9363db": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_WriteFailureIsRecordedAndPumpStops",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "9b083a47-653f-8e31-3dd3-cd98bdb2c102": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: '\\r', key: Enter, control: False, expected: \"\\r\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "d42726ae-2d24-e17b-f678-4eb13c9c6dff": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualRequestBoundary_OnlyHostCancellationStopsServing(source: \"shell\", shouldContinue: True)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-input-lifetime-unit-001.trx"
+    },
+    "151a1f4c-cdb1-254d-017b-206840b17fbc": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(bytes: [237, 160, 128], expected: \"\ufffd\ufffd\ufffd\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "6f731a2c-0d9f-ed71-2482-2590779d4822": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailRetainsCompletePairAtBoundary(limit: 65536)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "3b6fa19d-1e1a-3795-cbd6-2aad443b255c": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode(chunkSize: 4096)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "35913838-0a08-8bf8-f34c-3e8803a0a7c4": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(bytes: [192, 175], expected: \"\ufffd\ufffd\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "1c62e3d9-20c9-0aa8-3f6b-f905d517059c": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 4)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "75727204-5725-1708-ac63-f2b0c882a356": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 12)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "fc038755-02e2-c82e-885b-2ffdd5cf25a1": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailNeverStartsInsideSurrogatePair(limit: 65536)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "0275bb13-3ee4-d6c3-7687-05d8424f4bab": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 6)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "2798e2c7-2972-8f58-afcc-86c1392e6499": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(bytes: [226, 130], expected: \"\ufffd\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "0ca2fe9b-b673-1d1e-3cd1-17eeeab3ffa4": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 15)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "530a9da6-d5d5-9906-200f-e49c64b01428": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 13)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "ccc92ee2-2b17-c08f-765b-4fec51fe7843": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_FaultPropagatesWithoutFinalizingPendingBytes(phase: \"read\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "34220843-81ba-2d7d-71e8-033b020f1a78": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EmptyEofDoesNotInventActivityOrText",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "0e58cdac-a2c5-3d10-38df-90b6f6b9e5d7": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: \"between\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "e1bbe14d-9975-c31c-d84a-662a81909741": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_FaultPropagatesWithoutFinalizingPendingBytes(phase: \"write\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "1c0eaded-34e2-ad06-a54c-ebcbe1cea9da": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: \"flush\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "23279b7b-2e32-9e93-c0b0-035a02bd1d95": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(bytes: [255, 65, 128], expected: \"\ufffdA\ufffd\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "e1b6a38d-4119-47bb-fe6b-67fcb7370d58": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_FaultPropagatesWithoutFinalizingPendingBytes(phase: \"flush\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "e80ca4d7-9f05-d10e-4db7-f2ecfe3b0fa9": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode(chunkSize: 2)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "3d0eb670-9b42-036b-5bcc-23fb5a445288": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: \"before\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "4be28f62-a9f5-e691-f88c-7c283d46d91c": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode(chunkSize: 7)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "359eaf43-7a84-e4c0-6e5f-77a016fead05": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualConsumerAssemblyAndPortablePdbMatchCurrentProductionSource",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "ab020b10-942d-17dc-8502-32f4ab48b374": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailNeverStartsInsideSurrogatePair(limit: 12000)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "bd99aebb-cd6d-0b03-53f3-ec15718d8803": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 14)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "276c44a7-70f8-85e8-53a0-162bfb6a338d": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(bytes: [226, 130, 65], expected: \"\ufffdA\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "a8a34bd6-37c0-1e6e-928b-66ca4e66347c": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 8)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "c130df1e-cf85-627f-4671-7e3d00f62ad8": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 7)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "2272a58c-9a46-6116-48ca-a03cc3dbe05d": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_PendingMalformedPrefixPlusFullReadFitsDecoderBuffer",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "c7437885-26d3-0677-27a6-f1a19c68e99e": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: \"write\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "139efb9c-d72a-34a0-7bc7-9eeeb4da8244": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailRetainsCompletePairAtBoundary(limit: 12000)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "85d7b087-6724-7f0a-624d-2b418f9214c4": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_LongOutputStaysBoundedAfterEveryRead",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "f8b193a6-4d07-dfe2-5e74-2dc65585d3e4": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 11)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "4097b20f-8046-d4e0-efe6-0552178b3d04": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 9)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "ece7477f-297d-b966-c246-bcf1867180fe": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 3)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "29cde489-f85a-cb57-008b-00c701f548f1": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_IncompleteScalarAdvancesByteActivityBeforeTextExists",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "e0021abe-1b0d-8fe3-510b-1707903e5970": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: \"read\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "c65cc898-a029-87ac-9cd3-85ed8bfa6267": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy(bytes: [244, 144, 128, 128], expected: \"\ufffd\ufffd\ufffd\ufffd\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "884f5342-626b-0573-8355-c6fada5c9450": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof(phase: \"eof\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "e4a60ecc-6de6-fbe7-8a71-722ec94e09e8": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 10)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "a5592d6e-e24c-1396-8a00-34acde433b02": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_SeparateInvocationsNeverSharePendingDecoderState(firstEndsInFault: True)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "1ae78860-6a7c-50be-4865-d12d01a0eb1c": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CanceledBlockedReadCompletesWithoutEofFlush",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "e921b67b-bfe1-b27a-a29b-032533d1304b": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 5)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "cf86f6ef-31ac-dbd4-112e-4864acabcb48": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 1)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "c79fe32c-cb03-8e53-b44c-a380029f5844": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_OnlyRealEofFinalizesPendingTextWithoutInventingByteActivity",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "bf21eedb-094b-c3f1-8dc1-89381ffc8693": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode(chunkSize: 1)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "116054ba-5042-82e9-f3d9-c5c89de57bd5": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_SeparateInvocationsNeverSharePendingDecoderState(firstEndsInFault: False)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "6e9b4cda-0905-ea4f-8b9c-dd39d29f5d26": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes(split: 2)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-output-stream-unit-002.trx"
+    },
+    "8a0f74c6-acd4-b104-a488-72cce4bc2952": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_SlowPeerDoesNotBlockStatus",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "653a31f2-efee-2a54-333f-4ff9df48444f": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.RealKeyboard_TakesOverQueuedOperationBeforeAnyPaste",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "86928e32-583d-0cf2-2a9b-3758980f0bf0": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_NonReadingPeersCannotRetainUnboundedErrorWrites(handlerThrows: True)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "097deac2-bda8-3b2f-4f53-7057799e3780": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: \"unknown\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "6330fc51-9212-7c06-27ed-e39ecc85220e": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualStop_JoinsWholeOperationBeforeReplacement",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "a7e725c2-71be-4ac7-f18e-1110a2615679": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ManualReadyCannotClearUncertainDelivery",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "d64c0638-aaca-707e-926b-30269346bd0a": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ProfileMutation_DoesNotChangeFrozenSubmitSequence",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "a9466fb4-5a0b-b0ef-61f9-d408ed08d1ee": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DoesNotAutoAcceptTrustPrompt",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "48768043-53c1-bf62-cec2-6fc9d1f33fcd": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.AutomaticDispatch_DoesNotEraseManualDraft",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "8292e3c6-9400-ec6d-e05b-aea50811fc83": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_ManualTakeoverBeforeOrAfterSubmit(afterSubmit: False, expected: \"draft-uncertain\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "4dbb842f-6511-65aa-e346-06c2bb6df7b8": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DoesNotAutoAnswerUpdatePrompt",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "df5d9eaf-1d05-65de-6db5-0e4208d89bff": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: \"CONTROLLED CLI\\nAUTH\\n\u203a \")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "63f42e6d-105d-b953-a2de-4e5e84c8df2b": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DispatchUsesPositiveProfileAndEmptyComposer",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "01faa2a3-3058-c27b-9241-de09fab4f6ff": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_HeldPasteStatusQueueCancelOverflowAndRevoke",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "cb526d31-d241-58f3-df23-1d6955480011": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateFlood_HeldInputCannotOccupyControlService",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "883630fc-6c03-a842-3654-e47bc736daf6": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_AutoReadyRequiresSupportedEmptyIdleView",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "8e88b00b-90af-37e6-d8cf-950f416a88d8": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_ManualTakeoverBeforeOrAfterSubmit(afterSubmit: True, expected: \"unknown-outcome\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "969cfc66-a641-7d25-95a4-a3b400af89d5": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: \"\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "2d2cf4a8-25ce-401f-760e-6b8f3d473d46": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ChangedBodyQuery_CannotBorrowOriginalSuccess",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "f5dbc3e8-80b7-6315-a355-56102a79fe21": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ManualTakeover_BlocksAutomaticShellBootstrap",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "322f193a-5966-c320-600b-d7654acf6426": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DispatchRequiresFreshPasteAndSubmissionEvidence",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "5a66f271-4576-603c-fb3f-5a897c3f3f93": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_PreservesPendingCliDraftBeforeAutomaticDispatch",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "cb8cae33-9312-d125-a2a9-680c47a775e5": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_IdleObservationCannotClearUncertainDelivery",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "e3a5e745-b241-ec2a-4220-786c3dcdb16f": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: \"CONTROLLED CLI\\nUPDATE\\n\u203a \")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "ce31469d-ae7d-cc7f-2614-3af333e640ef": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_StatusAndCancelReachRealPromptOperation",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "6f12401b-bc18-43fc-a1ae-46cfae488449": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ActiveOperationCannotBeMarkedReady",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "55f3b239-657c-c931-978d-b9c252523cb1": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: \"CONTROLLED CLI\\nTRUST\\n\u203a \")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "9d1400dc-140f-f45a-c64f-4383287a30c5": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_NonReadingPeersCannotRetainUnboundedErrorWrites(handlerThrows: False)",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "c6cc4827-5169-b838-b772-9c02c863cf92": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.StaleBinding_IsZeroWriteAndCannotQueryAnotherBinding",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "480c515b-ac8f-5790-cbf8-80ddf56f6cff": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.TwoPromptsOneBinding_CustomSequences_OneSubmitEach",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "9dbc8b7a-cbbf-f042-1359-f039c5d837f2": {
+      "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ManualTakeoverPrecedesCompetingWrite",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "bcbd06f6-9989-5a5a-3055-10b9339d38f7": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.PasteNeedsFreshObservation_TimeoutRetainsDraftAndPause",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "5ce29ef7-7165-444b-6554-8d298f51ecf8": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateAndChangedBody_RetainOriginalWithoutRepaste",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "6905e732-988e-5c37-1a97-2b988a74107f": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays(submit: False, expected: \"draft-uncertain\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "da891458-896d-f863-338d-52bca7beaf29": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays(submit: True, expected: \"unknown-outcome\")",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "a2b957ac-077a-2b3d-82b7-50b17dec01e9": {
+      "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ProvenZeroWrite_ReadmittingRequestAwaitsItsOwnTransaction",
+      "SourceCommit": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Trx": "gm-bridge-prompt-operation-unit-003.trx"
+    },
+    "7878097f-0df1-85e7-229f-a69725d4e688": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OriginalOwner_DescendantsRootExitOrUncertain(mode: \"terminal-authority-loss\")",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-native-linux-unit-001.trx"
+    },
+    "74461919-f0a0-3a43-b74b-9a7c1bc0476b": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OriginalOwner_DescendantsRootExitOrUncertain(mode: \"terminal-root-first\")",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-native-linux-unit-001.trx"
+    },
+    "ab206925-f6cc-ee31-d73e-9ce32443c132": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OriginalOwner_DescendantsRootExitOrUncertain(mode: \"terminal-root-exit-admission\")",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-native-linux-unit-001.trx"
+    },
+    "5de15310-3ddb-43d7-ac07-42ced069c4d3": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OriginalOwner_DescendantsRootExitOrUncertain(mode: \"terminal-partial-start\")",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-native-linux-unit-001.trx"
+    },
+    "0e81eb72-2158-da65-bccf-15f50b465df7": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OriginalOwner_DescendantsRootExitOrUncertain(mode: \"terminal-retirement\")",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-native-linux-unit-001.trx"
+    },
+    "7aaf9b5e-2b54-6e2b-7f70-e1fa1fd318ab": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OriginalOwner_DescendantsRootExitOrUncertain(mode: \"terminal-gated-fds\")",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-native-linux-unit-001.trx"
+    },
+    "a0858681-448c-05b7-fd3a-b01c15d4cc9d": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OriginalOwner_DescendantsRootExitOrUncertain(mode: \"terminal-late-fault\")",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-native-linux-unit-001.trx"
+    },
+    "2c96e0a1-ee60-a421-3a0a-e5a4728fa08d": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OriginalOwner_DescendantsRootExitOrUncertain(mode: \"terminal-descendants\")",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-native-linux-unit-001.trx"
+    },
+    "57cb512a-6300-0b6a-0568-24fbf3061e2b": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OwnedRoot_TwoUnicodeInputsResizeCanonicalEof_ExactScopedCleanup",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-native-linux-unit-001.trx"
+    },
+    "1eb7ea35-69c5-ad2f-e502-bb434651221c": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OriginalOwner_DescendantsRootExitOrUncertain(mode: \"terminal-uncertain\")",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-native-linux-unit-001.trx"
+    },
+    "70c89bec-80ef-2522-2a1f-501deec6cc36": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.ActualBridge_PipeDispatchConsumesOriginalTerminalView",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-native-linux-unit-001.trx"
+    },
+    "bc25d164-8d25-e8e7-4b0c-142207aaa0cf": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.ActualProgram_ForegroundConsoleInputsResizeEofAndScopedStop",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-native-linux-unit-001.trx"
+    },
+    "3b8cbf7a-6fc3-4d0d-fe33-e1066c9f5a90": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_OutputTimeoutIsAbsorbingWithOriginalOwner",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-session-unit-002.trx"
+    },
+    "a751d6cc-4ad7-c53c-7147-2963bbc15532": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: \"retained\")",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-session-unit-002.trx"
+    },
+    "4a2ad315-3487-66cf-ba4b-a1ffa6e91b8d": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalSessionTests.ActualStop_RetainsOriginalOwnerWhileScopedStopAndOutputAreUnfinished",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-session-unit-002.trx"
+    },
+    "42f709f4-7241-e537-a970-937da2d5961b": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedKeyboard_PairsUnicodeScalarsBeforeWriting",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-session-unit-002.trx"
+    },
+    "15943005-8947-478f-c766-79d19f3f445a": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: \"incomplete\")",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-session-unit-002.trx"
+    },
+    "87a441f7-f530-daae-9866-6937a6342fa9": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedView_EraseWithoutHomeCannotCertifyIdle",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-session-unit-002.trx"
+    },
+    "380491a9-08f3-c62f-2f5e-32d2d42bd69c": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_ScopedProofStillRequiresActualOutputEof",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-session-unit-002.trx"
+    },
+    "7fb4fed8-eec7-88c6-1854-1e659a7f4051": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: \"foreign\")",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-session-unit-002.trx"
+    },
+    "ca94bcb6-610f-cb4a-73f0-aaff24bbaa3e": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualLauncher_UsesRetargetedBridgeAndKeepsProjectFallback",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-session-unit-002.trx"
+    },
+    "86be8e09-1b19-82dd-8c9f-50ca6cb3d0b3": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualWindowsStream_ZeroLengthReadDoesNotEstablishTransportEof",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-session-unit-002.trx"
+    },
+    "42c4f5c7-0ecb-7f5e-a32e-7423d5c1cab1": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedView_PartialUtf8AndUnsupportedVtCannotBorrowIdle",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-session-unit-002.trx"
+    },
+    "07bc4195-fe2c-07b6-eceb-f9825429a46c": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: \"uncertain\")",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-session-unit-002.trx"
+    },
+    "b398cd36-d7b1-1cf5-87ba-a47f8d1b00e8": {
+      "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.WindowsMainSource_HoldsJobBeforeReleaseAndOwnedPseudoConsoleClose",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "gm-owned-terminal-session-unit-002.trx"
+    },
+    "68d5f963-beed-5d9c-47ab-f2fd2dc904f2": {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.GatedBootstrapLoss_RetiresWithoutExecutingRoot(mode: \"bootstrap-wrong-ack\", reason: \"bootstrap-invalid\")",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "worker-native-bootstrap-output-unit-003.trx"
+    },
+    "2f6137ee-f5c5-eafa-f108-e277aa2a5e7a": {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.PreCanceledPreparation_RejectsBeforeAllocatingNativeOwner",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "worker-native-bootstrap-output-unit-003.trx"
+    },
+    "09218fcf-1e9a-b24d-8566-b6c42aff94c8": {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.GatedBootstrapLoss_RetiresWithoutExecutingRoot(mode: \"bootstrap-close\", reason: \"bootstrap-lost\")",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "worker-native-bootstrap-output-unit-003.trx"
+    },
+    "73d6b226-b03c-7e93-cb95-7414829edddc": {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.ConstructorFailure_RollsBackPrivateBootstrapBeforeAnyProcessStart",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "worker-native-owner-retention-unit-004.trx"
+    },
+    "77d2089f-3af7-7b44-6e20-a5a86382f1b5": {
+      "Name": "BookOfEternityClient.Tests.LinuxFallbackBootstrapTests.RealRootBinding_StartStopAndActualReap",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "worker-native-v1-transport-regression-unit-005.trx"
+    },
+    "26bbc839-67b8-63d3-faad-068187e50861": {
+      "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup(launched: True)",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "worker-native-v1-transport-regression-unit-005.trx"
+    },
+    "2ef0fabe-e4b9-c5fb-c430-91733958c386": {
+      "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ExecFailure_DoesNotClaimStartedOrScopedSuccess",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "worker-native-v1-transport-regression-unit-005.trx"
+    },
+    "4c33af65-3cdc-4fb6-daab-d661bc55f403": {
+      "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup(launched: False)",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "worker-native-v1-transport-regression-unit-005.trx"
+    },
+    "065620c0-fe9d-cc87-48bd-204caeae595f": {
+      "Name": "BookOfEternityClient.Tests.LinuxFallbackProcDiscoveryTests.FirstAdoptedChild_MustRetireBeforeIndependentFixtureExpiry",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "worker-native-v1-transport-regression-unit-005.trx"
+    },
+    "f02d0eaa-5950-f130-29f2-8a1a08750833": {
+      "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ClosedStatusAfterStart_RetiresOwnedChildrenWithoutBlockingOrSigpipeExit",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "worker-native-v1-transport-regression-unit-005.trx"
+    },
+    "2a2950c9-dca4-03d8-e4de-36b14a3b2829": {
+      "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Child_DoesNotInheritOwnerInput_AndPreservesSyntheticEnvironmentAndCwd",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "worker-native-v1-transport-regression-unit-005.trx"
+    },
+    "e45dad6c-eeef-79ac-a782-6f7580ab6780": {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.CancellationAfterNativeBinding_RetainsOwnerThroughScopedRetirement",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "worker-pool-regression-host-unit-006.trx"
+    },
+    "b8c0c934-eb40-8599-9642-af6dce954e3f": {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation(mode: \"owner-eof\")",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "worker-pool-regression-host-unit-006.trx"
+    },
+    "f30bcd90-97ec-97b1-4d2a-30fc8f3bb3d6": {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.HelperLossAndOutputEof_CannotDisposeLiveHostIdentity",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "worker-pool-regression-host-unit-006.trx"
+    },
+    "c2caa30e-d359-1e99-6cb6-9a912c0b3aec": {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation(mode: \"exec-failure\")",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "worker-pool-regression-host-unit-006.trx"
+    },
+    "f30f02e1-bbe8-d0db-70c3-ba338ba25262": {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "worker-pool-regression-host-unit-006.trx"
+    },
+    "0dbedf64-c592-ceff-6098-fdf618d6e2e7": {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.NeutralHostCapability_RejectsReleaseBeforeSendingAnyWorkerCommand",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "worker-pool-regression-host-unit-006.trx"
+    },
+    "c488f35e-33a9-6aed-64a7-ba96509daba5": {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation(mode: \"status-loss\")",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "worker-pool-regression-host-unit-006.trx"
+    },
+    "c637af7b-e4e2-5c12-8119-ad5a07d63202": {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.HostOutput_IsDistinctAndPrivateDescriptorsDoNotSurviveExec",
+      "SourceCommit": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Trx": "worker-pool-regression-host-unit-006.trx"
+    }
+  }
+}

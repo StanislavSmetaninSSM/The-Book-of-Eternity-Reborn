@@ -3,7 +3,7 @@
   "Task": "T041-OWNED-MAIN-TERMINAL-NEUTRAL",
   "Issue": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553",
   "AcceptedDesign": "3b21dba7410284cb4b471e7b3c3e4be970139c27",
-  "Status": "WIP native connected9/9 PASS; Windows/portable controls/final review pending",
+  "Status": "Bounded neutral tests complete; independent final source/evidence review and GitHub-only restore pending",
   "Method": "Spec Kit existing feature, Superpowers executing-plans/TDD, bridge; sole writer and separate Sol6.1/xhigh review",
   "Preflight": "Existing isolated linked worktree, exact remote base and clean tree. One shared session feeds original input/output/dispatch; original native reaper remains the sole ownership engine. No interface conflict found.",
   "Ledger": [
@@ -169,5 +169,76 @@
     "Complete": false,
     "Evidence": "evidence/t041-terminal-foreground-preparation/manifest.json",
     "Classification": "outer UI fixture controlling-terminal/resize-signal preparation; not native ownership failure"
-  }
+  },
+  "LedgerSemantics": "Append-only execution history; old WIP/zero/pending statements below describe their recorded earlier checkpoint. FinalVerification and Status are current.",
+  "FinalVerification": {
+    "RuntimeSource": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+    "ForegroundFixtureSource": "6061df633091ce25cfa41183aa3d1b5938764a33",
+    "DistinctPassed": 160,
+    "DuplicateTestIds": 0,
+    "ManagedReused": {
+      "Source": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Passed": 116,
+      "Categories": [
+        "gm-bridge-input-lifetime",
+        "gm-bridge-output-stream",
+        "gm-bridge-prompt-operation"
+      ],
+      "Manifest": "evidence/t041-terminal-foreground-preparation/manifest.json",
+      "Note": "These three completed descriptors pass; full9 run stopped after foreground preparation failure. Source delta to606 changes no C#/C/PowerShell/project/catalog/selection input.116 not repeated."
+    },
+    "RemainingFresh": {
+      "Source": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Planned": 44,
+      "Executed": 44,
+      "Passed": 44,
+      "Failed": 0,
+      "Complete": true,
+      "NativeTerminal": 12,
+      "PortableSession": 13,
+      "AffectedWorkerRegression": 19,
+      "Manifest": "evidence/t041-terminal-native-final-green/manifest.json",
+      "Aggregate": "evidence/t041-terminal-native-final-green/aggregate-green.json",
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile /workspace/qualification-1553-terminal/remaining-linux.json -Parallelism 1",
+      "SelectionArtifact": "evidence/t041-terminal-native-final-green/requested-selection.json"
+    },
+    "Cleanup": {
+      "TerminalGuardians": 12,
+      "TerminalEchild": 12,
+      "TerminalEmergencySignals": 0,
+      "HostGuardians": 12,
+      "HostEchild": 12,
+      "HostEmergencySignals": 1,
+      "HostEmergencyReason": "Existing deliberate helper-loss-closed-output owner-retention negative permits independent guardian exact cleanup; never runtime positive scoped proof.",
+      "V1Guardians": 7,
+      "V1Echild": 7,
+      "V1EmergencyLineageActions": 0,
+      "V1EmergencyAlarmReaps": 0,
+      "AllFailureOrDeadline": 0,
+      "Scope": "own fixtures only; no claim about pre-existing PID1 zombies"
+    },
+    "Discovery": {
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog",
+      "Categories": 321,
+      "MethodsOrFiles": 10932,
+      "Executed": 0,
+      "Manifest": "evidence/t041-terminal-catalog-discovery/manifest.json"
+    },
+    "Plan": {
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selections/1553-owned-terminal-linux.json -PlanOnly -NoBuild",
+      "Descriptors": 9,
+      "Planned": 160,
+      "Executed": 0,
+      "Manifest": "evidence/t041-terminal-selection-plan/manifest.json"
+    }
+  },
+  "NativeNeutralQualified": false,
+  "CurrentNext": "Independent Sol6.1/xhigh final source/evidence review; no next implementation stage.",
+  "NotQualified": [
+    "native Windows ConPTY/Job execution",
+    "existing-user-manager systemd terminal adapter",
+    "arbitrary configured live CLI/provider/TUI/final queue/profile/manual-resume UX",
+    "ordinary production Linux GM/worker launch and durable main run/write fence",
+    "real saves and cold/reboot/power-loss/delivery exactly-once"
+  ]
 }
