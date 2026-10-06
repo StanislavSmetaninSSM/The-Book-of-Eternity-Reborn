@@ -25,6 +25,7 @@ internal static partial class MainRunCrashScenarioDriver
         var result=new Dictionary<string,object?>{["Mode"]=mode};
         try {
             if(mode.StartsWith(Prefix+"pin-",StringComparison.Ordinal))return await WitnessPinAsync(mode[(Prefix.Length+4)..],package,folder,result);
+            if(mode.StartsWith(Prefix+"stop-",StringComparison.Ordinal))return await WitnessStopAsync(mode[(Prefix.Length+5)..],package,folder,result);
             Require(mode.StartsWith(Prefix+"launch-",StringComparison.Ordinal),"Unknown crash witness mode.");
             var cut=mode[(Prefix.Length+7)..];
             await using var owner=Child(Prefix+"owner-launch-"+cut,package,folder);
@@ -48,6 +49,7 @@ internal static partial class MainRunCrashScenarioDriver
     private static async Task<int> OwnerAsync(string mode,string package,string folder)
     {
         if(mode.StartsWith("pin-",StringComparison.Ordinal))return await OwnerPinAsync(mode[4..],package,folder);
+        if(mode.StartsWith("stop-",StringComparison.Ordinal))return await OwnerStopAsync(mode[5..],package,folder);
         try {
             var launch=NeutralTerminalLaunch.Create(package,folder);var root=Directory.GetParent(launch.Scratch)!.FullName;
             var files=Files(root);var state=PortableSaveFixture.Seed(files);
@@ -83,6 +85,7 @@ internal static partial class MainRunCrashScenarioDriver
     private static async Task<int> ColdAsync(string mode,string folder)
     {
         if(mode=="fresh")return await FreshAsync(folder);
+        if(mode=="warm-blocked")return await WarmBlockedAsync(folder);
         var result=new Dictionary<string,object?>{["Mode"]=mode,["Pid"]=Environment.ProcessId};
         try {
             Require(mode=="refuse","Unknown cold actor mode.");var info=ReadInfo(folder);var files=Files(info.Root);
@@ -106,12 +109,12 @@ internal static partial class MainRunCrashScenarioDriver
         finally {WriteJson(Path.Combine(folder,"cold.json"),result);}
     }
 
-    private static void Cut(string folder,FixtureHost host,string name)
+    private static void Cut(string folder,FixtureHost host,string name,GmSessionRunCoordinator? retained=null)
     {
-        var root=ReadInfo(folder).Root;
-        WriteJson(Path.Combine(folder,"cut.json"),new{Name=name,Pid=Environment.ProcessId,Record=host.Owner.Record,
+        var root=ReadInfo(folder).Root;var owner=retained??host.Owner;
+        WriteJson(Path.Combine(folder,"cut.json"),new{Name=name,Pid=Environment.ProcessId,Record=owner.Record,
             DurableRecord=File.Exists(Path.Combine(root,".boe_runtime/gm-runs/main.json"))?ReadRecord(root):null,
-            MetadataDebt=host.Owner.HasMetadataDebt,RetainsAuthority=host.Owner.RetainsAuthority,Uncertain=host.Owner.IsUncertain});
+            MetadataDebt=owner.HasMetadataDebt,RetainsAuthority=owner.RetainsAuthority,Uncertain=owner.IsUncertain});
         using var bounded=new ManualResetEventSlim();
         if(!bounded.Wait(TimeSpan.FromSeconds(6)))throw new TimeoutException("Witness did not kill the exact original application at its controlled cut.");
     }
@@ -124,9 +127,11 @@ internal static partial class MainRunCrashScenarioDriver
     private static void WriteJson(string path,object value)
     {var stage=path+".stage";File.WriteAllBytes(stage,JsonSerializer.SerializeToUtf8Bytes(value));File.Move(stage,path,true);}
     private static string ReadOutput(string folder,string name)=>File.Exists(Path.Combine(folder,name))?Encoding.UTF8.GetString(File.ReadAllBytes(Path.Combine(folder,name))):"";
-    private static Dictionary<string,string> Snapshot(string root)=>Directory.EnumerateFiles(root,"*",SearchOption.AllDirectories)
+    private static Dictionary<string,string> Snapshot(string root,bool omitOpenMainStage=false)=>Directory.EnumerateFiles(root,"*",SearchOption.AllDirectories)
         .Where(path=>!Path.GetRelativePath(root,path).StartsWith(".boe_runtime/locks/",StringComparison.Ordinal))
+        .Where(path=>!omitOpenMainStage || !IsMainStage(Path.GetRelativePath(root,path)))
         .ToDictionary(path=>Path.GetRelativePath(root,path),path=>Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path))),StringComparer.Ordinal);
+    private static bool IsMainStage(string relative)=>relative.StartsWith(".boe_runtime/gm-runs/main-",StringComparison.Ordinal)&&relative.EndsWith(".tmp",StringComparison.Ordinal);
     private static bool Equal(Dictionary<string,string> first,Dictionary<string,string> next)=>first.Count==next.Count && first.All(p=>next.TryGetValue(p.Key,out var hash)&&hash==p.Value);
     private static async Task WaitAsync(Func<bool> ready,Process? child=null)
     {

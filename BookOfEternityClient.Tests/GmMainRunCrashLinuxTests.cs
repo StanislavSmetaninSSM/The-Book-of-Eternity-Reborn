@@ -18,6 +18,16 @@ public sealed class GmMainRunCrashLinuxTests
     public async Task ClientDeath_OriginalReceiptBoundaryControlsColdContinuation(string cut)=>
         await RunBoundedAsync("terminal-main-crash-pin-"+cut);
 
+    [Theory]
+    [InlineData("stopping")]
+    [InlineData("io")]
+    [InlineData("staged")]
+    [InlineData("readback")]
+    [InlineData("ack")]
+    [InlineData("fault")]
+    public async Task StopDeath_ActualSettlementAndDurableAckControlNewEpoch(string cut)=>
+        await RunBoundedAsync("terminal-main-crash-stop-"+cut);
+
     private static async Task RunBoundedAsync(string mode)
     {
         string? folder=null;

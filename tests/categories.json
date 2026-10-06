@@ -14677,6 +14677,29 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-crash-stop-linux",
+      "responsibility": "#1553 F3 original application death at Stopping, actual pending output, actual disposal/Stopped staging/readback/ACK and real pre-seal output failure.",
+      "excludes": "Linux x64 fixed neutral fixture; post-disposal private fault injection is not a live producer; no powerloss/coldguarantees/systemd/Windows/live/provider/production/real saves.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/MainRunCrashScenarioDriver.Stop.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.StopDeath_ActualSettlementAndDurableAckControlNewEpoch"
+          ]
+        }
+      ]
     }
   ]
 }

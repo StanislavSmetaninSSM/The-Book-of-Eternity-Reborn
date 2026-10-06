@@ -21,6 +21,13 @@
       "contracts": [
         "#1553 T041-RUN-FENCE-F3 actual original typed connection/receipt; logical Uncertain despite physical cleanup; fresh epoch only stopped"
       ]
+    },
+    {
+      "category": "gm-main-crash-stop-linux",
+      "reason": "F3 unproved process death around actual output/disposal/sealed stop and ACK; real pre-seal producer fault ensures absorbing Uncertain",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F3 scopedstop+actual I/O/disposal/ACK, original guard, cold nonterminal refusal and new epoch only sealed stop"
+      ]
     }
   ]
 }
