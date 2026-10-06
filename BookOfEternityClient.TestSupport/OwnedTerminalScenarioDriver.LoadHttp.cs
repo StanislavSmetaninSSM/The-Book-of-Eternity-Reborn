@@ -20,10 +20,14 @@ internal static partial class OwnedTerminalScenarioDriver
         var faultName=mode.Contains("-fault-",StringComparison.Ordinal)?mode[(mode.LastIndexOf("-fault-",StringComparison.Ordinal)+7)..]:null;
         var storageFault=faultName is "rollback" or "uncertain";
         var publicationArmed=false;var replacing=false;var cuts=0;
-        var lockOpens=0;var lockContentions=0;var closes=0;string? contendedAt=null;
+        var lockOpens=0;var lockContentions=0;var closes=0;var borrows=0;var mainContentions=0;
+        string? contendedAt=null;string? mainContendedAt=null;
+        var reads=new System.Collections.Concurrent.ConcurrentQueue<string>();
         var marker=files.ResolvePath("game_state/world/test_fixture_state.json");
-        if(storageFault)await files.WriteFileAtomicAsync("game_state/world/test_fixture_state.json","{\"state\":\"before-load\"}");
         var hooks=storageFault || faultName=="load-reply-loss"?new FileSystemManagerHooks{
+            BeforeMainBorrowRetainAsync=()=>{if(publicationArmed)Interlocked.Increment(ref borrows);return Task.CompletedTask;},
+            MainOwnerLockContendedAsync=()=>{if(publicationArmed){Interlocked.Increment(ref mainContentions);mainContendedAt=new System.Diagnostics.StackTrace().ToString();}return Task.CompletedTask;},
+            BeforeCanonicalReadOpenAsync=p=>{if(publicationArmed && reads.Count<100)reads.Enqueue(p);return Task.CompletedTask;},
             BeforeCanonicalWriteLockOpenAsync=()=>{if(publicationArmed)Interlocked.Increment(ref lockOpens);return Task.CompletedTask;},
             CanonicalWriteLockContendedAsync=()=>{if(publicationArmed){Interlocked.Increment(ref lockContentions);contendedAt=new System.Diagnostics.StackTrace().ToString();}return Task.CompletedTask;},
             SessionOperationClosingAsync=()=>{if(publicationArmed)Interlocked.Increment(ref closes);return Task.CompletedTask;},
@@ -67,7 +71,7 @@ internal static partial class OwnedTerminalScenarioDriver
         if(mode.Contains("-fault-",StringComparison.Ordinal)) {
             publicationArmed=true;
             try {await RunLoadHttpFaultAsync(faultName!,app,http,host,type,rpc,original,prior,request,evidence,files,transportAborted.Task);}
-            finally {if(faultName=="load-reply-loss")evidence["BundlePhase"]=new{lockOpens,lockContentions,closes,contendedAt};}
+            finally {if(faultName=="load-reply-loss")evidence["BundlePhase"]=new{lockOpens,lockContentions,closes,borrows,mainContentions,contendedAt,mainContendedAt,Reads=reads.ToArray()};}
             if(storageFault)Require(cuts==1,"Preparation failure: real replacement publication cut not reached.");
             await app.StopAsync();return;
         }

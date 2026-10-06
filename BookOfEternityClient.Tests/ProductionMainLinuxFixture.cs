@@ -70,6 +70,8 @@ internal static class ProductionMainLinuxFixture
             }
             var saves=new BookOfEternityClient.Services.SaveLoadService(files,archiveState,NullLogger<BookOfEternityClient.Services.SaveLoadService>.Instance);
             Assert.True(await saves.SaveGameAsync("load-neutral","original configured neutral CLI"),"Preparation: real archive creation failed.");
+            if(mode.EndsWith("fault-rollback",StringComparison.Ordinal) || mode.EndsWith("fault-uncertain",StringComparison.Ordinal))
+                await files.WriteFileAtomicAsync("game_state/world/test_fixture_state.json","{\"state\":\"before-load\"}"); // own quiescent root, before original terminal creation
             if(mode.EndsWith("profile-from-archive",StringComparison.Ordinal)) {
                 var activeCwd=Path.Combine(root,"active Ж");Directory.CreateDirectory(activeCwd);
                 json["GmCliLaunchCommand"]=JsonSerializer.SerializeToElement(command.Replace("gm-model-sentinel","active-model-sentinel",StringComparison.Ordinal));

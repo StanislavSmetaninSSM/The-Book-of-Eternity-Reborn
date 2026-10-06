@@ -30,6 +30,8 @@ public sealed class GmLoadSessionLifecycleTests
     [Theory]
     [InlineData("rollback")]
     [InlineData("uncertain")]
+    public Task BrowserHttp_ActualStorageCutOutcomes(string fault)=>ProductionMainLinuxFixture.RunAsync("production-main-load-http-fault-"+fault);
+    [Theory]
     [InlineData("no-active")]
     [InlineData("worker-debt")]
     public Task BrowserHttp_TypedStorageAndIndependentAdmission(string fault)=>ProductionMainLinuxFixture.RunAsync("production-main-load-http-fault-"+fault);

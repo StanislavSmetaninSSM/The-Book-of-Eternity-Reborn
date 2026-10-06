@@ -92,6 +92,14 @@
         "T041-LOAD-SESSION-LIFECYCLE",
         "original connection and no replay"
       ]
+    },
+    {
+      "category": "gm-load-admission-faults",
+      "reason": "Exact no-active/full refresh and retained worker admission conjunction, separated from storage cuts to avoid repeats",
+      "contracts": [
+        "T041-LOAD-SESSION-LIFECYCLE",
+        "worker/main/storage conjunction"
+      ]
     }
   ]
 }

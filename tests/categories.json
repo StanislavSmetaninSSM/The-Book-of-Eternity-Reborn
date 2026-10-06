@@ -2,6 +2,29 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-load-admission-faults",
+      "responsibility": "No-active Load/full refresh and independent actual Prepared worker inventory refusal",
+      "excludes": "No provider/model/EnterGameLoop/native Windows/systemd or unrelated console cohorts",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_TypedStorageAndIndependentAdmission"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-load-lost-reply",
       "responsibility": "Lost actual HTTP Load response: observed server RequestAborted, retained Committed and no unacknowledged fresh terminal",
       "excludes": "No provider/model/EnterGameLoop/native Windows/systemd or unrelated console cohorts",
@@ -128,7 +151,7 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_TypedStorageAndIndependentAdmission"
+            "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_ActualStorageCutOutcomes"
           ]
         }
       ]

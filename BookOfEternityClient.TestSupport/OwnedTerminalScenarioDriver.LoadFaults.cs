@@ -55,7 +55,8 @@ internal static partial class OwnedTerminalScenarioDriver
         BrowserLoadSaveResultDto loaded;
         if(fault=="load-reply-loss") {
             var service=app.Services.GetRequiredService<LocalWebUiMainMenuService>();
-            service.BeforeCommittedMenuRefresh=async()=>{entered.TrySetResult();await release.Task;evidence["RefreshHookReturned"]=true;};
+            var hookReturned=0;
+            service.BeforeCommittedMenuRefresh=async()=>{entered.TrySetResult();await release.Task;Interlocked.Exchange(ref hookReturned,1);};
             // Own real HTTP connection: an explicit RST proves server RequestAborted, rather than
             // treating HttpClient's local cancellation receipt as remote cancellation evidence.
             using var connection=new TcpClient();await connection.ConnectAsync(http.BaseAddress!.Host,http.BaseAddress.Port);
@@ -67,7 +68,7 @@ internal static partial class OwnedTerminalScenarioDriver
             var originalExecution=(Task<BrowserLoadSaveResultDto>)operation.GetType().GetField("Execution",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(operation)!;
             object Phase() {
                 object? Get(string name)=>operation.GetType().GetField(name,BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(operation);
-                return new{Cancelled=Get("Cancelled"),AwaitingApplication=Get("AwaitingApplication"),Restarting=Get("Restarting"),
+                return new{RefreshHookReturned=Volatile.Read(ref hookReturned)==1,Cancelled=Get("Cancelled"),AwaitingApplication=Get("AwaitingApplication"),Restarting=Get("Restarting"),
                     Applied=((TaskCompletionSource<bool>)Get("Applied")!).Task.Status,Execution=originalExecution.Status,Retained=Get("Retained")};
             }
             connection.Client.LingerState=new(true,0);connection.Dispose();
