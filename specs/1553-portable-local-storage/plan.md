@@ -31,8 +31,13 @@ GCC14.2.0-19, readelf2.44, Linux6.18.44 x64. No installation/network/auth/securi
 
 Current WIP: new declaration-only worker record and intentionally missing cold reader,
 nine cold nonterminal assertions, owned `worker-run-ledger-record` category/selection.
-Build/PlanOnly and causal RED pending; compile/preparation failures will be separate.
-Next: fresh selected build/discovery, execute the nine assertions, then implement codec.
+At source `21e9008798c33eb7a2f7de551a338deaa5ae367a`, fresh selected build/PlanOnly
+passed (9 discovered,0 executed,96.4130651s); then NoBuild executed9/9 causal FAIL,
+8.7791368s, expected Uncertain versus actual Missing. Cleanup complete, no preparation
+failure. Evidence: recovery/evidence/worker-ledger-record-initial-red/manifest.json.
+Added34 strict malformed cases and one prelaunch terminal case before implementing
+codec; expanded causal RED pending. Catalog formatting restored without changing any
+existing category object. Next: build/execute expanded45-case RED, implement strict codec.
 
 ## Active worker restart/fencing design-only continuation, 2026-10-05
 

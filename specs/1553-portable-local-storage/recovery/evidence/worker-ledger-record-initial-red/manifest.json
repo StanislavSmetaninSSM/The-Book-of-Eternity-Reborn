@@ -1,0 +1,133 @@
+{
+  "SchemaVersion": 1,
+  "SourceCommit": "21e9008798c33eb7a2f7de551a338deaa5ae367a",
+  "Commands": [
+    {
+      "Log": "record-red-plan.log.gz",
+      "Entrypoint": "scripts/test-csharp.ps1; exact category/options and results in retained runner artifacts"
+    },
+    {
+      "Log": "record-red.log.gz",
+      "Entrypoint": "scripts/test-csharp.ps1; exact category/options and results in retained runner artifacts"
+    }
+  ],
+  "Inputs": [
+    {
+      "Path": "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+      "Sha256": "472a2d743d0bb89a2585ca22c90fd5bce33ba92edc02e0a98634ae094bf2972f",
+      "GitBlob": "ddbbc890b30c53a35df72256552c195aa57f6b4c"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "Sha256": "e8e6b28583615031a4eda2978b16011d046cf05661f75331c54efb0bcc070ea5",
+      "GitBlob": "5226cdf71f1efb03b961880307a02448536d9864"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Sha256": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0",
+      "GitBlob": "8d5df04ac73689ac01baf7a225afc68adb6f1d18"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs",
+      "Sha256": "d5422d3bae2e6e9b07d2ab336b66125ab45954bdc76c2f3b2f5147f1ebce5068",
+      "GitBlob": "19825814b46cc989ad7c64c93c0900c61f37f9cb"
+    },
+    {
+      "Path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "Sha256": "009f4dbfe71f80887561227b708af0abb9a153a8de2a75c10af0be1487f6e4c6",
+      "GitBlob": "e6e78f3b5797ed6367763878790309e48041befe"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+      "Sha256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2",
+      "GitBlob": "c4c9d46904efd9361c02e690d6d142c799e9d672"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunRecord.cs",
+      "Sha256": "ec019c9cced3b59a853795aad95563f61e5984b1aa71cd85194d6fbaa4d96cf0",
+      "GitBlob": "730be8f08e19e15965d862736a2bf2df37cc1f9d"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunRecordCodec.cs",
+      "Sha256": "864f78ee008858c777b62899d20485484562c83fdb53050d2ed761e05907e6a4",
+      "GitBlob": "acf028f62b5c94a07f607d8e7f134f53a808e186"
+    },
+    {
+      "Path": "scripts/test-csharp.ps1",
+      "Sha256": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1",
+      "GitBlob": "0576b2e34e5c0c5d164c173a9961a67c965c5509"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Sha256": "a0c4856deee9e3c54fc2069aae4afe7044cd0c78f8d77d7fb2fb4807ff309b45",
+      "GitBlob": "4503b965a7578c2bd93acb2533a899376e83ccf9"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Sha256": "f3b8d2f694d413338ff415b2acad7a47bb90ce4982cf2682b71fdaee89207412",
+      "GitBlob": "2b7742e8cb268e0d15cd54d618bb4c2649782679"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "record-red/dotnet-test.log.gz",
+      "Bytes": 167563,
+      "Sha256": "31ea059caf0301afe9300749fbe295f87f950c1eb8095935b941d5e0eed26c18",
+      "DecompressedSha256": "b162827765a63e26582985ec5b6edcd3789bbdde62dde6fe72dd57712a06b6e6"
+    },
+    {
+      "Path": "record-red/plan.json",
+      "Bytes": 1084,
+      "Sha256": "4d2b6839aff56babb924974d55b4b646d2af3ae637925d0b611da7122d50c7ce"
+    },
+    {
+      "Path": "record-red/summary.json",
+      "Bytes": 1358,
+      "Sha256": "b7653284eacbf59c130aaf8a49b998a5401c67b3ab694bfb203ef077e8f51550"
+    },
+    {
+      "Path": "record-red/worker-run-ledger-record-unit-001.trx",
+      "Bytes": 31273,
+      "Sha256": "38106d36e5f96b8ce0578ba754abe52fe3ac04237071450a1ef05699d876ca09"
+    },
+    {
+      "Path": "record-red-plan/Build-unit.log.gz",
+      "Bytes": 1254,
+      "Sha256": "de2ae7a92e512a3a19404e9d2ff81970b86c1c897ff65eafab785c5f5276a407",
+      "DecompressedSha256": "aebef095ebea660b51176bbde0522ab7f324e82ff0b0e3f170f838d9d7866cfe"
+    },
+    {
+      "Path": "record-red-plan/dotnet-test.log.gz",
+      "Bytes": 167922,
+      "Sha256": "34e09ce84d594c56f2a1f5c1670cb13130bbe4b9f6543c017aa108bf4797c337",
+      "DecompressedSha256": "3483e5b3b8cab59ac9ca6c2b51eab155ecd222b87896346ec00020a7c5c0686a"
+    },
+    {
+      "Path": "record-red-plan/plan.json",
+      "Bytes": 1085,
+      "Sha256": "56fee242640a35fb50cf468880940d0f76297ae4d936a073ca7d3622847160fa"
+    },
+    {
+      "Path": "record-red-plan/summary.json",
+      "Bytes": 1456,
+      "Sha256": "be3857220c8dbb514de050b03544a20f7cb9d03922d0084171abb2ebfee66276"
+    },
+    {
+      "Path": "record-red-plan.log.gz",
+      "Bytes": 584,
+      "Sha256": "3e2ac692c9f5b22779b9dee906548184e8f5869ad5fe83bc26c358ca979fc9a4",
+      "DecompressedSha256": "fc95ef4d304d0c6f187b8fc21f5567cd60c238cedaf049667489be36ff96b41e"
+    },
+    {
+      "Path": "record-red.log.gz",
+      "Bytes": 1308,
+      "Sha256": "704215bb6cc6b0503351291e351f7b6eed2f722a92f94ce6b85ac2b0b92389ac",
+      "DecompressedSha256": "c80f6cd3dbdb5a679f06d25d776968d27633dcee41f20a5f1cff439439283e65"
+    },
+    {
+      "Path": "toolchain.txt",
+      "Bytes": 517,
+      "Sha256": "3998a0473eb80bc45bb32f5d7443d2e50b1322be2b2e8dead790ad1a29e2a9b2"
+    }
+  ]
+}
