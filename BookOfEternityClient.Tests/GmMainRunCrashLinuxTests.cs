@@ -28,6 +28,13 @@ public sealed class GmMainRunCrashLinuxTests
     public async Task StopDeath_ActualSettlementAndDurableAckControlNewEpoch(string cut)=>
         await RunBoundedAsync("terminal-main-crash-stop-"+cut);
 
+    [Theory]
+    [InlineData("committed")]
+    [InlineData("rollback")]
+    [InlineData("uncertain")]
+    public async Task Replacement_FreshProcessRetainsExactTypedDecisionAndConjunction(string decision)=>
+        await RunBoundedAsync("terminal-main-crash-replacement-"+decision);
+
     private static async Task RunBoundedAsync(string mode)
     {
         string? folder=null;

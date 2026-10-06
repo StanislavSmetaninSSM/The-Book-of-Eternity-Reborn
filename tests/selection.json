@@ -28,6 +28,13 @@
       "contracts": [
         "#1553 T041-RUN-FENCE-F3 scopedstop+actual I/O/disposal/ACK, original guard, cold nonterminal refusal and new epoch only sealed stop"
       ]
+    },
+    {
+      "category": "gm-main-crash-replacement-linux",
+      "reason": "F3 D missing new-process exact replacement decisions on actual connected original stopped root",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F3 actual typed Load and exact namespace/generation; retained storage remains independent"
+      ]
     }
   ]
 }

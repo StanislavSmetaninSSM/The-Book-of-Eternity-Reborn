@@ -14700,6 +14700,29 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-crash-replacement-linux",
+      "responsibility": "#1553 F3 actual original stop ACK and application death, fresh-process Load exact Committed/RolledBack/Uncertain namespace/generation and independent cold debt refusal.",
+      "excludes": "Linux x64 fixed neutral fixture; post-disposal private fault injection is not a live producer; no powerloss/coldguarantees/systemd/Windows/live/provider/production/real saves.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/MainRunCrashScenarioDriver.Replacement.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.Replacement_FreshProcessRetainsExactTypedDecisionAndConjunction"
+          ]
+        }
+      ]
     }
   ]
 }
