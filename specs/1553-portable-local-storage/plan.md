@@ -77,6 +77,11 @@ Mode-exclusion scaffold adds eight metadata-only Linux cases (two mode/lifetime
 orders, six live/cold corruption refusals) with a declaration-only refusal stub for
 legacy opening. No worker/process test added to this prerequisite. Current durable
 adapter still has no mode binding; causal RED pending in `worker-restart-mode-linux`.
+First mode run at `adcbca129a797d6939026488ef5bcb95ce0a21fa` stopped in build:
+the existing per-test LedgerFixture class was private (CS0122), despite its internal
+members. Zero tests executed,34.4550548s, cleanup complete. Made only that test
+utility type internal; instances remain private to each test, no shared mutable state.
+Evidence: recovery/evidence/worker-r2-mode-preparation-build/manifest.json.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

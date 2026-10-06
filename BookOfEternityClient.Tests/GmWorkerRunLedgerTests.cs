@@ -325,7 +325,7 @@ public sealed class GmWorkerRunLedgerTests
         fixture.AssertSentinel();
     }
 
-    private sealed class LedgerFixture : IDisposable
+    internal sealed class LedgerFixture : IDisposable
     {
         private readonly string _container = Path.Combine(Path.GetTempPath(), "boe-ledger-" + Guid.NewGuid().ToString("N"));
         internal WorkerLedgerTarget Target { get; }
