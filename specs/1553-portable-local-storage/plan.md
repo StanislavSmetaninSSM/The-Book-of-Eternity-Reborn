@@ -144,6 +144,18 @@ guardian-owned signals. No behavior fix or GREEN claim before execution. Categor
 worker-restart-crash-launch-linux owns8; R3 selection currently contains only that cohort.
 SDK10.0.401/runtime8.0.31/PowerShell7.5.4/GCC14.2.0-19/readelf2.44 rechecked locally.
 
+Cohort A initial run at `1fd2360059515f9c7acfe6736ed8968e7e725724`:8executed,
+7reportedPASS/1fixture observationFAIL,116.5388258s, complete runner cleanup/no timeout.
+All15guardians ECHILD/0failure/deadline. This is NOT backend causal RED or accepted A
+qualification: sent-Release callback tried reading the held canonical-write.lock, and
+ledger callbacks could retry after that same observation IOException, reaching a later
+cleanup state (release-intent report had an already-observed stop). Preserve evidence
+worker-r3-launch-observation-failure. Fix only the observer: cut snapshots omit lock
+files, record/require exactly first callback attempt, and pre-stop cuts require no actual
+stop observation. Post-guardian cold snapshots still compare the complete data tree.
+Repeat A8 because shared cut reachability was invalid, not because unchanged successes
+need replay. No runtime behavior change. Subsequent cohorts remain unstarted.
+
 ## Authorized R2: connected synthetic lifecycle — 2026-10-06
 
 Task T041-WORKER-RESTART-R2 / #1553 / US4 / FR-012/014/015. Parent accepted exact

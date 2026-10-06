@@ -17,6 +17,11 @@ internal static partial class NativePoolScenarioDriver
     }
     private static T? FenceField<T>(object instance, string field) =>
         (T?)instance.GetType().GetField(field, BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(instance);
+    // Original canonical/ledger lock descriptors may intentionally exclude readers
+    // at the cut. Their bytes carry no outcome; post-guardian cold snapshots remain full.
+    private static string[] FenceCutSnapshot(string root) => Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories)
+        .Where(path => !path.EndsWith(".lock", StringComparison.Ordinal))
+        .Order(StringComparer.Ordinal).Select(path => Path.GetRelativePath(root, path) + ":" + GmWorkerRunLedgerCodec.Hash(File.ReadAllBytes(path))).ToArray();
     private static int FenceWorkerStarts(string output) => File.Exists(Path.Combine(output, "worker-starts"))
         ? File.ReadAllLines(Path.Combine(output, "worker-starts")).Length : 0;
 
@@ -34,22 +39,24 @@ internal static partial class NativePoolScenarioDriver
         GmWorkerDurableExecution? execution = null;
         ReleaseCountingStream? frames = null;
         Task<int>? completion = null; int? originalCompletionExit = null;
+        var cutAttempts = 0;
         void Crash()
         {
+            if (++cutAttempts != 1) throw new InvalidOperationException("The first crash observation failed; a later retry is not the requested cut.");
             var state = GmWorkerRunLedgerCodec.Decode(new(root), File.ReadAllBytes(statePath));
             var record = state.Entries.Single();
             var taskBytes = File.ReadAllBytes(fs.ResolvePath(GmWorkerBridgePool.GetTaskPacketPath(task.TaskId)));
             var authority = execution?.Authority;
             File.WriteAllText(Path.Combine(output, "fence-cut.json"), JsonSerializer.Serialize(new
             {
-                cut, diskPhase = record.Phase.ToString(), livePhase = execution == null ? null : FenceField<WorkerRunRecord>(execution, "_record")?.Phase.ToString(),
+                cut, cutAttempts, diskPhase = record.Phase.ToString(), livePhase = execution == null ? null : FenceField<WorkerRunRecord>(execution, "_record")?.Phase.ToString(),
                 record.Identity, ownerBound = owner != null,
                 originalTaskBound = record.Identity.TaskId == task.TaskId && record.Identity.TaskSha256 == GmWorkerRunLedgerCodec.Hash(taskBytes),
                 releaseFrames = frames?.ReleaseFrames ?? 0, workerStarts = FenceWorkerStarts(output),
                 completionTaskCompleted = completion?.IsCompleted, originalCompletionExit,
                 recordedCompletion = authority == null ? null : FenceField<int?>(authority, "_completion"),
                 stop = authority?.StopEvidence?.State.ToString(), outputsSettled = authority?.OutputsSettled == true,
-                workspaceExists = Directory.Exists(record.Identity.WorkspacePath), rootFiles = RestartSnapshot(root)
+                workspaceExists = Directory.Exists(record.Identity.WorkspacePath), cutFilesExcludingLockDescriptors = FenceCutSnapshot(root)
             }));
             ExitRestartImmediately(77);
         }

@@ -21,6 +21,9 @@ public sealed class GmWorkerRestartFenceTests
         using var reached = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(fixture.Output, "fence-cut.json")));
         var r = reached.RootElement;
         Assert.Equal(cut, r.GetProperty("cut").GetString());
+        Assert.Equal(1, r.GetProperty("cutAttempts").GetInt32());
+        if (cut is not ("scoped-stop" or "outputs-stop-record"))
+            Assert.Equal(JsonValueKind.Null, r.GetProperty("stop").ValueKind);
         Assert.Equal(phase, r.GetProperty("diskPhase").GetString());
         Assert.True(r.GetProperty("originalTaskBound").GetBoolean(), r.ToString());
         Assert.Equal(starts, r.GetProperty("workerStarts").GetInt32());
