@@ -1,0 +1,344 @@
+{
+  "Categories": [
+    "worker-restart-admission-linux",
+    "worker-restart-record",
+    "worker-restart-mode-linux",
+    "worker-restart-lifecycle-linux",
+    "worker-restart-boundaries-linux",
+    "worker-restart-root-linux",
+    "worker-restart-audit-linux",
+    "worker-restart-cleanup-linux",
+    "worker-restart-dispatch-linux",
+    "worker-restart-purpose-linux",
+    "worker-restart-witness-linux",
+    "worker-restart-control-linux",
+    "worker-restart-ownership-linux",
+    "worker-restart-warm-linux",
+    "worker-run-ledger-record",
+    "worker-run-ledger-storage-linux",
+    "worker-run-ledger-failures-linux",
+    "worker-detached-workspace",
+    "worker-quarantine-audit-receipt",
+    "worker-pool-regression-host",
+    "worker-pool-regression-policy",
+    "worker-execution-scoped-evidence",
+    "worker-consumer-execution-evidence",
+    "portable-session-generation",
+    "portable-load-lease-consumers",
+    "portable-coordinated-lease-consumers",
+    "worker-restart-default-controls",
+    "worker-restart-launch-linux"
+  ],
+  "Reasons": [
+    {
+      "category": "worker-restart-admission-linux",
+      "reason": "R2 causal real-pool cold refusal before automatic recovery and allocation; isolated Linux process fixture with independent guardian.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-record",
+      "reason": "R2 adds strict schema2 publication/terminal facts and cold syntax; portable model verification only.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-mode-linux",
+      "reason": "R2 closes unrecorded legacy dispatch bypass through immutable mode and common native owner lock.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-lifecycle-linux",
+      "reason": "Actual positive companion to cold refusal must bind publication and acknowledged retirement before releasing original capacity.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-boundaries-linux",
+      "reason": "Bounded actual regressions for original authority/capacity and distinct publication versus retirement ACK loss.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-root-linux",
+      "reason": "Two original epochs must retain independent cleanup/ACK authority and must not recover through another Uncertain worker.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-audit-linux",
+      "reason": "R2 cleanup purpose must authorize exactly one bound audit line and no unrelated mutations, including post-await revocation.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-cleanup-linux",
+      "reason": "R2 closed original cleanup witness and bounded stop cannot be bypassed by generic ledger or missing completion evidence.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-dispatch-linux",
+      "reason": "R2 original dispatch/task key admission must precede recovery and capacity; original bytes/generation must still authorize Release.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-purpose-linux",
+      "reason": "Original root and operation capability must be checked independently of target context presence and before native Release intent.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-witness-linux",
+      "reason": "Complete independent review requirement for owner mismatch and private retained completion identity; no positive authority substitution.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-control-linux",
+      "reason": "Actual original authenticated pipe observation proves one Release across withheld Released ACK and repeat calls, and no send on prior cancellation.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-ownership-linux",
+      "reason": "R2 actual cross-process durable/legacy mode admission, first attach race, retained quarantine exclusion after client disposal and unaffected healthy legacy root.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-warm-linux",
+      "reason": "R2 detected native status loss fences another actual pool and unbound FS before original late Stop; failed Uncertain journal and client disposal retain authority and capacity.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-run-ledger-record",
+      "reason": "R2 schema2 and strict worker record semantics; main run-record contract unchanged.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-run-ledger-storage-linux",
+      "reason": "Original preparation/live claims and exact private retry changed after the previous storage GREEN.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-run-ledger-failures-linux",
+      "reason": "Closed R2 transition ownership must preserve original R1 disk fault/ambiguity/cancellation and bounded retry behavior.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-detached-workspace",
+      "reason": "Original workspace creation now retains acquired partial authority; staging, reads and cleanup use that shared implementation.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-quarantine-audit-receipt",
+      "reason": "Shared original cleanup phases and conditional terminal audit changed; exact receipt and owner-slot lifetime remain required.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-pool-regression-host",
+      "reason": "Common host Release latch and native original owner bindings changed; narrow real host guard/cleanup regressions only.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-pool-regression-policy",
+      "reason": "Explicit synthetic admission and default unavailable Linux Release must preserve platform policy and managed retained-Job behavior.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-execution-scoped-evidence",
+      "reason": "CurrentUncertainty, ObserveStop and original cleanup authority gates changed on shared execution authority.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-consumer-execution-evidence",
+      "reason": "Both actual acceptance consumers must still require the original live publication permit.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "portable-session-generation",
+      "reason": "The nonrecursive generation snapshot parser now sits below the worker lease predicate.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "portable-load-lease-consumers",
+      "reason": "Default unbound recovery, generation and replacement admission must retain behavior with optional worker fences.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "portable-coordinated-lease-consumers",
+      "reason": "Shared canonical validation still rejects disposed/foreign owners and preserves original operation lock ordering.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-default-controls",
+      "reason": "Two existing positive ordinary null-worker-purpose controls for exact logical mutations and prepared complete publication after shared R2 guard insertion.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-restart-launch-linux",
+      "reason": "Final review causal gaps at never-Start Busy and original host Release binding.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "7439bfc7683000cfb856252d7889d1bce2d54219",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0938387,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0260433,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0463639,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0065844,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 30,
+  "WallTime": "00:00:10.6966013",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 30,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 403,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-coordinated-lease-consumers-unit-001",
+      "portable-load-lease-consumers-integration-002",
+      "portable-load-lease-consumers-unit-003",
+      "portable-session-generation-unit-004",
+      "worker-consumer-execution-evidence-unit-005",
+      "worker-detached-workspace-integration-006",
+      "worker-detached-workspace-unit-007",
+      "worker-execution-scoped-evidence-unit-008",
+      "worker-pool-regression-host-unit-009",
+      "worker-pool-regression-policy-unit-010",
+      "worker-quarantine-audit-receipt-integration-011",
+      "worker-restart-admission-linux-unit-012",
+      "worker-restart-audit-linux-unit-013",
+      "worker-restart-boundaries-linux-unit-014",
+      "worker-restart-cleanup-linux-unit-015",
+      "worker-restart-control-linux-unit-016",
+      "worker-restart-default-controls-unit-017",
+      "worker-restart-dispatch-linux-unit-018",
+      "worker-restart-launch-linux-unit-019",
+      "worker-restart-lifecycle-linux-unit-020",
+      "worker-restart-mode-linux-unit-021",
+      "worker-restart-ownership-linux-unit-022",
+      "worker-restart-purpose-linux-unit-023",
+      "worker-restart-record-unit-024",
+      "worker-restart-root-linux-unit-025",
+      "worker-restart-warm-linux-unit-026",
+      "worker-restart-witness-linux-unit-027",
+      "worker-run-ledger-failures-linux-unit-028",
+      "worker-run-ledger-record-unit-029",
+      "worker-run-ledger-storage-linux-unit-030"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

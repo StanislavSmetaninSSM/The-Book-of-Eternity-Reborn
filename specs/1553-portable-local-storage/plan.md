@@ -472,6 +472,27 @@ missing canonical lease before destructive send-failure handling; the ordinary t
 lease/task checks remain under the send gate. Already-sent repeats remain no-ops.
 GREEN pending: new launch3 + original control2/root2/boundaries5/lifecycle1 + affected
 host8/scoped-authority13. No unchanged broad storage/core/IPC/ENV/FRAME replay.
+Final launch GREEN at `7439bfc7683000cfb856252d7889d1bce2d54219`:34/34 PASS,
+7/7 complete descriptors,115.6527920s, no skip/duplicates/timeout; owned cleanup complete.
+Busy B archived AbortedBeforeLaunch with zero owner starts; both original epochs retire
+and return capacity0. Missing/foreign first-send Release each refused before any actual
+frame/start; original cleanup returns capacity0 without a success permit. All21guardians
+ECHILD,0failure/deadline; one emergency signal is the intentionally unconfirmed helper-loss
+host control. New three launch cases have none. Evidence worker-r2-launch-green
+(194inputs344artifacts). Independent Sol6.1/xhigh source review closes both findings;
+completed32-file connected review has no remaining runtime blocker. Packet verdict pending.
+Fresh final catalog build/discovery at the same source:311categories/10879methods,
+zero unmapped/stale,34.2186152s. Linux PlanOnly30descriptors403cases,10.6966013s;
+portable CI PlanOnly13descriptors232cases,10.9381185s. Zero tests executed by discovery.
+Evidence worker-r2-final-discovery (194inputs15artifacts). The unchanged main PTY,
+native helper/IPC frame/peer and main run-record boundaries are byte-verified against R1.
+Final audit:35source-bound manifests,331unique input blobs,3182stored artifacts438gzip
+verified; latest403/403 distinct cases PASS from bounded cohorts. Historical793executions
+725PASS68FAIL;164guardians ECHILD,4historical emergency signals (2initial failed root
+fixture and2intentional host-loss regressions),0failure/deadline. No active test sessions.
+[Qualification/handoff](recovery/worker-restart-r2.json) records the source closure,
+cohorts, limits and manifest hashes. Ordinary candidate push/readback, fresh GitHub-only
+restoration and final independent complete-packet verdict remain before R2 completion.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

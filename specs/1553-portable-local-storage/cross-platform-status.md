@@ -5,26 +5,28 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## R2 реализован в synthetic-контуре; финальные регрессии и ревью впереди
+## R2: проверки пройдены; итоговое ревью и восстановление кандидата впереди
 
-Принятая база R1 — `25c16dcb513de8b09fc67059465d9dcfb6b96224`. Owner выбрал
-отказ новым заданиям всего root при unresolved worker; допустимый cleanup сохраняется,
-а Uncertain остаётся поглощающим. Подключены pre-recovery admission, original task/root,
-однократный Release, точная публикация и terminal ACK перед освобождением capacity.
-Обнаруженные ревьюером обходы cleanup/R1 API/audit/foreign purpose закрыты с сохранённым
-причинным RED→GREEN. Последний исходный блок `76240578`: ownership/warm6/6 PASS,
-6 guardian ECHILD, без emergency/failure/deadline; metadata `08038783` прочитана из GitHub.
-Все30 R2 manifests проверены:237 unique input blobs с привязкой к source:path,
-2,647 artifacts/348 gzip hashes; последние результаты235 различных случаев — PASS.
-Исторические494 исполнения включают429PASS/65FAIL; fixture preparation/observation
-ошибки выделены.131 guardian достиг ECHILD;2 исторических emergency signals относятся
-к первому неудачному root fixture, они не скрыты и не засчитаны как GREEN.
-Точные источники/команды/результаты — в [плане](plan.md) и `recovery/evidence/worker-r2-*`.
+Принятая база R1 — `25c16dcb513de8b09fc67059465d9dcfb6b96224`.
+Подключён только разрешённый synthetic-контур: pre-recovery admission, исходная
+идентичность root/task/host, однократный Release, точная публикация и terminal ACK
+перед освобождением capacity. При unresolved worker новые задания всего root
+отклоняются; исходный cleanup разрешён, Uncertain остаётся поглощающим.
 
-Следующий шаг: согласованные узкие регрессии затронутого общего кода, discovery-only
-catalog/PlanOnly, независимый final Sol6.1/xhigh review и fresh GitHub-only restoration.
-T041-WORKER-RESTART-R2 ещё не отмечен выполненным. R3, public Linux Release, main PTY,
-live GM, реальные saves и Windows/systemd native qualification остаются вне этого блока.
+Последний runtime source `7439bfc7`:34/34 затронутых проверок PASS после причинного
+RED3/3; Busy до LaunchIntent сохраняет never-Start cleanup, первый Release требует
+execution именно своего host. Независимый Sol6.1/xhigh завершил source review без
+оставшихся runtime-блокеров; принятие полного пакета ещё ожидается.
+Проверены35 manifests,331 unique source-bound blobs,3182 artifacts/438 gzip hashes;
+последние результаты403 различных случаев PASS, это отдельные ограниченные когорты.
+164 guardian достигли ECHILD;4 исторических emergency signals сохранены и объяснены
+в [qualification](recovery/worker-restart-r2.json), failures/deadlines0.
+Catalog311/10879 valid; Linux plan403 и portable CI plan232,0 исполнений discovery.
+
+Следующий шаг: публикация кандидата, fresh GitHub-only restoration и final review
+полного пакета. T041-WORKER-RESTART-R2 ещё не отмечен выполненным. R3, product Linux
+Release, main PTY, live GM, реальные saves и Windows/systemd native qualification
+остаются вне этого блока. Точные source/evidence — в [плане](plan.md).
 Старые формулировки «R2 не разрешён» ниже — история завершения R1.
 
 ## История: R1 завершён; остановка перед R2

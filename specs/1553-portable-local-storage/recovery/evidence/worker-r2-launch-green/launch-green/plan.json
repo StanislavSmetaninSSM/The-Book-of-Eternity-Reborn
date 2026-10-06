@@ -1,0 +1,192 @@
+{
+  "Categories": [
+    "worker-restart-launch-linux",
+    "worker-restart-control-linux",
+    "worker-restart-root-linux",
+    "worker-restart-boundaries-linux",
+    "worker-restart-lifecycle-linux",
+    "worker-pool-regression-host",
+    "worker-execution-scoped-evidence"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "7439bfc7683000cfb856252d7889d1bce2d54219",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 43.446132,
+  "Descriptors": [
+    {
+      "Name": "worker-execution-scoped-evidence-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-execution-scoped-evidence",
+      "Categories": [
+        "worker-execution-scoped-evidence"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MatchingScopedStop_IsAcceptedAsCleanupEvidence|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.OutputObservationFailure_RevokesPreviouslyValidatedStop",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 13,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MatchingScopedStop_IsAcceptedAsCleanupEvidence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord",
+          "Cases": 9
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.OutputObservationFailure_RevokesPreviouslyValidatedStop",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-pool-regression-host-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-pool-regression-host",
+      "Categories": [
+        "worker-pool-regression-host"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.CancellationAfterNativeBinding_RetainsOwnerThroughScopedRetirement|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.HelperLossAndOutputEof_CannotDisposeLiveHostIdentity|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.HostOutput_IsDistinctAndPrivateDescriptorsDoNotSurviveExec|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.NeutralHostCapability_RejectsReleaseBeforeSendingAnyWorkerCommand",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.CancellationAfterNativeBinding_RetainsOwnerThroughScopedRetirement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.HelperLossAndOutputEof_CannotDisposeLiveHostIdentity",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.HostOutput_IsDistinctAndPrivateDescriptorsDoNotSurviveExec",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.NeutralHostCapability_RejectsReleaseBeforeSendingAnyWorkerCommand",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-boundaries-linux-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-boundaries-linux",
+      "Categories": [
+        "worker-restart-boundaries-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary",
+          "Cases": 5
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-control-linux-unit-004",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-control-linux",
+      "Categories": [
+        "worker-restart-control-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartControlTests.OriginalRelease_OneSendAndNoLateSuccessAfterAckLossOrCancellation",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartControlTests.OriginalRelease_OneSendAndNoLateSuccessAfterAckLossOrCancellation",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-launch-linux-unit-005",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-launch-linux",
+      "Categories": [
+        "worker-restart-launch-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-lifecycle-linux-unit-006",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-lifecycle-linux",
+      "Categories": [
+        "worker-restart-lifecycle-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartLifecycleTests.ActualContentPool_PublishesAndCommitsBoundRetirementBeforeCapacityRelease",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartLifecycleTests.ActualContentPool_PublishesAndCommitsBoundRetirementBeforeCapacityRelease",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-root-linux-unit-007",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-root-linux",
+      "Categories": [
+        "worker-restart-root-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartRootTests.IndependentOriginalEpochs_DoNotBorrowJournalOrRecoveryAuthority",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartRootTests.IndependentOriginalEpochs_DoNotBorrowJournalOrRecoveryAuthority",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

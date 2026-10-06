@@ -1,0 +1,763 @@
+{
+  "SchemaVersion": 1,
+  "Task": "#1553 T041-WORKER-RESTART-R2",
+  "Date": "2026-10-06",
+  "Branch": "codex/1553-load-filesystem",
+  "AcceptedR1": "25c16dcb513de8b09fc67059465d9dcfb6b96224",
+  "FinalRuntimeSource": "7439bfc7683000cfb856252d7889d1bce2d54219",
+  "Status": "Implementation and selected checks complete; complete-packet independent review and fresh GitHub-only candidate restoration pending",
+  "Scope": "Explicitly injected Linux x64 synthetic connected native pool lifecycle. Root-wide new-job refusal with unresolved workers; legitimate original cleanup remains possible; Uncertain is absorbing.",
+  "DesignReview": {
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "Verdict": "PASS",
+    "Source": "4536638de8369c555f251feb30f485ad1bfa0dd1"
+  },
+  "SourceInputs": [
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "GitBlob": "094ad7e622f40ea91ac17df529eba92558d59479",
+      "Sha256": "444d0f5207a129996019c9703fbd4cb718b677586a9c0f9a94b276cd48f3f247"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.Restart.cs",
+      "GitBlob": "e99a6590e652ef1bfde4ec83d368ecc56d115a02",
+      "Sha256": "eb435770062b20d52fa453a3dcf272bd96a350aa229d5842ba83bff7d13f862f"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.RestartAudit.cs",
+      "GitBlob": "cffaea4bc8f68dad40b096826796fa805743c347",
+      "Sha256": "4f0e628fa375971058f46750214257bf9f050e93bd5a8d2cdae17dbfdbdd7b3a"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.RestartBoundaries.cs",
+      "GitBlob": "b7474384a26635299ef91d0514aca9fc245abf77",
+      "Sha256": "3dd25fdfdefe1e8f8e5728dc1ff2f95b1ac7e7f093d0ea81114c90bc10cdb68c"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.RestartCleanup.cs",
+      "GitBlob": "af69af62f114b65f882adb0cd17f4c5ddfc3e707",
+      "Sha256": "fdbc7846d615930f45130467cba223853389a6fb0186240b4787ab77523e6985"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.RestartControl.cs",
+      "GitBlob": "54117414050ee1b48e6ba6a1afc8fc34139b4ef7",
+      "Sha256": "bce80623b5b852a26b517e2a7db567f420f63297d627182ce69511a63aab9bc7"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.RestartLaunch.cs",
+      "GitBlob": "c4f55e5ba8077ca747d889a6e172b6f64c5a37c2",
+      "Sha256": "d37b26555d5d046b29913adb1d60910636ed170d34d9d920801b6e0a59586a35"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.RestartOwnership.cs",
+      "GitBlob": "8818efd91edfb45f6b30c8a30ab42942eb5860b0",
+      "Sha256": "8e2d683c36e4383800b250921cae90182a8906e651056ab8fdb3c8df1338c306"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.RestartPurpose.cs",
+      "GitBlob": "c18b22a747dc17090a532b3a04de91574d8c02cb",
+      "Sha256": "6783a1a7cb5563fe4ce0d31034a87c942253c60a6ef4925a93410013652062e5"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.RestartRoot.cs",
+      "GitBlob": "f2e1559b25a545c08dbf04830e07a6fdf7d53ca3",
+      "Sha256": "aa2e4f074545e8af28240cda723a3082e5bd3c377d2c6a17151f10cd7a59fac0"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.RestartWarm.cs",
+      "GitBlob": "08fe079b90e7300da11f81d5d0ecec48704355c0",
+      "Sha256": "e4e5aac7952b5bfea32ce1aaf1020de6a6f47be5ba3a4d64495ac80a5ba32747"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.RestartWitness.cs",
+      "GitBlob": "0423d19c56acc40878ccba1efca9ad962c6fe64d",
+      "Sha256": "94f23db95b0d71f1e729b5f6af36147b28810ba6eb3c5cc1523667f7c649907f"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.cs",
+      "GitBlob": "b6633bd524bd94b72f77165c883987058880900b",
+      "Sha256": "af7379eda16b7ac15afd69a3e0086e1d67d16bfc57237b4044a87e4ce6ef5471"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRestartAdmissionTests.cs",
+      "GitBlob": "5c91ccd8911cf984eed9a45b3588f13a6f2e0a04",
+      "Sha256": "5c253b58a557dcdbdcf387efde7ea40ebe59835ce40ac233d59c904d866728ea"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRestartAuditTests.cs",
+      "GitBlob": "09efb01990fc2487f9d34070da97eff4984c88f4",
+      "Sha256": "28c5d75a59f998be73b159070729e5fcb7f1d9183f89119d6877225a94914c63"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRestartBoundaryTests.cs",
+      "GitBlob": "9da051b0518dfd1f3b508a5dd2fdefc9517ad4b9",
+      "Sha256": "73c2ec947ef3823cc4fd8375732abe160a24fed37ccbfdc7cecfc6ac56cb8788"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRestartCleanupTests.cs",
+      "GitBlob": "70de9c752d18ebc1536f3d40a4b165d689d8b27d",
+      "Sha256": "b8a66783a6153a8324411edeeb517109d010c65e6b18309a7bec3934e7b955a7"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRestartControlTests.cs",
+      "GitBlob": "3ddf566b9e758342230297c04f02ebf4ee430bf0",
+      "Sha256": "1cd1003be9f5c8f059d3190d389086db72a68f87ca73757f483f9d971af9d1b2"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRestartDispatchTests.cs",
+      "GitBlob": "74856dadcc0e517d7fc4af2b3356d7a153089a7d",
+      "Sha256": "58154a166f932da7d4e3480fcec55e8577886e43a86bd4a898bf6cf779cbaa65"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRestartLaunchTests.cs",
+      "GitBlob": "1f8683e9e92f959d68f00c64f53a6012c0c68a89",
+      "Sha256": "386c0a325e097b7d17a45b3083638239bbf97f6150ce6659f1cce8183d2a0ec8"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRestartLifecycleTests.cs",
+      "GitBlob": "ec45e6ec9baf5570811a03ed525d231509b987dd",
+      "Sha256": "78add841c5e1c94f3478813018b0f1669154f18aa71cb0b1520e66c7f2ba14bf"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs",
+      "GitBlob": "8ce6ce6bfbad8595f04ef1f5e5c15c77ec14cb1c",
+      "Sha256": "8027532d699fd13c2fbd6704e458d72e1ded45bfc7d097d66c198bdd1e32af76"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRestartOwnershipTests.cs",
+      "GitBlob": "7a40a6dbdae0494345b9409721818197227f4f13",
+      "Sha256": "0c3a75fa097d94c1558ffb9edea90a5f6024dc6894550add398b63ee0aa26a31"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRestartPurposeTests.cs",
+      "GitBlob": "b8ed8292c0a1709503680bbe5e795cad60a52590",
+      "Sha256": "1e029e67e5343adbff1e4174079c59fa2a6d4510289d6dd72557c3bf516602fd"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs",
+      "GitBlob": "b4788cd008858f1f89cd1f32a260480483e05e44",
+      "Sha256": "167ba7e1a70b3f5ac7b0e2eebe1cecb590d5c1fb28d157b2c96cbb157622ed2d"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRestartRootTests.cs",
+      "GitBlob": "30ff902fd522376a18655e5b9ba272c02f0bf410",
+      "Sha256": "65f812456391bf37f397ffd9eefd8474d54aafe37c7bb3a14b976b5d84f0a7ee"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRestartWarmTests.cs",
+      "GitBlob": "2f246e287a0772f082f2c140c25c8697dd516474",
+      "Sha256": "6d8cf14a74c1cada762e4751d15dbd9ee87c24816c0b71a0d4f6b8126fa82bf8"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRestartWitnessTests.cs",
+      "GitBlob": "27959fafaf656f33a8a75af4225e09d7ced96bbc",
+      "Sha256": "3a2568a8157503a06306d7941084fd25e975af9c95c56ca182c26a55b4c27ef4"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs",
+      "GitBlob": "a1957374203fd59c557391d7a11612ac0536dc89",
+      "Sha256": "6610aee089bd09448547504be234dc8d976c6383f0ef750bd693de327677c0e1"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs",
+      "GitBlob": "32bfc117715bd421bc8918538e07bd90e8b5a916",
+      "Sha256": "cf4b3d4c2a9abdacbf353a9e794d2d3437479aafa242d30b7f23f1fed616837a"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs",
+      "GitBlob": "bee047374debe42eed6c7529d3f2d898a7179c80",
+      "Sha256": "ee69091130c6567fbb5bb580229cec724567ac8dec0b51b68573ff03f412a335"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/CanonicalRootIdentity.cs",
+      "GitBlob": "547258b91edd7af4b072a135a39ec0aadc95e2ce",
+      "Sha256": "929edd6e627803e06ef89539dc207ff6d9a373e682d6ce4fd9bb0935af03bec9"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+      "GitBlob": "fa302ac1ef396324d17da39c36b32c98ca0ddcbb",
+      "Sha256": "d9aa8450ab2288d7545a71dd6ce12e6a615d34fe3327033d97adce99698a0f57"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+      "GitBlob": "75a45a2d1956d474b6f8f8a97df957aa3c9258de",
+      "Sha256": "d7bda915f93eb8d94694dac61a8c500fa1bc553066a18e07e62844ffbbfbf78d"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+      "GitBlob": "cf18449820917bdd6b03e4be4013778a3e950c0d",
+      "Sha256": "6d8312a8ad842467ea378421b4c978beeffa7cef2c98c1b6590a9aca9c594d86"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.SyntheticBundlePublication.cs",
+      "GitBlob": "aad6dc977adf6a04486fe7cc751aba545fdf0cbc",
+      "Sha256": "f5ee6627f47e9c5503b6cf8bc1c7903c3413debc4496717375f153c74700b142"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "GitBlob": "ee4d894a79c5e85587a3241737b0ee7876842f80",
+      "Sha256": "37bd176902b284f5c9315cfcc90a99e320b836359dd2ce902f3ef7b6440e5beb"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs",
+      "GitBlob": "eb06082b89c14ca2e8afd3e727d424a0d53ac4a0",
+      "Sha256": "109f3b8721f5eccfa62ae2c93acfc7c6daf121327a1b5dfa958f50e28d82d05c"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.WorkerPublication.cs",
+      "GitBlob": "37056261a566bc46f963bdb92aef7b98ac29f4f3",
+      "Sha256": "5f5d1c7e810fd1a82a7dd786800506ebeb97435663c114baa5486f6bcab9a9dc"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "GitBlob": "f85e65c780e9e285696cdb9b11e85e421fd21b74",
+      "Sha256": "18cb332b5f2d6c833526e396335dfa4dacfdf1193143d7c15c7841b808732963"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Deferred.cs",
+      "GitBlob": "4c48476debc4415525e62449f66e9bdacd48c16b",
+      "Sha256": "f8c6db40f934bdafd08ff781b0aa657753c538b119dd6703a197bdff1f30141b"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Images.cs",
+      "GitBlob": "afc0758fba37504221b3cd82905275451fca7681",
+      "Sha256": "7ecc1654cf23caaaca167f7610367cd6e5a4883d9a4b50542f899cd7fbc7ebfc"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs",
+      "GitBlob": "a5704e0c22d45dd010746cf883b88d118feba6f2",
+      "Sha256": "8b68eb6a517b981953a24e8063329562c68b3fc941eb8c410f12ccdd72d0d087"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "GitBlob": "22ff6639203dbe8065b0d1142164d46b0672a5ba",
+      "Sha256": "34d5ca5e737321df000b11234b80929fd28469e0bf14ffc4dedaa1d3388036ab"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/WorkerRunLedgerPersistence.cs",
+      "GitBlob": "90b2c67a62430b725f9b83683c5811ae5f5959ec",
+      "Sha256": "0d18fd381ba2d04688b9031bb95bfaff500ccfab1217928095bc516f681b43c2"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs",
+      "GitBlob": "35299ea975160e25e8e94c5aeaf85add0f088304",
+      "Sha256": "401100aa4874634d50d1528d9c12808d7db6c92d8ce7d2d75c27f72e410eff5a"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+      "GitBlob": "6a6a7a0ac516988e0efa123c03e8b1fca8e15b69",
+      "Sha256": "956d927aada672d3b0133297a1e9a4015e1954d6d6e546a0978b3cf03b01e3b4"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerDispatchAdmission.cs",
+      "GitBlob": "203b3961c10a05a0798427d4100c234f4c16cad6",
+      "Sha256": "92d8c35eb7f1977a55252b294b1658cbec83251feee14a36e370eb11f464ee70"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerDurableExecution.cs",
+      "GitBlob": "e0942f79c522b5d4c1a8551df772bb2655dd7462",
+      "Sha256": "4803eb3d9f4067fd01496710a3e6f26a28e26002a52cd8b59ece2649958a9f70"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionAuthority.cs",
+      "GitBlob": "eb844a6f5d545c812831d38fe57fa16b7d686e32",
+      "Sha256": "6b35e4929e0c3786b34ae8fa7adbf049354b6f97b91f959261c8bf82c50aec08"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs",
+      "GitBlob": "1f4b19d783d9f44b241a15b3857575091ce707db",
+      "Sha256": "8423cf82b8d7c844f43b5e5964df69b6ec079526379ed1056cd388bf780d2b56"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs",
+      "GitBlob": "7001377199fd168a85dc110481454846c2573dda",
+      "Sha256": "42d4ef1fb51e5e269d807dab09b47774aec54b9e2e1fe9fd9f6e7cb69a7d8949"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativePoolAdmission.cs",
+      "GitBlob": "b47e30a4ef857c732cd94812f3a192f200099e56",
+      "Sha256": "e72723e9756778f745683dfcd5a38956a155289cc5cfe00debec2e7ded8b3f53"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerOwnedLaunch.cs",
+      "GitBlob": "7b8fb1555d1f73b098718e11c06cf312ac4750f2",
+      "Sha256": "632fd3b046ff0732351341e78f49b2af5334766f69169e6d2e367e50b408ccac"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs",
+      "GitBlob": "1649315c04d082a4abcca8498da409e2e72da972",
+      "Sha256": "eec1069daa3b96d482441caaa90d67ec6b94a786d74ff635f31d9781fa3f7413"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalStore.cs",
+      "GitBlob": "7063abe4a1b47894d91a0e75f0db6a4dc3c67717",
+      "Sha256": "58857a7a221813701967626bd6dfcbaadfacea31823bd2f36cc9bccf3ea10471"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs",
+      "GitBlob": "ee9bb889d10bb96302afd6b0dbbc680ba0050462",
+      "Sha256": "34149836a2b0d67f07ca80082a7140c0405bd17b2589d915aa7d97f5f81792d0"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRootContext.cs",
+      "GitBlob": "e70b246b7a45d08b3faa990680f199a3cb593669",
+      "Sha256": "882e862b8a465bc74e569ad5e14f5c7d05e79e5c081fe8ff9fb1a5e28a72baf0"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.Live.cs",
+      "GitBlob": "38d5adecdb2ad720a259eb22fd635827c282db5e",
+      "Sha256": "7cb48318758a847e606590c5f98448be855478c952526214c5e0bf29955584a9"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs",
+      "GitBlob": "727224040a095d96a5c781ca2c87fd7ced5eea7b",
+      "Sha256": "78323e87cade8ccc5c27871783cacac6cd086bd235f88883f888f0cdcf91c610"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedgerCodec.cs",
+      "GitBlob": "ca2d0d5c2cbf16a56d696afe1117a40d3c982367",
+      "Sha256": "9be3446206a21e618662ccec4ef1f0948d5cbb46dead257f05a5b63678b10f0f"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunRecord.cs",
+      "GitBlob": "98c5dc6effa02fafee1c3baf4543d1a249828a92",
+      "Sha256": "915adb12c606de413d22db64244a7fa2358b8881671bcb9a4faf887bdbad153d"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunRecordCodec.cs",
+      "GitBlob": "70472fd1a5f649dbad59fe232f72f5bcd61efe7c",
+      "Sha256": "6084fea6d064d4856e2d866f237631fa6a1bb8ca326e60c193ca4e506b95fec7"
+    },
+    {
+      "Path": "tests/categories.json",
+      "GitBlob": "db6b43e5a2ae0440d80ff5532735bcf9874f4128",
+      "Sha256": "ad6350b60a83d992ceae6e50722508ffdf5c0d22aa09cc37a27687a1a4623124"
+    },
+    {
+      "Path": "tests/selection.json",
+      "GitBlob": "11d61038a4ac96b10ad3072d2d9b29ba9e025ab1",
+      "Sha256": "6f4190d0ff17a6438e9cae9956fb88db2ddf8989b68b1ee35c81a06e27e3ec68"
+    },
+    {
+      "Path": "tests/selections/1553-worker-restart-r2-linux.json",
+      "GitBlob": "e4533b09c9b935f112b90d2e203f2db4a2b0d5a2",
+      "Sha256": "206153b383cc7ce812b26d1ff1d714a953d80fb7ff67c3d877a5f72da86aade4"
+    }
+  ],
+  "AcceptedBoundaryInputsUnchanged": [
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunAdmission.cs",
+      "GitBlob": "aaa6433bb7ca0caa687f66d660be85ff82f83983",
+      "Sha256": "aa1338fbfa3ba4b8a89851acaa41b4a5bfa3b95c8cc3239116fc24057add621a"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecord.cs",
+      "GitBlob": "877b16da222a4326d3228d08a1a253b0b81ecbbb",
+      "Sha256": "d31a714f9485647ab68b6ee7b7d07da852cb1e88edb3f0df7a1e6bf5ff9ec8c8"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecordCodec.cs",
+      "GitBlob": "19f6293794a283e666c220912c2ea6cb47a535ab",
+      "Sha256": "7e269f884c4ca2dd9277d9b1e3813dc8f15d405bd163160d6fc671247849ad63"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostFrameChannel.cs",
+      "GitBlob": "ab8002ba2ce4be75bbe383b72b4dd71a2863ecae",
+      "Sha256": "91527d69d2ec77494aba09fbf06c3c719d156e9b108dd6fb89a16052c6e09d29"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs",
+      "GitBlob": "c38e4115e90dc24a68ea496e7bcbb6fec8ee15db",
+      "Sha256": "8bd8b3103b6c09f2dd375480d910ca8515018c291963681901edd7896e0fa58c"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BookOfEternityGMBridge.csproj",
+      "GitBlob": "603f4886992cc8326a72d4249e9042390cf539f4",
+      "Sha256": "aea4e886f3f2209b32e3f79ab37b62793567d6e7510109a6622be31f2af9de4d"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/ConPtySession.cs",
+      "GitBlob": "9f23aba595233798908a1f211c05534574c2f293",
+      "Sha256": "8c609242e9c9f6fe2e29526184c7350058a959b56bf02852826572b762d152c7"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/Program.cs",
+      "GitBlob": "4287ea735798fc5a207286af443ac8e60039a0f1",
+      "Sha256": "112191361e8b753a7b7a3fe53b8b5418ecb4cd4936b8165c1ae1aab35423711d"
+    },
+    {
+      "Path": "native/linux/boe-lineage-supervisor.c",
+      "GitBlob": "beeb7e12a25ffb7f3874db41b17b8d6f46836702",
+      "Sha256": "b8b6ed123ca2b437713e51e022f9fe943d0d762967e6d7388f040e2ae68f8b9a"
+    },
+    {
+      "Path": "scripts/build-linux-supervisor.ps1",
+      "GitBlob": "f0bde0ae108612a995ecab179ad655cb3d3747a9",
+      "Sha256": "14a665eb1734e3d4cca3607efc69c1b37ef3a355dd94d93487989d2fd6882485"
+    },
+    {
+      "Path": "scripts/test-csharp.ps1",
+      "GitBlob": "0576b2e34e5c0c5d164c173a9961a67c965c5509",
+      "Sha256": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1"
+    }
+  ],
+  "ArtifactAudit": {
+    "SchemaVersion": 1,
+    "ManifestCount": 35,
+    "VerifiedUniqueInputBlobs": 331,
+    "VerifiedArtifacts": 3182,
+    "VerifiedGzipArtifacts": 438,
+    "HistoricalExecuted": 793,
+    "HistoricalPassed": 725,
+    "HistoricalFailed": 68,
+    "LatestDistinctCases": 403,
+    "LatestPassed": 403,
+    "Guardians": {
+      "Count": 164,
+      "ECHILD": 164,
+      "EmergencySignals": 4,
+      "Failures": 0,
+      "Deadlines": 0
+    }
+  },
+  "EvidenceManifests": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-audit-green/manifest.json",
+      "Sha256": "9f857e34476461a025c1abc1a37b1ed1d16e1bb6836628b1d9feb88736ea3261",
+      "SourceCommit": "2f728f23c90a3dc1a47dedf4bbdad723b5f8694a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-audit-red/manifest.json",
+      "Sha256": "8c55b6cce5b4125261526a906dbe49ecc34ef6e1bb47de26ae24bf0cc5f263d6",
+      "SourceCommit": "d7da77d1ab1df81a1d055357d5b671d519baa4ce"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-boundaries-green/manifest.json",
+      "Sha256": "213a162a49ba7f1ba4a17a6608281617d842ccaded2155236de19f53c20ebd86",
+      "SourceCommit": "2b681548f7a9a1193da20a4edfc22b80097ddc2b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-boundaries-red/manifest.json",
+      "Sha256": "8e314c644c9edde55e83dd529f7cc5ff496a4dc5b72da7686769873d0fa45cd0",
+      "SourceCommit": "de3e1fdeb5c922bf6cb54d9fb26586e7c9aeb656"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-cleanup-green/manifest.json",
+      "Sha256": "7ba16fc942c8d122521ed40f2aa696a375dcf42c80eadbb4c5986c26c287e424",
+      "SourceCommit": "b8f01ca4974ccf2780bc90de622766b61ddb61c9"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-cleanup-red/manifest.json",
+      "Sha256": "783325f3d6d90e743acf458e7ccba6c57776a6311c1b823f0e07c3c3369afea2",
+      "SourceCommit": "9c6c1df7abb2e1b192f0d6dbb9f3d19c6e514f79"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-cold-preparation-catalog/manifest.json",
+      "Sha256": "f0343dc4df8f14bc5aa1b459f7ba1486fa13467ed7d088ac731be004a9bd280c",
+      "SourceCommit": "26c5f5009345552a285a8014be0a0582196b55cc"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-cold-red/manifest.json",
+      "Sha256": "4b742b63a9da3ece51f679d28def6753f7bad51bb5cba08887fdbf194a65ca13",
+      "SourceCommit": "73207b8fe957249107277b93b1fb0c3d75cf0d10"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-connected-first/manifest.json",
+      "Sha256": "5fd396d888010103ee6179fb5bb99c1d4803d2675742291471d6bafecb882046",
+      "SourceCommit": "3e02b4b8e82325e6e7fc71de5912cbb9da2d731e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-connected-positive/manifest.json",
+      "Sha256": "8b91bfd4f94d947ca40e7ea631ccb6117ea1f7d12ac025c35bd2cafdcc4c08b5",
+      "SourceCommit": "8beaac3330a7d99c0004fe86c7f85650efc20f22"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-connected-preparation/manifest.json",
+      "Sha256": "4540e609b47d940d62ced8767bad12e6c5e54102d5abd6851b9fb0ba21cb91db",
+      "SourceCommit": "dad93ac8fa3db4996763468ca3c4fa34ceb9523d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-control-green-witness-preparation/manifest.json",
+      "Sha256": "25df6547f8685e8f62f7b5d3e3c01387b195e3f0e45990c6f320b59d07e24524",
+      "SourceCommit": "a50d1dd714b8acc525633bd90699bfe271a46063"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-control-observation-failure/manifest.json",
+      "Sha256": "152f445bffca3c6cbb03ae1e0b5a035b8fa92fb1f6a2c8426e2853ca63c55fb3",
+      "SourceCommit": "04e9d7521e6fb14608e7d5822a11a70131ee15e0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-dispatch-green/manifest.json",
+      "Sha256": "473d8b9aa318c11529ea8ceee6d703a76a8f2b6ddae134c420c8421cda881358",
+      "SourceCommit": "9c3b3ffb1aefa4ac06c9c0766cb52330f0d0efaa"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-dispatch-red/manifest.json",
+      "Sha256": "a1000ecbdb0c505c3d7a7eed570e42f70e67565e584c748e2c68c4ef3a1f54c4",
+      "SourceCommit": "63772d1d03f12b8f9e23cc6ea1cbc94ce1ac2297"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-final-audit/manifest.json",
+      "Sha256": "ce05ce84052221df8fa6be07bdc348600890acbcfef10dbca3d1fee53ac2ead8",
+      "SourceCommit": "d5abf237457f9f32313ef3bea1ea0d0f3bc97018"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-final-discovery/manifest.json",
+      "Sha256": "4cead91e342156561e90ba6ed39283e24f385602000f31a4cb93b34a24a2e353",
+      "SourceCommit": "7439bfc7683000cfb856252d7889d1bce2d54219"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-launch-green/manifest.json",
+      "Sha256": "4016a779d54ed943c310ca4e5135964fa5a4006663a9dbfd934c4d21aa7ec48b",
+      "SourceCommit": "7439bfc7683000cfb856252d7889d1bce2d54219"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-launch-red/manifest.json",
+      "Sha256": "39630a716096b44279cc5cb81fa177cca7832f78e3394b63b8566556deef760f",
+      "SourceCommit": "443a635557df0a61044225379fb140fb484fb525"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-lifecycle-red/manifest.json",
+      "Sha256": "d38b2a6f3ed331a965c561f7efea3cc2d4f18bc2e78cba6ecb76436a2a35d0fc",
+      "SourceCommit": "f32a9fcfbe5824bb3d1f4912289eaee043ba8bee"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-mode-green/manifest.json",
+      "Sha256": "d5aa6773ade4897d75530e604972a293bc25097806db459875dc0ba3ef587b17",
+      "SourceCommit": "b86c62517e1ab2f42ec91e53344db8a3e4750000"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-mode-observation-failure/manifest.json",
+      "Sha256": "0e8ee76bdf18a8fc93b57413372a216dd86bc64dcbe33ded4ccb1f3936e073cd",
+      "SourceCommit": "8186b994b04c0e7deb416035f4d79686b9185d5e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-mode-observation-sharing-failure/manifest.json",
+      "Sha256": "a3131b1cd022567376e9be7bad94a2e96c49a931be3b2a9733a3e902c8acb3c5",
+      "SourceCommit": "1abfa1e0e231577ca95acd1aa68d45132a368d07"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-mode-preparation-build/manifest.json",
+      "Sha256": "8b5c76161ae93cd3a31286b668b0ecb698bc752acf50dfc8cc5f1cbe67c1e532",
+      "SourceCommit": "adcbca129a797d6939026488ef5bcb95ce0a21fa"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-mode-red/manifest.json",
+      "Sha256": "502171ed9d36918359f07caf6b1c90d0f3f918dd6843fcfbfef9da3418e9cfc4",
+      "SourceCommit": "f85ffddb866fe18d9fdf57de64010c2129604140"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-ownership-warm-green/manifest.json",
+      "Sha256": "e590ca4fcaa9a958e822566fef4303b7935d2a091e7c967478f746d9512418e8",
+      "SourceCommit": "762405786ef0e3beeae825a09765ba31e550b30b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-purpose-green/manifest.json",
+      "Sha256": "c55c823d81a0ac933aed1cd08cdb84e5df41cd7e1a485f35690d6dbc2690b912",
+      "SourceCommit": "de7ca25588f0e1f7180e18b0246d3596877be14e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-purpose-red/manifest.json",
+      "Sha256": "59e9a5f1f2e61d4e4010775f2a4c6509e7a0f3cee81fc32edc21ef10cc97da26",
+      "SourceCommit": "30c57ae0f35121a55728a1b59451f1c9f784398a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-record-green/manifest.json",
+      "Sha256": "93a56a3bbb0da86277f01ad6820a4350177d34ca1f5f881cab29bc4ea319f75d",
+      "SourceCommit": "215ed8c84baeddda7ac54e3088b06a51da93e9cf"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-record-red/manifest.json",
+      "Sha256": "adb925d50271b1f380b11c016888bc4c97c07fd9e7ac5e44658132d8e057c4ae",
+      "SourceCommit": "fab6c7d988b387ab810426ecbe9ed0b107710929"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-regressions-green/manifest.json",
+      "Sha256": "cabb5ae94d39b690cb70fbc86db83430c957e871c47b86f085bfdbd2dd66e89b",
+      "SourceCommit": "6c633a84d15f39ac1318c61d644482c014d5b30d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-root-first/manifest.json",
+      "Sha256": "b73a849e08b34827355db88f15c47bb235d78af1b26e3c549fb72a6669526a3f",
+      "SourceCommit": "4b10b0baf6903165163ab7b7ce3e543c800b5a09"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-root-green/manifest.json",
+      "Sha256": "1ca22c04a35d69f09f44715c0c53dec6b748504e235cca4dbf9f27d1d111b9f8",
+      "SourceCommit": "12cc678e9a9a1c851941a8a35288510c6cdd003e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-root-red/manifest.json",
+      "Sha256": "a529cacafe71aa095c134c14a465077eb8ef28a56c3dbe19cc1084ba15813941",
+      "SourceCommit": "7b800e13c912ab614ec4a9abd89c4507afe3896c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/worker-r2-witness-green/manifest.json",
+      "Sha256": "a83723290d69144285fd8f1e37343df20425df76c571a11e9cb11911d75fdb3b",
+      "SourceCommit": "efe634449a22a6757793f09b77d3053e82347ac0"
+    }
+  ],
+  "LatestEvidenceBySource": [
+    {
+      "Source": "215ed8c84baeddda7ac54e3088b06a51da93e9cf",
+      "PassedCases": 44,
+      "TrxArtifacts": [
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-record-green/record-green/worker-run-ledger-record-unit-003.trx"
+      ]
+    },
+    {
+      "Source": "6c633a84d15f39ac1318c61d644482c014d5b30d",
+      "PassedCases": 241,
+      "TrxArtifacts": [
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-regressions-green/regressions/portable-coordinated-lease-consumers-unit-001.trx",
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-regressions-green/regressions/portable-load-lease-consumers-integration-002.trx",
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-regressions-green/regressions/portable-load-lease-consumers-unit-003.trx",
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-regressions-green/regressions/portable-session-generation-unit-004.trx",
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-regressions-green/regressions/worker-consumer-execution-evidence-unit-005.trx",
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-regressions-green/regressions/worker-detached-workspace-integration-006.trx",
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-regressions-green/regressions/worker-detached-workspace-unit-007.trx",
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-regressions-green/regressions/worker-pool-regression-policy-unit-010.trx",
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-regressions-green/regressions/worker-quarantine-audit-receipt-integration-011.trx",
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-regressions-green/regressions/worker-restart-default-controls-unit-012.trx",
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-regressions-green/regressions/worker-restart-warm-linux-unit-013.trx",
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-regressions-green/regressions/worker-run-ledger-failures-linux-unit-014.trx",
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-regressions-green/regressions/worker-run-ledger-storage-linux-unit-015.trx"
+      ]
+    },
+    {
+      "Source": "7439bfc7683000cfb856252d7889d1bce2d54219",
+      "PassedCases": 34,
+      "TrxArtifacts": [
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-launch-green/launch-green/worker-execution-scoped-evidence-unit-001.trx",
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-launch-green/launch-green/worker-pool-regression-host-unit-002.trx",
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-launch-green/launch-green/worker-restart-boundaries-linux-unit-003.trx",
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-launch-green/launch-green/worker-restart-control-linux-unit-004.trx",
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-launch-green/launch-green/worker-restart-launch-linux-unit-005.trx",
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-launch-green/launch-green/worker-restart-lifecycle-linux-unit-006.trx",
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-launch-green/launch-green/worker-restart-root-linux-unit-007.trx"
+      ]
+    },
+    {
+      "Source": "762405786ef0e3beeae825a09765ba31e550b30b",
+      "PassedCases": 5,
+      "TrxArtifacts": [
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-ownership-warm-green/ownership-warm/worker-restart-ownership-linux-unit-001.trx"
+      ]
+    },
+    {
+      "Source": "8beaac3330a7d99c0004fe86c7f85650efc20f22",
+      "PassedCases": 37,
+      "TrxArtifacts": [
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-connected-positive/connected-positive/worker-restart-record-unit-002.trx"
+      ]
+    },
+    {
+      "Source": "9c3b3ffb1aefa4ac06c9c0766cb52330f0d0efaa",
+      "PassedCases": 16,
+      "TrxArtifacts": [
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-dispatch-green/dispatch-green/worker-restart-admission-linux-unit-001.trx",
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-dispatch-green/dispatch-green/worker-restart-audit-linux-unit-002.trx"
+      ]
+    },
+    {
+      "Source": "b86c62517e1ab2f42ec91e53344db8a3e4750000",
+      "PassedCases": 8,
+      "TrxArtifacts": [
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-mode-green/mode-green-boundary/worker-restart-mode-linux-unit-001.trx"
+      ]
+    },
+    {
+      "Source": "b8f01ca4974ccf2780bc90de622766b61ddb61c9",
+      "PassedCases": 5,
+      "TrxArtifacts": [
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-cleanup-green/cleanup-green/worker-restart-cleanup-linux-unit-002.trx"
+      ]
+    },
+    {
+      "Source": "de7ca25588f0e1f7180e18b0246d3596877be14e",
+      "PassedCases": 11,
+      "TrxArtifacts": [
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-purpose-green/purpose-green/worker-restart-dispatch-linux-unit-001.trx",
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-purpose-green/purpose-green/worker-restart-purpose-linux-unit-003.trx"
+      ]
+    },
+    {
+      "Source": "efe634449a22a6757793f09b77d3053e82347ac0",
+      "PassedCases": 2,
+      "TrxArtifacts": [
+        "specs/1553-portable-local-storage/recovery/evidence/worker-r2-witness-green/witness-green/worker-restart-witness-linux-unit-001.trx"
+      ]
+    }
+  ],
+  "CountsMeaning": "403 latest distinct passing cases assembled from bounded source-specific cohorts, not one aggregate execution. All source:path Git blobs, stored bytes and gzip-expanded hashes verified. Historical failing tests and preparation failures remain separately retained in manifests and plan.",
+  "FinalRuntimeRegression": {
+    "Source": "7439bfc7683000cfb856252d7889d1bce2d54219",
+    "Executed": 34,
+    "Passed": 34,
+    "Descriptors": 7,
+    "Seconds": 115.652792,
+    "Skips": 0,
+    "Duplicates": 0,
+    "Timeout": false,
+    "OwnedCleanupComplete": true,
+    "Evidence": "evidence/worker-r2-launch-green/manifest.json"
+  },
+  "FinalDiscovery": {
+    "Source": "7439bfc7683000cfb856252d7889d1bce2d54219",
+    "Catalog": {
+      "Valid": true,
+      "Categories": 311,
+      "MethodsOrFiles": 10879,
+      "Unmapped": 0,
+      "StaleSelectors": 0,
+      "Seconds": 34.2186152
+    },
+    "LinuxPlan": {
+      "Descriptors": 30,
+      "Cases": 403,
+      "Seconds": 10.6966013
+    },
+    "PortableCiPlan": {
+      "Descriptors": 13,
+      "Cases": 232,
+      "Seconds": 10.9381185
+    },
+    "Executed": 0,
+    "Evidence": "evidence/worker-r2-final-discovery/manifest.json"
+  },
+  "CleanupInterpretation": {
+    "AllGuardiansReachedECHILD": true,
+    "HistoricalEmergencySignals": 4,
+    "Explanation": "Two signals from initial failed root fixture; two from intentional existing helper-loss host scenario, once in each affected final regression run. No emergency/failure/deadline in new launch causal RED or its three GREEN cases. No historical PID1 zombies were touched or claimed reaped."
+  },
+  "Toolchain": {
+    "SDK": "10.0.401",
+    "ExecutedTargetRuntime": "8.0.31",
+    "OtherInstalledRuntime": "10.0.12",
+    "PowerShell": "7.5.4",
+    "NativeCompiler": "Debian GCC 14.2.0-19",
+    "Readelf": "GNU binutils 2.44",
+    "OS": "Linux 6.18.44 x86_64",
+    "Evidence": "evidence/worker-r2-launch-green/toolchain.txt"
+  },
+  "IndependentReview": {
+    "Agent": "/root/native_review",
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "Mode": "read-only; no edits/tests/probes",
+    "Status": "Source review complete, complete-packet final acceptance pending",
+    "SourceFindingsClosedAt": "7439bfc7683000cfb856252d7889d1bce2d54219",
+    "ConfirmedReviewScope": "32-file connected authority/error/lifetime/storage/canonical review; no remaining runtime blocker after Busy and original host Release fixes."
+  },
+  "Limits": [
+    "No R3 crash/restart expansion, production Linux Release, main PTY wiring, live GM, real game saves, merge or issue closure.",
+    "Bounded native process lineage only, same PID namespace; no external service/control claim and no new namespaces/root/cgroup/security changes.",
+    "No Windows native/runtime/durability or systemd user-manager qualification. Windows Job semantics remain; this environment has no systemd user manager.",
+    "Crash/injected I/O checks do not establish power-loss durability.",
+    "No late observation, timeout, death evidence or journal DTO clears absorbing Uncertain or grants publication/retirement authority."
+  ],
+  "GmDocsRationale": "Client-owned explicitly injected synthetic contour; GM-authored payloads, prompts and examples unchanged.",
+  "Next": "Complete independent packet review and GitHub-only restoration, then handoff to parent; stop before R3/integration.",
+  "FinalCarrier": "Publish with ordinary non-force push, exact remote SHA and byte readback. Restore final metadata carrier independently from GitHub; report its final SHA/proof in handoff without self-referential metadata."
+}
