@@ -41,6 +41,7 @@ internal sealed class GmLoadSessionOperation : IAsyncDisposable
     }
     internal async Task StopAsync(CancellationToken token=default)
     {
+        _files.RequireLoadIpcOutsideFileScopes();
         try {
             var bytes=GmSessionRunPersistence.Read(_files.BasePath);
             var expected=bytes==null?null:GmSessionRunRecordCodec.Decode(bytes);
@@ -87,6 +88,7 @@ internal sealed class GmLoadSessionOperation : IAsyncDisposable
     }
     internal async Task<GmLoadMainState> FinishAsync(bool committed,bool refreshConfirmed,string? generation)
     {
+        _files.RequireLoadIpcOutsideFileScopes();
         if(_finished || _stop==null)throw new InvalidOperationException("Original Load finish is absent or already consumed.");
         _finished=true;
         if(_pipe==null)return State=GmLoadMainState.NoActiveSession;

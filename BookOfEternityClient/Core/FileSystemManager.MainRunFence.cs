@@ -9,6 +9,13 @@ public partial class FileSystemManager
     // ambient leases. Lifecycle/nested consumers borrow the original access; they
     // never re-lock the main guard from beneath a canonical/lifecycle lock.
     private static readonly AsyncLocal<MainAdmission?> MainAdmissions=new();
+    internal void RequireLoadIpcOutsideFileScopes()
+    {
+        if(HasAmbientCanonicalLease() || SessionOperationContext.TryGetExpectedGeneration(BasePath,out _))
+            throw new InvalidOperationException("Load IPC requires the original filesystem operation to close first.");
+        for(var p=MainAdmissions.Value;p!=null;p=p.Parent)
+            if(!p.Closed && p.Root==BasePath)throw new InvalidOperationException("Load IPC cannot borrow a filesystem admission.");
+    }
     internal MainAdmission BeginMainAdmission()=>BeginMainAdmission(false);
     internal MainAdmission BeginParticipatingMainAdmission()=>BeginMainAdmission(true);
     private MainAdmission BeginMainAdmission(bool participating)

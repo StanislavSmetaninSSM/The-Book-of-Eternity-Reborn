@@ -3426,11 +3426,13 @@ public partial class GameEngine
 
         var saveInfo = allSaves[idx];
 
-        var result = await LoadSelectedSaveAndRebindRuntimeAsync(saveInfo.FileName);
-        result = await PrepareLoadedConsoleContinuationAsync(result);
+        var result = await LoadSelectedSaveWithMainLifecycleAsync(saveInfo.FileName);
         var color = result.ContinuationBlocked ? "yellow" :
             result.Disposition == LoadReplacementDisposition.Committed ? "green" : "red";
         AnsiConsole.MarkupLine($"[{color}]{Markup.Escape(DescribeConsoleLoadOutcome(result))}[/]");
+        if(_consoleLoadMainState is BookOfEternityClient.Services.GmRuntime.GmLoadMainState.Stopped or
+            BookOfEternityClient.Services.GmRuntime.GmLoadMainState.Uncertain or BookOfEternityClient.Services.GmRuntime.GmLoadMainState.StartedNotReady)
+            AnsiConsole.MarkupLine("[yellow]Запуск новой сессии ГМа не подтверждён. Продолжение остановлено.[/]");
         if (result.Disposition == LoadReplacementDisposition.Committed && !result.ContinuationBlocked)
         {
             await Task.Delay(1000);
