@@ -1,0 +1,17 @@
+﻿{
+  "terminalUncertain": true,
+  "terminalOwnerRetained": false,
+  "backend": "ConPTYBridge",
+  "state": "TerminalUncertain",
+  "ready": false,
+  "helperPid": 302775,
+  "sessionPath": "/workspace/native-1553/TestResults/native-terminal/cedc25fd463741df93db0d0b07038689/neutral-session-6315f8c6520e4e3b9d6dea87e980277d/game_session",
+  "pipeName": "f1-8f788d5e0d934a27af73011ee1e4407a",
+  "cliLaunchCommand": "",
+  "shellWorkingDirectory": "",
+  "lastPromptDispatchState": "None",
+  "startedAtUtc": "2026-10-06T13:43:36.8610831\u002B00:00",
+  "updatedAtUtc": "2026-10-06T13:43:37.5065024\u002B00:00",
+  "lastError": "Original terminal ownership or I/O settlement is uncertain; replacement remains blocked.",
+  "workerStatuses": []
+}

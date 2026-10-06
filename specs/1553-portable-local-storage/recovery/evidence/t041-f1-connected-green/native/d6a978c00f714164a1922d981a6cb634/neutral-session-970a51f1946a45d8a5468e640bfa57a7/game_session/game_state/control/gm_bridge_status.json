@@ -1,0 +1,33 @@
+﻿{
+  "terminalRunId": "b95a5c117a4745ef91a115f2c4dd4aca",
+  "terminalGuarantee": "ordinary-same-namespace-lineage",
+  "terminalUncertain": true,
+  "terminalStop": {
+    "identity": {
+      "runId": "b95a5c117a4745ef91a115f2c4dd4aca",
+      "backend": "native-lineage",
+      "guarantee": "ordinary-same-namespace-lineage",
+      "rootPid": 301658
+    },
+    "state": "stopped-within-scope",
+    "reason": "stop-requested",
+    "cleanupComplete": true,
+    "authorityRetained": false
+  },
+  "terminalOwnerRetained": false,
+  "inputBindingId": "63cb711f9350487a910e51c6b9c975d3",
+  "backend": "native-lineage",
+  "state": "TerminalUncertain",
+  "ready": false,
+  "helperPid": 301642,
+  "sessionPath": "/workspace/native-1553/TestResults/native-terminal/d6a978c00f714164a1922d981a6cb634/neutral-session-970a51f1946a45d8a5468e640bfa57a7/game_session",
+  "shellPid": 301658,
+  "pipeName": "f1-21f3f586221e4c888811ceb7c26228ce",
+  "cliLaunchCommand": "",
+  "shellWorkingDirectory": "",
+  "lastPromptDispatchState": "None",
+  "startedAtUtc": "2026-10-06T13:42:30.4653231\u002B00:00",
+  "updatedAtUtc": "2026-10-06T13:42:31.3200060\u002B00:00",
+  "lastError": "Original terminal ownership or I/O settlement is uncertain; replacement remains blocked.",
+  "workerStatuses": []
+}
