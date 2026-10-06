@@ -15,6 +15,18 @@
 - Wound implementation was merged by explicit owner request in [PR #1554](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/pull/1554). Its unfinished acceptance remains deferred under #1536, not declared complete by this feature
 
 
+## Current production main design-only continuation
+
+Accepted bounded F3 `fc49f271` is reused with F1/F2/terminal/T042; its accepted
+scope remains neutral/isolated. [Production main admission design](production-main-admission-design.md)
+plans original production root/worker conjunction, configured arbitrary CLI, explicit
+NativeLineage and a supplied prebuilt helper through existing launcher/daemon/console.
+The game profile controls the GM command/model; the executor model does not.
+No implementation/public/provider/game operation is authorized in this design turn.
+Codex startup-only diagnostic does not qualify readiness/VT/liveGM. Load stop/fresh
+launch UX remains pending; current typed refusal, systemd task and
+T031-BROWSER-ROLLBACK-LINUX remain. US4/FR-009/012/013/014/015/SC-004 are unchanged.
+
 ## Authorized main run-fence design from accepted neutral terminal
 
 Accepted neutral terminal `14888663d608355098cc1a329d97ab61de0e6016` feeds the

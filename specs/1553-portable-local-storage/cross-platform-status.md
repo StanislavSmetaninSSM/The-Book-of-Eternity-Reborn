@@ -5,7 +5,21 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## Current: bounded T041-RUN-FENCE-F3 independent PASS; stop before next stage
+## Current: production main/ordinary Linux launcher design only
+
+Owner accepted bounded F3 **fc49f271f5cd14ac3b24931cce2c98ef64a61068**.
+[First connected M1 proposal](production-main-admission-design.md) reuses the original
+terminal/schema1 fence/T042, adds required production root/worker registration and
+actual launcher/console/daemon/QTE/repair boundaries with a prebuilt helper and
+explicit NativeLineage. No runtime/test/catalog/config change; implementation pending.
+Separate real-Codex qualification and primary systemd/native Windows remain open.
+One permitted startup in empty scratch stopped at unanswered TERM=dumb confirmation;
+Ctrl+C exit, guardian ECHILD/emergency0/failure0/deadlinefalse; no ready/VT/model request.
+Load UX answer pending; T031-BROWSER-ROLLBACK-LINUX retained.
+[Exact source/probe evidence](recovery/production-main-design.json).
+Independent Sol6.1/xhigh design review pending. Stop before implementation.
+
+## Accepted bounded T041-RUN-FENCE-F3 independent PASS
 
 Accepted F2 `8b0c416e` → F3 execution complete:23 distinct latest PASS
 (2portable admission +21actual Linux),41historical executions27PASS/14FAIL

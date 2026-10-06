@@ -1,0 +1,443 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T041-PRODUCTION-MAIN-DESIGN",
+  "acceptedBase": "fc49f271f5cd14ac3b24931cce2c98ef64a61068",
+  "scope": "design-only; one optional startup/exit diagnostic, no runtime/test/catalog/config changes",
+  "method": [
+    "Spec Kit current feature plan/analyze",
+    "Superpowers brainstorming/writing-plans",
+    "spec-kit-superpowers-bridge"
+  ],
+  "review": {
+    "status": "pending",
+    "requestedModel": "gpt-6.1-sol",
+    "requestedReasoningEffort": "xhigh"
+  },
+  "inputs": [
+    {
+      "path": "AGENTS.md",
+      "gitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "docs/testing.md",
+      "gitBlob": "eb036aa06c716d19467bc6aadaff5fbd535c4a3a",
+      "bytes": 16759,
+      "sha256": "20ea808053428488ac21e5b1fee9f05b3e981e503dc8f610f0b25f91d44b84a1",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "gitBlob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": ".specify/extensions.yml",
+      "gitBlob": "651400d306cf969c8d354beedcab041f729fe8a9",
+      "bytes": 4672,
+      "sha256": "5e1ef86bc39cb43001577e895da68b324154a52281565e30ddba62c235c61df1",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/Program.cs",
+      "gitBlob": "425d64f5e0b074fa127e81c6cadb27c6d8df6ac0",
+      "bytes": 83584,
+      "sha256": "a805d3e9d0d4994ccfbf05ceb764ba66f934669daccf2be97d073fbc18ab927f",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/BookOfEternityGMBridge.csproj",
+      "gitBlob": "d4594f6b45086b9b40a805cf7a7a718c3658be41",
+      "bytes": 470,
+      "sha256": "c49d352dbfb3bb464e0a5bd456366222e0abe792b1264d665d60c8d545e487d4",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/TerminalScreen.cs",
+      "gitBlob": "dba7b27c728d20843aae1c77ee8989f4e4757f7b",
+      "bytes": 3483,
+      "sha256": "c49951522ebf0f8dca0237e292405c1e0d8273ed614843c904b8cfd7e09c4fbb",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
+      "gitBlob": "27f99bf8db4b0ee758bce205628c72ec2a509cd6",
+      "bytes": 18951,
+      "sha256": "5b064ea162664e16c8d3a04d854b77d4cc18fb4ce2e6682797da51ce9f0ec4e5",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/BridgeHost.MainOperations.cs",
+      "gitBlob": "a422536a679050e3ff3ad598b5b5eb50127c89cd",
+      "bytes": 2234,
+      "sha256": "064a9d5db5cefd74d8378d8ed4896004f6d0737ca3df5ba6403c2cf199f1f3a6",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/BridgeHost.StatusPublication.cs",
+      "gitBlob": "84d96da6e3d28be14f7a744d3df9d752c84fd9a4",
+      "bytes": 4504,
+      "sha256": "f56574a407c8227823892c87d1813da2a89bcc21c38138f55cfea88b4cfafa14",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "gitBlob": "50bcc082e4cb2a53536a95e2fa6a282a1100cdf7",
+      "bytes": 14446,
+      "sha256": "b289cef383562e47b0855b33ee0018f55e3f11c76ed2c9994f9d7a14d09742c3",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/OwnedTerminalSessionFactory.cs",
+      "gitBlob": "f8ecc0eb9b9b29f6553561ffb9cd8e616091b16f",
+      "bytes": 3131,
+      "sha256": "e13604183b559d6afcabc05ad19d676fd7dd4d52f2769d30fd0452dbd1f6967c",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/NeutralTerminalLaunch.cs",
+      "gitBlob": "ad1e6e89ba3d47f6b9a316a97c623bfda61f8a3d",
+      "bytes": 2396,
+      "sha256": "327652cb6c5c4085e0c665aff68e135b1838210218bf301cba3aa9ebe12a56e0",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "gitBlob": "ea2291193b68ba63f34088b2538dcfe9f36be8ae",
+      "bytes": 10890,
+      "sha256": "c059a42cb8e1bb8ef2a4e1c1faffb29f22130b5948e2d8db6da249150140d200",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GmSessionRunPersistence.cs",
+      "gitBlob": "3f56cc94576fad3a16fd65d5936fd5352e9ebd80",
+      "bytes": 7977,
+      "sha256": "e64d6de3a210fef5426537636d48a8a8e67b52aad98f10d873c819684ca66f09",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "gitBlob": "3abc454b7381e1dc3cc682d9ea9e5d94c156aa0c",
+      "bytes": 18145,
+      "sha256": "4b7e64e13c1f722b4da1d7b45c69e70f61a433bf8e3abd48150536f231cef43e",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRootContext.cs",
+      "gitBlob": "e70b246b7a45d08b3faa990680f199a3cb593669",
+      "bytes": 10106,
+      "sha256": "882e862b8a465bc74e569ad5e14f5c7d05e79e5c081fe8ff9fb1a5e28a72baf0",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs",
+      "gitBlob": "727224040a095d96a5c781ca2c87fd7ced5eea7b",
+      "bytes": 14013,
+      "sha256": "78323e87cade8ccc5c27871783cacac6cd086bd235f88883f888f0cdcf91c610",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativePoolAdmission.cs",
+      "gitBlob": "b47e30a4ef857c732cd94812f3a192f200099e56",
+      "bytes": 3014,
+      "sha256": "e72723e9756778f745683dfcd5a38956a155289cc5cfe00debec2e7ded8b3f53",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativePackage.cs",
+      "gitBlob": "ff2ad06c6c5e57fc55b2fd249f600822bf34a676",
+      "bytes": 3124,
+      "sha256": "20fcd945a355ab36c09ea1aecc7c3438a2eaa93fe65fe73b4eab1c0d5525a9c4",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBackendSelector.cs",
+      "gitBlob": "855114bfafa9981c76cb2f15c04accaffc7629c7",
+      "bytes": 2990,
+      "sha256": "fdc63764d17b50c37477c900b9a8fea0c97ec7eaaab84b1a25c0703dacd2a7a1",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
+      "gitBlob": "40874a26d7576e61e8d0832fc2f7e7d427f2ff3d",
+      "bytes": 22418,
+      "sha256": "cac9672ce457e406ad77dadf823656b55bf6a2079296d69d957735c32fa46eda",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "native/linux/boe-lineage-supervisor.c",
+      "gitBlob": "d9ef317bdf599a2cc761688d53630568f39e0487",
+      "bytes": 24326,
+      "sha256": "939622a025260f29fec105d2a0dff58f10e9a1f3ded5a6fb9d0866930b9c50ce",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/bookofeternity.ps1",
+      "gitBlob": "6f0cc4bb78e7b13b688a7f7382d12726d8d7bfa1",
+      "bytes": 40628,
+      "sha256": "8e477b44cf6fc7a4279c07805a67ce6f2ecd1c16f9a39642af953dfd1ecc1922",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/gm_main_operation.ps1",
+      "gitBlob": "370bfe8cebb6889e52201cb10572730a42e32723",
+      "bytes": 9844,
+      "sha256": "42a3ceca24bd1175c3817b3a17f27f8ff7bc682c13a40425780297a7eb6d7d6b",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "gitBlob": "20d435cec898ccec0eb970b8442df4711b618116",
+      "bytes": 391037,
+      "sha256": "5e6c2597a58f9435feca000b1e02ec22ba4e6a325d49546f825a676a7a515aac",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/Program.cs",
+      "gitBlob": "9b1713add608b369202c7892d6714d692c9bef40",
+      "bytes": 16302,
+      "sha256": "cbb63ecb60f2071423e80ed684afe00c30b488894207cdc93b5a5dfccfb93bf5",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine.cs",
+      "gitBlob": "dacda4f0c6ee53323a0da23c3c366398c2434f61",
+      "bytes": 10160,
+      "sha256": "e7b8c0b9f08e8f725f8dd8d3b44c28c3ae08cb24d24717b55d8ccea746656f54",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/StateManager.cs",
+      "gitBlob": "4c4582b40c2eb969a6806085062b1dad34b44235",
+      "bytes": 26916,
+      "sha256": "550b288beb5332efa75c98a6774c200418bf2447a39e049cfefc80294c3063e6",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "gitBlob": "b555101a5245b6574847d42fa8a89f69ba190a33",
+      "bytes": 479614,
+      "sha256": "daf03ef2f990d85169e13099ba51c538d2f8e4d7502ddc7288e0b04074e38e6f",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "gitBlob": "5b336a437a467a54aeb03bb6eb1f3d5eff11b98d",
+      "bytes": 261896,
+      "sha256": "c4fc44ee900b913734cf039acba5cacc70fca351b7f45104684c96910dfe5405",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/Configuration/GameSettings.cs",
+      "gitBlob": "ed83440b8413db4549347d5de40dc785ca04ca39",
+      "bytes": 15822,
+      "sha256": "040927689b8e7b458483f3368ddc75e52926cf04ab916d815561eacf326df8d7",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/Configuration/GmCliInputProfile.cs",
+      "gitBlob": "301ec89f509fa67d9982c878ec8ee9fc08865c32",
+      "bytes": 1840,
+      "sha256": "d3a5b5b91d9e9e1621214ee87314b1519308ce548a7d948e5c9a8bdb7e8eabf9",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "gitBlob": "46bac54ca24cc686ac3bab46b857b9661beccb13",
+      "bytes": 4342,
+      "sha256": "8c6654c84218c9718fac0fbeaf8f828a0244a4a7826b45438e9915b47a19d449",
+      "unchangedFromAcceptedF3": true
+    },
+    {
+      "path": "scripts/build-linux-supervisor.ps1",
+      "gitBlob": "0208a3793088ebe5802e512a022ee1ab73993e3f",
+      "bytes": 4556,
+      "sha256": "ed7f9ed701801e95562afc76ead02c4e4887aee054c873d162bc0f81f3c15914",
+      "unchangedFromAcceptedF3": true
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "recovery/evidence/production-main-design/codex-startup-probe.py",
+      "bytes": 3151,
+      "sha256": "243bb568f0d3d018a7b981eff157637a4115062bdc211181dfc73cd5726b11d0"
+    },
+    {
+      "path": "recovery/evidence/production-main-design/guardian.json",
+      "bytes": 97,
+      "sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "path": "recovery/evidence/production-main-design/probe-result.json",
+      "bytes": 555,
+      "sha256": "ef00e39b6426e43d0fe77a7be56c0fb2de51317ac6e71a5c6f98aa7be7c342c3"
+    },
+    {
+      "path": "recovery/evidence/production-main-design/startup-readable.txt",
+      "bytes": 220,
+      "sha256": "e41f7fbc250c164292c7005d77e17c88192c530b2f434ad80e682034f6c0dbf7"
+    },
+    {
+      "path": "recovery/evidence/production-main-design/startup.raw",
+      "bytes": 220,
+      "sha256": "e41f7fbc250c164292c7005d77e17c88192c530b2f434ad80e682034f6c0dbf7"
+    }
+  ],
+  "checks": [
+    {
+      "command": "pwsh -NoLogo -NoProfile -File .specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks",
+      "exitCode": 0,
+      "featureDirectory": "specs/1553-portable-local-storage",
+      "testsExecuted": 0
+    },
+    {
+      "command": "command -v codex; codex --version; codex --help; codex login status",
+      "exitCode": 0,
+      "path": "/opt/codex/bin/codex",
+      "version": "codex-cli 0.159.0-alpha.3",
+      "loginStatus": "Logged in using ChatGPT",
+      "warning": "PATH alias creation read-only; no workaround",
+      "binaryBytes": 286016808,
+      "binarySha256": "981ade7b03926534c654fd718ced3a9f378b7b2841271e29156f939462d176e9"
+    }
+  ],
+  "probe": {
+    "startupAttempts": 1,
+    "preparationFailure": "Accepted tracked guardian has no executable mode. Initial preflight assertion before driver/CLI launch. Copied exact bytes into own workspace, restored mode; no compilation or system setting change.",
+    "guardianInput": {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/t041-terminal-native-final-green/native/native-host/9b992ff6e2a14bff83f6da1bc159043e/host-guardian",
+      "gitBlob": "989dbe017ecdfdb52010b7dedaea4657a025f4f9",
+      "bytes": 42656,
+      "sha256": "c4d1bc6bbc178b207f54695d7355316fcf4b611d0e18581c79d1d77cc66d857e",
+      "unchangedFromAcceptedF3": true
+    },
+    "command": [
+      "<exact accepted guardian copy>",
+      "<own guardian report>",
+      "12000",
+      "/usr/bin/python3",
+      "<saved codex-startup-probe.py>",
+      "<own evidence scratch>"
+    ],
+    "argv": [
+      "/opt/codex/bin/codex",
+      "--no-daemon",
+      "-C",
+      "/workspace/qualification-1553-production-main-design/empty-scratch"
+    ],
+    "result": {
+      "argv": [
+        "/opt/codex/bin/codex",
+        "--no-daemon",
+        "-C",
+        "/workspace/qualification-1553-production-main-design/empty-scratch"
+      ],
+      "noPromptArgument": true,
+      "noModelInput": true,
+      "ptyRetainedUntilRootReap": true,
+      "dimensions": [
+        100,
+        25
+      ],
+      "rootPid": 427311,
+      "exitCode": -2,
+      "elapsedSeconds": 4.014,
+      "inputJournal": [
+        {
+          "atSeconds": 4.011,
+          "hex": "03",
+          "purpose": "exit-only Ctrl+C; no acceptance or prompt"
+        }
+      ],
+      "scopedSignals": [],
+      "rawBytes": 220,
+      "scratchFilesAfter": []
+    },
+    "observation": "TERM=dumb warning; Continue anyway? [y/N]:; no ready screen or VT qualification. Only exit Ctrl+C sent, no trust/access/terminal acceptance or model input.",
+    "modelRequestsInitiated": 0,
+    "gameFilesAccessed": false,
+    "persistedConfigurationChanges": false,
+    "authenticationChanges": false,
+    "guardian": {
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    "cleanup": {
+      "originalRootReaped": true,
+      "originalPtyClosed": true,
+      "scratchEmptyAfter": true,
+      "emptyScratchRemoved": true,
+      "localExecutableGuardianCopyRemoved": true,
+      "allSessionsComplete": true
+    }
+  },
+  "reusedProof": {
+    "r1_r3": "accepted existing synthetic worker qualifications; no rerun",
+    "terminal": "14888663d608355098cc1a329d97ab61de0e6016",
+    "inputTransaction": "1bc9d67536dccbcc6672d8e7cd71ad885c2a946c",
+    "f1": "f4e7621fe85c7aa0393552708d28eec4bfe36d8f",
+    "f2": "8b0c416e1ec5c132d82776b4fdc348ee90cfdbe5",
+    "f3": "fc49f271f5cd14ac3b24931cce2c98ef64a61068"
+  },
+  "executed": {
+    "builds": 0,
+    "csharpTests": 0,
+    "priorCohortReruns": 0,
+    "runtimeEdits": 0,
+    "nativeCompilations": 0,
+    "interactiveStartupAttempts": 1
+  },
+  "limitations": [
+    "No positive systemd-user/native Windows/live GM/profile VT/production worker qualification",
+    "Load UX proposal pending user answer; refusal retained",
+    "T031-BROWSER-ROLLBACK-LINUX real consumer debt remains open",
+    "No provider/model request/game operation/real save/public rollout/cold promises"
+  ],
+  "publication": "WIP push/readback before review; final exact SHA supplied by handoff, not self-referential",
+  "specKitAnalysis": {
+    "method": "read-only scoped current spec/plan/tasks/constitution consistency analysis; existing feature continuation, not a replacement plan",
+    "requirements": [
+      "US4",
+      "FR-009",
+      "FR-012",
+      "FR-013",
+      "FR-014",
+      "FR-015",
+      "SC-004"
+    ],
+    "trackedTasks": [
+      "T041-PRODUCTION-MAIN-DESIGN",
+      "T041-PRODUCTION-MAIN-M1",
+      "T043-REAL-CODEX-QUALIFICATION",
+      "T041-SYSTEMD-MAIN",
+      "T031-BROWSER-ROLLBACK-LINUX"
+    ],
+    "scopeCoverage": "7/7 referenced requirements mapped to proposed implementation/qualification tasks; this is design traceability, not executed acceptance",
+    "criticalFindings": 0,
+    "unresolvedProductDecision": "Load stop/confirmed load/fresh launch UX pending; retained refusal does not block M1",
+    "remainingTechnicalWork": [
+      "Production inventory registration and remote pin conjunction",
+      "Shipped package and existing launcher/daemon Windows assumptions",
+      "Ordinary console bootstrap bounded participating pins",
+      "Actual configured CLI VT/readiness/profile qualification"
+    ],
+    "constitution": "No changed gameplay/schema/GM-authored contract; no operational prompt migration at design-only checkpoint. Existing operational guidance/examples must be synchronized in implementation. No issue closure or task-wide platform acceptance.",
+    "extensionHooks": "Only optional before/after plan/analyze Git commit and optional context refresh; ordinary checkpoint fulfills commit workflow, context already points at current plan; no mandatory hook."
+  }
+}

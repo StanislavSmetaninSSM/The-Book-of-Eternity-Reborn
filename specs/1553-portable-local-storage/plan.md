@@ -4,6 +4,22 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T041-PRODUCTION-MAIN-DESIGN — current design-only continuation
+
+Owner accepted bounded F3 `fc49f271f5cd14ac3b24931cce2c98ef64a61068`.
+[Production main/ordinary Linux launcher plan](production-main-admission-design.md)
+proposes M1 through the same original terminal/schema1 fence/T042, explicit
+NativeLineage and prebuilt package; all helpers may stay disabled while the
+independent worker inventory still fences admission. Real console startup and
+daemon/QTE/repair transport boundaries are included. Separate Codex qualification,
+primary systemd and Linux browser rollback debt remain open. Load UX answer is pending.
+One no-model-request startup probe stopped at TERM=dumb confirmation, unanswered;
+Ctrl+C scoped exit, empty scratch and guardian ECHILD/emergency0/failure0/deadlinefalse.
+[Source/evidence](recovery/production-main-design.json). Runtime/test/catalog/config
+unchanged; builds/tests0. Sol6.1/xhigh independent design review pending; normal
+WIP publication/readback precedes review. M1 implementation is not authorized here.
+The historical F3 ledger below records the accepted completed slice.
+
 ## T041-RUN-FENCE-F3 — bounded independent PASS; stop before next stage
 
 Owner accepted F2 `8b0c416e1ec5c132d82776b4fdc348ee90cfdbe5`. Current
