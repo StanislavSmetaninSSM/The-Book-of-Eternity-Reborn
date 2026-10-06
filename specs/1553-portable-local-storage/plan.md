@@ -33,6 +33,11 @@ the absent connection in the accepted baseline; later GREEN must use the complet
 explicit R2 context and its positive companion before any qualification claim.
 New category `worker-restart-admission-linux` owns this test. Prior catalog objects
 are unchanged; portable default selection remains unchanged until its contracts change.
+First PlanOnly at `26c5f5009345552a285a8014be0a0582196b55cc` failed during catalog
+preparation: related-category string needed a structured id/when object. Zero tests,
+zero native fixtures started; this is not causal RED. Retained log/source manifest:
+recovery/evidence/worker-r2-cold-preparation-catalog/manifest.json. Corrected only that
+catalog object; fresh build/discovery and causal execution remain pending.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

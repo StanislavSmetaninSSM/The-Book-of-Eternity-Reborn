@@ -12716,7 +12716,10 @@
         "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.Restart.cs"
       ],
       "related": [
-        "worker-run-ledger-storage-linux"
+        {
+          "id": "worker-run-ledger-storage-linux",
+          "when": "Durable worker ledger admission and native storage authority change."
+        }
       ],
       "requirements": {
         "frontendBuild": false,
