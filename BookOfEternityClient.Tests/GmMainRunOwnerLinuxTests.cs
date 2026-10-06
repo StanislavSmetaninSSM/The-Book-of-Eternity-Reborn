@@ -6,6 +6,7 @@ public sealed class GmMainRunOwnerLinuxTests
     public async Task ActualBridge_DurableOriginalOwnerBeforeInteractiveReleaseAndScopedRetirement()=>
         await GmOwnedTerminalLinuxTests.RunAsync("terminal-fence");
     [Theory]
+    [InlineData("terminal-main-running-debt")]
     [InlineData("terminal-main-replacement")]
     [InlineData("terminal-main-forged-stop")]
     [InlineData("terminal-main-closing")]

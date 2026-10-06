@@ -10,7 +10,7 @@ public partial class FileSystemManager
     private static readonly AsyncLocal<MainAdmission?> MainAdmissions=new();
     internal MainAdmission BeginMainAdmission()
     {
-        var parent=MainAdmissions.Value;while(parent is { _closed:true })parent=parent._parent;
+        var parent=MainAdmissions.Value;while(parent is { Closed:true })parent=parent.Parent;
         var frame=new MainAdmission(this,parent,GmSessionRunCoordinator.Current);
         MainAdmissions.Value=frame;return frame;
     }
@@ -21,6 +21,8 @@ public partial class FileSystemManager
         private readonly GmSessionRunCoordinator.Access? _requested;
         private MainAccess? _access;
         private bool _closed;
+        internal bool Closed=>_closed;
+        internal MainAdmission? Parent=>_parent;
         internal MainAdmission(FileSystemManager files,MainAdmission? parent,GmSessionRunCoordinator.Access? requested)
         {_files=files;_parent=parent;_requested=requested;}
         internal async Task AcquireAsync(CancellationToken token=default,bool closing=false)

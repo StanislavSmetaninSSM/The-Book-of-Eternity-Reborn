@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Text.Json;
+using System.Text;
+using System.IO.Pipes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services.GmRuntime;
 using BookOfEternityClient.Services.GmWorkers;
@@ -12,7 +14,7 @@ internal static class MainRunFenceScenarioDriver
 {
     internal static async Task<int> RunAsync(string mode,string package,string folder)
     {
-        var result=new Dictionary<string,object?>();object? host=null;Type? type=null;
+        var result=new Dictionary<string,object?>(){["Mode"]=mode};object? host=null;Type? type=null;
         object? Field(string name)=>type!.GetField(name,BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host);
         void Set(string name,object value)=>type!.GetField(name,BindingFlags.Instance|BindingFlags.NonPublic|BindingFlags.Public)!.SetValue(host,value);
         async Task Call(string name){try{await (Task)type!.GetMethod(name,BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,null)!;}catch(TargetInvocationException e){throw e.InnerException!;}}
@@ -26,6 +28,28 @@ internal static class MainRunFenceScenarioDriver
             type=Assembly.LoadFrom(Path.Combine(repo,"BookOfEternityGMBridge/bin",configuration,"net8.0/BookOfEternityGMBridge.dll")).GetType("BookOfEternityGMBridge.BridgeHost",true)!;
             host=Activator.CreateInstance(type,[launch.Scratch,"f1-"+Guid.NewGuid().ToString("N")]);
             type.GetMethod("ConfigureNeutral",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[launch]);
+            if(mode=="terminal-main-running-debt") {
+                Set("ObserveMainMetadata",(Action<MainRunIoStage>)(stage=>{if(stage==MainRunIoStage.Readback && Read().Disposition==GmSessionRunDisposition.Running)throw new IOException("Running ACK debt");}));
+                OwnedTerminalStartException? partial=null;
+                try{await Call("StartShellAsync");}catch(OwnedTerminalStartException e){partial=e;}
+                Require(partial!=null && ReferenceEquals(partial.Owner,Field("_pty")),"Partial Running ACK debt lost its exact original exception/owner.");
+                var retained=(GmSessionRunCoordinator)Field("_mainRun")!;Require(retained.HasMetadataDebt,"Running ACK debt was accepted.");
+                using var control=new CancellationTokenSource();
+                var server=(Task)type.GetMethod("RunServerLoopAsync",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[control.Token])!;
+                async Task<JsonElement> Rpc(object message) {
+                    using var timeout=new CancellationTokenSource(TimeSpan.FromSeconds(2));
+                    // Use the actual fixed host pipe value, never another dispatcher.
+                    using var actual=new NamedPipeClientStream(".",(string)Field("_pipeName")!,PipeDirection.InOut,PipeOptions.Asynchronous);
+                    await actual.ConnectAsync(timeout.Token);await actual.WriteAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message)+"\n"),timeout.Token);await actual.FlushAsync(timeout.Token);
+                    using var reader=new StreamReader(actual,Encoding.UTF8);using var doc=JsonDocument.Parse((await reader.ReadLineAsync(timeout.Token))!);return doc.RootElement.Clone();
+                }
+                try {
+                    var status=(await Rpc(new{command="status"})).GetProperty("status");
+                    Require(status.GetProperty("terminalOwnerRetained").GetBoolean() && status.GetProperty("terminalUncertain").GetBoolean(),"Partial original owner not visible as uncertain.");
+                    Require(!(await Rpc(new{command="addText",text="must-not-write"})).GetProperty("ok").GetBoolean(),"Partial owner admitted manual input.");
+                } finally {await control.CancelAsync();await server;}
+                result["Success"]=true;return 0;
+            }
             await Call("StartShellAsync");
             var owner=(GmSessionRunCoordinator)Field("_mainRun")!;var terminal=(IOwnedTerminalSession)Field("_pty")!;
             var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);var old=Read();
