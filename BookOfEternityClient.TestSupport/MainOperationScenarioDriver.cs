@@ -12,6 +12,12 @@ internal static class MainOperationScenarioDriver
 {
     internal static async Task<int> RunAsync(string mode,string package,string folder)
     {
+        if(mode=="terminal-main-operation-child") {
+            var files=new FileSystemManager(package,NullLogger<FileSystemManager>.Instance);
+            var record=GmSessionRunRecordCodec.Decode(File.ReadAllBytes(Path.Combine(package,".boe_runtime/gm-runs/main.json")));
+            try {await SessionOperationContext.RunBoundAsync(files,record.Identity.GenerationId,()=>files.WriteFileAtomicAsync("game_state/control/f2-child.txt","two 🌌 inputs"));return 0;}
+            catch(Exception e){await File.WriteAllTextAsync(Path.Combine(folder,"client-failure.json"),JsonSerializer.Serialize(new{Failure=e.ToString()}));return 1;}
+        }
         var result=new Dictionary<string,object?> { ["Mode"]=mode }; object? host=null; Type? type=null; Task? server=null;
         using var control=new CancellationTokenSource();
         async Task Call(string name){try{await (Task)type!.GetMethod(name,BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,null)!;}catch(TargetInvocationException e){throw e.InnerException!;}}
@@ -34,13 +40,37 @@ internal static class MainOperationScenarioDriver
             if(!reply.RootElement.GetProperty("ok").GetBoolean())throw new InvalidOperationException("Actual original owner pipe did not grant a retained main operation.");
             var grant=reply.RootElement;
             object Frame(string command)=>new{command,pinId=grant.GetProperty("pinId").GetString(),closeId=grant.GetProperty("closeId").GetString(),operationId=operation,identity=grant.GetProperty("identity")};
+            var owner=(GmSessionRunCoordinator)type.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
+            if(mode=="terminal-main-operation-activation-exit") {
+                var terminal=(IOwnedTerminalSession)type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
+                await terminal.StopAndObserveAsync(CancellationToken.None);
+            }
             await pipe.WriteAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(Frame("activateMainOperation"))+"\n"),timeout.Token);
-            using var activated=JsonDocument.Parse((await reader.ReadLineAsync(timeout.Token))!);
+            var activationLine=await reader.ReadLineAsync(timeout.Token);
+            if(mode=="terminal-main-operation-activation-exit") {
+                if(activationLine!=null)throw new InvalidOperationException("Dead original terminal granted Active after peer wait.");
+                if(!owner.IsUncertain)throw new InvalidOperationException("Lost prepared grant did not retain Unresolved owner.");
+                result["Success"]=true;return 0;
+            }
+            using var activated=JsonDocument.Parse(activationLine!);
             if(!activated.RootElement.GetProperty("ok").GetBoolean())throw new InvalidOperationException("Original grant did not activate.");
             var close=new {pinId=grant.GetProperty("pinId").GetString(),closeId=grant.GetProperty("closeId").GetString(),operationId=operation,identity=grant.GetProperty("identity"),outcome=0,closingFailed=false};
+            if(mode=="terminal-main-operation-omitted-close") {
+                var incomplete=new{pinId=grant.GetProperty("pinId").GetString(),closeId=grant.GetProperty("closeId").GetString(),operationId=operation,identity=grant.GetProperty("identity")};
+                await pipe.WriteAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new{command="closeMainOperation",close=incomplete})+"\n"),timeout.Token);
+                if(await reader.ReadLineAsync(timeout.Token)!=null)throw new InvalidOperationException("Incomplete terminal close frame retired original pin.");
+                if(!owner.IsUncertain)throw new InvalidOperationException("Incomplete close lost original unresolved pin.");
+                result["Success"]=true;return 0;
+            }
             await pipe.WriteAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new{command="closeMainOperation",close})+"\n"),timeout.Token);
             using var closed=JsonDocument.Parse((await reader.ReadLineAsync(timeout.Token))!);
             if(closed.RootElement.GetProperty("state").GetInt32()!=3)throw new InvalidOperationException("Actual immutable close receipt not observed.");
+            if(mode=="terminal-main-operation-client-positive") {
+                var start=new System.Diagnostics.ProcessStartInfo(Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!,"dotnet")){UseShellExecute=false};
+                foreach(var arg in new[]{typeof(MainOperationScenarioDriver).Assembly.Location,"terminal-main-operation-child",root,folder})start.ArgumentList.Add(arg);
+                using var child=System.Diagnostics.Process.Start(start)!;await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(4));
+                if(child.ExitCode!=0 || File.ReadAllText(new FileSystemManager(root,NullLogger<FileSystemManager>.Instance).ResolvePath("game_state/control/f2-child.txt"))!="two 🌌 inputs")throw new InvalidOperationException("Separate real client did not retain participating admission through actual finalization.");
+            }
             await Call("StopShellAsync");
             if(GmSessionRunRecordCodec.Decode(File.ReadAllBytes(Path.Combine(root,".boe_runtime/gm-runs/main.json"))).Disposition!=GmSessionRunDisposition.Stopped)throw new InvalidOperationException("Closed original pin prevented durable scoped stop.");
             result["ClosedObserved"]=true;result["DurableStopped"]=true;
