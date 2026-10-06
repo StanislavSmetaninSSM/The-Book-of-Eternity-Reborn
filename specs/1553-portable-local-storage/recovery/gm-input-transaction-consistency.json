@@ -23,7 +23,12 @@
   "OptionalHooks": "git commit hook action satisfied by ordinary authorized checkpoint commits; no initialization/feature setup hook executed",
   "ExecutionTestsDuringAnalysis": 0,
   "UnresolvedAcceptanceGates": [
-    "Final independent source/evidence verdict",
-    "Reviewed candidate and final carrier GitHub-only restoration"
-  ]
+    "Final carrier metadata check, ordinary push/readback and fresh GitHub-only restoration; exact final proof in handoff"
+  ],
+  "IndependentSourceEvidenceReview": {
+    "Verdict": "Bounded PASS",
+    "Candidate": "7829279496584f65ea51dd9e8037e57f143064cf",
+    "Model": "gpt-6.1-sol",
+    "Effort": "xhigh"
+  }
 }

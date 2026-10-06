@@ -5,18 +5,24 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## T042 live-owner input transaction: focused GREEN, final review pending
+## T042 live-owner input transaction: bounded PASS; handoff before next stage
 
-Design `dc4a5111` accepted; only the connected input slice is implemented.
-83distinctPASS: bridge46at`773f5e9e` + daemon37at`db5864c2`, with actual pipe
-control and real inert launcher/daemon/QTE/repair consumers. Causal review findings
-resolved; independent actual Sol6.1/xhigh source delta confirmed, final evidence
-verdict and GitHub-only restoration pending. Clean discovery319/10918,0execution.
+Design `dc4a5111` accepted; only the connected controlled input slice is complete.
+83distinctPASS: bridge46at`773f5e9e` + daemon37at`db5864c2`, actual pipe control
+and real inert launcher/daemon/ordinary/QTE/repair consumers. Independent actual
+Sol6.1/xhigh **Bounded PASS** at`78292794`, no confirmed blocker. Clean319/10918
+discovery,0execution;13manifests/271source inputs/133artifacts/54gzip audited.
+Reviewed candidate restored only from GitHub:13,128tracked files, exact tree/history/
+bytes, both clean, fsck/remote SHA match. Final metadata carrier receives separate
+ordinary push/readback/narrow metadata check/fresh restore; exact final SHA in handoff.
 [Qualification](recovery/gm-input-transaction-qualification.json) ·
 [Execution ledger](plan.md#t042-input-transaction--authorized-execution-ledger).
-Queue/profile/retention are controlled technical choices; live UX, arbitrary CLI,
-native/main PTY/systemd/production GM/main fences/real saves and cold delivery remain
-unqualified. No next implementation stage begins here.
+
+Unqualified: every raw read settled before caller return; arbitrary live CLI/TUI
+profiles and final queue/manual-resume UX; native Windows/Linux terminal ownership,
+main PTY/systemd/stop/restart; ordinary production GM/worker Release/main run fences/
+real saves; cold retention/reconciliation/exactly-once/reboot/power-loss. FullT042,
+T041 and#1553 remain open. No new implementation stage begins here.
 
 ## Accepted roadmap toward normal Linux GM launch (historical design checkpoint)
 

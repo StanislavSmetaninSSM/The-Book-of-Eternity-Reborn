@@ -1,0 +1,31 @@
+{
+  "Model": "gpt-6.1-sol",
+  "Effort": "xhigh",
+  "Agent": "/root/native_review",
+  "Verdict": "Bounded PASS",
+  "CandidateCommit": "7829279496584f65ea51dd9e8037e57f143064cf",
+  "RuntimeSource": "db5864c2b2fcecb6958ff7842fc1cf885f688772",
+  "ConfirmedRemainingBlockers": 0,
+  "Verified": {
+    "LatestDistinctPasses": 83,
+    "SourceInputInstances": 271,
+    "Manifests": 13,
+    "Artifacts": 133,
+    "Gzip": 54,
+    "TrxParsed": 24,
+    "CSharpBuildInputsUnchanged": true,
+    "CandidateFreshGitHubOnlyRestoration": "gm-input-transaction-review-restore.json"
+  },
+  "RawVerdict": "Bounded PASS at 7829279496584f65ea51dd9e8037e57f143064cf, reviewed with gpt-6.1-sol/xhigh. No confirmed blocker remains.\n\nVerified 83 source-specific passes matching the exact selection, 13 manifests, 133 artifacts, 54 gzip files, unchanged C# build inputs, and candidate restoration proof.\n\nAcceptance covers controlled live-owner input transactions only. Raw-read settlement, live CLI profiles, native terminal ownership, production/cold integration, and full T042 remain unqualified.\n\nFinal verdict-carrier metadata and restoration remain to be checked.",
+  "ReviewerActions": "Read-only source/artifact/metadata audit; no writes/builds/tests/native probes",
+  "Qualification": "gm-input-transaction-qualification.json",
+  "Unqualified": [
+    "all underlying raw reads settled before each caller returns",
+    "arbitrary live CLI profiles/final queue/manual-resume UX",
+    "native terminal ownership/stop/restart/systemd/main PTY",
+    "ordinary production GM/worker public Release/main run fence/real saves",
+    "cold delivery/exactly-once/reboot/power-loss",
+    "full T042/T041/#1553 game qualification"
+  ],
+  "RecordedUtc": "2026-10-06 08:36:00 UTC"
+}

@@ -7,8 +7,10 @@
 
 ## T042-INPUT-TRANSACTION — authorized execution ledger
 
-Current closure candidate:83distinct focused PASS (bridge46at773f5e9e plus daemon37atdb5864c2),
-source delta independently confirmed; final source/evidence verdict and restoration pending.
+Bounded closure:83distinct focused PASS (bridge46at773f5e9e plus daemon37atdb5864c2).
+Independent actual Sol6.1/xhigh Bounded PASS at78292794; reviewed candidate fresh
+GitHub-only restoration verified13,128tracked files. Final metadata carrier checks
+and separate fresh restoration are reported in handoff without self-reference.
 [Qualification](recovery/gm-input-transaction-qualification.json) and final evidence ledger below.
 
 Accepted design `dc4a5111f7e2b196c06565c294a28fc240fe8356`; user authorized only this
@@ -167,7 +169,18 @@ Do not repeat untouched INPUT37/OUTPUT48 or worker/native cohorts.
   historical475executions439PASS/36FAIL include repeated runs and separately classified
   preparation/fixture failures. All known sessions finished; own fixture roots absent.
   [Clean verification](recovery/evidence/t042-clean-verification/manifest.json).
-- [ ] Independent Sol source/evidence PASS, ordinary publication/readback and fresh restore.
+- [x] Independent Sol source/evidence PASS, ordinary publication/readback and fresh restore.
+  Bounded PASS at7829279496584f65ea51dd9e8037e57f143064cf; no confirmed blocker.
+  Reviewer independently matched13manifests/271inputs/133artifacts/54gzip and24TRX;
+  46bridge +37daemon/integration PASS/no overlap, build reuse and source inputs verified.
+  Fresh GitHub-only candidate13,128files matches exact tree/parent/history/blobs in both
+  clean checkouts; connectivity fsck and remote SHA exact,0tests executed for restoration.
+  [Review](recovery/gm-input-transaction-review.json) ·
+  [Candidate restore](recovery/gm-input-transaction-review-restore.json).
+  Final verdict carrier changes metadata only; normal push/readback, narrow metadata
+  check and another fresh GitHub-only restore follow, exact final SHA/proof in handoff.
+  Stop before the next stage. Raw-read settlement/live CLI/native/main/systemd/
+  production/cold/fullT042 remain unqualified; no GM/save/prompt/model contract change.
 
 ## Ordinary Linux console with persistent interactive GM — design-only continuation
 
