@@ -28,7 +28,7 @@ public sealed class GmOwnedTerminalLinuxTests
     [InlineData("terminal-root-exit-admission")]
     public async Task OriginalOwner_DescendantsRootExitOrUncertain(string mode) { await RunAsync(mode); }
 
-    private static async Task RunAsync(string mode)
+    internal static async Task RunAsync(string mode)
     {
         Assert.True(OperatingSystem.IsLinux(), "This category requires actual Linux native execution.");
         var root = TestRepoPaths.RepoRoot;
@@ -70,7 +70,7 @@ public sealed class GmOwnedTerminalLinuxTests
         if(mode=="terminal-root-exit-admission") { Assert.True(scenario.RootElement.GetProperty("RootExitAdmissionClosed").GetBoolean());Assert.True(scenario.RootElement.GetProperty("ScopedRetired").GetBoolean());return; }
         if (mode == "terminal-authority-loss") { Assert.True(scenario.RootElement.GetProperty("LiveAuthorityLossBlocked").GetBoolean()); return; }
         if (mode == "terminal-uncertain") { Assert.True(scenario.RootElement.GetProperty("UncertainRetained").GetBoolean()); return; }
-        if (mode == "terminal-bridge") {
+        if (mode is "terminal-bridge" or "terminal-fence") {
             foreach(var proof in new[]{"ScopedRetired","TwoDispatchesOneSession","DraftPreserved","CancelledViaPipe","TakeoverViaPipe","ActualResizeViaPipe","ScopedStopViaPipe"}) Assert.True(scenario.RootElement.GetProperty(proof).GetBoolean()); return;
         }
         Assert.True(scenario.RootElement.GetProperty("TwoInputs").GetBoolean());

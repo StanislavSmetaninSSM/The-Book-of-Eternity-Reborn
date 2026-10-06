@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-main-run-owner-linux",
+      "responsibility": "#1553 F1 connected fixed neutral BridgeHost, original native terminal and durable main record, independent guardian cleanup.",
+      "excludes": "Linux-x64 native fixture only; no F2/F3, systemd/Windows native, real GM/saves/cold guarantees.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/",
+        "BookOfEternityGMBridge/Program.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-main-run-fence",
       "responsibility": "#1553 F1 real pre-recovery and held-lease main admission, isolated canonical consumers and retained tombstone",
       "excludes": "No F2/F3, live GM/saves, systemd/Windows native/cold qualification.",

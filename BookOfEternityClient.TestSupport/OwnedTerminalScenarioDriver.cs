@@ -11,7 +11,7 @@ internal static class OwnedTerminalScenarioDriver
 {
     internal static async Task<int> RunAsync(string mode, string package, string output)
     {
-        if (mode is "terminal-bridge" or "terminal-uncertain" or "terminal-authority-loss" or "terminal-partial-start" or "terminal-root-exit-admission") return await RunBridgeAsync(mode, package, output);
+        if (mode is "terminal-fence" or "terminal-bridge" or "terminal-uncertain" or "terminal-authority-loss" or "terminal-partial-start" or "terminal-root-exit-admission") return await RunBridgeAsync(mode, package, output);
         var result = new Dictionary<string, object?>();
         IOwnedTerminalSession? session = null;
         try
@@ -117,6 +117,15 @@ internal static class OwnedTerminalScenarioDriver
             try { await (Task)Invoke("StartShellAsync")!; }
             catch(OwnedTerminalStartException ex) when(mode=="terminal-partial-start") {
                 result["PartialExceptionOriginal"]=ReferenceEquals(ex.Owner,type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host));
+            }
+            if(mode=="terminal-fence") {
+                var record=Path.Combine(Directory.GetParent(launch.Scratch)!.FullName,".boe_runtime/gm-runs/main.json");
+                if(!File.Exists(record))throw new InvalidOperationException("Causal RED: actual released terminal has no durable main record.");
+                var run=BookOfEternityClient.Services.GmRuntime.GmSessionRunRecordCodec.Decode(File.ReadAllBytes(record));
+                var original=(IOwnedTerminalSession)type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
+                if(run.Disposition!=GmSessionRunDisposition.Running || run.Identity.RunId!=original.Identity.RunId)
+                    throw new InvalidOperationException("Actual released terminal is not bound to durable Running identity.");
+                result["DurableOriginalRunning"]=true;
             }
             server = (Task)Invoke("RunServerLoopAsync", serverCancellation.Token)!;
             if(mode=="terminal-partial-start") {
