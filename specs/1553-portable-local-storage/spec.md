@@ -582,3 +582,10 @@ This specification itself changes no GM-authored game field. Storage/runtime doc
 ## Clarifications and limits
 
 The approved storage decisions are settled. The former GM design document is a proposal, not blanket approval; implementation must preserve FR-013 and resolve concrete lifecycle risks. New material behavior losses require direction rather than silent redesign. Final all-platform claims remain limited by actual Windows results.
+
+Bounded T041 neutral outcome (2026-10-06): original BridgeHost/InputLifetime/output/
+T042 consumes one existing native-owned terminal, fixed inert fixture only.
+160distinctPASS/source-specific evidence and independent Sol6.1/xhigh Bounded PASS
+at `595436cf`; [qualified scope and untested boundaries](recovery/owned-main-terminal-neutral.json).
+This closes the neutral implementation task only. FullT041/US4 and main run/write
+fence/systemd/native Windows/live-provider/save/cold requirements remain open.

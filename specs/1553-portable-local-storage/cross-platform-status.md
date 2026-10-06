@@ -5,7 +5,7 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## Owned main terminal: bounded neutral implementation; final review pending
+## Owned main terminal: bounded neutral PASS; final carrier handoff
 
 Accepted design `3b21dba7410284cb4b471e7b3c3e4be970139c27` now feeds actual original
 BridgeHost/InputLifetime/output/T042 through the existing native owner in terminal
@@ -16,8 +16,12 @@ transactions/stop/uncertainty tested; no second dispatcher or managed reaper.
 [Current evidence/limits](recovery/owned-main-terminal-neutral.json) ·
 [Execution ledger](plan.md#t041-owned-main-terminal-neutral--authorized-execution) ·
 [Accepted design](owned-main-terminal-design.md).
-Independent Sol6.1/xhigh final source/evidence verdict and fresh GitHub-only restore
-pending. ConPTY/Job consumed and guarded/build checked; native Windows unqualified.
+Independent actual gpt-6.1-sol/xhigh **Bounded PASS** at `595436cf`; no confirmed
+blocker.24manifests/1769inputinstances/1097artifacts/283gzip verified; candidate
+GitHub-only restore14277files exactSHA/tree/history/bytes/clean/fsck/remote.
+[Review](recovery/owned-main-terminal-neutral-review.json). Final metadata carrier
+gets narrow review/ordinary push/byte readback/another fresh restore; final SHA in
+handoff. ConPTY/Job consumed and guarded/build checked; native Windows unqualified.
 Existing systemd-user remains primary contract, no manager here/no qualification.
 No arbitrary TUI/live provider/public GM launch/main run fence/real saves/cold guarantee.
 Next stage not started. FullT041/T042/#1553 stay open beyond this controlled slice.

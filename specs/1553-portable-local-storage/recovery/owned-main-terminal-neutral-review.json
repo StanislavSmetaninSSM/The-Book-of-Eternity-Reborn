@@ -1,0 +1,33 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T041-OWNED-MAIN-TERMINAL-NEUTRAL",
+  "Reviewer": "/root/native_review",
+  "Model": "gpt-6.1-sol",
+  "ReasoningEffort": "xhigh",
+  "ReviewedCommit": "595436cf31a9c184faa5a3a021441222b6e6ea51",
+  "Verdict": "Bounded PASS",
+  "UnresolvedConfirmedBlockers": [],
+  "ExecutedTestsByReviewer": 0,
+  "WritesByReviewer": 0,
+  "FindingsClosure": "Six preliminary source gaps and four final source findings closed; real EOF and root-exit admission have causal RED\u2192GREEN; foreground correction is isolated outer UI controlling-terminal fixture setup. Late-display-flush hypothesis rejected against actual sole-reader EOF/settlement ordering, no unsolicited defensive change.",
+  "IndependentEvidenceAudit": {
+    "Manifests": 24,
+    "SourceInputInstances": 1769,
+    "Artifacts": 1097,
+    "Gzip": 283,
+    "DistinctPassed": 160,
+    "Mapping": "116 at c3ef969364d55af0dc52e7d769d3fc182229a7f8 plus44 at6061df633091ce25cfa41183aa3d1b5938764a33; raw TRX/IDs/source match."
+  },
+  "Guardians": "12 terminal+12host+7v1 ECHILD; failure/deadline0. Exactly1 expected independent emergency in existing deliberate helper-loss negative.",
+  "CandidateRestore": "owned-main-terminal-neutral-restore.json; independently checked595436cf SHA/tree/parent,clean,14277file bytes",
+  "QualifiedScope": "Fixed Linux-x64/glibc neutral terminal through original BridgeHost/InputLifetime/output/T042 and retained existing native owner; ordinary same-PID-namespace lineage.",
+  "Selection": "Sufficient affected categories; default4portable, explicitLinux9. No broad R3/IPC/ENV/storage replay.",
+  "Unqualified": [
+    "native Windows execution (source/build only)",
+    "primary existing-manager systemd terminal adapter",
+    "arbitrary live configured CLI/provider/TUI and final queue/profile/manual-resume UX",
+    "production main/worker Release and durable main run/write fence",
+    "real saves/cold/reboot/power-loss/exactly-once"
+  ],
+  "MetadataReview": "Pending final carrier delta; runtime/tests frozen."
+}

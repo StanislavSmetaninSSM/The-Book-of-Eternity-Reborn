@@ -200,10 +200,10 @@ GM launch/systemd manager/privileges/settings/live provider/game-writing/saves/c
   positive cleanup before controlled descendants/uncertainty cases.
 - [x] Session-scoped actual output view and T042/real pipe/manual/resize consumers;
   preserve ConPTY/Job contract and retained transport shutdown.
-- [ ] Narrow affected regressions, exact sources/artifacts/cleanup, independent
+- [x] Narrow affected regressions, exact sources/artifacts/cleanup, independent
   source/evidence verdict, checkpoint/readback/fresh GitHub-only restore; handoff.
 
-Current bounded outcome (2026-10-06): **160 distinct PASS**, review/restore pending.
+Current bounded outcome (2026-10-06): **160 distinct PASS**, independent source/evidence Bounded PASS.
 Original retirement causal RED→GREEN precedes native own-root positive cleanup;
 source-backed review gaps added genuine EOF and root-exit admission RED→GREEN.
 Runtime source `c3ef9693`, corrected foreground fixture source `6061df63`.
@@ -222,8 +222,13 @@ Default CI selection is four portable categories; explicit Linux manifest holds
 nine impacted owners. No CI workflow change. Exact commands/source hashes/DLL/PDB/
 ELF/compiler/source manifests and compressed raw logs/TRX in the current ledger.
 All former WIP/next wording in historical sections below remains historical.
-Final independent source/evidence review, remote checkpoint/readback and fresh
-GitHub-only restoration still pending; no production/main fence stage starts.
+Independent actual gpt-6.1-sol/xhigh **Bounded PASS** at `595436cf`, no confirmed
+blockers. Reviewed candidate fresh GitHub-only restore:14277tracked files, exact
+SHA/tree/parent/history/bytes/fsck, both clean and remote ref matched.
+[Review](recovery/owned-main-terminal-neutral-review.json). Final metadata carrier
+receives narrow review, ordinary push/readback and another fresh GitHub-only restore;
+exact final SHA/proof in handoff, no self-referential commit field. Runtime/tests
+frozen. Stop before production/main fence/systemd/live/next stage.
 
 ## Owned main terminal — accepted design-only block
 
