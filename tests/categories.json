@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-main-operation-native-linux",
+      "responsibility": "#1553 F2 actual original neutral owner and retained client operation through real pipe, canonical fence and independent guardian.",
+      "excludes": "No F3, production GM, actual saves, systemd or native Windows qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmMainOperation",
+        "BookOfEternityGMBridge/",
+        "BookOfEternityClient.TestSupport/MainOperationScenarioDriver.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainOperationLinuxTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-main-run-owner-linux",
       "responsibility": "#1553 F1 connected fixed neutral BridgeHost, original native terminal and durable main record, independent guardian cleanup.",
       "excludes": "Linux-x64 native fixture only; no F2/F3, systemd/Windows native, real GM/saves/cold guarantees.",

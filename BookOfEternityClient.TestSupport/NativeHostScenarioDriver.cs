@@ -13,6 +13,7 @@ internal static class NativeHostScenarioDriver
 {
     internal static async Task<int> Main(string[] args)
     {
+        if(args.Length==3 && args[0].StartsWith("terminal-main-operation-",StringComparison.Ordinal))return await MainOperationScenarioDriver.RunAsync(args[0],args[1],args[2]);
         if(args.Length==3 && args[0].StartsWith("terminal-main-",StringComparison.Ordinal))return await MainRunFenceScenarioDriver.RunAsync(args[0],args[1],args[2]);
         if (args.Length == 3 && args[0].StartsWith("terminal-", StringComparison.Ordinal))
             return await OwnedTerminalScenarioDriver.RunAsync(args[0], args[1], args[2]);
