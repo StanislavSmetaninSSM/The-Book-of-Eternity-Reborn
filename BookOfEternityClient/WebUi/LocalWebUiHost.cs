@@ -113,9 +113,9 @@ public static class LocalWebUiHost
             var result = await menu.CreateManualSaveAsync(request);
             return CreateSaveResponse(result);
         });
-        app.MapPost("/api/saves/load", async (BrowserLoadSaveRequest request, LocalWebUiMainMenuService menu) =>
+        app.MapPost("/api/saves/load", async (BrowserLoadSaveRequest request, LocalWebUiMainMenuService menu, BrowserLoadStateService state) =>
         {
-            var result = await menu.LoadSaveAsync(request);
+            var result = await menu.LoadSaveAsync(request, state.BuildAsync);
             return LoadSaveResponse(result);
         });
         app.MapPost("/api/saves/load-state", async (BrowserLoadStateRequest request, BrowserLoadStateService state) =>

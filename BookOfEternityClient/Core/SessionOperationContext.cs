@@ -97,7 +97,7 @@ internal static class SessionOperationContext
         try {result=await RunBoundBodyAsync(fileSystem,expectedGeneration,operation,writeLease);}
         catch(Exception e){failure=e;throw;}
         finally {
-            try {await main.CompleteAsync(failure is OperationCanceledException?MainOperationOutcome.Cancelled:failure!=null?MainOperationOutcome.Failed:MainOperationOutcome.Completed,failure!=null);}
+            try {await main.CompleteAsync(failure is OperationCanceledException?MainOperationOutcome.Cancelled:failure!=null?MainOperationOutcome.Failed:MainOperationOutcome.Completed,HasClosingFailure(failure));}
             catch(Exception close) when(failure!=null){failure.Data["MainOperationCloseFailure"]=close;}
         }
         return result!;
@@ -116,10 +116,12 @@ internal static class SessionOperationContext
             return await RunBoundCoreAsync(files,generation,operation,null);
         } catch(Exception e){failure=e;throw;}
         finally {
-            try {await main.CompleteAsync(failure is OperationCanceledException?MainOperationOutcome.Cancelled:failure!=null?MainOperationOutcome.Failed:establishedOutcome?.Invoke()??MainOperationOutcome.Completed,failure!=null);}
+            try {await main.CompleteAsync(failure is OperationCanceledException?MainOperationOutcome.Cancelled:failure!=null?MainOperationOutcome.Failed:establishedOutcome?.Invoke()??MainOperationOutcome.Completed,HasClosingFailure(failure));}
             catch(Exception close) when(failure!=null){failure.Data["MainOperationCloseFailure"]=close;}
         }
     }
+
+    private static bool HasClosingFailure(Exception? failure)=>failure?.Data.Contains("SessionFinalizationFailure")==true;
 
     internal static Task RunParticipatingCurrentSessionAsync(FileSystemManager files,Func<Task> operation)=>
         RunParticipatingCurrentSessionAsync<object?>(files,async()=>{await operation();return null;});
@@ -169,8 +171,7 @@ internal static class SessionOperationContext
                 writeLease,
                 verifyAfterOperation: writeLease != null);
         }
-        catch (Exception failure) when (failure is CoordinatedStatePublicationUncertainException or
-            CommittedSaveContinuationException or SessionReplacedException)
+        catch (Exception failure)
         {
             // RunWithinBindingAsync has already applied replacement precedence.
             operationFailure = failure;
@@ -217,6 +218,11 @@ internal static class SessionOperationContext
                     if (!ReferenceEquals(retained, closingFailure))
                         retained.Data["SessionFinalizationFailure"] = closingFailure;
                     ExceptionDispatchInfo.Capture(retained).Throw();
+                    throw;
+                }
+                catch (Exception closingFailure)
+                {
+                    closingFailure.Data["SessionFinalizationFailure"] = true;
                     throw;
                 }
                 finally

@@ -15,6 +15,8 @@ public sealed class BrowserLoadStateService(
     public async Task<BrowserLoadStateDto> BuildAsync(BrowserLoadStateRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
+        using var mainAdmission=files.BeginMainAdmission();
+        await mainAdmission.AcquireAsync(quiescentOnly: true);
         var generation = request.EstablishedGeneration;
         if (request.ReconcileCurrent)
         {

@@ -53,17 +53,19 @@ public sealed class LocalWebUiMainMenuService
 
     /// <summary>Loads a menu-issued archive without losing its decision during required menu refresh.</summary>
     internal Func<Task>? BeforeCommittedMenuRefresh {get;set;}
-    public async Task<BrowserLoadSaveResultDto> LoadSaveAsync(BrowserLoadSaveRequest request)
+    public async Task<BrowserLoadSaveResultDto> LoadSaveAsync(BrowserLoadSaveRequest request,
+        Func<BrowserLoadStateRequest, Task<BrowserLoadStateDto>>? buildState = null)
     {
         ArgumentNullException.ThrowIfNull(request);
         LoadReplacementResult? retained = null;
         var saveId = request.SaveId?.Trim() ?? string.Empty;
         BrowserMainMenuDto? menu = null;
+        BrowserLoadStateDto? bundle = null;
         var missing = false;
         using var mainAdmission=_fs.BeginMainAdmission();
         try
         {
-            await mainAdmission.AcquireAsync();
+            await mainAdmission.AcquireAsync(quiescentOnly: true);
             var saves = await BuildSaveSlotsWithPathsAsync();
             var match = saves.FirstOrDefault(save => string.Equals(save.Dto.SaveId, saveId, StringComparison.Ordinal));
             if (match is null || string.IsNullOrWhiteSpace(match.FullPath))
@@ -77,12 +79,23 @@ public sealed class LocalWebUiMainMenuService
                     new BrowserLocalWriteRequest("browser-main-menu-load", "Browser main menu", "browser save load"),
                     admission => _saveLoad.LoadGameWithAdmissionAsync(match.FullPath, admission));
             }
-            if (!retained.ContinuationBlocked && retained.Disposition == LoadReplacementDisposition.Committed)
+            if (!retained.ContinuationBlocked)
             {
-                if (string.IsNullOrWhiteSpace(retained.EstablishedGeneration))
-                    throw new InvalidOperationException("Committed load did not establish a generation.");
-                if(BeforeCommittedMenuRefresh!=null)await BeforeCommittedMenuRefresh();
-                menu = await SessionOperationContext.RunBoundAsync(_fs, retained.EstablishedGeneration, BuildAsync);
+                var committedLoad = retained.Disposition == LoadReplacementDisposition.Committed;
+                if (committedLoad)
+                {
+                    if (string.IsNullOrWhiteSpace(retained.EstablishedGeneration))
+                        throw new InvalidOperationException("Committed load did not establish a generation.");
+                    if (BeforeCommittedMenuRefresh != null) await BeforeCommittedMenuRefresh();
+                }
+                if (buildState != null)
+                {
+                    var reconcileCurrent = retained.Disposition == LoadReplacementDisposition.NotLoaded;
+                    bundle = await buildState(new(reconcileCurrent ? null : retained.EstablishedGeneration, reconcileCurrent));
+                    menu = bundle.Menu;
+                }
+                else if (committedLoad)
+                    menu = await SessionOperationContext.RunBoundAsync(_fs, retained.EstablishedGeneration!, BuildAsync);
             }
         }
         catch (Exception failure)
@@ -105,7 +118,8 @@ public sealed class LocalWebUiMainMenuService
         };
         return new(committed, message, committed ? saveId : string.Empty,
             retained.ContinuationBlocked ? null : menu, retained.Disposition, retained.SelectedSourcePath,
-            retained.EstablishedGeneration, retained.NeedsFollowUp, retained.ContinuationBlocked);
+            retained.EstablishedGeneration, retained.NeedsFollowUp, retained.ContinuationBlocked,
+            retained.ContinuationBlocked ? null : bundle);
     }
 
     /// <summary>
@@ -712,7 +726,8 @@ public sealed record BrowserLoadSaveResultDto(
     string? SelectedSourcePath,
     string? EstablishedGeneration,
     bool NeedsFollowUp,
-    bool ContinuationBlocked);
+    bool ContinuationBlocked,
+    BrowserLoadStateDto? State = null);
 
 public sealed record BrowserCreateSaveRequest(string? SaveName);
 

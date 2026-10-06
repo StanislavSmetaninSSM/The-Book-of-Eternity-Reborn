@@ -70,9 +70,9 @@ public partial class GameEngine
 
     private async Task<bool> WaitForGmResponse()
     {
-        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
-        return await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
+        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
         var manifest = await LoadPendingTurnSnapshotManifestAsync();
         var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
         var rollbackSnapshot = BuildValidatedRollbackSnapshot(snapshotContext);
@@ -256,9 +256,9 @@ public partial class GameEngine
     /// </summary>
     private async Task<bool> WaitForGmResponseRaw()
     {
-        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
-        return await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
+        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
         var manifest = await LoadPendingTurnSnapshotManifestAsync();
         var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
         var rollbackSnapshot = BuildValidatedRollbackSnapshot(snapshotContext);
@@ -565,10 +565,7 @@ public partial class GameEngine
 
     private async Task<int?> TryReadActiveDaemonTurnTimeoutSecondsAsync()
     {
-        if (!_fs.FileExists(GmDaemonStatusPath))
-            return null;
-
-        var statusJson = await _fs.ReadFileAsync(GmDaemonStatusPath);
+        var statusJson = await _fs.ReadDiagnosticStatusAsync(GmDaemonStatusPath);
         if (string.IsNullOrWhiteSpace(statusJson))
             return null;
 
@@ -628,10 +625,8 @@ public partial class GameEngine
         string pidPropertyName,
         string displayName)
     {
-        if (!_fs.FileExists(statusPath))
-            return null;
-
-        var statusJson = await _fs.ReadFileAsync(statusPath);
+        var statusJson = await _fs.ReadDiagnosticStatusAsync(statusPath);
+        if (statusJson == null) return null;
         if (string.IsNullOrWhiteSpace(statusJson))
             return $"{displayName} status file is empty ({statusPath}).";
 
@@ -787,9 +782,9 @@ public partial class GameEngine
 
     private async Task<bool> ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync()
     {
-        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
-        return await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
+        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
             await InvokeSessionFinalizationCheckpointAsync(
                 SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound);
 
@@ -1273,9 +1268,9 @@ public partial class GameEngine
         string? waitingText = null,
         bool playerFacingTurn = true)
     {
-        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
-        await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
+        await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
         if (!await ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода"))
             return;
 
@@ -2145,9 +2140,9 @@ public partial class GameEngine
     /// </summary>
     private async Task<bool> CheckLifeTransitions(ValidatedPendingTurnSnapshotContext? acceptedTurnSnapshotContext = null)
     {
-        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
-        return await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
+        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
         var transJson = await _fs.ReadFileAsync("game_state/control/life_transitions.json");
         if (transJson == null) return false;
 
@@ -2580,9 +2575,9 @@ public partial class GameEngine
     /// </summary>
     private async Task<bool> CheckGmIncarnationTrigger(ValidatedPendingTurnSnapshotContext? acceptedTurnSnapshotContext = null)
     {
-        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
-        return await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
+        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
         var triggerJson = await _fs.ReadFileAsync("game_state/control/incarnation_trigger.json");
         if (triggerJson == null) return false;
         var isShiningBootstrapHandoff = _stateManager.CurrentState.IsInShiningAbodePendingBootstrap;

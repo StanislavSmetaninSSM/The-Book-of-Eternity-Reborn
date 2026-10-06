@@ -78,7 +78,7 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
     try {
       await executeBrowserLoad(() => browserApi.loadSave({ saveId: slot.saveId }), ownsLoad,
         notice => setLauncherNotice(notice.message), notice => blockLoadContinuation?.(notice),
-        (generation, allowNoActive) => refreshAfterLoad?.(generation, ownsLoad, allowNoActive) ?? Promise.resolve(false),
+        (generation, allowNoActive, state) => refreshAfterLoad?.(generation, ownsLoad, allowNoActive, state) ?? Promise.resolve(false),
         () => onActiveRouteChange('game'), notice => reportLoadNotice?.(notice));
     } finally {
       if (isLauncherMountedRef.current && loadEpoch.current === epoch) setLoadingSaveId(null);

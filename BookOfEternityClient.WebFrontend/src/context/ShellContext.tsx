@@ -1,3 +1,4 @@
+import type { BrowserLoadStateDto } from '../api/contracts';
 import {
   createContext,
   useCallback,
@@ -90,7 +91,7 @@ export interface ShellContextValue {
   loadFollowUpNotice?: LoadPersistenceNotice | null;
   reportLoadNotice?: (notice: LoadPersistenceNotice) => void;
   blockLoadContinuation?: (notice: LoadPersistenceNotice) => void;
-  refreshAfterLoad?: (generation: string | null, isCurrent: () => boolean, allowNoActiveSession?: boolean) => Promise<boolean>;
+  refreshAfterLoad?: (generation: string | null, isCurrent: () => boolean, allowNoActiveSession?: boolean, state?: BrowserLoadStateDto | null) => Promise<boolean>;
   /** Present in the real shell; optional for independent read-only component hosts. */
   saveContinuationNotice?: SavePersistenceNotice | null;
   /** Retains a save-specific stop until this shell is restarted after storage reconciliation. */
@@ -201,9 +202,9 @@ export function ShellProvider({ children }: { children: ReactNode }) {
   const blockLoadContinuation = useCallback((notice: LoadPersistenceNotice) => {
     setLoadContinuationNotice(loadController.current.block(notice)); invalidateRefresh();
   }, [invalidateRefresh]);
-  const refreshAfterLoad = useCallback((generation: string | null, isCurrent: () => boolean, allowNoActiveSession = false) => {
+  const refreshAfterLoad = useCallback((generation: string | null, isCurrent: () => boolean, allowNoActiveSession = false, state?: BrowserLoadStateDto | null) => {
     if (continuationBlocked()) return Promise.resolve(false);
-    return refreshAfterLoadCore(generation, () => !continuationBlocked() && isCurrent(), allowNoActiveSession);
+    return refreshAfterLoadCore(generation, () => !continuationBlocked() && isCurrent(), allowNoActiveSession, state);
   }, [continuationBlocked, refreshAfterLoadCore]);
   const loadBrowserState = useCallback(async (isCurrent?: () => boolean) => {
     if (continuationBlocked() || isLoadInProgress()) return;

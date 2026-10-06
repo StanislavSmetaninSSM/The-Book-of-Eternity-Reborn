@@ -60,6 +60,8 @@ public sealed class ExplorerWebCommandService
             !ExplorerCommandMigrationRegistry.IsBrowserExecutable(subcommand.BrowserStatus))
             return BuildBlockedMigrationResult(command, subcommand);
 
+        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
+        {
         string expectedGeneration;
         await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
             expectedGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
@@ -92,6 +94,7 @@ public sealed class ExplorerWebCommandService
                 descriptor,
                 effectiveRequest);
         }
+        });
     }
 
     public Task<ExplorerCommandResult> SubmitPromptSessionAsync(ExplorerPromptSessionSubmitRequest request) =>

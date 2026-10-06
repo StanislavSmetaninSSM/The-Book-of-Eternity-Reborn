@@ -2,6 +2,24 @@ namespace BookOfEternityClient.Core;
 
 public partial class FileSystemManager
 {
+    // Endpoint/status discovery is diagnostic only. It must neither recover a
+    // canonical journal nor acquire a write lease or infer authority from a PID.
+    internal async Task<string?> ReadDiagnosticStatusAsync(string relativePath)
+    {
+        if(relativePath is not ("game_state/control/gm_bridge_status.json" or "game_state/control/gm_daemon_status.json"))
+            throw new InvalidDataException("Unsupported diagnostic status path.");
+        var path=ResolvePath(relativePath);
+        var scope=new TrustedLocalFileScope([GameSessionPath]);
+        if(!File.Exists(scope.ValidateFile(path)))return null;
+        await using var stream=OpenValidatedOrdinaryFile(scope,path,asynchronous:true);
+        if(stream==null)return null;
+        if(stream.Length>65536)throw new InvalidDataException("Diagnostic status exceeds its bound.");
+        var bytes=new byte[65537];var count=0;
+        while(count<bytes.Length){var n=await stream.ReadAsync(bytes.AsMemory(count));if(n==0)break;count+=n;}
+        if(count>65536)throw new InvalidDataException("Diagnostic status exceeds its bound.");
+        return new System.Text.UTF8Encoding(false,true).GetString(bytes,0,count).TrimStart('\uFEFF');
+    }
+
     // .NET's Linux FileStream reports an existing sharing lock as raw errno 11
     // (EWOULDBLOCK), rather than the Windows sharing/lock HRESULTs.
     private static bool IsTransientOrdinaryReadOpenException(Exception exception) =>

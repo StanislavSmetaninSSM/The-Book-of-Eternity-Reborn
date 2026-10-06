@@ -80,12 +80,12 @@ public sealed partial class BrowserLocalWriteCoordinator
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(replacementOperation);
         using var mainAdmission=_fs.BeginMainAdmission();
-        await mainAdmission.AcquireAsync();
         LocalUiSessionLockLease? replacementGuard = null;
         LoadReplacementResult? retained = null;
         var dispatched = false;
         try
         {
+            await mainAdmission.AcquireAsync(quiescentOnly: true);
             await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
             {
                 if (BrowserPendingTurnInspector.Build(_fs, writeLease).HasActiveGmTurn)
@@ -201,44 +201,21 @@ public sealed partial class BrowserLocalWriteCoordinator
         }
     }
 
-    internal async Task<T> RunBoundAsync<T>(Func<Task<T>> operation)
+    internal Task<T> RunBoundAsync<T>(Func<Task<T>> operation)
     {
         ArgumentNullException.ThrowIfNull(operation);
-
-        string generation;
-        if (!SessionOperationContext.TryGetExpectedGeneration(_fs.BasePath, out generation))
-        {
-            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            generation = _fs.GetOrCreateSessionGeneration(writeLease);
-        }
-
-        return await SessionOperationContext.RunBoundAsync(_fs, generation, operation);
+        return SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, operation);
     }
 
-    internal async Task<T> RunBoundTransactionAsync<T>(
-        Func<FileSystemManager.CanonicalWriteLease, Task<T>> operation)
+    internal Task<T> RunBoundTransactionAsync<T>(Func<FileSystemManager.CanonicalWriteLease, Task<T>> operation)
     {
         ArgumentNullException.ThrowIfNull(operation);
-
-        if (!SessionOperationContext.TryGetExpectedGeneration(_fs.BasePath, out var generation))
+        return SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {
             await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            generation = _fs.GetOrCreateSessionGeneration(writeLease);
-            return await SessionOperationContext.RunBoundAsync(
-                _fs,
-                generation,
-                writeLease,
-                () => operation(writeLease));
-        }
-
-        return await SessionOperationContext.RunBoundAsync(
-            _fs,
-            generation,
-            async () =>
-            {
-                await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-                return await operation(writeLease);
-            });
+            var generation = _fs.ReadExistingSessionGeneration(writeLease) ?? throw new InvalidDataException("Original transaction generation is missing.");
+            return await SessionOperationContext.RunBoundAsync(_fs, generation, writeLease, () => operation(writeLease));
+        });
     }
 
     internal async Task RunBoundTransactionAsync(

@@ -24,8 +24,7 @@ internal sealed class GmMainOperationClient : IAsyncDisposable
         var bytes=GmSessionRunPersistence.Read(files.BasePath)??throw GmSessionRunPersistence.Invalid();
         var expected=GmSessionRunRecordCodec.Decode(bytes);
         if(expected.Disposition!=GmSessionRunDisposition.Running)throw GmSessionRunPersistence.Invalid();
-        var status=files.ResolvePath("game_state/control/gm_bridge_status.json");
-        using var doc=JsonDocument.Parse(ReadBoundedText(status));
+        using var doc=JsonDocument.Parse(await files.ReadDiagnosticStatusAsync("game_state/control/gm_bridge_status.json")??throw GmSessionRunPersistence.Invalid());
         var name=doc.RootElement.GetProperty("pipeName").GetString();
         if(string.IsNullOrWhiteSpace(name) || name.Length>128)throw GmSessionRunPersistence.Invalid();
         var pipe=new NamedPipeClientStream(".",name,PipeDirection.InOut,PipeOptions.Asynchronous);
@@ -42,13 +41,6 @@ internal sealed class GmMainOperationClient : IAsyncDisposable
             if(active!=(grant with{State=MainOperationState.Active}))throw GmSessionRunPersistence.Invalid();
             var client=new GmMainOperationClient(pipe,reader,active);client._readTask=client.ReadRepliesAsync();return client;
         } catch {pipe.Dispose();throw;}
-    }
-    private static string ReadBoundedText(string path)
-    {
-        using var stream=File.OpenRead(path);if(stream.Length>65536)throw GmSessionRunPersistence.Invalid();
-        using var reader=new StreamReader(stream,new System.Text.UTF8Encoding(false,true),true);
-        var chars=new char[65537];var count=0;while(count<chars.Length){var n=reader.Read(chars,count,chars.Length-count);if(n==0)break;count+=n;}
-        if(count>65536)throw GmSessionRunPersistence.Invalid();return new string(chars,0,count);
     }
     private async Task ReadRepliesAsync()
     {

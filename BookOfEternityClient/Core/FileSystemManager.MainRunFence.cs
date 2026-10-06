@@ -34,12 +34,15 @@ public partial class FileSystemManager
         internal MainAdmission? Parent=>_parent;
         internal MainAdmission(FileSystemManager files,MainAdmission? parent,GmSessionRunCoordinator.Access? requested,bool participating)
         {_files=files;_parent=parent;_requested=requested;_participating=participating;}
-        internal async Task AcquireAsync(CancellationToken token=default,bool closing=false)
+        internal async Task AcquireAsync(CancellationToken token=default,bool closing=false,bool quiescentOnly=false)
         {
+            if(quiescentOnly && _requested?.Pin!=null)throw GmSessionRunPersistence.Invalid();
             if(_requested?.Owner.RootIdentity==_files.CanonicalRootAuthorityIdentity)_requested.Owner.ValidateAccessAcquisition(_requested,closing);
             for(var p=_parent;p!=null;p=p._parent)
-                if(!p._closed && p._files.CanonicalRootAuthorityIdentity==_files.CanonicalRootAuthorityIdentity && p._requested==_requested && p._access!=null)
-                {var borrowed=p._access;borrowed.Remote?.Validate(_files.BasePath,closing && borrowed.Remote.Closing);
+                if(!p._closed && p._files.CanonicalRootAuthorityIdentity==_files.CanonicalRootAuthorityIdentity && p._requested==_requested && p._access is { } borrowed)
+                {
+                    if(quiescentOnly && (borrowed.Remote!=null || borrowed.Original?.Pin!=null))throw GmSessionRunPersistence.Invalid();
+                    borrowed.Remote?.Validate(_files.BasePath,closing && borrowed.Remote.Closing);
                     if(_files._hooks?.BeforeMainBorrowRetainAsync is { } hook)await hook();
                     _access=borrowed.Retain();WasRemote=_access.Remote!=null;_retainedRemote=_access.Remote;_retainedOriginal=_access.Original;return;}
             if(_requested!=null && _requested.Owner.RootIdentity==_files.CanonicalRootAuthorityIdentity)
@@ -65,7 +68,8 @@ public partial class FileSystemManager
         internal async Task CompleteAsync(MainOperationOutcome outcome,bool closingFailed)
         {
             if(!_ownsRemote)return;
-            if(_access==null || _access.References!=1)throw new IOException("Original operation still owns filesystem leases.");
+            if(_access==null)throw GmSessionRunPersistence.Invalid();
+            _access.FreezeForTerminalClose();
             await _access.Remote!.CompleteAsync(outcome,closingFailed);
         }
         internal void Validate(CanonicalWriteLease? lease)
@@ -107,13 +111,34 @@ public partial class FileSystemManager
     }
     private sealed class MainAccess(GmMainOwnerGuard? guard,GmSessionRunCoordinator.Access? original,GmMainOperationClient? remote=null) : IDisposable
     {
+        private readonly object _state = new();
         private int _references=1;
-        internal int References=>Volatile.Read(ref _references);
+        private bool _frozen;
         internal GmMainOperationClient? Remote=>remote;
         internal GmMainOwnerGuard? Guard=>guard;
         internal GmSessionRunCoordinator.Access? Original=>original;
-        internal MainAccess Retain(){Interlocked.Increment(ref _references);return this;}
-        public void Dispose(){if(Interlocked.Decrement(ref _references)==0){guard?.Dispose();original?.Pin?.Dispose();}}
+        internal MainAccess Retain()
+        {
+            lock(_state)
+            {
+                if(_frozen || _references==0)throw GmSessionRunPersistence.Invalid();
+                _references++;return this;
+            }
+        }
+        internal void FreezeForTerminalClose()
+        {
+            lock(_state)
+            {
+                _frozen=true;
+                if(_references!=1)throw new IOException("Original operation still owns filesystem leases; close is unconfirmed.");
+            }
+        }
+        public void Dispose()
+        {
+            bool release;
+            lock(_state) { if(_references==0)return;release=--_references==0; }
+            if(release){guard?.Dispose();original?.Pin?.Dispose();}
+        }
     }
     private void EnsureMainMutationAllowed(CanonicalWriteLease lease)
     {

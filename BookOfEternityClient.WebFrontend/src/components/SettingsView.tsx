@@ -122,7 +122,7 @@ export function SettingsView() {
           invalidatePendingSettings();
           blockLoadContinuation?.(notice);
         },
-        (established, allowNoActive) => refreshAfterLoad?.(established, ownsLoad, allowNoActive) ?? Promise.resolve(false),
+        (established, allowNoActive, state) => refreshAfterLoad?.(established, ownsLoad, allowNoActive, state) ?? Promise.resolve(false),
         () => setActiveRoute('game'), notice => reportLoadNotice?.(notice));
     } finally {
       if (isMountedRef.current && writeScope.current.generation === generation) setLoadingSaveId(null);

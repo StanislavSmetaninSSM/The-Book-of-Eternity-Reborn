@@ -141,6 +141,7 @@ export interface BrowserLoadSaveResultDto {
   establishedGeneration: string | null;
   needsFollowUp: boolean;
   continuationBlocked: boolean;
+  state?: BrowserLoadStateDto | null;
 }
 
 export interface BrowserLoadStateRequest {

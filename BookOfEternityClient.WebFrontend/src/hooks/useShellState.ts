@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
+import type { BrowserLoadStateDto } from '../api/contracts';
 import { browserApi } from '../api/client';
 import type { BrowserShellState } from '../context/ShellContext';
 import { loadShellState } from './loadShellState';
@@ -17,7 +18,7 @@ export function useShellState(advancedEnabled: boolean) {
   }, [advancedEnabled]);
 
   const invalidateRefresh = useCallback(() => { publicationOwner.current++; }, []);
-  const refreshAfterLoad = useCallback((generation: string | null, isCurrent: () => boolean, allowNoActiveSession = false) =>
-    refreshShellAfterLoad(browserApi, setShellState, publicationOwner, generation, isCurrent, allowNoActiveSession), []);
+  const refreshAfterLoad = useCallback((generation: string | null, isCurrent: () => boolean, allowNoActiveSession = false, state?: BrowserLoadStateDto | null) =>
+    refreshShellAfterLoad(browserApi, setShellState, publicationOwner, generation, isCurrent, allowNoActiveSession, state), []);
   return { shellState, loadBrowserState, refreshAfterSave, refreshAfterLoad, invalidateRefresh };
 }

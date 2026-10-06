@@ -1298,9 +1298,9 @@ public partial class GameEngine
     /// </summary>
     private async Task HandleIncarnation()
     {
-        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
-        await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
+        await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
         await InvokeSessionFinalizationCheckpointAsync(
             SessionFinalizationCheckpoint.IncarnationOperationBound);
         await _fs.VerifyCurrentSessionOperationAsync();

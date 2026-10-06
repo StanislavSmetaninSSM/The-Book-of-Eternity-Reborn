@@ -1,5 +1,5 @@
 import type { BrowserApiClient } from '../api/client';
-import type { BrowserApiFailure } from '../api/contracts';
+import type { BrowserApiFailure, BrowserLoadStateDto } from '../api/contracts';
 import type { PublishShellState, ShellRefreshOwner } from './loadShellState';
 
 /** Publishes one complete, exact-generation bundle. Current capture is reserved for known non-loading. */
@@ -9,12 +9,16 @@ export async function refreshShellAfterLoad(
   publicationOwner: ShellRefreshOwner,
   generation: string | null,
   requestIsCurrent: () => boolean,
-  allowNoActiveSession = false
+  allowNoActiveSession = false,
+  state?: BrowserLoadStateDto | null
 ): Promise<boolean> {
   if (!requestIsCurrent() || generation === '') return false;
   const owner = ++publicationOwner.current;
   const isCurrent = () => owner === publicationOwner.current && requestIsCurrent();
-  const result = await api.getLoadState({ establishedGeneration: generation, reconcileCurrent: generation === null });
+  if (state === null) return false; // Missing Load bundle cannot trigger a new admission.
+  const result = state === undefined
+    ? await api.getLoadState({ establishedGeneration: generation, reconcileCurrent: generation === null })
+    : { ok: true as const, status: 200, data: state };
   if (!isCurrent() || !result.ok) return false;
   const bundle = result.data;
   if (!bundle || typeof bundle.establishedGeneration !== 'string' || !bundle.establishedGeneration.trim()

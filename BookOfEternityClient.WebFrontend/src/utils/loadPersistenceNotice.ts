@@ -1,4 +1,4 @@
-import type { BrowserApiResult, BrowserLoadSaveResultDto } from '../api/contracts';
+import type { BrowserApiResult, BrowserLoadSaveResultDto, BrowserLoadStateDto } from '../api/contracts';
 
 export interface LoadPersistenceNotice {
   disposition: 'NotLoaded' | 'Committed' | 'RolledBack' | 'Uncertain';
@@ -43,7 +43,7 @@ export async function executeBrowserLoad(
   isCurrent: () => boolean,
   apply: (notice: LoadPersistenceNotice) => void,
   block: (notice: LoadPersistenceNotice) => void,
-  refresh: (generation: string | null, allowNoActiveSession: boolean) => Promise<boolean>,
+  refresh: (generation: string | null, allowNoActiveSession: boolean, state: BrowserLoadStateDto | null) => Promise<boolean>,
   navigate: () => void,
   retain: (notice: LoadPersistenceNotice) => void = () => {}
 ): Promise<LoadPersistenceNotice> {
@@ -66,7 +66,7 @@ export async function executeBrowserLoad(
   }
   let confirmed = false;
   try { confirmed = await refresh(notice.disposition === 'NotLoaded' ? null : notice.establishedGeneration,
-    notice.disposition !== 'Committed'); } catch { /* Preserve the established decision. */ }
+    notice.disposition !== 'Committed', ((result?.ok ? result.data : result?.payload) as BrowserLoadSaveResultDto | undefined)?.state ?? null); } catch { /* Preserve the established decision. */ }
   if (!confirmed || !isCurrent()) { stop(); return notice; }
   if (notice.disposition === 'Committed') navigate();
   return notice;

@@ -52,8 +52,11 @@ try
             throw new ArgumentException(liveTurnPreparationError);
 
         var fs = new FileSystemManager(basePath, NullLogger<FileSystemManager>.Instance);
-        fs.EnsureDirectoryStructure();
-        var result = await new LiveTurnPreparationService(fs).PrepareAsync(liveTurnPreparationOptions);
+        var result = await SessionOperationContext.RunParticipatingCurrentSessionAsync(fs, async () =>
+        {
+            fs.EnsureDirectoryStructure();
+            return await new LiveTurnPreparationService(fs).PrepareAsync(liveTurnPreparationOptions);
+        });
         Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(
             result,
             SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));

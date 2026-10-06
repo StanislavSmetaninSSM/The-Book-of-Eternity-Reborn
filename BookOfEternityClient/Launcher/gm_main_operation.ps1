@@ -40,11 +40,12 @@ function Open-GmParticipatingOperation {
 function Send-GmOperationCommand {
     param($Context,[hashtable]$Command)
     if ($Context.closed -or $Context.lost) { throw 'Original operation is closed or lost; no reconnect.' }
-    $Context.sequence++
-    $Command.sequence = $Context.sequence
+    $nextSequence = $Context.sequence + 1
+    $Command.sequence = $nextSequence
     $frame = $Command | ConvertTo-Json -Depth 8 -Compress
     if ([Text.Encoding]::UTF8.GetByteCount($frame) -gt 4194304) { throw 'Participating control frame exceeds its bound.' }
     try {
+        $Context.sequence = $nextSequence
         $Context.process.StandardInput.WriteLine($frame); $Context.process.StandardInput.Flush()
         $reply = Read-GmOperationReply $Context
         if ($reply.sequence -ne $Context.sequence) { throw 'Original operation response identity mismatch.' }
