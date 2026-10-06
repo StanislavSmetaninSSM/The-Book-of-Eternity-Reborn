@@ -121,6 +121,7 @@ internal static partial class MainRunCrashScenarioDriver
     {var stage=path+".stage";File.WriteAllBytes(stage,JsonSerializer.SerializeToUtf8Bytes(value));File.Move(stage,path,true);}
     private static string ReadOutput(string folder,string name)=>File.Exists(Path.Combine(folder,name))?Encoding.UTF8.GetString(File.ReadAllBytes(Path.Combine(folder,name))):"";
     private static Dictionary<string,string> Snapshot(string root)=>Directory.EnumerateFiles(root,"*",SearchOption.AllDirectories)
+        .Where(path=>!Path.GetRelativePath(root,path).StartsWith(".boe_runtime/locks/",StringComparison.Ordinal))
         .ToDictionary(path=>Path.GetRelativePath(root,path),path=>Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path))),StringComparer.Ordinal);
     private static bool Equal(Dictionary<string,string> first,Dictionary<string,string> next)=>first.Count==next.Count && first.All(p=>next.TryGetValue(p.Key,out var hash)&&hash==p.Value);
     private static async Task WaitAsync(Func<bool> ready,Process? child=null)
