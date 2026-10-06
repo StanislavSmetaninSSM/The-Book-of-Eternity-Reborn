@@ -277,7 +277,7 @@
       "WorkingTreeFingerprint": "725F8A0EDE44296C51E3B123A9C99804AC44FB523FDB32033030F66C266F4389",
       "ChangedFiles": 1
     },
-    "RevisionInterpretation": "historical first RED has one changed/untracked item not named by runner; excluded from exact-source acceptance",
+    "RevisionInterpretation": "historical first RED has exactly one untracked SDD ledger .superpowers/sdd/browser-rollback-linux-plan/progress.md, named in preserved New-paths log; excluded from clean exact-source acceptance",
     "DiscoveryOnly": false,
     "PlanOnly": false,
     "OwnedTreeCleanupSucceeded": true,

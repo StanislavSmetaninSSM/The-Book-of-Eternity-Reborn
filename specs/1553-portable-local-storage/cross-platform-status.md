@@ -5,7 +5,32 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## Current: bounded M1 ordinary Linux production route PASS
+## Current: bounded T031 browser rollback Linux PASS
+
+Actual original BrowserLocalWriteCoordinator schema7 stages/records/commits/rolls back/
+cleans via the existing trusted-local publication journal on Linux, with original main+
+worker+generation/UI lease conjunction. Declared profile and actual QTE reward action/
+read-only refresh pass; both Load entry refresh bundles are retained. Typed known
+commit/rollback survives cleanup debt; authority loss retains Uncertain/evidence.
+Runtime56d43924; clean testedb08159ee: **71/71** (41new+30exact affected),zero skips,
+41new roots removed. Independent actual Sol6.1/xhigh plan/source/final evidence/selection
+PASS at candidate09dd0af5;11manifests1126pins57artifacts21gzip independently verified.
+Candidate fresh GitHub-only clone19804trackedfiles/tree/parent/clean/fsck/noalternates/
+remote verified. [Handoff](browser-rollback-linux-handoff.md) ·
+[qualification](recovery/browser-rollback-linux-qualification.json).
+Final verdict carrier changes only metadata and receives its own normal push/byte
+readback/fresh GitHub-only restoration before the writer stops.
+
+Separate real debts remain explicit: **T031-BROWSER-DIRECT-GACHA-LINUX** (long-lived
+pending-turn StageFileAsync outside atomic root) and **T031-DAREN-STANDALONE-LINUX**
+(standalone profile writes). Four historical F2 IDs remain unpassed and unexecuted.
+Accepted Load UX2026-10-06 is recorded in tasks: confirmed stop → confirmed successful
+Load → fresh launch; uncertainty halts. Its implementation is separate; current
+low-level refusal remains. Systemd-user is mandatory separate/unqualified here; no
+manager setup. Windows/liveGM/provider/CodexQ1Q2/real saves/fullT031T041/cold/reboot
+acceptance remain open. Stop before another implementation stage.
+
+## Accepted bounded M1 ordinary Linux production route PASS
 
 Owner accepted design **cdc3b10ca5cbff5b4d9cbc935609cdff29a95e68** and authorized M1.
 Existing ordinary launcher/production root admission consumes original terminal,
@@ -22,7 +47,7 @@ byte/tree/parent/clean/fullfsck/accepted ancestry/remote verified. Final carrier
 fresh restoration supplied by writer closure. [Handoff](production-main-m1-handoff.md).
 No Q1/Q2/Codex/TERM/provider/model/game-writing/saves acceptance in M1. Primary systemd
 and native Windows remain unqualified; workers stay disabled, no Auto/Systemd downgrade.
-T031-BROWSER-ROLLBACK-LINUX is the active authorized migration. Load UX accepted 2026-10-06: confirmed stop + confirmed successful load → fresh session; uncertainty halts. Implementation is a separate next slice; current low-level refusal remains.
+T031-BROWSER-ROLLBACK-LINUX bounded qualification is recorded above; its adjacent consumer tasks remain open. Load UX accepted 2026-10-06: confirmed stop + confirmed successful load → fresh session; uncertainty halts. Implementation is a separate next slice; current low-level refusal remains.
 Full T041/T043/public rollout/cold/reboot guarantees stay open. Stop before Q1/next stage.
 
 ## Accepted bounded T041-RUN-FENCE-F3 independent PASS

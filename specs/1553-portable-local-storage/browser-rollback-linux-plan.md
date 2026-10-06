@@ -108,9 +108,9 @@ distinction is required for fresh-manager cleanup without reinterpreting old evi
 - [x] Select only actually affected old ordinary publication/no-legacy-admission and
   actual browser Load guard/full-refresh methods, inspecting source and catalog before
   recording exact IDs. Do not rerun F1–F3/M1 or broad browser-api-host cohort.
-- [ ] Fresh selected GREEN, catalog and exact PlanOnly discovery (zero execution),
+- [x] Fresh selected GREEN, catalog and exact PlanOnly discovery (zero execution),
   source/manifest/hash/TRX/cleanup map, independent Sol source/evidence/selection review.
-- [ ] Reconcile Spec Kit tasks/status and handoff, ordinary push/remote byte readback,
+- [x] Reconcile Spec Kit tasks/status and handoff, ordinary push/remote byte readback,
   fresh GitHub-only restore. Stop before another stage; no issue closure or merge.
 
 New categories use protective 3-minute budgets, unmeasured expectedSeconds=null,
@@ -146,12 +146,14 @@ Fresh final source `b08159ee8ea818c4339fc0554f24388a441c261d`, runtime
 `56d43924f31a79a69bbc9949b9b3a2e69d8739c9`: 71/71 PASS (41 new +30 exact
 review-selected affected regressions),3 descriptors,0 skipped,cleanup complete.
 Independent actual Sol6.1/xhigh source/selection PASS at exact tested source; final
-independent evidence review and fresh GitHub-only restoration are pending.
+independent evidence/metadata/selection PASS at candidate09dd0af5 and fresh GitHub-only
+restoration of19804trackedfiles are verified. Final verdict carrier publication and
+its own restoration are writer closure.
 [Qualification](recovery/browser-rollback-linux-qualification.json) and
 [run index](recovery/browser-rollback-linux-run-index.json) preserve exact commands,
 source hashes, history/partial runs and preparation failures. The first historical
-RED had one dirty item not identified by the runner; it is excluded from exact-source
-acceptance. Later clean causal blocks plus final clean GREEN provide source proof.
+RED had one untracked SDD ledger named in the preserved New-paths log; it is excluded
+from clean exact-source acceptance. Later clean causal blocks plus final clean GREEN provide source proof.
 Catalog354/11003 and PlanOnly3/71 execute0tests; their only untracked inputs were
 new GREEN evidence, with runtime/catalog source identical to the clean tested commit.
 
@@ -164,3 +166,16 @@ admitted members and then retain Uncertain/evidence; it does not promise new who
 rollback atomicity. The accepted Load UX is a separate later implementation; no product
 fork or additional behavior was introduced here. Historical four IDs above remain
 unpassed. No live browser/provider/model/saves/systemd/Windows/TERM/Q1/Q2 qualification.
+
+
+## Final bounded verdict
+
+Independent actual Sol6.1/xhigh final evidence/metadata/selection **PASS** at
+`09dd0af58cbbcd2e45258ebabd67c74b1d6de34e`, no blocking findings. Source/selection
+PASS remains exact tested `b08159ee`; final source/evidence/task/restore carrier changes
+only documentation. [Handoff](browser-rollback-linux-handoff.md),
+[final review](recovery/browser-rollback-linux-final-review.json) and
+[candidate restore](recovery/browser-rollback-linux-github-candidate-restore.json).
+The final carrier receives normal push/remote byte readback/fresh GitHub-only restore
+before the writer stops; these completion facts are supplied with its exact final SHA.
+Only this bounded coordinator slice closes; adjacent tasks and wholeT031 remain open.

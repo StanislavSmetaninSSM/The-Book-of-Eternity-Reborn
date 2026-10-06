@@ -1,6 +1,6 @@
 {
   "Task": "T031-BROWSER-ROLLBACK-LINUX",
-  "Status": "fresh narrow Linux GREEN + independent SOURCE PASS; final evidence/restoration review pending",
+  "Status": "BOUNDED LINUX PASS: fresh 71/71, independent plan/source/evidence/selection PASS, candidate fresh GitHub-only restoration verified",
   "BaseCommit": "4d456d5d5e12289d6fc97e5b2e7a0c523207bc08",
   "RuntimeCommit": "56d43924f31a79a69bbc9949b9b3a2e69d8739c9",
   "TestedSourceCommit": "b08159ee8ea818c4339fc0554f24388a441c261d",
@@ -74,9 +74,9 @@
     "TestsExecutedByThisAudit": 0
   },
   "PreparationFailures": "browser-rollback-linux-preparation-failures.json",
-  "HistoricalEvidenceInterpretation": "214 total observed executions, not distinct acceptance. 186PASS/28FAIL:24 clean causal failures,3 first dirty-preparation failures,1 wrong-grade fixture oracle. One separate argument preparation failure executed0. Initial first RED is historical, excluded from exact-source acceptance. Later clean causal blocks and final clean GREEN carry proof. Historical unbuilt unit binaries are observed-only; final selected projects rebuilt fresh.",
-  "FinalEvidenceReview": "pending",
-  "FreshGitHubOnlyRestoration": "pending",
+  "HistoricalEvidenceInterpretation": "214 total observed executions, not distinct acceptance. 186PASS/28FAIL:24 clean causal failures,3 first dirty-preparation failures,1 wrong-grade fixture oracle. One separate argument preparation failure executed0. Initial first RED has only one untracked SDD ledger named by preserved New-paths log; it is historical and excluded from clean exact-source acceptance. Later clean causal blocks and final clean GREEN carry proof. Historical unbuilt unit binaries are observed-only; final selected projects rebuilt fresh.",
+  "FinalEvidenceReview": "browser-rollback-linux-final-review.json",
+  "FreshGitHubOnlyRestoration": "browser-rollback-linux-github-candidate-restore.json",
   "RemainingTasks": [
     "T031-BROWSER-DIRECT-GACHA-LINUX: real unchanged long-lived pending-turn StageFileAsync path reaches physical publication outside atomic root.",
     "T031-DAREN-STANDALONE-LINUX: standalone profile writes remain physical; declared browser participant and read-only refresh qualified only.",
@@ -97,5 +97,6 @@
     "cold exactly-once/reboot salvage",
     "old four historical Windows-only tests",
     "F1\u2013F3/M1/unrelated cohort repetitions"
-  ]
+  ],
+  "FinalVerdictCarrier": "Final carrier consists only of review/restore/task/status metadata. Its own SHA, non-force push/readback and fresh GitHub-only restoration are reported by writer after publication; no tests repeated."
 }
