@@ -77,8 +77,10 @@ public partial class FileSystemManager
         internal bool Closing=>(_requested?.Pin!=null && _requested.Owner.AdmissionClosed) || _access?.Remote?.Closing==true;
         internal string? ActiveGeneration=>_access?.Remote?.Identity.GenerationId ?? (_access?.Original?.Pin!=null?_access.Original.Owner.Identity.GenerationId:null);
         internal void MarkUnresolved(){_retainedRemote?.Abort();_retainedOriginal?.Owner.NotifyUncertain();}
-        internal bool BoundClosing { get; private set; }
-        internal void BeginClosing(){BoundClosing=true;_access?.Remote?.BeginClosing();}
+        private bool _boundClosing;
+        internal bool BoundClosing => _boundClosing ||
+            _parent is { Closed: false } && _parent.Root == Root && _parent.BoundClosing;
+        internal void BeginClosing(){_boundClosing=true;_access?.Remote?.BeginClosing();}
         internal async Task CompleteAsync(MainOperationOutcome outcome,bool closingFailed)
         {
             if(!_ownsRemote)return;
