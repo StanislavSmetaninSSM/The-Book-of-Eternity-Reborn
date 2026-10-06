@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="d7a75082-3148-4200-97b3-c2de5407e7a8" name="@c7669543e9c7 2026-10-06 05:45:19" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T05:45:19.6048452+00:00" queuing="2026-10-06T05:45:19.6048452+00:00" start="2026-10-06T05:45:14.8146486+00:00" finish="2026-10-06T05:45:30.1678813+00:00" />
+  <TestSettings name="default" id="b08a448f-4c07-4d29-b468-4d6cddf3791a">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_05_45_19" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="91971e46-63d9-4ab3-a68c-b62c9250d840" testId="946fb70c-9e1c-c3e1-a3ab-c759351f2ba3" testName="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationCrash_ActualArtifactsCannotBecomeColdSuccess(cut: &quot;published-disk&quot;, phase: &quot;Published&quot;, bundle: True, inbox: False, acknowledged: False)" computerName="c7669543e9c7" duration="00:00:02.6777279" startTime="2026-10-06T05:45:24.7939747+00:00" endTime="2026-10-06T05:45:24.7939750+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="91971e46-63d9-4ab3-a68c-b62c9250d840" />
+    <UnitTestResult executionId="dd203b26-2045-4629-aa25-59184290cb5e" testId="31cacc02-1783-0169-8ce6-15d47fa49838" testName="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationCrash_ActualArtifactsCannotBecomeColdSuccess(cut: &quot;intent&quot;, phase: &quot;PublicationIntent&quot;, bundle: False, inbox: False, acknowledged: False)" computerName="c7669543e9c7" duration="00:00:02.6250790" startTime="2026-10-06T05:45:30.0913294+00:00" endTime="2026-10-06T05:45:30.0913298+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dd203b26-2045-4629-aa25-59184290cb5e" />
+    <UnitTestResult executionId="21af08c6-fb37-43b9-92b1-a7fda6974d9e" testId="0068ecd2-0fd3-c0a3-cb67-546f9be4cd20" testName="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationCrash_ActualArtifactsCannotBecomeColdSuccess(cut: &quot;inbox&quot;, phase: &quot;Published&quot;, bundle: True, inbox: True, acknowledged: True)" computerName="c7669543e9c7" duration="00:00:02.6698381" startTime="2026-10-06T05:45:27.4646201+00:00" endTime="2026-10-06T05:45:27.4646207+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="21af08c6-fb37-43b9-92b1-a7fda6974d9e" />
+    <UnitTestResult executionId="250f0362-dc16-49ec-8fc7-3296d82e1664" testId="d5b91fed-5090-9053-5b11-173477fee8c8" testName="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationCrash_ActualArtifactsCannotBecomeColdSuccess(cut: &quot;bundle&quot;, phase: &quot;PublicationIntent&quot;, bundle: True, inbox: False, acknowledged: False)" computerName="c7669543e9c7" duration="00:00:02.9138685" startTime="2026-10-06T05:45:19.5814718+00:00" endTime="2026-10-06T05:45:19.5814858+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="250f0362-dc16-49ec-8fc7-3296d82e1664" />
+    <UnitTestResult executionId="43b92180-beea-4aa2-b191-04e630c36197" testId="0c598b66-e937-4f27-e9fd-6ff478385a8e" testName="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationCrash_ActualArtifactsCannotBecomeColdSuccess(cut: &quot;live-publication&quot;, phase: &quot;Published&quot;, bundle: True, inbox: True, acknowledged: True)" computerName="c7669543e9c7" duration="00:00:02.5314456" startTime="2026-10-06T05:45:22.1136061+00:00" endTime="2026-10-06T05:45:22.1136065+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="43b92180-beea-4aa2-b191-04e630c36197" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationCrash_ActualArtifactsCannotBecomeColdSuccess(cut: &quot;inbox&quot;, phase: &quot;Published&quot;, bundle: True, inbox: True, acknowledged: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0068ecd2-0fd3-c0a3-cb67-546f9be4cd20">
+      <Execution id="21af08c6-fb37-43b9-92b1-a7fda6974d9e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartFenceTests" name="PublicationCrash_ActualArtifactsCannotBecomeColdSuccess" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationCrash_ActualArtifactsCannotBecomeColdSuccess(cut: &quot;live-publication&quot;, phase: &quot;Published&quot;, bundle: True, inbox: True, acknowledged: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0c598b66-e937-4f27-e9fd-6ff478385a8e">
+      <Execution id="43b92180-beea-4aa2-b191-04e630c36197" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartFenceTests" name="PublicationCrash_ActualArtifactsCannotBecomeColdSuccess" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationCrash_ActualArtifactsCannotBecomeColdSuccess(cut: &quot;intent&quot;, phase: &quot;PublicationIntent&quot;, bundle: False, inbox: False, acknowledged: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="31cacc02-1783-0169-8ce6-15d47fa49838">
+      <Execution id="dd203b26-2045-4629-aa25-59184290cb5e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartFenceTests" name="PublicationCrash_ActualArtifactsCannotBecomeColdSuccess" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationCrash_ActualArtifactsCannotBecomeColdSuccess(cut: &quot;bundle&quot;, phase: &quot;PublicationIntent&quot;, bundle: True, inbox: False, acknowledged: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d5b91fed-5090-9053-5b11-173477fee8c8">
+      <Execution id="250f0362-dc16-49ec-8fc7-3296d82e1664" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartFenceTests" name="PublicationCrash_ActualArtifactsCannotBecomeColdSuccess" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationCrash_ActualArtifactsCannotBecomeColdSuccess(cut: &quot;published-disk&quot;, phase: &quot;Published&quot;, bundle: True, inbox: False, acknowledged: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="946fb70c-9e1c-c3e1-a3ab-c759351f2ba3">
+      <Execution id="91971e46-63d9-4ab3-a68c-b62c9250d840" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartFenceTests" name="PublicationCrash_ActualArtifactsCannotBecomeColdSuccess" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="946fb70c-9e1c-c3e1-a3ab-c759351f2ba3" executionId="91971e46-63d9-4ab3-a68c-b62c9250d840" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="31cacc02-1783-0169-8ce6-15d47fa49838" executionId="dd203b26-2045-4629-aa25-59184290cb5e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0068ecd2-0fd3-c0a3-cb67-546f9be4cd20" executionId="21af08c6-fb37-43b9-92b1-a7fda6974d9e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d5b91fed-5090-9053-5b11-173477fee8c8" executionId="250f0362-dc16-49ec-8fc7-3296d82e1664" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0c598b66-e937-4f27-e9fd-6ff478385a8e" executionId="43b92180-beea-4aa2-b191-04e630c36197" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="5" executed="5" passed="5" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.24]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.37]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.39]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:14.86]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

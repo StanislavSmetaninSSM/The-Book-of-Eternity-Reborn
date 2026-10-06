@@ -25,7 +25,7 @@ an actual causal failure. No reconnect, automatic salvage, force-clear, reboot c
 public Linux Release, main PTY, live GM/real saves, power-cut/reboot or Windows-native
 qualification. No network/auth/security/dependency changes; no HOME-PC.
 
-### Cohort B source checkpoint — WIP
+### Cohort B qualification checkpoint
 
 B adds five actual publication crash cuts using existing hooks only. No backend
 behavior change. A is remotely preserved at `df3820709e8b1d5106ee456e369d4d4ac420ae4e`.
@@ -33,7 +33,10 @@ B initial build succeeded;5/5 failed because the fixture joined canonical paths 
 root instead of using FileSystemManager.ResolvePath (game_session). Three actual cuts
 were reached, two were never reached; no causal backend RED. All five guardians ECHILD,
 no cleanup failure/deadline. Evidence worker-r3-publication-preparation-failure records
-source148af16c and60.5223417s. Fix only observer path resolution, then rerun only B.
+source148af16c and60.5223417s. Fixture-only path correction at `000499cd0c3600ac38a953f707faff0cd1f0566c` then
+B5/5PASS,64.5285515s;10guardianECHILD/0signals/failure/deadline. Full exact cold
+snapshots unchanged, no allocation/import/repeated Release or consumers. Evidence
+worker-r3-publication-green; next only C. No runtime behavior change.
 
 ### Evidence already accepted; exclude unchanged repetitions
 
@@ -119,7 +122,7 @@ a claim that current code already satisfies it; runtime fixes still need causal 
 - [x] A: publish only required scaffold/negative hook, fresh build then run A; classify
   preparation errors separately. On causal RED fix minimally, rerun A and only affected
   accepted consumers justified by the source delta. Capture exact source/commands/counts.
-- [ ] B: repeat the bounded workflow for publication cuts after A's ECHILD evidence.
+- [x] B: repeat the bounded workflow for publication cuts after A's ECHILD evidence.
 - [ ] C: repeat for conditional cleanup/retirement, with exact post-live-ACK observation.
 - [ ] D: repeat for queued/held publication fences; retain original authority on uncertainty.
 - [ ] E: repeat for whole parallel inventory and the unmasked canonical journal conflict.
