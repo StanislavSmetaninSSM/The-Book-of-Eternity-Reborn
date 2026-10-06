@@ -60,8 +60,10 @@ public sealed class LocalWebUiMainMenuService
         var saveId = request.SaveId?.Trim() ?? string.Empty;
         BrowserMainMenuDto? menu = null;
         var missing = false;
+        using var mainAdmission=_fs.BeginMainAdmission();
         try
         {
+            await mainAdmission.AcquireAsync();
             var saves = await BuildSaveSlotsWithPathsAsync();
             var match = saves.FirstOrDefault(save => string.Equals(save.Dto.SaveId, saveId, StringComparison.Ordinal));
             if (match is null || string.IsNullOrWhiteSpace(match.FullPath))

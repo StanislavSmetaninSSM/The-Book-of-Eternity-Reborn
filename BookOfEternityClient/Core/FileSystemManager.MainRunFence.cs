@@ -10,7 +10,8 @@ public partial class FileSystemManager
     private static readonly AsyncLocal<MainAdmission?> MainAdmissions=new();
     internal MainAdmission BeginMainAdmission()
     {
-        var frame=new MainAdmission(this,MainAdmissions.Value,GmSessionRunCoordinator.Current);
+        var parent=MainAdmissions.Value;while(parent is { _closed:true })parent=parent._parent;
+        var frame=new MainAdmission(this,parent,GmSessionRunCoordinator.Current);
         MainAdmissions.Value=frame;return frame;
     }
     internal sealed class MainAdmission : IDisposable
@@ -22,16 +23,18 @@ public partial class FileSystemManager
         private bool _closed;
         internal MainAdmission(FileSystemManager files,MainAdmission? parent,GmSessionRunCoordinator.Access? requested)
         {_files=files;_parent=parent;_requested=requested;}
-        internal async Task AcquireAsync(CancellationToken token=default)
+        internal async Task AcquireAsync(CancellationToken token=default,bool closing=false)
         {
+            if(_requested?.Owner.RootIdentity==_files.CanonicalRootAuthorityIdentity)_requested.Owner.ValidateAccessAcquisition(_requested,closing);
             for(var p=_parent;p!=null;p=p._parent)
                 if(!p._closed && p._files.CanonicalRootAuthorityIdentity==_files.CanonicalRootAuthorityIdentity && p._requested==_requested && p._access!=null)
                 {_access=p._access.Retain();return;}
             if(_requested!=null && _requested.Owner.RootIdentity==_files.CanonicalRootAuthorityIdentity)
-            {_access=new(null,_requested);_requested.Owner.ValidateAccessAcquisition(_requested);_requested.Pin?.Retain();return;}
+            {_requested.Pin?.Retain();_access=new(null,_requested);return;}
             _access=new(await GmMainOwnerGuard.AcquireAsync(_files.BasePath,token),null);
             try{Validate(null);}catch{Dispose();throw;}
         }
+        internal GmSessionRunCoordinator.Access? Original=>_access?.Original;
         internal bool MetadataOnly=>_requested?.MetadataOnly==true;
         internal bool Closing=>_requested?.Pin!=null && _requested.Owner.AdmissionClosed;
         internal void Validate(CanonicalWriteLease? lease)
@@ -39,6 +42,7 @@ public partial class FileSystemManager
             if(_closed || _access==null)throw GmSessionRunPersistence.Invalid();
             if(_access.Original is { } a)
             {
+                if(a.Pin!=null && lease?.Purpose==CanonicalWritePurpose.SessionReplacement)throw GmSessionRunPersistence.Invalid();
                 a.Owner.ValidateAccess(a,lease?.Purpose==CanonicalWritePurpose.SessionFinalization);
                 if(a.Pin!=null && lease!=null &&
                     _files.ReadLocalGenerationSnapshotBelowWorkerFence(lease).Binding.Id!=a.Owner.Identity.GenerationId)
@@ -79,15 +83,15 @@ public partial class FileSystemManager
     private void EnsureMainBeforeRecovery(CanonicalWriteLease lease)
     {
         lease.MainAdmission!.Validate(lease);
-        if(lease.MainAdmission.MetadataOnly || lease.MainAdmission.Closing)throw GmSessionRunPersistence.Invalid();
+        if(lease.MainAdmission.MetadataOnly)throw GmSessionRunPersistence.Invalid();
         // Original active recovery must inspect generation-changing intent before
         // effects. The typed trusted-local reader handles in-generation journals.
-        if(GmSessionRunCoordinator.Current?.Pin!=null)
+        if(lease.MainAdmission.Original?.Pin!=null)
             new TrustedLocalFilePublication(this,new TrustedLocalFileScope([BasePath])).ValidateMainRecoveryGeneration(lease);
     }
     internal void EnsureMainRecoveryGeneration(CanonicalWriteLease lease,TrustedLocalGeneration before,TrustedLocalGeneration after)
     {
-        if(GmSessionRunCoordinator.Current is {Pin:not null} a &&
+        if(lease.MainAdmission?.Original is {Pin:not null} a &&
             (before!=TrustedLocalGeneration.Existing(a.Owner.Identity.GenerationId) || after!=before))
             throw GmSessionRunPersistence.Invalid();
     }

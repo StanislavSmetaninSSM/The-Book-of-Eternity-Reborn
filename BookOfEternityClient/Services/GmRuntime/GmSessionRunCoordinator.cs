@@ -19,6 +19,14 @@ internal sealed class GmSessionRunCoordinator
     private int _pins;
     private TaskCompletionSource _drained=Completed();
     private TerminalStopEvidence? _settledStop;
+    private FileSystemManager.SessionLifecycleLease? _stopLifecycle;
+    private sealed record Retirement(IOwnedTerminalSession Session,Task[] Loops,Func<Task?> InputDrain);
+    private Retirement? _retirement;
+    internal void BindActualBridgeRetirement(IOwnedTerminalSession session,Task[] loops,Func<Task?> inputDrain)
+    {
+        if(!ReferenceEquals(session,_terminal) || !_released || _retirement!=null)throw GmSessionRunPersistence.Invalid();
+        _retirement=new(session,loops.ToArray(),inputDrain);
+    }
     private static TaskCompletionSource Completed(){var t=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);t.SetResult();return t;}
     private static readonly AsyncLocal<Access?> Ambient=new();
     internal static Access? Current=>Ambient.Value;
@@ -80,10 +88,10 @@ internal sealed class GmSessionRunCoordinator
         }
         using(pin)using(Enter(false,pin))return await operation();
     }
-    internal void ValidateAccessAcquisition(Access access)
+    internal void ValidateAccessAcquisition(Access access,bool closing=false)
     {
         _guard.Validate();if(!ReferenceEquals(access.Owner,this) || _retired)throw GmSessionRunPersistence.Invalid();
-        if(access.Pin!=null && !access.MetadataOnly && AdmissionClosed)throw GmSessionRunPersistence.Invalid();
+        if(access.Pin!=null && !access.MetadataOnly && AdmissionClosed && !closing)throw GmSessionRunPersistence.Invalid();
         access.Pin?.Validate(this);
     }
     internal void ValidateAccess(Access access,bool finalization)
@@ -158,24 +166,38 @@ internal sealed class GmSessionRunCoordinator
         }
         finally{_transitions.Release();}
         Task drain;lock(_sync)drain=_drained.Task;
-        await drain.WaitAsync(TimeSpan.FromSeconds(5)); // no filesystem locks across pin drain
+        try {await drain.WaitAsync(TimeSpan.FromSeconds(5));}
+        catch(TimeoutException){NotifyUncertain();throw;} // no filesystem locks across pin drain
+        using(Enter(true))if(_stopLifecycle==null)_stopLifecycle=await _files.AcquireSessionLifecycleLeaseAsync();
     }
     internal async Task ConfirmSettledStopAsync(IOwnedTerminalSession original,TerminalStopEvidence proof)
     {
-        if(!ReferenceEquals(original,_terminal) || proof.Identity!=original.Identity || proof.Identity.RunId!=Identity.RunId ||
-            proof.State!=GmWorkerStopState.StoppedWithinScope || !proof.CleanupComplete || proof.AuthorityRetained)
+        var binding=_retirement;
+        var drain=binding?.InputDrain();
+        // Caller evidence alone cannot mint retirement. Require actual registered
+        // original managed tasks, original adapter's proof object and disposal.
+        if(!ReferenceEquals(original,_terminal) || binding==null || !ReferenceEquals(binding.Session,original) ||
+            drain?.IsCompleted!=true || binding.Loops.Any(t=>!t.IsCompleted) || _stopLifecycle?.IsActive!=true)
+            throw GmSessionRunPersistence.Invalid();
+        var actual=await original.StopAndObserveAsync(CancellationToken.None);
+        if(!ReferenceEquals(proof,actual))throw GmSessionRunPersistence.Invalid();
+        try {await drain;await Task.WhenAll(binding.Loops);await original.DisposeAsync();}
+        catch{NotifyUncertain();throw;}
+        if(actual.Identity!=original.Identity || actual.Identity.RunId!=Identity.RunId ||
+            actual.State!=GmWorkerStopState.StoppedWithinScope || !actual.CleanupComplete || actual.AuthorityRetained ||
+            original.AuthorityLost.IsCompleted || !original.RootExited.IsCompletedSuccessfully)
         {NotifyUncertain();throw GmSessionRunPersistence.Invalid();}
-        // Called only by actual BridgeHost after original pumps AND DisposeAsync
-        // complete. Private coordinator retains this exact proof through ACK debt.
+        // The original proof and actual settlement survive metadata ACK debt.
         _settledStop??=proof;
         lock(_sync)if(_uncertain || _pins!=0)throw GmSessionRunPersistence.Invalid();
-        using(Enter(true))await using(var lifecycle=await _files.AcquireSessionLifecycleLeaseAsync())
-        await using(var lease=await _files.AcquireMainMetadataLeaseAsync())
+        using(Enter(true))await using(var lease=await _files.AcquireMainMetadataLeaseAsync())
         {
             if(_persistence.HasDebt){_persistence.Retry();Acknowledge();}
+            if(_record?.Disposition is not (GmSessionRunDisposition.Stopping or GmSessionRunDisposition.Stopped))throw GmSessionRunPersistence.Invalid();
             if(_record?.Disposition!=GmSessionRunDisposition.Stopped)
                 Publish(GmSessionRunTransitions.ConfirmStopped(_record!,new(Identity,GmSessionRunStopKind.OwnedScopeEmpty,Identity.BootId)));
         }
+        await _stopLifecycle.DisposeAsync();_stopLifecycle=null;
         lock(_sync){if(_uncertain)throw GmSessionRunPersistence.Invalid();_retired=true;}
         lock(RootIdentity.WorkerContextGate){if(RootIdentity.MainCoordinator!=this)throw GmSessionRunPersistence.Invalid();RootIdentity.MainCoordinator=null;}
         _guard.Dispose();

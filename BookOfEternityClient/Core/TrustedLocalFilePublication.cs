@@ -260,6 +260,7 @@ internal sealed partial class TrustedLocalFilePublication
         var afterGeneration = generationMember == null ? generation : ParseGeneration(generationMember.After);
         if (generationMember != null && ParseGeneration(generationMember.Before) != generation)
             throw Conflict("The generation member does not match its binding.");
+        _files.EnsureMainRecoveryGeneration(lease,generation,afterGeneration);
         if (!afterGeneration.Exists)
             throw Conflict("A publication must retain or establish a session generation.");
         var journal = new Journal

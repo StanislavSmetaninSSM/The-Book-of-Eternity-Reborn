@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "gm-main-run-owner-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "625bcf521428ca54a09d124795609dee19fbcdea",
+    "WorkingTreeFingerprint": "6907E34CCE4A106286D06B27D5A2BDB70DD72B21085E6D5D15A5365C7D762FD4",
+    "ChangedFiles": 2
+  },
+  "PreparationSeconds": 6.0195904,
+  "Descriptors": [
+    {
+      "Name": "gm-main-run-owner-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-run-owner-linux",
+      "Categories": [
+        "gm-main-run-owner-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.ActualBridge_DurableOriginalOwnerBeforeInteractiveReleaseAndScopedRetirement|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.ActualBridge_DurableOriginalOwnerBeforeInteractiveReleaseAndScopedRetirement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary",
+          "Cases": 5
+        }
+      ]
+    }
+  ]
+}

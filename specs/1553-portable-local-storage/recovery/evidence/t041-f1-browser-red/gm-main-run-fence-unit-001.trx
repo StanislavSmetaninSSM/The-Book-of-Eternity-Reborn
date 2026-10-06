@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="60766a85-e730-4bc2-a5f5-d0d93d12d9ad" name="@c7669543e9c7 2026-10-06 12:39:29" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T12:39:29.1175766+00:00" queuing="2026-10-06T12:39:29.1175767+00:00" start="2026-10-06T12:39:24.7615804+00:00" finish="2026-10-06T12:39:36.6835860+00:00" />
+  <TestSettings name="default" id="5b65fade-145d-4c2d-9145-b7b54a70af8d">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_12_39_29" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="cb02f8b4-8ed3-4060-8f0c-961fecc0930c" testId="a5a3b99a-045c-215d-2eed-88d4af068b09" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 5)" computerName="c7669543e9c7" duration="00:00:01.0998307" startTime="2026-10-06T12:39:32.2118233+00:00" endTime="2026-10-06T12:39:32.2118237+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cb02f8b4-8ed3-4060-8f0c-961fecc0930c" />
+    <UnitTestResult executionId="ab6db5c8-9acd-43f1-8e46-2e61549069b1" testId="d273d00d-5926-0f1c-8767-a1ec277a380e" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing" computerName="c7669543e9c7" duration="00:00:01.9926450" startTime="2026-10-06T12:39:36.5251961+00:00" endTime="2026-10-06T12:39:36.5251966+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ab6db5c8-9acd-43f1-8e46-2e61549069b1">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.True() Failure
+Expected: True
+Actual:   False</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing() in /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunFenceTests.cs:line 105
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a386f588-2799-4e69-9720-c3ba2d4d12f9" testId="d7d791a4-1a84-98c7-dab9-637a69e70c6f" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(disposition: 4)" computerName="c7669543e9c7" duration="00:00:00.0269624" startTime="2026-10-06T12:39:34.4888438+00:00" endTime="2026-10-06T12:39:34.4888442+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a386f588-2799-4e69-9720-c3ba2d4d12f9" />
+    <UnitTestResult executionId="355d808b-116c-44b2-9168-90bd01c80a19" testId="18603c11-9b43-c79d-52ad-0a25004c9298" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(disposition: 2)" computerName="c7669543e9c7" duration="00:00:00.0082685" startTime="2026-10-06T12:39:34.4973470+00:00" endTime="2026-10-06T12:39:34.4973482+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="355d808b-116c-44b2-9168-90bd01c80a19" />
+    <UnitTestResult executionId="dfeeb34d-03e0-4257-b5ae-66680c38e99b" testId="582cdbef-47e6-64ce-dc61-e43c839e2edc" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(disposition: 3)" computerName="c7669543e9c7" duration="00:00:00.0047546" startTime="2026-10-06T12:39:34.5073869+00:00" endTime="2026-10-06T12:39:34.5073873+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dfeeb34d-03e0-4257-b5ae-66680c38e99b" />
+    <UnitTestResult executionId="1ff79235-a472-4540-8822-d524fed3387f" testId="f42c88d3-19ad-b5a3-005b-87afec0cb724" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 6)" computerName="c7669543e9c7" duration="00:00:01.1393825" startTime="2026-10-06T12:39:34.4548264+00:00" endTime="2026-10-06T12:39:34.4548268+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1ff79235-a472-4540-8822-d524fed3387f" />
+    <UnitTestResult executionId="2b07ec15-1764-4d63-8f41-88a4a26664c4" testId="fe856996-42cc-c2f3-ee5d-6de7519cd8c8" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 0)" computerName="c7669543e9c7" duration="00:00:01.2418096" startTime="2026-10-06T12:39:28.8387534+00:00" endTime="2026-10-06T12:39:28.8387537+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2b07ec15-1764-4d63-8f41-88a4a26664c4" />
+    <UnitTestResult executionId="c5798701-7910-4c2a-bfdf-9baaef16c176" testId="16a54e6a-c372-62fb-eaf3-328d184d1bc6" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.InitializationParentBarrier_IsReplayedBeforeRetryAck" computerName="c7669543e9c7" duration="00:00:00.0092546" startTime="2026-10-06T12:39:36.5658132+00:00" endTime="2026-10-06T12:39:36.5658135+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c5798701-7910-4c2a-bfdf-9baaef16c176">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 2
+Actual:   1</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmMainRunFenceTests.InitializationParentBarrier_IsReplayedBeforeRetryAck() in /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunFenceTests.cs:line 86
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="20171036-ce2c-486f-b34e-563f2a9f3d26" testId="0d686bb0-a97b-a7c6-1dbc-2e3377f05631" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.InitializedMissingOrInvalid_RefusesClearBeforeEffects(corrupt: True)" computerName="c7669543e9c7" duration="00:00:00.0133100" startTime="2026-10-06T12:39:27.5922538+00:00" endTime="2026-10-06T12:39:27.5922541+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="20171036-ce2c-486f-b34e-563f2a9f3d26" />
+    <UnitTestResult executionId="03dfb636-00a0-4810-92ca-07a9384f375b" testId="267ccb79-1f63-5ede-3a27-6cca7d902cf7" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.InitializedMissingOrInvalid_RefusesClearBeforeEffects(corrupt: False)" computerName="c7669543e9c7" duration="00:00:00.0628507" startTime="2026-10-06T12:39:27.5795308+00:00" endTime="2026-10-06T12:39:27.5797031+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="03dfb636-00a0-4810-92ca-07a9384f375b" />
+    <UnitTestResult executionId="86fe5dc0-fad8-430c-9b2c-a520b4a78609" testId="14260092-98af-a3ed-6a51-8f8be1f52b47" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.StoppedTombstone_ClearRetainsEpochOutsideReplacement" computerName="c7669543e9c7" duration="00:00:00.0295272" startTime="2026-10-06T12:39:36.5469503+00:00" endTime="2026-10-06T12:39:36.5469507+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="86fe5dc0-fad8-430c-9b2c-a520b4a78609" />
+    <UnitTestResult executionId="9a458bf6-ddbb-4078-890f-ea553b4c3e1c" testId="69b8ded8-abc1-dde3-e16c-59bc6c9945bf" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(disposition: 1)" computerName="c7669543e9c7" duration="00:00:00.0049641" startTime="2026-10-06T12:39:34.5024906+00:00" endTime="2026-10-06T12:39:34.5024909+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9a458bf6-ddbb-4078-890f-ea553b4c3e1c" />
+    <UnitTestResult executionId="d22cc739-6769-43db-a04d-621c46122eac" testId="10047d6a-c2dc-f49d-c044-fc14e911abc0" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 3)" computerName="c7669543e9c7" duration="00:00:01.1568672" startTime="2026-10-06T12:39:31.1097180+00:00" endTime="2026-10-06T12:39:31.1097185+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d22cc739-6769-43db-a04d-621c46122eac" />
+    <UnitTestResult executionId="e00865b8-b308-40ef-8e3f-5c5905ed277e" testId="2dab1f7c-5cd1-d4af-73ce-9d36c665a7ad" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 2)" computerName="c7669543e9c7" duration="00:00:01.1112039" startTime="2026-10-06T12:39:29.9515919+00:00" endTime="2026-10-06T12:39:29.9515923+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e00865b8-b308-40ef-8e3f-5c5905ed277e" />
+    <UnitTestResult executionId="448f2986-7352-4adb-a293-653ed8b992db" testId="9735af27-a220-8126-23ae-0269941ff966" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 4)" computerName="c7669543e9c7" duration="00:00:01.1000158" startTime="2026-10-06T12:39:33.3130351+00:00" endTime="2026-10-06T12:39:33.3130354+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="448f2986-7352-4adb-a293-653ed8b992db" />
+    <UnitTestResult executionId="d8dcabbf-d9f1-4ec4-94ee-49a4082976ee" testId="2db5d628-a267-c6a6-353a-0638e377e1c1" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite" computerName="c7669543e9c7" duration="00:00:00.0073681" startTime="2026-10-06T12:39:36.5545578+00:00" endTime="2026-10-06T12:39:36.5545582+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d8dcabbf-d9f1-4ec4-94ee-49a4082976ee" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.InitializedMissingOrInvalid_RefusesClearBeforeEffects(corrupt: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="267ccb79-1f63-5ede-3a27-6cca7d902cf7">
+      <Execution id="03dfb636-00a0-4810-92ca-07a9384f375b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="InitializedMissingOrInvalid_RefusesClearBeforeEffects" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.InitializationParentBarrier_IsReplayedBeforeRetryAck" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="16a54e6a-c372-62fb-eaf3-328d184d1bc6">
+      <Execution id="c5798701-7910-4c2a-bfdf-9baaef16c176" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="InitializationParentBarrier_IsReplayedBeforeRetryAck" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.StoppedTombstone_ClearRetainsEpochOutsideReplacement" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="14260092-98af-a3ed-6a51-8f8be1f52b47">
+      <Execution id="86fe5dc0-fad8-430c-9b2c-a520b4a78609" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="StoppedTombstone_ClearRetainsEpochOutsideReplacement" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.InitializedMissingOrInvalid_RefusesClearBeforeEffects(corrupt: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0d686bb0-a97b-a7c6-1dbc-2e3377f05631">
+      <Execution id="20171036-ce2c-486f-b34e-563f2a9f3d26" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="InitializedMissingOrInvalid_RefusesClearBeforeEffects" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(disposition: 1)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="69b8ded8-abc1-dde3-e16c-59bc6c9945bf">
+      <Execution id="9a458bf6-ddbb-4078-890f-ea553b4c3e1c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="ColdNonterminal_RefusesBeforeRecoveryAndMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(disposition: 2)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="18603c11-9b43-c79d-52ad-0a25004c9298">
+      <Execution id="355d808b-116c-44b2-9168-90bd01c80a19" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="ColdNonterminal_RefusesBeforeRecoveryAndMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 3)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="10047d6a-c2dc-f49d-c044-fc14e911abc0">
+      <Execution id="d22cc739-6769-43db-a04d-621c46122eac" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="MetadataFault_RetainsFrozenPlanAndOriginalGuard" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 2)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2dab1f7c-5cd1-d4af-73ce-9d36c665a7ad">
+      <Execution id="e00865b8-b308-40ef-8e3f-5c5905ed277e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="MetadataFault_RetainsFrozenPlanAndOriginalGuard" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(disposition: 3)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="582cdbef-47e6-64ce-dc61-e43c839e2edc">
+      <Execution id="dfeeb34d-03e0-4257-b5ae-66680c38e99b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="ColdNonterminal_RefusesBeforeRecoveryAndMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 5)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a5a3b99a-045c-215d-2eed-88d4af068b09">
+      <Execution id="cb02f8b4-8ed3-4060-8f0c-961fecc0930c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="MetadataFault_RetainsFrozenPlanAndOriginalGuard" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d273d00d-5926-0f1c-8767-a1ec277a380e">
+      <Execution id="ab6db5c8-9acd-43f1-8e46-2e61549069b1" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 4)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9735af27-a220-8126-23ae-0269941ff966">
+      <Execution id="448f2986-7352-4adb-a293-653ed8b992db" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="MetadataFault_RetainsFrozenPlanAndOriginalGuard" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2db5d628-a267-c6a6-353a-0638e377e1c1">
+      <Execution id="d8dcabbf-d9f1-4ec4-94ee-49a4082976ee" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="HeldLease_RechecksMainRecordBeforeWrite" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 0)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fe856996-42cc-c2f3-ee5d-6de7519cd8c8">
+      <Execution id="2b07ec15-1764-4d63-8f41-88a4a26664c4" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="MetadataFault_RetainsFrozenPlanAndOriginalGuard" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation(disposition: 4)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d7d791a4-1a84-98c7-dab9-637a69e70c6f">
+      <Execution id="a386f588-2799-4e69-9720-c3ba2d4d12f9" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="ColdNonterminal_RefusesBeforeRecoveryAndMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard(stage: 6)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f42c88d3-19ad-b5a3-005b-87afec0cb724">
+      <Execution id="1ff79235-a472-4540-8822-d524fed3387f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="MetadataFault_RetainsFrozenPlanAndOriginalGuard" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="a5a3b99a-045c-215d-2eed-88d4af068b09" executionId="cb02f8b4-8ed3-4060-8f0c-961fecc0930c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d273d00d-5926-0f1c-8767-a1ec277a380e" executionId="ab6db5c8-9acd-43f1-8e46-2e61549069b1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d7d791a4-1a84-98c7-dab9-637a69e70c6f" executionId="a386f588-2799-4e69-9720-c3ba2d4d12f9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="18603c11-9b43-c79d-52ad-0a25004c9298" executionId="355d808b-116c-44b2-9168-90bd01c80a19" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="582cdbef-47e6-64ce-dc61-e43c839e2edc" executionId="dfeeb34d-03e0-4257-b5ae-66680c38e99b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f42c88d3-19ad-b5a3-005b-87afec0cb724" executionId="1ff79235-a472-4540-8822-d524fed3387f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fe856996-42cc-c2f3-ee5d-6de7519cd8c8" executionId="2b07ec15-1764-4d63-8f41-88a4a26664c4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="16a54e6a-c372-62fb-eaf3-328d184d1bc6" executionId="c5798701-7910-4c2a-bfdf-9baaef16c176" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0d686bb0-a97b-a7c6-1dbc-2e3377f05631" executionId="20171036-ce2c-486f-b34e-563f2a9f3d26" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="267ccb79-1f63-5ede-3a27-6cca7d902cf7" executionId="03dfb636-00a0-4810-92ca-07a9384f375b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="14260092-98af-a3ed-6a51-8f8be1f52b47" executionId="86fe5dc0-fad8-430c-9b2c-a520b4a78609" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="69b8ded8-abc1-dde3-e16c-59bc6c9945bf" executionId="9a458bf6-ddbb-4078-890f-ea553b4c3e1c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="10047d6a-c2dc-f49d-c044-fc14e911abc0" executionId="d22cc739-6769-43db-a04d-621c46122eac" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2dab1f7c-5cd1-d4af-73ce-9d36c665a7ad" executionId="e00865b8-b308-40ef-8e3f-5c5905ed277e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9735af27-a220-8126-23ae-0269941ff966" executionId="448f2986-7352-4adb-a293-653ed8b992db" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2db5d628-a267-c6a6-353a-0638e377e1c1" executionId="d8dcabbf-d9f1-4ec4-94ee-49a4082976ee" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="16" executed="16" passed="14" failed="2" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.28]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:02.03]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:02.07]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:11.12]       Assert.True() Failure
+[xUnit.net 00:00:11.12]       Expected: True
+[xUnit.net 00:00:11.12]       Actual:   False
+[xUnit.net 00:00:11.13]       Stack Trace:
+[xUnit.net 00:00:11.13]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunFenceTests.cs(105,0): at BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing()
+[xUnit.net 00:00:11.13]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:11.17]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:11.17]       Expected: 2
+[xUnit.net 00:00:11.17]       Actual:   1
+[xUnit.net 00:00:11.17]       Stack Trace:
+[xUnit.net 00:00:11.17]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunFenceTests.cs(86,0): at BookOfEternityClient.Tests.GmMainRunFenceTests.InitializationParentBarrier_IsReplayedBeforeRetryAck()
+[xUnit.net 00:00:11.17]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:11.18]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T12:39:36.5236343+00:00">
+        <Text>[xUnit.net 00:00:11.12]     BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T12:39:36.5660500+00:00">
+        <Text>[xUnit.net 00:00:11.17]     BookOfEternityClient.Tests.GmMainRunFenceTests.InitializationParentBarrier_IsReplayedBeforeRetryAck [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

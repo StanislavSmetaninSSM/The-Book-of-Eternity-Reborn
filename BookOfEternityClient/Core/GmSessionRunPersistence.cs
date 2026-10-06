@@ -58,7 +58,11 @@ internal sealed class GmSessionRunPersistence
         {
             // Only this live plan that observed the whole namespace absent can initialize.
             if(p.Before!=null || _created || Mkdir(scope.ValidateDirectory(DirectoryPath),0x1c0)!=0)throw Invalid();
-            _created=true;Sync(DirectoryPath);_observe?.Invoke(MainRunIoStage.BeforeNamespaceParentFlush);Sync(Path.GetDirectoryName(DirectoryPath)!);_observe?.Invoke(MainRunIoStage.NamespaceCreated);
+            _created=true;_observe?.Invoke(MainRunIoStage.NamespaceCreated);
+        }
+        if(_created) {
+            Sync(DirectoryPath);_observe?.Invoke(MainRunIoStage.BeforeNamespaceParentFlush);
+            Sync(Path.GetDirectoryName(DirectoryPath)!);Sync(_guard.Root);
         }
         scope.ValidateDirectory(DirectoryPath,false);
         byte[]? actual;

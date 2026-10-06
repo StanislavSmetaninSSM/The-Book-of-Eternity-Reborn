@@ -466,6 +466,7 @@ internal sealed partial class BridgeHost : IDisposable
         _terminalRootTask = ObserveTerminalRootAsync(session,input);
         _keyboardPumpTask = Task.Run(() => PumpKeyboardAsync(input, ReadConsoleKeyAsync, shellLoopCts.Token));
         _resizePumpTask = Task.Run(() => PumpResizeAsync(shellLoopCts.Token));
+        _mainRun?.BindActualBridgeRetirement(session,[_outputPumpTask,_keyboardPumpTask,_resizePumpTask,_terminalRootTask,_terminalAuthorityTask],()=>input.Revoked?input.DrainTask:null);
         lock (_sync) { _status.ShellPid = session.Identity.RootPid; _status.Backend = session.Identity.Backend; _status.TerminalRunId=session.Identity.RunId; _status.TerminalGuarantee=session.Identity.Guarantee; _status.State = "OperatorNotReady"; WriteStatusFile(); }
         return input;
     }
@@ -963,6 +964,7 @@ internal sealed partial class BridgeHost : IDisposable
         }
         catch (Exception ex) when (started)
         {
+            if(_pty!=null)MarkTerminalUncertain();
             var error = new PtyInputWriteException(ex);
             lock (_sync)
             {
@@ -1080,6 +1082,7 @@ internal sealed partial class BridgeHost : IDisposable
         catch (OperationCanceledException) when (linked.IsCancellationRequested) { }
         catch (InputLifetimeUnavailableException) { }
         catch (PtyInputWriteException) { /* Recorded and revoked by the real writer; no silent retry. */ }
+        catch { if(_pty!=null)MarkTerminalUncertain();throw; }
     }
 
     private static async ValueTask<ConsoleKeyInfo?> ReadConsoleKeyAsync(CancellationToken cancellationToken)
@@ -1092,6 +1095,7 @@ internal sealed partial class BridgeHost : IDisposable
 
     private async Task PumpResizeAsync(CancellationToken cancellationToken)
     {
+        try {
         var last = GetConsoleSize();
         while (!cancellationToken.IsCancellationRequested)
         {
@@ -1107,6 +1111,8 @@ internal sealed partial class BridgeHost : IDisposable
 
             last = current;
         }
+        } catch(OperationCanceledException) when(cancellationToken.IsCancellationRequested) { }
+        catch { MarkTerminalUncertain();throw; }
     }
 
     private static string? KeyToSequence(ConsoleKeyInfo key)

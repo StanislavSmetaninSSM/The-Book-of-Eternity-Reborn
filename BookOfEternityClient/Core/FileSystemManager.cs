@@ -3617,7 +3617,7 @@ public partial class FileSystemManager
     {
         try
         {
-            await mainAdmission.AcquireAsync(cancellationToken);
+            await mainAdmission.AcquireAsync(cancellationToken,purpose==CanonicalWritePurpose.SessionFinalization);
             var writeLease = await AcquireCanonicalWriteLeaseCoreAsync(
                 purpose,
                 cancellationToken, workerPurpose);
@@ -3700,15 +3700,16 @@ public partial class FileSystemManager
                 purpose) { WorkerPurpose = workerPurpose, MainAdmission=MainAdmissions.Value };
             try
             {
+                if(purpose==CanonicalWritePurpose.MainMetadata) {
+                    if(workerPurpose!=null)throw GmSessionRunPersistence.Invalid();
+                    if(writeLease.MainAdmission?.MetadataOnly!=true)throw GmSessionRunPersistence.Invalid();
+                    writeLease.MainAdmission.Validate(writeLease);return writeLease;
+                }
                 workerPurpose?.ValidateRoot(this);
                 var workerContext = CanonicalRootAuthorityIdentity.WorkerContext;
                 workerContext?.ValidateCanonical(this, writeLease);
                 workerContext?.ValidateBeforeRecovery();
                 writeLease.WorkerRootPin = workerContext?.PinCanonical();
-                if(purpose==CanonicalWritePurpose.MainMetadata) {
-                    if(writeLease.MainAdmission?.MetadataOnly!=true)throw GmSessionRunPersistence.Invalid();
-                    writeLease.MainAdmission.Validate(writeLease);return writeLease;
-                }
                 if(purpose==CanonicalWritePurpose.SessionFinalization && writeLease.MainAdmission!.Closing) {
                     writeLease.MainAdmission.Validate(writeLease);return writeLease;
                 }
@@ -3897,6 +3898,7 @@ public partial class FileSystemManager
     {
         EnsurePhysicalCanonicalWriteLease(writeLease);
         writeLease.MainAdmission?.Validate(writeLease);
+        if(writeLease.Purpose==CanonicalWritePurpose.MainMetadata)return;
         writeLease.WorkerPurpose?.ValidateRoot(this);
         CanonicalRootAuthorityIdentity.WorkerContext?.ValidateCanonical(this, writeLease);
     }
