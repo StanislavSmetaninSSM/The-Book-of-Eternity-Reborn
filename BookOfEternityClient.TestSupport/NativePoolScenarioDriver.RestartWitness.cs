@@ -16,13 +16,22 @@ internal static partial class NativePoolScenarioDriver
     }
     private static async Task<int> RunRestartWitness(string mode, string output)
     {
+        var withholdOriginalTerminalAck = mode == "forged";
+        var terminalFaults = 0;
         async Task<(GmWorkerDurableExecution Execution, GmWorkerQuarantinedExecution Owner,
             GmWorkerExecutionWorkspace Workspace, WitnessSlot Slot)> Original(string name)
         {
             var root = Path.Combine(output, name);
             await BootstrapRestartRoot(root);
             var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
-            var context = GmWorkerRootContext.Attach(fs, durable: true, observer: null);
+            void Observe(WorkerLedgerIoStage stage)
+            {
+                var statePath = Path.Combine(root, ".boe_runtime", "worker-runs-v1", "state.json");
+                if (name == "original" && withholdOriginalTerminalAck && stage == WorkerLedgerIoStage.StateDirectorySynced &&
+                    File.Exists(statePath) && GmWorkerRunLedgerCodec.Decode(new(root), File.ReadAllBytes(statePath)).Retired.Length == 1)
+                { terminalFaults++; throw new IOException("Synthetic original cleanup terminal ACK withheld."); }
+            }
+            var context = GmWorkerRootContext.Attach(fs, durable: true, Observe);
             var retained = context.Enter(); retained.RetainForCleanup();
             var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
             var workspace = GmWorkerExecutionWorkspace.PlanCreation(fs, task, null, Path.Combine(output, name + "-detached"));
@@ -50,14 +59,28 @@ internal static partial class NativePoolScenarioDriver
                 !Directory.Exists(foreign.Workspace.GameSessionPath);
             if (!foreignCompleted) throw new InvalidOperationException("Foreign positive cleanup did not complete.");
         }
-        else completion = new(original.Owner);
+        else
+        {
+            await original.Owner.ConfirmDeathAsync();
+            try { await original.Owner.CleanupConfirmedAsync(); }
+            catch (IOException) when (terminalFaults > 0) { }
+            var retained = (GmWorkerQuarantinedExecution.CleanupCompletion?)typeof(GmWorkerQuarantinedExecution)
+                .GetField("_completion", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(original.Owner);
+            completion = new(original.Owner);
+            if (terminalFaults == 0 || retained == null || retained.Facts != completion.Facts ||
+                original.Execution.RetirementAcknowledged || original.Slot.Disposals != 0)
+                throw new InvalidOperationException("Original retained completion was not frozen before ACK loss.");
+            // All cleanup facts now hold; only private retained-instance identity
+            // distinguishes the fabricated token. The original retry may ACK now.
+            withholdOriginalTerminalAck = false;
+        }
         var rootBefore = RestartSnapshot(Path.Combine(output, "original"));
         Exception? refusal = null;
         try { await original.Execution.RetireAsync(completion); }
         catch (InvalidOperationException error) { refusal = error; }
         await File.WriteAllTextAsync(Path.Combine(output, "restart-witness.json"), JsonSerializer.Serialize(new
         {
-            mode, refused = refusal != null, foreignCompleted,
+            mode, refused = refusal != null, foreignCompleted, terminalFaults,
             preserved = rootBefore.SequenceEqual(RestartSnapshot(Path.Combine(output, "original"))),
             workspaceRetained = Directory.Exists(original.Workspace.GameSessionPath),
             original.Slot.Disposals, original.Execution.RetirementAcknowledged

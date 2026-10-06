@@ -364,6 +364,12 @@ Corrected only expected cancellation capture: result remains null and no permit 
 fabricated; read actual ledger/reaper/cleanup. Reviewer also required direct awaiting
 of the bounded after-send hook so cancellation cannot abandon its task under the lease.
 Fresh same4 selection pending; default-null production ordering remains unchanged.
+Before running witness cases, reviewer strengthened the same forged row: actual original
+cleanup reaches frozen terminal ACK loss, then the fault is removed. A newly constructed
+same-owner completion has identical true cleanup facts but differs from the private
+cached instance. It must not grant terminal ACK or release capacity; cached original
+cleanup then retries successfully. This isolates the instance check from incomplete
+cleanup rejection and adds no native children. Source test-only refinement is unrun.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing
