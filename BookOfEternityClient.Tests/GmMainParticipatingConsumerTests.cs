@@ -8,12 +8,12 @@ namespace BookOfEternityClient.Tests;
 public sealed class GmMainParticipatingConsumerTests
 {
     [Fact]
-    public async Task PrepareCli_AbsentRootHasNoEffects()
+    public async Task ParticipatingHelperCli_AbsentRootHasNoEffects()
     {
         var root=Path.Combine(Path.GetTempPath(),"f2-absent-"+Guid.NewGuid().ToString("N"));
         var configuration=new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
         var start=new ProcessStartInfo("dotnet"){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true};
-        foreach(var a in new[]{Path.Combine(TestRepoPaths.RepoRoot,"BookOfEternityClient/bin",configuration,"net8.0/BookOfEternityClient.dll"),"--base-path",root,"--prepare-live-turn","--action","neutral"})start.ArgumentList.Add(a);
+        foreach(var a in new[]{Path.Combine(TestRepoPaths.RepoRoot,"BookOfEternityClient/bin",configuration,"net8.0/BookOfEternityClient.dll"),"--gm-main-operation","--root",root})start.ArgumentList.Add(a);
         using var process=Process.Start(start)!;var output=process.StandardOutput.ReadToEndAsync();var errors=process.StandardError.ReadToEndAsync();
         try {await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));}
         finally {if(!process.HasExited){process.Kill();await process.WaitForExitAsync();}}

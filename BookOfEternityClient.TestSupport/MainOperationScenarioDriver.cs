@@ -134,6 +134,46 @@ internal static class MainOperationScenarioDriver
                 if(!(await shutdown).GetProperty("ok").GetBoolean())throw new InvalidOperationException("Actual shutdown did not settle original closing.");
                 await running!.WaitAsync(TimeSpan.FromSeconds(3));
             }
+            if(mode=="terminal-main-operation-successful-finalization") {
+                MainOperationClose? receipt=null;
+                type.GetField("BeforeMainCloseReply",BindingFlags.Instance|BindingFlags.NonPublic)!.SetValue(host,(Func<MainOperationClose,Task>)(close=>{receipt=close;return Task.CompletedTask;}));
+                var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance,PhysicalLoadTransactionOperations.Instance,new FileSystemManagerHooks{SessionOperationClosingAsync=()=>throw new IOException("Controlled finalization failure after value.")});
+                Exception? failed=null;
+                try {await SessionOperationContext.RunBoundAsync(files,owner.Identity.GenerationId,()=>Task.FromResult(42));}catch(Exception e){failed=e;}
+                if(failed?.Data["EstablishedOperationResult"] is not int n || n!=42 || receipt?.Outcome!=MainOperationOutcome.Completed || !receipt.ClosingFailed)
+                    throw new InvalidOperationException("Successful callback result/outcome lost at actual finalization.");
+                result["EstablishedResult"]=n;result["ActualFinalizationFailed"]=true;
+            }
+            if(mode=="terminal-main-operation-shutdown-identity") {
+                var rejected=await Rpc(new{command="shutdown",rootKey=root+"-wrong",expectedMainIdentity=owner.Identity with{RootKey=root+"-wrong",RunId=Guid.NewGuid().ToString("N")}});
+                var terminal=(IOwnedTerminalSession)type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
+                if(rejected.GetProperty("ok").GetBoolean() || owner.AdmissionClosed || terminal.RootExited.IsCompleted)
+                    throw new InvalidOperationException("Mismatched status endpoint performed stop before original identity validation.");
+                result["WrongEndpointRefusedBeforeStop"]=true;
+            }
+            if(mode.StartsWith("terminal-main-operation-helper-",StringComparison.Ordinal) && mode!="terminal-main-operation-helper-oversized") {
+                if(mode.EndsWith("reply-loss",StringComparison.Ordinal))type.GetField("BeforeMainCloseReply",BindingFlags.Instance|BindingFlags.NonPublic)!.SetValue(host,(Func<MainOperationClose,Task>)(_=>throw new IOException("Controlled helper close reply loss.")));
+                var start=new System.Diagnostics.ProcessStartInfo("pwsh"){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true,RedirectStandardInput=true};
+                foreach(var arg in new[]{"-NoProfile","-NonInteractive","-File",Path.Combine(repo,"tests/fixtures/GmMainOperation/live.ps1"),"-RepoRoot",repo,"-SessionPath",launch.Scratch,"-Scenario",mode})start.ArgumentList.Add(arg);
+                using var child=System.Diagnostics.Process.Start(start)!;var errors=child.StandardError.ReadToEndAsync();Task? stopping=null;string output;
+                try {
+                    if(mode.EndsWith("stopping",StringComparison.Ordinal)) {
+                        if(await child.StandardOutput.ReadLineAsync().WaitAsync(TimeSpan.FromSeconds(4))!="original-active")throw new InvalidOperationException("Helper did not enter original controlled scope.");
+                        stopping=Call("StopShellAsync");
+                        for(var i=0;i<200 && owner.Record?.Disposition!=GmSessionRunDisposition.Stopping;i++)await Task.Delay(5);
+                        if(owner.Record?.Disposition!=GmSessionRunDisposition.Stopping)throw new InvalidOperationException("Stop did not durably revoke live helper before drain.");
+                        child.StandardInput.WriteLine("continue");child.StandardInput.Flush();
+                    }
+                    output=await child.StandardOutput.ReadToEndAsync();await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(7));
+                } finally {if(!child.HasExited){child.Kill();await child.WaitForExitAsync();}}
+                if(child.ExitCode!=0)throw new InvalidOperationException("Actual controlled helper failed: "+await errors);
+                if(stopping!=null)await stopping.WaitAsync(TimeSpan.FromSeconds(3));result["HelperOutput"]=output;
+                if(mode.EndsWith("caught-loss",StringComparison.Ordinal)) {
+                    for(var i=0;i<200 && !owner.IsUncertain;i++)await Task.Delay(5);
+                    if(!owner.IsUncertain || !owner.RetainsAuthority)throw new InvalidOperationException("Pre-receipt loss did not retain original Unresolved owner.");
+                    result["UnresolvedRetained"]=true;result["Success"]=true;return 0;
+                }
+            }
             if(mode=="terminal-main-operation-close-reply-loss") {
                 MainOperationClose? receipt=null;
                 type.GetField("BeforeMainCloseReply",BindingFlags.Instance|BindingFlags.NonPublic)!.SetValue(host,(Func<MainOperationClose,Task>)(close=>{receipt=close;throw new IOException("Controlled reply loss after receipt.");}));

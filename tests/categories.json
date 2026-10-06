@@ -14337,7 +14337,7 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.PrepareCli_AbsentRootHasNoEffects"
+            "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.ParticipatingHelperCli_AbsentRootHasNoEffects"
           ]
         }
       ]
@@ -14363,6 +14363,56 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-main-review-closing-linux",
+      "responsibility": "F2 reviewed original result/finalization/helper loss and scoped stop boundaries",
+      "excludes": "Previously qualified wire cases, live GM, arbitrary launch, other F1 cohorts",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmMainOperation",
+        "BookOfEternityGMBridge/",
+        "BookOfEternityClient.TestSupport/MainOperationScenarioDriver.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ReviewClosingBoundary"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-main-helper-live-linux",
+      "responsibility": "F2 reviewed original result/finalization/helper loss and scoped stop boundaries",
+      "excludes": "Previously qualified wire cases, live GM, arbitrary launch, other F1 cohorts",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmMainOperation",
+        "BookOfEternityGMBridge/",
+        "BookOfEternityClient.TestSupport/MainOperationScenarioDriver.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_ControlledLiveBoundary"
           ]
         }
       ]
