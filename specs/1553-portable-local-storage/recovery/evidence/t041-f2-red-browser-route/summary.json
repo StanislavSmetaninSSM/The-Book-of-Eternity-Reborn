@@ -1,0 +1,75 @@
+{
+  "Categories": [
+    "gm-main-browser-bundle"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "4e97c0639914e3980dd4f97c255b2769e2754f14",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "gm-main-browser-bundle",
+      "Seconds": 11.1294549,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.1334716,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0480607,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0894705,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 32.4642924,
+      "Completed": true
+    },
+    {
+      "Name": "Frontend-build",
+      "Seconds": 7.4736249,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 8,
+  "WallTime": "00:00:58.7234251",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 2,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [
+      "gm-main-browser-bundle-frontend-001"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

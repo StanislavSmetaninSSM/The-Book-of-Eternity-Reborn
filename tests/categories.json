@@ -14218,7 +14218,7 @@
     },
     {
       "id": "gm-main-browser-bundle",
-      "responsibility": "F2 both actual browser Load handlers and HTTP route consume original guarded same-response bundle",
+      "responsibility": "Actual Load HTTP route builds complete exact-generation state under original quiescent guard",
       "excludes": "Other frontend UX, save creation cohorts, public launch, live GM",
       "changeHints": [
         "BookOfEternityClient/Services/GmRuntime/GmMainOperation",
@@ -14237,13 +14237,6 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard"
-          ]
-        },
-        {
-          "project": "frontend",
-          "runner": "vitest",
-          "tests": [
-            "BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts"
           ]
         }
       ]
@@ -14269,6 +14262,32 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_FinalizationBoundary"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-main-browser-bundle-client",
+      "responsibility": "Both actual browser Load handlers forward complete same-response bundle without second HTTP refresh",
+      "excludes": "Other frontend UX, save creation cohorts, public launch, live GM",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmMainOperation",
+        "BookOfEternityGMBridge/",
+        "BookOfEternityClient.TestSupport/MainOperationScenarioDriver.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "frontend",
+          "runner": "vitest",
+          "tests": [
+            "BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts"
           ]
         }
       ]
