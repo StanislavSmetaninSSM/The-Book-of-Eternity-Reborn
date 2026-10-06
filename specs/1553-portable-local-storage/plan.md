@@ -5,6 +5,31 @@
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
 
+## T042-INPUT-TRANSACTION — authorized execution ledger
+
+Accepted design `dc4a5111f7e2b196c06565c294a28fc240fe8356`; user authorized only this
+live-owner slice. Same branch, sole Sol6.1/xhigh writer, independent Sol6.1/xhigh review.
+Spec Kit/Superpowers/bridge apply; source/remote/clean base verified before edits.
+No cold exactly-once, main/native PTY, systemd, production GM, environment changes,
+GM-model changes or real saves. Queue/profile choices remain controlled implementation
+choices, not final live UX. Existing runtime/test evidence is reused by exact source.
+
+Ruling: initial causal RED uses actual unconditional clear, actual pipe accept-loop
+head-of-line blocking, real Dispatch-WithRetry ambiguity and dormant AllowNotReady split
+writes. These fixtures do not execute Win32/PTY/provider/daemon startup. Real bridge
+assembly is built; PowerShell AST extracts only named real functions with inert collaborators.
+Actual held-dispatch/status/cancel plus fresh profile observation tests follow on the same
+consumed bridge path; a synthetic native start is never used to bypass missing terminals.
+Only new gm-bridge-prompt-operation and gm-daemon-prompt-delivery categories are selected;
+exact altered operational/source guards will join these owners when runtime changes.
+Do not repeat untouched INPUT37/OUTPUT48 or worker/native cohorts.
+
+- [ ] Preserve causal RED source/results/owned cleanup; classify preparation failures.
+- [ ] Implement immutable live operation and actual RPC/manual/profile consumers.
+- [ ] Connect typed launcher/daemon/ordinary/QTE/repair outcomes, no ambiguity replay.
+- [ ] Focused fresh GREEN and discovery; exact source/binary/artifact evidence.
+- [ ] Independent Sol source/evidence PASS, ordinary publication/readback and fresh restore.
+
 ## Ordinary Linux console with persistent interactive GM — design-only continuation
 
 **Base:** accepted R3 `bd2acebf9c070e484434d1332ee80c99bf1c66b6`, #1553,

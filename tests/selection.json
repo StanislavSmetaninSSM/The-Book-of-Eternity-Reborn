@@ -2,91 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "worker-run-ledger-record",
-      "reason": "R2 schema2 and strict worker record semantics; main run-record contract unchanged.",
+      "category": "gm-bridge-prompt-operation",
+      "reason": "Current live-owner input transaction and actual pipe control only; accepted output/worker/native cohorts are unchanged.",
       "contracts": [
-        "#1553 T041-WORKER-RESTART-R2",
-        "FR-012/014/015"
+        "#1553 T042-INPUT-TRANSACTION",
+        "US4 / FR-012/013/014/015"
       ]
     },
     {
-      "category": "worker-restart-record",
-      "reason": "R2 schema2 frozen publication and terminal cleanup progress, cold syntax only.",
+      "category": "gm-daemon-prompt-delivery",
+      "reason": "Actual launcher/daemon/QTE/repair identity and ambiguity handling; inert extracted functions, no daemon/provider startup.",
       "contracts": [
-        "#1553 T041-WORKER-RESTART-R2",
-        "FR-012/014/015"
-      ]
-    },
-    {
-      "category": "worker-detached-workspace",
-      "reason": "Original workspace creation now retains acquired partial authority; staging, reads and cleanup use that shared implementation.",
-      "contracts": [
-        "#1553 T041-WORKER-RESTART-R2",
-        "FR-012/014/015"
-      ]
-    },
-    {
-      "category": "worker-quarantine-audit-receipt",
-      "reason": "Shared original cleanup phases and conditional terminal audit changed; exact receipt and owner-slot lifetime remain required.",
-      "contracts": [
-        "#1553 T041-WORKER-RESTART-R2",
-        "FR-012/014/015"
-      ]
-    },
-    {
-      "category": "worker-pool-regression-managed-policy",
-      "reason": "Portable managed Windows selection/drain/retained-Job policy only; no native Windows qualification.",
-      "contracts": [
-        "#1553 T041-WORKER-RESTART-R2",
-        "FR-012/014/015"
-      ]
-    },
-    {
-      "category": "worker-execution-scoped-evidence",
-      "reason": "CurrentUncertainty, ObserveStop and original cleanup authority gates changed on shared execution authority.",
-      "contracts": [
-        "#1553 T041-WORKER-RESTART-R2",
-        "FR-012/014/015"
-      ]
-    },
-    {
-      "category": "worker-consumer-execution-evidence",
-      "reason": "Both actual acceptance consumers must still require the original live publication permit.",
-      "contracts": [
-        "#1553 T041-WORKER-RESTART-R2",
-        "FR-012/014/015"
-      ]
-    },
-    {
-      "category": "portable-session-generation",
-      "reason": "The nonrecursive generation snapshot parser now sits below the worker lease predicate.",
-      "contracts": [
-        "#1553 T041-WORKER-RESTART-R2",
-        "FR-012/014/015"
-      ]
-    },
-    {
-      "category": "portable-load-lease-consumers",
-      "reason": "Default unbound recovery, generation and replacement admission must retain behavior with optional worker fences.",
-      "contracts": [
-        "#1553 T041-WORKER-RESTART-R2",
-        "FR-012/014/015"
-      ]
-    },
-    {
-      "category": "portable-coordinated-lease-consumers",
-      "reason": "Shared canonical validation still rejects disposed/foreign owners and preserves original operation lock ordering.",
-      "contracts": [
-        "#1553 T041-WORKER-RESTART-R2",
-        "FR-012/014/015"
-      ]
-    },
-    {
-      "category": "worker-restart-default-controls",
-      "reason": "Two existing positive ordinary null-worker-purpose controls for exact logical mutations and prepared complete publication after shared R2 guard insertion.",
-      "contracts": [
-        "#1553 T041-WORKER-RESTART-R2",
-        "FR-012/014/015"
+        "#1553 T042-INPUT-TRANSACTION",
+        "US4 / FR-012/013/014/015"
       ]
     }
   ]

@@ -94,6 +94,18 @@ cleanup remain required. No reconnect/salvage/force-clear/reboot release, public
 Release/main PTY/live GM/real saves, power-cut or native Windows qualification.
 R3 stops at handoff before another integration stage; no GM-authored contract change.
 
+## Authorized T042 input transaction — live-owner scope
+
+The owner accepted design checkpoint `dc4a5111f7e2b196c06565c294a28fc240fe8356`
+and authorized only T042-INPUT-TRANSACTION: immutable bridge/launcher/daemon/QTE/repair
+operation, paste/fresh observation/submit, manual draft/takeover, typed outcomes and
+no automatic ambiguous replay. Status/cancel proof uses the actual pipe accept loop;
+PowerShell fixtures execute real extracted functions with inert collaborators only.
+Removal of automatic Ctrl+U/trust/update is authorized. Bounded queue/profile schema
+are technical choices for controlled proof, not final live UX. No cold exactly-once,
+main PTY/production GM/systemd/environment/GM-model/real-save changes. The existing
+roadmap remains authoritative for later stages; stop after focused reviewed delivery.
+
 ## Design-only continuation from accepted R3
 
 The owner accepted bounded synthetic R3 at `bd2acebf9c070e484434d1332ee80c99bf1c66b6`

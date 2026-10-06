@@ -5,6 +5,13 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
+## Current authorized work: T042 live-owner input transaction
+
+Design `dc4a5111` accepted; only the first connected input slice is authorized.
+Causal RED fixtures and two new bounded category owners are being prepared;
+no implementation or GREEN claimed yet. Native/main/live/cold/production boundaries
+remain closed. [Execution ledger](plan.md#t042-input-transaction--authorized-execution-ledger).
+
 ## Current design-only continuation toward normal Linux GM launch
 
 R3 accepted by the owner at `bd2acebf9c070e484434d1332ee80c99bf1c66b6`.

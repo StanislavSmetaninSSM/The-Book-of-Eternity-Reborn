@@ -13297,6 +13297,58 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-bridge-prompt-operation",
+      "responsibility": "Actual live-owner bridge prompt operation, immutable identity, profile evidence, manual arbitration and responsive pipe control with controlled streams/screens.",
+      "excludes": "Cold durable delivery, main/native PTY, systemd, production GM/worker Release, real saves and unrelated accepted cohorts.",
+      "changeHints": [
+        "BookOfEternityGMBridge/Program.cs",
+        "BookOfEternityClient/Launcher/bookofeternity.ps1",
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmBridgePromptOperationTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-daemon-prompt-delivery",
+      "responsibility": "Typed immutable prompt delivery through real inert PowerShell launcher/daemon/QTE/repair consumers; no ambiguous automatic replay.",
+      "excludes": "Cold durable delivery, main/native PTY, systemd, production GM/worker Release, real saves and unrelated accepted cohorts.",
+      "changeHints": [
+        "BookOfEternityGMBridge/Program.cs",
+        "BookOfEternityClient/Launcher/bookofeternity.ps1",
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.*"
+          ]
+        }
+      ]
     }
   ]
 }
