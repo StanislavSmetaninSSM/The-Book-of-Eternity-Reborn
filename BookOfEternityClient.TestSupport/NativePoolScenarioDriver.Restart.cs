@@ -18,7 +18,8 @@ internal static partial class NativePoolScenarioDriver
     {
         var root = Path.Combine(output, "state-copy");
         if (mode == "restart-seed-cold") return await SeedColdRestart(root, output);
-        if (mode != "restart-cold-run") return 64;
+        if (mode is not ("restart-cold-run" or "restart-happy-run")) return 64;
+        if (mode == "restart-happy-run") await BootstrapRestartRoot(root);
 
         // This is deliberately a fresh FS and actual pool. No bootstrap, generation
         // write, recovery, ledger rewrite or hand-made result precedes admission.
@@ -68,6 +69,16 @@ internal static partial class NativePoolScenarioDriver
         var after = RestartSnapshot(root);
         var observed = await GmWorkerRunLedger.ObserveAsync(new(root));
         var proposalPath = fs.ResolvePath(GmWorkerProposalStore.GetProposalPath("worker_proposal_native_pool_happy"));
+        var statePath = Path.Combine(root, ".boe_runtime", "worker-runs-v1", "state.json");
+        var state = File.Exists(statePath) ? GmWorkerRunLedgerCodec.Decode(new(root), File.ReadAllBytes(statePath)) : null;
+        WorkerRunRecord? retired = null;
+        if (state?.Retired.Length == 1)
+            retired = GmWorkerRunRecordCodec.Decode(File.ReadAllBytes(Path.Combine(root, ".boe_runtime", "worker-runs-v1", "retired", state.Retired[0].RunId + ".json")));
+        var taskPath = fs.ResolvePath(GmWorkerBridgePool.GetTaskPacketPath(task.TaskId));
+        var publication = retired?.Progress?.Publication;
+        var contentImportedExactly = result?.Proposal?.ChangedFiles.Count == 1 &&
+            File.Exists(fs.ResolvePath(result.Proposal.ChangedFiles[0].ContentRef!)) &&
+            File.ReadAllBytes(fs.ResolvePath(result.Proposal.ChangedFiles[0].ContentRef!)).AsSpan().SequenceEqual(ProposedContent);
         await File.WriteAllTextAsync(Path.Combine(output, "restart-result.json"), JsonSerializer.Serialize(new
         {
             mode, failure, boundOwners, releases, publicationCalls, reservationCalls,
@@ -81,6 +92,14 @@ internal static partial class NativePoolScenarioDriver
             reaperEntries = reaper.EntryCount, reaperCapacity = reaper.OwnedCapacity,
             ledgerKind = observed.Kind.ToString(),
             phases = observed.Entries.Select(entry => entry.Phase.ToString()),
+            activeEntries = state?.Entries.Length, retiredEntries = state?.Retired.Length,
+            retiredPhase = retired?.Phase.ToString(), contentImportedExactly,
+            originalRunBound = retired?.Identity.RunId == result?.ExecutionIdentity?.RunId && retired is not null,
+            originalTaskBound = retired is not null && File.Exists(taskPath) && retired.Identity.TaskSha256 == GmWorkerRunLedgerCodec.Hash(File.ReadAllBytes(taskPath)) &&
+                retired.Identity.WorkerId == task.WorkerId && retired.Identity.TaskId == task.TaskId && retired.Identity.GenerationId == task.SessionGeneration,
+            publicationCommitted = publication?.Committed == true && result?.Proposal is not null && publication.ProposalId == result.Proposal.ProposalId &&
+                File.Exists(proposalPath) && publication.ProposalSha256 == GmWorkerRunLedgerCodec.Hash(File.ReadAllBytes(proposalPath)),
+            normalCleanupWithoutAudit = retired?.Progress?.Cleanup is { RequiredAudit: false, AuditEventId: null, AuditSha256: null },
             elapsedMilliseconds = elapsed.ElapsedMilliseconds, result
         }));
         return 0;
@@ -88,13 +107,8 @@ internal static partial class NativePoolScenarioDriver
 
     private static async Task<int> SeedColdRestart(string root, string output)
     {
-        Directory.CreateDirectory(root);
+        await BootstrapRestartRoot(root);
         var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
-        fs.EnsureDirectoryStructure();
-        Directory.CreateDirectory(Path.GetDirectoryName(fs.SessionGenerationPath)!);
-        await File.WriteAllTextAsync(fs.SessionGenerationPath, JsonSerializer.Serialize(new
-        { SchemaVersion = 1, GenerationId = GmWorkerBridgeTestFixtures.SessionGeneration }));
-        await fs.WriteFileAtomicBytesAsync(RestartContextPath, RestartContextBytes);
         await using var canonical = await fs.AcquireCanonicalWriteLeaseAsync();
         await using var coordinator = await GmWorkerRunLedger.OpenCoordinatorAsync(new(root));
         if (coordinator is null || await coordinator.InitializeAsync() != WorkerLedgerMutationKind.Applied) return 71;
@@ -121,7 +135,20 @@ internal static partial class NativePoolScenarioDriver
         return 73;
     }
 
+    private static async Task BootstrapRestartRoot(string root)
+    {
+        Directory.CreateDirectory(root);
+        var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+        fs.EnsureDirectoryStructure();
+        Directory.CreateDirectory(Path.GetDirectoryName(fs.SessionGenerationPath)!);
+        await File.WriteAllTextAsync(fs.SessionGenerationPath, JsonSerializer.Serialize(new
+        { SchemaVersion = 1, GenerationId = GmWorkerBridgeTestFixtures.SessionGeneration }));
+        await fs.WriteFileAtomicBytesAsync(RestartContextPath, RestartContextBytes);
+    }
+
     private static string[] RestartSnapshot(string root) => Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories)
+        .Where(path => path != Path.Combine(root, ".boe_runtime", "worker-runs-v1", "owner.lock") &&
+            path != Path.Combine(root, ".boe_runtime", "worker-runs-v1", "journal.lock"))
         .Order(StringComparer.Ordinal).Select(path => Path.GetRelativePath(root, path) + ":" +
             Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path))).ToLowerInvariant()).ToArray();
 

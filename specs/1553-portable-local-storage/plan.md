@@ -116,6 +116,11 @@ all six live and cold corruption assertions executed. No native worker was launc
 in this cohort. Parent status was answered; no external blocker, no running session.
 Next: actual positive lifecycle RED, then closed live transition/context and complete
 pool/Release/publication/retirement wiring. Cold-pool connection RED remains open.
+Positive lifecycle scaffold now invokes actual content worker and first checks successful
+content import, one launch/Release/publication and complete workspace/reaper cleanup.
+It then requires exact durable Retired identity/publication/normal-cleanup facts and
+zero active entries. Baseline has no connected ledger; fresh causal RED pending in
+new category worker-restart-lifecycle-linux. No runtime edits in this scaffold.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

@@ -12782,6 +12782,30 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-restart-lifecycle-linux",
+      "responsibility": "#1553 R2 actual synthetic content pool lifecycle: exact task/run/publication binding and acknowledged retirement before capacity release under an independent finite guardian.",
+      "excludes": "No public Linux Release, main PTY, live GM, real saves or R3 crash-cut permutations.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/",
+        "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.Restart.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerRestartLifecycleTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

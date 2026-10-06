@@ -24,6 +24,14 @@
         "#1553 T041-WORKER-RESTART-R2",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-restart-lifecycle-linux",
+      "reason": "Actual positive companion to cold refusal must bind publication and acknowledged retirement before releasing original capacity.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
     }
   ]
 }
