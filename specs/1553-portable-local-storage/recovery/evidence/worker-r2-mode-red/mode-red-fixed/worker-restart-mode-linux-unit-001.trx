@@ -1,0 +1,212 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="9fc5d97a-e791-4683-a16a-cc394bb51f6c" name="@c7669543e9c7 2026-10-06 02:20:24" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T02:20:24.1575835+00:00" queuing="2026-10-06T02:20:24.1575835+00:00" start="2026-10-06T02:20:22.1264301+00:00" finish="2026-10-06T02:20:24.1639579+00:00" />
+  <TestSettings name="default" id="89ae489b-6d97-46f0-8589-87de1c732531">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_02_20_24" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="f595600f-9352-44f9-ba0f-e99136cb8fc7" testId="a38fe69b-705e-9939-b2dc-dbd171e50374" testName="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;unknown-field&quot;)" computerName="c7669543e9c7" duration="00:00:00.0878247" startTime="2026-10-06T02:20:24.0303348+00:00" endTime="2026-10-06T02:20:24.0303495+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f595600f-9352-44f9-ba0f-e99136cb8fc7">
+      <Output>
+        <ErrorInfo>
+          <Message>An initialized current namespace must have an immutable mode binding.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 71
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 89
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="829eff30-b71a-4b18-83c6-7611dd8fd877" testId="b6622347-17c4-c9f4-e926-7fadc0a3f5ca" testName="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;missing&quot;)" computerName="c7669543e9c7" duration="00:00:00.0062710" startTime="2026-10-06T02:20:24.0415440+00:00" endTime="2026-10-06T02:20:24.0415442+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="829eff30-b71a-4b18-83c6-7611dd8fd877">
+      <Output>
+        <ErrorInfo>
+          <Message>An initialized current namespace must have an immutable mode binding.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 71
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 89
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="bd5d8cde-6b0c-4b5f-9c77-2ecc687a10f0" testId="1e18656f-bdfc-ba68-8840-012bcf01a8e4" testName="BookOfEternityClient.Tests.GmWorkerRestartModeTests.LegacyMode_RetainsCommonLockAndNeverUpgradesToDurable" computerName="c7669543e9c7" duration="00:00:00.0022249" startTime="2026-10-06T02:20:24.0656562+00:00" endTime="2026-10-06T02:20:24.0656563+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bd5d8cde-6b0c-4b5f-9c77-2ecc687a10f0">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.NotNull() Failure: Value is null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.LegacyMode_RetainsCommonLockAndNeverUpgradesToDurable() in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 17
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1ee8c7b9-130c-4716-b90a-92cb20a83de2" testId="9445fcad-ce34-5649-938e-ec0a08e3e9da" testName="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DurableMode_BindsRootBeforeInitializationAndAlwaysRejectsLegacy" computerName="c7669543e9c7" duration="00:00:00.0050051" startTime="2026-10-06T02:20:24.0712479+00:00" endTime="2026-10-06T02:20:24.0712480+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1ee8c7b9-130c-4716-b90a-92cb20a83de2">
+      <Output>
+        <ErrorInfo>
+          <Message>Mode must be installed before first state/Start, not inferred after release.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DurableMode_BindsRootBeforeInitializationAndAlwaysRejectsLegacy() in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 43
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DurableMode_BindsRootBeforeInitializationAndAlwaysRejectsLegacy() in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 50
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="897b0b54-cce9-4248-8122-289b4ba50b08" testId="300259a8-b402-b47e-f63a-be099be854b4" testName="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;duplicate-field&quot;)" computerName="c7669543e9c7" duration="00:00:00.0061830" startTime="2026-10-06T02:20:24.0628268+00:00" endTime="2026-10-06T02:20:24.0628268+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="897b0b54-cce9-4248-8122-289b4ba50b08">
+      <Output>
+        <ErrorInfo>
+          <Message>An initialized current namespace must have an immutable mode binding.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 71
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 89
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="829750f0-7c63-437e-9bb6-56bcbc6ae668" testId="71c2b540-4ed8-8239-074a-74af2fb25cc6" testName="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;wrong-root&quot;)" computerName="c7669543e9c7" duration="00:00:00.0069200" startTime="2026-10-06T02:20:24.0564464+00:00" endTime="2026-10-06T02:20:24.0564466+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="829750f0-7c63-437e-9bb6-56bcbc6ae668">
+      <Output>
+        <ErrorInfo>
+          <Message>An initialized current namespace must have an immutable mode binding.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 71
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 89
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="499cf7f7-1f9b-4e2c-b1e7-aee0fdb3b6f3" testId="570654ef-28da-0b7e-8206-e903118a4658" testName="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;empty&quot;)" computerName="c7669543e9c7" duration="00:00:00.0089474" startTime="2026-10-06T02:20:24.0347713+00:00" endTime="2026-10-06T02:20:24.0347715+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="499cf7f7-1f9b-4e2c-b1e7-aee0fdb3b6f3">
+      <Output>
+        <ErrorInfo>
+          <Message>An initialized current namespace must have an immutable mode binding.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 71
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 89
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a484c6b3-f53b-4386-af02-0090488a7f4d" testId="578dee10-2779-d99c-6aa4-b501193c600f" testName="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;unknown-mode&quot;)" computerName="c7669543e9c7" duration="00:00:00.0068387" startTime="2026-10-06T02:20:24.0488365+00:00" endTime="2026-10-06T02:20:24.0488367+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a484c6b3-f53b-4386-af02-0090488a7f4d">
+      <Output>
+        <ErrorInfo>
+          <Message>An initialized current namespace must have an immutable mode binding.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 71
+   at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs:line 89
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartModeTests.LegacyMode_RetainsCommonLockAndNeverUpgradesToDurable" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1e18656f-bdfc-ba68-8840-012bcf01a8e4">
+      <Execution id="bd5d8cde-6b0c-4b5f-9c77-2ecc687a10f0" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartModeTests" name="LegacyMode_RetainsCommonLockAndNeverUpgradesToDurable" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;duplicate-field&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="300259a8-b402-b47e-f63a-be099be854b4">
+      <Execution id="897b0b54-cce9-4248-8122-289b4ba50b08" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartModeTests" name="DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;empty&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="570654ef-28da-0b7e-8206-e903118a4658">
+      <Execution id="499cf7f7-1f9b-4e2c-b1e7-aee0fdb3b6f3" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartModeTests" name="DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DurableMode_BindsRootBeforeInitializationAndAlwaysRejectsLegacy" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9445fcad-ce34-5649-938e-ec0a08e3e9da">
+      <Execution id="1ee8c7b9-130c-4716-b90a-92cb20a83de2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartModeTests" name="DurableMode_BindsRootBeforeInitializationAndAlwaysRejectsLegacy" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;unknown-mode&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="578dee10-2779-d99c-6aa4-b501193c600f">
+      <Execution id="a484c6b3-f53b-4386-af02-0090488a7f4d" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartModeTests" name="DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;wrong-root&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="71c2b540-4ed8-8239-074a-74af2fb25cc6">
+      <Execution id="829750f0-7c63-437e-9bb6-56bcbc6ae668" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartModeTests" name="DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;missing&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b6622347-17c4-c9f4-e926-7fadc0a3f5ca">
+      <Execution id="829eff30-b71a-4b18-83c6-7611dd8fd877" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartModeTests" name="DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: &quot;unknown-field&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a38fe69b-705e-9939-b2dc-dbd171e50374">
+      <Execution id="f595600f-9352-44f9-ba0f-e99136cb8fc7" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartModeTests" name="DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="a38fe69b-705e-9939-b2dc-dbd171e50374" executionId="f595600f-9352-44f9-ba0f-e99136cb8fc7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b6622347-17c4-c9f4-e926-7fadc0a3f5ca" executionId="829eff30-b71a-4b18-83c6-7611dd8fd877" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1e18656f-bdfc-ba68-8840-012bcf01a8e4" executionId="bd5d8cde-6b0c-4b5f-9c77-2ecc687a10f0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9445fcad-ce34-5649-938e-ec0a08e3e9da" executionId="1ee8c7b9-130c-4716-b90a-92cb20a83de2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="300259a8-b402-b47e-f63a-be099be854b4" executionId="897b0b54-cce9-4248-8122-289b4ba50b08" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="71c2b540-4ed8-8239-074a-74af2fb25cc6" executionId="829750f0-7c63-437e-9bb6-56bcbc6ae668" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="570654ef-28da-0b7e-8206-e903118a4658" executionId="499cf7f7-1f9b-4e2c-b1e7-aee0fdb3b6f3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="578dee10-2779-d99c-6aa4-b501193c600f" executionId="a484c6b3-f53b-4386-af02-0090488a7f4d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="8" executed="8" passed="0" failed="8" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.23]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.31]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.33]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.47]       An initialized current namespace must have an immutable mode binding.
+[xUnit.net 00:00:01.47]       Stack Trace:
+[xUnit.net 00:00:01.47]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(71,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.47]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(89,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.47]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.47]       An initialized current namespace must have an immutable mode binding.
+[xUnit.net 00:00:01.47]       Stack Trace:
+[xUnit.net 00:00:01.47]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(71,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.47]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(89,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.47]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.48]       An initialized current namespace must have an immutable mode binding.
+[xUnit.net 00:00:01.48]       Stack Trace:
+[xUnit.net 00:00:01.48]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(71,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.48]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(89,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.48]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.49]       An initialized current namespace must have an immutable mode binding.
+[xUnit.net 00:00:01.49]       Stack Trace:
+[xUnit.net 00:00:01.49]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(71,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.49]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(89,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.49]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.49]       An initialized current namespace must have an immutable mode binding.
+[xUnit.net 00:00:01.49]       Stack Trace:
+[xUnit.net 00:00:01.49]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(71,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.49]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(89,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.49]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.50]       An initialized current namespace must have an immutable mode binding.
+[xUnit.net 00:00:01.50]       Stack Trace:
+[xUnit.net 00:00:01.50]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(71,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.50]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(89,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(String mutation)
+[xUnit.net 00:00:01.50]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.50]       Assert.NotNull() Failure: Value is null
+[xUnit.net 00:00:01.50]       Stack Trace:
+[xUnit.net 00:00:01.50]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(17,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.LegacyMode_RetainsCommonLockAndNeverUpgradesToDurable()
+[xUnit.net 00:00:01.50]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.51]       Mode must be installed before first state/Start, not inferred after release.
+[xUnit.net 00:00:01.51]       Stack Trace:
+[xUnit.net 00:00:01.51]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(43,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DurableMode_BindsRootBeforeInitializationAndAlwaysRejectsLegacy()
+[xUnit.net 00:00:01.51]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartModeTests.cs(50,0): at BookOfEternityClient.Tests.GmWorkerRestartModeTests.DurableMode_BindsRootBeforeInitializationAndAlwaysRejectsLegacy()
+[xUnit.net 00:00:01.51]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.51]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:20:24.0276938+00:00">
+        <Text>[xUnit.net 00:00:01.46]     BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: "unknown-field") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:20:24.0351335+00:00">
+        <Text>[xUnit.net 00:00:01.47]     BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: "empty") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:20:24.0415289+00:00">
+        <Text>[xUnit.net 00:00:01.48]     BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: "missing") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:20:24.0489595+00:00">
+        <Text>[xUnit.net 00:00:01.49]     BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: "unknown-mode") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:20:24.0566072+00:00">
+        <Text>[xUnit.net 00:00:01.49]     BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: "wrong-root") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:20:24.0628675+00:00">
+        <Text>[xUnit.net 00:00:01.50]     BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair(mutation: "duplicate-field") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:20:24.0657268+00:00">
+        <Text>[xUnit.net 00:00:01.50]     BookOfEternityClient.Tests.GmWorkerRestartModeTests.LegacyMode_RetainsCommonLockAndNeverUpgradesToDurable [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:20:24.0713274+00:00">
+        <Text>[xUnit.net 00:00:01.51]     BookOfEternityClient.Tests.GmWorkerRestartModeTests.DurableMode_BindsRootBeforeInitializationAndAlwaysRejectsLegacy [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

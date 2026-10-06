@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using System.Text.Json;
 using BookOfEternityClient.Services.GmWorkers;
 
 namespace BookOfEternityClient.Core;
@@ -12,15 +13,21 @@ internal sealed class WorkerRunLedgerPersistence : IDisposable
     private readonly Descriptor _owner, _journal;
     private readonly WorkerLedgerTarget _target;
     private readonly Action<WorkerLedgerIoStage>? _observe;
+    private readonly FixtureMode _mode;
+    private enum FixtureMode { LegacySynthetic, DurableSynthetic }
     private Transaction? _pending;
     private sealed record Transaction(byte[]? Before, byte[] After, WorkerRunRecord? Archive, string Temporary);
     internal bool CreatedNamespace { get; }
 
     private WorkerRunLedgerPersistence(WorkerLedgerTarget target, TrustedLocalFileScope scope,
-        Descriptor owner, Descriptor journal, bool created, Action<WorkerLedgerIoStage>? observe)
-    { _target = target; _scope = scope; _owner = owner; _journal = journal; CreatedNamespace = created; _observe = observe; }
+        Descriptor owner, Descriptor journal, bool created, FixtureMode mode, Action<WorkerLedgerIoStage>? observe)
+    { _target = target; _scope = scope; _owner = owner; _journal = journal; CreatedNamespace = created; _mode = mode; _observe = observe; }
 
-    internal static WorkerRunLedgerPersistence Open(WorkerLedgerTarget target, Action<WorkerLedgerIoStage>? observe = null)
+    internal static WorkerRunLedgerPersistence Open(WorkerLedgerTarget target, Action<WorkerLedgerIoStage>? observe = null) =>
+        OpenCore(target, FixtureMode.DurableSynthetic, observe);
+    internal static WorkerRunLedgerPersistence OpenLegacy(WorkerLedgerTarget target) => OpenCore(target, FixtureMode.LegacySynthetic, null);
+
+    private static WorkerRunLedgerPersistence OpenCore(WorkerLedgerTarget target, FixtureMode mode, Action<WorkerLedgerIoStage>? observe)
     {
         if (!Supported) throw new PlatformNotSupportedException("Worker ledger durability adapter is unavailable.");
         var scope = Scope(target);
@@ -54,9 +61,28 @@ internal sealed class WorkerRunLedgerPersistence : IDisposable
                 CreateDirectory(scope, Path.Combine(target.DirectoryPath, "retired"));
                 observe?.Invoke(WorkerLedgerIoStage.RetiredDirectoryCreated);
                 owner.Flush(); journal.Flush(); SyncDirectory(target.DirectoryPath);
+                journal.Lock();
+                try
+                {
+                    var path = scope.ValidateFile(Path.Combine(target.DirectoryPath, "mode.json"));
+                    using (var stream = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.None))
+                    {
+                        stream.Write(ModeBytes(target, mode));
+                        stream.Flush(flushToDisk: true);
+                    }
+                    observe?.Invoke(WorkerLedgerIoStage.ModeFileFlushed);
+                    SyncDirectory(target.DirectoryPath);
+                    observe?.Invoke(WorkerLedgerIoStage.ModeDirectorySynced);
+                }
+                finally { journal.Unlock(); }
             }
-            else _ = ReadSnapshot(target) ?? throw Invalid();
-            var result = new WorkerRunLedgerPersistence(target, scope, owner, journal, fresh, observe);
+            else
+            {
+                RequireMode(scope, target, mode);
+                if (mode == FixtureMode.DurableSynthetic) _ = ReadSnapshot(target) ?? throw Invalid();
+                else ValidateLegacyNamespace(scope, target);
+            }
+            var result = new WorkerRunLedgerPersistence(target, scope, owner, journal, fresh, mode, observe);
             result.RequireAuthority();
             return result;
         }
@@ -71,10 +97,11 @@ internal sealed class WorkerRunLedgerPersistence : IDisposable
         if (observed.BlockingFileAncestor != null) throw Invalid();
         if (observed.Kind == TrustedLocalNamespaceKind.Missing) return null;
         scope.ValidateDirectory(target.DirectoryPath, allowMissing: false);
+        RequireMode(scope, target, FixtureMode.DurableSynthetic);
         scope.ValidateFile(Path.Combine(target.DirectoryPath, "owner.lock"), allowMissing: false);
         scope.ValidateFile(Path.Combine(target.DirectoryPath, "journal.lock"), allowMissing: false);
         var retired = scope.ValidateDirectory(Path.Combine(target.DirectoryPath, "retired"), allowMissing: false);
-        var names = new HashSet<string>(["owner.lock", "journal.lock", "state.json", "retired"], StringComparer.Ordinal);
+        var names = new HashSet<string>(["owner.lock", "journal.lock", "mode.json", "state.json", "retired"], StringComparer.Ordinal);
         foreach (var path in Directory.EnumerateFileSystemEntries(target.DirectoryPath))
             if (path != allowedTemporary && !names.Remove(Path.GetFileName(path))) throw Invalid();
         if (names.Count != 0) throw Invalid();
@@ -108,6 +135,7 @@ internal sealed class WorkerRunLedgerPersistence : IDisposable
             }
         }
         if (required.Count != 0 || !ReadBounded(scope, statePath, MaximumStateBytes).AsSpan().SequenceEqual(bytes)) throw Invalid();
+        RequireMode(scope, target, FixtureMode.DurableSynthetic);
         return bytes;
     }
 
@@ -148,7 +176,7 @@ internal sealed class WorkerRunLedgerPersistence : IDisposable
     // Generic byte CAS is private; callers select only closed typed operations.
     private void PublishExact(byte[]? expected, byte[] bytes, WorkerRunRecord? archive)
     {
-        if (_pending is not null || bytes.Length > MaximumStateBytes) throw Conflict();
+        if (_mode != FixtureMode.DurableSynthetic || _pending is not null || bytes.Length > MaximumStateBytes) throw Conflict();
         _pending = new(expected?.ToArray(), bytes.ToArray(), archive,
             Path.Combine(_target.DirectoryPath, "state-" + Guid.NewGuid().ToString("N") + ".tmp"));
         Execute(_pending);
@@ -171,7 +199,7 @@ internal sealed class WorkerRunLedgerPersistence : IDisposable
             else
             {
                 if (plan.Before is not null || !CreatedNamespace) throw Conflict();
-                var names = new HashSet<string>(["owner.lock", "journal.lock", "retired"], StringComparer.Ordinal);
+                var names = new HashSet<string>(["owner.lock", "journal.lock", "mode.json", "retired"], StringComparer.Ordinal);
                 foreach (var path in Directory.EnumerateFileSystemEntries(_target.DirectoryPath))
                     if (path != plan.Temporary && !names.Remove(Path.GetFileName(path))) throw Conflict();
                 if (names.Count != 0 || Directory.EnumerateFileSystemEntries(_scope.ValidateDirectory(Path.Combine(_target.DirectoryPath, "retired"), false)).Any()) throw Conflict();
@@ -257,6 +285,40 @@ internal sealed class WorkerRunLedgerPersistence : IDisposable
         _scope.ValidateDirectory(_target.DirectoryPath, allowMissing: false);
         _owner.RequireName(_scope.ValidateFile(Path.Combine(_target.DirectoryPath, "owner.lock"), false));
         _journal.RequireName(_scope.ValidateFile(Path.Combine(_target.DirectoryPath, "journal.lock"), false));
+        RequireMode(_scope, _target, _mode);
+    }
+
+    internal void VerifyLegacy()
+    {
+        if (_mode != FixtureMode.LegacySynthetic) throw Invalid();
+        RequireAuthority();
+        ValidateLegacyNamespace(_scope, _target);
+        RequireAuthority();
+    }
+
+    private static byte[] ModeBytes(WorkerLedgerTarget target, FixtureMode mode) => JsonSerializer.SerializeToUtf8Bytes(new
+    { SchemaVersion = 1, RootKey = target.RootPath, Mode = mode.ToString() });
+
+    private static void RequireMode(TrustedLocalFileScope scope, WorkerLedgerTarget target, FixtureMode mode)
+    {
+        // An immutable generated binding: no parser normalization, repair or mode switch.
+        // Mode is cooperating exclusion, never evidence about a worker's death/result.
+        if (!ReadBounded(scope, Path.Combine(target.DirectoryPath, "mode.json"), 16 * 1024)
+            .AsSpan().SequenceEqual(ModeBytes(target, mode))) throw Invalid();
+    }
+
+    private static void ValidateLegacyNamespace(TrustedLocalFileScope scope, WorkerLedgerTarget target)
+    {
+        scope.ValidateDirectory(target.DirectoryPath, false);
+        RequireMode(scope, target, FixtureMode.LegacySynthetic);
+        scope.ValidateFile(Path.Combine(target.DirectoryPath, "owner.lock"), false);
+        scope.ValidateFile(Path.Combine(target.DirectoryPath, "journal.lock"), false);
+        var retired = scope.ValidateDirectory(Path.Combine(target.DirectoryPath, "retired"), false);
+        if (Directory.EnumerateFileSystemEntries(retired).Any()) throw Invalid();
+        var names = new HashSet<string>(["owner.lock", "journal.lock", "mode.json", "retired"], StringComparer.Ordinal);
+        foreach (var path in Directory.EnumerateFileSystemEntries(target.DirectoryPath))
+            if (!names.Remove(Path.GetFileName(path))) throw Invalid();
+        if (names.Count != 0) throw Invalid();
     }
 
     private static byte[] ReadBounded(TrustedLocalFileScope scope, string path, int limit)

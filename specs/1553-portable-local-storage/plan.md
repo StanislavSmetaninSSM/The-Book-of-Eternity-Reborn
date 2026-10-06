@@ -82,6 +82,15 @@ the existing per-test LedgerFixture class was private (CS0122), despite its inte
 members. Zero tests executed,34.4550548s, cleanup complete. Made only that test
 utility type internal; instances remain private to each test, no shared mutable state.
 Evidence: recovery/evidence/worker-r2-mode-preparation-build/manifest.json.
+Mode RED at `f85ffddb866fe18d9fdf57de64010c2129604140`:8/8 causal FAIL,47.0377625s,
+cleanup complete, no timeout/process launch. Evidence:
+recovery/evidence/worker-r2-mode-red/manifest.json. Implemented immutable exact mode
+bytes under the same native non-inherited owner/journal locks, file+parent sync before
+return, strict live/cold mode verification and an opaque legacy exclusion-only lease.
+Legacy layout cannot contain ledger state/archive, cannot change mode and cannot use
+the private durable publisher. Public pool not connected yet; GREEN pending. Next
+selection8-mode +42-storage +54-failure tests the changed adapter. Record codecs are
+unchanged from175-GREEN, so their79 cases are not repeated.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

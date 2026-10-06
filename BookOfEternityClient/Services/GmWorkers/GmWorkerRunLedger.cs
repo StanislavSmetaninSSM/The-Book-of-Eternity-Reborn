@@ -13,6 +13,7 @@ internal enum WorkerLedgerMutationKind { Applied, AlreadyExact, Blocked, CommitP
 internal enum WorkerLedgerIoStage
 {
     RuntimeCreated, NamespaceCreated, OwnerCreated, JournalCreated, RetiredDirectoryCreated,
+    ModeFileFlushed, ModeDirectorySynced,
     BeforeStateWrite, StateWritten, StateFlushed, StateRenamed, StateDirectorySynced,
     BeforeArchiveWrite, ArchiveWritten, ArchiveFlushed, ArchiveDirectorySynced
 }
@@ -32,7 +33,7 @@ internal static class GmWorkerRunLedger
         CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        return Task.FromResult<WorkerLegacyFixtureOwner?>(null); // TDD mode-exclusion prerequisite.
+        return Task.FromResult(WorkerLegacyFixtureOwner.Open(target));
     }
 
     internal static Task<WorkerLedgerObservation> ObserveAsync(WorkerLedgerTarget target, CancellationToken cancellationToken = default)
@@ -66,9 +67,15 @@ internal static class GmWorkerRunLedger
 // Legacy fixture exclusion is never an execution handle or a result/stop witness.
 internal sealed class WorkerLegacyFixtureOwner : IDisposable
 {
-    private WorkerLegacyFixtureOwner() { }
-    internal void Verify() => throw new InvalidOperationException("Legacy fixture authority is not implemented.");
-    public void Dispose() { }
+    private WorkerRunLedgerPersistence? _storage;
+    private WorkerLegacyFixtureOwner(WorkerRunLedgerPersistence storage) { _storage = storage; }
+    internal static WorkerLegacyFixtureOwner? Open(WorkerLedgerTarget target)
+    {
+        try { return new(WorkerRunLedgerPersistence.OpenLegacy(target)); }
+        catch (Exception error) when (GmWorkerRunLedger.Unavailable(error)) { return null; }
+    }
+    internal void Verify() => (_storage ?? throw WorkerRunLedgerPersistence.Invalid()).VerifyLegacy();
+    public void Dispose() => Interlocked.Exchange(ref _storage, null)?.Dispose();
 }
 
 internal sealed class WorkerRunLedgerCoordinator : IAsyncDisposable
