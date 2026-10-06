@@ -121,7 +121,7 @@ internal sealed partial class BridgeHost
 
     private bool PromptStillOwned(PromptOperation op) => !_inputClosed && ReferenceEquals(_inputLifetime, op.Input) &&
         !op.Input.Revoked && !op.Input.Token.IsCancellationRequested && !op.Input.ManualTakeover &&
-        !op.Cancellation.IsCancellationRequested && !_cts.IsCancellationRequested && _pty?.AuthorityLost.IsCompleted != true;
+        !op.Cancellation.IsCancellationRequested && !_cts.IsCancellationRequested && _pty?.AuthorityLost.IsCompleted != true && _pty?.RootExited.IsCompleted != true;
 
     private async Task<PromptDeliveryResult> RunPromptOperationAsync(PromptOperation operation)
     {

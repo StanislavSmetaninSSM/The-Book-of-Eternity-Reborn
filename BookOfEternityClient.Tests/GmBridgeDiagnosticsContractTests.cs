@@ -47,7 +47,8 @@ public sealed class GmBridgeDiagnosticsContractTests
     public void BridgeHost_DispatchRequiresFreshPasteAndSubmissionEvidence()
     {
         var source = ReadRepoFile("BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs");
-        Assert.Contains("_outputVersion > afterVersion", source, StringComparison.Ordinal);
+        Assert.Contains("PromptObservationVersion > afterVersion", source, StringComparison.Ordinal);
+        Assert.Contains("_terminalScreen != null ? CaptureTerminalView().Revision : _outputVersion", source, StringComparison.Ordinal);
         Assert.Contains("PromptDeliveryDisposition.SubmissionObserved", source, StringComparison.Ordinal);
         Assert.Contains("PromptDeliveryDisposition.UnknownOutcome", source, StringComparison.Ordinal);
         Assert.True(source.IndexOf("operation.Phase = PromptDeliveryPhase.SubmitStarted", StringComparison.Ordinal) < source.IndexOf("profile.SubmitSequence, false, token", StringComparison.Ordinal));

@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text;
 using BookOfEternityClient.Services.GmRuntime;
 using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Win32.SafeHandles;
@@ -11,6 +12,8 @@ namespace BookOfEternityGMBridge;
 internal sealed class ConPtySession : IDisposable, IOwnedTerminalSession
 {
     private IntPtr _pseudoConsole, _processHandle, _threadHandle;
+    private IntPtr _unwrappedInput, _unwrappedOutput;
+    private SafeFileHandle? _inputPipe, _outputPipe;
     private Process? _process;
     private WindowsJobProcessTree? _job;
     private readonly object _gate=new();
@@ -19,39 +22,39 @@ internal sealed class ConPtySession : IDisposable, IOwnedTerminalSession
     private readonly TaskCompletionSource<string> _authorityLost=new(TaskCreationOptions.RunContinuationsAsynchronously);
     private volatile bool _uncertain, _stopping;
     private bool _released;
-    public Stream InputWriter {get;}
-    public Stream OutputReader {get;}
+    public Stream InputWriter {get;private set;}=Stream.Null;
+    public Stream OutputReader {get;private set;}=Stream.Null;
     public int ProcessId=>Identity.RootPid;
     public TerminalIdentity Identity {get;private set;}=new(Guid.NewGuid().ToString("N"),"windows-job","windows-job",0);
     public Task<TerminalRootExit> RootExited {get;private set;}=new TaskCompletionSource<TerminalRootExit>().Task;
     public Task<string> AuthorityLost=>_authorityLost.Task;
-    private ConPtySession(IntPtr console,IntPtr input,IntPtr output)
-    {
-        _pseudoConsole=console;
-        InputWriter=new FaultStream(new FileStream(new SafeFileHandle(input,true),FileAccess.Write,4096,false),Lose,()=>!_stopping && !_uncertain);
-        OutputReader=new FaultStream(new FileStream(new SafeFileHandle(output,true),FileAccess.Read,4096,false),Lose,()=>true);
-    }
+    private ConPtySession() { }
     private void Lose(string reason) { lock(_gate)_uncertain=true;_authorityLost.TrySetResult(reason); }
     private async Task<TerminalRootExit> ObserveRootAsync(Process process) { try { await process.WaitForExitAsync();return new(process.ExitCode); } catch { Lose("conpty-root-observation-fault");throw; } }
     public static ConPtySession Start(string shellExe,string shellArguments,string workingDirectory,short width,short height)
     {
         if(!OperatingSystem.IsWindows())throw new PlatformNotSupportedException("ConPTY requires Windows.");
+        var owner=new ConPtySession(); // Original resource owner exists before fallible stream acquisition.
         if(!ConPtyNativeMethods.CreatePipe(out var inputRead,out var inputWrite,IntPtr.Zero,0))throw new IOException("ConPTY input pipe failed.");
         if(!ConPtyNativeMethods.CreatePipe(out var outputRead,out var outputWrite,IntPtr.Zero,0)) {
             ConPtyNativeMethods.CloseHandle(inputRead);ConPtyNativeMethods.CloseHandle(inputWrite);throw new IOException("ConPTY output pipe failed."); }
         var hr=ConPtyNativeMethods.CreatePseudoConsole(new(){X=width,Y=height},inputRead,outputWrite,0,out var console);
         ConPtyNativeMethods.CloseHandle(inputRead);ConPtyNativeMethods.CloseHandle(outputWrite);
         if(hr!=0) { ConPtyNativeMethods.CloseHandle(inputWrite);ConPtyNativeMethods.CloseHandle(outputRead);throw new IOException("ConPTY creation failed."); }
-        var owner=new ConPtySession(console,inputWrite,outputRead);
+        owner._pseudoConsole=console;owner._unwrappedInput=inputWrite;owner._unwrappedOutput=outputRead;
         var si=new ConPtyNativeMethods.STARTUPINFOEX();si.StartupInfo.cb=Marshal.SizeOf<ConPtyNativeMethods.STARTUPINFOEX>();
         var size=IntPtr.Zero;var initialized=false;
         try {
+            owner._inputPipe=new SafeFileHandle(owner._unwrappedInput,true);owner._unwrappedInput=IntPtr.Zero;
+            owner.InputWriter=new FaultStream(new FileStream(owner._inputPipe,FileAccess.Write,4096,false),owner.Lose,()=>!owner._stopping && !owner._uncertain && !owner.RootExited.IsCompleted);
+            owner._outputPipe=new SafeFileHandle(owner._unwrappedOutput,true);owner._unwrappedOutput=IntPtr.Zero;
+            owner.OutputReader=new FaultStream(new FileStream(owner._outputPipe,FileAccess.Read,4096,false),owner.Lose,()=>true);
             ConPtyNativeMethods.InitializeProcThreadAttributeList(IntPtr.Zero,1,0,ref size);
             si.lpAttributeList=Marshal.AllocHGlobal(size);
             if(!ConPtyNativeMethods.InitializeProcThreadAttributeList(si.lpAttributeList,1,0,ref size))throw new IOException("ConPTY attribute initialization failed.");
             initialized=true;
             if(!ConPtyNativeMethods.UpdateProcThreadAttribute(si.lpAttributeList,0,(IntPtr)ConPtyNativeMethods.PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE,console,(IntPtr)IntPtr.Size,IntPtr.Zero,IntPtr.Zero))throw new IOException("ConPTY attribute failed.");
-            if(!ConPtyNativeMethods.CreateProcess(null,$"\"{shellExe}\" {shellArguments}",IntPtr.Zero,IntPtr.Zero,false,
+            if(!ConPtyNativeMethods.CreateProcess(null,new StringBuilder($"\"{shellExe}\" {shellArguments}"),IntPtr.Zero,IntPtr.Zero,false,
                 ConPtyNativeMethods.EXTENDED_STARTUPINFO_PRESENT|ConPtyNativeMethods.CREATE_UNICODE_ENVIRONMENT|ConPtyNativeMethods.CREATE_SUSPENDED,
                 IntPtr.Zero,workingDirectory,ref si,out var process))throw new IOException("ConPTY suspended process creation failed.");
             owner._processHandle=process.hProcess;owner._threadHandle=process.hThread;
@@ -68,7 +71,7 @@ internal sealed class ConPtySession : IDisposable, IOwnedTerminalSession
         token.ThrowIfCancellationRequested();
         if(size.Columns is <1 or >32767 || size.Rows is <1 or >32767)throw new ArgumentOutOfRangeException(nameof(size));
         lock(_gate) {
-            if(_uncertain || _stopping)throw new IOException("Original ConPTY admission is closed.");
+            if(_uncertain || _stopping || RootExited.IsCompleted)throw new IOException("Original ConPTY admission is closed.");
             if(ConPtyNativeMethods.ResizePseudoConsole(_pseudoConsole,new(){X=(short)size.Columns,Y=(short)size.Rows})!=0) { Lose("conpty-resize-fault");throw new IOException("ConPTY resize failed."); }
         }
         return ValueTask.CompletedTask;
@@ -101,6 +104,7 @@ internal sealed class ConPtySession : IDisposable, IOwnedTerminalSession
         catch { Lose("conpty-close-unsettled");throw; }
         // Actual EOF and all admitted I/O, plus the one original close task, are joined.
         await InputWriter.DisposeAsync();await OutputReader.DisposeAsync();
+        _inputPipe?.Dispose();_outputPipe?.Dispose();
         await _job!.DisposeAsync();_job=null;
         _process?.Dispose();
         if(_threadHandle!=IntPtr.Zero)ConPtyNativeMethods.CloseHandle(_threadHandle);
@@ -124,7 +128,7 @@ internal sealed class ConPtySession : IDisposable, IOwnedTerminalSession
         public override long Length=>throw new NotSupportedException();public override long Position{get=>throw new NotSupportedException();set=>throw new NotSupportedException();}
         public override async ValueTask<int> ReadAsync(Memory<byte> b,CancellationToken t=default)
         {
-            if(_eof.Task.IsCompletedSuccessfully)return 0;
+            if(b.Length==0 || _eof.Task.IsCompletedSuccessfully)return 0;
             Enter();try{var n=await stream.ReadAsync(b,t);if(n==0)_eof.TrySetResult();return n;}
             catch(OperationCanceledException){throw;}catch{fault("conpty-output-fault");throw;}finally{Leave();}
         }
@@ -183,7 +187,7 @@ internal static class ConPtyNativeMethods
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
     public static extern bool CreateProcess(
         string? lpApplicationName,
-        string lpCommandLine,
+        [In,Out] StringBuilder lpCommandLine,
         IntPtr lpProcessAttributes,
         IntPtr lpThreadAttributes,
         bool bInheritHandles,

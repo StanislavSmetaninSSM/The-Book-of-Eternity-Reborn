@@ -48,6 +48,9 @@ public sealed class GmOwnedTerminalBoundaryTests
         Assert.Contains("ResumeThread",source);
         Assert.DoesNotContain("Kill(entireProcessTree",source);
         Assert.Contains("_closeTask",source);
+        Assert.True(source.IndexOf("var owner=new ConPtySession()",StringComparison.Ordinal)<source.IndexOf("CreatePseudoConsole(",StringComparison.Ordinal));
+        Assert.Contains("owner.InputWriter=new FaultStream",source);
+        Assert.Contains("throw new OwnedTerminalStartException(owner,ex)",source);
     }
     [Fact]
     public async Task ActualOwnedView_PartialUtf8AndUnsupportedVtCannotBorrowIdle()

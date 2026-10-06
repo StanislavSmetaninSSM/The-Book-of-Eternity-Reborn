@@ -17,7 +17,9 @@
     "Fresh c2040e1e GREEN1/1 executed after complete matching rebuild; same actualStop assertion, no timeout, original controlled tasks settled/runner owned cleanup complete. Do not count this as native PTY/Job qualification.",
     "Next native case written first: fixed own-root fixture / real isolated TestSupport driver beneath unchanged guardian. Factory compile-ready stub refuses transport; this baseline is availability/preparation (no worker/root launch), never native causal RED. Accepted portable retirement RED remains causal. Native own-root GREEN must precede expansion.",
     "2cf1a0b2 affected selection preparation failed CS0120 ConPTY instance root observer invoked from static Start without original owner.0 tests executed; archived final-build-preparation. Minimal owner-qualified call corrected; actual launcher binary path follows net8.0 retarget and new inert actual Start-Bridge consumer check (compiled path plus project fallback). New native partial-start/stopTerminal and final affected selection remain unrun.",
-    "fbdc406b affected selection freshly built:157 planned,33 executed31PASS2FAIL; runner stops after first input category. Two source wiring guards still named old concrete pty/shellToken call sites, updated to consumed AttachOwnedTerminal/session actual calls (output CancellationToken.None and peer listener retention). No runtime fault hidden; remaining categories not executed. Review added Windows zero-length EOF and immediate completed-root input/view/resize closure negatives before runtime fix."
+    "fbdc406b affected selection freshly built:157 planned,33 executed31PASS2FAIL; runner stops after first input category. Two source wiring guards still named old concrete pty/shellToken call sites, updated to consumed AttachOwnedTerminal/session actual calls (output CancellationToken.None and peer listener retention). No runtime fault hidden; remaining categories not executed. Review added Windows zero-length EOF and immediate completed-root input/view/resize closure negatives before runtime fix.",
+    "0ac1b522 review causal REDs: actual ConPTY FaultStream13exec12PASS1FAIL empty read certifies EOF; native11exec10PASS1FAIL completed root still admits manual input while descendant holds PTY. All11 native guardians ECHILD/emergency0/failures0/deadlinefalse; partial-start original retention and actual stopTerminal pass. Correct zero buffer and close-only matched root notification plus synchronous view/writer/resize checks. No scoped proof inferred from root. Add accepted foreground actual Program/Console.ReadKey smoke under own outer PTY/unchanged guardian and unrelated finite own sentinel. CI Windows default retains4 portable category owners; explicit Linux manifest contains affected9 selection (no workflow change). Final GREEN unrun.",
+    "Review Windows partial stream acquisition now guarded by original resource owner created before kernel PTY; raw handles and progressive SafeFileHandle/stream bindings stay in same typed exception owner. Zero app code release before Job unchanged. Mutable CreateProcessW command-line buffer follows official Microsoft API in/out contract: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw (checked2026-10-06). Source guard now checks owned view Revision freshness instead of obsolete raw outputVersion condition. Foreground Python is test-only outer UI PTY orchestration, no second reaper; existing C guardian retains cleanup, no Python player/runtime dependency."
   ],
   "Cohorts": [
     {
@@ -140,5 +142,21 @@
     "Failed": 2,
     "Complete": false,
     "Evidence": "evidence/t041-terminal-affected-wiring-red/manifest.json"
-  }
+  },
+  "ReviewClosureReds": [
+    {
+      "Source": "0ac1b522fcdce8a356695d8c36442ae196b7b703",
+      "Executed": 13,
+      "Passed": 12,
+      "Failed": 1,
+      "Evidence": "evidence/t041-terminal-empty-read-red/manifest.json"
+    },
+    {
+      "Source": "0ac1b522fcdce8a356695d8c36442ae196b7b703",
+      "Executed": 11,
+      "Passed": 10,
+      "Failed": 1,
+      "Evidence": "evidence/t041-terminal-root-exit-red/manifest.json"
+    }
+  ]
 }

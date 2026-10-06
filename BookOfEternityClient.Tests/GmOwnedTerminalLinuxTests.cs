@@ -13,6 +13,9 @@ public sealed class GmOwnedTerminalLinuxTests
     [Fact]
     public async Task ActualBridge_PipeDispatchConsumesOriginalTerminalView() { await RunAsync("terminal-bridge"); }
 
+    [Fact]
+    public async Task ActualProgram_ForegroundConsoleInputsResizeEofAndScopedStop() { await RunAsync("terminal-foreground"); }
+
     [Theory]
     [InlineData("terminal-descendants")]
     [InlineData("terminal-root-first")]
@@ -39,10 +42,14 @@ public sealed class GmOwnedTerminalLinuxTests
             var log = await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(compiler, TimeSpan.FromSeconds(40), Path.Combine(folder, "build.log"));
             Assert.True(compiler.ExitCode == 0, "Preparation failure, not causal RED: " + log);
         }
-        var start = new ProcessStartInfo(Path.Combine(folder, "host-guardian")) { UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true };
-        foreach (var arg in new[] { Path.Combine(folder, "guardian.json"), "15000",
+        var foreground=mode=="terminal-foreground";
+        var start = new ProcessStartInfo(foreground?"python3":Path.Combine(folder, "host-guardian")) { UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true };
+        var configuration=new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
+        var arguments=foreground ? new[] {Path.Combine(root,"tests/fixtures/LinuxTerminal/foreground.py"),root,folder,
+            Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!,"dotnet"),Path.Combine(root,"BookOfEternityGMBridge/bin",configuration,"net8.0/BookOfEternityGMBridge.dll")} : new[] { Path.Combine(folder, "guardian.json"), "15000",
             Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!, "dotnet"),
-            typeof(NativeHostScenarioDriver).Assembly.Location, mode, folder, folder }) start.ArgumentList.Add(arg);
+            typeof(NativeHostScenarioDriver).Assembly.Location, mode, folder, folder };
+        foreach (var arg in arguments) start.ArgumentList.Add(arg);
         using var guardian = Process.Start(start)!;
         await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(guardian, TimeSpan.FromSeconds(20), Path.Combine(folder, "guardian.log"));
         using var report = JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(folder, "guardian.json")));
@@ -53,6 +60,9 @@ public sealed class GmOwnedTerminalLinuxTests
         Assert.Equal(0, guardian.ExitCode);
         Assert.Equal(0, report.RootElement.GetProperty("driverExitCode").GetInt32());
         using var scenario = JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(folder, "scenario.json")));
+        if(foreground) {
+            foreach(var proof in new[]{"Success","TwoActualConsoleInputsOneSession","ActualConsoleResize","CanonicalEofRootAlive","ActualScopedStop","OuterInputModeRestored"})Assert.True(scenario.RootElement.GetProperty(proof).GetBoolean());return;
+        }
         if (mode == "terminal-retirement") { Assert.True(scenario.RootElement.GetProperty("OwnerHeldBeforeEof").GetBoolean()); return; }
         if (mode == "terminal-late-fault") { Assert.True(scenario.RootElement.GetProperty("LateFaultUncertain").GetBoolean()); return; }
         if (mode == "terminal-gated-fds") Assert.True(scenario.RootElement.GetProperty("HeldRootHasNoHelperChannels").GetBoolean());
@@ -66,6 +76,7 @@ public sealed class GmOwnedTerminalLinuxTests
         Assert.True(scenario.RootElement.GetProperty("TwoInputs").GetBoolean());
         Assert.True(scenario.RootElement.GetProperty("Resize").GetBoolean());
         Assert.True(scenario.RootElement.GetProperty("EofStillAlive").GetBoolean());
+        if(mode is "terminal-descendants" or "terminal-root-first")Assert.True(scenario.RootElement.GetProperty("UnrelatedOwnSentinelSurvived").GetBoolean());
         Assert.Equal("StoppedWithinScope", scenario.RootElement.GetProperty("StopState").GetString());
     }
 }

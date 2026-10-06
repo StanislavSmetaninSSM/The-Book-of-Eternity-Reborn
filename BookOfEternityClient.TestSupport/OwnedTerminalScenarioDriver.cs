@@ -46,7 +46,16 @@ internal static class OwnedTerminalScenarioDriver
             result["EofStillAlive"] = !session.RootExited.IsCompleted;
             if (mode == "terminal-descendants") { await Write("descendants\n"); await Until("DESCENDANTS_READY"); }
             if (mode == "terminal-root-first") { await Write("root-exit\n"); await Until("DESCENDANTS_READY"); await session.RootExited.WaitAsync(deadline.Token); }
-            var stop = await session.StopAndObserveAsync(deadline.Token); result["StopState"] = stop.State.ToString();
+            // This finite direct child belongs to the outer driver/guardian, outside the
+            // original supervisor's lineage. Scoped stop must leave it untouched.
+            using var sentinel=mode is "terminal-descendants" or "terminal-root-first" ? System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("/usr/bin/sleep","1.2") {UseShellExecute=false}) : null;
+            TerminalStopEvidence stop;
+            try { stop=await session.StopAndObserveAsync(deadline.Token); if(sentinel!=null) {
+                if(sentinel.HasExited)throw new InvalidOperationException("Original scoped stop disturbed unrelated own sentinel.");
+                result["UnrelatedOwnSentinelSurvived"]=true;
+            } }
+            finally { if(sentinel!=null)await sentinel.WaitForExitAsync().WaitAsync(deadline.Token); }
+            result["StopState"] = stop.State.ToString();
             if (mode == "terminal-retirement") {
                 var owner=typeof(LinuxOwnedTerminalSession).GetField("_owner", BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(session)!;
                 var dispose=session.DisposeAsync().AsTask(); await Task.Delay(50);

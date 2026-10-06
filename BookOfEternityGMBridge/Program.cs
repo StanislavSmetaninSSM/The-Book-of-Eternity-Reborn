@@ -148,11 +148,12 @@ internal sealed partial class BridgeHost : IDisposable
     private TerminalViewObservation CaptureTerminalView()
     {
         lock (_sync) { var view = _terminalScreen?.Capture() ?? new("", 0, "", false);
-            return view with { Reliable = view.Reliable && !_terminalUncertain && _pty?.AuthorityLost.IsCompleted != true && _inputLifetime is { Revoked: false } input && input.Id == view.BindingId }; }
+            return view with { Reliable = view.Reliable && !_terminalUncertain && _pty?.AuthorityLost.IsCompleted != true && _pty?.RootExited.IsCompleted != true && _inputLifetime is { Revoked: false } input && input.Id == view.BindingId }; }
     }
     private Stream? _ptyInput;
     private Task? _outputPumpTask;
     private Task? _terminalAuthorityTask;
+    private Task? _terminalRootTask;
     private Task? _keyboardPumpTask;
     private Task? _resizePumpTask;
     private CancellationTokenSource? _shellLoopCts;
@@ -453,6 +454,7 @@ internal sealed partial class BridgeHost : IDisposable
         // Output has its own lifetime: revoking input must not discard final terminal bytes.
         _outputPumpTask = Task.Run(async () => { try { await PumpOutputAsync(session.OutputReader, output, CancellationToken.None); } catch { MarkTerminalUncertain(); throw; } });
         _terminalAuthorityTask = ObserveTerminalAuthorityAsync(session,input);
+        _terminalRootTask = ObserveTerminalRootAsync(session,input);
         _keyboardPumpTask = Task.Run(() => PumpKeyboardAsync(input, ReadConsoleKeyAsync, shellLoopCts.Token));
         _resizePumpTask = Task.Run(() => PumpResizeAsync(shellLoopCts.Token));
         lock (_sync) { _status.ShellPid = session.Identity.RootPid; _status.Backend = session.Identity.Backend; _status.TerminalRunId=session.Identity.RunId; _status.TerminalGuarantee=session.Identity.Guarantee; _status.State = "OperatorNotReady"; WriteStatusFile(); }
@@ -464,6 +466,19 @@ internal sealed partial class BridgeHost : IDisposable
         try { await session.AuthorityLost.WaitAsync(input.Token); }
         catch(OperationCanceledException) when(input.Token.IsCancellationRequested) { return; }
         lock(_sync) { if(!ReferenceEquals(_pty,session)||!ReferenceEquals(_inputLifetime,input))return; MarkTerminalUncertain(); }
+        RevokeInputLifetime(input);
+    }
+
+    private async Task ObserveTerminalRootAsync(IOwnedTerminalSession session, InputLifetime input)
+    {
+        try { await session.RootExited.WaitAsync(input.Token); }
+        catch(OperationCanceledException) when(input.Token.IsCancellationRequested) { return; }
+        catch { lock(_sync) { if(ReferenceEquals(_pty,session) && ReferenceEquals(_inputLifetime,input))MarkTerminalUncertain(); } }
+        lock(_sync) {
+            if(!ReferenceEquals(_pty,session)||!ReferenceEquals(_inputLifetime,input))return;
+            _status.Ready=false;
+        }
+        // Exit withdraws only this original input binding; it is never scoped stop proof.
         RevokeInputLifetime(input);
     }
 
@@ -515,6 +530,7 @@ internal sealed partial class BridgeHost : IDisposable
                 input.WritesDrained?.Task ?? Task.CompletedTask,
                 _keyboardPumpTask ?? Task.CompletedTask,
                 _terminalAuthorityTask ?? Task.CompletedTask,
+                _terminalRootTask ?? Task.CompletedTask,
                 _outputPumpTask ?? Task.CompletedTask,
                 _resizePumpTask ?? Task.CompletedTask,
                 input.CancellationTask,
@@ -544,6 +560,7 @@ internal sealed partial class BridgeHost : IDisposable
                 _shellLoopCts = null;
                 _keyboardPumpTask = null;
                 _terminalAuthorityTask = null;
+                _terminalRootTask = null;
                 _outputPumpTask = null;
                 _resizePumpTask = null;
             }
@@ -895,7 +912,7 @@ internal sealed partial class BridgeHost : IDisposable
         var bytes = Encoding.UTF8.GetBytes(appendEnter ? text + "\r" : text);
         lock (_sync)
         {
-            if (_inputClosed || !ReferenceEquals(_inputLifetime, input) || input.Revoked || _pty?.AuthorityLost.IsCompleted == true)
+            if (_inputClosed || !ReferenceEquals(_inputLifetime, input) || input.Revoked || _pty?.AuthorityLost.IsCompleted == true || _pty?.RootExited.IsCompleted == true)
                 throw new InputLifetimeUnavailableException();
             cancellationToken.ThrowIfCancellationRequested();
             input.Token.ThrowIfCancellationRequested();
@@ -913,7 +930,7 @@ internal sealed partial class BridgeHost : IDisposable
             lock (_sync)
             {
                 linked.Token.ThrowIfCancellationRequested();
-                if (_inputClosed || !ReferenceEquals(_inputLifetime, input) || input.Revoked || _pty?.AuthorityLost.IsCompleted == true)
+                if (_inputClosed || !ReferenceEquals(_inputLifetime, input) || input.Revoked || _pty?.AuthorityLost.IsCompleted == true || _pty?.RootExited.IsCompleted == true)
                     throw new InputLifetimeUnavailableException();
                 started = true; // Reservation linearizes before revocation; failures after it are uncertain.
             }
@@ -1026,7 +1043,7 @@ internal sealed partial class BridgeHost : IDisposable
                 var key = await keySource(linked.Token);
                 linked.Token.ThrowIfCancellationRequested();
                 lock (_sync)
-                    if (_inputClosed || !ReferenceEquals(_inputLifetime, input) || input.Revoked || _pty?.AuthorityLost.IsCompleted == true)
+                    if (_inputClosed || !ReferenceEquals(_inputLifetime, input) || input.Revoked || _pty?.AuthorityLost.IsCompleted == true || _pty?.RootExited.IsCompleted == true)
                         return;
                 if (key == null) continue;
                 TakeManualInput(input);
@@ -1068,6 +1085,7 @@ internal sealed partial class BridgeHost : IDisposable
 
             IOwnedTerminalSession? session;
             lock (_sync) session = _pty;
+            if (session?.RootExited.IsCompleted == true) return;
             if (session != null) await session.ResizeAsync(new(current.width, current.height), cancellationToken);
 
             last = current;

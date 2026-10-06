@@ -26,7 +26,7 @@ internal sealed class LinuxOwnedTerminalSession : IOwnedTerminalSession
         try
         {
             output = Duplicate(master);
-            InputWriter = new LinuxPtyStream(input, true, owner.ReportTerminalFault, () => owner.Uncertainty == null);
+            InputWriter = new LinuxPtyStream(input, true, owner.ReportTerminalFault, () => owner.Uncertainty == null && !owner.HostExited.IsCompleted);
             OutputReader = new LinuxPtyStream(output, false, owner.ReportTerminalFault, () => owner.Uncertainty == null);
             RootExited = ObserveRootAsync(owner);
             owner.RegisterTerminalSettlement(ObserveIoSettlementAsync());
@@ -65,7 +65,7 @@ internal sealed class LinuxOwnedTerminalSession : IOwnedTerminalSession
     {
         if (_disposed) return;
         var proof = await StopAndObserveAsync(CancellationToken.None);
-        if (proof.State != GmWorkerStopState.StoppedWithinScope || !proof.CleanupComplete) throw new InvalidOperationException("Uncertain terminal retains original owner.");
+        if (proof.State != GmWorkerStopState.StoppedWithinScope || !proof.CleanupComplete || proof.AuthorityRetained) throw new InvalidOperationException("Uncertain terminal retains original owner.");
         await _owner.SettleOutputsAsync();
         await _owner.DisposeAsync();
         await InputWriter.DisposeAsync(); await OutputReader.DisposeAsync();
