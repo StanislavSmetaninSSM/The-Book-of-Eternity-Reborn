@@ -17,7 +17,10 @@ Release, публикация и retirement реального synthetic pool. S
 cold Prepared. Два guardian ECHILD, без emergency/deadline/failures, baseline cleanup
 завершён. Отдельный первый catalog preparation failure исполнил0 тестов и сохранён.
 Следующий шаг: закрытые R2 storage/progress prerequisites и связанная реализация.
-R2 GREEN пока нет; runtime всё ещё R1/B. Доказательства и точные source hashes в плане.
+Schema2 progress prerequisite GREEN на `215ed8c8`:35 новых +44 record +42 storage
++54 failure =175/175 PASS,61.011s, cleanup complete. Closed started-run transitions,
+mode binding, root context и сам connected pool ещё не реализованы; cold pool RED
+не исправлен этим prerequisite. Доказательства и точные source hashes в плане.
 R3, public Linux Release, main PTY, live GM и реальные saves закрыты.
 Старые формулировки «R2 не разрешён» ниже относятся к истории завершения R1.
 

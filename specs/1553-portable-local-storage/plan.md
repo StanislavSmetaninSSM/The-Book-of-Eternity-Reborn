@@ -66,6 +66,13 @@ still unavailable: syntax alone cannot archive or mint a live permit. GREEN pend
 Selected affected categories now: new35-record plus original44-record/42-storage/
 54-failure, because the exact codec bytes/state version changed. Do not repeat native
 process/cold pool yet; its connected path remains missing.
+GREEN at `215ed8c84baeddda7ac54e3088b06a51da93e9cf`: fresh build and175/175 PASS
+(35 new progress +44 affected record +42 storage +54 failure),61.0114381s, all four
+descriptors complete, cleanup complete/no timeout. Evidence:
+recovery/evidence/worker-r2-record-green/manifest.json. Only the pure schema/current
+writers are qualified here; closed started-run transitions, immutable mode binding,
+root context and complete pool lifecycle remain unimplemented. Next: mode exclusion
+metadata tests and native adapter changes, then closed live witnesses/connection.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

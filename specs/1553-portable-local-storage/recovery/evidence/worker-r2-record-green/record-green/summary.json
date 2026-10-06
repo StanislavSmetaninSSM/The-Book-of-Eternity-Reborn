@@ -1,0 +1,94 @@
+{
+  "Categories": [
+    "worker-restart-record",
+    "worker-run-ledger-record",
+    "worker-run-ledger-storage-linux",
+    "worker-run-ledger-failures-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "215ed8c84baeddda7ac54e3088b06a51da93e9cf",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "worker-restart-record",
+      "Seconds": 3.5244504,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "worker-run-ledger-failures-linux",
+      "Seconds": 4.519724,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-run-ledger-record",
+      "Seconds": 2.9946924,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "worker-run-ledger-storage-linux",
+      "Seconds": 3.8881684,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.085525,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0266594,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0386445,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 40.738085,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0050929,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 15,
+  "WallTime": "00:01:01.0114381",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 4,
+    "PlannedCases": 175,
+    "CompletedCases": 175,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 175,
+    "Executed": 175,
+    "Passed": 175,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
