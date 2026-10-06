@@ -268,7 +268,17 @@
     "UnresolvedBlockingFindings": [],
     "Scope": "Three initial blockers and affected contracts; actual browser guard/Load/finalization, original held expiry and status lock order. Existing runtime/evidence audits not repeated.",
     "HashVerification": "37 source refs and7 reused carriers match accepted base; reviewer verified3 additions and prior refs/carriers unchanged.",
-    "MetadataCarrier": "Pending narrow review of status/consistency updates; no runtime/test changes."
+    "MetadataCarrier": "Metadata PASS at946cfb98529e368e1263e48fd45ec6a5cd64510b; final carrier changes only this verdict attribution and records the observed review.",
+    "MetadataReview": {
+      "Reviewer": "/root/run_fence_review",
+      "Model": "gpt-6.1-sol",
+      "ReasoningEffort": "xhigh",
+      "ReviewedCommit": "946cfb98529e368e1263e48fd45ec6a5cd64510b",
+      "Verdict": "Metadata PASS",
+      "Scope": "Four-file carrier, design unchanged,37source refs+7reused carriers unchanged; only design task complete; no architecture or qualification drift.",
+      "UnresolvedDiscrepancies": [],
+      "WritesTestsBuildsProbes": 0
+    }
   },
   "FirstProposedSlice": "T041-RUN-FENCE-F1: connected fixed neutral original owner, existing schema1 main.json persistence and real common filesystem pre-recovery/held-lease gates; no public game-writing launch.",
   "NextSlices": [
