@@ -459,5 +459,15 @@
     ],
     "constitution": "No changed gameplay/schema/GM-authored contract; no operational prompt migration at design-only checkpoint. Existing operational guidance/examples must be synchronized in implementation. No issue closure or task-wide platform acceptance.",
     "extensionHooks": "Only optional before/after plan/analyze Git commit and optional context refresh; ordinary checkpoint fulfills commit workflow, context already points at current plan; no mandatory hook."
+  },
+  "candidateRestoration": {
+    "commit": "dd05ea97f06ef36c05e2b52b83c4daec21fe65a5",
+    "proof": "recovery/production-main-design-restoration.json",
+    "proofSha256": "8656e5cf9ceda0b8f54c353b3f7a4eb4f5e9732f2435141a8b95770f92e35c6d",
+    "trackedBytesCompared": 18468,
+    "githubOnly": true,
+    "clean": true,
+    "fullFsck": true,
+    "testsExecuted": 0
   }
 }

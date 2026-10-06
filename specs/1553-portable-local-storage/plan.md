@@ -22,6 +22,12 @@ findings.37source/guardian pins and5probe artifacts verified;0builds/tests/model
 requests in review. WIP checkpoints were normally published and read back before
 review. Final verdict carrier/readback/fresh GitHub-only source restore are writer
 closure, with exact SHA in handoff. M1 implementation is not authorized here.
+[Executed GitHub-only source restoration](recovery/production-main-design-restoration.json)
+at verdict carrier `dd05ea97`:18468tracked files byte-identical to independent
+GitHub blobs/writer, exact SHA/tree/parent/accepted ancestry, clean/fullfsck/no
+alternates,0restoration tests. Remote SHA/changed-byte readback also matched.
+This proof is retained in the subsequent closure carrier; final carrier receives
+its own fresh restoration before handoff, without a self-referential SHA.
 The historical F3 ledger below records the accepted completed slice.
 
 ## T041-RUN-FENCE-F3 — bounded independent PASS; stop before next stage
