@@ -60,6 +60,8 @@ public sealed partial class BrowserRollbackLinuxBoundaryTests
         Assert.Equal("Completed", current.State);
         Assert.InRange(actions, 1, 64);
         Assert.NotNull(current.Ending); Assert.NotNull(current.BestReward);
+        var refreshed = await web.BuildDarenShowcaseStateAsync();
+        Assert.NotNull(refreshed.BestReward); Assert.True(string.IsNullOrWhiteSpace(refreshed.Error), refreshed.Error);
         Assert.True(File.Exists(Path.Combine(_root, DarenQteRewardProfileService.ProfileRelativePath)));
         Assert.Equal(Before, File.ReadAllBytes(files.ResolvePath(Member)));
         AssertNoBrowserEvidence(files);

@@ -295,7 +295,7 @@ public sealed partial class BrowserLocalWriteCoordinator
                 rollbackCleanupDirectories,
                 rollbackExternalFileIds);
             writeLease.ExternalPublicationContext =
-                backups.DarenTransaction;
+                (object?)backups.LocalTransaction ?? backups.DarenTransaction;
             await writeOperation(writeLease);
             await ExplorerLocalTurnRollbackArtifacts.MarkBrowserWriteTransactionCommittedAsync(
                 _fs,
@@ -315,6 +315,7 @@ public sealed partial class BrowserLocalWriteCoordinator
         {
             writeLease.MutationIntentRecorder = null;
             Exception? rollbackFailure = null;
+            var rollbackConfirmed = false;
             try
             {
                 if (backups != null)
@@ -322,6 +323,7 @@ public sealed partial class BrowserLocalWriteCoordinator
                     try
                     {
                         await RestoreRollbackAsync(writeLease, backups);
+                        rollbackConfirmed = true;
                         if (!ExplorerLocalTurnRollbackArtifacts.TryDeleteBrowserWriteTransaction(
                                 _fs,
                                 writeLease,
@@ -364,9 +366,12 @@ public sealed partial class BrowserLocalWriteCoordinator
             return backups == null
                 ? BrowserLocalWriteResult.Failed(
                     $"Browser-write отменён до применения изменений: {ex.Message}")
-                : rollbackFailure == null
+                : rollbackConfirmed
                 ? BrowserLocalWriteResult.Failed(
                     $"Browser-write отменён, rollback восстановлен: {ex.Message}", BrowserPreparedWriteDisposition.RolledBack)
+                    with { NeedsFollowUp = rollbackFailure != null,
+                        Message = rollbackFailure == null ? $"Browser-write отменён, rollback восстановлен: {ex.Message}"
+                            : $"Browser-write отменён, файлы восстановлены; служебная очистка требует проверки: {ex.Message}" }
                 : BrowserLocalWriteResult.Failed(
                     $"Browser-write отменён; rollback завершён не полностью: {ex.Message}; {rollbackFailure.Message}", BrowserPreparedWriteDisposition.Uncertain);
         }

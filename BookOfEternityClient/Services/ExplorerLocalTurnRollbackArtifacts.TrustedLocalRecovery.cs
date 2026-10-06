@@ -23,7 +23,7 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
         foreach (var evidence in ReadLocalBrowserEvidence(fs, lease))
         {
             var generation = evidence.Manifest?.Generation ?? evidence.Cleanup!.Generation;
-            using var access = fs.BeginBrowserLocalStorage(lease, evidence.Root, generation);
+            using var access = fs.BeginBrowserLocalStorage(lease, evidence.Root, generation, evidence.Manifest?.ExternalEntries?.Count > 0);
             if (evidence.Manifest == null)
             {
                 var path = CleanupPath(evidence.Root, evidence.Cleanup!.Outcome);
@@ -49,6 +49,7 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
     private static IReadOnlyList<LocalBrowserEvidence> ReadLocalBrowserEvidence(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease)
     {
         var files = fs.ListBrowserStorageEvidence(lease);
+        IReadOnlyList<string> pendingScratch = files.Count == 0 ? [] : fs.ReadPendingBrowserPublicationScratch(lease);
         var roots = files.Select(path => path[..path.LastIndexOf('/')]).Distinct(StringComparer.Ordinal).OrderBy(path => path, StringComparer.Ordinal).ToArray();
         var result = new List<LocalBrowserEvidence>();
         foreach (var root in roots)
@@ -92,6 +93,8 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
             var allowed = new HashSet<string>(StringComparer.Ordinal) { manifestPath, markerPath };
             if (intentPath != null) allowed.Add(intentPath);
             foreach (var entry in manifest?.Entries ?? []) if (entry.BackupPath != null) allowed.Add(entry.BackupPath);
+            foreach (var entry in manifest?.ExternalEntries ?? []) if (entry.BackupPath != null) allowed.Add(entry.BackupPath);
+            allowed.UnionWith(pendingScratch);
             if (own.Any(path => !allowed.Contains(path)) || manifest == null && own.Count != 1)
                 throw new InvalidDataException("Browser cleanup retained unknown evidence.");
             result.Add(new(root, manifest, cleanup, own.Contains(markerPath)));
@@ -143,6 +146,22 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
             }
             else if (entry.BackupPath != null || entry.Sha256 != null)
                 throw new InvalidDataException("Absent browser baseline has unexpected evidence.");
+        }
+        if ((manifest.ExternalEntries ?? []).Count > 1) throw new InvalidDataException("Duplicate browser external participant.");
+        foreach (var entry in manifest.ExternalEntries ?? [])
+        {
+            if (entry == null || entry.FileId != DarenRewardProfileExternalFileId ||
+                (entry.PublishedSha256s ?? []).Any(hash => !IsSha256(hash) || hash != hash.ToLowerInvariant()) ||
+                (entry.PublishedSha256s ?? []).Distinct(StringComparer.Ordinal).Count() != (entry.PublishedSha256s ?? []).Count)
+                throw new InvalidDataException("Invalid declared browser external intent.");
+            if (entry.Existed)
+            {
+                if (!IsSha256(entry.Sha256) || entry.BackupPath == null || NormalizeRelativePath(fs, entry.BackupPath) != entry.BackupPath ||
+                    Path.GetDirectoryName(entry.BackupPath)?.Replace('\\', '/') != root || !backups.Add(entry.BackupPath))
+                    throw new InvalidDataException("Invalid external browser baseline membership.");
+            }
+            else if (entry.BackupPath != null || entry.Sha256 != null)
+                throw new InvalidDataException("Absent external baseline has unexpected evidence.");
         }
         if (manifest.CleanupDirectories.Distinct(StringComparer.Ordinal).Count() != manifest.CleanupDirectories.Count ||
             manifest.CleanupDirectories.Any(path => NormalizeRelativePath(fs, path) != path || !IsAllowedRollbackCleanupDirectory(path)))

@@ -29,6 +29,7 @@ internal sealed class DarenRewardProfileFileStore
         CancellationToken cancellationToken = default)
     {
         EnsureLease(writeLease);
+        if (OperatingSystem.IsLinux()) return await _fs.ReadLocalDarenProfileAsync(writeLease, cancellationToken);
         if (writeLease.ExternalPublicationContext is
             DarenRewardProfileRollbackTransaction transaction)
         {
@@ -96,6 +97,11 @@ internal sealed class DarenRewardProfileFileStore
     {
         ArgumentNullException.ThrowIfNull(content);
         EnsureLease(writeLease);
+        if (writeLease.ExternalPublicationContext is ExplorerLocalTurnRollbackArtifacts.LocalBrowserTransaction)
+        {
+            await _fs.PublishLocalDarenProfileAsync(writeLease, content, cancellationToken);
+            return;
+        }
         if (writeLease.ExternalPublicationContext is
             DarenRewardProfileRollbackTransaction transaction)
         {
@@ -175,6 +181,11 @@ internal sealed class DarenRewardProfileFileStore
         FileSystemManager.CanonicalWriteLease writeLease)
     {
         EnsureLease(writeLease);
+        if (writeLease.ExternalPublicationContext is ExplorerLocalTurnRollbackArtifacts.LocalBrowserTransaction)
+        {
+            _fs.RequireDeclaredDarenProfile(writeLease);
+            return;
+        }
         if (writeLease.ExternalPublicationContext is
             DarenRewardProfileRollbackTransaction transaction)
         {
@@ -192,6 +203,11 @@ internal sealed class DarenRewardProfileFileStore
         byte[]? content)
     {
         EnsureLease(writeLease);
+        if (writeLease.ExternalPublicationContext is ExplorerLocalTurnRollbackArtifacts.LocalBrowserTransaction)
+        {
+            await _fs.PublishLocalDarenProfileAsync(writeLease, content);
+            return;
+        }
         if (content != null)
         {
             await WriteExactBytesAtomicAsync(writeLease, content);

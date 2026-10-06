@@ -326,6 +326,21 @@ internal sealed partial class TrustedLocalFilePublication
         return result;
     }
 
+    // Read-only projection of this journal's exact scratch membership. Browser
+    // preflight may recognize these names before this same publisher settles them.
+    internal IReadOnlyList<string> ReadBrowserRecoveryScratch(FileSystemManager.CanonicalWriteLease lease)
+    {
+        _files.EnsureCanonicalWriteLeaseActive(lease);
+        if (!Directory.Exists(_journalRoot)) return [];
+        ValidateJournalDirectory();
+        if (!File.Exists(_journalScope.ValidateFile(Active)) || HasNamespaceJournalMagic(Active)) return [];
+        var journal = ReadJournal(Active);
+        var generation = ReadGeneration(lease);
+        if (generation != journal.GenerationBefore && generation != journal.GenerationAfter)
+            throw Conflict("Pending browser publication belongs to another generation.");
+        return ScratchPaths(journal).ToArray();
+    }
+
     internal void ValidateMainRecoveryGeneration(FileSystemManager.CanonicalWriteLease lease)
     {
         if(!Directory.Exists(_journalRoot))return;

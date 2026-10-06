@@ -167,6 +167,14 @@ public partial class FileSystemManager
                 var memberPath = scope.ValidateFile(change.Path);
                 if (string.Equals(memberPath, generationPath,
                         windows ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal)) continue;
+                if (lease.BrowserLocalAccess?.ProfilePath == memberPath)
+                {
+                    RequireDeclaredDarenProfile(lease);
+                    await InvokeBeforeCanonicalMutationBoundaryAsync("@daren_reward_profile");
+                    scope.ValidateFile(memberPath);
+                    await InvokeAfterCanonicalMutationBoundaryValidatedAsync("@daren_reward_profile");
+                    continue;
+                }
                 var relative = GetLocalRelativePath(GameSessionPath, memberPath, windows);
                 var canonicalPath = ResolvePath(relative);
                 await InvokeBeforeCanonicalMutationBoundaryAsync(relative);
