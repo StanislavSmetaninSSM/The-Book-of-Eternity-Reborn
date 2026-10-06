@@ -99,3 +99,7 @@ Clean33c6b18e frontend6/6PASS after reviewed fixes; explicit stop/completion rec
 ### Cleanup debt causal RED → admission fix; bounded interruption groups
 
 At9cb3481c debt injection reached1: actual candidate disposal returned Committed/NeedsFollowUp/nonblocked and console launched fresh;1FAIL causal. Correct only fresh authorization: NeedsFollowUp blocks a new GM while preserving storage decision. Added four-case controlled HTTP stop/refresh, restart/cancel/response-loss, and storage/admission groups; null receipt observer closes only the original fixture stream. Broader frontend original-owner/fault tests added; all new work pending build/run/review. Positive category remains three cases, not a growing full matrix.
+
+### Fault-matrix preparation and stop message correction
+
+Atb6f5849a native build executed0 due fixture bool/task name collision; fixed only fixture name. Actual frontend18 executed/16PASS/2FAIL: failed original stop lacked a specific GM message. Added typed main-state copy without unsafe diagnostic paths, plus focused ambient bound/main scope IPC refusal oracles. All changes remain WIP pending fresh selected build.

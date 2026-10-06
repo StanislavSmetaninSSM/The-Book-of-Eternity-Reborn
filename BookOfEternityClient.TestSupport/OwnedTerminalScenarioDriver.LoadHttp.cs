@@ -16,11 +16,11 @@ internal static partial class OwnedTerminalScenarioDriver
         var assets=Path.Combine(folder,"frontend");Directory.CreateDirectory(assets);
         await File.WriteAllTextAsync(Path.Combine(assets,"index.html"),"<!doctype html><title>isolated Load fixture</title>");
         var storageFault=mode.EndsWith("rollback",StringComparison.Ordinal)||mode.EndsWith("uncertain",StringComparison.Ordinal);
-        var loading=false;var replacing=false;var cuts=0;
+        var publicationArmed=false;var replacing=false;var cuts=0;
         var marker=files.ResolvePath("game_state/world/test_fixture_state.json");
         if(storageFault)await files.WriteFileAtomicAsync("game_state/world/test_fixture_state.json","{\"state\":\"before-load\"}");
         var hooks=storageFault?new FileSystemManagerHooks{LocalPublicationObserver=(phase,_)=>{
-            if(!loading)return;
+            if(!publicationArmed)return;
             if(phase==TrustedLocalPublicationPhase.IntentPublished) {
                 using var journal=File.OpenRead(Path.Combine(files.RuntimeRootPath,"trusted-local-publication-v1/active.json"));
                 Span<byte> magic=stackalloc byte[8];journal.ReadExactly(magic);replacing=magic.SequenceEqual("BOELP3\r\n"u8);
@@ -44,7 +44,7 @@ internal static partial class OwnedTerminalScenarioDriver
         var oldBinding=(await rpc(new{command="status"})).GetProperty("status").GetProperty("inputBindingId").GetString();
         var request=new BrowserLoadSaveRequest("manual:"+Path.GetFileName(path),Guid.NewGuid().ToString("N"),menu!.LoadGeneration);
         if(mode.Contains("-fault-",StringComparison.Ordinal)) {
-            loading=true;
+            publicationArmed=true;
             await RunLoadHttpFaultAsync(mode[(mode.LastIndexOf("-fault-",StringComparison.Ordinal)+7)..],app,http,host,type,rpc,original,prior,request,evidence,files);
             if(storageFault)Require(cuts==1,"Preparation failure: real replacement publication cut not reached.");
             await app.StopAsync();return;

@@ -25,6 +25,12 @@ export function toLoadNotice(result: BrowserApiResult<BrowserLoadSaveResultDto> 
   const continuationBlocked = disposition === 'Uncertain' || data.continuationBlocked !== false
     || typeof data.needsFollowUp !== 'boolean'
     || (committed && (!loadedSaveId || !establishedGeneration || !selectedSourcePath));
+  const mainMessage = continuationBlocked && ['Uncertain', 'Refused'].includes(String(data.mainSessionState))
+    ? ' Завершение сессии ГМа не подтверждено; автоматическое продолжение остановлено.'
+    : continuationBlocked && data.mainSessionState === 'Stopped'
+      ? ' Исходная сессия ГМа завершена; новая сессия не подтверждена.'
+      : data.mainSessionState === 'NoActiveSession'
+        ? ' Активного ГМа нет; загрузка не запускает его автоматически.' : '';
   return {
     disposition, loadedSaveId, establishedGeneration, selectedSourcePath,
     needsFollowUp: continuationBlocked || data.needsFollowUp === true,
@@ -33,7 +39,7 @@ export function toLoadNotice(result: BrowserApiResult<BrowserLoadSaveResultDto> 
       : disposition === 'RolledBack' ? 'Загрузка отменена: прежнее состояние книги восстановлено.'
         : disposition === 'NotLoaded' ? 'Сохранение не загружено.'
           : 'Состояние загрузки не подтверждено. Продолжение остановлено до восстановления книги.')
-      + (data.needsFollowUp === true ? ' Служебное завершение операции требует проверки.' : '')
+      + (data.needsFollowUp === true ? ' Служебное завершение операции требует проверки.' : '') + mainMessage
   };
 }
 
