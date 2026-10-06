@@ -1,0 +1,4 @@
+{
+  "TwoActualConsoleInputsOneSession": true,
+  "Failure": "TimeoutError: Missing foreground observation: b'RESIZE 31x93'"
+}

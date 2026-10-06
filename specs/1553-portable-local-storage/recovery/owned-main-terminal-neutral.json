@@ -19,7 +19,8 @@
     "2cf1a0b2 affected selection preparation failed CS0120 ConPTY instance root observer invoked from static Start without original owner.0 tests executed; archived final-build-preparation. Minimal owner-qualified call corrected; actual launcher binary path follows net8.0 retarget and new inert actual Start-Bridge consumer check (compiled path plus project fallback). New native partial-start/stopTerminal and final affected selection remain unrun.",
     "fbdc406b affected selection freshly built:157 planned,33 executed31PASS2FAIL; runner stops after first input category. Two source wiring guards still named old concrete pty/shellToken call sites, updated to consumed AttachOwnedTerminal/session actual calls (output CancellationToken.None and peer listener retention). No runtime fault hidden; remaining categories not executed. Review added Windows zero-length EOF and immediate completed-root input/view/resize closure negatives before runtime fix.",
     "0ac1b522 review causal REDs: actual ConPTY FaultStream13exec12PASS1FAIL empty read certifies EOF; native11exec10PASS1FAIL completed root still admits manual input while descendant holds PTY. All11 native guardians ECHILD/emergency0/failures0/deadlinefalse; partial-start original retention and actual stopTerminal pass. Correct zero buffer and close-only matched root notification plus synchronous view/writer/resize checks. No scoped proof inferred from root. Add accepted foreground actual Program/Console.ReadKey smoke under own outer PTY/unchanged guardian and unrelated finite own sentinel. CI Windows default retains4 portable category owners; explicit Linux manifest contains affected9 selection (no workflow change). Final GREEN unrun.",
-    "Review Windows partial stream acquisition now guarded by original resource owner created before kernel PTY; raw handles and progressive SafeFileHandle/stream bindings stay in same typed exception owner. Zero app code release before Job unchanged. Mutable CreateProcessW command-line buffer follows official Microsoft API in/out contract: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw (checked2026-10-06). Source guard now checks owned view Revision freshness instead of obsolete raw outputVersion condition. Foreground Python is test-only outer UI PTY orchestration, no second reaper; existing C guardian retains cleanup, no Python player/runtime dependency."
+    "Review Windows partial stream acquisition now guarded by original resource owner created before kernel PTY; raw handles and progressive SafeFileHandle/stream bindings stay in same typed exception owner. Zero app code release before Job unchanged. Mutable CreateProcessW command-line buffer follows official Microsoft API in/out contract: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw (checked2026-10-06). Source guard now checks owned view Revision freshness instead of obsolete raw outputVersion condition. Foreground Python is test-only outer UI PTY orchestration, no second reaper; existing C guardian retains cleanup, no Python player/runtime dependency.",
+    "c3ef9693 fresh affected selection160planned128exec127PASS1FAIL, stops native category; input33/output47/prompt36PASS, native11/12PASS includes actual partial-start and closed root-exit admission. Foreground actual Program manual2/Unicode/samebinding passed, outer UI resize observation failed because fixture only allocated isatty slave without controlling/foreground session (SIGWINCH delivery unavailable). Fixed isolated guardian child ownsetsid/TIOCSCTTY(0)/tcsetpgrp, no runtime/configuration/privilege change. All12 guardians ECHILD/emergency0/failures0/deadlinefalse. Portable/worker descriptors not executed duefail-fast."
   ],
   "Cohorts": [
     {
@@ -158,5 +159,15 @@
       "Failed": 1,
       "Evidence": "evidence/t041-terminal-root-exit-red/manifest.json"
     }
-  ]
+  ],
+  "ForegroundPreparation": {
+    "Source": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+    "Planned": 160,
+    "Executed": 128,
+    "Passed": 127,
+    "Failed": 1,
+    "Complete": false,
+    "Evidence": "evidence/t041-terminal-foreground-preparation/manifest.json",
+    "Classification": "outer UI fixture controlling-terminal/resize-signal preparation; not native ownership failure"
+  }
 }

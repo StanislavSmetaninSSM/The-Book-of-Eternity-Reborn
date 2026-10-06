@@ -7,6 +7,12 @@ fcntl.ioctl(slave,termios.TIOCSWINSZ,struct.pack('HHHH',25,80,0,0))
 original=termios.tcgetattr(slave)
 pipe='neutral-ui-'+uuid.uuid4().hex
 transcript=bytearray(); result={}; guardian=None; started=time.monotonic()
+def own_ui_terminal():
+ # This new child session owns only the fixture's outer UI terminal. TIOCSCTTY(0)
+ # never steals another session's tty; foreground ownership delivers SIGWINCH.
+ os.setsid()
+ fcntl.ioctl(slave,termios.TIOCSCTTY,0)
+ os.tcsetpgrp(slave,os.getpid())
 def receive():
  if select.select([master],[],[],0.02)[0]:
   try: transcript.extend(os.read(master,65536))
@@ -29,7 +35,7 @@ def rpc(request):
   return json.loads(reply)
 try:
  guardian=subprocess.Popen([str(package/'host-guardian'),str(package/'guardian.json'),'15000',str(dotnet),str(bridge),
-  '--host','--sessionPath',str(package/'ignored-session'),'--pipeName',pipe,'--neutralPackage',str(package)],cwd=repo,stdin=slave,stdout=slave,stderr=slave)
+  '--host','--sessionPath',str(package/'ignored-session'),'--pipeName',pipe,'--neutralPackage',str(package)],cwd=repo,stdin=slave,stdout=slave,stderr=slave,preexec_fn=own_ui_terminal)
  until(b'NEUTRAL READY')
  first=rpc({'command':'status'})['status']; binding=first['inputBindingId']; pid=first['shellPid']
  os.write(master,'one Ж😀\r'.encode()); until('RESULT1:one Ж😀'.encode())
