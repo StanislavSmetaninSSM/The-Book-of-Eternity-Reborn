@@ -134,7 +134,9 @@ internal static partial class MainRunCrashScenarioDriver
                 Scan(property.Value);
             } else if(value.ValueKind==JsonValueKind.Array)foreach(var item in value.EnumerateArray())Scan(item);
         }
-        foreach(var path in Directory.EnumerateFiles(folder,"*.json",SearchOption.AllDirectories)) {
+        // Only driver-owned witnesses carry bootstrap identities. Canonical JSON
+        // may contain a BOM; the journal named active.json is a binary codec.
+        foreach(var path in Directory.EnumerateFiles(folder,"*.json",SearchOption.TopDirectoryOnly)) {
             using var value=JsonDocument.Parse(File.ReadAllBytes(path));Scan(value.RootElement);
         }
         var removed=new List<string>();foreach(var path in owned)if(Directory.Exists(path)){Directory.Delete(path,true);removed.Add(path);}

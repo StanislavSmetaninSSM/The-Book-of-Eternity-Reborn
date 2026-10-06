@@ -82,7 +82,7 @@ internal static partial class MainRunCrashScenarioDriver
     }
 
     private static string CurrentGeneration(FileSystemManager files)
-    {using var json=JsonDocument.Parse(File.ReadAllBytes(files.SessionGenerationPath));return json.RootElement.GetProperty("generationId").GetString()!;}
+    {return System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllBytes(files.SessionGenerationPath))!.AsObject().Single(p=>p.Key.Equals("generationId",StringComparison.OrdinalIgnoreCase)).Value!.GetValue<string>();}
     private static Dictionary<string,string> CanonicalSnapshot(string root)=>Snapshot(root).Where(p=>p.Key.StartsWith("game_session/",StringComparison.Ordinal) &&
         !p.Key.StartsWith("game_session/saves/",StringComparison.Ordinal) && !p.Key.StartsWith("game_session/rollback/",StringComparison.Ordinal)).ToDictionary(p=>p.Key,p=>p.Value,StringComparer.Ordinal);
 
@@ -110,6 +110,7 @@ internal static partial class MainRunCrashScenarioDriver
             var held=false;var prepared=false;
             var owner=await GmSessionRunCoordinator.OpenNeutralAsync(files,stage=>{if(stage==MainRunIoStage.Readback)prepared=true;});
             await Refuse(async()=>{_ =await owner.LaunchNeutralAsync(NeutralTerminalLaunch.CreateForFixtureRoot(folder,folder,info.Root),CancellationToken.None,_=>held=true);},"NewLaunch");
+            result["Before"]=before;result["After"]=Snapshot(info.Root);result["PreparedObserved"]=prepared;result["HeldObserved"]=held;result["OwnerRetainsAuthority"]=owner.RetainsAuthority;
             Require(!held && !prepared && !owner.RetainsAuthority && Equal(before,Snapshot(info.Root)),"Independent debt allowed launch/recovery side effects before admission.");
             result["Load"]=DescribeLoad(load);result["Before"]=before;result["After"]=Snapshot(info.Root);result["NoPreparedOrCreation"]=true;result["Success"]=true;return 0;
         } catch(Exception failure){result["Failure"]=failure.ToString();return 1;}
