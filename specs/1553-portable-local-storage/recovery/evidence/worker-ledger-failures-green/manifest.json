@@ -1,0 +1,147 @@
+{
+  "SchemaVersion": 1,
+  "SourceCommit": "c5c363b8b7c154989d47011c3254b3eb9b9d1ec1",
+  "Commands": [
+    {
+      "Log": "failures-green.log.gz",
+      "Entrypoint": "scripts/test-csharp.ps1; exact category/options and results in retained runner artifacts"
+    },
+    {
+      "Log": "failures-green-selection-error.log.gz",
+      "Entrypoint": "scripts/test-csharp.ps1; exact category/options and results in retained runner artifacts"
+    }
+  ],
+  "Inputs": [
+    {
+      "Path": "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+      "Sha256": "472a2d743d0bb89a2585ca22c90fd5bce33ba92edc02e0a98634ae094bf2972f",
+      "GitBlob": "ddbbc890b30c53a35df72256552c195aa57f6b4c"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "Sha256": "e8e6b28583615031a4eda2978b16011d046cf05661f75331c54efb0bcc070ea5",
+      "GitBlob": "5226cdf71f1efb03b961880307a02448536d9864"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Sha256": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0",
+      "GitBlob": "8d5df04ac73689ac01baf7a225afc68adb6f1d18"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs",
+      "Sha256": "afc6c1be9a482dfe5c4adb0cf1a6e8620c70ec5e375f6c988986f16bb5f6e6a4",
+      "GitBlob": "9ada0a1ab82955053e988b702288b4005e864d71"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs",
+      "Sha256": "1694dd90a85a81444f35498b68156378503bd3b037715d5ed18a22abec4b3f55",
+      "GitBlob": "917ccabf7ec93ed666b14f211b173f9113507880"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs",
+      "Sha256": "19355b1ca1421e2f3a4b313d81baeb3bd6a7f7a3fb1fb91780a4ac459f27c091",
+      "GitBlob": "34fe03d012e5034b63b060be4987968f89e5a687"
+    },
+    {
+      "Path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "Sha256": "009f4dbfe71f80887561227b708af0abb9a153a8de2a75c10af0be1487f6e4c6",
+      "GitBlob": "e6e78f3b5797ed6367763878790309e48041befe"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+      "Sha256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2",
+      "GitBlob": "c4c9d46904efd9361c02e690d6d142c799e9d672"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/WorkerRunLedgerPersistence.cs",
+      "Sha256": "f693a384b4ceee6440f6eddf490d15467851771c1cfe3ef0021ec8db470fc225",
+      "GitBlob": "7da52a8d701a60c67e4a39b3602b99f4a6453118"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs",
+      "Sha256": "e1db139a722521603964502d7cf1e0248b1760bf24b3ff0b2a74e3b977df82a7",
+      "GitBlob": "0606dfc1617d5707094c4ed47ee1a0fbfed8930f"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedgerCodec.cs",
+      "Sha256": "0195dd6ea33b1e81c291ae612c44b1b9d97f67cd03f9c917aaad0b3c60bd4e53",
+      "GitBlob": "1d4da9ff0057f8e24258171df0519b737d158d7e"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunRecord.cs",
+      "Sha256": "ec019c9cced3b59a853795aad95563f61e5984b1aa71cd85194d6fbaa4d96cf0",
+      "GitBlob": "730be8f08e19e15965d862736a2bf2df37cc1f9d"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunRecordCodec.cs",
+      "Sha256": "60f2456ee04282201a53007e971a53a9a313999ee57d4d4e7c99d210345a4269",
+      "GitBlob": "3f656bc1c634cef47b4a8f203d45a0885d1d7be2"
+    },
+    {
+      "Path": "scripts/test-csharp.ps1",
+      "Sha256": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1",
+      "GitBlob": "0576b2e34e5c0c5d164c173a9961a67c965c5509"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Sha256": "5af2f3466d63e7dbed925966e4429e3b1126a59d61e8fdc225bc75768f535f8a",
+      "GitBlob": "bd2fdc1544cfba85aaf8deb58c9ff81ecb978e93"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Sha256": "f3b8d2f694d413338ff415b2acad7a47bb90ce4982cf2682b71fdaee89207412",
+      "GitBlob": "2b7742e8cb268e0d15cd54d618bb4c2649782679"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "failures-green/Build-unit.log.gz",
+      "Bytes": 1252,
+      "Sha256": "603cf559e18b874a3bd0442673716c39f61f7bd526cc84b3d273b427f66ac917",
+      "DecompressedSha256": "ca4cf82541a26a1894a2a171457aab0c1757fe08d599e645653bb2a6e6511099"
+    },
+    {
+      "Path": "failures-green/dotnet-test.log.gz",
+      "Bytes": 169629,
+      "Sha256": "a830a89e1ae9287fe1d4cb05cc58097b576d3b31fe38ee0c25eb20442f859e0a",
+      "DecompressedSha256": "63534f0dbd240cc8479d65dd9441da02882d442b6b96684f63862206c8abfd28"
+    },
+    {
+      "Path": "failures-green/plan.json",
+      "Bytes": 7514,
+      "Sha256": "887576a0cd3cf53442b283c6c40022bc3def41fcbf3d9deb9b7c02a856d67cb8"
+    },
+    {
+      "Path": "failures-green/summary.json",
+      "Bytes": 1754,
+      "Sha256": "7e1b0ebc1b50f55f8d9457842a2f2e5048e89f5e1c1d17b4e2f3b71b312694ce"
+    },
+    {
+      "Path": "failures-green/worker-run-ledger-failures-linux-unit-001.trx",
+      "Bytes": 71649,
+      "Sha256": "da4a513dcdab6e67e7abbcfa62b3eab97b45addee3e47294f41e43f0b1cae20d"
+    },
+    {
+      "Path": "failures-green/worker-run-ledger-storage-linux-unit-002.trx",
+      "Bytes": 62027,
+      "Sha256": "4463a90738f521b3eeb21328a66be862ef53715bb102d20299b5c7e3800dbd26"
+    },
+    {
+      "Path": "failures-green-selection-error.log.gz",
+      "Bytes": 226,
+      "Sha256": "43f9b6df1d5e56ca17b3332b2a8cc98547d6b4e9a67e8b33fde840360470d776",
+      "DecompressedSha256": "e9b051ec93b878b159ae33681bf77b9ed789c543cca00267088d453bf72cdd5b"
+    },
+    {
+      "Path": "failures-green.log.gz",
+      "Bytes": 1569,
+      "Sha256": "baaaa3f910cf3306efcdfd799eca84c49aefda169b41374fd038fd3d98470fbd",
+      "DecompressedSha256": "c24e8b3a478f80e1f7b40e0eccd197c0edaa9610fa3d61ebbbcac8e6c27c5f96"
+    },
+    {
+      "Path": "toolchain.txt",
+      "Bytes": 517,
+      "Sha256": "3998a0473eb80bc45bb32f5d7443d2e50b1322be2b2e8dead790ad1a29e2a9b2"
+    }
+  ]
+}

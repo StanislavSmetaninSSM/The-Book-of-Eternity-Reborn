@@ -24,6 +24,14 @@
         "#1553 T041-WORKER-RESTART-R1",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-run-ledger-process-linux",
+      "reason": "R1 fresh process/cross-process ownership/crash cuts, independent guardian required.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R1",
+        "FR-012/014/015"
+      ]
     }
   ]
 }

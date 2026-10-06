@@ -12680,6 +12680,31 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-run-ledger-process-linux",
+      "responsibility": "#1553 R1 bounded actual process restart, abrupt metadata crash cuts, cross-process coordinator exclusion and descriptor noninheritance under independent guardian ECHILD evidence.",
+      "excludes": "Power-loss qualification, real workers/GM, pool Release, main PTY, Windows/systemd qualification and old native cohorts.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger*.cs",
+        "BookOfEternityClient/Core/WorkerRunLedgerPersistence.cs",
+        "BookOfEternityClient.TestSupport/WorkerRunLedgerScenarioDriver.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerRunLedgerProcessTests.*"
+          ]
+        }
+      ]
     }
   ]
 }
