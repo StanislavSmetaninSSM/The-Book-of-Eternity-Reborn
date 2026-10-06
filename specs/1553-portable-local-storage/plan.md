@@ -73,6 +73,12 @@ fixture compiler provenance. Fresh actual bridge must refuse retained Uncertain 
 independent physical guardian cleanup. Runtime unchanged from ee5d62b1; unrun until next
 narrow qualification. Systemd, browser rollback, pending Load UX/Q1/Q2 remain excluded.
 
+Consumer preparation at6230e88 executed0: C# local-name conflictCS0136, no behavioral
+RED. Fix only fixture variable. Independent reviewer requested changed OwnedTerminal
+ambiguity branch proof: inert lower launcher throws once, actual dispatcher returns
+unknown, retains immutable identity, pauses and refuses replay/clipboard fallback.
+Existing successful T042/F2 cohorts remain source-backed rather than rerun.
+
 ## T041-PRODUCTION-MAIN-DESIGN — current design-only continuation
 
 Owner accepted bounded F3 `fc49f271f5cd14ac3b24931cce2c98ef64a61068`.

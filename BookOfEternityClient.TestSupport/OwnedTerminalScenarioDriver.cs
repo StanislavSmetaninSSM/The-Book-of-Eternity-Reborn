@@ -210,7 +210,7 @@ internal static class OwnedTerminalScenarioDriver
             }
             if(mode=="production-main-consumers") {
                 var root=Path.Combine(folder,"root");
-                var main=(GmSessionRunCoordinator)type.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
+                var consumerMain=(GmSessionRunCoordinator)type.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
                 async Task Execute(string exe,string[] args,string name) {
                     var start=new System.Diagnostics.ProcessStartInfo(exe){UseShellExecute=false,RedirectStandardInput=true,RedirectStandardOutput=true,RedirectStandardError=true};
                     foreach(var arg in args)start.ArgumentList.Add(arg);
@@ -226,7 +226,7 @@ internal static class OwnedTerminalScenarioDriver
                 var script=Path.Combine(folder,"console-input.json");
                 await File.WriteAllTextAsync(script,"{\"steps\":[{\"kind\":\"key\",\"key\":\"Up\"},{\"kind\":\"key\",\"key\":\"Enter\"}]}");
                 await Execute("dotnet",[Path.Combine(folder,"ship/BookOfEternityClient/BookOfEternityClient.dll"),root,"--plain-output","--e2e-script",script,"--e2e-artifacts",Path.Combine(folder,"console-observations")],"actual-console-health");
-                var pins=(System.Collections.IDictionary)typeof(GmSessionRunCoordinator).GetField("_remotePins",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(main)!;
+                var pins=(System.Collections.IDictionary)typeof(GmSessionRunCoordinator).GetField("_remotePins",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(consumerMain)!;
                 Require(pins.Count>=2,"Actual console bootstrap/health did not use original remote pins.");
                 foreach(var p in pins.Values)Require((MainOperationState)p!.GetType().GetField("State",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(p)! == MainOperationState.ClosedObserved,"Console pin did not reach ClosedObserved.");
                 result["RealConsoleBootstrapAndHealthClosedObserved"]=pins.Count;
@@ -234,12 +234,12 @@ internal static class OwnedTerminalScenarioDriver
                 using var observations=JsonDocument.Parse(await File.ReadAllBytesAsync(Path.Combine(folder,"consumer-boundaries.json")));
                 foreach(var item in observations.RootElement.GetProperty("connections").EnumerateArray()) {
                     var close=JsonSerializer.Deserialize<MainOperationClose>(item.GetProperty("close"),MainOperationReader.Json)!;
-                    Require(GmSessionRunValidation.IdentityMatches(close.Identity,main.Identity) && main.QueryRemoteOperation(close).State==MainOperationState.ClosedObserved,"Consumer receipt belongs to another original main or is not ClosedObserved.");
+                    Require(GmSessionRunValidation.IdentityMatches(close.Identity,consumerMain.Identity) && consumerMain.QueryRemoteOperation(close).State==MainOperationState.ClosedObserved,"Consumer receipt belongs to another original main or is not ClosedObserved.");
                 }
                 await Idle();
                 result["ActualDaemonTurnQteRepairBootstrapStatusPins"]=5;
                 Require(ReferenceEquals(originalSession,type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)),"Real consumers switched original terminal.");
-                var stop=await Rpc(new {command="shutdown",rootKey=main.Identity.RootKey,expectedMainIdentity=main.Identity});
+                var stop=await Rpc(new {command="shutdown",rootKey=consumerMain.Identity.RootKey,expectedMainIdentity=consumerMain.Identity});
                 Require(stop.GetProperty("ok").GetBoolean(),"Consumer original scoped stop unconfirmed.");
                 result["Success"]=true;return 0;
             }

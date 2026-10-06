@@ -1,5 +1,5 @@
 """Bounded real ordinary entrypoints in shipped layout; no neutralPackage or provider."""
-import fcntl,json,os,pty,select,socket,struct,subprocess,sys,termios,time,uuid,signal
+import fcntl,json,os,pty,select,socket,struct,subprocess,sys,termios,time,uuid,signal,shutil
 from pathlib import Path
 mode,folder,ship,session=sys.argv[1:];folder,ship,session=map(Path,(folder,ship,session))
 master,slave=pty.openpty();fcntl.ioctl(slave,termios.TIOCSWINSZ,struct.pack('HHHH',25,80,0,0));initial=termios.tcgetattr(slave)
@@ -26,7 +26,7 @@ def rpc(payload):
    reply.extend(b)
   return json.loads(reply)
 try:
- assert not any((folder/'player-bin'/name).exists() for name in ['cc','gcc','clang','c++'])
+ assert all(shutil.which(name) is None for name in ['cc','gcc','clang','c++'])
  result['CompilerAbsentAtPlayerStartup']=True
  if mode.startswith('refuse-'):
   originalRecord=session.parent/'.boe_runtime/gm-runs/main.json';recordBefore=originalRecord.read_bytes() if originalRecord.exists() else None

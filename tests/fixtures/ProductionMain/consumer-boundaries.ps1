@@ -47,4 +47,21 @@ $dispatch=Dispatch-WithRetry -Message 'consumer Ж😀' -OperationKind 'turn' -O
 if($dispatch.Status -ne 'sent' -or $dispatch.PromptDelivery.disposition -ne 'submission-observed'){throw ('Actual dispatch unconfirmed: '+($dispatch|ConvertTo-Json -Depth 10 -Compress))}
 $again=Dispatch-WithRetry -Message 'consumer Ж😀' -OperationKind 'turn' -OperationRevision 'M1' -ReturnDetails
 if($again.PromptDelivery.operationId -cne $dispatch.PromptDelivery.operationId -or $again.PromptDelivery.disposition -ne 'submission-observed'){throw 'Original delivery identity changed on retained observation.'}
-[IO.File]::WriteAllText($EvidencePath,([ordered]@{connections=$connections;dispatch=$dispatch;retained=$again;realFunctions=$names;gameRequests=0;modelRequests=0}|ConvertTo-Json -Depth 20))
+# Inert ambiguous lower launcher response: real dispatcher must absorb it once,
+# pause and never reach clipboard/window fallback or replay. No model/input sent.
+$counter=Join-Path (Split-Path $EvidencePath -Parent) 'ambiguous-launcher-calls.txt'
+$ambiguous=Join-Path (Split-Path $EvidencePath -Parent) 'ambiguous-launcher.ps1'
+$env:BOE_M1_AMBIGUOUS_CALLS=$counter
+[IO.File]::WriteAllText($ambiguous,@'
+param([string]$Action,[Parameter(ValueFromRemainingArguments=$true)]$Arguments,[string]$SessionPath)
+[IO.File]::AppendAllText($env:BOE_M1_AMBIGUOUS_CALLS,$Action+"`n")
+throw 'Controlled original response unavailable.'
+'@)
+$BridgeControlScript=$ambiguous
+function Set-Clipboard {param($Value) throw 'OwnedTerminal fell through to clipboard.'}
+$unknown=Dispatch-WithRetry -Message 'inert ambiguous' -OperationKind 'repair' -OperationRevision 'M1-unknown' -ReturnDetails
+$paused=Dispatch-WithRetry -Message 'inert ambiguous' -OperationKind 'repair' -OperationRevision 'M1-unknown' -ReturnDetails
+if($unknown.Status -ne 'bridge-unknown-outcome' -or $unknown.PromptDelivery.disposition -ne 'unknown-outcome' -or
+ $unknown.Attempts -ne 1 -or $paused.Status -ne 'bridge-unknown-outcome' -or -not $script:GmPromptInputPaused -or
+ [IO.File]::ReadAllLines($counter).Count -ne 1){throw 'OwnedTerminal ambiguity replayed or failed to pause.'}
+[IO.File]::WriteAllText($EvidencePath,([ordered]@{connections=$connections;dispatch=$dispatch;retained=$again;unknown=$unknown;paused=$paused;ambiguousLauncherCalls=1;realFunctions=$names;gameRequests=0;modelRequests=0}|ConvertTo-Json -Depth 20))
