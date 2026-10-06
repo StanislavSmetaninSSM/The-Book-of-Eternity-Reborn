@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-main-crash-cold-boundary-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "7f53a1de2d933af627ccf8c00797ff2ef7bdd117",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 5.9377899,
+  "Descriptors": [
+    {
+      "Name": "gm-main-crash-cold-boundary-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-crash-cold-boundary-linux",
+      "Categories": [
+        "gm-main-crash-cold-boundary-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.ColdBoundary_ConfirmedStopAllowsClearOrFreshEpochWithoutOriginalInputReplay",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.ColdBoundary_ConfirmedStopAllowsClearOrFreshEpochWithoutOriginalInputReplay",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

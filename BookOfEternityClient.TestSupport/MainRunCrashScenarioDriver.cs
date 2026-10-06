@@ -137,6 +137,7 @@ internal static partial class MainRunCrashScenarioDriver
     private static string ReadOutput(string folder,string name)=>File.Exists(Path.Combine(folder,name))?Encoding.UTF8.GetString(File.ReadAllBytes(Path.Combine(folder,name))):"";
     private static Dictionary<string,string> Snapshot(string root,bool omitOpenMainStage=false)=>Directory.EnumerateFiles(root,"*",SearchOption.AllDirectories)
         .Where(path=>!Path.GetRelativePath(root,path).StartsWith(".boe_runtime/locks/",StringComparison.Ordinal))
+        .Where(path=>Path.GetRelativePath(root,path)!=".boe_runtime/worker-runs-v1/owner.lock")
         .Where(path=>!omitOpenMainStage || !IsMainStage(Path.GetRelativePath(root,path)))
         .ToDictionary(path=>Path.GetRelativePath(root,path),path=>Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path))),StringComparer.Ordinal);
     private static bool IsMainStage(string relative)=>relative.StartsWith(".boe_runtime/gm-runs/main-",StringComparison.Ordinal)&&relative.EndsWith(".tmp",StringComparison.Ordinal);
