@@ -33,7 +33,8 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmOwnedTerminalSessionTests.*"
+            "BookOfEternityClient.Tests.GmOwnedTerminalSessionTests.*",
+            "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.*"
           ]
         }
       ]
