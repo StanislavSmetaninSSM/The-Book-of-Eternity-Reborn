@@ -1,0 +1,95 @@
+{
+  "Categories": [
+    "worker-run-ledger-process-linux",
+    "worker-run-ledger-failures-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "b57c674ea305106065dddada5d6c9254a1723b21",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 39.9070176,
+  "Descriptors": [
+    {
+      "Name": "worker-run-ledger-failures-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-run-ledger-failures-linux",
+      "Categories": [
+        "worker-run-ledger-failures-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CancellationAndDisposeDuringWrite_WaitForOriginalIoAndRetainLock|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CapacityAndTaskIdentityBounds_RefuseBeforeMutation|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InconsistentArchiveIndex_NeverLooksQuiescent|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InvalidPreparation_IsReadOnly|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.NonordinaryLedgerPath_IsBlockedWithoutFollowingOutsideLink|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.SequenceOverflowAndLifetimeInventoryBound_RefuseNewAllocation",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 54,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction",
+          "Cases": 29
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CancellationAndDisposeDuringWrite_WaitForOriginalIoAndRetainLock",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CapacityAndTaskIdentityBounds_RefuseBeforeMutation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InconsistentArchiveIndex_NeverLooksQuiescent",
+          "Cases": 7
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InvalidPreparation_IsReadOnly",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.NonordinaryLedgerPath_IsBlockedWithoutFollowingOutsideLink",
+          "Cases": 7
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.SequenceOverflowAndLifetimeInventoryBound_RefuseNewAllocation",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-run-ledger-process-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-run-ledger-process-linux",
+      "Categories": [
+        "worker-run-ledger-process-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerProcessTests.AbruptExit_ColdProcessPreservesExactOldOrNewStateOrBlocks|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerProcessTests.FiniteGuardian_RealInitializationThenFreshProcessObservation|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerProcessTests.LiveOwner_ExcludesAnotherProcessAndDescriptorsDoNotSurviveExec|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerProcessTests.OriginalProcessExit_CannotReconstructLiveEntry",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 34,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerProcessTests.AbruptExit_ColdProcessPreservesExactOldOrNewStateOrBlocks",
+          "Cases": 29
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerProcessTests.FiniteGuardian_RealInitializationThenFreshProcessObservation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerProcessTests.LiveOwner_ExcludesAnotherProcessAndDescriptorsDoNotSurviveExec",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerProcessTests.OriginalProcessExit_CannotReconstructLiveEntry",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

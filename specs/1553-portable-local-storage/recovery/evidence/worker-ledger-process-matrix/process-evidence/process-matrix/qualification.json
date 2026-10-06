@@ -1,0 +1,13 @@
+{
+  "CompilerPath": "/usr/bin/x86_64-linux-gnu-gcc-14",
+  "CompilerSha256": "a23ecab8ff08f09ad8c80602c2c5df7f49e09c25905cb8975902e101bf72635f",
+  "CompilerVersion": "x86_64-linux-gnu-gcc-14 (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "ReadelfVersion": "GNU readelf (GNU Binutils for Debian) 2.44\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis program is free software; you may redistribute it under the terms of\nthe GNU General Public License version 3 or (at your option) any later version.\nThis program has absolutely no warranty.\n",
+  "GuardianReports": 68,
+  "Reaped": 68,
+  "AbruptExits": 29,
+  "AllEchild": true,
+  "EmergencySignals": 0,
+  "Failures": 0,
+  "Deadlines": 0
+}

@@ -5,6 +5,18 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
+## R1: реализация проверена выбранными категориями, финальное ревью ожидается
+
+На `b57c674e` завершены закрытые записи Prepared/LaunchIntent/Uncertain,
+исходные coordinator/entry handles, долговечный prelaunch-abort archive/index,
+точный retry под сохранёнными lock descriptors и read-only cold refusal.
+Последние независимые когорты:44 record,42 storage,54 failure,34 process PASS
+(174 различных случая, не общий прогон). Процессная матрица:68 guardian ECHILD,
+29 abrupt exits, без emergency cleanup/deadline. Доказательства в plan.md и
+recovery/evidence/worker-ledger-*. Native storage квалифицирован только Linux x64;
+неподдерживаемый адаптер блокирует запись. Power-loss и Windows durability не заявляются.
+R1 ещё не объявлен завершённым: ожидаются catalog discovery, Sol6.1/xhigh и fresh restore.
+
 ## Текущий этап: разрешён только inert ledger R1
 
 2026-10-06 родитель принял `89bf200d` и разрешил R1. Записи/codec, закрытые переходы,
