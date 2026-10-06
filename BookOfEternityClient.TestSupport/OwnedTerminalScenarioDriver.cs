@@ -11,7 +11,7 @@ internal static class OwnedTerminalScenarioDriver
 {
     internal static async Task<int> RunAsync(string mode, string package, string output)
     {
-        if (mode is "terminal-bridge" or "terminal-uncertain") return await RunBridgeAsync(mode, package, output);
+        if (mode is "terminal-bridge" or "terminal-uncertain" or "terminal-authority-loss") return await RunBridgeAsync(mode, package, output);
         var result = new Dictionary<string, object?>();
         IOwnedTerminalSession? session = null;
         try
@@ -123,6 +123,20 @@ internal static class OwnedTerminalScenarioDriver
                 throw new TimeoutException("Actual view did not return to empty idle.");
             }
             var originalSession=type.GetField("_pty", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(host)!;
+            if(mode=="terminal-authority-loss") {
+                var owner=(BookOfEternityClient.Services.GmWorkers.NativeLineageOwner)typeof(LinuxOwnedTerminalSession).GetField("_owner",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(originalSession)!;
+                var supervisor=(System.Diagnostics.Process)owner.GetType().GetField("_supervisor",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(owner)!;
+                supervisor.StandardOutput.Close();
+                // Closing the actual status reader withdraws this owner, while root/master still live.
+                for(var i=0;i<100 && owner.Uncertainty==null;i++)await Task.Delay(10);
+                Require(owner.Uncertainty!=null,"Actual status close did not retire its observer.");
+                Require(!((IOwnedTerminalSession)originalSession).RootExited.IsCompleted,"Loss negative requires live root.");
+                Require(!(await Rpc(new {command="setReady",ready=true})).GetProperty("ok").GetBoolean(),"Old view accepted after original authority loss.");
+                Require(Disposition(await Rpc(Prompt("dispatchPrompt","lost","must-not-write")))=="not-written","Dispatch admitted after authority loss.");
+                Require(!(await Rpc(new {command="addText",text="must-not-write"})).GetProperty("ok").GetBoolean(),"Manual writer admitted after original authority loss.");
+                Require(ReferenceEquals(originalSession,type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)),"Authority loss removed original session.");
+                result["LiveAuthorityLossBlocked"]=true;return 0;
+            }
             if (mode == "terminal-uncertain") {
                 var owner=typeof(LinuxOwnedTerminalSession).GetField("_owner", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(originalSession)!;
                 await (Task)owner.GetType().GetMethod("SendControlAsync", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(owner, ['U'])!;
