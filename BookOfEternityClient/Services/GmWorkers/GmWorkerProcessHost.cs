@@ -488,6 +488,7 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
             {
                 if (writeLease == null) throw new InvalidOperationException("Durable Release requires its original canonical lease.");
                 await durable.RequireOriginalTaskAsync(writeLease.Owner, writeLease);
+                (_readyIdentity ?? throw new InvalidOperationException("Durable Release has no admitted ready identity.")).EnsureLive();
                 durable.ConsumeRelease(writeLease.Owner, writeLease);
             }
             Interlocked.Exchange(ref _releaseAttempted, 1);
