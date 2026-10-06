@@ -67,9 +67,14 @@ four causal typed-refusal defects: InvalidDataException/FormatException escaped 
 storage observation filter. Those are actual executed behavior failures, not build
 preparation failures. Evidence: recovery/evidence/worker-ledger-prepared-red/manifest.json.
 Added closed Prepared persistence, bounded state codec and explicit refusal for those
-exception types; GREEN pending. State accounts for every allocated epoch, preventing
+exception types. GREEN at `638e60c83afede2ec65252987d47accf9ac63335`:28/28PASS,
+43.9285755s, cleanup complete/no timeout. Evidence:
+recovery/evidence/worker-ledger-prepared-green/manifest.json. State accounts for every allocated epoch, preventing
 an incomplete inventory from looking quiescent. Archives remain unsupported until the
-prelaunch-only retirement test block. Next run is only
+prelaunch-only retirement test block. That block now has typed stub methods and tests
+for durable LaunchIntent, absorbing Uncertain, exact prelaunch archive/idempotence,
+independent per-entry epochs, forged/foreign/stale/disposed handles, pre-cancellation,
+retired identity reuse and stale already-initialized authority. Causal RED pending. Next run is only
 `-Category worker-run-ledger-storage-linux`; no unchanged44-record rerun. Parent status request answered in commentary;
 this durable checkpoint records actual progress independently of delegation status UI. Default CI selection retains the
 portable record category; explicit Linux selection adds the native storage category.

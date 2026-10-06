@@ -63,6 +63,13 @@ internal sealed class WorkerRunLedgerCoordinator : IAsyncDisposable
     { _storage = storage; _target = target; _state = state; _stateBytes = bytes; }
 
     internal long Sequence => _state?.Sequence ?? 0;
+    // Closed lifecycle transitions are the next causal RED scaffold.
+    internal Task<WorkerLedgerMutationKind> PlanLaunchAsync(WorkerRunEntryHandle entry, long expectedSequence,
+        CancellationToken cancellationToken = default) => Task.FromResult(WorkerLedgerMutationKind.Blocked);
+    internal Task<WorkerLedgerMutationKind> MarkUncertainAsync(WorkerRunEntryHandle entry, long expectedSequence,
+        CancellationToken cancellationToken = default) => Task.FromResult(WorkerLedgerMutationKind.Blocked);
+    internal Task<WorkerLedgerMutationKind> AbortBeforeLaunchAsync(WorkerRunEntryHandle entry, long expectedSequence,
+        CancellationToken cancellationToken = default) => Task.FromResult(WorkerLedgerMutationKind.Blocked);
     internal static Task<WorkerRunLedgerCoordinator?> OpenAsync(WorkerLedgerTarget target)
     {
         WorkerRunLedgerPersistence? storage = null;

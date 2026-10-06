@@ -9,6 +9,162 @@ namespace BookOfEternityClient.Tests;
 public sealed class GmWorkerRunLedgerTests
 {
     [Fact]
+    public async Task LaunchIntent_IsDurableAndPermanentlyDisallowsPrelaunchAbort()
+    {
+        using var fixture = new LedgerFixture();
+        await using var owner = await fixture.OpenInitialized();
+        var entry = await fixture.Prepare(owner);
+        Assert.Equal(WorkerLedgerMutationKind.Applied, await owner.PlanLaunchAsync(entry, owner.Sequence));
+        Assert.Equal(WorkerRunPhase.LaunchIntent, Assert.Single((await GmWorkerRunLedger.ObserveAsync(fixture.Target)).Entries).Phase);
+        var bytes = File.ReadAllBytes(fixture.StatePath);
+        Assert.Equal(WorkerLedgerMutationKind.Blocked, await owner.AbortBeforeLaunchAsync(entry, owner.Sequence));
+        Assert.Equal(bytes, File.ReadAllBytes(fixture.StatePath));
+        Assert.Empty(Directory.EnumerateFiles(Path.Combine(fixture.Target.DirectoryPath, "retired")));
+    }
+
+    [Fact]
+    public async Task Uncertain_IsAbsorbingAndPreservesWorkspaceAndReservation()
+    {
+        using var fixture = new LedgerFixture();
+        await using var owner = await fixture.OpenInitialized();
+        var entry = await fixture.Prepare(owner);
+        Directory.CreateDirectory(entry.Identity.WorkspacePath);
+        var evidence = Path.Combine(entry.Identity.WorkspacePath, "retained.txt");
+        File.WriteAllText(evidence, "original-evidence");
+        Assert.Equal(WorkerLedgerMutationKind.Applied, await owner.MarkUncertainAsync(entry, owner.Sequence));
+        Assert.Equal(WorkerRunPhase.Uncertain, Assert.Single((await GmWorkerRunLedger.ObserveAsync(fixture.Target)).Entries).Phase);
+        var bytes = File.ReadAllBytes(fixture.StatePath);
+        Assert.Equal(WorkerLedgerMutationKind.Blocked, await owner.PlanLaunchAsync(entry, owner.Sequence));
+        Assert.Equal(WorkerLedgerMutationKind.Blocked, await owner.AbortBeforeLaunchAsync(entry, owner.Sequence));
+        Assert.Equal(bytes, File.ReadAllBytes(fixture.StatePath));
+        Assert.Equal("original-evidence", File.ReadAllText(evidence));
+    }
+
+    [Fact]
+    public async Task PrelaunchAbort_CommitsExactArchiveBeforeRemovingReservationAndIsIdempotent()
+    {
+        using var fixture = new LedgerFixture();
+        await using var owner = await fixture.OpenInitialized();
+        var entry = await fixture.Prepare(owner);
+        var expectedSequence = owner.Sequence;
+        Assert.Equal(WorkerLedgerMutationKind.Applied, await owner.AbortBeforeLaunchAsync(entry, expectedSequence));
+        var archive = Path.Combine(fixture.Target.DirectoryPath, "retired", entry.Identity.RunId + ".json");
+        var bytes = File.ReadAllBytes(archive);
+        Assert.Equal(new WorkerRunRecord(1, entry.Identity, WorkerRunPhase.AbortedBeforeLaunch), GmWorkerRunRecordCodec.Decode(bytes));
+        var observed = await GmWorkerRunLedger.ObserveAsync(fixture.Target);
+        Assert.Equal(WorkerRunObservationKind.Quiescent, observed.Kind);
+        Assert.Equal(1, observed.EpochHighWater);
+        Assert.Empty(observed.Entries);
+        var stateBytes = File.ReadAllBytes(fixture.StatePath);
+        Assert.Equal(WorkerLedgerMutationKind.AlreadyExact, await owner.AbortBeforeLaunchAsync(entry, expectedSequence));
+        Assert.Equal(bytes, File.ReadAllBytes(archive));
+        Assert.Equal(stateBytes, File.ReadAllBytes(fixture.StatePath));
+        fixture.AssertSentinel();
+    }
+
+    [Fact]
+    public async Task OriginalEntriesWithDifferentEpochs_RemainIndependentlyValid()
+    {
+        using var fixture = new LedgerFixture();
+        await using var owner = await fixture.OpenInitialized();
+        var first = await fixture.Prepare(owner, "first");
+        var second = await fixture.Prepare(owner, "second");
+        Assert.Equal(1, first.Identity.Epoch); Assert.Equal(2, second.Identity.Epoch);
+        Assert.Equal(WorkerLedgerMutationKind.Applied, await owner.MarkUncertainAsync(first, owner.Sequence));
+        Assert.Equal(WorkerLedgerMutationKind.Applied, await owner.AbortBeforeLaunchAsync(second, owner.Sequence));
+        var observed = await GmWorkerRunLedger.ObserveAsync(fixture.Target);
+        Assert.Equal(WorkerRunObservationKind.Uncertain, observed.Kind);
+        Assert.Equal(first.Identity, Assert.Single(observed.Entries).Identity);
+        Assert.Equal(WorkerRunPhase.Uncertain, observed.Entries[0].Phase);
+        Assert.Equal(2, observed.EpochHighWater);
+    }
+
+    [Theory]
+    [InlineData("forged")]
+    [InlineData("foreign")]
+    [InlineData("stale-sequence")]
+    [InlineData("disposed")]
+    public async Task UnboundHandlesAndStaleSequences_CannotMutate(string mode)
+    {
+        using var fixture = new LedgerFixture(); using var other = new LedgerFixture();
+        await using var owner = await fixture.OpenInitialized();
+        await using var otherOwner = await other.OpenInitialized();
+        var original = await fixture.Prepare(owner);
+        var entry = mode switch { "forged" => new WorkerRunEntryHandle(original.Identity), "foreign" => await other.Prepare(otherOwner), _ => original };
+        var sequence = mode == "stale-sequence" ? owner.Sequence - 1 : owner.Sequence;
+        if (mode == "disposed") await owner.DisposeAsync();
+        var before = File.ReadAllBytes(fixture.StatePath);
+        Assert.Equal(WorkerLedgerMutationKind.Blocked, await owner.PlanLaunchAsync(entry, sequence));
+        Assert.Equal(WorkerLedgerMutationKind.Blocked, await owner.MarkUncertainAsync(entry, sequence));
+        Assert.Equal(WorkerLedgerMutationKind.Blocked, await owner.AbortBeforeLaunchAsync(entry, sequence));
+        Assert.Equal(before, File.ReadAllBytes(fixture.StatePath));
+        Assert.Empty(Directory.EnumerateFiles(Path.Combine(fixture.Target.DirectoryPath, "retired")));
+    }
+
+    [Fact]
+    public async Task StaleSequence_DoesNotConsumeOriginalNeverStartToken()
+    {
+        using var fixture = new LedgerFixture();
+        await using var owner = await fixture.OpenInitialized();
+        var entry = await fixture.Prepare(owner);
+        Assert.Equal(WorkerLedgerMutationKind.Blocked, await owner.PlanLaunchAsync(entry, owner.Sequence - 1));
+        Assert.Equal(WorkerLedgerMutationKind.Applied, await owner.AbortBeforeLaunchAsync(entry, owner.Sequence));
+    }
+
+    [Fact]
+    public async Task CanceledMutation_PreservesBytesAndOriginalNeverStartToken()
+    {
+        using var fixture = new LedgerFixture();
+        await using var owner = await fixture.OpenInitialized();
+        var entry = await fixture.Prepare(owner);
+        var before = File.ReadAllBytes(fixture.StatePath);
+        using var canceled = new CancellationTokenSource(); canceled.Cancel();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => owner.PlanLaunchAsync(entry, owner.Sequence, canceled.Token));
+        Assert.Equal(before, File.ReadAllBytes(fixture.StatePath));
+        Assert.Equal(WorkerLedgerMutationKind.Applied, await owner.AbortBeforeLaunchAsync(entry, owner.Sequence));
+    }
+
+    [Fact]
+    public async Task Reopen_PreservesRetiredEpochAndRefusesExactTaskReuse()
+    {
+        using var fixture = new LedgerFixture();
+        WorkerRunEntryHandle retired;
+        await using (var owner = await fixture.OpenInitialized())
+        {
+            retired = await fixture.Prepare(owner);
+            Assert.Equal(WorkerLedgerMutationKind.Applied, await owner.AbortBeforeLaunchAsync(retired, owner.Sequence));
+        }
+        await using var replacement = await GmWorkerRunLedger.OpenCoordinatorAsync(fixture.Target);
+        Assert.NotNull(replacement);
+        Assert.Equal(WorkerLedgerMutationKind.AlreadyExact, await replacement.InitializeAsync());
+        Assert.Equal(WorkerLedgerMutationKind.Blocked, await replacement.AbortBeforeLaunchAsync(retired, replacement.Sequence));
+        Assert.Equal(WorkerLedgerMutationKind.Blocked, (await replacement.PrepareAsync(fixture.Preparation() with { TaskSha256 = new string('b', 64) }, replacement.Sequence)).Kind);
+        var fresh = await fixture.Prepare(replacement, "new-task");
+        Assert.Equal(2, fresh.Identity.Epoch);
+        Assert.NotEqual(retired.Identity.RunId, fresh.Identity.RunId);
+        Assert.NotEqual(retired.Identity.HostInstanceId, fresh.Identity.HostInstanceId);
+    }
+
+    [Theory]
+    [InlineData("state")]
+    [InlineData("owner.lock")]
+    [InlineData("journal.lock")]
+    public async Task AlreadyInitialized_CannotHideChangedBytesOrLostLockBinding(string changed)
+    {
+        using var fixture = new LedgerFixture();
+        await using var owner = await fixture.OpenInitialized();
+        if (changed == "state") File.WriteAllText(fixture.StatePath, "different-state");
+        else
+        {
+            var path = Path.Combine(fixture.Target.DirectoryPath, changed);
+            File.Move(path, path + ".old"); File.WriteAllText(path, "replacement");
+        }
+        Assert.Equal(WorkerLedgerMutationKind.Blocked, await owner.InitializeAsync());
+        Assert.Equal(WorkerLedgerMutationKind.Blocked, (await owner.PrepareAsync(fixture.Preparation(), owner.Sequence)).Kind);
+        fixture.AssertSentinel();
+    }
+
+    [Fact]
     public async Task PreparedEntry_PersistsIdentityAndColdRestartCannotAdoptIt()
     {
         using var fixture = new LedgerFixture();
@@ -191,6 +347,20 @@ public sealed class GmWorkerRunLedgerTests
             await using var owner = await GmWorkerRunLedger.OpenCoordinatorAsync(Target);
             Assert.NotNull(owner);
             Assert.Equal(WorkerLedgerMutationKind.Applied, await owner.InitializeAsync());
+        }
+        internal async Task<WorkerRunLedgerCoordinator> OpenInitialized()
+        {
+            var owner = await GmWorkerRunLedger.OpenCoordinatorAsync(Target);
+            Assert.NotNull(owner);
+            Assert.Equal(WorkerLedgerMutationKind.Applied, await owner.InitializeAsync());
+            return owner;
+        }
+        internal async Task<WorkerRunEntryHandle> Prepare(WorkerRunLedgerCoordinator owner, string task = "task")
+        {
+            var result = await owner.PrepareAsync(Preparation(task), owner.Sequence);
+            Assert.Equal(WorkerLedgerMutationKind.Applied, result.Kind);
+            Assert.NotNull(result.Entry);
+            return result.Entry;
         }
         public void Dispose() => Directory.Delete(_container, recursive: true);
     }
