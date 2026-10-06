@@ -138,7 +138,7 @@ public sealed class GmDaemonPromptDeliveryTests
     {
         await using var host = new GmBridgePromptOperationTests.PromptHostFixture();
         host.Input.Written = bytes => host.Observe(bytes == "<submit>" ? "WORKING" : "CONTROLLED CLI\n› connected prompt");
-        await host.Rpc(new { command = "status" }); // Real current pipe/binding status file consumed by launcher.
+        await PublishInputFixtureStatusAsync(host); // Explicit inert fixture descriptor; no main-owner admission claim.
         await Run("connected-pipe", result =>
         {
             Assert.Equal("sent", result.GetProperty("first").GetString());
@@ -171,7 +171,7 @@ public sealed class GmDaemonPromptDeliveryTests
     {
         await using var host=new GmBridgePromptOperationTests.PromptHostFixture();
         host.Input.Hold=true;
-        await host.Rpc(new {command="status"});
+        await PublishInputFixtureStatusAsync(host);
         await Run("connected-held-pipe",result=>
         {
             Assert.Equal("bridge-unknown-outcome",result.GetProperty("first").GetString());
@@ -181,6 +181,14 @@ public sealed class GmDaemonPromptDeliveryTests
         Assert.Equal("<paste>connected prompt</paste>",System.Text.Encoding.UTF8.GetString(host.Input.Bytes));
         host.Invoke("RevokeInputLifetime",host.Binding);
         host.Input.Release.TrySetResult(true);
+    }
+
+    private static async Task PublishInputFixtureStatusAsync(GmBridgePromptOperationTests.PromptHostFixture host)
+    {
+        var status=(await host.Rpc(new {command="status"})).GetProperty("status");
+        var control=Path.Combine(host.Root,"game_state/control");
+        Directory.CreateDirectory(control);
+        await File.WriteAllTextAsync(Path.Combine(control,"gm_bridge_status.json"),status.GetRawText());
     }
 
     internal static async Task Run(string scenario, Action<JsonElement> assert, string sessionRoot = "")

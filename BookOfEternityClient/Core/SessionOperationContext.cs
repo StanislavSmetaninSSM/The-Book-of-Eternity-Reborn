@@ -88,18 +88,19 @@ internal static class SessionOperationContext
     /// The completed operation result. Established session replacement takes precedence over a storage failure;
     /// ordinary closing failures retain the original typed storage outcome and a separate diagnostic.
     /// </returns>
-    private static async Task<T> RunBoundCoreAsync<T>(FileSystemManager fileSystem,string expectedGeneration,Func<Task<T>> operation,FileSystemManager.CanonicalWriteLease? writeLease)
+    private static async Task<T> RunBoundCoreAsync<T>(FileSystemManager fileSystem,string expectedGeneration,Func<Task<T>> operation,FileSystemManager.CanonicalWriteLease? writeLease,Func<MainOperationOutcome>? capturedOutcome=null)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);ArgumentNullException.ThrowIfNull(operation);
         if(string.IsNullOrWhiteSpace(expectedGeneration))throw new ArgumentException("A session operation requires a generation.",nameof(expectedGeneration));
         await using var main=fileSystem.BeginParticipatingMainAdmission();await main.AcquireAsync();
         Exception? failure=null;T? result=default;
-        try {result=await RunBoundBodyAsync(fileSystem,expectedGeneration,operation,writeLease);}
+        try {result=await RunBoundBodyAsync(fileSystem,expectedGeneration,operation,writeLease,capturedOutcome);}
         catch(Exception e){failure=e;throw;}
         finally {
-            try {await main.CompleteAsync(OutcomeFor(failure),HasClosingFailure(failure));}
+            var outcome=failure==null?(capturedOutcome?.Invoke()??MainOperationOutcome.Completed):OutcomeFor(failure);
+            try {await main.CompleteAsync(outcome,HasClosingFailure(failure));}
             catch(Exception close) when(failure!=null){failure.Data["MainOperationCloseFailure"]=close;}
-            catch(Exception close){throw new MainOperationContinuationException<T>(result!,MainOperationOutcome.Completed,main.DescribeClose(MainOperationOutcome.Completed,false),close);}
+            catch(Exception close){throw new MainOperationContinuationException<T>(result!,outcome,main.DescribeClose(outcome,false),close);}
         }
         return result!;
     }
@@ -114,8 +115,13 @@ internal static class SessionOperationContext
             if(!TryGetExpectedGeneration(files.BasePath,out generation)) {
                 await using var lease=await files.AcquireCanonicalWriteLeaseAsync();generation=files.GetOrCreateSessionGeneration(lease);
             }
-            result=await RunBoundCoreAsync(files,generation,operation,null);
-            outcome=establishedOutcome?.Invoke()??MainOperationOutcome.Completed;
+            result=await RunBoundCoreAsync(files,generation,async()=> {
+                var value=await operation();
+                // Freeze the callback's established decision once, before any
+                // actual finalization or close can fail. Later reads use this value.
+                outcome=establishedOutcome?.Invoke()??MainOperationOutcome.Completed;
+                return value;
+            },null,()=>outcome);
         } catch(Exception e){failure=e;throw;}
         finally {
             outcome=failure==null?outcome:OutcomeFor(failure);
@@ -136,7 +142,8 @@ internal static class SessionOperationContext
         FileSystemManager fileSystem,
         string expectedGeneration,
         Func<Task<T>> operation,
-        FileSystemManager.CanonicalWriteLease? writeLease)
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        Func<MainOperationOutcome>? capturedOutcome)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(operation);
@@ -234,8 +241,9 @@ internal static class SessionOperationContext
                 {
                     closingFailure.Data["SessionFinalizationFailure"] = true;
                     if(established && closingFailure is not SessionReplacedException) {
-                        var retained=new MainOperationContinuationException<T>(establishedResult!,MainOperationOutcome.Completed,
-                            fileSystem.DescribeMainOperationClose(MainOperationOutcome.Completed,true),closingFailure);
+                        var outcome=capturedOutcome?.Invoke()??MainOperationOutcome.Completed;
+                        var retained=new MainOperationContinuationException<T>(establishedResult!,outcome,
+                            fileSystem.DescribeMainOperationClose(outcome,true),closingFailure);
                         retained.Data["SessionFinalizationFailure"]=closingFailure;
                         throw retained;
                     }

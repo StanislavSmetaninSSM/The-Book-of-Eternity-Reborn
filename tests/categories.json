@@ -14533,6 +14533,32 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-affected-input-fixture",
+      "responsibility": "F2 narrowly affected real participating consumers and exact typed browser continuation",
+      "excludes": "Previously qualified wire cases, live GM, arbitrary launch, other F1 cohorts",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmMainOperation",
+        "BookOfEternityGMBridge/",
+        "BookOfEternityClient.TestSupport/MainOperationScenarioDriver.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealDaemonLauncherRpc_RetainsOneOperationAndOneSubmit",
+            "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealLauncherTimeout_HeldInputReturnsUnknownWithoutReplay"
+          ]
+        }
+      ]
     }
   ]
 }
