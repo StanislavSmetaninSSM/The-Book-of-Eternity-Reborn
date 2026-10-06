@@ -32,6 +32,14 @@
         "#1553 T041-WORKER-RESTART-R3",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-restart-cleanup-loss-linux",
+      "reason": "Exactly two causal partitions from independent D diagnosis: post-confirmation await and failed original ACK retry.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R3",
+        "FR-012/014/015"
+      ]
     }
   ]
 }
