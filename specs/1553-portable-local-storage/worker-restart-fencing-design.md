@@ -225,6 +225,10 @@ For the later explicitly injected fixture contour:
   reserves durable capacity/epoch and Prepared before any helper/host start. Workspace
   leaf and RunId are chosen first, then passed through sealed internal preparation
   tokens so actual owners use the same identity; do not expose arbitrary success hooks.
+  Retain the original partial workspace-creation authority before fallible creation/
+  staging and transfer it intact on failure. The current CreateAsync swallowed cleanup
+  failure cannot authorize a durable prelaunch abort. Only exact physical cleanup
+  through that original creation owner permits AbortedBeforeLaunch archival.
 - Under the current canonical lease and short journal transaction, persist ReleaseIntent,
   recheck exact original live owner and generation, then perform at most one Release
   write while the lease remains held. A partial write/failed acknowledgement remains

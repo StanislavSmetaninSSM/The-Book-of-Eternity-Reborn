@@ -87,6 +87,14 @@ explicitly injected fixture contour.
    invalidate a still-original entry N. Early failures after Prepared use the same
    retained cleanup owner and capacity: only unconsumed Prepared can abort after its
    fallible prelaunch cleanup, and ambiguous metadata cannot drop those reservations.
+   Source review found that current CreateAsync swallows cleanup errors after staging
+   failure and loses its partial workspace before pool assignment. The durable path
+   must retain a sealed original creation owner before the first fallible creation/
+   staging action, tracking partial authority as it is acquired, and transfer it to
+   that same cleanup state on failure (never reconstruct from a saved path). Refactor
+   the creation result/exception boundary as needed. Unknown partial filesystem
+   authority blocks retirement; an ordinary staging error with original retained
+   authority may retry exact cleanup and only then archive AbortedBeforeLaunch.
 
 4. **Closed connected transitions.** Extend worker record/state to current schema2,
    retaining the fixed namespace and strict bounds. Add required bounded nullable
@@ -166,6 +174,10 @@ types. These paths are under BookOfEternityClient. Avoid unrelated broad Core re
   one ambiguous retirement commit using observation/failure-only hooks, exact retry,
   held authority/capacity and distinct success-permit semantics. This minimal connected
   matrix is R2; all crash-cut permutations/environment/limit variants remain R3.
+- Include one causal prelaunch staging plus cleanup-failure case: Start remains zero;
+  the original creation owner, Prepared entry, slot and root locks remain retained;
+  exact retry completes physical cleanup before AbortedBeforeLaunch archival. Do not
+  treat the existing swallowed staging cleanup error as proof of workspace deletion.
 - Catalog changes are structural. New bounded categories own R2 admission, connected
   lifecycle and commit-boundary tests, with explicit Linux/guardian requirements.
   Revise explicit Linux selection and portable CI selection by actual contracts.
