@@ -17,6 +17,9 @@ public sealed class GmOwnedTerminalLinuxTests
     [InlineData("terminal-descendants")]
     [InlineData("terminal-root-first")]
     [InlineData("terminal-uncertain")]
+    [InlineData("terminal-retirement")]
+    [InlineData("terminal-late-fault")]
+    [InlineData("terminal-gated-fds")]
     public async Task OriginalOwner_DescendantsRootExitOrUncertain(string mode) { await RunAsync(mode); }
 
     private static async Task RunAsync(string mode)
@@ -47,6 +50,9 @@ public sealed class GmOwnedTerminalLinuxTests
         Assert.Equal(0, guardian.ExitCode);
         Assert.Equal(0, report.RootElement.GetProperty("driverExitCode").GetInt32());
         using var scenario = JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(folder, "scenario.json")));
+        if (mode == "terminal-retirement") { Assert.True(scenario.RootElement.GetProperty("OwnerHeldBeforeEof").GetBoolean()); return; }
+        if (mode == "terminal-late-fault") { Assert.True(scenario.RootElement.GetProperty("LateFaultUncertain").GetBoolean()); return; }
+        if (mode == "terminal-gated-fds") Assert.True(scenario.RootElement.GetProperty("HeldRootHasNoHelperChannels").GetBoolean());
         if (mode == "terminal-uncertain") { Assert.True(scenario.RootElement.GetProperty("UncertainRetained").GetBoolean()); return; }
         if (mode == "terminal-bridge") {
             foreach(var proof in new[]{"ScopedRetired","TwoDispatchesOneSession","DraftPreserved","CancelledViaPipe","TakeoverViaPipe","ActualResizeViaPipe"}) Assert.True(scenario.RootElement.GetProperty(proof).GetBoolean()); return;

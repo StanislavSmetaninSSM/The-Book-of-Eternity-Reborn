@@ -103,14 +103,14 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         }
     }
 
-    internal static async Task<NativeLineageOwner> StartTerminalAsync(ProcessStartInfo fixture, string executable, int columns, int rows, CancellationToken token)
+    internal static async Task<NativeLineageOwner> StartTerminalAsync(ProcessStartInfo fixture, string executable, int columns, int rows, CancellationToken token, Action<int>? observeHeldRoot = null)
     {
         var owner = new NativeLineageOwner(null, terminal: true);
-        try { await owner.StartAsync(fixture, executable, token, columns, rows); return owner; }
+        try { await owner.StartAsync(fixture, executable, token, columns, rows, observeHeldRoot); return owner; }
         catch (Exception ex) { owner.Lose("partial-terminal-launch"); owner.CloseBootstrap(); throw new GmWorkerOwnedLaunchException("Terminal partial launch retains owner.", owner, ex); }
     }
 
-    private async Task StartAsync(ProcessStartInfo host, string executable, CancellationToken cancellationToken, int columns = 80, int rows = 25)
+    private async Task StartAsync(ProcessStartInfo host, string executable, CancellationToken cancellationToken, int columns = 80, int rows = 25, Action<int>? observeHeldRoot = null)
     {
         var start = new ProcessStartInfo(executable)
         {
@@ -149,6 +149,7 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         if (_terminalMode) _terminalMaster = rights[1];
         _identity = GmWorkerHostIdentity.FromTransferredPidfd(_supervisor, _hostPidfd, AuthorityValid);
         _hostExit = ObserveHostExitAsync();
+        observeHeldRoot?.Invoke(_identity.ProcessId);
         GmWorkerNativeDescriptors.Send(_bootstrap, (_terminalMode ? "A1:" : "A2:") + _run);
         _bootstrap.Dispose(); _bootstrap = null;
         await _startedHost.Task.WaitAsync(deadline.Token);

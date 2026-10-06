@@ -7,7 +7,7 @@ namespace BookOfEternityClient.Services.GmRuntime;
 
 internal static class OwnedTerminalSessionFactory
 {
-    internal static async Task<IOwnedTerminalSession> StartNeutralAsync(string package, string scratch, CancellationToken token)
+    internal static async Task<IOwnedTerminalSession> StartNeutralAsync(string package, string scratch, CancellationToken token, Action<int>? observeHeldRoot = null)
     {
         var supervisor = GmWorkerNativePackage.Validate(package);
         var manifest = Path.Combine(package, "neutral-terminal-manifest.json");
@@ -21,7 +21,7 @@ internal static class OwnedTerminalSessionFactory
         using (var f = File.OpenRead(cli))
             if (Convert.ToHexString(SHA256.HashData(f)).ToLowerInvariant() != r.GetProperty("binarySha256").GetString()) throw new InvalidDataException("Neutral fixture binary mismatch.");
         var start = new ProcessStartInfo(cli) { WorkingDirectory = Path.GetFullPath(scratch), UseShellExecute = false };
-        var owner = await NativeLineageOwner.StartTerminalAsync(start, supervisor, 80, 25, token);
+        var owner = await NativeLineageOwner.StartTerminalAsync(start, supervisor, 80, 25, token, observeHeldRoot);
         try { return new LinuxOwnedTerminalSession(owner); }
         catch (Exception ex) { throw new GmWorkerOwnedLaunchException("Terminal adapter retains original owner.", owner, ex); }
     }

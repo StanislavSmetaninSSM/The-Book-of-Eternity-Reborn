@@ -16,7 +16,12 @@ internal static class OwnedTerminalScenarioDriver
         IOwnedTerminalSession? session = null;
         try
         {
-            session = await OwnedTerminalSessionFactory.StartNeutralAsync(package, output, CancellationToken.None);
+            session = await OwnedTerminalSessionFactory.StartNeutralAsync(package, output, CancellationToken.None,
+                mode == "terminal-gated-fds" ? pid => {
+                    var descriptors=Directory.GetFiles($"/proc/{pid}/fd").Select(Path.GetFileName).ToArray();
+                    result["HeldRootHasNoHelperChannels"] = !descriptors.Any(d=>d is "0" or "1" or "2");
+                    if(descriptors.Any(d=>d is "0" or "1" or "2")) throw new InvalidOperationException("Gated terminal root still inherits helper control/status stdio.");
+                } : null);
             var text = new StringBuilder();
             using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(6));
             var decoder = Encoding.UTF8.GetDecoder();
@@ -42,6 +47,22 @@ internal static class OwnedTerminalScenarioDriver
             if (mode == "terminal-descendants") { await Write("descendants\n"); await Until("DESCENDANTS_READY"); }
             if (mode == "terminal-root-first") { await Write("root-exit\n"); await Until("DESCENDANTS_READY"); await session.RootExited.WaitAsync(deadline.Token); }
             var stop = await session.StopAndObserveAsync(deadline.Token); result["StopState"] = stop.State.ToString();
+            if (mode == "terminal-retirement") {
+                var owner=typeof(LinuxOwnedTerminalSession).GetField("_owner", BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(session)!;
+                var dispose=session.DisposeAsync().AsTask(); await Task.Delay(50);
+                if(dispose.IsCompletedSuccessfully || (bool)owner.GetType().GetField("_disposed",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(owner)!)
+                    throw new InvalidOperationException("Native owner released before actual PTY EOF/operation settlement.");
+                result["OwnerHeldBeforeEof"]=true;
+                while(await session.OutputReader.ReadAsync(new byte[1024],deadline.Token)!=0) { }
+                await dispose.WaitAsync(deadline.Token); session=null; return 0;
+            }
+            if (mode == "terminal-late-fault") {
+                var owner=typeof(LinuxOwnedTerminalSession).GetField("_owner",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(session)!;
+                owner.GetType().GetMethod("ReportTerminalFault", BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(owner,["controlled-late-io-fault"]);
+                var late=await session.StopAndObserveAsync(CancellationToken.None);
+                if(late.State!=BookOfEternityClient.Services.GmWorkers.GmWorkerStopState.Uncertain) throw new InvalidOperationException("Cached positive stop hid later original I/O uncertainty.");
+                result["LateFaultUncertain"]=true; return 0;
+            }
             while (await session.OutputReader.ReadAsync(new byte[1024], deadline.Token) != 0) { }
             await session.DisposeAsync(); session = null;
             result["Transcript"] = text.ToString();
@@ -50,6 +71,8 @@ internal static class OwnedTerminalScenarioDriver
         catch (Exception ex)
         {
             result["Failure"] = ex.GetType().Name + ": " + ex.Message;
+            if (ex is BookOfEternityClient.Services.GmWorkers.GmWorkerOwnedLaunchException partial)
+                try { result["PartialOwnerCleanup"] = await partial.Owner.StopAndObserveAsync(); } catch { }
             if (session != null) try { result["Cleanup"] = await session.StopAndObserveAsync(CancellationToken.None); } catch { }
             return 1;
         }

@@ -62,7 +62,8 @@ int main(void) {
                 if (!strcmp(draft,"descendants") || !strcmp(draft,"root-exit")) {
                     pid_t child=fork(); if(child<0)return 91;
                     if(!child) { alarm(3); pid_t grandchild=fork(); if(grandchild<0)_exit(92); if(grandchild>0)_exit(0);
-                        if(setsid()<0)_exit(93); alarm(3); signal(SIGTERM,SIG_IGN); dprintf(1,"DESCENDANTS_READY\r\n"); for(;;)pause(); }
+                        if(setsid()<0) { _exit(93); }
+                        alarm(3); signal(SIGTERM,SIG_IGN); dprintf(1,"DESCENDANTS_READY\r\n"); for(;;)pause(); }
                     if(!strcmp(draft,"root-exit")) { usleep(100000); return 0; }
                     used=0;draft[0]=0;continue;
                 }

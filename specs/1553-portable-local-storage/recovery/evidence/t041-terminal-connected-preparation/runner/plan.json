@@ -1,0 +1,42 @@
+{
+  "Categories": [
+    "gm-owned-terminal-native-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "ded919cff140310ebb8bba2ab0b55a038923b5c2",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 46.4756551,
+  "Descriptors": [
+    {
+      "Name": "gm-owned-terminal-native-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-owned-terminal-native-linux",
+      "Categories": [
+        "gm-owned-terminal-native-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.ActualBridge_PipeDispatchConsumesOriginalTerminalView|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OriginalOwner_DescendantsRootExitOrUncertain|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OwnedRoot_TwoUnicodeInputsResizeCanonicalEof_ExactScopedCleanup",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.ActualBridge_PipeDispatchConsumesOriginalTerminalView",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OriginalOwner_DescendantsRootExitOrUncertain",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OwnedRoot_TwoUnicodeInputsResizeCanonicalEof_ExactScopedCleanup",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
