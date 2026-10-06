@@ -46,3 +46,9 @@ $package = [ordered]@{
 $package | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $out 'package-manifest.json') -Encoding utf8NoBOM
 # Explicit developer/package build only. Player launch never invokes this script.
 Write-Output (Join-Path $out 'build-provenance.json')
+
+if ($IncludeTerminalFixture) {
+    $fixture = $assets | Where-Object { $_.binary -eq 'neutral-cli' }
+    [ordered]@{ schemaVersion=1; fixture='neutral-cli'; source=$fixture.source; sourceSha256=$fixture.sourceSha256; binarySha256=$fixture.binarySha256; profile='neutral-v1'; argv=@() } |
+        ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $out 'neutral-terminal-manifest.json') -Encoding utf8NoBOM
+}
