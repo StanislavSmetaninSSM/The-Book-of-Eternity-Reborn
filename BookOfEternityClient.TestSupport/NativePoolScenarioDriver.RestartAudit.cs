@@ -72,6 +72,13 @@ internal static partial class NativePoolScenarioDriver
                         [new(fs.ResolvePath(RestartContextPath), RestartContextBytes, suffix)]); break;
                     case "legacy-append": lease.IsLegacyStorageRecovery = true; await fs.AppendFileAtomicAsync(lease, GmWorkerAuditLog.AuditLogPath, line); break;
                     case "held-closure": await fs.AppendFileAtomicAsync(lease, GmWorkerAuditLog.AuditLogPath, line); break;
+                    case "cas": await fs.CompareExchangeFileBytesAsync(lease, RestartContextPath, RestartContextBytes, suffix); break;
+                    case "delete": fs.DeleteFile(lease, RestartContextPath); break;
+                    case "backup": fs.CreateBackup(lease, RestartContextPath); break;
+                    case "worker-apply": await fs.BeginWorkerApplyTransactionAsync(lease,
+                        [new(RestartContextPath, RestartContextBytes, suffix)]); break;
+                    case "generation": fs.RotateSessionGeneration(lease); break;
+                    case "directory-structure": fs.EnsureDirectoryStructure(lease); break;
                     default: throw new ArgumentException("Unknown audit fixture mode.");
                 }
             }

@@ -90,6 +90,7 @@ public partial class FileSystemManager
 
     internal bool TryRemoveEmptyCanonicalDirectory(CanonicalWriteLease lease, string relativePath)
     {
+        EnsureWorkerGeneralMutationAllowed(lease);
         ArgumentException.ThrowIfNullOrWhiteSpace(relativePath);
         VerifyCurrentSessionOperation(lease);
         lease.EnsureNoPendingLocalDecision();

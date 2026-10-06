@@ -27,6 +27,9 @@ public sealed class GmWorkerAuditLog
         _fs = fs;
     }
 
+    internal static string SerializeAppend(WorkerAuditEvent auditEvent) =>
+        JsonSerializer.Serialize(auditEvent, CompactJsonOptions) + Environment.NewLine;
+
     public async Task AppendEventAsync(WorkerAuditEvent auditEvent)
     {
         await AppendEventCoreAsync(auditEvent, writeLease: null);
@@ -109,7 +112,7 @@ public sealed class GmWorkerAuditLog
     {
         ValidateAuditEvent(auditEvent);
 
-        var line = JsonSerializer.Serialize(auditEvent, CompactJsonOptions);
+        var line = SerializeAppend(auditEvent);
         try
         {
             if (writeLease == null)
@@ -119,14 +122,14 @@ public sealed class GmWorkerAuditLog
                     .EnterGmWorkerAuditAppendAdmissionAsync(cancellationToken);
                 await _fs.AppendFileAtomicAsync(
                     AuditLogPath,
-                    line + Environment.NewLine);
+                    line);
             }
             else
             {
                 await _fs.AppendFileAtomicAsync(
                     writeLease,
                     AuditLogPath,
-                    line + Environment.NewLine,
+                    line,
                     cancellationToken);
             }
         }

@@ -30,7 +30,7 @@ public partial class FileSystemManager
     // if recovery fails; ordinary input/schema errors are not converted here.
     internal void ResolveBackupPublicationRecovery(CanonicalWriteLease lease)
     {
-        EnsureValidCanonicalWriteLease(lease);
+        EnsureWorkerGeneralMutationAllowed(lease);
         lease.EnsureNoPendingLocalDecision();
         if (lease.MutationIntentRecorder != null || lease.IsLegacyStorageRecovery)
         {
@@ -59,7 +59,7 @@ public partial class FileSystemManager
 
     private async Task<string?> CreateBackupWithLeaseAsync(CanonicalWriteLease lease, string relativePath)
     {
-        EnsureValidCanonicalWriteLease(lease);
+        EnsureWorkerGeneralMutationAllowed(lease);
         if (!UsesTrustedLocalWriter(lease, relativePath)) return CreateBackupCore(relativePath);
         var source = GetLocalBackupRelativePath(ResolvePath(relativePath));
         ResolveBackupPublicationRecovery(lease);
@@ -75,7 +75,7 @@ public partial class FileSystemManager
 
     private async Task RestoreBackupWithLeaseAsync(CanonicalWriteLease lease, string backupFullPath, string originalRelativePath)
     {
-        EnsureValidCanonicalWriteLease(lease);
+        EnsureWorkerGeneralMutationAllowed(lease);
         var backup = GetLocalBackupRelativePath(backupFullPath);
         var ordinaryBackup = UsesTrustedLocalWriter(lease, backup);
         var ordinaryTarget = UsesTrustedLocalWriter(lease, originalRelativePath);
@@ -97,7 +97,7 @@ public partial class FileSystemManager
 
     private async Task CleanupBackupWithLeaseAsync(CanonicalWriteLease lease, string backupFullPath)
     {
-        EnsureValidCanonicalWriteLease(lease);
+        EnsureWorkerGeneralMutationAllowed(lease);
         var backup = GetLocalBackupRelativePath(backupFullPath);
         if (!UsesTrustedLocalWriter(lease, backup)) { CleanupBackupCore(backupFullPath); return; }
         ResolveBackupPublicationRecovery(lease);

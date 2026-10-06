@@ -70,6 +70,7 @@ public partial class FileSystemManager
 
     internal string BootstrapLocalStorage(CanonicalWriteLease lease, byte[]? beforeConfig, byte[] desiredConfig)
     {
+        EnsureWorkerGeneralMutationAllowed(lease);
         VerifyCurrentSessionOperation(lease);
         if (lease.IsLegacyStorageRecovery || lease.MutationIntentRecorder != null)
             throw new InvalidOperationException("Local bootstrap cannot run inside a legacy transaction.");
@@ -95,6 +96,7 @@ public partial class FileSystemManager
 
     private string CreateTrustedLocalGeneration(CanonicalWriteLease lease)
     {
+        EnsureWorkerGeneralMutationAllowed(lease);
         VerifyCurrentSessionOperation(lease);
         if (lease.IsLegacyStorageRecovery)
             throw new InvalidDataException("Legacy recovery cannot invent a missing session generation.");
@@ -124,6 +126,7 @@ public partial class FileSystemManager
         Action? validatePreparedNamespace = null)
     {
         lease.EnsureNoPendingLocalDecision();
+        EnsureWorkerAuditPublication(lease, generation, changes);
         var scope = new TrustedLocalFileScope([BasePath]);
         var registrations = new List<InProcessMutationRegistration>();
         try
@@ -149,9 +152,11 @@ public partial class FileSystemManager
             }
             cancellationToken.ThrowIfCancellationRequested();
             VerifyCurrentSessionOperation(lease);
+            EnsureWorkerAuditPublication(lease, generation, changes);
             var publisher = new TrustedLocalFilePublication(this, scope);
             for (var attempt = 0; ; attempt++)
             {
+                EnsureWorkerAuditPublication(lease, generation, changes);
                 validatePreparedNamespace?.Invoke();
                 var outcome = publisher.PublishWithOutcome(lease, generation, changes, _hooks?.LocalPublicationObserver);
                 if (outcome.Disposition != TrustedLocalPublicationDisposition.RolledBack ||

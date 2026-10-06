@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="9f026d75-e887-461c-b53b-b69619552fb8" name="@c7669543e9c7 2026-10-06 03:20:33" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T03:20:33.7428924+00:00" queuing="2026-10-06T03:20:33.7428924+00:00" start="2026-10-06T03:20:30.0100716+00:00" finish="2026-10-06T03:20:45.3734417+00:00" />
+  <TestSettings name="default" id="e615b3cd-173d-46d2-9f5e-956c9f723477">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_03_20_33" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="9a231c12-19fd-4064-80dd-169303a1103a" testId="ff978869-7ca3-0da6-ad12-87a64e990f6f" testName="BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: &quot;empty-prune&quot;)" computerName="c7669543e9c7" duration="00:00:01.3642410" startTime="2026-10-06T03:20:42.3777009+00:00" endTime="2026-10-06T03:20:42.3777012+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9a231c12-19fd-4064-80dd-169303a1103a">
+      <Output>
+        <ErrorInfo>
+          <Message>Original cleanup purpose must refuse before unrelated side effects: {"mode":"empty-prune","refused":false,"error":null,"message":null,"appendedTwice":false,"exactOnce":false,"preserved":false,"retained":true}</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartAuditTests.cs:line 29
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="76152089-1681-4761-bf66-6401ccd8db21" testId="af4ddc78-e882-af26-c508-eeff04e711f9" testName="BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: &quot;replace-audit&quot;)" computerName="c7669543e9c7" duration="00:00:01.3642844" startTime="2026-10-06T03:20:36.5372367+00:00" endTime="2026-10-06T03:20:36.5372370+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="76152089-1681-4761-bf66-6401ccd8db21">
+      <Output>
+        <ErrorInfo>
+          <Message>Original cleanup purpose must refuse before unrelated side effects: {"mode":"replace-audit","refused":false,"error":null,"message":null,"appendedTwice":false,"exactOnce":true,"preserved":false,"retained":true}</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartAuditTests.cs:line 29
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1d8852c0-782f-4d0f-a073-ca553d6897d5" testId="14b435cf-4dab-b415-f8af-1861518ef966" testName="BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: &quot;legacy-append&quot;)" computerName="c7669543e9c7" duration="00:00:01.4604792" startTime="2026-10-06T03:20:35.1724454+00:00" endTime="2026-10-06T03:20:35.1724457+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1d8852c0-782f-4d0f-a073-ca553d6897d5" />
+    <UnitTestResult executionId="1af3fb54-3f04-468b-a207-1f63c32cbfda" testId="64723e29-086a-566c-b7c7-750fb65e2d30" testName="BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: &quot;wrong-bytes&quot;)" computerName="c7669543e9c7" duration="00:00:01.4851233" startTime="2026-10-06T03:20:39.5119691+00:00" endTime="2026-10-06T03:20:39.5119695+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1af3fb54-3f04-468b-a207-1f63c32cbfda">
+      <Output>
+        <ErrorInfo>
+          <Message>Original cleanup purpose must refuse before unrelated side effects: {"mode":"wrong-bytes","refused":false,"error":null,"message":null,"appendedTwice":false,"exactOnce":false,"preserved":false,"retained":true}</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartAuditTests.cs:line 29
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6bf21b0f-e8aa-48e7-b35b-b4ee668e24a5" testId="2ddc3325-45cc-e656-0bb1-a988dcc9ebed" testName="BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: &quot;wrong-path&quot;)" computerName="c7669543e9c7" duration="00:00:01.4817452" startTime="2026-10-06T03:20:38.0200237+00:00" endTime="2026-10-06T03:20:38.0200240+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6bf21b0f-e8aa-48e7-b35b-b4ee668e24a5">
+      <Output>
+        <ErrorInfo>
+          <Message>Original cleanup purpose must refuse before unrelated side effects: {"mode":"wrong-path","refused":false,"error":null,"message":null,"appendedTwice":false,"exactOnce":false,"preserved":false,"retained":true}</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartAuditTests.cs:line 29
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="75bda083-e2c8-4270-a6a4-99faf5b8e8a3" testId="c26d3d75-84e9-30a6-5255-9fd99a80f6a5" testName="BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: &quot;extra-member&quot;)" computerName="c7669543e9c7" duration="00:00:01.3463732" startTime="2026-10-06T03:20:43.7206471+00:00" endTime="2026-10-06T03:20:43.7206475+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="75bda083-e2c8-4270-a6a4-99faf5b8e8a3">
+      <Output>
+        <ErrorInfo>
+          <Message>Original cleanup purpose must refuse before unrelated side effects: {"mode":"extra-member","refused":false,"error":null,"message":null,"appendedTwice":false,"exactOnce":true,"preserved":false,"retained":true}</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartAuditTests.cs:line 29
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="92afcd82-6e5b-488c-bffe-449030279ff3" testId="b65c9897-be85-d84a-06c4-668f62e56d04" testName="BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: &quot;held-closure&quot;)" computerName="c7669543e9c7" duration="00:00:01.4875147" startTime="2026-10-06T03:20:40.9996248+00:00" endTime="2026-10-06T03:20:40.9996251+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="92afcd82-6e5b-488c-bffe-449030279ff3" />
+    <UnitTestResult executionId="2ab977fe-47de-47aa-aae0-61ccb944f861" testId="de5e2ed0-564a-329c-1989-70eb723c8bab" testName="BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: &quot;direct-publish&quot;)" computerName="c7669543e9c7" duration="00:00:01.6881909" startTime="2026-10-06T03:20:33.7153860+00:00" endTime="2026-10-06T03:20:33.7154064+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2ab977fe-47de-47aa-aae0-61ccb944f861">
+      <Output>
+        <ErrorInfo>
+          <Message>Original cleanup purpose must refuse before unrelated side effects: {"mode":"direct-publish","refused":false,"error":null,"message":null,"appendedTwice":false,"exactOnce":false,"preserved":false,"retained":true}</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartAuditTests.cs:line 29
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d3d87ace-0c10-4c4b-9628-022326776a29" testId="7398fe65-a090-7005-09d6-35cb25afe684" testName="BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: &quot;exact-once&quot;)" computerName="c7669543e9c7" duration="00:00:01.5578517" startTime="2026-10-06T03:20:45.2796857+00:00" endTime="2026-10-06T03:20:45.2796861+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d3d87ace-0c10-4c4b-9628-022326776a29" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: &quot;legacy-append&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="14b435cf-4dab-b415-f8af-1861518ef966">
+      <Execution id="1d8852c0-782f-4d0f-a073-ca553d6897d5" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartAuditTests" name="OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: &quot;wrong-bytes&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="64723e29-086a-566c-b7c7-750fb65e2d30">
+      <Execution id="1af3fb54-3f04-468b-a207-1f63c32cbfda" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartAuditTests" name="OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: &quot;exact-once&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7398fe65-a090-7005-09d6-35cb25afe684">
+      <Execution id="d3d87ace-0c10-4c4b-9628-022326776a29" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartAuditTests" name="OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: &quot;wrong-path&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2ddc3325-45cc-e656-0bb1-a988dcc9ebed">
+      <Execution id="6bf21b0f-e8aa-48e7-b35b-b4ee668e24a5" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartAuditTests" name="OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: &quot;direct-publish&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="de5e2ed0-564a-329c-1989-70eb723c8bab">
+      <Execution id="2ab977fe-47de-47aa-aae0-61ccb944f861" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartAuditTests" name="OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: &quot;extra-member&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c26d3d75-84e9-30a6-5255-9fd99a80f6a5">
+      <Execution id="75bda083-e2c8-4270-a6a4-99faf5b8e8a3" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartAuditTests" name="OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: &quot;replace-audit&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="af4ddc78-e882-af26-c508-eeff04e711f9">
+      <Execution id="76152089-1681-4761-bf66-6401ccd8db21" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartAuditTests" name="OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: &quot;held-closure&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b65c9897-be85-d84a-06c4-668f62e56d04">
+      <Execution id="92afcd82-6e5b-488c-bffe-449030279ff3" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartAuditTests" name="OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: &quot;empty-prune&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ff978869-7ca3-0da6-ad12-87a64e990f6f">
+      <Execution id="9a231c12-19fd-4064-80dd-169303a1103a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartAuditTests" name="OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="ff978869-7ca3-0da6-ad12-87a64e990f6f" executionId="9a231c12-19fd-4064-80dd-169303a1103a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="af4ddc78-e882-af26-c508-eeff04e711f9" executionId="76152089-1681-4761-bf66-6401ccd8db21" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="14b435cf-4dab-b415-f8af-1861518ef966" executionId="1d8852c0-782f-4d0f-a073-ca553d6897d5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="64723e29-086a-566c-b7c7-750fb65e2d30" executionId="1af3fb54-3f04-468b-a207-1f63c32cbfda" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2ddc3325-45cc-e656-0bb1-a988dcc9ebed" executionId="6bf21b0f-e8aa-48e7-b35b-b4ee668e24a5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c26d3d75-84e9-30a6-5255-9fd99a80f6a5" executionId="75bda083-e2c8-4270-a6a4-99faf5b8e8a3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b65c9897-be85-d84a-06c4-668f62e56d04" executionId="92afcd82-6e5b-488c-bffe-449030279ff3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="de5e2ed0-564a-329c-1989-70eb723c8bab" executionId="2ab977fe-47de-47aa-aae0-61ccb944f861" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7398fe65-a090-7005-09d6-35cb25afe684" executionId="d3d87ace-0c10-4c4b-9628-022326776a29" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="9" executed="9" passed="3" failed="6" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.19]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.44]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.47]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:03.21]       Original cleanup purpose must refuse before unrelated side effects: {"mode":"direct-publish","refused":false,"error":null,"message":null,"appendedTwice":false,"exactOnce":false,"preserved":false,"retained":true}
+[xUnit.net 00:00:03.21]       Stack Trace:
+[xUnit.net 00:00:03.21]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartAuditTests.cs(29,0): at BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(String mode)
+[xUnit.net 00:00:03.21]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:06.04]       Original cleanup purpose must refuse before unrelated side effects: {"mode":"replace-audit","refused":false,"error":null,"message":null,"appendedTwice":false,"exactOnce":true,"preserved":false,"retained":true}
+[xUnit.net 00:00:06.04]       Stack Trace:
+[xUnit.net 00:00:06.04]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartAuditTests.cs(29,0): at BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(String mode)
+[xUnit.net 00:00:06.04]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:07.52]       Original cleanup purpose must refuse before unrelated side effects: {"mode":"wrong-path","refused":false,"error":null,"message":null,"appendedTwice":false,"exactOnce":false,"preserved":false,"retained":true}
+[xUnit.net 00:00:07.52]       Stack Trace:
+[xUnit.net 00:00:07.52]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartAuditTests.cs(29,0): at BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(String mode)
+[xUnit.net 00:00:07.52]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:09.01]       Original cleanup purpose must refuse before unrelated side effects: {"mode":"wrong-bytes","refused":false,"error":null,"message":null,"appendedTwice":false,"exactOnce":false,"preserved":false,"retained":true}
+[xUnit.net 00:00:09.01]       Stack Trace:
+[xUnit.net 00:00:09.01]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartAuditTests.cs(29,0): at BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(String mode)
+[xUnit.net 00:00:09.01]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:11.88]       Original cleanup purpose must refuse before unrelated side effects: {"mode":"empty-prune","refused":false,"error":null,"message":null,"appendedTwice":false,"exactOnce":false,"preserved":false,"retained":true}
+[xUnit.net 00:00:11.88]       Stack Trace:
+[xUnit.net 00:00:11.88]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartAuditTests.cs(29,0): at BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(String mode)
+[xUnit.net 00:00:11.88]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:13.22]       Original cleanup purpose must refuse before unrelated side effects: {"mode":"extra-member","refused":false,"error":null,"message":null,"appendedTwice":false,"exactOnce":true,"preserved":false,"retained":true}
+[xUnit.net 00:00:13.22]       Stack Trace:
+[xUnit.net 00:00:13.22]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartAuditTests.cs(29,0): at BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(String mode)
+[xUnit.net 00:00:13.22]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:14.79]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T03:20:33.7133380+00:00">
+        <Text>[xUnit.net 00:00:03.21]     BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: "direct-publish") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T03:20:36.5378329+00:00">
+        <Text>[xUnit.net 00:00:06.04]     BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: "replace-audit") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T03:20:38.0201942+00:00">
+        <Text>[xUnit.net 00:00:07.52]     BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: "wrong-path") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T03:20:39.5143548+00:00">
+        <Text>[xUnit.net 00:00:09.01]     BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: "wrong-bytes") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T03:20:42.3862368+00:00">
+        <Text>[xUnit.net 00:00:11.87]     BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: "empty-prune") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T03:20:43.7223555+00:00">
+        <Text>[xUnit.net 00:00:13.22]     BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(mode: "extra-member") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

@@ -20,6 +20,7 @@ internal sealed class GmWorkerDurableExecution
     private bool _preparedAcknowledged, _registered, _startAttempted, _releaseAttempted, _publicationAcknowledged, _retirementAcknowledged;
     private int _uncertain;
     private WorkerRunCleanup? _cleanup, _boundAudit;
+    private byte[]? _boundAuditAppend;
 
     private GmWorkerDurableExecution(WorkerRunLedgerCoordinator coordinator, GmWorkerRootExecutionLease root,
         WorkerRunEntryHandle entry, WorkerTaskPacket task, byte[] taskBytes, bool prepared)
@@ -171,6 +172,14 @@ internal sealed class GmWorkerDurableExecution
             audit.EventType != "process-tree-cleanup-confirmed")
             throw new InvalidOperationException("Cleanup audit must bind once to the original task.");
         _boundAudit = AuditFacts(audit);
+        _boundAuditAppend = Encoding.UTF8.GetBytes(GmWorkerAuditLog.SerializeAppend(audit));
+    }
+    internal void ValidateCleanupAppend(GmWorkerCanonicalPurpose purpose, ReadOnlySpan<byte> suffix)
+    {
+        ValidatePurpose(purpose);
+        if (purpose.Operation != GmWorkerCanonicalOperation.ConfirmedCleanupAudit || _boundAuditAppend == null ||
+            !suffix.SequenceEqual(_boundAuditAppend))
+            throw new InvalidOperationException("Cleanup purpose only permits the original frozen audit append.");
     }
     internal GmWorkerCanonicalPurpose CleanupPurpose(WorkerAuditEvent audit)
     {

@@ -24,8 +24,11 @@ internal sealed partial class TrustedLocalFilePublication
     /// </returns>
     internal TrustedLocalPublicationOutcome PublishNamespaceWithOutcome(FileSystemManager.CanonicalWriteLease lease,
         TrustedLocalGeneration generation, TrustedLocalNamespacePlan plan,
-        Action<TrustedLocalPublicationPhase, int>? observer = null) =>
-        PublishWithOutcome(lease, attempt => PublishNamespaceCore(lease, generation, plan, observer, attempt));
+        Action<TrustedLocalPublicationPhase, int>? observer = null)
+    {
+        _files.EnsureWorkerGeneralMutationAllowed(lease);
+        return PublishWithOutcome(lease, attempt => PublishNamespaceCore(lease, generation, plan, observer, attempt));
+    }
 
     /// <summary>
     /// Validates admission before the coordinator enters the typed publication attempt.
@@ -42,6 +45,7 @@ internal sealed partial class TrustedLocalFilePublication
     internal void ValidateNamespaceBeforePublication(FileSystemManager.CanonicalWriteLease lease,
         TrustedLocalGeneration generation, TrustedLocalNamespacePlan plan)
     {
+        _files.EnsureWorkerGeneralMutationAllowed(lease);
         var journal = CreateNamespaceJournal(generation, plan);
         ValidateNamespaceJournal(journal);
         PreflightNamespace(lease, journal, exactAfter: false, exactBefore: true);

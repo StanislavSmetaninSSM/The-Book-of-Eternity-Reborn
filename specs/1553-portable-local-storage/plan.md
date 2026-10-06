@@ -246,6 +246,18 @@ It holds real native journal/root authority but starts no worker. Independent gu
 verifies ECHILD. Unbuilt/unrun; runtime remains intentionally unchanged for causal RED.
 Intermediate reviewer also confirmed missing closed cleanup witness, R1 API bypass
 and skipped bounded stop on Uncertain; address before final R2 review.
+Audit RED at `d7da77d1ab1df81a1d055357d5b671d519baa4ce`:9 executed,6 causal FAIL
+(wrong path/bytes, replacement, extra member, empty prune, direct publisher),3 PASS
+(exact idempotent append, held closure, legacy unavailable),55.5947655s. All nine
+guardians ECHILD/exit0/reap1, zero emergency/failure/deadline; runner complete. Legacy
+refusal was platform availability, not operation-confinement evidence. Manifest:
+recovery/evidence/worker-r2-audit-red/manifest.json. Added frozen compact JSONL bytes,
+exact single-member prefix+append admission before directory preparation and after
+awaits/retries, direct publisher checks, and refusal at generic participating mutation
+entrypoints. Canonical cleanup leases now validate the whole root on every lease
+check; only known cleanup debt permits its exact operation. Fresh GREEN pending; added six guard-family cases for CAS, delete, backup,
+worker apply, generation and directory structure. Negative assertions exclude
+platform-availability refusal;15 cases now planned.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

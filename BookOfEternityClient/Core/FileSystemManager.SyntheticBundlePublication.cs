@@ -7,6 +7,7 @@ public partial class FileSystemManager
     internal async Task MoveSyntheticRuntimeBundleIntoCanonicalSessionAsync(CanonicalWriteLease lease,
         string admittedFixtureRoot, string sourceDirectory, string destinationRelativePath)
     {
+        EnsureWorkerGeneralMutationAllowed(lease);
         ValidateSyntheticFixtureRoot(admittedFixtureRoot);
         ValidateLease();
         EnsureSafeCanonicalRelativePath(destinationRelativePath);

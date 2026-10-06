@@ -32,6 +32,7 @@ internal sealed partial class TrustedLocalFilePublication
             FileSystemManager.CanonicalWriteLease lease, TrustedLocalGeneration generation,
             IReadOnlyList<TrustedLocalFileChange> changes, Action<TrustedLocalPublicationPhase, int>? observer)
         {
+            owner._files.EnsureWorkerGeneralMutationAllowed(lease);
             lease.EnsureNoPendingLocalDecision();
             owner.BeginPublication(lease, generation, changes.Count);
             var members = changes.Select(change => new Member

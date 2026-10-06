@@ -1,0 +1,1 @@
+{"mode":"legacy-append","refused":true,"error":"PlatformNotSupportedException","message":"Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.","appendedTwice":false,"exactOnce":false,"preserved":true,"retained":true}

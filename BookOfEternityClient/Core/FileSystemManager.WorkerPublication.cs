@@ -9,7 +9,7 @@ public partial class FileSystemManager
     internal async Task<CanonicalWorkerApplyTransaction> BeginWorkerApplyTransactionAsync(
         CanonicalWriteLease writeLease, IReadOnlyList<CanonicalWorkerApplyChange> changes)
     {
-        EnsureValidCanonicalWriteLease(writeLease);
+        EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         if (writeLease.IsLegacyStorageRecovery || writeLease.MutationIntentRecorder != null)
             throw new InvalidOperationException("An ordinary worker cannot begin inside an original recovery or recorder transaction.");

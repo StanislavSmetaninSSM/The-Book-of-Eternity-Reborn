@@ -125,9 +125,10 @@ internal sealed class GmWorkerRootContext
             if (_disposed) throw new InvalidOperationException("Explicit worker admission is required before canonical recovery.");
             if (purpose == null) { RequireOpen(); return; }
             if (!Durable || !ReferenceEquals(purpose.Execution.Context, this) || _coordinator == null ||
-                _pending.Count != 0 || !_coordinator.VerifyAdmission(allowUncertain: purpose.Operation == GmWorkerCanonicalOperation.ConfirmedCleanupAudit))
+                _pending.Count != 0 || !_coordinator.VerifyAdmission())
                 throw new InvalidOperationException("Original worker purpose has no current journal authority.");
-            if (purpose.Operation != GmWorkerCanonicalOperation.ConfirmedCleanupAudit && (Volatile.Read(ref _closed) != 0 || _cleanupDeferred.Count != 0))
+            if (Volatile.Read(ref _closed) != 0 ||
+                purpose.Operation != GmWorkerCanonicalOperation.ConfirmedCleanupAudit && _cleanupDeferred.Count != 0)
                 throw new InvalidOperationException("Worker root closed before canonical operation.");
             purpose.Execution.ValidatePurpose(purpose);
             if (purpose.Operation != GmWorkerCanonicalOperation.ConfirmedCleanupAudit &&

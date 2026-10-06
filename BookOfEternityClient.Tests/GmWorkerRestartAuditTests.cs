@@ -15,6 +15,12 @@ public sealed class GmWorkerRestartAuditTests
     [InlineData("direct-publish")]
     [InlineData("legacy-append")]
     [InlineData("held-closure")]
+    [InlineData("cas")]
+    [InlineData("delete")]
+    [InlineData("backup")]
+    [InlineData("worker-apply")]
+    [InlineData("generation")]
+    [InlineData("directory-structure")]
     public async Task OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce(string mode)
     {
         var fixture = await GmWorkerRestartAdmissionTests.RestartFixture.Create();
@@ -26,7 +32,10 @@ public sealed class GmWorkerRestartAuditTests
             Assert.True(!r.GetProperty("refused").GetBoolean() && r.GetProperty("appendedTwice").GetBoolean() &&
                 r.GetProperty("exactOnce").GetBoolean(), r.ToString());
         else
+        {
             Assert.True(r.GetProperty("refused").GetBoolean() && r.GetProperty("preserved").GetBoolean(),
                 "Original cleanup purpose must refuse before unrelated side effects: " + r);
+            Assert.NotEqual("PlatformNotSupportedException", r.GetProperty("error").GetString());
+        }
     }
 }
