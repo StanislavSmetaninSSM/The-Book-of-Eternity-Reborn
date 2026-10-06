@@ -1,0 +1,168 @@
+{
+  "Categories": [
+    "worker-restart-mode-linux",
+    "worker-run-ledger-storage-linux",
+    "worker-run-ledger-failures-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "b86c62517e1ab2f42ec91e53344db8a3e4750000",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 41.0314318,
+  "Descriptors": [
+    {
+      "Name": "worker-restart-mode-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-mode-linux",
+      "Categories": [
+        "worker-restart-mode-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartModeTests.DurableMode_BindsRootBeforeInitializationAndAlwaysRejectsLegacy|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartModeTests.LegacyMode_RetainsCommonLockAndNeverUpgradesToDurable",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartModeTests.DamagedMode_ClosesLiveAndColdAuthorityWithoutRepair",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartModeTests.DurableMode_BindsRootBeforeInitializationAndAlwaysRejectsLegacy",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartModeTests.LegacyMode_RetainsCommonLockAndNeverUpgradesToDurable",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-run-ledger-failures-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-run-ledger-failures-linux",
+      "Categories": [
+        "worker-run-ledger-failures-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CancellationAndDisposeDuringWrite_WaitForOriginalIoAndRetainLock|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CapacityAndTaskIdentityBounds_RefuseBeforeMutation|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InconsistentArchiveIndex_NeverLooksQuiescent|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InvalidPreparation_IsReadOnly|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.NonordinaryLedgerPath_IsBlockedWithoutFollowingOutsideLink|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.SequenceOverflowAndLifetimeInventoryBound_RefuseNewAllocation",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 54,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction",
+          "Cases": 29
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CancellationAndDisposeDuringWrite_WaitForOriginalIoAndRetainLock",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CapacityAndTaskIdentityBounds_RefuseBeforeMutation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InconsistentArchiveIndex_NeverLooksQuiescent",
+          "Cases": 7
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InvalidPreparation_IsReadOnly",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.NonordinaryLedgerPath_IsBlockedWithoutFollowingOutsideLink",
+          "Cases": 7
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.SequenceOverflowAndLifetimeInventoryBound_RefuseNewAllocation",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-run-ledger-storage-linux-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-run-ledger-storage-linux",
+      "Categories": [
+        "worker-run-ledger-storage-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.AlreadyInitialized_CannotHideChangedBytesOrLostLockBinding|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.CanceledMutation_PreservesBytesAndOriginalNeverStartToken|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdMissing_IsReadOnlyAndDoesNotCreateNamespace|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ExistingEmptyNamespace_IsBlockedWithoutBootstrapRepair|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.Initialize_PersistsBoundRootStateAndStableLocks|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.LaunchIntent_IsDurableAndPermanentlyDisallowsPrelaunchAbort|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.OriginalEntriesWithDifferentEpochs_RemainIndependentlyValid|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.PrelaunchAbort_CommitsExactArchiveBeforeRemovingReservationAndIsIdempotent|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.PreparedEntry_PersistsIdentityAndColdRestartCannotAdoptIt|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.Reopen_PreservesRetiredEpochAndRefusesExactTaskReuse|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.StaleSequence_DoesNotConsumeOriginalNeverStartToken|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.UnboundHandlesAndStaleSequences_CannotMutate|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.Uncertain_IsAbsorbingAndPreservesWorkspaceAndReservation",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 42,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.AlreadyInitialized_CannotHideChangedBytesOrLostLockBinding",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.CanceledMutation_PreservesBytesAndOriginalNeverStartToken",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner",
+          "Cases": 9
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdMissing_IsReadOnlyAndDoesNotCreateNamespace",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ExistingEmptyNamespace_IsBlockedWithoutBootstrapRepair",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.Initialize_PersistsBoundRootStateAndStableLocks",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired",
+          "Cases": 15
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.LaunchIntent_IsDurableAndPermanentlyDisallowsPrelaunchAbort",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.OriginalEntriesWithDifferentEpochs_RemainIndependentlyValid",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.PrelaunchAbort_CommitsExactArchiveBeforeRemovingReservationAndIsIdempotent",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.PreparedEntry_PersistsIdentityAndColdRestartCannotAdoptIt",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.Reopen_PreservesRetiredEpochAndRefusesExactTaskReuse",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.StaleSequence_DoesNotConsumeOriginalNeverStartToken",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.UnboundHandlesAndStaleSequences_CannotMutate",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.Uncertain_IsAbsorbingAndPreservesWorkspaceAndReservation",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

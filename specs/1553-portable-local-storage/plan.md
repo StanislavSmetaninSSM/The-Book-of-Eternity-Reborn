@@ -108,6 +108,14 @@ was not applicable. Corrected the test boundary instead: while owner is held, co
 exact mode/state bytes around live refusal; release it normally, then snapshot all
 files (including locks) around cold refusal. No alternate/native lock read or
 production change. Evidence: recovery/evidence/worker-r2-mode-observation-sharing-failure/manifest.json.
+Mode/storage GREEN at `b86c62517e1ab2f42ec91e53344db8a3e4750000`:104/104 PASS
+(8 mode +42 affected storage +54 failure),52.0960470s, fresh build, all three
+descriptors complete, no timeout, cleanup complete. Evidence:
+recovery/evidence/worker-r2-mode-green/manifest.json. The fix respects the held lock;
+all six live and cold corruption assertions executed. No native worker was launched
+in this cohort. Parent status was answered; no external blocker, no running session.
+Next: actual positive lifecycle RED, then closed live transition/context and complete
+pool/Release/publication/retirement wiring. Cold-pool connection RED remains open.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

@@ -18,9 +18,12 @@ cold Prepared. Два guardian ECHILD, без emergency/deadline/failures, basel
 завершён. Отдельный первый catalog preparation failure исполнил0 тестов и сохранён.
 Следующий шаг: закрытые R2 storage/progress prerequisites и связанная реализация.
 Schema2 progress prerequisite GREEN на `215ed8c8`:35 новых +44 record +42 storage
-+54 failure =175/175 PASS,61.011s, cleanup complete. Closed started-run transitions,
-mode binding, root context и сам connected pool ещё не реализованы; cold pool RED
-не исправлен этим prerequisite. Доказательства и точные source hashes в плане.
++54 failure =175/175 PASS,61.011s, cleanup complete. Mode binding теперь реализован:
+GREEN на `b86c6251`,8 mode +42 storage +54 failure =104/104 PASS,52.096s, cleanup
+complete. Два промежуточных fixture observation FAIL сохранены отдельно; исправлена
+граница снимка относительно held lock, production lock не менялся. Closed started-run
+transitions, root context и connected pool ещё впереди; cold pool RED остаётся.
+Доказательства и точные source hashes в плане.
 R3, public Linux Release, main PTY, live GM и реальные saves закрыты.
 Старые формулировки «R2 не разрешён» ниже относятся к истории завершения R1.
 
