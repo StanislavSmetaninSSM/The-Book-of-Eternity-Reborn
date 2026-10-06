@@ -1,7 +1,8 @@
 # T041-RUN-FENCE-F1 handoff
 
 Accepted design0658e440; only connected neutral durable owner/fence is authorized.
-Runtime candidate da3ffc6fa7a93bb89d8e81ee4d5e2c533b51c1f6. Independent final review pending.
+Runtime candidate da3ffc6fa7a93bb89d8e81ee4d5e2c533b51c1f6. Independent actual Sol6.1/xhigh **Focused F1 PASS**
+at91fd34cd078328c575e6e340990301dd4b18706d; no remaining blocking finding.
 
 The original held terminal consumes the existing schema1 main.json: Prepared before
 creation, actual identity and Running durable ACK before one release. One coordinator/
@@ -22,6 +23,10 @@ Correct staged cut has causal RED→GREEN; BOM preconditions/compile preparation
 separately labelled. Synthetic save/load archives exist only in isolated fixture roots.
 [Qualification](recovery/main-run-fence-f1-qualification.json) records commands, source
 hashes, passing IDs, debt/authority/order/settlement evidence and excluded boundaries.
+[Review](recovery/main-run-fence-f1-review.json) independently verifies84IDs/latest
+packet; [writer evidence audit](recovery/main-run-fence-f1-evidence-audit.json) checks
+20manifests/701inputinstances/1660artifacts/330gzip/149guardianreports with0errors.
+Only F1 task closes; parent run fence, F2/F3/fullT041/#1553 remain open.
 
 Publication checkpoints use ordinary non-force pushes, exact remote SHA and fetched byte
 readback. Final carrier SHA and fresh independent GitHub HTTPS-only restore are returned

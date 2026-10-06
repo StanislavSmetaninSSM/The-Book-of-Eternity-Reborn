@@ -5,7 +5,7 @@
   "AcceptedDesign": "0658e4405a4d0d958eb1b64b11b83956917fb81b",
   "RuntimeCandidate": "da3ffc6fa7a93bb89d8e81ee4d5e2c533b51c1f6",
   "NativeQualificationSource": "da3ffc6fa7a93bb89d8e81ee4d5e2c533b51c1f6",
-  "Status": "84 distinct focused PASS; independent final review pending",
+  "Status": "Focused F1 PASS;84 distinct verified; stop before F2",
   "Model": "gpt-6.1-sol",
   "ReasoningEffort": "xhigh",
   "Tools": {
@@ -264,5 +264,8 @@
   "ReleaseAckNegative": {
     "NativeFolder": "b4f72618e82c4de0825a04f8d8f3d02d",
     "Proof": "Actual Started frame invalidated by existing negative seam only after original A1 consumed once; same partial adapter/owner retained, actual pipe input refused, Uncertain/non-Stopped and replay denied; physical scope guardian ECHILD. This closes coverage gap; it does not repair an observed runtime defect."
-  }
+  },
+  "Review": "main-run-fence-f1-review.json",
+  "EvidenceAudit": "main-run-fence-f1-evidence-audit.json",
+  "FinalPublicationRestoration": "Final verdict carrier gets ordinary non-force push, exact remote SHA/byte readback and fresh GitHub HTTPS-only restoration. Exact carrier SHA/proof returned in handoff after execution."
 }

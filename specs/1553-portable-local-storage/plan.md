@@ -27,7 +27,7 @@ GCC14.2.0-19 observed before the first new run. Execution/evidence checkpoints f
 Causal RED: main fence8executed/1PASS/7FAIL at7388c2ac (pre-recovery/cold/held effects);
 actual released neutral bridge1executed/1FAIL atfcb96abe due to missing Running record.
 Both complete, skips0, owned cleanup complete; neutral guardian ECHILD/emergency0.
-Connected implementation is still WIP until final review/qualification. Initial9
+This historical WIP preceded the focused final PASS recorded below. Initial9
 GREEN was followed by targeted reviewer RED: parent barrier retry, browser Load
 guard lifetime, early active replacement, closing admission, pin refcount, forged
 stop and independent worker metadata. c07 preparation failed before tests (CS0122);
@@ -68,7 +68,14 @@ and [exact passing IDs](recovery/main-run-fence-f1-passed-ids.json). Historical 
 preconditions and preparation failures remain separate; passing historical carriers
 do not qualify changed code. Evidence preserves exact source inputs and individually
 named guardian artifacts; normalized reproducible command fields retain original
-runner plans/logs and displays. Independent final review pending; stop before F2.
+runner plans/logs and displays. Independent actual Sol6.1/xhigh **Focused F1 PASS** at
+`91fd34cd078328c575e6e340990301dd4b18706d`, runtime da3ffc6f; no remaining blocker.
+Reviewer independently verified84IDs, latest51inputs/292artifacts/56gzip/28source refs
+and27guardians. Writer all-history audit20manifests/701inputs/1660artifacts/330gzip/
+149guardianreports has0errors. [Review](recovery/main-run-fence-f1-review.json),
+[handoff](main-run-fence-f1-handoff.md). Only F1 closes; parent/F2/F3 remain open.
+Final carrier push/readback/fresh GitHub-only restore gets exact SHA/proof in handoff;
+no runtime/tests repeated for closure. Stop before F2.
 
 ## T041-RUN-FENCE — current design-only checkpoint
 

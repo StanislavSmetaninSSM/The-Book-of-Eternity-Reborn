@@ -5,7 +5,7 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## Current: T041-RUN-FENCE-F1 controlled neutral verification
+## Current: T041-RUN-FENCE-F1 Focused PASS; stop before F2
 
 Owner authorized only F1 from accepted design `0658e4405a4d0d958eb1b64b11b83956917fb81b`.
 One original neutral owner now consumes schema1 main.json, durable transition ACK and
@@ -17,8 +17,9 @@ Actual post-A1 Started-ACK negative retains original owner/input closed/non-Stop
 27latest guardians ECHILD, emergency/failure/deadline0; unrelated cohorts not replayed.
 [Qualification and hashes](recovery/main-run-fence-f1-qualification.json) ·
 [handoff](main-run-fence-f1-handoff.md).
-Independent final Sol6.1/xhigh source/evidence review and final publication/restoration
-pending. FullT041 and F2/F3 remain open; stop before F2. Separate-client/daemon pins,
+Independent actual Sol6.1/xhigh **Focused F1 PASS** at91fd34cd/runtime da3ffc6f,
+[review](recovery/main-run-fence-f1-review.json); no remaining blocker. Final verdict
+carrier publication/restoration is pending; exact SHA/proof will be reported in handoff. FullT041 and F2/F3 remain open; stop before F2. Separate-client/daemon pins,
 ordinary launcher/live GM/production Release/real saves/cold behavior remain unqualified.
 Primary systemd-user stays required, no manager here/setup/qualification. Windows
 ConPTY/Job source/build preserved; native Windows not qualified. Product stop/load/

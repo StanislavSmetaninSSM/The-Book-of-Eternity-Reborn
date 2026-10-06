@@ -1,0 +1,52 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T041-RUN-FENCE-F1",
+  "Reviewer": "/root/f1_review",
+  "Model": "gpt-6.1-sol",
+  "ReasoningEffort": "xhigh",
+  "ReviewedCheckpoint": "91fd34cd078328c575e6e340990301dd4b18706d",
+  "RuntimeSource": "da3ffc6fa7a93bb89d8e81ee4d5e2c533b51c1f6",
+  "Verdict": "Focused F1 PASS",
+  "UnresolvedBlockingFindings": [],
+  "ReviewerWrites": 0,
+  "ReviewerTestsBuildsProbes": 0,
+  "SourceConclusion": "Reviewed F1 ordering, exact original authority, frozen metadata debt, retained uncertainty, real pre-recovery/held gates, permitted earlier decision settlement, retirement and epoch requirements satisfied in the controlled neutral scope.",
+  "IndependentEvidence": {
+    "DistinctPassed": 84,
+    "Portable": 50,
+    "LinuxOwner": 34,
+    "LatestInputsVerified": 51,
+    "LatestArtifactsVerified": 292,
+    "LatestGzipVerified": 56,
+    "QualificationSourceRefsVerified": 28,
+    "Errors": 0,
+    "LatestGuardians": 27,
+    "Echild": 27,
+    "EmergencySignals": 0,
+    "Failures": 0,
+    "Deadline": 0
+  },
+  "FindingsClosure": "Initial source findings closed via targeted causal RED→GREEN. Exact old contention fixtures observe real main/canonical waiting while preserving accepted-writer assertions. Last acceptance coverage gap closed by actual post-A1 Started frame invalidation; same original owner retained, input closed via actual pipe, Uncertain/non-Stopped/replay denied.",
+  "CleanupAttribution": "Expected logical/managed uncertainty is not application retirement. Every latest physical guardian scope reached ECHILD without emergency cleanup.",
+  "HistoricalEvidenceAudit": "main-run-fence-f1-evidence-audit.json is the writer all-history byte/hash audit (20 manifests/701 inputs/1660 artifacts/330 gzip/149 guardian reports); reviewer independently verified latest packet, earlier connected/profile/stage packets and84IDs, not a repeated full all-history sweep.",
+  "Scope": "Fixed inert admitted Linux-x64/glibc neutral original-owned terminal and same-process connected canonical gates; no public game-writing launch.",
+  "Unqualified": [
+    "F2 actual separate-client/daemon pin protocol and mutation consumer integration",
+    "F3 process-crash/replacement/cold qualification",
+    "native Windows (ConPTY/Job source/build only)",
+    "primary existing-systemd-user backend; no manager here/setup/qualification",
+    "production Release, normal game-writing launcher/live provider/arbitrary CLI/TUI/real user saves",
+    "cold exactly-once/reboot/power-loss guarantees and future stop/load/fresh-start UX"
+  ],
+  "FinalClosure": "Final metadata carrier normal push/remote byte-readback and fresh GitHub-only restoration are writer closure steps; exact final SHA/restoration proof returned in handoff, not self-referenced in this file.",
+  "MetadataReview": {
+    "Reviewer": "/root/f1_review",
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "BaseCheckpoint": "91fd34cd078328c575e6e340990301dd4b18706d",
+    "Verdict": "Metadata PASS",
+    "Scope": "Seven-file metadata-only verdict carrier; two premature publication/restoration phrases corrected to pending writer closure. Source/tests/catalog/selection unchanged.",
+    "RemainingFindings": [],
+    "ReviewerTestsBuildsProbesWrites": 0
+  }
+}

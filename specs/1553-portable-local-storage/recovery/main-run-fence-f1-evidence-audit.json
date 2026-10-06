@@ -1,0 +1,11 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T041-RUN-FENCE-F1",
+  "Manifests": 20,
+  "SourceInputInstances": 701,
+  "Artifacts": 1660,
+  "Gzip": 330,
+  "GuardianReports": 149,
+  "Errors": [],
+  "Audit": "Every manifest input git blob/source SHA256 and artifact bytes/gzip decompressed SHA256 checked; every artifact tracked; all historical F1 guardian reports ECHILD/emergency0/failure0/deadlinefalse. This includes causal RED and retained logical Uncertain; it does not assert application retirement for negative cases."
+}
