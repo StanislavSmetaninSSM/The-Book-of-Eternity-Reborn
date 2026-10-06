@@ -150,6 +150,17 @@ create authority. Evidence: recovery/evidence/worker-r2-connected-preparation/ma
 Added separate cleanup-deferred root refusal and early exact metadata retry by the
 original cleanup owner; pending metadata cannot accidentally latch execution loss.
 Intermediate independent Sol source review is running; fresh initial checks pending.
+Initial connected run at `3e02b4b8e82325e6e7fc71de5912cbb9da2d731e`: fresh build;
+2 executed,1 cold-admission PASS and1 positive lifecycle FAIL,63.4120395s. Runner
+stopped before37 record cases. Cold route preserves exact root bytes and refuses
+before recovery/reservation/owner/Release/Start/publication. Positive route failed
+before Prepared/Start: preallocated workspace constructed a physical file scope
+whose missing ancestors correctly refused. Fixed by initializing that scope only
+after original creation handles exist; name planning remains free of writes. Three
+guardians ECHILD, no emergency/failure/deadline (77,0,0); runner cleanup complete.
+Evidence: recovery/evidence/worker-r2-connected-first/manifest.json. Next fresh
+selection is positive lifecycle plus37 unrun record cases; unchanged cold PASS is
+not repeated for this workspace-only correction.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

@@ -1,0 +1,88 @@
+{
+  "Categories": [
+    "worker-restart-record",
+    "worker-restart-admission-linux",
+    "worker-restart-lifecycle-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "3e02b4b8e82325e6e7fc71de5912cbb9da2d731e",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 51.6776122,
+  "Descriptors": [
+    {
+      "Name": "worker-restart-admission-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-admission-linux",
+      "Categories": [
+        "worker-restart-admission-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartAdmissionTests.ColdPrepared_ActualPoolRefusesBeforeRecoveryCapacityAndLaunch",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartAdmissionTests.ColdPrepared_ActualPoolRefusesBeforeRecoveryCapacityAndLaunch",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-lifecycle-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-lifecycle-linux",
+      "Categories": [
+        "worker-restart-lifecycle-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartLifecycleTests.ActualContentPool_PublishesAndCommitsBoundRetirementBeforeCapacityRelease",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartLifecycleTests.ActualContentPool_PublishesAndCommitsBoundRetirementBeforeCapacityRelease",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-record-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-record",
+      "Categories": [
+        "worker-restart-record"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartRecordTests.PreparedCleanupFacts_StayColdUncertainUntilExactAbort|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 37,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority",
+          "Cases": 9
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked",
+          "Cases": 22
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartRecordTests.PreparedCleanupFacts_StayColdUncertainUntilExactAbort",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

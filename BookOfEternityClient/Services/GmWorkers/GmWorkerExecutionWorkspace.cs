@@ -33,7 +33,8 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
 
     private readonly string _runtimeRoot;
     private readonly string _workspaceRoot;
-    private readonly TrustedLocalFileScope _fileScope;
+    private TrustedLocalFileScope? _fileScope;
+    private TrustedLocalFileScope FileScope => _fileScope ?? throw new InvalidOperationException("Workspace filesystem authority is not initialized.");
     private PhysicalFileAuthority.FileIdentity?
         _workspaceRootIdentity;
     private readonly GmWorkerExecutionWorkspaceHooks? _hooks;
@@ -61,7 +62,7 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
     {
         _runtimeRoot = runtimeRoot;
         _workspaceRoot = workspaceRoot;
-        _fileScope = new TrustedLocalFileScope([gameSessionPath]);
+        _fileScope = gameSessionAuthority == null ? null : new TrustedLocalFileScope([gameSessionPath]);
         _runtimeRootAuthority = runtimeRootAuthority;
         _workspaceRootAuthority = workspaceRootAuthority;
         _gameSessionAuthority = gameSessionAuthority;
@@ -222,6 +223,7 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
             workspaceRootAuthority = null;
             gameSessionAuthority = null;
 
+            workspace._fileScope ??= new TrustedLocalFileScope([gameSessionPath]);
             await workspace.StageTaskAsync(
                 fs,
                 task,
@@ -717,7 +719,7 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
         var proposalParent = Path.GetDirectoryName(ProposalPath)
             ?? throw new InvalidDataException(
                 "Worker proposal path has no parent.");
-        _fileScope.ValidateDirectory(proposalParent);
+        FileScope.ValidateDirectory(proposalParent);
         using var proposalParentAuthority =
             PhysicalFileAuthority.EnsureStableDirectory(
                 _gameSessionAuthority
@@ -809,7 +811,7 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
     {
         cancellationToken.ThrowIfCancellationRequested();
         var expected = TrustedLocalFileImage.FromBytes(content);
-        _fileScope.ValidateFile(fullPath);
+        FileScope.ValidateFile(fullPath);
         var parentPath = Path.GetDirectoryName(fullPath)
             ?? throw new InvalidDataException("Worker workspace file has no parent.");
         using var parentAuthority = PhysicalFileAuthority.EnsureStableDirectory(
@@ -818,7 +820,7 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
         if (_hooks?.BeforeWorkspaceFileCreateAsync != null)
             await _hooks.BeforeWorkspaceFileCreateAsync(fullPath);
         cancellationToken.ThrowIfCancellationRequested();
-        _fileScope.ValidateFile(fullPath);
+        FileScope.ValidateFile(fullPath);
 
         await using var stream = PhysicalFileAuthority.CreateNewWritableFile(
             parentAuthority, fullPath, "Worker workspace staging file",
@@ -839,7 +841,7 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
                 stream.SafeFileHandle, fullPath, identity, expected.Sha256!,
                 "Worker workspace staging file", expected.Length);
         }
-        else if (!expected.MatchesFile(_fileScope, fullPath))
+        else if (!expected.MatchesFile(FileScope, fullPath))
         {
             throw new InvalidDataException("Worker workspace staging bytes changed.");
         }
@@ -856,7 +858,7 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
         if (_hooks?.BeforeWorkspaceFileOpenAsync != null)
             await _hooks.BeforeWorkspaceFileOpenAsync(fullPath);
         cancellationToken.ThrowIfCancellationRequested();
-        _fileScope.ValidateFile(fullPath);
+        FileScope.ValidateFile(fullPath);
         var parentPath = Path.GetDirectoryName(fullPath)
             ?? throw new InvalidDataException($"{artifactName} has no parent.");
         PhysicalFileAuthority.StableDirectory? parentAuthority;
@@ -870,7 +872,7 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
 
         using (parentAuthority)
         {
-            _fileScope.ValidateFile(fullPath);
+            FileScope.ValidateFile(fullPath);
             await using var stream = PhysicalFileAuthority.OpenReadFile(
                 parentAuthority, fullPath, artifactName, asynchronous: true, shareDelete: true);
             if (stream == null) return null;
@@ -906,7 +908,7 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
                     stream.SafeFileHandle, fullPath, authority.Identity, authority.Sha256,
                     artifactName, authority.Length);
             }
-            if (!expected.MatchesFile(_fileScope, fullPath))
+            if (!expected.MatchesFile(FileScope, fullPath))
                 throw new InvalidDataException($"{artifactName} bytes changed during read.");
             cancellationToken.ThrowIfCancellationRequested();
             return content;
