@@ -8,6 +8,14 @@
         "#1553 T041-WORKER-RESTART-R1",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-restart-record",
+      "reason": "R2 adds strict schema2 publication/terminal facts and cold syntax; portable model verification only.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
     }
   ]
 }

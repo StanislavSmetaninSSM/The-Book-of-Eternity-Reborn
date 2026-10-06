@@ -49,6 +49,13 @@ capacity returned zero; two independent guardians reached ECHILD with zero emerg
 failure or deadline (seed exit77, pool exit0). Evidence/source/commands:
 recovery/evidence/worker-r2-cold-red/manifest.json. Next: closed R2 storage/progress
 prerequisites and complete connected lifecycle; no R2 GREEN or qualification yet.
+Next TDD scaffold: `worker-restart-record` owns35 pure current-schema cases (nine
+nonterminal progress, four terminal cleanup variants and22 inconsistent payloads).
+Schema2 progress freezes proposal/content digests and a committed flag; that disk flag
+does not prove the former live caller received ACK. Cleanup facts freeze conditional
+audit ID/digest. Retired syntax requires completed cleanup facts and, when publication
+exists, committed publication; unresolved PublicationIntent cannot silently retire.
+This scaffold is unrun and production codec remains schema1 until observed RED.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

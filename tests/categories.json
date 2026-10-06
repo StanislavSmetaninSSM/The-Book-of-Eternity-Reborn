@@ -12735,6 +12735,29 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-restart-record",
+      "responsibility": "#1553 R2 strict schema2 publication and frozen terminal cleanup facts; cold progress and terminal syntax never reconstruct live authority.",
+      "excludes": "No process execution, storage durability, actual pool integration or main record changes.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerRunRecord*.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerRestartRecordTests.*"
+          ]
+        }
+      ]
     }
   ]
 }
