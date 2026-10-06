@@ -199,7 +199,9 @@ internal sealed partial class BridgeHost : IDisposable
         UpdateConsoleTitle();
         PrintBanner();
 
-        try { await StartShellAsync(); } catch(OwnedTerminalStartException) { /* Original owner retained; keep diagnostics/control alive. */ }
+        try { await StartShellAsync(); }
+        catch(OwnedTerminalStartException) { /* Original owner retained; keep diagnostics/control alive. */ }
+        catch(Exception) when(_mainRun?.RetainsAuthority==true) { MarkTerminalUncertain(); /* Exact no-child debt also retains diagnostics, never release replay. */ }
         var serverTask = RunServerLoopAsync(_cts.Token);
         var controlKeys=!Console.IsInputRedirected;
         var previousControlKeys=controlKeys && Console.TreatControlCAsInput;
@@ -406,6 +408,7 @@ internal sealed partial class BridgeHost : IDisposable
                     _neutralLaunch=_neutralLaunch.NextEpoch();
                 }
                 catch(OwnedTerminalStartException ex) { AttachOwnedTerminal(ex.Owner,Console.OpenStandardOutput()); MarkTerminalUncertain(); throw; }
+                catch { if(_mainRun?.RetainsAuthority==true)MarkTerminalUncertain();else _mainRun=null;throw; }
                 AttachOwnedTerminal(neutralSession, Console.OpenStandardOutput());
                 return;
             }
@@ -531,6 +534,8 @@ internal sealed partial class BridgeHost : IDisposable
         }
         if (input == null)
         {
+            if(metadataFailure!=null)throw metadataFailure;
+            if(_mainRun!=null && pty==null)throw new InvalidOperationException("Original main metadata owner remains unresolved without terminal retirement evidence.");
             if(pty!=null) { await Task.WhenAll(_outputPumpTask??Task.CompletedTask,_resizePumpTask??Task.CompletedTask).WaitAsync(InputDrainTimeout); await RetireTerminalHandlesAsync(pty); }
             return;
         }
@@ -589,6 +594,7 @@ internal sealed partial class BridgeHost : IDisposable
         lock (_sync)
         {
             _mainRun?.NotifyUncertain();
+            if(_inputLifetime is { } input)RevokeInputLifetime(input);
             _terminalUncertain = true;
             _status.TerminalUncertain=true;
             _status.Ready = false;
@@ -1420,7 +1426,7 @@ internal sealed partial class BridgeHost : IDisposable
     {
         lock (_sync)
         {
-            return _status with { TerminalOwnerRetained=_pty!=null };
+            return _status with { TerminalOwnerRetained=_pty!=null || _mainRun?.RetainsAuthority==true };
         }
     }
 

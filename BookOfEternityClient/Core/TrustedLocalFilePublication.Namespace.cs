@@ -27,6 +27,8 @@ internal sealed partial class TrustedLocalFilePublication
         Action<TrustedLocalPublicationPhase, int>? observer = null)
     {
         _files.EnsureWorkerGeneralMutationAllowed(lease);
+        var journal=CreateNamespaceJournal(generation,plan);
+        _files.EnsureMainRecoveryGeneration(lease,journal.GenerationBefore,journal.GenerationAfter);
         return PublishWithOutcome(lease, attempt => PublishNamespaceCore(lease, generation, plan, observer, attempt));
     }
 
@@ -47,6 +49,7 @@ internal sealed partial class TrustedLocalFilePublication
     {
         _files.EnsureWorkerGeneralMutationAllowed(lease);
         var journal = CreateNamespaceJournal(generation, plan);
+        _files.EnsureMainRecoveryGeneration(lease,journal.GenerationBefore,journal.GenerationAfter);
         ValidateNamespaceJournal(journal);
         PreflightNamespace(lease, journal, exactAfter: false, exactBefore: true);
     }
@@ -103,8 +106,9 @@ internal sealed partial class TrustedLocalFilePublication
         TrustedLocalGeneration generation, TrustedLocalNamespacePlan plan,
         Action<TrustedLocalPublicationPhase, int>? observer, PublicationAttempt attempt)
     {
-        BeginPublication(lease, generation, plan.Changes.Count);
         var journal = CreateNamespaceJournal(generation, plan);
+        _files.EnsureMainRecoveryGeneration(lease,journal.GenerationBefore,journal.GenerationAfter);
+        BeginPublication(lease, generation, plan.Changes.Count);
         ValidateNamespaceJournal(journal);
         PreflightNamespace(lease, journal, exactAfter: false, exactBefore: true);
         attempt.NamespacePrepared = journal;
