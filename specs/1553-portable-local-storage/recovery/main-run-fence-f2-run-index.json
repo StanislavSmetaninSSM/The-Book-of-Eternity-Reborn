@@ -37,7 +37,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-142843-467-318860-753dba3444b34b3484ddf490496167b7-categories",
@@ -76,7 +76,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-143512-920-320453-c350dbdc38474e7cb7369e0392ea3742-categories",
@@ -110,7 +110,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-143834-199-321628-af5d11ccb3274aec8c3dd634b9d5ba15-categories",
@@ -154,7 +154,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-144307-108-322851-0bf8c26818214be18b6a903e074d2633-categories",
@@ -205,7 +205,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-145315-598-324872-fa1b841a979e4b20b90030c077f4bac7-categories",
@@ -261,7 +261,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-145916-439-326436-266cd07ebd364567bdcf22e58ac5d935-categories",
@@ -320,7 +320,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-150904-051-328439-ba83d07011dc44ea99cce34766ffa748-categories",
@@ -379,7 +379,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-151518-248-330117-76924b9696404aa89413eeabf135e252-categories",
@@ -445,7 +445,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-152404-681-331919-490ea6a579c34a20b77a06977588b4d3-categories",
@@ -504,7 +504,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-152700-161-332966-13f77211af744a75a2c424b4fef109b6-categories",
@@ -563,7 +563,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-153018-871-334345-cfea6233d8ee48dab8042c36fb13a183-categories",
@@ -622,7 +622,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-153703-425-335740-b504b50fd8fd42e894a5973e9fa455a7-categories",
@@ -710,7 +710,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-154119-796-337793-d0985ff51a4a47668df6dae0e6ad6c55-categories",
@@ -753,7 +753,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-154816-134-339722-166a6287dadd436e91d03e583235dbe1-categories",
@@ -796,7 +796,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-154940-432-340359-d79cde220aeb4a63a4573e7d5d88d0ae-categories",
@@ -843,7 +843,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-155001-267-340796-714dc3f8fba24263881812a2b8af3c85-categories",
@@ -882,7 +882,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-155018-219-341094-9d706122634a4c9baa5732918100a465-categories",
@@ -923,7 +923,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-155301-650-342523-b0d0784811284afbac3b63d1fca79121-categories",
@@ -992,7 +992,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-155906-673-343625-c3e70d34b6eb4d45933ebd2a065f32b9-categories",
@@ -1034,7 +1034,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-160028-331-344229-d149224430db41e5a92a249f84a56f70-categories",
@@ -1106,7 +1106,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-160531-718-345278-2d86d096f6704b19ae12a0e2a4b486fe-categories",
@@ -1145,7 +1145,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-160642-027-345832-85a259447beb42c7954167c29d4c7bd0-categories",
@@ -1192,7 +1192,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-161252-438-347599-710efb37c77c4d04b5c4c009f01bb00f-categories",
@@ -1231,7 +1231,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-161406-307-348155-3cc20f1bfd944ca2987c30eeddf99210-categories",
@@ -1270,7 +1270,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-161655-725-349400-1e6b3b4f69e54544938201e73e754770-categories",
@@ -1309,7 +1309,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-162049-759-350491-63d27b959bc549278c68dc0942bc6170-categories",
@@ -1352,7 +1352,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-162158-486-351022-1cdd4a62d0d74999841b3cb966fe3740-categories",
@@ -1403,7 +1403,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-162215-536-351316-b1d05125998d4bb7b42ea58cd6655ee9-categories",
@@ -1442,7 +1442,7 @@
         "WorkingTreeFingerprint": "E929F80D0603217F0CB64D8599B6F33D227F09C8471C7754D62BF0A66FD89AE3",
         "ChangedFiles": 1
       },
-      "QualificationEligible": false
+      "ExactCommittedSourceSnapshot": false
     },
     {
       "RunId": "20261006-162507-121-352341-3b96d2fa294d4707971468a7dd1bbb34-categories",
@@ -1489,7 +1489,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-162618-427-352820-e19a0888421f412b9076f6f7c23a5f5b-categories",
@@ -1528,7 +1528,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-162923-805-353903-83d45b596b0d40a2b99078c439d7beca-categories",
@@ -1567,7 +1567,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-163022-096-354389-3ab7330e74f6443e8d6d6f609bc70986-categories",
@@ -1610,7 +1610,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-163038-452-354712-e9a727595cdd425f85288adbda559a44-categories",
@@ -1662,7 +1662,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-164105-142-356876-3692426cd87b477680a1d2f7a25953ad-categories",
@@ -1705,7 +1705,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-164327-080-357568-bbeab84c580c4ad59c354e2c1c49f253-categories",
@@ -1760,7 +1760,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-164854-768-359407-dd770fb57ba142d48da15bc2c41a3142-categories",
@@ -1803,7 +1803,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-165320-564-360305-9ac0867624204d9d928cd6dfddd84e57-categories",
@@ -1858,7 +1858,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-170146-571-362080-ffd52ff04a1c4081944b328b64ffe2d8-categories",
@@ -1937,7 +1937,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-170848-430-363840-b2750d78f6e142f180cac26a5b1ea77e-categories",
@@ -1980,7 +1980,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-171026-005-364702-34966e3ad2294d428c79e723dc46f00d-categories",
@@ -2037,7 +2037,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-171200-572-365594-da155d969464418d8fff6baf224ee94c-categories",
@@ -2149,7 +2149,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
@@ -2427,7 +2427,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-171529-966-367355-619a5ba554884ce5b8874a6db6e2044f-categories",
@@ -2517,7 +2517,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     },
     {
       "RunId": "20261006-171717-144-368885-a2916beb431242aba41ea9f9409c7db3-categories",
@@ -2596,7 +2596,7 @@
         "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
         "ChangedFiles": 0
       },
-      "QualificationEligible": true
+      "ExactCommittedSourceSnapshot": true
     }
   ]
 }

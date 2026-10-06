@@ -61,7 +61,8 @@ Files: focused TestSupport driver and new `gm-main-operation-native-linux` categ
 
 - [X] Actual fixed neutral BridgeHost and separate C# client/helper through real accept loop: retained operation, durable Stopping, original closing/disposal, exact stop; independent guardian ECHILD/no emergency. Negative connection loss retains logical owner/Uncertain; physical fixture cleanup is independent, never fake logical retirement.
 - [X] Only these new cases and actually affected regression methods through scripts/test-csharp.ps1. Record source hashes, manifests, executed counts, commands and cleanup; reuse unchanged accepted F1/input/terminal evidence by source identity.
-- [ ] Independent actual Sol6.1/xhigh final source/evidence review; ordinary non-force final push, exact remote SHA/byte readback and fresh GitHub-only restoration (no new tests in restore). Handoff stops before F3.
+- [X] Independent actual Sol6.1/xhigh final source/evidence review: source PASS6202426f, bounded evidence/metadata PASS5037f1a9. Handoff stops before F3.
+- [ ] Writer closure after final metadata review: ordinary non-force final push, exact remote SHA/byte readback and fresh GitHub-only restoration (no tests in restore). This immutable pre-publication checkpoint does not claim those later actions.
 
 ## Codex CLI safe diagnostic (completed, independent of F2)
 
@@ -69,6 +70,6 @@ Files: focused TestSupport driver and new `gm-main-operation-native-linux` categ
 
 ## Implementation checkpoint and qualification limits
 
-Runtime source `6202426f0db8197d12b72f2ce111dd4a0c8f490f`: independent Sol6.1/xhigh source PASS; final evidence review/publication/restore pending. Source-delta amendments were implemented through the real pipe, original admission and real participating adapter, without changing GM model or adding a journal. Explicit Failed/Cancelled is frozen before actual finalization. Four selected legacy browser rollback tests require the existing Windows-only relative publication backend: Linux executed18/14PASS/4FAIL; those four are now an explicit native-Windows category, unqualified here. The14 supported HTTP/generation cases and exact11 typed Load/rollback outcomes passed. Both actual UI Load entries passed12 same-response cases plus45 affected frontend cases. Preparation failures and one dirty preparation snapshot are separately ineligible in the run index. No tests/probes/builds by reviewer.
+Runtime source `6202426f0db8197d12b72f2ce111dd4a0c8f490f`: independent Sol6.1/xhigh source PASS; bounded evidence/metadata PASS5037f1a9; final publication/restore is writer closure. Source-delta amendments were implemented through the real pipe, original admission and real participating adapter, without changing GM model or adding a journal. Explicit Failed/Cancelled is frozen before actual finalization. Four selected legacy browser rollback tests require the existing Windows-only relative publication backend: Linux executed18/14PASS/4FAIL; those four are now an explicit native-Windows category, unqualified here. The14 supported HTTP/generation cases and exact11 typed Load/rollback outcomes passed. Both actual UI Load entries passed12 same-response cases plus45 affected frontend cases. Preparation failures and one dirty preparation snapshot are separately ineligible in the run index. No tests/probes/builds by reviewer.
 
 Existing low-level refusal is the bounded F2 product behavior. Stop/load/fresh-start UX does not block this implementation and remains a later owner decision. F3/public launch/backend qualifications require separate work.

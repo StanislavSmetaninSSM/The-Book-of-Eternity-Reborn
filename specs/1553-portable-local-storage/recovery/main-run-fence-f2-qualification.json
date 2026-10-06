@@ -7,7 +7,7 @@
   "F2DesignReviewedPlan": "4bf38010dd87e9f2a206bb955ea00864a8ea366f",
   "FinalRuntimeSource": "6202426f0db8197d12b72f2ce111dd4a0c8f490f",
   "LastQualificationSource": "0c59ef920accc06f962a98517a728bf2574b81f6",
-  "Status": "Controlled F2 source PASS; writer evidence sweep PASS; independent final evidence review pending",
+  "Status": "Bounded controlled F2 source/evidence PASS; stop before F3",
   "Model": "gpt-6.1-sol",
   "ReasoningEffort": "xhigh",
   "Tools": {
@@ -33,7 +33,10 @@
     "Executed": 235,
     "Passed": 175,
     "Failed": 60,
-    "Caveat": "Historical reports include preparation/invalid fixtures and repeated attempts; failed frontend adapter reports zero but actual six Vitest failures are separately retained. These totals are NOT qualification."
+    "Caveat": "Historical reports include preparation/invalid fixtures and repeated attempts; failed frontend adapter reports zero but actual six Vitest failures are separately retained. These totals are NOT qualification.",
+    "ActualExecutedIncludingFailedVitestAdapter": 241,
+    "ActualPassed": 175,
+    "ActualFailed": 66
   },
   "Cases": [
     {
@@ -1666,6 +1669,41 @@
       "Sha256": "55762adcd9ec302a221953829f6616dbba43b5ccce11c0a468064b33e53dd02b",
       "Bytes": 32169,
       "AcceptedF1BytesUnchanged": true
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs",
+      "Sha256": "d372ecf78ecde37d351272d0e0c9b2476bb4a54f494d48762c1579e13885ab8b",
+      "Bytes": 3583,
+      "AcceptedF1BytesUnchanged": true,
+      "ComparisonPerformedBy": "root writer"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/WorkerRunLedgerPersistence.cs",
+      "Sha256": "0d18fd381ba2d04688b9031bb95bfaff500ccfab1217928095bc516f681b43c2",
+      "Bytes": 22457,
+      "AcceptedF1BytesUnchanged": true,
+      "ComparisonPerformedBy": "root writer"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunRecord.cs",
+      "Sha256": "915adb12c606de413d22db64244a7fa2358b8881671bcb9a4faf887bdbad153d",
+      "Bytes": 1515,
+      "AcceptedF1BytesUnchanged": true,
+      "ComparisonPerformedBy": "root writer"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs",
+      "Sha256": "78323e87cade8ccc5c27871783cacac6cd086bd235f88883f888f0cdcf91c610",
+      "Bytes": 14013,
+      "AcceptedF1BytesUnchanged": true,
+      "ComparisonPerformedBy": "root writer"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.Live.cs",
+      "Sha256": "7cb48318758a847e606590c5f98448be855478c952526214c5e0bf29955584a9",
+      "Bytes": 7452,
+      "AcceptedF1BytesUnchanged": true,
+      "ComparisonPerformedBy": "root writer"
     }
   ],
   "Carriers": [
@@ -1916,5 +1954,6 @@
     "No live GM/provider, real saves, cold exactly-once or replay; no network/security/settings changes",
     "Physical guardian cleanup is not logical retirement of intentionally Uncertain/Unresolved owner; old unrelated PID1 zombies untouched"
   ],
-  "PublicationRestoration": "Pending final carrier publication, exact remote SHA/byte readback and fresh GitHub-only restore; no tests will run in restore"
+  "PublicationRestoration": "Final verdict carrier ready; final ordinary publication/readback/fresh GitHub-only restoration are writer closure steps, not claimed by this pre-publication snapshot.",
+  "IndependentEvidenceReviewed": "5037f1a993306c4800f1b97e11c0ff244b220bd6"
 }

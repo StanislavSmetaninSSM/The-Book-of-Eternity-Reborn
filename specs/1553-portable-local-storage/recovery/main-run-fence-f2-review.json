@@ -6,7 +6,7 @@
   "ReasoningEffort": "xhigh",
   "SourceReviewed": "6202426f0db8197d12b72f2ce111dd4a0c8f490f",
   "SourceVerdict": "PASS; no remaining concrete source blocker",
-  "FinalEvidenceVerdict": "Pending independent final evidence review",
+  "FinalEvidenceVerdict": "Bounded F2 evidence/metadata PASS; no concrete blocker",
   "FindingsClosed": [
     "Frozen explicit outcome before finalization",
     "Established result retained on finalization/reply failure",
@@ -20,5 +20,20 @@
   "WindowsFailureClassification": "Four unchanged legacy browser rollback preparation checks require Windows publication backend, fail before callback on Linux. Source split supported; actual18/14/4 retained, four unqualified.",
   "ReviewerRuntimeEditsTestsBuildsProbes": 0,
   "WriterEvidenceAudit": "Separately attributed in qualification; not claimed as reviewer performed",
-  "PublicationRestoration": "Pending final push/readback/fresh restore"
+  "PublicationRestoration": "Final metadata carrier ready; ordinary final push/remote byte verification/fresh GitHub-only restore pending writer closure.",
+  "FinalEvidenceReviewed": "5037f1a993306c4800f1b97e11c0ff244b220bd6",
+  "IndependentChecks": {
+    "PrimaryCasesReconciled": 129,
+    "Native": 24,
+    "Frontend": 57,
+    "OtherManagedInertPowerShell": 48,
+    "ActualHistoricalCases": 241,
+    "ManifestHashes": 45,
+    "ArtifactHashes": 1172,
+    "DecompressedHashes": 251,
+    "CurrentSourceReferences": 80,
+    "LatestGuardianHashesAndResults": 24,
+    "HistoricalSourceInputSweepRepeated": false
+  },
+  "MetadataAmendment": "QualificationEligible renamed ExactCommittedSourceSnapshot; accepted subset/counts unchanged. Five unchanged worker source identities added with writer attribution."
 }

@@ -1,6 +1,6 @@
 # T041-RUN-FENCE-F2 controlled handoff
 
-Accepted F1: `f4e7621fe85c7aa0393552708d28eec4bfe36d8f`; accepted main-run-fence design `0658e4405a4d0d958eb1b64b11b83956917fb81b`. F2 source-delta plan received independent Sol6.1/xhigh DESIGN PASS at `4bf38010dd87e9f2a206bb955ea00864a8ea366f`. Runtime/source review PASS at `6202426f0db8197d12b72f2ce111dd4a0c8f490f`; final evidence verdict, carrier publication and restoration pending.
+Accepted F1: `f4e7621fe85c7aa0393552708d28eec4bfe36d8f`; accepted main-run-fence design `0658e4405a4d0d958eb1b64b11b83956917fb81b`. F2 source-delta plan received independent Sol6.1/xhigh DESIGN PASS at `4bf38010dd87e9f2a206bb955ea00864a8ea366f`. Runtime/source review PASS at `6202426f0db8197d12b72f2ce111dd4a0c8f490f`; independent bounded evidence/metadata PASS at `5037f1a993306c4800f1b97e11c0ff244b220bd6`; final verdict carrier publication and restoration remain writer closure.
 
 ## Result and actual consumers
 
@@ -26,4 +26,4 @@ Codex diagnostic: `/opt/codex/bin/codex`, `codex-cli 0.159.0-alpha.3`, help exit
 
 ## Publication and restoration
 
-Pending final metadata verdict carrier, ordinary non-force push, exact remote SHA/changed-file byte readback and fresh GitHub-only restore. No tests will be rerun in restored checkout. Final SHA and proof will be supplied in the writer closure; this text does not claim an action before execution.
+Final metadata verdict carrier records bounded PASS. Ordinary non-force push, exact remote SHA/changed-file byte readback and fresh GitHub-only restore. No tests will be rerun in restored checkout. Final SHA and proof will be supplied in the writer closure; this text does not claim an action before execution.
