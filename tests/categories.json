@@ -13005,6 +13005,36 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-restart-control-linux",
+      "responsibility": "R2 actual original Release pipe writes are at most once after Released ACK loss; cancellation before send cleans original authority without accepting output.",
+      "excludes": "R3 full crash permutations, production Release, IPC framing unit matrix and Windows native qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerRootContext.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerDurableExecution.cs"
+      ],
+      "related": [
+        {
+          "id": "worker-restart-admission-linux",
+          "when": "Pre-recovery root admission changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerRestartControlTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

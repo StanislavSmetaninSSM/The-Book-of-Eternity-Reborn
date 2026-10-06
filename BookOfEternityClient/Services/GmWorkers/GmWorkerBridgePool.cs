@@ -15,7 +15,9 @@ internal sealed class GmWorkerBridgePoolHooks
     internal Func<Task>? BeforeProposalPublicationAsync { get; init; }
     internal Func<Task>? BeforeProcessTreeAttachAsync { get; init; }
     internal Func<Task>? BeforeWorkerReleaseAsync { get; init; }
+    internal Func<Task>? AfterWorkerReleaseAsync { get; init; }
     internal Action<GmWorkerOwnedLaunch>? AfterOwnerBound { get; init; }
+    internal Action<GmWorkerProcessHostLaunch>? AfterHostPrepared { get; init; }
     internal Func<Task<int>, Task>? BeforeCompletionArbitrationAsync { get; init; }
     internal Action<GmWorkerProcessCompletionOutcome>? AfterCompletionArbitration { get; init; }
     internal Func<string, Task>? BeforeWorkspaceFileCreateAsync { get; init; }
@@ -800,6 +802,7 @@ public sealed class GmWorkerBridgePool
                     throw;
                 }
                 _hooks?.AfterOwnerBound?.Invoke(ownedLaunch!);
+                _hooks?.AfterHostPrepared?.Invoke(processHostLaunch);
                 if (_hooks?.BeforeWorkerReleaseAsync != null)
                 {
                     await _hooks.BeforeWorkerReleaseAsync()
@@ -812,6 +815,8 @@ public sealed class GmWorkerBridgePool
                         cancellationToken: lifecycleCancellation.Token, workerPurpose: durableExecution.ReleasePurpose());
                     await durableExecution.PlanReleaseAsync(_fs, releaseLease);
                     await processHostLaunch.ReleaseAsync(lifecycleCancellation.Token, durableExecution, releaseLease);
+                    if (_hooks?.AfterWorkerReleaseAsync != null)
+                        await _hooks.AfterWorkerReleaseAsync().WaitAsync(lifecycleCancellation.Token);
                     await durableExecution.AcknowledgeReleaseAsync();
                 }
             }

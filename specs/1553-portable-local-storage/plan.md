@@ -344,6 +344,17 @@ Added two unrun witness regressions: real foreign completed owner and fabricated
 instance of original incomplete owner. Both retain original workspace/ledger/slot,
 then finish via original cleanup to prove the negative probe did not lose authority.
 Runtime unchanged; category worker-restart-witness-linux owns these cases.
+Added two unrun control regressions with observation-only original-host/after-send
+pool hooks. A fixture-only pass-through wrapper counts successful complete Release
+writes to the same authenticated pipe; it preserves bytes/cancellation/flush and
+original disposal. After-send hook waits for the actual worker marker before negative
+Released-ACK injection. Repeated original Release must complete synchronously without
+another frame; an unexpected pending call is retained and observed outside the journal
+callback. Cancellation before send must produce zero writes/Starts and complete cleanup.
+Sol6.1/xhigh endorsed the original-host plus unchanged-stream observation approach.
+No native/positive evidence is supplied by either hook. Next selected fresh verification:
+worker-restart-witness-linux (2) and worker-restart-control-linux (2). These add required
+negative coverage to the implemented behavior; no fabricated RED claim.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

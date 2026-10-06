@@ -88,6 +88,14 @@
         "#1553 T041-WORKER-RESTART-R2",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-restart-control-linux",
+      "reason": "Actual original authenticated pipe observation proves one Release across withheld Released ACK and repeat calls, and no send on prior cancellation.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
     }
   ]
 }
