@@ -18,6 +18,7 @@ internal sealed class GmWorkerDurableExecution
     private WorkerRunRecord _record;
     private Mutation? _pending;
     private GmWorkerOwnedLaunch? _owner;
+    private GmWorkerProcessHostLaunch? _nativeHost;
     private GmWorkerExecutionAuthority? _authority;
     private bool _preparedAcknowledged, _registered, _startAttempted, _releaseAttempted, _publicationAcknowledged, _retirementAcknowledged;
     private int _uncertain;
@@ -90,7 +91,9 @@ internal sealed class GmWorkerDurableExecution
             !string.Equals(Path.GetFullPath(host.WorkerWorkingDirectory), Identity.WorkspacePath, StringComparison.Ordinal))
             throw new InvalidOperationException("Native Start does not match the original launch plan.");
         Context.RequireOpen();
+        _nativeHost = host;
     }
+    internal bool OwnsNativeHost(GmWorkerProcessHostLaunch host) => ReferenceEquals(_nativeHost, host);
     private int _nativeStartConsumed;
     internal GmWorkerExecutionAuthority BindOwner(GmWorkerOwnedLaunch owner)
     {
@@ -303,6 +306,9 @@ internal sealed class GmWorkerDurableExecution
         var result = await _coordinator.ApplyLiveAsync(this, mutation);
         if (result == WorkerLedgerMutationKind.Busy)
         {
+            // The coordinator refused before consuming Start or touching storage.
+            // Preserve only this definite never-Start path; ambiguous ACKs stay retained.
+            if (phase == WorkerRunPhase.LaunchIntent) _startAttempted = false;
             _pending = null;
             throw new IOException("Another original worker metadata plan is pending; this transition has not started.");
         }

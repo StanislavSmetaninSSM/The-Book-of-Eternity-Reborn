@@ -467,6 +467,12 @@ internal sealed class GmWorkerProcessHostLaunch : IAsyncDisposable
         if (_capability != GmWorkerRequiredCapability.WorkerRelease &&
             !(_capability == GmWorkerRequiredCapability.SyntheticWorkerRelease && _nativeAdmission != null))
             throw new InvalidOperationException("This owned host was admitted for NeutralHost only.");
+        // This immutable binding comes only from the original consumed native Start.
+        // Refuse mismatched callers before the send-failure path can close channels
+        // or mark somebody else's execution uncertain. Sent repeats remain harmless.
+        if (Volatile.Read(ref _released) == 0 && (_nativeAdmission?.Durable == true || durable != null) &&
+            (durable == null || !durable.OwnsNativeHost(this) || writeLease == null))
+            throw new InvalidOperationException("Durable Release requires this host's original execution and canonical lease.");
         using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         deadline.CancelAfter(OwnershipReleaseTimeout);
         var entered = false;

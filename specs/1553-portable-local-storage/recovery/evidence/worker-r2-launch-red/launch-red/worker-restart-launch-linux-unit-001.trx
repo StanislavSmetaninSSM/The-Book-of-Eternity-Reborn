@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="a8e37406-3ffa-4456-8c63-377dd54f39e2" name="@c7669543e9c7 2026-10-06 05:03:23" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T05:03:23.7088997+00:00" queuing="2026-10-06T05:03:23.7088997+00:00" start="2026-10-06T05:03:19.5850596+00:00" finish="2026-10-06T05:03:28.9596608+00:00" />
+  <TestSettings name="default" id="55cd9e74-54c7-4d8b-95bc-c50b4fccb6a2">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_05_03_23" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="c096d436-1c57-497d-8c4e-04a8c144ea0f" testId="2af8796e-b63e-b92b-3b0b-9592200f30e8" testName="BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease(mode: &quot;omitted&quot;)" computerName="c7669543e9c7" duration="00:00:02.2736308" startTime="2026-10-06T05:03:23.6727831+00:00" endTime="2026-10-06T05:03:23.6727965+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c096d436-1c57-497d-8c4e-04a8c144ea0f">
+      <Output>
+        <ErrorInfo>
+          <Message>A fresh host must reject missing/foreign original execution before writing Release: {"mode":"omitted","faults":0,"bOwners":1,"refused":false,"beforeB":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":"StoppedWithinScope","outputsSettled":true,"entries":0,"capacity":0,"active":0,"retired":1,"phases":[],"workspaceExists":false,"lastError":"Synthetic probe stops before the pool\u0027s authorized Release.","cleanupDeferred":false},"afterA":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":null,"outputsSettled":null,"entries":0,"capacity":0,"active":0,"retired":1,"phases":[],"workspaceExists":false,"lastError":null,"cleanupDeferred":null},"afterB":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":"StoppedWithinScope","outputsSettled":true,"entries":0,"capacity":0,"active":0,"retired":1,"phases":[],"workspaceExists":false,"lastError":"Synthetic probe stops before the pool\u0027s authorized Release.","cleanupDeferred":false},"bNeverStartedRetired":false,"distinctEpochs":1,"retired":1,"releaseFrames":1,"workerStarts":1,"detachedRemaining":false}</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartLaunchTests.cs:line 26
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4422993b-ca84-4004-9a77-89f0f4b895da" testId="a9e61f99-01eb-4188-6308-5bc5e974e401" testName="BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease(mode: &quot;foreign&quot;)" computerName="c7669543e9c7" duration="00:00:02.6875965" startTime="2026-10-06T05:03:28.8907614+00:00" endTime="2026-10-06T05:03:28.8907616+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4422993b-ca84-4004-9a77-89f0f4b895da">
+      <Output>
+        <ErrorInfo>
+          <Message>A fresh host must reject missing/foreign original execution before writing Release: {"mode":"foreign","faults":0,"bOwners":1,"refused":false,"beforeB":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":"StoppedWithinScope","outputsSettled":true,"entries":0,"capacity":0,"active":0,"retired":2,"phases":[],"workspaceExists":false,"lastError":"Synthetic probe stops before the pool\u0027s authorized Release.","cleanupDeferred":false},"afterA":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":"StoppedWithinScope","outputsSettled":true,"entries":0,"capacity":0,"active":0,"retired":2,"phases":[],"workspaceExists":false,"lastError":"Synthetic A stops without sending its own Release.","cleanupDeferred":false},"afterB":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":"StoppedWithinScope","outputsSettled":true,"entries":0,"capacity":0,"active":0,"retired":2,"phases":[],"workspaceExists":false,"lastError":"Synthetic probe stops before the pool\u0027s authorized Release.","cleanupDeferred":false},"bNeverStartedRetired":false,"distinctEpochs":2,"retired":2,"releaseFrames":1,"workerStarts":1,"detachedRemaining":false}</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartLaunchTests.cs:line 26
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7ee7968b-0e91-4628-9db7-a9286af449ea" testId="3140fd58-3b6b-eafb-458b-c8fc5d81d0aa" testName="BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease(mode: &quot;busy&quot;)" computerName="c7669543e9c7" duration="00:00:02.5294522" startTime="2026-10-06T05:03:26.2040365+00:00" endTime="2026-10-06T05:03:26.2040367+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7ee7968b-0e91-4628-9db7-a9286af449ea">
+      <Output>
+        <ErrorInfo>
+          <Message>{"mode":"busy","faults":2,"bOwners":0,"refused":false,"beforeB":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":null,"outputsSettled":false,"entries":1,"capacity":1,"active":2,"retired":0,"phases":["Prepared","Released"],"workspaceExists":false,"lastError":"Another original worker metadata plan is pending; this transition has not started.","cleanupDeferred":true},"afterA":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":"StoppedWithinScope","outputsSettled":true,"entries":0,"capacity":0,"active":1,"retired":1,"phases":["Prepared"],"workspaceExists":false,"lastError":"Worker metadata transition did not receive its durable ACK.","cleanupDeferred":true},"afterB":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":null,"outputsSettled":false,"entries":1,"capacity":1,"active":1,"retired":1,"phases":["Prepared"],"workspaceExists":false,"lastError":"Another original worker metadata plan is pending; this transition has not started.","cleanupDeferred":true},"bNeverStartedRetired":false,"distinctEpochs":1,"retired":1,"releaseFrames":0,"workerStarts":1,"detachedRemaining":false}</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartLaunchTests.cs:line 23
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease(mode: &quot;omitted&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2af8796e-b63e-b92b-3b0b-9592200f30e8">
+      <Execution id="c096d436-1c57-497d-8c4e-04a8c144ea0f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartLaunchTests" name="OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease(mode: &quot;busy&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3140fd58-3b6b-eafb-458b-c8fc5d81d0aa">
+      <Execution id="7ee7968b-0e91-4628-9db7-a9286af449ea" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartLaunchTests" name="OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease(mode: &quot;foreign&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a9e61f99-01eb-4188-6308-5bc5e974e401">
+      <Execution id="4422993b-ca84-4004-9a77-89f0f4b895da" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartLaunchTests" name="OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="2af8796e-b63e-b92b-3b0b-9592200f30e8" executionId="c096d436-1c57-497d-8c4e-04a8c144ea0f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a9e61f99-01eb-4188-6308-5bc5e974e401" executionId="4422993b-ca84-4004-9a77-89f0f4b895da" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3140fd58-3b6b-eafb-458b-c8fc5d81d0aa" executionId="7ee7968b-0e91-4628-9db7-a9286af449ea" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="3" executed="3" passed="0" failed="3" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.24]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.32]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.34]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:03.66]       A fresh host must reject missing/foreign original execution before writing Release: {"mode":"omitted","faults":0,"bOwners":1,"refused":false,"beforeB":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":"StoppedWithinScope","outputsSettled":true,"entries":0,"capacity":0,"active":0,"retired":1,"phases":[],"workspaceExists":false,"lastError":"Synthetic probe stops before the pool\u0027s authorized Release.","cleanupDeferred":false},"afterA":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":null,"outputsSettled":null,"entries":0,"capacity":0,"active":0,"retired":1,"phases":[],"workspaceExists":false,"lastError":null,"cleanupDeferred":null},"afterB":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":"StoppedWithinScope","outputsSettled":true,"entries":0,"capacity":0,"active":0,"retired":1,"phases":[],"workspaceExists":false,"lastError":"Synthetic probe stops before the pool\u0027s authorized Release.","cleanupDeferred":false},"bNeverStartedRetired":false,"distinctEpochs":1,"retired":1,"releaseFrames":1,"workerStarts":1,"detachedRemaining":false}
+[xUnit.net 00:00:03.66]       Stack Trace:
+[xUnit.net 00:00:03.66]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartLaunchTests.cs(26,0): at BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease(String mode)
+[xUnit.net 00:00:03.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:06.19]       {"mode":"busy","faults":2,"bOwners":0,"refused":false,"beforeB":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":null,"outputsSettled":false,"entries":1,"capacity":1,"active":2,"retired":0,"phases":["Prepared","Released"],"workspaceExists":false,"lastError":"Another original worker metadata plan is pending; this transition has not started.","cleanupDeferred":true},"afterA":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":"StoppedWithinScope","outputsSettled":true,"entries":0,"capacity":0,"active":1,"retired":1,"phases":["Prepared"],"workspaceExists":false,"lastError":"Worker metadata transition did not receive its durable ACK.","cleanupDeferred":true},"afterB":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":null,"outputsSettled":false,"entries":1,"capacity":1,"active":1,"retired":1,"phases":["Prepared"],"workspaceExists":false,"lastError":"Another original worker metadata plan is pending; this transition has not started.","cleanupDeferred":true},"bNeverStartedRetired":false,"distinctEpochs":1,"retired":1,"releaseFrames":0,"workerStarts":1,"detachedRemaining":false}
+[xUnit.net 00:00:06.20]       Stack Trace:
+[xUnit.net 00:00:06.20]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartLaunchTests.cs(23,0): at BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease(String mode)
+[xUnit.net 00:00:06.20]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:08.88]       A fresh host must reject missing/foreign original execution before writing Release: {"mode":"foreign","faults":0,"bOwners":1,"refused":false,"beforeB":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":"StoppedWithinScope","outputsSettled":true,"entries":0,"capacity":0,"active":0,"retired":2,"phases":[],"workspaceExists":false,"lastError":"Synthetic probe stops before the pool\u0027s authorized Release.","cleanupDeferred":false},"afterA":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":"StoppedWithinScope","outputsSettled":true,"entries":0,"capacity":0,"active":0,"retired":2,"phases":[],"workspaceExists":false,"lastError":"Synthetic A stops without sending its own Release.","cleanupDeferred":false},"afterB":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":"StoppedWithinScope","outputsSettled":true,"entries":0,"capacity":0,"active":0,"retired":2,"phases":[],"workspaceExists":false,"lastError":"Synthetic probe stops before the pool\u0027s authorized Release.","cleanupDeferred":false},"bNeverStartedRetired":false,"distinctEpochs":2,"retired":2,"releaseFrames":1,"workerStarts":1,"detachedRemaining":false}
+[xUnit.net 00:00:08.88]       Stack Trace:
+[xUnit.net 00:00:08.88]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartLaunchTests.cs(26,0): at BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease(String mode)
+[xUnit.net 00:00:08.88]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:08.89]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T05:03:23.6712120+00:00">
+        <Text>[xUnit.net 00:00:03.66]     BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease(mode: "omitted") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T05:03:26.2091916+00:00">
+        <Text>[xUnit.net 00:00:06.19]     BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease(mode: "busy") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T05:03:28.8929132+00:00">
+        <Text>[xUnit.net 00:00:08.88]     BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease(mode: "foreign") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

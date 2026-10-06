@@ -460,6 +460,18 @@ withholds A Released ACK, then retries both original cleanups. Release probes co
 actual control frames/worker starts on the captured original host; no positive native
 evidence is injected. Production behavior is unchanged pending causal RED. R2 is
 not complete; prior catalog/plan results remain historical after this addition.
+Causal launch RED at `443a635557df0a61044225379fb140fb484fb525`: fresh build,
+3/3 executed FAIL,100.0273248s, complete selected/owned cleanup. Busy B stayed Prepared
+with capacity1 after A's original ACK/cleanup settled; omitted/foreign Release each
+wrote one real frame and started one worker. All3guardians reached ECHILD/driver0,
+zero emergency/failure/deadline. Evidence worker-r2-launch-red (source-bound manifest).
+Minimal fix retains never-Start eligibility only for coordinator Busy before LaunchIntent
+mutation; no ambiguous/failed ACK is treated as unattempted. ConsumeNativeStart retains
+the original host reference. A fresh R2 Release rejects missing/foreign execution or
+missing canonical lease before destructive send-failure handling; the ordinary typed
+lease/task checks remain under the send gate. Already-sent repeats remain no-ops.
+GREEN pending: new launch3 + original control2/root2/boundaries5/lifecycle1 + affected
+host8/scoped-authority13. No unchanged broad storage/core/IPC/ENV/FRAME replay.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing
