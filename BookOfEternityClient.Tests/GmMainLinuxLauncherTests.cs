@@ -10,6 +10,8 @@ public sealed class GmMainLinuxLauncherTests
     [Fact]
     public Task ActualDaemonStartup_PortableOwnedBridgeWithoutWindowsDesktop()=>ProductionMainLinuxFixture.RunAsync("daemon");
     [Fact]
+    public Task OrdinaryDaemonLauncher_ForegroundSeparateStdinInstalledContext()=>ProductionMainLinuxFixture.RunAsync("daemon-launcher");
+    [Fact]
     public Task ShippedPublicationContainsRealLauncherAndParticipatingHelper()=>ProductionMainLinuxFixture.RunAsync("package-layout");
     [Theory]
     [InlineData(false)]

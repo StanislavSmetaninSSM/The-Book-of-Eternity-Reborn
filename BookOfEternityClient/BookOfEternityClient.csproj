@@ -24,6 +24,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="../CLI_*.md" Link="operational-resources/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="../TaskGuides/**/*.txt;../TaskGuides/**/*.md;../TaskGuides/**/*.json" Link="operational-resources/TaskGuides/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="../Examples/**/*.txt;../Examples/**/*.md;../Examples/**/*.json" Link="operational-resources/Examples/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="../OtherGuides/**/*.txt;../OtherGuides/**/*.md;../OtherGuides/**/*.json" Link="operational-resources/OtherGuides/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="../Rules/**/*.txt;../Rules/**/*.md;../Rules/**/*.json" Link="operational-resources/Rules/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <None Update="Launcher/**/*.md" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <None Update="Launcher/**/*.ps1" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <None Update="game_master_daemon.ps1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

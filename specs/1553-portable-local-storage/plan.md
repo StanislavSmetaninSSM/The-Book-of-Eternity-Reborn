@@ -87,6 +87,15 @@ coldUncertain refusal after physical cleanup passed. Independent source review a
 identified missing existing operational context documents in installed layout. Add causal
 package assertion before packaging correction; keep accepted context content unchanged.
 
+Operational package RED at865b3ef4:6executed5PASS/1causalFAIL (missing unchanged
+CLI_Agent_Daemon_Specification.md in relocated installed resources); two guardianECHILD0.
+Now publish existing CLI docs,TaskGuides/Examples/OtherGuides/Rules and Launcher markdown
+within client, actual daemon resolves this installed source root before source-checkout
+layout. No content/game-contract/model change, parallel launcher/API or startup compiler.
+Actual daemon must copy14existing context docs. Add ordinary foreground daemon launcher
+probe with separate caller terminal and Ctrl+C cleanup of only that own terminal. Runtime
+owner/fence/bootstrap remains ee5d62b1; minimal runtime delta is resource-path selection.
+
 ## T041-PRODUCTION-MAIN-DESIGN — current design-only continuation
 
 Owner accepted bounded F3 `fc49f271f5cd14ac3b24931cce2c98ef64a61068`.

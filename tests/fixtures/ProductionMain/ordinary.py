@@ -41,6 +41,7 @@ try:
  if mode=='launcher':
   cfg=json.loads((session/'config.json').read_text());cfg['GmBridgePipeNameOverride']=pipe;(session/'config.json').write_text(json.dumps(cfg))
   args=['pwsh','-NoLogo','-NoProfile','-File',str(ship/'BookOfEternityClient/Launcher/bookofeternity.ps1'),'start-bridge','visible','-SessionPath',str(session)]
+ elif mode=='daemon-launcher':args=['pwsh','-NoLogo','-NoProfile','-File',str(ship/'BookOfEternityClient/Launcher/bookofeternity.ps1'),'start-daemon','visible','--no-autopaste','--log',str(folder/'daemon.log'),'-SessionPath',str(session)]
  elif mode=='daemon':args=['pwsh','-NoLogo','-NoProfile','-File',str(ship/'BookOfEternityClient/game_master_daemon.ps1'),'-GameSessionPath',str(session),'-PollingInterval','50','-LogFile',str(folder/'daemon.log')]
  else:args=['dotnet',str(ship/'BookOfEternityGMBridge/BookOfEternityGMBridge.dll'),'--host','--sessionPath',str(session),'--pipeName',pipe]
  result['Argv']=args
@@ -53,10 +54,14 @@ try:
   assert not (folder/'must-not-create').exists()
   assert {str(p):p.read_bytes() for p in session.rglob('*') if p.is_file()}==before
   result['RefusedBeforeCreationAndCanonicalEffects']=True
- elif mode=='daemon':
+ elif mode in ['daemon','daemon-launcher']:
   until(b'Waiting for turns...',12);result['PortableDaemonStartup']=True
+  context=json.loads((session/'game_state/control/gm_context_pack/context_pack_manifest.json').read_text(encoding='utf-8-sig'))
+  assert len(context['docs'])==14;result['ActualDaemonContextDocs']=len(context['docs'])
   # Only this original unreaped direct child; independent outer guardian owns descendants.
-  signal.pidfd_send_signal(pidfd,signal.SIGINT);result['ExitSignal']='SIGINT original daemon pidfd';process.wait(timeout=3)
+  if mode=='daemon-launcher':os.write(master,b'\x03');result['ExitSignal']='Ctrl+C in original owned foreground terminal'
+  else:signal.pidfd_send_signal(pidfd,signal.SIGINT);result['ExitSignal']='SIGINT original daemon pidfd'
+  process.wait(timeout=3)
  else:
   until(b'NEUTRAL READY')
   cfg=json.loads((session/'config.json').read_text());assert ('CONFIGURED_CWD:'+cfg['GmBridgeShellWorkingDirectory']).encode() in capture

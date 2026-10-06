@@ -74,7 +74,11 @@ $script:ErrorCount = 0
 $script:StartTime = Get-Date
 $script:IsProcessing = $false
 $script:ObservedTerminalRequestKeys = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
-$script:RepoRootPath = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
+# Installed immutable operational assets; source checkout keeps its existing layout.
+$packagedResources = Join-Path $PSScriptRoot 'operational-resources'
+$script:RepoRootPath = if (Test-Path (Join-Path $packagedResources 'CLI_Agent_Daemon_Specification.md')) {
+    (Resolve-Path $packagedResources).Path
+} else { (Resolve-Path (Join-Path $PSScriptRoot "..")).Path }
 $script:TaskGuideMainPath = Join-Path $script:RepoRootPath "TaskGuides\CLI_Step_Main.txt"
 $script:ExampleMainPath = Join-Path $script:RepoRootPath "Examples\E_CLI_Step_Main.txt"
 $script:MortalItemMaterializationExamplePath = Join-Path $script:RepoRootPath "Examples\E_CLI_Mortal_Item_Materialization.txt"
