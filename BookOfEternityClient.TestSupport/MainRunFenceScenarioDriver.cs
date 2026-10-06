@@ -119,7 +119,7 @@ internal static class MainRunFenceScenarioDriver
                     var publisher=new TrustedLocalFilePublication(files,new TrustedLocalFileScope([root]));
                     var change=new TrustedLocalFileChange(target,Encoding.UTF8.GetBytes("before"),Encoding.UTF8.GetBytes("after"));
                     var outcome=publisher.PublishWithOutcome(lease,TrustedLocalGeneration.Existing(owner.Identity.GenerationId),[change],(s,_)=>{if(s==TrustedLocalPublicationPhase.IntentStaged)throw new IOException("owned staged interruption");});
-                    result["Disposition"]=outcome.Disposition.ToString();Require(outcome.Disposition==TrustedLocalPublicationDisposition.RolledBack,"Known original staged before-decision did not settle rollback.");
+                    result["Disposition"]=outcome.Disposition.ToString();result["PublicationFailure"]=outcome.Failure?.ToString();Require(outcome.Disposition==TrustedLocalPublicationDisposition.RolledBack,"Known original staged before-decision did not settle rollback.");
                     Require(File.ReadAllText(target)=="before" && !Directory.EnumerateFileSystemEntries(Path.Combine(root,".boe_runtime/trusted-local-publication-v1")).Any(),"Original staged rollback left intent or changed before bytes.");return 0;
                 });
             }
