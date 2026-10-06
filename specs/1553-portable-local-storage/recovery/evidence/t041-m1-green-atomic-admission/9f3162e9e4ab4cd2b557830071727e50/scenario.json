@@ -1,0 +1,17 @@
+{
+  "Success": true,
+  "Mode": "refuse-auto",
+  "BeforeFileCount": 1,
+  "Argv": [
+    "dotnet",
+    "/workspace/native-1553/TestResults/production-main/9f3162e9e4ab4cd2b557830071727e50/ship/BookOfEternityGMBridge/BookOfEternityGMBridge.dll",
+    "--host",
+    "--sessionPath",
+    "/workspace/native-1553/TestResults/production-main/9f3162e9e4ab4cd2b557830071727e50/root/game_session",
+    "--pipeName",
+    "m1-0b4a2803c1c2493eb211cc571156ccda"
+  ],
+  "RefusedBeforeCreationAndCanonicalEffects": true,
+  "EntrypointExitCode": 1,
+  "ElapsedSeconds": 0.505534017996979
+}
