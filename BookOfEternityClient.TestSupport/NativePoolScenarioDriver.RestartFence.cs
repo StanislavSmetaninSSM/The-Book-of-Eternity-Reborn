@@ -18,6 +18,7 @@ internal static partial class NativePoolScenarioDriver
         if (mode.StartsWith("seed-retirement-", StringComparison.Ordinal))
             return await SeedRestartFenceRetirement(mode[16..], package, output);
         if (mode == "probe-retired") return await ProbeRestartFenceRetired(package, output);
+        if (mode.StartsWith("race-", StringComparison.Ordinal)) return await RunRestartFenceRace(mode[5..], package, output);
         return 64;
     }
     private static T? FenceField<T>(object instance, string field) =>

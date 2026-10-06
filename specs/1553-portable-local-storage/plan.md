@@ -49,6 +49,15 @@ terminal pre-ACK/ACK/capacity cuts each admitted a new actual content task, pres
 old bytes/tombstone/audit prefix, and rejected the old task before allocation. Evidence
 worker-r3-retirement-green. Next only D; no causal runtime behavior change.
 
+### Cohort D source checkpoint — WIP
+
+Three actual races: confirmed Store lock contention while a legitimate replacement
+lease rotates generation; awaited final bundle boundary raw generation corruption;
+awaited final boundary original owner-lock replacement. Pin exact detached source bytes
+before invalidation, assert retention before/after two original reaper passes. Generation
+byte restoration is only a negative fixture probe and cannot clear PublicationIntent.
+No behavior changes yet. Source unbuilt/unrun; next only worker-restart-publication-races-linux.
+
 ### Evidence already accepted; exclude unchanged repetitions
 
 - R1: exact old/new/Blocked persistence cuts at write/flush/rename/directory sync,

@@ -13225,6 +13225,30 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-restart-publication-races-linux",
+      "responsibility": "#1553 R3 queued Store generation rotation vs awaited held bundle generation/owner-lock invalidation; no stale publication, exact task/source workspace retention and original cleanup/Uncertain behavior.",
+      "excludes": "No replay of crash cohorts or queued Release, reconnect, force-clear, production Linux Release, main PTY, live GM, real saves, reboot or Windows native.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.RestartFenceRaces.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerDurableExecution.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationRace_PreservesUnresolvedWorkspaceAndAuthority"
+          ]
+        }
+      ]
     }
   ]
 }

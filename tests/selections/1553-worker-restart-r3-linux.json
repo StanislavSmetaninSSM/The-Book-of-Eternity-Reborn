@@ -24,6 +24,14 @@
         "#1553 T041-WORKER-RESTART-R3",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-restart-publication-races-linux",
+      "reason": "R3 cohort D: one actual queued and two held publication races; execute alone after C cleanup.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R3",
+        "FR-012/014/015"
+      ]
     }
   ]
 }
