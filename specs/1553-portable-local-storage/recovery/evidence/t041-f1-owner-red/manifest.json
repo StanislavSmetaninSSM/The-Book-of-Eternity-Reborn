@@ -1,7 +1,7 @@
 {
   "SchemaVersion": 1,
   "SourceCommit": "fcb96abeff754109da3e78497650289a7aeade0f",
-  "Command": "scripts/test-csharp.ps1 -Category gm-main-run-owner-linux",
+  "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-run-owner-linux",
   "Inputs": [
     {
       "Path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.cs",
@@ -241,5 +241,7 @@
       "Bytes": 1449,
       "Sha256": "2bc9b3b9360ed17e372868ba53a75c56f613ae8a55457ed7cbee9c61054fbcc9"
     }
-  ]
+  ],
+  "OriginalCommandDisplay": "scripts/test-csharp.ps1 -Category gm-main-run-owner-linux",
+  "CommandRepresentation": "Normalized reproducible invocation retaining recorded category/build parameters; exact source runner plan and logs are unchanged."
 }

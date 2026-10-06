@@ -6,7 +6,7 @@ namespace BookOfEternityClient.Services.GmWorkers;
 
 internal enum GmWorkerNativeObservationFaultKind
 {
-    WrongRun, WrongScope, MalformedTerminal, ReportUncertain, HoldTerminal, HoldOutputs, DisposeOnce
+    WrongRun, WrongScope, MalformedTerminal, ReportUncertain, HoldTerminal, HoldOutputs, DisposeOnce, MalformedStarted
 }
 
 // Internal synthetic-fixture faults only. This object can delay or invalidate an
@@ -23,6 +23,11 @@ internal sealed class GmWorkerNativeObservationFault(GmWorkerNativeObservationFa
     internal async Task<ReadOnlyMemory<byte>> ObserveFrameAsync(ReadOnlyMemory<byte> bytes)
     {
         using var frame = JsonDocument.Parse(bytes);
+        if(kind==GmWorkerNativeObservationFaultKind.MalformedStarted)
+        {
+            if(frame.RootElement.GetProperty("state").GetString()!="Started")return bytes;
+            _reached.TrySetResult();return Encoding.UTF8.GetBytes("{");
+        }
         if (frame.RootElement.GetProperty("state").GetString() != "StoppedWithinScope" ||
             kind is GmWorkerNativeObservationFaultKind.HoldOutputs or GmWorkerNativeObservationFaultKind.DisposeOnce)
             return bytes;

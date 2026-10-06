@@ -1,7 +1,7 @@
 {
   "SchemaVersion": 1,
   "SourceCommit": "7388c2ace7ad71a71ec9eb4eb4c1cffd38550d48",
-  "Command": "scripts/test-csharp.ps1 -Category gm-main-run-fence -NoBuild",
+  "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-run-fence -NoBuild",
   "Inputs": [
     {
       "Path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.cs",
@@ -182,5 +182,7 @@
       "Bytes": 1344,
       "Sha256": "0879b4f3b211c236dbff6df47c574ecb84dddf090ef46ace226be1184f6824d3"
     }
-  ]
+  ],
+  "OriginalCommandDisplay": "scripts/test-csharp.ps1 -Category gm-main-run-fence -NoBuild",
+  "CommandRepresentation": "Normalized reproducible invocation retaining recorded category/build parameters; exact source runner plan and logs are unchanged."
 }

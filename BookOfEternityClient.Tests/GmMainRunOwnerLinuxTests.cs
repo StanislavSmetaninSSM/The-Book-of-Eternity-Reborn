@@ -22,6 +22,8 @@ public sealed class GmMainRunOwnerLinuxTests
     public async Task OriginalOwner_ReviewBoundary(string mode)=>await GmOwnedTerminalLinuxTests.RunAsync(mode);
     [Fact]
     public async Task StagedIntent_SettlesOriginalBeforeDecision()=>await GmOwnedTerminalLinuxTests.RunAsync("terminal-main-staged-rollback");
+    [Fact]
+    public async Task ReleasedOriginal_LostStartedAckRetainsAuthorityAndClosedInput()=>await GmOwnedTerminalLinuxTests.RunAsync("terminal-main-release-ack");
     [Theory]
     [InlineData("terminal-main-unbound")]
     [InlineData("terminal-main-held-rollback")]

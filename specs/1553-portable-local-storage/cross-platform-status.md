@@ -5,20 +5,23 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## Current: T041-RUN-FENCE design only
+## Current: T041-RUN-FENCE-F1 controlled neutral verification
 
-Owner accepted neutral terminal at `14888663d608355098cc1a329d97ab61de0e6016`;
-next is [original-owner/durable main-fence design](main-run-fence-design.md),
-not implementation. Reuse main-record/R1–R3/input/terminal audits and proofs.
-First proposed slice F1 connects the fixed neutral owner, existing main.json and
-actual pre-recovery/held-lease consumers; F2 binds real separate clients/daemon;
-F3 qualifies process crash/replacement. No new journal, runtime/test/probe/settings
-change or execution. Independent actual Sol6.1/xhigh **Focused design PASS** at
-`4cfd9b14d51e890268ac949322eb352e40dd4a00`, three initial findings closed;
-[source checkpoint](recovery/main-run-fence-design.json). Stop before implementation.
-Primary systemd/production/main live acceptance/real saves/cold gates remain open.
-Final metadata carrier ordinary push/readback and fresh GitHub-only restoration
-are reported with the exact final SHA in handoff, without self-reference.
+Owner authorized only F1 from accepted design `0658e4405a4d0d958eb1b64b11b83956917fb81b`.
+One original neutral owner now consumes schema1 main.json, durable transition ACK and
+real FileSystemManager pre-recovery/held-lease gates. No second journal. Fixed isolated
+inert CLI only; cooperating cold nonterminal/clear/Load refuses, original in-generation
+operations settle, Uncertain/metadata debt retain owner, completed stop precedes new epoch.
+83distinct focused PASS: portable50 at39362ff8 plus unchanged-runtime Linux33 ata874fb5d.
+26connected guardians ECHILD, emergency/failure/deadline0; unrelated cohorts not replayed.
+[Qualification and hashes](recovery/main-run-fence-f1-qualification.json) ·
+[handoff](../1553-portable-local-storage/main-run-fence-f1-handoff.md).
+Independent final Sol6.1/xhigh source/evidence review and final publication/restoration
+pending. FullT041 and F2/F3 remain open; stop before F2. Separate-client/daemon pins,
+ordinary launcher/live GM/production Release/real saves/cold behavior remain unqualified.
+Primary systemd-user stays required, no manager here/setup/qualification. Windows
+ConPTY/Job source/build preserved; native Windows not qualified. Product stop/load/
+fresh-start UX stays undecided. Final exact SHA/remote/GitHub-only restore in handoff.
 
 ## Owned main terminal: bounded neutral PASS; final carrier handoff
 

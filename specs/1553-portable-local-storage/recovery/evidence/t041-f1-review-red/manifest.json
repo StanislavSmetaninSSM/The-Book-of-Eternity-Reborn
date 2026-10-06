@@ -1,7 +1,7 @@
 {
   "SchemaVersion": 1,
   "SourceCommit": "625bcf521428ca54a09d124795609dee19fbcdea",
-  "Command": "scripts/test-csharp.ps1 -Category gm-main-run-fence,gm-main-run-owner-linux",
+  "Command": "pwsh -NoProfile -Command \"& ./scripts/test-csharp.ps1 -Category @('gm-main-run-fence','gm-main-run-owner-linux')\"",
   "Inputs": [
     {
       "Path": "BookOfEternityClient.TestSupport/MainRunFenceScenarioDriver.cs",
@@ -218,5 +218,7 @@
       "Bytes": 1522,
       "Sha256": "860f1c70efda56a5e336891202f7e5941923aefa97a83f40fdc60ac2b0020a83"
     }
-  ]
+  ],
+  "OriginalCommandDisplay": "scripts/test-csharp.ps1 -Category gm-main-run-fence,gm-main-run-owner-linux",
+  "CommandRepresentation": "Normalized reproducible invocation retaining recorded category/build parameters; exact source runner plan and logs are unchanged."
 }

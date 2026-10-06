@@ -36,12 +36,32 @@ fixed at dfa9912d. Partial owner23 executed/22PASS/1RED. Generation initial10 ra
 namespace RED. Corrected full-root fixture at a435d79e proves namespace admission
 RED; unit17/16PASS/1RED oversized generation, native15/7PASS/8FAIL. All native
 guardians ECHILD/emergency0/failures0/deadlinefalse. f769 preparation CS1503 ran0
-tests; this is separate from causal failure. a57551d5 fresh32/31PASS/1FAIL leaves
-original staged rollback unresolved. No completed F1 verdict yet. Evidence under
-`recovery/evidence/t041-f1-*` preserves exact source inputs, commands, runner counts
-and individually named guardians. Earlier flattened report capture is repaired
-from original fixtures; ignored runtime metadata is now tracked explicitly.
-Historical passing carriers do not qualify changed code.
+tests; this is separate from causal failure. a57551d5 fresh32/31PASS/1FAIL and
+f8ecf163 native15/14PASS/1FAIL had a BOM before-image precondition failure, not
+causal staged rollback evidence. Correct actual bytes at07c21ba0 reached IntentStaged:
+connected33/31PASS/2FAIL; staged rollback is causal RED, save fixture's Boolean
+expectation is corrected to preserve actual typed Uncertain/no publication.
+4ab85fbc preparation CS1525 ran0tests. Selected old writer48/47PASS/1FAIL identifies
+the changed contention boundary: ordinary writers await main before canonical;
+three exact distributor/profile fixtures now observe either real boundary and retain
+all accepted writer/rollback assertions. No lock-order bypass.
+
+Reapplied bounded staged cleanup and original attempt evidence; quiescent main guard
+uses existing cancellable canonical wait budget, fast read-only denial of cold
+nonterminal evidence never grants authority. Fresh connected82/82PASS at
+`a874fb5d3c82bdaf2c605db38a6bde103acd0a1f` (portable49+Linux33). Exact profile fixture
+added without runtime change; fresh portable50/50PASS at
+`39362ff85cb1f8e9cfa68819787d2292ce2ae662`. Final coverage83distinct (portable50+Linux33),
+not132distinct. All26 connected guardians ECHILD/emergency0/failures0/deadlinefalse;
+runner selection complete/skips0/owned cleanup complete. SDK10.0.401/runtime8.0.31,
+PowerShell7.5.4/GCC14.2.0-19 actually observed. No Windows native or systemd qualification.
+
+[Qualification/source/evidence map](recovery/main-run-fence-f1-qualification.json)
+and [exact passing IDs](recovery/main-run-fence-f1-passed-ids.json). Historical invalid
+preconditions and preparation failures remain separate; passing historical carriers
+do not qualify changed code. Evidence preserves exact source inputs and individually
+named guardian artifacts; normalized reproducible command fields retain original
+runner plans/logs and displays. Independent final review pending; stop before F2.
 
 ## T041-RUN-FENCE — current design-only checkpoint
 

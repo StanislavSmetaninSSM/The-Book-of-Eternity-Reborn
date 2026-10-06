@@ -104,6 +104,38 @@ internal static class MainRunFenceScenarioDriver
                 File.WriteAllBytes(generationPath,generation!);
                 result["Success"]=true;return 0;
             }
+            if(mode=="terminal-main-release-ack") {
+                var fault=new GmWorkerNativeObservationFault(GmWorkerNativeObservationFaultKind.MalformedStarted);
+                NativeLineageOwner? native=null;
+                Set("ObserveMainMetadata",(Action<MainRunIoStage>)(stage=>{
+                    if(stage!=MainRunIoStage.Readback || Read().Disposition!=GmSessionRunDisposition.Running)return;
+                    var coordinator=(GmSessionRunCoordinator)Field("_mainRun")!;
+                    var session=(IOwnedTerminalSession)typeof(GmSessionRunCoordinator).GetField("_terminal",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(coordinator)!;
+                    native=(NativeLineageOwner)session.GetType().GetField("_owner",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(session)!;
+                    native.SetSyntheticObservationFault(fault);
+                }));
+                OwnedTerminalStartException? partial=null;
+                try{await Call("StartShellAsync");}catch(OwnedTerminalStartException e){partial=e;}
+                await fault.Reached.WaitAsync(TimeSpan.FromSeconds(2));
+                Require(partial!=null && ReferenceEquals(partial.Owner,Field("_pty")),"Started ACK loss replaced/dropped original partial owner.");
+                Require(native!=null && (int)typeof(NativeLineageOwner).GetField("_terminalRelease",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(native)! == 1,"A1 was not consumed exactly once before ACK loss.");
+                var retained=(GmSessionRunCoordinator)Field("_mainRun")!;
+                Require(retained.RetainsAuthority && retained.IsUncertain && native!.AuthorityLost.IsCompleted && Read().Disposition!=GmSessionRunDisposition.Stopped,"Started ACK loss granted retirement/ordinary authority.");
+                Exception? replay=null;try{await native!.ReleaseTerminalAsync(CancellationToken.None);}catch(Exception e){replay=e;}
+                Require(replay is InvalidOperationException,"Unconfirmed A1 release was automatically replayable.");
+                using var control=new CancellationTokenSource();
+                var server=(Task)type.GetMethod("RunServerLoopAsync",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[control.Token])!;
+                try {
+                    var status=(await Rpc(new{command="status"})).GetProperty("status");
+                    Require(status.GetProperty("terminalOwnerRetained").GetBoolean() && status.GetProperty("terminalUncertain").GetBoolean(),"Lost release ACK hid retained original.");
+                    Require(!(await Rpc(new{command="addText",text="must-not-write"})).GetProperty("ok").GetBoolean(),"Lost release ACK admitted input.");
+                    Exception? stop=null;try{await Call("StopShellAsync");}catch(Exception e){stop=e;}
+                    Require(stop!=null && retained.RetainsAuthority && Read().Disposition!=GmSessionRunDisposition.Stopped && ReferenceEquals(partial!.Owner,Field("_pty")),"Lost ACK was accepted as confirmed stop.");
+                } finally {await control.CancelAsync();await server;}
+                result["A1ConsumedOnce"]=true;result["StartedFrameObservedAndInvalidated"]=true;
+                result["OriginalOwnerRetained"]=true;result["InputClosedViaActualPipe"]=true;
+                result["NoStoppedOrReplay"]=true;result["Success"]=true;return 0;
+            }
             if(mode=="terminal-main-running-debt") {
                 Set("ObserveMainMetadata",(Action<MainRunIoStage>)(stage=>{if(stage==MainRunIoStage.Readback && Read().Disposition==GmSessionRunDisposition.Running)throw new IOException("Running ACK debt");}));
                 OwnedTerminalStartException? partial=null;

@@ -1,7 +1,7 @@
 {
   "SchemaVersion": 1,
   "SourceCommit": "a435d79e97309573220f3b189323a0f5cdb403a4",
-  "Command": "pwsh -NoProfile -Command & scripts/test-csharp.ps1 -Category @('gm-main-run-fence','gm-main-run-owner-linux')",
+  "Command": "pwsh -NoProfile -Command \"& ./scripts/test-csharp.ps1 -Category @('gm-main-run-fence','gm-main-run-owner-linux')\"",
   "Inputs": [
     {
       "Path": "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
@@ -218,5 +218,7 @@
       "Bytes": 1523,
       "Sha256": "8b766e4171b90837cf0deac99f88d8879f2d74d501ca0b01009f9c2824433824"
     }
-  ]
+  ],
+  "OriginalCommandDisplay": "pwsh -NoProfile -Command & scripts/test-csharp.ps1 -Category @('gm-main-run-fence','gm-main-run-owner-linux')",
+  "CommandRepresentation": "Normalized reproducible invocation retaining recorded category/build parameters; exact source runner plan and logs are unchanged."
 }
