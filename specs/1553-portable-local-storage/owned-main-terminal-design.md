@@ -220,13 +220,22 @@ These are acceptance cases below, not additional product requirements.
 
 ### Execution steps (one connected reviewed block, after authorization)
 
-- [ ] Create `BookOfEternityClient.Tests/GmOwnedTerminalSessionTests.cs`,
+- [ ] Write `BookOfEternityClient.Tests/GmOwnedTerminalSessionTests.cs`,
   `GmOwnedTerminalLinuxTests.cs`, fixed raw-mode CLI
   `tests/fixtures/LinuxTerminal/neutral-cli.c`. Reuse unchanged LinuxHost guardian,
-  independent per-test scratch/deadlines. Causal RED: current actual Linux entry cannot
-  bind terminal/view. Preparation failure is not causal RED. Managed retirement RED:
-  current StopShell must not clear owner/admit replacement on root-exit while descendant/
-  output remains. Pin actual executed assertions before modifying behavior.
+  independent per-test scratch/deadlines. Introduce only the minimal compile-ready
+  consumed session/factory/neutral-entry seam, preserving current StopShell clear/
+  disposal order and Windows behavior. This mechanical preparation is not a fix
+  or qualification. Missing type/entry, ConPTY DLL failure or unavailable native
+  factory are preparation/availability results, never causal RED.
+- [ ] Execute portable retirement negative through actual BridgeHost/StopShell with
+  controlled session's original root-exit/output/stop tasks held unfinished. Assert
+  the captured owner remains stored and replacement cannot consume a new binding;
+  current clear-before-dispose order must fail that executed assertion. Release
+  controlled tasks in finally so the negative fixture cannot leak work. Only then
+  change retirement behavior. Linux causal assertions start only when the owned
+  seam can actually launch the fixed fixture and receive its tty/view evidence;
+  log unavailable baselines separately rather than relabeling them as runtime RED.
 - [ ] Implement interface/factory, LinuxOwnedTerminalSession/LinuxPtyStream and shared
   NativeLineageOwner; adapt GmWorkerNativeLineageLaunch host-v2 without admission/ledger
   change. Original C helper gains transport/tty setup, same ownership engine. Build
