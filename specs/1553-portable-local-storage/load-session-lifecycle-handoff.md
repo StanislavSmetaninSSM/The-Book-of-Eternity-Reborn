@@ -32,7 +32,7 @@ The complete [execution ledger](load-session-lifecycle-plan.md) retains causal f
 
 Writer integrity audit:36manifests/4619sourcepins/680artifacts/352gzip/42guardianreceipts all verified against exact Git blobs, raw/gzip hashes and ECHILD/emergency0/failures0/deadlinefalse. Own guarded fixture roots were removed after capture; logical Uncertain is not cleared by this physical proof.
 
-Final fresh-context independent **gpt-6.1-sol/xhigh PASS** at `734cb8cf`: all audit counts, actual TRX/frontend summaries, 132unique successful identities and all17selected descriptors independently agree. No functional/evidence defect found; no runtime/test delta follows d4cfb195. All42 recorded guardian roots are absent. Reviewer executed no tests or configured CLI.
+Final fresh-context independent **gpt-6.1-sol/xhigh PASS** at `734cb8cf`: all audit counts, actual TRX/frontend summaries, 132unique successful identities and all17selected descriptors independently agree. No functional/evidence defect found; no runtime or executable test/fixture source delta follows d4cfb195. Catalog/selection metadata was finalized at19dc27ea and reviewed at734cb8cf. All42 recorded guardian roots are absent. Reviewer executed no tests or configured CLI.
 
 [Candidate GitHub-only restoration proof](recovery/load-session-lifecycle-candidate-restore.json):20,546tracked files match both writer checkout and independently fetched Git blobs; exact SHA/tree/parent/accepted ancestry, clean checkout, full fsck and no alternates. Reviewer independently rechecked all20,546files (336,690,503bytes). Restoration executes0tests and proves source/evidence recovery, not another runtime qualification. Exact final carrier gets a separate fresh GitHub-only restore before writer closure.
 
