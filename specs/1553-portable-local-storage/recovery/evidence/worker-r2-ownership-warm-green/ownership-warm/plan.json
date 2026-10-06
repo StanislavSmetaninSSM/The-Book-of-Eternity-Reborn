@@ -1,0 +1,59 @@
+{
+  "Categories": [
+    "worker-restart-ownership-linux",
+    "worker-restart-warm-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "762405786ef0e3beeae825a09765ba31e550b30b",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 40.3941266,
+  "Descriptors": [
+    {
+      "Name": "worker-restart-ownership-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-ownership-linux",
+      "Categories": [
+        "worker-restart-ownership-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartOwnershipTests.ActualPoolOwner_ExcludesOtherProcessThroughClientDisposalAndQuarantine|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartOwnershipTests.FirstAttachRace_OnlyOneModeMayEnterAndPublish",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartOwnershipTests.ActualPoolOwner_ExcludesOtherProcessThroughClientDisposalAndQuarantine",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartOwnershipTests.FirstAttachRace_OnlyOneModeMayEnterAndPublish",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-warm-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-warm-linux",
+      "Categories": [
+        "worker-restart-warm-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartWarmTests.DetectedNativeLoss_ClosesSharedRootBeforeStopAndSurvivesFailedJournalAndClientDisposal",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartWarmTests.DetectedNativeLoss_ClosesSharedRootBeforeStopAndSurvivesFailedJournalAndClientDisposal",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

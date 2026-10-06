@@ -1,0 +1,41 @@
+﻿{
+  "schemaVersion": 1,
+  "taskId": "warm_original",
+  "sessionGeneration": "11111111111111111111111111111111",
+  "workerId": "validation_repair_codex",
+  "role": "validation-repair",
+  "taskType": "validation-repair",
+  "createdAtUtc": "2026-06-20T00:00:00Z",
+  "timeoutSeconds": 15,
+  "sourceTurn": {
+    "sessionId": "test-session",
+    "requestId": "test-request",
+    "turnNumber": 12
+  },
+  "validationIssues": [
+    {
+      "code": "normalized_weather_missing_description",
+      "path": "game_state/world/weather.json",
+      "message": "normalizedWeatherState.description is required."
+    }
+  ],
+  "contextFiles": [
+    {
+      "path": "game_state/world/weather.json",
+      "sha256": "cc03341805bafb3e5c93574b7f869171eedb69ea80deaed51c920b3f55ea2543"
+    }
+  ],
+  "allowedProposalPaths": [
+    "game_state/world/weather.json"
+  ],
+  "responseContract": "worker-proposal-v1",
+  "acceptanceCriteria": [
+    "Return a worker-proposal-v1 JSON proposal.",
+    "Validation must pass after the apply gate applies proposed changes."
+  ],
+  "forbiddenActions": [
+    "Do not edit canonical game_session files directly.",
+    "Do not create terminal signals manually."
+  ],
+  "instructions": "Return a minimal repair proposal. Do not change files outside allowedProposalPaths."
+}

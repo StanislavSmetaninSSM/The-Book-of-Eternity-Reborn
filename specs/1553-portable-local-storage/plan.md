@@ -393,6 +393,18 @@ pool/FS, client disposal, failed Uncertain ACK and retained quarantine after ret
 All children remain beneath the existing independent guardian; only captured original
 objects are acted upon. Categories worker-restart-ownership-linux and worker-restart-warm-linux
 own these6 cases. Root/task profile helpers pin actual immutable context bytes.
+Connected ownership/warm GREEN at `762405786ef0e3beeae825a09765ba31e550b30b`:
+6/6 PASS,64.8719590s fresh build, two complete descriptors, complete owned-tree
+cleanup/no timeout;6 guardians ECHILD/exit0/reap1, zero emergency/failure/deadline.
+Evidence: recovery/evidence/worker-r2-ownership-warm-green/manifest.json. Both mode
+orders and same-mode owners refused fresh-process contenders before capacity in
+active and retained-quarantine phases; exactly one first-attach race winner published.
+Other-root legacy positive succeeded. Warm second FS/pool refused before original Stop;
+failed Uncertain ACK occurred once, original Stop was attempted, and late retry kept
+root lock/capacity/absorbing Uncertain with zero Start and no success consumers.
+No running test sessions. Remaining: source/evidence review of this bounded fixture
+block, affected regression selection, catalog/selection audit, final independent R2
+review and fresh GitHub-only restoration. R2 remains unchecked pending those gates.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing
