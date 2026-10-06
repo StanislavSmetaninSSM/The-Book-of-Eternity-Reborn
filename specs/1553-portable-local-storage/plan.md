@@ -38,13 +38,16 @@ B5/5PASS,64.5285515s;10guardianECHILD/0signals/failure/deadline. Full exact cold
 snapshots unchanged, no allocation/import/repeated Release or consumers. Evidence
 worker-r3-publication-green; next only C. No runtime behavior change.
 
-### Cohort C source checkpoint — WIP
+### Cohort C qualification checkpoint
 
 Five original reaper retirement crash cuts follow a one-shot actual workspace-cleanup
 failure. Add only the reviewed nullable Action after actual RetireAsync return and before
 runtime/root/slot release; no positive witness or behavior change. RequiredAudit exact
-event/digest and old archive/task/bundle/audit prefix are asserted. Source unbuilt/unrun;
-next only worker-restart-crash-retirement-linux. B carrier d473f021 is remotely verified.
+event/digest and old archive/task/bundle/audit prefix are asserted. Fresh source `52cf923feabefa7680e66deffeb709b129b388fd`: C5/5PASS,63.5024820s;
+10guardianECHILD,0signals/failure/deadline. RequiredAudit exact match at all cuts;
+terminal pre-ACK/ACK/capacity cuts each admitted a new actual content task, preserved
+old bytes/tombstone/audit prefix, and rejected the old task before allocation. Evidence
+worker-r3-retirement-green. Next only D; no causal runtime behavior change.
 
 ### Evidence already accepted; exclude unchanged repetitions
 
@@ -131,7 +134,7 @@ a claim that current code already satisfies it; runtime fixes still need causal 
   preparation errors separately. On causal RED fix minimally, rerun A and only affected
   accepted consumers justified by the source delta. Capture exact source/commands/counts.
 - [x] B: repeat the bounded workflow for publication cuts after A's ECHILD evidence.
-- [ ] C: repeat for conditional cleanup/retirement, with exact post-live-ACK observation.
+- [x] C: repeat for conditional cleanup/retirement, with exact post-live-ACK observation.
 - [ ] D: repeat for queued/held publication fences; retain original authority on uncertainty.
 - [ ] E: repeat for whole parallel inventory and the unmasked canonical journal conflict.
 - [ ] Discovery-only ValidateCatalog and exact PlanOnly after matching fresh builds;

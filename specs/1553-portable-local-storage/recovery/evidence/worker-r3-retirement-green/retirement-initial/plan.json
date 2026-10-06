@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "worker-restart-crash-retirement-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "52cf923feabefa7680e66deffeb709b129b388fd",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 42.5025866,
+  "Descriptors": [
+    {
+      "Name": "worker-restart-crash-retirement-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-crash-retirement-linux",
+      "Categories": [
+        "worker-restart-crash-retirement-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartFenceTests.RetirementCrash_ExactTerminalCommitGatesNewTask",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.RetirementCrash_ExactTerminalCommitGatesNewTask",
+          "Cases": 5
+        }
+      ]
+    }
+  ]
+}
