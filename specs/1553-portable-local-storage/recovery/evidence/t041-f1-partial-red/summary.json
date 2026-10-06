@@ -1,0 +1,75 @@
+{
+  "Categories": [
+    "gm-main-run-fence",
+    "gm-main-run-owner-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "dfa9912d1a311e3514cb92a132524fd9e2be205a",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "gm-main-run-fence",
+      "Seconds": 20.1366026,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-main-run-owner-linux",
+      "Seconds": 31.1050977,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.3291077,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.1567729,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.4201639,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 48.4359633,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:01:47.3574048",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 23,
+    "CompletedCases": 23,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 23,
+    "Executed": 23,
+    "Passed": 22,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

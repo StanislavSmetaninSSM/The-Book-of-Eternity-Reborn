@@ -7,6 +7,9 @@ public sealed class GmMainRunOwnerLinuxTests
         await GmOwnedTerminalLinuxTests.RunAsync("terminal-fence");
     [Theory]
     [InlineData("terminal-main-running-debt")]
+    [InlineData("terminal-main-launch-generation")]
+    [InlineData("terminal-main-namespace-validate")]
+    [InlineData("terminal-main-namespace-publish")]
     [InlineData("terminal-main-replacement")]
     [InlineData("terminal-main-forged-stop")]
     [InlineData("terminal-main-closing")]
@@ -14,4 +17,3 @@ public sealed class GmMainRunOwnerLinuxTests
     [InlineData("terminal-main-worker")]
     public async Task OriginalOwner_ReviewBoundary(string mode)=>await GmOwnedTerminalLinuxTests.RunAsync(mode);
 }
-

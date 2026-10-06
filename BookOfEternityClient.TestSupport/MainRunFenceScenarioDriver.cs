@@ -28,6 +28,17 @@ internal static class MainRunFenceScenarioDriver
             type=Assembly.LoadFrom(Path.Combine(repo,"BookOfEternityGMBridge/bin",configuration,"net8.0/BookOfEternityGMBridge.dll")).GetType("BookOfEternityGMBridge.BridgeHost",true)!;
             host=Activator.CreateInstance(type,[launch.Scratch,"f1-"+Guid.NewGuid().ToString("N")]);
             type.GetMethod("ConfigureNeutral",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[launch]);
+            if(mode=="terminal-main-launch-generation") {
+                var generationPath=Path.Combine(root,".boe_runtime/session-generation.json");
+                byte[]? generation=null;var preparedObserved=false;
+                Set("ObserveMainHeldRoot",(Action<int>)(_=>{preparedObserved=Read().Disposition==GmSessionRunDisposition.Prepared;generation=File.ReadAllBytes(generationPath);File.Delete(generationPath);}));
+                Exception? failure=null;try{await Call("StartShellAsync");}catch(Exception e){failure=e;}
+                Require(preparedObserved,"Prepared was absent before original process creation.");
+                Require(failure is OwnedTerminalStartException,"Missing launch generation released the original terminal.");
+                Require(Read().Disposition==GmSessionRunDisposition.Prepared,"Missing launch generation published Running.");
+                File.WriteAllBytes(generationPath,generation!);
+                result["Success"]=true;return 0;
+            }
             if(mode=="terminal-main-running-debt") {
                 Set("ObserveMainMetadata",(Action<MainRunIoStage>)(stage=>{if(stage==MainRunIoStage.Readback && Read().Disposition==GmSessionRunDisposition.Running)throw new IOException("Running ACK debt");}));
                 OwnedTerminalStartException? partial=null;
@@ -53,7 +64,33 @@ internal static class MainRunFenceScenarioDriver
             await Call("StartShellAsync");
             var owner=(GmSessionRunCoordinator)Field("_mainRun")!;var terminal=(IOwnedTerminalSession)Field("_pty")!;
             var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);var old=Read();
-            if(mode=="terminal-main-replacement")
+            if(mode.StartsWith("terminal-main-namespace-",StringComparison.Ordinal)) {
+                await owner.RunOperationAsync(async()=>{
+                    await using var lease=await files.AcquireCanonicalWriteLeaseAsync();
+                    var snapshot=files.ReadLocalGenerationSnapshot(lease);
+                    var dirs=Directory.EnumerateDirectories(files.GameSessionPath,"*",SearchOption.AllDirectories).Prepend(files.GameSessionPath)
+                        .Where(p=>p!=files.ResolvePath("saves") && !p.StartsWith(files.ResolvePath("saves")+Path.DirectorySeparatorChar,StringComparison.Ordinal));
+                    var directory=new TrustedLocalNamespaceImage(TrustedLocalNamespaceKind.Directory,null);
+                    var members=dirs.Select(p=>new TrustedLocalNamespaceChange(p,directory,directory)).ToList();
+                    var scope=new TrustedLocalFileScope([root]);
+                    foreach(var p in Directory.EnumerateFiles(files.GameSessionPath,"*",SearchOption.AllDirectories).Where(p=>!p.StartsWith(files.ResolvePath("saves")+Path.DirectorySeparatorChar,StringComparison.Ordinal))) {
+                        var image=new TrustedLocalNamespaceImage(TrustedLocalNamespaceKind.File,TrustedLocalFileImage.CaptureFile(scope,p));members.Add(new(p,image,image));
+                    }
+                    var beforeGeneration=new TrustedLocalNamespaceImage(TrustedLocalNamespaceKind.File,TrustedLocalFileImage.FromBytes(snapshot.Bytes));
+                    var afterGeneration=new TrustedLocalNamespaceImage(TrustedLocalNamespaceKind.File,TrustedLocalFileImage.FromBytes(JsonSerializer.SerializeToUtf8Bytes(new{schemaVersion=1,generationId=Guid.NewGuid().ToString("N")})));
+                    members.Add(new(files.SessionGenerationPath,beforeGeneration,afterGeneration));
+                    var plan=new TrustedLocalNamespacePlan(files.GameSessionPath,members,[new(files.ResolvePath("saves"),TrustedLocalNamespaceKind.Directory,0,null)]);
+                    var publisher=new TrustedLocalFilePublication(files,scope);Exception? error=null;var effects=0;
+                    try {
+                        if(mode.EndsWith("validate",StringComparison.Ordinal))publisher.ValidateNamespaceBeforePublication(lease,snapshot.Binding,plan);
+                        else {var outcome=publisher.PublishNamespaceWithOutcome(lease,snapshot.Binding,plan,(_,_)=>effects++);error=outcome.Failure;}
+                    } catch(Exception e){error=e;}
+                    Require(error!=null,"Active original pin admitted a generation-changing namespace plan.");
+                    Require(effects==0 && !Directory.Exists(Path.Combine(root,".boe_runtime/trusted-local-publication-v1")),"Namespace generation refusal followed publication effects.");
+                    Require(File.ReadAllBytes(files.SessionGenerationPath).AsSpan().SequenceEqual(snapshot.Bytes),"Namespace primitive changed original generation.");return 0;
+                });
+            }
+            else if(mode=="terminal-main-replacement")
             {
                 await owner.RunOperationAsync(async()=>{await using var l=await files.AcquireCanonicalWriteLeaseAsync();await files.WriteFileAtomicAsync(l,"game_state/marker.txt","original");return 0;});
                 var before=File.ReadAllBytes(files.ResolvePath("game_state/marker.txt"));
