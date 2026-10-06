@@ -5,13 +5,24 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## Current: T041-RUN-FENCE-F2 controlled source/evidence PASS; stop before F3
+## Current: T041-RUN-FENCE-F3 authorized; source-delta plan review pending
+
+Accepted F2 `8b0c416e1ec5c132d82776b4fdc348ee90cfdbe5` has verified remote
+publication/readback and fresh GitHub-only restoration. The owner now authorizes
+only [F3 process-crash/replacement qualification](main-run-fence-f3-plan.md).
+Reuse accepted F1/F2 evidence; new controlled process cuts, no old mass cohorts.
+No F3 runtime/build/test changes yet. Independent Sol6.1/xhigh plan review precedes
+execution. Four F2 Windows-only refusals expose actual Linux browser rollback
+publication debt; exact IDs/cause and remaining T031-BROWSER-ROLLBACK-LINUX are
+tracked outside F3. No silent storage migration or positive Windows claim.
+
+## Accepted T041-RUN-FENCE-F2 controlled source/evidence PASS
 
 Owner accepted F1 `f4e7621fe85c7aa0393552708d28eec4bfe36d8f` and authorized only F2. Runtime source `6202426f0db8197d12b72f2ce111dd4a0c8f490f` has independent actual Sol6.1/xhigh source PASS. Actual original pipe/client/helper pins span participating C#/PowerShell consumers, actual lease disposal and SessionOperationContext finalization. Durable Stopping revokes ordinary mutation; original closing is no-recovery/no-write. Loss before receipt retains Unresolved; receipt retirement survives lost reply. No replay or mint from status/JSON/PID. Both real browser Load inputs publish the complete same-response bundle under the original quiescent guard.
 
 Independent bounded F2 evidence PASS at5037f1a9:129 distinct actual PASS across F2 checkpoints (24 Linux original-owner guardian cases,57 frontend,48 other managed/inert PowerShell); final carrier publication/restoration remains the writer closure step. All24 latest guardians reached ECHILD with emergency/failure/deadline0. Four unchanged native-Windows legacy rollback publication tests are unqualified here; their observed Linux refusals are retained. Preparation failures/invalid passes and one dirty preparation snapshot are excluded. Exact counts, hashes and classifications: [qualification](recovery/main-run-fence-f2-qualification.json), [run index](recovery/main-run-fence-f2-run-index.json), [handoff](main-run-fence-f2-handoff.md).
 
-F1's accepted84-case owner/persistence evidence and R1–R3/input/terminal evidence are reused by source identity; unrelated cohorts were not replayed. FullT041/F3, production/public game-writing launch, ordinary launcher/live provider/real saves/cold guarantees remain unqualified. Primary systemd-user is a separate required stage; manager absent here, no setup or positive qualification. Windows ConPTY/Job source preserved; native Windows unqualified. Product stop/load/fresh-start UX remains a later decision; existing low-level refusal suffices for F2.
+F1's accepted84-case owner/persistence evidence and R1–R3/input/terminal evidence are reused by source identity; unrelated cohorts were not replayed. FullT041, production/public game-writing launch, ordinary launcher/live provider/real saves/cold guarantees remain unqualified. Primary systemd-user is a separate required stage; manager absent here, no setup or positive qualification. Windows ConPTY/Job source preserved; native Windows unqualified. Product stop/load/fresh-start UX remains a later decision; existing low-level refusal suffices for F2.
 
 ## Owned main terminal: bounded neutral PASS; final carrier handoff
 

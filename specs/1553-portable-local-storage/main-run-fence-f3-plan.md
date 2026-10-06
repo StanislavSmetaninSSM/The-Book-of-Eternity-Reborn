@@ -1,0 +1,54 @@
+# T041-RUN-FENCE-F3 process crash and replacement qualification
+
+> Executor: use Superpowers executing-plans/TDD, Spec Kit and bridge. Sole writer
+> Sol6.1/xhigh; independent Sol6.1/xhigh plan and final review. No Astra.
+
+**Source issue:** [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553). **Accepted base:** `8b0c416e1ec5c132d82776b4fdc348ee90cfdbe5`, accepted F1 `f4e7621f`, design `0658e440`. The owner authorizes F3 only. Existing schema1 record, original neutral terminal and actual F2 pin/lease consumers remain the implementation. This plan refines the accepted design; it creates no new journal, launch admission, gameplay or UX policy.
+
+## Reuse and scope
+
+Reuse accepted F1 84-case and F2 129-case evidence, R1–R3 and T041/T042 carriers by source identity. Do not repeat warm owner/metadata faults, pipe protocol permutations, frontend refresh or inert PowerShell consumers that F2 already qualified. New evidence must kill an actual owned application/client process at a controlled boundary and use a new process for cold admission. Qualification probes of existing behavior may pass initially; only a causally reproduced runtime defect warrants an implementation correction and RED→GREEN. Preparation/fixture defects are separate.
+
+Only fresh isolated roots and the admitted fixed neutral CLI. No real saves, game-writing/provider/ordinary launcher, systemd setup, Windows execution, network/security changes, power-loss, reboot salvage, cold exactly-once or final stop/load/fresh-start UX. The guardian is an independent physical cleanup authority; ECHILD never erases logical Uncertain. No old input replay or repeated unknown effects.
+
+## Minimal gap matrix (sequential cohorts)
+
+| Cohort | Still missing from F1/F2 | Controlled cut and evidence |
+|---|---|---|
+| A — launch | Actual application death at initialization/Prepared, held creation, Running and release | Separate owner child uses actual BridgeHost. Existing metadata/held-root observations block before the selected boundary. Witness kills only that original Process. Five cuts: initialized namespace before Prepared; durable Prepared before creation; actual held root before Running; durable Running before single release; released neutral root. Fresh reader proves exact nonmutating cold refusal, no canonical/epoch changes, no replay and no replacement. Check fixture output proves release only in the last cut. |
+| B — original operation | Actual client death before receipt versus after ClosedObserved and reply | Real pipe accept loop and original GmMainOperationClient in separate participating process. Compare death before close receipt, after coordinator has ClosedObserved but before reply, and after validated reply. First remains Unresolved/Uncertain despite cleanup; latter two preserve established result and can only proceed through real scoped stop. Exact callback count/result and original pin identity; no retry/mint. |
+| C — stop and fresh epoch | Actual death at durable Stopping, physical stop with pending I/O, disposal and Stopped ACK | Hold actual output destination to prove Stopping persists after root exit while I/O drain is incomplete. Crash at Stopped staging (actual disposal already complete) leaves nonterminal/debt refusal. Crash after exact Stopped readback has sealed original stop proof but warm ACK debt: live guard blocks a competing actor; after owner death a new process may admit only a fresh epoch, never restore the old owner/input. Confirmed stop is paired with a fresh process/replacement. Stop reply failure cannot undo a proven receipt/stop. |
+| D — replacement and conjunction | New-process exact canonical and typed replacement outcomes | On stopped isolated root, fresh processes exercise actual Load Committed, RolledBack and Uncertain through existing publication fault seams, compare complete targeted canonical before/after bytes and generation, and retain debt where required. Separate unresolved worker inventory and retained storage decision still refuse admission despite valid Stopped; independent conditions are never inferred from main record alone. Fresh epoch requires all conditions. |
+
+Cuts share immutable packages only; each test has its own mutable root/processes/streams. Avoid a Cartesian matrix. Add a case only for a specific unproved boundary or a causally found defect. Do not substitute record fabrication for original connected launch/stop/pin evidence. Fixture seeding of separately qualified worker/storage conditions is identified as such, not worker requalification.
+
+### Stopped interpretation and review focus
+
+The accepted design requires durable sealed stop proof after actual scoped empty, I/O and disposal. Warm pending publication ACK retains original authority and refuses replacement; an exact valid terminal record read by a new process describes completed stop and permits only new admission, subject to worker/storage conditions. It never revives an old pin. Review this boundary against the implementation before executing C, particularly late authority/error observation and absorbing Uncertain; if a real ambiguity cannot be proved safe, preserve refusal rather than manufacture a cold guarantee. Late authority faults after terminal proof are not treated as permission to overwrite or clear evidence.
+
+## Tasks and verification
+
+1. Source-delta plan review; reconcile spec/tasks/status and record Linux browser debt below. Publish ordinary checkpoint/remote byte readback before review. Expected: independent DESIGN PASS or addressed concrete findings; no test runs.
+2. Add focused crash witness/child driver to TestSupport and narrow Linux categories structurally in `tests/categories.json`/selection. Reuse actual native guardian/package and BridgeHost observations, original input/output and pipe consumers. No session wrapper or synthetic replacement of original authority. Publish WIP before first long build/run.
+3. Execute A first, then B, C, D in small separately captured category runs via `scripts/test-csharp.ps1`. Expected: exact planned/completed identities, no skips, no deadline, guardian ECHILD/emergency0. Failed assertions require cause classification before the next block. Runtime correction requires watched causal RED, minimal fix and affected category GREEN; unchanged old cohorts remain reused.
+4. Source/evidence review on a published candidate: exact hashes, manifest/commands/TRX, observed counts, original identities, before/after snapshots, logical versus physical cleanup, four unavailable Windows IDs and actual Linux debt, sufficient bounded selection. Record unresolved limits without claiming full T041/#1553 or live Codex acceptance.
+5. Final verdict carrier and handoff, ordinary non-force push, exact remote SHA/changed bytes and fresh GitHub-only restore (SHA/tree/history/clean/fsck/all tracked bytes, no tests rerun there). Stop before production/backend/live stage.
+
+Actual environment checked before execution: SDK10.0.401; runtimes8.0.31 and10.0.12; PowerShell7.5.4; Debian GCC14.2.0-19. Spec Kit prerequisites resolved this feature with tasks. No package/service/configuration changes.
+
+## Real remaining Linux browser consumer — outside F3
+
+The four F2 unavailable IDs (catalog `gm-main-affected-browser-native-windows`) are:
+
+- `BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAsync_SessionReplacementWaitsForWholeLegacyTransaction`
+- `BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ConcurrentReplacementWaitsForCompleteTransaction`
+- `BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_LockReleaseFailureDoesNotRollbackCommittedMutation`
+- `BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ExplicitLeaseWritesWithoutAmbientAuthority`
+
+Original observed Linux execution:18 cases,14 PASS/4 FAIL; first two time out before callback, last two refuse with `Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.` They are not Windows PASS. Source delta confirms an actual Linux consumer debt: BrowserLocalWriteCoordinator stages ExplorerLocalTurnRollbackArtifacts before callback; rollback-root writes (and later recorder writes) bypass `UsesTrustedLocalWriter`, reach the unchanged Windows-only create/replace publication backend. Portable Load and its same-response UI refresh have separate accepted evidence and do not qualify ordinary browser rollback transactions.
+
+Tracked remaining task `T031-BROWSER-ROLLBACK-LINUX` must port these actual cooperating browser rollback/manifest/cleanup writes to the existing trusted-local-player publication contract, preserve typed committed/rollback/uncertain and main+worker+generation conjunction, without protecting saves from the player. F3 will retain the IDs/cause/debt in handoff, not silently implement that storage migration.
+
+## Execution ledger
+
+Plan WIP; no F3 runtime changes/builds/tests yet. Independent plan review pending. Sole writer uses this ledger and immutable evidence carriers as continuity; historical plan entries do not authorize later stages. No GM-authored capability/schema/prompt changes, so GM guides/examples need no update for this neutral qualification slice.

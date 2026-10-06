@@ -26,14 +26,18 @@ No decoded terminal record/PID/EOF permits old-session continuation. Clear/load/
 replacement/generation-changing recovery require quiescent main; active in-generation
 rollback/save/finalization requires original live capability and current generation.
 Retain epoch outside replaceable game_state; no second journal or protection from
-the player editing saves. The owner accepted design `0658e440` and authorized only
-F1 connected neutral durable owner/fence: same original fixed terminal, schema1
+the player editing saves. The owner accepted design `0658e440`, F1 `f4e7621f` and F2
+`8b0c416e`, and now authorizes F3 bounded process-crash/replacement qualification
+under [the source-delta plan](main-run-fence-f3-plan.md). F1 connects neutral durable owner/fence: same original fixed terminal, schema1
 Prepared/Running/Stopping/Stopped ACK ordering, isolated root and actual common
 filesystem gates. An admitted held storage decision may settle before persisted
 revocation; unknown owner/I/O/debt never authorizes replacement or a fresh epoch.
 This is client-owned neutral infrastructure, with no new GM prompt/schema/example
-or game-writing capability. F2 separate client pins and F3 process-crash/replacement
-qualification remain unauthorized. Systemd remains a separate required backend
+or game-writing capability. Accepted F2 supplies original participating pipe pins
+and actual consumers. F3 retains cold nonterminal refusal, original receipt/stop
+evidence, fresh epoch only after proven stop and independent worker/storage gates.
+Actual Linux browser rollback publication debt is tracked as
+T031-BROWSER-ROLLBACK-LINUX outside F3. Systemd remains a separate required backend
 stage; no environment/service changes, public rollout, real saves, provider or
 reboot/power-loss/cold guarantees. Later stop/load/fresh-start UX is unchanged.
 
