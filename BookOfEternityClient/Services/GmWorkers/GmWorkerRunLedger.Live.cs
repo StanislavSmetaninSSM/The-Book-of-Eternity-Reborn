@@ -5,7 +5,34 @@ namespace BookOfEternityClient.Services.GmWorkers;
 internal sealed partial class WorkerRunLedgerCoordinator
 {
     private readonly Dictionary<string, GmWorkerDurableExecution> _executions = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, WorkerRunEntryHandle> _liveEntries = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, GmWorkerDurableExecution> _preparedOwners = new(StringComparer.Ordinal);
     private GmWorkerDurableExecution.Mutation? _livePending;
+    internal void ClaimOriginalExecution(GmWorkerDurableExecution execution)
+    {
+        _gate.Wait();
+        try
+        {
+            if (!_liveEntries.TryGetValue(execution.Identity.RunId, out var entry) || !ReferenceEquals(entry, execution.Entry) ||
+                _preparedOwners.TryGetValue(execution.Identity.RunId, out var owner) && !ReferenceEquals(owner, execution))
+                throw new InvalidOperationException("Prepared entry already belongs to another original execution.");
+            _preparedOwners[execution.Identity.RunId] = execution;
+        }
+        finally { _gate.Release(); }
+    }
+    internal async Task<WorkerLedgerMutationResult> RetryPreparedAsync(GmWorkerDurableExecution execution)
+    {
+        await _gate.WaitAsync();
+        try
+        {
+            if (_disposed || _authorityLost || _livePending != null || _pending?.Phase != WorkerRunPhase.Prepared ||
+                !ReferenceEquals(_pending.Entry, execution.Entry) ||
+                !_preparedOwners.TryGetValue(execution.Identity.RunId, out var owner) || !ReferenceEquals(owner, execution))
+                return new(WorkerLedgerMutationKind.Blocked);
+            return Commit(_pending, _storage.RetryPending);
+        }
+        finally { _gate.Release(); }
+    }
     internal bool VerifyAdmission(bool requireQuiescent = false, bool allowUncertain = false) =>
         InspectAdmission(requireQuiescent, allowUncertain) == true;
     // null is unresolved metadata, distinct from permanent authority loss.
@@ -28,7 +55,8 @@ internal sealed partial class WorkerRunLedgerCoordinator
         try
         {
             _observeLive?.Invoke(WorkerLedgerIoStage.BeforeLiveRegistration);
-            if (_disposed || _pending != null || !_ownedEntries.TryGetValue(execution.Identity.RunId, out var original) ||
+            if (_disposed || _pending != null || !_preparedOwners.TryGetValue(execution.Identity.RunId, out var owner) ||
+                !ReferenceEquals(owner, execution) || !_ownedEntries.TryGetValue(execution.Identity.RunId, out var original) ||
                 !ReferenceEquals(original, execution.Entry) || !VerifyCurrent() || !_executions.TryAdd(execution.Identity.RunId, execution))
                 throw new InvalidOperationException("Only one original live execution may bind a Prepared entry.");
         }
@@ -41,7 +69,7 @@ internal sealed partial class WorkerRunLedgerCoordinator
         while (true)
         {
             var sequence = Sequence;
-            var result = await PrepareAsync(preparation, sequence);
+            var result = await PrepareCoreAsync(preparation, sequence, forLiveExecution: true, CancellationToken.None);
             if (result.Kind != WorkerLedgerMutationKind.Blocked || Sequence == sequence) return result;
         }
     }

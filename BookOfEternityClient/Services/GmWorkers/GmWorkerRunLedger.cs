@@ -104,7 +104,8 @@ internal sealed partial class WorkerRunLedgerCoordinator : IAsyncDisposable
         await _gate.WaitAsync(cancellationToken);
         try
         {
-            if (_disposed || _authorityLost || _pending is null) return new(WorkerLedgerMutationKind.Blocked);
+            if (_disposed || _authorityLost || _pending is null || _livePending != null ||
+                _pending.Entry is { } entry && _liveEntries.ContainsKey(entry.Identity.RunId)) return new(WorkerLedgerMutationKind.Blocked);
             cancellationToken.ThrowIfCancellationRequested();
             return Commit(_pending, _storage.RetryPending);
         }
@@ -144,6 +145,7 @@ internal sealed partial class WorkerRunLedgerCoordinator : IAsyncDisposable
         try
         {
             if (_disposed || _pending is not null || _authorityLost || _state is null || entry is null ||
+                _liveEntries.ContainsKey(entry.Identity.RunId) ||
                 !_ownedEntries.TryGetValue(entry.Identity.RunId, out var original) || !ReferenceEquals(original, entry))
                 return WorkerLedgerMutationKind.Blocked;
             cancellationToken.ThrowIfCancellationRequested();
@@ -181,8 +183,11 @@ internal sealed partial class WorkerRunLedgerCoordinator : IAsyncDisposable
         { storage?.Dispose(); return Task.FromResult<WorkerRunLedgerCoordinator?>(null); }
     }
 
-    internal async Task<WorkerLedgerMutationResult> PrepareAsync(WorkerRunPreparation preparation, long expectedSequence,
-        CancellationToken cancellationToken = default)
+    internal Task<WorkerLedgerMutationResult> PrepareAsync(WorkerRunPreparation preparation, long expectedSequence,
+        CancellationToken cancellationToken = default) => PrepareCoreAsync(preparation, expectedSequence, false, cancellationToken);
+
+    private async Task<WorkerLedgerMutationResult> PrepareCoreAsync(WorkerRunPreparation preparation, long expectedSequence,
+        bool forLiveExecution, CancellationToken cancellationToken)
     {
         await _gate.WaitAsync(cancellationToken);
         try
@@ -200,6 +205,7 @@ internal sealed partial class WorkerRunLedgerCoordinator : IAsyncDisposable
             }
             catch (Exception error) when (GmWorkerRunLedger.Unavailable(error)) { return new(WorkerLedgerMutationKind.Blocked); }
             var entry = new WorkerRunEntryHandle(record.Identity);
+            if (forLiveExecution) _liveEntries.Add(record.Identity.RunId, entry);
             return Commit(new(next, GmWorkerRunLedgerCodec.Encode(next), entry, WorkerRunPhase.Prepared, expectedSequence),
                 () => _storage.PublishPrepared(_stateBytes!, record));
         }

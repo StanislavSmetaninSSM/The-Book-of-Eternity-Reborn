@@ -738,7 +738,7 @@ public sealed class GmWorkerBridgePool
                 {
                     if (!_fs.IsCurrentSessionGeneration(preparedLease, task.SessionGeneration))
                         throw new InvalidOperationException("Worker generation changed before Prepared.");
-                    durableExecution = await rootExecutionLease!.Context.PrepareAsync(rootExecutionLease, task, taskBytes, workspace.GameSessionPath);
+                    durableExecution = await rootExecutionLease!.Context.PrepareAsync(rootExecutionLease, task, taskBytes, workspace);
                     rootExecutionLease.RetainForCleanup();
                     await durableExecution.EnsurePreparedAsync();
                     _fs.EnsureCanonicalWriteLeaseActive(preparedLease);

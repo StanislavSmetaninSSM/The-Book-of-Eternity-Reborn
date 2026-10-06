@@ -272,6 +272,18 @@ checks premature retirement with retained actual workspace, R1 Abort/Start/live 
 bypass and actual pool stop attempt on native status loss. Native fixture retains
 its independent late-stop safety fallback, so missing pool attempt can be causal RED
 without guardian emergency cleanup. New scaffold unbuilt/unrun, runtime unchanged.
+Cleanup RED at `9c6c1df7abb2e1b192f0d6dbb9f3d19c6e514f79`:5/5 causal FAIL,
+48.6547130s, fresh build/complete selection and cleanup/no timeout. All five guardians
+ECHILD/exit0/reap1, no emergency/failure/deadline. Baseline prematurely retired with
+actual workspace retained, admitted R1 Abort/Start, ACKed live plan via generic retry
+and skipped actual pool bounded stop. Evidence:
+recovery/evidence/worker-r2-cleanup-red/manifest.json. Added original workspace binding,
+once-bound cleanup owner and phase-checked private completion instance for retirement.
+R2 entries are claimed before Prepared publication; generic R1 transitions/retry deny
+them, while only the retained original execution retries Prepared/live metadata.
+Cleanup attempts original stop first and still validates/persists metadata after any
+stop error. Completion facts freeze before terminal retry; Uncertain remains absorbing.
+Fresh GREEN pending:5 cleanup +5 affected boundary +1 normal lifecycle.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

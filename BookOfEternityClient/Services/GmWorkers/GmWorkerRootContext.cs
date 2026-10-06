@@ -137,14 +137,14 @@ internal sealed class GmWorkerRootContext
         }
     }
     internal async Task<GmWorkerDurableExecution> PrepareAsync(GmWorkerRootExecutionLease lease,
-        WorkerTaskPacket task, byte[] bytes, string workspace)
+        WorkerTaskPacket task, byte[] bytes, GmWorkerExecutionWorkspace workspace)
     {
         RequireOpen();
         var coordinator = _coordinator ?? throw new InvalidOperationException("Legacy mode has no durable execution authority.");
         var result = await coordinator.PrepareCurrentAsync(new(task.SessionGeneration, task.WorkerId, task.TaskId,
-            GmWorkerRunLedgerCodec.Hash(bytes), WorkerRunBackend.LinuxNativeLineage, WorkerRunScope.OrdinarySamePidNamespace, workspace));
+            GmWorkerRunLedgerCodec.Hash(bytes), WorkerRunBackend.LinuxNativeLineage, WorkerRunScope.OrdinarySamePidNamespace, workspace.GameSessionPath));
         if (result.Entry == null) throw new InvalidOperationException("Worker Prepared reservation was refused.");
-        var execution = GmWorkerDurableExecution.RetainPrepared(coordinator, lease, result, task, bytes);
+        var execution = GmWorkerDurableExecution.RetainPrepared(coordinator, lease, result, task, bytes, workspace);
         if (result.Kind == WorkerLedgerMutationKind.CommitPending) MarkMetadataPending(execution);
         return execution;
     }

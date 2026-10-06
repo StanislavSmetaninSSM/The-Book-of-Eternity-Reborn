@@ -12,6 +12,8 @@ internal sealed class GmWorkerDurableExecution
     private readonly GmWorkerRootExecutionLease _root;
     private readonly WorkerTaskPacket _task;
     private readonly byte[] _taskBytes;
+    private readonly GmWorkerExecutionWorkspace _workspace;
+    private GmWorkerQuarantinedExecution? _cleanupOwner;
     private readonly SemaphoreSlim _gate = new(1, 1);
     private WorkerRunRecord _record;
     private Mutation? _pending;
@@ -23,18 +25,20 @@ internal sealed class GmWorkerDurableExecution
     private byte[]? _boundAuditAppend;
 
     private GmWorkerDurableExecution(WorkerRunLedgerCoordinator coordinator, GmWorkerRootExecutionLease root,
-        WorkerRunEntryHandle entry, WorkerTaskPacket task, byte[] taskBytes, bool prepared)
+        WorkerRunEntryHandle entry, WorkerTaskPacket task, byte[] taskBytes, bool prepared, GmWorkerExecutionWorkspace workspace)
     {
         _coordinator = coordinator; _root = root; Entry = entry; _task = task; _taskBytes = taskBytes.ToArray();
         _record = new(2, entry.Identity, WorkerRunPhase.Prepared);
         _preparedAcknowledged = prepared;
+        _workspace = workspace;
     }
     internal static GmWorkerDurableExecution RetainPrepared(WorkerRunLedgerCoordinator coordinator,
-        GmWorkerRootExecutionLease root, WorkerLedgerMutationResult prepared, WorkerTaskPacket task, byte[] bytes)
+        GmWorkerRootExecutionLease root, WorkerLedgerMutationResult prepared, WorkerTaskPacket task, byte[] bytes,
+        GmWorkerExecutionWorkspace workspace)
     {
         if (prepared.Entry is null || prepared.Kind is not (WorkerLedgerMutationKind.Applied or WorkerLedgerMutationKind.CommitPending))
             throw new InvalidOperationException("Prepared authority was not retained.");
-        return new(coordinator, root, prepared.Entry, task, bytes, prepared.Kind == WorkerLedgerMutationKind.Applied);
+        return new(coordinator, root, prepared.Entry, task, bytes, prepared.Kind == WorkerLedgerMutationKind.Applied, workspace);
     }
     internal WorkerRunEntryHandle Entry { get; }
     internal WorkerRunIdentity Identity => Entry.Identity;
@@ -59,9 +63,10 @@ internal sealed class GmWorkerDurableExecution
     internal async Task EnsurePreparedAsync()
     {
         if (_registered) return;
+        _coordinator.ClaimOriginalExecution(this);
         if (!_preparedAcknowledged)
         {
-            var result = await _coordinator.RetryPendingAsync();
+            var result = await _coordinator.RetryPreparedAsync(this);
             if (result.Kind != WorkerLedgerMutationKind.Applied || !ReferenceEquals(result.Entry, Entry))
                 throw new IOException("Prepared commit is still pending; original cleanup capacity is retained.");
             _preparedAcknowledged = true;
@@ -203,11 +208,21 @@ internal sealed class GmWorkerDurableExecution
         else RequireBound();
     }
 
-    internal async Task RetireAsync(bool quarantined, WorkerAuditEvent audit)
+    internal void BindCleanupOwner(GmWorkerQuarantinedExecution owner, GmWorkerExecutionWorkspace? workspace,
+        GmWorkerExecutionAuthority authority)
+    {
+        if (_cleanupOwner != null || !ReferenceEquals(workspace, _workspace) || !ReferenceEquals(authority, Authority))
+            throw new InvalidOperationException("Cleanup owner must retain the original execution, workspace and authority.");
+        _cleanupOwner = owner;
+    }
+
+    internal async Task RetireAsync(GmWorkerQuarantinedExecution.CleanupCompletion completion)
     {
         await _gate.WaitAsync();
         try
         {
+            if (_cleanupOwner == null || completion == null || !completion.BelongsTo(_cleanupOwner, this, _workspace))
+                throw new InvalidOperationException("Only completed original cleanup can authorize retirement.");
             if (_retirementAcknowledged) return;
             await EnsurePreparedAsync();
             await RetryOriginalPendingAsync();
@@ -222,8 +237,9 @@ internal sealed class GmWorkerDurableExecution
                 throw new IOException("Publication boundary is unresolved; terminal cleanup cannot accept or discard it.");
             if (_record.Phase == WorkerRunPhase.Retired || _record.Phase == WorkerRunPhase.AbortedBeforeLaunch)
             { _retirementAcknowledged = true; return; }
-            if (quarantined && _boundAudit != AuditFacts(audit)) throw new InvalidOperationException("Terminal audit facts do not match original cleanup.");
-            _cleanup ??= quarantined ? AuditFacts(audit) : new(false, null, null);
+            if (completion.Facts.RequiredAudit && _boundAudit != completion.Facts)
+                throw new InvalidOperationException("Terminal audit facts do not match original cleanup.");
+            _cleanup ??= completion.Facts;
             var progress = new WorkerRunProgress(_record.Progress?.Publication, _cleanup);
             if (!_startAttempted)
             {

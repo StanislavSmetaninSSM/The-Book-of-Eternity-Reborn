@@ -26,7 +26,7 @@ internal static partial class NativePoolScenarioDriver
         { ContextFiles = [new WorkerFileReference { Path = RestartContextPath, Sha256 = GmWorkerRunLedgerCodec.Hash(RestartContextBytes) }] };
         var workspace = GmWorkerExecutionWorkspace.PlanCreation(fs, task, hooks: null, Path.Combine(output, "detached"));
         var execution = await context.PrepareAsync(retained, task,
-            Encoding.UTF8.GetBytes(GmWorkerJson.Serialize(task)), workspace.GameSessionPath);
+            Encoding.UTF8.GetBytes(GmWorkerJson.Serialize(task)), workspace);
         await execution.EnsurePreparedAsync();
         await workspace.CreateRetainingAuthorityAsync(fs, task, CancellationToken.None);
         var coordinator = (WorkerRunLedgerCoordinator)typeof(GmWorkerDurableExecution)

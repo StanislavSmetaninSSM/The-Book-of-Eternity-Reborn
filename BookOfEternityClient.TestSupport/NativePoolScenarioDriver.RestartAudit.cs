@@ -28,8 +28,9 @@ internal static partial class NativePoolScenarioDriver
         context = GmWorkerRootContext.Attach(fs, durable: true, observer: null);
         using var retained = context.Enter();
         var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
+        var workspace = GmWorkerExecutionWorkspace.PlanCreation(fs, task, hooks: null, Path.Combine(output, "detached"));
         var execution = await context.PrepareAsync(retained, task,
-            Encoding.UTF8.GetBytes(GmWorkerJson.Serialize(task)), Path.Combine(output, "never-started-workspace"));
+            Encoding.UTF8.GetBytes(GmWorkerJson.Serialize(task)), workspace);
         await execution.EnsurePreparedAsync();
         var audit = new WorkerAuditEvent
         {
