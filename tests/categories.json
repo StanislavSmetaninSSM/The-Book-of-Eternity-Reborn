@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "browser-rollback-linux",
+      "responsibility": "#1553 T031 actual bootstrapped Linux browser coordinator backup/manifest/recorder/rollback/cleanup positive oracles",
+      "excludes": "No native Windows/live browser/provider/real saves/Load UX or broad browser cohort. Historical four F2 IDs remain unpassed.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager",
+        "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts",
+        "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-main-production-admission",
       "responsibility": "M1 ordinary configured production admission, retained original worker/storage conjunction, real live console bootstrap/health and inert daemon/turn/QTE/repair consumers; native scoped stop and Uncertain",
       "excludes": "No neutralPackage bypass, provider/Codex Q1/Q2, real saves, helpers enabled, Auto/systemd/native Windows/cold guarantees or browser rollback migration.",

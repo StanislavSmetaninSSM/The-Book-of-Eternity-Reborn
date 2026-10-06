@@ -152,3 +152,11 @@ Current ordinary-save acceptance is `ddaade72`; historical WIN/V1/CREATE entries
 - [ ] T053 Deliver reproducible Windows owner-run checklist, explicit unverified items and verified remote recovery checkpoint
 
 Dependencies: R0 before B1; B1 before B2; B2 before B3; B4 investigation may run in parallel, but shared-state edits are serialized. Every bounded code block uses RED/GREEN, current category selection, remote WIP before lengthy tests/review, independent review and verified publication. A checked task requires inspected implementation/evidence, not an agent report alone.
+
+### Load UX decision — accepted 2026-10-06 21:11 UTC
+
+The user accepted automatic stop on Load, followed by fresh GM launch only after
+confirmed stop and confirmed successful load. Uncertain stop/load must halt automatic
+continuation with a clear message. Never resume the old session or replay an unknown
+command. Implement in a separate next slice; T031 retains existing low-level refusal.
+No new provider/model request or GM model change is authorized by this decision.
