@@ -139,6 +139,12 @@ internal sealed partial class BridgeHost : IDisposable
     private Task<TerminalStopEvidence>? _terminalStopTask;
     private Task? _terminalDisposeTask;
     private bool _terminalUncertain;
+    private TerminalScreen? _terminalScreen;
+    private TerminalViewObservation CaptureTerminalView()
+    {
+        lock (_sync) { var view = _terminalScreen?.Capture() ?? new("", 0, "", false);
+            return view with { Reliable = view.Reliable && !_terminalUncertain && _inputLifetime is { Revoked: false } input && input.Id == view.BindingId }; }
+    }
     private Stream? _ptyInput;
     private Task? _outputPumpTask;
     private Task? _keyboardPumpTask;
@@ -423,8 +429,9 @@ internal sealed partial class BridgeHost : IDisposable
         lock (_sync) { if (_pty != null || _terminalUncertain) throw new InvalidOperationException("Original terminal owner is retained."); _pty = session; }
         var shellLoopCts = new CancellationTokenSource();
         var input = BeginInputLifetime(session.InputWriter, shellLoopCts);
+        lock (_sync) { _terminalScreen = new(input.Id); _promptScreenReader = () => { var view=CaptureTerminalView(); return view.Reliable ? view.Text : ""; }; }
         // Output has its own lifetime: revoking input must not discard final terminal bytes.
-        _outputPumpTask = Task.Run(() => PumpOutputAsync(session.OutputReader, output, CancellationToken.None));
+        _outputPumpTask = Task.Run(async () => { try { await PumpOutputAsync(session.OutputReader, output, CancellationToken.None); } catch { MarkTerminalUncertain(); throw; } });
         _keyboardPumpTask = Task.Run(() => PumpKeyboardAsync(input, ReadConsoleKeyAsync, shellLoopCts.Token));
         _resizePumpTask = Task.Run(() => PumpResizeAsync(shellLoopCts.Token));
         lock (_sync) { _status.ShellPid = session.Identity.RootPid; _status.Backend = session.Identity.Backend; _status.State = "OperatorNotReady"; WriteStatusFile(); }
@@ -546,6 +553,7 @@ internal sealed partial class BridgeHost : IDisposable
             _ptyInput = null;
             _terminalStopTask = null;
             _terminalDisposeTask = null;
+            _terminalScreen = null;
         }
     }
 
@@ -920,6 +928,8 @@ internal sealed partial class BridgeHost : IDisposable
 
     private async Task PumpOutputAsync(Stream outputReader, Stream consoleWriter, CancellationToken cancellationToken)
     {
+        TerminalScreen? screen;
+        lock (_sync) screen = _terminalScreen;
         var buffer = new byte[4096];
         var decoder = Encoding.UTF8.GetDecoder();
         var characters = new char[Encoding.UTF8.GetMaxCharCount(buffer.Length)];
@@ -934,6 +944,7 @@ internal sealed partial class BridgeHost : IDisposable
                 var finalCount = decoder.GetChars(buffer, 0, 0, characters, 0, flush: true);
                 if (finalCount > 0)
                     RecordOutputChunk(characters, finalCount, hasByteActivity: false);
+                lock (_sync) screen?.Fault();
                 return;
             }
 
@@ -943,6 +954,7 @@ internal sealed partial class BridgeHost : IDisposable
             var count = decoder.GetChars(buffer, 0, read, characters, 0, flush: false);
             // A partial scalar is still byte activity, even when it produces no text yet.
             RecordOutputChunk(characters, count, hasByteActivity: true);
+            lock (_sync) { if (ReferenceEquals(_terminalScreen, screen)) screen?.Feed(buffer.AsSpan(0, read), characters.AsSpan(0,count)); }
         }
     }
 

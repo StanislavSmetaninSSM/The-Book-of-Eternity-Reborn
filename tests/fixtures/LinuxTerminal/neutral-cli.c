@@ -12,7 +12,7 @@
 /* Fixed inert CLI: input is text, never a shell command/GM/save operation. */
 static volatile sig_atomic_t resized;
 static void winch(int unused) { (void)unused; resized = 1; }
-static void view(const char *draft) { dprintf(1, "\033[2J\033[HNEUTRAL READY\r\n> %s <\r\n", draft); }
+static void view(const char *draft) { dprintf(1, "\033[2J\033[HNEUTRAL READY\r\n> %s\r\n", draft); }
 int main(void) {
     alarm(8);
     if (!isatty(0) || !isatty(1) || !isatty(2) || tcgetsid(0) != getpid() || tcgetpgrp(0) != getpid()) return 78;
@@ -23,7 +23,7 @@ int main(void) {
     struct sigaction sa = { .sa_handler = winch }; sigemptyset(&sa.sa_mask);
     if (sigaction(SIGWINCH, &sa, NULL)) return 81;
     dprintf(1, "TTY_READY owned=1 pid=%d sid=%d\r\n", getpid(), getsid(0)); view("");
-    char draft[4096] = {0}; size_t used = 0; int submitted = 0; bool canonical = false;
+    char draft[4096] = {0}; size_t used = 0; int submitted = 0; bool canonical = false, paste = false; char escape[8] = {0}; size_t escape_used = 0;
     for (;;) {
         if (resized) {
             resized = 0; struct winsize size;
@@ -45,13 +45,25 @@ int main(void) {
             view(""); continue;
         }
         for (ssize_t i = 0; i < count; i++) {
-            if (bytes[i] == '\r' || bytes[i] == '\n') {
+            if (escape_used || bytes[i] == '\033') {
+                if (escape_used >= sizeof escape - 1) return 89;
+                escape[escape_used++] = bytes[i]; escape[escape_used] = 0;
+                if (!strcmp(escape, "\033[200~")) { paste = true; escape_used=0; }
+                else if (!strcmp(escape, "\033[201~")) { paste = false; escape_used=0; }
+                else if (bytes[i] == '~') return 90;
+                continue;
+            }
+            if (!paste && (bytes[i] == 127 || bytes[i] == 8)) {
+                if (used) { do { used--; } while (used && ((unsigned char)draft[used] & 0xc0) == 0x80); draft[used]=0; }
+                continue;
+            }
+            if (!paste && (bytes[i] == '\r' || bytes[i] == '\n')) {
                 draft[used] = 0;
                 if (!strcmp(draft, "canonical")) {
                     struct termios cooked = raw; cooked.c_lflag |= ICANON; cooked.c_cc[VEOF] = 4;
                     if (tcsetattr(0, TCSANOW, &cooked)) return 87;
                     canonical = true; dprintf(1, "CANONICAL_READY\r\n");
-                } else { dprintf(1, "NEUTRAL WORKING\r\nRESULT%d:%s\r\n", ++submitted, draft); usleep(50000); view(""); }
+                } else { dprintf(1, "\033[2J\033[HNEUTRAL WORKING\r\nRESULT%d:%s\r\n", ++submitted, draft); usleep(300000); view(""); }
                 used = 0; draft[0] = 0;
             } else if (used < sizeof draft - 1) { draft[used++] = bytes[i]; draft[used] = 0; }
             else return 88;

@@ -10,6 +10,7 @@ internal sealed partial class BridgeHost
     private readonly SemaphoreSlim _promptGate = new(1, 1);
     private readonly Dictionary<string, PromptOperation> _promptOperations = new(StringComparer.Ordinal);
     private Func<string> _promptScreenReader = ReadVisibleConsoleText;
+    private long PromptObservationVersion => _terminalScreen != null ? CaptureTerminalView().Revision : _outputVersion;
     private bool _automaticInputPaused;
     private int _admittedPrompts;
     private const int PromptRetentionLimit = 256;
@@ -152,7 +153,7 @@ internal sealed partial class BridgeHost
             }
             var profile = operation.Snapshot.Profile;
             long version;
-            lock (_sync) version = _outputVersion;
+            lock (_sync) version = PromptObservationVersion;
             var text = operation.Snapshot.Text.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", profile.NewlineSequence);
             await WriteToPtyAsync(operation.Input, profile.PasteStart + text + profile.PasteEnd, false, token);
             lock (_sync) operation.Phase = PromptDeliveryPhase.AwaitingPaste;
@@ -165,7 +166,7 @@ internal sealed partial class BridgeHost
                 if (!IsPastedView(profile, _promptScreenReader(), text))
                     return FinishPrompt(operation, PromptDeliveryDisposition.DraftUncertain, "paste-view-changed", watch.ElapsedMilliseconds);
                 operation.Phase = PromptDeliveryPhase.SubmitStarted;
-                version = _outputVersion;
+                version = PromptObservationVersion;
             }
             await WriteToPtyAsync(operation.Input, profile.SubmitSequence, false, token);
             lock (_sync) operation.Phase = PromptDeliveryPhase.AwaitingSubmission;
@@ -231,7 +232,7 @@ internal sealed partial class BridgeHost
             lock (_sync)
             {
                 if (!PromptStillOwned(operation)) throw new OperationCanceledException(token);
-                if (_outputVersion > afterVersion && predicate(_promptScreenReader())) return true;
+                if (PromptObservationVersion > afterVersion && predicate(_promptScreenReader())) return true;
             }
             await Task.Delay(10, token);
         }
