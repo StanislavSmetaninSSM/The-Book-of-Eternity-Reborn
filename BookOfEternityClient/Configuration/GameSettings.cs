@@ -67,9 +67,12 @@ public class GameSettings
     /// </summary>
     public string GmBridgePasteVisibilityPolicy { get; set; } = BookOfEternityClient.Configuration.GmBridgePasteVisibilityPolicy.ExactTextOrConfiguredMarker;
     /// <summary>
-    /// Max seconds the GM bridge waits for a CLI prompt to render the pasted text or collapsed paste marker before pressing Enter.
+    /// Explicit controlled live-owner input profile. Empty defaults do not qualify an arbitrary live CLI.
     /// </summary>
     public GmCliInputProfile GmCliInputProfile { get; set; } = new();
+    /// <summary>
+    /// Legacy visibility timeout retained for the dormant visibility-policy helpers.
+    /// </summary>
     public double GmBridgePromptVisibilityTimeoutSeconds { get; set; } = 15;
     /// <summary>
     /// CLI-specific markers that prove a large pasted prompt was accepted even when the terminal collapses the text.

@@ -282,12 +282,15 @@ internal sealed partial class BridgeHost : IDisposable
         }
         catch (Exception ex)
         {
+            // The handler may throw before the normal response deadline is armed.
+            using var errorDeadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            errorDeadline.CancelAfter(TimeSpan.FromSeconds(3));
             await WriteMessageAsync(server, new BridgeResponse
             {
                 Ok = false,
                 Error = ex.Message,
                 Status = SnapshotStatus()
-            }, cancellationToken);
+            }, errorDeadline.Token);
         }
         return true;
     }

@@ -5851,6 +5851,7 @@ function Process-Turn {
             }
 
             if ($dispatchDiagnostics.Status -eq "bridge-dispatch-timeout") {
+                if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
                 $script:ErrorCount++
                 Write-Log "  GM bridge did not accept dispatch before the dispatch timeout; emitting daemon terminal error." -Level "ERROR" -Color Red
                 $missingHarnessTool = "gm_bridge_dispatch_unavailable"
@@ -5890,6 +5891,7 @@ function Process-Turn {
         }
 
         # Wait for terminal signal
+        if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
         $elapsed = 0
         $artifactWriteStallWatchState = @{}
         $outputWithoutTerminalWatchState = New-GmOutputWithoutTerminalWatchState
@@ -5898,6 +5900,8 @@ function Process-Turn {
             Start-Sleep -Seconds 1
             $elapsed++
 
+            # The old invocation cannot act on replacement bytes, even if snapshot context still matches.
+            if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
             if (!(Test-Path $RequestPath)) {
                 Write-Log "  Turn cancelled by client" -Level "WARN" -Color Yellow
                 break
@@ -5910,8 +5914,10 @@ function Process-Turn {
             }
 
             $terminalSignal = Get-CorrelatedTerminalSignal -TurnRequest $turnRequest -CompletionPath $completionPath -ErrorPath $errorPath
+            if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
 
             if ($null -eq $terminalSignal -and $elapsed % 15 -eq 0 -and (Test-GmBridgeReturnedIdleWithoutTerminalSignal -ElapsedSeconds $elapsed)) {
+                if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
                 $script:ErrorCount++
                 Write-Log "  GM bridge returned to idle without a correlated terminal signal; emitting daemon terminal error instead of waiting for full timeout." -Level "ERROR" -Color Red
                 $missingHarnessTool = "gm_bridge_idle_without_terminal_signal"
@@ -5935,11 +5941,13 @@ function Process-Turn {
 
             if ($null -eq $terminalSignal -and $elapsed % 15 -eq 0) {
                 $payloadStall = Test-GmOutputWithoutTerminalSignal -ElapsedSeconds $elapsed -WatchState $outputWithoutTerminalWatchState
+                if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
                 if ($null -ne $payloadStall -and $payloadStall.isStalled) {
                     $script:ErrorCount++
                     Write-Log "  GM wrote turn payload files without a correlated terminal signal; emitting daemon terminal error before indefinite wait." -Level "ERROR" -Color Red
                     $missingHarnessTool = "gm_output_without_terminal_signal"
                     $payloadCleanup = Stop-GmBridgeAfterTurnTimeout -TurnRequest $turnRequest -ElapsedSeconds $elapsed -Reason "gm_output_without_terminal_signal"
+                    if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
                     $payloadStall | Add-Member -NotePropertyName timeoutBridgeCleanup -NotePropertyValue $payloadCleanup -Force
                     [void](Write-DaemonJsonFileBestEffort -Path $OutputWithoutTerminalReportFile -Payload $payloadStall -Depth 10)
                     $payloadTerminalSignal = @{
@@ -5963,11 +5971,13 @@ function Process-Turn {
                 }
 
                 $artifactStall = Test-GmBridgeArtifactWritingStall -ElapsedSeconds $elapsed -WatchState $artifactWriteStallWatchState
+                if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
                 if ($null -ne $artifactStall -and $artifactStall.isStalled) {
                     $script:ErrorCount++
                     Write-Log "  GM bridge appears stalled while preparing turn artifacts; emitting daemon terminal error before full timeout." -Level "ERROR" -Color Red
                     $missingHarnessTool = "gm_bridge_artifact_write_stall"
                     $artifactCleanup = Stop-GmBridgeAfterTurnTimeout -TurnRequest $turnRequest -ElapsedSeconds $elapsed -Reason "gm_bridge_artifact_write_stall"
+                    if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
                     $artifactStall | Add-Member -NotePropertyName timeoutBridgeCleanup -NotePropertyValue $artifactCleanup -Force
                     [void](Write-DaemonJsonFileBestEffort -Path $ArtifactWriteStallReportFile -Payload $artifactStall -Depth 10)
                     $artifactTerminalSignal = @{
@@ -5997,11 +6007,13 @@ function Process-Turn {
         }
 
         if ($TurnTimeout -gt 0 -and $elapsed -ge $TurnTimeout -and $null -eq $terminalSignal) {
+            if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
             $script:ErrorCount++
             Write-Log "  Timeout after ${elapsed}s" -Level "ERROR" -Color Red
             $dispatchDiagnostics.Timeout = $true
             $missingHarnessTool = "gm_turn_timeout"
             $timeoutBridgeCleanup = Stop-GmBridgeAfterTurnTimeout -TurnRequest $turnRequest -ElapsedSeconds $elapsed
+            if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
             $timeoutSignal = @{
                 sessionId = $turnRequest.sessionId
                 requestId = $turnRequest.requestId

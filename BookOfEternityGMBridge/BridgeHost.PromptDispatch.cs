@@ -46,6 +46,7 @@ internal sealed partial class BridgeHost
                     s.Text != request.Text || s.Submit != request.AppendEnter)
                     return PromptResponse(PromptResult(request, PromptDeliveryDisposition.NotWritten, "identity-conflict"));
                 // Only a proven zero-write availability rejection can be attempted again with the same frozen operation.
+                var readmitted = false;
                 if (retained.Result?.Disposition == PromptDeliveryDisposition.NotWritten &&
                     retained.Result.Reason == "not-ready" && ReferenceEquals(_inputLifetime, retained.Input) &&
                     !retained.Input.Revoked && !_automaticInputPaused && _admittedPrompts < 2)
@@ -55,8 +56,9 @@ internal sealed partial class BridgeHost
                     retained.Result = null;
                     retained.Phase = PromptDeliveryPhase.Queued;
                     AdmitPrompt(retained);
+                    readmitted = true;
                 }
-                if (!retained.Task.IsCompleted)
+                if (!readmitted && !retained.Task.IsCompleted)
                     return PromptResponse(retained.Result ?? OperationResult(retained, null, "in-progress"));
                 task = retained.Task;
             }

@@ -69,6 +69,7 @@ public sealed class GmDaemonPromptDeliveryTests
         {
             Assert.Single(result.GetProperty("commands").EnumerateArray());
             Assert.Equal(allowedStops, result.GetProperty("stops").GetInt32());
+            Assert.Equal(allowedStops, result.GetProperty("errorCount").GetInt32());
             Assert.Equal(0, result.GetProperty("readyFiles").GetInt32());
             Assert.Empty(result.GetProperty("observed").EnumerateArray());
             Assert.True(result.GetProperty("pending").GetBoolean());

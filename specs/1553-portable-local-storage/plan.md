@@ -118,6 +118,12 @@ Do not repeat untouched INPUT37/OUTPUT48 or worker/native cohorts.
   Corrected ambiguity fixture now PASS. No preparation/fixture failures, runner
   timeout/skips/duplicates; both owned cleanups complete.
   [Residual causal evidence](recovery/evidence/t042-residual-causal-red/manifest.json).
+  Minimal fixes now WIP: only the request that re-admits proven zero-write availability
+  awaits its new task; pending duplicates still return immediately. Error responses
+  get their own linked three-second deadline, including pre-response handler errors.
+  Ordinary turn waits recheck the frozen packet around observations and after mockable
+  Stop before old report/terminal publication. No native Stop authority changed.
+  Late-fixture assertions also reject incidental errors; fresh GREEN remains unrun.
 - [ ] Connect typed launcher/daemon/ordinary/QTE/repair outcomes, no ambiguity replay.
 - [ ] Focused fresh GREEN and discovery; exact source/binary/artifact evidence.
 - [ ] Independent Sol source/evidence PASS, ordinary publication/readback and fresh restore.
