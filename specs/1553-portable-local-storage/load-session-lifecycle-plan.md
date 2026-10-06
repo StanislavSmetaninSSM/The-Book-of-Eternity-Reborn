@@ -83,3 +83,7 @@ Real browser basic and HTTP full-bundle/current ACK/fresh epoch passed2/2, inclu
 ### Console isolated archive diagnosis
 
 At clean ebdf6b99 the console case1FAIL confirms Committed but correctly refuses refresh due nine missing required fixture artifacts (Mortal item index/player status/lore). Inert input and logger produced exact codes; no runtime validator changes. Guardian ECHILD/0emergency/failures/deadline. [Evidence](recovery/evidence/load-ux-console-fixture-validation/manifest.json). Complete only the positive console fixture archive and rerun that exact case.
+
+### Independent source-review causal gaps
+
+Pinned ebdf independent Sol identified premature null-generation completion before full bundle, malformed fresh receipt navigation and cleanup-debt launch mismatch. Added actual HTTP early-ACK oracle and real frontend malformed/lost receipt oracles before fixes. Console fixture schema refinements affect only isolated archive, not runtime. New causal tests pending; no completion claim.

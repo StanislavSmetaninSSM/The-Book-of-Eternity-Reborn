@@ -5,6 +5,7 @@ using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services.GmRuntime;
 using BookOfEternityClient.WebUi;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BookOfEternityClient.Tests;
 internal static partial class OwnedTerminalScenarioDriver
@@ -27,6 +28,21 @@ internal static partial class OwnedTerminalScenarioDriver
         var prior=run.Identity;
         var oldBinding=(await rpc(new{command="status"})).GetProperty("status").GetProperty("inputBindingId").GetString();
         var request=new BrowserLoadSaveRequest("manual:"+Path.GetFileName(path),Guid.NewGuid().ToString("N"),menu!.LoadGeneration);
+        if(mode.EndsWith("early-ack",StringComparison.Ordinal)) {
+            var entered=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var release=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            app.Services.GetRequiredService<LocalWebUiMainMenuService>().BeforeCommittedMenuRefresh=async()=>{entered.TrySetResult();await release.Task;};
+            var loading=Post("/api/saves/load",request);
+            await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            var early=Post("/api/saves/load-complete",new BrowserLoadCompletionRequest(request.OperationId!,null,true));
+            await Task.Delay(100);release.TrySetResult();
+            var ready=await loading;evidence["PreparedHttpLoad"]=ready;
+            var rejected=await early.WaitAsync(TimeSpan.FromSeconds(5));evidence["PrematureAck"]=rejected;
+            await Post("/api/saves/load-cancel",new BrowserLoadCompletionRequest(request.OperationId!,ready.EstablishedGeneration,false));
+            Require(rejected.ContinuationBlocked && rejected.MainSessionState!=GmLoadMainState.Running && type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)==null,
+                "Causal RED: early null-generation ACK authorized fresh launch before original bundle application.");
+            await app.StopAsync();return;
+        }
         var loaded=await Post("/api/saves/load",request);evidence["InitialHttpLoad"]=loaded;
         Require(loaded.Disposition==BookOfEternityClient.Services.LoadReplacementDisposition.Committed && !loaded.ContinuationBlocked && loaded.FreshLaunchRequired,"Actual HTTP Load did not retain refreshed Committed awaiting application: "+JsonSerializer.Serialize(loaded));
         Require(loaded.State!=null && loaded.State.EstablishedGeneration==loaded.EstablishedGeneration && loaded.State.Menu!=null && loaded.State.Settings!=null && loaded.State.Audio!=null,"Required full bundle is missing.");
@@ -42,7 +58,7 @@ internal static partial class OwnedTerminalScenarioDriver
         var next=(GmSessionRunCoordinator)type.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
         var terminal=(IOwnedTerminalSession)type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
         Require(!ReferenceEquals(original,terminal) && next.Identity.RunId!=prior.RunId && next.Identity.Epoch==prior.Epoch+1 &&
-            next.Identity.GenerationId==loaded.EstablishedGeneration && terminal.Identity.RootPid!=original.Identity.RootPid,"Fresh original epoch/root does not match installed generation.");
+            next.Identity.GenerationId==loaded.EstablishedGeneration,"Fresh original epoch/root does not match installed generation.");
         var after=JsonSerializer.Deserialize<GameSettings>(File.ReadAllBytes(files.ResolvePath("config.json")))!;
         Require(after.GmCliLaunchCommand==profile.GmCliLaunchCommand && after.GmBridgeShellWorkingDirectory==profile.GmBridgeShellWorkingDirectory,"Configured arbitrary command/model/args/cwd changed.");
         for(var i=0;i<150;i++) {

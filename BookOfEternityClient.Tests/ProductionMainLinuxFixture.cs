@@ -60,8 +60,8 @@ internal static class ProductionMainLinuxFixture
                 var extra=new Dictionary<string,string> {
                     ["game_state/core/player_status.json"]="{\"currentCondition\":\"neutral fixture\",\"money\":0}",
                     ["game_state/inventory/item_identity_index.json"]="{\"schemaVersion\":1,\"entries\":[]}",
-                    ["game_state/meta/achievements.json"]="{\"achievements\":[]}",
-                    ["lore/codex_entries.json"]="{\"entries\":[]}"
+                    ["game_state/meta/achievements.json"]="{\"unlockedAchievements\":[]}",
+                    ["lore/codex_entries.json"]="{\"entries\":[],\"categories\":[],\"totalEntries\":0}"
                 };
                 foreach(var name in new[]{"cultures","geography","history","threats","world_setting"})extra["lore/current_world/"+name+".json"]="{\"fixture\":\"neutral\"}";
                 foreach(var entry in extra) {
