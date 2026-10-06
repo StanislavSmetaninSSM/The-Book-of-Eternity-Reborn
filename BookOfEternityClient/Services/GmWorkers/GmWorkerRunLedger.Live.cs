@@ -6,12 +6,16 @@ internal sealed partial class WorkerRunLedgerCoordinator
 {
     private readonly Dictionary<string, GmWorkerDurableExecution> _executions = new(StringComparer.Ordinal);
     private GmWorkerDurableExecution.Mutation? _livePending;
-    internal bool VerifyAdmission(bool requireQuiescent = false, bool allowUncertain = false)
+    internal bool VerifyAdmission(bool requireQuiescent = false, bool allowUncertain = false) =>
+        InspectAdmission(requireQuiescent, allowUncertain) == true;
+    // null is unresolved metadata, distinct from permanent authority loss.
+    internal bool? InspectAdmission(bool requireQuiescent = false, bool allowUncertain = false)
     {
         _gate.Wait();
         try
         {
-            return !_disposed && _pending == null && _state != null && VerifyCurrent() &&
+            if (_pending != null && !_authorityLost && !_disposed) return null;
+            return !_disposed && _state != null && VerifyCurrent() &&
                 (!requireQuiescent || _state.Entries.Length == 0) && _state.Entries.All(record =>
                     (allowUncertain || record.Phase != WorkerRunPhase.Uncertain) &&
                     _ownedEntries.TryGetValue(record.Identity.RunId, out var entry) && entry.Identity == record.Identity);

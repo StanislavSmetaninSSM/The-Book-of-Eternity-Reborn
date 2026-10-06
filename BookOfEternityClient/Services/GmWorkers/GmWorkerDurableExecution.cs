@@ -143,18 +143,18 @@ internal sealed class GmWorkerDurableExecution
     {
         if (_record.Phase == WorkerRunPhase.PublicationIntent) Context.MarkMetadataPending(this);
     }
+    internal void MarkCleanupDeferred() => Context.MarkCleanupDeferred(this);
     internal async Task RequireCleanupAuthorityAsync()
     {
-        if (!IsUncertain) return;
         await _gate.WaitAsync();
         try
         {
             await EnsurePreparedAsync();
             await RetryOriginalPendingAsync();
-            if (_record.Phase != WorkerRunPhase.Uncertain) await MoveUnderGateAsync(WorkerRunPhase.Uncertain, _record.Progress);
+            if (IsUncertain && _record.Phase != WorkerRunPhase.Uncertain) await MoveUnderGateAsync(WorkerRunPhase.Uncertain, _record.Progress);
         }
         finally { _gate.Release(); }
-        throw new InvalidOperationException("Execution uncertainty retains its original quarantine and capacity.");
+        if (IsUncertain) throw new InvalidOperationException("Execution uncertainty retains its original quarantine and capacity.");
     }
 
     internal GmWorkerCanonicalPurpose ReleasePurpose() => new(this, GmWorkerCanonicalOperation.Release, null);
@@ -231,6 +231,7 @@ internal sealed class GmWorkerDurableExecution
     internal void ReleaseRootAfterCleanup()
     {
         if (!_retirementAcknowledged) throw new InvalidOperationException("Retirement ACK is required before releasing root capacity.");
+        Context.ClearCleanupDeferred(this);
         _root.ReleaseAfterCleanup();
     }
     private void RequireBound()
@@ -273,12 +274,12 @@ internal sealed class GmWorkerDurableExecution
         private readonly WorkerRunRecord _before;
         internal WorkerRunRecord After { get; }
         internal WorkerRunIdentity Identity => _before.Identity;
-        private Mutation(GmWorkerDurableExecution execution, WorkerRunRecord before, WorkerRunRecord after)
+        internal Mutation(GmWorkerDurableExecution execution, WorkerRunRecord before, WorkerRunRecord after)
         { _execution = execution; _before = before; After = after; }
         internal bool BelongsTo(GmWorkerDurableExecution execution) => ReferenceEquals(_execution, execution) && ReferenceEquals(execution._pending, this);
         internal WorkerRunRecord ApplyTo(WorkerRunRecord current)
         {
-            if (current != _before || current.Identity != After.Identity || current.Phase == WorkerRunPhase.Uncertain ||
+            if (!BelongsTo(_execution) || current != _before || current.Identity != After.Identity || current.Phase == WorkerRunPhase.Uncertain ||
                 !Allowed(current, After)) throw GmWorkerRunRecordCodec.Invalid();
             _ = GmWorkerRunRecordCodec.Encode(After); return After;
         }

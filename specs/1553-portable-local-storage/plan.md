@@ -142,6 +142,14 @@ Start, lease-held single Release, publication ACK before live success, exact ter
 archive ACK before workspace/root/slot release. Restart drivers now explicitly select
 the durable route. Added two frozen Prepared cleanup syntax cases. Fresh preparation
 and initial integration checks pending; this checkpoint is unbuilt and unreviewed.
+First connected preparation at `dad93ac8fa3db4996763468ca3c4fa34ceb9523d` stopped
+in build on CS0122 for the nested Mutation constructor:0 executed,55.4942678s,
+cleanup complete/no timeout. Constructor now internal but ApplyTo requires reference
+equality with the one private original pending plan; constructed records cannot
+create authority. Evidence: recovery/evidence/worker-r2-connected-preparation/manifest.json.
+Added separate cleanup-deferred root refusal and early exact metadata retry by the
+original cleanup owner; pending metadata cannot accidentally latch execution loss.
+Intermediate independent Sol source review is running; fresh initial checks pending.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

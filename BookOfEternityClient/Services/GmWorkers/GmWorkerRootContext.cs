@@ -9,7 +9,7 @@ internal sealed class GmWorkerRootContext
     private readonly CanonicalRootIdentity _root;
     private readonly WorkerRunLedgerCoordinator? _coordinator;
     private readonly WorkerLegacyFixtureOwner? _legacy;
-    private readonly HashSet<GmWorkerDurableExecution> _pending = [];
+    private readonly HashSet<GmWorkerDurableExecution> _pending = [], _cleanupDeferred = [];
     private int _closed;
     private int _clients, _executions;
     private bool _disposed;
@@ -68,13 +68,17 @@ internal sealed class GmWorkerRootContext
     }
     private void TryDispose()
     {
-        if (_disposed || _clients != 0 || _executions != 0 || Volatile.Read(ref _closed) != 0 || _pending.Count != 0) return;
+        if (_disposed || _clients != 0 || _executions != 0 || Volatile.Read(ref _closed) != 0 || _pending.Count != 0 || _cleanupDeferred.Count != 0) return;
         if (_coordinator != null && !_coordinator.VerifyAdmission(requireQuiescent: true)) return;
         _coordinator?.DisposeAsync().AsTask().GetAwaiter().GetResult(); _legacy?.Dispose(); _disposed = true;
         // Keep the closed registration until another explicit matching admission
         // reopens the original namespace. An unbound FS cannot remove the fence.
     }
     internal void CloseForUncertainty() => Interlocked.Exchange(ref _closed, 1);
+    internal void MarkCleanupDeferred(GmWorkerDurableExecution execution)
+    { lock (_root.WorkerContextGate) _cleanupDeferred.Add(execution); }
+    internal void ClearCleanupDeferred(GmWorkerDurableExecution execution)
+    { lock (_root.WorkerContextGate) _cleanupDeferred.Remove(execution); }
     internal void MarkMetadataPending(GmWorkerDurableExecution execution)
     { lock (_root.WorkerContextGate) _pending.Add(execution); }
     internal void ClearMetadataPending(GmWorkerDurableExecution execution)
@@ -83,11 +87,16 @@ internal sealed class GmWorkerRootContext
     {
         lock (_root.WorkerContextGate)
         {
-            if (_disposed || Volatile.Read(ref _closed) != 0 || _pending.Count != 0)
+            if (_disposed || Volatile.Read(ref _closed) != 0 || _pending.Count != 0 || _cleanupDeferred.Count != 0)
                 throw new InvalidOperationException("This worker root is closed while original authority or metadata is unresolved.");
             if (_coordinator != null)
             {
-                if (!_coordinator.VerifyAdmission()) { CloseForUncertainty(); throw new InvalidOperationException("Worker ledger authority is no longer current."); }
+                var observed = _coordinator.InspectAdmission();
+                if (observed != true)
+                {
+                    if (observed == false) CloseForUncertainty();
+                    throw new InvalidOperationException("Worker ledger authority or metadata is unresolved.");
+                }
             }
             else
             {
@@ -106,7 +115,7 @@ internal sealed class GmWorkerRootContext
             if (!Durable || !ReferenceEquals(purpose.Execution.Context, this) || _coordinator == null ||
                 _pending.Count != 0 || !_coordinator.VerifyAdmission(allowUncertain: purpose.Operation == GmWorkerCanonicalOperation.ConfirmedCleanupAudit))
                 throw new InvalidOperationException("Original worker purpose has no current journal authority.");
-            if (purpose.Operation != GmWorkerCanonicalOperation.ConfirmedCleanupAudit && Volatile.Read(ref _closed) != 0)
+            if (purpose.Operation != GmWorkerCanonicalOperation.ConfirmedCleanupAudit && (Volatile.Read(ref _closed) != 0 || _cleanupDeferred.Count != 0))
                 throw new InvalidOperationException("Worker root closed before canonical operation.");
             purpose.Execution.ValidatePurpose(purpose);
             if (purpose.Operation != GmWorkerCanonicalOperation.ConfirmedCleanupAudit &&

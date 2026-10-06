@@ -51,7 +51,11 @@ internal sealed class GmWorkerQuarantinedExecution : IGmWorkerQuarantineOwner
     }
 
     public string Identity { get; }
-    internal void RetainForRetry() { if (_durable?.TerminalPlanFrozen != true) _quarantined = true; }
+    internal void RetainForRetry()
+    {
+        _durable?.MarkCleanupDeferred();
+        if (_durable?.TerminalPlanFrozen != true) _quarantined = true;
+    }
 
     public async Task<GmWorkerCleanupEvidence> ConfirmDeathAsync()
     {
