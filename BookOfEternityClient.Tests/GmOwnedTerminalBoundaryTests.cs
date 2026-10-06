@@ -124,6 +124,7 @@ public sealed class GmOwnedTerminalBoundaryTests
         internal bool Reliable=>(bool)Invoke("CaptureTerminalView")!.GetType().GetProperty("Reliable")!.GetValue(Invoke("CaptureTerminalView"))!;
         internal OwnedHost()
         {
+            Directory.CreateDirectory(_scratch); // The inert fixture owns preparation; bridge startup has no pre-admission effects.
             var configuration=new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
             _type=Assembly.LoadFrom(Path.Combine(TestRepoPaths.RepoRoot,"BookOfEternityGMBridge/bin",configuration,"net8.0/BookOfEternityGMBridge.dll")).GetType("BookOfEternityGMBridge.BridgeHost",true)!;
             _host=Activator.CreateInstance(_type,[_scratch,"unused-"+Guid.NewGuid().ToString("N")])!;
