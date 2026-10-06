@@ -51,8 +51,15 @@ uses existing cancellable canonical wait budget, fast read-only denial of cold
 nonterminal evidence never grants authority. Fresh connected82/82PASS at
 `a874fb5d3c82bdaf2c605db38a6bde103acd0a1f` (portable49+Linux33). Exact profile fixture
 added without runtime change; fresh portable50/50PASS at
-`39362ff85cb1f8e9cfa68819787d2292ce2ae662`. Final coverage83distinct (portable50+Linux33),
-not132distinct. All26 connected guardians ECHILD/emergency0/failures0/deadlinefalse;
+`39362ff85cb1f8e9cfa68819787d2292ce2ae662`. At that checkpoint coverage83distinct (portable50+Linux33), not132distinct.
+Independent review then identified only the accepted post-A1 Started-ACK coverage gap.
+One negative uses the existing observation seam on actual original Started bytes;
+no positive owner/stop evidence is injected. Fresh Linux34/34PASS at
+`da3ffc6fa7a93bb89d8e81ee4d5e2c533b51c1f6` closes that gap, same partial owner,
+A1 consumed once, actual pipe input refusal, absorbing uncertainty/non-Stopped and
+no replay; all27 guardians ECHILD/emergency0/failures0/deadlinefalse.
+Final coverage84distinct: portable50+Linux34; no portable repeat for this negative-only
+helper/test change and no unrelated cohorts. All26 connected guardians ECHILD/emergency0/failures0/deadlinefalse;
 runner selection complete/skips0/owned cleanup complete. SDK10.0.401/runtime8.0.31,
 PowerShell7.5.4/GCC14.2.0-19 actually observed. No Windows native or systemd qualification.
 

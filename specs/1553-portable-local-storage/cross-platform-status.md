@@ -12,10 +12,11 @@ One original neutral owner now consumes schema1 main.json, durable transition AC
 real FileSystemManager pre-recovery/held-lease gates. No second journal. Fixed isolated
 inert CLI only; cooperating cold nonterminal/clear/Load refuses, original in-generation
 operations settle, Uncertain/metadata debt retain owner, completed stop precedes new epoch.
-83distinct focused PASS: portable50 at39362ff8 plus unchanged-runtime Linux33 ata874fb5d.
-26connected guardians ECHILD, emergency/failure/deadline0; unrelated cohorts not replayed.
+84distinct focused PASS: portable50 at39362ff8 plus finalLinux34 atda3ffc6f.
+Actual post-A1 Started-ACK negative retains original owner/input closed/non-Stopped.
+27latest guardians ECHILD, emergency/failure/deadline0; unrelated cohorts not replayed.
 [Qualification and hashes](recovery/main-run-fence-f1-qualification.json) ·
-[handoff](../1553-portable-local-storage/main-run-fence-f1-handoff.md).
+[handoff](main-run-fence-f1-handoff.md).
 Independent final Sol6.1/xhigh source/evidence review and final publication/restoration
 pending. FullT041 and F2/F3 remain open; stop before F2. Separate-client/daemon pins,
 ordinary launcher/live GM/production Release/real saves/cold behavior remain unqualified.

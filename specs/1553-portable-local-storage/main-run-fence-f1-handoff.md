@@ -1,7 +1,7 @@
 # T041-RUN-FENCE-F1 handoff
 
 Accepted design0658e440; only connected neutral durable owner/fence is authorized.
-Runtime candidate39362ff85cb1f8e9cfa68819787d2292ce2ae662. Independent final review pending.
+Runtime candidate da3ffc6fa7a93bb89d8e81ee4d5e2c533b51c1f6. Independent final review pending.
 
 The original held terminal consumes the existing schema1 main.json: Prepared before
 creation, actual identity and Running durable ACK before one release. One coordinator/
@@ -12,10 +12,12 @@ publication can settle. Scoped stop, actual input/managed loops/I/O/disposal and
 required for retirement and next epoch. Separate worker/storage gates and narrow cleanup
 remain independent. No serialized record, PID or EOF reconstructs live authority.
 
-Verification: 83distinct PASS through scripts/test-csharp.ps1, only new
+Verification: 84distinct PASS through scripts/test-csharp.ps1, only new
 `gm-main-run-fence` and `gm-main-run-owner-linux` owners plus exact affected methods.
-Portable50 at39362ff8; Linux33 (connected full82PASS) ata874fb5d, runtime/native driver
-unchanged between these points.26guardian ECHILD/emergency0/failures0/deadlinefalse.
+Portable50 at39362ff8; finalLinux34 atda3ffc6f, after only the additional negative
+observation seam/test (no change to ordinary path).27latest guardian ECHILD/emergency0/
+failures0/deadlinefalse. Actual post-A1 Started ACK invalidation retains same owner,
+closes input via actual pipe and prevents confirmed Stopped/replay.
 Correct staged cut has causal RED→GREEN; BOM preconditions/compile preparation are
 separately labelled. Synthetic save/load archives exist only in isolated fixture roots.
 [Qualification](recovery/main-run-fence-f1-qualification.json) records commands, source

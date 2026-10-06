@@ -3,9 +3,9 @@
   "Task": "T041-RUN-FENCE-F1",
   "Branch": "codex/1553-load-filesystem",
   "AcceptedDesign": "0658e4405a4d0d958eb1b64b11b83956917fb81b",
-  "RuntimeCandidate": "39362ff85cb1f8e9cfa68819787d2292ce2ae662",
-  "NativeQualificationSource": "a874fb5d3c82bdaf2c605db38a6bde103acd0a1f",
-  "Status": "83 distinct focused PASS; independent final review pending",
+  "RuntimeCandidate": "da3ffc6fa7a93bb89d8e81ee4d5e2c533b51c1f6",
+  "NativeQualificationSource": "da3ffc6fa7a93bb89d8e81ee4d5e2c533b51c1f6",
+  "Status": "84 distinct focused PASS; independent final review pending",
   "Model": "gpt-6.1-sol",
   "ReasoningEffort": "xhigh",
   "Tools": {
@@ -17,9 +17,9 @@
   "SourceReferences": [
     {
       "Path": "BookOfEternityClient.TestSupport/MainRunFenceScenarioDriver.cs",
-      "GitBlob": "1c5abf077f1ca83d5e05eec7320ce92bf97d8e5d",
-      "Bytes": 34019,
-      "Sha256": "940d82005d265c9e57247cc1f0f44135b7d9a4ea961976a220dcd379b7148180"
+      "GitBlob": "435644e80992876d72ecbd0723b9662e25f25d75",
+      "Bytes": 37416,
+      "Sha256": "28fad4c248f775c8791fa638fed32e90961403c3d5014c9abe7577c62126021c"
     },
     {
       "Path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
@@ -41,9 +41,9 @@
     },
     {
       "Path": "BookOfEternityClient.Tests/GmMainRunOwnerLinuxTests.cs",
-      "GitBlob": "c3d5cae2a9c2d448691d0752c70fd01b2696cc34",
-      "Bytes": 1790,
-      "Sha256": "5b9c5f9d607dd228ed062528f4b29f4e5b2f411e6b2f3a8f745f44cf465cfed7"
+      "GitBlob": "cfa0746755455113744966169f20e1814fe59b3b",
+      "Bytes": 1959,
+      "Sha256": "633ab01ea12bf8271e9fdc90595e13c0f891c42996984da91979c655d466e92e"
     },
     {
       "Path": "BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs",
@@ -130,6 +130,12 @@
       "Sha256": "e13604183b559d6afcabc05ad19d676fd7dd4d52f2769d30fd0452dbd1f6967c"
     },
     {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeObservationFault.cs",
+      "GitBlob": "d318760cdac59ea7fa57d3913fe0eb9175d69f26",
+      "Bytes": 3176,
+      "Sha256": "1b424a44e7cd6e465714ecd5ae0f8d3b5a027027078b5ce869cae88fc3902300"
+    },
+    {
       "Path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
       "GitBlob": "40874a26d7576e61e8d0832fc2f7e7d427f2ff3d",
       "Bytes": 22418,
@@ -195,13 +201,19 @@
       "Passed": 82,
       "NativeSubsetPassed": 33,
       "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selections/1553-main-run-fence-f1-linux.json"
+    },
+    {
+      "Manifest": "evidence/t041-f1-release-ack-green/manifest.json",
+      "Source": "da3ffc6fa7a93bb89d8e81ee4d5e2c533b51c1f6",
+      "Passed": 34,
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-run-owner-linux"
     }
   ],
-  "DistinctPassed": 83,
-  "Reuse": "Final portable50 plus connected Linux33. From a874 to39362 runtime/native/fixture driver unchanged; only exact profile test/catalog and evidence changed. Native not replayed. No unrelated successful cohorts replayed.",
+  "DistinctPassed": 84,
+  "Reuse": "Final portable50 at39362ff8 plus finalLinux34 atda3ffc6f. Only test/negative-observation seam changed after portable50: default and prior fault behavior unchanged. Only Linux owner category replayed for explicit release-ACK negative; no unrelated cohort replay.",
   "GuardianSummary": {
-    "ConnectedGreenGuardians": 26,
-    "Echild": 26,
+    "LatestGreenGuardians": 27,
+    "Echild": 27,
     "EmergencySignals": 0,
     "Failures": 0,
     "Deadline": 0,
@@ -248,5 +260,9 @@
     "real user saves, cold exactly-once, reboot/power-loss salvage",
     "future product stop/load/fresh-start UX"
   ],
-  "StopBefore": "F2"
+  "StopBefore": "F2",
+  "ReleaseAckNegative": {
+    "NativeFolder": "b4f72618e82c4de0825a04f8d8f3d02d",
+    "Proof": "Actual Started frame invalidated by existing negative seam only after original A1 consumed once; same partial adapter/owner retained, actual pipe input refused, Uncertain/non-Stopped and replay denied; physical scope guardian ECHILD. This closes coverage gap; it does not repair an observed runtime defect."
+  }
 }

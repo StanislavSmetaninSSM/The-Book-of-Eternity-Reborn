@@ -1,0 +1,62 @@
+{
+  "Categories": [
+    "gm-main-run-owner-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "da3ffc6fa7a93bb89d8e81ee4d5e2c533b51c1f6",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 77.5274361,
+  "Descriptors": [
+    {
+      "Name": "gm-main-run-owner-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-run-owner-linux",
+      "Categories": [
+        "gm-main-run-owner-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.InitializationParentBarrier_IsReplayedBeforeRetryAck|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.ActualBridge_DurableOriginalOwnerBeforeInteractiveReleaseAndScopedRetirement|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.ReleasedOriginal_LostStartedAckRetainsAuthorityAndClosedInput|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.StagedIntent_SettlesOriginalBeforeDecision|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OwnedRoot_TwoUnicodeInputsResizeCanonicalEof_ExactScopedCleanup",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 34,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.InitializationParentBarrier_IsReplayedBeforeRetryAck",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.ActualBridge_DurableOriginalOwnerBeforeInteractiveReleaseAndScopedRetirement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ConnectedSettlement",
+          "Cases": 10
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_ReviewBoundary",
+          "Cases": 13
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.ReleasedOriginal_LostStartedAckRetainsAuthorityAndClosedInput",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.StagedIntent_SettlesOriginalBeforeDecision",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OwnedRoot_TwoUnicodeInputsResizeCanonicalEof_ExactScopedCleanup",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
