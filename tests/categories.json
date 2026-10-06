@@ -12806,6 +12806,30 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-restart-boundaries-linux",
+      "responsibility": "#1553 R2 original authority retention across partial workspace cleanup, publication/retirement ACK loss, Prepared registration failure and post-publication authority loss; actual isolated pool and independent guardian.",
+      "excludes": "No R3 crash permutations, public Linux Release, main PTY, live GM or real saves.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/",
+        "BookOfEternityClient.TestSupport/NativePoolScenarioDriver.RestartBoundaries.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

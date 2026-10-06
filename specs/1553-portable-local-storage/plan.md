@@ -174,6 +174,13 @@ already-minted success permit; fallible Prepared registration must occur after t
 original execution is retained by cleanup; foreign journal pending needs Busy rather
 than absorbing execution loss. Add bounded regression evidence and fix before final
 review/qualification. Broader approved R2 negative matrix remains pending.
+Next five-case boundary scaffold includes partial staging+cleanup failure, separate
+publication/retirement lost ACK, Prepared registration loss after ACK and late
+journal authority loss after Published. Negative-only hooks observe actual registration
+or fail actual workspace staging; they cannot mint positive evidence. It probes a
+second FS/pool and original lock retention after admission-client disposal, then
+retries original cleanup. Both actual consumer gates are checked before/after retry.
+These tests are unbuilt/unrun; reviewed defects remain intentionally unfixed for RED.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

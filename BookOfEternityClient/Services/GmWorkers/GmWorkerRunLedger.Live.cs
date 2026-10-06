@@ -27,6 +27,7 @@ internal sealed partial class WorkerRunLedgerCoordinator
         _gate.Wait();
         try
         {
+            _observeLive?.Invoke(WorkerLedgerIoStage.BeforeLiveRegistration);
             if (_disposed || _pending != null || !_ownedEntries.TryGetValue(execution.Identity.RunId, out var original) ||
                 !ReferenceEquals(original, execution.Entry) || !VerifyCurrent() || !_executions.TryAdd(execution.Identity.RunId, execution))
                 throw new InvalidOperationException("Only one original live execution may bind a Prepared entry.");

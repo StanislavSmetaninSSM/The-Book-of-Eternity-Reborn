@@ -13,7 +13,7 @@ internal enum WorkerLedgerMutationKind { Applied, AlreadyExact, Blocked, CommitP
 internal enum WorkerLedgerIoStage
 {
     RuntimeCreated, NamespaceCreated, OwnerCreated, JournalCreated, RetiredDirectoryCreated,
-    ModeFileFlushed, ModeDirectorySynced,
+    ModeFileFlushed, ModeDirectorySynced, BeforeLiveRegistration,
     BeforeStateWrite, StateWritten, StateFlushed, StateRenamed, StateDirectorySynced,
     BeforeArchiveWrite, ArchiveWritten, ArchiveFlushed, ArchiveDirectorySynced
 }
@@ -82,6 +82,7 @@ internal sealed partial class WorkerRunLedgerCoordinator : IAsyncDisposable
 {
     private readonly WorkerRunLedgerPersistence _storage;
     private readonly WorkerLedgerTarget _target;
+    private readonly Action<WorkerLedgerIoStage>? _observeLive;
     private readonly SemaphoreSlim _gate = new(1, 1);
     private bool _disposed, _authorityLost;
     private PendingMutation? _pending;
@@ -94,8 +95,8 @@ internal sealed partial class WorkerRunLedgerCoordinator : IAsyncDisposable
     private readonly HashSet<string> _startConsumed = new(StringComparer.Ordinal);
     private readonly Dictionary<string, long> _aborted = new(StringComparer.Ordinal);
     private WorkerRunLedgerCoordinator(WorkerRunLedgerPersistence storage, WorkerLedgerTarget target,
-        WorkerLedgerState? state, byte[]? bytes)
-    { _storage = storage; _target = target; _state = state; _stateBytes = bytes; }
+        WorkerLedgerState? state, byte[]? bytes, Action<WorkerLedgerIoStage>? observeLive)
+    { _observeLive = observeLive; _storage = storage; _target = target; _state = state; _stateBytes = bytes; }
 
     internal long Sequence => _state?.Sequence ?? 0;
     internal async Task<WorkerLedgerMutationResult> RetryPendingAsync(CancellationToken cancellationToken = default)
@@ -174,7 +175,7 @@ internal sealed partial class WorkerRunLedgerCoordinator : IAsyncDisposable
                 // R1 cannot adopt cold active entries. This is not a pool/root dispatch policy.
                 if (state.Entries.Length != 0) throw WorkerRunLedgerPersistence.Invalid();
             }
-            return Task.FromResult<WorkerRunLedgerCoordinator?>(new(storage, target, state, bytes));
+            return Task.FromResult<WorkerRunLedgerCoordinator?>(new(storage, target, state, bytes, observeIo));
         }
         catch (Exception error) when (GmWorkerRunLedger.Unavailable(error))
         { storage?.Dispose(); return Task.FromResult<WorkerRunLedgerCoordinator?>(null); }

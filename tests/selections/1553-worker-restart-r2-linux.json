@@ -32,6 +32,14 @@
         "#1553 T041-WORKER-RESTART-R2",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-restart-boundaries-linux",
+      "reason": "Bounded actual regressions for original authority/capacity and distinct publication versus retirement ACK loss.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
     }
   ]
 }

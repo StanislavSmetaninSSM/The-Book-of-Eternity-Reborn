@@ -16,6 +16,7 @@ internal static partial class NativePoolScenarioDriver
 
     internal static async Task<int> RunRestart(string mode, string package, string output)
     {
+        if (mode.StartsWith("restart-boundary-", StringComparison.Ordinal)) return await RunRestartBoundary(mode[17..], package, output);
         var root = Path.Combine(output, "state-copy");
         if (mode == "restart-seed-cold") return await SeedColdRestart(root, output);
         if (mode is not ("restart-cold-run" or "restart-happy-run")) return 64;
