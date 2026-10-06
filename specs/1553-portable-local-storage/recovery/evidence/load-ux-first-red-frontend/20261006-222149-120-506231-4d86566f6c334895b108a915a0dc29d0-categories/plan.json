@@ -1,0 +1,70 @@
+{
+  "Categories": [
+    "gm-load-session-lifecycle",
+    "browser-load-session-lifecycle"
+  ],
+  "Reasons": [
+    {
+      "category": "gm-load-session-lifecycle",
+      "reason": "T041 Load UX original production terminal stop/replacement/refresh/fresh epoch in isolated Linux roots and real entrypoints; new causal boundary only.",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction"
+      ]
+    },
+    {
+      "category": "browser-load-session-lifecycle",
+      "reason": "Actual launcher/settings Load handlers: immutable owner, complete refresh/fresh-launch receipt, stale/cancel/lost reply; new causal boundary only.",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "ed8aafb4e585affc0b9d06edd65f3ad2f0f3a5a5",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 96.100653,
+  "Descriptors": [
+    {
+      "Name": "browser-load-session-lifecycle-frontend-001",
+      "Project": "frontend",
+      "Category": "browser-load-session-lifecycle",
+      "Categories": [
+        "browser-load-session-lifecycle"
+      ],
+      "Filter": null,
+      "Adapter": "vitest",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-session-lifecycle-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-session-lifecycle",
+      "Categories": [
+        "gm-load-session-lifecycle"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserLoad_OriginalLiveOwnerStopsBeforeRealReplacement",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserLoad_OriginalLiveOwnerStopsBeforeRealReplacement",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

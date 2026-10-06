@@ -53,3 +53,9 @@ Proposed new category `gm-load-session-lifecycle`: real bridge pipe accept loop 
 This is an additive task within accepted #1553; do not run setup-plan over its existing plan or initialize another feature/branch. Constitution, existing spec/contracts/worker policy/trusted-local player contract remain governing. Optional `speckit.git.commit` before/after-plan hooks are satisfied by the explicit ordinary checkpoints; optional agent-context refresh is unnecessary because the existing #1553 pointer remains valid. No new configuration or install.
 
 Direct-gacha and standalone Daren Linux tasks remain open and separate. Pending debt for systemd-user, native Windows, real CLI Q1/Q2 and live gameplay remains unchanged.
+
+## Execution checkpoint — first causal RED
+
+Independent actual Sol6.1/xhigh PLAN PASS on `c91adc00267e131d0f0dc7676e5d222ccd2cfa0f` after focused Windows/restart amendments. Runtime remains accepted base. Clean tested source `ed8aafb4e585affc0b9d06edd65f3ad2f0f3a5a5`: actual GameLauncher/Settings handlers2/2FAIL (navigate before pending fresh receipt), actual installed production bridge → browser Load1/1FAIL (Running refusal instead of stop/replacement). Guardian ECHILD true, emergency0/failures0/deadlinefalse, actual original scoped retirement confirmed. Combined runner stopped after frontend failure: native case was separately executed with NoBuild after that exact fresh successful unit/dependency build.
+
+Three earlier zero-execution preparation failures (unsupported ResultsDirectory; selector files vs tests; frontend-relative vs repository-relative path) are not causal RED. Evidence: [frontend](recovery/evidence/load-ux-first-red-frontend/manifest.json), [native](recovery/evidence/load-ux-first-red-native/manifest.json). No provider/model requests. Next: minimal original connection/reservation + launch generation guard and actual consuming lifecycle.
