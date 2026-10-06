@@ -41,6 +41,124 @@ public sealed class GmBridgePromptOperationTests
         Assert.Empty(host.Input.Bytes);
     }
 
+    private static string? Disposition(JsonElement response) => response.GetProperty("promptDelivery").GetProperty("disposition").GetString();
+    private static object Control(PromptHostFixture host, string command, string id) => new
+    { command, operationId = id, operationKind = "turn", operationRevision = "revision-1", inputBindingId = host.BindingId };
+
+    [Fact]
+    public async Task TwoPromptsOneBinding_CustomSequences_OneSubmitEach()
+    {
+        await using var host = new PromptHostFixture();
+        var text = "one\ntwo";
+        host.Input.Written = bytes => host.Observe(bytes == "<submit>" ? "WORKING" : "CONTROLLED CLI\n› " + text);
+        Assert.Equal("submission-observed", Disposition(await host.Rpc(host.Request("first", text))));
+        host.Observe("CONTROLLED CLI\n› ");
+        Assert.Equal("submission-observed", Disposition(await host.Rpc(host.Request("second", text))));
+        Assert.Equal("<paste>one\ntwo</paste><submit><paste>one\ntwo</paste><submit>", Encoding.UTF8.GetString(host.Input.Bytes));
+        Assert.Equal(host.BindingId, (await host.Rpc(new { command = "status" })).GetProperty("status").GetProperty("inputBindingId").GetString());
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("unknown")]
+    [InlineData("CONTROLLED CLI\nAUTH\n› ")]
+    [InlineData("CONTROLLED CLI\nTRUST\n› ")]
+    [InlineData("CONTROLLED CLI\nUPDATE\n› ")]
+    public async Task UnsupportedOrBlockedView_WritesNothing(string screen)
+    {
+        await using var host = new PromptHostFixture();
+        host.Screen = screen;
+        Assert.Equal("not-written", Disposition(await host.Rpc(host.Request("blocked"))));
+        Assert.Empty(host.Input.Bytes);
+    }
+
+    [Fact]
+    public async Task PasteNeedsFreshObservation_TimeoutRetainsDraftAndPause()
+    {
+        await using var host = new PromptHostFixture();
+        // Matching text without a newer renderer observation is not proof of this paste.
+        host.Input.Written = _ => host.Screen = "CONTROLLED CLI\n› text";
+        Assert.Equal("draft-uncertain", Disposition(await host.Rpc(host.Request("first", "text"))));
+        host.Observe("CONTROLLED CLI\n› ");
+        Assert.False((await host.Rpc(new { command = "setReady", ready = true })).GetProperty("ok").GetBoolean());
+        Assert.Equal("not-written", Disposition(await host.Rpc(host.Request("other"))));
+        Assert.Equal("<paste>text</paste>", Encoding.UTF8.GetString(host.Input.Bytes));
+    }
+
+    [Fact]
+    public async Task DuplicateAndChangedBody_RetainOriginalWithoutRepaste()
+    {
+        await using var host = new PromptHostFixture();
+        host.Input.Written = bytes => host.Observe(bytes == "<submit>" ? "WORKING" : "CONTROLLED CLI\n› text");
+        Assert.Equal("submission-observed", Disposition(await host.Rpc(host.Request("same", "text"))));
+        Assert.Equal("submission-observed", Disposition(await host.Rpc(host.Request("same", "text"))));
+        var conflict = await host.Rpc(host.Request("same", "changed"));
+        Assert.Equal("identity-conflict", conflict.GetProperty("promptDelivery").GetProperty("reason").GetString());
+        Assert.Equal("<paste>text</paste><submit>", Encoding.UTF8.GetString(host.Input.Bytes));
+    }
+
+    [Theory]
+    [InlineData(false, "draft-uncertain")]
+    [InlineData(true, "unknown-outcome")]
+    public async Task PartialWrite_RecordsPhaseAndNeverReplays(bool submit, string expected)
+    {
+        await using var host = new PromptHostFixture();
+        host.Input.Fail = !submit;
+        host.Input.Written = bytes => { host.Observe("CONTROLLED CLI\n› text"); if (submit) host.Input.Fail = true; };
+        Assert.Equal(expected, Disposition(await host.Rpc(host.Request("partial", "text"))));
+        var count = host.Input.Bytes.Length;
+        Assert.Equal(expected, Disposition(await host.Rpc(host.Request("partial", "text"))));
+        Assert.Equal(count, host.Input.Bytes.Length);
+    }
+
+    [Fact]
+    public async Task ActualPipe_HeldPasteStatusQueueCancelOverflowAndRevoke()
+    {
+        await using var host = new PromptHostFixture();
+        host.Input.Hold = true;
+        var active = host.Rpc(host.Request("active", "text"));
+        await host.Input.Entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
+        var queued = host.Rpc(host.Request("queued"));
+        for (var i = 0; i < 100 && (int)host.Get("_admittedPrompts")! < 2; i++) await Task.Delay(10);
+        Assert.Equal(2, (int)host.Get("_admittedPrompts")!);
+        Assert.Equal("busy", (await host.Rpc(host.Request("overflow"))).GetProperty("promptDelivery").GetProperty("reason").GetString());
+        Assert.True((await host.Rpc(new { command = "status" }).WaitAsync(TimeSpan.FromSeconds(2))).GetProperty("ok").GetBoolean());
+        await host.Rpc(Control(host, "cancelPrompt", "queued")).WaitAsync(TimeSpan.FromSeconds(2));
+        Assert.Equal("queued-cancelled", Disposition(await queued.WaitAsync(TimeSpan.FromSeconds(2))));
+        host.Invoke("RevokeInputLifetime", host.Binding);
+        Assert.True((await host.Rpc(new { command = "status" }).WaitAsync(TimeSpan.FromSeconds(2))).GetProperty("ok").GetBoolean());
+        Assert.False(active.IsCompleted); // Revocation must retain the ignored-cancellation write.
+        host.Input.Release.TrySetResult(true);
+        Assert.Equal("draft-uncertain", Disposition(await active));
+        Assert.Equal("<paste>text</paste>", Encoding.UTF8.GetString(host.Input.Bytes));
+    }
+
+    [Theory]
+    [InlineData(false, "draft-uncertain")]
+    [InlineData(true, "unknown-outcome")]
+    public async Task ActualPipe_ManualTakeoverBeforeOrAfterSubmit(bool afterSubmit, string expected)
+    {
+        await using var host = new PromptHostFixture();
+        host.Input.Written = bytes => { if (afterSubmit && bytes.StartsWith("<paste>")) host.Observe("CONTROLLED CLI\n› text"); };
+        var active = host.Rpc(host.Request("takeover", "text"));
+        for (var i = 0; i < 150 && !(afterSubmit ? Encoding.UTF8.GetString(host.Input.Bytes).Contains("<submit>") : host.Input.Entered.Task.IsCompleted); i++) await Task.Delay(5);
+        Assert.Contains(afterSubmit ? "<submit>" : "<paste>", Encoding.UTF8.GetString(host.Input.Bytes));
+        var manual = host.Rpc(new { command = "addText", text = "manual" });
+        Assert.Equal(expected, Disposition(await active));
+        await manual;
+        Assert.Equal("<paste>text</paste>" + (afterSubmit ? "<submit>" : "") + "manual", Encoding.UTF8.GetString(host.Input.Bytes));
+    }
+
+    [Fact]
+    public async Task StaleBinding_IsZeroWriteAndCannotQueryAnotherBinding()
+    {
+        await using var host = new PromptHostFixture();
+        var stale = new { command = "dispatchPrompt", text = "text", operationId = "stale", operationKind = "turn",
+            operationRevision = "revision-1", inputBindingId = "other-binding" };
+        Assert.Equal("stale-binding", (await host.Rpc(stale)).GetProperty("promptDelivery").GetProperty("reason").GetString());
+        Assert.Empty(host.Input.Bytes);
+    }
+
     internal sealed class PromptHostFixture : IAsyncDisposable
     {
         internal static readonly string Repo = FindRepo();

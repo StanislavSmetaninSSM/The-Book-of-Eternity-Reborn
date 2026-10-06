@@ -37,6 +37,13 @@ Do not repeat untouched INPUT37/OUTPUT48 or worker/native cohorts.
   SDK10.0.401/runtime8.0.31/PowerShell7.5.4, no installation/native compiler use.
   Runtime unchanged; next implement consumed operation/typed transport.
 - [ ] Implement immutable live operation and actual RPC/manual/profile consumers.
+  WIP first consumed runtime block: partial existing BridgeHost; copied identity/body/profile,
+  one active+one pending, pre-submit linearization, retained typed phases/results,
+  manual arbitration, responsive bounded peer accepts, local lifetime drain.
+  Actual launcher sends one operation or queries its original identity after ambiguity;
+  daemon caches frozen pending bytes and pauses uncertain outcomes, QTE idle queries only.
+  Added controlled behavioral tests. Fresh build/GREEN and independent review not yet run;
+  altered source guards and remaining inert consumer scenarios are still pending.
 - [ ] Connect typed launcher/daemon/ordinary/QTE/repair outcomes, no ambiguity replay.
 - [ ] Focused fresh GREEN and discovery; exact source/binary/artifact evidence.
 - [ ] Independent Sol source/evidence PASS, ordinary publication/readback and fresh restore.

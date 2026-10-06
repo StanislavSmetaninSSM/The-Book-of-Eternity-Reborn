@@ -69,6 +69,7 @@ public class GameSettings
     /// <summary>
     /// Max seconds the GM bridge waits for a CLI prompt to render the pasted text or collapsed paste marker before pressing Enter.
     /// </summary>
+    public GmCliInputProfile GmCliInputProfile { get; set; } = new();
     public double GmBridgePromptVisibilityTimeoutSeconds { get; set; } = 15;
     /// <summary>
     /// CLI-specific markers that prove a large pasted prompt was accepted even when the terminal collapses the text.
@@ -173,6 +174,7 @@ public class GameSettings
         GmBridgePromptVisibilityTimeoutSeconds = loaded.GmBridgePromptVisibilityTimeoutSeconds > 0
             ? Math.Clamp(loaded.GmBridgePromptVisibilityTimeoutSeconds, 1, 60)
             : 15;
+        GmCliInputProfile = (loaded.GmCliInputProfile ?? new()).Snapshot();
         GmBridgePasteVisibilityMarkers = BookOfEternityClient.Configuration.GmBridgePasteVisibilityPolicy.NormalizeMarkers(GmBridgePasteVisibilityMarkers);
         GmWorkerBridgeProfiles = NormalizeWorkerProfiles(loaded.GmWorkerBridgeProfiles);
     }

@@ -306,7 +306,8 @@ function Read-BridgeStatus {
 function Invoke-BridgeRequest {
     param(
         [string]$ResolvedSessionPath,
-        [hashtable]$Payload
+        [hashtable]$Payload,
+        [int]$ResponseTimeoutMilliseconds = 5000
     )
 
     $status = Read-BridgeStatus $ResolvedSessionPath
@@ -314,17 +315,20 @@ function Invoke-BridgeRequest {
         throw "GM bridge status file not found or pipeName is missing."
     }
 
-    $pipe = New-Object System.IO.Pipes.NamedPipeClientStream(".", [string]$status.pipeName, [System.IO.Pipes.PipeDirection]::InOut)
+    $pipe = New-Object System.IO.Pipes.NamedPipeClientStream(".", [string]$status.pipeName, [System.IO.Pipes.PipeDirection]::InOut, [System.IO.Pipes.PipeOptions]::Asynchronous)
     try {
         $pipe.Connect(3000)
         $writer = New-Object System.IO.StreamWriter($pipe, [System.Text.Encoding]::UTF8, 1024, $true)
         $writer.AutoFlush = $true
         $json = $Payload | ConvertTo-Json -Depth 8 -Compress
-        $writer.WriteLine($json)
-        $writer.Flush()
+        $write = $writer.WriteLineAsync($json)
+        if (-not $write.Wait($ResponseTimeoutMilliseconds)) { throw "Bridge request write timed out." }
+        $write.GetAwaiter().GetResult()
 
         $reader = New-Object System.IO.StreamReader($pipe, [System.Text.Encoding]::UTF8, $false, 1024, $true)
-        $responseJson = $reader.ReadLine()
+        $read = $reader.ReadLineAsync()
+        if (-not $read.Wait($ResponseTimeoutMilliseconds)) { throw "Bridge response timed out." }
+        $responseJson = $read.GetAwaiter().GetResult()
         if ([string]::IsNullOrWhiteSpace($responseJson)) {
             throw "Bridge returned an empty response."
         }
@@ -334,6 +338,35 @@ function Invoke-BridgeRequest {
     finally {
         $pipe.Dispose()
     }
+}
+
+function Invoke-BridgePromptDelivery {
+    param([string]$ResolvedSessionPath, [hashtable]$Payload)
+    $original = $Payload.Clone()
+    function ConvertTo-UnknownDelivery {
+        [pscustomobject]@{ ok=$true; promptDelivery=[pscustomobject]@{
+            operationId=[string]$original.operationId; operationKind=[string]$original.operationKind;
+            operationRevision=[string]$original.operationRevision; inputBindingId=[string]$original.inputBindingId;
+            disposition='unknown-outcome'; phase='terminal'; reason='transport-or-response-ambiguous' } }
+    }
+    function Test-ReplyIdentity($response) {
+        $d = $response.promptDelivery
+        return $d -and $d.operationId -ceq $original.operationId -and $d.operationKind -ceq $original.operationKind -and
+            $d.operationRevision -ceq $original.operationRevision -and $d.inputBindingId -ceq $original.inputBindingId
+    }
+    try {
+        $response = Invoke-BridgeRequest -ResolvedSessionPath $ResolvedSessionPath -Payload $original
+        if ((Test-ReplyIdentity $response) -and $response.promptDelivery.disposition) { return $response }
+    } catch { }
+    # A lost response may only query the original live identity. This never sends another paste/submit.
+    if ($original.command -eq 'dispatchPrompt') {
+        try {
+            $query = $original.Clone(); $query.command = 'promptStatus'
+            $response = Invoke-BridgeRequest -ResolvedSessionPath $ResolvedSessionPath -Payload $query
+            if ((Test-ReplyIdentity $response) -and $response.promptDelivery.disposition) { return $response }
+        } catch { }
+    }
+    return (ConvertTo-UnknownDelivery)
 }
 
 function Assert-BridgeResponseOk {
@@ -848,12 +881,17 @@ switch ($Action.ToLowerInvariant()) {
         } | ConvertTo-Json -Depth 8
         break
     }
+    "dispatch-operation" {
+        $operation = ($Arguments -join " ") | ConvertFrom-Json -AsHashtable
+        Invoke-BridgePromptDelivery -ResolvedSessionPath $resolvedSessionPath -Payload $operation | ConvertTo-Json -Depth 8
+        break
+    }
     "dispatchprompt" {
-        $text = ($Arguments -join " ")
-        Invoke-BridgeRequestChecked -ResolvedSessionPath $resolvedSessionPath -Payload @{
-            command = "dispatchPrompt"
-            text = $text
-            appendEnter = $true
+        $status = Read-BridgeStatus $resolvedSessionPath
+        Invoke-BridgePromptDelivery -ResolvedSessionPath $resolvedSessionPath -Payload @{
+            command='dispatchPrompt'; text=($Arguments -join " "); appendEnter=$true;
+            operationId=[guid]::NewGuid().ToString('N'); operationKind='automatic'; operationRevision='live';
+            inputBindingId=[string]$status.inputBindingId
         } | ConvertTo-Json -Depth 8
         break
     }

@@ -7,13 +7,15 @@ try {
     $tokens = $null; $errors = $null
     $ast = [Management.Automation.Language.Parser]::ParseFile($source, [ref]$tokens, [ref]$errors)
     if ($errors.Count) { throw 'Daemon source parsing failed.' }
-    $names = @('Dispatch-WithRetry', 'Send-ToGmBridge')
+    $names = @('Dispatch-WithRetry', 'Send-ToGmBridge', 'New-GmPromptOperation', 'New-GmPromptDelivery', 'Test-GmPromptDeliveryIdentity', 'Invoke-GmPromptControl', 'Complete-GmPromptDispatch', 'Test-GmPromptDispatchPaused')
     foreach ($function in $ast.FindAll({ param($node) $node -is [Management.Automation.Language.FunctionDefinitionAst] }, $true)) {
         if ($function.Name -in $names) { . ([scriptblock]::Create($function.Extent.Text)) }
     }
     function Write-Log { param($Message, $Level, $Color) }
     function Start-Sleep { param($Seconds, $Milliseconds) }
     function New-GmDispatchDiagnostics { param($Status, $Attempts, $BusyRetries, [switch]$Timeout) [pscustomobject]@{ Status=$Status; Attempts=$Attempts } }
+    function Get-GameConfig { [pscustomobject]@{ GmBridgeEnabled=$true; GmBridgeBackend='ConPTYBridge' } }
+    function Get-GmBridgeStatus { [pscustomobject]@{ ready=$false; inputBindingId='controlled-binding' } }
     if ($Scenario -eq 'transport-ambiguity') {
         $script:Calls = 0
         function Send-ToCliWindow {
@@ -32,7 +34,9 @@ try {
         @'
 param([string]$Action, [Parameter(ValueFromRemainingArguments=$true)]$Arguments, [string]$SessionPath)
 [IO.File]::AppendAllText($env:BOE_PROMPT_FIXTURE_COMMANDS, $Action + "`n")
-'{"ok":true,"promptDelivery":{"disposition":"submission-observed"}}'
+$payload = ($Arguments -join ' ') | ConvertFrom-Json
+[ordered]@{ ok=$true; promptDelivery=[ordered]@{ operationId=$payload.operationId; operationKind=$payload.operationKind;
+operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindingId; disposition='submission-observed' } } | ConvertTo-Json -Compress
 '@ | Set-Content -LiteralPath $BridgeControlScript
         function Get-GameConfig { [pscustomobject]@{ GmBridgeEnabled=$true; GmBridgeBackend='ConPTYBridge' } }
         function Ensure-GmBridgeStarted { }

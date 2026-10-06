@@ -3636,59 +3636,75 @@ function Stop-GmBridgeAfterTurnTimeout {
     return [pscustomobject]$cleanup
 }
 
-function Send-ToGmBridge {
-    param(
-        [string]$Message,
-        [switch]$AllowNotReady
-    )
-
-    $config = Get-GameConfig
-    if (-not $config.GmBridgeEnabled -or $config.GmBridgeBackend -ne "ConPTYBridge") {
-        return $null
+function New-GmPromptOperation {
+    param([string]$Message, [string]$PendingPath = '', [string]$OperationKind = 'turn', [string]$OperationRevision = 'live')
+    $sourceHash = ''
+    if ($PendingPath) {
+        $sourceHash = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([IO.File]::ReadAllBytes($PendingPath)))
     }
-
-    Ensure-GmBridgeStarted
-
+    $key = $OperationKind + '|' + $OperationRevision + '|' + $PendingPath + '|' + $sourceHash
+    if (-not $PendingPath) { $key += '|' + [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($Message))) }
+    if ($null -eq $script:GmPromptOperations) { $script:GmPromptOperations = @{} }
+    if ($script:GmPromptOperations.ContainsKey($key)) { return $script:GmPromptOperations[$key] }
     $status = Get-GmBridgeStatus
-    if ($null -eq $status) {
-        Write-Log "  -> GM bridge status file not found. Falling back." -Level "WARN" -Color Yellow
-        return "bridge-unavailable"
+    $operation = [pscustomobject]@{
+        PayloadJson = ([ordered]@{ command='dispatchPrompt'; operationId=[guid]::NewGuid().ToString('N');
+            operationKind=$OperationKind; operationRevision=$OperationRevision; inputBindingId=[string]$status.inputBindingId;
+            text=$Message; appendEnter=$true } | ConvertTo-Json -Depth 6 -Compress)
+        PendingPath=$PendingPath; SourceHash=$sourceHash; LastDelivery=$null; MayHaveReached=$false
     }
+    # A live owner retains all possibly delivered identities. Overflow never evicts or rebinds them.
+    if ($script:GmPromptOperations.Count -ge 256) { return $null }
+    $script:GmPromptOperations[$key] = $operation
+    return $operation
+}
 
-    if (-not $status.ready -and -not $AllowNotReady) {
-        $refreshedStatus = Refresh-GmBridgeReadiness
-        if ($null -ne $refreshedStatus -and $refreshedStatus.ready) {
-            $status = $refreshedStatus
-        }
-    }
+function New-GmPromptDelivery {
+    param([object]$Operation, [string]$Disposition, [string]$Reason)
+    $p = if ($Operation) { $Operation.PayloadJson | ConvertFrom-Json } else { $null }
+    return [pscustomobject]@{ operationId=[string]$p.operationId; operationKind=[string]$p.operationKind;
+        operationRevision=[string]$p.operationRevision; inputBindingId=[string]$p.inputBindingId;
+        disposition=$Disposition; phase='terminal'; reason=$Reason }
+}
 
-    if (-not $status.ready -and -not $AllowNotReady) {
-        Write-Log "  -> GM bridge is running but not marked ready. Falling back." -Level "WARN" -Color Yellow
-        return "bridge-not-ready"
-    }
+function Test-GmPromptDeliveryIdentity {
+    param([object]$Operation, [object]$Delivery)
+    $p = $Operation.PayloadJson | ConvertFrom-Json
+    return $Delivery -and $Delivery.operationId -ceq $p.operationId -and $Delivery.operationKind -ceq $p.operationKind -and
+        $Delivery.operationRevision -ceq $p.operationRevision -and $Delivery.inputBindingId -ceq $p.inputBindingId
+}
 
-    if (!(Test-Path $BridgeControlScript)) {
-        Write-Log "  -> GM bridge control script missing. Falling back." -Level "WARN" -Color Yellow
-        return "bridge-control-missing"
-    }
-
+function Invoke-GmPromptControl {
+    param([object]$Operation, [string]$Command = 'dispatchPrompt')
+    $payload = $Operation.PayloadJson | ConvertFrom-Json
+    $payload.command = $Command
+    $json = $payload | ConvertTo-Json -Depth 6 -Compress
     try {
-        if ($AllowNotReady) {
-            & $BridgeControlScript addText $Message -SessionPath $GameSessionPath | Out-Null
-            Start-Sleep -Milliseconds 100
-            & $BridgeControlScript sendEnter -SessionPath $GameSessionPath | Out-Null
-            Write-Log "  -> Sent bootstrap/reminder to GM bridge via addText+sendEnter" -Color Green
-        }
-        else {
-            & $BridgeControlScript dispatchPrompt $Message -SessionPath $GameSessionPath | Out-Null
-            Write-Log "  -> Sent to GM bridge via named pipe" -Color Green
-        }
-        return "sent"
+        # No transport exception proves zero input after invoking a launcher. Never automatically replay it.
+        if ($Command -eq 'dispatchPrompt') { $Operation.MayHaveReached = $true }
+        $raw = & $BridgeControlScript dispatch-operation $json -SessionPath $GameSessionPath
+        $response = ($raw -join "`n") | ConvertFrom-Json
+        if (-not (Test-GmPromptDeliveryIdentity $Operation $response.promptDelivery)) { throw 'Mismatched prompt delivery identity.' }
+        return $response.promptDelivery
     }
-    catch {
-        Write-Log "  -> GM bridge dispatch failed: $_" -Level "WARN" -Color Yellow
-        return "bridge-failed"
-    }
+    catch { return (New-GmPromptDelivery $Operation 'unknown-outcome' 'launcher-or-transport-ambiguous') }
+}
+
+function Send-ToGmBridge {
+    param([string]$Message, [switch]$AllowNotReady, [object]$Operation)
+    $config = Get-GameConfig
+    if (-not $config.GmBridgeEnabled -or $config.GmBridgeBackend -ne 'ConPTYBridge') { return $null }
+    Ensure-GmBridgeStarted
+    if (-not $Operation) { $Operation = New-GmPromptOperation -Message $Message -OperationKind 'automatic' }
+    if (-not $Operation) { return (New-GmPromptDelivery $null 'not-written' 'retention-full') }
+    if ($script:GmPromptInputPaused) { return (New-GmPromptDelivery $Operation 'unknown-outcome' 'automatic-input-paused') }
+    if ($Operation.LastDelivery -and $Operation.LastDelivery.disposition -ne 'not-written') { return $Operation.LastDelivery }
+    if (!(Test-Path $BridgeControlScript)) { return (New-GmPromptDelivery $Operation 'not-written' 'control-missing') }
+    # Dormant AllowNotReady uses this same operation; it cannot bypass the bridge's positive idle/draft check.
+    $delivery = Invoke-GmPromptControl -Operation $Operation
+    $Operation.LastDelivery = $delivery
+    if ($delivery.disposition -in @('draft-uncertain','unknown-outcome') -or -not $delivery.disposition) { $script:GmPromptInputPaused = $true }
+    return $delivery
 }
 
 function Write-Log {
@@ -5359,12 +5375,12 @@ function Resolve-CliTarget {
 
 function Send-ToCliWindow {
     param(
-        [string]$Message
+        [string]$Message, [object]$Operation
     )
 
     $config = Get-GameConfig
     if ($config.GmBridgeEnabled -and $config.GmBridgeBackend -eq "ConPTYBridge") {
-        return (Send-ToGmBridge -Message $Message)
+        return (Send-ToGmBridge -Message $Message -Operation $Operation)
     }
 
     # Clipboard is the universal fallback for every bridge/window failure path.
@@ -5420,55 +5436,74 @@ function Send-ToCliWindow {
 }
 
 function Dispatch-WithRetry {
-    param(
-        [string]$Message,
-        [string]$PendingPath = "",
-        [switch]$ReturnDetails,
-        [int]$MaxWaitSeconds = 0
-    )
-
-    $attempts = 0
-    $busyRetries = 0
-    $startedAt = Get-Date
-
-    while ($true) {
-        if ($PendingPath -and !(Test-Path $PendingPath)) {
-            if ($ReturnDetails) {
-                return (New-GmDispatchDiagnostics -Status "cancelled" -Attempts $attempts -BusyRetries $busyRetries)
-            }
-            return "cancelled"
-        }
-
-        $attempts++
-        $dispatch = Send-ToCliWindow -Message $Message
-        if ($dispatch -eq "sent" -or $dispatch -eq "clipboard") {
-            if ($ReturnDetails) {
-                return (New-GmDispatchDiagnostics -Status $dispatch -Attempts $attempts -BusyRetries $busyRetries)
-            }
-            return $dispatch
-        }
-
-        if ($dispatch -like "bridge-*") {
-            $busyRetries++
-            $elapsedSeconds = ((Get-Date) - $startedAt).TotalSeconds
-            if ($MaxWaitSeconds -gt 0 -and $elapsedSeconds -ge $MaxWaitSeconds) {
-                Write-Log "  -> GM bridge dispatch timeout after $([math]::Round($elapsedSeconds, 1))s; bridge did not accept the prompt." -Level "ERROR" -Color Red
-                if ($ReturnDetails) {
-                    return (New-GmDispatchDiagnostics -Status "bridge-dispatch-timeout" -Attempts $attempts -BusyRetries $busyRetries -Timeout $true)
-                }
-                return "bridge-dispatch-timeout"
-            }
-
-            Write-Log "  -> Waiting for GM bridge to become available/ready..." -Level "WARN" -Color Yellow
-            Start-Sleep -Seconds 1
-            continue
-        }
-
-        if ($ReturnDetails) {
-            return (New-GmDispatchDiagnostics -Status $dispatch -Attempts $attempts -BusyRetries $busyRetries)
-        }
-        return $dispatch
+    param([string]$Message, [string]$PendingPath = '', [switch]$ReturnDetails, [int]$MaxWaitSeconds = 0,
+        [string]$OperationKind = 'turn', [string]$OperationRevision = 'live', [object]$Operation)
+    $attempts = 0; $busyRetries = 0; $startedAt = Get-Date
+    $config = Get-GameConfig
+    $bridge = $config.GmBridgeEnabled -and $config.GmBridgeBackend -eq 'ConPTYBridge'
+    if ($bridge -and -not $Operation) {
+        if ($PendingPath -and !(Test-Path $PendingPath)) { return (Complete-GmPromptDispatch 'cancelled' $null $ReturnDetails 0 0) }
+        $Operation = New-GmPromptOperation -Message $Message -PendingPath $PendingPath -OperationKind $OperationKind -OperationRevision $OperationRevision
     }
+    while ($true) {
+        $replaced = $PendingPath -and (!(Test-Path $PendingPath) -or ($Operation -and
+            [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([IO.File]::ReadAllBytes($PendingPath))) -cne $Operation.SourceHash))
+        if ($replaced) {
+            if ($Operation -and $Operation.MayHaveReached) {
+                $delivery = Invoke-GmPromptControl -Operation $Operation -Command 'cancelPrompt'
+                if ($delivery.disposition -notin @('not-written','queued-cancelled')) {
+                    $script:GmPromptInputPaused = $true
+                    $delivery = New-GmPromptDelivery $Operation 'unknown-outcome' 'pending-source-replaced-after-dispatch'
+                    $Operation.LastDelivery = $delivery
+                    return (Complete-GmPromptDispatch 'bridge-unknown-outcome' $delivery $ReturnDetails $attempts $busyRetries)
+                }
+            }
+            return (Complete-GmPromptDispatch 'cancelled' $null $ReturnDetails $attempts $busyRetries)
+        }
+        $attempts++
+        $dispatch = Send-ToCliWindow -Message $Message -Operation $Operation
+        if ($dispatch -is [string]) {
+            # Untyped bridge failures cannot authorize a retry, even for legacy collaborators.
+            $status = if ($dispatch -like 'bridge-*') { 'bridge-unknown-outcome' } else { $dispatch }
+            if ($status -eq 'bridge-unknown-outcome') { $script:GmPromptInputPaused = $true }
+            return (Complete-GmPromptDispatch $status $null $ReturnDetails $attempts $busyRetries)
+        }
+        $delivery = $dispatch
+        if (-not $Operation -or -not (Test-GmPromptDeliveryIdentity $Operation $delivery)) {
+            $script:GmPromptInputPaused = $true
+            return (Complete-GmPromptDispatch 'bridge-unknown-outcome' $delivery $ReturnDetails $attempts $busyRetries)
+        }
+        $Operation.LastDelivery = $delivery
+        switch ([string]$delivery.disposition) {
+            'submission-observed' { return (Complete-GmPromptDispatch 'sent' $delivery $ReturnDetails $attempts $busyRetries) }
+            'queued-cancelled' { return (Complete-GmPromptDispatch 'cancelled' $delivery $ReturnDetails $attempts $busyRetries) }
+            'not-written' {
+                if ($delivery.reason -notin @('busy','not-ready')) { return (Complete-GmPromptDispatch 'bridge-not-written' $delivery $ReturnDetails $attempts $busyRetries) }
+                $busyRetries++
+                if ($MaxWaitSeconds -le 0 -or ((Get-Date)-$startedAt).TotalSeconds -ge $MaxWaitSeconds) {
+                    return (Complete-GmPromptDispatch 'bridge-dispatch-timeout' $delivery $ReturnDetails $attempts $busyRetries)
+                }
+                Start-Sleep -Seconds 1
+            }
+            default {
+                $script:GmPromptInputPaused = $true
+                return (Complete-GmPromptDispatch 'bridge-unknown-outcome' $delivery $ReturnDetails $attempts $busyRetries)
+            }
+        }
+    }
+}
+
+function Complete-GmPromptDispatch {
+    param([string]$Status, [object]$Delivery, [bool]$Details, [int]$Attempts, [int]$BusyRetries)
+    if (-not $Details) { return $Status }
+    $result = New-GmDispatchDiagnostics -Status $Status -Attempts $Attempts -BusyRetries $BusyRetries -Timeout:($Status -eq 'bridge-dispatch-timeout')
+    $result | Add-Member -NotePropertyName PromptDelivery -NotePropertyValue $Delivery -Force
+    return $result
+}
+
+function Test-GmPromptDispatchPaused {
+    param([object]$Dispatch)
+    return $Dispatch.Status -in @('bridge-unknown-outcome','bridge-not-written','cancelled')
 }
 
 # ═══════════════════════════════════════════════
@@ -5635,9 +5670,10 @@ function Process-QteEffectResolutionRequest {
         $dispatch = Dispatch-WithRetry `
             -Message $message `
             -PendingPath $RequestPath `
+            -OperationKind qte-effect -OperationRevision $requestKey `
             -ReturnDetails `
             -MaxWaitSeconds $dispatchMaxWaitSeconds
-        if ($dispatch.Status -eq "cancelled") {
+        if (Test-GmPromptDispatchPaused $dispatch) {
             Write-Log "  QTE effect receipt request was cancelled before dispatch." -Level "WARN" -Color Yellow
             return
         }
@@ -5669,15 +5705,11 @@ function Process-QteEffectResolutionRequest {
 
             if ($elapsed % 15 -eq 0 -and
                 (Test-GmBridgeReturnedIdleWithoutTerminalSignal -ElapsedSeconds $elapsed)) {
-                Write-Log "  GM bridge returned idle without the correlated QTE ready marker; redispatching the same sealed packet." -Level "WARN" -Color Yellow
-                $dispatch = Dispatch-WithRetry `
-                    -Message $message `
-                    -PendingPath $RequestPath `
-                    -ReturnDetails `
-                    -MaxWaitSeconds $dispatchMaxWaitSeconds
-                if ($dispatch.Status -eq "cancelled") {
-                    return
-                }
+                Write-Log "  GM bridge returned idle without the correlated QTE ready marker; preserving the original delivery without replay." -Level "WARN" -Color Yellow
+                $operation = New-GmPromptOperation -Message $message -PendingPath $RequestPath -OperationKind qte-effect -OperationRevision $requestKey
+                if ($operation) { $operation.LastDelivery = Invoke-GmPromptControl -Operation $operation -Command 'promptStatus' }
+                $script:GmPromptInputPaused = $true
+                return
             }
 
             if ($elapsed % 60 -eq 0) {
@@ -5765,8 +5797,8 @@ function Process-Turn {
 
         if ($null -eq $terminalSignal) {
             $dispatchMaxWaitSeconds = if ($TurnTimeout -gt 0 -and $TurnTimeout -lt $script:BridgeDispatchMaxWaitSeconds) { $TurnTimeout } else { $script:BridgeDispatchMaxWaitSeconds }
-            $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $RequestPath -ReturnDetails -MaxWaitSeconds $dispatchMaxWaitSeconds
-            if ($dispatchDiagnostics.Status -eq "cancelled") {
+            $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $RequestPath -OperationKind turn -ReturnDetails -MaxWaitSeconds $dispatchMaxWaitSeconds
+            if (Test-GmPromptDispatchPaused $dispatchDiagnostics) {
                 Write-Log "  Turn cancelled while waiting for bridge turn dispatch" -Level "WARN" -Color Yellow
                 Write-GmTrajectoryRecord `
                     -Kind "turn" `
@@ -5781,7 +5813,8 @@ function Process-Turn {
                 return
             }
 
-            if ($dispatchDiagnostics.Status -eq "bridge-dispatch-timeout") {
+            if (Test-GmPromptDispatchPaused $dispatchDiagnostics) { return }
+        if ($dispatchDiagnostics.Status -eq "bridge-dispatch-timeout") {
                 $script:ErrorCount++
                 Write-Log "  GM bridge did not accept dispatch before the dispatch timeout; emitting daemon terminal error." -Level "ERROR" -Color Red
                 $missingHarnessTool = "gm_bridge_dispatch_unavailable"
@@ -6197,7 +6230,8 @@ function Process-RepairRequest {
         }
 
         $repairDispatchMaxWaitSeconds = if ($TurnTimeout -gt 0 -and $TurnTimeout -lt $script:BridgeDispatchMaxWaitSeconds) { $TurnTimeout } else { $script:BridgeDispatchMaxWaitSeconds }
-        $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $RepairPath -ReturnDetails -MaxWaitSeconds $repairDispatchMaxWaitSeconds
+        $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $RepairPath -OperationKind repair -OperationRevision ([string]$attempt) -ReturnDetails -MaxWaitSeconds $repairDispatchMaxWaitSeconds
+        if (Test-GmPromptDispatchPaused $dispatchDiagnostics) { return }
         if ($dispatchDiagnostics.Status -eq "bridge-dispatch-timeout") {
             $script:ErrorCount++
             Write-Log "  GM bridge did not accept validation repair dispatch before the dispatch timeout; publishing repair stall report." -Level "ERROR" -Color Red
@@ -6345,7 +6379,8 @@ function Process-TerminalProtocolFailureRequest {
 
         $null = Write-GmExperienceLessons
 
-        $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $FailurePath -ReturnDetails
+        $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $FailurePath -OperationKind terminal-repair -ReturnDetails
+        if (Test-GmPromptDispatchPaused $dispatchDiagnostics) { return }
         Write-GmTrajectoryRecord `
             -Kind "terminal" `
             -Mode "terminal_protocol" `

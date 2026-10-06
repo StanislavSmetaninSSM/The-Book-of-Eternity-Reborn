@@ -73,7 +73,7 @@ internal static class Program
     }
 }
 
-internal sealed class BridgeHost : IDisposable
+internal sealed partial class BridgeHost : IDisposable
 {
     private static readonly JsonSerializerOptions JsonOpts = new()
     {
@@ -111,6 +111,9 @@ internal sealed class BridgeHost : IDisposable
     // Local stream/task identity only; never a persistent run, generation or ownership grant.
     private sealed class InputLifetime(Stream input, CancellationTokenSource cancellation)
     {
+        public string Id { get; } = Guid.NewGuid().ToString("N");
+        public bool ManualTakeover;
+        public readonly List<Task> PromptTasks = new();
         public Stream Input { get; } = input;
         public CancellationTokenSource Cancellation { get; } = cancellation;
         public CancellationToken Token { get; } = cancellation.Token;
@@ -134,8 +137,6 @@ internal sealed class BridgeHost : IDisposable
     private CancellationTokenSource? _shellLoopCts;
     private long _outputVersion;
     private TaskCompletionSource<bool> _outputChanged = CreateOutputSignal();
-    private long _lastAutoTrustOutputVersion = -1;
-    private long _lastAutoUpdateSkipOutputVersion = -1;
     private BridgeStatus _status;
 
     public BridgeHost(string sessionPath, string pipeName)
@@ -225,29 +226,46 @@ internal sealed class BridgeHost : IDisposable
 
     private async Task RunServerLoopAsync(CancellationToken cancellationToken)
     {
-        while (!cancellationToken.IsCancellationRequested)
+        var peers = new List<Task>();
+        using var capacity = new SemaphoreSlim(16, 16);
+        try
         {
-            using var server = new NamedPipeServerStream(
-                _pipeName,
-                PipeDirection.InOut,
-                1,
-                PipeTransmissionMode.Byte,
-                PipeOptions.Asynchronous);
-
-            await server.WaitForConnectionAsync(cancellationToken);
-
-            if (!await ProcessConnectedRequestAsync(server, async () =>
+            while (!cancellationToken.IsCancellationRequested)
             {
-                var request = await ReadMessageAsync<BridgeRequest>(server, cancellationToken) ?? new BridgeRequest();
-                var response = await HandleRequestAsync(request);
-                await WriteMessageAsync(
-                    server,
-                    response,
-                    response.ShutdownAfterResponse ? CancellationToken.None : cancellationToken);
-                if (response.ShutdownAfterResponse)
-                    _cts.Cancel();
-            }, cancellationToken))
-                break;
+                await capacity.WaitAsync(cancellationToken);
+                var server = new NamedPipeServerStream(_pipeName, PipeDirection.InOut,
+                    NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+                try { await server.WaitForConnectionAsync(cancellationToken); }
+                catch { server.Dispose(); capacity.Release(); throw; }
+                peers.RemoveAll(t => t.IsCompleted);
+                peers.Add(ServePeerAsync(server));
+            }
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { }
+        finally { await Task.WhenAll(peers); }
+
+        async Task ServePeerAsync(NamedPipeServerStream server)
+        {
+            using (server)
+            using (var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
+            {
+                // Bound incomplete reads independently of dispatch; every accepted peer is joined.
+                deadline.CancelAfter(TimeSpan.FromSeconds(3));
+                try
+                {
+                    var request = await ReadMessageAsync<BridgeRequest>(server, deadline.Token) ?? new BridgeRequest();
+                    deadline.CancelAfter(Timeout.InfiniteTimeSpan);
+                    await ProcessConnectedRequestAsync(server, async () =>
+                    {
+                        var response = await HandleRequestAsync(request);
+                        deadline.CancelAfter(TimeSpan.FromSeconds(3));
+                        await WriteMessageAsync(server, response, deadline.Token);
+                        if (response.ShutdownAfterResponse) _cts.Cancel();
+                    }, cancellationToken);
+                }
+                catch (Exception ex) when (ex is OperationCanceledException or IOException or ObjectDisposedException) { }
+                finally { capacity.Release(); }
+            }
         }
     }
 
@@ -293,103 +311,18 @@ internal sealed class BridgeHost : IDisposable
                 return await DispatchWorkerTaskAsync(request);
 
             case "addtext":
-                EnsureShellAlive();
-                await WriteToPtyAsync(CaptureInputLifetime(), request.Text ?? string.Empty, appendEnter: false, _cts.Token);
+                await WriteManualInputAsync(CaptureInputLifetime(), request.Text ?? string.Empty, _cts.Token);
                 return BridgeResponse.Success(SnapshotStatus());
-
             case "sendenter":
-                EnsureShellAlive();
-                await WriteToPtyAsync(CaptureInputLifetime(), string.Empty, appendEnter: true, _cts.Token);
+                await WriteManualInputAsync(CaptureInputLifetime(), LoadBridgeConfig().GmCliInputProfile.SubmitSequence, _cts.Token);
                 return BridgeResponse.Success(SnapshotStatus());
-
             case "dispatchprompt":
-            {
-                EnsureShellAlive();
-                var dispatchInput = CaptureInputLifetime();
-                using var dispatchCancellation = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, dispatchInput.Token);
-                var dispatchSucceeded = false;
-                var dispatchStartedAt = DateTimeOffset.UtcNow;
-                var dispatchStopwatch = Stopwatch.StartNew();
-                lock (_sync)
-                {
-                    if (!_status.Ready)
-                        return BridgeResponse.Failure("Bridge is not marked ready.", SnapshotStatus());
+                return await DispatchPromptAsync(request);
+            case "promptstatus":
+                return QueryPrompt(request, false);
+            case "cancelprompt":
+                return QueryPrompt(request, true);
 
-                    _status.Ready = false;
-                    _status.State = "Busy";
-                    _status.LastPromptDispatchState = "Dispatching";
-                    _status.LastPromptDispatchStartedAtUtc = dispatchStartedAt.ToString("O");
-                    _status.LastPromptDispatchCompletedAtUtc = null;
-                    _status.LastPromptDispatchElapsedMs = null;
-                    WriteStatusFile();
-                }
-
-                try
-                {
-                    var visibilitySettings = LoadBridgeConfig();
-                    await ClearPendingInputBeforePromptDispatchAsync(dispatchInput, dispatchCancellation.Token);
-                    var readiness = ProbeCliPromptReadinessForDispatch();
-                    if (!readiness.IsReady)
-                    {
-                        return FailWithLastError(
-                            "GM CLI is not ready for a new prompt: " + readiness.Reason +
-                            " Dispatch was blocked so the player turn is not pasted into an active or confirmation screen.");
-                    }
-
-                    long outputVersionBefore;
-                    int outputLengthBefore;
-                    lock (_sync)
-                    {
-                        outputVersionBefore = _outputVersion;
-                        outputLengthBefore = _recentOutput.Length;
-                    }
-
-                    var payload = BuildBracketedPastePayload(request.Text ?? string.Empty);
-                    await WriteToPtyAsync(dispatchInput, payload, appendEnter: false, dispatchCancellation.Token);
-                    if (request.AppendEnter)
-                    {
-                        var visible = await WaitForPromptVisibleAsync(
-                            request.Text ?? string.Empty,
-                            outputVersionBefore,
-                            outputLengthBefore,
-                            visibilitySettings,
-                            TimeSpan.FromSeconds(visibilitySettings.GmBridgePromptVisibilityTimeoutSeconds),
-                            dispatchCancellation.Token);
-                        if (!visible)
-                        {
-                            return FailWithLastError(
-                                "Prompt text was pasted into the PTY, but it never became visible in the CLI output. Enter was not sent to avoid switching the CLI into a wrong mode.");
-                        }
-
-                        await WaitForOutputQuietPeriodAsync(TimeSpan.FromMilliseconds(250), TimeSpan.FromSeconds(2), dispatchCancellation.Token);
-                        long outputVersionBeforeEnter;
-                        lock (_sync)
-                            outputVersionBeforeEnter = _outputVersion;
-
-                        await WriteToPtyAsync(dispatchInput, string.Empty, appendEnter: true, dispatchCancellation.Token);
-                        var submitted = await WaitForPromptSubmittedAfterEnterAsync(
-                            request.Text ?? string.Empty,
-                            outputVersionBeforeEnter,
-                            visibilitySettings,
-                            TimeSpan.FromSeconds(5),
-                            dispatchCancellation.Token);
-                        if (!submitted)
-                        {
-                            return FailWithLastError(
-                                "Prompt was visible and Enter was sent, but the CLI did not transition away from the pasted prompt marker. Dispatch was not confirmed; use diagnostics/sendEnter or restart the shell before retrying.");
-                        }
-                    }
-                    dispatchSucceeded = true;
-                }
-                finally
-                {
-                    dispatchStopwatch.Stop();
-                    CompletePromptDispatch(dispatchInput, dispatchSucceeded, dispatchStopwatch.ElapsedMilliseconds);
-                }
-
-                return BridgeResponse.Success(SnapshotStatus());
-
-            }
             case "restartshell":
             case "restartcli":
                 await StartShellAsync();
@@ -462,7 +395,7 @@ internal sealed class BridgeHost : IDisposable
                 Console.WriteLine($"[Bridge] Launch command: {config.GmCliLaunchCommand}");
                 var bootstrap = BuildShellBootstrap(config.GmCliLaunchCommand);
                 await Task.Delay(250, input.Token);
-                await WriteToPtyAsync(input, bootstrap, appendEnter: true, input.Token);
+                await WriteExclusiveInputAsync(input, bootstrap, appendEnter: true, input.Token);
             }
 
         }
@@ -501,7 +434,8 @@ internal sealed class BridgeHost : IDisposable
                 _keyboardPumpTask ?? Task.CompletedTask,
                 _outputPumpTask ?? Task.CompletedTask,
                 _resizePumpTask ?? Task.CompletedTask,
-                input.CancellationTask);
+                input.CancellationTask,
+                Task.WhenAll(input.PromptTasks));
         }
         try { await drain.WaitAsync(InputDrainTimeout); }
         catch (TimeoutException)
@@ -549,6 +483,7 @@ internal sealed class BridgeHost : IDisposable
             _ptyInput = stream;
             _shellLoopCts = shellLoopCts;
             _status.LastInputWriteError = null;
+            _status.InputBindingId = input.Id;
             return input;
         }
     }
@@ -593,40 +528,17 @@ internal sealed class BridgeHost : IDisposable
 
     private BridgeResponse SetReady(bool ready)
     {
-        if (ready)
-        {
-            var readiness = ProbeCliPromptReadinessForDispatch();
-            if (!readiness.IsReady)
-            {
-                var message = "Cannot mark bridge ready: " + readiness.Reason;
-                lock (_sync)
-                {
-                    _status.Ready = false;
-                    _status.State = "OperatorNotReady";
-                    _status.LastError = message;
-                    WriteStatusFile();
-                }
-
-                Console.WriteLine();
-                Console.WriteLine("[Bridge] " + message);
-                return BridgeResponse.Failure(message, SnapshotStatus());
-            }
-        }
-
         lock (_sync)
         {
+            if (ready && (_automaticInputPaused || _admittedPrompts != 0 || _inputLifetime == null ||
+                _inputLifetime.Revoked || !IsEmptyIdleView(LoadBridgeConfig().GmCliInputProfile.Snapshot(), _promptScreenReader())))
+                return BridgeResponse.Failure("Fresh empty supported idle view is required; uncertain operations remain paused.", SnapshotStatus());
+            if (ready) _inputLifetime!.ManualTakeover = false;
             _status.Ready = ready;
             _status.State = ready ? "Ready" : "OperatorNotReady";
-            _status.LastError = null;
             WriteStatusFile();
+            return BridgeResponse.Success(SnapshotStatus());
         }
-
-        Console.WriteLine();
-        Console.WriteLine(ready
-            ? "[Bridge] Marked READY. Daemon may dispatch prompts now."
-            : "[Bridge] Marked NOT READY. Daemon dispatch should pause or fallback.");
-
-        return BridgeResponse.Success(SnapshotStatus());
     }
 
     private void EnsureShellAlive()
@@ -638,117 +550,21 @@ internal sealed class BridgeHost : IDisposable
         }
     }
 
-    private async Task ClearPendingInputBeforePromptDispatchAsync(InputLifetime input, CancellationToken cancellationToken)
+    private Task RefreshBridgeAutomationStateAsync()
     {
-        await WriteToPtyAsync(input, "\u0015", appendEnter: false, cancellationToken);
-        await WaitForOutputQuietPeriodAsync(TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(1), cancellationToken);
-    }
-
-    private async Task RefreshBridgeAutomationStateAsync()
-    {
-        try
-        {
-            await AutoAcceptTrustedCodexWorkingDirectoryTrustPromptAsync();
-            await AutoSkipCodexUpdatePromptAsync();
-        }
-        catch (InputLifetimeUnavailableException) { /* Retired input cannot receive automation. */ }
-        catch (PtyInputWriteException) { /* Local uncertainty is retained; status queries remain available. */ }
-        catch (OperationCanceledException) when (!_cts.IsCancellationRequested) { /* Shell lifetime ended. */ }
-        AutoMarkNotReadyIfCliWorking();
-        AutoMarkReadyIfCliPromptReady();
-        RefreshDispatchFailureRecoveryIfCliPromptReady();
-    }
-
-    private async Task AutoAcceptTrustedCodexWorkingDirectoryTrustPromptAsync()
-    {
-        InputLifetime input;
-        try { input = CaptureInputLifetime(); }
-        catch (InputLifetimeUnavailableException) { return; }
-        var visibleText = ReadVisibleConsoleText();
-        if (!IsWorkspaceTrustPrompt(visibleText))
-            return;
-
-        long outputVersion;
-        string workingDirectory;
+        // Observation never acknowledges trust/update prompts or clears an uncertain operation.
         lock (_sync)
         {
-            outputVersion = _outputVersion;
-            workingDirectory = _status.ShellWorkingDirectory;
-        }
-
-        if (outputVersion == _lastAutoTrustOutputVersion ||
-            !IsTrustedCodexWorkingDirectory(workingDirectory))
-        {
-            return;
-        }
-
-        _lastAutoTrustOutputVersion = outputVersion;
-        await WriteToPtyAsync(input, string.Empty, appendEnter: true, input.Token);
-    }
-
-    private async Task AutoSkipCodexUpdatePromptAsync()
-    {
-        InputLifetime input;
-        try { input = CaptureInputLifetime(); }
-        catch (InputLifetimeUnavailableException) { return; }
-        var visibleText = ReadVisibleConsoleText();
-        if (!IsCodexCliUpdatePrompt(visibleText))
-            return;
-
-        long outputVersion;
-        lock (_sync)
-            outputVersion = _outputVersion;
-
-        if (outputVersion == _lastAutoUpdateSkipOutputVersion)
-            return;
-
-        _lastAutoUpdateSkipOutputVersion = outputVersion;
-        await WriteToPtyAsync(input, "3", appendEnter: true, input.Token);
-    }
-
-    private void AutoMarkReadyIfCliPromptReady()
-    {
-        var visibleText = ReadVisibleConsoleText();
-        if (!IsCodexCliIdlePrompt(visibleText))
-            return;
-
-        lock (_sync)
-        {
-            if (_status.Ready ||
-                string.Equals(_status.State, "Dispatching", StringComparison.Ordinal) ||
-                string.Equals(_status.LastPromptDispatchState, "Dispatching", StringComparison.Ordinal))
+            var profile = LoadBridgeConfig().GmCliInputProfile.Snapshot();
+            if (_inputLifetime != null && !_inputLifetime.Revoked && !_inputLifetime.ManualTakeover &&
+                !_automaticInputPaused && _admittedPrompts == 0 && IsEmptyIdleView(profile, _promptScreenReader()))
             {
-                return;
+                _status.Ready = true;
+                _status.State = "Ready";
+                TryWriteInputStatus();
             }
-
-            _status.Ready = true;
-            _status.State = "Ready";
-            _status.LastError = null;
-            WriteStatusFile();
         }
-    }
-
-    private void AutoMarkNotReadyIfCliWorking()
-    {
-        var visibleText = ReadVisibleConsoleText();
-        if (!IsCodexCliWorkingScreen(visibleText))
-            return;
-
-        const string message = "Codex CLI is working; bridge is not ready for a new prompt.";
-        lock (_sync)
-        {
-            if (!_status.Ready &&
-                string.Equals(_status.State, "Busy", StringComparison.Ordinal) &&
-                string.Equals(_status.LastError, message, StringComparison.Ordinal))
-            {
-                return;
-            }
-
-            _status.Ready = false;
-            _status.State = "Busy";
-            _status.LastError = message;
-            WriteStatusFile();
-        }
+        return Task.CompletedTask;
     }
 
     private CliPromptReadiness ProbeCliPromptReadinessForDispatch()
@@ -1080,7 +896,7 @@ internal sealed class BridgeHost : IDisposable
                 if (key == null) continue;
                 var sequence = KeyToSequence(key.Value);
                 if (sequence == null) continue;
-                await WriteToPtyAsync(input, sequence, appendEnter: false, linked.Token);
+                await WriteManualInputAsync(input, sequence, linked.Token);
             }
         }
         catch (OperationCanceledException) when (linked.IsCancellationRequested) { }
@@ -1273,6 +1089,7 @@ internal sealed class BridgeHost : IDisposable
 
     private static string ReadVisibleConsoleText()
     {
+        if (!OperatingSystem.IsWindows()) return string.Empty;
         var stdOut = NativeMethods.GetStdHandle(NativeMethods.STD_OUTPUT_HANDLE);
         if (stdOut == IntPtr.Zero || stdOut == NativeMethods.INVALID_HANDLE_VALUE)
             return string.Empty;
@@ -1432,7 +1249,7 @@ internal sealed class BridgeHost : IDisposable
         {
             recentOutput = GetRecentOutputTail();
             outputVersion = _outputVersion;
-            visibleScreenText = ReadVisibleConsoleText();
+            visibleScreenText = _promptScreenReader();
         }
 
         return new BridgeDiagnostics
@@ -1739,6 +1556,10 @@ internal sealed class BridgeRequest
     public string? Text { get; set; }
     public bool AppendEnter { get; set; } = true;
     public bool? Ready { get; set; }
+    public string? OperationId { get; set; }
+    public string? OperationKind { get; set; }
+    public string? OperationRevision { get; set; }
+    public string? InputBindingId { get; set; }
     public string? WorkerTaskType { get; set; }
     public string? SessionId { get; set; }
     public string? RequestId { get; set; }
@@ -1763,6 +1584,7 @@ internal sealed class BridgeResponse
     public string? Error { get; set; }
     public BridgeStatus? Status { get; set; }
     public BridgeDiagnostics? Diagnostics { get; set; }
+    public PromptDeliveryResult? PromptDelivery { get; set; }
     public GmWorkerProposalOnlyDispatchResult? WorkerDispatch { get; set; }
     [JsonIgnore]
     public bool ShutdownAfterResponse { get; set; }
@@ -1816,6 +1638,8 @@ internal sealed class BridgeResponse
 
 internal sealed record BridgeStatus
 {
+    public string? InputBindingId { get; set; }
+    public PromptDeliveryResult? PromptDelivery { get; set; }
     public string Backend { get; set; } = "ConPTYBridge";
     public string State { get; set; } = "Starting";
     public bool Ready { get; set; }
