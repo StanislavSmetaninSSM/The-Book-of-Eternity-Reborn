@@ -622,7 +622,7 @@ internal sealed partial class BridgeHost : IDisposable
     {
         lock (_sync)
         {
-            if (ready && (_automaticInputPaused || _admittedPrompts != 0 || _inputLifetime == null ||
+            if (ready && (_terminalUncertain || _automaticInputPaused || _admittedPrompts != 0 || _inputLifetime == null ||
                 _inputLifetime.Revoked || !IsEmptyIdleView(LoadBridgeConfig().GmCliInputProfile.Snapshot(), _promptScreenReader())))
                 return BridgeResponse.Failure("Fresh empty supported idle view is required; uncertain operations remain paused.", SnapshotStatus());
             if (ready) _inputLifetime!.ManualTakeover = false;
@@ -647,6 +647,7 @@ internal sealed partial class BridgeHost : IDisposable
         // Observation never acknowledges trust/update prompts or clears an uncertain operation.
         lock (_sync)
         {
+            if (_terminalUncertain) { _status.Ready=false; _status.State="TerminalUncertain"; TryWriteInputStatus(); return Task.CompletedTask; }
             var profile = LoadBridgeConfig().GmCliInputProfile.Snapshot();
             if (_inputLifetime != null && !_inputLifetime.Revoked && !_inputLifetime.ManualTakeover &&
                 !_automaticInputPaused && _admittedPrompts == 0 && IsEmptyIdleView(profile, _promptScreenReader()))

@@ -11,7 +11,7 @@ internal static class OwnedTerminalScenarioDriver
 {
     internal static async Task<int> RunAsync(string mode, string package, string output)
     {
-        if (mode == "terminal-bridge") return await RunBridgeAsync(package, output);
+        if (mode is "terminal-bridge" or "terminal-uncertain") return await RunBridgeAsync(mode, package, output);
         var result = new Dictionary<string, object?>();
         IOwnedTerminalSession? session = null;
         try
@@ -39,6 +39,8 @@ internal static class OwnedTerminalScenarioDriver
             await Write("canonical\n"); await Until("CANONICAL_READY");
             await Write("\u0004"); await Until("CANONICAL_EOF");
             result["EofStillAlive"] = !session.RootExited.IsCompleted;
+            if (mode == "terminal-descendants") { await Write("descendants\n"); await Until("DESCENDANTS_READY"); }
+            if (mode == "terminal-root-first") { await Write("root-exit\n"); await Until("DESCENDANTS_READY"); await session.RootExited.WaitAsync(deadline.Token); }
             var stop = await session.StopAndObserveAsync(deadline.Token); result["StopState"] = stop.State.ToString();
             while (await session.OutputReader.ReadAsync(new byte[1024], deadline.Token) != 0) { }
             await session.DisposeAsync(); session = null;
@@ -53,7 +55,7 @@ internal static class OwnedTerminalScenarioDriver
         }
         finally { await File.WriteAllTextAsync(Path.Combine(output, "scenario.json"), JsonSerializer.Serialize(result)); }
     }
-    private static async Task<int> RunBridgeAsync(string package, string folder)
+    private static async Task<int> RunBridgeAsync(string mode, string package, string folder)
     {
         var result = new Dictionary<string, object?>(); object? host = null; Task? server = null;
         using var serverCancellation = new CancellationTokenSource();
@@ -89,7 +91,56 @@ internal static class OwnedTerminalScenarioDriver
             var ready = await Rpc(new { command="setReady", ready=true });
             result["Ready"] = ready;
             if (!ready.GetProperty("ok").GetBoolean()) throw new InvalidOperationException("Actual session output did not produce a reliable idle view.");
-            result["Binding"] = ready.GetProperty("status").GetProperty("inputBindingId").GetString();
+            var binding = ready.GetProperty("status").GetProperty("inputBindingId").GetString(); result["Binding"] = binding;
+            object Prompt(string command, string id, string text) => new { command, operationId=id, operationKind="turn", operationRevision="neutral-1", inputBindingId=binding, text, appendEnter=true };
+            string? Disposition(JsonElement r) => r.GetProperty("promptDelivery").GetProperty("disposition").GetString();
+            void Require(bool condition, string failure) { if (!condition) throw new InvalidOperationException(failure); }
+            async Task Idle() {
+                for (var i=0;i<150;i++) { if ((await Rpc(new { command="status" })).GetProperty("status").GetProperty("ready").GetBoolean()) return; await Task.Delay(10); }
+                throw new TimeoutException("Actual view did not return to empty idle.");
+            }
+            var originalSession=type.GetField("_pty", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(host)!;
+            if (mode == "terminal-uncertain") {
+                var owner=typeof(LinuxOwnedTerminalSession).GetField("_owner", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(originalSession)!;
+                await (Task)owner.GetType().GetMethod("SendControlAsync", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(owner, ['U'])!;
+                try { await (Task)Invoke("StopShellAsync")!; throw new InvalidOperationException("Uncertain original owner was accepted."); }
+                catch (TimeoutException) { }
+                Require(ReferenceEquals(originalSession,type.GetField("_pty", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(host)),"Original Uncertain owner lost.");
+                Require(!(await Rpc(new { command="setReady", ready=true })).GetProperty("ok").GetBoolean(),"Uncertain owner became ready.");
+                result["UncertainRetained"]=true; return 0;
+            }
+            var first=await Rpc(Prompt("dispatchPrompt","first","one Ж😀"));
+            Require(Disposition(first)=="submission-observed","First original T042 submission not observed: "+first); await Idle();
+            Require(Disposition(await Rpc(Prompt("dispatchPrompt","first","one Ж😀")))=="submission-observed","Retained duplicate changed outcome.");
+            var second=await Rpc(Prompt("dispatchPrompt","second","two"));
+            Require(Disposition(second)=="submission-observed","Second original T042 submission not observed: "+second); await Idle();
+            Require(ReferenceEquals(originalSession,type.GetField("_pty", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(host)),"Two prompts used another process/session.");
+            result["TwoDispatchesOneSession"]=true;
+            await Rpc(new { command="addText", text="draft" });
+            Require(Disposition(await Rpc(Prompt("dispatchPrompt","draft","automatic")))=="not-written","Manual draft was overwritten.");
+            Require(!(await Rpc(new { command="setReady", ready=true })).GetProperty("ok").GetBoolean(),"Nonempty draft was accepted as idle.");
+            await Rpc(new { command="addText", text="\u007f\u007f\u007f\u007f\u007f" }); await Task.Delay(50);
+            Require((await Rpc(new { command="setReady", ready=true })).GetProperty("ok").GetBoolean(),"Explicit manual backspace did not restore idle.");
+            result["DraftPreserved"]=true;
+            var gate=(SemaphoreSlim)type.GetField("_promptGate",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
+            async Task Admitted() { for(var i=0;i<100;i++) { if((int)type.GetField("_admittedPrompts",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!>0)return;await Task.Delay(5); } throw new TimeoutException("Queued operation not admitted."); }
+            await gate.WaitAsync();
+            try {
+                var queued=Rpc(Prompt("dispatchPrompt","cancel","cancelled")); await Admitted();
+                await Rpc(Prompt("cancelPrompt","cancel","cancelled"));
+                Require(Disposition(await queued)=="queued-cancelled","Real pipe cancel reached another operation."); result["CancelledViaPipe"]=true;
+            } finally { gate.Release(); }
+            await gate.WaitAsync();
+            Task<JsonElement>? manual=null;
+            try {
+                var queued=Rpc(Prompt("dispatchPrompt","takeover","automatic")); await Admitted();
+                manual=Rpc(new { command="addText",text="m" });
+                Require(Disposition(await queued)=="queued-cancelled","Real pipe manual takeover failed."); result["TakeoverViaPipe"]=true;
+            } finally { gate.Release(); }
+            await manual!;
+            Require(!(await Rpc(new { command="setReady", ready=true })).GetProperty("ok").GetBoolean(),"Manual takeover draft was discarded.");
+            await Rpc(new { command="resize", columns=93, rows=31 });
+            result["ActualResizeViaPipe"]=true;
             return 0;
         }
         catch (Exception ex) { result["Failure"] = ex.ToString(); return 1; }

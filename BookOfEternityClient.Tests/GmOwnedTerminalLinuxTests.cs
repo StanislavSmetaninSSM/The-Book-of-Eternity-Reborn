@@ -13,6 +13,12 @@ public sealed class GmOwnedTerminalLinuxTests
     [Fact]
     public async Task ActualBridge_PipeDispatchConsumesOriginalTerminalView() { await RunAsync("terminal-bridge"); }
 
+    [Theory]
+    [InlineData("terminal-descendants")]
+    [InlineData("terminal-root-first")]
+    [InlineData("terminal-uncertain")]
+    public async Task OriginalOwner_DescendantsRootExitOrUncertain(string mode) { await RunAsync(mode); }
+
     private static async Task RunAsync(string mode)
     {
         Assert.True(OperatingSystem.IsLinux(), "This category requires actual Linux native execution.");
@@ -41,7 +47,10 @@ public sealed class GmOwnedTerminalLinuxTests
         Assert.Equal(0, guardian.ExitCode);
         Assert.Equal(0, report.RootElement.GetProperty("driverExitCode").GetInt32());
         using var scenario = JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(folder, "scenario.json")));
-        if (mode == "terminal-bridge") { Assert.True(scenario.RootElement.GetProperty("ScopedRetired").GetBoolean()); return; }
+        if (mode == "terminal-uncertain") { Assert.True(scenario.RootElement.GetProperty("UncertainRetained").GetBoolean()); return; }
+        if (mode == "terminal-bridge") {
+            foreach(var proof in new[]{"ScopedRetired","TwoDispatchesOneSession","DraftPreserved","CancelledViaPipe","TakeoverViaPipe","ActualResizeViaPipe"}) Assert.True(scenario.RootElement.GetProperty(proof).GetBoolean()); return;
+        }
         Assert.True(scenario.RootElement.GetProperty("TwoInputs").GetBoolean());
         Assert.True(scenario.RootElement.GetProperty("Resize").GetBoolean());
         Assert.True(scenario.RootElement.GetProperty("EofStillAlive").GetBoolean());
