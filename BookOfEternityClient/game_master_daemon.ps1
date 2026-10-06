@@ -5300,8 +5300,8 @@ public class Win32Window {
     public const uint MOUSEEVENTF_RIGHTDOWN = 0x0008;
     public const uint MOUSEEVENTF_RIGHTUP = 0x0010;
 }
-"@
-} -ErrorAction SilentlyContinue
+"@ -ErrorAction SilentlyContinue
+}
 
 function Invoke-RightClickPaste {
     param([System.IntPtr]$WindowHandle)

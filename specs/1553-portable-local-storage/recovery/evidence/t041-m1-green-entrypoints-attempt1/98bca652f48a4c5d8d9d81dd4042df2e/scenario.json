@@ -1,0 +1,18 @@
+{
+  "Success": false,
+  "Mode": "launcher",
+  "Argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "/workspace/native-1553/TestResults/production-main/98bca652f48a4c5d8d9d81dd4042df2e/ship/BookOfEternityClient/Launcher/bookofeternity.ps1",
+    "start-bridge",
+    "visible",
+    "-SessionPath",
+    "/workspace/native-1553/TestResults/production-main/98bca652f48a4c5d8d9d81dd4042df2e/root/game_session"
+  ],
+  "Failure": "FileNotFoundError: [Errno 2] No such file or directory",
+  "EntrypointExitCode": 143,
+  "ElapsedSeconds": 25.096096412002225
+}

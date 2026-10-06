@@ -41,6 +41,9 @@ try:
   until(b'NEUTRAL READY')
   cfg=json.loads((session/'config.json').read_text());assert ('CONFIGURED_CWD:'+cfg['GmBridgeShellWorkingDirectory']).encode() in capture
   assert b'CONFIGURED_ARG2:gm-model-sentinel' in capture and b'CONFIGURED_ARG4:a b' in capture
+  # Initial connection availability only: no operation has been written/replayed.
+  deadline=time.monotonic()+3
+  while not Path('/tmp/CoreFxPipe_'+pipe).exists() and time.monotonic()<deadline:receive()
   status=rpc({'command':'status'})['status'];binding=status['inputBindingId'];pid=status['shellPid'];result['OriginalStatus']=status
   record=json.loads((session.parent/'.boe_runtime/gm-runs/main.json').read_text());assert record['Disposition']=='Running';result['DurableRunning']=True
   for n,text in enumerate(['one Ж😀','two'],1):
@@ -56,7 +59,9 @@ except Exception as ex:result['Failure']=type(ex).__name__+': '+str(ex)
 finally:
  if process is not None:
   if process.poll() is None:
-   try:rpc({'command':'shutdown'})
+   try:
+    record=json.loads((session.parent/'.boe_runtime/gm-runs/main.json').read_text());identity={k[0].lower()+k[1:]:v for k,v in record['Identity'].items()};identity['backend']=2
+    rpc({'command':'shutdown','rootKey':identity['rootKey'],'expectedMainIdentity':identity})
    except Exception:pass
   try:
    while process.poll() is None and time.monotonic()-started<25:receive()
