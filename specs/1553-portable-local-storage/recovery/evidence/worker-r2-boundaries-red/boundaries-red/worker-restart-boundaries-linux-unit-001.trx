@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="facb9396-9ae7-4b7e-b6e2-ecc83cdaa04e" name="@c7669543e9c7 2026-10-06 03:00:19" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T03:00:19.5640554+00:00" queuing="2026-10-06T03:00:19.5640554+00:00" start="2026-10-06T03:00:14.6954085+00:00" finish="2026-10-06T03:00:27.8168415+00:00" />
+  <TestSettings name="default" id="fbdf51b4-866a-47d9-9b3a-c7583216723b">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_03_00_19" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="331907bd-8d72-40ca-a25f-d636e93249db" testId="7a50b620-161c-cd90-6338-414daf307c34" testName="BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary(mode: &quot;publication-ack&quot;)" computerName="c7669543e9c7" duration="00:00:02.4749800" startTime="2026-10-06T03:00:26.0657226+00:00" endTime="2026-10-06T03:00:26.0657228+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="331907bd-8d72-40ca-a25f-d636e93249db" />
+    <UnitTestResult executionId="cd1c7e02-bc8f-4234-9a4b-f0007bbcaa81" testId="ce6ab649-7e0a-6c1d-202b-ab74655bc2bc" testName="BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary(mode: &quot;retirement-ack&quot;)" computerName="c7669543e9c7" duration="00:00:02.2592609" startTime="2026-10-06T03:00:23.5882776+00:00" endTime="2026-10-06T03:00:23.5882778+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cd1c7e02-bc8f-4234-9a4b-f0007bbcaa81" />
+    <UnitTestResult executionId="fc947437-06a9-4a9b-ad83-4b998023db6a" testId="7afe3621-4b44-a9d1-5fcf-af8b93eba3ec" testName="BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary(mode: &quot;retirement-authority-loss&quot;)" computerName="c7669543e9c7" duration="00:00:02.6804847" startTime="2026-10-06T03:00:19.5226821+00:00" endTime="2026-10-06T03:00:19.5227271+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fc947437-06a9-4a9b-ad83-4b998023db6a">
+      <Output>
+        <ErrorInfo>
+          <Message>Original consumer permit at failure: {"mode":"retirement-authority-loss","faults":1,"stageFailures":0,"cleanupFailures":0,"before":{"accepted":true,"proposalConsumer":true,"repairConsumer":true,"stopState":"StoppedWithinScope","outputsSettled":true,"entries":1,"capacity":1,"active":1,"retired":0,"phases":["Published"],"workspaceExists":false,"lastError":null,"cleanupDeferred":true},"after":{"accepted":true,"proposalConsumer":true,"repairConsumer":true,"stopState":"StoppedWithinScope","outputsSettled":true,"entries":1,"capacity":1,"active":1,"retired":0,"phases":["Published"],"workspaceExists":false,"lastError":null,"cleanupDeferred":true},"probeReservations":0,"canonicalRefused":true,"lockRetainedAfterClientDispose":true,"terminal":null,"terminalPhase":null,"proposalPreserved":true,"exactTerminalRetry":false,"workerStarts":1}</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartBoundaryTests.cs:line 28
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="056d91b6-b029-4676-a2fb-012e16c8e922" testId="a6ceabc2-0916-99d2-7dfb-e1d221f0b2db" testName="BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary(mode: &quot;partial-workspace&quot;)" computerName="c7669543e9c7" duration="00:00:01.6452727" startTime="2026-10-06T03:00:27.7119828+00:00" endTime="2026-10-06T03:00:27.7119831+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="056d91b6-b029-4676-a2fb-012e16c8e922" />
+    <UnitTestResult executionId="df89aecf-3af6-4131-8490-86adf1af0544" testId="c8bb3e79-5c8c-f2ef-2307-acd0d9c05589" testName="BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary(mode: &quot;prepared-registration-loss&quot;)" computerName="c7669543e9c7" duration="00:00:01.8108549" startTime="2026-10-06T03:00:21.3276536+00:00" endTime="2026-10-06T03:00:21.3276538+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="df89aecf-3af6-4131-8490-86adf1af0544">
+      <Output>
+        <ErrorInfo>
+          <Message>Original unresolved execution must retain capacity: {"mode":"prepared-registration-loss","faults":1,"stageFailures":0,"cleanupFailures":0,"before":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":null,"outputsSettled":false,"entries":0,"capacity":0,"active":1,"retired":0,"phases":["Prepared"],"workspaceExists":false,"lastError":"Only one original live execution may bind a Prepared entry.","cleanupDeferred":false},"after":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":null,"outputsSettled":false,"entries":0,"capacity":0,"active":1,"retired":0,"phases":["Prepared"],"workspaceExists":false,"lastError":"Only one original live execution may bind a Prepared entry.","cleanupDeferred":false},"probeReservations":0,"canonicalRefused":true,"lockRetainedAfterClientDispose":true,"terminal":null,"terminalPhase":null,"proposalPreserved":false,"exactTerminalRetry":false,"workerStarts":0}</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartBoundaryTests.cs:line 20
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary(mode: &quot;publication-ack&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7a50b620-161c-cd90-6338-414daf307c34">
+      <Execution id="331907bd-8d72-40ca-a25f-d636e93249db" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests" name="OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary(mode: &quot;retirement-ack&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ce6ab649-7e0a-6c1d-202b-ab74655bc2bc">
+      <Execution id="cd1c7e02-bc8f-4234-9a4b-f0007bbcaa81" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests" name="OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary(mode: &quot;retirement-authority-loss&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7afe3621-4b44-a9d1-5fcf-af8b93eba3ec">
+      <Execution id="fc947437-06a9-4a9b-ad83-4b998023db6a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests" name="OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary(mode: &quot;partial-workspace&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a6ceabc2-0916-99d2-7dfb-e1d221f0b2db">
+      <Execution id="056d91b6-b029-4676-a2fb-012e16c8e922" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests" name="OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary(mode: &quot;prepared-registration-loss&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c8bb3e79-5c8c-f2ef-2307-acd0d9c05589">
+      <Execution id="df89aecf-3af6-4131-8490-86adf1af0544" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests" name="OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="7a50b620-161c-cd90-6338-414daf307c34" executionId="331907bd-8d72-40ca-a25f-d636e93249db" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ce6ab649-7e0a-6c1d-202b-ab74655bc2bc" executionId="cd1c7e02-bc8f-4234-9a4b-f0007bbcaa81" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7afe3621-4b44-a9d1-5fcf-af8b93eba3ec" executionId="fc947437-06a9-4a9b-ad83-4b998023db6a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a6ceabc2-0916-99d2-7dfb-e1d221f0b2db" executionId="056d91b6-b029-4676-a2fb-012e16c8e922" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c8bb3e79-5c8c-f2ef-2307-acd0d9c05589" executionId="df89aecf-3af6-4131-8490-86adf1af0544" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="5" executed="5" passed="3" failed="2" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.23]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.56]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.58]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:04.32]       Original consumer permit at failure: {"mode":"retirement-authority-loss","faults":1,"stageFailures":0,"cleanupFailures":0,"before":{"accepted":true,"proposalConsumer":true,"repairConsumer":true,"stopState":"StoppedWithinScope","outputsSettled":true,"entries":1,"capacity":1,"active":1,"retired":0,"phases":["Published"],"workspaceExists":false,"lastError":null,"cleanupDeferred":true},"after":{"accepted":true,"proposalConsumer":true,"repairConsumer":true,"stopState":"StoppedWithinScope","outputsSettled":true,"entries":1,"capacity":1,"active":1,"retired":0,"phases":["Published"],"workspaceExists":false,"lastError":null,"cleanupDeferred":true},"probeReservations":0,"canonicalRefused":true,"lockRetainedAfterClientDispose":true,"terminal":null,"terminalPhase":null,"proposalPreserved":true,"exactTerminalRetry":false,"workerStarts":1}
+[xUnit.net 00:00:04.32]       Stack Trace:
+[xUnit.net 00:00:04.33]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartBoundaryTests.cs(28,0): at BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary(String mode)
+[xUnit.net 00:00:04.33]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:06.13]       Original unresolved execution must retain capacity: {"mode":"prepared-registration-loss","faults":1,"stageFailures":0,"cleanupFailures":0,"before":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":null,"outputsSettled":false,"entries":0,"capacity":0,"active":1,"retired":0,"phases":["Prepared"],"workspaceExists":false,"lastError":"Only one original live execution may bind a Prepared entry.","cleanupDeferred":false},"after":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":null,"outputsSettled":false,"entries":0,"capacity":0,"active":1,"retired":0,"phases":["Prepared"],"workspaceExists":false,"lastError":"Only one original live execution may bind a Prepared entry.","cleanupDeferred":false},"probeReservations":0,"canonicalRefused":true,"lockRetainedAfterClientDispose":true,"terminal":null,"terminalPhase":null,"proposalPreserved":false,"exactTerminalRetry":false,"workerStarts":0}
+[xUnit.net 00:00:06.13]       Stack Trace:
+[xUnit.net 00:00:06.13]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartBoundaryTests.cs(20,0): at BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary(String mode)
+[xUnit.net 00:00:06.13]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:12.53]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T03:00:19.5189294+00:00">
+        <Text>[xUnit.net 00:00:04.32]     BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary(mode: "retirement-authority-loss") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T03:00:21.3280099+00:00">
+        <Text>[xUnit.net 00:00:06.13]     BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary(mode: "prepared-registration-loss") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

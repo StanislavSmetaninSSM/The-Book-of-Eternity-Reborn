@@ -181,6 +181,16 @@ or fail actual workspace staging; they cannot mint positive evidence. It probes 
 second FS/pool and original lock retention after admission-client disposal, then
 retries original cleanup. Both actual consumer gates are checked before/after retry.
 These tests are unbuilt/unrun; reviewed defects remain intentionally unfixed for RED.
+Boundary RED at `de3e1fdeb5c922bf6cb54d9fb26586e7c9aeb656`:5 executed,3 PASS
+(partial workspace, publication ACK, retirement ACK),2 causal FAIL (late authority
+loss accepted by both consumers; Prepared registration lost cleanup capacity),
+61.2602203s, fresh build/complete descriptor, cleanup complete/no timeout. All five
+guardians ECHILD/exit0 with zero emergency/failure/deadline. Evidence:
+recovery/evidence/worker-r2-boundaries-red/manifest.json. Moved fallible original
+registration after pool assignment/retention and made the durable atomic uncertainty
+latch participate in both success consumers and positive stop/output diagnostics.
+Fresh five-case GREEN pending. Recovery/audit confinement and foreign Busy remain
+open review findings; the remaining minimal R2 matrix and final review are pending.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

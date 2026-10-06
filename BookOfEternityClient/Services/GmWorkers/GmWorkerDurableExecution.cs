@@ -17,7 +17,7 @@ internal sealed class GmWorkerDurableExecution
     private Mutation? _pending;
     private GmWorkerOwnedLaunch? _owner;
     private GmWorkerExecutionAuthority? _authority;
-    private bool _registered, _startAttempted, _releaseAttempted, _publicationAcknowledged, _retirementAcknowledged;
+    private bool _preparedAcknowledged, _registered, _startAttempted, _releaseAttempted, _publicationAcknowledged, _retirementAcknowledged;
     private int _uncertain;
     private WorkerRunCleanup? _cleanup, _boundAudit;
 
@@ -26,7 +26,7 @@ internal sealed class GmWorkerDurableExecution
     {
         _coordinator = coordinator; _root = root; Entry = entry; _task = task; _taskBytes = taskBytes.ToArray();
         _record = new(2, entry.Identity, WorkerRunPhase.Prepared);
-        if (prepared) Register();
+        _preparedAcknowledged = prepared;
     }
     internal static GmWorkerDurableExecution RetainPrepared(WorkerRunLedgerCoordinator coordinator,
         GmWorkerRootExecutionLease root, WorkerLedgerMutationResult prepared, WorkerTaskPacket task, byte[] bytes)
@@ -58,10 +58,16 @@ internal sealed class GmWorkerDurableExecution
     internal async Task EnsurePreparedAsync()
     {
         if (_registered) return;
-        var result = await _coordinator.RetryPendingAsync();
-        if (result.Kind != WorkerLedgerMutationKind.Applied || !ReferenceEquals(result.Entry, Entry))
-            throw new IOException("Prepared commit is still pending; original cleanup capacity is retained.");
-        Register(); Context.ClearMetadataPending(this);
+        if (!_preparedAcknowledged)
+        {
+            var result = await _coordinator.RetryPendingAsync();
+            if (result.Kind != WorkerLedgerMutationKind.Applied || !ReferenceEquals(result.Entry, Entry))
+                throw new IOException("Prepared commit is still pending; original cleanup capacity is retained.");
+            _preparedAcknowledged = true;
+        }
+        try { Register(); }
+        catch { CloseForUncertainty(); throw; }
+        Context.ClearMetadataPending(this);
     }
 
     internal async Task PlanLaunchAsync()

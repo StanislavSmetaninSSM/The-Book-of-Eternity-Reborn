@@ -47,9 +47,10 @@ internal sealed class GmWorkerExecutionAuthority
     internal static GmWorkerExecutionAuthority NoLaunch(WorkerTaskPacket task, byte[]? reservedBytes = null) =>
         new(null, task, reservedBytes, noLaunch: true);
     internal GmWorkerExecutionIdentity? Identity { get; }
-    internal bool OutputsSettled { get { lock (_sync) return _outputs != null && _uncertainty == null; } }
-    internal bool IsUncertain { get { lock (_sync) return _uncertainty != null; } }
-    internal string? UncertaintyReason { get { lock (_sync) return _uncertainty; } }
+    private string? CurrentUncertainty => _uncertainty ?? (_durable?.IsUncertain == true ? "Original durable execution authority became uncertain." : null);
+    internal bool OutputsSettled { get { lock (_sync) return _outputs != null && CurrentUncertainty == null; } }
+    internal bool IsUncertain { get { lock (_sync) return CurrentUncertainty != null; } }
+    internal string? UncertaintyReason { get { lock (_sync) return CurrentUncertainty; } }
     internal GmWorkerOwnedOutputs? Outputs { get { lock (_sync) return _outputs; } }
     internal GmWorkerStopEvidence? StopEvidence
     {
@@ -57,11 +58,12 @@ internal sealed class GmWorkerExecutionAuthority
         {
             lock (_sync)
             {
-                if (_uncertainty == null) return _observedStop;
+                var uncertainty = CurrentUncertainty;
+                if (uncertainty == null) return _observedStop;
                 return _observedStop is { } observed
-                    ? observed with { State = GmWorkerStopState.Uncertain, Reason = _uncertainty }
+                    ? observed with { State = GmWorkerStopState.Uncertain, Reason = uncertainty }
                     : Identity == null ? null : new(Identity.RunId, Identity.Backend, Identity.Guarantee,
-                        GmWorkerStopState.Uncertain, _uncertainty, false, false, null);
+                        GmWorkerStopState.Uncertain, uncertainty, false, false, null);
             }
         }
     }
@@ -71,7 +73,7 @@ internal sealed class GmWorkerExecutionAuthority
         lock (_sync)
         {
             _observedStop = evidence;
-            if (_uncertainty != null) return false;
+            if (CurrentUncertainty != null) return false;
             if (Identity == null || string.IsNullOrWhiteSpace(Identity.RunId) ||
                 (Identity.Backend != GmWorkerBackend.NativeLineage && Identity.Backend != GmWorkerBackend.WindowsJob) ||
                 Identity.Guarantee != (Identity.Backend == GmWorkerBackend.NativeLineage ? GmWorkerBackendSelector.NativeGuarantee : "windows-job") ||
@@ -94,8 +96,8 @@ internal sealed class GmWorkerExecutionAuthority
     {
         lock (_sync)
         {
-            if (_noLaunch && _uncertainty == null) return new(true, null);
-            if (_validatedStop != null && _uncertainty == null) return new(false, _validatedStop);
+            if (_noLaunch && CurrentUncertainty == null) return new(true, null);
+            if (_validatedStop != null && CurrentUncertainty == null) return new(false, _validatedStop);
         }
         if (owner == null || owner.Identity != Identity)
         {
@@ -134,7 +136,7 @@ internal sealed class GmWorkerExecutionAuthority
     {
         lock (_sync)
         {
-            if (_noLaunch && _uncertainty == null) return new(true, null);
+            if (_noLaunch && CurrentUncertainty == null) return new(true, null);
             RequireScopedStop();
             if (_outputs == null) throw new InvalidOperationException("Cleanup retains unsettled owned outputs.");
             return new(false, _validatedStop);
@@ -167,7 +169,7 @@ internal sealed class GmWorkerExecutionAuthority
     {
         lock (_sync)
         {
-            if (_uncertainty != null || _publication == null || _validatedStop == null || _outputs == null || _completion != 0 ||
+            if (CurrentUncertainty != null || _publication == null || _validatedStop == null || _outputs == null || _completion != 0 ||
                 result.TimedOut || result.SessionReplaced || result.ExitCode != _completion || result.Status.State != WorkerBridgeState.Stopped ||
                 result.Status.WorkerId != _workerId || result.Status.CurrentTaskId != _taskId || result.ExecutionIdentity != Identity ||
                 result.StopEvidence != _validatedStop || !result.OutputsSettled || result.BoundTask == null || result.Proposal == null ||
@@ -176,7 +178,7 @@ internal sealed class GmWorkerExecutionAuthority
             {
                 return requested.WorkerId == _workerId && requested.TaskId == _taskId && requested.SessionGeneration == _generation &&
                     ModelDigest(requested) == _taskModelDigest && ModelDigest(result.BoundTask) == _taskModelDigest &&
-                    ModelDigest(result.Proposal) == _publication.ModelDigest;
+                    ModelDigest(result.Proposal) == _publication.ModelDigest && CurrentUncertainty == null;
             }
             catch { return false; }
         }
@@ -184,8 +186,8 @@ internal sealed class GmWorkerExecutionAuthority
 
     private void RequireScopedStop()
     {
-        if (_noLaunch || _uncertainty != null || _validatedStop == null)
-            throw new InvalidOperationException(_uncertainty ?? "Matching scoped stop evidence is required.");
+        if (_noLaunch || CurrentUncertainty != null || _validatedStop == null)
+            throw new InvalidOperationException(CurrentUncertainty ?? "Matching scoped stop evidence is required.");
     }
     private static string ModelDigest<T>(T value) => Digest(Encoding.UTF8.GetBytes(GmWorkerJson.Serialize(value)));
     private static string Digest(byte[] bytes) => Convert.ToHexString(SHA256.HashData(bytes));
