@@ -4,6 +4,21 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T031-BROWSER-ROLLBACK-LINUX — authorized continuation
+
+Owner accepted bounded M1 `4d456d5d5e12289d6fc97e5b2e7a0c523207bc08` and authorized
+planning plus implementation after independent actual Sol6.1/xhigh plan review.
+Sole writer, existing isolated branch/local+remote SHA/clean confirmed; no other VM.
+[Concrete implementation plan](browser-rollback-linux-plan.md) traces real coordinator,
+recorder, original legacy exclusions and shared publication/recovery ordering. Existing
+Spec Kit prerequisites/constitution/spec/tasks apply; project skills are available,
+standalone specify CLI is absent and not installed. No product decision identified.
+Two narrow categories and exact affected guards/consumers only; historical four F2
+Windows-only failures stay separate/unpassed. No runtime/tests implemented or executed
+at this checkpoint. No LoadUX/provider/saves/Q1/Q2/TERM/settings/auth/services or broad
+verification. Native Windows/systemd remain unqualified. Plan review is next, then
+causal real-consumer RED→GREEN; no extra user confirmation for already authorized work.
+
 ## T041-PRODUCTION-MAIN-M1 — authorized execution ledger
 
 Owner accepted design `cdc3b10ca5cbff5b4d9cbc935609cdff29a95e68` and authorized M1 only.
