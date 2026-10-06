@@ -27,8 +27,8 @@ internal sealed class ConPtySession : IDisposable, IOwnedTerminalSession
     private ConPtySession(IntPtr console,IntPtr input,IntPtr output)
     {
         _pseudoConsole=console;
-        InputWriter=new FaultStream(new FileStream(new SafeFileHandle(input,true),FileAccess.Write,4096,false),Lose);
-        OutputReader=new FaultStream(new FileStream(new SafeFileHandle(output,true),FileAccess.Read,4096,false),Lose);
+        InputWriter=new FaultStream(new FileStream(new SafeFileHandle(input,true),FileAccess.Write,4096,false),Lose,()=>!_stopping && !_uncertain);
+        OutputReader=new FaultStream(new FileStream(new SafeFileHandle(output,true),FileAccess.Read,4096,false),Lose,()=>true);
     }
     private void Lose(string reason) { lock(_gate)_uncertain=true;_authorityLost.TrySetResult(reason); }
     private static async Task<TerminalRootExit> ObserveRootAsync(Process process) { await process.WaitForExitAsync();return new(process.ExitCode); }
@@ -87,7 +87,7 @@ internal sealed class ConPtySession : IDisposable, IOwnedTerminalSession
                 await RootExited.WaitAsync(TimeSpan.FromSeconds(5));
             } else if(_released)throw new InvalidOperationException("ConPTY Job authority lost.");
             // Do not wait for output EOF before beginning this retained close task.
-            lock(_gate)_closeTask??=Task.Run(()=>ConPtyNativeMethods.ClosePseudoConsole(_pseudoConsole));
+            lock(_gate)_closeTask??=Task.Factory.StartNew(()=>ConPtyNativeMethods.ClosePseudoConsole(_pseudoConsole),CancellationToken.None,TaskCreationOptions.LongRunning,TaskScheduler.Default);
             return new(Identity,_uncertain?GmWorkerStopState.Uncertain:GmWorkerStopState.StoppedWithinScope,"original-job-empty",true,_uncertain);
         } catch { Lose("conpty-stop-fault");return new(Identity,GmWorkerStopState.Uncertain,"original-job-stop-unconfirmed",false,true); }
     }
@@ -96,9 +96,9 @@ internal sealed class ConPtySession : IDisposable, IOwnedTerminalSession
     {
         var proof=await StopAndObserveAsync(CancellationToken.None);
         if(proof.State!=GmWorkerStopState.StoppedWithinScope || !proof.CleanupComplete || proof.AuthorityRetained)throw new InvalidOperationException("Uncertain ConPTY retains original Job/session.");
-        try { await _closeTask!.WaitAsync(TimeSpan.FromSeconds(5)); }
+        try { await Task.WhenAll(_closeTask!,((FaultStream)InputWriter).Settlement,((FaultStream)OutputReader).Settlement).WaitAsync(TimeSpan.FromSeconds(5)); }
         catch { Lose("conpty-close-unsettled");throw; }
-        // Bridge joined its actual reader/writer before asking for handle retirement.
+        // Actual EOF and all admitted I/O, plus the one original close task, are joined.
         await InputWriter.DisposeAsync();await OutputReader.DisposeAsync();
         await _job!.DisposeAsync();_job=null;
         _process?.Dispose();
@@ -107,19 +107,37 @@ internal sealed class ConPtySession : IDisposable, IOwnedTerminalSession
         _threadHandle=_processHandle=_pseudoConsole=IntPtr.Zero;
     }
     public void Dispose()=>DisposeAsync().AsTask().GetAwaiter().GetResult();
-    private sealed class FaultStream(Stream stream,Action<string> fault) : Stream
+    private sealed class FaultStream(Stream stream,Action<string> fault,Func<bool> admission) : Stream
     {
+        private readonly object _state=new();
+        private int _active;
+        private bool _disposed;
+        private TaskCompletionSource _idle=Completed();
+        private readonly TaskCompletionSource _eof=new(TaskCreationOptions.RunContinuationsAsynchronously);
+        private static TaskCompletionSource Completed(){var t=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);t.SetResult();return t;}
+        internal Task Settlement=>SettleAsync();
+        private async Task SettleAsync(){if(stream.CanRead)await _eof.Task;Task idle;lock(_state)idle=_idle.Task;await idle;}
+        private void Enter(){lock(_state){if(_disposed || !admission())throw new IOException("Original ConPTY I/O admission closed.");if(_active++==0)_idle=new(TaskCreationOptions.RunContinuationsAsynchronously);}}
+        private void Leave(){lock(_state){if(--_active==0)_idle.TrySetResult();}}
         public override bool CanRead=>stream.CanRead;public override bool CanWrite=>stream.CanWrite;public override bool CanSeek=>false;
         public override long Length=>throw new NotSupportedException();public override long Position{get=>throw new NotSupportedException();set=>throw new NotSupportedException();}
-        public override async ValueTask<int> ReadAsync(Memory<byte> b,CancellationToken t=default) {try{return await stream.ReadAsync(b,t);}catch(OperationCanceledException){throw;}catch{fault("conpty-output-fault");throw;}}
-        public override async ValueTask WriteAsync(ReadOnlyMemory<byte> b,CancellationToken t=default) {try{await stream.WriteAsync(b,t);}catch(OperationCanceledException){throw;}catch{fault("conpty-input-fault");throw;}}
+        public override async ValueTask<int> ReadAsync(Memory<byte> b,CancellationToken t=default)
+        {
+            if(_eof.Task.IsCompletedSuccessfully)return 0;
+            Enter();try{var n=await stream.ReadAsync(b,t);if(n==0)_eof.TrySetResult();return n;}
+            catch(OperationCanceledException){throw;}catch{fault("conpty-output-fault");throw;}finally{Leave();}
+        }
+        public override async ValueTask WriteAsync(ReadOnlyMemory<byte> b,CancellationToken t=default)
+        {
+            Enter();try{await stream.WriteAsync(b,t);}catch(OperationCanceledException){throw;}catch{fault("conpty-input-fault");throw;}finally{Leave();}
+        }
         public override Task<int> ReadAsync(byte[] b,int o,int n,CancellationToken t)=>ReadAsync(b.AsMemory(o,n),t).AsTask();
         public override Task WriteAsync(byte[] b,int o,int n,CancellationToken t)=>WriteAsync(b.AsMemory(o,n),t).AsTask();
-        public override Task FlushAsync(CancellationToken t)=>stream.FlushAsync(t);
+        public override async Task FlushAsync(CancellationToken t){Enter();try{await stream.FlushAsync(t);}catch(OperationCanceledException){throw;}catch{fault("conpty-flush-fault");throw;}finally{Leave();}}
         public override int Read(byte[] b,int o,int n)=>ReadAsync(b.AsMemory(o,n)).AsTask().GetAwaiter().GetResult();
         public override void Write(byte[] b,int o,int n)=>WriteAsync(b.AsMemory(o,n)).AsTask().GetAwaiter().GetResult();
-        public override void Flush()=>stream.Flush();public override long Seek(long n,SeekOrigin s)=>throw new NotSupportedException();public override void SetLength(long n)=>throw new NotSupportedException();
-        protected override void Dispose(bool disposing){if(disposing)stream.Dispose();base.Dispose(disposing);}
+        public override void Flush()=>FlushAsync(CancellationToken.None).GetAwaiter().GetResult();public override long Seek(long n,SeekOrigin s)=>throw new NotSupportedException();public override void SetLength(long n)=>throw new NotSupportedException();
+        protected override void Dispose(bool disposing){if(disposing){lock(_state){if(_active!=0 || (stream.CanRead && !_eof.Task.IsCompletedSuccessfully))throw new InvalidOperationException("Original ConPTY I/O unsettled.");_disposed=true;stream.Dispose();}}base.Dispose(disposing);}
     }
 }
 

@@ -3,7 +3,7 @@ using Microsoft.Win32.SafeHandles;
 
 namespace BookOfEternityClient.Services.GmRuntime;
 
-// Nonblocking owned descriptors. A finite poll slice observes cancellation inside
+// Nonblocking owned descriptors. A cancellation wake pipe observes cancellation inside
 // the actual operation; no blocking read is abandoned behind a cancelled waiter.
 internal sealed class LinuxPtyStream : Stream
 {
@@ -69,17 +69,22 @@ internal sealed class LinuxPtyStream : Stream
         {
             _fd.DangerousAddRef(ref held);
             var fd = _fd.DangerousGetHandle().ToInt32();
+            var wake=new int[2];if(Pipe(wake,0x80800)!=0)throw new IOException("PTY cancellation wake pipe failed.");
+            using var wakeRead=new SafeFileHandle((IntPtr)wake[0],true);
+            using var wakeWrite=new SafeFileHandle((IntPtr)wake[1],true);
+            using var registration=token.Register(()=>Wake(wakeWrite,[1],1));
             while (true)
             {
                 token.ThrowIfCancellationRequested();
+                if(write && !_authority())throw new IOException("Original terminal authority is uncertain.");
                 var n = write ? NativeWrite(fd, pin.AddrOfPinnedObject(), (nuint)buffer.Length) : NativeRead(fd, pin.AddrOfPinnedObject(), (nuint)buffer.Length);
                 if (n >= 0) { if (write && n == 0) throw new IOException("PTY zero write."); if (!write) { if(n==0)_eof.TrySetResult(); buffer.AsSpan(0, checked((int)n)).CopyTo(bytes.Span); } return checked((int)n); }
                 var e = Marshal.GetLastPInvokeError();
                 if (!write && e == 5) { _eof.TrySetResult(); return 0; } // established slave hangup only; never scoped stop proof
                 if (e == 4) continue;
                 if (e != 11) throw new IOException("PTY I/O errno=" + e);
-                var p = new PollFd { Fd = fd, Events = (short)(write ? 4 : 1) };
-                if (Poll(ref p, 1, 20) < 0 && Marshal.GetLastPInvokeError() != 4) throw new IOException("PTY poll failed.");
+                var p = new[]{new PollFd { Fd = fd, Events = (short)(write ? 4 : 1) },new PollFd {Fd=wake[0],Events=1}};
+                if (Poll(p, 2, -1) < 0 && Marshal.GetLastPInvokeError() != 4) throw new IOException("PTY poll failed.");
             }
         }
         catch (OperationCanceledException) { throw; }
@@ -100,6 +105,8 @@ internal sealed class LinuxPtyStream : Stream
     [StructLayout(LayoutKind.Sequential)] private struct WinSize { internal ushort Rows, Columns, X, Y; }
     [DllImport("libc",EntryPoint="read",SetLastError=true)] private static extern long NativeRead(int fd,IntPtr data,nuint n);
     [DllImport("libc",EntryPoint="write",SetLastError=true)] private static extern long NativeWrite(int fd,IntPtr data,nuint n);
-    [DllImport("libc",EntryPoint="poll",SetLastError=true)] private static extern int Poll(ref PollFd fd,nuint count,int timeout);
+    [DllImport("libc",EntryPoint="poll",SetLastError=true)] private static extern int Poll([In,Out] PollFd[] fd,nuint count,int timeout);
+    [DllImport("libc",EntryPoint="pipe2",SetLastError=true)] private static extern int Pipe([Out]int[] fds,int flags);
+    [DllImport("libc",EntryPoint="write",SetLastError=true)] private static extern long Wake(SafeFileHandle fd,byte[] bytes,nuint count);
     [DllImport("libc",EntryPoint="ioctl",SetLastError=true)] private static extern int Ioctl(SafeFileHandle fd,uint request,ref WinSize size);
 }

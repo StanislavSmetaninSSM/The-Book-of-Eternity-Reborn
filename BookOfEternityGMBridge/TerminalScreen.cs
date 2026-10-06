@@ -44,7 +44,7 @@ internal sealed class TerminalScreen(string bindingId)
                 if (_escape.Length <= 2) continue;
                 if (char.IsAsciiLetter(c) || c == '~')
                 {
-                    if (_escape == "\u001b[2J") { _lines.Clear(); _lines.Add(new()); _invalid=false; _awaitingHome=true; }
+                    if (_escape == "\u001b[2J") { _lines.Clear(); while(_lines.Count<=_row)_lines.Add(new()); _invalid=false; _awaitingHome=true; }
                     else if (_escape is "\u001b[H" or "\u001b[1;1H") { _row=_column=0; _awaitingHome=false; }
                     else _invalid=true;
                     _escape=null;

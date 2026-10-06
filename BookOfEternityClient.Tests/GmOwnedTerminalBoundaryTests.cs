@@ -37,6 +37,7 @@ public sealed class GmOwnedTerminalBoundaryTests
         await using var h=new OwnedHost();
         await h.Feed("\u001b[2J\u001b[HNEUTRAL READY\r\n> \r\n");
         await h.Feed("\u001b[2JNEUTRAL READY\r\n> \r\n"); Assert.False(h.Reliable);
+        await h.Feed("\u001b[2J\u001b[HNEUTRAL READY\r\n> \r\n"); Assert.True(h.Reliable);
     }
     [Fact]
     public async Task ActualOwnedKeyboard_PairsUnicodeScalarsBeforeWriting()
@@ -71,6 +72,15 @@ public sealed class GmOwnedTerminalBoundaryTests
         var stop=h.Stop(); await h.Terminal.StopEntered.Task.WaitAsync(TimeSpan.FromSeconds(2));
         await Task.Delay(30); Assert.False(stop.IsCompleted); Assert.Same(h.Terminal,h.Get("_pty")); Assert.False(h.Terminal.Disposed);
         h.Terminal.Complete(); await stop.WaitAsync(TimeSpan.FromSeconds(3)); Assert.True(h.Terminal.Disposed); Assert.Null(h.Get("_pty"));
+    }
+    [Fact]
+    public async Task ActualOwnedStop_OutputTimeoutIsAbsorbingWithOriginalOwner()
+    {
+        await using var h=new OwnedHost();h.Terminal.HoldEof=true;
+        await Assert.ThrowsAsync<TimeoutException>(h.Stop);
+        Assert.Same(h.Terminal,h.Get("_pty"));Assert.False(h.Terminal.Disposed);
+        h.Terminal.Complete();await Assert.ThrowsAsync<TimeoutException>(h.Stop);
+        Assert.Same(h.Terminal,h.Get("_pty"));Assert.False(h.Terminal.Disposed);
     }
     private sealed class OwnedHost : IAsyncDisposable
     {

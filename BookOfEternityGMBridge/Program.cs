@@ -195,6 +195,9 @@ internal sealed partial class BridgeHost : IDisposable
 
         try { await StartShellAsync(); } catch(OwnedTerminalStartException) { /* Original owner retained; keep diagnostics/control alive. */ }
         var serverTask = RunServerLoopAsync(_cts.Token);
+        var controlKeys=!Console.IsInputRedirected;
+        var previousControlKeys=controlKeys && Console.TreatControlCAsInput;
+        if(controlKeys)Console.TreatControlCAsInput=true;
 
         try
         {
@@ -221,7 +224,7 @@ internal sealed partial class BridgeHost : IDisposable
         finally
         {
             try { await serverTask; } catch { /* ignored */ }
-            await StopShellAsync();
+            try { await StopShellAsync(); } finally { if(controlKeys)Console.TreatControlCAsInput=previousControlKeys; }
             SafeDeleteStatusFile();
         }
 
@@ -360,6 +363,9 @@ internal sealed partial class BridgeHost : IDisposable
                 await StartShellAsync();
                 return BridgeResponse.Success(SnapshotStatus());
 
+            case "stopterminal":
+                if(_neutralLaunch==null)return BridgeResponse.Failure("Scoped terminal harness control requires fixed neutral admission.",SnapshotStatus());
+                await StopShellAsync();return BridgeResponse.Success(SnapshotStatus());
             case "shutdown":
                 lock (_sync)
                 {
@@ -484,6 +490,7 @@ internal sealed partial class BridgeHost : IDisposable
             {
                 _terminalStopTask ??= ObserveScopedTerminalStopAsync(pty);
                 var proof = await _terminalStopTask.WaitAsync(InputDrainTimeout);
+                lock(_sync)_status.TerminalStop=proof;
                 if (_terminalUncertain || proof.Identity != pty.Identity ||
                     proof.State != GmWorkerStopState.StoppedWithinScope || !proof.CleanupComplete || proof.AuthorityRetained)
                     throw new InvalidOperationException("Original terminal scoped stop is unconfirmed.");
@@ -575,6 +582,7 @@ internal sealed partial class BridgeHost : IDisposable
         {
             if (!ReferenceEquals(_pty, session)) throw new InvalidOperationException("Terminal retirement identity changed.");
             _pty = null;
+            _status.Ready=false;_status.State="TerminalStopped";_status.ShellPid=null;
             _ptyInput = null;
             _terminalStopTask = null;
             _terminalDisposeTask = null;
@@ -1028,7 +1036,11 @@ internal sealed partial class BridgeHost : IDisposable
                 var character=key.Value.KeyChar;
                 if(char.IsHighSurrogate(character)) { highSurrogate=character; continue; }
                 if(char.IsLowSurrogate(character)) { sequence=highSurrogate is { } high ? new string([high,character]) : null; highSurrogate=null; }
-                else { highSurrogate=null; sequence = KeyToSequence(key.Value); }
+                else { highSurrogate=null;
+                    if((key.Value.Modifiers & ConsoleModifiers.Control)!=0 && key.Value.Key==ConsoleKey.D)sequence=LoadBridgeConfig().GmCliInputProfile.ExitSequence;
+                    else if((key.Value.Modifiers & ConsoleModifiers.Control)!=0 && key.Value.Key==ConsoleKey.C)sequence=LoadBridgeConfig().GmCliInputProfile.InterruptSequence;
+                    else sequence = KeyToSequence(key.Value);
+                }
                 if (sequence == null) continue;
                 await WriteManualInputAsync(input, sequence, linked.Token);
             }
@@ -1369,7 +1381,7 @@ internal sealed partial class BridgeHost : IDisposable
     {
         lock (_sync)
         {
-            return _status with { };
+            return _status with { TerminalOwnerRetained=_pty!=null };
         }
     }
 
@@ -1775,6 +1787,8 @@ internal sealed record BridgeStatus
     public string? TerminalRunId { get; set; }
     public string? TerminalGuarantee { get; set; }
     public bool TerminalUncertain { get; set; }
+    public TerminalStopEvidence? TerminalStop { get; set; }
+    public bool TerminalOwnerRetained { get; set; }
     public string? InputBindingId { get; set; }
     public PromptDeliveryResult? PromptDelivery { get; set; }
     public string Backend { get; set; } = "ConPTYBridge";
