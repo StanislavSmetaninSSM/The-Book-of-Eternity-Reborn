@@ -4,11 +4,21 @@ $source=Join-Path $RepoRoot ('BookOfEternityClient/Launcher/'+$(switch($Scenario
 $tokens=$null;$errors=$null
 $ast=[Management.Automation.Language.Parser]::ParseFile($source,[ref]$tokens,[ref]$errors)
 if($errors.Count){throw 'Actual source parse failed.'}
-# Inert preparation only: truncate before daemon invocation or native window API.
-$text=$ast.EndBlock.Extent.Text
-if($Scenario -eq 'start-daemon'){$text=$text.Substring(0,$text.IndexOf('$invokeArgs ='))}
-if($Scenario -eq 'register-window'){$text=$text.Substring(0,$text.IndexOf('Add-Type'))}
-$GameSessionPath=$SessionPath;$OutputPath=Join-Path $SessionPath 'game_state/control/CLI_Launch_Script.generated.md';$UsePlaceholders=$false
+$text=$ast.Extent.Text
+# Preserve the real param block and pass the isolated paths explicitly.
+# Only the external native/daemon action is replaced with a controlled refusal.
+if($Scenario -eq 'start-daemon') {
+ $call=$ast.Find({param($n)$n -is [Management.Automation.Language.CommandAst] -and $n.CommandElements[0].Extent.Text -eq '$daemonPath'},$true)
+ if(-not $call){throw 'Actual daemon invocation not found.'}
+ $text=$text.Replace($call.Extent.Text,"throw 'Inert fixture forbids daemon launch.'")
+}
+if($Scenario -eq 'register-window') {
+ $call=$ast.Find({param($n)$n -is [Management.Automation.Language.CommandAst] -and $n.GetCommandName() -eq 'Add-Type'},$true)
+ if(-not $call){throw 'Actual native API declaration not found.'}
+ $text=$text.Replace($call.Extent.Text,"throw 'Inert fixture forbids native window calls.'")
+}
 $origin=Split-Path $source -Parent
 $text=$text.Replace('$PSScriptRoot',("'"+$origin.Replace("'","''")+"'"))
-try {& ([scriptblock]::Create($text))}catch{}
+$args=@{GameSessionPath=$SessionPath}
+if($Scenario -eq 'generate-session'){$args.OutputPath=Join-Path $SessionPath 'game_state/control/CLI_Launch_Script.generated.md'}
+try {& ([scriptblock]::Create($text)) @args}catch{}
