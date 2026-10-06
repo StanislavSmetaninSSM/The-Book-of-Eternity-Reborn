@@ -96,6 +96,21 @@ Do not repeat untouched INPUT37/OUTPUT48 or worker/native cohorts.
   launcher response-timeout/held-input cases. Fresh GREEN/review still pending.
   Metadata correction adds omitted directly consumed profile GitBlob/hash to historical
   T042 manifests; historical source/artifacts/binary hashes remain unchanged.
+  At ad82815c0bad33fe67a4ab52c8ee805cab1c522d fresh selected run completed all65:
+  bridge44/44PASS, daemon16PASS/1fixtureFAIL of17, integration4/4PASS; exit1,
+  no runner timeout/skips/duplicates, owned cleanup complete.
+  [Attempt manifest](recovery/evidence/t042-review-fixes-attempt/manifest.json).
+  Diagnostic inert extraction confirms missing Ensure-GmBridgeStarted fixture stub,
+  before behavior assertion; corrected with no runtime change or daemon startup.
+  Independent Sol review confirms three residual boundaries: newly readmitted proven
+  zero-write retry returns pending instead of awaiting its own operation; a handler
+  exception before response-deadline rearm can retain non-reading peers; late ordinary
+  turn side effects lack the original packet hash before/after blocking collaborators.
+  Added actual-pipe and seven inert late-packet cases before runtime corrections.
+  Five genuinely affected timeout/idle/stall/context guards move to the new owner.
+  These additions are unrun WIP. Existing accepted cohorts remain unselected.
+  Transport proof is bounded responsiveness and owned fixture cleanup, not a claim
+  that every raw read task settled before every caller returned.
 - [ ] Connect typed launcher/daemon/ordinary/QTE/repair outcomes, no ambiguity replay.
 - [ ] Focused fresh GREEN and discovery; exact source/binary/artifact evidence.
 - [ ] Independent Sol source/evidence PASS, ordinary publication/readback and fresh restore.

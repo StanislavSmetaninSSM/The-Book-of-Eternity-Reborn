@@ -11,7 +11,7 @@
     },
     {
       "category": "gm-daemon-prompt-delivery",
-      "reason": "Actual launcher/daemon/QTE/repair identity and ambiguity handling; inert extracted functions, no daemon/provider startup.",
+      "reason": "Actual launcher/daemon/QTE/repair identity and ambiguity handling; inert extracted functions, no daemon/provider startup. Frozen-source checks around late ordinary-turn effects and five exact affected guards.",
       "contracts": [
         "#1553 T042-INPUT-TRANSACTION",
         "US4 / FR-012/013/014/015"

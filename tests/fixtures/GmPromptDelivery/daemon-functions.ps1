@@ -14,10 +14,11 @@ try {
     $script:FixtureErrors = @()
     function Write-Log { param($Message, $Level, $Color) if ($Level -eq 'ERROR') { $script:FixtureErrors += $Message } }
     function Start-Sleep { param($Seconds, $Milliseconds) }
-    function New-GmDispatchDiagnostics { param($Status, $Attempts, $BusyRetries, [switch]$Timeout) [pscustomobject]@{ Status=$Status; Attempts=$Attempts } }
+    function New-GmDispatchDiagnostics { param($Status, $Attempts, $BusyRetries, [switch]$Timeout) [pscustomobject]@{ Status=$Status; Attempts=$Attempts; Timeout=[bool]$Timeout } }
     function Get-GameConfig { [pscustomobject]@{ GmBridgeEnabled=$true; GmBridgeBackend='ConPTYBridge' } }
     function Get-GmBridgeStatus { [pscustomobject]@{ ready=$false; inputBindingId='controlled-binding' } }
     if ($Scenario -eq 'transport-ambiguity') {
+        function Ensure-GmBridgeStarted { }
         $script:Calls = 0
         function Send-ToCliWindow {
             param($Message)
@@ -46,7 +47,7 @@ operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindi
         $null = Send-ToGmBridge -Message 'controlled bootstrap' -AllowNotReady
         [ordered]@{ commands=@([IO.File]::ReadAllLines($env:BOE_PROMPT_FIXTURE_COMMANDS)) } | ConvertTo-Json -Compress
     }
-    elseif ($Scenario -in @('typed-retry','repair-revisions','source-replaced','callback-replaced','turn-packet-replaced','autostart-binding','consumer-turn','consumer-qte','consumer-repair','consumer-terminal','qte-idle','connected-pipe','connected-held-pipe','launcher-lost-response')) {
+    elseif ($Scenario -like 'late-*' -or $Scenario -in @('typed-retry','repair-revisions','source-replaced','callback-replaced','turn-packet-replaced','autostart-binding','consumer-turn','consumer-qte','consumer-repair','consumer-terminal','qte-idle','connected-pipe','connected-held-pipe','launcher-lost-response')) {
         $BridgeControlScript = Join-Path $fixtureRoot 'controlled-launcher.ps1'
         $GameSessionPath = $fixtureRoot
         $env:BOE_PROMPT_FIXTURE_COMMANDS = Join-Path $fixtureRoot 'commands.txt'
@@ -95,6 +96,39 @@ operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindi
         $ReadyDir = Join-Path $fixtureRoot 'ready'; [void][IO.Directory]::CreateDirectory($ReadyDir)
         $QteEffectResolutionReadyFile=Join-Path $ReadyDir 'qte.json'
         [IO.File]::WriteAllText($Pending, '{"requestKind":"qte_deferred_effect_resolution","safePacket":{},"sessionId":"fixture","requestId":"request","turnNumber":1,"playerAction":"controlled","waveOrdinal":1,"acceptedSourceTurn":1}')
+        $script:FixtureStops=0; $script:FixtureObserved=@()
+        if ($Scenario -like 'late-*') {
+            function New-GmOutputWithoutTerminalWatchState { @{} }
+            function Add-ObservedTerminalRequestKey { param($Key) $script:FixtureObserved += $Key }
+            function Start-Sleep { param($Seconds,$Milliseconds) if ($Seconds -eq 1 -and $Scenario -eq 'late-wait') { [IO.File]::WriteAllText($Pending,'{"replaced":true}') } }
+            function Test-GmBridgeReturnedIdleWithoutTerminalSignal {
+                param($ElapsedSeconds)
+                if ($Scenario -eq 'late-idle') { [IO.File]::WriteAllText($Pending,'{"replaced":true}'); return $true }
+                return $false
+            }
+            function Test-GmOutputWithoutTerminalSignal {
+                param($ElapsedSeconds,$WatchState)
+                if ($Scenario -eq 'late-payload') { [IO.File]::WriteAllText($Pending,'{"replaced":true}') }
+                if ($Scenario -in @('late-payload','late-stop-payload')) { return [pscustomobject]@{isStalled=$true; changedFiles=@()} }
+                return $null
+            }
+            function Test-GmBridgeArtifactWritingStall {
+                param($ElapsedSeconds,$WatchState)
+                if ($Scenario -eq 'late-artifact') { [IO.File]::WriteAllText($Pending,'{"replaced":true}') }
+                if ($Scenario -in @('late-artifact','late-stop-artifact')) { return [pscustomobject]@{isStalled=$true} }
+                return $null
+            }
+            function Stop-GmBridgeAfterTurnTimeout {
+                param($TurnRequest,$ElapsedSeconds,$Reason)
+                $script:FixtureStops++
+                if ($Scenario -like 'late-stop-*') { [IO.File]::WriteAllText($Pending,'{"replaced":true}') }
+                [pscustomobject]@{ controlled=$true }
+            }
+            function Write-DaemonJsonFileBestEffort { param($Path,$Payload,$Depth) [IO.File]::WriteAllText($Path,'{}'); $true }
+            $OutputWithoutTerminalReportFile=Join-Path $ReadyDir 'payload-report.json'
+            $ArtifactWriteStallReportFile=Join-Path $ReadyDir 'artifact-report.json'
+            if ($Scenario -eq 'late-stop-timeout') { $TurnTimeout=2 }
+        }
         if ($Scenario -in @('connected-pipe','connected-held-pipe','launcher-lost-response')) {
             # Extract real launcher functions; the shim executes no launcher/main startup statements.
             $launcher = Join-Path $RepoRoot 'BookOfEternityClient/Launcher/bookofeternity.ps1'
@@ -144,11 +178,11 @@ operationRevision=$payload.operationRevision; inputBindingId=$payload.inputBindi
                     [IO.File]::SetLastWriteTimeUtc($Pending,[datetime]::UtcNow.AddSeconds(1))
                     Process-RepairRequest $Pending
                 }
-                default { $reply=Dispatch-WithRetry -Message 'controlled packet' -PendingPath $Pending -ReturnDetails -MaxWaitSeconds 10 }
+                default { if ($Scenario -like 'late-*') { Process-Turn $Pending } else { $reply=Dispatch-WithRetry -Message 'controlled packet' -PendingPath $Pending -ReturnDetails -MaxWaitSeconds 10 } }
             }
             $commands = if (Test-Path $env:BOE_PROMPT_FIXTURE_COMMANDS) { @([IO.File]::ReadAllLines($env:BOE_PROMPT_FIXTURE_COMMANDS) | ForEach-Object { $_ | ConvertFrom-Json }) } else { @() }
             [ordered]@{ commands=@($commands); status=$reply.Status; pending=[IO.File]::Exists($Pending);
-                readyFiles=@([IO.Directory]::GetFiles($ReadyDir)).Count; errors=$script:FixtureErrors;
+                readyFiles=@([IO.Directory]::GetFiles($ReadyDir)).Count; errors=$script:FixtureErrors; stops=$script:FixtureStops; observed=@($script:FixtureObserved);
                 errorCount=$script:ErrorCount; processing=$script:IsProcessing; paused=[bool]$script:GmPromptInputPaused } | ConvertTo-Json -Depth 8 -Compress
         }
     }

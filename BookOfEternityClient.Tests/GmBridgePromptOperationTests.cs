@@ -202,16 +202,19 @@ public sealed class GmBridgePromptOperationTests
         Assert.Empty(host.Input.Bytes);
     }
 
-    [Fact]
-    public async Task ActualPipe_NonReadingPeersCannotRetainUnboundedErrorWrites()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ActualPipe_NonReadingPeersCannotRetainUnboundedErrorWrites(bool handlerThrows)
     {
         await using var host = new PromptHostFixture();
         var status = host.Get("_status")!;
         status.GetType().GetProperty("CliLaunchCommand")!.SetValue(status, new string('x', 1024 * 1024));
+        if (handlerThrows) host.Invoke("RevokeInputLifetime", host.Binding);
         for (var i = 0; i < 16; i++)
         {
             var peer = await host.Connect();
-            await peer.WriteAsync(Encoding.UTF8.GetBytes("{\"command\":\"status\"}\n"));
+            await peer.WriteAsync(Encoding.UTF8.GetBytes(handlerThrows ? "{\"command\":\"addText\",\"text\":\"manual\"}\n" : "{\"command\":\"status\"}\n"));
             await peer.FlushAsync();
         }
         // Every first response has its own three-second deadline. A second unbounded
@@ -219,6 +222,25 @@ public sealed class GmBridgePromptOperationTests
         var error = await Record.ExceptionAsync(async () => await host.Rpc(new { command = "status" }).WaitAsync(TimeSpan.FromSeconds(5)));
         Assert.Null(error);
         Assert.Empty(host.Input.Bytes);
+    }
+
+    [Fact]
+    public async Task ProvenZeroWrite_ReadmittingRequestAwaitsItsOwnTransaction()
+    {
+        await using var host = new PromptHostFixture();
+        host.Screen = "CONTROLLED CLI\n› manual draft";
+        Assert.Equal("not-written", Disposition(await host.Rpc(host.Request("retry", "text"))));
+        Assert.Empty(host.Input.Bytes);
+        host.Observe("CONTROLLED CLI\n› ");
+        host.Input.Hold = true;
+        host.Input.Written = bytes => host.Observe(bytes == "<submit>" ? "WORKING" : "CONTROLLED CLI\n› text");
+        var retry = host.Rpc(host.Request("retry", "text"));
+        await host.Input.Entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
+        await Task.Delay(50);
+        Assert.False(retry.IsCompleted, "The request admitting a proven-zero-write retry must await its transaction.");
+        host.Input.Release.TrySetResult(true);
+        Assert.Equal("submission-observed", Disposition(await retry));
+        Assert.Equal("<paste>text</paste><submit>", Encoding.UTF8.GetString(host.Input.Bytes));
     }
 
     [Fact]

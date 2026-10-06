@@ -57,6 +57,25 @@ public sealed class GmDaemonPromptDeliveryTests
     });
 
     [Theory]
+    [InlineData("wait", 0)]
+    [InlineData("idle", 0)]
+    [InlineData("payload", 0)]
+    [InlineData("artifact", 0)]
+    [InlineData("stop-timeout", 1)]
+    [InlineData("stop-payload", 1)]
+    [InlineData("stop-artifact", 1)]
+    public async Task RealTurn_LateReplacementCannotPublishOldTerminal(string boundary, int allowedStops) =>
+        await Run("late-" + boundary, result =>
+        {
+            Assert.Single(result.GetProperty("commands").EnumerateArray());
+            Assert.Equal(allowedStops, result.GetProperty("stops").GetInt32());
+            Assert.Equal(0, result.GetProperty("readyFiles").GetInt32());
+            Assert.Empty(result.GetProperty("observed").EnumerateArray());
+            Assert.True(result.GetProperty("pending").GetBoolean());
+            Assert.False(result.GetProperty("processing").GetBoolean());
+        });
+
+    [Theory]
     [InlineData("turn")]
     [InlineData("qte")]
     [InlineData("repair")]
@@ -160,8 +179,9 @@ public sealed class GmDaemonPromptDeliveryTests
             if (Directory.Exists(owned)) Directory.Delete(owned, true);
             Assert.False(Directory.Exists(owned));
         }
-        Assert.Equal(0, process.ExitCode);
-        Assert.True(string.IsNullOrWhiteSpace(await error), await error);
+        var stderr = await error;
+        Assert.True(process.ExitCode == 0, $"Fixture exit {process.ExitCode}: {stderr}");
+        Assert.True(string.IsNullOrWhiteSpace(stderr), stderr);
         using var json = JsonDocument.Parse((await output).Trim());
         assert(json.RootElement);
     }
