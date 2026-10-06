@@ -2,80 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-main-participating-consumers",
-      "reason": "F2 new boundary or explicitly changed consumer; controlled fixtures only, no full suite or native Windows qualification",
+      "category": "gm-main-crash-fixture-admission",
+      "reason": "F3 newly authorized internal same-root fixed neutral fixture seam; causal RED before implementation",
       "contracts": [
-        "#1553 T041-RUN-FENCE-F2; original T042 identity; exact typed Load outcome"
-      ]
-    },
-    {
-      "category": "gm-main-operation-pins",
-      "reason": "F2 new boundary or explicitly changed consumer; controlled fixtures only, no full suite or native Windows qualification",
-      "contracts": [
-        "#1553 T041-RUN-FENCE-F2; original T042 identity; exact typed Load outcome"
-      ]
-    },
-    {
-      "category": "gm-main-preparation-boundaries",
-      "reason": "F2 new boundary or explicitly changed consumer; controlled fixtures only, no full suite or native Windows qualification",
-      "contracts": [
-        "#1553 T041-RUN-FENCE-F2; original T042 identity; exact typed Load outcome"
-      ]
-    },
-    {
-      "category": "gm-main-ancillary-preparation",
-      "reason": "F2 new boundary or explicitly changed consumer; controlled fixtures only, no full suite or native Windows qualification",
-      "contracts": [
-        "#1553 T041-RUN-FENCE-F2; original T042 identity; exact typed Load outcome"
-      ]
-    },
-    {
-      "category": "gm-main-browser-bundle",
-      "reason": "F2 new boundary or explicitly changed consumer; controlled fixtures only, no full suite or native Windows qualification",
-      "contracts": [
-        "#1553 T041-RUN-FENCE-F2; original T042 identity; exact typed Load outcome"
-      ]
-    },
-    {
-      "category": "gm-main-browser-bundle-client",
-      "reason": "F2 new boundary or explicitly changed consumer; controlled fixtures only, no full suite or native Windows qualification",
-      "contracts": [
-        "#1553 T041-RUN-FENCE-F2; original T042 identity; exact typed Load outcome"
-      ]
-    },
-    {
-      "category": "gm-main-affected-managed",
-      "reason": "F2 new boundary or explicitly changed consumer; controlled fixtures only, no full suite or native Windows qualification",
-      "contracts": [
-        "#1553 T041-RUN-FENCE-F2; original T042 identity; exact typed Load outcome"
-      ]
-    },
-    {
-      "category": "gm-main-affected-browser",
-      "reason": "F2 new boundary or explicitly changed consumer; controlled fixtures only, no full suite or native Windows qualification",
-      "contracts": [
-        "#1553 T041-RUN-FENCE-F2; original T042 identity; exact typed Load outcome"
-      ]
-    },
-    {
-      "category": "gm-main-affected-browser-client",
-      "reason": "F2 new boundary or explicitly changed consumer; controlled fixtures only, no full suite or native Windows qualification",
-      "contracts": [
-        "#1553 T041-RUN-FENCE-F2; original T042 identity; exact typed Load outcome"
-      ]
-    },
-    {
-      "category": "gm-main-affected-browser-native-windows",
-      "reason": "Four affected legacy browser rollback/transaction checks requiring existing native Windows reversible publication backend; unavailable in Linux qualification",
-      "contracts": [
-        "#1553 T041-RUN-FENCE-F2; original browser transaction remains fenced"
-      ]
-    },
-    {
-      "category": "gm-main-affected-load-outcomes",
-      "reason": "F2 changed browser admission/follow-up: exact NotLoaded, RolledBack, Committed, Uncertain and exact lease/token preservation",
-      "contracts": [
-        "#1553 T041-RUN-FENCE-F2 typed load/rollback and original quiescent guard"
+        "#1553 T041-RUN-FENCE-F3 original isolated root, single-use new admission, no mint from record"
       ]
     }
   ]

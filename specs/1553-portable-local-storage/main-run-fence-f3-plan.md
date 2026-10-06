@@ -3,7 +3,7 @@
 > Executor: use Superpowers executing-plans/TDD, Spec Kit and bridge. Sole writer
 > Sol6.1/xhigh; independent Sol6.1/xhigh plan and final review. No Astra.
 
-**Source issue:** [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553). **Accepted base:** `8b0c416e1ec5c132d82776b4fdc348ee90cfdbe5`, accepted F1 `f4e7621f`, design `0658e440`. The owner authorizes F3 only. Existing schema1 record, original neutral terminal and actual F2 pin/lease consumers remain the implementation. This plan refines the accepted design; it creates no new journal, launch admission, gameplay or UX policy.
+**Source issue:** [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553). **Accepted base:** `8b0c416e1ec5c132d82776b4fdc348ee90cfdbe5`, accepted F1 `f4e7621f`, design `0658e440`. The owner authorizes F3 only. Existing schema1 record, original neutral terminal and actual F2 pin/lease consumers remain the implementation. This plan refines the accepted design; it creates no new journal, production launch admission, gameplay or UX policy.
 
 ## Reuse and scope
 
@@ -55,4 +55,6 @@ Tracked remaining task `T031-BROWSER-ROLLBACK-LINUX` must port these actual coop
 
 ## Execution ledger
 
-Plan WIP; no F3 runtime changes/builds/tests yet. Independent plan review requested at2915481c; two source-delta clarifications above address same-root fresh admission and actual producer closure. Final design verdict pending. Sole writer uses this ledger and immutable evidence carriers as continuity; historical plan entries do not authorize later stages. No GM-authored capability/schema/prompt changes, so GM guides/examples need no update for this neutral qualification slice.
+Plan WIP; no F3 runtime changes/builds/tests yet. Independent plan review requested at2915481c; two source-delta clarifications above address same-root fresh admission and actual producer closure. Independent actual Sol6.1/xhigh DESIGN PASS at36fb4f9e; both initial plan gaps closed. Sole writer uses this ledger and immutable evidence carriers as continuity; historical plan entries do not authorize later stages. No GM-authored capability/schema/prompt changes, so GM guides/examples need no update for this neutral qualification slice.
+
+Task1 complete: design PASS, source-delta consistency and current prerequisites/checklist22/22 confirmed; optional Spec Kit Git hooks fulfilled by ordinary checkpoints. Task2 starts with two portable admission tests; implementation absent, expected causal missing-seam RED. No genuine Linux fault/epoch qualification claimed yet.

@@ -14608,6 +14608,29 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-crash-fixture-admission",
+      "responsibility": "#1553 F3 fresh single-use fixed-neutral admission on original witness-owned fixture root; no record-derived authority.",
+      "excludes": "Technical fixture seam only; actual process/stop/epoch qualified separately; no production launch or native platform qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/NeutralTerminalLaunch.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainCrashFixtureAdmissionTests.*"
+          ]
+        }
+      ]
     }
   ]
 }
