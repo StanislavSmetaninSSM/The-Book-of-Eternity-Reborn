@@ -183,7 +183,13 @@ internal sealed class GmWorkerDurableExecution
         try
         {
             await EnsurePreparedAsync();
-            await RetryOriginalPendingAsync();
+            try { await RetryOriginalPendingAsync(); }
+            catch
+            {
+                // A failed original ACK retry must not hide already-lost authority.
+                if (_coordinator.InspectAdmission(allowUncertain: true) == false) CloseForUncertainty();
+                throw;
+            }
             // Verify original durable authority before any disposal or detached source
             // deletion. A retained object is insufficient when its owner name was lost.
             var admission = _coordinator.InspectAdmission(allowUncertain: true);

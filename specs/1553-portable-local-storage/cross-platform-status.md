@@ -5,20 +5,23 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## R3 выполняется: план PASS, набор A проверен
+## R3 выполняется: A/B/C проверены, D causal fixes, E далее
 
-Принятая база R2 `6992e812f5917315bc789c0eeff9bbc0677cdd33`. Независимый actual
-Sol6.1/xhigh plan PASS на `1545bf4a`; минимальная матрица25 случаев в пяти последовательных
-когортах опубликована в [плане](plan.md). Набор A: runtime source `e2cb6820`,8/8 PASS,
-16 guardian ECHILD (8 намеренных app exits +8 fresh probes),8 независимых guardian signals
-после app death,0failure/deadline. Физический cleanup не выдаёт durable authority:
-каждый fresh distinct-task probe сохранил Uncertain/bytes/reservation и ничего не запустил.
-Первый прогон был ошибкой наблюдения lock-файла/повторного callback; он сохранён отдельно
-и не считается backend RED или квалификацией. Исправлена только фикстура, плюс null-default
-наблюдение AfterScopedStop. Следующий шаг — набор B публикации, затем C/D/E по одному.
-Прежние «R3 не разрешён» ниже — история, заменённая новой инструкцией владельца.
-Дальнейшая интеграция, reconnect/salvage/reboot-clear, Windows/systemd/power-loss
-квалификация не разрешены; R3 заканчивается handoff родителю с оставшимися задачами.
+Принятая R2 база `6992e812`; независимый actual Sol6.1/xhigh plan PASS `1545bf4a`.
+A8/8, B5/5, C5/5 PASS; точные source/manifest/cleanup в [плане](plan.md).
+D выявила удаление unresolved detached source до terminal refusal и отсутствие sticky
+authority-loss latch. Первый fix4e8e4f18: D3/3PASS. Независимый диагноз добавил ровно
+2 причинных partition: owner loss в cleanup await и при pending Published ACK;
+оба дали causal RED на0577964c. Текущий исправляющий WIP ещё не проверен:
+следующий шаг D5 свежая сборка, затем19 узко затронутых случаев (selection reviewer),
+затем E4. Минимальная матрица R3 теперь27, без повтора неизменённых A/B/IPC/Windows.
+Ошибки fixtures A/B и queued-generation oracle отдельно от causal backend RED.
+Обычная смена generation удаляет old worker artifacts по существующему контракту;
+queued oracle сохраняет frozen task hash/identity и проверяет отсутствие старого task.
+Все завершённые guardian достигли ECHILD,0failure/deadline. Только A deliberate app
+crashes потребовали8 собственных adopted-child cleanup signals; они не дают authority.
+Дальнейшая интеграция, reconnect/salvage/reboot-clear, Windows/systemd/power-loss не
+разрешены. После E и final review — GitHub-only restoration и handoff родителю.
 
 ## R2 завершён в ограниченном synthetic-контуре; передача родителю
 

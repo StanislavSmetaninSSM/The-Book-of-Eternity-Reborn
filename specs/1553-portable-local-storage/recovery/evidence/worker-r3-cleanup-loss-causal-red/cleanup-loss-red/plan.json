@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "worker-restart-cleanup-loss-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "0577964cd469c62a3ec5a47a4a89a574e12b8604",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 43.4657307,
+  "Descriptors": [
+    {
+      "Name": "worker-restart-cleanup-loss-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-cleanup-loss-linux",
+      "Categories": [
+        "worker-restart-cleanup-loss-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartFenceTests.CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

@@ -98,6 +98,7 @@ internal sealed class GmWorkerQuarantinedExecution : IGmWorkerQuarantineOwner
         try
         {
             if (Volatile.Read(ref _cleanupCompleted) != 0) return;
+            if (_durable != null) await _durable.RequireCleanupAuthorityAsync();
             _ = _authority.RequireCleanupEvidence();
             if (_owner != null) { await _owner.DisposeAsync(); _owner = null; }
 
@@ -119,7 +120,13 @@ internal sealed class GmWorkerQuarantinedExecution : IGmWorkerQuarantineOwner
                 if (_beforeWorkspaceCleanupAsync != null) await _beforeWorkspaceCleanupAsync(_workspace.GameSessionPath);
                 _workspaceHookCompleted = true;
             }
-            if (_workspace != null) await _workspace.DeleteDetachedSessionRetainingRuntimeAuthorityAsync();
+            if (_workspace != null)
+            {
+                // The awaited hook cannot carry earlier authority into deletion.
+                if (_durable != null) await _durable.RequireCleanupAuthorityAsync();
+                _ = _authority.RequireCleanupEvidence();
+                await _workspace.DeleteDetachedSessionRetainingRuntimeAuthorityAsync();
+            }
             _workspaceDeletionCompleted = true;
             if (_quarantined && !_terminalAuditRecorded)
             {

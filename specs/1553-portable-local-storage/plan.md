@@ -72,7 +72,7 @@ Held pre-corruption real stop/outputs are recorded separately from their later p
 Uncertain view. Fix unbuilt/unrun; next D only, followed by source-affected original
 cleanup/ACK/foreign-pending categories after independent selection review.
 
-### D independent causal follow-up — two cases, WIP
+### D independent causal follow-up — two reproduced defects, fix WIP
 
 First fix4e8e4f18 gave D3/3PASS,55.9948933s,5guardianECHILD/0signals/failure/deadline;
 evidence worker-r3-races-first-green. Sol6.1/xhigh diagnosis independently confirmed
@@ -83,6 +83,11 @@ Add exactly those2 negative cases in worker-restart-cleanup-loss-linux; no furth
 runtime change before causal execution. This justified addition expands minimal27cases.
 If reproduced, recheck at actual pre-disposal cleanup entry/after awaited hook and
 latch confirmed lost authority when own ACK retry throws. Preserve Stop-first behavior.
+Actual follow-up at0577964c:2/2causalFAIL,52.4132634s,2guardianECHILD/0signals/failure/deadline.
+Pending Published retained files but failed to latch IsUncertain; cleanup-await latched
+only after deleting all4 source files. Evidence worker-r3-cleanup-loss-causal-red.
+Fix adds the guard at actual cleanup entry/after hook and latches confirmed authority
+loss on failed original ACK retry. Source unbuilt/unrun; next D5 fresh, then19 affected.
 Reviewer selected affected D5 + boundaries5 + root2 + control2 + launch3 + lifecycle1
 + warm1 + retirement5 =24; no A/B replay or unrelated primitive/Windows sweeps.
 
