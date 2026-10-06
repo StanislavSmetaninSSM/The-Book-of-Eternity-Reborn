@@ -295,4 +295,10 @@ CLI acceptance. Enabled helpers additionally need production worker root/ledger
 admission; no-worker persistent main does not. Fence is neither save protection from
 owner nor cold delivery deduplication. Provider/saves/public rollout remain later.
 
-Status: design candidate, independent Sol6.1/xhigh review and final persistence pending.
+Status: independent actual gpt-6.1-sol/xhigh **DESIGN PASS** at
+`ed435a6062e1a0b5554e3d1374f29b2a3412cd33`, no unresolved substantial findings.
+[Review](recovery/owned-main-terminal-design-review.json): ConPTY transport shutdown
+and executable causal RED staging corrected; no runtime/probe/test rerun. Published
+candidate `63c13838` fresh-restored13,137files, exact clean tree/bytes/fsck/remote.
+Final verdict carrier push/readback/fresh restoration is reported by exact SHA in
+handoff. Implementation remains unapproved by this design verdict; stop here.

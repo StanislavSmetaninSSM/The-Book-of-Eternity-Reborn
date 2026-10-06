@@ -188,8 +188,13 @@ Accepted T042 `1bc9d67536dccbcc6672d8e7cd71ad885c2a946c` closes only its
 controlled input transaction. Current authorization is T041 source-backed owned
 terminal design and necessary isolated capability probes, no runtime/test changes.
 [Connected interface and neutral first-slice plan](owned-main-terminal-design.md).
-Separate Sol6.1/xhigh design review and ordinary publication/readback/restore
-precede handoff. No implementation or production launch is authorized by this block.
+Actual independent Sol6.1/xhigh DESIGN PASS at
+`ed435a6062e1a0b5554e3d1374f29b2a3412cd33`; two lifecycle/causal-staging findings
+closed, no unresolved substantial defect. One necessary PTY availability probe:
+1driver/8checks PASS, own+guardian ECHILD/no emergency.18source inputs unchanged,
+0tests. Candidate `63c13838` remote byte readback/fresh GitHub-only13,137file restore
+verified; final verdict carrier gets ordinary push/readback/fresh restore, exact SHA
+in handoff. No implementation or production launch is authorized by this block.
 
 ## Ordinary Linux console with persistent interactive GM — design-only continuation
 

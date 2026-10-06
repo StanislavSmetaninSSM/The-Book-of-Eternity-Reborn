@@ -15,8 +15,13 @@ BridgeHost/input transaction, with a neutral-only proposed next implementation.
 One necessary isolated PTY primitive probe:1driver/8checks PASS, probe+independent
 guardian ECHILD,0emergency/failure/deadline. This is availability evidence only;
 no runtime/tests/catalog/settings changes, integrated fallback/main/systemd/Windows
-native/live/fence qualification or production launch. Candidate independent
-Sol6.1/xhigh design review pending; stop before implementation.
+native/live/fence qualification or production launch. Actual independent
+Sol6.1/xhigh **DESIGN PASS** at `ed435a6062e1a0b5554e3d1374f29b2a3412cd33`;
+two lifecycle/staging findings closed, no unresolved substantial defect. Candidate
+`63c13838` restored from GitHub only:13,137files/exact tree/bytes/clean/fsck/remote.
+Final verdict carrier receives ordinary push/readback/fresh restore, exact SHA in
+handoff. [Review](recovery/owned-main-terminal-design-review.json).
+T041-OWNED-MAIN-TERMINAL-NEUTRAL remains unchecked/unimplemented; stop here.
 
 ## T042 live-owner input transaction: bounded PASS; accepted at1bc9d675
 

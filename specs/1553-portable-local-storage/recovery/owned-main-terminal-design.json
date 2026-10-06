@@ -4,7 +4,7 @@
   "Issue": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553",
   "AcceptedBase": "1bc9d67536dccbcc6672d8e7cd71ad885c2a946c",
   "Design": "specs/1553-portable-local-storage/owned-main-terminal-design.md",
-  "Status": "WIP design candidate; independent review pending",
+  "Status": "DESIGN PASS; neutral-only implementation is the next proposed slice, not authorized by this checkpoint",
   "RuntimeOrTestOrCatalogChanged": false,
   "TestsExecuted": 0,
   "PriorCohortsRepeated": false,
@@ -157,7 +157,11 @@
   "Review": {
     "Model": "gpt-6.1-sol",
     "Effort": "xhigh",
-    "Status": "Pending"
+    "Status": "DESIGN PASS",
+    "CandidateCommit": "ed435a6062e1a0b5554e3d1374f29b2a3412cd33",
+    "Report": "specs/1553-portable-local-storage/recovery/owned-main-terminal-design-review.json",
+    "ClosedFindings": 2,
+    "UnresolvedSubstantialDefects": 0
   },
   "Publication": {
     "InitialBoundaryCheckpoint": "8ebee46783a801a759e64cc91daff451cad0d14c",
@@ -166,7 +170,29 @@
       "ChangedFilesByteReadback": 4,
       "Clean": true
     },
-    "CandidateAndFinal": "Exact publication and fresh restore evidence follow after independent review; final SHA is recorded in handoff to avoid self-reference."
+    "CandidateAndFinal": "Exact publication and fresh restore evidence follow after independent review; final SHA is recorded in handoff to avoid self-reference.",
+    "CandidateRestoration": {
+      "Commit": "63c1383884f03294d82da8e6bb46d1d0d25644cb",
+      "Proof": "specs/1553-portable-local-storage/recovery/owned-main-terminal-design-candidate-restore.json",
+      "TrackedFiles": 13137,
+      "FreshGitHubOnly": true,
+      "ByteTreeHistoryCleanFsckRemote": true,
+      "TestsExecuted": 0
+    },
+    "DesignCorrectionReadbacks": [
+      {
+        "Commit": "6a63d31cb3faf3e2d213c115c010fc868a16543e",
+        "RemoteMatched": true,
+        "ChangedFilesByteReadback": 1,
+        "Clean": true
+      },
+      {
+        "Commit": "ed435a6062e1a0b5554e3d1374f29b2a3412cd33",
+        "RemoteMatched": true,
+        "ChangedFilesByteReadback": 1,
+        "Clean": true
+      }
+    ]
   },
   "Limits": [
     "Runtime not implemented",
@@ -176,5 +202,6 @@
     "No arbitrary live CLI viewport/input UX qualification",
     "No provider/saves/public rollout",
     "No cold exactly-once"
-  ]
+  ],
+  "ConsistencyReport": "specs/1553-portable-local-storage/recovery/owned-main-terminal-design-consistency.json"
 }
