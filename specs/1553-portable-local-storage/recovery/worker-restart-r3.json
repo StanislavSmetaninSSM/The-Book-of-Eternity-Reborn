@@ -7,7 +7,7 @@
   "FinalRuntimeSource": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
   "FinalFixtureSource": "6d441cc0defe7bb92647930086e879a985934d81",
   "DiscoverySource": "8f0d52dea55f2bfcef5736295abab926e294c0d5",
-  "Status": "All bounded tests GREEN; candidate awaiting independent final review and GitHub-only restoration",
+  "Status": "Bounded R3 source/evidence accepted by independent final PASS and candidate restoration; metadata finalization in progress",
   "Scope": "Application-process crash/restart and original retirement in explicitly injected Linux x64 synthetic native pool only. Root-wide cold refusal; no reconstruction of execution authority from metadata.",
   "DesignReview": {
     "Model": "gpt-6.1-sol",
@@ -1020,9 +1020,31 @@
     "Model": "gpt-6.1-sol",
     "ReasoningEffort": "xhigh",
     "Mode": "Read-only source/evidence review; no edits/tests/native probes",
-    "Status": "Pending"
+    "Status": "PASS",
+    "Source": "2e4d07eb2f8ee781106faf672c2799b7c9ace07e",
+    "Verdict": "Bounded R3 PASS",
+    "ConfirmedCriticalOrImportantFindings": [],
+    "Summary": "Final runtime preserves unresolved workspace bytes, sticky Uncertain, original ACK retries and bounded Stop; legacy null-durable behavior remains unchanged. Independently verified 27 R3 plus 14 affected latest PASS, failure classification, all 12 manifests/234 source blobs/1928 artifacts/229 gzip files, guardian attribution and fresh candidate restoration.",
+    "RemainingMetadataCorrections": [
+      "Refresh stale status counts/next-step prose.",
+      "Separate completed discovery/consistency from final review in the combined checklist."
+    ],
+    "AcceptanceBoundary": "Authorized Linux synthetic application-process crash/restart and original retirement only; production integration, Windows/systemd runtime, power-loss, reconnect/salvage/force-clear, main PTY, live GM and real saves remain open.",
+    "TestsOrNativeProbesExecutedByReviewer": 0
   },
-  "CandidateRestoration": null,
+  "CandidateRestoration": {
+    "Commit": "2e4d07eb2f8ee781106faf672c2799b7c9ace07e",
+    "Tree": "e2809b19b6cb2821032c072dcfd0c48afe968ca4",
+    "Parent": "8f0d52dea55f2bfcef5736295abab926e294c0d5",
+    "RestoredDirectory": "/workspace/r3-candidate-github-2e4d07eb",
+    "Transport": "fresh clone from GitHub HTTPS only; no local source/object/cache reuse",
+    "Clean": true,
+    "TrackedFilesByteCompared": 12973,
+    "Comparison": "each restored and writer checkout file byte-identical to independent GitHub-fetched blob",
+    "ConnectivityFsck": true,
+    "RemoteAfterRestoration": "2e4d07eb2f8ee781106faf672c2799b7c9ace07e",
+    "TestsExecutedForRestoration": 0
+  },
   "FinalCarrier": "Ordinary non-force push, exact remote SHA and changed-file byte readback; then a separate fresh GitHub-only clone with all tracked bytes/tree/history/clean/fsck checks. Final carrier SHA/proof reported in handoff without self-reference.",
   "RemainingIntegrationTasks": [
     "Review/authorize production Linux worker Release and actual product pool connection separately.",
@@ -1037,5 +1059,11 @@
     "No namespaces/root/cgroup/security/network/auth changes.",
     "No full suite/Fast/PreMerge/all-category bypass, production rollout, main PTY/live GM/real saves, merge/force push/branch deletion/issue closure."
   ],
-  "HandoffBoundary": "Stop after R3 final reviewed and restored carrier; do not start integration."
+  "HandoffBoundary": "Stop after R3 final reviewed and restored carrier; do not start integration.",
+  "MetadataReview": {
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "Scope": "Metadata-only delta from accepted R3 candidate; no runtime/test/catalog changes or repeated successful checks.",
+    "Status": "Pending"
+  }
 }

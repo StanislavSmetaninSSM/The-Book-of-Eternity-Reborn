@@ -376,8 +376,10 @@ matrix; do not introduce reconnect or new cold cleanup authority.
   per-root inventory claims to replace the existing process-wide reaper capacity bound.
 - [x] Qualify selected B uncertainty/receipt/consumer regressions only when changed.
   Do not replay all127, main-record90 or unrelated passing cohorts by default.
-- [ ] Preserve exact source/commands/counts/cleanup, catalog discovery, separate
-  Sol6.1/xhigh final review, non-force publication/readback and fresh GitHub restore.
+- [x] Preserve exact source/commands/counts/cleanup, catalog discovery, separate
+  Sol6.1/xhigh final source/evidence PASS, non-force candidate publication/readback and
+  fresh GitHub-only candidate restoration. The final metadata verdict carrier receives
+  its own publication/readback/restore; exact SHA/proof are reported in handoff.
   No public rollout, reboot-based clear or autonomous salvage follows R3.
 
 R3 implementation note: two causal owner-loss partitions expanded the initial25 to27.
@@ -385,7 +387,10 @@ Unresolved publication retains actual source bytes before cleanup; authority is 
 at destructive entry/after awaited hook, and failed own ACK retry latches detected loss.
 Legitimate generation rotation retains its original ledger identity/hash while removing
 old canonical artifacts according to its existing contract. Latest41distinctPASS include
-14source-affected previous cases; final review/restoration remain pending.
+14source-affected previous cases. Independent actual gpt-6.1-sol/xhigh Bounded R3 PASS
+at `2e4d07eb2f8ee781106faf672c2799b7c9ace07e`; fresh GitHub-only candidate restoration
+verified12973tracked files, exact tree/history/bytes and clean/fsck. Final metadata-only
+review and final-carrier publication/restoration remain for handoff; no integration.
 
 ## Product decisions versus technical choices
 

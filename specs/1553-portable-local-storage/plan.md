@@ -123,7 +123,7 @@ Next discovery-only catalog/R3/portable plans, Spec Kit consistency and final re
 Previous regression evidence carrier f29a9157 verified remotely; actual guardian count33
 (the prior plan line32 was a transcription error, corrected against all JSON reports).
 
-### Final candidate for independent review
+### Final source/evidence acceptance and metadata carrier
 
 Discovery at8f0d52de: catalog317categories/10885methods-files valid; R3 plan6descriptors/27cases,
 portable plan13/232; all0executions. Native/managed fresh builds preceded NoBuild plans.
@@ -132,8 +132,21 @@ Full evidence audit12manifests/234input blobs/1928artifacts/229gzip verified, al
 failure classification, guardian attribution, source-specific latest cases and limits.
 Spec Kit consistency: US4/FR-012/014/015, existing1553feature and bounded design align;
 R3 remains client-owned synthetic, no GM payload/prompt/example change. Cumulative R2
-portable selection reviewed and retained; no unchanged232-case replay. Final review
-and fresh GitHub-only candidate/carrier restoration remain pending; no integration.
+portable selection reviewed and retained; no unchanged232-case replay.
+Independent actual **gpt-6.1-sol/xhigh Bounded R3 PASS** at candidate
+`2e4d07eb2f8ee781106faf672c2799b7c9ace07e`: no remaining critical/important source/proof
+finding. Reviewer independently verified all41latestPASS, 12manifests/234source blobs/
+1928artifacts/229gzip, all116guardianECHILD and21signals confined to deliberate exit77.
+Fresh GitHub-only candidate restoration:12973tracked files byte-compared with fetched
+Git blobs in both restored and writer checkouts; exact tree
+`e2809b19b6cb2821032c072dcfd0c48afe968ca4`, parent/history/remote, clean states and
+connectivity fsck verified. Restoration and reviewer executed0tests/native probes.
+Only metadata finalization remains: narrow independent review, non-force publication,
+exact remote/byte readback and a separate fresh final-carrier restore. Exact final SHA
+and restoration proof belong in handoff without a self-referential commit claim.
+No runtime, fixtures, test catalog, selection or successful checks change in this block;
+no GM-facing update is required for this client-owned synthetic qualification. Stop at
+R3 handoff; no integration begins.
 
 ### Evidence already accepted; exclude unchanged repetitions
 
@@ -224,9 +237,13 @@ a claim that current code already satisfies it; runtime fixes still need causal 
 - [x] D: repeat for queued/held publication fences; retain original authority on uncertainty.
 - [x] E: repeat for whole parallel inventory and the unmasked canonical journal conflict.
 - [x] Discovery-only ValidateCatalog and exact PlanOnly after matching fresh builds;
-  read-only Spec Kit consistency review, final independent source/evidence review.
-- [ ] Ordinary commit/push/readback at every boundary, fresh GitHub-only candidate and
-  final carrier restore; handoff with precise remaining integration/native/platform tasks.
+  read-only Spec Kit consistency review.
+- [x] Independent actual Sol6.1/xhigh final source/evidence PASS at `2e4d07eb`.
+- [x] Ordinary commit/push/readback at every source boundary and fresh GitHub-only
+  candidate restoration with exact tree/history/bytes/clean/fsck checks.
+- [ ] Narrow independent final metadata review. Its verdict carrier receives ordinary
+  publication/readback and a separate fresh GitHub-only restore; exact final SHA/proof
+  and remaining integration/native/platform tasks are reported in handoff.
 
 Commands per cohort: `pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category
 "<one category above>"'`, with TMPDIR=/workspace/t1553 and isolated

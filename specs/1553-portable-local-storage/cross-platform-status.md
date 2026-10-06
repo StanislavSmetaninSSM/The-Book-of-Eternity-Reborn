@@ -5,7 +5,7 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## R3: bounded tests GREEN, final review/restoration pending
+## R3: bounded source/evidence accepted; final metadata carrier in progress
 
 Accepted R2 `6992e812`; actual Sol6.1/xhigh plan PASS `1545bf4a`. R3 A8/B5/C5/D5/E4
 прошли отдельными когортами. Два дополнительных D-сценария добавлены после конкретного
@@ -17,12 +17,17 @@ E source `6d441cc0`:4/4 PASS. Только source-specific evidence, не пол
 cleanup и после awaited hook; legacy null-durable путь сохранён. Исходный bounded Stop
 разрешён; ни холодный процесс, ни сохранённые metadata не создают новый permit.
 
-Аудит11manifests:234source blobs/1913artifacts/221gzip,72historical executions61PASS11FAIL;
+Аудит12manifests:234source blobs/1928artifacts/229gzip,72historical executions61PASS11FAIL;
 последние41различных PASS =27R3 +14 затронутых прежних.116guardianECHILD,21 независимый
 adopted-child signal только после deliberate exit77 (initial A5, accepted A8, E8),
 0failure/deadline. Ошибки fixtures A/B/queued oracle отдельно от causal backend RED.
-Следующий шаг: discovery-only catalog/plans, Spec Kit consistency, независимое финальное
-ревью и fresh GitHub-only restoration. T041-WORKER-RESTART-R3 пока не закрыт.
+Discovery-only: catalog317/10885, R3 plan6/27, portable plan13/232; везде0execution.
+Spec Kit consistency подтверждена. Независимый actual gpt-6.1-sol/xhigh дал Bounded R3
+PASS для `2e4d07eb2f8ee781106faf672c2799b7c9ace07e`, без critical/important findings.
+Fresh GitHub-only restoration:12973tracked files, exact tree/history/bytes, clean/fsck.
+T041-WORKER-RESTART-R3 принят в этих границах. Осталась отдельная финализация metadata:
+узкое review, обычный push/readback и fresh restore финального carrier; точный SHA/proof
+сообщается в handoff без self-reference. [Qualification](recovery/worker-restart-r3.json).
 
 Интеграция public Linux Release/main PTY/live GM/реальных saves, native Windows/systemd,
 power-loss/reboot, reconnect/salvage/force-clear не квалифицированы и здесь не начинаются.
