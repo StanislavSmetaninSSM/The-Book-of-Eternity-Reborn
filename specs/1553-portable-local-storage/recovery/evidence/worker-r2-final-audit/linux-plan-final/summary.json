@@ -1,6 +1,34 @@
 {
-  "schemaVersion": 1,
-  "selections": [
+  "Categories": [
+    "worker-restart-admission-linux",
+    "worker-restart-record",
+    "worker-restart-mode-linux",
+    "worker-restart-lifecycle-linux",
+    "worker-restart-boundaries-linux",
+    "worker-restart-root-linux",
+    "worker-restart-audit-linux",
+    "worker-restart-cleanup-linux",
+    "worker-restart-dispatch-linux",
+    "worker-restart-purpose-linux",
+    "worker-restart-witness-linux",
+    "worker-restart-control-linux",
+    "worker-restart-ownership-linux",
+    "worker-restart-warm-linux",
+    "worker-run-ledger-record",
+    "worker-run-ledger-storage-linux",
+    "worker-run-ledger-failures-linux",
+    "worker-detached-workspace",
+    "worker-quarantine-audit-receipt",
+    "worker-pool-regression-host",
+    "worker-pool-regression-policy",
+    "worker-execution-scoped-evidence",
+    "worker-consumer-execution-evidence",
+    "portable-session-generation",
+    "portable-load-lease-consumers",
+    "portable-coordinated-lease-consumers",
+    "worker-restart-default-controls"
+  ],
+  "Reasons": [
     {
       "category": "worker-restart-admission-linux",
       "reason": "R2 causal real-pool cold refusal before automatic recovery and allocation; isolated Linux process fixture with independent guardian.",
@@ -216,14 +244,91 @@
         "#1553 T041-WORKER-RESTART-R2",
         "FR-012/014/015"
       ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "d5abf237457f9f32313ef3bea1ea0d0f3bc97018",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.6807693,
+      "Completed": true
     },
     {
-      "category": "worker-restart-launch-linux",
-      "reason": "Final review causal gaps at never-Start Busy and original host Release binding.",
-      "contracts": [
-        "#1553 T041-WORKER-RESTART-R2",
-        "FR-012/014/015"
-      ]
+      "Name": "Changed-paths",
+      "Seconds": 0.0888636,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0540357,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0052963,
+      "Completed": true
     }
-  ]
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 30,
+  "WallTime": "00:00:12.8222402",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 29,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 400,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-coordinated-lease-consumers-unit-001",
+      "portable-load-lease-consumers-integration-002",
+      "portable-load-lease-consumers-unit-003",
+      "portable-session-generation-unit-004",
+      "worker-consumer-execution-evidence-unit-005",
+      "worker-detached-workspace-integration-006",
+      "worker-detached-workspace-unit-007",
+      "worker-execution-scoped-evidence-unit-008",
+      "worker-pool-regression-host-unit-009",
+      "worker-pool-regression-policy-unit-010",
+      "worker-quarantine-audit-receipt-integration-011",
+      "worker-restart-admission-linux-unit-012",
+      "worker-restart-audit-linux-unit-013",
+      "worker-restart-boundaries-linux-unit-014",
+      "worker-restart-cleanup-linux-unit-015",
+      "worker-restart-control-linux-unit-016",
+      "worker-restart-default-controls-unit-017",
+      "worker-restart-dispatch-linux-unit-018",
+      "worker-restart-lifecycle-linux-unit-019",
+      "worker-restart-mode-linux-unit-020",
+      "worker-restart-ownership-linux-unit-021",
+      "worker-restart-purpose-linux-unit-022",
+      "worker-restart-record-unit-023",
+      "worker-restart-root-linux-unit-024",
+      "worker-restart-warm-linux-unit-025",
+      "worker-restart-witness-linux-unit-026",
+      "worker-run-ledger-failures-linux-unit-027",
+      "worker-run-ledger-record-unit-028",
+      "worker-run-ledger-storage-linux-unit-029"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
 }

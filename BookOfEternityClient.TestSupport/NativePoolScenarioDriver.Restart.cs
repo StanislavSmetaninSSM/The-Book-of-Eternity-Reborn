@@ -17,6 +17,7 @@ internal static partial class NativePoolScenarioDriver
 
     internal static async Task<int> RunRestart(string mode, string package, string output)
     {
+        if (mode.StartsWith("restart-launch-", StringComparison.Ordinal)) return await RunRestartLaunch(mode[15..], package, output);
         if (mode == "restart-warm") return await RunRestartWarm(package, output);
         if (mode.StartsWith("restart-ownership-", StringComparison.Ordinal)) return await RunRestartOwnership(mode[18..], package, output);
         if (mode.StartsWith("restart-control-", StringComparison.Ordinal)) return await RunRestartControl(mode[16..], package, output);

@@ -448,6 +448,18 @@ Spec Kit PowerShell prerequisite discovery resolves the existing1553feature/task
 read-only R2 consistency analysis maps the bounded task to US4/FR-012/014/015 and keeps
 real-client/GM acceptance and R3 explicitly uncompleted. Optional git analysis hook
 is already satisfied by the clean published checkpoint; no branch reinitialization.
+Final discovery at `d5abf237457f9f32313ef3bea1ea0d0f3bc97018`: catalog valid310categories/
+10878methods, zero unmapped/stale; Linux plan29descriptors400cases, portable CI
+plan13descriptors232cases; zero execution. Evidence worker-r2-final-audit (192inputs/
+13artifacts). Final review then found two confirmed R2 blockers: a foreign pending
+journal returns Busy before LaunchIntent but leaves _startAttempted=true, preventing
+original never-Start retirement; first Release on an actual R2 host accepts omitted
+or foreign durable execution. Added unrun three-case actual-pool causal scaffold
+worker-restart-launch-linux. Busy holds B's last staged task write after registration,
+withholds A Released ACK, then retries both original cleanups. Release probes count
+actual control frames/worker starts on the captured original host; no positive native
+evidence is injected. Production behavior is unchanged pending causal RED. R2 is
+not complete; prior catalog/plan results remain historical after this addition.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

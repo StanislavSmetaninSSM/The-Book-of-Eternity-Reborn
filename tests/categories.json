@@ -13121,6 +13121,39 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-restart-launch-linux",
+      "responsibility": "R2 original launch boundary: foreign pending ACK before LaunchIntent preserves never-Start cleanup; fresh actual host rejects absent or foreign durable Release authority. Actual connected isolated pool and independent finite guardian.",
+      "excludes": "No R3 crash matrix, production Linux Release, main PTY, live GM or Windows native qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerDurableExecution.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs"
+      ],
+      "related": [
+        {
+          "id": "worker-restart-control-linux",
+          "when": "Original host Release binding or idempotence changes."
+        },
+        {
+          "id": "worker-restart-boundaries-linux",
+          "when": "Launch/cleanup eligibility changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.*"
+          ]
+        }
+      ]
     }
   ]
 }
