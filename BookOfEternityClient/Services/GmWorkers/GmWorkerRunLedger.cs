@@ -53,23 +53,60 @@ internal sealed class WorkerRunLedgerCoordinator : IAsyncDisposable
     private readonly WorkerRunLedgerPersistence _storage;
     private readonly WorkerLedgerTarget _target;
     private readonly SemaphoreSlim _gate = new(1, 1);
-    private bool _disposed, _pending;
+    private bool _disposed, _pending, _authorityLost;
     private WorkerLedgerState? _state;
     private byte[]? _stateBytes;
     private readonly string _hostInstance = Guid.NewGuid().ToString("N");
     private readonly Dictionary<string, WorkerRunEntryHandle> _ownedEntries = new(StringComparer.Ordinal);
+    private readonly HashSet<string> _startConsumed = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, long> _aborted = new(StringComparer.Ordinal);
     private WorkerRunLedgerCoordinator(WorkerRunLedgerPersistence storage, WorkerLedgerTarget target,
         WorkerLedgerState? state, byte[]? bytes)
     { _storage = storage; _target = target; _state = state; _stateBytes = bytes; }
 
     internal long Sequence => _state?.Sequence ?? 0;
-    // Closed lifecycle transitions are the next causal RED scaffold.
     internal Task<WorkerLedgerMutationKind> PlanLaunchAsync(WorkerRunEntryHandle entry, long expectedSequence,
-        CancellationToken cancellationToken = default) => Task.FromResult(WorkerLedgerMutationKind.Blocked);
+        CancellationToken cancellationToken = default) => TransitionAsync(entry, expectedSequence, WorkerRunPhase.LaunchIntent, cancellationToken);
     internal Task<WorkerLedgerMutationKind> MarkUncertainAsync(WorkerRunEntryHandle entry, long expectedSequence,
-        CancellationToken cancellationToken = default) => Task.FromResult(WorkerLedgerMutationKind.Blocked);
+        CancellationToken cancellationToken = default) => TransitionAsync(entry, expectedSequence, WorkerRunPhase.Uncertain, cancellationToken);
     internal Task<WorkerLedgerMutationKind> AbortBeforeLaunchAsync(WorkerRunEntryHandle entry, long expectedSequence,
-        CancellationToken cancellationToken = default) => Task.FromResult(WorkerLedgerMutationKind.Blocked);
+        CancellationToken cancellationToken = default) => TransitionAsync(entry, expectedSequence, WorkerRunPhase.AbortedBeforeLaunch, cancellationToken);
+
+    private bool VerifyCurrent()
+    {
+        if (_authorityLost || _stateBytes is null) return false;
+        try { _storage.VerifyExact(_stateBytes); return true; }
+        catch (Exception error) when (GmWorkerRunLedger.Unavailable(error)) { _authorityLost = true; return false; }
+    }
+
+    private async Task<WorkerLedgerMutationKind> TransitionAsync(WorkerRunEntryHandle entry, long expectedSequence,
+        WorkerRunPhase phase, CancellationToken cancellationToken)
+    {
+        await _gate.WaitAsync(cancellationToken);
+        try
+        {
+            if (_disposed || _pending || _authorityLost || _state is null || entry is null ||
+                !_ownedEntries.TryGetValue(entry.Identity.RunId, out var original) || !ReferenceEquals(original, entry))
+                return WorkerLedgerMutationKind.Blocked;
+            cancellationToken.ThrowIfCancellationRequested();
+            if (phase == WorkerRunPhase.AbortedBeforeLaunch && _aborted.TryGetValue(entry.Identity.RunId, out var priorSequence))
+                return priorSequence == expectedSequence && VerifyCurrent() ? WorkerLedgerMutationKind.AlreadyExact : WorkerLedgerMutationKind.Blocked;
+            if (expectedSequence != _state.Sequence || !VerifyCurrent() ||
+                phase == WorkerRunPhase.AbortedBeforeLaunch && _startConsumed.Contains(entry.Identity.RunId)) return WorkerLedgerMutationKind.Blocked;
+            WorkerLedgerState next;
+            try { next = GmWorkerRunLedgerCodec.Transition(_state, entry.Identity, phase); }
+            catch (Exception error) when (GmWorkerRunLedger.Unavailable(error)) { return WorkerLedgerMutationKind.Blocked; }
+            // Once launch intent may have reached disk, the original never-Start capability is gone.
+            if (phase == WorkerRunPhase.LaunchIntent) _startConsumed.Add(entry.Identity.RunId);
+            try { _storage.PublishTransition(_stateBytes!, entry.Identity, phase); }
+            catch (Exception error) when (GmWorkerRunLedger.Unavailable(error))
+            { _pending = true; return WorkerLedgerMutationKind.CommitPending; }
+            _state = next; _stateBytes = GmWorkerRunLedgerCodec.Encode(next);
+            if (phase == WorkerRunPhase.AbortedBeforeLaunch) _aborted.Add(entry.Identity.RunId, expectedSequence);
+            return WorkerLedgerMutationKind.Applied;
+        }
+        finally { _gate.Release(); }
+    }
     internal static Task<WorkerRunLedgerCoordinator?> OpenAsync(WorkerLedgerTarget target)
     {
         WorkerRunLedgerPersistence? storage = null;
@@ -96,7 +133,7 @@ internal sealed class WorkerRunLedgerCoordinator : IAsyncDisposable
         await _gate.WaitAsync(cancellationToken);
         try
         {
-            if (_disposed || _state is null || _pending || expectedSequence != _state.Sequence)
+            if (_disposed || _authorityLost || _state is null || _pending || preparation is null || expectedSequence != _state.Sequence || !VerifyCurrent())
                 return new(WorkerLedgerMutationKind.Blocked);
             cancellationToken.ThrowIfCancellationRequested();
             WorkerRunRecord record; WorkerLedgerState next;
@@ -124,9 +161,9 @@ internal sealed class WorkerRunLedgerCoordinator : IAsyncDisposable
         await _gate.WaitAsync(cancellationToken);
         try
         {
-            if (_disposed) return WorkerLedgerMutationKind.Blocked;
+            if (_disposed || _authorityLost) return WorkerLedgerMutationKind.Blocked;
             if (_pending) return WorkerLedgerMutationKind.CommitPending;
-            if (_state is not null) return WorkerLedgerMutationKind.AlreadyExact;
+            if (_state is not null) return VerifyCurrent() ? WorkerLedgerMutationKind.AlreadyExact : WorkerLedgerMutationKind.Blocked;
             cancellationToken.ThrowIfCancellationRequested();
             var initial = GmWorkerRunLedgerCodec.Initial(_target);
             var bytes = GmWorkerRunLedgerCodec.Encode(initial);

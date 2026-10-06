@@ -64,12 +64,41 @@ internal sealed class WorkerRunLedgerPersistence : IDisposable
         scope.ValidateFile(Path.Combine(target.DirectoryPath, "owner.lock"), allowMissing: false);
         scope.ValidateFile(Path.Combine(target.DirectoryPath, "journal.lock"), allowMissing: false);
         var retired = scope.ValidateDirectory(Path.Combine(target.DirectoryPath, "retired"), allowMissing: false);
-        if (Directory.EnumerateFileSystemEntries(retired).Any()) throw Invalid(); // R1 initialization stage only.
         var names = new HashSet<string>(["owner.lock", "journal.lock", "state.json", "retired"], StringComparer.Ordinal);
         foreach (var path in Directory.EnumerateFileSystemEntries(target.DirectoryPath))
             if (!names.Remove(Path.GetFileName(path))) throw Invalid();
         if (names.Count != 0) throw Invalid();
-        return ReadBounded(scope, Path.Combine(target.DirectoryPath, "state.json"), MaximumStateBytes);
+        var statePath = Path.Combine(target.DirectoryPath, "state.json");
+        var bytes = ReadBounded(scope, statePath, MaximumStateBytes);
+        var state = GmWorkerRunLedgerCodec.Decode(target, bytes);
+        var required = state.Retired.ToDictionary(item => item.RunId, StringComparer.Ordinal);
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var path in Directory.EnumerateFileSystemEntries(retired))
+        {
+            if (seen.Count >= GmWorkerRunLedgerCodec.MaximumRetiredEntries) throw Invalid();
+            var name = Path.GetFileName(path);
+            if (!name.EndsWith(".json", StringComparison.Ordinal)) throw Invalid();
+            var runId = name[..^5];
+            if (!GmWorkerRunRecordCodec.Id(runId) || !seen.Add(runId)) throw Invalid();
+            var archive = ReadBounded(scope, path, 64 * 1024);
+            var record = GmWorkerRunRecordCodec.Decode(archive);
+            if (record.Phase != WorkerRunPhase.AbortedBeforeLaunch || record.Identity.RunId != runId ||
+                !GmWorkerRunLedgerCodec.RootMatches(record.Identity.RootKey, target.RootPath)) throw Invalid();
+            if (required.Remove(runId, out var reference))
+            {
+                if (reference.Epoch != record.Identity.Epoch || reference.TaskKeySha256 != GmWorkerRunLedgerCodec.TaskKey(record.Identity) ||
+                    reference.RecordSha256 != GmWorkerRunLedgerCodec.Hash(archive)) throw Invalid();
+            }
+            else
+            {
+                // A candidate alone never removes its still-active reservation.
+                var active = state.Entries.SingleOrDefault(item => item.Identity == record.Identity);
+                if (active?.Phase != WorkerRunPhase.Prepared ||
+                    !archive.AsSpan().SequenceEqual(GmWorkerRunRecordCodec.Encode(active with { Phase = WorkerRunPhase.AbortedBeforeLaunch }))) throw Invalid();
+            }
+        }
+        if (required.Count != 0 || !ReadBounded(scope, statePath, MaximumStateBytes).AsSpan().SequenceEqual(bytes)) throw Invalid();
+        return bytes;
     }
 
     internal void PublishInitial(byte[] bytes)
@@ -82,6 +111,45 @@ internal sealed class WorkerRunLedgerPersistence : IDisposable
     {
         var before = GmWorkerRunLedgerCodec.Decode(_target, expected);
         var next = GmWorkerRunLedgerCodec.AddPrepared(before, record);
+        PublishExact(expected, GmWorkerRunLedgerCodec.Encode(next));
+    }
+
+    internal void VerifyExact(byte[] expected)
+    {
+        RequireAuthority();
+        var actual = ReadSnapshot(_target);
+        if (actual is null || !actual.AsSpan().SequenceEqual(expected)) throw Invalid();
+        RequireAuthority();
+    }
+
+    internal void PublishTransition(byte[] expected, WorkerRunIdentity identity, WorkerRunPhase phase)
+    {
+        var before = GmWorkerRunLedgerCodec.Decode(_target, expected);
+        var next = GmWorkerRunLedgerCodec.Transition(before, identity, phase);
+        VerifyExact(expected);
+        if (phase == WorkerRunPhase.AbortedBeforeLaunch)
+        {
+            _journal.Lock();
+            try
+            {
+                VerifyExact(expected);
+                var directory = _scope.ValidateDirectory(Path.Combine(_target.DirectoryPath, "retired"), false);
+                var path = _scope.ValidateFile(Path.Combine(directory, identity.RunId + ".json"));
+                var bytes = GmWorkerRunRecordCodec.Encode(new(1, identity, phase));
+                if (File.Exists(path))
+                {
+                    if (!ReadBounded(_scope, path, 64 * 1024).AsSpan().SequenceEqual(bytes)) throw Invalid();
+                }
+                else
+                {
+                    using var stream = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.None);
+                    stream.Write(bytes); stream.Flush(flushToDisk: true);
+                }
+                SyncDirectory(directory);
+                RequireAuthority();
+            }
+            finally { _journal.Unlock(); }
+        }
         PublishExact(expected, GmWorkerRunLedgerCodec.Encode(next));
     }
 
