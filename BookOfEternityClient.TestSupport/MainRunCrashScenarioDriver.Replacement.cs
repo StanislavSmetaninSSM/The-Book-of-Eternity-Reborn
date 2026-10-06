@@ -62,12 +62,14 @@ internal static partial class MainRunCrashScenarioDriver
             if(decision=="committed") {
                 Require(load.EstablishedGeneration!=info.Generation && load.EstablishedGeneration==CurrentGeneration(files) && !load.ContinuationBlocked &&
                     archived.SequenceEqual(File.ReadAllBytes(files.ResolvePath(ReplacementMarker))) && !File.Exists(files.ResolvePath("lore/f3-absent-after-load.txt")),"Committed exact bytes/absence/new generation not established.");
-                var expectedCanonical=new Dictionary<string,string>(before,StringComparer.Ordinal);
-                expectedCanonical.Remove("game_session/lore/f3-absent-after-load.txt");
-                expectedCanonical["game_session/"+ReplacementMarker]=Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(archived));
+                // Actual LoadNamespace replaces the complete non-library namespace
+                // with archive images and preserves config only when absent there.
+                // Ephemeral old bridge status is intentionally not an archive image.
+                var expectedCanonical=new Dictionary<string,string>(StringComparer.Ordinal){["game_session/config.json"]=before["game_session/config.json"]};
                 using(var archive=System.IO.Compression.ZipFile.OpenRead(info.Archive))
-                using(var metadata=archive.GetEntry("save_metadata.json")!.Open())
-                    expectedCanonical["game_session/save_metadata.json"]=Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(metadata));
+                    foreach(var entry in archive.Entries.Where(e=>!e.FullName.EndsWith('/') && e.FullName!="save_manifest.json")) {
+                        using var stream=entry.Open();expectedCanonical["game_session/"+entry.FullName]=Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(stream));
+                    }
                 Require(Equal(expectedCanonical,CanonicalSnapshot(info.Root)),"Committed Load changed unexpected canonical members.");
             } else if(decision=="rollback") {
                 Require(cuts==1 && load.EstablishedGeneration==info.Generation && !load.ContinuationBlocked && generation.SequenceEqual(File.ReadAllBytes(files.SessionGenerationPath)) &&
