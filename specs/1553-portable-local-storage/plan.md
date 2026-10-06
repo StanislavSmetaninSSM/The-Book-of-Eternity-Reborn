@@ -258,6 +258,13 @@ entrypoints. Canonical cleanup leases now validate the whole root on every lease
 check; only known cleanup debt permits its exact operation. Fresh GREEN pending; added six guard-family cases for CAS, delete, backup,
 worker apply, generation and directory structure. Negative assertions exclude
 platform-availability refusal;15 cases now planned.
+Audit GREEN at `2f728f23c90a3dc1a47dedf4bbdad723b5f8694a`:15/15 PASS,
+64.4948488s, fresh build, complete selection/cleanup, no timeout. All15 guardians
+ECHILD/exit0/reap1, zero emergency/failure/deadline. Exact/idempotent positive append
+and all constrained mutation refusals executed, including held lease after await;
+legacy rejection now comes from operation authority, not platform availability.
+Evidence: recovery/evidence/worker-r2-audit-green/manifest.json. Independent source
+follow-up on this finding is in progress. Other R2 obligations remain open.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing
