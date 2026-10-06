@@ -157,7 +157,7 @@ public sealed class GmWorkerRunLedgerTests
         else
         {
             var path = Path.Combine(fixture.Target.DirectoryPath, changed);
-            File.Move(path, path + ".old"); File.WriteAllText(path, "replacement");
+            File.Move(path, Path.Combine(fixture.Target.RootPath, changed + ".old")); File.WriteAllText(path, "replacement");
         }
         Assert.Equal(WorkerLedgerMutationKind.Blocked, await owner.InitializeAsync());
         Assert.Equal(WorkerLedgerMutationKind.Blocked, (await owner.PrepareAsync(fixture.Preparation(), owner.Sequence)).Kind);
