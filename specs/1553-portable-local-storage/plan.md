@@ -4,6 +4,24 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T041-RUN-FENCE-F1 — authorized execution ledger
+
+Accepted design `0658e4405a4d0d958eb1b64b11b83956917fb81b`; owner authorizes only F1.
+Sole Sol6.1/xhigh writer. Existing isolated worktree and exact clean remote verified.
+No F2/F3, public game-writing launch, live provider, normal launcher, actual saves,
+systemd setup, network/security changes or cold guarantees. Future product stop/load/start
+UX is not decided here. Spec Kit/Superpowers/bridge and causal RED→GREEN apply.
+
+Initial narrow verification: `gm-main-run-fence` checks real canonical acquisition,
+held writes, clear and strict initialized namespace refusal without recovery side effects;
+`gm-main-run-owner-linux` consumes the actual fixed neutral BridgeHost/input/native
+owner with independent guardian. Existing evidence is reused until a source change
+selects an exact affected regression. All execution uses scripts/test-csharp.ps1.
+Original guard precedes lifecycle/canonical; one schema1 main.json and frozen metadata
+retry; no filesystem locks across IPC/child/I/O/pin drain. Runtime qualification remains
+bounded Linux native fallback; Windows source/build only. SDK10.0.401, PowerShell7.5.4,
+GCC14.2.0-19 observed before the first new run. Execution/evidence checkpoints follow.
+
 ## T041-RUN-FENCE — current design-only checkpoint
 
 Owner accepted neutral terminal `14888663d608355098cc1a329d97ab61de0e6016` and

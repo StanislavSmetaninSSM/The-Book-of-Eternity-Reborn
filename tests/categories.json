@@ -2,6 +2,29 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-main-run-fence",
+      "responsibility": "#1553 F1 real pre-recovery and held-lease main admission, isolated canonical consumers and retained tombstone",
+      "excludes": "No F2/F3, live GM/saves, systemd/Windows native/cold qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainRunFenceTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-owned-terminal-session",
       "responsibility": "#1553 T041 owned terminal actual BridgeHost session/view/input and retained scoped retirement.",
       "excludes": "No native backend qualification, arbitrary TUI, real GM, production fence or saves.",

@@ -2,32 +2,8 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-owned-terminal-session",
-      "reason": "actual original session/view/keyboard/proof/timeout plus Windows source guard",
-      "contracts": [
-        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
-      ]
-    },
-    {
-      "category": "gm-bridge-input-lifetime",
-      "reason": "changed original attach/retire/keyboard call sites, actual source/PDB and concurrency",
-      "contracts": [
-        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
-      ]
-    },
-    {
-      "category": "gm-bridge-output-stream",
-      "reason": "changed original output pump commits coherent owned view and EOF while preserving raw UTF8/tail semantics",
-      "contracts": [
-        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
-      ]
-    },
-    {
-      "category": "gm-bridge-prompt-operation",
-      "reason": "changed original revision/readiness/control loop; preserve frozen T042 operations and no ambiguous replay",
-      "contracts": [
-        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
-      ]
+      "category": "gm-main-run-fence",
+      "reason": "F1 causal RED: real common canonical pre-recovery and held writes currently do not consume schema1 main record."
     }
   ]
 }
