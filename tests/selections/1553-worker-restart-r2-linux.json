@@ -80,6 +80,14 @@
         "#1553 T041-WORKER-RESTART-R2",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-restart-witness-linux",
+      "reason": "Complete independent review requirement for owner mismatch and private retained completion identity; no positive authority substitution.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
     }
   ]
 }

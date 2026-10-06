@@ -12975,6 +12975,36 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-restart-witness-linux",
+      "responsibility": "R2 original completed cleanup witness rejects foreign owner and fabricated retained-instance identities before retirement or slot release.",
+      "excludes": "No new lifecycle or native stop semantics; these test original never-Start cleanup under the independent Linux guardian.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerRootContext.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerDurableExecution.cs"
+      ],
+      "related": [
+        {
+          "id": "worker-restart-admission-linux",
+          "when": "Pre-recovery root admission changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerRestartWitnessTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -333,6 +333,17 @@ acquisition and held lease checks, plus exact Release purpose/execution validati
 before reads, intent and consume. Independent reviewer endorsed this design. WIP
 unbuilt; fresh6-purpose plus5-dispatch and1-positive lifecycle selected because the
 root and Release fences changed. Prior audit mutation fencing is untouched.
+Purpose GREEN at `de7ca25588f0e1f7180e18b0246d3596877be14e`:12/12 PASS
+(6 purpose,5 affected dispatch,1 positive lifecycle),80.3235891s; fresh build,
+complete3descriptors/cleanup/no timeout.15 guardians ECHILD, zero emergency/failure/
+deadline. Evidence: recovery/evidence/worker-r2-purpose-green/manifest.json. Independent
+Sol6.1/xhigh source-resolved both findings, no new delta blockers. Remaining minimal
+matrix is now limited to witness identity, connected mode/lifetime, immediate warm
+loss and one-send/Released ACK/cancellation; already-covered sequences are not repeated.
+Added two unrun witness regressions: real foreign completed owner and fabricated
+instance of original incomplete owner. Both retain original workspace/ledger/slot,
+then finish via original cleanup to prove the negative probe did not lose authority.
+Runtime unchanged; category worker-restart-witness-linux owns these cases.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing
