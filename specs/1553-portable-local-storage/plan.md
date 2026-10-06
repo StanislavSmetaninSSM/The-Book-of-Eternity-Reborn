@@ -79,6 +79,14 @@ ambiguity branch proof: inert lower launcher throws once, actual dispatcher retu
 unknown, retains immutable identity, pauses and refuses replay/clipboard fallback.
 Existing successful T042/F2 cohorts remain source-backed rather than rerun.
 
+Consumer run1b61f36f:17executed16PASS/1fixture failure; actual console bootstrap/health
+passed and closed original pins, but dynamic AST definitions had emptyPSScriptRoot.
+Dot-source exact unchanged definitions from a fixture file beside actual shipped daemon;
+no top-level daemon startup. All14guardians ECHILD/emergency0/failure0/deadlinefalse;
+coldUncertain refusal after physical cleanup passed. Independent source review also
+identified missing existing operational context documents in installed layout. Add causal
+package assertion before packaging correction; keep accepted context content unchanged.
+
 ## T041-PRODUCTION-MAIN-DESIGN — current design-only continuation
 
 Owner accepted bounded F3 `fc49f271f5cd14ac3b24931cce2c98ef64a61068`.

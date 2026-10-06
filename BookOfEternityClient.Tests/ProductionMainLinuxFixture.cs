@@ -29,6 +29,10 @@ internal static class ProductionMainLinuxFixture
         foreach(var name in new[]{"BookOfEternityClient","BookOfEternityGMBridge"}.Concat(mode.StartsWith("production-main-",StringComparison.Ordinal)?new[]{"BookOfEternityClient.TestSupport"}:Array.Empty<string>()))
             await Prepare("dotnet",["publish",Path.Combine(repo,name,name+".csproj"),"--no-build","--no-restore","-c",new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name,"-o",Path.Combine(ship,name),"-p:BoeNativePackageDirectory="+package,"-p:BoeRequireNativePackage=true"],"publish-"+name);
         if(mode=="package-layout") {
+            var resources=Path.Combine(ship,"BookOfEternityClient/operational-resources");
+            foreach(var relative in new[]{"CLI_Agent_Daemon_Specification.md","TaskGuides/CLI_Step_Main.txt","Examples/E_CLI_Step_Main.txt","Examples/E_CLI_Mortal_Item_Materialization.txt","Examples/E_CLI_Mortal_Resources.txt","OtherGuides/Effect_Materialization_Contract.md","Examples/E_CLI_Effect_Materialization.txt","OtherGuides/Wound_Materialization_Contract.md","Examples/E_CLI_Wound_Materialization.txt","Examples/E_CLI_Afterlife_Turns.txt","Examples/E_CLI_Training_Showcases.txt","OtherGuides/Afterlife_Contract_Matrix.md","OtherGuides/Afterlife_Combat_Terminology_Glossary.md","Examples/E_CLI_Ink_Feather_Actions.txt"})
+                Assert.True(File.Exists(Path.Combine(resources,relative)),"Causal RED: shipped daemon context source missing: "+relative);
+
             Assert.True(File.Exists(Path.Combine(ship,"BookOfEternityClient/Launcher/bookofeternity.ps1")),"Causal RED: ordinary published layout lacks its real launcher.");
             Assert.True(File.Exists(Path.Combine(ship,"BookOfEternityClient/Launcher/gm_main_operation.ps1")),"Causal RED: ordinary published layout lacks participating helper.");return;
         }
