@@ -1,0 +1,464 @@
+{
+  "SchemaVersion": 1,
+  "Scope": "Only exact current F3 isolated case witnesses after actual guardian ECHILD; private bootstrap and own f3 named-pipe socket paths",
+  "GuardianCases": 37,
+  "Rows": [
+    {
+      "Folder": "TestResults/native-terminal/0524c10d558a4d2c9cab998669fbfb64",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "ff4b32daadd8460c90ded56695635d60"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 27
+    },
+    {
+      "Folder": "TestResults/native-terminal/0adfa097058a4d8782acb0135c106aee",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "4351f97b694447088b5f33a7745c5a2e"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 12
+    },
+    {
+      "Folder": "TestResults/native-terminal/0ea799b7ad764e0f8c001829c86f903f",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "53bb0d817df24128afdd49b57cec653e"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 19
+    },
+    {
+      "Folder": "TestResults/native-terminal/0ef03d35778646cb96b185f5170b0b4d",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "da36122d15244022b188ad141403eb1b"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 27
+    },
+    {
+      "Folder": "TestResults/native-terminal/0ffb217a76d14fae9bc9dc0f5682d9c4",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "cc1d392f97cd402bade85e4e8812b997"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 12
+    },
+    {
+      "Folder": "TestResults/native-terminal/12bdd5582b5644caba14dcb42a8ebbe6",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "526e77ec814c40c49dd74ab3ea532e7a"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 11
+    },
+    {
+      "Folder": "TestResults/native-terminal/17ef2fac39d94cd3b2062cbed2ae7efd",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "42bec1ace78e4554aaa82783e15f92ae",
+        "6e5ec3dd54674cfabaa302a17ff7a444"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 12
+    },
+    {
+      "Folder": "TestResults/native-terminal/1a6ec0af5efd42aba671c75c0d2586ee",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "9bb9d969b2b14ef192b8ef11acc93b70"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 11
+    },
+    {
+      "Folder": "TestResults/native-terminal/1bd851d4705946e79eda9479bb7ba4af",
+      "GuardianEchild": true,
+      "KnownRunIds": [],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 10
+    },
+    {
+      "Folder": "TestResults/native-terminal/28c78c0e8dcb4b3cac03a85f454c8480",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "01f54c5af4b44720879ba27c102f9409",
+        "439b2ff6827d4f77999c5c8e6d1da9e7"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 11
+    },
+    {
+      "Folder": "TestResults/native-terminal/295b0897588242bbb25dfa55650d6bbc",
+      "GuardianEchild": true,
+      "KnownRunIds": [],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 10
+    },
+    {
+      "Folder": "TestResults/native-terminal/2d2277a57aa84371b465edf435f0ab38",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "db6c9d810af3486c8a353f9ed77537a5"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 11
+    },
+    {
+      "Folder": "TestResults/native-terminal/35c55b343acc4fdf93374ddb8a93fdd4",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "06cccf8789094c71982cf65ddf732953",
+        "b3929ed2e2e7458cafcc1729394343e9"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 12
+    },
+    {
+      "Folder": "TestResults/native-terminal/3756f638a0554867849896ebcd0bf1ec",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "a5d7c653ce9840a38cd7d0eeef6989cc"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 11
+    },
+    {
+      "Folder": "TestResults/native-terminal/3ce4bde3eabc45d6aff1903fe890f26b",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "20dc0cd5b06c4d8a890df5b81aac367a"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 27
+    },
+    {
+      "Folder": "TestResults/native-terminal/4032e56c798141bfb34dc729c7434bde",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "d775dbb0f261462a8a5298371e96ad5f"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 11
+    },
+    {
+      "Folder": "TestResults/native-terminal/42cec86a55ba447baf7939ead94791d6",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "5b4b250a6a39437ab406d4c38580d0ed",
+        "dd1ffdfab5414944a0bfabd0597d3903"
+      ],
+      "KnownPipeNames": [
+        "f3-9f08d0eb24da41178d254498e9248f9b"
+      ],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 11
+    },
+    {
+      "Folder": "TestResults/native-terminal/457b692cf049455587d730ceb5f4c369",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "325acc2fc8934870bee67b1e1ebc08e3"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 12
+    },
+    {
+      "Folder": "TestResults/native-terminal/49442ea7fa4f49b2a9a54f0e2727ff4c",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "cf9d32a3e67c40d3a26a1d32637b0ca1"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 11
+    },
+    {
+      "Folder": "TestResults/native-terminal/498c5b3bc84543b0b4bbcc604704a24e",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "b991608cf02d4f9db6c5f4a93f504078"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 11
+    },
+    {
+      "Folder": "TestResults/native-terminal/4e193147259e4584ba8293db8fe4db3e",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "642d62c3016c424ea788166ac55e169a"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 11
+    },
+    {
+      "Folder": "TestResults/native-terminal/59294321a12e422e9cbd2967881084da",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "83130ba610e545ca9138a8a5b3662f90"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 11
+    },
+    {
+      "Folder": "TestResults/native-terminal/67f4392391da4c4f80c8ad67b9a9c6b8",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "dc7b53d4e4ea474cac5527692e8dea34"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 19
+    },
+    {
+      "Folder": "TestResults/native-terminal/73dfe1bc7a1c40df85908eb0bce326da",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "0b0acd36a6ea461aa55ac0a3b2faee24",
+        "adb3e8882090446b9cecaa7767ceda78"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 12
+    },
+    {
+      "Folder": "TestResults/native-terminal/898f0e5bb2c34561868cf909603e720e",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "2945a885d3114def8a28d3b465e44edd",
+        "c080d4deeb4249a2b43820395fb503fd"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 14
+    },
+    {
+      "Folder": "TestResults/native-terminal/987e489302cb487c8dfa1db81e4f4c1e",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "baeb7766d8f2489d9897574fb587258a"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 11
+    },
+    {
+      "Folder": "TestResults/native-terminal/bad5613e00e14f679d0fe8ab431852c7",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "72b8a80fa8b94cbe8d20a30882599be7",
+        "c822bcdb9e75432f9d9813fdcf5d1734"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 12
+    },
+    {
+      "Folder": "TestResults/native-terminal/bb9d995982954d899f213d7fba4f5da7",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "640ca6513ea9443bae79778b310f68b4",
+        "db2b3cdb838c4b74ba46e4ba092ef224"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 12
+    },
+    {
+      "Folder": "TestResults/native-terminal/bc8a67887aac4fb6bdc7f70337c0e884",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "3b24b50d165c4343992c1b8972bc2e4d"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 11
+    },
+    {
+      "Folder": "TestResults/native-terminal/c51e83a829684c35a448d7c5bb6a6301",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "04dd54d160ed4da3932412bcccf83af2",
+        "e91286b3dd5442e7b4f4d2438495f429"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 11
+    },
+    {
+      "Folder": "TestResults/native-terminal/cb91fb984c484d50a6d6824af4b7f926",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "4880b6281d6b42feb2625367e9bdcb69"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 14
+    },
+    {
+      "Folder": "TestResults/native-terminal/cf39acd12abb4226858d9b45075f70f9",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "98bb223d2f9f48489dfa43263d04ce1a"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 27
+    },
+    {
+      "Folder": "TestResults/native-terminal/d4fc0103eadb42168635a182da00fa40",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "896bd3c2782841e7971ad7fe40e2909b"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 12
+    },
+    {
+      "Folder": "TestResults/native-terminal/d7c34f54897f438a89e635cb67e724ab",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "ec16372997cf4160b5fa638d8f3bc43d",
+        "f68592899122477cbfb6684c0de2ca4f"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 5
+    },
+    {
+      "Folder": "TestResults/native-terminal/e0b25798b2c741768a07dee1cbd83633",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "1ee1e78622c841dba81a5de04f9d47b5",
+        "c2d33ff88f4d4ed8a927fca361fb6ac5"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 12
+    },
+    {
+      "Folder": "TestResults/native-terminal/f3e8269b374a48969009bae7304e17c0",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "b55067de039349ec83eda61ed93292a2"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 11
+    },
+    {
+      "Folder": "TestResults/native-terminal/fe7b810814704a5aa199e01ad1303c9a",
+      "GuardianEchild": true,
+      "KnownRunIds": [
+        "1cd21220446941909d5c15cd79966a11",
+        "88ed34b10d8c4d54b551f3c6e05dfc77"
+      ],
+      "KnownPipeNames": [],
+      "Removed": [],
+      "AllKnownPrivateResourcesAbsent": true,
+      "RootFileBytesUnchanged": true,
+      "RetainedRootFileCount": 12
+    }
+  ],
+  "LogicalUncertainAndCanonicalEvidenceRetained": true,
+  "NoPidSignalsOrUnrelatedResources": true,
+  "OldUnrelatedPid1ZombiesUntouched": true
+}

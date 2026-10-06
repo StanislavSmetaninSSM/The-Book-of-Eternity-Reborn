@@ -5,16 +5,21 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## Current: T041-RUN-FENCE-F3 authorized; source-delta plan review pending
+## Current: bounded T041-RUN-FENCE-F3 final review candidate
 
-Accepted F2 `8b0c416e1ec5c132d82776b4fdc348ee90cfdbe5` has verified remote
-publication/readback and fresh GitHub-only restoration. The owner now authorizes
-only [F3 process-crash/replacement qualification](main-run-fence-f3-plan.md).
-Reuse accepted F1/F2 evidence; new controlled process cuts, no old mass cohorts.
-No F3 runtime/build/test changes yet. Independent Sol6.1/xhigh plan review precedes
-execution. Four F2 Windows-only refusals expose actual Linux browser rollback
-publication debt; exact IDs/cause and remaining T031-BROWSER-ROLLBACK-LINUX are
-tracked outside F3. No silent storage migration or positive Windows claim.
+Accepted F2 `8b0c416e` → F3 execution complete:23 distinct latest PASS
+(2portable admission +21actual Linux),41historical executions27PASS/14FAIL
+(2causal admission RED +12fixture/oracle failures, excluded from acceptance).
+All37 historical guardians ECHILD/emergency0/failure0/deadlinefalse. Core runtime
+unchanged; fixed-neutral same-root fresh fixture seam is the sole production delta.
+Discovery-only catalog350/10968 and F3 plan7/23 both0execution. Final independent
+Sol6.1/xhigh source/evidence review and final publication/GitHub-only restore are
+pending writer closure. [Handoff](main-run-fence-f3-handoff.md) ·
+[qualification](recovery/main-run-fence-f3-qualification.json) · [ledger](main-run-fence-f3-plan.md).
+Four F2 Windows-only cases remain unqualified; actual Linux browser rollback
+consumer debt T031-BROWSER-ROLLBACK-LINUX stays open outside F3. FullT041,
+production/public/game-writing main, primary systemd/native Windows/live Codex,
+real saves/cold guarantees/final UX remain open. Stop before the next stage.
 
 ## Accepted T041-RUN-FENCE-F2 controlled source/evidence PASS
 

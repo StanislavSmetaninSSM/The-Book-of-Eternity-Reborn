@@ -4,13 +4,16 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
-## T041-RUN-FENCE-F3 — current authorized refinement
+## T041-RUN-FENCE-F3 — bounded execution complete, final review pending
 
 Owner accepted F2 `8b0c416e1ec5c132d82776b4fdc348ee90cfdbe5`. Current
 [source-delta gap matrix and execution ledger](main-run-fence-f3-plan.md) reuse
 accepted F1/F2/R1–R3/input/terminal evidence. Only bounded actual application-process
 crash/restart/replacement qualification is authorized; plan review precedes runs.
 Real Linux browser rollback debt is explicitly tracked outside this slice.
+Latest23source-backedPASS (2portable+21native); historical41executions27PASS/14FAIL
+retain2causalRED+12fixture/oraclefailures separately. Discovery-only350/10968 and7/23.
+[Final handoff](main-run-fence-f3-handoff.md); independent finalreview/remoteclosure pending.
 No production/backend/live/real saves/power-loss/final UX expansion. Historical
 F1/F2 authorization and next-stage notes below describe those snapshots only.
 

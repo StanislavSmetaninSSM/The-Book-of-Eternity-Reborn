@@ -165,6 +165,14 @@ public rollout/provider/real saves/cold exactly-once. Independent Sol6.1/xhigh
 design review and published checkpoint, then stop before implementation.
 [Design](owned-main-terminal-design.md).
 
+## Bounded F3 qualification and remaining production boundary
+
+From accepted F2, F3 latest23distinctPASS qualify only isolated neutral actual process
+crash/restart/replacement boundaries of the connected F1/F2 path. FullT041 and
+production main/selected backend/live remain open. Final independent review and
+remote closure pending; [handoff](main-run-fence-f3-handoff.md). No new gameplay,
+save-security, reboot/replay or cold exactly-once requirement.
+
 ## Design-only continuation from accepted R3
 
 The owner accepted bounded synthetic R3 at `bd2acebf9c070e484434d1332ee80c99bf1c66b6`
