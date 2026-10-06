@@ -15,6 +15,22 @@
 - Wound implementation was merged by explicit owner request in [PR #1554](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/pull/1554). Its unfinished acceptance remains deferred under #1536, not declared complete by this feature
 
 
+## Authorized main run-fence design from accepted neutral terminal
+
+Accepted neutral terminal `14888663d608355098cc1a329d97ab61de0e6016` feeds the
+design-only [T041-RUN-FENCE connection](main-run-fence-design.md), US4 /
+FR-009/012/013/014/015. Consume existing schema1/main.json and authentic original
+terminal owner before normal game-writing launch; enforce pre-recovery and actual
+held-lease admission, preserving separate worker inventory and selected cold refusal.
+No decoded terminal record/PID/EOF permits old-session continuation. Clear/load/
+replacement/generation-changing recovery require quiescent main; active in-generation
+rollback/save/finalization requires original live capability and current generation.
+Retain epoch outside replaceable game_state; no second journal or protection from
+the player editing saves. Planned F1 neutral connection, F2 real client pins and
+F3 process-crash/replacement qualification do not imply implementation authorization.
+Systemd remains a separate required backend stage; no environment/service changes,
+new tests/runtime edits, public rollout, real saves or reboot/power-loss salvage now.
+
 ## Approved two-backend Linux ownership — 2026-10-05 15:12 UTC
 
 Owner decision: primary existing **systemd user manager**, plus a **native ordinary-lineage fallback** for cloud/similar environments. This explicitly supersedes the earlier unconditional complete-descendant requirement only for the declared fallback scope. It is a product guarantee change, not permission to bypass environment security. Source base `2defe92cd8b7d313d07b059db76b73e97905f66f`, same branch/sole writer. First implementation is T041-FALLBACK-NATIVE synthetic helper qualification only; production pool/main Release wiring requires the next handoff/authorization.

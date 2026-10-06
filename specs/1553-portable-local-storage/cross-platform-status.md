@@ -5,6 +5,18 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
+## Current: T041-RUN-FENCE design only
+
+Owner accepted neutral terminal at `14888663d608355098cc1a329d97ab61de0e6016`;
+next is [original-owner/durable main-fence design](main-run-fence-design.md),
+not implementation. Reuse main-record/R1–R3/input/terminal audits and proofs.
+First proposed slice F1 connects the fixed neutral owner, existing main.json and
+actual pre-recovery/held-lease consumers; F2 binds real separate clients/daemon;
+F3 qualifies process crash/replacement. No new journal, runtime/test/probe/settings
+change or execution. Independent Sol6.1/xhigh review pending at WIP publication;
+[source checkpoint](recovery/main-run-fence-design.json). Stop before implementation.
+Primary systemd/production/main live acceptance/real saves/cold gates remain open.
+
 ## Owned main terminal: bounded neutral PASS; final carrier handoff
 
 Accepted design `3b21dba7410284cb4b471e7b3c3e4be970139c27` now feeds actual original

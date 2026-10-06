@@ -4,6 +4,38 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T041-RUN-FENCE — current design-only checkpoint
+
+Owner accepted neutral terminal `14888663d608355098cc1a329d97ab61de0e6016` and
+authorized source-backed design only. Same branch, sole writer, independent actual
+Sol6.1/xhigh design review. [Design and source map](main-run-fence-design.md);
+[checkpoint/source hashes](recovery/main-run-fence-design.json).
+
+Reuse accepted main-record90, R1–R3 and input/terminal evidence without repeating
+unchanged audits. The existing `.boe_runtime/gm-runs/main.json` schema1 is suitable;
+consume original owned terminal, one durable CAS and exact metadata ACK rather than
+adding a combined journal. Source delta confirms real canonical lease acquisition
+recovers before returning; checks belong before recovery and at held-lease effects.
+Main status/record/PID/EOF are never live authority. Independent workers retain their
+selected root-wide cold refusal and exact narrow original purposes.
+
+Sequence: **F1 connected neutral owner/persistence/common filesystem fence**, then
+**F2 actual separate client/daemon operation pins and mutation consumers**, then
+**F3 process-crash/replacement qualification**. F1 is first proposed implementation:
+Prepared before helper creation; held original owner → durable Running → one release;
+input/pin revocation → Stopping → scoped stop + actual I/O/disposal → durable Stopped.
+Actual clear/load/recovery and held rollback/save writes use the same gate. Release
+filesystem locks before IPC/child/drain waits; lifecycle precedes canonical lease,
+original client pins precede both. Retain terminal epoch outside replaceable state.
+
+No runtime/test/catalog/selection/probe/environment change or execution in this
+checkpoint. Existing-manager systemd is still a separate required backend stage;
+no manager is available here or installed. Production admission/live GM/real saves/
+reboot/power-loss/cold guarantees remain closed. Only later stop/load/start UX needs
+a product decision; it does not block F1 technical implementation. Independent
+review pending at first WIP publication; no implementation task is complete.
+Next: review and publish design, then return handoff and stop before F1 authorization.
+
 
 ## T042-INPUT-TRANSACTION — authorized execution ledger
 
