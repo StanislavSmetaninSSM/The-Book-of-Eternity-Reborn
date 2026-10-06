@@ -8,7 +8,7 @@ internal sealed record WorkerLedgerTarget(string RootPath)
     internal string DirectoryPath => Path.Combine(RootPath, ".boe_runtime", "worker-runs-v1");
 }
 
-internal enum WorkerLedgerMutationKind { Applied, AlreadyExact, Blocked, CommitPending }
+internal enum WorkerLedgerMutationKind { Applied, AlreadyExact, Blocked, CommitPending, Busy }
 // Observation/failure injection only; no callback can supply ownership or stop evidence.
 internal enum WorkerLedgerIoStage
 {

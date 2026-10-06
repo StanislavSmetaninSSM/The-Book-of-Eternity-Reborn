@@ -58,6 +58,7 @@ public partial class FileSystemManager
 
     private void RecoverTrustedLocalStorage(CanonicalWriteLease lease)
     {
+        EnsureWorkerRecoveryAdmission(lease);
         lease.EnsureNoPendingLocalDecision();
         if (!HasStorageEvidence(LocalPublicationRoot)) return;
         var before = ReadExistingSessionGeneration(lease);

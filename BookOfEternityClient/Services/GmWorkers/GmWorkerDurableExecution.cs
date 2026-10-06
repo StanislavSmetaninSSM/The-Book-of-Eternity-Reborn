@@ -258,6 +258,11 @@ internal sealed class GmWorkerDurableExecution
         var mutation = new Mutation(this, _record, _record with { Phase = phase, Progress = progress });
         _pending = mutation;
         var result = await _coordinator.ApplyLiveAsync(this, mutation);
+        if (result == WorkerLedgerMutationKind.Busy)
+        {
+            _pending = null;
+            throw new IOException("Another original worker metadata plan is pending; this transition has not started.");
+        }
         if (result != WorkerLedgerMutationKind.Applied)
         {
             Context.MarkMetadataPending(this);

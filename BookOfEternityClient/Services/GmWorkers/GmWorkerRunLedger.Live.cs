@@ -50,8 +50,12 @@ internal sealed partial class WorkerRunLedgerCoordinator
         await _gate.WaitAsync();
         try
         {
-            if (_disposed || _authorityLost || _pending != null || _state == null || !Original(execution, mutation) || !VerifyCurrent())
+            if (_disposed || _authorityLost || _state == null || !Original(execution, mutation))
                 return WorkerLedgerMutationKind.Blocked;
+            // A different original operation may await its exact metadata ACK.
+            // Nothing for this caller has been attempted or made ambiguous.
+            if (_pending != null) return WorkerLedgerMutationKind.Busy;
+            if (!VerifyCurrent()) return WorkerLedgerMutationKind.Blocked;
             WorkerLedgerState next;
             try { next = GmWorkerRunLedgerCodec.TransitionLive(_state, mutation); }
             catch (Exception error) when (GmWorkerRunLedger.Unavailable(error)) { return WorkerLedgerMutationKind.Blocked; }

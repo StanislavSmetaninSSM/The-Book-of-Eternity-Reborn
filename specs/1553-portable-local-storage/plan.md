@@ -219,6 +219,16 @@ recovery/evidence/worker-r2-root-first/manifest.json. Fixture now asks only its
 original retained owner for bounded late stop and waits actual supervisor exit;
 Uncertain/slot/workspace retention and recovery assertions remain unchanged. Runtime
 reviewed gaps are unchanged. Fresh same small category retry pending.
+Root causal RED confirmed at `7b800e13c912ab614ec4a9abd89c4507afe3896c`:2/2 FAIL,
+47.5933315s, fresh build, both original guardians ECHILD/exit0/reap1 with zero emergency/
+failure/deadline. Both behavioral assertions now executed. Evidence:
+recovery/evidence/worker-r2-root-red/manifest.json. Added Busy for a foreign pending
+plan before any new mutation, dropping only the unstarted local plan without loss
+of authority. Added whole-inventory pre-recovery admission at lease acquisition,
+trusted-local recovery wrapper and direct publisher recovery entry. Known cleanup
+debt may audit; another Uncertain or unresolved journal always refuses recovery.
+Fresh root GREEN pending; exact audit-operation confinement/typed early purposes,
+remaining minimal matrix, affected categories and final independent review remain.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

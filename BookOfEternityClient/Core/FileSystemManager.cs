@@ -3689,6 +3689,7 @@ public partial class FileSystemManager
             {
                 var workerContext = CanonicalRootAuthorityIdentity.WorkerContext;
                 workerContext?.ValidateCanonical(this, writeLease);
+                workerContext?.ValidateBeforeRecovery();
                 writeLease.WorkerRootPin = workerContext?.PinCanonical();
                 if (!OperatingSystem.IsWindows()) EnsureNoLegacyStorageEvidence();
                 await RunLegacyStorageRecoveryAsync(writeLease, async () =>
@@ -3869,6 +3870,12 @@ public partial class FileSystemManager
         ArgumentNullException.ThrowIfNull(writeLease);
         if (!ReferenceEquals(writeLease.Owner, this) || !writeLease.IsActive)
             throw new InvalidOperationException("Canonical write lease is not active for this game session.");
+    }
+
+    internal void EnsureWorkerRecoveryAdmission(CanonicalWriteLease writeLease)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        CanonicalRootAuthorityIdentity.WorkerContext?.ValidateBeforeRecovery();
     }
 
     internal void EnsureCanonicalWriteLeaseActive(CanonicalWriteLease writeLease) =>

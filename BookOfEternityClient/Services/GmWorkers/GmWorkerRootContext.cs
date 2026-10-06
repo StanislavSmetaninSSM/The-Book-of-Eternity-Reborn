@@ -105,6 +105,18 @@ internal sealed class GmWorkerRootContext
             }
         }
     }
+    internal void ValidateBeforeRecovery()
+    {
+        lock (_root.WorkerContextGate)
+        {
+            if (_disposed || Volatile.Read(ref _closed) != 0 || _pending.Count != 0 ||
+                _coordinator != null && _coordinator.InspectAdmission() != true)
+                throw new InvalidOperationException("Canonical recovery is closed while any original worker authority or journal is unresolved.");
+            // Known cleanup debt alone may perform its exact audit operation;
+            // it never exempts another Uncertain entry or a pending journal.
+            _legacy?.Verify();
+        }
+    }
     internal void ValidateCanonical(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease)
     {
         var purpose = lease.WorkerPurpose;
