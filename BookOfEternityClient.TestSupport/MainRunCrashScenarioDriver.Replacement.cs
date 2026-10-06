@@ -106,12 +106,14 @@ internal static partial class MainRunCrashScenarioDriver
             }
             await Refuse(async()=>{await using var lease=await files.AcquireCanonicalWriteLeaseAsync();},"CanonicalLease");
             await Refuse(()=>files.ClearGameStateAsync(),"Clear");
+            Require(Equal(before,Snapshot(info.Root)),"Canonical/Clear refusal changed pre-existing authority evidence.");
             var state=new StateManager(files,new GameSettings(),NullLogger<StateManager>.Instance);string? privateStage=null;
             var load=await new SaveLoadService(files,state,NullLogger<SaveLoadService>.Instance,new SaveLoadServiceHooks {
                 AfterLoadArchiveExtractedAsync=path=>{privateStage=path;return Task.CompletedTask;}
             }).LoadGameWithOutcomeAsync(info.Archive);
             Require(load.Disposition==(kind=="worker"?LoadReplacementDisposition.NotLoaded:LoadReplacementDisposition.Uncertain),"Independent debt lost typed Load decision.");
             if(kind=="storage")Require(load.EstablishedGeneration==null && load.ContinuationBlocked,"Storage conflict admitted continuation.");
+            var afterLoad=Snapshot(info.Root);
             var held=false;var prepared=false;
             var owner=await GmSessionRunCoordinator.OpenNeutralAsync(files,stage=>{if(stage==MainRunIoStage.Readback)prepared=true;});
             await Refuse(async()=>{_ =await owner.LaunchNeutralAsync(NeutralTerminalLaunch.CreateForFixtureRoot(folder,folder,info.Root),CancellationToken.None,_=>held=true);},"NewLaunch");
@@ -119,7 +121,18 @@ internal static partial class MainRunCrashScenarioDriver
             var after=Snapshot(info.Root);var stagePrefix=privateStage==null?null:Path.GetRelativePath(info.Root,privateStage)+"/";
             Require(privateStage!=null && Path.GetDirectoryName(privateStage)==Path.Combine(files.RuntimeRootPath,"load-staging") && Guid.TryParseExact(Path.GetFileName(privateStage),"N",out _),"Load preparation escaped its actual private scratch.");
             var authorityAfter=after.Where(p=>!p.Key.StartsWith(stagePrefix!,StringComparison.Ordinal)).ToDictionary(p=>p.Key,p=>p.Value,StringComparer.Ordinal);
-            Require(!held && !prepared && !owner.RetainsAuthority && Equal(before,authorityAfter),"Independent debt allowed launch/recovery authority side effects before admission.");
+            Require(!held && !prepared && !owner.RetainsAuthority && Equal(before,authorityAfter) && Equal(afterLoad,after),"Independent debt allowed launch/recovery authority side effects before admission.");
+            if(kind=="worker")Require(!Directory.Exists(privateStage) && Equal(before,afterLoad),"Worker NotLoaded retained or changed preparation.");
+            else {
+                var candidate=Directory.EnumerateFiles(privateStage!,"*",SearchOption.AllDirectories).ToDictionary(p=>Path.GetRelativePath(privateStage!,p),p=>Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(p))),StringComparer.Ordinal);
+                using var archive=System.IO.Compression.ZipFile.OpenRead(info.Archive);
+                var expected=new Dictionary<string,string>(StringComparer.Ordinal);
+                foreach(var entry in archive.Entries.Where(e=>!e.FullName.EndsWith('/') && e.FullName!="save_manifest.json")) {
+                    using var stream=entry.Open();expected.Add(entry.FullName,Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(stream)));
+                }
+                Require(Equal(expected,candidate),"Retained private preparation is not exact selected fixed archive images.");
+                result["ExactPrivateArchiveImages"]=candidate;
+            }
             result["ActualPrivateLoadPreparation"]=privateStage;result["PrivatePreparationRetained"]=Directory.Exists(privateStage);result["AuthorityEvidenceUnchanged"]=true;
             result["Load"]=DescribeLoad(load);result["Before"]=before;result["After"]=Snapshot(info.Root);result["NoPreparedOrCreation"]=true;result["Success"]=true;return 0;
         } catch(Exception failure){result["Failure"]=failure.ToString();return 1;}
