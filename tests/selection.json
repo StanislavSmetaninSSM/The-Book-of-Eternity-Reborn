@@ -2,52 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-main-crash-fixture-admission",
-      "reason": "F3 newly authorized internal same-root fixed neutral fixture seam; causal RED before implementation",
+      "category": "gm-main-production-admission",
+      "reason": "#1553 M1 Consumed production main/root admission and retained independent worker/storage conjunction, configured neutral-only Linux fixture; causal RED from accepted design checkpoint before production corrections",
       "contracts": [
-        "#1553 T041-RUN-FENCE-F3 original isolated root, single-use new admission, no mint from record"
+        "#1553 T041-PRODUCTION-MAIN-M1 original authority/run fence/T042, shipped no-build ordinary Linux entrypoint"
       ]
     },
     {
-      "category": "gm-main-crash-launch-linux",
-      "reason": "F3 missing actual process-death and new-process cold admission boundaries; reuse existing F1 fault/terminal evidence",
+      "category": "gm-main-linux-launcher",
+      "reason": "#1553 M1 Actual ordinary Linux launcher/daemon/console entrypoints in relocated shipped layout, configured neutral-only fixture; causal RED from accepted design checkpoint before production corrections",
       "contracts": [
-        "#1553 T041-RUN-FENCE-F3 Prepared/held/Running/single release, original root identity, exact nonmutating cold refusal"
-      ]
-    },
-    {
-      "category": "gm-main-crash-pins-linux",
-      "reason": "F3 unproved actual participating process death at original receipt/reply cuts; accepted F2 wire/warm permutations reused",
-      "contracts": [
-        "#1553 T041-RUN-FENCE-F3 actual original typed connection/receipt; logical Uncertain despite physical cleanup; fresh epoch only stopped"
-      ]
-    },
-    {
-      "category": "gm-main-crash-stop-linux",
-      "reason": "F3 unproved process death around actual output/disposal/sealed stop and ACK; real pre-seal producer fault ensures absorbing Uncertain",
-      "contracts": [
-        "#1553 T041-RUN-FENCE-F3 scopedstop+actual I/O/disposal/ACK, original guard, cold nonterminal refusal and new epoch only sealed stop"
-      ]
-    },
-    {
-      "category": "gm-main-crash-replacement-linux",
-      "reason": "F3 D missing new-process exact replacement decisions on actual connected original stopped root",
-      "contracts": [
-        "#1553 T041-RUN-FENCE-F3 actual typed Load and exact namespace/generation; retained storage remains independent"
-      ]
-    },
-    {
-      "category": "gm-main-crash-conjunction-linux",
-      "reason": "F3 D missing original main stopped plus new-process independent worker/storage admission refusal",
-      "contracts": [
-        "#1553 T041-RUN-FENCE-F3 independent inventory/recovery retained decision; no native creation or worker requalification"
-      ]
-    },
-    {
-      "category": "gm-main-crash-cold-boundary-linux",
-      "reason": "F3 specific missing cold Clear and actually queued original T042 input after process death; accepted warm T042 reused",
-      "contracts": [
-        "#1553 T041-RUN-FENCE-F3 actual stopped new generation, original binding revocation/settlement, no queued old replay"
+        "#1553 T041-PRODUCTION-MAIN-M1 original authority/run fence/T042, shipped no-build ordinary Linux entrypoint"
       ]
     }
   ]

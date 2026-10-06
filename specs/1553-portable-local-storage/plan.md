@@ -4,6 +4,35 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T041-PRODUCTION-MAIN-M1 — authorized execution ledger
+
+Owner accepted design `cdc3b10ca5cbff5b4d9cbc935609cdff29a95e68` and authorized M1 only.
+Sole Sol6.1/xhigh writer; independent Sol6.1/xhigh whole-source/evidence review.
+Existing isolated worktree/local+remote exact SHA/clean verified before edits.
+Execute accepted [M1](production-main-admission-design.md#m1-first-implementation-slice)
+inline with Spec Kit/Superpowers/bridge. No Q1/Q2/Codex/provider/model requests,
+helpers enabled, Auto/systemd downgrade, settings/services/security/network/auth changes,
+real saves, automatic Load stop/fresh launch or cold promises. Systemd/native Windows
+and T031-BROWSER-ROLLBACK-LINUX stay open.
+
+Task1 in progress: causal real-entrypoint RED for ordinary bridge, relocated ordinary
+launcher and actual daemon startup; two new categories gm-main-production-admission
+and gm-main-linux-launcher. Publisher fixture preparation builds/copies prebuilt assets
+before player launch; no source/compiler invocation in that launch. Task2 connects
+production admission/worker inventory, helper package and consumers; Task3 controlled
+qualification/review/source/evidence/GitHub-only restoration and stop before Q1.
+Pre-flight: production factory/coordinator must consume the original guard/generation;
+remote pins borrow retained worker authority; cold clients acquire their own bounded
+quiescent authority; installed assembly resolution serves launcher and participating
+helper. Existing neutral capability remains strict. Original lifecycle start/retirement
+span retained; pin drain before lifecycle, IPC outside canonical/transition gates.
+Ruling: obey user/repo narrow-category policy over skill generic full-suite/repeat
+instructions; recorded successful covering cohorts are reused by source identity.
+Use this existing tracked ledger instead of duplicating it in a skill-only directory.
+Actual environment observed: SDK10.0.401; runtimes8.0.31/10.0.12; PowerShell7.5.4;
+Debian cc14.2.0-19. No runtime edits or new runs yet. Checkpoints below retain exact
+source hashes/commands/results/owned cleanup; preparation failure is not causal RED.
+
 ## T041-PRODUCTION-MAIN-DESIGN — current design-only continuation
 
 Owner accepted bounded F3 `fc49f271f5cd14ac3b24931cce2c98ef64a61068`.

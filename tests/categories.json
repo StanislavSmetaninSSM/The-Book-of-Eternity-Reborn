@@ -2,6 +2,58 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-main-production-admission",
+      "responsibility": "#1553 M1 Consumed production main/root admission and retained independent worker/storage conjunction, configured neutral-only Linux fixture",
+      "excludes": "No neutralPackage bypass, provider/Codex Q1/Q2, real saves, helpers enabled, Auto/systemd/native Windows/cold guarantees or browser rollback migration.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/",
+        "BookOfEternityClient/Launcher/",
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "BookOfEternityGMBridge/"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-main-linux-launcher",
+      "responsibility": "#1553 M1 Actual ordinary Linux launcher/daemon/console entrypoints in relocated shipped layout, configured neutral-only fixture",
+      "excludes": "No neutralPackage bypass, provider/Codex Q1/Q2, real saves, helpers enabled, Auto/systemd/native Windows/cold guarantees or browser rollback migration.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/",
+        "BookOfEternityClient/Launcher/",
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "BookOfEternityGMBridge/"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-main-participating-consumers",
       "responsibility": "#1553 F2 actual inert PowerShell/client/browser consumers and mutation/finalization boundaries.",
       "excludes": "No F3, production GM, actual saves, systemd or native Windows qualification.",
