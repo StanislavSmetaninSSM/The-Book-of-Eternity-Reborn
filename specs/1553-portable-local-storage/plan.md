@@ -141,9 +141,14 @@ Fresh GitHub-only candidate restoration:12973tracked files byte-compared with fe
 Git blobs in both restored and writer checkouts; exact tree
 `e2809b19b6cb2821032c072dcfd0c48afe968ca4`, parent/history/remote, clean states and
 connectivity fsck verified. Restoration and reviewer executed0tests/native probes.
-Only metadata finalization remains: narrow independent review, non-force publication,
-exact remote/byte readback and a separate fresh final-carrier restore. Exact final SHA
-and restoration proof belong in handoff without a self-referential commit claim.
+Narrow independent actual **gpt-6.1-sol/xhigh metadata PASS** at
+`13d89d2f818e2c100627e57a06793f694193589e`: the five-file delta faithfully records the
+bounded verdict, corrected counts, candidate proof and limits; no runtime/test/catalog
+change. Final adjustments rename addressed findings, record this metadata PASS and
+separate completed review from delivery. No further source review or tests required.
+Final verdict carrier receives non-force publication, exact remote/byte readback and a
+separate fresh GitHub-only restore. Exact final SHA and restoration proof belong in
+handoff without a self-referential commit claim.
 No runtime, fixtures, test catalog, selection or successful checks change in this block;
 no GM-facing update is required for this client-owned synthetic qualification. Stop at
 R3 handoff; no integration begins.
@@ -241,9 +246,11 @@ a claim that current code already satisfies it; runtime fixes still need causal 
 - [x] Independent actual Sol6.1/xhigh final source/evidence PASS at `2e4d07eb`.
 - [x] Ordinary commit/push/readback at every source boundary and fresh GitHub-only
   candidate restoration with exact tree/history/bytes/clean/fsck checks.
-- [ ] Narrow independent final metadata review. Its verdict carrier receives ordinary
-  publication/readback and a separate fresh GitHub-only restore; exact final SHA/proof
-  and remaining integration/native/platform tasks are reported in handoff.
+- [x] Narrow independent actual Sol6.1/xhigh metadata PASS at `13d89d2f`; final
+  wording adjustments recorded, no runtime/test/catalog changes or further source review.
+- [ ] Final verdict-carrier delivery: ordinary publication/readback and a separate fresh
+  GitHub-only restore. Exact final SHA/proof and remaining integration/native/platform
+  tasks are reported in handoff; this commit does not claim its own future delivery.
 
 Commands per cohort: `pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category
 "<one category above>"'`, with TMPDIR=/workspace/t1553 and isolated

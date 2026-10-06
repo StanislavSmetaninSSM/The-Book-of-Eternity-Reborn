@@ -5,7 +5,7 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## R3: bounded source/evidence accepted; final metadata carrier in progress
+## R3: bounded acceptance and metadata PASS; final carrier handoff
 
 Accepted R2 `6992e812`; actual Sol6.1/xhigh plan PASS `1545bf4a`. R3 A8/B5/C5/D5/E4
 прошли отдельными когортами. Два дополнительных D-сценария добавлены после конкретного
@@ -25,9 +25,11 @@ Discovery-only: catalog317/10885, R3 plan6/27, portable plan13/232; везде0e
 Spec Kit consistency подтверждена. Независимый actual gpt-6.1-sol/xhigh дал Bounded R3
 PASS для `2e4d07eb2f8ee781106faf672c2799b7c9ace07e`, без critical/important findings.
 Fresh GitHub-only restoration:12973tracked files, exact tree/history/bytes, clean/fsck.
-T041-WORKER-RESTART-R3 принят в этих границах. Осталась отдельная финализация metadata:
-узкое review, обычный push/readback и fresh restore финального carrier; точный SHA/proof
-сообщается в handoff без self-reference. [Qualification](recovery/worker-restart-r3.json).
+T041-WORKER-RESTART-R3 принят в этих границах. Узкое actual gpt-6.1-sol/xhigh metadata
+review: PASS на `13d89d2f818e2c100627e57a06793f694193589e`; runtime/tests/catalog не менялись.
+Финальный verdict carrier получает обычный push/readback и отдельный fresh GitHub-only
+restore; точный SHA/proof сообщается в handoff без self-reference.
+[Qualification](recovery/worker-restart-r3.json).
 
 Интеграция public Linux Release/main PTY/live GM/реальных saves, native Windows/systemd,
 power-loss/reboot, reconnect/salvage/force-clear не квалифицированы и здесь не начинаются.

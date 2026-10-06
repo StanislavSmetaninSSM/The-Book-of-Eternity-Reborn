@@ -389,8 +389,9 @@ Legitimate generation rotation retains its original ledger identity/hash while r
 old canonical artifacts according to its existing contract. Latest41distinctPASS include
 14source-affected previous cases. Independent actual gpt-6.1-sol/xhigh Bounded R3 PASS
 at `2e4d07eb2f8ee781106faf672c2799b7c9ace07e`; fresh GitHub-only candidate restoration
-verified12973tracked files, exact tree/history/bytes and clean/fsck. Final metadata-only
-review and final-carrier publication/restoration remain for handoff; no integration.
+verified12973tracked files, exact tree/history/bytes and clean/fsck. Narrow independent
+actual gpt-6.1-sol/xhigh metadata PASS at `13d89d2f`; final-carrier publication/readback
+and fresh restoration are delivery steps reported in handoff; no integration.
 
 ## Product decisions versus technical choices
 

@@ -7,7 +7,7 @@
   "FinalRuntimeSource": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
   "FinalFixtureSource": "6d441cc0defe7bb92647930086e879a985934d81",
   "DiscoverySource": "8f0d52dea55f2bfcef5736295abab926e294c0d5",
-  "Status": "Bounded R3 source/evidence accepted by independent final PASS and candidate restoration; metadata finalization in progress",
+  "Status": "Bounded R3 accepted: independent source/evidence PASS and narrow metadata PASS recorded. Final carrier delivery proof is reported in handoff without self-reference.",
   "Scope": "Application-process crash/restart and original retirement in explicitly injected Linux x64 synthetic native pool only. Root-wide cold refusal; no reconstruction of execution authority from metadata.",
   "DesignReview": {
     "Model": "gpt-6.1-sol",
@@ -1025,12 +1025,12 @@
     "Verdict": "Bounded R3 PASS",
     "ConfirmedCriticalOrImportantFindings": [],
     "Summary": "Final runtime preserves unresolved workspace bytes, sticky Uncertain, original ACK retries and bounded Stop; legacy null-durable behavior remains unchanged. Independently verified 27 R3 plus 14 affected latest PASS, failure classification, all 12 manifests/234 source blobs/1928 artifacts/229 gzip files, guardian attribution and fresh candidate restoration.",
-    "RemainingMetadataCorrections": [
+    "AcceptanceBoundary": "Authorized Linux synthetic application-process crash/restart and original retirement only; production integration, Windows/systemd runtime, power-loss, reconnect/salvage/force-clear, main PTY, live GM and real saves remain open.",
+    "TestsOrNativeProbesExecutedByReviewer": 0,
+    "AddressedMetadataCorrections": [
       "Refresh stale status counts/next-step prose.",
       "Separate completed discovery/consistency from final review in the combined checklist."
-    ],
-    "AcceptanceBoundary": "Authorized Linux synthetic application-process crash/restart and original retirement only; production integration, Windows/systemd runtime, power-loss, reconnect/salvage/force-clear, main PTY, live GM and real saves remain open.",
-    "TestsOrNativeProbesExecutedByReviewer": 0
+    ]
   },
   "CandidateRestoration": {
     "Commit": "2e4d07eb2f8ee781106faf672c2799b7c9ace07e",
@@ -1064,6 +1064,17 @@
     "Model": "gpt-6.1-sol",
     "ReasoningEffort": "xhigh",
     "Scope": "Metadata-only delta from accepted R3 candidate; no runtime/test/catalog changes or repeated successful checks.",
-    "Status": "Pending"
+    "Status": "PASS",
+    "Source": "13d89d2f818e2c100627e57a06793f694193589e",
+    "Verdict": "Narrow metadata PASS",
+    "Mode": "Independent read-only review; no edits/tests/builds/native probes or repeated full evidence audit.",
+    "ConfirmedCriticalOrImportantFindings": [],
+    "Summary": "Five-file delta faithfully records the bounded R3 verdict, corrected counts, exact candidate restoration proof and remaining limits. Runtime, tests, catalog, native code, scripts and workflows are unchanged.",
+    "FinalCarrierAdjustments": [
+      "Renamed fixed review items to AddressedMetadataCorrections.",
+      "Recorded this metadata PASS against the reviewed WIP source.",
+      "Separated completed metadata review from final-carrier delivery in the checklist."
+    ],
+    "TestsOrNativeProbesExecutedByReviewer": 0
   }
 }
