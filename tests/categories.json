@@ -28,7 +28,7 @@
     },
     {
       "id": "browser-rollback-linux-boundaries",
-      "responsibility": "#1553 T031 real browser cumulative intent/recovery/typed closing debt, external QTE participant and main-worker-generation conjunction in isolated Linux roots",
+      "responsibility": "#1553 T031 real browser cumulative intent/recovery/typed closing debt, external QTE participant and main-worker-generation conjunction in isolated Linux roots; exact affected publication/admission/finalization and both browser Load bundle regressions",
       "excludes": "No historical F2 four reruns/native Windows/live browser/providers/real saves/Load UX or unrelated cohorts.",
       "changeHints": [
         "BookOfEternityClient/Core/FileSystemManager",
@@ -48,7 +48,23 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.*"
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.*",
+            "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard",
+            "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriteAppendCompareExchangeAndDeleteUseExactLogicalContent",
+            "BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterPreservesBoundaryHooksAndStopsARevokedBoundOperationBeforeMutation",
+            "BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterRejectsStaleBoundGenerationWithoutChangingContent",
+            "BookOfEternityClient.Tests.PortableClientStorageTests.AcquireLease_UnresolvedLegacyPublicationCannotSilentlyPassOnLinux",
+            "BookOfEternityClient.Tests.PortableClientStorageTests.OriginalRecoveryCallbackDoesNotCreatePortableJournalOrGenerationAndRestoresLeaseMode",
+            "BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes",
+            "BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing",
+            "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission",
+            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter"
           ]
         }
       ]

@@ -10,7 +10,7 @@
     },
     {
       "category": "browser-rollback-linux-boundaries",
-      "reason": "T031 next bounded actual recovery/closing/directory consumer gaps after first three causal RED\u2192GREEN; no old cohort reruns.",
+      "reason": "T031 connected trusted-local browser recorder/recovery/external participant and original outcome finalization. Include only independent-review-selected exact affected ordinary publication/admission/closing and both actual Browser Load full-bundle regressions, once after final source fixes; no old class/cohort reruns.",
       "contracts": [
         "#1553 T031 original browser record byte intent + scoped recovery + exact outcome retention"
       ]
