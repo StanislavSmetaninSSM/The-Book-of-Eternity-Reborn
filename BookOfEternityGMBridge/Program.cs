@@ -26,6 +26,8 @@ internal static class Program
         try
         {
             using var host = new BridgeHost(sessionPath, pipeName);
+            var neutral = Array.IndexOf(args, "--neutralPackage");
+            if (neutral >= 0 && neutral + 1 < args.Length) host.ConfigureNeutral(args[neutral + 1]);
             return await host.RunAsync();
         }
         catch (Exception ex)
@@ -104,6 +106,8 @@ internal sealed partial class BridgeHost : IDisposable
     private readonly object _sync = new();
     private readonly SemaphoreSlim _ptyWriteLock = new(1, 1);
     private readonly SemaphoreSlim _shellLifecycleLock = new(1, 1);
+    private string? _neutralPackage;
+    internal void ConfigureNeutral(string package) => _neutralPackage = Path.GetFullPath(package);
     private InputLifetime? _inputLifetime;
     private bool _inputClosed;
     private bool _writeGateDisposed;
@@ -170,11 +174,10 @@ internal sealed partial class BridgeHost : IDisposable
 
     public async Task<int> RunAsync()
     {
-        NativeMethods.SetConsoleCP(65001);
-        NativeMethods.SetConsoleOutputCP(65001);
+        if (OperatingSystem.IsWindows()) { NativeMethods.SetConsoleCP(65001); NativeMethods.SetConsoleOutputCP(65001); }
         Console.InputEncoding = Encoding.UTF8;
         Console.OutputEncoding = Encoding.UTF8;
-        EnableVirtualTerminalOutput();
+        if (OperatingSystem.IsWindows()) EnableVirtualTerminalOutput();
         UpdateConsoleTitle();
         PrintBanner();
 
@@ -318,6 +321,12 @@ internal sealed partial class BridgeHost : IDisposable
             case "dispatchworkertask":
                 return await DispatchWorkerTaskAsync(request);
 
+            case "resize":
+                IOwnedTerminalSession? resizedSession;
+                lock (_sync) resizedSession = _pty;
+                if (resizedSession == null) return BridgeResponse.Failure("No original terminal.", SnapshotStatus());
+                await resizedSession.ResizeAsync(new(request.Columns ?? 80, request.Rows ?? 25), _cts.Token);
+                return BridgeResponse.Success(SnapshotStatus());
             case "addtext":
                 await WriteManualInputAsync(CaptureInputLifetime(), request.Text ?? string.Empty, _cts.Token);
                 return BridgeResponse.Success(SnapshotStatus());
@@ -361,6 +370,12 @@ internal sealed partial class BridgeHost : IDisposable
                 ObjectDisposedException.ThrowIf(_inputClosed, this);
             await StopShellCoreAsync();
 
+            if (_neutralPackage != null) {
+                var neutralSession = await OwnedTerminalSessionFactory.StartNeutralAsync(_neutralPackage, _sessionPath, _cts.Token);
+                AttachOwnedTerminal(neutralSession, Console.OpenStandardOutput());
+                return;
+            }
+            if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("Production main launch remains fenced; only fixed neutral terminal admission is available here.");
             var config = LoadBridgeConfig();
             var shellExe = ResolveShellExecutable();
             var shellArgs = BuildShellArguments(shellExe);
@@ -369,15 +384,7 @@ internal sealed partial class BridgeHost : IDisposable
             var pty = ConPtySession.Start(shellExe, shellArgs, workingDirectory, width, height);
             var outputWriter = Console.OpenStandardOutput();
 
-            var shellLoopCts = new CancellationTokenSource();
-            InputLifetime input;
-            try { input = BeginInputLifetime(pty.InputWriter, shellLoopCts); }
-            catch { shellLoopCts.Dispose(); pty.Dispose(); throw; }
-            _pty = pty;
-            var shellToken = shellLoopCts.Token;
-            _outputPumpTask = Task.Run(() => PumpOutputAsync(pty.OutputReader, outputWriter, shellToken), shellToken);
-            _keyboardPumpTask = Task.Run(() => PumpKeyboardAsync(input, ReadConsoleKeyAsync, shellToken), shellToken);
-            _resizePumpTask = Task.Run(() => PumpResizeAsync(shellToken), shellToken);
+            var input = AttachOwnedTerminal(pty, outputWriter);
 
             lock (_sync)
             {
@@ -408,6 +415,20 @@ internal sealed partial class BridgeHost : IDisposable
 
         }
         finally { _shellLifecycleLock.Release(); }
+    }
+
+    // All admitted sessions consume the original writer/lifetime/pumps, never a second dispatcher.
+    private InputLifetime AttachOwnedTerminal(IOwnedTerminalSession session, Stream output)
+    {
+        lock (_sync) { if (_pty != null || _terminalUncertain) throw new InvalidOperationException("Original terminal owner is retained."); _pty = session; }
+        var shellLoopCts = new CancellationTokenSource();
+        var input = BeginInputLifetime(session.InputWriter, shellLoopCts);
+        // Output has its own lifetime: revoking input must not discard final terminal bytes.
+        _outputPumpTask = Task.Run(() => PumpOutputAsync(session.OutputReader, output, CancellationToken.None));
+        _keyboardPumpTask = Task.Run(() => PumpKeyboardAsync(input, ReadConsoleKeyAsync, shellLoopCts.Token));
+        _resizePumpTask = Task.Run(() => PumpResizeAsync(shellLoopCts.Token));
+        lock (_sync) { _status.ShellPid = session.Identity.RootPid; _status.Backend = session.Identity.Backend; _status.State = "OperatorNotReady"; WriteStatusFile(); }
+        return input;
     }
 
     private async Task StopShellAsync()
@@ -976,7 +997,7 @@ internal sealed partial class BridgeHost : IDisposable
 
     private static async ValueTask<ConsoleKeyInfo?> ReadConsoleKeyAsync(CancellationToken cancellationToken)
     {
-        if (Console.KeyAvailable)
+        if (!Console.IsInputRedirected && Console.KeyAvailable)
             return Console.ReadKey(intercept: true);
         await Task.Delay(15, cancellationToken);
         return null;
@@ -992,10 +1013,9 @@ internal sealed partial class BridgeHost : IDisposable
             if (current == last)
                 continue;
 
-            lock (_sync)
-            {
-                if (_pty != null) _pty.ResizeAsync(new(current.width, current.height), CancellationToken.None).GetAwaiter().GetResult();
-            }
+            IOwnedTerminalSession? session;
+            lock (_sync) session = _pty;
+            if (session != null) await session.ResizeAsync(new(current.width, current.height), cancellationToken);
 
             last = current;
         }
@@ -1621,6 +1641,8 @@ internal sealed partial class BridgeHost : IDisposable
 
 internal sealed class BridgeRequest
 {
+    public int? Columns { get; set; }
+    public int? Rows { get; set; }
     public string? Command { get; set; }
     public string? Text { get; set; }
     public bool AppendEnter { get; set; } = true;

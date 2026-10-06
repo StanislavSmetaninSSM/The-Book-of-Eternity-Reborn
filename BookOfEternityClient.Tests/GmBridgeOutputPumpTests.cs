@@ -373,7 +373,7 @@ public sealed class GmBridgeOutputPumpTests
     {
         public static readonly string RepoRoot = FindRepoRoot();
         private static readonly string Configuration = new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
-        public static readonly string BridgePath = Path.Combine(RepoRoot, "BookOfEternityGMBridge", "bin", Configuration, "net8.0-windows", "BookOfEternityGMBridge.dll");
+        public static readonly string BridgePath = Path.Combine(RepoRoot, "BookOfEternityGMBridge", "bin", Configuration, "net8.0", "BookOfEternityGMBridge.dll");
         private static readonly Type Type = Assembly.LoadFrom(BridgePath).GetType("BookOfEternityGMBridge.BridgeHost", throwOnError: true)!;
         private readonly string _root = Path.Combine(Path.GetTempPath(), "boe-output-pump-" + Guid.NewGuid().ToString("N"));
         private readonly object _host;

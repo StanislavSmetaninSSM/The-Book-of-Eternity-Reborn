@@ -12,7 +12,7 @@ public sealed class GmOwnedTerminalSessionTests
     {
         var repo = FindRoot();
         var configuration = new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
-        var bridge = Path.Combine(repo, "BookOfEternityGMBridge/bin", configuration, "net8.0-windows/BookOfEternityGMBridge.dll");
+        var bridge = Path.Combine(repo, "BookOfEternityGMBridge/bin", configuration, "net8.0/BookOfEternityGMBridge.dll");
         var type = Assembly.LoadFrom(bridge).GetType("BookOfEternityGMBridge.BridgeHost", true)!;
         var scratch = Path.Combine(Path.GetTempPath(), "boe-owned-terminal-" + Guid.NewGuid().ToString("N"));
         var host = Activator.CreateInstance(type, [scratch, "unused-" + Guid.NewGuid().ToString("N")])!;

@@ -8,6 +8,12 @@ public sealed class GmOwnedTerminalLinuxTests
 {
     [Fact]
     public async Task OwnedRoot_TwoUnicodeInputsResizeCanonicalEof_ExactScopedCleanup()
+    { await RunAsync("terminal-own-root"); }
+
+    [Fact]
+    public async Task ActualBridge_PipeDispatchConsumesOriginalTerminalView() { await RunAsync("terminal-bridge"); }
+
+    private static async Task RunAsync(string mode)
     {
         Assert.True(OperatingSystem.IsLinux(), "This category requires actual Linux native execution.");
         var root = TestRepoPaths.RepoRoot;
@@ -24,7 +30,7 @@ public sealed class GmOwnedTerminalLinuxTests
         var start = new ProcessStartInfo(Path.Combine(folder, "host-guardian")) { UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true };
         foreach (var arg in new[] { Path.Combine(folder, "guardian.json"), "15000",
             Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!, "dotnet"),
-            typeof(NativeHostScenarioDriver).Assembly.Location, "terminal-own-root", folder, folder }) start.ArgumentList.Add(arg);
+            typeof(NativeHostScenarioDriver).Assembly.Location, mode, folder, folder }) start.ArgumentList.Add(arg);
         using var guardian = Process.Start(start)!;
         await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(guardian, TimeSpan.FromSeconds(20), Path.Combine(folder, "guardian.log"));
         using var report = JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(folder, "guardian.json")));
@@ -35,6 +41,7 @@ public sealed class GmOwnedTerminalLinuxTests
         Assert.Equal(0, guardian.ExitCode);
         Assert.Equal(0, report.RootElement.GetProperty("driverExitCode").GetInt32());
         using var scenario = JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(folder, "scenario.json")));
+        if (mode == "terminal-bridge") { Assert.True(scenario.RootElement.GetProperty("ScopedRetired").GetBoolean()); return; }
         Assert.True(scenario.RootElement.GetProperty("TwoInputs").GetBoolean());
         Assert.True(scenario.RootElement.GetProperty("Resize").GetBoolean());
         Assert.True(scenario.RootElement.GetProperty("EofStillAlive").GetBoolean());

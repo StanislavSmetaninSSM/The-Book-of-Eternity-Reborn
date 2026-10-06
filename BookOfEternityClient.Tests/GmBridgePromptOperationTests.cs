@@ -311,7 +311,7 @@ public sealed class GmBridgePromptOperationTests
     {
         internal static readonly string Repo = FindRepo();
         private static readonly string BridgePath = Path.Combine(Repo, "BookOfEternityGMBridge/bin",
-            new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name, "net8.0-windows/BookOfEternityGMBridge.dll");
+            new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name, "net8.0/BookOfEternityGMBridge.dll");
         internal readonly Type HostType = Assembly.LoadFrom(BridgePath).GetType("BookOfEternityGMBridge.BridgeHost", true)!;
         internal readonly object Host;
         internal readonly string Root = Path.Combine(Path.GetTempPath(), "boe-prompt-" + Guid.NewGuid().ToString("N"));

@@ -427,7 +427,7 @@ public sealed class GmBridgeInputLifetimeTests
     private sealed class HostFixture : IAsyncDisposable
     {
         public static readonly string RepoRoot = FindRoot();
-        public static readonly string BridgePath = Path.Combine(RepoRoot, "BookOfEternityGMBridge/bin", new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name, "net8.0-windows/BookOfEternityGMBridge.dll");
+        public static readonly string BridgePath = Path.Combine(RepoRoot, "BookOfEternityGMBridge/bin", new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name, "net8.0/BookOfEternityGMBridge.dll");
         public Type Type { get; } = Assembly.LoadFrom(BridgePath).GetType("BookOfEternityGMBridge.BridgeHost", true)!;
         private readonly string _root = Path.Combine(Path.GetTempPath(), "boe-input-lifetime-" + Guid.NewGuid().ToString("N"));
         private readonly object _host;
