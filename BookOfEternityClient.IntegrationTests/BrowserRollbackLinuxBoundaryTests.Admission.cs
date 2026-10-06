@@ -57,13 +57,13 @@ public sealed partial class BrowserRollbackLinuxBoundaryTests
     public async Task RetainedColdWorkerPrepared_RefusesBeforeBrowserEffects()
     {
         var (files, coordinator) = await CreateAsync();
+        string generation;
+        await using (var lease = await files.AcquireCanonicalWriteLeaseAsync()) generation = files.ReadExistingSessionGeneration(lease)!;
         var target = new WorkerLedgerTarget(files.BasePath);
         await using (var ledger = await GmWorkerRunLedger.OpenCoordinatorAsync(target))
         {
             Assert.NotNull(ledger);
             Assert.Equal(WorkerLedgerMutationKind.Applied, await ledger.InitializeAsync());
-            await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
-            var generation = files.ReadExistingSessionGeneration(lease)!;
             var prepared = await ledger.PrepareAsync(new(generation, "fixture-worker", "fixture-task", new string('0', 64),
                 WorkerRunBackend.LinuxNativeLineage, WorkerRunScope.OrdinarySamePidNamespace, Path.Combine(_root, "fixture-workspace")), ledger.Sequence);
             Assert.Equal(WorkerLedgerMutationKind.Applied, prepared.Kind);
