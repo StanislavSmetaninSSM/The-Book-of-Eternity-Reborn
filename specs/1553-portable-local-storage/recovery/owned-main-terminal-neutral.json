@@ -54,5 +54,15 @@
   "SystemdQualified": false,
   "ArbitraryTuiQualified": false,
   "ColdGuarantees": false,
-  "Review": "Pending"
+  "Review": "Pending",
+  "NativePreparation": {
+    "Source": "9348f8d5c79e86c08b31a19326c266214a2c5261",
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1,
+    "NativeRootLaunched": 0,
+    "Classification": "preparation compiler failure, not causal RED",
+    "Evidence": "evidence/t041-terminal-native-build-preparation/manifest.json",
+    "Correction": "newline single-character literal"
+  }
 }

@@ -45,7 +45,7 @@ int main(void) {
             view(""); continue;
         }
         for (ssize_t i = 0; i < count; i++) {
-            if (bytes[i] == '\r' || bytes[i] == '\r\n') {
+            if (bytes[i] == '\r' || bytes[i] == '\n') {
                 draft[used] = 0;
                 if (!strcmp(draft, "canonical")) {
                     struct termios cooked = raw; cooked.c_lflag |= ICANON; cooked.c_cc[VEOF] = 4;
