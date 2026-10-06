@@ -22,12 +22,49 @@ internal static class MainRunFenceScenarioDriver
         try
         {
             var launch=NeutralTerminalLaunch.Create(package,folder);var root=Directory.GetParent(launch.Scratch)!.FullName;
+            new FileSystemManager(root,NullLogger<FileSystemManager>.Instance).EnsureDirectoryStructure();
             var recordPath=Path.Combine(root,".boe_runtime/gm-runs/main.json");
             GmSessionRunRecord Read()=>GmSessionRunRecordCodec.Decode(File.ReadAllBytes(recordPath));
             var repo=FindRepoRoot();var configuration=new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
             type=Assembly.LoadFrom(Path.Combine(repo,"BookOfEternityGMBridge/bin",configuration,"net8.0/BookOfEternityGMBridge.dll")).GetType("BookOfEternityGMBridge.BridgeHost",true)!;
             host=Activator.CreateInstance(type,[launch.Scratch,"f1-"+Guid.NewGuid().ToString("N")]);
             type.GetMethod("ConfigureNeutral",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[launch]);
+            var stopDebt=true;
+            if(mode is "terminal-main-stopped-debt-epoch" or "terminal-main-stop-late-authority")
+                Set("ObserveMainMetadata",(Action<MainRunIoStage>)(s=>{
+                    if(s!=MainRunIoStage.Readback || Read().Disposition!=GmSessionRunDisposition.Stopped)return;
+                    if(mode=="terminal-main-stopped-debt-epoch" && stopDebt)throw new IOException("Stopped ACK debt");
+                    if(mode=="terminal-main-stop-late-authority") {
+                        var session=(IOwnedTerminalSession)Field("_pty")!;
+                        var native=session.GetType().GetField("_owner",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(session)!;
+                        native.GetType().GetMethod("ReportTerminalFault",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(native,["late-stop-ack-fault"]);
+                    }
+                }));
+            async Task<JsonElement> Rpc(object message) {
+                using var timeout=new CancellationTokenSource(TimeSpan.FromSeconds(2));
+                using var pipe=new NamedPipeClientStream(".",(string)Field("_pipeName")!,PipeDirection.InOut,PipeOptions.Asynchronous);
+                await pipe.ConnectAsync(timeout.Token);await pipe.WriteAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message)+"\n"),timeout.Token);await pipe.FlushAsync(timeout.Token);
+                using var reader=new StreamReader(pipe,Encoding.UTF8);using var doc=JsonDocument.Parse((await reader.ReadLineAsync(timeout.Token))!);return doc.RootElement.Clone();
+            }
+            if(mode=="terminal-main-prepared-debt") {
+                var created=false;Set("ObserveMainHeldRoot",(Action<int>)(_=>created=true));
+                Set("ObserveMainMetadata",(Action<MainRunIoStage>)(s=>{if(s==MainRunIoStage.Readback)throw new IOException("Prepared ACK debt");}));
+                var running=(Task<int>)type.GetMethod("RunAsync",BindingFlags.Instance|BindingFlags.Public)!.Invoke(host,null)!;
+                try {
+                    var status=(await Rpc(new{command="status"})).GetProperty("status");
+                    Require(!created && status.GetProperty("terminalOwnerRetained").GetBoolean() && status.GetProperty("terminalUncertain").GetBoolean(),"Prepared debt lost original guard diagnostics or created child.");
+                    Require(((GmSessionRunCoordinator)Field("_mainRun")!).HasMetadataDebt,"Prepared debt was accepted.");
+                    Require(!(await Rpc(new{command="restart"})).GetProperty("ok").GetBoolean(),"Prepared debt restart succeeded.");
+                } finally {await ((CancellationTokenSource)Field("_cts")!).CancelAsync();try{await running;}catch{}}
+                result["Success"]=true;return 0;
+            }
+            if(mode=="terminal-main-held-expiry") {
+                Set("ObserveMainMetadata",(Action<MainRunIoStage>)(s=>{if(s==MainRunIoStage.Readback && Read().Disposition==GmSessionRunDisposition.Running)Thread.Sleep(5200);}));
+                Exception? failure=null;try{await Call("StartShellAsync");}catch(Exception e){failure=e;}
+                Require(failure is OwnedTerminalStartException,"Expired held root was released after late Running ACK.");
+                Require(ReferenceEquals(((OwnedTerminalStartException)failure!).Owner,Field("_pty")),"Expired original was replaced.");
+                Require((bool)Field("_terminalUncertain")!,"Expired original not uncertain.");result["Success"]=true;return 0;
+            }
             if(mode=="terminal-main-launch-generation") {
                 var generationPath=Path.Combine(root,".boe_runtime/session-generation/current.json");
                 byte[]? generation=null;var preparedObserved=false;
@@ -47,13 +84,6 @@ internal static class MainRunFenceScenarioDriver
                 var retained=(GmSessionRunCoordinator)Field("_mainRun")!;Require(retained.HasMetadataDebt,"Running ACK debt was accepted.");
                 using var control=new CancellationTokenSource();
                 var server=(Task)type.GetMethod("RunServerLoopAsync",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[control.Token])!;
-                async Task<JsonElement> Rpc(object message) {
-                    using var timeout=new CancellationTokenSource(TimeSpan.FromSeconds(2));
-                    // Use the actual fixed host pipe value, never another dispatcher.
-                    using var actual=new NamedPipeClientStream(".",(string)Field("_pipeName")!,PipeDirection.InOut,PipeOptions.Asynchronous);
-                    await actual.ConnectAsync(timeout.Token);await actual.WriteAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message)+"\n"),timeout.Token);await actual.FlushAsync(timeout.Token);
-                    using var reader=new StreamReader(actual,Encoding.UTF8);using var doc=JsonDocument.Parse((await reader.ReadLineAsync(timeout.Token))!);return doc.RootElement.Clone();
-                }
                 try {
                     var status=(await Rpc(new{command="status"})).GetProperty("status");
                     Require(status.GetProperty("terminalOwnerRetained").GetBoolean() && status.GetProperty("terminalUncertain").GetBoolean(),"Partial original owner not visible as uncertain.");
@@ -64,7 +94,37 @@ internal static class MainRunFenceScenarioDriver
             await Call("StartShellAsync");
             var owner=(GmSessionRunCoordinator)Field("_mainRun")!;var terminal=(IOwnedTerminalSession)Field("_pty")!;
             var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);var old=Read();
-            if(mode.StartsWith("terminal-main-namespace-",StringComparison.Ordinal)) {
+            if(mode=="terminal-main-stopped-debt-epoch") {
+                Exception? error=null;try{await Call("StopShellAsync");}catch(Exception e){error=e;}
+                Require(error!=null && owner.HasMetadataDebt && Read().Disposition==GmSessionRunDisposition.Stopped && ReferenceEquals(terminal,Field("_pty")),"Visible Stopped retired original before ACK.");
+                Require(terminal.RootExited.IsCompletedSuccessfully,"Stopped ACK debt preceded real root exit.");
+                error=null;try{await Call("StartShellAsync");}catch(Exception e){error=e;}
+                Require(error!=null && Read().Identity.Epoch==old.Identity.Epoch && ReferenceEquals(terminal,Field("_pty")),"New epoch bypassed pending Stopped ACK.");
+                Task<Exception?> blocked;using(ExecutionContext.SuppressFlow())blocked=Task.Run(async()=>{try{await files.ClearGameStateAsync();return null;}catch(Exception e){return e;}});
+                Require(await blocked!=null,"Visible Stopped bypassed original guard.");
+                stopDebt=false;await Call("StopShellAsync");Require(Field("_mainRun")==null && Field("_pty")==null,"Exact Stopped ACK retry retained successful original.");
+                await Call("StartShellAsync");var next=Read();
+                Require(next.Identity.Epoch==old.Identity.Epoch+1 && next.Identity.RunId!=old.Identity.RunId && next.Identity.RootKey==old.Identity.RootKey,"Next confirmed epoch changed root/reused identity.");
+                Require(((IOwnedTerminalSession)Field("_pty")!).Identity.RunId==next.Identity.RunId,"Next epoch original identity mismatch.");
+            }
+            else if(mode=="terminal-main-stop-late-authority") {
+                Exception? error=null;try{await Call("StopShellAsync");}catch(Exception e){error=e;}
+                Require(error!=null && ReferenceEquals(terminal,Field("_pty")) && Field("_mainRun")!=null,"Late authority loss released main owner at Stopped ACK.");
+                result["RetainedUncertain"]=true;
+            }
+            else if(mode=="terminal-main-staged-rollback") {
+                await owner.RunOperationAsync(async()=>{
+                    await using var lease=await files.AcquireCanonicalWriteLeaseAsync();
+                    var target=files.ResolvePath("game_state/main-stage.txt");await files.WriteFileAtomicAsync(lease,"game_state/main-stage.txt","before");
+                    var publisher=new TrustedLocalFilePublication(files,new TrustedLocalFileScope([root]));
+                    var image=TrustedLocalFileImage.FromBytes(Encoding.UTF8.GetBytes("before"));
+                    var change=new TrustedLocalFileChange(target,image,TrustedLocalFileImage.FromBytes(Encoding.UTF8.GetBytes("after")));
+                    var outcome=publisher.PublishWithOutcome(lease,TrustedLocalGeneration.Existing(owner.Identity.GenerationId),[change],(s,_)=>{if(s==TrustedLocalPublicationPhase.IntentStaged)throw new IOException("owned staged interruption");});
+                    result["Disposition"]=outcome.Disposition.ToString();Require(outcome.Disposition==TrustedLocalPublicationDisposition.RolledBack,"Known original staged before-decision did not settle rollback.");
+                    Require(File.ReadAllText(target)=="before" && !Directory.EnumerateFileSystemEntries(Path.Combine(root,".boe_runtime/trusted-local-publication-v1")).Any(),"Original staged rollback left intent or changed before bytes.");return 0;
+                });
+            }
+            else if(mode.StartsWith("terminal-main-namespace-",StringComparison.Ordinal)) {
                 await owner.RunOperationAsync(async()=>{
                     await using var lease=await files.AcquireCanonicalWriteLeaseAsync();
                     var snapshot=files.ReadLocalGenerationSnapshot(lease);
@@ -85,8 +145,9 @@ internal static class MainRunFenceScenarioDriver
                         if(mode.EndsWith("validate",StringComparison.Ordinal))publisher.ValidateNamespaceBeforePublication(lease,snapshot.Binding,plan);
                         else {var outcome=publisher.PublishNamespaceWithOutcome(lease,snapshot.Binding,plan,(_,_)=>effects++);error=outcome.Failure;}
                     } catch(Exception e){error=e;}
+                    result["NamespaceAttemptFailure"]=error?.ToString();
                     Require(error!=null,"Active original pin admitted a generation-changing namespace plan.");
-                    Require(effects==0 && !Directory.Exists(Path.Combine(root,".boe_runtime/trusted-local-publication-v1")),"Namespace generation refusal followed publication effects.");
+                    Require(effects==0 && !Directory.EnumerateFileSystemEntries(Path.Combine(root,".boe_runtime/trusted-local-publication-v1")).Any(),"Namespace generation refusal followed publication effects.");
                     Require(File.ReadAllBytes(files.SessionGenerationPath).AsSpan().SequenceEqual(snapshot.Bytes),"Namespace primitive changed original generation.");return 0;
                 });
             }

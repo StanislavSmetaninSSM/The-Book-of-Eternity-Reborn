@@ -43,6 +43,16 @@ public sealed class GmMainRunFenceTests : IDisposable
         Assert.NotNull(error);Assert.Equal("original",File.ReadAllText(marker));Assert.False(File.Exists(_files.SessionGenerationPath));
     }
     [Fact]
+    public async Task BoundedGeneration_RejectsOversizeBeforeAllocatingAuthority()
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(_files.SessionGenerationPath)!);
+        var text="{\"schemaVersion\":1,\"generationId\":\""+Guid.NewGuid().ToString("N")+"\",\"extension\":\""+new string('x',65536)+"\"}";
+        File.WriteAllText(_files.SessionGenerationPath,text);
+        await using var lease=await _files.AcquireCanonicalWriteLeaseAsync();
+        Assert.Throws<InvalidDataException>(()=>_files.ReadLocalGenerationSnapshot(lease));
+        Assert.Equal(text,File.ReadAllText(_files.SessionGenerationPath));
+    }
+    [Fact]
     public async Task HeldLease_RechecksMainRecordBeforeWrite()
     {
         await using var lease=await _files.AcquireCanonicalWriteLeaseAsync();Write(GmSessionRunDisposition.Running);
