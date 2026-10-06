@@ -61,12 +61,20 @@ internal sealed partial class BridgeHost
                     if (_statusSealed) return;
                     if (publication == null) continue;
                 }
+                try
+                {
                 await publication.Owner.RunOperationAsync(async () =>
                 {
                     if (BeforeStatusPublication != null) await BeforeStatusPublication();
                     await _neutralFiles!.WriteFileAtomicBytesAsync("game_state/control/gm_bridge_status.json", publication.Bytes);
                     return true;
                 });
+                }
+                catch (Exception failure) when (GmSessionRunPersistence.IsAdmissionRefusal(failure) && publication.Owner.AdmissionClosed && !publication.Owner.IsUncertain)
+                {
+                    // Revoked before publication; all actual lease disposals completed.
+                    // This snapshot grants no closing write or recovery.
+                }
                 _firstStatus.TrySetResult();
 
             }
@@ -83,7 +91,6 @@ internal sealed partial class BridgeHost
             }
             throw;
         }
-        finally { signal.Dispose(); }
     }
 
     private async Task SealOriginalStatusPublicationAsync()
@@ -94,8 +101,9 @@ internal sealed partial class BridgeHost
             _statusSealed = true; _pendingStatus = null; actual = _statusPublisher;
             if (!actual.IsCompleted && _statusSignal is { CurrentCount: 0 }) _statusSignal.Release();
         }
-        try { await actual; lock (_sync) _statusSignal = null; _statusSettlement.TrySetResult(); }
+        try { await actual; _statusSettlement.TrySetResult(); }
         catch (Exception failure) { _mainRun?.NotifyUncertain(); _statusSettlement.TrySetException(failure); throw; }
+        finally { lock (_sync) { _statusSignal?.Dispose(); _statusSignal = null; } }
         await _statusSettlement.Task;
     }
 }

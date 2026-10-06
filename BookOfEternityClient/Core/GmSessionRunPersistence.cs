@@ -98,7 +98,14 @@ internal sealed class GmSessionRunPersistence
         var fd=Open(path,0x10000|0x80000|0x20000);if(fd<0)throw Invalid();
         using var handle=new SafeFileHandle((IntPtr)fd,true);if(Fsync(handle)!=0)throw Invalid();
     }
-    internal static IOException Invalid()=>new("Main run metadata or original owner admission is unavailable.");
+    private static readonly object RefusalMarker = new();
+    internal static bool IsAdmissionRefusal(Exception failure) => failure.Data.Contains(RefusalMarker);
+    internal static IOException Invalid()
+    {
+        var failure = new IOException("Main run metadata or original owner admission is unavailable.");
+        failure.Data[RefusalMarker] = true;
+        return failure;
+    }
     [DllImport("libc",EntryPoint="open",SetLastError=true)]private static extern int Open(string path,int flags);
     [DllImport("libc",EntryPoint="fsync",SetLastError=true)]private static extern int Fsync(SafeFileHandle handle);
     [DllImport("libc",EntryPoint="mkdir",SetLastError=true)]private static extern int Mkdir(string path,uint mode);

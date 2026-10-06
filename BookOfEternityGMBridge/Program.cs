@@ -533,11 +533,13 @@ internal sealed partial class BridgeHost : IDisposable
             input = _inputLifetime;
             pty = _pty;
         }
-        await SealOriginalStatusPublicationAsync();
+        var statusDrain = SealOriginalStatusPublicationAsync();
         if (input != null)
             RevokeInputLifetime(input);
         Exception? metadataFailure=null;
-        if(_mainRun!=null)try { await _mainRun.BeginStopAsync(); } catch(Exception ex){metadataFailure=ex;if(_mainRun.IsUncertain)MarkTerminalUncertain();}
+        if(_mainRun!=null)try { await _mainRun.BeginStopAsync(); } catch(Exception ex){metadataFailure=ex;}
+        try { await statusDrain.WaitAsync(InputDrainTimeout); }
+        catch(Exception ex) { metadataFailure ??= ex; _mainRun?.NotifyUncertain(); }
         if (pty != null)
         {
             try

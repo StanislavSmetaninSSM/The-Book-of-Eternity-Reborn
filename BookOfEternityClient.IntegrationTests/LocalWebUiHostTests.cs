@@ -524,6 +524,24 @@ public sealed class LocalWebUiHostTests : IDisposable
         Assert.Contains("не найден", invalid["error"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard()
+    {
+        WriteSessionFile("game_state/meta/soul_state.json", """{"soulName":"F2 Bundle","currentRealm":"Mortal World","currentIncarnation":1}""");
+        var saveId = await CreateManualSaveAsync("f2-load-bundle");
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
+        await app.StartAsync();
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        using var response = await client.PostAsJsonAsync("/api/saves/load", new { saveId });
+        var result = JsonNode.Parse(await response.Content.ReadAsStringAsync())!.AsObject();
+        response.EnsureSuccessStatusCode();
+        var state = Assert.IsType<JsonObject>(result["state"]);
+        Assert.Equal(result["establishedGeneration"]!.GetValue<string>(), state["establishedGeneration"]!.GetValue<string>());
+        foreach(var member in new[]{"menu","session","settings","audio"}) Assert.NotNull(state[member]);
+        Assert.True(state["game"]!=null || state["noActiveSession"]!.GetValue<bool>());
+    }
+
     /// <summary>Requires the actual HTTP refresh endpoint to return only a complete exact-generation bundle.</summary>
     /// <param name="scenario">Selects a valid generation, stale generation, malformed request or failed required settings read.</param>
     [Theory]

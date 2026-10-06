@@ -71,7 +71,8 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmMainOperationLinuxTests.*"
+            "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualPipeRetainsParticipatingOperation",
+            "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary"
           ]
         }
       ]
@@ -14186,6 +14187,63 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-main-helper-bounds-linux",
+      "responsibility": "Original real PowerShell helper unsent oversized command retains sequence and closes without canonical effects",
+      "excludes": "Previously qualified wire cases, live GM, arbitrary launch, other F1 cohorts",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmMainOperation",
+        "BookOfEternityGMBridge/",
+        "BookOfEternityClient.TestSupport/MainOperationScenarioDriver.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-main-browser-bundle",
+      "responsibility": "F2 both actual browser Load handlers and HTTP route consume original guarded same-response bundle",
+      "excludes": "Other frontend UX, save creation cohorts, public launch, live GM",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmMainOperation",
+        "BookOfEternityGMBridge/",
+        "BookOfEternityClient.TestSupport/MainOperationScenarioDriver.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": true,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.IntegrationTests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard"
+          ]
+        },
+        {
+          "project": "frontend",
+          "runner": "vitest",
+          "tests": [
+            "BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts"
           ]
         }
       ]

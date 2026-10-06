@@ -134,6 +134,15 @@ internal static class MainOperationScenarioDriver
                 if(!(await shutdown).GetProperty("ok").GetBoolean())throw new InvalidOperationException("Actual shutdown did not settle original closing.");
                 await running!.WaitAsync(TimeSpan.FromSeconds(3));
             }
+            if(mode=="terminal-main-operation-helper-oversized") {
+                var start=new System.Diagnostics.ProcessStartInfo("pwsh"){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true};
+                foreach(var arg in new[]{"-NoProfile","-NonInteractive","-File",Path.Combine(repo,"tests/fixtures/GmMainOperation/oversized.ps1"),"-RepoRoot",repo,"-SessionPath",launch.Scratch})start.ArgumentList.Add(arg);
+                using var child=System.Diagnostics.Process.Start(start)!;var output=child.StandardOutput.ReadToEndAsync();var errors=child.StandardError.ReadToEndAsync();
+                try{await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5));}finally{if(!child.HasExited){child.Kill();await child.WaitForExitAsync();}}
+                if(child.ExitCode!=0)throw new InvalidOperationException("Original oversized helper could not close after zero effects: "+await errors);
+                if(File.Exists(Path.Combine(launch.Scratch,"game_state/control/oversized.txt")))throw new InvalidOperationException("Oversized unsent helper created canonical bytes.");
+                result["HelperOutput"]=await output;
+            }
             if(mode=="terminal-main-operation-client-positive") {
                 var start=new System.Diagnostics.ProcessStartInfo(Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!,"dotnet")){UseShellExecute=false};
                 foreach(var arg in new[]{typeof(MainOperationScenarioDriver).Assembly.Location,"terminal-main-operation-child",root,folder})start.ArgumentList.Add(arg);

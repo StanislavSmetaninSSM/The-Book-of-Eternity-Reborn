@@ -4,6 +4,8 @@ public sealed class GmMainOperationLinuxTests
 {
     [Fact]
     public async Task OriginalOwner_ActualPipeRetainsParticipatingOperation()=>await GmOwnedTerminalLinuxTests.RunAsync("terminal-main-operation-positive");
+    [Fact]
+    public async Task OriginalHelper_UnsentOversizedCommandCanClose()=>await GmOwnedTerminalLinuxTests.RunAsync("terminal-main-operation-helper-oversized");
     [Theory]
     [InlineData("terminal-main-operation-status-fault")]
     [InlineData("terminal-main-operation-status-stall")]
