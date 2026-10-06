@@ -68,7 +68,8 @@
             "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedKeyboard_PairsUnicodeScalarsBeforeWriting",
             "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority",
             "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_ScopedProofStillRequiresActualOutputEof",
-            "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_OutputTimeoutIsAbsorbingWithOriginalOwner"
+            "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_OutputTimeoutIsAbsorbingWithOriginalOwner",
+            "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterBackupCapture_DoesNotOverwriteConcurrentAcceptedWriter"
           ]
         }
       ]
