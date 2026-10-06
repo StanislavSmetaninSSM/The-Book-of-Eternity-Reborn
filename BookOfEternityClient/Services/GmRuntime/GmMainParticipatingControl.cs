@@ -52,7 +52,7 @@ internal static class GmMainParticipatingControl
             {
                 try
                 {
-                await MainOperationReader.WriteAsync(output, new { ok = true, state = "active", sequence }, CancellationToken.None);
+                await MainOperationReader.WriteAsync(output, new { ok = true, state = "active", sequence, originalClose = files.DescribeMainOperationClose(MainOperationOutcome.Completed,false) }, CancellationToken.None);
                 while (true)
                 {
                     var command = await reader.ReadAsync<Command>(CancellationToken.None, FrameLimit)

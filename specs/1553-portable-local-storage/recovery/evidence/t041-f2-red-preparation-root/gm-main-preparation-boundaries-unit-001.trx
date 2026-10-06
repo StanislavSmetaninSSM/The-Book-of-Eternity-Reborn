@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="2f4dde29-c043-4f1c-91e9-9aa2fde6cef5" name="@c7669543e9c7 2026-10-06 16:22:10" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T16:22:10.8996189+00:00" queuing="2026-10-06T16:22:10.8996189+00:00" start="2026-10-06T16:22:06.3534854+00:00" finish="2026-10-06T16:22:12.7791821+00:00" />
+  <TestSettings name="default" id="6342a89e-f011-47ce-9987-1e2fff33abae">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_16_22_10" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="61138df7-09df-4440-a04f-042dc6a3af7f" testId="986a007b-0c08-e297-6375-288476101b6d" testName="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: &quot;register-window&quot;)" computerName="c7669543e9c7" duration="00:00:00.7995989" startTime="2026-10-06T16:22:11.6947681+00:00" endTime="2026-10-06T16:22:11.6947684+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="61138df7-09df-4440-a04f-042dc6a3af7f" />
+    <UnitTestResult executionId="c68305b0-2c79-4669-9ed5-9c4297714a11" testId="0a6efa1c-fa01-f693-3dd9-6e43d73eb86c" testName="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: &quot;start-daemon&quot;)" computerName="c7669543e9c7" duration="00:00:00.7701496" startTime="2026-10-06T16:22:10.1153674+00:00" endTime="2026-10-06T16:22:10.1153865+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c68305b0-2c79-4669-9ed5-9c4297714a11" />
+    <UnitTestResult executionId="50d07699-fada-4ab7-b5e4-765d36f5a80d" testId="791df00d-8bc3-8957-4b5e-74d8c5fd03b1" testName="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: &quot;generate-session&quot;)" computerName="c7669543e9c7" duration="00:00:00.7732078" startTime="2026-10-06T16:22:10.8928146+00:00" endTime="2026-10-06T16:22:10.8928148+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="50d07699-fada-4ab7-b5e4-765d36f5a80d" />
+    <UnitTestResult executionId="86f6737f-f21e-4724-ac27-05422a161270" testId="46fabe93-3183-547f-2dd0-feeb21d77946" testName="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.PrepareCli_AbsentRootHasNoEffects" computerName="c7669543e9c7" duration="00:00:00.6308432" startTime="2026-10-06T16:22:12.3528139+00:00" endTime="2026-10-06T16:22:12.3528143+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="86f6737f-f21e-4724-ac27-05422a161270">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 2
+Actual:   0</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.PrepareCli_AbsentRootHasNoEffects() in /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs:line 20
+   at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.PrepareCli_AbsentRootHasNoEffects() in /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs:line 21
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: &quot;register-window&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="986a007b-0c08-e297-6375-288476101b6d">
+      <Execution id="61138df7-09df-4440-a04f-042dc6a3af7f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests" name="RealAncillary_StoppingHasNoCanonicalEffect" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: &quot;generate-session&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="791df00d-8bc3-8957-4b5e-74d8c5fd03b1">
+      <Execution id="50d07699-fada-4ab7-b5e4-765d36f5a80d" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests" name="RealAncillary_StoppingHasNoCanonicalEffect" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: &quot;start-daemon&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0a6efa1c-fa01-f693-3dd9-6e43d73eb86c">
+      <Execution id="c68305b0-2c79-4669-9ed5-9c4297714a11" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests" name="RealAncillary_StoppingHasNoCanonicalEffect" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.PrepareCli_AbsentRootHasNoEffects" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="46fabe93-3183-547f-2dd0-feeb21d77946">
+      <Execution id="86f6737f-f21e-4724-ac27-05422a161270" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests" name="PrepareCli_AbsentRootHasNoEffects" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="986a007b-0c08-e297-6375-288476101b6d" executionId="61138df7-09df-4440-a04f-042dc6a3af7f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0a6efa1c-fa01-f693-3dd9-6e43d73eb86c" executionId="c68305b0-2c79-4669-9ed5-9c4297714a11" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="791df00d-8bc3-8957-4b5e-74d8c5fd03b1" executionId="50d07699-fada-4ab7-b5e4-765d36f5a80d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="46fabe93-3183-547f-2dd0-feeb21d77946" executionId="86f6737f-f21e-4724-ac27-05422a161270" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="4" executed="4" passed="3" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.30]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:02.29]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:02.32]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:05.40]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:05.40]       Expected: 2
+[xUnit.net 00:00:05.40]       Actual:   0
+[xUnit.net 00:00:05.40]       Stack Trace:
+[xUnit.net 00:00:05.40]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs(20,0): at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.PrepareCli_AbsentRootHasNoEffects()
+[xUnit.net 00:00:05.40]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs(21,0): at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.PrepareCli_AbsentRootHasNoEffects()
+[xUnit.net 00:00:05.40]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:05.41]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T16:22:12.3497842+00:00">
+        <Text>[xUnit.net 00:00:05.40]     BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.PrepareCli_AbsentRootHasNoEffects [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

@@ -99,6 +99,7 @@ internal static class SessionOperationContext
         finally {
             try {await main.CompleteAsync(failure is OperationCanceledException?MainOperationOutcome.Cancelled:failure!=null?MainOperationOutcome.Failed:MainOperationOutcome.Completed,HasClosingFailure(failure));}
             catch(Exception close) when(failure!=null){failure.Data["MainOperationCloseFailure"]=close;}
+            catch(Exception close){throw new MainOperationContinuationException<T>(result!,MainOperationOutcome.Completed,main.DescribeClose(MainOperationOutcome.Completed,false),close);}
         }
         return result!;
     }
@@ -107,18 +108,22 @@ internal static class SessionOperationContext
     {
         ArgumentNullException.ThrowIfNull(files);ArgumentNullException.ThrowIfNull(operation);
         await using var main=files.BeginParticipatingMainAdmission();await main.AcquireAsync();
-        Exception? failure=null;
+        Exception? failure=null;T? result=default;MainOperationOutcome outcome=MainOperationOutcome.Completed;
         try {
             string generation;
             if(!TryGetExpectedGeneration(files.BasePath,out generation)) {
                 await using var lease=await files.AcquireCanonicalWriteLeaseAsync();generation=files.GetOrCreateSessionGeneration(lease);
             }
-            return await RunBoundCoreAsync(files,generation,operation,null);
+            result=await RunBoundCoreAsync(files,generation,operation,null);
+            outcome=establishedOutcome?.Invoke()??MainOperationOutcome.Completed;
         } catch(Exception e){failure=e;throw;}
         finally {
-            try {await main.CompleteAsync(failure is OperationCanceledException?MainOperationOutcome.Cancelled:failure!=null?MainOperationOutcome.Failed:establishedOutcome?.Invoke()??MainOperationOutcome.Completed,HasClosingFailure(failure));}
+            outcome=failure is OperationCanceledException?MainOperationOutcome.Cancelled:failure!=null?MainOperationOutcome.Failed:outcome;
+            try {await main.CompleteAsync(outcome,HasClosingFailure(failure));}
             catch(Exception close) when(failure!=null){failure.Data["MainOperationCloseFailure"]=close;}
+            catch(Exception close){throw new MainOperationContinuationException<T>(result!,outcome,main.DescribeClose(outcome,false),close);}
         }
+        return result!;
     }
 
     private static bool HasClosingFailure(Exception? failure)=>failure?.Data.Contains("SessionFinalizationFailure")==true;

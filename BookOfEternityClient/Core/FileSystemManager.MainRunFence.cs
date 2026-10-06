@@ -13,7 +13,8 @@ public partial class FileSystemManager
     private MainAdmission BeginMainAdmission(bool participating)
     {
         var parent=MainAdmissions.Value;
-        if(parent is {Closed:true,WasRemote:true} && parent.Root==BasePath)throw GmSessionRunPersistence.Invalid();
+        for(var ancestor=parent;ancestor!=null;ancestor=ancestor.Parent)
+            if(ancestor.Closed && ancestor.OwnsRemote && ancestor.Root==BasePath)throw GmSessionRunPersistence.Invalid();
         while(parent is { Closed:true })parent=parent.Parent;
         var frame=new MainAdmission(this,parent,GmSessionRunCoordinator.Current,participating);
         MainAdmissions.Value=frame;return frame;
@@ -29,6 +30,8 @@ public partial class FileSystemManager
         private GmSessionRunCoordinator.Access? _retainedOriginal;
         private readonly bool _participating;
         internal bool WasRemote {get;private set;}
+        internal bool OwnsRemote=>_ownsRemote;
+        internal MainOperationClose? DescribeClose(MainOperationOutcome outcome,bool closingFailed)=>_retainedRemote?.DescribeClose(outcome,closingFailed);
         internal string Root=>_files.BasePath;
         internal bool Closed=>_closed;
         internal MainAdmission? Parent=>_parent;
@@ -146,6 +149,11 @@ public partial class FileSystemManager
         if(lease.MainAdmission.MetadataOnly || (lease.MainAdmission.Closing && lease.Purpose==CanonicalWritePurpose.SessionFinalization))
             throw GmSessionRunPersistence.Invalid();
         lease.MainAdmission.Validate(lease);
+    }
+    internal MainOperationClose? DescribeMainOperationClose(MainOperationOutcome outcome,bool closingFailed)
+    {
+        for(var p=MainAdmissions.Value;p!=null;p=p.Parent)if(p.Root==BasePath && p.DescribeClose(outcome,closingFailed) is { } close)return close;
+        return null;
     }
     internal void MarkMainOperationUnresolved()
     {

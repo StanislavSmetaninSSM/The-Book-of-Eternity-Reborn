@@ -4,10 +4,10 @@ $global:BoeMainOperationCodeRoot = Split-Path $PSScriptRoot -Parent
 
 function Read-GmOperationReply {
     param($Context)
-    $read = $Context.process.StandardOutput.ReadLineAsync()
-    if (-not $read.Wait(10000)) { $Context.closed = $true; throw 'Original operation reply unavailable; no replay.' }
+    $read = $Context.process.StandardOutput.ReadLineAsync(); $Context.pendingRead=$read
+    if (-not $read.Wait(10000)) { $Context.lost = $true; throw 'Original operation reply unavailable; no replay.' }
     $line = $read.Result
-    if ($null -eq $line -or $line.Length -gt 65536) { $Context.closed = $true; throw 'Original operation connection lost; no replay.' }
+    if ($null -eq $line -or $line.Length -gt 65536) { $Context.lost = $true; throw 'Original operation connection lost; no replay.' }
     return ($line | ConvertFrom-Json -ErrorAction Stop)
 }
 
@@ -24,19 +24,18 @@ function Open-GmParticipatingOperation {
     $start.RedirectStandardInput = $true; $start.RedirectStandardOutput = $true; $start.RedirectStandardError = $true
     foreach ($arg in @($assembly,'--gm-main-operation','--root',$root)) { [void]$start.ArgumentList.Add($arg) }
     $process = [Diagnostics.Process]::Start($start)
-    $context = [pscustomobject]@{ process=$process; errorRead=$process.StandardError.ReadToEndAsync(); session=$session; sequence=0L; closed=$false; lost=$false }
+    $context = [pscustomobject]@{ process=$process; errorRead=$process.StandardError.ReadToEndAsync(); session=$session; sequence=0L; closed=$false; lost=$false; disposed=$false; pendingRead=$null; originalClose=$null; closeObserved=$false }
     try {
         $ready = Read-GmOperationReply $context
         if (-not $ready.ok -or $ready.state -cne 'active' -or $ready.sequence -ne 0) { throw 'Participating admission refused.' }
+        $context.originalClose=$ready.originalClose
         return $context
     } catch {
-        $process.StandardInput.Dispose()
-        if (-not $process.WaitForExit(4000)) { $process.Kill(); $process.WaitForExit() }
-        $code=$process.ExitCode
-        $diagnostic=$context.errorRead.GetAwaiter().GetResult()
+        Dispose-GmOperationTransport $context
+        $code=$context.exitCode
+        $diagnostic=$context.diagnostic
         $kind='Unspecified'
         if ($diagnostic -match '^Original participating operation refused or continuation unconfirmed \(([A-Za-z0-9]+; (original-connection|local-admission|read-record|read-endpoint); (Validate|AcquireAsync|EnsureMainBeforeRecovery|Read|ReadBounded|unspecified))\)\.\s*$') { $kind=$Matches[1] }
-        $process.Dispose()
         throw "Original participating admission unavailable (helper exit $code, $kind)."
     }
 }
@@ -64,7 +63,21 @@ function Close-GmParticipatingOperation {
     try {
         $reply = Send-GmOperationCommand $Context @{action='close';outcome=$Outcome}
         if ($reply.state -cne 'closed-observed') { throw 'Original terminal close is unconfirmed.' }
+        $Context.closeObserved=$true
     } finally { $Context.closed=$true; $Context.process.StandardInput.Dispose() }
+}
+
+function Dispose-GmOperationTransport {
+    param($Context)
+    if($Context.disposed){return}
+    $Context.disposed=$true
+    try {$Context.process.StandardInput.Dispose()}catch{}
+    if (-not $Context.process.WaitForExit(4000)) { $Context.process.Kill(); $Context.process.WaitForExit() }
+    # Join actual stdout/stderr tasks before disposing the owned helper process.
+    if($Context.pendingRead){try {[void]$Context.pendingRead.GetAwaiter().GetResult()}catch{}}
+    $Context | Add-Member -NotePropertyName exitCode -NotePropertyValue $Context.process.ExitCode -Force
+    $Context | Add-Member -NotePropertyName diagnostic -NotePropertyValue $Context.errorRead.GetAwaiter().GetResult() -Force
+    $Context.process.Dispose()
 }
 
 function Invoke-GmParticipatingConsumer {
@@ -82,11 +95,17 @@ function Invoke-GmParticipatingConsumer {
     finally {
         try {
             if (-not $context.closed -and -not $context.lost) { Close-GmParticipatingOperation $context $(if($failure){1}else{0}) }
-        } catch { if (-not $failure) { $failure=$_ } }
+        } catch {
+            if (-not $failure) {
+                $continuation=[IO.IOException]::new('Original operation established a result but continuation is unconfirmed; no replay.',$_.Exception)
+                $continuation.Data['EstablishedOperationResult']=$result
+                $continuation.Data['EstablishedOperationOutcome']=0
+                $continuation.Data['OriginalOperationClose']=$context.originalClose
+                $failure=[Management.Automation.ErrorRecord]::new($continuation,'OriginalOperationContinuationUnconfirmed',[Management.Automation.ErrorCategory]::OperationStopped,$null)
+            } else {$failure.Exception.Data['MainOperationCloseFailure']=$_.Exception}
+        }
         finally {
-            $context.process.StandardInput.Dispose()
-            if (-not $context.process.WaitForExit(4000)) { $context.process.Kill(); $context.process.WaitForExit() }
-            $context.process.Dispose()
+            Dispose-GmOperationTransport $context
             $global:BoeMainOperationContext = $null
         }
     }
@@ -97,8 +116,16 @@ function Invoke-GmParticipatingConsumer {
 function Close-GmParticipatingBeforeStop {
     # Closing is absorbing until the enclosing consumer unwinds. Shutdown must
     # never wait on a pin still held by its own caller.
-    if ($global:BoeMainOperationContext -and -not $global:BoeMainOperationContext.closed) {
-        Close-GmParticipatingOperation $global:BoeMainOperationContext -Outcome 1
+    if ($global:BoeMainOperationContext) {
+        $context=$global:BoeMainOperationContext
+        try {
+            if(-not $context.closed -and -not $context.lost){Close-GmParticipatingOperation $context -Outcome 1}
+        } catch {$script:GmMainClosingDiagnostic=$_.Exception.GetType().Name}
+        finally {
+            $context.closed=$true
+            if(-not $context.closeObserved){$context.lost=$true}
+            Dispose-GmOperationTransport $context
+        }
     }
 }
 

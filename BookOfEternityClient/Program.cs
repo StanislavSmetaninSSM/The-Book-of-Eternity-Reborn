@@ -51,6 +51,8 @@ try
         if (!string.IsNullOrWhiteSpace(liveTurnPreparationError))
             throw new ArgumentException(liveTurnPreparationError);
 
+        if (!Directory.Exists(basePath))
+            throw new IOException("Participating preparation requires an existing explicit root.");
         var fs = new FileSystemManager(basePath, NullLogger<FileSystemManager>.Instance);
         var result = await SessionOperationContext.RunParticipatingCurrentSessionAsync(fs, async () =>
         {

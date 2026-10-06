@@ -150,8 +150,10 @@ $script:DaemonLastLoopError = $null
 $script:CorrelatedRepairGraceMilliseconds = 5000
 $script:CorrelatedRepairPollMilliseconds = 200
 
-foreach ($dir in @($InputDir, $ReadyDir, $OutputDir, $ControlDir)) {
-    if (!(Test-Path $dir)) { Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $dir }
+Invoke-GmParticipatingConsumer $GameSessionPath {
+    foreach ($dir in @($InputDir, $ReadyDir, $OutputDir, $ControlDir)) {
+        if (!(Test-Path $dir)) { Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $dir }
+    }
 }
 
 $script:GmTurnHelperBootstrapPath = Join-Path $ControlDir "gm_turn_helper.bootstrap.ps1"

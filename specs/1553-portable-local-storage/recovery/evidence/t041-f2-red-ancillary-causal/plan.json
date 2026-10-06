@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-main-ancillary-preparation"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "9dbb28169181ecc9b2d73dc7acb7b74c0df1c0ca",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 59.6220859,
+  "Descriptors": [
+    {
+      "Name": "gm-main-ancillary-preparation-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-ancillary-preparation",
+      "Categories": [
+        "gm-main-ancillary-preparation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

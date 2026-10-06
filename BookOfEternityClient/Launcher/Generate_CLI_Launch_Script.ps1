@@ -6,6 +6,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+. (Join-Path $PSScriptRoot 'gm_main_operation.ps1')
 $projectRoot = Split-Path $PSScriptRoot -Parent
 $repoRoot = Split-Path $projectRoot -Parent
 if ([string]::IsNullOrWhiteSpace($GameSessionPath)) {
@@ -25,10 +26,7 @@ else {
     $repoRootResolved = (Resolve-Path $repoRoot).Path
     $projectRootResolved = (Resolve-Path $projectRoot).Path
 
-    if (!(Test-Path $GameSessionPath)) {
-        New-Item -ItemType Directory -Path $GameSessionPath -Force | Out-Null
-    }
-    $gameSessionResolved = (Resolve-Path $GameSessionPath).Path
+    $gameSessionResolved = [IO.Path]::GetFullPath($GameSessionPath)
 }
 
 function Repair-LaunchTemplateEncodingIfNeeded {
@@ -310,7 +308,14 @@ $content = $content.Replace("{{REPO_ROOT}}", $repoRootResolved)
 $content = $content.Replace("{{GAME_SESSION}}", $gameSessionResolved)
 
 $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
-[System.IO.File]::WriteAllText($OutputPath, $content + [Environment]::NewLine, $utf8NoBom)
+$sessionFull=[IO.Path]::GetFullPath($GameSessionPath).TrimEnd([IO.Path]::DirectorySeparatorChar)
+$outputFull=[IO.Path]::GetFullPath($OutputPath)
+$relative=[IO.Path]::GetRelativePath($sessionFull,$outputFull).Replace('\','/')
+if($relative -ne '..' -and -not $relative.StartsWith('../') -and -not [IO.Path]::IsPathRooted($relative)) {
+    Invoke-GmCanonicalControl $GameSessionPath 'write' $outputFull ($utf8NoBom.GetBytes($content + [Environment]::NewLine))
+} else {
+    [System.IO.File]::WriteAllText($OutputPath, $content + [Environment]::NewLine, $utf8NoBom)
+}
 
 Write-Host ""
 Write-Host "[OK] CLI_Launch_Script.md generated." -ForegroundColor Green

@@ -66,11 +66,13 @@ internal sealed class GmMainOperationClient : IAsyncDisposable
             !(finalization && Closing ? r.Disposition is GmSessionRunDisposition.Running or GmSessionRunDisposition.Stopping or GmSessionRunDisposition.Uncertain : r.Disposition==GmSessionRunDisposition.Running))
             throw GmSessionRunPersistence.Invalid();
     }
+    internal MainOperationClose DescribeClose(MainOperationOutcome outcome,bool closingFailed)=>new(_grant.PinId!,_grant.CloseId!,_grant.OperationId!,Identity,outcome,closingFailed);
     internal async Task CompleteAsync(MainOperationOutcome outcome,bool closingFailed)
     {
+        TerminalClose=DescribeClose(outcome,closingFailed);
         if(Volatile.Read(ref _lost)!=0)throw new IOException("Original operation is unresolved.");
         if(Interlocked.Exchange(ref _locallyClosed,1)!=0)throw GmSessionRunPersistence.Invalid();
-        BeginClosing();TerminalClose=new(_grant.PinId!,_grant.CloseId!,_grant.OperationId!,Identity,outcome,closingFailed);
+        BeginClosing();
         using var bounded=new CancellationTokenSource(TimeSpan.FromSeconds(3));
         await MainOperationReader.WriteAsync(_pipe,new MainOperationFrame{Command="closeMainOperation",Close=TerminalClose},bounded.Token);
         await _closedReply.Task.WaitAsync(bounded.Token); // one send; failure never repeats/mints
