@@ -86,5 +86,12 @@
     "Error": "Unsupported TestFilter argument rejected before build/tests",
     "Executed": 0,
     "Correction": "explicit category wrapper only"
+  },
+  "NativeBridgeViewGreen": {
+    "Source": "a67c95c9673b56eeca2a8d10bbd1fef1ab3e5fab",
+    "Executed": 2,
+    "Passed": 2,
+    "Evidence": "evidence/t041-terminal-bridge-view-green/manifest.json",
+    "Scope": "actual native BridgeHost initial reliable idle view; prompt sequences and Windows still pending"
   }
 }
