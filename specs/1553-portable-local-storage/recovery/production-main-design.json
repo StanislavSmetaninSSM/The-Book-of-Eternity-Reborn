@@ -10,11 +10,10 @@
     "spec-kit-superpowers-bridge"
   ],
   "review": {
-    "status": "initial-needs-clarification; narrow correction pending reinspection",
+    "status": "PASS design-only",
     "actualModel": "gpt-6.1-sol",
     "actualReasoningEffort": "xhigh",
     "agent": "/root/production_main_design_review",
-    "reviewedCandidate": "d7c640a3dec1e7432f1e72591337deeb5433a5f5",
     "findings": [
       {
         "id": "D1",
@@ -22,13 +21,18 @@
         "location": "production-main-admission-design.md:46",
         "scenario": "Blanket ban on pin/IPC/drain waits under lifecycle contradicts accepted original lifecycle span across held prepare/release and owned stop/I/O/disposal/Stopped publication.",
         "sourceVerification": "GmSessionRunCoordinator.LaunchNeutralAsync retains lifecycle; BeginStopAsync drains pins before acquiring stop lifecycle; ConfirmSettledStopAsync retains lifecycle through owned retirement and publication.",
-        "correction": "Canonical/short transition gates released before external/child/I/O/drain waits; operation-pin drain never under lifecycle; accepted original lifecycle span explicitly retained."
+        "correction": "Canonical/short transition gates released before external/child/I/O/drain waits; operation-pin drain never under lifecycle; accepted original lifecycle span explicitly retained.",
+        "resolution": "Closed by actual independent narrow reinspection at 8d6a689624cc4ea45eb81be29bd4ed2d2830cd4a"
       }
     ],
     "otherMaterialFindings": 0,
     "reviewerVerifiedSourceGuardianPins": 37,
     "reviewerVerifiedArtifacts": 5,
-    "reviewerBuildsTestsProbes": 0
+    "reviewerBuildsTestsProbes": 0,
+    "initialCandidate": "d7c640a3dec1e7432f1e72591337deeb5433a5f5",
+    "reviewedCandidate": "8d6a689624cc4ea45eb81be29bd4ed2d2830cd4a",
+    "finalVerdict": "PASS — DESIGN ONLY; D1 closed, no other material findings. M1 obligations remain unimplemented and unauthorized in this turn.",
+    "remainingMaterialFindings": 0
   },
   "inputs": [
     {
@@ -425,7 +429,7 @@
     "T031-BROWSER-ROLLBACK-LINUX real consumer debt remains open",
     "No provider/model request/game operation/real save/public rollout/cold promises"
   ],
-  "publication": "WIP push/readback before review; final exact SHA supplied by handoff, not self-referential",
+  "publication": "Final verdict carrier normal non-force push/remote byte readback and fresh GitHub-only source restore are writer closure; exact final SHA/proof supplied in handoff, with zero restoration tests.",
   "specKitAnalysis": {
     "method": "read-only scoped current spec/plan/tasks/constitution consistency analysis; existing feature continuation, not a replacement plan",
     "requirements": [

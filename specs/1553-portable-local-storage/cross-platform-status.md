@@ -17,7 +17,10 @@ One permitted startup in empty scratch stopped at unanswered TERM=dumb confirmat
 Ctrl+C exit, guardian ECHILD/emergency0/failure0/deadlinefalse; no ready/VT/model request.
 Load UX answer pending; T031-BROWSER-ROLLBACK-LINUX retained.
 [Exact source/probe evidence](recovery/production-main-design.json).
-Independent Sol6.1/xhigh design review pending. Stop before implementation.
+Independent actual Sol6.1/xhigh DESIGN PASS at `8d6a6896`; D1 closed, no remaining
+material findings,37source/guardian pins+5probe artifacts verified. Final verdict
+carrier/readback/fresh GitHub-only source restoration follows as writer closure.
+Stop before M1 implementation.
 
 ## Accepted bounded T041-RUN-FENCE-F3 independent PASS
 

@@ -16,10 +16,12 @@ primary systemd and Linux browser rollback debt remain open. Load UX answer is p
 One no-model-request startup probe stopped at TERM=dumb confirmation, unanswered;
 Ctrl+C scoped exit, empty scratch and guardian ECHILD/emergency0/failure0/deadlinefalse.
 [Source/evidence](recovery/production-main-design.json). Runtime/test/catalog/config
-unchanged; builds/tests0. Actual Sol6.1/xhigh design review at `d7c640a3` found one
-lock-span wording contradiction; source-confirmed correction retains the accepted
-original lifecycle span and is pending narrow reinspection. Normal WIP
-publication/readback precedes review. M1 implementation is not authorized here.
+unchanged; builds/tests0. Actual independent Sol6.1/xhigh DESIGN PASS at `8d6a6896`; one initial
+lock-span wording contradiction is source-confirmed/closed, no remaining material
+findings.37source/guardian pins and5probe artifacts verified;0builds/tests/model
+requests in review. WIP checkpoints were normally published and read back before
+review. Final verdict carrier/readback/fresh GitHub-only source restore are writer
+closure, with exact SHA in handoff. M1 implementation is not authorized here.
 The historical F3 ledger below records the accepted completed slice.
 
 ## T041-RUN-FENCE-F3 — bounded independent PASS; stop before next stage
