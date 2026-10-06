@@ -29,7 +29,7 @@ internal static class MainRunFenceScenarioDriver
             host=Activator.CreateInstance(type,[launch.Scratch,"f1-"+Guid.NewGuid().ToString("N")]);
             type.GetMethod("ConfigureNeutral",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[launch]);
             if(mode=="terminal-main-launch-generation") {
-                var generationPath=Path.Combine(root,".boe_runtime/session-generation.json");
+                var generationPath=Path.Combine(root,".boe_runtime/session-generation/current.json");
                 byte[]? generation=null;var preparedObserved=false;
                 Set("ObserveMainHeldRoot",(Action<int>)(_=>{preparedObserved=Read().Disposition==GmSessionRunDisposition.Prepared;generation=File.ReadAllBytes(generationPath);File.Delete(generationPath);}));
                 Exception? failure=null;try{await Call("StartShellAsync");}catch(Exception e){failure=e;}
