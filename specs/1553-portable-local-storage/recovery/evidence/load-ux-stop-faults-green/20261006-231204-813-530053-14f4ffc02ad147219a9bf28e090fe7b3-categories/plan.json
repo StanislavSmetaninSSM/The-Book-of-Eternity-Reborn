@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-load-stop-faults"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "ecd14793df2ebec532f7908e982dc80c40be7f09",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 48.2058354,
+  "Descriptors": [
+    {
+      "Name": "gm-load-stop-faults-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-stop-faults",
+      "Categories": [
+        "gm-load-stop-faults"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_OriginalStopAndRefreshFaults",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_OriginalStopAndRefreshFaults",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

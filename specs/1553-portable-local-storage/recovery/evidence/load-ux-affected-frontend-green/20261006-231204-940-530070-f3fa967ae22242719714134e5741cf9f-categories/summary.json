@@ -1,0 +1,100 @@
+{
+  "Categories": [
+    "gm-load-affected-frontend",
+    "frontend-shell-types"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "ecd14793df2ebec532f7908e982dc80c40be7f09",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "frontend-shell-types",
+      "Seconds": 6.9472468,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "gm-load-affected-frontend",
+      "Seconds": 6.8755582,
+      "BudgetMinutes": 2,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [
+    {
+      "Descriptor": "frontend-shell-types-frontend-001",
+      "Adapter": "typecheck",
+      "VerificationKind": "compile-contracts",
+      "Results": 2,
+      "Seconds": 6.9323548
+    },
+    {
+      "Descriptor": "gm-load-affected-frontend-frontend-002",
+      "Adapter": "vitest",
+      "VerificationKind": "tests",
+      "Results": 62,
+      "Seconds": 6.873819
+    }
+  ],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0663382,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0451489,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1029568,
+      "Completed": true
+    },
+    {
+      "Name": "frontend-shell-types-frontend-001-compile",
+      "Seconds": 6.896364,
+      "Completed": true
+    },
+    {
+      "Name": "gm-load-affected-frontend-frontend-002",
+      "Seconds": 6.837015,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0052025,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 12,
+  "WallTime": "00:00:14.4779840",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 6,
+    "CompletedCases": 64,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 64,
+    "Executed": 64,
+    "Passed": 64,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
