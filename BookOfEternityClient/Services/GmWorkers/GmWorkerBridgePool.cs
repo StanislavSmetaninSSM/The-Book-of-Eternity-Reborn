@@ -400,6 +400,25 @@ public sealed class GmWorkerBridgePool
         }
         using var rootExecutionLease = admittedRoot;
 
+        GmWorkerDispatchAdmission? dispatch = null;
+        try
+        {
+            if (rootExecutionLease?.Context.Durable == true)
+            {
+                dispatch = rootExecutionLease.Context.CreateDispatch(rootExecutionLease, task, taskBytes);
+                await using var coldLease = await _fs.AcquireCanonicalWriteLeaseAsync(
+                    cancellationToken: cancellationToken, workerPurpose: dispatch.ColdPurpose);
+                dispatch.CompleteColdAdmission(_fs, coldLease);
+            }
+        }
+        catch (Exception error) when (GmWorkerRunLedger.Unavailable(error))
+        {
+            dispatch?.Dispose();
+            var status = Track(WorkerBridgeState.Failed, ready: false, error.Message);
+            return new() { Status = status, StatusHistory = statusHistory.ToArray(), BoundTask = task };
+        }
+        using var dispatchAdmission = dispatch;
+
         var slotAcquisition = await AcquireWorkerSlotAsync(profile, cancellationToken);
         if (slotAcquisition.Lease == null)
         {
@@ -513,7 +532,7 @@ public sealed class GmWorkerBridgePool
                 taskBytes,
                 taskPath,
                 proposalInboxPath,
-                lifecycleCancellation.Token);
+                lifecycleCancellation.Token, dispatch);
         }
         catch (OperationCanceledException ex)
         {
@@ -1191,10 +1210,10 @@ public sealed class GmWorkerBridgePool
         byte[] taskBytes,
         string taskPath,
         string proposalInboxPath,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken, GmWorkerDispatchAdmission? dispatch)
     {
         await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(
-            cancellationToken: cancellationToken);
+            cancellationToken: cancellationToken, workerPurpose: dispatch?.ReservationPurpose);
         cancellationToken.ThrowIfCancellationRequested();
         if (_fs.FileExists(taskPath) || _fs.FileExists(proposalInboxPath))
             return WorkerTaskReservation.Reject(
@@ -1216,6 +1235,7 @@ public sealed class GmWorkerBridgePool
                            taskPath,
                            expectedContent: null,
                            desiredContent: taskBytes) == CanonicalFileMutationResult.Applied;
+        if (reserved && dispatch != null) await dispatch.CompleteReservationAsync(_fs, writeLease);
         return reserved
             ? new WorkerTaskReservation(true, reservedTask, taskBytes, null, false)
             : WorkerTaskReservation.Reject(

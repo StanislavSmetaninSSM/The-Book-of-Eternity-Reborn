@@ -105,8 +105,17 @@ internal sealed class GmWorkerDurableExecution
     internal async Task PlanReleaseAsync(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease)
     {
         RequireBound(); fs.EnsureCanonicalWriteLeaseActive(lease);
+        await RequireOriginalTaskAsync(fs, lease);
         await MoveAsync(WorkerRunPhase.ReleaseIntent, null);
+        await RequireOriginalTaskAsync(fs, lease);
         fs.EnsureCanonicalWriteLeaseActive(lease);
+    }
+    internal async Task RequireOriginalTaskAsync(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease)
+    {
+        var bytes = await fs.ReadFileBytesAsync(lease, GmWorkerBridgePool.GetTaskPacketPath(Identity.TaskId));
+        fs.EnsureCanonicalWriteLeaseActive(lease);
+        if (bytes == null || !_taskBytes.AsSpan().SequenceEqual(bytes))
+            throw new InvalidOperationException("Original reserved task bytes changed before Release.");
     }
     internal void ConsumeRelease(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease)
     {
@@ -343,12 +352,16 @@ internal sealed class GmWorkerDurableExecution
          active.Phase == WorkerRunPhase.CleanupPending && terminal.Phase == WorkerRunPhase.Retired);
 }
 
-internal enum GmWorkerCanonicalOperation { Release, ProposalPublication, ConfirmedCleanupAudit }
+internal enum GmWorkerCanonicalOperation { ColdAdmission, TaskReservation, Release, ProposalPublication, ConfirmedCleanupAudit }
 internal sealed class GmWorkerCanonicalPurpose
 {
-    internal GmWorkerDurableExecution Execution { get; }
+    private readonly GmWorkerDurableExecution? _execution;
+    internal GmWorkerDurableExecution Execution => _execution ?? throw new InvalidOperationException("Dispatch purpose has no execution authority.");
+    internal GmWorkerDispatchAdmission? Dispatch { get; }
     internal GmWorkerCanonicalOperation Operation { get; }
     internal WorkerRunCleanup? Audit { get; }
     internal GmWorkerCanonicalPurpose(GmWorkerDurableExecution execution, GmWorkerCanonicalOperation operation, WorkerRunCleanup? audit)
-    { Execution = execution; Operation = operation; Audit = audit; }
+    { _execution = execution; Operation = operation; Audit = audit; }
+    internal GmWorkerCanonicalPurpose(GmWorkerDispatchAdmission dispatch, GmWorkerCanonicalOperation operation)
+    { Dispatch = dispatch; Operation = operation; }
 }

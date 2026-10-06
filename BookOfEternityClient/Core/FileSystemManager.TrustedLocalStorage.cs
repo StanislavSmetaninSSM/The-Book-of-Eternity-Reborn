@@ -126,7 +126,7 @@ public partial class FileSystemManager
         Action? validatePreparedNamespace = null)
     {
         lease.EnsureNoPendingLocalDecision();
-        EnsureWorkerAuditPublication(lease, generation, changes);
+        EnsureWorkerPurposePublication(lease, generation, changes);
         var scope = new TrustedLocalFileScope([BasePath]);
         var registrations = new List<InProcessMutationRegistration>();
         try
@@ -152,11 +152,11 @@ public partial class FileSystemManager
             }
             cancellationToken.ThrowIfCancellationRequested();
             VerifyCurrentSessionOperation(lease);
-            EnsureWorkerAuditPublication(lease, generation, changes);
+            EnsureWorkerPurposePublication(lease, generation, changes);
             var publisher = new TrustedLocalFilePublication(this, scope);
             for (var attempt = 0; ; attempt++)
             {
-                EnsureWorkerAuditPublication(lease, generation, changes);
+                EnsureWorkerPurposePublication(lease, generation, changes);
                 validatePreparedNamespace?.Invoke();
                 var outcome = publisher.PublishWithOutcome(lease, generation, changes, _hooks?.LocalPublicationObserver);
                 if (outcome.Disposition != TrustedLocalPublicationDisposition.RolledBack ||

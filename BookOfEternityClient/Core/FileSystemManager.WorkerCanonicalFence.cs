@@ -8,17 +8,19 @@ public partial class FileSystemManager
     private static bool IsWorkerCleanupAudit(CanonicalWriteLease lease) =>
         lease.WorkerPurpose?.Operation == GmWorkerCanonicalOperation.ConfirmedCleanupAudit;
 
-    // A cleanup lease is an operation capability, never a general canonical
+    // A task/cleanup lease is an operation capability, never a general canonical
     // writer. Check at participating mutation entrypoints before preparation.
     internal void EnsureWorkerGeneralMutationAllowed(CanonicalWriteLease lease)
     {
         EnsureValidCanonicalWriteLease(lease);
-        if (IsWorkerCleanupAudit(lease))
-            throw new InvalidOperationException("Cleanup audit authority cannot perform this canonical mutation.");
+        if (IsWorkerCleanupAudit(lease) || lease.WorkerPurpose?.Dispatch != null)
+            throw new InvalidOperationException("Original worker purpose cannot perform this canonical mutation.");
     }
 
     private void EnsureWorkerAuditAppend(CanonicalWriteLease lease, string path, ReadOnlySpan<byte> suffix)
     {
+        if (lease.WorkerPurpose?.Dispatch != null)
+            throw new InvalidOperationException("Task admission cannot append canonical bytes.");
         if (!IsWorkerCleanupAudit(lease)) return;
         EnsureWorkerRecoveryAdmission(lease);
         if (lease.MutationIntentRecorder != null || lease.IsLegacyStorageRecovery ||
@@ -27,9 +29,18 @@ public partial class FileSystemManager
         lease.WorkerPurpose!.Execution.ValidateCleanupAppend(lease.WorkerPurpose, suffix);
     }
 
-    internal void EnsureWorkerAuditPublication(CanonicalWriteLease lease, TrustedLocalGeneration generation,
+    internal void EnsureWorkerPurposePublication(CanonicalWriteLease lease, TrustedLocalGeneration generation,
         IReadOnlyList<TrustedLocalFileChange> changes)
     {
+        if (lease.WorkerPurpose?.Dispatch is { } dispatch)
+        {
+            EnsureWorkerRecoveryAdmission(lease);
+            if (changes.Count != 1 || generation != TrustedLocalGeneration.Existing(dispatch.GenerationId))
+                throw new InvalidOperationException("Task reservation cannot publish another member or generation.");
+            var relative = GetLocalRelativePath(GameSessionPath, changes[0].Path, OperatingSystem.IsWindows());
+            dispatch.ValidateReservation(this, lease, relative, changes[0].Before, changes[0].After);
+            return;
+        }
         if (!IsWorkerCleanupAudit(lease)) return;
         EnsureWorkerRecoveryAdmission(lease);
         var purpose = lease.WorkerPurpose!;

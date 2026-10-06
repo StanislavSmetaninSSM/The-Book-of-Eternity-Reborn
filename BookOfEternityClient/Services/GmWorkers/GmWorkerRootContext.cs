@@ -124,6 +124,15 @@ internal sealed class GmWorkerRootContext
         {
             if (_disposed) throw new InvalidOperationException("Explicit worker admission is required before canonical recovery.");
             if (purpose == null) { RequireOpen(); return; }
+            if (purpose.Dispatch is { } dispatch)
+            {
+                if (!Durable || !ReferenceEquals(dispatch.Context, this)) throw new InvalidOperationException("Task purpose belongs to another root.");
+                RequireNewTask(dispatch);
+                dispatch.ValidatePurpose(purpose);
+                if (fs.ReadLocalGenerationSnapshotBelowWorkerFence(lease).Binding.Id != dispatch.GenerationId)
+                    throw new InvalidOperationException("Task generation changed before admission or reservation.");
+                return;
+            }
             if (!Durable || !ReferenceEquals(purpose.Execution.Context, this) || _coordinator == null ||
                 _pending.Count != 0 || !_coordinator.VerifyAdmission())
                 throw new InvalidOperationException("Original worker purpose has no current journal authority.");
@@ -135,6 +144,19 @@ internal sealed class GmWorkerRootContext
                 fs.ReadLocalGenerationSnapshotBelowWorkerFence(lease).Binding.Id != purpose.Execution.Identity.GenerationId)
                 throw new InvalidOperationException("Worker generation changed before its canonical operation.");
         }
+    }
+    internal GmWorkerDispatchAdmission CreateDispatch(GmWorkerRootExecutionLease lease, WorkerTaskPacket task, byte[] bytes)
+    {
+        if (!ReferenceEquals(lease.Context, this) || !lease.IsActive) throw new InvalidOperationException("Original root lease is unavailable.");
+        var dispatch = new GmWorkerDispatchAdmission(lease, task, bytes);
+        RequireNewTask(dispatch);
+        return dispatch;
+    }
+    private void RequireNewTask(GmWorkerDispatchAdmission dispatch)
+    {
+        RequireOpen();
+        (_coordinator ?? throw new InvalidOperationException("Durable task admission is unavailable."))
+            .RequireNewTask(dispatch.GenerationId, dispatch.WorkerId, dispatch.TaskId);
     }
     internal async Task<GmWorkerDurableExecution> PrepareAsync(GmWorkerRootExecutionLease lease,
         WorkerTaskPacket task, byte[] bytes, GmWorkerExecutionWorkspace workspace)
@@ -157,6 +179,7 @@ internal sealed class GmWorkerRootExecutionLease : IDisposable
     internal void RetainForCleanup() => _transferred = true;
     internal void ReleaseAfterCleanup() { if (Interlocked.Exchange(ref _released, 1) == 0) Context.ReleaseExecution(); }
     internal GmWorkerRootContext Context { get; }
+    internal bool IsActive => Volatile.Read(ref _released) == 0;
     internal GmWorkerRootExecutionLease(GmWorkerRootContext context) { Context = context; }
     public void Dispose() { if (!_transferred) ReleaseAfterCleanup(); }
 }

@@ -64,8 +64,9 @@ internal static class GmWorkerRunLedgerCodec
         Validate(result); return result;
     }
 
-    internal static string TaskKey(WorkerRunIdentity identity) => Convert.ToHexString(SHA256.HashData(
-        JsonSerializer.SerializeToUtf8Bytes(new[] { identity.GenerationId, identity.WorkerId, identity.TaskId }))).ToLowerInvariant();
+    internal static string TaskKey(WorkerRunIdentity identity) => TaskKey(identity.GenerationId, identity.WorkerId, identity.TaskId);
+    internal static string TaskKey(string generation, string worker, string task) => Convert.ToHexString(SHA256.HashData(
+        JsonSerializer.SerializeToUtf8Bytes(new[] { generation, worker, task }))).ToLowerInvariant();
     internal static bool RootMatches(string left, string right) => string.Equals(left, right,
         OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
 

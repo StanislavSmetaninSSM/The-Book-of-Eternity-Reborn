@@ -954,7 +954,9 @@ public partial class FileSystemManager
         byte[]? expectedContent,
         byte[]? desiredContent)
     {
-        EnsureWorkerGeneralMutationAllowed(writeLease);
+        if (writeLease.WorkerPurpose?.Dispatch is { } dispatch)
+            dispatch.ValidateReservation(this, writeLease, relativePath, expectedContent, desiredContent);
+        else EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         var useLocalWriter = UsesTrustedLocalWriter(writeLease, relativePath);
         var currentContent = useLocalWriter

@@ -158,7 +158,7 @@ internal sealed partial class TrustedLocalFilePublication
         TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes,
         Action<TrustedLocalPublicationPhase, int>? observer = null)
     {
-        _files.EnsureWorkerAuditPublication(lease, generation, changes);
+        _files.EnsureWorkerPurposePublication(lease, generation, changes);
         return PublishWithOutcome(lease, attempt => PublishCore(lease, generation, changes, observer, attempt));
     }
 
@@ -220,7 +220,7 @@ internal sealed partial class TrustedLocalFilePublication
         TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes,
         Action<TrustedLocalPublicationPhase, int>? observer, PublicationAttempt? attempt)
     {
-        _files.EnsureWorkerAuditPublication(lease, generation, changes);
+        _files.EnsureWorkerPurposePublication(lease, generation, changes);
         BeginPublication(lease, generation, changes.Count);
         var members = changes.Select(change => new Member
         {

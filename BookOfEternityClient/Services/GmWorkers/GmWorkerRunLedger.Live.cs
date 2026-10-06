@@ -8,6 +8,21 @@ internal sealed partial class WorkerRunLedgerCoordinator
     private readonly Dictionary<string, WorkerRunEntryHandle> _liveEntries = new(StringComparer.Ordinal);
     private readonly Dictionary<string, GmWorkerDurableExecution> _preparedOwners = new(StringComparer.Ordinal);
     private GmWorkerDurableExecution.Mutation? _livePending;
+    internal void RequireNewTask(string generation, string worker, string task)
+    {
+        _gate.Wait();
+        try
+        {
+            var key = GmWorkerRunLedgerCodec.TaskKey(generation, worker, task);
+            if (_disposed || _authorityLost || _pending != null || _state == null || !VerifyCurrent() ||
+                _state.Entries.Length >= GmWorkerRunLedgerCodec.MaximumActiveEntries ||
+                _state.Entries.Length + _state.Retired.Length >= GmWorkerRunLedgerCodec.MaximumRetiredEntries ||
+                _state.Entries.Any(entry => GmWorkerRunLedgerCodec.TaskKey(entry.Identity) == key) ||
+                _state.Retired.Any(entry => entry.TaskKeySha256 == key))
+                throw new InvalidOperationException("Worker task identity is already reserved or its ledger admission is unavailable.");
+        }
+        finally { _gate.Release(); }
+    }
     internal void ClaimOriginalExecution(GmWorkerDurableExecution execution)
     {
         _gate.Wait();

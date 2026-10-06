@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "worker-restart-dispatch-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "63772d1d03f12b8f9e23cc6ea1cbc94ce1ac2297",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 39.3491979,
+  "Descriptors": [
+    {
+      "Name": "worker-restart-dispatch-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-dispatch-linux",
+      "Categories": [
+        "worker-restart-dispatch-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartDispatchTests.ColdRetired_OnlyDistinctTaskMayRecoverAndDispatch|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartDispatchTests.GatedHost_ChangedOriginalBindingRefusesRelease",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartDispatchTests.ColdRetired_OnlyDistinctTaskMayRecoverAndDispatch",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartDispatchTests.GatedHost_ChangedOriginalBindingRefusesRelease",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

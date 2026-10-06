@@ -300,6 +300,19 @@ new task), and task-byte/generation replacement while original host remains gate
 They assert before-recovery/capacity refusal for retired identity and no worker Start
 for changed original Release binding. Seeds require actual full positive lifecycle
 and independent guardian cleanup. Runtime remains unchanged for causal RED; unrun.
+Independent Sol6.1/xhigh closed cleanup/R1-bypass/bounded-stop findings on b8f01ca4
+and verified all98 source inputs,234 artifacts,25 gzip hashes and11 PASS TRX/guardians;
+not final R2 PASS. Dispatch RED at `63772d1d03f12b8f9e23cc6ea1cbc94ce1ac2297`:
+5 executed,3 causal FAIL (same/changed-body retired task recovered before refusal;
+changed task bytes still started worker),2 PASS (distinct cold task and stale generation),
+56.4272017s, fresh build/complete cleanup/no timeout;8 guardians ECHILD/exit0/reap1,
+zero emergency/failure/deadline. Evidence: recovery/evidence/worker-r2-dispatch-red/manifest.json.
+Added original request-bound ColdAdmission before capacity/recovery, bounded task-key
+inventory query, and exact create-only TaskReservation purpose. Both capabilities
+expire after their original phase and cannot perform other mutations. Release checks
+exact original task bytes under its lease before/after intent and after control gate,
+beside the existing root/generation predicate. WIP unbuilt; next fresh selection5
+dispatch +1 cold Prepared +15 purpose-confinement cases (canonical purpose path changed).
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing
