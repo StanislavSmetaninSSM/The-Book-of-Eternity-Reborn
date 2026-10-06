@@ -91,5 +91,13 @@ public sealed class GmWorkerRestartModeTests
 
     private static string[] Snapshot(WorkerLedgerTarget target) => Directory.EnumerateFiles(target.RootPath, "*", SearchOption.AllDirectories)
         .Order(StringComparer.Ordinal).Select(path => Path.GetRelativePath(target.RootPath, path) + ":" +
-            Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path)))).ToArray();
+            SnapshotHash(path)).ToArray();
+
+    private static string SnapshotHash(string path)
+    {
+        // Observe our own files without asking File.ReadAllBytes to acquire a
+        // competing shared lock on the intentionally retained exclusive owner.lock.
+        using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+        return Convert.ToHexString(SHA256.HashData(stream));
+    }
 }

@@ -91,6 +91,15 @@ Legacy layout cannot contain ledger state/archive, cannot change mode and cannot
 the private durable publisher. Public pool not connected yet; GREEN pending. Next
 selection8-mode +42-storage +54-failure tests the changed adapter. Record codecs are
 unchanged from175-GREEN, so their79 cases are not repeated.
+First mode GREEN attempt at `8186b994b04c0e7deb416035f4d79686b9185d5e` executed
+8 cases:2 mode/lifetime PASS,6 fixture observation FAIL before corruption assertions.
+Snapshot used File.ReadAllBytes on our intentionally held exclusive owner.lock and
+requested conflicting read sharing. Fixed the test-only snapshot to open read-only
+with ReadWrite/Delete sharing, as the existing storage observer does. No lock or
+production behavior weakened.43.3185723s, cleanup complete, no timeout; runner stopped
+before the remaining96 planned storage/failure cases. Evidence:
+recovery/evidence/worker-r2-mode-observation-failure/manifest.json. Fresh affected
+selection retry is required; no corruption GREEN claim yet.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing
