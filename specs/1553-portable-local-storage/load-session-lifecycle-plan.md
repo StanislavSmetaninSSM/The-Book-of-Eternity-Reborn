@@ -103,3 +103,7 @@ At9cb3481c debt injection reached1: actual candidate disposal returned Committed
 ### Fault-matrix preparation and stop message correction
 
 Atb6f5849a native build executed0 due fixture bool/task name collision; fixed only fixture name. Actual frontend18 executed/16PASS/2FAIL: failed original stop lacked a specific GM message. Added typed main-state copy without unsafe diagnostic paths, plus focused ambient bound/main scope IPC refusal oracles. All changes remain WIP pending fresh selected build.
+
+### Reviewed positive/handler GREEN; exact fault preparation and profile contract
+
+Cleanff500224 native/portable10/10PASS and actual frontend handler18/18PASS. All5 guardians ECHILD/0emergency/failures/deadline; own fixtures removed after capture. Sol focused source review: runtime fixes PASS; corrected exact fault-name classification, actual Prepared worker debt witness outside swallowed hook, and duplicated catalog selector before fault execution. Exact affected regression selection is accepted and now recorded. Fresh uses **installed archive configuration**, as existing SaveLoad/ApplyLoadedValues already specify: selected config/model/command/args/cwd are consumed verbatim by M1, never replaced by executor settings or a neutral API. It does not preserve a contradictory pre-Load config. Added isolated neutral archived-vs-active profile sentinels to qualify this established contract; no runtime profile change.

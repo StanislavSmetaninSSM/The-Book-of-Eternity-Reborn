@@ -2,6 +2,92 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-load-affected-frontend",
+      "responsibility": "Exact existing real Load handler/complete bundle/settings reconciliation consumers affected by new lifecycle",
+      "excludes": "No live browser/provider or unrelated frontend tests",
+      "changeHints": [
+        "BookOfEternityClient.WebFrontend/src/utils/loadPersistenceNotice.ts",
+        "BookOfEternityClient.WebFrontend/src/components/GameLauncher.tsx",
+        "BookOfEternityClient.WebFrontend/src/components/SettingsView.tsx"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "frontend",
+          "runner": "vitest",
+          "tests": [
+            "BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts",
+            "BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts",
+            "BookOfEternityClient.WebFrontend/test/settingsLoadReconciliation.test.ts",
+            "BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-load-affected-backend",
+      "responsibility": "Exact existing Load/storage/refresh/original guard consumers affected by lifecycle integration",
+      "excludes": "No provider/model/EnterGameLoop/native Windows/systemd or unrelated console cohorts",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableBrowserLoadTests.*",
+            "BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard",
+            "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration",
+            "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InGameMenuReportsCommitAndResumesOnlyAfterRequiredRefresh",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredUiRefreshFailureCannotEraseCommit"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-load-installed-profile",
+      "responsibility": "Actual production fresh Load consumes installed archive command/model/args/cwd without executor override; configured neutral CLI only",
+      "excludes": "No provider/model/EnterGameLoop/native Windows/systemd or unrelated console cohorts",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_FreshLaunchConsumesInstalledArchiveProfile"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-load-storage-faults",
       "responsibility": "Actual installed production-neutral original Load HTTP/pipe fault boundary: BrowserHttp_TypedStorageAndIndependentAdmission",
       "excludes": "No provider/model/EnterGameLoop/native Windows/systemd or unrelated console cohorts",
@@ -72,7 +158,7 @@
     },
     {
       "id": "gm-load-protocol",
-      "responsibility": "Causal real console selected-Load original owner stop/replacement/refresh/fresh session; isolated configured neutral CLI only",
+      "responsibility": "Strict original Load receipt fields and refusal of bound filesystem scopes before stop IPC; portable inert fixtures",
       "excludes": "No provider/model/EnterGameLoop/native Windows/systemd or unrelated console cohorts",
       "changeHints": [
         "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs"
@@ -159,7 +245,7 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_PrematureAckCannotAuthorizeFreshLaunch"
+            "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LoadFullBundleCurrentAckFreshEpoch"
           ]
         }
       ]

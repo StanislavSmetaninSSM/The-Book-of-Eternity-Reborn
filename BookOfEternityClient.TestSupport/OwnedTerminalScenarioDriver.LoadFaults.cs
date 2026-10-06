@@ -26,6 +26,7 @@ internal static partial class OwnedTerminalScenarioDriver
         var archive=Directory.GetFiles(files.ResolvePath("saves/manual_saves"),"*.zip").Single();var sourceBefore=File.ReadAllBytes(archive);
         var entered=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var release=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var workerPrepared=false;
         if(fault=="stop-reply-loss")Set("BeforeLoadReceipt",(Action<Stream,GmLoadMainState>)((stream,state)=>{if(state==GmLoadMainState.Stopped)stream.Dispose();}));
         if(fault=="restart-reply-loss")Set("BeforeLoadReceipt",(Action<Stream,GmLoadMainState>)((stream,state)=>{if(state==GmLoadMainState.Running)stream.Dispose();}));
         if(fault=="stop-uncertain") {
@@ -35,9 +36,11 @@ internal static partial class OwnedTerminalScenarioDriver
         if(fault=="no-active")await(Task)type.GetMethod("StopShellAsync",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,null)!;
         if(fault=="worker-debt")Set("BeforeLoadStopReply",(Func<Task>)(async()=>{
             await using var ledger=await GmWorkerRunLedger.OpenCoordinatorAsync(new(files.BasePath));Require(ledger!=null,"Original inventory not released after confirmed stop.");
-            Require(await ledger!.InitializeAsync()==WorkerLedgerMutationKind.Applied,"Worker fixture preparation failed.");
+            var initialized=await ledger!.InitializeAsync();
+            Require(initialized is WorkerLedgerMutationKind.Applied or WorkerLedgerMutationKind.AlreadyExact,"Worker fixture preparation failed.");
             var prepared=await ledger.PrepareAsync(new(prior.GenerationId,"inert_worker","load-admission",new string('a',64),WorkerRunBackend.LinuxNativeLineage,WorkerRunScope.OrdinarySamePidNamespace,files.GameSessionPath),ledger.Sequence);
             Require(prepared.Kind==WorkerLedgerMutationKind.Applied,"Actual retained worker preparation was not reached.");
+            workerPrepared=true;evidence["WorkerPreparedMutation"]=prepared.Kind;
         }));
         if(fault=="generation-race")Set("BeforeLoadRestart",(Func<Task>)(async()=>{
             // Real short mutation lease can be acquired here only after client Load guards unwind.
@@ -59,6 +62,13 @@ internal static partial class OwnedTerminalScenarioDriver
             await Task.Delay(100);release.TrySetResult();loaded=await originalExecution.WaitAsync(TimeSpan.FromSeconds(5));
         } else loaded=await Post("/api/saves/load",request);
         evidence["InitialFaultLoad"]=loaded;
+        if(fault=="worker-debt") {
+            Require(workerPrepared,"Preparation failure: actual worker Prepared debt was not reached.");
+            var inventory=await GmWorkerRunLedger.ObserveAsync(new(files.BasePath));
+            Require(inventory.Kind==WorkerRunObservationKind.Uncertain && inventory.Entries.Count==1 && inventory.Entries[0].Phase==WorkerRunPhase.Prepared,
+                "Retained worker inventory lost its exact unresolved Prepared entry.");
+            evidence["ActualPreparedWorkerInventoryRetained"]=true;
+        }
         if(fault is "stop-reply-loss" or "stop-uncertain" or "worker-debt") {
             Require(loaded.Disposition==LoadReplacementDisposition.NotLoaded && loaded.ContinuationBlocked && File.ReadAllBytes(files.SessionGenerationPath).SequenceEqual(generationBefore),"Failed stop/independent admission mutated or accepted Load.");
             if(fault=="stop-uncertain") {

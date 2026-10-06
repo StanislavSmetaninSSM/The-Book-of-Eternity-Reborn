@@ -70,6 +70,12 @@ internal static class ProductionMainLinuxFixture
             }
             var saves=new BookOfEternityClient.Services.SaveLoadService(files,archiveState,NullLogger<BookOfEternityClient.Services.SaveLoadService>.Instance);
             Assert.True(await saves.SaveGameAsync("load-neutral","original configured neutral CLI"),"Preparation: real archive creation failed.");
+            if(mode.EndsWith("profile-from-archive",StringComparison.Ordinal)) {
+                var activeCwd=Path.Combine(root,"active Ж");Directory.CreateDirectory(activeCwd);
+                json["GmCliLaunchCommand"]=JsonSerializer.SerializeToElement(command.Replace("gm-model-sentinel","active-model-sentinel",StringComparison.Ordinal));
+                json["GmBridgeShellWorkingDirectory"]=JsonSerializer.SerializeToElement(activeCwd);
+                File.WriteAllText(Path.Combine(files.GameSessionPath,"config.json"),JsonSerializer.Serialize(json));
+            }
         }
         if(mode=="refuse-worker") {
             await using var ledger=await GmWorkerRunLedger.OpenCoordinatorAsync(new(root));Assert.NotNull(ledger);

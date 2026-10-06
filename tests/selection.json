@@ -3,16 +3,86 @@
   "selections": [
     {
       "category": "gm-load-session-lifecycle",
-      "reason": "T041 Load UX original production terminal stop/replacement/refresh/fresh epoch in isolated Linux roots and real entrypoints; new causal boundary only.",
+      "reason": "T041 Load UX original production terminal stop/replacement/refresh/fresh epoch in isolated Linux roots and real entrypoints",
       "contracts": [
-        "#1553 accepted Load UX + original main/worker/storage generation conjunction"
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-cleanup-debt",
+      "reason": "Causal real console selected-Load original owner stop/replacement/refresh/fresh session; isolated configured neutral CLI only",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-early-ack",
+      "reason": "Actual loopback Load/full-bundle completion endpoints and installed production original GM stop/current refresh/fresh epoch; configured neutral CLI",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-protocol",
+      "reason": "Strict original Load receipt fields and refusal of bound filesystem scopes before stop IPC; portable inert fixtures",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-stop-faults",
+      "reason": "Actual installed production-neutral original Load HTTP/pipe fault boundary: BrowserHttp_OriginalStopAndRefreshFaults",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-restart-faults",
+      "reason": "Actual installed production-neutral original Load HTTP/pipe fault boundary: BrowserHttp_OriginalRestartFaults",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-storage-faults",
+      "reason": "Actual installed production-neutral original Load HTTP/pipe fault boundary: BrowserHttp_TypedStorageAndIndependentAdmission",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-installed-profile",
+      "reason": "Actual production fresh Load consumes installed archive command/model/args/cwd without executor override; configured neutral CLI only",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
       ]
     },
     {
       "category": "browser-load-session-lifecycle",
-      "reason": "Actual launcher/settings Load handlers: immutable owner, complete refresh/fresh-launch receipt, stale/cancel/lost reply; new causal boundary only.",
+      "reason": "Actual launcher/settings Load handlers: immutable owner, complete refresh/fresh-launch receipt, stale/cancel/lost reply",
       "contracts": [
-        "#1553 accepted Load UX + original main/worker/storage generation conjunction"
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-affected-backend",
+      "reason": "Exact existing Load/storage/refresh/original guard consumers affected by lifecycle integration",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-affected-frontend",
+      "reason": "Exact existing real Load handler/complete bundle/settings reconciliation consumers affected by new lifecycle",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "frontend-shell-types",
+      "reason": "Compile-time contracts for extracted app routes and shell context component shapes.",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
       ]
     }
   ]

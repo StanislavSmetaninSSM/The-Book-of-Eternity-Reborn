@@ -9,6 +9,8 @@ public sealed class GmLoadSessionLifecycleTests
     [Fact]
     public Task BrowserHttp_LoadFullBundleCurrentAckFreshEpoch()=>ProductionMainLinuxFixture.RunAsync("production-main-load-browser-http");
     [Fact]
+    public Task BrowserHttp_FreshLaunchConsumesInstalledArchiveProfile()=>ProductionMainLinuxFixture.RunAsync("production-main-load-http-profile-from-archive");
+    [Fact]
     public Task BrowserHttp_PrematureAckCannotAuthorizeFreshLaunch()=>ProductionMainLinuxFixture.RunAsync("production-main-load-http-early-ack");
     [Fact]
     public Task ConsoleLoad_CommittedCleanupDebtCannotLaunchFresh()=>ProductionMainLinuxFixture.RunAsync("production-main-load-console-debt");

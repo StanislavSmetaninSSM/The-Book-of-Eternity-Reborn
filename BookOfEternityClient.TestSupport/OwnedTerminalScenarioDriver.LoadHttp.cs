@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using System.IO.Compression;
 using System.Reflection;
 using System.Text.Json;
 using BookOfEternityClient.Configuration;
@@ -15,7 +16,8 @@ internal static partial class OwnedTerminalScenarioDriver
     {
         var assets=Path.Combine(folder,"frontend");Directory.CreateDirectory(assets);
         await File.WriteAllTextAsync(Path.Combine(assets,"index.html"),"<!doctype html><title>isolated Load fixture</title>");
-        var storageFault=mode.EndsWith("rollback",StringComparison.Ordinal)||mode.EndsWith("uncertain",StringComparison.Ordinal);
+        var faultName=mode.Contains("-fault-",StringComparison.Ordinal)?mode[(mode.LastIndexOf("-fault-",StringComparison.Ordinal)+7)..]:null;
+        var storageFault=faultName is "rollback" or "uncertain";
         var publicationArmed=false;var replacing=false;var cuts=0;
         var marker=files.ResolvePath("game_state/world/test_fixture_state.json");
         if(storageFault)await files.WriteFileAtomicAsync("game_state/world/test_fixture_state.json","{\"state\":\"before-load\"}");
@@ -26,7 +28,7 @@ internal static partial class OwnedTerminalScenarioDriver
                 Span<byte> magic=stackalloc byte[8];journal.ReadExactly(magic);replacing=magic.SequenceEqual("BOELP3\r\n"u8);
             }
             if(replacing && phase==TrustedLocalPublicationPhase.CommitStaged) {
-                cuts++;if(mode.EndsWith("uncertain",StringComparison.Ordinal))File.WriteAllText(marker,"{\"state\":\"unknown-cut\"}");
+                cuts++;if(faultName=="uncertain")File.WriteAllText(marker,"{\"state\":\"unknown-cut\"}");
                 throw new IOException("controlled actual Load commit cut");
             }
         }}:null;
@@ -45,7 +47,7 @@ internal static partial class OwnedTerminalScenarioDriver
         var request=new BrowserLoadSaveRequest("manual:"+Path.GetFileName(path),Guid.NewGuid().ToString("N"),menu!.LoadGeneration);
         if(mode.Contains("-fault-",StringComparison.Ordinal)) {
             publicationArmed=true;
-            await RunLoadHttpFaultAsync(mode[(mode.LastIndexOf("-fault-",StringComparison.Ordinal)+7)..],app,http,host,type,rpc,original,prior,request,evidence,files);
+            await RunLoadHttpFaultAsync(faultName!,app,http,host,type,rpc,original,prior,request,evidence,files);
             if(storageFault)Require(cuts==1,"Preparation failure: real replacement publication cut not reached.");
             await app.StopAsync();return;
         }
@@ -81,7 +83,13 @@ internal static partial class OwnedTerminalScenarioDriver
         Require(!ReferenceEquals(original,terminal) && next.Identity.RunId!=prior.RunId && next.Identity.Epoch==prior.Epoch+1 &&
             next.Identity.GenerationId==loaded.EstablishedGeneration,"Fresh original epoch/root does not match installed generation.");
         var after=JsonSerializer.Deserialize<GameSettings>(File.ReadAllBytes(files.ResolvePath("config.json")))!;
-        Require(after.GmCliLaunchCommand==profile.GmCliLaunchCommand && after.GmBridgeShellWorkingDirectory==profile.GmBridgeShellWorkingDirectory,"Configured arbitrary command/model/args/cwd changed.");
+        using var archive=ZipFile.OpenRead(path);using var installedConfig=archive.GetEntry("config.json")!.Open();
+        var expectedProfile=JsonSerializer.Deserialize<GameSettings>(installedConfig)!;
+        Require(after.GmCliLaunchCommand==expectedProfile.GmCliLaunchCommand && after.GmBridgeShellWorkingDirectory==expectedProfile.GmBridgeShellWorkingDirectory,
+            "Installed configured command/model/args/cwd changed during fresh launch.");
+        Require((await rpc(new{command="status"})).GetProperty("status").GetProperty("cliLaunchCommand").GetString()==expectedProfile.GmCliLaunchCommand,"Fresh production terminal used a profile from another generation.");
+        if(mode.EndsWith("profile-from-archive",StringComparison.Ordinal))Require(profile.GmCliLaunchCommand!=expectedProfile.GmCliLaunchCommand && profile.GmBridgeShellWorkingDirectory!=expectedProfile.GmBridgeShellWorkingDirectory,
+            "Preparation failure: original and archived neutral profile sentinels do not differ.");
         for(var i=0;i<150;i++) {
             if((await rpc(new{command="setReady",ready=true})).GetProperty("ok").GetBoolean())break;
             await Task.Delay(10);

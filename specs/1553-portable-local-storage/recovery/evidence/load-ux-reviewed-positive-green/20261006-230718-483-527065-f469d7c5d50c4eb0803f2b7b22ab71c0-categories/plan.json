@@ -1,0 +1,109 @@
+{
+  "Categories": [
+    "gm-load-session-lifecycle",
+    "gm-load-cleanup-debt",
+    "gm-load-early-ack",
+    "gm-load-protocol"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "ff500224542243641a64d05894c3ca9f4b68e07a",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 46.6021057,
+  "Descriptors": [
+    {
+      "Name": "gm-load-cleanup-debt-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-cleanup-debt",
+      "Categories": [
+        "gm-load-cleanup-debt"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_CommittedCleanupDebtCannotLaunchFresh",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_CommittedCleanupDebtCannotLaunchFresh",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-early-ack-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-early-ack",
+      "Categories": [
+        "gm-load-early-ack"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_PrematureAckCannotAuthorizeFreshLaunch",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_PrematureAckCannotAuthorizeFreshLaunch",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-protocol-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-protocol",
+      "Categories": [
+        "gm-load-protocol"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionProtocolTests.LoadIpcRefusesOriginalFilesystemScopeBeforeSideEffects|FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionProtocolTests.LoadIpcRefusesOriginalFilesystemScopeBeforeSideEffects",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-session-lifecycle-unit-004",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-session-lifecycle",
+      "Categories": [
+        "gm-load-session-lifecycle"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LoadFullBundleCurrentAckFreshEpoch|FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserLoad_OriginalLiveOwnerStopsBeforeRealReplacement|FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_OriginalLiveOwnerStopsBeforeRealReplacement",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LoadFullBundleCurrentAckFreshEpoch",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserLoad_OriginalLiveOwnerStopsBeforeRealReplacement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_OriginalLiveOwnerStopsBeforeRealReplacement",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
