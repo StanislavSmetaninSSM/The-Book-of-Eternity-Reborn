@@ -3,6 +3,7 @@ using System.Reflection;
 using System.IO.Pipes;
 using System.Text.Json;
 using BookOfEternityClient.Services.GmRuntime;
+using BookOfEternityClient.Services.GmWorkers;
 
 namespace BookOfEternityClient.Tests;
 

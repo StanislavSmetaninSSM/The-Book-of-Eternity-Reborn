@@ -26,6 +26,10 @@ internal static class ProductionMainLinuxFixture
         await Prepare("cc",["-std=c11","-O2","-g","-Wall","-Wextra","-Werror",source,"-o",fixture],"fixture-build");
         foreach(var name in new[]{"BookOfEternityClient","BookOfEternityGMBridge"}.Concat(mode.StartsWith("production-main-",StringComparison.Ordinal)?new[]{"BookOfEternityClient.TestSupport"}:Array.Empty<string>()))
             await Prepare("dotnet",["publish",Path.Combine(repo,name,name+".csproj"),"--no-build","--no-restore","-c",new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name,"-o",Path.Combine(ship,name),"-p:BoeNativePackageDirectory="+package,"-p:BoeRequireNativePackage=true"],"publish-"+name);
+        if(mode=="package-layout") {
+            Assert.True(File.Exists(Path.Combine(ship,"BookOfEternityClient/Launcher/bookofeternity.ps1")),"Causal RED: ordinary published layout lacks its real launcher.");
+            Assert.True(File.Exists(Path.Combine(ship,"BookOfEternityClient/Launcher/gm_main_operation.ps1")),"Causal RED: ordinary published layout lacks participating helper.");return;
+        }
         Directory.CreateDirectory(Path.Combine(ship,"BookOfEternityClient/Launcher"));
         foreach(var f in Directory.GetFiles(Path.Combine(repo,"BookOfEternityClient/Launcher"),"*.ps1"))File.Copy(f,Path.Combine(ship,"BookOfEternityClient/Launcher",Path.GetFileName(f)),true);
         Assert.Empty(Directory.GetFiles(ship,"*.cs",SearchOption.AllDirectories));Assert.Empty(Directory.GetFiles(ship,"*.csproj",SearchOption.AllDirectories));
