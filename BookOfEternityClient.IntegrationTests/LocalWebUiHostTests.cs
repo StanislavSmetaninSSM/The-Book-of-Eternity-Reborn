@@ -528,11 +528,13 @@ public sealed class LocalWebUiHostTests : IDisposable
     public async Task LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard()
     {
         WriteSessionFile("game_state/meta/soul_state.json", """{"soulName":"F2 Bundle","currentRealm":"Mortal World","currentIncarnation":1}""");
-        var saveId = await CreateManualSaveAsync("f2-load-bundle");
+        await CreateManualSaveAsync("f2-load-bundle");
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
         await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
         using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var menu = JsonNode.Parse(await client.GetStringAsync("/api/main-menu"))!.AsObject();
+        var saveId = menu["saves"]!.AsArray()[0]!["saveId"]!.GetValue<string>();
         using var response = await client.PostAsJsonAsync("/api/saves/load", new { saveId });
         var result = JsonNode.Parse(await response.Content.ReadAsStringAsync())!.AsObject();
         response.EnsureSuccessStatusCode();

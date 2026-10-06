@@ -4,6 +4,11 @@ public sealed class GmMainOperationLinuxTests
 {
     [Fact]
     public async Task OriginalOwner_ActualPipeRetainsParticipatingOperation()=>await GmOwnedTerminalLinuxTests.RunAsync("terminal-main-operation-positive");
+    [Theory]
+    [InlineData("terminal-main-operation-retain-race")]
+    [InlineData("terminal-main-operation-cancel-closing")]
+    [InlineData("terminal-main-operation-failed-clean-closing")]
+    public async Task OriginalClient_FinalizationBoundary(string mode)=>await GmOwnedTerminalLinuxTests.RunAsync(mode);
     [Fact]
     public async Task OriginalHelper_UnsentOversizedCommandCanClose()=>await GmOwnedTerminalLinuxTests.RunAsync("terminal-main-operation-helper-oversized");
     [Theory]

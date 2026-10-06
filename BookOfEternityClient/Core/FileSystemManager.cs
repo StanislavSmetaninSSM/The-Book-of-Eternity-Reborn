@@ -21,6 +21,7 @@ internal sealed class FileSystemManagerHooks
     /// </summary>
     internal Action<TrustedLocalPublicationPhase, int>? LocalPublicationRecoveryObserver { get; init; }
     internal Func<Task>? CanonicalWriteLockContendedAsync { get; init; }
+    internal Func<Task>? BeforeMainBorrowRetainAsync { get; init; }
     internal Func<Task>? MainOwnerLockContendedAsync { get; init; }
     internal Func<Task>? SessionLifecycleLockContendedAsync { get; init; }
     internal Func<Task>? BeforeCanonicalWriteLockOpenAsync { get; init; }

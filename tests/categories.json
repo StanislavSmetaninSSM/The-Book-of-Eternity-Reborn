@@ -14236,7 +14236,7 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.IntegrationTests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard"
+            "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard"
           ]
         },
         {
@@ -14244,6 +14244,31 @@
           "runner": "vitest",
           "tests": [
             "BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-main-operation-closing-linux",
+      "responsibility": "Original client delayed retention freeze, established cancellation and actual finalization diagnostic metadata",
+      "excludes": "Previously qualified wire cases, live GM, arbitrary launch, other F1 cohorts",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmMainOperation",
+        "BookOfEternityGMBridge/",
+        "BookOfEternityClient.TestSupport/MainOperationScenarioDriver.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_FinalizationBoundary"
           ]
         }
       ]

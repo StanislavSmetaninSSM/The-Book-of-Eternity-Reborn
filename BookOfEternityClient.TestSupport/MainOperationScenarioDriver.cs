@@ -134,6 +134,30 @@ internal static class MainOperationScenarioDriver
                 if(!(await shutdown).GetProperty("ok").GetBoolean())throw new InvalidOperationException("Actual shutdown did not settle original closing.");
                 await running!.WaitAsync(TimeSpan.FromSeconds(3));
             }
+            if(mode=="terminal-main-operation-retain-race") {
+                var entered=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);var release=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);var opened=false;Task? child=null;
+                var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);
+                var borrowed=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance,PhysicalLoadTransactionOperations.Instance,new FileSystemManagerHooks{
+                    BeforeMainBorrowRetainAsync=async()=>{entered.TrySetResult();await release.Task;},AfterCanonicalWriteLockOpenedAsync=()=>{opened=true;return Task.CompletedTask;}});
+                try {
+                    await SessionOperationContext.RunBoundAsync(files,owner.Identity.GenerationId,async()=>{
+                        child=Task.Run(async()=>{try{await using var lease=await borrowed.AcquireCanonicalWriteLeaseAsync();}catch(IOException){} });
+                        await entered.Task.WaitAsync(TimeSpan.FromSeconds(1));return 42;
+                    });
+                } finally {release.TrySetResult();if(child!=null)await child.WaitAsync(TimeSpan.FromSeconds(2));}
+                if(opened)throw new InvalidOperationException("Delayed borrower opened an actual canonical lease after original close receipt.");
+            }
+            if(mode is "terminal-main-operation-cancel-closing" or "terminal-main-operation-failed-clean-closing") {
+                MainOperationClose? observed=null;type.GetField("BeforeMainCloseReply",BindingFlags.Instance|BindingFlags.NonPublic)!.SetValue(host,(Func<MainOperationClose,Task>)(close=>{observed=close;return Task.CompletedTask;}));
+                var cancel=mode.EndsWith("cancel-closing",StringComparison.Ordinal);
+                var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance,PhysicalLoadTransactionOperations.Instance,new FileSystemManagerHooks{SessionOperationClosingAsync=cancel?()=>throw new IOException("Controlled closing failure."):null});
+                Exception? escaped=null;
+                try {await SessionOperationContext.RunBoundAsync<int>(files,owner.Identity.GenerationId,()=>cancel?Task.FromException<int>(new OperationCanceledException("Established cancellation.")):Task.FromException<int>(new InvalidOperationException("Established operation failure.")));}
+                catch(Exception failure){escaped=failure;}
+                if(observed?.Outcome!=(cancel?MainOperationOutcome.Cancelled:MainOperationOutcome.Failed) || observed.ClosingFailed!=cancel ||
+                    (cancel && escaped is not OperationCanceledException) || (!cancel && escaped is not InvalidOperationException))
+                    throw new InvalidOperationException("Established outcome/actual closing diagnostic was not retained in immutable terminal frame.");
+            }
             if(mode=="terminal-main-operation-helper-oversized") {
                 var start=new System.Diagnostics.ProcessStartInfo("pwsh"){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true};
                 foreach(var arg in new[]{"-NoProfile","-NonInteractive","-File",Path.Combine(repo,"tests/fixtures/GmMainOperation/oversized.ps1"),"-RepoRoot",repo,"-SessionPath",launch.Scratch})start.ArgumentList.Add(arg);

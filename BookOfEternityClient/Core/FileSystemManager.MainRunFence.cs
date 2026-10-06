@@ -39,7 +39,9 @@ public partial class FileSystemManager
             if(_requested?.Owner.RootIdentity==_files.CanonicalRootAuthorityIdentity)_requested.Owner.ValidateAccessAcquisition(_requested,closing);
             for(var p=_parent;p!=null;p=p._parent)
                 if(!p._closed && p._files.CanonicalRootAuthorityIdentity==_files.CanonicalRootAuthorityIdentity && p._requested==_requested && p._access!=null)
-                {p._access.Remote?.Validate(_files.BasePath,closing && p._access.Remote.Closing);_access=p._access.Retain();WasRemote=_access.Remote!=null;_retainedRemote=_access.Remote;_retainedOriginal=_access.Original;return;}
+                {var borrowed=p._access;borrowed.Remote?.Validate(_files.BasePath,closing && borrowed.Remote.Closing);
+                    if(_files._hooks?.BeforeMainBorrowRetainAsync is { } hook)await hook();
+                    _access=borrowed.Retain();WasRemote=_access.Remote!=null;_retainedRemote=_access.Remote;_retainedOriginal=_access.Original;return;}
             if(_requested!=null && _requested.Owner.RootIdentity==_files.CanonicalRootAuthorityIdentity)
             {_requested.Pin?.Retain();_access=new(null,_requested);_retainedOriginal=_requested;return;}
             // This read can only refuse. Absent/Stopped still requires the original
