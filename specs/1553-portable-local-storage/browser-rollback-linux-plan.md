@@ -36,6 +36,11 @@ member mutation, the original recorder publishes its intent; known before or dec
 post bytes can restore baseline, unknown bytes preserve evidence and block continuation.
 Repeated writes and a failed later write cannot discard earlier mutation authority.
 Ordinary hardlink aliases retain their bytes; links/types/out-of-root paths still refuse.
+Schema7 cleanup intent uses the existing cleanup filename with a typed payload carrying
+schema, original generation, transaction root/scope/creation binding and outcome. It
+survives manifest removal and permits only the remaining declared cleanup. Windows
+keeps its empty original intent; Linux rejects and retains that old empty orphan. This
+distinction is required for fresh-manager cleanup without reinterpreting old evidence.
 
 ## Files and interfaces
 
@@ -46,7 +51,9 @@ Ordinary hardlink aliases retain their bytes; links/types/out-of-root paths stil
 - `Core/FileSystemManager.TrustedLocalStorage.cs`, focused browser storage partial and
   `FileSystemManager.cs`: an internal original-active-lease browser scope enables its
   artifact writes and typed trusted-local recorder. Ordinary writes call recorder
-  intent before the existing publisher. Recorder-free cleanup remains in this scope.
+  intent at the shared publication boundary for Write/Append/CAS/Delete, before the
+  existing publisher. Owned artifacts bypass recording to avoid recursive manifest
+  writes. Recorder-free cleanup remains in this scope.
   Reads/writes/recovery validate main + worker + generation; never mint from JSON/PID.
 - Recovery below the already-acquired original main/worker/canonical lease preflights
   supported browser evidence before mutation. Unsupported old/unknown evidence still
@@ -57,12 +64,19 @@ Ordinary hardlink aliases retain their bytes; links/types/out-of-root paths stil
   UI release and SessionOperationContext finalization. Known rollback is RolledBack;
   incomplete rollback is Uncertain; durable commit plus cleanup/close debt remains
   Committed with follow-up. Preserve Success/IsBlocked/message consumer compatibility.
+  Carry the exact result through both ExecuteAtomicAsync and Within under enclosing
+  RunBoundTransactionAsync; supply captured MainOperationOutcome instead of default
+  Completed. Closing failure must retain established Committed/RolledBack/Uncertain
+  and attach debt; it must not replace a settled decision or report Uncertain as Completed.
 - The actual `QteWebInteractionService.ResolveDarenShowcaseActionBoundAsync` declares
   the single Daren profile outside game_session, still within BasePath. Include this
   original declared member using its exact registered path and schema7 external intent,
   through `DarenRewardProfileFileStore`'s same original browser scope. Do not silently
   discard this participant or migrate unrelated standalone profile writes. Windows
   Daren deferred physical route stays unchanged; no arbitrary external path capability.
+  Use a narrow exact registered-path adapter (ordinary canonical APIs resolve within
+  game_session), and qualify the actual QteWebInteractionService reward-producing
+  Resolve action as well as direct declared profile publication/rollback.
 - Both browser Load entries, original quiescent guard, UI acquisition/release/refresh,
   exact Committed/RolledBack/Uncertain and F2 full same-response refresh bundle remain.
   Select actual backend guard/refresh regression; frontend code is unchanged unless a
@@ -83,9 +97,13 @@ Ordinary hardlink aliases retain their bytes; links/types/out-of-root paths stil
   repeated writes/deletes, wrong bytes and retained rollback, committed cleanup debt
   then fresh-manager cleanup, interrupted staged recovery and recovery ordering,
   missing baseline, malformed/stale generation/old-schema retained refusal,
+  cleanup cut after manifest removal (typed schema7 orphan clears, old empty orphan refuses),
   directory cleanup/type/link constraints, actual declared Daren file-store commit/
   rollback, local UI other-owner and refreshed original token, held transaction versus
   replacement, main nonterminal/Stopping and worker nonquiescence refusal before effects.
+  Explicitly cover Write/Append/CAS/Delete with recording, A→B success followed by
+  failed B→C then callback failure restoring A, and finalization faults for all three
+  established decisions through both atomic entry routes.
   Faults use controlled filesystem hooks; no providers/process owner probes needed.
 - [ ] Select only actually affected old ordinary publication/no-legacy-admission and
   actual browser Load guard/full-refresh methods, inspecting source and catalog before
