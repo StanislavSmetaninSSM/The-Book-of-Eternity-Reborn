@@ -15,7 +15,7 @@ $source=Join-Path $RepoRoot $(if($Scenario -like 'launcher-*'){'BookOfEternityCl
 $ast=[Management.Automation.Language.Parser]::ParseFile($source,[ref]$tokens,[ref]$errors)
 if($errors.Count){throw 'Actual source parse failed.'}
 foreach($f in $ast.FindAll({param($n)$n -is [Management.Automation.Language.FunctionDefinitionAst]},$true)) {
- if($f.Name -in @('Write-DaemonJsonFileBestEffort','Write-DaemonStatus','New-DaemonErrorPayload','Get-GmBridgeStatus','Write-GmTurnHelperBootstrap','Quote-PowerShellSingleQuotedString','Copy-GmContextPackFile','Read-BridgeStatus','Get-BridgeStatusPath','Test-BridgeHelperAlive','Remove-BridgeStatusFileIfStopped')){. ([scriptblock]::Create($f.Extent.Text))}
+ if($f.Name -in @('Write-DaemonJsonFileBestEffort','Write-DaemonStatus','New-DaemonErrorPayload','Get-GmBridgeStatus','Write-GmTurnHelperBootstrap','Quote-PowerShellSingleQuotedString','Copy-GmContextPackFile','Read-BridgeStatus','Get-BridgeStatusPath','Test-BridgeHelperAlive','Remove-BridgeStatusFileIfStopped')){. ([scriptblock]::Create($f.Extent.Text.Replace('$PSScriptRoot', ("'" + (Join-Path $RepoRoot 'BookOfEternityClient').Replace("'","''") + "'"))))}
 }
 function Write-Log {param($Message,$Level,$Color)}
 $PSScriptRoot=Join-Path $RepoRoot 'BookOfEternityClient'
