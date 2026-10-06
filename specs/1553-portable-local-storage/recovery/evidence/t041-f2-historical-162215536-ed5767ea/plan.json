@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-main-helper-bounds-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "ed5767eaad616bdc5056397ace65f501565ae859",
+    "WorkingTreeFingerprint": "E929F80D0603217F0CB64D8599B6F33D227F09C8471C7754D62BF0A66FD89AE3",
+    "ChangedFiles": 1
+  },
+  "PreparationSeconds": 7.0296181,
+  "Descriptors": [
+    {
+      "Name": "gm-main-helper-bounds-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-helper-bounds-linux",
+      "Categories": [
+        "gm-main-helper-bounds-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun>
+  <Results>
+    <UnitTestResult testId="ED6A527BE5F4C3B7A925FAB9E6E4CB8E60DBFBB957F43D7EDB15B3611D3FA897" testName="BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts(F2 original Load guard publishes its same-response bundle settings Committed: forwards original bundle and makes no second load-state request)" outcome="Passed" />
+    <UnitTestResult testId="E7C4BA5C0C692341A0AB9943766ADDED60E25FBF16102885175403060009A2DC" testName="BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts(F2 original Load guard publishes its same-response bundle settings RolledBack: forwards original bundle and makes no second load-state request)" outcome="Passed" />
+    <UnitTestResult testId="A6C2B5C7147CD7C4C58E099A85C6284DC19D837CA30FB07E248B7D67A68A1BB3" testName="BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts(F2 original Load guard publishes its same-response bundle settings NotLoaded: forwards original bundle and makes no second load-state request)" outcome="Passed" />
+    <UnitTestResult testId="76276760356E09BFD6C6AF6A772F10E785B0C5148826D9BBE47529724BD91756" testName="BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts(F2 original Load guard publishes its same-response bundle launcher Committed: forwards original bundle and makes no second load-state request)" outcome="Passed" />
+    <UnitTestResult testId="C68D0E3C550FE03E9FD82EA7827DAFCC751E61E435C6EFE3B8B758BA902E2283" testName="BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts(F2 original Load guard publishes its same-response bundle launcher RolledBack: forwards original bundle and makes no second load-state request)" outcome="Passed" />
+    <UnitTestResult testId="9E899A59578E6802C208E19698D3A9E5AE112A0121A5D3CAE3276DF340804156" testName="BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts(F2 original Load guard publishes its same-response bundle launcher NotLoaded: forwards original bundle and makes no second load-state request)" outcome="Passed" />
+    <UnitTestResult testId="E6DF167D30697E777248CE59A6FB04B0D0583662CFE565BD2549E674550DAF05" testName="BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts(F2 original Load guard publishes its same-response bundle settings missing: keeps committed decision without publishing, navigating or refetching)" outcome="Passed" />
+    <UnitTestResult testId="1342B66FE6C522DF1DC8A5CF34D037273340606F85A6A349573B66393CBC92DF" testName="BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts(F2 original Load guard publishes its same-response bundle settings stale: keeps committed decision without publishing, navigating or refetching)" outcome="Passed" />
+    <UnitTestResult testId="E62C18F82B634D779AA8972EA5A09C8620D6956CB18ED13AC1EF3F31E984C987" testName="BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts(F2 original Load guard publishes its same-response bundle settings incomplete: keeps committed decision without publishing, navigating or refetching)" outcome="Passed" />
+    <UnitTestResult testId="E72CC54429DCEF6A0B1951BE6DCE6C3572F162996DBB4E7D59C0896B4F27B65B" testName="BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts(F2 original Load guard publishes its same-response bundle launcher missing: keeps committed decision without publishing, navigating or refetching)" outcome="Passed" />
+    <UnitTestResult testId="61D75CDB16DA326C85CEF78E6D7EFED596A22289B945B77411834771737ACA59" testName="BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts(F2 original Load guard publishes its same-response bundle launcher stale: keeps committed decision without publishing, navigating or refetching)" outcome="Passed" />
+    <UnitTestResult testId="BECBEA7F3E401F743FDA2A2384E90FE38A6FCDD185C583BC177921750A6105AF" testName="BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts(F2 original Load guard publishes its same-response bundle launcher incomplete: keeps committed decision without publishing, navigating or refetching)" outcome="Passed" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest id="ED6A527BE5F4C3B7A925FAB9E6E4CB8E60DBFBB957F43D7EDB15B3611D3FA897" storage="category-vitest" />
+    <UnitTest id="E7C4BA5C0C692341A0AB9943766ADDED60E25FBF16102885175403060009A2DC" storage="category-vitest" />
+    <UnitTest id="A6C2B5C7147CD7C4C58E099A85C6284DC19D837CA30FB07E248B7D67A68A1BB3" storage="category-vitest" />
+    <UnitTest id="76276760356E09BFD6C6AF6A772F10E785B0C5148826D9BBE47529724BD91756" storage="category-vitest" />
+    <UnitTest id="C68D0E3C550FE03E9FD82EA7827DAFCC751E61E435C6EFE3B8B758BA902E2283" storage="category-vitest" />
+    <UnitTest id="9E899A59578E6802C208E19698D3A9E5AE112A0121A5D3CAE3276DF340804156" storage="category-vitest" />
+    <UnitTest id="E6DF167D30697E777248CE59A6FB04B0D0583662CFE565BD2549E674550DAF05" storage="category-vitest" />
+    <UnitTest id="1342B66FE6C522DF1DC8A5CF34D037273340606F85A6A349573B66393CBC92DF" storage="category-vitest" />
+    <UnitTest id="E62C18F82B634D779AA8972EA5A09C8620D6956CB18ED13AC1EF3F31E984C987" storage="category-vitest" />
+    <UnitTest id="E72CC54429DCEF6A0B1951BE6DCE6C3572F162996DBB4E7D59C0896B4F27B65B" storage="category-vitest" />
+    <UnitTest id="61D75CDB16DA326C85CEF78E6D7EFED596A22289B945B77411834771737ACA59" storage="category-vitest" />
+    <UnitTest id="BECBEA7F3E401F743FDA2A2384E90FE38A6FCDD185C583BC177921750A6105AF" storage="category-vitest" />
+  </TestDefinitions>
+  <ResultSummary>
+    <Counters total="12" executed="12" passed="12" failed="0" />
+  </ResultSummary>
+</TestRun>

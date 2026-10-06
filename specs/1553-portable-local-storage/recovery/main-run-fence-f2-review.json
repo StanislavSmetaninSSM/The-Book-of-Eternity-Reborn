@@ -1,0 +1,24 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T041-RUN-FENCE-F2",
+  "Reviewer": "/root/f2_review",
+  "Model": "gpt-6.1-sol",
+  "ReasoningEffort": "xhigh",
+  "SourceReviewed": "6202426f0db8197d12b72f2ce111dd4a0c8f490f",
+  "SourceVerdict": "PASS; no remaining concrete source blocker",
+  "FinalEvidenceVerdict": "Pending independent final evidence review",
+  "FindingsClosed": [
+    "Frozen explicit outcome before finalization",
+    "Established result retained on finalization/reply failure",
+    "Same helper close and actual transport disposal before timeout/stall waits",
+    "Escaped borrower cannot remint; lease retain/freeze atomic",
+    "Canonical status admission, actual publisher drain/revoke outside sync",
+    "Full expected stop identity validated after lifecycle semaphore; no protected PID fallback",
+    "Outer main admission before prepare/prebinding; real ancillary/control effects",
+    "Same-response complete browser bundle under original quiescent guard"
+  ],
+  "WindowsFailureClassification": "Four unchanged legacy browser rollback preparation checks require Windows publication backend, fail before callback on Linux. Source split supported; actual18/14/4 retained, four unqualified.",
+  "ReviewerRuntimeEditsTestsBuildsProbes": 0,
+  "WriterEvidenceAudit": "Separately attributed in qualification; not claimed as reviewer performed",
+  "PublicationRestoration": "Pending final push/readback/fresh restore"
+}

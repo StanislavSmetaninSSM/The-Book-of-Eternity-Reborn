@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-main-explicit-outcome-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "a3f3e0070d87de2c1dc630d568c2ddb76970fbaa",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 55.127358,
+  "Descriptors": [
+    {
+      "Name": "gm-main-explicit-outcome-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-explicit-outcome-linux",
+      "Categories": [
+        "gm-main-explicit-outcome-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualAdapter_ExplicitOutcomeSurvivesFinalization",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualAdapter_ExplicitOutcomeSurvivesFinalization",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

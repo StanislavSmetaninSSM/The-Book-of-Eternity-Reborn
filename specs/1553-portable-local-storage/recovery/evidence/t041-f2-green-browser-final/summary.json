@@ -1,0 +1,100 @@
+{
+  "Categories": [
+    "gm-main-browser-bundle-client",
+    "gm-main-affected-browser-client"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "49dc76b63c4cf79fabdcb3990369576868717217",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "gm-main-affected-browser-client",
+      "Seconds": 3.9305233,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-main-browser-bundle-client",
+      "Seconds": 1.9456898,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [
+    {
+      "Descriptor": "gm-main-affected-browser-client-frontend-001",
+      "Adapter": "vitest",
+      "VerificationKind": "tests",
+      "Results": 45,
+      "Seconds": 3.914088
+    },
+    {
+      "Descriptor": "gm-main-browser-bundle-client-frontend-002",
+      "Adapter": "vitest",
+      "VerificationKind": "tests",
+      "Results": 12,
+      "Seconds": 1.9441795
+    }
+  ],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.1082376,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0640413,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1263366,
+      "Completed": true
+    },
+    {
+      "Name": "gm-main-affected-browser-client-frontend-001",
+      "Seconds": 3.8513165,
+      "Completed": true
+    },
+    {
+      "Name": "gm-main-browser-bundle-client-frontend-002",
+      "Seconds": 1.9368793,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0037586,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:00:06.7245017",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 3,
+    "CompletedCases": 57,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 57,
+    "Executed": 57,
+    "Passed": 57,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

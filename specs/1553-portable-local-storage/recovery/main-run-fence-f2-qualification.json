@@ -1,0 +1,1920 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T041-RUN-FENCE-F2",
+  "Branch": "codex/1553-load-filesystem",
+  "AcceptedF1": "f4e7621fe85c7aa0393552708d28eec4bfe36d8f",
+  "AcceptedDesign": "0658e4405a4d0d958eb1b64b11b83956917fb81b",
+  "F2DesignReviewedPlan": "4bf38010dd87e9f2a206bb955ea00864a8ea366f",
+  "FinalRuntimeSource": "6202426f0db8197d12b72f2ce111dd4a0c8f490f",
+  "LastQualificationSource": "0c59ef920accc06f962a98517a728bf2574b81f6",
+  "Status": "Controlled F2 source PASS; writer evidence sweep PASS; independent final evidence review pending",
+  "Model": "gpt-6.1-sol",
+  "ReasoningEffort": "xhigh",
+  "Tools": {
+    "SDK": "10.0.401",
+    "RuntimeNet8": "8.0.31",
+    "RuntimeNet10": "10.0.12",
+    "PowerShell": "7.5.4",
+    "Compiler": "/usr/bin/cc; Debian14.2.0-19; per-native build provenance retained"
+  },
+  "DistinctPassed": 129,
+  "CountsScope": "129 distinct actual PASS across named F2 source checkpoints, incremental affected checks; not all rerun on one final snapshot. Earlier failures/preparation/Windows unavailable excluded. Frontend Vitest cases, not file estimates, counted once.",
+  "Breakdown": {
+    "LinuxOriginalOwnerGuardianCases": 24,
+    "ActualFrontendCases": 57,
+    "OtherManagedOrInertPowerShellCases": 48
+  },
+  "LatestGuardianCount": 24,
+  "LatestGuardianEchild": 24,
+  "LatestGuardianEmergencySignals": 0,
+  "LatestGuardianFailures": 0,
+  "LatestGuardianDeadlines": 0,
+  "AllRecordedRunnerTests": {
+    "Executed": 235,
+    "Passed": 175,
+    "Failed": 60,
+    "Caveat": "Historical reports include preparation/invalid fixtures and repeated attempts; failed frontend adapter reports zero but actual six Vitest failures are separately retained. These totals are NOT qualification."
+  },
+  "Cases": [
+    {
+      "Name": "BookOfEternityClient.Tests.GameEngineSourceGuardTests.GmResponseWaits_MustFailFastThroughHarnessTerminalErrorWhenRuntimeIsDead",
+      "RunId": "20261006-170146-571-362080-ffd52ff04a1c4081944b328b64ffe2d8-categories",
+      "SourceCommit": "321513025b5d62c7f5b2625a724e7d0209d5a592"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GameEngineSourceGuardTests.TurnFinalizers_MustRunUnderImmutableSessionOperationFence",
+      "RunId": "20261006-170146-571-362080-ffd52ff04a1c4081944b328b64ffe2d8-categories",
+      "SourceCommit": "321513025b5d62c7f5b2625a724e7d0209d5a592"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.LauncherLostResponse_OnlyQueriesSameOperation",
+      "RunId": "20261006-170146-571-362080-ffd52ff04a1c4081944b328b64ffe2d8-categories",
+      "SourceCommit": "321513025b5d62c7f5b2625a724e7d0209d5a592"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: \"qte\")",
+      "RunId": "20261006-170146-571-362080-ffd52ff04a1c4081944b328b64ffe2d8-categories",
+      "SourceCommit": "321513025b5d62c7f5b2625a724e7d0209d5a592"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: \"repair\")",
+      "RunId": "20261006-170146-571-362080-ffd52ff04a1c4081944b328b64ffe2d8-categories",
+      "SourceCommit": "321513025b5d62c7f5b2625a724e7d0209d5a592"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: \"terminal\")",
+      "RunId": "20261006-170146-571-362080-ffd52ff04a1c4081944b328b64ffe2d8-categories",
+      "SourceCommit": "321513025b5d62c7f5b2625a724e7d0209d5a592"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: \"turn\")",
+      "RunId": "20261006-170146-571-362080-ffd52ff04a1c4081944b328b64ffe2d8-categories",
+      "SourceCommit": "321513025b5d62c7f5b2625a724e7d0209d5a592"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealDaemonLauncherRpc_RetainsOneOperationAndOneSubmit",
+      "RunId": "20261006-171026-005-364702-34966e3ad2294d428c79e723dc46f00d-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealLauncherTimeout_HeldInputReturnsUnknownWithoutReplay",
+      "RunId": "20261006-171026-005-364702-34966e3ad2294d428c79e723dc46f00d-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealRepairConsumers_DistinctRevisionsKeepDistinctIdentities",
+      "RunId": "20261006-170146-571-362080-ffd52ff04a1c4081944b328b64ffe2d8-categories",
+      "SourceCommit": "321513025b5d62c7f5b2625a724e7d0209d5a592"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualAdapter_ExplicitOutcomeSurvivesFinalization(mode: \"terminal-main-operation-explicit-cancelled-finaliz\"\u00b7\u00b7\u00b7)",
+      "RunId": "20261006-171026-005-364702-34966e3ad2294d428c79e723dc46f00d-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualAdapter_ExplicitOutcomeSurvivesFinalization(mode: \"terminal-main-operation-explicit-failed-finalizati\"\u00b7\u00b7\u00b7)",
+      "RunId": "20261006-171026-005-364702-34966e3ad2294d428c79e723dc46f00d-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_ControlledLiveBoundary(mode: \"terminal-main-operation-helper-caught-loss\")",
+      "RunId": "20261006-165320-564-360305-9ac0867624204d9d928cd6dfddd84e57-categories",
+      "SourceCommit": "acaf25579f085e2af13081410dcfed45e87a9f49"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_ControlledLiveBoundary(mode: \"terminal-main-operation-helper-stall\")",
+      "RunId": "20261006-165320-564-360305-9ac0867624204d9d928cd6dfddd84e57-categories",
+      "SourceCommit": "acaf25579f085e2af13081410dcfed45e87a9f49"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_ControlledLiveBoundary(mode: \"terminal-main-operation-helper-stopping\")",
+      "RunId": "20261006-165320-564-360305-9ac0867624204d9d928cd6dfddd84e57-categories",
+      "SourceCommit": "acaf25579f085e2af13081410dcfed45e87a9f49"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_ControlledLiveBoundary(mode: \"terminal-main-operation-helper-timeout\")",
+      "RunId": "20261006-165320-564-360305-9ac0867624204d9d928cd6dfddd84e57-categories",
+      "SourceCommit": "acaf25579f085e2af13081410dcfed45e87a9f49"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_ControlledLiveBoundary(mode: \"terminal-main-operation-helper-timeout-reply-loss\")",
+      "RunId": "20261006-165320-564-360305-9ac0867624204d9d928cd6dfddd84e57-categories",
+      "SourceCommit": "acaf25579f085e2af13081410dcfed45e87a9f49"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ContinuationBoundary(mode: \"terminal-main-operation-close-reply-loss\")",
+      "RunId": "20261006-171529-966-367355-619a5ba554884ce5b8874a6db6e2044f-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ContinuationBoundary(mode: \"terminal-main-operation-escaped-borrow\")",
+      "RunId": "20261006-171529-966-367355-619a5ba554884ce5b8874a6db6e2044f-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_FinalizationBoundary(mode: \"terminal-main-operation-cancel-closing\")",
+      "RunId": "20261006-171529-966-367355-619a5ba554884ce5b8874a6db6e2044f-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_FinalizationBoundary(mode: \"terminal-main-operation-failed-clean-closing\")",
+      "RunId": "20261006-171529-966-367355-619a5ba554884ce5b8874a6db6e2044f-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_FinalizationBoundary(mode: \"terminal-main-operation-retain-race\")",
+      "RunId": "20261006-171529-966-367355-619a5ba554884ce5b8874a6db6e2044f-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ReviewClosingBoundary(mode: \"terminal-main-operation-shutdown-identity\")",
+      "RunId": "20261006-164854-768-359407-dd770fb57ba142d48da15bc2c41a3142-categories",
+      "SourceCommit": "acaf25579f085e2af13081410dcfed45e87a9f49"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ReviewClosingBoundary(mode: \"terminal-main-operation-successful-finalization\")",
+      "RunId": "20261006-164854-768-359407-dd770fb57ba142d48da15bc2c41a3142-categories",
+      "SourceCommit": "acaf25579f085e2af13081410dcfed45e87a9f49"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose",
+      "RunId": "20261006-162923-805-353903-83d45b596b0d40a2b99078c439d7beca-categories",
+      "SourceCommit": "654a6e6e903a416c091d47bdebb497f6f0d15985"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-activation-exit\")",
+      "RunId": "20261006-171529-966-367355-619a5ba554884ce5b8874a6db6e2044f-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-client-positive\")",
+      "RunId": "20261006-171529-966-367355-619a5ba554884ce5b8874a6db6e2044f-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-omitted-close\")",
+      "RunId": "20261006-171529-966-367355-619a5ba554884ce5b8874a6db6e2044f-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-query\")",
+      "RunId": "20261006-171529-966-367355-619a5ba554884ce5b8874a6db6e2044f-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-shutdown\")",
+      "RunId": "20261006-171529-966-367355-619a5ba554884ce5b8874a6db6e2044f-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-status-admission\")",
+      "RunId": "20261006-171529-966-367355-619a5ba554884ce5b8874a6db6e2044f-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualPipeRetainsParticipatingOperation",
+      "RunId": "20261006-171529-966-367355-619a5ba554884ce5b8874a6db6e2044f-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary(mode: \"terminal-main-operation-status-fault\")",
+      "RunId": "20261006-154816-134-339722-166a6287dadd436e91d03e583235dbe1-categories",
+      "SourceCommit": "4e97c0639914e3980dd4f97c255b2769e2754f14"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary(mode: \"terminal-main-operation-status-stall\")",
+      "RunId": "20261006-154816-134-339722-166a6287dadd436e91d03e583235dbe1-categories",
+      "SourceCommit": "4e97c0639914e3980dd4f97c255b2769e2754f14"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainOperationPinTests.ActualPipe_LargeUnicodeT042IdentitySurvivesStatusAndCancel",
+      "RunId": "20261006-171529-966-367355-619a5ba554884ce5b8874a6db6e2044f-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.ParticipatingHelperCli_AbsentRootHasNoEffects",
+      "RunId": "20261006-171026-005-364702-34966e3ad2294d428c79e723dc46f00d-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: \"generate-session\")",
+      "RunId": "20261006-163038-452-354712-e9a727595cdd425f85288adbda559a44-categories",
+      "SourceCommit": "654a6e6e903a416c091d47bdebb497f6f0d15985"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: \"register-window\")",
+      "RunId": "20261006-163038-452-354712-e9a727595cdd425f85288adbda559a44-categories",
+      "SourceCommit": "654a6e6e903a416c091d47bdebb497f6f0d15985"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: \"start-daemon\")",
+      "RunId": "20261006-163038-452-354712-e9a727595cdd425f85288adbda559a44-categories",
+      "SourceCommit": "654a6e6e903a416c091d47bdebb497f6f0d15985"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"bootstrap\", preexisting: False)",
+      "RunId": "20261006-153703-425-335740-b504b50fd8fd42e894a5973e9fa455a7-categories",
+      "SourceCommit": "1cbf9a50bcd1d21e60a6530080eae336ad735de7"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"context-copy\", preexisting: False)",
+      "RunId": "20261006-153703-425-335740-b504b50fd8fd42e894a5973e9fa455a7-categories",
+      "SourceCommit": "1cbf9a50bcd1d21e60a6530080eae336ad735de7"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"daemon-stale\", preexisting: True)",
+      "RunId": "20261006-153703-425-335740-b504b50fd8fd42e894a5973e9fa455a7-categories",
+      "SourceCommit": "1cbf9a50bcd1d21e60a6530080eae336ad735de7"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"daemon-status\", preexisting: False)",
+      "RunId": "20261006-153703-425-335740-b504b50fd8fd42e894a5973e9fa455a7-categories",
+      "SourceCommit": "1cbf9a50bcd1d21e60a6530080eae336ad735de7"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"launcher-delete\", preexisting: True)",
+      "RunId": "20261006-153703-425-335740-b504b50fd8fd42e894a5973e9fa455a7-categories",
+      "SourceCommit": "1cbf9a50bcd1d21e60a6530080eae336ad735de7"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"launcher-stale\", preexisting: True)",
+      "RunId": "20261006-153703-425-335740-b504b50fd8fd42e894a5973e9fa455a7-categories",
+      "SourceCommit": "1cbf9a50bcd1d21e60a6530080eae336ad735de7"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing",
+      "RunId": "20261006-170146-571-362080-ffd52ff04a1c4081944b328b64ffe2d8-categories",
+      "SourceCommit": "321513025b5d62c7f5b2625a724e7d0209d5a592"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard",
+      "RunId": "20261006-160028-331-344229-d149224430db41e5a92a249f84a56f70-categories",
+      "SourceCommit": "49525f8f0e0de9e3ef3d81949a86d971342a100b"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"absent-authority\")",
+      "RunId": "20261006-171200-572-365594-da155d969464418d8fff6baf224ee94c-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"cached-settings\")",
+      "RunId": "20261006-171200-572-365594-da155d969464418d8fff6baf224ee94c-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"game-read-failure\")",
+      "RunId": "20261006-171200-572-365594-da155d969464418d8fff6baf224ee94c-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"mixed-request\")",
+      "RunId": "20261006-171200-572-365594-da155d969464418d8fff6baf224ee94c-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"no-active\")",
+      "RunId": "20261006-171200-572-365594-da155d969464418d8fff6baf224ee94c-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"rotate-close\")",
+      "RunId": "20261006-171200-572-365594-da155d969464418d8fff6baf224ee94c-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"rotate-read\")",
+      "RunId": "20261006-171200-572-365594-da155d969464418d8fff6baf224ee94c-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"current\")",
+      "RunId": "20261006-171200-572-365594-da155d969464418d8fff6baf224ee94c-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"missing\")",
+      "RunId": "20261006-171200-572-365594-da155d969464418d8fff6baf224ee94c-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"settings-failure\")",
+      "RunId": "20261006-171200-572-365594-da155d969464418d8fff6baf224ee94c-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"stale\")",
+      "RunId": "20261006-171200-572-365594-da155d969464418d8fff6baf224ee94c-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked",
+      "RunId": "20261006-171200-572-365594-da155d969464418d8fff6baf224ee94c-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds",
+      "RunId": "20261006-171200-572-365594-da155d969464418d8fff6baf224ee94c-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: \"absent-generation\")",
+      "RunId": "20261006-171717-144-368885-a2916beb431242aba41ea9f9409c7db3-categories",
+      "SourceCommit": "0c59ef920accc06f962a98517a728bf2574b81f6"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: \"committed\")",
+      "RunId": "20261006-171717-144-368885-a2916beb431242aba41ea9f9409c7db3-categories",
+      "SourceCommit": "0c59ef920accc06f962a98517a728bf2574b81f6"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: \"late-absent-generation\")",
+      "RunId": "20261006-171717-144-368885-a2916beb431242aba41ea9f9409c7db3-categories",
+      "SourceCommit": "0c59ef920accc06f962a98517a728bf2574b81f6"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: \"late-pending\")",
+      "RunId": "20261006-171717-144-368885-a2916beb431242aba41ea9f9409c7db3-categories",
+      "SourceCommit": "0c59ef920accc06f962a98517a728bf2574b81f6"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: \"late-token\")",
+      "RunId": "20261006-171717-144-368885-a2916beb431242aba41ea9f9409c7db3-categories",
+      "SourceCommit": "0c59ef920accc06f962a98517a728bf2574b81f6"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: \"menu-refresh\")",
+      "RunId": "20261006-171717-144-368885-a2916beb431242aba41ea9f9409c7db3-categories",
+      "SourceCommit": "0c59ef920accc06f962a98517a728bf2574b81f6"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: \"missing-source\")",
+      "RunId": "20261006-171717-144-368885-a2916beb431242aba41ea9f9409c7db3-categories",
+      "SourceCommit": "0c59ef920accc06f962a98517a728bf2574b81f6"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: \"newer-generation\")",
+      "RunId": "20261006-171717-144-368885-a2916beb431242aba41ea9f9409c7db3-categories",
+      "SourceCommit": "0c59ef920accc06f962a98517a728bf2574b81f6"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: \"rollback\")",
+      "RunId": "20261006-171717-144-368885-a2916beb431242aba41ea9f9409c7db3-categories",
+      "SourceCommit": "0c59ef920accc06f962a98517a728bf2574b81f6"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: \"service-refresh\")",
+      "RunId": "20261006-171717-144-368885-a2916beb431242aba41ea9f9409c7db3-categories",
+      "SourceCommit": "0c59ef920accc06f962a98517a728bf2574b81f6"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: \"uncertain\")",
+      "RunId": "20261006-171717-144-368885-a2916beb431242aba41ea9f9409c7db3-categories",
+      "SourceCommit": "0c59ef920accc06f962a98517a728bf2574b81f6"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.BoundInvocationRejectsBeforePreparationAndUnboundLoadRemainsAvailable",
+      "RunId": "20261006-171200-572-365594-da155d969464418d8fff6baf224ee94c-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption launcher: blocks a lost response without refresh or retry promises",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption launcher: confirmed rollback is distinct and never navigates to a loaded chapter",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption launcher: explicit NotLoaded needs no invented generation and permits safe refusal",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption launcher: newer navigation cannot be overwritten by an old committed response",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption launcher: preserves commitment when required refresh fails",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption launcher: retains Committed from HTTP409 and blocks even after unmount",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption launcher: retains Uncertain from HTTP409 and blocks even after unmount",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption launcher: retains a nonblocking committed follow-up after successful navigation",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption launcher: suppresses duplicate dispatch synchronously before rerender",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption launcher: waits for required refresh before navigation (none)",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption launcher: waits for required refresh before navigation (unmount)",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption same-mount launcher mode change invalidates late committed navigation",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption settings: blocks a lost response without refresh or retry promises",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption settings: confirmed rollback is distinct and never navigates to a loaded chapter",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption settings: explicit NotLoaded needs no invented generation and permits safe refusal",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption settings: newer navigation cannot be overwritten by an old committed response",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption settings: preserves commitment when required refresh fails",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption settings: retains Committed from HTTP409 and blocks even after unmount",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption settings: retains Uncertain from HTTP409 and blocks even after unmount",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption settings: retains a nonblocking committed follow-up after successful navigation",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption settings: suppresses duplicate dispatch synchronously before rerender",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption settings: waits for required refresh before navigation (none)",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption settings: waits for required refresh before navigation (unmount)",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption shares synchronous admission between both mounted consuming handlers",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::actual ShellProvider owns load admission and blocked continuation a command dispatched earlier cannot navigate after load stops continuation",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::actual ShellProvider owns load admission and blocked continuation a command reply cannot publish or dispatch an old GM action after a healthy load has finished",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::actual ShellProvider owns load admission and blocked continuation blocks commands, actions and ordinary refresh during load and after a stale owner records uncertainty",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::actual ShellProvider owns load admission and blocked continuation clears an already-present command view when load takes ownership",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::actual ShellProvider owns load admission and blocked continuation command-follow-up: discards an old action response after successful load finish",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::actual ShellProvider owns load admission and blocked continuation direct-action: discards an old action response after successful load finish",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::actual ShellProvider owns load admission and blocked continuation keeps a synchronous single dispatch owner and does not let stale finish release its successor",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::actual ShellProvider owns load admission and blocked continuation retains nonblocking follow-up after navigation without stopping commands",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority accepts only explicitly allowed no-active-chapter absence for safe reconciliation",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority discards the entire late bundle after newer-refresh",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority discards the entire late bundle after unmounted",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority does not use archive-list presence to accept another generation",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority publishes every required surface together and clears old optional diagnostics",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority refuses audio without publishing a partial or unbound shell",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority refuses game without publishing a partial or unbound shell",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority refuses generation without publishing a partial or unbound shell",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority refuses http without publishing a partial or unbound shell",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority refuses lost without publishing a partial or unbound shell",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority refuses menu without publishing a partial or unbound shell",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority refuses session without publishing a partial or unbound shell",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority refuses settings without publishing a partial or unbound shell",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle launcher Committed: forwards original bundle and makes no second load-state request",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle launcher NotLoaded: forwards original bundle and makes no second load-state request",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle launcher RolledBack: forwards original bundle and makes no second load-state request",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle launcher incomplete: keeps committed decision without publishing, navigating or refetching",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle launcher missing: keeps committed decision without publishing, navigating or refetching",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle launcher stale: keeps committed decision without publishing, navigating or refetching",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle settings Committed: forwards original bundle and makes no second load-state request",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle settings NotLoaded: forwards original bundle and makes no second load-state request",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle settings RolledBack: forwards original bundle and makes no second load-state request",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle settings incomplete: keeps committed decision without publishing, navigating or refetching",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle settings missing: keeps committed decision without publishing, navigating or refetching",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle settings stale: keeps committed decision without publishing, navigating or refetching",
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    }
+  ],
+  "SelectedRuns": [
+    {
+      "RunId": "20261006-153703-425-335740-b504b50fd8fd42e894a5973e9fa455a7-categories",
+      "SourceCommit": "1cbf9a50bcd1d21e60a6530080eae336ad735de7",
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-adapter-status",
+      "ReportedTests": {
+        "Total": 13,
+        "Executed": 13,
+        "Passed": 13,
+        "Failed": 0
+      },
+      "AcceptedSubset": "Only actual Passed cases;160028 frontend earlier6 excluded,163038 only corrected ancillary3,1701469/11 and17120014/18; failures never counted as qualification."
+    },
+    {
+      "RunId": "20261006-154816-134-339722-166a6287dadd436e91d03e583235dbe1-categories",
+      "SourceCommit": "4e97c0639914e3980dd4f97c255b2769e2754f14",
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-status-retirement",
+      "ReportedTests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "AcceptedSubset": "Only actual Passed cases;160028 frontend earlier6 excluded,163038 only corrected ancillary3,1701469/11 and17120014/18; failures never counted as qualification."
+    },
+    {
+      "RunId": "20261006-160028-331-344229-d149224430db41e5a92a249f84a56f70-categories",
+      "SourceCommit": "49525f8f0e0de9e3ef3d81949a86d971342a100b",
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-browser-bundle",
+      "ReportedTests": {
+        "Total": 7,
+        "Executed": 7,
+        "Passed": 7,
+        "Failed": 0
+      },
+      "AcceptedSubset": "Only actual Passed cases;160028 frontend earlier6 excluded,163038 only corrected ancillary3,1701469/11 and17120014/18; failures never counted as qualification."
+    },
+    {
+      "RunId": "20261006-162923-805-353903-83d45b596b0d40a2b99078c439d7beca-categories",
+      "SourceCommit": "654a6e6e903a416c091d47bdebb497f6f0d15985",
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-helper-admission",
+      "ReportedTests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 1,
+        "Failed": 0
+      },
+      "AcceptedSubset": "Only actual Passed cases;160028 frontend earlier6 excluded,163038 only corrected ancillary3,1701469/11 and17120014/18; failures never counted as qualification."
+    },
+    {
+      "RunId": "20261006-163038-452-354712-e9a727595cdd425f85288adbda559a44-categories",
+      "SourceCommit": "654a6e6e903a416c091d47bdebb497f6f0d15985",
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-ancillary-green-cli-invalid",
+      "ReportedTests": {
+        "Total": 4,
+        "Executed": 4,
+        "Passed": 3,
+        "Failed": 1
+      },
+      "AcceptedSubset": "Only actual Passed cases;160028 frontend earlier6 excluded,163038 only corrected ancillary3,1701469/11 and17120014/18; failures never counted as qualification."
+    },
+    {
+      "RunId": "20261006-164854-768-359407-dd770fb57ba142d48da15bc2c41a3142-categories",
+      "SourceCommit": "acaf25579f085e2af13081410dcfed45e87a9f49",
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-review-closing",
+      "ReportedTests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "AcceptedSubset": "Only actual Passed cases;160028 frontend earlier6 excluded,163038 only corrected ancillary3,1701469/11 and17120014/18; failures never counted as qualification."
+    },
+    {
+      "RunId": "20261006-165320-564-360305-9ac0867624204d9d928cd6dfddd84e57-categories",
+      "SourceCommit": "acaf25579f085e2af13081410dcfed45e87a9f49",
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-helper-live",
+      "ReportedTests": {
+        "Total": 5,
+        "Executed": 5,
+        "Passed": 5,
+        "Failed": 0
+      },
+      "AcceptedSubset": "Only actual Passed cases;160028 frontend earlier6 excluded,163038 only corrected ancillary3,1701469/11 and17120014/18; failures never counted as qualification."
+    },
+    {
+      "RunId": "20261006-170146-571-362080-ffd52ff04a1c4081944b328b64ffe2d8-categories",
+      "SourceCommit": "321513025b5d62c7f5b2625a724e7d0209d5a592",
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-affected-managed-fixture-preparation",
+      "ReportedTests": {
+        "Total": 11,
+        "Executed": 11,
+        "Passed": 9,
+        "Failed": 2
+      },
+      "AcceptedSubset": "Only actual Passed cases;160028 frontend earlier6 excluded,163038 only corrected ancillary3,1701469/11 and17120014/18; failures never counted as qualification."
+    },
+    {
+      "RunId": "20261006-171026-005-364702-34966e3ad2294d428c79e723dc46f00d-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f",
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-explicit-affected-input",
+      "ReportedTests": {
+        "Total": 5,
+        "Executed": 5,
+        "Passed": 5,
+        "Failed": 0
+      },
+      "AcceptedSubset": "Only actual Passed cases;160028 frontend earlier6 excluded,163038 only corrected ancillary3,1701469/11 and17120014/18; failures never counted as qualification."
+    },
+    {
+      "RunId": "20261006-171200-572-365594-da155d969464418d8fff6baf224ee94c-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f",
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-affected-browser-windows-unavailable",
+      "ReportedTests": {
+        "Total": 18,
+        "Executed": 18,
+        "Passed": 14,
+        "Failed": 4
+      },
+      "AcceptedSubset": "Only actual Passed cases;160028 frontend earlier6 excluded,163038 only corrected ancillary3,1701469/11 and17120014/18; failures never counted as qualification."
+    },
+    {
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217",
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-browser-final",
+      "ReportedTests": {
+        "Total": 57,
+        "Executed": 57,
+        "Passed": 57,
+        "Failed": 0
+      },
+      "AcceptedSubset": "Only actual Passed cases;160028 frontend earlier6 excluded,163038 only corrected ancillary3,1701469/11 and17120014/18; failures never counted as qualification."
+    },
+    {
+      "RunId": "20261006-171529-966-367355-619a5ba554884ce5b8874a6db6e2044f-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217",
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-final-closing",
+      "ReportedTests": {
+        "Total": 13,
+        "Executed": 13,
+        "Passed": 13,
+        "Failed": 0
+      },
+      "AcceptedSubset": "Only actual Passed cases;160028 frontend earlier6 excluded,163038 only corrected ancillary3,1701469/11 and17120014/18; failures never counted as qualification."
+    },
+    {
+      "RunId": "20261006-171717-144-368885-a2916beb431242aba41ea9f9409c7db3-categories",
+      "SourceCommit": "0c59ef920accc06f962a98517a728bf2574b81f6",
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-load-outcomes",
+      "ReportedTests": {
+        "Total": 11,
+        "Executed": 11,
+        "Passed": 11,
+        "Failed": 0
+      },
+      "AcceptedSubset": "Only actual Passed cases;160028 frontend earlier6 excluded,163038 only corrected ancillary3,1701469/11 and17120014/18; failures never counted as qualification."
+    }
+  ],
+  "LatestGuardians": [
+    {
+      "Mode": "terminal-main-operation-activation-exit",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-final-closing/native/8c532b9197b241fa9a03629fa1ba0a2f/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-cancel-closing",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-final-closing/native/dd8af26dec814522b880d1ffe6e3ac78/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-client-positive",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-final-closing/native/a2733923bea14b939b0a4da859875f96/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-close-reply-loss",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-final-closing/native/8b22f8457edb42e7a34f1bebb44d0820/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-escaped-borrow",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-final-closing/native/b6cafac07e85450aacff52be55e0c4a6/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-explicit-cancelled-finalization",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-explicit-affected-input/native/01b6d99e37584515bde3713687fe4834/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-explicit-failed-finalization",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-explicit-affected-input/native/85a60fabb4944c4bb9878c10d3eabc47/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-failed-clean-closing",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-final-closing/native/889b50b6976c4248a5d54997f569ecc7/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-helper-caught-loss",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-helper-live/native/e3aca19af2394d4c9f4fa37d1d82d38a/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-helper-oversized",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-helper-admission/native/ec64805a3d6d46509c82270f1188aa3e/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-helper-stall",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-helper-live/native/5d94883f51114d37966e37bbde835f3f/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-helper-stopping",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-helper-live/native/1c8e9ae9e6b3474a93017b4acfc35dab/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-helper-timeout",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-helper-live/native/6b88ab33232f44e3a48fdbfa762ec0b2/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-helper-timeout-reply-loss",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-helper-live/native/dac6a80e94ad494594e9584643bf375a/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-omitted-close",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-final-closing/native/2bfbee5c2cec4822910cdb82076ad9b3/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-positive",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-final-closing/native/10b1f737c4504315a3d2c4a346698da1/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-query",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-final-closing/native/c3bf72bd92964a658d0770a1494ebfe3/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-retain-race",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-final-closing/native/3dd52d34e58b411ca0d55468d3895445/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-shutdown",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-final-closing/native/13af6227070e481da4bc9304b5fc20fe/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-shutdown-identity",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-review-closing/native/3c1d4c9eba7c4993b2c3f32822c5f66e/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-status-admission",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-final-closing/native/9c10a164fe3b4c8982c4937fd9ef808a/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-status-fault",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-status-retirement/native/ea6b0127c69d44aaba6ca365b36449d0/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-status-stall",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-status-retirement/native/ef4da0468808474fbe3715c49d63105c/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "Mode": "terminal-main-operation-successful-finalization",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-review-closing/native/7c27a0f5818949f4b852dfc545c036b2/guardian.json",
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "Result": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    }
+  ],
+  "SourceReferences": [
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs",
+      "Bytes": 97049,
+      "Sha256": "e4c7612e6db92001b10cfc972cc5f8831d6378232e83060104c8e9459c856ebb",
+      "GitBlob": "21a1e55efb9c649398fc7cf2cc4950a42c660f28"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+      "Bytes": 1054,
+      "Sha256": "472a2d743d0bb89a2585ca22c90fd5bce33ba92edc02e0a98634ae094bf2972f",
+      "GitBlob": "ddbbc890b30c53a35df72256552c195aa57f6b4c"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/MainOperationScenarioDriver.cs",
+      "Bytes": 28169,
+      "Sha256": "363a31cd540f526e27d10e8b2bc9ead4a001f09b95562894855e13759c9d0741",
+      "GitBlob": "468faf3982e11c38a4bdbab20c6f7561045603a6"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "Bytes": 10446,
+      "Sha256": "64a67040eed85950d333f24309340080c2e8498f1651af092f6f0208d25cc8ca",
+      "GitBlob": "5988fe00f9408b54533a485d9efcc0b26b48a64e"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/PortableSaveFixture.cs",
+      "Bytes": 2383,
+      "Sha256": "7c05b769b4342ccad9692599eab0f37d35e4dea4077631ab213a62680a81e2b6",
+      "GitBlob": "eea32080e458e653c1beb8c56ba21280cbd7e569"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Bytes": 1682,
+      "Sha256": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0",
+      "GitBlob": "8d5df04ac73689ac01baf7a225afc68adb6f1d18"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GameEngineSourceGuardTests.cs",
+      "Bytes": 112373,
+      "Sha256": "498d7f02447ac2127eb4b3c5d25f78e7e34bb92360119f3f1a370f549e2dccc1",
+      "GitBlob": "6329465545e554c011d789fe3e8732f1412395d2"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs",
+      "Bytes": 28423,
+      "Sha256": "8f62628d33e2e3bbeff8f456b26beb601c6d5041947e2627cb12024ed187320c",
+      "GitBlob": "0774a8f88304b1a02f237c8ab620e977bf464878"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs",
+      "Bytes": 11599,
+      "Sha256": "a04b96fa53ad983f0277ee60dc7101214e5a8c926e0b87dae042bcf22673b028",
+      "GitBlob": "8dd741d3c0c2deda022c930de70f9e8aa398c527"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmMainOperationLinuxTests.cs",
+      "Bytes": 2741,
+      "Sha256": "d24472d1043a19f64a024016a18b0fa8fbe95e081a5705afe68143fee15f2705",
+      "GitBlob": "d8254a353ae0c7e06e795f240798c60a22df8c3a"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmMainOperationPinTests.cs",
+      "Bytes": 1338,
+      "Sha256": "35ec8f895b9568078ade0164438b4b690476d31038379fcbef12d17149efebb8",
+      "GitBlob": "64652d01a78261d32b7bd0bc4c44add7f95f9615"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs",
+      "Bytes": 5952,
+      "Sha256": "432f429104b88a7803f86766a38af619c837598225a4bb7faae74defadd7dfa4",
+      "GitBlob": "eb095ec5ec963153f0bd8f4a3885dc977fc74bcc"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs",
+      "Bytes": 11593,
+      "Sha256": "9e060dbf302df244d69cd99587bda0cc70f4ee5eb0490d61cd8034276d8861a9",
+      "GitBlob": "84578fe2f596138a80b3650e8868d60f6dab3186"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs",
+      "Bytes": 6331,
+      "Sha256": "e62a602f364d6232fbc7ae8752f237a6123e7442b950c5dfefbcbb3ca73c647a",
+      "GitBlob": "8318a43f82e66c8fe6977cb925ab370a6a4c5f78"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalSessionTests.cs",
+      "Bytes": 4241,
+      "Sha256": "ec2802ed5463118980767db317059d862cd52a3ca3888eb9f5a2e5e6cac4d755",
+      "GitBlob": "31e3caedbddfae1b779aedaef65cf325efb870ee"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs",
+      "Bytes": 21834,
+      "Sha256": "5d2499a966de61ead072aead6b72a0d32ba1e354c3519653c0ac04adaeee0bca",
+      "GitBlob": "e19014edd1382362120ed836d100878d421134d6"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/PortableBrowserLoadTests.cs",
+      "Bytes": 9279,
+      "Sha256": "5ff1e70ff4f0e25b2c7586ae788b72a0f15f1ed6ef429a10891cf547ceeeb4ed",
+      "GitBlob": "6bdceaab7db221a2996a6daba1464fb45f8a8dff"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/PortableSessionGenerationTests.cs",
+      "Bytes": 10011,
+      "Sha256": "f453ff6b7c7dbbde82223091493fca6eafe05b43ac967669837422878dd6f85c",
+      "GitBlob": "a433bda5ecbb657defaa04f355578e78a9b570d4"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/StateDistributorCanonicalLeaseTests.cs",
+      "Bytes": 13225,
+      "Sha256": "dc54b851d4e249751ab75dbe68c8f61d78907dae317b03a1cf275641bfaf104f",
+      "GitBlob": "4e6fb87ea55b4a47800c1020bc86fdee68f2e436"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/StateManagerTests.cs",
+      "Bytes": 27275,
+      "Sha256": "7c023ba16cffceebb62619a4b7bd5a3d50af4363814b788db4add6036b3b6f95",
+      "GitBlob": "96a72d5be0ca7bccf2022e7e40529251ecbcf3de"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/TrustedLocalFilePublicationTests.cs",
+      "Bytes": 29156,
+      "Sha256": "2449a765543d8bc0f161a67ad841e021f63d19debccdb5fa0c6ed0b73d0715ae",
+      "GitBlob": "ee1c471ab245df75985df15e5e95c1c1c207c3aa"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/TrustedLocalNamespaceJournalTests.cs",
+      "Bytes": 30702,
+      "Sha256": "2b7c5af12c208fa41be856d4e7f6feb142839461d9c2d31a2f7a41f4c405e2e8",
+      "GitBlob": "6ddc4f0dad6ff76dab43f36f64c64844e9ea2fb2"
+    },
+    {
+      "Path": "BookOfEternityClient.WebFrontend/src/api/contracts.ts",
+      "Bytes": 30867,
+      "Sha256": "35f17e5ad0c75de9eb4aaf895da8e48c07f72cd9d8272ce0837de2d197e62188",
+      "GitBlob": "cddef3a28bd7ccd621a16d5308d8393e740bdd66"
+    },
+    {
+      "Path": "BookOfEternityClient.WebFrontend/src/components/GameLauncher.tsx",
+      "Bytes": 26010,
+      "Sha256": "6fd6340706bbcd8d77349ef4b46f1202a953dc9c10ba675f545016e374931428",
+      "GitBlob": "247691cbf218f26d18be4a4487b45807a2043ce0"
+    },
+    {
+      "Path": "BookOfEternityClient.WebFrontend/src/components/SettingsView.tsx",
+      "Bytes": 14976,
+      "Sha256": "72a928a1e15dcea791f4d9a506adec078be8adf9a75280f1cb39561baf365d9a",
+      "GitBlob": "8a00464c2ef3024bedfc4f89ef9facc376466bec"
+    },
+    {
+      "Path": "BookOfEternityClient.WebFrontend/src/context/ShellContext.tsx",
+      "Bytes": 16793,
+      "Sha256": "8fcec153cddcf8517f85cadebfe7ba3c7280b4ae2021458873f13c449cf8497c",
+      "GitBlob": "77be884bba60a866574abc14de7bf3d27a4a1aee"
+    },
+    {
+      "Path": "BookOfEternityClient.WebFrontend/src/hooks/refreshShellAfterLoad.ts",
+      "Bytes": 2188,
+      "Sha256": "8a7dd0b86eb76170c17c5baf469bc0537a1b198f868322ca7115d44b3efaa49d",
+      "GitBlob": "8e059160d8064bf4b38262feb50adb42dc26f874"
+    },
+    {
+      "Path": "BookOfEternityClient.WebFrontend/src/hooks/useShellState.ts",
+      "Bytes": 1534,
+      "Sha256": "bfb8eea00ea3824f2d808910bbddb8fe61c3b54c4d1b542219655c9b42a76798",
+      "GitBlob": "b701ea04972120777182017a0573c16481131ba3"
+    },
+    {
+      "Path": "BookOfEternityClient.WebFrontend/src/utils/loadPersistenceNotice.ts",
+      "Bytes": 5500,
+      "Sha256": "d28979f3d3a1d87d2b70e6dd4c6041d1cd09e3076bf63fe855f7f38da660f0af",
+      "GitBlob": "7f051685c5f461ed4c88e79c8d5eba9f2f50c814"
+    },
+    {
+      "Path": "BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts",
+      "Bytes": 3024,
+      "Sha256": "c4687fca1842e4897cc81daf6fbb9461f411b027b2327f9f0a4f73ca6b7b76c2",
+      "GitBlob": "f42c225b5306253887d633a435fd664dd7b2e5f2"
+    },
+    {
+      "Path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "Bytes": 4342,
+      "Sha256": "8c6654c84218c9718fac0fbeaf8f828a0244a4a7826b45438e9915b47a19d449",
+      "GitBlob": "46bac54ca24cc686ac3bab46b857b9661beccb13"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "Bytes": 10890,
+      "Sha256": "c059a42cb8e1bb8ef2a4e1c1faffb29f22130b5948e2d8db6da249150140d200",
+      "GitBlob": "ea2291193b68ba63f34088b2538dcfe9f36be8ae"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+      "Bytes": 8847,
+      "Sha256": "4a738f91985c2dd42a9117e22f0d9e0b824495b3594798a9b5579095fb0db6d4",
+      "GitBlob": "34ce9c9a829e3367d78fc174559d6a3859074909"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "Bytes": 234549,
+      "Sha256": "94eada9841afcffb0f2e484df1a6d280f0a40fb94c45a64d501efd3e44fa6ef2",
+      "GitBlob": "a9c895f8ffed3946a757a6fba772836742567083"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "Bytes": 165505,
+      "Sha256": "0e6ed37a064136f6a9a6224ce71a406ae873019fbcddc920776b51004031a8b8",
+      "GitBlob": "3b0f3edb064a9e14a6379a3d597c08e14dff4be5"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "Bytes": 261896,
+      "Sha256": "c4fc44ee900b913734cf039acba5cacc70fca351b7f45104684c96910dfe5405",
+      "GitBlob": "5b336a437a467a54aeb03bb6eb1f3d5eff11b98d"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GmSessionRunPersistence.cs",
+      "Bytes": 7977,
+      "Sha256": "e64d6de3a210fef5426537636d48a8a8e67b52aad98f10d873c819684ca66f09",
+      "GitBlob": "3f56cc94576fad3a16fd65d5936fd5352e9ebd80"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/MainOperationContinuationException.cs",
+      "Bytes": 1118,
+      "Sha256": "5c9e2ad69823b9228631ab2c7043522a989d86bf17eef30405f4aa74c7648ba1",
+      "GitBlob": "a7c759e2aa09b4c5e3ef7791b5e9ec1339a7b342"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "Bytes": 18145,
+      "Sha256": "4b7e64e13c1f722b4da1d7b45c69e70f61a433bf8e3abd48150536f231cef43e",
+      "GitBlob": "3abc454b7381e1dc3cc682d9ea9e5d94c156aa0c"
+    },
+    {
+      "Path": "BookOfEternityClient/IO/StateDistributor.cs",
+      "Bytes": 32169,
+      "Sha256": "55762adcd9ec302a221953829f6616dbba43b5ccce11c0a468064b33e53dd02b",
+      "GitBlob": "de12ee76a7ee5616f2ba0ee661252398216507ab"
+    },
+    {
+      "Path": "BookOfEternityClient/Launcher/Generate_CLI_Launch_Script.ps1",
+      "Bytes": 31947,
+      "Sha256": "592e6c607df18e5f0935bf4574ba3a861edb39e70c612f7eaf12653d5ddb555d",
+      "GitBlob": "4b6d2e9626f28439a8f80423cd11a98927a3944a"
+    },
+    {
+      "Path": "BookOfEternityClient/Launcher/Register_GM_CLI_Window.ps1",
+      "Bytes": 3386,
+      "Sha256": "a0cb8d186548ff7e547087d2c3762fe665a4e7a705560670a42646b63bc78c50",
+      "GitBlob": "a0d371332de1fbf88df6daaca82a53fab4b356d7"
+    },
+    {
+      "Path": "BookOfEternityClient/Launcher/Start_GM_Daemon.ps1",
+      "Bytes": 1546,
+      "Sha256": "c581c55a109c5b57cdee3bc77dff8ffd579985e5f58b8e5d9e4304f4a2782991",
+      "GitBlob": "f7906ec6e511690edd235e26575fec58d06a3d01"
+    },
+    {
+      "Path": "BookOfEternityClient/Launcher/bookofeternity.ps1",
+      "Bytes": 40628,
+      "Sha256": "8e477b44cf6fc7a4279c07805a67ce6f2ecd1c16f9a39642af953dfd1ecc1922",
+      "GitBlob": "6f0cc4bb78e7b13b688a7f7382d12726d8d7bfa1"
+    },
+    {
+      "Path": "BookOfEternityClient/Launcher/gm_main_operation.ps1",
+      "Bytes": 9844,
+      "Sha256": "42a3ceca24bd1175c3817b3a17f27f8ff7bc682c13a40425780297a7eb6d7d6b",
+      "GitBlob": "370bfe8cebb6889e52201cb10572730a42e32723"
+    },
+    {
+      "Path": "BookOfEternityClient/Program.cs",
+      "Bytes": 16302,
+      "Sha256": "cbb63ecb60f2071423e80ed684afe00c30b488894207cdc93b5a5dfccfb93bf5",
+      "GitBlob": "9b1713add608b369202c7892d6714d692c9bef40"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "Bytes": 14216,
+      "Sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4",
+      "GitBlob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmMainOperationClient.cs",
+      "Bytes": 6421,
+      "Sha256": "a835f855f27cb883b60374c8555cc99a42df8b45fef593d36e69067d48ade37a",
+      "GitBlob": "acb36162fa471842b9c0e767a42962d7ca9ad4f3"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmMainOperationProtocol.cs",
+      "Bytes": 2993,
+      "Sha256": "199378d4f0477a2cfdd7e7afc6745ffdebe58935f49b5169342e0e58d0b9b2c9",
+      "GitBlob": "a54deb686b6a85de26f37821fdf67456c2bffd30"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
+      "Bytes": 6734,
+      "Sha256": "387dae9d0878a0c6862128e2b2477c6dc339be586245c5c34380a4d3351aab51",
+      "GitBlob": "b67186b69bfbeddf10e58de92817bf8177b1a5f6"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+      "Bytes": 4838,
+      "Sha256": "34877d96012683fda42bb49fefd525da9e3567e17852190b292fde48f957e8f6",
+      "GitBlob": "0ac04c581640fa2cab795fec5e0d5ade71d1c7af"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "Bytes": 14446,
+      "Sha256": "b289cef383562e47b0855b33ee0018f55e3f11c76ed2c9994f9d7a14d09742c3",
+      "GitBlob": "50bcc082e4cb2a53536a95e2fa6a282a1100cdf7"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "Bytes": 19061,
+      "Sha256": "4b365b1a3d4a7bedf79bd89f22f8240338291957a5b6e40630d0c4ba8beff83f",
+      "GitBlob": "23bda2d7564bdf0b2ea7baefc8c6e817edbc15b6"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/SaveLoadService.Creation.cs",
+      "Bytes": 19635,
+      "Sha256": "881559a5e20ce76489f16a2fecda55dc5a7c932bceccd6eee3ad6d0cd6161982",
+      "GitBlob": "460dffbea3364bbc98e2f6011668554b40bd907d"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+      "Bytes": 27716,
+      "Sha256": "87ef33e7bf8ae33b692148bd4a5b8023c3f470fe83561597dcdccad54c896473",
+      "GitBlob": "1a5499d7dd65caf5aa04a4e6ed2ea4fcfc2e5675"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/SaveLoadService.cs",
+      "Bytes": 65999,
+      "Sha256": "5270a1385069fe0172c66f980dc8644762fbf3f3c7859ea2bda17cfe3158525a",
+      "GitBlob": "1c6b4557c110d808c4842e147e9c3e724a5548a4"
+    },
+    {
+      "Path": "BookOfEternityClient/WebUi/BrowserLoadStateService.cs",
+      "Bytes": 3074,
+      "Sha256": "11b19e342909d5b720b1276078939af70a88f614bc23ccc30def43c00234208e",
+      "GitBlob": "6c12e08f99c99c592470a36cad3f1f00c1ee9a6a"
+    },
+    {
+      "Path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+      "Bytes": 20671,
+      "Sha256": "96f600bc4baaeaed4dbb5d19bb4c31fc354485832b63e51178837250bcdc5819",
+      "GitBlob": "55a6b3126b0c06eb97ceb749a5fbae0427f9a564"
+    },
+    {
+      "Path": "BookOfEternityClient/WebUi/ExplorerWebCommandService.cs",
+      "Bytes": 21255,
+      "Sha256": "ad96ca0240e6f11c04a19fa1f78e733687a7dd90897766cf18205e9f4cf385c4",
+      "GitBlob": "ab795e9d7bc7a3f2bf1fa90b7f8dae4f79f7ee6a"
+    },
+    {
+      "Path": "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
+      "Bytes": 16443,
+      "Sha256": "0c177907b6f214db4e0fef45c2a4daeb8603093197a91171258e20d6cc685fd7",
+      "GitBlob": "7a543ddc610f1a179099040116cda279734d0742"
+    },
+    {
+      "Path": "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs",
+      "Bytes": 35985,
+      "Sha256": "c654bd27f8ff2f9607109f587b1464f06da8ffb5f49c7ea71f16adfa395f5537",
+      "GitBlob": "425f084246f6e8072f751f53c4b52a5763c33d1b"
+    },
+    {
+      "Path": "BookOfEternityClient/game_master_daemon.ps1",
+      "Bytes": 391037,
+      "Sha256": "5e6c2597a58f9435feca000b1e02ec22ba4e6a325d49546f825a676a7a515aac",
+      "GitBlob": "20d435cec898ccec0eb970b8442df4711b618116"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BookOfEternityGMBridge.csproj",
+      "Bytes": 470,
+      "Sha256": "c49d352dbfb3bb464e0a5bd456366222e0abe792b1264d665d60c8d545e487d4",
+      "GitBlob": "d4594f6b45086b9b40a805cf7a7a718c3658be41"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.MainOperations.cs",
+      "Bytes": 2234,
+      "Sha256": "064a9d5db5cefd74d8378d8ed4896004f6d0737ca3df5ba6403c2cf199f1f3a6",
+      "GitBlob": "a422536a679050e3ff3ad598b5b5eb50127c89cd"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.StatusPublication.cs",
+      "Bytes": 4504,
+      "Sha256": "f56574a407c8227823892c87d1813da2a89bcc21c38138f55cfea88b4cfafa14",
+      "GitBlob": "84d96da6e3d28be14f7a744d3df9d752c84fd9a4"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/Program.cs",
+      "Bytes": 83584,
+      "Sha256": "a805d3e9d0d4994ccfbf05ceb764ba66f934669daccf2be97d073fbc18ab927f",
+      "GitBlob": "425d64f5e0b074fa127e81c6cadb27c6d8df6ac0"
+    },
+    {
+      "Path": "native/linux/boe-lineage-supervisor.c",
+      "Bytes": 24326,
+      "Sha256": "939622a025260f29fec105d2a0dff58f10e9a1f3ded5a6fb9d0866930b9c50ce",
+      "GitBlob": "d9ef317bdf599a2cc761688d53630568f39e0487"
+    },
+    {
+      "Path": "scripts/build-linux-supervisor.ps1",
+      "Bytes": 4556,
+      "Sha256": "ed7f9ed701801e95562afc76ead02c4e4887aee054c873d162bc0f81f3c15914",
+      "GitBlob": "0208a3793088ebe5802e512a022ee1ab73993e3f"
+    },
+    {
+      "Path": "scripts/test-csharp.ps1",
+      "Bytes": 81475,
+      "Sha256": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1",
+      "GitBlob": "0576b2e34e5c0c5d164c173a9961a67c965c5509"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1092950,
+      "Sha256": "45729ced4d4d1bd22be2379c4002904b1a7c51c52113ec5b9066d366e72976aa",
+      "GitBlob": "cd4aacabe0e0f84b918c12f44d5a37c27f985509"
+    },
+    {
+      "Path": "tests/fixtures/GmMainOperation/ancillary.ps1",
+      "Bytes": 1648,
+      "Sha256": "a0fa3855596e323a4699255c95e9ecb1dfd395ae0f5df55feff02625b135fd6a",
+      "GitBlob": "09ab7316e99084bd23b4942401e76cabfe5be787"
+    },
+    {
+      "Path": "tests/fixtures/GmMainOperation/consumers.ps1",
+      "Bytes": 2793,
+      "Sha256": "b3b72163c9599d40f64925f62d860d849851b1c1df1ce3b821e50d7be9447ef1",
+      "GitBlob": "b69d00495fa8e6e33f11a77be05596c210dc14a0"
+    },
+    {
+      "Path": "tests/fixtures/GmMainOperation/live.ps1",
+      "Bytes": 3877,
+      "Sha256": "cad65c211cd162c517a4be2988393d272087acc22bb0fedf0b4376c34f78cd4c",
+      "GitBlob": "fe2aaa7e8ef95d93d90f326e47b4c4bc5b7f2e1c"
+    },
+    {
+      "Path": "tests/fixtures/GmMainOperation/oversized.ps1",
+      "Bytes": 721,
+      "Sha256": "684062c3fb7c5e02ac0ea3212f8fff3884fd352a422baf5747ef97035e670072",
+      "GitBlob": "25a4f09c398d6ffdf28a8d739f49a5d6c0c33acf"
+    },
+    {
+      "Path": "tests/fixtures/GmPromptDelivery/daemon-functions.ps1",
+      "Bytes": 20935,
+      "Sha256": "0d729acc1dd4a5e96061fdec184fb8f9707e4411274a4f2474a1e629b9966463",
+      "GitBlob": "e4b6242c5f093e451b27c68ad1cef6e8304ff852"
+    },
+    {
+      "Path": "tests/fixtures/LinuxHost/host-guardian.c",
+      "Bytes": 9240,
+      "Sha256": "d7963c86632153ec2bf1adf9a7c30dea29e1cea5c274e5fa0ea311a0518cc3db",
+      "GitBlob": "6c3ddbc42282d9b0ee2251764fda61250f97984c"
+    },
+    {
+      "Path": "tests/fixtures/LinuxTerminal/neutral-cli.c",
+      "Bytes": 4038,
+      "Sha256": "c2e5d411ea12e10dcb6ea9b24f724ff9a71494c0218567133b5e5c789e8dc60d",
+      "GitBlob": "c5a7c20fdceae15cf0e31cb4f7df59dea779c443"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 3552,
+      "Sha256": "811c6fd8776db3deb09994748486bc2f053eb805457c092d972d09c1e54b6dda",
+      "GitBlob": "d063eba4cbf6647254497ba56983f593a22656bd"
+    },
+    {
+      "Path": "tests/selections/1553-main-run-fence-f1-linux.json",
+      "Bytes": 858,
+      "Sha256": "e56fd8ccdbb1a0e61e2d7de80f09835b81bdff65aad94c51124f09112b80f4b1",
+      "GitBlob": "5447a8de1433ba6f51070b34ee38a5e11669cd17"
+    },
+    {
+      "Path": "tests/selections/1553-main-run-fence-f2-linux.json",
+      "Bytes": 2721,
+      "Sha256": "533a54884350383a3c1f1c3d71d4a91e72dc3b6eaf6b78cb11cfd9ca76722b44",
+      "GitBlob": "608cc0216d0d348bbd168c6be884ddb969e581ed"
+    }
+  ],
+  "UnchangedReuse": [
+    {
+      "Path": "native/linux/boe-lineage-supervisor.c",
+      "Sha256": "939622a025260f29fec105d2a0dff58f10e9a1f3ded5a6fb9d0866930b9c50ce",
+      "Bytes": 24326,
+      "AcceptedF1BytesUnchanged": true
+    },
+    {
+      "Path": "tests/fixtures/LinuxHost/host-guardian.c",
+      "Sha256": "d7963c86632153ec2bf1adf9a7c30dea29e1cea5c274e5fa0ea311a0518cc3db",
+      "Bytes": 9240,
+      "AcceptedF1BytesUnchanged": true
+    },
+    {
+      "Path": "tests/fixtures/LinuxTerminal/neutral-cli.c",
+      "Sha256": "c2e5d411ea12e10dcb6ea9b24f724ff9a71494c0218567133b5e5c789e8dc60d",
+      "Bytes": 4038,
+      "AcceptedF1BytesUnchanged": true
+    },
+    {
+      "Path": "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+      "Sha256": "87ef33e7bf8ae33b692148bd4a5b8023c3f470fe83561597dcdccad54c896473",
+      "Bytes": 27716,
+      "AcceptedF1BytesUnchanged": true
+    },
+    {
+      "Path": "BookOfEternityClient/IO/StateDistributor.cs",
+      "Sha256": "55762adcd9ec302a221953829f6616dbba43b5ccce11c0a468064b33e53dd02b",
+      "Bytes": 32169,
+      "AcceptedF1BytesUnchanged": true
+    }
+  ],
+  "Carriers": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-affected-browser-windows-unavailable/manifest.json",
+      "Sha256": "1eeacaba365a48c485f4b886323a83da06954fe3ffbaf827637d53a183b0b81f",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-affected-managed-fixture-preparation/manifest.json",
+      "Sha256": "fee055c84f58213c7f24197ab5e8321de2ae6fba134a1f24de8f92b30d9fc12b",
+      "SourceCommit": "321513025b5d62c7f5b2625a724e7d0209d5a592"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-ancillary-green-cli-invalid/manifest.json",
+      "Sha256": "c8079bb054f6de4ba5aa614b30f477d653f789c3257c604eace9f17f02a52fd0",
+      "SourceCommit": "654a6e6e903a416c091d47bdebb497f6f0d15985"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-adapter-status/manifest.json",
+      "Sha256": "e784069eefdee161294dd5bdb0fd1fcaab663207513fa9601c324f9c4f728ea1",
+      "SourceCommit": "1cbf9a50bcd1d21e60a6530080eae336ad735de7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-browser-bundle/manifest.json",
+      "Sha256": "6e598483c380530f8145f7c64ecf35a1474eb9ad6f85955ec893dcfc2bd421ac",
+      "SourceCommit": "49525f8f0e0de9e3ef3d81949a86d971342a100b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-browser-final/manifest.json",
+      "Sha256": "56a33b36450ae6d8edb34fb9b3e40d77444af7402d3cf5d849a8ee90e9af97e6",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-client-boundaries/manifest.json",
+      "Sha256": "3a95e7089ba83aa1b14c3c74af38bbc2c0d398793dae399271538a9dff3d4879",
+      "SourceCommit": "0e54a62d585a2cfc050fb093268c11bfb84ae63b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-explicit-affected-input/manifest.json",
+      "Sha256": "bc9693db920472a71b34a1b7ffce77e5024c33ab69e33ea71a484cc08b231e25",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-final-closing/manifest.json",
+      "Sha256": "9f7f528ecc60ef108bf1e1c60ba553c69678c2009773632072d05fc9239cce32",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-followup/manifest.json",
+      "Sha256": "b647c176f3c10d8a606d5b1209df01fdadfc61afa213e1732e982212c29a0357",
+      "SourceCommit": "654a6e6e903a416c091d47bdebb497f6f0d15985"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-helper-admission/manifest.json",
+      "Sha256": "9512141933b6db43e65db4f063cfcf1bc0a70a612cb6813c70aeab9d8c70ecc2",
+      "SourceCommit": "654a6e6e903a416c091d47bdebb497f6f0d15985"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-helper-live/manifest.json",
+      "Sha256": "5328d0780cf97760f3d71c6588af1cc1d217f58dbd835a77953cb96180364c1e",
+      "SourceCommit": "acaf25579f085e2af13081410dcfed45e87a9f49"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-load-outcomes/manifest.json",
+      "Sha256": "1a2a22864754d0c3c6c3e676d656beb536c8d59dc4b52345844a2437dee76a43",
+      "SourceCommit": "0c59ef920accc06f962a98517a728bf2574b81f6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-operation-closing/manifest.json",
+      "Sha256": "a50eef620e462f215e96b2bb060c262e8d7e1c51934c020ed2129ba2461e6e98",
+      "SourceCommit": "d847c3280975d615747a0fb03ff4250ed568fa1f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-query-shutdown/manifest.json",
+      "Sha256": "97ff48d6e98d78b87e59a119b3755fdc9575085f38c23d7bcb7ea7be3b26135b",
+      "SourceCommit": "b307b968c56292ebf148f5908698d4804807654d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-review-closing/manifest.json",
+      "Sha256": "e679af939bbc2708be1ded825a723ad1730e4997e549ffdae7f2eedf3e276ff4",
+      "SourceCommit": "acaf25579f085e2af13081410dcfed45e87a9f49"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-status-retirement/manifest.json",
+      "Sha256": "fa11820f71456e82a1df8443dad98fc20e65e4ed13ef3628826b80e76fc03249",
+      "SourceCommit": "4e97c0639914e3980dd4f97c255b2769e2754f14"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-historical-142808560-0b11f588/manifest.json",
+      "Sha256": "1255bf952d65f0fcb9c657c630d465eafbf4567f60b4305ead116ac2b7c6c488",
+      "SourceCommit": "0b11f588f47cb75be6c429e688598e2e8a90aa13"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-historical-143512920-a8f3beef/manifest.json",
+      "Sha256": "4b9c3519bbd76467abbafe48b9eecd4277c6f13a20310d3a28aca889378fbbe1",
+      "SourceCommit": "a8f3beefa5aaadede59bb6a65036c7fcf247663e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-historical-155906673-49525f8f/manifest.json",
+      "Sha256": "243af4d647f22c6330ba23679f7cf0a5dd041b35706226277495873641e88f52",
+      "SourceCommit": "49525f8f0e0de9e3ef3d81949a86d971342a100b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-historical-160531718-d847c328/manifest.json",
+      "Sha256": "121335c76cdf72b34217d97b179151ec39d14f296a070540d348b0393a451b2b",
+      "SourceCommit": "d847c3280975d615747a0fb03ff4250ed568fa1f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-historical-161252438-666646d3/manifest.json",
+      "Sha256": "2505484863a0348a63ba4dc42d22f6b1d957380070b2835dabdc235900c46639",
+      "SourceCommit": "666646d36f613e8ffa59f7884ba26b94953f48b8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-historical-161406307-2ec81db0/manifest.json",
+      "Sha256": "ed1b4bbf9b67797104e550a31fdac2ec4ba9a6a3f10de19d4284aefd907272b7",
+      "SourceCommit": "2ec81db0ff03b1b8dcf88233a74abc8967ef1111"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-historical-161655725-f3348b3f/manifest.json",
+      "Sha256": "2652e55dc4f549c872ac2fc76b9a4536c4fe4de845756726b86729c4f28873c3",
+      "SourceCommit": "f3348b3f1a00f09fa3bf689e8cd9443df87abad2"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-historical-162215536-ed5767ea/manifest.json",
+      "Sha256": "cec252b5123116b783cd6e786c11d5f07331d5280491d36d99147dc7293a4a06",
+      "SourceCommit": "ed5767eaad616bdc5056397ace65f501565ae859"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-historical-162618427-9dbb2816/manifest.json",
+      "Sha256": "19ea7b992937a97cc002b1065cfaa009cf7fd0dc19d132924527637e662850dc",
+      "SourceCommit": "9dbb28169181ecc9b2d73dc7acb7b74c0df1c0ca"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-ancillary-causal/manifest.json",
+      "Sha256": "646403a29e95930ff69f69d15ef2911981ffc7f2741eaf2960f2376da0d0947b",
+      "SourceCommit": "9dbb28169181ecc9b2d73dc7acb7b74c0df1c0ca"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-browser-client/manifest.json",
+      "Sha256": "493249fefc19d642f2330e05eae5c94dac967d3b93f057980dfcc5f941556ec9",
+      "SourceCommit": "4f8d25e8cf260ec078fea31288ea9cc050104d41"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-browser-route/manifest.json",
+      "Sha256": "433e36a0f44d0d3c889281002e349f0eaa38058371d40b51bc3db94f67c20270",
+      "SourceCommit": "4e97c0639914e3980dd4f97c255b2769e2754f14"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-client-boundaries/manifest.json",
+      "Sha256": "0962e2bc1baf3a7a6ff61273d724077cd26d67b1f32c6869ac774958dad8dcc9",
+      "SourceCommit": "b35ead8703146b55d56a37f276003e3f46cc57d2"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-explicit-outcome/manifest.json",
+      "Sha256": "a292fe7669f88b318f07c80aa34ab7a59775a93b4062be61e83c2668675b9a30",
+      "SourceCommit": "a3f3e0070d87de2c1dc630d568c2ddb76970fbaa"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-followup/manifest.json",
+      "Sha256": "852aded6a301df426d59cfc7c474c41b86f4463eaddcf829b92507495c39e45a",
+      "SourceCommit": "ed5767eaad616bdc5056397ace65f501565ae859"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-helper-bounds/manifest.json",
+      "Sha256": "e480cd38029b99e3eaff9f0406445d0dc32a41d806626a2b67004426343a726a",
+      "SourceCommit": "4e97c0639914e3980dd4f97c255b2769e2754f14"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-helper-live/manifest.json",
+      "Sha256": "dd7b618b32b741a0cd35be77b349abccf67a4c4de7a41bcef9e69559560bbd72",
+      "SourceCommit": "d0bf79f047d5c4bf76070df022d774ebf840dd63"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-large-green-wire/manifest.json",
+      "Sha256": "c2d739091ffd1c22fc10208427ae9e9d879fd11719ff3a81228444e144e102d3",
+      "SourceCommit": "2f33b946a28187038ddc69e1c517309496e74b39"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-operation-closing/manifest.json",
+      "Sha256": "5fd3ea779728f440c18e1d94a3f84c6812e8b8f17689b966b430903ecd1288b3",
+      "SourceCommit": "4e97c0639914e3980dd4f97c255b2769e2754f14"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-pipe/manifest.json",
+      "Sha256": "44132e40491fb46c6e6278bf638d541a0a784c828e224300b2f106f485190f6d",
+      "SourceCommit": "0b11f588f47cb75be6c429e688598e2e8a90aa13"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-preparation-root/manifest.json",
+      "Sha256": "6c7e46b1b8c34f55ba4c05e5ecaf9b1ccc44a51b84d0c4c3b57b74b3cea4ba7e",
+      "SourceCommit": "ed5767eaad616bdc5056397ace65f501565ae859"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-ps-five/manifest.json",
+      "Sha256": "e9affb0c4ee28ceeb536764be7e083d65195bd020662b0b9aad38fe90f31a806",
+      "SourceCommit": "4034a495c8c56d51a2b29e281ebe218d6d05d05a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-ps-preparation/manifest.json",
+      "Sha256": "d42477c7b67cb76ac612557dd81a11200b9930d2a1c6612213f24a8b6fc9a13e",
+      "SourceCommit": "9773c00a84b587155dede1ad6bda65a4b6380d91"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-ps-six/manifest.json",
+      "Sha256": "6ed19d4bd0b213c8466579d3153506855b8cc39b1f6ca7e2803b50a9d2e2a77e",
+      "SourceCommit": "850bb761ea12458c9c0c99165a99e183b8b2d2f0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-query-shutdown/manifest.json",
+      "Sha256": "122124764b24407f8970b057caf4daaa2b8e7e91286a608a0f0ab86bc92eb80c",
+      "SourceCommit": "4455cf4533e93574b5e38b9fdbc7db018f616e0d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-review-closing/manifest.json",
+      "Sha256": "af23984fdcadac2ffb57c71e14ec65069c3b3c845cef13d8500906e330145ba6",
+      "SourceCommit": "d0bf79f047d5c4bf76070df022d774ebf840dd63"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-status-admission/manifest.json",
+      "Sha256": "d36b26f906939fdcd56bb80132667948928d6354deef8978d063ad9c5dfa3c6e",
+      "SourceCommit": "9773c00a84b587155dede1ad6bda65a4b6380d91"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-status-retirement/manifest.json",
+      "Sha256": "a307062df7da845bdc82d25f4c9ac0df7c4497bf5c969c734b3efb515c18a5eb",
+      "SourceCommit": "5fd26471624c782cb15f0e27a3bd14c6b6d9c7d2"
+    }
+  ],
+  "WriterAudit": {
+    "PerformedBy": "root writer, not independent reviewer",
+    "SourceInputComparisons": 2764,
+    "ArtifactByteComparisons": 1172,
+    "CarrierCount": 45,
+    "AllMatched": true,
+    "HistoricalDirtyPreparationRunNotQualified": "20261006-162215-536-351316-b1d05125998d4bb7b42ea58cd6655ee9-categories"
+  },
+  "UnqualifiedWindowsChecks": {
+    "ExecutedInLinux": 4,
+    "Passed": 0,
+    "SourceClassificationReviewed": "Sol6.1/xhigh: unchanged legacy rollback-root publication requires Windows backend, refuses before callback; two waits timeout. Four checks moved into explicit gm-main-affected-browser-native-windows category; no native-Windows qualification."
+  },
+  "Limits": [
+    "Controlled fixed neutral CLI and isolated fixture roots only; no public/game-writing launch or final product UX",
+    "F3 process crash/restart and cold/nonterminal boundaries not qualified",
+    "Primary systemd-user required separately; manager absent here, no setup or positive qualification",
+    "Native Windows ConPTY/Job and four legacy publication checks unqualified",
+    "No live GM/provider, real saves, cold exactly-once or replay; no network/security/settings changes",
+    "Physical guardian cleanup is not logical retirement of intentionally Uncertain/Unresolved owner; old unrelated PID1 zombies untouched"
+  ],
+  "PublicationRestoration": "Pending final carrier publication, exact remote SHA/byte readback and fresh GitHub-only restore; no tests will run in restore"
+}

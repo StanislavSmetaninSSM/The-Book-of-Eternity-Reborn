@@ -5,25 +5,13 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## Current: T041-RUN-FENCE-F1 Focused PASS; stop before F2
+## Current: T041-RUN-FENCE-F2 controlled implementation; stop before F3
 
-Owner authorized only F1 from accepted design `0658e4405a4d0d958eb1b64b11b83956917fb81b`.
-One original neutral owner now consumes schema1 main.json, durable transition ACK and
-real FileSystemManager pre-recovery/held-lease gates. No second journal. Fixed isolated
-inert CLI only; cooperating cold nonterminal/clear/Load refuses, original in-generation
-operations settle, Uncertain/metadata debt retain owner, completed stop precedes new epoch.
-84distinct focused PASS: portable50 at39362ff8 plus finalLinux34 atda3ffc6f.
-Actual post-A1 Started-ACK negative retains original owner/input closed/non-Stopped.
-27latest guardians ECHILD, emergency/failure/deadline0; unrelated cohorts not replayed.
-[Qualification and hashes](recovery/main-run-fence-f1-qualification.json) ·
-[handoff](main-run-fence-f1-handoff.md).
-Independent actual Sol6.1/xhigh **Focused F1 PASS** at91fd34cd/runtime da3ffc6f,
-[review](recovery/main-run-fence-f1-review.json); no remaining blocker. Final verdict
-carrier publication/restoration is pending; exact SHA/proof will be reported in handoff. FullT041 and F2/F3 remain open; stop before F2. Separate-client/daemon pins,
-ordinary launcher/live GM/production Release/real saves/cold behavior remain unqualified.
-Primary systemd-user stays required, no manager here/setup/qualification. Windows
-ConPTY/Job source/build preserved; native Windows not qualified. Product stop/load/
-fresh-start UX stays undecided. Final exact SHA/remote/GitHub-only restore in handoff.
+Owner accepted F1 `f4e7621fe85c7aa0393552708d28eec4bfe36d8f` and authorized only F2. Runtime source `6202426f0db8197d12b72f2ce111dd4a0c8f490f` has independent actual Sol6.1/xhigh source PASS. Actual original pipe/client/helper pins span participating C#/PowerShell consumers, actual lease disposal and SessionOperationContext finalization. Durable Stopping revokes ordinary mutation; original closing is no-recovery/no-write. Loss before receipt retains Unresolved; receipt retirement survives lost reply. No replay or mint from status/JSON/PID. Both real browser Load inputs publish the complete same-response bundle under the original quiescent guard.
+
+Writer evidence sweep:129 distinct actual PASS across F2 checkpoints (24 Linux original-owner guardian cases,57 frontend,48 other managed/inert PowerShell); final independent evidence review/publication/restore pending. All24 latest guardians reached ECHILD with emergency/failure/deadline0. Four unchanged native-Windows legacy rollback publication tests are unqualified here; their observed Linux refusals are retained. Preparation failures/invalid passes and one dirty preparation snapshot are excluded. Exact counts, hashes and classifications: [qualification](recovery/main-run-fence-f2-qualification.json), [run index](recovery/main-run-fence-f2-run-index.json), [handoff](main-run-fence-f2-handoff.md).
+
+F1's accepted84-case owner/persistence evidence and R1–R3/input/terminal evidence are reused by source identity; unrelated cohorts were not replayed. FullT041/F3, production/public game-writing launch, ordinary launcher/live provider/real saves/cold guarantees remain unqualified. Primary systemd-user is a separate required stage; manager absent here, no setup or positive qualification. Windows ConPTY/Job source preserved; native Windows unqualified. Product stop/load/fresh-start UX remains a later decision; existing low-level refusal suffices for F2.
 
 ## Owned main terminal: bounded neutral PASS; final carrier handoff
 

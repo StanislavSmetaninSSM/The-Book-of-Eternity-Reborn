@@ -1,0 +1,20 @@
+{
+  "terminalRunId": "70467da93aa2460a851ed0f542137e85",
+  "terminalGuarantee": "ordinary-same-namespace-lineage",
+  "terminalUncertain": false,
+  "terminalOwnerRetained": false,
+  "inputBindingId": "023a9b1d0e324e639ba3b2248e938af3",
+  "backend": "native-lineage",
+  "state": "Ready",
+  "ready": true,
+  "helperPid": 368112,
+  "sessionPath": "/workspace/native-1553/TestResults/native-terminal/13af6227070e481da4bc9304b5fc20fe/neutral-session-13657de29463440f8c59aa6a593a9d48/game_session",
+  "shellPid": 368129,
+  "pipeName": "f2-383448360117472fba7320732e7f5651",
+  "cliLaunchCommand": "",
+  "shellWorkingDirectory": "",
+  "lastPromptDispatchState": "None",
+  "startedAtUtc": "2026-10-06T17:16:09.9154849\u002B00:00",
+  "updatedAtUtc": "2026-10-06T17:16:10.5420452\u002B00:00",
+  "workerStatuses": []
+}

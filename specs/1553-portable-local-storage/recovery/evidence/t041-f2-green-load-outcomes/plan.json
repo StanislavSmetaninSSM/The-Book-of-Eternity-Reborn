@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-main-affected-load-outcomes"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "0c59ef920accc06f962a98517a728bf2574b81f6",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 6.1564092,
+  "Descriptors": [
+    {
+      "Name": "gm-main-affected-load-outcomes-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-affected-load-outcomes",
+      "Categories": [
+        "gm-main-affected-load-outcomes"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 11,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission",
+          "Cases": 11
+        }
+      ]
+    }
+  ]
+}

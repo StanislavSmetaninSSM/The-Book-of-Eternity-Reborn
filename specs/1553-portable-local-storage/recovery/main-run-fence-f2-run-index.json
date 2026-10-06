@@ -1,0 +1,2602 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T041-RUN-FENCE-F2",
+  "CommandNote": "Canonical runner invocation reconstructed from recorded categories; descriptors/filters/source revision/counts retained verbatim. Final NoBuild calls explicitly recorded. Frontend failed adapter reports zero: VitestActual contains actual executed workload.",
+  "Runs": [
+    {
+      "RunId": "20261006-142808-560-318577-dc7202286ab84d6b8d33e44098c789c0-categories",
+      "SourceCommit": "0b11f588f47cb75be6c429e688598e2e8a90aa13",
+      "Categories": [
+        "gm-main-operation-native-linux"
+      ],
+      "ReportedTests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "ExitCode": 0,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 1,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "gm-main-operation-native-linux-unit-001"
+        ],
+        "Complete": false
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-historical-142808560-0b11f588",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-operation-native-linux\")'",
+      "ActualCases": [],
+      "Classification": "preparation failure or plan-only; zero executed workloads; not causal RED",
+      "RecordedRevision": {
+        "Head": "0b11f588f47cb75be6c429e688598e2e8a90aa13",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-142843-467-318860-753dba3444b34b3484ddf490496167b7-categories",
+      "SourceCommit": "0b11f588f47cb75be6c429e688598e2e8a90aa13",
+      "Categories": [
+        "gm-main-operation-native-linux"
+      ],
+      "ReportedTests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-pipe",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-operation-native-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualPipeRetainsParticipatingOperation",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "0b11f588f47cb75be6c429e688598e2e8a90aa13",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-143512-920-320453-c350dbdc38474e7cb7369e0392ea3742-categories",
+      "SourceCommit": "a8f3beefa5aaadede59bb6a65036c7fcf247663e",
+      "Categories": [
+        "gm-main-operation-native-linux"
+      ],
+      "ReportedTests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-historical-143512920-a8f3beef",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-operation-native-linux\")'",
+      "ActualCases": [],
+      "Classification": "preparation failure or plan-only; zero executed workloads; not causal RED",
+      "RecordedRevision": {
+        "Head": "a8f3beefa5aaadede59bb6a65036c7fcf247663e",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-143834-199-321628-af5d11ccb3274aec8c3dd634b9d5ba15-categories",
+      "SourceCommit": "2f33b946a28187038ddc69e1c517309496e74b39",
+      "Categories": [
+        "gm-main-operation-pins",
+        "gm-main-operation-native-linux"
+      ],
+      "ReportedTests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 1,
+        "Failed": 1
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-large-green-wire",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-operation-pins\",\"gm-main-operation-native-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualPipeRetainsParticipatingOperation",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationPinTests.ActualPipe_LargeUnicodeT042IdentitySurvivesStatusAndCancel",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "2f33b946a28187038ddc69e1c517309496e74b39",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-144307-108-322851-0bf8c26818214be18b6a903e074d2633-categories",
+      "SourceCommit": "b35ead8703146b55d56a37f276003e3f46cc57d2",
+      "Categories": [
+        "gm-main-operation-native-linux"
+      ],
+      "ReportedTests": {
+        "Total": 4,
+        "Executed": 4,
+        "Passed": 1,
+        "Failed": 3
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 4,
+        "CompletedCases": 4,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-client-boundaries",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-operation-native-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualPipeRetainsParticipatingOperation",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-omitted-close\")",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-activation-exit\")",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-client-positive\")",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "b35ead8703146b55d56a37f276003e3f46cc57d2",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-145315-598-324872-fa1b841a979e4b20b90030c077f4bac7-categories",
+      "SourceCommit": "0e54a62d585a2cfc050fb093268c11bfb84ae63b",
+      "Categories": [
+        "gm-main-operation-pins",
+        "gm-main-operation-native-linux"
+      ],
+      "ReportedTests": {
+        "Total": 5,
+        "Executed": 5,
+        "Passed": 5,
+        "Failed": 0
+      },
+      "ExitCode": 0,
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 5,
+        "CompletedCases": 5,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-client-boundaries",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-operation-pins\",\"gm-main-operation-native-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-client-positive\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-activation-exit\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-omitted-close\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualPipeRetainsParticipatingOperation",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationPinTests.ActualPipe_LargeUnicodeT042IdentitySurvivesStatusAndCancel",
+          "Outcome": "Passed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "0e54a62d585a2cfc050fb093268c11bfb84ae63b",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-145916-439-326436-266cd07ebd364567bdcf22e58ac5d935-categories",
+      "SourceCommit": "4455cf4533e93574b5e38b9fdbc7db018f616e0d",
+      "Categories": [
+        "gm-main-operation-native-linux"
+      ],
+      "ReportedTests": {
+        "Total": 6,
+        "Executed": 6,
+        "Passed": 4,
+        "Failed": 2
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 6,
+        "CompletedCases": 6,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-query-shutdown",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-operation-native-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-client-positive\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualPipeRetainsParticipatingOperation",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-activation-exit\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-shutdown\")",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-query\")",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-omitted-close\")",
+          "Outcome": "Passed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "4455cf4533e93574b5e38b9fdbc7db018f616e0d",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-150904-051-328439-ba83d07011dc44ea99cce34766ffa748-categories",
+      "SourceCommit": "b307b968c56292ebf148f5908698d4804807654d",
+      "Categories": [
+        "gm-main-operation-native-linux"
+      ],
+      "ReportedTests": {
+        "Total": 6,
+        "Executed": 6,
+        "Passed": 6,
+        "Failed": 0
+      },
+      "ExitCode": 0,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 6,
+        "CompletedCases": 6,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-query-shutdown",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-operation-native-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-shutdown\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-query\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-activation-exit\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualPipeRetainsParticipatingOperation",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-omitted-close\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-client-positive\")",
+          "Outcome": "Passed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "b307b968c56292ebf148f5908698d4804807654d",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-151518-248-330117-76924b9696404aa89413eeabf135e252-categories",
+      "SourceCommit": "9773c00a84b587155dede1ad6bda65a4b6380d91",
+      "Categories": [
+        "gm-main-participating-consumers",
+        "gm-main-operation-native-linux"
+      ],
+      "ReportedTests": {
+        "Total": 7,
+        "Executed": 7,
+        "Passed": 6,
+        "Failed": 1
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 13,
+        "CompletedCases": 7,
+        "UnderfilledDescriptors": [
+          "gm-main-participating-consumers-unit-002"
+        ],
+        "Complete": false
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-status-admission",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-participating-consumers\",\"gm-main-operation-native-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-omitted-close\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-activation-exit\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-client-positive\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-status-admission\")",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-query\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualPipeRetainsParticipatingOperation",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-shutdown\")",
+          "Outcome": "Passed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "9773c00a84b587155dede1ad6bda65a4b6380d91",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-152404-681-331919-490ea6a579c34a20b77a06977588b4d3-categories",
+      "SourceCommit": "9773c00a84b587155dede1ad6bda65a4b6380d91",
+      "Categories": [
+        "gm-main-participating-consumers"
+      ],
+      "ReportedTests": {
+        "Total": 6,
+        "Executed": 6,
+        "Passed": 0,
+        "Failed": 6
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 6,
+        "CompletedCases": 6,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-ps-preparation",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-participating-consumers\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"context-copy\", preexisting: False)",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"daemon-status\", preexisting: False)",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"launcher-delete\", preexisting: True)",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"launcher-stale\", preexisting: True)",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"daemon-stale\", preexisting: True)",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"bootstrap\", preexisting: False)",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "five causal consumer failures plus one bootstrap fixture preparation failure; corrected six-case causal RED153018 is authoritative",
+      "RecordedRevision": {
+        "Head": "9773c00a84b587155dede1ad6bda65a4b6380d91",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-152700-161-332966-13f77211af744a75a2c424b4fef109b6-categories",
+      "SourceCommit": "4034a495c8c56d51a2b29e281ebe218d6d05d05a",
+      "Categories": [
+        "gm-main-participating-consumers"
+      ],
+      "ReportedTests": {
+        "Total": 6,
+        "Executed": 6,
+        "Passed": 1,
+        "Failed": 5
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 6,
+        "CompletedCases": 6,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-ps-five",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-participating-consumers\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"launcher-stale\", preexisting: True)",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"bootstrap\", preexisting: False)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"context-copy\", preexisting: False)",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"launcher-delete\", preexisting: True)",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"daemon-status\", preexisting: False)",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"daemon-stale\", preexisting: True)",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "five causal consumer failures; bootstrap PASS invalid until fixture correction; corrected six-case RED153018 is authoritative",
+      "RecordedRevision": {
+        "Head": "4034a495c8c56d51a2b29e281ebe218d6d05d05a",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-153018-871-334345-cfea6233d8ee48dab8042c36fb13a183-categories",
+      "SourceCommit": "850bb761ea12458c9c0c99165a99e183b8b2d2f0",
+      "Categories": [
+        "gm-main-participating-consumers"
+      ],
+      "ReportedTests": {
+        "Total": 6,
+        "Executed": 6,
+        "Passed": 0,
+        "Failed": 6
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 6,
+        "CompletedCases": 6,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-ps-six",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-participating-consumers\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"bootstrap\", preexisting: False)",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"daemon-stale\", preexisting: True)",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"daemon-status\", preexisting: False)",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"launcher-stale\", preexisting: True)",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"context-copy\", preexisting: False)",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"launcher-delete\", preexisting: True)",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "850bb761ea12458c9c0c99165a99e183b8b2d2f0",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-153703-425-335740-b504b50fd8fd42e894a5973e9fa455a7-categories",
+      "SourceCommit": "1cbf9a50bcd1d21e60a6530080eae336ad735de7",
+      "Categories": [
+        "gm-main-participating-consumers",
+        "gm-main-operation-native-linux"
+      ],
+      "ReportedTests": {
+        "Total": 13,
+        "Executed": 13,
+        "Passed": 13,
+        "Failed": 0
+      },
+      "ExitCode": 0,
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 13,
+        "CompletedCases": 13,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-adapter-status",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-participating-consumers\",\"gm-main-operation-native-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"daemon-stale\", preexisting: True)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"daemon-status\", preexisting: False)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"context-copy\", preexisting: False)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"bootstrap\", preexisting: False)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"launcher-delete\", preexisting: True)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: \"launcher-stale\", preexisting: True)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualPipeRetainsParticipatingOperation",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-client-positive\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-shutdown\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-omitted-close\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-query\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-activation-exit\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-status-admission\")",
+          "Outcome": "Passed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "1cbf9a50bcd1d21e60a6530080eae336ad735de7",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-154119-796-337793-d0985ff51a4a47668df6dae0e6ad6c55-categories",
+      "SourceCommit": "5fd26471624c782cb15f0e27a3bd14c6b6d9c7d2",
+      "Categories": [
+        "gm-main-status-retirement-linux"
+      ],
+      "ReportedTests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 0,
+        "Failed": 2
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-status-retirement",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-status-retirement-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary(mode: \"terminal-main-operation-status-stall\")",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary(mode: \"terminal-main-operation-status-fault\")",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "5fd26471624c782cb15f0e27a3bd14c6b6d9c7d2",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-154816-134-339722-166a6287dadd436e91d03e583235dbe1-categories",
+      "SourceCommit": "4e97c0639914e3980dd4f97c255b2769e2754f14",
+      "Categories": [
+        "gm-main-status-retirement-linux"
+      ],
+      "ReportedTests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "ExitCode": 0,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-status-retirement",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-status-retirement-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary(mode: \"terminal-main-operation-status-fault\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary(mode: \"terminal-main-operation-status-stall\")",
+          "Outcome": "Passed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "4e97c0639914e3980dd4f97c255b2769e2754f14",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-154940-432-340359-d79cde220aeb4a63a4573e7d5d88d0ae-categories",
+      "SourceCommit": "4e97c0639914e3980dd4f97c255b2769e2754f14",
+      "Categories": [
+        "gm-main-operation-closing-linux"
+      ],
+      "ReportedTests": {
+        "Total": 3,
+        "Executed": 3,
+        "Passed": 0,
+        "Failed": 3
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 3,
+        "CompletedCases": 3,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-operation-closing",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-operation-closing-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_FinalizationBoundary(mode: \"terminal-main-operation-failed-clean-closing\")",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_FinalizationBoundary(mode: \"terminal-main-operation-retain-race\")",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_FinalizationBoundary(mode: \"terminal-main-operation-cancel-closing\")",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "4e97c0639914e3980dd4f97c255b2769e2754f14",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-155001-267-340796-714dc3f8fba24263881812a2b8af3c85-categories",
+      "SourceCommit": "4e97c0639914e3980dd4f97c255b2769e2754f14",
+      "Categories": [
+        "gm-main-helper-bounds-linux"
+      ],
+      "ReportedTests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-helper-bounds",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-helper-bounds-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "before-body original admission preparation failure; NOT causal oversized-frame RED; later actual helper GREEN plus escaped-borrow causal RED/GREEN qualify the fix",
+      "RecordedRevision": {
+        "Head": "4e97c0639914e3980dd4f97c255b2769e2754f14",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-155018-219-341094-9d706122634a4c9baa5732918100a465-categories",
+      "SourceCommit": "4e97c0639914e3980dd4f97c255b2769e2754f14",
+      "Categories": [
+        "gm-main-browser-bundle"
+      ],
+      "ReportedTests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [
+          "gm-main-browser-bundle-frontend-001"
+        ],
+        "Complete": false
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-browser-route",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-browser-bundle\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "4e97c0639914e3980dd4f97c255b2769e2754f14",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-155301-650-342523-b0d0784811284afbac3b63d1fca79121-categories",
+      "SourceCommit": "4f8d25e8cf260ec078fea31288ea9cc050104d41",
+      "Categories": [
+        "gm-main-browser-bundle-client"
+      ],
+      "ReportedTests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 1,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "gm-main-browser-bundle-client-frontend-001"
+        ],
+        "Complete": false
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-browser-client",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-browser-bundle-client\")'",
+      "VitestActual": [
+        {
+          "Runner": "gm-main-browser-bundle-client-frontend-001.vitest.json",
+          "Executed": 6,
+          "Passed": 0,
+          "Failed": 6
+        }
+      ],
+      "ActualCases": [
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle settings Committed: forwards original bundle and makes no second load-state request",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle settings RolledBack: forwards original bundle and makes no second load-state request",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle settings NotLoaded: forwards original bundle and makes no second load-state request",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle launcher Committed: forwards original bundle and makes no second load-state request",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle launcher RolledBack: forwards original bundle and makes no second load-state request",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle launcher NotLoaded: forwards original bundle and makes no second load-state request",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "preparation failure or plan-only; zero executed workloads; not causal RED",
+      "RecordedRevision": {
+        "Head": "4f8d25e8cf260ec078fea31288ea9cc050104d41",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-155906-673-343625-c3e70d34b6eb4d45933ebd2a065f32b9-categories",
+      "SourceCommit": "49525f8f0e0de9e3ef3d81949a86d971342a100b",
+      "Categories": [
+        "gm-main-operation-closing-linux",
+        "gm-main-helper-bounds-linux"
+      ],
+      "ReportedTests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 4,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [
+          "gm-main-operation-closing-linux-unit-002"
+        ],
+        "Complete": false
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-historical-155906673-49525f8f",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-operation-closing-linux\",\"gm-main-helper-bounds-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "before-body original admission preparation failure; NOT causal oversized-frame RED; later actual helper GREEN plus escaped-borrow causal RED/GREEN qualify the fix",
+      "RecordedRevision": {
+        "Head": "49525f8f0e0de9e3ef3d81949a86d971342a100b",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-160028-331-344229-d149224430db41e5a92a249f84a56f70-categories",
+      "SourceCommit": "49525f8f0e0de9e3ef3d81949a86d971342a100b",
+      "Categories": [
+        "gm-main-browser-bundle",
+        "gm-main-browser-bundle-client"
+      ],
+      "ReportedTests": {
+        "Total": 7,
+        "Executed": 7,
+        "Passed": 7,
+        "Failed": 0
+      },
+      "ExitCode": 0,
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 2,
+        "CompletedCases": 7,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-browser-bundle",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-browser-bundle\",\"gm-main-browser-bundle-client\")'",
+      "VitestActual": [
+        {
+          "Runner": "gm-main-browser-bundle-client-frontend-002.vitest.json",
+          "Executed": 6,
+          "Passed": 6,
+          "Failed": 0
+        }
+      ],
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle settings Committed: forwards original bundle and makes no second load-state request",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle settings RolledBack: forwards original bundle and makes no second load-state request",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle settings NotLoaded: forwards original bundle and makes no second load-state request",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle launcher Committed: forwards original bundle and makes no second load-state request",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle launcher RolledBack: forwards original bundle and makes no second load-state request",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle launcher NotLoaded: forwards original bundle and makes no second load-state request",
+          "Outcome": "Passed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "49525f8f0e0de9e3ef3d81949a86d971342a100b",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-160531-718-345278-2d86d096f6704b19ae12a0e2a4b486fe-categories",
+      "SourceCommit": "d847c3280975d615747a0fb03ff4250ed568fa1f",
+      "Categories": [
+        "gm-main-helper-bounds-linux"
+      ],
+      "ReportedTests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-historical-160531718-d847c328",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-helper-bounds-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "before-body original admission preparation failure; NOT causal oversized-frame RED; later actual helper GREEN plus escaped-borrow causal RED/GREEN qualify the fix",
+      "RecordedRevision": {
+        "Head": "d847c3280975d615747a0fb03ff4250ed568fa1f",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-160642-027-345832-85a259447beb42c7954167c29d4c7bd0-categories",
+      "SourceCommit": "d847c3280975d615747a0fb03ff4250ed568fa1f",
+      "Categories": [
+        "gm-main-operation-closing-linux"
+      ],
+      "ReportedTests": {
+        "Total": 3,
+        "Executed": 3,
+        "Passed": 3,
+        "Failed": 0
+      },
+      "ExitCode": 0,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 3,
+        "CompletedCases": 3,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-operation-closing",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-operation-closing-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_FinalizationBoundary(mode: \"terminal-main-operation-cancel-closing\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_FinalizationBoundary(mode: \"terminal-main-operation-retain-race\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_FinalizationBoundary(mode: \"terminal-main-operation-failed-clean-closing\")",
+          "Outcome": "Passed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "d847c3280975d615747a0fb03ff4250ed568fa1f",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-161252-438-347599-710efb37c77c4d04b5c4c009f01bb00f-categories",
+      "SourceCommit": "666646d36f613e8ffa59f7884ba26b94953f48b8",
+      "Categories": [
+        "gm-main-helper-bounds-linux"
+      ],
+      "ReportedTests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-historical-161252438-666646d3",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-helper-bounds-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "before-body original admission preparation failure; NOT causal oversized-frame RED; later actual helper GREEN plus escaped-borrow causal RED/GREEN qualify the fix",
+      "RecordedRevision": {
+        "Head": "666646d36f613e8ffa59f7884ba26b94953f48b8",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-161406-307-348155-3cc20f1bfd944ca2987c30eeddf99210-categories",
+      "SourceCommit": "2ec81db0ff03b1b8dcf88233a74abc8967ef1111",
+      "Categories": [
+        "gm-main-helper-bounds-linux"
+      ],
+      "ReportedTests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-historical-161406307-2ec81db0",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-helper-bounds-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "before-body original admission preparation failure; NOT causal oversized-frame RED; later actual helper GREEN plus escaped-borrow causal RED/GREEN qualify the fix",
+      "RecordedRevision": {
+        "Head": "2ec81db0ff03b1b8dcf88233a74abc8967ef1111",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-161655-725-349400-1e6b3b4f69e54544938201e73e754770-categories",
+      "SourceCommit": "f3348b3f1a00f09fa3bf689e8cd9443df87abad2",
+      "Categories": [
+        "gm-main-helper-bounds-linux"
+      ],
+      "ReportedTests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-historical-161655725-f3348b3f",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-helper-bounds-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "before-body original admission preparation failure; NOT causal oversized-frame RED; later actual helper GREEN plus escaped-borrow causal RED/GREEN qualify the fix",
+      "RecordedRevision": {
+        "Head": "f3348b3f1a00f09fa3bf689e8cd9443df87abad2",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-162049-759-350491-63d27b959bc549278c68dc0942bc6170-categories",
+      "SourceCommit": "ed5767eaad616bdc5056397ace65f501565ae859",
+      "Categories": [
+        "gm-main-operation-followup-linux"
+      ],
+      "ReportedTests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 0,
+        "Failed": 2
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-followup",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-operation-followup-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ContinuationBoundary(mode: \"terminal-main-operation-close-reply-loss\")",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ContinuationBoundary(mode: \"terminal-main-operation-escaped-borrow\")",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "ed5767eaad616bdc5056397ace65f501565ae859",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-162158-486-351022-1cdd4a62d0d74999841b3cb966fe3740-categories",
+      "SourceCommit": "ed5767eaad616bdc5056397ace65f501565ae859",
+      "Categories": [
+        "gm-main-preparation-boundaries"
+      ],
+      "ReportedTests": {
+        "Total": 4,
+        "Executed": 4,
+        "Passed": 3,
+        "Failed": 1
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 4,
+        "CompletedCases": 4,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-preparation-root",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-preparation-boundaries\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: \"register-window\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: \"start-daemon\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: \"generate-session\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.PrepareCli_AbsentRootHasNoEffects",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "old unsupported --base-path CLI fixture invalid; its prepare-root result is NOT causal root refusal; initial ancillary default-param passes INVALID. Explicit ancillary causal 162507 and GREEN163038 only three cases qualify; cleanup separately recorded",
+      "RecordedRevision": {
+        "Head": "ed5767eaad616bdc5056397ace65f501565ae859",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-162215-536-351316-b1d05125998d4bb7b42ea58cd6655ee9-categories",
+      "SourceCommit": "ed5767eaad616bdc5056397ace65f501565ae859",
+      "Categories": [
+        "gm-main-helper-bounds-linux"
+      ],
+      "ReportedTests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-historical-162215536-ed5767ea",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-helper-bounds-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "before-body original admission preparation failure; NOT causal oversized-frame RED; later actual helper GREEN plus escaped-borrow causal RED/GREEN qualify the fix; dirty source snapshot not reconstructed: NOT qualified or causal RED",
+      "RecordedRevision": {
+        "Head": "ed5767eaad616bdc5056397ace65f501565ae859",
+        "WorkingTreeFingerprint": "E929F80D0603217F0CB64D8599B6F33D227F09C8471C7754D62BF0A66FD89AE3",
+        "ChangedFiles": 1
+      },
+      "QualificationEligible": false
+    },
+    {
+      "RunId": "20261006-162507-121-352341-3b96d2fa294d4707971468a7dd1bbb34-categories",
+      "SourceCommit": "9dbb28169181ecc9b2d73dc7acb7b74c0df1c0ca",
+      "Categories": [
+        "gm-main-ancillary-preparation"
+      ],
+      "ReportedTests": {
+        "Total": 3,
+        "Executed": 3,
+        "Passed": 0,
+        "Failed": 3
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 3,
+        "CompletedCases": 3,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-ancillary-causal",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-ancillary-preparation\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: \"generate-session\")",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: \"register-window\")",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: \"start-daemon\")",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "9dbb28169181ecc9b2d73dc7acb7b74c0df1c0ca",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-162618-427-352820-e19a0888421f412b9076f6f7c23a5f5b-categories",
+      "SourceCommit": "9dbb28169181ecc9b2d73dc7acb7b74c0df1c0ca",
+      "Categories": [
+        "gm-main-helper-bounds-linux"
+      ],
+      "ReportedTests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-historical-162618427-9dbb2816",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-helper-bounds-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "before-body original admission preparation failure; NOT causal oversized-frame RED; later actual helper GREEN plus escaped-borrow causal RED/GREEN qualify the fix",
+      "RecordedRevision": {
+        "Head": "9dbb28169181ecc9b2d73dc7acb7b74c0df1c0ca",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-162923-805-353903-83d45b596b0d40a2b99078c439d7beca-categories",
+      "SourceCommit": "654a6e6e903a416c091d47bdebb497f6f0d15985",
+      "Categories": [
+        "gm-main-helper-bounds-linux"
+      ],
+      "ReportedTests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 1,
+        "Failed": 0
+      },
+      "ExitCode": 0,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-helper-admission",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-helper-bounds-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose",
+          "Outcome": "Passed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "654a6e6e903a416c091d47bdebb497f6f0d15985",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-163022-096-354389-3ab7330e74f6443e8d6d6f609bc70986-categories",
+      "SourceCommit": "654a6e6e903a416c091d47bdebb497f6f0d15985",
+      "Categories": [
+        "gm-main-operation-followup-linux"
+      ],
+      "ReportedTests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "ExitCode": 0,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-followup",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-operation-followup-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ContinuationBoundary(mode: \"terminal-main-operation-escaped-borrow\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ContinuationBoundary(mode: \"terminal-main-operation-close-reply-loss\")",
+          "Outcome": "Passed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "654a6e6e903a416c091d47bdebb497f6f0d15985",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-163038-452-354712-e9a727595cdd425f85288adbda559a44-categories",
+      "SourceCommit": "654a6e6e903a416c091d47bdebb497f6f0d15985",
+      "Categories": [
+        "gm-main-preparation-boundaries",
+        "gm-main-ancillary-preparation"
+      ],
+      "ReportedTests": {
+        "Total": 4,
+        "Executed": 4,
+        "Passed": 3,
+        "Failed": 1
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 4,
+        "CompletedCases": 4,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-ancillary-green-cli-invalid",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-preparation-boundaries\",\"gm-main-ancillary-preparation\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.PrepareCli_AbsentRootHasNoEffects",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: \"start-daemon\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: \"register-window\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: \"generate-session\")",
+          "Outcome": "Passed"
+        }
+      ],
+      "Classification": "old unsupported --base-path CLI fixture invalid; its prepare-root result is NOT causal root refusal; initial ancillary default-param passes INVALID. Explicit ancillary causal 162507 and GREEN163038 only three cases qualify; cleanup separately recorded",
+      "RecordedRevision": {
+        "Head": "654a6e6e903a416c091d47bdebb497f6f0d15985",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-164105-142-356876-3692426cd87b477680a1d2f7a25953ad-categories",
+      "SourceCommit": "d0bf79f047d5c4bf76070df022d774ebf840dd63",
+      "Categories": [
+        "gm-main-review-closing-linux"
+      ],
+      "ReportedTests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 0,
+        "Failed": 2
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-review-closing",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-review-closing-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ReviewClosingBoundary(mode: \"terminal-main-operation-shutdown-identity\")",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ReviewClosingBoundary(mode: \"terminal-main-operation-successful-finalization\")",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "d0bf79f047d5c4bf76070df022d774ebf840dd63",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-164327-080-357568-bbeab84c580c4ad59c354e2c1c49f253-categories",
+      "SourceCommit": "d0bf79f047d5c4bf76070df022d774ebf840dd63",
+      "Categories": [
+        "gm-main-helper-live-linux"
+      ],
+      "ReportedTests": {
+        "Total": 5,
+        "Executed": 5,
+        "Passed": 1,
+        "Failed": 4
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 5,
+        "CompletedCases": 5,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-helper-live",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-helper-live-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_ControlledLiveBoundary(mode: \"terminal-main-operation-helper-stopping\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_ControlledLiveBoundary(mode: \"terminal-main-operation-helper-stall\")",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_ControlledLiveBoundary(mode: \"terminal-main-operation-helper-timeout\")",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_ControlledLiveBoundary(mode: \"terminal-main-operation-helper-caught-loss\")",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_ControlledLiveBoundary(mode: \"terminal-main-operation-helper-timeout-reply-loss\")",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "d0bf79f047d5c4bf76070df022d774ebf840dd63",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-164854-768-359407-dd770fb57ba142d48da15bc2c41a3142-categories",
+      "SourceCommit": "acaf25579f085e2af13081410dcfed45e87a9f49",
+      "Categories": [
+        "gm-main-review-closing-linux"
+      ],
+      "ReportedTests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "ExitCode": 0,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-review-closing",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-review-closing-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ReviewClosingBoundary(mode: \"terminal-main-operation-successful-finalization\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ReviewClosingBoundary(mode: \"terminal-main-operation-shutdown-identity\")",
+          "Outcome": "Passed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "acaf25579f085e2af13081410dcfed45e87a9f49",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-165320-564-360305-9ac0867624204d9d928cd6dfddd84e57-categories",
+      "SourceCommit": "acaf25579f085e2af13081410dcfed45e87a9f49",
+      "Categories": [
+        "gm-main-helper-live-linux"
+      ],
+      "ReportedTests": {
+        "Total": 5,
+        "Executed": 5,
+        "Passed": 5,
+        "Failed": 0
+      },
+      "ExitCode": 0,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 5,
+        "CompletedCases": 5,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-helper-live",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-helper-live-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_ControlledLiveBoundary(mode: \"terminal-main-operation-helper-timeout\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_ControlledLiveBoundary(mode: \"terminal-main-operation-helper-timeout-reply-loss\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_ControlledLiveBoundary(mode: \"terminal-main-operation-helper-caught-loss\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_ControlledLiveBoundary(mode: \"terminal-main-operation-helper-stall\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_ControlledLiveBoundary(mode: \"terminal-main-operation-helper-stopping\")",
+          "Outcome": "Passed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "acaf25579f085e2af13081410dcfed45e87a9f49",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-170146-571-362080-ffd52ff04a1c4081944b328b64ffe2d8-categories",
+      "SourceCommit": "321513025b5d62c7f5b2625a724e7d0209d5a592",
+      "Categories": [
+        "gm-main-affected-managed"
+      ],
+      "ReportedTests": {
+        "Total": 11,
+        "Executed": 11,
+        "Passed": 9,
+        "Failed": 2
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 11,
+        "CompletedCases": 11,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-affected-managed-fixture-preparation",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-affected-managed\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: \"qte\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineSourceGuardTests.TurnFinalizers_MustRunUnderImmutableSessionOperationFence",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: \"repair\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealRepairConsumers_DistinctRevisionsKeepDistinctIdentities",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealLauncherTimeout_HeldInputReturnsUnknownWithoutReplay",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineSourceGuardTests.GmResponseWaits_MustFailFastThroughHarnessTerminalErrorWhenRuntimeIsDead",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: \"turn\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealDaemonLauncherRpc_RetainsOneOperationAndOneSubmit",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.LauncherLostResponse_OnlyQueriesSameOperation",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: \"terminal\")",
+          "Outcome": "Passed"
+        }
+      ],
+      "Classification": "9 affected PASS; 2 old T042 fixture setup failures due missing explicitly prepared diagnostic status, not a runtime main-pin failure; corrected2 GREEN171026",
+      "RecordedRevision": {
+        "Head": "321513025b5d62c7f5b2625a724e7d0209d5a592",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-170848-430-363840-b2750d78f6e142f180cac26a5b1ea77e-categories",
+      "SourceCommit": "a3f3e0070d87de2c1dc630d568c2ddb76970fbaa",
+      "Categories": [
+        "gm-main-explicit-outcome-linux"
+      ],
+      "ReportedTests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 0,
+        "Failed": 2
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-explicit-outcome",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-explicit-outcome-linux\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualAdapter_ExplicitOutcomeSurvivesFinalization(mode: \"terminal-main-operation-explicit-cancelled-finaliz\"\u00b7\u00b7\u00b7)",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualAdapter_ExplicitOutcomeSurvivesFinalization(mode: \"terminal-main-operation-explicit-failed-finalizati\"\u00b7\u00b7\u00b7)",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "a3f3e0070d87de2c1dc630d568c2ddb76970fbaa",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-171026-005-364702-34966e3ad2294d428c79e723dc46f00d-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f",
+      "Categories": [
+        "gm-main-explicit-outcome-linux",
+        "gm-main-affected-input-fixture",
+        "gm-main-preparation-boundaries"
+      ],
+      "ReportedTests": {
+        "Total": 5,
+        "Executed": 5,
+        "Passed": 5,
+        "Failed": 0
+      },
+      "ExitCode": 0,
+      "Selection": {
+        "PlannedDescriptors": 3,
+        "CompletedDescriptors": 3,
+        "PlannedCases": 5,
+        "CompletedCases": 5,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-explicit-affected-input",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-explicit-outcome-linux\",\"gm-main-affected-input-fixture\",\"gm-main-preparation-boundaries\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealDaemonLauncherRpc_RetainsOneOperationAndOneSubmit",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealLauncherTimeout_HeldInputReturnsUnknownWithoutReplay",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.ParticipatingHelperCli_AbsentRootHasNoEffects",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualAdapter_ExplicitOutcomeSurvivesFinalization(mode: \"terminal-main-operation-explicit-failed-finalizati\"\u00b7\u00b7\u00b7)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualAdapter_ExplicitOutcomeSurvivesFinalization(mode: \"terminal-main-operation-explicit-cancelled-finaliz\"\u00b7\u00b7\u00b7)",
+          "Outcome": "Passed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "6202426f0db8197d12b72f2ce111dd4a0c8f490f",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-171200-572-365594-da155d969464418d8fff6baf224ee94c-categories",
+      "SourceCommit": "6202426f0db8197d12b72f2ce111dd4a0c8f490f",
+      "Categories": [
+        "gm-main-browser-bundle-client",
+        "gm-main-affected-browser",
+        "gm-main-affected-browser-client"
+      ],
+      "ReportedTests": {
+        "Total": 18,
+        "Executed": 18,
+        "Passed": 14,
+        "Failed": 4
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 3,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 21,
+        "CompletedCases": 18,
+        "UnderfilledDescriptors": [
+          "gm-main-affected-browser-client-frontend-002",
+          "gm-main-browser-bundle-client-frontend-003"
+        ],
+        "Complete": false
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-affected-browser-windows-unavailable",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-browser-bundle-client\",\"gm-main-affected-browser\",\"gm-main-affected-browser-client\")'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ExplicitLeaseWritesWithoutAmbientAuthority",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"cached-settings\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"rotate-close\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"mixed-request\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAsync_SessionReplacementWaitsForWholeLegacyTransaction",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"game-read-failure\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_LockReleaseFailureDoesNotRollbackCommittedMutation",
+          "Outcome": "Failed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.BoundInvocationRejectsBeforePreparationAndUnboundLoadRemainsAvailable",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"stale\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"no-active\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"absent-authority\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"rotate-read\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"settings-failure\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"missing\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"current\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ConcurrentReplacementWaitsForCompleteTransaction",
+          "Outcome": "Failed"
+        }
+      ],
+      "Classification": "14 supported Linux affected PASS; 4 unchanged native-Windows legacy rollback publication capability refusals before callback (two callback waits timeout); retained actual failures, not qualified here",
+      "RecordedRevision": {
+        "Head": "6202426f0db8197d12b72f2ce111dd4a0c8f490f",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-171504-774-367076-c62acdb418584e5dbdfd65141685ec79-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217",
+      "Categories": [
+        "gm-main-browser-bundle-client",
+        "gm-main-affected-browser-client"
+      ],
+      "ReportedTests": {
+        "Total": 57,
+        "Executed": 57,
+        "Passed": 57,
+        "Failed": 0
+      },
+      "ExitCode": 0,
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 3,
+        "CompletedCases": 57,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-browser-final",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-browser-bundle-client\",\"gm-main-affected-browser-client\")'",
+      "VitestActual": [
+        {
+          "Runner": "gm-main-browser-bundle-client-frontend-002.vitest.json",
+          "Executed": 12,
+          "Passed": 12,
+          "Failed": 0
+        },
+        {
+          "Runner": "gm-main-affected-browser-client-frontend-001.vitest.json",
+          "Executed": 45,
+          "Passed": 45,
+          "Failed": 0
+        }
+      ],
+      "ActualCases": [
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle settings Committed: forwards original bundle and makes no second load-state request",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle settings RolledBack: forwards original bundle and makes no second load-state request",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle settings NotLoaded: forwards original bundle and makes no second load-state request",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle launcher Committed: forwards original bundle and makes no second load-state request",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle launcher RolledBack: forwards original bundle and makes no second load-state request",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle launcher NotLoaded: forwards original bundle and makes no second load-state request",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle settings missing: keeps committed decision without publishing, navigating or refetching",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle settings stale: keeps committed decision without publishing, navigating or refetching",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle settings incomplete: keeps committed decision without publishing, navigating or refetching",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle launcher missing: keeps committed decision without publishing, navigating or refetching",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle launcher stale: keeps committed decision without publishing, navigating or refetching",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts::F2 original Load guard publishes its same-response bundle launcher incomplete: keeps committed decision without publishing, navigating or refetching",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption settings: suppresses duplicate dispatch synchronously before rerender",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption settings: retains a nonblocking committed follow-up after successful navigation",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption settings: waits for required refresh before navigation (none)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption settings: waits for required refresh before navigation (unmount)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption settings: retains Committed from HTTP409 and blocks even after unmount",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption settings: retains Uncertain from HTTP409 and blocks even after unmount",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption settings: blocks a lost response without refresh or retry promises",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption settings: preserves commitment when required refresh fails",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption settings: newer navigation cannot be overwritten by an old committed response",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption settings: confirmed rollback is distinct and never navigates to a loaded chapter",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption settings: explicit NotLoaded needs no invented generation and permits safe refusal",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption launcher: suppresses duplicate dispatch synchronously before rerender",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption launcher: retains a nonblocking committed follow-up after successful navigation",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption launcher: waits for required refresh before navigation (none)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption launcher: waits for required refresh before navigation (unmount)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption launcher: retains Committed from HTTP409 and blocks even after unmount",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption launcher: retains Uncertain from HTTP409 and blocks even after unmount",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption launcher: blocks a lost response without refresh or retry promises",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption launcher: preserves commitment when required refresh fails",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption launcher: newer navigation cannot be overwritten by an old committed response",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption launcher: confirmed rollback is distinct and never navigates to a loaded chapter",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption launcher: explicit NotLoaded needs no invented generation and permits safe refusal",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption shares synchronous admission between both mounted consuming handlers",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts::actual launcher/settings load handlers retain decisions through interruption same-mount launcher mode change invalidates late committed navigation",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority publishes every required surface together and clears old optional diagnostics",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority refuses generation without publishing a partial or unbound shell",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority refuses menu without publishing a partial or unbound shell",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority refuses session without publishing a partial or unbound shell",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority refuses game without publishing a partial or unbound shell",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority refuses settings without publishing a partial or unbound shell",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority refuses audio without publishing a partial or unbound shell",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority refuses http without publishing a partial or unbound shell",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority refuses lost without publishing a partial or unbound shell",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority does not use archive-list presence to accept another generation",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority discards the entire late bundle after newer-refresh",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority discards the entire late bundle after unmounted",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::complete load refresh uses exact replacement authority accepts only explicitly allowed no-active-chapter absence for safe reconciliation",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::actual ShellProvider owns load admission and blocked continuation keeps a synchronous single dispatch owner and does not let stale finish release its successor",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::actual ShellProvider owns load admission and blocked continuation blocks commands, actions and ordinary refresh during load and after a stale owner records uncertainty",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::actual ShellProvider owns load admission and blocked continuation retains nonblocking follow-up after navigation without stopping commands",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::actual ShellProvider owns load admission and blocked continuation clears an already-present command view when load takes ownership",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::actual ShellProvider owns load admission and blocked continuation a command reply cannot publish or dispatch an old GM action after a healthy load has finished",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::actual ShellProvider owns load admission and blocked continuation direct-action: discards an old action response after successful load finish",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::actual ShellProvider owns load admission and blocked continuation command-follow-up: discards an old action response after successful load finish",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "frontend:BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts::actual ShellProvider owns load admission and blocked continuation a command dispatched earlier cannot navigate after load stops continuation",
+          "Outcome": "Passed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "49dc76b63c4cf79fabdcb3990369576868717217",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-171529-966-367355-619a5ba554884ce5b8874a6db6e2044f-categories",
+      "SourceCommit": "49dc76b63c4cf79fabdcb3990369576868717217",
+      "Categories": [
+        "gm-main-operation-native-linux",
+        "gm-main-operation-closing-linux",
+        "gm-main-operation-followup-linux",
+        "gm-main-operation-pins"
+      ],
+      "ReportedTests": {
+        "Total": 13,
+        "Executed": 13,
+        "Passed": 13,
+        "Failed": 0
+      },
+      "ExitCode": 0,
+      "Selection": {
+        "PlannedDescriptors": 4,
+        "CompletedDescriptors": 4,
+        "PlannedCases": 13,
+        "CompletedCases": 13,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-final-closing",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-operation-native-linux\",\"gm-main-operation-closing-linux\",\"gm-main-operation-followup-linux\",\"gm-main-operation-pins\") -NoBuild'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationPinTests.ActualPipe_LargeUnicodeT042IdentitySurvivesStatusAndCancel",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_FinalizationBoundary(mode: \"terminal-main-operation-cancel-closing\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_FinalizationBoundary(mode: \"terminal-main-operation-failed-clean-closing\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_FinalizationBoundary(mode: \"terminal-main-operation-retain-race\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ContinuationBoundary(mode: \"terminal-main-operation-close-reply-loss\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ContinuationBoundary(mode: \"terminal-main-operation-escaped-borrow\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualPipeRetainsParticipatingOperation",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-status-admission\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-shutdown\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-omitted-close\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-query\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-activation-exit\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: \"terminal-main-operation-client-positive\")",
+          "Outcome": "Passed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "49dc76b63c4cf79fabdcb3990369576868717217",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    },
+    {
+      "RunId": "20261006-171717-144-368885-a2916beb431242aba41ea9f9409c7db3-categories",
+      "SourceCommit": "0c59ef920accc06f962a98517a728bf2574b81f6",
+      "Categories": [
+        "gm-main-affected-load-outcomes"
+      ],
+      "ReportedTests": {
+        "Total": 11,
+        "Executed": 11,
+        "Passed": 11,
+        "Failed": 0
+      },
+      "ExitCode": 0,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 11,
+        "CompletedCases": 11,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Carrier": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-load-outcomes",
+      "CommandRepresentation": "pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-affected-load-outcomes\") -NoBuild'",
+      "ActualCases": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: \"service-refresh\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: \"late-token\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: \"committed\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: \"absent-generation\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: \"menu-refresh\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: \"rollback\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: \"uncertain\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: \"missing-source\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: \"late-absent-generation\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: \"newer-generation\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: \"late-pending\")",
+          "Outcome": "Passed"
+        }
+      ],
+      "Classification": "causal-or-partial qualification; see case result and final latest qualification subset",
+      "RecordedRevision": {
+        "Head": "0c59ef920accc06f962a98517a728bf2574b81f6",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "QualificationEligible": true
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="a8a51fc5-fbbc-4df9-9723-4b88de7b3c94" name="@c7669543e9c7 2026-10-06 16:30:55" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T16:30:55.8778349+00:00" queuing="2026-10-06T16:30:55.8778350+00:00" start="2026-10-06T16:30:52.4769165+00:00" finish="2026-10-06T16:30:55.8864440+00:00" />
+  <TestSettings name="default" id="d778f799-53f8-4895-9a21-9ede335785b3">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_16_30_55" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="16c6ec4c-3a82-4524-9e39-eace977ea0ba" testId="46fabe93-3183-547f-2dd0-feeb21d77946" testName="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.PrepareCli_AbsentRootHasNoEffects" computerName="c7669543e9c7" duration="00:00:00.5748652" startTime="2026-10-06T16:30:55.7575327+00:00" endTime="2026-10-06T16:30:55.7575473+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="16c6ec4c-3a82-4524-9e39-eace977ea0ba">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 2
+Actual:   0</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.PrepareCli_AbsentRootHasNoEffects() in /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs:line 20
+   at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.PrepareCli_AbsentRootHasNoEffects() in /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs:line 21
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.PrepareCli_AbsentRootHasNoEffects" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="46fabe93-3183-547f-2dd0-feeb21d77946">
+      <Execution id="16c6ec4c-3a82-4524-9e39-eace977ea0ba" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests" name="PrepareCli_AbsentRootHasNoEffects" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="46fabe93-3183-547f-2dd0-feeb21d77946" executionId="16c6ec4c-3a82-4524-9e39-eace977ea0ba" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" passed="0" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.25]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:02.07]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:02.09]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:02.74]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:02.74]       Expected: 2
+[xUnit.net 00:00:02.74]       Actual:   0
+[xUnit.net 00:00:02.74]       Stack Trace:
+[xUnit.net 00:00:02.74]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs(20,0): at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.PrepareCli_AbsentRootHasNoEffects()
+[xUnit.net 00:00:02.74]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs(21,0): at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.PrepareCli_AbsentRootHasNoEffects()
+[xUnit.net 00:00:02.74]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.75]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T16:30:55.7584329+00:00">
+        <Text>[xUnit.net 00:00:02.73]     BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.PrepareCli_AbsentRootHasNoEffects [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

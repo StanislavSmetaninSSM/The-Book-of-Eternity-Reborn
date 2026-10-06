@@ -1,0 +1,101 @@
+{
+  "Categories": [
+    "gm-main-operation-native-linux",
+    "gm-main-operation-closing-linux",
+    "gm-main-operation-followup-linux",
+    "gm-main-operation-pins"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "49dc76b63c4cf79fabdcb3990369576868717217",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 6.9426115,
+  "Descriptors": [
+    {
+      "Name": "gm-main-operation-closing-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-operation-closing-linux",
+      "Categories": [
+        "gm-main-operation-closing-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_FinalizationBoundary",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_FinalizationBoundary",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-operation-followup-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-operation-followup-linux",
+      "Categories": [
+        "gm-main-operation-followup-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ContinuationBoundary",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ContinuationBoundary",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-operation-native-linux-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-operation-native-linux",
+      "Categories": [
+        "gm-main-operation-native-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary|FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualPipeRetainsParticipatingOperation",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualPipeRetainsParticipatingOperation",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-operation-pins-unit-004",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-operation-pins",
+      "Categories": [
+        "gm-main-operation-pins"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationPinTests.ActualPipe_LargeUnicodeT042IdentitySurvivesStatusAndCancel",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationPinTests.ActualPipe_LargeUnicodeT042IdentitySurvivesStatusAndCancel",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
