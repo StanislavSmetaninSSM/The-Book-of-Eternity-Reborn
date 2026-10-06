@@ -64,7 +64,13 @@ Queued case observer failed reading task.json: legitimate RotateSessionGeneratio
 explicitly deletes worker_tasks (existing contract). Fix its oracle to require absence
 and exact frozen original task hash in retired identity, without changing rotation.
 Evidence worker-r3-races-causal-red; independent diagnosis requested before minimal
-cleanup-authority fix. No backend behavior fix applied in this checkpoint.
+cleanup-authority fix. Causal fix now checks original coordinator admission (allowing already-recorded Uncertain
+for the original stop path) before destructive cleanup, makes detected authority loss
+sticky, and refuses unresolved PublicationIntent before source deletion. Original pending
+ACK retry still precedes this guard; no reconnect, rollback or new success is minted.
+Held pre-corruption real stop/outputs are recorded separately from their later public
+Uncertain view. Fix unbuilt/unrun; next D only, followed by source-affected original
+cleanup/ACK/foreign-pending categories after independent selection review.
 
 ### Evidence already accepted; exclude unchanged repetitions
 

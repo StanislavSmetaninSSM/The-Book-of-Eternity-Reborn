@@ -23,6 +23,8 @@ public sealed partial class GmWorkerRestartFenceTests
         Assert.True(r.GetProperty("taskBound").GetBoolean());
         Assert.True(r.GetProperty("originalWorkspaceFiles").GetInt32() > 0);
         Assert.Equal(1, r.GetProperty("workerStarts").GetInt32());
+        Assert.Equal("StoppedWithinScope", r.GetProperty("heldStop").GetString());
+        Assert.True(r.GetProperty("heldOutputsSettled").GetBoolean());
         foreach (var stage in new[] { "beforeRetry", "afterRetry" })
         {
             var p = r.GetProperty(stage);
@@ -30,8 +32,8 @@ public sealed partial class GmWorkerRestartFenceTests
             Assert.Equal(!queued, p.GetProperty("taskPreserved").GetBoolean());
             Assert.Equal(queued, p.GetProperty("taskAbsent").GetBoolean());
             if (queued) Assert.Equal(r.GetProperty("originalTaskHash").GetString(), p.GetProperty("retiredTaskHash").GetString());
-            Assert.Equal("StoppedWithinScope", p.GetProperty("stop").GetString());
-            Assert.True(p.GetProperty("outputsSettled").GetBoolean());
+            Assert.Equal(mode == "held-owner-loss" ? "Uncertain" : "StoppedWithinScope", p.GetProperty("stop").GetString());
+            Assert.Equal(mode != "held-owner-loss", p.GetProperty("outputsSettled").GetBoolean());
             foreach (var key in new[] { "capacity", "entries", "active" }) Assert.Equal(queued ? 0 : 1, p.GetProperty(key).GetInt32());
             Assert.Equal(queued ? 1 : 0, p.GetProperty("retired").GetInt32());
             Assert.Equal(!queued, p.GetProperty("workspaceExists").GetBoolean());

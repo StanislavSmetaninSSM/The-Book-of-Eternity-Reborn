@@ -48,6 +48,8 @@ internal static partial class NativePoolScenarioDriver
         var originalTask = File.ReadAllBytes(taskPath);
         var workspace = atHold.Identity.WorkspacePath;
         var originalWorkspace = Directory.GetFiles(workspace, "*", SearchOption.AllDirectories).ToDictionary(path => path, File.ReadAllBytes);
+        var heldStop = execution!.Authority.StopEvidence?.State.ToString();
+        var heldOutputsSettled = execution.Authority.OutputsSettled;
         var originalGeneration = File.ReadAllBytes(fs.SessionGenerationPath);
         if (mode == "queued-generation")
         {
@@ -99,7 +101,7 @@ internal static partial class NativePoolScenarioDriver
         await reaper.RunPassAsync();
         File.WriteAllText(Path.Combine(output, "fence-race.json"), JsonSerializer.Serialize(new
         { mode, publicationCalls, mutationWaits, contentionCalls, heldPhase = atHold.Phase.ToString(), taskBound = atHold.Identity.TaskSha256 == GmWorkerRunLedgerCodec.Hash(originalTask),
-            originalTaskHash = GmWorkerRunLedgerCodec.Hash(originalTask), originalWorkspaceFiles = originalWorkspace.Count, beforeRetry, afterRetry = Snapshot(), workerStarts = FenceWorkerStarts(output) }));
+            heldStop, heldOutputsSettled, originalTaskHash = GmWorkerRunLedgerCodec.Hash(originalTask), originalWorkspaceFiles = originalWorkspace.Count, beforeRetry, afterRetry = Snapshot(), workerStarts = FenceWorkerStarts(output) }));
         return 0;
     }
 }

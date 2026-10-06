@@ -184,7 +184,14 @@ internal sealed class GmWorkerDurableExecution
         {
             await EnsurePreparedAsync();
             await RetryOriginalPendingAsync();
+            // Verify original durable authority before any disposal or detached source
+            // deletion. A retained object is insufficient when its owner name was lost.
+            var admission = _coordinator.InspectAdmission(allowUncertain: true);
+            if (admission == false) CloseForUncertainty();
+            else if (admission == null) throw new IOException("Original cleanup retains a pending worker journal.");
             if (IsUncertain && _record.Phase != WorkerRunPhase.Uncertain) await MoveUnderGateAsync(WorkerRunPhase.Uncertain, _record.Progress);
+            if (_record.Phase == WorkerRunPhase.PublicationIntent)
+                throw new IOException("Unresolved publication retains its original workspace and cleanup capacity.");
         }
         finally { _gate.Release(); }
         if (IsUncertain) throw new InvalidOperationException("Execution uncertainty retains its original quarantine and capacity.");
