@@ -4,6 +4,8 @@
 **Created**: 2026-09-30
 **Status**: Original feature approved; ordinary-save capability accepted at `ddaade72`. The owner approved the exact local load-filesystem specification revision 1 below. The owner subsequently waived further written spec/plan/revision review and authorized recommended autonomous decisions; execution plan revision 1 and its namespace-frame design addendum are authorized; full Load and remaining B3/B4/B5/platform acceptance remain open.
 
+**Accepted Load session UX (2026-10-06)**: real console/browser Load must first confirm exact original GM stop; only confirmed Committed Load and mandatory current-owner refresh authorize one fresh configured session on its installed generation. Preserve Committed if later launch fails. NotLoaded/RolledBack/Uncertain, failed stop/refresh or ambiguous reply never resume/replay the old session. No-active GM Load remains quiescent and does not create missing transport. [Authorized lifecycle slice](load-session-lifecycle-plan.md); no provider/model or cold guarantee is implied.
+
 ## Source Issues & Scope
 
 - Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)

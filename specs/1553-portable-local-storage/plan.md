@@ -4,6 +4,10 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T041-LOAD-SESSION-LIFECYCLE — authorized continuation
+
+Accepted base `dc62a88a630ba20eacd65f7bdab138ba129123ff`; actual console and both browser Load handlers now have a separate authorized [source-backed execution plan](load-session-lifecycle-plan.md). First checkpoint is design WIP, with no runtime edits/tests. Independent actual Sol6.1/xhigh plan review precedes causal entrypoint RED and connected implementation. Existing accepted M1/F1–F3/T042/T031 evidence is reused; no broad repeated audit. The accepted stop → Load → mandatory refresh → fresh-session UX remains client-owned. Direct-gacha/standalone Daren, systemd/native Windows/Q1/Q2/live/cold debts stay separate.
+
 ## T031-BROWSER-ROLLBACK-LINUX — authorized continuation
 
 Owner accepted bounded M1 `4d456d5d5e12289d6fc97e5b2e7a0c523207bc08` and authorized
