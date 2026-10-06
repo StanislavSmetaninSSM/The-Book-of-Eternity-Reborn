@@ -1,0 +1,80 @@
+{
+  "Categories": [
+    "worker-restart-record",
+    "worker-restart-lifecycle-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "8beaac3330a7d99c0004fe86c7f85650efc20f22",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "worker-restart-lifecycle-linux",
+      "Seconds": 5.8858238,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-restart-record",
+      "Seconds": 3.3055987,
+      "BudgetMinutes": 2,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0656673,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0257545,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0319164,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 38.7708942,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.004783,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 10,
+  "WallTime": "00:00:52.3923079",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 38,
+    "CompletedCases": 38,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 38,
+    "Executed": 38,
+    "Passed": 38,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

@@ -161,6 +161,19 @@ guardians ECHILD, no emergency/failure/deadline (77,0,0); runner cleanup complet
 Evidence: recovery/evidence/worker-r2-connected-first/manifest.json. Next fresh
 selection is positive lifecycle plus37 unrun record cases; unchanged cold PASS is
 not repeated for this workspace-only correction.
+Initial positive GREEN at `8beaac3330a7d99c0004fe86c7f85650efc20f22`:38/38 PASS
+(one actual content lifecycle +37 record),52.3923079s, fresh build, complete selection/
+cleanup, no timeout. One Start/Release/publication, exact content/task/run binding,
+Retired archive/zero active entries, no audit on normal cleanup, zero reaper capacity.
+Guardian ECHILD/exit0, no emergency/failure/deadline. Evidence:
+recovery/evidence/worker-r2-connected-positive/manifest.json. Together with earlier
+unchanged cold PASS this establishes only the initial connected pair, not final R2.
+Intermediate Sol review found four open gaps: cleanup purpose must not authorize
+recovery through another Uncertain inventory; durable uncertainty must revoke an
+already-minted success permit; fallible Prepared registration must occur after the
+original execution is retained by cleanup; foreign journal pending needs Busy rather
+than absorbing execution loss. Add bounded regression evidence and fix before final
+review/qualification. Broader approved R2 negative matrix remains pending.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing
