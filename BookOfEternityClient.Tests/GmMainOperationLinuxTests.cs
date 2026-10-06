@@ -9,6 +9,10 @@ public sealed class GmMainOperationLinuxTests
     [InlineData("terminal-main-operation-cancel-closing")]
     [InlineData("terminal-main-operation-failed-clean-closing")]
     public async Task OriginalClient_FinalizationBoundary(string mode)=>await GmOwnedTerminalLinuxTests.RunAsync(mode);
+    [Theory]
+    [InlineData("terminal-main-operation-close-reply-loss")]
+    [InlineData("terminal-main-operation-escaped-borrow")]
+    public async Task OriginalClient_ContinuationBoundary(string mode)=>await GmOwnedTerminalLinuxTests.RunAsync(mode);
     [Fact]
     public async Task OriginalHelper_UnsentOversizedCommandCanClose()=>await GmOwnedTerminalLinuxTests.RunAsync("terminal-main-operation-helper-oversized");
     [Theory]

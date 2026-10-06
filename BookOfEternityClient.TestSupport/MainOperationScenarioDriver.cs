@@ -134,6 +134,37 @@ internal static class MainOperationScenarioDriver
                 if(!(await shutdown).GetProperty("ok").GetBoolean())throw new InvalidOperationException("Actual shutdown did not settle original closing.");
                 await running!.WaitAsync(TimeSpan.FromSeconds(3));
             }
+            if(mode=="terminal-main-operation-close-reply-loss") {
+                MainOperationClose? receipt=null;
+                type.GetField("BeforeMainCloseReply",BindingFlags.Instance|BindingFlags.NonPublic)!.SetValue(host,(Func<MainOperationClose,Task>)(close=>{receipt=close;throw new IOException("Controlled reply loss after receipt.");}));
+                var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);
+                Exception? failed=null;
+                try {await SessionOperationContext.RunBoundAsync(files,owner.Identity.GenerationId,()=>Task.FromResult(42));}
+                catch(Exception failure){failed=failure;}
+                if(failed?.Data["EstablishedOperationResult"] is not int established || established!=42 || receipt?.Outcome!=MainOperationOutcome.Completed || owner.IsUncertain)
+                    throw new InvalidOperationException("Established result or owner receipt was discarded after close reply loss.");
+                result["EstablishedResult"]=established;result["ReplyLostAfterReceipt"]=true;
+            }
+            if(mode=="terminal-main-operation-escaped-borrow") {
+                var entered=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);var release=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);Task? child=null;
+                var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);
+                var borrowed=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance,PhysicalLoadTransactionOperations.Instance,new FileSystemManagerHooks{BeforeMainBorrowRetainAsync=async()=>{entered.TrySetResult();await release.Task;}});
+                int countBefore=0,countAfter=0;
+                int Count()=>((System.Collections.IDictionary)typeof(GmSessionRunCoordinator).GetField("_remotePins",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(owner)!).Count;
+                try {
+                    await SessionOperationContext.RunBoundAsync(files,owner.Identity.GenerationId,async()=>{
+                        child=Task.Run(async()=>{
+                            try {await using var lease=await borrowed.AcquireCanonicalWriteLeaseAsync();}catch(IOException){}
+                            countBefore=Count();
+                            try {await SessionOperationContext.RunParticipatingCurrentSessionAsync(files,()=>Task.FromResult(123));}catch(Exception){}
+                            countAfter=Count();
+                        });
+                        await entered.Task.WaitAsync(TimeSpan.FromSeconds(1));return 42;
+                    });
+                } finally {release.TrySetResult();if(child!=null)await child.WaitAsync(TimeSpan.FromSeconds(2));}
+                if(countBefore!=countAfter)throw new InvalidOperationException("Escaped child minted another original pin from a closed ancestor.");
+                result["EscapedContinuationDidNotRemint"]=true;
+            }
             if(mode=="terminal-main-operation-retain-race") {
                 var entered=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);var release=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);var opened=false;Task? child=null;
                 var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);

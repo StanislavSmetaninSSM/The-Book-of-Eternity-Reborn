@@ -14291,6 +14291,57 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-operation-followup-linux",
+      "responsibility": "F2 original continuation and preparation admission source-delta boundaries",
+      "excludes": "Previously qualified wire cases, live GM, arbitrary launch, other F1 cohorts",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmMainOperation",
+        "BookOfEternityGMBridge/",
+        "BookOfEternityClient.TestSupport/MainOperationScenarioDriver.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ContinuationBoundary"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-main-preparation-boundaries",
+      "responsibility": "F2 original continuation and preparation admission source-delta boundaries",
+      "excludes": "Previously qualified wire cases, live GM, arbitrary launch, other F1 cohorts",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmMainOperation",
+        "BookOfEternityGMBridge/",
+        "BookOfEternityClient.TestSupport/MainOperationScenarioDriver.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.PrepareCli_AbsentRootHasNoEffects",
+            "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -35,7 +35,7 @@ function Open-GmParticipatingOperation {
         $code=$process.ExitCode
         $diagnostic=$context.errorRead.GetAwaiter().GetResult()
         $kind='Unspecified'
-        if ($diagnostic -match '^Original participating operation refused or continuation unconfirmed \(([A-Za-z0-9]+; (original-connection|local-admission|read-record|read-endpoint))\)\.\s*$') { $kind=$Matches[1] }
+        if ($diagnostic -match '^Original participating operation refused or continuation unconfirmed \(([A-Za-z0-9]+; (original-connection|local-admission|read-record|read-endpoint); (Validate|AcquireAsync|EnsureMainBeforeRecovery|unspecified))\)\.\s*$') { $kind=$Matches[1] }
         $process.Dispose()
         throw "Original participating admission unavailable (helper exit $code, $kind)."
     }

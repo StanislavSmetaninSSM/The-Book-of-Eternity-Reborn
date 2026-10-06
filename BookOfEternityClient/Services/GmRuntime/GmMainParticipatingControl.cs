@@ -32,7 +32,8 @@ internal static class GmMainParticipatingControl
         {
             // Fixed diagnostic: no source data, credentials or uncontrolled exception text.
             var phase=failure.Data["ParticipatingAdmissionPhase"] is "original-connection" or "read-record" or "read-endpoint" ? (string)failure.Data["ParticipatingAdmissionPhase"]! : "local-admission";
-            Console.Error.WriteLine($"Original participating operation refused or continuation unconfirmed ({failure.GetType().Name}; {phase}).");
+            var site=new System.Diagnostics.StackTrace(failure).GetFrames()?.Select(f=>f.GetMethod()?.Name).FirstOrDefault(n=>n is "Validate" or "AcquireAsync" or "EnsureMainBeforeRecovery")??"unspecified";
+            Console.Error.WriteLine($"Original participating operation refused or continuation unconfirmed ({failure.GetType().Name}; {phase}; {site}).");
             return 2;
         }
     }
