@@ -91,3 +91,7 @@ Pinned ebdf independent Sol identified premature null-generation completion befo
 ### Review gaps causal RED and minimal fixes
 
 At8d71b38a actual early ACK1FAIL authorized fresh launch before bundle application; both handlers4FAIL/2PASS proved malformed receipt navigation and lost reply message defects. Guardians clean. Added explicit AwaitingApplication + required nonempty matching generation and normalized fresh identity/notice validation. Added next cleanup-debt and explicit-receipt-field oracles before corresponding fixes. Console isolated archive now matches existing accepted achievement/codex seed contract rather than weakening validator; positive console remains pending.
+
+### Explicit receipt and cleanup-debt fixture correction
+
+Clean33c6b18e frontend6/6PASS after reviewed fixes; explicit stop/completion receipt fields3/3FAIL before JsonRequired correction. Console debt oracle at33c6b18e did **not inject debt** (hook applies failed preparation only), so its1FAIL is preparation failure, not causal cleanup RED. It incidentally proves valid console refresh/fresh execution but is not positive-case verdict. Correct fault injection adds an owned staging link only after Committed; real candidate disposal must report debt before runtime admission changes. Guardian clean.

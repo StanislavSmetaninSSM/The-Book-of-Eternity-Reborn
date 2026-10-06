@@ -16,8 +16,14 @@ internal static partial class OwnedTerminalScenarioDriver
         var files=new FileSystemManager(Path.Combine(folder,"root"),NullLogger<FileSystemManager>.Instance);
         var settings=JsonSerializer.Deserialize<GameSettings>(File.ReadAllBytes(files.ResolvePath("config.json")))!;
         var state=new StateManager(files,settings,NullLogger<StateManager>.Instance);
+        string? prepared=null;var debtInjected=0;
         var save=new SaveLoadService(files,state,NullLogger<SaveLoadService>.Instance,mode.EndsWith("debt",StringComparison.Ordinal)?new SaveLoadServiceHooks{
-            BeforeLoadPreparationCleanupAsync=_=>Task.FromException(new IOException("controlled committed preparation cleanup debt"))}:null);
+            AfterLoadArchiveExtractedAsync=staging=>{prepared=staging;return Task.CompletedTask;},
+            AfterLoadPublicationValidatedAsync=()=>{
+                // Own private staging only, after commitment. Real candidate disposal reports cleanup debt.
+                File.CreateSymbolicLink(Path.Combine(prepared!,"cleanup-debt"),Path.Combine(folder,"absent-own-target"));debtInjected++;
+                return Task.CompletedTask;
+            }}:null);
         var writes=new BrowserLocalWriteCoordinator(files,new LocalUiSessionLockService(files));
         var status=new LocalWebUiSessionStatusService(files,writes);
         var dashboard=new BrowserLifecycleDashboardService(files,status,new ValidationService(files,NullLogger<ValidationService>.Instance));
@@ -33,6 +39,8 @@ internal static partial class OwnedTerminalScenarioDriver
             if(console.Disposition!=LoadReplacementDisposition.Committed)throw new InvalidOperationException("Causal RED: actual console selected Load refused the original Running GM: "+console.Disposition);
             if(!original.RootExited.IsCompleted)throw new InvalidOperationException("Console replacement preceded original stop.");
             if(mode.EndsWith("debt",StringComparison.Ordinal)) {
+                evidence["CleanupDebtInjected"]=debtInjected;
+                if(debtInjected!=1 || !console.NeedsFollowUp)throw new InvalidOperationException("Preparation failure: intended committed cleanup debt was not reached.");
                 if(!console.NeedsFollowUp || !console.ContinuationBlocked || hostType.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!=null)
                     throw new InvalidOperationException("Causal RED: committed cleanup debt freshly launched a GM instead of retaining the decision and stopping continuation.");
                 return;
