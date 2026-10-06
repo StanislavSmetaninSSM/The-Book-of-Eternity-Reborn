@@ -1,0 +1,42 @@
+{
+  "Categories": [
+    "worker-run-ledger-storage-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "7e58c571e7909b0143c689725a6f7c3edaa0fad3",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 38.4966034,
+  "Descriptors": [
+    {
+      "Name": "worker-run-ledger-storage-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-run-ledger-storage-linux",
+      "Categories": [
+        "worker-run-ledger-storage-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdMissing_IsReadOnlyAndDoesNotCreateNamespace|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ExistingEmptyNamespace_IsBlockedWithoutBootstrapRepair|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.Initialize_PersistsBoundRootStateAndStableLocks",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdMissing_IsReadOnlyAndDoesNotCreateNamespace",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ExistingEmptyNamespace_IsBlockedWithoutBootstrapRepair",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.Initialize_PersistsBoundRootStateAndStableLocks",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

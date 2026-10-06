@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="9415092b-85a7-406b-9b21-d1c30db39f44" name="@c7669543e9c7 2026-10-06 00:18:43" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T00:18:43.0632727+00:00" queuing="2026-10-06T00:18:43.0632727+00:00" start="2026-10-06T00:18:41.1978627+00:00" finish="2026-10-06T00:18:43.0694866+00:00" />
+  <TestSettings name="default" id="6dde4104-50d9-48a4-a167-ff7aa34a92a0">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_00_18_43" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="6ae3a9df-93ff-451e-94ec-61aaef125497" testId="c5d0ee9c-12e1-2de9-9f5f-1c5fd519aed8" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.Initialize_PersistsBoundRootStateAndStableLocks" computerName="c7669543e9c7" duration="00:00:00.0042988" startTime="2026-10-06T00:18:42.9404414+00:00" endTime="2026-10-06T00:18:42.9404415+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6ae3a9df-93ff-451e-94ec-61aaef125497">
+      <Output>
+        <ErrorInfo>
+          <Message>Initialization must persist an actual bounded ledger before acknowledging.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.Initialize_PersistsBoundRootStateAndStableLocks() in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs:line 17
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.Initialize_PersistsBoundRootStateAndStableLocks() in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs:line 31
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="dac862e9-9348-400e-a8a7-ade27d378828" testId="0a769d43-87d9-94f0-a764-bf590c854818" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdMissing_IsReadOnlyAndDoesNotCreateNamespace" computerName="c7669543e9c7" duration="00:00:00.0090335" startTime="2026-10-06T00:18:42.9259998+00:00" endTime="2026-10-06T00:18:42.9260180+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dac862e9-9348-400e-a8a7-ade27d378828" />
+    <UnitTestResult executionId="56632aa8-783e-4cec-af54-02f3478936c8" testId="9fd2fe9d-2e11-0ac7-2de3-02e149de5220" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ExistingEmptyNamespace_IsBlockedWithoutBootstrapRepair" computerName="c7669543e9c7" duration="00:00:00.0029543" startTime="2026-10-06T00:18:42.9393809+00:00" endTime="2026-10-06T00:18:42.9393812+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="56632aa8-783e-4cec-af54-02f3478936c8">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ExistingEmptyNamespace_IsBlockedWithoutBootstrapRepair() in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs:line 48
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.Initialize_PersistsBoundRootStateAndStableLocks" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c5d0ee9c-12e1-2de9-9f5f-1c5fd519aed8">
+      <Execution id="6ae3a9df-93ff-451e-94ec-61aaef125497" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="Initialize_PersistsBoundRootStateAndStableLocks" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ExistingEmptyNamespace_IsBlockedWithoutBootstrapRepair" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9fd2fe9d-2e11-0ac7-2de3-02e149de5220">
+      <Execution id="56632aa8-783e-4cec-af54-02f3478936c8" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="ExistingEmptyNamespace_IsBlockedWithoutBootstrapRepair" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdMissing_IsReadOnlyAndDoesNotCreateNamespace" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0a769d43-87d9-94f0-a764-bf590c854818">
+      <Execution id="dac862e9-9348-400e-a8a7-ade27d378828" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerTests" name="ColdMissing_IsReadOnlyAndDoesNotCreateNamespace" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="c5d0ee9c-12e1-2de9-9f5f-1c5fd519aed8" executionId="6ae3a9df-93ff-451e-94ec-61aaef125497" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0a769d43-87d9-94f0-a764-bf590c854818" executionId="dac862e9-9348-400e-a8a7-ade27d378828" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9fd2fe9d-2e11-0ac7-2de3-02e149de5220" executionId="56632aa8-783e-4cec-af54-02f3478936c8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="3" executed="3" passed="1" failed="2" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.19]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.23]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.24]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.30]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.30]       Expected: Blocked
+[xUnit.net 00:00:01.30]       Actual:   Missing
+[xUnit.net 00:00:01.30]       Stack Trace:
+[xUnit.net 00:00:01.30]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs(48,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ExistingEmptyNamespace_IsBlockedWithoutBootstrapRepair()
+[xUnit.net 00:00:01.30]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.30]       Initialization must persist an actual bounded ledger before acknowledging.
+[xUnit.net 00:00:01.30]       Stack Trace:
+[xUnit.net 00:00:01.30]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs(17,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.Initialize_PersistsBoundRootStateAndStableLocks()
+[xUnit.net 00:00:01.30]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerTests.cs(31,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerTests.Initialize_PersistsBoundRootStateAndStableLocks()
+[xUnit.net 00:00:01.30]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.31]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:18:42.9388700+00:00">
+        <Text>[xUnit.net 00:00:01.30]     BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ExistingEmptyNamespace_IsBlockedWithoutBootstrapRepair [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:18:42.9401204+00:00">
+        <Text>[xUnit.net 00:00:01.30]     BookOfEternityClient.Tests.GmWorkerRunLedgerTests.Initialize_PersistsBoundRootStateAndStableLocks [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>
