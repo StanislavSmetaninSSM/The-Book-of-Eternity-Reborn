@@ -73,6 +73,10 @@ recovery/evidence/worker-r2-record-green/manifest.json. Only the pure schema/cur
 writers are qualified here; closed started-run transitions, immutable mode binding,
 root context and complete pool lifecycle remain unimplemented. Next: mode exclusion
 metadata tests and native adapter changes, then closed live witnesses/connection.
+Mode-exclusion scaffold adds eight metadata-only Linux cases (two mode/lifetime
+orders, six live/cold corruption refusals) with a declaration-only refusal stub for
+legacy opening. No worker/process test added to this prerequisite. Current durable
+adapter still has no mode binding; causal RED pending in `worker-restart-mode-linux`.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

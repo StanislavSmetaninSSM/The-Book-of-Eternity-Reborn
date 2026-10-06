@@ -16,6 +16,14 @@
         "#1553 T041-WORKER-RESTART-R2",
         "FR-012/014/015"
       ]
+    },
+    {
+      "category": "worker-restart-mode-linux",
+      "reason": "R2 closes unrecorded legacy dispatch bypass through immutable mode and common native owner lock.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R2",
+        "FR-012/014/015"
+      ]
     }
   ]
 }

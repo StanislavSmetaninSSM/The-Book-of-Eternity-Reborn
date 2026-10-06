@@ -12758,6 +12758,30 @@
           ]
         }
       ]
+    },
+    {
+      "id": "worker-restart-mode-linux",
+      "responsibility": "#1553 R2 immutable synthetic legacy/durable mode exclusion using the original Linux owner lock; live/cold corruption refusal, no execution authority.",
+      "excludes": "No process/worker launch, no complete pool lifecycle, no R3 crash permutations or Windows durability.",
+      "changeHints": [
+        "BookOfEternityClient/Core/WorkerRunLedgerPersistence.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerRestartModeTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

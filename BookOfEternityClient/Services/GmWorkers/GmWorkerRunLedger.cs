@@ -28,6 +28,13 @@ internal sealed record WorkerLedgerMutationResult(WorkerLedgerMutationKind Kind,
 
 internal static class GmWorkerRunLedger
 {
+    internal static Task<WorkerLegacyFixtureOwner?> OpenLegacyFixtureOwnerAsync(WorkerLedgerTarget target,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        return Task.FromResult<WorkerLegacyFixtureOwner?>(null); // TDD mode-exclusion prerequisite.
+    }
+
     internal static Task<WorkerLedgerObservation> ObserveAsync(WorkerLedgerTarget target, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -54,6 +61,14 @@ internal static class GmWorkerRunLedger
     internal static bool Unavailable(Exception error) => error is IOException or InvalidDataException or UnauthorizedAccessException or
         JsonException or ArgumentException or InvalidOperationException or FormatException or OverflowException or
         PlatformNotSupportedException or EntryPointNotFoundException or DllNotFoundException;
+}
+
+// Legacy fixture exclusion is never an execution handle or a result/stop witness.
+internal sealed class WorkerLegacyFixtureOwner : IDisposable
+{
+    private WorkerLegacyFixtureOwner() { }
+    internal void Verify() => throw new InvalidOperationException("Legacy fixture authority is not implemented.");
+    public void Dispose() { }
 }
 
 internal sealed class WorkerRunLedgerCoordinator : IAsyncDisposable
