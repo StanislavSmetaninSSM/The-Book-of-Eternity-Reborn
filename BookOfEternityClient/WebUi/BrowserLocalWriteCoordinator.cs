@@ -309,6 +309,10 @@ public sealed partial class BrowserLocalWriteCoordinator
             backups?.DarenTransaction?.Dispose();
             backups?.LocalTransaction?.Access.Dispose();
             await TryReleaseAsync(writeLease, lockLease);
+            if (backups != null)
+                return CaptureBrowserResult(BrowserLocalWriteResult.Failed(
+                    "Полномочия исходной транзакции потеряны; результат изменений не подтверждён. Служебные данные сохранены, автоматически повторять операцию нельзя.",
+                    BrowserPreparedWriteDisposition.Uncertain));
             throw;
         }
         catch (Exception ex)

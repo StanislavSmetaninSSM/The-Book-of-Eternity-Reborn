@@ -54,7 +54,7 @@ public sealed partial class BrowserRollbackLinuxBoundaryTests
         while (current.State == "Active" && actions++ < 64)
         {
             var action = Assert.Single(current.ActiveScene!.CurrentChapter!.Actions);
-            current = await web.ResolveDarenShowcaseActionAsync(new(action.ActionId, "perfect", Assert.IsType<string>(current.InteractionToken)));
+            current = await web.ResolveDarenShowcaseActionAsync(new(action.ActionId, "success", Assert.IsType<string>(current.InteractionToken)));
             Assert.True(string.IsNullOrWhiteSpace(current.Error), current.Error);
         }
         Assert.Equal("Completed", current.State);

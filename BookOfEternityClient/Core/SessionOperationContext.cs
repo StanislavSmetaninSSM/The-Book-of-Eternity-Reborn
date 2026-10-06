@@ -99,7 +99,7 @@ internal static class SessionOperationContext
         try {result=await RunBoundBodyAsync(fileSystem,expectedGeneration,operation,writeLease,capturedOutcome);}
         catch(Exception e){failure=e;throw;}
         finally {
-            var outcome=failure==null?(capturedOutcome?.Invoke()??MainOperationOutcome.Completed):OutcomeFor(failure);
+            var outcome=failure==null?(capturedOutcome?.Invoke()??MainOperationOutcome.Completed):OutcomeFor(failure,capturedOutcome?.Invoke());
             try {await main.CompleteAsync(outcome,HasClosingFailure(failure));}
             catch(Exception close) when(failure!=null){failure.Data["MainOperationCloseFailure"]=close;}
             catch(Exception close){throw new MainOperationContinuationException<T>(result!,outcome,main.DescribeClose(outcome,false),close);}
@@ -124,9 +124,9 @@ internal static class SessionOperationContext
                 outcome=establishedOutcome?.Invoke()??MainOperationOutcome.Completed;
                 return value;
             },null,()=>outcome);
-        } catch(Exception e){failure=e;throw;}
+        } catch(Exception e){failure=e;outcome=establishedOutcome?.Invoke()??outcome;throw;}
         finally {
-            outcome=failure==null?outcome:OutcomeFor(failure);
+            outcome=failure==null?outcome:OutcomeFor(failure,outcome);
             try {await main.CompleteAsync(outcome,HasClosingFailure(failure));}
             catch(Exception close) when(failure!=null){failure.Data["MainOperationCloseFailure"]=close;}
             catch(Exception close){throw new MainOperationContinuationException<T>(result!,outcome,main.DescribeClose(outcome,false),close);}
@@ -154,7 +154,14 @@ internal static class SessionOperationContext
         return result!;
     }
 
-    private static MainOperationOutcome OutcomeFor(Exception? failure)=>failure is IMainOperationContinuationFailure known?known.EstablishedOutcome:failure is OperationCanceledException?MainOperationOutcome.Cancelled:failure!=null?MainOperationOutcome.Failed:MainOperationOutcome.Completed;
+    // A supplied decision is captured by the original callback, never inferred
+    // from an exception, status/PID or storage JSON. Later authority loss cannot
+    // relabel an already established browser decision when closing its main pin.
+    private static MainOperationOutcome OutcomeFor(Exception? failure, MainOperationOutcome? captured=null)=>
+        failure is IMainOperationContinuationFailure known?known.EstablishedOutcome:
+        captured is { } decision && decision!=MainOperationOutcome.Completed?decision:
+        failure is OperationCanceledException?MainOperationOutcome.Cancelled:
+        failure!=null?MainOperationOutcome.Failed:MainOperationOutcome.Completed;
     private static bool HasClosingFailure(Exception? failure)=>failure?.Data.Contains("SessionFinalizationFailure")==true;
 
     internal static Task RunParticipatingCurrentSessionAsync(FileSystemManager files,Func<Task> operation)=>
