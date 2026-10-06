@@ -31,6 +31,12 @@ internal static partial class OwnedTerminalScenarioDriver
             var console=await load; evidence["ConsoleLoadResult"]=new{console.Disposition,console.EstablishedGeneration,console.SelectedSourcePath,console.NeedsFollowUp,console.ContinuationBlocked,Failure=console.Failure?.Message};
             if(console.Disposition!=LoadReplacementDisposition.Committed)throw new InvalidOperationException("Causal RED: actual console selected Load refused the original Running GM: "+console.Disposition);
             if(!original.RootExited.IsCompleted)throw new InvalidOperationException("Console replacement preceded original stop.");
+            var current=(GmSessionRunCoordinator?)hostType.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host);
+            if(console.ContinuationBlocked || current?.Record?.Disposition!=GmSessionRunDisposition.Running || current.Identity.GenerationId!=console.EstablishedGeneration)
+                throw new InvalidOperationException("Console mandatory refresh/fresh launch is unconfirmed: "+console.Failure?.Message);
+            if(ReferenceEquals(original,hostType.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)))
+                throw new InvalidOperationException("Console reused the old terminal after Load.");
+            evidence["ConsoleFreshIdentity"]=current.Identity;
             return;
         }
         var loaded=await menu.LoadSaveAsync(new("manual:"+Path.GetFileName(path)));
