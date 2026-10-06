@@ -32,7 +32,7 @@ public sealed class GmMainLinuxLauncherTests
         var root=Path.Combine(Path.GetTempPath(),"m1-bootstrap-atomic-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(root);
         try {
             var intents=0;var members=new List<int>();
-            var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance,new FileSystemManagerHooks{LocalPublicationObserver=(phase,index)=>{if(phase==TrustedLocalPublicationPhase.IntentPublished)intents++;if(phase==TrustedLocalPublicationPhase.MemberPublished)members.Add(index);}});
+            var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance,PhysicalLoadTransactionOperations.Instance,new FileSystemManagerHooks{LocalPublicationObserver=(phase,index)=>{if(phase==TrustedLocalPublicationPhase.IntentPublished)intents++;if(phase==TrustedLocalPublicationPhase.MemberPublished)members.Add(index);}});
             await new StateManager(files,new GameSettings(),NullLogger<StateManager>.Instance).BootstrapLocalStorageAsync();
             Assert.Equal(1,intents);Assert.Equal(new[]{0,1},members);
         }finally {Directory.Delete(root,true);}
