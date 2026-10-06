@@ -101,7 +101,7 @@ cohort is warranted. Exact final runtime source `a7370fd0b7eb789079a307ee0c04538
 Evidence worker-r3-affected-regression-green. Guardian33/33ECHILD,0signals/failure/deadline.
 Final independent source/evidence acceptance is still pending; next only E4.
 
-### Cohort E source checkpoint — WIP
+### Cohort E qualification checkpoint
 
 Four actual crash seeds: two separately bound original epochs before Release under
 limit2, same inventory followed by corruption of one owned member, one bound epoch
@@ -110,7 +110,16 @@ retired actual task followed by an ordinary canonical journal at Committed. The 
 receives third conflicting member bytes after guardian ECHILD, so cold refusal must
 show the original handler unknown-bytes error with Quiescent worker ledger (no masking
 active entry). Fresh distinct-task probe uses the existing actual profile limit1.
-No new runtime change; source unbuilt/unrun. Next only worker-restart-inventory-linux.
+No new runtime change. Source `6d441cc0defe7bb92647930086e879a985934d81`: E4/4PASS,
+60.9148854s;8guardianECHILD,8reported adopted-child signals only after intended app
+exit77,0failure/deadline. Actual two reservations survived lower limit1/corrupt member;
+missing runtime was not recreated, quiescent journal failed with original unknown-bytes
+error and exact cold snapshot retained. Evidence worker-r3-inventory-green.
+All R3 evidence audit:11manifests/234unique input blobs/1913artifacts/221gzip verified;
+72historical executions61PASS11FAIL, latest41distinctPASS =27R3 +14source-affected old
+cases. Historical116guardianECHILD,21signals (initial A5 +accepted A8 +E8), all from
+intentional exit77;0failures/deadlines. Initial observation failures are not qualification.
+Next discovery-only catalog/R3/portable plans, Spec Kit consistency and final review.
 Previous regression evidence carrier f29a9157 verified remotely; actual guardian count33
 (the prior plan line32 was a transcription error, corrected against all JSON reports).
 
@@ -131,14 +140,14 @@ Previous regression evidence carrier f29a9157 verified remotely; actual guardian
   below assert these invariants only when reaching a previously unqualified crash cut.
   Do not rerun unrelated IPC34/ENV16/FRAME49/output48/input37/main90 or all pool tests.
 
-### Minimal remaining matrix: 25 cases in five sequential cohorts
+### Minimal matrix: initial25 plus two causal findings =27 cases in five sequential cohorts
 
 | Cohort/category | New cases and exact observation | Required distinction/result |
 | --- | --- | --- |
 | A `worker-restart-crash-launch-linux` (8) | actual RunTask Prepared at BeforeLiveRegistration; original helper Ready/bound; ReleaseIntent StateDirectorySynced before send; actual sent Release plus observed worker-start before Released ACK; BeforeCompletionArbitration after Released ACK; original correlated Completed; after real scoped Stop before output settlement; StopValidated StateDirectorySynced after real output settlement | Abrupt `_exit(77)`, no pool finally/Dispose. Each fresh distinct-task dispatch refuses before recovery/capacity/reservation/owner/Release; state remains nonterminal and physical guardian cleanup grants no durable authority. |
 | B `worker-restart-crash-publication-linux` (5) | PublicationIntent before bundle move; real bundle exists before Published state write; Published StateDirectorySynced before caller ACK; derived inbox exists before derived audit; original publication permit recorded and derived audit complete before workspace cleanup | Preserve actual bundle/inbox/audit bytes reached at the cut; no cold import/repeated Release/success. Disk installation is labelled separately from live ACK. |
 | C `worker-restart-crash-retirement-linux` (5) | CleanupPending; exact terminal archive synced before state removal; terminal state synced before live ACK; actual RetireAsync returned before runtime/slot release; actual original reaper pass finished/capacity0 | First retain one real cleanup failure to exercise conditional quarantine audit. Retry only the original owner, then crash at the cut. Active inventory plus candidate archive refuses; fully consistent terminal inventory admits a distinct new actual content task, preserves old tombstone/task/bundle and cannot accept the old result. Post-ACK cut records capacity retained; final cut records capacity0. |
-| D `worker-restart-publication-races-linux` (3) | queued Store publication after legitimate generation rotation; raw generation identity invalidated during awaited held bundle-mutation hook (negative corruption, not a legitimate competing writer); original owner.lock pathname replaced during that awaited held hook | No bundle move or stale success; preserve exact original task. Queued generation rejection before PublicationIntent may clean/retire. Held invalidation follows acknowledged PublicationIntent and must retain actual workspace bytes/quarantine/capacity, not merely a retained object; lost root authority additionally remains absorbing Uncertain. A later native stop cannot clear either unresolved boundary. |
+| D `worker-restart-publication-races-linux` (3) | queued Store publication after legitimate generation rotation; raw generation identity invalidated during awaited held bundle-mutation hook (negative corruption, not a legitimate competing writer); original owner.lock pathname replaced during that awaited held hook | No bundle move or stale success. Queued generation rotation follows its existing artifact reset, retaining exact original task hash/identity in retirement; held corruption preserves original task bytes. Queued generation rejection before PublicationIntent may clean/retire. Held invalidation follows acknowledged PublicationIntent and must retain actual workspace bytes/quarantine/capacity, not merely a retained object; lost root authority additionally remains absorbing Uncertain. A later native stop cannot clear either unresolved boundary. |
 | E `worker-restart-inventory-linux` (4) | two actual bound worker epochs followed by crash/lower current profile limit; same actual inventory with one corrupted member; original runtime namespace renamed away after independent cleanup; fully retired root plus committed canonical journal with original-handler conflict | Distinct new-task dispatch refuses whole root before allocation and preserves all evidence. RuntimeBase is fixed by fixture admission: test missing/renamed original namespace, not a fake TMPDIR/config change. Journal-conflict case has no nonterminal worker to mask the recovery conflict. Healthy terminal/new-task companions are in C. |
 
 These are meaningful boundary partitions, not every instruction/syscall interleaving.
@@ -201,7 +210,7 @@ a claim that current code already satisfies it; runtime fixes still need causal 
 - [x] B: repeat the bounded workflow for publication cuts after A's ECHILD evidence.
 - [x] C: repeat for conditional cleanup/retirement, with exact post-live-ACK observation.
 - [x] D: repeat for queued/held publication fences; retain original authority on uncertainty.
-- [ ] E: repeat for whole parallel inventory and the unmasked canonical journal conflict.
+- [x] E: repeat for whole parallel inventory and the unmasked canonical journal conflict.
 - [ ] Discovery-only ValidateCatalog and exact PlanOnly after matching fresh builds;
   read-only Spec Kit consistency review, final independent source/evidence review.
 - [ ] Ordinary commit/push/readback at every boundary, fresh GitHub-only candidate and

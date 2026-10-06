@@ -5,23 +5,28 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## R3 выполняется: A/B/C проверены, D causal fixes, E далее
+## R3: bounded tests GREEN, final review/restoration pending
 
-Принятая R2 база `6992e812`; независимый actual Sol6.1/xhigh plan PASS `1545bf4a`.
-A8/8, B5/5, C5/5 PASS; точные source/manifest/cleanup в [плане](plan.md).
-D выявила удаление unresolved detached source до terminal refusal и отсутствие sticky
-authority-loss latch. Первый fix4e8e4f18: D3/3PASS. Независимый диагноз добавил ровно
-2 причинных partition: owner loss в cleanup await и при pending Published ACK;
-оба дали causal RED на0577964c. Текущий исправляющий WIP ещё не проверен:
-следующий шаг D5 свежая сборка, затем19 узко затронутых случаев (selection reviewer),
-затем E4. Минимальная матрица R3 теперь27, без повтора неизменённых A/B/IPC/Windows.
-Ошибки fixtures A/B и queued-generation oracle отдельно от causal backend RED.
-Обычная смена generation удаляет old worker artifacts по существующему контракту;
-queued oracle сохраняет frozen task hash/identity и проверяет отсутствие старого task.
-Все завершённые guardian достигли ECHILD,0failure/deadline. Только A deliberate app
-crashes потребовали8 собственных adopted-child cleanup signals; они не дают authority.
-Дальнейшая интеграция, reconnect/salvage/reboot-clear, Windows/systemd/power-loss не
-разрешены. После E и final review — GitHub-only restoration и handoff родителю.
+Accepted R2 `6992e812`; actual Sol6.1/xhigh plan PASS `1545bf4a`. R3 A8/B5/C5/D5/E4
+прошли отдельными когортами. Два дополнительных D-сценария добавлены после конкретного
+независимого диагноза и causal RED. Runtime `a7370fd0`:24/24 затронутых PASS; последний
+E source `6d441cc0`:4/4 PASS. Только source-specific evidence, не полный набор игры.
+
+Исправлено удаление unresolved workspace до отказа retirement и потеря sticky Uncertain
+при owner-lock loss/failed original ACK retry. Authority проверяется до destructive
+cleanup и после awaited hook; legacy null-durable путь сохранён. Исходный bounded Stop
+разрешён; ни холодный процесс, ни сохранённые metadata не создают новый permit.
+
+Аудит11manifests:234source blobs/1913artifacts/221gzip,72historical executions61PASS11FAIL;
+последние41различных PASS =27R3 +14 затронутых прежних.116guardianECHILD,21 независимый
+adopted-child signal только после deliberate exit77 (initial A5, accepted A8, E8),
+0failure/deadline. Ошибки fixtures A/B/queued oracle отдельно от causal backend RED.
+Следующий шаг: discovery-only catalog/plans, Spec Kit consistency, независимое финальное
+ревью и fresh GitHub-only restoration. T041-WORKER-RESTART-R3 пока не закрыт.
+
+Интеграция public Linux Release/main PTY/live GM/реальных saves, native Windows/systemd,
+power-loss/reboot, reconnect/salvage/force-clear не квалифицированы и здесь не начинаются.
+R3 заканчивается handoff родителю; точные source и evidence находятся в [плане](plan.md).
 
 ## R2 завершён в ограниченном synthetic-контуре; передача родителю
 
