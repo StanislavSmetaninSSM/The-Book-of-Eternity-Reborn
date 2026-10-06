@@ -5,6 +5,16 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
+## Current design-only continuation toward normal Linux GM launch
+
+R3 accepted by the owner at `bd2acebf9c070e484434d1332ee80c99bf1c66b6`.
+[Source-backed roadmap and first slice](plan.md#ordinary-linux-console-with-persistent-interactive-gm--design-only-continuation):
+whole input transaction → owned main PTY/backend + run fence → normal launcher/daemon
+and live console acceptance; production workers join for enabled helper profiles.
+Primary systemd adapter and native main PTY are still absent, production Linux WorkerRelease
+still closed; accepted worker/output/input evidence is reused. Design review pending.
+No new runtime, tests, rollout or environment changes; stop at design handoff.
+
 ## R3: bounded acceptance and metadata PASS; final carrier handoff
 
 Accepted R2 `6992e812`; actual Sol6.1/xhigh plan PASS `1545bf4a`. R3 A8/B5/C5/D5/E4

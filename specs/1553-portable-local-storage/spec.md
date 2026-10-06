@@ -94,6 +94,18 @@ cleanup remain required. No reconnect/salvage/force-clear/reboot release, public
 Release/main PTY/live GM/real saves, power-cut or native Windows qualification.
 R3 stops at handoff before another integration stage; no GM-authored contract change.
 
+## Design-only continuation from accepted R3
+
+The owner accepted bounded synthetic R3 at `bd2acebf9c070e484434d1332ee80c99bf1c66b6`
+and requested a source-backed remaining path to ordinary Linux console launch with a
+persistent interactive GM. This block updates planning only. The existing US4 and
+two-backend product contract remain authoritative; no protection from the player editing
+their own saves, new environment/security requirement or public capability is added.
+[Current staged plan](plan.md#ordinary-linux-console-with-persistent-interactive-gm--design-only-continuation)
+selects T042-INPUT-TRANSACTION as the first useful connected slice; owned main PTY,
+primary systemd, real run fence, enabled production workers and native/live qualification
+retain their separate dependencies. No implementation/test/probe/rollout in this block.
+
 ## History: completed inert worker ledger R1 — 2026-10-06
 
 Parent accepted design checkpoint `89bf200d` and authorized only T041-WORKER-RESTART-R1:

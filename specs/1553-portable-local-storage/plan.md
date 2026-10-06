@@ -5,6 +5,136 @@
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
 
+## Ordinary Linux console with persistent interactive GM — design-only continuation
+
+**Base:** accepted R3 `bd2acebf9c070e484434d1332ee80c99bf1c66b6`, #1553,
+US4 / FR-009/012/013/014/015 / SC-004; task T041-LINUX-MAIN-DESIGN.
+**Goal:** the normal console launcher keeps the player's configured arbitrary GM CLI
+interactive across turns, accepts manual and automatic input, and reports stop/restart
+outcomes within the selected backend's actual scope.
+**Architecture:** retain the real bridge/daemon and accepted worker components; finish
+connected input delivery, then connect owned terminal execution and durable main admission.
+**Stack:** existing .NET8/SDK10, PowerShell7, Windows ConPTY/Job, Linux PTY,
+primary existing systemd-user and packaged ordinary-lineage fallback.
+**Method:** existing Spec Kit feature + Superpowers brainstorming/writing-plans;
+sole Sol6.1/xhigh writer, separate Sol6.1/xhigh design review. Future execution uses
+executing-plans/TDD; this request authorizes documentation only, no runtime/test/probe,
+public rollout, settings, service, credential or environment change.
+
+### Delta check; reuse accepted audits
+
+Line references are at the exact base above. Bridge/launcher paths are repo-relative;
+service/Core paths in the last rows are under BookOfEternityClient.
+
+| Current source boundary | Reused proof and remaining connection |
+| --- | --- |
+| `BookOfEternityGMBridge/Program.cs:106–129,308–381,428,944–1000`; bridge csproj | Program/ConPTY/project unchanged from accepted INPUT-LIFETIME source `dc29b37d`. Reuse OUTPUT48 and INPUT37. Main still targets net8.0-windows, starts ConPTY and has per-write lifetime protection; complete prompt arbitration remains absent. |
+| `Program.cs:234–247,641–706,1295,1325–1354` | Reuse T042 audit at `8ef45247`: serialized dispatch blocks status/cancel; Ctrl+U precedes readiness; trust/update responses and outer Win32 screen reads remain. Current local lifetime fixes do not close these gaps. |
+| `BookOfEternityClient/Launcher/bookofeternity.ps1:305–340,631–660,854`; `BookOfEternityClient/game_master_daemon.ps1:70,3639–3692,5422–5477,5635–5681,5768,6200,6348` | Launcher/daemon/settings unchanged from `8ef45247`; reuse that audit. Unbounded response read, string-based retry/QTE redispatch, unconditional Forms and powershell.exe/window startup still need actual caller changes. |
+| `Services/GmWorkers/GmWorkerBackendSelector.cs:33–46`, `GmWorkerOwnedLaunch.cs:43–54`, `GmWorkerBridgePool.cs:389–405` (under `BookOfEternityClient/`) | Rechecked R2 changes from HOST A: explicit SyntheticWorkerRelease was added; ordinary Linux WorkerRelease remains NotQualified, SystemdUser remains NotImplemented. Public pool callers pass no fixture admission. Accepted R2/R3 is reused without replay. |
+| `GmWorkerNativePoolAdmission.cs:5–52`, `GmWorkerRootContext.cs:32–46`; `Core/FileSystemManager.cs:3693–3699,3870–3884` | Durable worker context attaches through injected admission. Existing real pre-recovery/held-lease worker fences are useful integration seams; they are not automatically installed for normal main/worker startup. |
+| `Services/GmRuntime/GmSessionRunAdmission.cs:10–46`, `GmSessionRunRecord.cs:10–17,118–122` | Unchanged from the T042 audit. Main record/codec is a slot condition with no production owner/persistence/fence consumer. Decoded identity, absent status/PID or a worker's ECHILD cannot authenticate the persistent main run. |
+
+Main worker callers remain `Program.cs:1481` and
+`Core/GameEngine/GameEngine.ValidationAndRepair.cs:7559`. Default worker templates
+are disabled (`GmWorkerBridgeProfileTemplates.cs:32,52,72,183`): production worker
+Release is necessary for enabled helper profiles, not a prerequisite for the first
+no-worker persistent GM path. No configured helper may silently pretend to have run.
+
+### Short sequence; each stage has its own review and evidence
+
+| Stage | Connected result and actual dependency |
+| --- | --- |
+| 1. T042-INPUT-TRANSACTION | One automatic request reaches the retained CLI without erasing a manual draft or repeating an ambiguous submit. Depends only on accepted output/input lifetime and the actual daemon callers; owned Linux PTY is needed for Linux live evidence, not controlled implementation proof. |
+| 2. Owned main terminal + backend adapters (T041) | Provide the owned terminal that the normal launcher will use for a persistent manual CLI on Linux. Connect a consumed terminal-session abstraction, PTY input/output/resize and native controlling-terminal setup to original owned launch/stop; preserve Windows ConPTY and assign its Job before execution. Implement primary existing systemd-user and adapt packaged native-lineage to terminal use. Its current /dev/null stdin worker-host path is not a PTY backend. Couple executable launch admission with stage3 before any normal game-writing CLI is released. |
+| 3. T041-RUN-FENCE | Actual main owner durably publishes Prepared before release, Running/Stopping/Uncertain/Stopped with authentic scoped evidence. Wire the owner/persistence and pre-recovery/held-lease mutation checks together; compose independent worker inventory. Gate normal startup/restart, rollback/replacement/clear/load and recovery at their actual participating writes. Preserve stopped epoch and cold uncertainty outside replaceable game_state. This concerns cooperating game/GM operations, not the player's own edits. Stage2 neutral terminal qualification may precede it; normal game-writing launch may not. |
+| 4. Ordinary production worker admission | Replace fixture-only admission with a consumed production root/ledger admission and portable real bundle publication in public pool callers. Connect primary/fallback launch and enabled profile commands, preserving R3 publication/cleanup/slot rules. Needs actual production root admission and qualified requested backend; recheck only the production/synthetic boundary and affected consumers. May proceed separately from the no-worker main path. |
+| 5. Normal Linux launcher/daemon + live acceptance (T043) | Port executable/shell/window/CIM/Forms assumptions and move readiness to the owned terminal's current view. Compose stages1–3; start configured CLI once, deliver multiple turns, exercise manual takeover/restart/uncertainty, accepted turn/save/typed Load, and synchronize operational docs/examples. No CLI special game API or per-turn process restart. Enabled helpers additionally need stage4. |
+| 6. Remaining platform parity (B5) | Audio/clipboard/other helpers, browser actual-client/backend evidence and native Windows owner-run checklist retain their task/evidence boundaries; complete #1553 only after actual remaining capability proofs. No new live-browser gate or full-suite requirement. |
+
+### First implementation slice: T042-INPUT-TRANSACTION
+
+**Player result:** automatic delivery preserves text the player is typing; a timeout or
+lost response never causes the daemon to submit the same possibly delivered prompt again.
+Two successful prompts reuse one existing main input lifetime, with one submit each.
+This completes the residual connected T042 input design, not a new coordinator/backend.
+
+**Files/interfaces:** add `BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs` as a
+partial of the existing BridgeHost; keep its original InputLifetime and writer.
+`DispatchPromptAsync(BridgeRequest, InputLifetime, CancellationToken)` returns a typed
+PromptDeliveryResult (operation identity, disposition, reason), consumed by the real
+HandleRequestAsync/BridgeResponse, launcher and daemon, never only by a test API.
+Add a snapshot CLI input profile under existing Configuration/GameSettings for required
+paste/newline/submit/interrupt/exit sequences and positive idle/empty-composer/paste/
+submission observations. Application sequences and terminal clipboard gestures remain
+separate; unknown/auth/trust/update screens pause for the operator. Any manual takeover
+and cancellation are checked before the submit linearization point.
+
+- [ ] Add causal actual-bridge and inert real-PowerShell-function fixtures: positive
+  TwoPromptsOneBinding_CustomSequences_OneSubmitEach; ManualDraft_NotWritten;
+  TakeoverBeforeSubmit_NoEnter; TakeoverAfterSubmit_UnknownOutcome;
+  StatusAndCancelRemainResponsive; LostResponse_NoDaemonOrQteReplay.
+  Invoke extracted real dispatch functions with inert collaborators, never daemon startup.
+- [ ] Connect a bounded whole-operation arbiter to dispatch/manual/bootstrap writers,
+  keep status/cancel service responsive and observe request-specific fresh profile evidence.
+  Remove automatic Ctrl+U/trust/update input; preserve manual draft and accepted input
+  lifetime retirement. Mark SubmitStarted before its first write, not after success.
+- [ ] Carry immutable request kind/revision/content identity plus actual local binding
+  through BridgeRequest/Response, Invoke-BridgeRequestChecked, Send-ToGmBridge,
+  Dispatch-WithRetry and ordinary/QTE/repair/terminal-repair callers. Distinct repair
+  revision/wave is a distinct operation; an old callback cannot finish a replacement.
+  Never invent a durable run epoch from request JSON or this local input binding.
+- [ ] Return NotWritten/QueuedCancelled/DraftUncertain/SubmissionObserved/UnknownOutcome
+  distinctly. Permit bounded retry only on matching explicit NotWritten/busy; ambiguous
+  transport failure, partial I/O, cancel/timeout after possible submit preserve uncertainty
+  and pause automatic delivery. Bound launcher response waits; query retained identity
+  instead of re-pasting. SubmissionObserved is not an accepted game turn.
+- [ ] Prove queue cancellation/overflow, duplicate/same-ID-changed-body, partial paste
+  and submit, stale binding, blank/unknown/auth/trust screens, manual keys at every
+  pre-submit boundary, replaced pending request and QTE idle retry in those consumers.
+  Retention in this slice is live-owner only. Cold operation retention/reconciliation
+  must connect to stage3 before restart-safe automatic delivery is claimed.
+- [ ] Use proposed narrow categories `gm-bridge-prompt-operation` and
+  `gm-daemon-prompt-delivery`, structural catalog/selection edits and exactly affected
+  operational guards. Future commands through `scripts/test-csharp.ps1 -Category
+  <those IDs> -PlanOnly`, then causal RED/GREEN and discovery-only ValidateCatalog.
+  Determine counts after actual discovery. Do not replay unchanged OUTPUT48/INPUT37,
+  IPC34/ENV16/FRAME49/main90/workspace47/receipt41 or R1/R2/R3.
+
+### Dependencies and decisions; no new product contract
+
+Required for live Linux: packaged PTY-capable owner, available selected backend, main
+run admission/fences, actual terminal profile evidence and portable launcher/daemon.
+Native systemd proof requires an already working user manager; this VM has none in
+retained evidence. Controlled tests alone cannot qualify it. Auto prefers qualified
+systemd-user, otherwise explicitly reports native ordinary-same-namespace lineage
+before launch; explicit SystemdUser never downgrades and no backend changes after
+possible launch. No namespaces/root/new services/security/cgroup delegation setup.
+
+Settled product behavior is unchanged: arbitrary persistent interactive CLI, automatic
+and manual input, configurable gestures, visible fallback scope, strict Uncertain,
+root-wide refusal while unresolved workers remain and player-editable saves. Do not
+add anti-player identity/security checks, external-service supervision, universal
+exactly-once or power-loss/reboot-clear promises. Existing CLI launch settings are
+preserved; execution-agent model selection does not change the player's configured GM.
+
+Recommended implementation choices within that contract: one active plus one pending
+automatic operation; overflow returns NotWritten/busy; any manual key takes over until
+explicit existing ready/resume with fresh empty idle evidence. Profile schema and typed
+status/cancel wire shape are technical design choices. The operator-facing resolution
+of DraftUncertain/UnknownOutcome and supported CLI profile observations need a concrete
+UX decision before the affected live stage; recommend preserve the text, pause, inspect
+status and let the operator explicitly resume without automatic replay. No new product
+decision blocks controlled stage1 implementation; future cold recovery is not silently
+resolved by this proposal.
+
+**Spec Kit consistency:** existing1553feature/tasks prerequisite check succeeded;
+US4/FR-009/012/013/014/015/SC-004 and constitution2.1.0 agree. No GM gameplay/payload
+change in this design-only block; operational docs/guards belong to their future connected
+change. Optional analyze commit hook is satisfied by ordinary checkpoint publication;
+no scaffold/init/install. Independent design review and final checkpoint pending.
+Stop after reviewed design handoff; do not implement any stage in this request.
+
 ## Authorized R3: application-process crash/restart qualification — 2026-10-06
 
 Task T041-WORKER-RESTART-R3 / #1553 / US4 / FR-012/014/015. Parent explicitly
