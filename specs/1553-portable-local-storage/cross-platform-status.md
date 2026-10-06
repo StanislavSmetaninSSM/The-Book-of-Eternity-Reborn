@@ -12,7 +12,9 @@ R3 accepted by the owner at `bd2acebf9c070e484434d1332ee80c99bf1c66b6`.
 whole input transaction → owned main PTY/backend + run fence → normal launcher/daemon
 and live console acceptance; production workers join for enabled helper profiles.
 Primary systemd adapter and native main PTY are still absent, production Linux WorkerRelease
-still closed; accepted worker/output/input evidence is reused. Design review pending.
+still closed; accepted worker/output/input evidence is reused. Independent actual
+Sol6.1/xhigh Design PASS at `a4c425b3`, no confirmed blocking defect; exact final
+checkpoint/readback/restoration are reported in handoff.
 No new runtime, tests, rollout or environment changes; stop at design handoff.
 
 ## R3: bounded acceptance and metadata PASS; final carrier handoff

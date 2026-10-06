@@ -72,13 +72,20 @@ and cancellation are checked before the submit linearization point.
 
 - [ ] Add causal actual-bridge and inert real-PowerShell-function fixtures: positive
   TwoPromptsOneBinding_CustomSequences_OneSubmitEach; ManualDraft_NotWritten;
-  TakeoverBeforeSubmit_NoEnter; TakeoverAfterSubmit_UnknownOutcome;
+  TakeoverBeforeSubmit_NoEnter; TakeoverAfterSubmit_NoObservation_UnknownOutcome;
   StatusAndCancelRemainResponsive; LostResponse_NoDaemonOrQteReplay.
+  Status/cancel must traverse the actual BridgeHost pipe accept loop while dispatch is
+  held, with controlled streams/screens; direct HandleRequest calls alone are insufficient.
   Invoke extracted real dispatch functions with inert collaborators, never daemon startup.
 - [ ] Connect a bounded whole-operation arbiter to dispatch/manual/bootstrap writers,
   keep status/cancel service responsive and observe request-specific fresh profile evidence.
   Remove automatic Ctrl+U/trust/update input; preserve manual draft and accepted input
   lifetime retirement. Mark SubmitStarted before its first write, not after success.
+  Actual shell/bootstrap/manual writers share frame exclusion; automatic bootstrap or
+  reminder delivery must share the immutable prompt operation/submit boundary. The daemon
+  AllowNotReady addText+sendEnter branch is dormant (no current switch callers, unchanged
+  from the retained audit); route it through that boundary or refuse automatic use.
+  Include a future-path negative fixture so it cannot later activate an interleaving bypass.
 - [ ] Carry immutable request kind/revision/content identity plus actual local binding
   through BridgeRequest/Response, Invoke-BridgeRequestChecked, Send-ToGmBridge,
   Dispatch-WithRetry and ordinary/QTE/repair/terminal-repair callers. Distinct repair
@@ -132,7 +139,18 @@ resolved by this proposal.
 US4/FR-009/012/013/014/015/SC-004 and constitution2.1.0 agree. No GM gameplay/payload
 change in this design-only block; operational docs/guards belong to their future connected
 change. Optional analyze commit hook is satisfied by ordinary checkpoint publication;
-no scaffold/init/install. Independent design review and final checkpoint pending.
+no scaffold/init/install.
+
+Independent actual **gpt-6.1-sol/xhigh Design PASS** at published candidate
+`a4c425b3e873d99fa0151eeb3b32c4f9f1e0188a`: no confirmed blocking defect; source reuse,
+first connected T042 slice, dependencies and stage2/3 launch coupling verified. Reviewer
+performed0implementation/tests/probes. Its two verification clarifications are recorded
+above: actual pipe-server responsiveness and no separate automatic bootstrap/reminder
+submit boundary. Source inspection confirms AllowNotReady has no current switch caller;
+its dormant branch is not claimed as observed active behavior. Four existing Spec Kit
+files changed; runtime/tests/catalog/settings/workflows remain byte-identical to the
+accepted base. Final verdict checkpoint is published/read back and restored from GitHub
+only; exact final SHA/proof belongs in handoff without self-reference.
 Stop after reviewed design handoff; do not implement any stage in this request.
 
 ## Authorized R3: application-process crash/restart qualification — 2026-10-06
