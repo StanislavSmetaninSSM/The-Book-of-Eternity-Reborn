@@ -202,6 +202,25 @@ public sealed class GmBridgePromptOperationTests
         Assert.Empty(host.Input.Bytes);
     }
 
+    [Fact]
+    public async Task ActualPipe_NonReadingPeersCannotRetainUnboundedErrorWrites()
+    {
+        await using var host = new PromptHostFixture();
+        var status = host.Get("_status")!;
+        status.GetType().GetProperty("CliLaunchCommand")!.SetValue(status, new string('x', 1024 * 1024));
+        for (var i = 0; i < 16; i++)
+        {
+            var peer = await host.Connect();
+            await peer.WriteAsync(Encoding.UTF8.GetBytes("{\"command\":\"status\"}\n"));
+            await peer.FlushAsync();
+        }
+        // Every first response has its own three-second deadline. A second unbounded
+        // error response must not keep all slots held after those deadlines expire.
+        var error = await Record.ExceptionAsync(async () => await host.Rpc(new { command = "status" }).WaitAsync(TimeSpan.FromSeconds(5)));
+        Assert.Null(error);
+        Assert.Empty(host.Input.Bytes);
+    }
+
     internal sealed class PromptHostFixture : IAsyncDisposable
     {
         internal static readonly string Repo = FindRepo();

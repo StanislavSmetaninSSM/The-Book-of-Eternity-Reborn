@@ -73,6 +73,13 @@ Do not repeat untouched INPUT37/OUTPUT48 or worker/native cohorts.
   six boundaries: body identity, peer starvation, caller/postcall source, startup
   binding order, shell-bootstrap takeover, deadline on error response. No tests run
   by reviewer. These remain pending corrections; no acceptance claimed.
+  Corrected fixture RED at e7c98a442855d49bb9cbd8ca219b6073456c32ed:
+  bridge40executed37PASS/3causalFAIL; separate daemon18executed15PASS/3causalFAIL
+  (startup empty binding, caller read/allocation replacement, postcall replacement).
+  Six confirmed causal reviewer scenarios; no remaining fixture/preparation failures.
+  [Causal review manifest](recovery/evidence/t042-review-causal-red/manifest.json).
+  No timeout/skips/duplicates; owned cleanup complete. One more actual non-reading-peer
+  deadline scenario added before the final bounded error-response fix.
 - [ ] Connect typed launcher/daemon/ordinary/QTE/repair outcomes, no ambiguity replay.
 - [ ] Focused fresh GREEN and discovery; exact source/binary/artifact evidence.
 - [ ] Independent Sol source/evidence PASS, ordinary publication/readback and fresh restore.

@@ -1,0 +1,187 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="ebf76a64-6919-4a5c-a8fd-b7af926793a0" name="@c7669543e9c7 2026-10-06 07:46:36" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T07:46:36.8390557+00:00" queuing="2026-10-06T07:46:36.8390558+00:00" start="2026-10-06T07:46:33.2613218+00:00" finish="2026-10-06T07:46:45.5744225+00:00" />
+  <TestSettings name="default" id="f15f0a47-d196-41d3-81ed-27f6baa2c824">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_07_46_36" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="d782f43e-d8b3-4f4d-a826-5c97d1ba7e30" testId="78481c0a-d760-e4df-37a2-62f2a1676980" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.QteIdle_QueriesOriginalWithoutRepaste" computerName="c7669543e9c7" duration="00:00:00.9473930" startTime="2026-10-06T07:46:44.7496997+00:00" endTime="2026-10-06T07:46:44.7497000+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d782f43e-d8b3-4f4d-a826-5c97d1ba7e30" />
+    <UnitTestResult executionId="38e06612-618a-4abd-84c0-47c10d1b62f4" testId="874ffa86-7e58-7329-a05f-62cdd1b1b966" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.DormantAllowNotReady_UsesOneImmutableOperation" computerName="c7669543e9c7" duration="00:00:00.6168198" startTime="2026-10-06T07:46:43.8011407+00:00" endTime="2026-10-06T07:46:43.8011410+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="38e06612-618a-4abd-84c0-47c10d1b62f4" />
+    <UnitTestResult executionId="8ed69e65-f004-4249-a8eb-d80e7f79e581" testId="0c9c5e98-a66e-585d-11c7-697d3f27d94f" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ProvenBusy_RetriesIdenticalFrozenOperation" computerName="c7669543e9c7" duration="00:00:00.7095327" startTime="2026-10-06T07:46:37.5797344+00:00" endTime="2026-10-06T07:46:37.5797347+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8ed69e65-f004-4249-a8eb-d80e7f79e581" />
+    <UnitTestResult executionId="b39fcc88-f385-4c63-9010-0dd54e070788" testId="25d8f82d-598a-f973-50a1-087d74cb0831" testName="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.DaemonBridgeDispatch_UsesTypedOperationWithoutReadinessBypass" computerName="c7669543e9c7" duration="00:00:00.0078886" startTime="2026-10-06T07:46:35.3087184+00:00" endTime="2026-10-06T07:46:35.3087404+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b39fcc88-f385-4c63-9010-0dd54e070788" />
+    <UnitTestResult executionId="26eb4202-5045-4755-bc37-8ab1700b8231" testId="bd832e0d-5aa7-d2bb-b37c-6db745685ef7" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealDaemonLauncherRpc_RetainsOneOperationAndOneSubmit" computerName="c7669543e9c7" duration="00:00:01.0179048" startTime="2026-10-06T07:46:43.1837359+00:00" endTime="2026-10-06T07:46:43.1837374+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="26eb4202-5045-4755-bc37-8ab1700b8231" />
+    <UnitTestResult executionId="741f71bf-ca4d-4946-b162-d85c59746c9a" testId="49a530c9-303b-c911-17c0-12c9fda835e6" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: &quot;turn&quot;)" computerName="c7669543e9c7" duration="00:00:00.9239192" startTime="2026-10-06T07:46:42.1640404+00:00" endTime="2026-10-06T07:46:42.1640407+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="741f71bf-ca4d-4946-b162-d85c59746c9a" />
+    <UnitTestResult executionId="1027fc01-5cfe-43d9-8516-e9a1500fee49" testId="b11e0447-cdba-7fa0-888b-eebe1b579b10" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: &quot;terminal&quot;)" computerName="c7669543e9c7" duration="00:00:00.6955883" startTime="2026-10-06T07:46:40.5717831+00:00" endTime="2026-10-06T07:46:40.5717833+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1027fc01-5cfe-43d9-8516-e9a1500fee49" />
+    <UnitTestResult executionId="56c4c8dd-e459-470a-bf32-303af1153a2b" testId="2effeb7a-cbc4-274b-81dd-f6fe52f29bd9" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.LauncherLostResponse_OnlyQueriesSameOperation" computerName="c7669543e9c7" duration="00:00:00.7423824" startTime="2026-10-06T07:46:36.8695915+00:00" endTime="2026-10-06T07:46:36.8695917+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="56c4c8dd-e459-470a-bf32-303af1153a2b" />
+    <UnitTestResult executionId="d91024d1-b88d-4b25-8b90-5e92fead8398" testId="b5feeaa0-46bf-f3c8-dc06-a96544bdb13e" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ActualRetry_TransportAmbiguityDoesNotRepeat" computerName="c7669543e9c7" duration="00:00:00.8369502" startTime="2026-10-06T07:46:36.1242976+00:00" endTime="2026-10-06T07:46:36.1242979+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d91024d1-b88d-4b25-8b90-5e92fead8398" />
+    <UnitTestResult executionId="95a75f5a-284d-4e59-8882-1900ca2c5c34" testId="72190c63-1fba-c55d-cac1-89e85e7165cf" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.CallerSnapshotReplacedBeforeAllocation_CannotSendOldMessage" computerName="c7669543e9c7" duration="00:00:00.6497155" startTime="2026-10-06T07:46:39.0259989+00:00" endTime="2026-10-06T07:46:39.0259993+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="95a75f5a-284d-4e59-8882-1900ca2c5c34">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: Collection was not empty
+Collection: [{"command":"dispatchPrompt","operationId":"2558dba51b754c8790300f79bd263dda","operationKind":"turn","operationRevision":"live","inputBindingId":"controlled-binding","text":"Process turn #1 (requestId=request). Read /workspace/t1553/boe-prompt-ps-owner-fd20ceba11b041729bafd0ed927fb3d1\\input\\turn_request.json and follow CLI_Agent_Daemon_Specification.md phases 0-4. You MUST read '', '', '', '', '', '', '', '', '', and '' before opening large copied examples. Read '' for phase rules; use '' only when compact templates do not cover a route-specific shape.  If this turn uses any GM-side [INK_FEATHER_ACTION: TAG], you MUST also read '' and write output/ink_feather_action_result.json with exact metadata, actionTag, resolved=true, costInFeathers, resolutionType, summary, and stateEvidence. The client validates correlated metadata, valid JSON, realm restrictions, progressionControl/progression report, gm_thoughts_markdown scope/reasoning, and structured actor coverage. Relevant actors in NPC scope MUST cover any structured actor updates such as NPCCoreChanges, UpdateNPCs, NPCGoalUpdates, or UpdateGuardians. If a Mortal World turn creates or updates NPCs, use '' before editing game_state/npcs/npc_core.json. If a Mortal World turn creates or updates factions, ranks, branches, chronicles, projects, faction relations, or faction sidecars, use '' before editing game_state/factions/*. If a Mortal World turn creates a durable location, changes current_location, edits world_map, or moves NPCs between map locations, use '' before editing game_state/world/* or NPC location ids. If a Mortal World turn teaches, practices, unlocks, or uses a concrete player skill, use '' before writing output/state; do not leave learned skills or active-skill mastery as prose-only text. If a Mortal World turn grants XP, resolves combat rewards, or crosses a level-up threshold, use '' before editing game_state/player/experience.json; do not leave level progress prose-only. Use preGeneratedDices1d20 from the FIRST die for normal checks; afterlife spiritual conflicts use visible d20 values through diceAudit on contested exchange/resolve; gachaBaseResult is separate and does not consume visible dice. If playerAction contains [CHAOS_SEA_DIRECT_GACHA], treat it as a neutral direct pull from the Chaos Sea, not a Guardian-mediated pull, and preserve the exact cost phrase '&lt;N&gt; Чернильных Перьев' or '&lt;N&gt; Ink Feathers' because validation extracts prepaid cost from it. Guardian-mediated gacha is limited per Guardian per return from mortal life: Hostile=0, Wary/Neutral=1, Friendly=2, Devoted/Legendary=3. Guardian-mediated rarity upgrades are limited to Abode Power rarity ceiling bonus and completed relic_forging project bonus; Guardian reputation does not improve rarity odds. Charges reset only when the Soul returns to the Chaos Sea after a new mortal life. If a Guardian has no remaining charges this return, do NOT emit UpdateGuardians.processGacha for that Guardian. Direct /gacha remains neutral and does NOT consume Guardian charges. progressionControl in the request is authoritative. If progression is processed, write game_state/control/progression_report.json with exact sessionId/requestId/turnNumber copied from the CURRENT turn_request.json plus exact bounded processed cycle counts and new last-* markers. If progressionControl.afterlifeCatchupRequired=true, process only afterlifeCatchupSummaryEventsRequired summary outcomes and do NOT simulate raw elapsed cycles one by one. TERMINAL CHECKLIST: write EXACTLY ONE terminal signal for this request; use either ready/turn_complete.json OR ready/turn_error.json, never both; copy exact sessionId/requestId/turnNumber from the CURRENT turn_request.json; never delete or rewrite input/turn_request.json; write the terminal signal as the LAST step. If you write both terminal files or wrong metadata, the client will reject the terminal phase as protocol failure and write game_state/control/terminal_protocol_failure_request.json. validation_repair_request.json is only for accepted terminal completion with invalid resulting state. If a Mortal World turn resolves open combat, enemy exchange, combat XP, active-skill combat mastery, or combat resource changes, you MUST read '' before writing output/state and leave /бой useful through game_state/combat/combat_log.json plus enemies/allies when relevant.","appendEnter":true}]</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c.&lt;CallerSnapshotReplacedBeforeAllocation_CannotSendOldMessage&gt;b__4_0(JsonElement result) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 46
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert, String sessionRoot) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 131
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.CallerSnapshotReplacedBeforeAllocation_CannotSendOldMessage() in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 44
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="458c3737-1120-49a8-94de-87a72e051592" testId="33d392fe-2765-942a-bcaa-951aa5ceae2f" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: &quot;repair&quot;)" computerName="c7669543e9c7" duration="00:00:00.8493996" startTime="2026-10-06T07:46:39.8750670+00:00" endTime="2026-10-06T07:46:39.8750672+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="458c3737-1120-49a8-94de-87a72e051592" />
+    <UnitTestResult executionId="b85d412a-dcd9-4d22-9e71-0be6868f1d1c" testId="a5a6b93a-ac77-61bb-2266-583ed25eeb00" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.PendingReplacedDuringRemoteCall_CannotReturnSent" computerName="c7669543e9c7" duration="00:00:00.7393964" startTime="2026-10-06T07:46:45.4923380+00:00" endTime="2026-10-06T07:46:45.4923383+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b85d412a-dcd9-4d22-9e71-0be6868f1d1c">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+           ↓ (pos 0)
+Expected: "bridge-unknown-outcome"
+Actual:   "sent"
+           ↑ (pos 0)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c.&lt;PendingReplacedDuringRemoteCall_CannotReturnSent&gt;b__3_0(JsonElement result) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 37
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert, String sessionRoot) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 131
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.PendingReplacedDuringRemoteCall_CannotReturnSent() in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 35
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e34527bc-2c4b-468e-9235-faca54f4b6ae" testId="2e462267-dbe4-fbaf-3f27-b542b86bdbbf" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: &quot;qte&quot;)" computerName="c7669543e9c7" duration="00:00:00.6642943" startTime="2026-10-06T07:46:41.2367129+00:00" endTime="2026-10-06T07:46:41.2367132+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e34527bc-2c4b-468e-9235-faca54f4b6ae" />
+    <UnitTestResult executionId="811fe927-e81c-456f-8dc7-e811071e5a82" testId="3ced723d-7dca-83c2-1ac4-fd277646d31d" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.FirstAutostart_CapturesOnlyActualStartedBinding" computerName="c7669543e9c7" duration="00:00:00.7777205" startTime="2026-10-06T07:46:38.3784566+00:00" endTime="2026-10-06T07:46:38.3784569+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="811fe927-e81c-456f-8dc7-e811071e5a82">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+           ↓ (pos 0)
+Expected: "started-binding"
+Actual:   ""</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c.&lt;FirstAutostart_CapturesOnlyActualStartedBinding&gt;b__5_0(JsonElement result) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 56
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert, String sessionRoot) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 131
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.FirstAutostart_CapturesOnlyActualStartedBinding() in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 53
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealDaemonLauncherRpc_RetainsOneOperationAndOneSubmit" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="bd832e0d-5aa7-d2bb-b37c-6db745685ef7">
+      <Execution id="26eb4202-5045-4755-bc37-8ab1700b8231" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="RealDaemonLauncherRpc_RetainsOneOperationAndOneSubmit" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: &quot;qte&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2e462267-dbe4-fbaf-3f27-b542b86bdbbf">
+      <Execution id="e34527bc-2c4b-468e-9235-faca54f4b6ae" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: &quot;repair&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="33d392fe-2765-942a-bcaa-951aa5ceae2f">
+      <Execution id="458c3737-1120-49a8-94de-87a72e051592" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: &quot;turn&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="49a530c9-303b-c911-17c0-12c9fda835e6">
+      <Execution id="741f71bf-ca4d-4946-b162-d85c59746c9a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.PendingReplacedDuringRemoteCall_CannotReturnSent" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a5a6b93a-ac77-61bb-2266-583ed25eeb00">
+      <Execution id="b85d412a-dcd9-4d22-9e71-0be6868f1d1c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="PendingReplacedDuringRemoteCall_CannotReturnSent" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: &quot;terminal&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b11e0447-cdba-7fa0-888b-eebe1b579b10">
+      <Execution id="1027fc01-5cfe-43d9-8516-e9a1500fee49" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.DaemonBridgeDispatch_UsesTypedOperationWithoutReadinessBypass" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="25d8f82d-598a-f973-50a1-087d74cb0831">
+      <Execution id="b39fcc88-f385-4c63-9010-0dd54e070788" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests" name="DaemonBridgeDispatch_UsesTypedOperationWithoutReadinessBypass" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.CallerSnapshotReplacedBeforeAllocation_CannotSendOldMessage" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="72190c63-1fba-c55d-cac1-89e85e7165cf">
+      <Execution id="95a75f5a-284d-4e59-8882-1900ca2c5c34" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="CallerSnapshotReplacedBeforeAllocation_CannotSendOldMessage" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.DormantAllowNotReady_UsesOneImmutableOperation" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="874ffa86-7e58-7329-a05f-62cdd1b1b966">
+      <Execution id="38e06612-618a-4abd-84c0-47c10d1b62f4" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="DormantAllowNotReady_UsesOneImmutableOperation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ActualRetry_TransportAmbiguityDoesNotRepeat" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b5feeaa0-46bf-f3c8-dc06-a96544bdb13e">
+      <Execution id="d91024d1-b88d-4b25-8b90-5e92fead8398" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="ActualRetry_TransportAmbiguityDoesNotRepeat" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.QteIdle_QueriesOriginalWithoutRepaste" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="78481c0a-d760-e4df-37a2-62f2a1676980">
+      <Execution id="d782f43e-d8b3-4f4d-a826-5c97d1ba7e30" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="QteIdle_QueriesOriginalWithoutRepaste" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.FirstAutostart_CapturesOnlyActualStartedBinding" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3ced723d-7dca-83c2-1ac4-fd277646d31d">
+      <Execution id="811fe927-e81c-456f-8dc7-e811071e5a82" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="FirstAutostart_CapturesOnlyActualStartedBinding" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ProvenBusy_RetriesIdenticalFrozenOperation" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0c9c5e98-a66e-585d-11c7-697d3f27d94f">
+      <Execution id="8ed69e65-f004-4249-a8eb-d80e7f79e581" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="ProvenBusy_RetriesIdenticalFrozenOperation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.LauncherLostResponse_OnlyQueriesSameOperation" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2effeb7a-cbc4-274b-81dd-f6fe52f29bd9">
+      <Execution id="56c4c8dd-e459-470a-bf32-303af1153a2b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="LauncherLostResponse_OnlyQueriesSameOperation" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="78481c0a-d760-e4df-37a2-62f2a1676980" executionId="d782f43e-d8b3-4f4d-a826-5c97d1ba7e30" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="874ffa86-7e58-7329-a05f-62cdd1b1b966" executionId="38e06612-618a-4abd-84c0-47c10d1b62f4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0c9c5e98-a66e-585d-11c7-697d3f27d94f" executionId="8ed69e65-f004-4249-a8eb-d80e7f79e581" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="25d8f82d-598a-f973-50a1-087d74cb0831" executionId="b39fcc88-f385-4c63-9010-0dd54e070788" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bd832e0d-5aa7-d2bb-b37c-6db745685ef7" executionId="26eb4202-5045-4755-bc37-8ab1700b8231" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="49a530c9-303b-c911-17c0-12c9fda835e6" executionId="741f71bf-ca4d-4946-b162-d85c59746c9a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b11e0447-cdba-7fa0-888b-eebe1b579b10" executionId="1027fc01-5cfe-43d9-8516-e9a1500fee49" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2effeb7a-cbc4-274b-81dd-f6fe52f29bd9" executionId="56c4c8dd-e459-470a-bf32-303af1153a2b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b5feeaa0-46bf-f3c8-dc06-a96544bdb13e" executionId="d91024d1-b88d-4b25-8b90-5e92fead8398" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="72190c63-1fba-c55d-cac1-89e85e7165cf" executionId="95a75f5a-284d-4e59-8882-1900ca2c5c34" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="33d392fe-2765-942a-bcaa-951aa5ceae2f" executionId="458c3737-1120-49a8-94de-87a72e051592" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a5a6b93a-ac77-61bb-2266-583ed25eeb00" executionId="b85d412a-dcd9-4d22-9e71-0be6868f1d1c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2e462267-dbe4-fbaf-3f27-b542b86bdbbf" executionId="e34527bc-2c4b-468e-9235-faca54f4b6ae" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3ced723d-7dca-83c2-1ac4-fd277646d31d" executionId="811fe927-e81c-456f-8dc7-e811071e5a82" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="14" executed="14" passed="11" failed="3" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.22]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.47]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.49]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:04.62]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:04.62]                  ↓ (pos 0)
+[xUnit.net 00:00:04.62]       Expected: "started-binding"
+[xUnit.net 00:00:04.62]       Actual:   ""
+[xUnit.net 00:00:04.62]       Stack Trace:
+[xUnit.net 00:00:04.62]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(56,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c.&lt;FirstAutostart_CapturesOnlyActualStartedBinding&gt;b__5_0(JsonElement result)
+[xUnit.net 00:00:04.62]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(131,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert, String sessionRoot)
+[xUnit.net 00:00:04.62]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(53,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.FirstAutostart_CapturesOnlyActualStartedBinding()
+[xUnit.net 00:00:04.62]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:05.27]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:05.27]       Collection: [{"command":"dispatchPrompt","operationId":"2558dba51b754c8790300f79bd263dda","operationKind":"turn","operationRevision":"live","inputBindingId":"controlled-binding","text":"Process turn #1 (requestId=request). Read /workspace/t1553/boe-prompt-ps-owner-fd20ceba11b041729bafd0ed927fb3d1\\input\\turn_request.json and follow CLI_Agent_Daemon_Specification.md phases 0-4. You MUST read '', '', '', '', '', '', '', '', '', and '' before opening large copied examples. Read '' for phase rules; use '' only when compact templates do not cover a route-specific shape.  If this turn uses any GM-side [INK_FEATHER_ACTION: TAG], you MUST also read '' and write output/ink_feather_action_result.json with exact metadata, actionTag, resolved=true, costInFeathers, resolutionType, summary, and stateEvidence. The client validates correlated metadata, valid JSON, realm restrictions, progressionControl/progression report, gm_thoughts_markdown scope/reasoning, and structured actor coverage. Relevant actors in NPC scope MUST cover any structured actor updates such as NPCCoreChanges, UpdateNPCs, NPCGoalUpdates, or UpdateGuardians. If a Mortal World turn creates or updates NPCs, use '' before editing game_state/npcs/npc_core.json. If a Mortal World turn creates or updates factions, ranks, branches, chronicles, projects, faction relations, or faction sidecars, use '' before editing game_state/factions/*. If a Mortal World turn creates a durable location, changes current_location, edits world_map, or moves NPCs between map locations, use '' before editing game_state/world/* or NPC location ids. If a Mortal World turn teaches, practices, unlocks, or uses a concrete player skill, use '' before writing output/state; do not leave learned skills or active-skill mastery as prose-only text. If a Mortal World turn grants XP, resolves combat rewards, or crosses a level-up threshold, use '' before editing game_state/player/experience.json; do not leave level progress prose-only. Use preGeneratedDices1d20 from the FIRST die for normal checks; afterlife spiritual conflicts use visible d20 values through diceAudit on contested exchange/resolve; gachaBaseResult is separate and does not consume visible dice. If playerAction contains [CHAOS_SEA_DIRECT_GACHA], treat it as a neutral direct pull from the Chaos Sea, not a Guardian-mediated pull, and preserve the exact cost phrase '&lt;N&gt; Чернильных Перьев' or '&lt;N&gt; Ink Feathers' because validation extracts prepaid cost from it. Guardian-mediated gacha is limited per Guardian per return from mortal life: Hostile=0, Wary/Neutral=1, Friendly=2, Devoted/Legendary=3. Guardian-mediated rarity upgrades are limited to Abode Power rarity ceiling bonus and completed relic_forging project bonus; Guardian reputation does not improve rarity odds. Charges reset only when the Soul returns to the Chaos Sea after a new mortal life. If a Guardian has no remaining charges this return, do NOT emit UpdateGuardians.processGacha for that Guardian. Direct /gacha remains neutral and does NOT consume Guardian charges. progressionControl in the request is authoritative. If progression is processed, write game_state/control/progression_report.json with exact sessionId/requestId/turnNumber copied from the CURRENT turn_request.json plus exact bounded processed cycle counts and new last-* markers. If progressionControl.afterlifeCatchupRequired=true, process only afterlifeCatchupSummaryEventsRequired summary outcomes and do NOT simulate raw elapsed cycles one by one. TERMINAL CHECKLIST: write EXACTLY ONE terminal signal for this request; use either ready/turn_complete.json OR ready/turn_error.json, never both; copy exact sessionId/requestId/turnNumber from the CURRENT turn_request.json; never delete or rewrite input/turn_request.json; write the terminal signal as the LAST step. If you write both terminal files or wrong metadata, the client will reject the terminal phase as protocol failure and write game_state/control/terminal_protocol_failure_request.json. validation_repair_request.json is only for accepted terminal completion with invalid resulting state. If a Mortal World turn resolves open combat, enemy exchange, combat XP, active-skill combat mastery, or combat resource changes, you MUST read '' before writing output/state and leave /бой useful through game_state/combat/combat_log.json plus enemies/allies when relevant.","appendEnter":true}]
+[xUnit.net 00:00:05.27]       Stack Trace:
+[xUnit.net 00:00:05.27]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(46,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c.&lt;CallerSnapshotReplacedBeforeAllocation_CannotSendOldMessage&gt;b__4_0(JsonElement result)
+[xUnit.net 00:00:05.27]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(131,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert, String sessionRoot)
+[xUnit.net 00:00:05.27]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(44,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.CallerSnapshotReplacedBeforeAllocation_CannotSendOldMessage()
+[xUnit.net 00:00:05.27]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:11.73]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:11.73]                  ↓ (pos 0)
+[xUnit.net 00:00:11.73]       Expected: "bridge-unknown-outcome"
+[xUnit.net 00:00:11.73]       Actual:   "sent"
+[xUnit.net 00:00:11.73]                  ↑ (pos 0)
+[xUnit.net 00:00:11.73]       Stack Trace:
+[xUnit.net 00:00:11.73]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(37,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c.&lt;PendingReplacedDuringRemoteCall_CannotReturnSent&gt;b__3_0(JsonElement result)
+[xUnit.net 00:00:11.73]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(131,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert, String sessionRoot)
+[xUnit.net 00:00:11.73]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(35,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.PendingReplacedDuringRemoteCall_CannotReturnSent()
+[xUnit.net 00:00:11.73]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:11.74]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T07:46:38.3774200+00:00">
+        <Text>[xUnit.net 00:00:04.62]     BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.FirstAutostart_CapturesOnlyActualStartedBinding [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T07:46:39.0265477+00:00">
+        <Text>[xUnit.net 00:00:05.27]     BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.CallerSnapshotReplacedBeforeAllocation_CannotSendOldMessage [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T07:46:45.4926202+00:00">
+        <Text>[xUnit.net 00:00:11.73]     BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.PendingReplacedDuringRemoteCall_CannotReturnSent [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>
