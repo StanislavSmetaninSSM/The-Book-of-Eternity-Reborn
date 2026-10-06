@@ -109,6 +109,8 @@ internal sealed partial class BridgeHost : IDisposable
     private readonly SemaphoreSlim _shellLifecycleLock = new(1, 1);
     private NeutralTerminalLaunch? _neutralLaunch;
     private GmSessionRunCoordinator? _mainRun;
+    private GmSessionRunCoordinator? _lastMainRun;
+    internal Func<MainOperationClose,Task>? BeforeMainCloseReply;
     private BookOfEternityClient.Core.FileSystemManager? _neutralFiles;
     internal Action<BookOfEternityClient.Core.MainRunIoStage>? ObserveMainMetadata;
     internal Action<int>? ObserveMainHeldRoot;
@@ -259,7 +261,8 @@ internal sealed partial class BridgeHost : IDisposable
     private async Task RunServerLoopAsync(CancellationToken cancellationToken)
     {
         var peers = new List<Task>();
-        using var capacity = new SemaphoreSlim(16, 16);
+        using var capacity = new SemaphoreSlim(48, 48);
+        using var shortCapacity = new SemaphoreSlim(16,16);
         NamedPipeServerStream NewListener() => new(_pipeName,PipeDirection.InOut,NamedPipeServerStream.MaxAllowedServerInstances,PipeTransmissionMode.Byte,PipeOptions.Asynchronous);
         var listener=NewListener();
         try
@@ -288,15 +291,20 @@ internal sealed partial class BridgeHost : IDisposable
                 deadline.CancelAfter(TimeSpan.FromSeconds(3));
                 try
                 {
-                    var request = await ReadMessageAsync<BridgeRequest>(server, deadline.Token) ?? new BridgeRequest();
+                    var reader=new MainOperationReader(server);
+                    var request = await reader.ReadAsync<BridgeRequest>(deadline.Token) ?? new BridgeRequest();
+                    if(string.Equals(request.Command,"beginMainOperation",StringComparison.OrdinalIgnoreCase)) {
+                        await ServeMainOperationAsync(server,reader,request,cancellationToken);return;
+                    }
+                    await shortCapacity.WaitAsync(deadline.Token);
                     deadline.CancelAfter(Timeout.InfiniteTimeSpan);
-                    await ProcessConnectedRequestAsync(server, async () =>
+                    try { await ProcessConnectedRequestAsync(server, async () =>
                     {
                         var response = await HandleRequestAsync(request);
                         deadline.CancelAfter(TimeSpan.FromSeconds(3));
                         await WriteMessageAsync(server, response, deadline.Token);
                         if (response.ShutdownAfterResponse) _cts.Cancel();
-                    }, deadline.Token);
+                    }, deadline.Token); } finally { shortCapacity.Release(); }
                 }
                 catch (Exception) { /* The accepted peer owns a bounded read/response; no second unbounded write. */ }
                 finally { capacity.Release(); }
@@ -337,6 +345,8 @@ internal sealed partial class BridgeHost : IDisposable
 
         switch (command)
         {
+            case "mainoperationstatus":
+                return new BridgeResponse { Ok=true, MainOperation=(_mainRun??_lastMainRun)?.QueryRemoteOperation(request.MainOperationClose??throw new InvalidDataException("Missing close identity.")) };
             case "status":
                 return BridgeResponse.Success(SnapshotStatus());
 
@@ -622,7 +632,7 @@ internal sealed partial class BridgeHost : IDisposable
         if(_mainRun!=null) {
             try { await _mainRun.ConfirmSettledStopAsync(session,await _terminalStopTask!); }
             catch { if(_mainRun.IsUncertain)MarkTerminalUncertain();throw; }
-            _mainRun=null;
+            _lastMainRun=_mainRun;_mainRun=null;
         }
         lock (_sync)
         {
@@ -1748,6 +1758,8 @@ internal sealed class BridgeRequest
     public int? Columns { get; set; }
     public int? Rows { get; set; }
     public string? Command { get; set; }
+    public string? RootKey {get;set;}
+    public MainOperationClose? MainOperationClose {get;set;}
     public string? Text { get; set; }
     public bool AppendEnter { get; set; } = true;
     public bool? Ready { get; set; }
@@ -1780,6 +1792,7 @@ internal sealed class BridgeResponse
     public BridgeStatus? Status { get; set; }
     public BridgeDiagnostics? Diagnostics { get; set; }
     public PromptDeliveryResult? PromptDelivery { get; set; }
+    public MainOperationReply? MainOperation {get;set;}
     public GmWorkerProposalOnlyDispatchResult? WorkerDispatch { get; set; }
     [JsonIgnore]
     public bool ShutdownAfterResponse { get; set; }

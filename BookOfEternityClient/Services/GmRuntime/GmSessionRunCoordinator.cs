@@ -5,7 +5,7 @@ namespace BookOfEternityClient.Services.GmRuntime;
 
 // Live authority is the original coordinator/terminal/guard and admitted pin objects.
 // Decoded identities, status, PID, EOF and caller-supplied stop records never mint it.
-internal sealed class GmSessionRunCoordinator
+internal sealed partial class GmSessionRunCoordinator
 {
     private readonly FileSystemManager _files;
     private readonly GmMainOwnerGuard _guard;
@@ -83,13 +83,7 @@ internal sealed class GmSessionRunCoordinator
     }
     internal async Task<T> RunOperationAsync<T>(Func<Task<T>> operation)
     {
-        OperationPin pin;
-        lock(_sync)
-        {
-            if(_closed || _uncertain || !_released || _retired || _persistence.HasDebt || _record?.Disposition!=GmSessionRunDisposition.Running)
-                throw GmSessionRunPersistence.Invalid();
-            if(_pins++==0)_drained=new(TaskCreationOptions.RunContinuationsAsynchronously);pin=new(this);
-        }
+        var pin=CreateOperationPin();
         using(pin)using(Enter(false,pin))return await operation();
     }
     internal void ValidateAccessAcquisition(Access access,bool closing=false)

@@ -32,7 +32,18 @@ internal static class MainOperationScenarioDriver
             using var reply=JsonDocument.Parse((await reader.ReadLineAsync(timeout.Token))!);
             result["BeginResponse"]=reply.RootElement.Clone();
             if(!reply.RootElement.GetProperty("ok").GetBoolean())throw new InvalidOperationException("Actual original owner pipe did not grant a retained main operation.");
-            // GREEN continuation is extended after the causal baseline proves missing wire admission.
+            var grant=reply.RootElement;
+            object Frame(string command)=>new{command,pinId=grant.GetProperty("pinId").GetString(),closeId=grant.GetProperty("closeId").GetString(),operationId=operation,identity=grant.GetProperty("identity")};
+            await pipe.WriteAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(Frame("activateMainOperation"))+"\n"),timeout.Token);
+            using var activated=JsonDocument.Parse((await reader.ReadLineAsync(timeout.Token))!);
+            if(!activated.RootElement.GetProperty("ok").GetBoolean())throw new InvalidOperationException("Original grant did not activate.");
+            var close=new {pinId=grant.GetProperty("pinId").GetString(),closeId=grant.GetProperty("closeId").GetString(),operationId=operation,identity=grant.GetProperty("identity"),outcome=0,closingFailed=false};
+            await pipe.WriteAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new{command="closeMainOperation",close})+"\n"),timeout.Token);
+            using var closed=JsonDocument.Parse((await reader.ReadLineAsync(timeout.Token))!);
+            if(closed.RootElement.GetProperty("state").GetInt32()!=3)throw new InvalidOperationException("Actual immutable close receipt not observed.");
+            await Call("StopShellAsync");
+            if(GmSessionRunRecordCodec.Decode(File.ReadAllBytes(Path.Combine(root,".boe_runtime/gm-runs/main.json"))).Disposition!=GmSessionRunDisposition.Stopped)throw new InvalidOperationException("Closed original pin prevented durable scoped stop.");
+            result["ClosedObserved"]=true;result["DurableStopped"]=true;
             result["Success"]=true;return 0;
         } catch(Exception e){result["Failure"]=e.ToString();return 1;}
         finally {
