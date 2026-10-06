@@ -133,6 +133,15 @@ Do not repeat untouched INPUT37/OUTPUT48 or worker/native cohorts.
   the client consumes pending after the terminal was already captured. Added four
   inert real Process-Turn controls before any further runtime correction; unrun WIP.
   Only affected daemon category will be rebuilt/run; bridge source remains unchanged.
+  At e1cad8ec69a0e198d6c44aa61efea95ce645a51c fresh daemon-only37executed:
+  35PASS/2causalFAIL (captured terminal consumed before/after dispatch suppresses
+  accepted historical trajectory); ordinary completion/timeout controls PASS.
+  Cleanup complete, no timeout/skips/duplicates;117.0750683seconds.
+  [Consumed terminal RED](recovery/evidence/t042-terminal-consumption-red/manifest.json).
+  Minimal correction permits only historical logging of an already captured correlated
+  terminal after pending is absent. Replaced bytes remain rejected; every new daemon
+  terminal/report write still requires the exact source. No new game acceptance permit.
+  Fresh daemon GREEN/review pending; bridge46PASS evidence is reused unchanged.
 - [ ] Connect typed launcher/daemon/ordinary/QTE/repair outcomes, no ambiguity replay.
 - [ ] Focused fresh GREEN and discovery; exact source/binary/artifact evidence.
 - [ ] Independent Sol source/evidence PASS, ordinary publication/readback and fresh restore.

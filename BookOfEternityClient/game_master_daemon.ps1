@@ -5891,7 +5891,10 @@ function Process-Turn {
         }
 
         # Wait for terminal signal
-        if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
+        # A captured correlated terminal may still be logged after client consumption.
+        # Replacement bytes never inherit that observation; no new terminal writes use this exception.
+        if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash) -and
+            ($null -eq $terminalSignal -or (Test-Path -LiteralPath $RequestPath))) { return }
         $elapsed = 0
         $artifactWriteStallWatchState = @{}
         $outputWithoutTerminalWatchState = New-GmOutputWithoutTerminalWatchState
@@ -5914,7 +5917,8 @@ function Process-Turn {
             }
 
             $terminalSignal = Get-CorrelatedTerminalSignal -TurnRequest $turnRequest -CompletionPath $completionPath -ErrorPath $errorPath
-            if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
+            if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash) -and
+                ($null -eq $terminalSignal -or (Test-Path -LiteralPath $RequestPath))) { return }
 
             if ($null -eq $terminalSignal -and $elapsed % 15 -eq 0 -and (Test-GmBridgeReturnedIdleWithoutTerminalSignal -ElapsedSeconds $elapsed)) {
                 if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
