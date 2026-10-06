@@ -110,6 +110,20 @@ Mortal World/afterlife schema, mechanic, save, prompt/model or worked-example co
 changes; existing GM guidance remains applicable. Operational proof and limits are
 in the plan and [qualification](recovery/gm-input-transaction-qualification.json).
 
+## Authorized owned main terminal neutral implementation
+
+The owner accepted `3b21dba7410284cb4b471e7b3c3e4be970139c27` and authorized
+only T041-OWNED-MAIN-TERMINAL-NEUTRAL per its accepted design: one original-owned
+terminal session/native terminal mode, real BridgeHost/InputLifetime/output/T042,
+coherent scoped view and fixed persistent neutral fixture. Manual Unicode/resize/
+EOF/draft/takeover/cancel through actual pipe loop; precise stop and retained
+Uncertain. Preserve Windows ConPTY/Job without native qualification by mocks.
+No arbitrary public GM admission/systemd setup/privilege/network/settings changes,
+provider/game-writing/saves/cold guarantees. Supported VT subset is explicit.
+Causal RED/GREEN, bounded isolated fixtures/guardian, affected old regressions,
+independent Sol6.1/xhigh source/evidence review and durable restore apply.
+Stop after handoff before production/main fence/next stage.
+
 ## Authorized owned main terminal design
 
 From accepted T042 `1bc9d67536dccbcc6672d8e7cd71ad885c2a946c`, the owner

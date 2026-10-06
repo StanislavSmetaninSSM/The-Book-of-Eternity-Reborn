@@ -182,7 +182,28 @@ Do not repeat untouched INPUT37/OUTPUT48 or worker/native cohorts.
   Stop before the next stage. Raw-read settlement/live CLI/native/main/systemd/
   production/cold/fullT042 remain unqualified; no GM/save/prompt/model contract change.
 
-## Owned main terminal — current design-only block
+## T041 owned main terminal neutral — authorized execution
+
+User accepted design `3b21dba7410284cb4b471e7b3c3e4be970139c27` and authorized
+T041-OWNED-MAIN-TERMINAL-NEUTRAL only. Sole Sol6.1/xhigh writer in existing isolated
+`/workspace/native-1553`, branch `codex/1553-load-filesystem`; remote base exact/clean.
+[Accepted design](owned-main-terminal-design.md) is the execution brief;
+[durable evidence/ledger](recovery/owned-main-terminal-neutral.json).
+Use Superpowers executing-plans/TDD and existing Spec Kit/bridge, independent
+Sol6.1/xhigh review. Native Windows qualification requires an actual Windows run;
+supported VT subset is bounded, not arbitrary TUI support. No public arbitrary
+GM launch/systemd manager/privileges/settings/live provider/game-writing/saves/cold.
+
+- [ ] Compile-ready consumed session seam, preserving old retirement behavior.
+- [ ] Actual BridgeHost retained-owner causal RED, then GREEN/typed retirement.
+- [ ] Original native supervisor terminal mode, fixed neutral fixture; own-root
+  positive cleanup before controlled descendants/uncertainty cases.
+- [ ] Session-scoped actual output view and T042/real pipe/manual/resize consumers;
+  preserve ConPTY/Job contract and retained transport shutdown.
+- [ ] Narrow affected regressions, exact sources/artifacts/cleanup, independent
+  source/evidence verdict, checkpoint/readback/fresh GitHub-only restore; handoff.
+
+## Owned main terminal — accepted design-only block
 
 Accepted T042 `1bc9d67536dccbcc6672d8e7cd71ad885c2a946c` closes only its
 controlled input transaction. Current authorization is T041 source-backed owned

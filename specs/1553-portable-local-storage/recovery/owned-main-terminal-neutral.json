@@ -1,0 +1,21 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T041-OWNED-MAIN-TERMINAL-NEUTRAL",
+  "Issue": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553",
+  "AcceptedDesign": "3b21dba7410284cb4b471e7b3c3e4be970139c27",
+  "Status": "WIP authorized execution; runtime not implemented or qualified",
+  "Method": "Spec Kit existing feature, Superpowers executing-plans/TDD, bridge; sole writer and separate Sol6.1/xhigh review",
+  "Preflight": "Existing isolated linked worktree, exact remote base and clean tree. One shared session feeds original input/output/dispatch; original native reaper remains the sole ownership engine. No interface conflict found.",
+  "Ledger": [
+    "Authorization checkpoint before code/tests. Accepted design remains historical; current execution authorization is recorded in spec/plan/tasks.",
+    "Preparation missing type/entry/DLL/unavailable factory is not causal RED. Compile-ready consumed seam preserves original StopShell disposal order before actual retirement assertion.",
+    "Runtime/tests executed in this implementation so far: 0."
+  ],
+  "Cohorts": [],
+  "ProductionMainReleaseEnabled": false,
+  "NativeWindowsQualified": false,
+  "SystemdQualified": false,
+  "ArbitraryTuiQualified": false,
+  "ColdGuarantees": false,
+  "Review": "Pending"
+}
