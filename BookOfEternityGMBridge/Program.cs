@@ -292,8 +292,9 @@ internal sealed partial class BridgeHost : IDisposable
                 try
                 {
                     var reader=new MainOperationReader(server);
-                    var request = await reader.ReadAsync<BridgeRequest>(deadline.Token) ?? new BridgeRequest();
+                    var request = await reader.ReadAsync<BridgeRequest>(deadline.Token,int.MaxValue) ?? new BridgeRequest();
                     if(string.Equals(request.Command,"beginMainOperation",StringComparison.OrdinalIgnoreCase)) {
+                        if(reader.LastFrameBytes>65536)throw new InvalidDataException("Operation begin exceeds bound.");
                         await ServeMainOperationAsync(server,reader,request,cancellationToken);return;
                     }
                     await shortCapacity.WaitAsync(deadline.Token);

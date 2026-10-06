@@ -17,6 +17,7 @@ internal sealed partial class GmSessionRunCoordinator
             lock(owner._sync) {
                 Match(frame.PinId,frame.CloseId,frame.OperationId,frame.Identity);
                 if(State!=MainOperationState.PreparedGrant || owner._closed || owner._uncertain)throw GmSessionRunPersistence.Invalid();
+                owner.ValidateOriginalLive();
                 State=MainOperationState.Active;
             }
         }
@@ -66,12 +67,16 @@ internal sealed partial class GmSessionRunCoordinator
             return pin.Reply;
         }
     }
+    private void ValidateOriginalLive()
+    {
+        if(_closed || _uncertain || !_released || _retired || _persistence.HasDebt || _record?.Disposition!=GmSessionRunDisposition.Running ||
+            _terminal==null || _terminal.AuthorityLost.IsCompleted || _terminal.RootExited.IsCompleted)throw GmSessionRunPersistence.Invalid();
+        _guard.Validate();
+    }
     private OperationPin CreateOperationPin()
     {
         lock(_sync) {
-            if(_closed || _uncertain || !_released || _retired || _persistence.HasDebt || _record?.Disposition!=GmSessionRunDisposition.Running ||
-                _terminal?.AuthorityLost.IsCompleted!=false || _terminal.RootExited.IsCompleted)throw GmSessionRunPersistence.Invalid();
-            _guard.Validate();if(_pins++==0)_drained=new(TaskCreationOptions.RunContinuationsAsynchronously);return new(this);
+            ValidateOriginalLive();if(_pins++==0)_drained=new(TaskCreationOptions.RunContinuationsAsynchronously);return new(this);
         }
     }
 }

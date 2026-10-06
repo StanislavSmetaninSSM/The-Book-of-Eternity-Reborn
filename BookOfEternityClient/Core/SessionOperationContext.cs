@@ -1,5 +1,6 @@
 using System.Runtime.ExceptionServices;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.Services.GmRuntime;
 
 namespace BookOfEternityClient.Core;
 
@@ -87,7 +88,37 @@ internal static class SessionOperationContext
     /// The completed operation result. Established session replacement takes precedence over a storage failure;
     /// ordinary closing failures retain the original typed storage outcome and a separate diagnostic.
     /// </returns>
-    private static async Task<T> RunBoundCoreAsync<T>(
+    private static async Task<T> RunBoundCoreAsync<T>(FileSystemManager fileSystem,string expectedGeneration,Func<Task<T>> operation,FileSystemManager.CanonicalWriteLease? writeLease)
+    {
+        await using var main=fileSystem.BeginParticipatingMainAdmission();await main.AcquireAsync();
+        Exception? failure=null;T? result=default;
+        try {result=await RunBoundBodyAsync(fileSystem,expectedGeneration,operation,writeLease);}
+        catch(Exception e){failure=e;throw;}
+        finally {
+            try {await main.CompleteAsync(failure is OperationCanceledException?MainOperationOutcome.Cancelled:failure!=null?MainOperationOutcome.Failed:MainOperationOutcome.Completed,failure!=null);}
+            catch(Exception close) when(failure!=null){failure.Data["MainOperationCloseFailure"]=close;}
+        }
+        return result!;
+    }
+
+    internal static async Task<T> RunParticipatingCurrentSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation)
+    {
+        await using var main=files.BeginParticipatingMainAdmission();await main.AcquireAsync();
+        Exception? failure=null;
+        try {
+            string generation;
+            if(!TryGetExpectedGeneration(files.BasePath,out generation)) {
+                await using var lease=await files.AcquireCanonicalWriteLeaseAsync();generation=files.GetOrCreateSessionGeneration(lease);
+            }
+            return await RunBoundCoreAsync(files,generation,operation,null);
+        } catch(Exception e){failure=e;throw;}
+        finally {
+            try {await main.CompleteAsync(failure is OperationCanceledException?MainOperationOutcome.Cancelled:failure!=null?MainOperationOutcome.Failed:MainOperationOutcome.Completed,failure!=null);}
+            catch(Exception close) when(failure!=null){failure.Data["MainOperationCloseFailure"]=close;}
+        }
+    }
+
+    private static async Task<T> RunBoundBodyAsync<T>(
         FileSystemManager fileSystem,
         string expectedGeneration,
         Func<Task<T>> operation,
@@ -148,6 +179,7 @@ internal static class SessionOperationContext
             }
             else
             {
+                fileSystem.BeginMainOperationClosing();
                 state.BeginClosing();
                 try
                 {
