@@ -208,6 +208,17 @@ It checks original permit/capacity outcomes and exact recovery evidence. Distinc
 synthetic task IDs get distinct proposal IDs; old fixtures retain their output ID.
 Runtime reviewed gaps remain unfixed for causal RED; new category worker-restart-root-linux
 is unbuilt/unrun.
+First root run at `4b10b0baf6903165163ab7b7ce3e543c800b5a09`:2 executed/2 FAIL,
+49.8618791s, fresh build and runner cleanup complete. Foreign pending is causal RED:
+healthy B incorrectly became absorbing Uncertain, both capacities stayed retained.
+Recovery report showed4 unwanted recovery observations and changed evidence, but its
+test stopped at guardian cleanup:2 emergency signals for the still-retained gated
+helper/host, ECHILD reached with3 reap and no deadline/failure. That row is not yet
+accepted causal RED. Other guardian ECHILD/exit0/reap1/no emergency. Evidence:
+recovery/evidence/worker-r2-root-first/manifest.json. Fixture now asks only its
+original retained owner for bounded late stop and waits actual supervisor exit;
+Uncertain/slot/workspace retention and recovery assertions remain unchanged. Runtime
+reviewed gaps are unchanged. Fresh same small category retry pending.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing
