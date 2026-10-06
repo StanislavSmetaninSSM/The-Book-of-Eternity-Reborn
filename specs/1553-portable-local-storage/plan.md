@@ -24,7 +24,18 @@ Only new gm-bridge-prompt-operation and gm-daemon-prompt-delivery categories are
 exact altered operational/source guards will join these owners when runtime changes.
 Do not repeat untouched INPUT37/OUTPUT48 or worker/native cohorts.
 
-- [ ] Preserve causal RED source/results/owned cleanup; classify preparation failures.
+- [x] Preserve causal RED source/results/owned cleanup; classify preparation failures.
+  Source `aac26e3ad10c37992debb559e32a58e318699e9c`, Linux controlled fixtures;
+  `scripts/test-csharp.ps1 -Category @("gm-bridge-prompt-operation","gm-daemon-prompt-delivery")`:
+  fresh build succeeded, bridge 2/2 executed FAIL, daemon descriptor unexecuted due
+  fail-fast (planned4/completed2, exit1, no timeout). Then unchanged-source
+  `-Category gm-daemon-prompt-delivery -NoBuild`: 2/2 executed FAIL, exit1.
+  Four causal defects: Ctrl+U erases draft; partial-line peer blocks status;
+  transport ambiguity repeats dispatch; dormant AllowNotReady split writes.
+  No preparation failures/skips/duplicates; both owned-tree cleanups complete.
+  Evidence: [initial RED manifest](recovery/evidence/t042-initial-red/manifest.json).
+  SDK10.0.401/runtime8.0.31/PowerShell7.5.4, no installation/native compiler use.
+  Runtime unchanged; next implement consumed operation/typed transport.
 - [ ] Implement immutable live operation and actual RPC/manual/profile consumers.
 - [ ] Connect typed launcher/daemon/ordinary/QTE/repair outcomes, no ambiguity replay.
 - [ ] Focused fresh GREEN and discovery; exact source/binary/artifact evidence.
