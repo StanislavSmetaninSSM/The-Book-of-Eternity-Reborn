@@ -178,7 +178,7 @@ internal sealed partial class BridgeHost : IDisposable
         _controlDir = Path.Combine(_sessionPath, "game_state", "control");
         _statusPath = Path.Combine(_controlDir, "gm_bridge_status.json");
         _configPath = Path.Combine(_sessionPath, "config.json");
-        Directory.CreateDirectory(_controlDir);
+        // Canonical directories are created only by admitted client consumers.
 
         _status = new BridgeStatus
         {
@@ -427,7 +427,9 @@ internal sealed partial class BridgeHost : IDisposable
                 }
                 catch(OwnedTerminalStartException ex) { AttachOwnedTerminalCore(ex.Owner,NeutralOutput??Console.OpenStandardOutput(),false); MarkTerminalUncertain(); throw; }
                 catch { if(_mainRun?.RetainsAuthority==true)MarkTerminalUncertain();else _mainRun=null;throw; }
+                OpenOriginalStatusPublication();
                 AttachOwnedTerminal(neutralSession, NeutralOutput??Console.OpenStandardOutput());
+                await _firstStatus.Task;
                 return;
             }
             if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("Production main launch remains fenced; only fixed neutral terminal admission is available here.");
@@ -489,7 +491,7 @@ internal sealed partial class BridgeHost : IDisposable
         _terminalRootTask = ObserveTerminalRootAsync(session,input);
         _keyboardPumpTask = Task.Run(() => PumpKeyboardAsync(input, ReadConsoleKeyAsync, shellLoopCts.Token));
         _resizePumpTask = Task.Run(() => PumpResizeAsync(shellLoopCts.Token));
-        _mainRun?.BindActualBridgeRetirement(session,[_outputPumpTask,_keyboardPumpTask,_resizePumpTask,_terminalRootTask,_terminalAuthorityTask],()=>input.Revoked?input.DrainTask:null);
+        _mainRun?.BindActualBridgeRetirement(session,[_outputPumpTask,_keyboardPumpTask,_resizePumpTask,_terminalRootTask,_terminalAuthorityTask,_statusSettlement.Task],()=>input.Revoked?input.DrainTask:null);
         lock (_sync) { _status.ShellPid = session.Identity.RootPid; _status.Backend = session.Identity.Backend; _status.TerminalRunId=session.Identity.RunId; _status.TerminalGuarantee=session.Identity.Guarantee; _status.State = _terminalUncertain?"TerminalUncertain":"OperatorNotReady"; WriteStatusFile(); }
         return input;
     }
@@ -531,6 +533,7 @@ internal sealed partial class BridgeHost : IDisposable
             input = _inputLifetime;
             pty = _pty;
         }
+        await SealOriginalStatusPublicationAsync();
         if (input != null)
             RevokeInputLifetime(input);
         Exception? metadataFailure=null;
@@ -1668,9 +1671,7 @@ internal sealed partial class BridgeHost : IDisposable
 
     private void WriteStatusFile()
     {
-        _status.UpdatedAtUtc = DateTimeOffset.UtcNow.ToString("O");
-        var json = JsonSerializer.Serialize(_status, JsonOpts);
-        File.WriteAllText(_statusPath, json, Encoding.UTF8);
+        QueueOriginalStatusPublication();
         UpdateConsoleTitle();
     }
 
@@ -1686,15 +1687,8 @@ internal sealed partial class BridgeHost : IDisposable
 
     private void SafeDeleteStatusFile()
     {
-        try
-        {
-            if (File.Exists(_statusPath))
-                File.Delete(_statusPath);
-        }
-        catch
-        {
-            // ignored
-        }
+        // A status PID is never deletion authority. F2 retains stale diagnostic
+        // bytes; actual launcher cleanup must acquire participating admission.
     }
 
     private static void EnableVirtualTerminalOutput()

@@ -318,6 +318,7 @@ public partial class FileSystemManager
             ExternalPublicationContext = null;
             PendingLocalDecision = null;
             MutationIntentRecorder = null;
+            var mainForFailure = MainAdmission;
             Exception? failure = null;
             void RetainFailure(Exception next) =>
                 failure = failure == null ? next : new AggregateException(failure, next);
@@ -346,7 +347,10 @@ public partial class FileSystemManager
                 _ambientRegistration = null;
             }
             if (failure != null)
+            {
+                mainForFailure?.MarkUnresolved();
                 System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failure).Throw();
+            }
         }
     }
 

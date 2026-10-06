@@ -90,6 +90,8 @@ internal static class SessionOperationContext
     /// </returns>
     private static async Task<T> RunBoundCoreAsync<T>(FileSystemManager fileSystem,string expectedGeneration,Func<Task<T>> operation,FileSystemManager.CanonicalWriteLease? writeLease)
     {
+        ArgumentNullException.ThrowIfNull(fileSystem);ArgumentNullException.ThrowIfNull(operation);
+        if(string.IsNullOrWhiteSpace(expectedGeneration))throw new ArgumentException("A session operation requires a generation.",nameof(expectedGeneration));
         await using var main=fileSystem.BeginParticipatingMainAdmission();await main.AcquireAsync();
         Exception? failure=null;T? result=default;
         try {result=await RunBoundBodyAsync(fileSystem,expectedGeneration,operation,writeLease);}
@@ -101,8 +103,9 @@ internal static class SessionOperationContext
         return result!;
     }
 
-    internal static async Task<T> RunParticipatingCurrentSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation)
+    internal static async Task<T> RunParticipatingCurrentSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,Func<MainOperationOutcome>? establishedOutcome=null)
     {
+        ArgumentNullException.ThrowIfNull(files);ArgumentNullException.ThrowIfNull(operation);
         await using var main=files.BeginParticipatingMainAdmission();await main.AcquireAsync();
         Exception? failure=null;
         try {
@@ -113,10 +116,13 @@ internal static class SessionOperationContext
             return await RunBoundCoreAsync(files,generation,operation,null);
         } catch(Exception e){failure=e;throw;}
         finally {
-            try {await main.CompleteAsync(failure is OperationCanceledException?MainOperationOutcome.Cancelled:failure!=null?MainOperationOutcome.Failed:MainOperationOutcome.Completed,failure!=null);}
+            try {await main.CompleteAsync(failure is OperationCanceledException?MainOperationOutcome.Cancelled:failure!=null?MainOperationOutcome.Failed:establishedOutcome?.Invoke()??MainOperationOutcome.Completed,failure!=null);}
             catch(Exception close) when(failure!=null){failure.Data["MainOperationCloseFailure"]=close;}
         }
     }
+
+    internal static Task RunParticipatingCurrentSessionAsync(FileSystemManager files,Func<Task> operation)=>
+        RunParticipatingCurrentSessionAsync<object?>(files,async()=>{await operation();return null;});
 
     private static async Task<T> RunBoundBodyAsync<T>(
         FileSystemManager fileSystem,

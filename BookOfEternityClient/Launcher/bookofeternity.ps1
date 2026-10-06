@@ -7,6 +7,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+. (Join-Path $PSScriptRoot "gm_main_operation.ps1")
 
 function Get-ClientRoot {
     return (Split-Path $PSScriptRoot -Parent)
@@ -293,7 +294,7 @@ function Read-BridgeStatus {
     try {
         $status = Get-Content -Path $statusPath -Raw -Encoding UTF8 | ConvertFrom-Json
         if (-not (Test-BridgeHelperAlive $status)) {
-            Remove-Item $statusPath -Force -ErrorAction SilentlyContinue
+            # Stale PID is diagnostic only; retain the file.
             return $null
         }
         return $status
@@ -351,6 +352,11 @@ function Get-BridgePromptContentHash {
 }
 
 function Invoke-BridgePromptDelivery {
+    param([string]$ResolvedSessionPath, [hashtable]$Payload)
+    Invoke-GmParticipatingConsumer $ResolvedSessionPath { Invoke-BridgePromptDeliveryCore -ResolvedSessionPath $ResolvedSessionPath -Payload $Payload }
+}
+
+function Invoke-BridgePromptDeliveryCore {
     param([string]$ResolvedSessionPath, [hashtable]$Payload)
     $original = $Payload.Clone()
     function ConvertTo-UnknownDelivery {
@@ -536,7 +542,7 @@ function Remove-BridgeStatusFileIfStopped {
     param([string]$ResolvedSessionPath)
 
     $statusPath = Get-BridgeStatusPath $ResolvedSessionPath
-    Remove-Item $statusPath -Force -ErrorAction SilentlyContinue
+    Remove-GmCanonicalFile -SessionPath $ResolvedSessionPath -Path $statusPath
 }
 
 function New-BridgeShutdownResult {

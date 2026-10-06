@@ -58,6 +58,7 @@ internal sealed class GmMainOperationClient : IAsyncDisposable
             _closedReply.TrySetResult(reply);
         } catch(Exception e){Interlocked.Exchange(ref _lost,1);_closedReply.TrySetException(e);}
     }
+    internal void Abort(){Interlocked.Exchange(ref _lost,1);_pipe.Dispose();}
     internal void BeginClosing(){Interlocked.Exchange(ref _closing,1);}
     internal void Validate(string root,bool finalization)
     {
@@ -69,6 +70,7 @@ internal sealed class GmMainOperationClient : IAsyncDisposable
     }
     internal async Task CompleteAsync(MainOperationOutcome outcome,bool closingFailed)
     {
+        if(Volatile.Read(ref _lost)!=0)throw new IOException("Original operation is unresolved.");
         if(Interlocked.Exchange(ref _locallyClosed,1)!=0)throw GmSessionRunPersistence.Invalid();
         BeginClosing();TerminalClose=new(_grant.PinId!,_grant.CloseId!,_grant.OperationId!,Identity,outcome,closingFailed);
         using var bounded=new CancellationTokenSource(TimeSpan.FromSeconds(3));

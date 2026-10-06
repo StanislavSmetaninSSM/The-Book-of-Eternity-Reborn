@@ -25,6 +25,8 @@ public partial class FileSystemManager
         private readonly GmSessionRunCoordinator.Access? _requested;
         private MainAccess? _access;
         private bool _closed,_ownsRemote;
+        private GmMainOperationClient? _retainedRemote;
+        private GmSessionRunCoordinator.Access? _retainedOriginal;
         private readonly bool _participating;
         internal bool WasRemote {get;private set;}
         internal string Root=>_files.BasePath;
@@ -37,16 +39,16 @@ public partial class FileSystemManager
             if(_requested?.Owner.RootIdentity==_files.CanonicalRootAuthorityIdentity)_requested.Owner.ValidateAccessAcquisition(_requested,closing);
             for(var p=_parent;p!=null;p=p._parent)
                 if(!p._closed && p._files.CanonicalRootAuthorityIdentity==_files.CanonicalRootAuthorityIdentity && p._requested==_requested && p._access!=null)
-                {p._access.Remote?.Validate(_files.BasePath,closing && p._access.Remote.Closing);_access=p._access.Retain();WasRemote=_access.Remote!=null;return;}
+                {p._access.Remote?.Validate(_files.BasePath,closing && p._access.Remote.Closing);_access=p._access.Retain();WasRemote=_access.Remote!=null;_retainedRemote=_access.Remote;_retainedOriginal=_access.Original;return;}
             if(_requested!=null && _requested.Owner.RootIdentity==_files.CanonicalRootAuthorityIdentity)
-            {_requested.Pin?.Retain();_access=new(null,_requested);return;}
+            {_requested.Pin?.Retain();_access=new(null,_requested);_retainedOriginal=_requested;return;}
             // This read can only refuse. Absent/Stopped still requires the original
             // physical guard and validation below, including a pending Stopped ACK.
             var observed=GmSessionRunPersistence.Read(_files.BasePath);
             if(observed!=null && GmSessionRunRecordCodec.Decode(observed).Disposition!=GmSessionRunDisposition.Stopped) {
                 if(!_participating || closing)throw GmSessionRunPersistence.Invalid();
                 var remote=await GmMainOperationClient.OpenAsync(_files,token);
-                _access=new(null,null,remote);_ownsRemote=true;WasRemote=true;return;
+                _access=new(null,null,remote);_retainedRemote=remote;_ownsRemote=true;WasRemote=true;return;
             }
             _access=new(await GmMainOwnerGuard.AcquireAsync(_files.BasePath,token,
                 _files._hooks?.MainOwnerLockContendedAsync,CanonicalWriteLockRetryCount,TransientFileAccessRetryDelay),null);
@@ -56,6 +58,7 @@ public partial class FileSystemManager
         internal bool MetadataOnly=>_requested?.MetadataOnly==true;
         internal bool Closing=>(_requested?.Pin!=null && _requested.Owner.AdmissionClosed) || _access?.Remote?.Closing==true;
         internal string? ActiveGeneration=>_access?.Remote?.Identity.GenerationId ?? (_access?.Original?.Pin!=null?_access.Original.Owner.Identity.GenerationId:null);
+        internal void MarkUnresolved(){_retainedRemote?.Abort();_retainedOriginal?.Owner.NotifyUncertain();}
         internal void BeginClosing()=>_access?.Remote?.BeginClosing();
         internal async Task CompleteAsync(MainOperationOutcome outcome,bool closingFailed)
         {
@@ -116,6 +119,10 @@ public partial class FileSystemManager
         if(lease.MainAdmission.MetadataOnly || (lease.MainAdmission.Closing && lease.Purpose==CanonicalWritePurpose.SessionFinalization))
             throw GmSessionRunPersistence.Invalid();
         lease.MainAdmission.Validate(lease);
+    }
+    internal void MarkMainOperationUnresolved()
+    {
+        for(var p=MainAdmissions.Value;p!=null;p=p.Parent)if(p.Root==BasePath){p.MarkUnresolved();return;}
     }
     internal void BeginMainOperationClosing()
     {

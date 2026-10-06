@@ -63,6 +63,7 @@ param(
 # ═══════════════════════════════════════════════
 
 $ErrorActionPreference = "Stop"
+. (Join-Path $PSScriptRoot "Launcher/gm_main_operation.ps1")
 $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 [Console]::InputEncoding = [System.Text.UTF8Encoding]::new($false)
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
@@ -108,7 +109,7 @@ $script:AfterlifeSpecialArtCombatEffectDirective = " Teachable specialArts[] req
 $script:WeatherContractDirective = " Weather contract: if you write game_state/world/weather.json direct root or game_state/world/current_location.json.normalizedWeatherState, the weather object MUST keep both non-empty description and canonical tendency (IMPROVE, WORSEN, NO_CHANGE, or a valid JUMP_TO_* command). Do not wait for weather_direct_state_missing_required_fields repair; preserve/add description and tendency before writing the terminal marker."
 
 # Resolve paths
-if (!(Test-Path $GameSessionPath)) { New-Item -ItemType Directory -Path $GameSessionPath -Force | Out-Null }
+if (!(Test-Path $GameSessionPath)) { throw "Participating daemon requires an existing game_session." }
 $GameSessionPath = (Resolve-Path $GameSessionPath).Path
 
 $InputDir  = Join-Path $GameSessionPath "input"
@@ -150,7 +151,7 @@ $script:CorrelatedRepairGraceMilliseconds = 5000
 $script:CorrelatedRepairPollMilliseconds = 200
 
 foreach ($dir in @($InputDir, $ReadyDir, $OutputDir, $ControlDir)) {
-    if (!(Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
+    if (!(Test-Path $dir)) { Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $dir }
 }
 
 $script:GmTurnHelperBootstrapPath = Join-Path $ControlDir "gm_turn_helper.bootstrap.ps1"
@@ -209,7 +210,7 @@ function Write-GmTurnHelperBootstrap {
         "Initialize-BoeGmTurnHelper -GameSessionPath $(Quote-PowerShellSingleQuotedString $GameSessionPath)"
     ) -join [Environment]::NewLine
 
-    Set-Content -LiteralPath $script:GmTurnHelperBootstrapPath -Value ($content + [Environment]::NewLine) -Encoding UTF8
+    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $script:GmTurnHelperBootstrapPath -Value ($content + [Environment]::NewLine)
 }
 
 function Copy-GmContextPackFile {
@@ -226,10 +227,10 @@ function Copy-GmContextPackFile {
     $destinationPath = Join-Path $script:GmContextPackRoot $RelativePath
     $destinationDir = Split-Path -Parent $destinationPath
     if (!(Test-Path $destinationDir)) {
-        New-Item -ItemType Directory -Path $destinationDir -Force | Out-Null
+        Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $destinationDir
     }
 
-    Copy-Item -LiteralPath $sourcePath -Destination $destinationPath -Force
+    Copy-GmCanonicalFile -SessionPath $GameSessionPath -Source $sourcePath -Destination $destinationPath
 
     return [ordered]@{
         role = $Role
@@ -249,10 +250,10 @@ function Write-GmContextPackTemplate {
     $templatePath = Join-Path $script:GmContextPackRoot $RelativePath
     $templateDir = Split-Path -Parent $templatePath
     if (!(Test-Path $templateDir)) {
-        New-Item -ItemType Directory -Path $templateDir -Force | Out-Null
+        Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $templateDir
     }
 
-    Set-Content -LiteralPath $templatePath -Value ($Content + [Environment]::NewLine) -Encoding UTF8
+    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $templatePath -Value ($Content + [Environment]::NewLine)
 
     return [ordered]@{
         role = $Role
@@ -938,7 +939,7 @@ function Get-GmExperienceLessons {
 function Write-GmExperienceLessons {
     $lessonsDir = Split-Path $script:GmExperienceLessonJsonPath -Parent
     if (!(Test-Path $lessonsDir)) {
-        New-Item -ItemType Directory -Path $lessonsDir -Force | Out-Null
+        Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $lessonsDir
     }
 
     $query = Get-GmExperienceQuery
@@ -954,7 +955,7 @@ function Write-GmExperienceLessons {
         lessons = @($lessons)
     }
 
-    Set-Content -LiteralPath $script:GmExperienceLessonJsonPath -Value (($payload | ConvertTo-Json -Depth 10) + [Environment]::NewLine) -Encoding UTF8
+    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $script:GmExperienceLessonJsonPath -Value (($payload | ConvertTo-Json -Depth 10) + [Environment]::NewLine)
 
     $markdown = @(
         "# GM Experience Lessons",
@@ -975,7 +976,7 @@ function Write-GmExperienceLessons {
             $markdown += ""
         }
     }
-    Set-Content -LiteralPath $script:GmExperienceLessonMarkdownPath -Value (($markdown -join [Environment]::NewLine) + [Environment]::NewLine) -Encoding UTF8
+    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $script:GmExperienceLessonMarkdownPath -Value (($markdown -join [Environment]::NewLine) + [Environment]::NewLine)
 
     return [ordered]@{
         role = "experience_lessons"
@@ -1080,7 +1081,7 @@ function Build-FirstMortalBootstrapDispatchMessage {
 function Write-GmSafeProbes {
     $probeDir = Split-Path $script:GmSafeProbeJsonPath -Parent
     if (!(Test-Path $probeDir)) {
-        New-Item -ItemType Directory -Path $probeDir -Force | Out-Null
+        Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $probeDir
     }
 
     $guidance = "Safe GM probes are read-only context surfaces. Prefer them before repository source; if a needed fact is missing, record a missing harness surface instead of treating implementation source as normal workflow."
@@ -1186,7 +1187,7 @@ function Write-GmSafeProbes {
         probes = $probes
     }
 
-    Set-Content -LiteralPath $script:GmSafeProbeJsonPath -Value (($payload | ConvertTo-Json -Depth 10) + [Environment]::NewLine) -Encoding UTF8
+    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $script:GmSafeProbeJsonPath -Value (($payload | ConvertTo-Json -Depth 10) + [Environment]::NewLine)
 
     $markdown = @(
         "# GM Safe Probes",
@@ -1205,7 +1206,7 @@ function Write-GmSafeProbes {
         $markdown += ""
     }
 
-    Set-Content -LiteralPath $script:GmSafeProbeMarkdownPath -Value (($markdown -join [Environment]::NewLine) + [Environment]::NewLine) -Encoding UTF8
+    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $script:GmSafeProbeMarkdownPath -Value (($markdown -join [Environment]::NewLine) + [Environment]::NewLine)
 
     return [ordered]@{
         role = "safe_gm_probes"
@@ -1221,7 +1222,7 @@ function Write-GmSafeProbes {
 function Write-GmLiveTestRubric {
     $rubricDir = Split-Path $script:GmLiveTestRubricJsonPath -Parent
     if (!(Test-Path $rubricDir)) {
-        New-Item -ItemType Directory -Path $rubricDir -Force | Out-Null
+        Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $rubricDir
     }
 
     $notesPath = "game_state/control/gm_live_test_notes.jsonl"
@@ -1275,7 +1276,7 @@ function Write-GmLiveTestRubric {
         }
     }
 
-    Set-Content -LiteralPath $script:GmLiveTestRubricJsonPath -Value (($payload | ConvertTo-Json -Depth 8) + [Environment]::NewLine) -Encoding UTF8
+    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $script:GmLiveTestRubricJsonPath -Value (($payload | ConvertTo-Json -Depth 8) + [Environment]::NewLine)
 
     $markdown = @(
         "# GM Live-Test Rubric",
@@ -1305,7 +1306,7 @@ function Write-GmLiveTestRubric {
     $markdown += ""
     $markdown += "Repeated difficulty should become a harness issue, validator/normalizer issue, rollback/tool issue, worker-packet issue, or explicit no-change rationale."
 
-    Set-Content -LiteralPath $script:GmLiveTestRubricMarkdownPath -Value (($markdown -join [Environment]::NewLine) + [Environment]::NewLine) -Encoding UTF8
+    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $script:GmLiveTestRubricMarkdownPath -Value (($markdown -join [Environment]::NewLine) + [Environment]::NewLine)
 
     return [ordered]@{
         role = "live_test_rubric"
@@ -1320,7 +1321,7 @@ function Write-GmLiveTestRubric {
 
 function Write-GmContextPack {
     if (!(Test-Path $script:GmContextPackRoot)) {
-        New-Item -ItemType Directory -Path $script:GmContextPackRoot -Force | Out-Null
+        Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $script:GmContextPackRoot
     }
 
     $docSpecs = @(
@@ -2596,7 +2597,7 @@ Start here instead of browsing repository implementation code.
 - During normal play or validation repair, do not read implementation code such as BookOfEternityClient/**/*.cs.
 - If validation repair is requested, use game_state/control/validation_repair_request.json, especially harnessRepairPackets[].
 "@
-    Set-Content -LiteralPath $readmePath -Value ($readme + [Environment]::NewLine) -Encoding UTF8
+    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $readmePath -Value ($readme + [Environment]::NewLine)
 
     $manifest = [ordered]@{
         schemaVersion = 1
@@ -2626,7 +2627,7 @@ Start here instead of browsing repository implementation code.
         )
     }
 
-    Set-Content -LiteralPath $script:GmContextPackManifestPath -Value ($manifest | ConvertTo-Json -Depth 8) -Encoding UTF8
+    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $script:GmContextPackManifestPath -Value ($manifest | ConvertTo-Json -Depth 8)
 
     $script:TaskGuideMainPath = Join-Path $script:GmContextPackRoot "TaskGuides\CLI_Step_Main.txt"
     $script:ExampleMainPath = Join-Path $script:GmContextPackRoot "Examples\E_CLI_Step_Main.txt"
@@ -2651,8 +2652,10 @@ Start here instead of browsing repository implementation code.
     $script:GmLiveTestRubricDirective = " Live-test rubric: '$($script:GmLiveTestRubricMarkdownPath)'. When running a harness live test, tie notable observations to gm_trajectory_ledger.jsonl records and append structured notes to game_state/control/gm_live_test_notes.jsonl."
 }
 
-Write-GmTurnHelperBootstrap
-Write-GmContextPack
+Invoke-GmParticipatingConsumer $GameSessionPath {
+    Write-GmTurnHelperBootstrap
+    Write-GmContextPack
+}
 $script:GmCompactTemplateDirective += $script:FactionMaterializationDirective
 $script:MortalItemMaterializationDirective = " Mortal Item Materialization v1 is mandatory for every durable ordinary Mortal item creation, repair, transfer, stack operation, storage move, or NPC trade. Always read '$($script:CompactMortalItemTemplatePath)' first. New roots use existedId = null, one turn-unique creationRef, a complete semantic shape, all twelve materialization.sections, and exact route authority. Do not author itemId, materializationReceipt, game_state/inventory/item_identity_index.json, seals, transitions, retirement, or lineage; these are client-owned. Existing physical items bind exact itemId and preserve envelope/receipt. isCarried, currentLocationId, and currentLocationName are not placement authority and must not be authored on items. Receipt-less canonical items are invalid because the game has not shipped and no compatibility promotion exists. Open '$($script:MortalItemMaterializationExamplePath)' only when the compact template does not cover the needed route-specific worked shape."
 $script:GmCompactTemplateDirective += $script:MortalItemMaterializationDirective
@@ -2916,8 +2919,7 @@ function Get-GmBridgeStatus {
             return $status
         }
         catch {
-            Write-Log "  -> Removing stale GM bridge status file (dead helper pid)." -Level "WARN" -Color Yellow
-            Remove-Item $BridgeStatusFile -Force -ErrorAction SilentlyContinue
+            # PID liveness is diagnostic; it never authorizes canonical deletion.
             return $null
         }
     }
@@ -3523,6 +3525,11 @@ function Test-GmValidationRepairArtifactWritingStall {
 }
 
 function Watch-ActiveValidationRepairProgress {
+    if ($null -eq $script:ActiveValidationRepairWatch) { return }
+    Invoke-GmParticipatingConsumer $GameSessionPath { Watch-ActiveValidationRepairProgressCore }
+}
+
+function Watch-ActiveValidationRepairProgressCore {
     if ($null -eq $script:ActiveValidationRepairWatch) {
         return
     }
@@ -3593,6 +3600,9 @@ function Stop-GmBridgeAfterTurnTimeout {
         remainingProcessIds = @()
         error = ""
     }
+
+    $script:EstablishedTimeoutDiagnostic = $cleanup
+    Close-GmParticipatingBeforeStop
 
     if (!(Test-Path $BridgeControlScript)) {
         $cleanup.status = "bridge-control-missing"
@@ -3736,7 +3746,11 @@ function Write-Log {
     $logLine = "[$timestamp][$Level] $Message"
     Write-Host $logLine -ForegroundColor $Color
     if ($LogFile) {
-        try { Add-Content -Path $LogFile -Value $logLine -Encoding UTF8 -ErrorAction SilentlyContinue } catch { }
+        try {
+            $relativeLog=[IO.Path]::GetRelativePath([IO.Path]::GetFullPath($GameSessionPath),[IO.Path]::GetFullPath($LogFile)).Replace("\","/")
+            if ($relativeLog.StartsWith("../") -or [IO.Path]::IsPathRooted($relativeLog)) { Add-Content -LiteralPath $LogFile -Value $logLine -Encoding UTF8 -ErrorAction SilentlyContinue }
+            else { Write-GmCanonicalText -SessionPath $GameSessionPath -Path $LogFile -Value $logLine -Append }
+        } catch { }
     }
 }
 
@@ -3805,35 +3819,14 @@ function New-DaemonErrorPayload {
 }
 
 function Write-DaemonJsonFileBestEffort {
-    param(
-        [string]$Path,
-        [object]$Payload,
-        [int]$Depth = 8
-    )
-
-    $tmpPath = $null
+    param([string]$Path,[object]$Payload,[int]$Depth=8)
     try {
-        $directory = Split-Path $Path -Parent
-        if (!(Test-Path $directory)) {
-            New-Item -ItemType Directory -Path $directory -Force | Out-Null
-        }
-
-        $tmpName = "." + [IO.Path]::GetFileName($Path) + ".$PID.tmp"
-        $tmpPath = Join-Path $directory $tmpName
-        Set-Content -LiteralPath $tmpPath -Value ($Payload | ConvertTo-Json -Depth $Depth) -Encoding UTF8
-        Move-Item -LiteralPath $tmpPath -Destination $Path -Force
+        Write-GmCanonicalText -SessionPath $GameSessionPath -Path $Path -Value ($Payload | ConvertTo-Json -Depth $Depth)
         return $true
-    }
-    catch {
-        try {
-            if ($tmpPath -and (Test-Path $tmpPath)) {
-                Remove-Item -LiteralPath $tmpPath -Force
-            }
-        }
-        catch {
-            # Best-effort cleanup only.
-        }
-
+    } catch {
+        # Bounded volatile diagnostics survive a closed/lost operation. They are
+        # not another canonical writer and cannot authorize continuation.
+        $script:LastUnpublishedDaemonDiagnostic = [pscustomobject]@{path=$Path;payload=$Payload}
         return $false
     }
 }
@@ -4703,10 +4696,10 @@ function Write-GmTrajectoryRecord {
 
         $ledgerDir = Split-Path $script:GmTrajectoryLedgerPath -Parent
         if (!(Test-Path $ledgerDir)) {
-            New-Item -ItemType Directory -Path $ledgerDir -Force | Out-Null
+            Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $ledgerDir
         }
 
-        Add-Content -Path $script:GmTrajectoryLedgerPath -Value ($record | ConvertTo-Json -Depth 8 -Compress) -Encoding UTF8
+        Write-GmCanonicalText -SessionPath $GameSessionPath -Path $script:GmTrajectoryLedgerPath -Value ($record | ConvertTo-Json -Depth 8 -Compress) -Append
         Update-GmLiveTestNoteRecordLinks -RequestId $requestId -RecordId ([string]$record.recordId)
     }
     catch {
@@ -4761,7 +4754,7 @@ function Update-GmLiveTestNoteRecordLinks {
         }
 
         if ($changed) {
-            Set-Content -Path $notesPath -Value $updatedLines -Encoding UTF8
+            Write-GmCanonicalText -SessionPath $GameSessionPath -Path $notesPath -Value $updatedLines
         }
     }
     catch {
@@ -5180,7 +5173,7 @@ function Save-ObservedTerminalRequestKeys {
     try {
         $controlDir = Split-Path $ObservedTerminalRequestKeysFile -Parent
         if (!(Test-Path $controlDir)) {
-            New-Item -ItemType Directory -Path $controlDir -Force | Out-Null
+            Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $controlDir
         }
 
         $payload = [ordered]@{
@@ -5189,7 +5182,7 @@ function Save-ObservedTerminalRequestKeys {
             keys = @($script:ObservedTerminalRequestKeys | Sort-Object)
         }
 
-        Set-Content -Path $ObservedTerminalRequestKeysFile -Value ($payload | ConvertTo-Json -Depth 4) -Encoding UTF8
+        Write-GmCanonicalText -SessionPath $GameSessionPath -Path $ObservedTerminalRequestKeysFile -Value ($payload | ConvertTo-Json -Depth 4)
     }
     catch {
         Write-Log "  Failed to save observed terminal request keys: $_" -Level "WARN" -Color Yellow
@@ -5656,6 +5649,11 @@ After that helper call, stop immediately and do not report or write anything els
 
 function Process-QteEffectResolutionRequest {
     param([string]$RequestPath)
+    Invoke-GmParticipatingConsumer $GameSessionPath { Process-QteEffectResolutionRequestCore -RequestPath $RequestPath }
+}
+
+function Process-QteEffectResolutionRequestCore {
+    param([string]$RequestPath)
 
     if ($script:IsProcessing) { return }
     $script:IsProcessing = $true
@@ -5770,6 +5768,11 @@ function Process-QteEffectResolutionRequest {
 
 function Process-Turn {
     param([string]$RequestPath)
+    Invoke-GmParticipatingConsumer $GameSessionPath { Process-TurnCore -RequestPath $RequestPath }
+}
+
+function Process-TurnCore {
+    param([string]$RequestPath)
 
     if ($script:IsProcessing) { return }
     $script:IsProcessing = $true
@@ -5864,7 +5867,7 @@ function Process-Turn {
                     timestamp = (Get-Date).ToUniversalTime().ToString("o")
                     error = "GM bridge did not accept dispatch before the dispatch timeout."
                 }
-                Set-Content -Path $errorPath -Value ($dispatchTerminalSignal | ConvertTo-Json -Depth 4) -Encoding UTF8
+                Write-GmCanonicalText -SessionPath $GameSessionPath -Path $errorPath -Value ($dispatchTerminalSignal | ConvertTo-Json -Depth 4)
                 Write-GmTrajectoryRecord `
                     -Kind "turn" `
                     -Mode "ordinary" `
@@ -5934,7 +5937,7 @@ function Process-Turn {
                     timestamp = (Get-Date).ToUniversalTime().ToString("o")
                     error = "GM bridge returned to idle without a correlated terminal signal."
                 }
-                Set-Content -Path $errorPath -Value ($idleTerminalSignal | ConvertTo-Json -Depth 4) -Encoding UTF8
+                Write-GmCanonicalText -SessionPath $GameSessionPath -Path $errorPath -Value ($idleTerminalSignal | ConvertTo-Json -Depth 4)
                 $terminalSignal = [pscustomobject]@{
                     Path = $errorPath
                     Kind = "error"
@@ -5965,7 +5968,7 @@ function Process-Turn {
                         changedFiles = $payloadStall.changedFiles
                         outputWithoutTerminal = $payloadStall
                     }
-                    Set-Content -Path $errorPath -Value ($payloadTerminalSignal | ConvertTo-Json -Depth 12) -Encoding UTF8
+                    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $errorPath -Value ($payloadTerminalSignal | ConvertTo-Json -Depth 12)
                     $terminalSignal = [pscustomobject]@{
                         Path = $errorPath
                         Kind = "error"
@@ -5994,7 +5997,7 @@ function Process-Turn {
                         error = "GM bridge appears stalled while preparing turn artifacts."
                         artifactWriteStall = $artifactStall
                     }
-                    Set-Content -Path $errorPath -Value ($artifactTerminalSignal | ConvertTo-Json -Depth 12) -Encoding UTF8
+                    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $errorPath -Value ($artifactTerminalSignal | ConvertTo-Json -Depth 12)
                     $terminalSignal = [pscustomobject]@{
                         Path = $errorPath
                         Kind = "error"
@@ -6028,7 +6031,7 @@ function Process-Turn {
                 error = "Timeout after ${elapsed}s"
                 timeoutBridgeCleanup = $timeoutBridgeCleanup
             }
-            Set-Content -Path $errorPath -Value ($timeoutSignal | ConvertTo-Json -Depth 8) -Encoding UTF8
+            Write-GmCanonicalText -SessionPath $GameSessionPath -Path $errorPath -Value ($timeoutSignal | ConvertTo-Json -Depth 8)
             $terminalSignal = [pscustomobject]@{
                 Path = $errorPath
                 Kind = "error"
@@ -6126,6 +6129,11 @@ function Process-Turn {
 }
 
 function Process-RepairRequest {
+    param([string]$RepairPath)
+    Invoke-GmParticipatingConsumer $GameSessionPath { Process-RepairRequestCore -RepairPath $RepairPath }
+}
+
+function Process-RepairRequestCore {
     param([string]$RepairPath)
 
     if (!(Test-Path $RepairPath)) { return }
@@ -6379,6 +6387,11 @@ function Test-ProtocolRequestUsesDiagnosticOnlyMetadata {
 
 function Process-TerminalProtocolFailureRequest {
     param([string]$FailurePath)
+    Invoke-GmParticipatingConsumer $GameSessionPath { Process-TerminalProtocolFailureRequestCore -FailurePath $FailurePath }
+}
+
+function Process-TerminalProtocolFailureRequestCore {
+    param([string]$FailurePath)
 
     if (!(Test-Path $FailurePath)) { return }
 
@@ -6520,7 +6533,7 @@ function Get-CorrelatedTerminalSignal {
         $fileName = Split-Path $path -Leaf
         if ($null -eq $signal) {
             Write-Log "  Removed unreadable terminal signal artifact: $fileName" -Level "WARN" -Color Yellow
-            Remove-Item $path -Force -ErrorAction SilentlyContinue
+            Remove-GmCanonicalFile -SessionPath $GameSessionPath -Path $path
             continue
         }
 
@@ -6539,7 +6552,7 @@ function Get-CorrelatedTerminalSignal {
         }
 
         Write-Log "  Removed stale terminal signal artifact: $fileName (sessionId/requestId/turnNumber mismatch)" -Level "WARN" -Color Yellow
-        Remove-Item $path -Force -ErrorAction SilentlyContinue
+        Remove-GmCanonicalFile -SessionPath $GameSessionPath -Path $path
     }
 
     if ($matchedSignals.Count -gt 1) {
@@ -6583,7 +6596,7 @@ function Resolve-DaemonTimeoutTerminalConflict {
         foreach ($timeoutSignal in $timeoutSignals) {
             $fileName = Split-Path $timeoutSignal.Path -Leaf
             Write-Log "  Removed stale daemon timeout terminal signal artifact: $fileName" -Level "WARN" -Color Yellow
-            Remove-Item $timeoutSignal.Path -Force -ErrorAction SilentlyContinue
+            Remove-GmCanonicalFile -SessionPath $GameSessionPath -Path $timeoutSignal.Path
         }
 
         return $successSignals[0]
