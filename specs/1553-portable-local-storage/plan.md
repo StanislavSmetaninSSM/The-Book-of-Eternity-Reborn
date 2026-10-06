@@ -229,6 +229,16 @@ trusted-local recovery wrapper and direct publisher recovery entry. Known cleanu
 debt may audit; another Uncertain or unresolved journal always refuses recovery.
 Fresh root GREEN pending; exact audit-operation confinement/typed early purposes,
 remaining minimal matrix, affected categories and final independent review remain.
+Root GREEN at `12cc678e9a9a1c851941a8a35288510c6cdd003e`:2/2 PASS,
+47.5787627s, fresh build, complete selection and owned cleanup/no timeout. Both
+guardians ECHILD/exit0/reap1, zero emergency/failure/deadline. Healthy B retains its
+permit across foreign pending; each original epoch retires after its own retry.
+Uncertain A prevents B audit recovery and preserves exact canonical/journal evidence
+and both capacities. Evidence: recovery/evidence/worker-r2-root-green/manifest.json.
+GitHub push initially lacked a Git credential helper; existing gh authorization
+remained valid. One-command existing gh credential helper restored ordinary non-force
+push without configuration/auth changes; exact remote and67 changed bytes verified.
+Next: exact cleanup operation confinement tests and implementation; R2 remains WIP.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing
