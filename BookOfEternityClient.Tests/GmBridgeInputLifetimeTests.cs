@@ -398,13 +398,14 @@ public sealed class GmBridgeInputLifetimeTests
     public void ProductionOriginsAndRetirementConsumeTheTestedLifetimeMethods()
     {
         var source = File.ReadAllText(Path.Combine(HostFixture.RepoRoot, "BookOfEternityGMBridge/Program.cs"));
-        Assert.Contains("BeginInputLifetime(pty.InputWriter, shellLoopCts)", source, StringComparison.Ordinal);
+        Assert.Contains("AttachOwnedTerminal(pty, outputWriter)", source, StringComparison.Ordinal);
+        Assert.Contains("BeginInputLifetime(session.InputWriter, shellLoopCts)", source, StringComparison.Ordinal);
         var server = source[source.IndexOf("private async Task RunServerLoopAsync", StringComparison.Ordinal)..source.IndexOf("private async Task<bool> ProcessConnectedRequestAsync", StringComparison.Ordinal)];
         Assert.Contains("await ProcessConnectedRequestAsync(server, async () =>", server, StringComparison.Ordinal);
         Assert.Contains("var response = await HandleRequestAsync(request);", server, StringComparison.Ordinal);
         Assert.Contains("}, deadline.Token);", server, StringComparison.Ordinal);
-        Assert.Contains("finally { await Task.WhenAll(peers); }", server, StringComparison.Ordinal);
-        Assert.Contains("PumpKeyboardAsync(input, ReadConsoleKeyAsync, shellToken)", source, StringComparison.Ordinal);
+        Assert.Contains("finally { listener.Dispose(); await Task.WhenAll(peers); }", server, StringComparison.Ordinal);
+        Assert.Contains("PumpKeyboardAsync(input, ReadConsoleKeyAsync, shellLoopCts.Token)", source, StringComparison.Ordinal);
         Assert.Contains("return await DispatchPromptAsync(request);", source, StringComparison.Ordinal);
         Assert.Contains("Task.WhenAll(input.PromptTasks)", source, StringComparison.Ordinal);
         var prompts = File.ReadAllText(Path.Combine(HostFixture.RepoRoot, "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs"));

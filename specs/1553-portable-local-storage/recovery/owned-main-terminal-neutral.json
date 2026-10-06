@@ -16,7 +16,8 @@
     "Causal RED96791f71: actual BridgeHost StopShell1/1 executed FAIL, Assert.Same expected original HeldTerminal but _pty null before scoped/output completion. Fixture finally settled original tasks; runner owned cleanup complete. Changed StopShell to retained once-owned stop/dispose tasks, matching scoped proof plus actual drain before clearing; timeout/error absorbs Uncertain.",
     "Fresh c2040e1e GREEN1/1 executed after complete matching rebuild; same actualStop assertion, no timeout, original controlled tasks settled/runner owned cleanup complete. Do not count this as native PTY/Job qualification.",
     "Next native case written first: fixed own-root fixture / real isolated TestSupport driver beneath unchanged guardian. Factory compile-ready stub refuses transport; this baseline is availability/preparation (no worker/root launch), never native causal RED. Accepted portable retirement RED remains causal. Native own-root GREEN must precede expansion.",
-    "2cf1a0b2 affected selection preparation failed CS0120 ConPTY instance root observer invoked from static Start without original owner.0 tests executed; archived final-build-preparation. Minimal owner-qualified call corrected; actual launcher binary path follows net8.0 retarget and new inert actual Start-Bridge consumer check (compiled path plus project fallback). New native partial-start/stopTerminal and final affected selection remain unrun."
+    "2cf1a0b2 affected selection preparation failed CS0120 ConPTY instance root observer invoked from static Start without original owner.0 tests executed; archived final-build-preparation. Minimal owner-qualified call corrected; actual launcher binary path follows net8.0 retarget and new inert actual Start-Bridge consumer check (compiled path plus project fallback). New native partial-start/stopTerminal and final affected selection remain unrun.",
+    "fbdc406b affected selection freshly built:157 planned,33 executed31PASS2FAIL; runner stops after first input category. Two source wiring guards still named old concrete pty/shellToken call sites, updated to consumed AttachOwnedTerminal/session actual calls (output CancellationToken.None and peer listener retention). No runtime fault hidden; remaining categories not executed. Review added Windows zero-length EOF and immediate completed-root input/view/resize closure negatives before runtime fix."
   ],
   "Cohorts": [
     {
@@ -130,5 +131,14 @@
     "Source": "2cf1a0b2715e721d1561328114cf3f2cad6aa266",
     "Executed": 0,
     "Evidence": "evidence/t041-terminal-final-build-preparation/manifest.json"
+  },
+  "AffectedWiringRed": {
+    "Source": "fbdc406b7626598289bedf0c356cce2810dda393",
+    "Planned": 157,
+    "Executed": 33,
+    "Passed": 31,
+    "Failed": 2,
+    "Complete": false,
+    "Evidence": "evidence/t041-terminal-affected-wiring-red/manifest.json"
   }
 }

@@ -22,6 +22,7 @@ public sealed class GmOwnedTerminalLinuxTests
     [InlineData("terminal-gated-fds")]
     [InlineData("terminal-authority-loss")]
     [InlineData("terminal-partial-start")]
+    [InlineData("terminal-root-exit-admission")]
     public async Task OriginalOwner_DescendantsRootExitOrUncertain(string mode) { await RunAsync(mode); }
 
     private static async Task RunAsync(string mode)
@@ -56,6 +57,7 @@ public sealed class GmOwnedTerminalLinuxTests
         if (mode == "terminal-late-fault") { Assert.True(scenario.RootElement.GetProperty("LateFaultUncertain").GetBoolean()); return; }
         if (mode == "terminal-gated-fds") Assert.True(scenario.RootElement.GetProperty("HeldRootHasNoHelperChannels").GetBoolean());
         if(mode=="terminal-partial-start") { Assert.True(scenario.RootElement.GetProperty("PartialExceptionOriginal").GetBoolean());Assert.True(scenario.RootElement.GetProperty("PartialOwnerRetained").GetBoolean());return; }
+        if(mode=="terminal-root-exit-admission") { Assert.True(scenario.RootElement.GetProperty("RootExitAdmissionClosed").GetBoolean());Assert.True(scenario.RootElement.GetProperty("ScopedRetired").GetBoolean());return; }
         if (mode == "terminal-authority-loss") { Assert.True(scenario.RootElement.GetProperty("LiveAuthorityLossBlocked").GetBoolean()); return; }
         if (mode == "terminal-uncertain") { Assert.True(scenario.RootElement.GetProperty("UncertainRetained").GetBoolean()); return; }
         if (mode == "terminal-bridge") {

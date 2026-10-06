@@ -1,0 +1,594 @@
+{
+  "Categories": [
+    "gm-owned-terminal-session",
+    "gm-owned-terminal-native-linux",
+    "gm-bridge-input-lifetime",
+    "gm-bridge-output-stream",
+    "gm-bridge-prompt-operation",
+    "worker-pool-regression-host",
+    "worker-native-bootstrap-output",
+    "worker-native-owner-retention",
+    "worker-native-v1-transport-regression"
+  ],
+  "Reasons": [
+    {
+      "category": "gm-owned-terminal-session",
+      "reason": "actual original session/view/keyboard/proof/timeout plus Windows source guard",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "gm-owned-terminal-native-linux",
+      "reason": "real fixed native PTY, actual bridge/T042 pipe, descendants/loss/partial startup/guardian",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "gm-bridge-input-lifetime",
+      "reason": "changed original attach/retire/keyboard call sites, actual source/PDB and concurrency",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "gm-bridge-output-stream",
+      "reason": "changed original output pump commits coherent owned view and EOF while preserving raw UTF8/tail semantics",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "gm-bridge-prompt-operation",
+      "reason": "changed original revision/readiness/control loop; preserve frozen T042 operations and no ambiguous replay",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "worker-pool-regression-host",
+      "reason": "shared NativeLineageOwner extraction must preserve existing host-v2 typed owner and retire boundary",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "worker-native-bootstrap-output",
+      "reason": "shared C descriptor-bootstrap branch and held child transports",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "worker-native-owner-retention",
+      "reason": "shared original owner constructor/pidfd/disposal after loss",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "worker-native-v1-transport-regression",
+      "reason": "shared helper branch/version/argv/bootstrap must preserve legacy v1 discovery/stop",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "fbdc406b7626598289bedf0c356cce2810dda393",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 100.9062567,
+  "Descriptors": [
+    {
+      "Name": "gm-bridge-input-lifetime-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-bridge-input-lifetime",
+      "Categories": [
+        "gm-bridge-input-lifetime",
+        "gm-bridge-output-stream",
+        "gm-bridge-prompt-operation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualAssemblyAndPortablePdbMatchProductionSource|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualDispatchCompletion_ReflectsActualOperationSuccess|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualDispose_ClosesAdmissionAndDoesNotDisposeGateUnderUnsettledWrite|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_NullPtyStopWaitsForLateKeyReadBeforeReplacementConsumesKeys|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_WriteFailureIsRecordedAndPumpStops|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualLifetime_LateRevokeAndCompletionCannotChangeReplacement|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualRequestBoundary_OnlyHostCancellationStopsServing|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_AwaitsCancellationCallbacksThatReenterTheHost|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_ConcurrentStopsJoinOneRetiringLifetime|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_RetainsStartedAndQueuedWritesUntilSettledBeforeNewBinding|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_TimeoutRetainsSameDrainAndBlocksReplacementUntilLateCompletion|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_CancelBeforeEntryIsZeroBytesAndDoesNotPoisonActiveBinding|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_PreservesUnicodeMultilineAndAppendEnter|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StaleOriginCannotWriteToReplacementEvenWithReusedStream|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ProductionOriginsAndRetirementConsumeTheTestedLifetimeMethods|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ProductionStartAndDiagnosticsConsumeTheTestedMethods",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 33,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualAssemblyAndPortablePdbMatchProductionSource",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualDispatchCompletion_ReflectsActualOperationSuccess",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualDispose_ClosesAdmissionAndDoesNotDisposeGateUnderUnsettledWrite",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_NullPtyStopWaitsForLateKeyReadBeforeReplacementConsumesKeys",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_WriteFailureIsRecordedAndPumpStops",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualLifetime_LateRevokeAndCompletionCannotChangeReplacement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualRequestBoundary_OnlyHostCancellationStopsServing",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_AwaitsCancellationCallbacksThatReenterTheHost",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_ConcurrentStopsJoinOneRetiringLifetime",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_RetainsStartedAndQueuedWritesUntilSettledBeforeNewBinding",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_TimeoutRetainsSameDrainAndBlocksReplacementUntilLateCompletion",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_CancelBeforeEntryIsZeroBytesAndDoesNotPoisonActiveBinding",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_PreservesUnicodeMultilineAndAppendEnter",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StaleOriginCannotWriteToReplacementEvenWithReusedStream",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ProductionOriginsAndRetirementConsumeTheTestedLifetimeMethods",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ProductionStartAndDiagnosticsConsumeTheTestedMethods",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-bridge-output-stream-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-bridge-output-stream",
+      "Categories": [
+        "gm-bridge-output-stream"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualConsumerAssemblyAndPortablePdbMatchCurrentProductionSource|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailNeverStartsInsideSurrogatePair|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailRetainsCompletePairAtBoundary|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CanceledBlockedReadCompletesWithoutEofFlush|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EmptyEofDoesNotInventActivityOrText|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_FaultPropagatesWithoutFinalizingPendingBytes|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_IncompleteScalarAdvancesByteActivityBeforeTextExists|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_LongOutputStaysBoundedAfterEveryRead|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_OnlyRealEofFinalizesPendingTextWithoutInventingByteActivity|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_PendingMalformedPrefixPlusFullReadFitsDecoderBuffer|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_SeparateInvocationsNeverSharePendingDecoderState",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 47,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualConsumerAssemblyAndPortablePdbMatchCurrentProductionSource",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailNeverStartsInsideSurrogatePair",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailRetainsCompletePairAtBoundary",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CanceledBlockedReadCompletesWithoutEofFlush",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EmptyEofDoesNotInventActivityOrText",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes",
+          "Cases": 15
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_FaultPropagatesWithoutFinalizingPendingBytes",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_IncompleteScalarAdvancesByteActivityBeforeTextExists",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_LongOutputStaysBoundedAfterEveryRead",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_OnlyRealEofFinalizesPendingTextWithoutInventingByteActivity",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_PendingMalformedPrefixPlusFullReadFitsDecoderBuffer",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_SeparateInvocationsNeverSharePendingDecoderState",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "gm-bridge-prompt-operation-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-bridge-prompt-operation",
+      "Categories": [
+        "gm-bridge-prompt-operation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ActiveOperationCannotBeMarkedReady|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_AutoReadyRequiresSupportedEmptyIdleView|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DispatchRequiresFreshPasteAndSubmissionEvidence|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DispatchUsesPositiveProfileAndEmptyComposer|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DoesNotAutoAcceptTrustPrompt|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DoesNotAutoAnswerUpdatePrompt|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_IdleObservationCannotClearUncertainDelivery|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ManualReadyCannotClearUncertainDelivery|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ManualTakeoverPrecedesCompetingWrite|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_PreservesPendingCliDraftBeforeAutomaticDispatch|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_StatusAndCancelReachRealPromptOperation|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_HeldPasteStatusQueueCancelOverflowAndRevoke|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_ManualTakeoverBeforeOrAfterSubmit|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_NonReadingPeersCannotRetainUnboundedErrorWrites|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_SlowPeerDoesNotBlockStatus|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualStop_JoinsWholeOperationBeforeReplacement|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.AutomaticDispatch_DoesNotEraseManualDraft|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.ChangedBodyQuery_CannotBorrowOriginalSuccess|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateAndChangedBody_RetainOriginalWithoutRepaste|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateFlood_HeldInputCannotOccupyControlService|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.ManualTakeover_BlocksAutomaticShellBootstrap|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.PasteNeedsFreshObservation_TimeoutRetainsDraftAndPause|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.ProfileMutation_DoesNotChangeFrozenSubmitSequence|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.ProvenZeroWrite_ReadmittingRequestAwaitsItsOwnTransaction|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.RealKeyboard_TakesOverQueuedOperationBeforeAnyPaste|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.StaleBinding_IsZeroWriteAndCannotQueryAnotherBinding|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.TwoPromptsOneBinding_CustomSequences_OneSubmitEach|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 36,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ActiveOperationCannotBeMarkedReady",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_AutoReadyRequiresSupportedEmptyIdleView",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DispatchRequiresFreshPasteAndSubmissionEvidence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DispatchUsesPositiveProfileAndEmptyComposer",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DoesNotAutoAcceptTrustPrompt",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DoesNotAutoAnswerUpdatePrompt",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_IdleObservationCannotClearUncertainDelivery",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ManualReadyCannotClearUncertainDelivery",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ManualTakeoverPrecedesCompetingWrite",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_PreservesPendingCliDraftBeforeAutomaticDispatch",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_StatusAndCancelReachRealPromptOperation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_HeldPasteStatusQueueCancelOverflowAndRevoke",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_ManualTakeoverBeforeOrAfterSubmit",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_NonReadingPeersCannotRetainUnboundedErrorWrites",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_SlowPeerDoesNotBlockStatus",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualStop_JoinsWholeOperationBeforeReplacement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.AutomaticDispatch_DoesNotEraseManualDraft",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ChangedBodyQuery_CannotBorrowOriginalSuccess",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateAndChangedBody_RetainOriginalWithoutRepaste",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateFlood_HeldInputCannotOccupyControlService",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ManualTakeover_BlocksAutomaticShellBootstrap",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.PasteNeedsFreshObservation_TimeoutRetainsDraftAndPause",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ProfileMutation_DoesNotChangeFrozenSubmitSequence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ProvenZeroWrite_ReadmittingRequestAwaitsItsOwnTransaction",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.RealKeyboard_TakesOverQueuedOperationBeforeAnyPaste",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.StaleBinding_IsZeroWriteAndCannotQueryAnotherBinding",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.TwoPromptsOneBinding_CustomSequences_OneSubmitEach",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing",
+          "Cases": 5
+        }
+      ]
+    },
+    {
+      "Name": "gm-owned-terminal-native-linux-unit-004",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-owned-terminal-native-linux",
+      "Categories": [
+        "gm-owned-terminal-native-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.ActualBridge_PipeDispatchConsumesOriginalTerminalView|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OriginalOwner_DescendantsRootExitOrUncertain|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OwnedRoot_TwoUnicodeInputsResizeCanonicalEof_ExactScopedCleanup",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 10,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.ActualBridge_PipeDispatchConsumesOriginalTerminalView",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OriginalOwner_DescendantsRootExitOrUncertain",
+          "Cases": 8
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OwnedRoot_TwoUnicodeInputsResizeCanonicalEof_ExactScopedCleanup",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-owned-terminal-session-unit-005",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-owned-terminal-session",
+      "Categories": [
+        "gm-owned-terminal-session"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualLauncher_UsesRetargetedBridgeAndKeepsProjectFallback|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedKeyboard_PairsUnicodeScalarsBeforeWriting|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_OutputTimeoutIsAbsorbingWithOriginalOwner|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_ScopedProofStillRequiresActualOutputEof|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedView_EraseWithoutHomeCannotCertifyIdle|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedView_PartialUtf8AndUnsupportedVtCannotBorrowIdle|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.WindowsMainSource_HoldsJobBeforeReleaseAndOwnedPseudoConsoleClose|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalSessionTests.ActualStop_RetainsOriginalOwnerWhileScopedStopAndOutputAreUnfinished",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 12,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualLauncher_UsesRetargetedBridgeAndKeepsProjectFallback",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedKeyboard_PairsUnicodeScalarsBeforeWriting",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_OutputTimeoutIsAbsorbingWithOriginalOwner",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_ScopedProofStillRequiresActualOutputEof",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedView_EraseWithoutHomeCannotCertifyIdle",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedView_PartialUtf8AndUnsupportedVtCannotBorrowIdle",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.WindowsMainSource_HoldsJobBeforeReleaseAndOwnedPseudoConsoleClose",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalSessionTests.ActualStop_RetainsOriginalOwnerWhileScopedStopAndOutputAreUnfinished",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-bootstrap-output-unit-006",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-bootstrap-output",
+      "Categories": [
+        "worker-native-bootstrap-output"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.GatedBootstrapLoss_RetiresWithoutExecutingRoot|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.PreCanceledPreparation_RejectsBeforeAllocatingNativeOwner",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.GatedBootstrapLoss_RetiresWithoutExecutingRoot",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.PreCanceledPreparation_RejectsBeforeAllocatingNativeOwner",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-owner-retention-unit-007",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-owner-retention",
+      "Categories": [
+        "worker-native-owner-retention"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.ConstructorFailure_RollsBackPrivateBootstrapBeforeAnyProcessStart",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.ConstructorFailure_RollsBackPrivateBootstrapBeforeAnyProcessStart",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-v1-transport-regression-unit-008",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-v1-transport-regression",
+      "Categories": [
+        "worker-native-v1-transport-regression"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackBootstrapTests.RealRootBinding_StartStopAndActualReap|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackProcDiscoveryTests.FirstAdoptedChild_MustRetireBeforeIndependentFixtureExpiry|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Child_DoesNotInheritOwnerInput_AndPreservesSyntheticEnvironmentAndCwd|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ClosedStatusAfterStart_RetiresOwnedChildrenWithoutBlockingOrSigpipeExit|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ExecFailure_DoesNotClaimStartedOrScopedSuccess|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackBootstrapTests.RealRootBinding_StartStopAndActualReap",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackProcDiscoveryTests.FirstAdoptedChild_MustRetireBeforeIndependentFixtureExpiry",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Child_DoesNotInheritOwnerInput_AndPreservesSyntheticEnvironmentAndCwd",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ClosedStatusAfterStart_RetiresOwnedChildrenWithoutBlockingOrSigpipeExit",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ExecFailure_DoesNotClaimStartedOrScopedSuccess",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "worker-pool-regression-host-unit-009",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-pool-regression-host",
+      "Categories": [
+        "worker-native-bootstrap-output",
+        "worker-native-owner-retention",
+        "worker-pool-regression-host"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.CancellationAfterNativeBinding_RetainsOwnerThroughScopedRetirement|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.HelperLossAndOutputEof_CannotDisposeLiveHostIdentity|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.HostOutput_IsDistinctAndPrivateDescriptorsDoNotSurviveExec|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.NeutralHostCapability_RejectsReleaseBeforeSendingAnyWorkerCommand",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.CancellationAfterNativeBinding_RetainsOwnerThroughScopedRetirement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.HelperLossAndOutputEof_CannotDisposeLiveHostIdentity",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.HostOutput_IsDistinctAndPrivateDescriptorsDoNotSurviveExec",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.NeutralHostCapability_RejectsReleaseBeforeSendingAnyWorkerCommand",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

@@ -335,7 +335,8 @@ public sealed class GmBridgeOutputPumpTests
     public void ProductionStartAndDiagnosticsConsumeTheTestedMethods()
     {
         var source = File.ReadAllText(Path.Combine(HostFixture.RepoRoot, "BookOfEternityGMBridge", "Program.cs"));
-        Assert.Contains("PumpOutputAsync(pty.OutputReader, outputWriter, shellToken)", source, StringComparison.Ordinal);
+        Assert.Contains("AttachOwnedTerminal(pty, outputWriter)", source, StringComparison.Ordinal);
+        Assert.Contains("PumpOutputAsync(session.OutputReader, output, CancellationToken.None)", source, StringComparison.Ordinal);
         var start = source.IndexOf("private BridgeDiagnostics SnapshotDiagnostics()", StringComparison.Ordinal);
         var end = source.IndexOf("private string GetRecentOutputTail()", start, StringComparison.Ordinal);
         Assert.True(start >= 0 && end > start);

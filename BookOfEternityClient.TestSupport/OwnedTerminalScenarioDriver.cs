@@ -11,7 +11,7 @@ internal static class OwnedTerminalScenarioDriver
 {
     internal static async Task<int> RunAsync(string mode, string package, string output)
     {
-        if (mode is "terminal-bridge" or "terminal-uncertain" or "terminal-authority-loss" or "terminal-partial-start") return await RunBridgeAsync(mode, package, output);
+        if (mode is "terminal-bridge" or "terminal-uncertain" or "terminal-authority-loss" or "terminal-partial-start" or "terminal-root-exit-admission") return await RunBridgeAsync(mode, package, output);
         var result = new Dictionary<string, object?>();
         IOwnedTerminalSession? session = null;
         try
@@ -134,6 +134,17 @@ internal static class OwnedTerminalScenarioDriver
                 throw new TimeoutException("Actual view did not return to empty idle.");
             }
             var originalSession=type.GetField("_pty", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(host)!;
+            if(mode=="terminal-root-exit-admission") {
+                Require((await Rpc(new {command="addText",text="root-exit\r"})).GetProperty("ok").GetBoolean(),"Controlled root-exit command refused.");
+                await ((IOwnedTerminalSession)originalSession).RootExited.WaitAsync(TimeSpan.FromSeconds(2));
+                // No RunAsync polling loop: exact original exit itself must close admission.
+                Require(!(await Rpc(new {command="setReady",ready=true})).GetProperty("ok").GetBoolean(),"Completed original root exit borrowed old reliable view.");
+                Require(Disposition(await Rpc(Prompt("dispatchPrompt","after-exit","must-not-write")))=="not-written","Root exit admitted automatic input.");
+                Require(!(await Rpc(new {command="addText",text="must-not-write"})).GetProperty("ok").GetBoolean(),"Root exit admitted manual input.");
+                Require(!(await Rpc(new {command="resize",columns=93,rows=31})).GetProperty("ok").GetBoolean(),"Root exit admitted resize.");
+                Require(ReferenceEquals(originalSession,type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)),"Root exit dropped original owned descendants.");
+                result["RootExitAdmissionClosed"]=true;return 0;
+            }
             if(mode=="terminal-authority-loss") {
                 var owner=(BookOfEternityClient.Services.GmWorkers.NativeLineageOwner)typeof(LinuxOwnedTerminalSession).GetField("_owner",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(originalSession)!;
                 var supervisor=(System.Diagnostics.Process)owner.GetType().GetField("_supervisor",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(owner)!;

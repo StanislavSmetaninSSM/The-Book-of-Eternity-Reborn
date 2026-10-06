@@ -11,6 +11,22 @@ namespace BookOfEternityClient.Tests;
 public sealed class GmOwnedTerminalBoundaryTests
 {
     [Fact]
+    public async Task ActualWindowsStream_ZeroLengthReadDoesNotEstablishTransportEof()
+    {
+        var configuration=new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
+        var assembly=Assembly.LoadFrom(Path.Combine(TestRepoPaths.RepoRoot,"BookOfEternityGMBridge/bin",configuration,"net8.0/BookOfEternityGMBridge.dll"));
+        var type=assembly.GetType("BookOfEternityGMBridge.ConPtySession+FaultStream",true)!;
+        using var underlying=new MemoryStream([42]);
+        using var stream=(Stream)Activator.CreateInstance(type,BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic,null,
+            [underlying,(Action<string>)(_=>throw new InvalidOperationException("Unexpected controlled I/O fault.")),(Func<bool>)(()=>true)],null)!;
+        Assert.Equal(0,await stream.ReadAsync(Memory<byte>.Empty));
+        var settlement=(Task)type.GetProperty("Settlement",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(stream)!;
+        Assert.False(settlement.IsCompleted,"Empty buffer is not evidence of output transport EOF.");
+        Assert.Equal(1,await stream.ReadAsync(new byte[1]));
+        Assert.Equal(0,await stream.ReadAsync(new byte[1]));
+        await settlement.WaitAsync(TimeSpan.FromSeconds(1));
+    }
+    [Fact]
     public async Task ActualLauncher_UsesRetargetedBridgeAndKeepsProjectFallback() =>
         await GmDaemonPromptDeliveryTests.Run("terminal-launcher-path", result =>
         {
