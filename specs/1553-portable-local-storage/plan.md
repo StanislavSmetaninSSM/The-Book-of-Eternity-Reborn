@@ -41,9 +41,30 @@ existing category object. Expanded source `8c7c5e5b4cf39968b2f3ca0f35e41db058ea6
 causal FAIL,49.8333019s, no preparation error or timeout, cleanup complete. Nine active,
 one terminal syntax and34 malformed cases all reject the scaffold's false Missing.
 Evidence: recovery/evidence/worker-ledger-record-expanded-red/manifest.json.
-Strict bounded UTF-8/JSON codec now implemented; GREEN pending. Only prelaunch-abort
-terminal syntax is supported in R1; started-run retirement remains unavailable.
-Next: fresh selected build and44-case GREEN; then begin real persistence tests.
+Record codec GREEN at `6ab35591a83e1634eb969ac3222edf5481a56a1f`: fresh selected build,
+44/44PASS,41.0397245s, no timeout, cleanup complete. Evidence:
+recovery/evidence/worker-ledger-record-green/manifest.json. Only prelaunch-abort terminal
+syntax is supported; started-run retirement remains unavailable. Do not repeat this
+cohort unless codec/shared validation changes. Next: real persistence causal tests.
+
+Persistence implementation notes (R1 technical refinement, no R2 admission decision):
+- Fixed root-relative namespace, ordinary-path scope checks, original non-inherited
+  owner/journal descriptors; original lock-to-name binding checked before mutations.
+  Private serialized transactions; no canonical recovery calls or abandoned I/O.
+- Ruling: include a bounded terminal-reference index in state, so removing an active
+  entry cannot make a missing archive invisible or permit reuse of a retired exact task
+  identity. References carry RunId/epoch/task-key digest/archive digest. Bound to4096
+  references and the existing4MiB state limit; exhaustion blocks before mutation, no GC.
+  This is storage completeness, not a choice of root-wide dispatch policy.
+- R1 mutation surface: Initialize, Prepare, PlanLaunch, MarkUncertain, AbortBeforeLaunch
+  and exact RetryPending. Every entry operation requires the same privately registered
+  original handle and expected state sequence. No desired-snapshot mutation or started
+  stop/publication/retirement API. PlanLaunch consumes the never-Start token before I/O.
+- Pre-commit cancellation is read-only; once synchronous bounded publication starts,
+  settle it under original locks. A failed/ambiguous publication retains an exact frozen
+  pending transaction; only its original coordinator can retry. Identity/CAS conflicts
+  block without overwriting evidence. Cold observations never reconstruct a handle.
+
 
 ## Active worker restart/fencing design-only continuation, 2026-10-05
 
