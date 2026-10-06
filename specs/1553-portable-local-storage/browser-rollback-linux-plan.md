@@ -84,16 +84,16 @@ distinction is required for fresh-manager cleanup without reinterpreting old evi
 
 ## Execution and verification
 
-- [ ] Plan source/delta/selection independent Sol review and checkpoint push/readback.
-- [ ] Add `BrowserRollbackLinuxTests` (isolated bootstrapped roots, actual coordinator)
+- [x] Plan source/delta/selection independent Sol review and checkpoint push/readback.
+- [x] Add `BrowserRollbackLinuxTests` (isolated bootstrapped roots, actual coordinator)
   and narrow `browser-rollback-linux` category. First three positive-oracle RED cases:
   real existing+absent member commit, exact rollback after callback error, explicit
   held-lease write. Reach actual staging/recorder; assert callback/bytes/outcome, never
   accept unavailable backend as success. Preserve preparation failures separately.
-- [ ] Fresh category RED via scripts/test-csharp.ps1, exact SHA/source/command/TRX and
+- [x] Fresh category RED via scripts/test-csharp.ps1, exact SHA/source/command/TRX and
   cleanup. Implement minimal connected scope/schema7/recorder/recovery/cleanup change;
   fresh narrow GREEN and ordinary checkpoint/readback before expansion.
-- [ ] Add small qualification block/category `browser-rollback-linux-boundaries` for
+- [x] Add small qualification block/category `browser-rollback-linux-boundaries` for
   repeated writes/deletes, wrong bytes and retained rollback, committed cleanup debt
   then fresh-manager cleanup, interrupted staged recovery and recovery ordering,
   missing baseline, malformed/stale generation/old-schema retained refusal,
@@ -105,7 +105,7 @@ distinction is required for fresh-manager cleanup without reinterpreting old evi
   failed B→C then callback failure restoring A, and finalization faults for all three
   established decisions through both atomic entry routes.
   Faults use controlled filesystem hooks; no providers/process owner probes needed.
-- [ ] Select only actually affected old ordinary publication/no-legacy-admission and
+- [x] Select only actually affected old ordinary publication/no-legacy-admission and
   actual browser Load guard/full-refresh methods, inspecting source and catalog before
   recording exact IDs. Do not rerun F1–F3/M1 or broad browser-api-host cohort.
 - [ ] Fresh selected GREEN, catalog and exact PlanOnly discovery (zero execution),
@@ -138,3 +138,29 @@ No new product decision is identified: this ports existing cooperating transacti
 behavior. Load UX was accepted on 2026-10-06: confirmed stop, then confirmed Load, then fresh launch; uncertainty stops automatic continuation. Its implementation is a separate next slice, so this slice keeps low-level refusal. No live provider/saves/Q1/Q2,
 TERM acceptance, settings/auth/network/service changes, native Windows/systemd claim,
 cold command exactly-once, reboot salvage or protection from the player.
+
+
+## Current execution checkpoint — 2026-10-06
+
+Fresh final source `b08159ee8ea818c4339fc0554f24388a441c261d`, runtime
+`56d43924f31a79a69bbc9949b9b3a2e69d8739c9`: 71/71 PASS (41 new +30 exact
+review-selected affected regressions),3 descriptors,0 skipped,cleanup complete.
+Independent actual Sol6.1/xhigh source/selection PASS at exact tested source; final
+independent evidence review and fresh GitHub-only restoration are pending.
+[Qualification](recovery/browser-rollback-linux-qualification.json) and
+[run index](recovery/browser-rollback-linux-run-index.json) preserve exact commands,
+source hashes, history/partial runs and preparation failures. The first historical
+RED had one dirty item not identified by the runner; it is excluded from exact-source
+acceptance. Later clean causal blocks plus final clean GREEN provide source proof.
+Catalog354/11003 and PlanOnly3/71 execute0tests; their only untracked inputs were
+new GREEN evidence, with runtime/catalog source identical to the clean tested commit.
+
+Source review confirmed two distinct adjacent debts: real direct Chaos Sea gacha
+StageFileAsync long-lived pending-turn evidence remains physical outside the current
+atomic root; standalone Daren profile writes remain physical. Both have explicit
+separate tasks. This slice qualifies actual coordinator/declared profile QTE action,
+not all browser or console write paths. Partial original recovery may settle earlier
+admitted members and then retain Uncertain/evidence; it does not promise new whole-set
+rollback atomicity. The accepted Load UX is a separate later implementation; no product
+fork or additional behavior was introduced here. Historical four IDs above remain
+unpassed. No live browser/provider/model/saves/systemd/Windows/TERM/Q1/Q2 qualification.

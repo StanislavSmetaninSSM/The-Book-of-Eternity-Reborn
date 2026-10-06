@@ -1,0 +1,423 @@
+[
+  {
+    "Evidence": "evidence/t031-browser-catalog",
+    "ManifestSha256": "3bb6106d570b988684cfdf82e477d0729a7b624379259cc9479543bf335bedf2",
+    "SourceCommit": "b08159ee8ea818c4339fc0554f24388a441c261d",
+    "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild",
+    "ExitCode": 0,
+    "PlannedCases": 0,
+    "ExecutedCases": 0,
+    "Passed": 0,
+    "Failed": 0,
+    "Complete": false,
+    "ObservedRevision": {
+      "Head": "b08159ee8ea818c4339fc0554f24388a441c261d",
+      "WorkingTreeFingerprint": "A934A720FCF1168F01D1FFF12A44935CC74EAE34D19B62934161CD978A5E0591",
+      "ChangedFiles": 9
+    },
+    "RevisionInterpretation": "only nine newly captured GREEN evidence artifacts were untracked; runtime/catalog/source pins unchanged",
+    "DiscoveryOnly": true,
+    "PlanOnly": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "Failures": [],
+    "NewFixtureCleanupRecorded": 0,
+    "CompiledInputInterpretation": "Only selected built projects and dependencies freshly qualify; historical unbuilt unit binaries explicitly observed-only."
+  },
+  {
+    "Evidence": "evidence/t031-browser-green-boundary",
+    "ManifestSha256": "2bf92cf6e2a537c79a3a2b724113521fab972898a2bfa582ba174774feb61461",
+    "SourceCommit": "fb9c679ef9bdfa9bfb959fd29115641c7669f23b",
+    "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+    "ExitCode": 0,
+    "PlannedCases": 15,
+    "ExecutedCases": 15,
+    "Passed": 15,
+    "Failed": 0,
+    "Complete": true,
+    "ObservedRevision": {
+      "Head": "fb9c679ef9bdfa9bfb959fd29115641c7669f23b",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "RevisionInterpretation": "clean exact source",
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "Failures": [],
+    "NewFixtureCleanupRecorded": 15,
+    "CompiledInputInterpretation": "Only selected built projects and dependencies freshly qualify; historical unbuilt unit binaries explicitly observed-only."
+  },
+  {
+    "Evidence": "evidence/t031-browser-green-final",
+    "ManifestSha256": "ca0c2c850ecb798cdffb4741935b026edeabf764f31152c1e3c682674942522f",
+    "SourceCommit": "b08159ee8ea818c4339fc0554f24388a441c261d",
+    "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+    "ExitCode": 0,
+    "PlannedCases": 71,
+    "ExecutedCases": 71,
+    "Passed": 71,
+    "Failed": 0,
+    "Complete": true,
+    "ObservedRevision": {
+      "Head": "b08159ee8ea818c4339fc0554f24388a441c261d",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "RevisionInterpretation": "clean exact source",
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "Failures": [],
+    "NewFixtureCleanupRecorded": 41,
+    "CompiledInputInterpretation": "Only selected built projects and dependencies freshly qualify; historical unbuilt unit binaries explicitly observed-only."
+  },
+  {
+    "Evidence": "evidence/t031-browser-green-first",
+    "ManifestSha256": "0c29b699ea6de988edc3350c4acfb006b71174904ef667506e9670eea8bd1b53",
+    "SourceCommit": "1f09acf1305e3429b039af68b4b1e0a16d8df603",
+    "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category browser-rollback-linux -Parallelism 1",
+    "ExitCode": 0,
+    "PlannedCases": 3,
+    "ExecutedCases": 3,
+    "Passed": 3,
+    "Failed": 0,
+    "Complete": true,
+    "ObservedRevision": {
+      "Head": "1f09acf1305e3429b039af68b4b1e0a16d8df603",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "RevisionInterpretation": "clean exact source",
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "Failures": [],
+    "NewFixtureCleanupRecorded": 3,
+    "CompiledInputInterpretation": "Only selected built projects and dependencies freshly qualify; historical unbuilt unit binaries explicitly observed-only."
+  },
+  {
+    "Evidence": "evidence/t031-browser-plan-only",
+    "ManifestSha256": "d148bc40a1d3794627ae4220d0d10bef26d59bd8acf9e88ece73ed01efb78d93",
+    "SourceCommit": "b08159ee8ea818c4339fc0554f24388a441c261d",
+    "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -PlanOnly -NoBuild -Parallelism 1",
+    "ExitCode": 0,
+    "PlannedCases": 71,
+    "ExecutedCases": 0,
+    "Passed": 0,
+    "Failed": 0,
+    "Complete": false,
+    "ObservedRevision": {
+      "Head": "b08159ee8ea818c4339fc0554f24388a441c261d",
+      "WorkingTreeFingerprint": "A934A720FCF1168F01D1FFF12A44935CC74EAE34D19B62934161CD978A5E0591",
+      "ChangedFiles": 9
+    },
+    "RevisionInterpretation": "only nine newly captured GREEN evidence artifacts were untracked; runtime/catalog/source pins unchanged",
+    "DiscoveryOnly": false,
+    "PlanOnly": true,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "Failures": [],
+    "NewFixtureCleanupRecorded": 0,
+    "CompiledInputInterpretation": "Only selected built projects and dependencies freshly qualify; historical unbuilt unit binaries explicitly observed-only."
+  },
+  {
+    "Evidence": "evidence/t031-browser-red-boundary",
+    "ManifestSha256": "72c97d8d9f128bd03bf9f7f6ffb918d2b17d5074f10c61bbee46fd537329dce9",
+    "SourceCommit": "60a66c16dae534160441b8a29ae0e727e8841d3b",
+    "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category browser-rollback-linux-boundaries -Parallelism 1",
+    "ExitCode": 1,
+    "PlannedCases": 12,
+    "ExecutedCases": 12,
+    "Passed": 2,
+    "Failed": 10,
+    "Complete": true,
+    "ObservedRevision": {
+      "Head": "60a66c16dae534160441b8a29ae0e727e8841d3b",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "RevisionInterpretation": "clean exact source",
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "Failures": [
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes(within: False, decision: \"rollback\")",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      },
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DirectoryMemberDeletion_RestoresDeclaredBytesOnCallbackFailure",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      },
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes(within: False, decision: \"commit\")",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      },
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InterruptedRealTransaction_FreshManagerRestoresBeforeReturningLease",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      },
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes(within: True, decision: \"uncertain\")",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      },
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes(within: True, decision: \"commit\")",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      },
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes(within: False, decision: \"uncertain\")",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      },
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CommittedCleanupDebt_FreshManagerCleansManifestOrTypedOrphan(afterManifestRemoval: False)",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      },
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CommittedCleanupDebt_FreshManagerCleansManifestOrTypedOrphan(afterManifestRemoval: True)",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      },
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes(within: True, decision: \"rollback\")",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      }
+    ],
+    "NewFixtureCleanupRecorded": 12,
+    "CompiledInputInterpretation": "Only selected built projects and dependencies freshly qualify; historical unbuilt unit binaries explicitly observed-only."
+  },
+  {
+    "Evidence": "evidence/t031-browser-red-external",
+    "ManifestSha256": "3c534e4cb48b7bd43d339902c6b8d90fecbeee34571549eaac570aaac18048ec",
+    "SourceCommit": "5f95c31dcb1b949165985b3c9e1d55a4ed312b0f",
+    "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category browser-rollback-linux-boundaries -Parallelism 1",
+    "ExitCode": 1,
+    "PlannedCases": 33,
+    "ExecutedCases": 33,
+    "Passed": 26,
+    "Failed": 7,
+    "Complete": true,
+    "ObservedRevision": {
+      "Head": "5f95c31dcb1b949165985b3c9e1d55a4ed312b0f",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "RevisionInterpretation": "clean exact source",
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "Failures": [
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline(existed: True, fail: True)",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      },
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline(existed: False, fail: False)",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      },
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline(existed: True, fail: False)",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      },
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualQteWebRewardResolution_UsesDeclaredPortableParticipant",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      },
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingManifestScratch_OriginalPublisherSettlesBeforeBrowserRecovery",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      },
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline(existed: False, fail: True)",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      },
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ConfirmedRollbackWithCleanupDebt_RemainsRolledBackAndFreshManagerCleans",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      }
+    ],
+    "NewFixtureCleanupRecorded": 33,
+    "CompiledInputInterpretation": "Only selected built projects and dependencies freshly qualify; historical unbuilt unit binaries explicitly observed-only."
+  },
+  {
+    "Evidence": "evidence/t031-browser-red-first",
+    "ManifestSha256": "53e688239eb2690e86414c5c339c0b01dfc0d1c1e35121d7b4fac0a8ce69923d",
+    "SourceCommit": "b0d07b4a8820687bb19b28c100832e5bc70857ed",
+    "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category browser-rollback-linux -Parallelism 1",
+    "ExitCode": 1,
+    "PlannedCases": 3,
+    "ExecutedCases": 3,
+    "Passed": 0,
+    "Failed": 3,
+    "Complete": true,
+    "ObservedRevision": {
+      "Head": "b0d07b4a8820687bb19b28c100832e5bc70857ed",
+      "WorkingTreeFingerprint": "725F8A0EDE44296C51E3B123A9C99804AC44FB523FDB32033030F66C266F4389",
+      "ChangedFiles": 1
+    },
+    "RevisionInterpretation": "historical first RED has one changed/untracked item not named by runner; excluded from exact-source acceptance",
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "Failures": [
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_CommitsExistingAndAbsentMembers",
+        "Outcome": "Failed",
+        "Classification": "historical dirty-preparation consumer failure; excluded from exact-source acceptance"
+      },
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_ExplicitOriginalLeasePublishesWithoutAmbientAuthority",
+        "Outcome": "Failed",
+        "Classification": "historical dirty-preparation consumer failure; excluded from exact-source acceptance"
+      },
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_CallbackFailureRestoresExactBaselineAndAbsence",
+        "Outcome": "Failed",
+        "Classification": "historical dirty-preparation consumer failure; excluded from exact-source acceptance"
+      }
+    ],
+    "NewFixtureCleanupRecorded": 3,
+    "CompiledInputInterpretation": "Only selected built projects and dependencies freshly qualify; historical unbuilt unit binaries explicitly observed-only."
+  },
+  {
+    "Evidence": "evidence/t031-browser-red-lifetime",
+    "ManifestSha256": "79b14b7029bf7650aa5d80e5f4da81698fbfa567b34c17f782e8ab73ae8e9081",
+    "SourceCommit": "1b1f911eb7421b5b6316a76d00ac920a77e2cef1",
+    "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category browser-rollback-linux-boundaries -Parallelism 1",
+    "ExitCode": 1,
+    "PlannedCases": 38,
+    "ExecutedCases": 38,
+    "Passed": 36,
+    "Failed": 2,
+    "Complete": true,
+    "ObservedRevision": {
+      "Head": "1b1f911eb7421b5b6316a76d00ac920a77e2cef1",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "RevisionInterpretation": "clean exact source",
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "Failures": [
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualQteWebRewardResolution_UsesDeclaredPortableParticipant",
+        "Outcome": "Failed",
+        "Classification": "fixture grade oracle: perfect is unsupported, corrected to success; no acceptance"
+      },
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.RevokedOriginalGenerationAfterPublication_RetainsUncertainAndEvidence",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      }
+    ],
+    "NewFixtureCleanupRecorded": 38,
+    "CompiledInputInterpretation": "Only selected built projects and dependencies freshly qualify; historical unbuilt unit binaries explicitly observed-only."
+  },
+  {
+    "Evidence": "evidence/t031-browser-red-missing-parent",
+    "ManifestSha256": "fde88eb0f2044acea7ff96b6819410cc3a92f7f15dd1117fcd7e8589e6d05522",
+    "SourceCommit": "c22fd6f58f4f3064e682688de5de846cfa1875a7",
+    "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+    "ExitCode": 1,
+    "PlannedCases": 36,
+    "ExecutedCases": 36,
+    "Passed": 33,
+    "Failed": 3,
+    "Complete": true,
+    "ObservedRevision": {
+      "Head": "c22fd6f58f4f3064e682688de5de846cfa1875a7",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "RevisionInterpretation": "clean exact source",
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "Failures": [
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualQteWebRewardResolution_UsesDeclaredPortableParticipant",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      },
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline(existed: False, fail: True)",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      },
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline(existed: False, fail: False)",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      }
+    ],
+    "NewFixtureCleanupRecorded": 36,
+    "CompiledInputInterpretation": "Only selected built projects and dependencies freshly qualify; historical unbuilt unit binaries explicitly observed-only."
+  },
+  {
+    "Evidence": "evidence/t031-browser-regression-closing",
+    "ManifestSha256": "c949a313ec4846047a40b726ca476ee6fe4c70b30cad81537581edb39854c0dd",
+    "SourceCommit": "fc37c051491410837c5deb348cf0df22669045d4",
+    "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+    "ExitCode": 1,
+    "PlannedCases": 15,
+    "ExecutedCases": 3,
+    "Passed": 0,
+    "Failed": 3,
+    "Complete": false,
+    "ObservedRevision": {
+      "Head": "fc37c051491410837c5deb348cf0df22669045d4",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "RevisionInterpretation": "clean exact source",
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "Failures": [
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_ExplicitOriginalLeasePublishesWithoutAmbientAuthority",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      },
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_CommitsExistingAndAbsentMembers",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      },
+      {
+        "Test": "BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_CallbackFailureRestoresExactBaselineAndAbsence",
+        "Outcome": "Failed",
+        "Classification": "causal failure of actual selected consumer"
+      }
+    ],
+    "NewFixtureCleanupRecorded": 3,
+    "CompiledInputInterpretation": "Only selected built projects and dependencies freshly qualify; historical unbuilt unit binaries explicitly observed-only."
+  }
+]

@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="e473b5a9-6e17-4259-8b12-173e416de985" name="@c7669543e9c7 2026-10-06 21:52:04" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T21:52:04.9956608+00:00" queuing="2026-10-06T21:52:04.9956609+00:00" start="2026-10-06T21:52:01.1622535+00:00" finish="2026-10-06T21:52:05.0050782+00:00" />
+  <TestSettings name="default" id="852acd72-2d4e-4090-b54d-a8cd0b9ebe4b">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_21_52_04" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="02271a52-7918-4781-9957-db62f0a86e60" testId="757328c7-6494-20d0-85e4-383749c3b4da" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_CommitsExistingAndAbsentMembers" computerName="c7669543e9c7" duration="00:00:00.1300109" startTime="2026-10-06T21:52:04.8819485+00:00" endTime="2026-10-06T21:52:04.8819487+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="02271a52-7918-4781-9957-db62f0a86e60">
+      <Output>
+        <StdOut>Browser-write завершён.
+FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c495946a-af12-4733-aff1-367064f61cbd" testId="88d2f4cc-5db8-f431-01ee-2c88bf853efa" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_ExplicitOriginalLeasePublishesWithoutAmbientAuthority" computerName="c7669543e9c7" duration="00:00:00.3498765" startTime="2026-10-06T21:52:04.5340672+00:00" endTime="2026-10-06T21:52:04.5340825+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c495946a-af12-4733-aff1-367064f61cbd">
+      <Output>
+        <StdOut>Browser-write завершён.
+FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="dd7122d6-ed81-44a5-84d3-bbeca5584e72" testId="edbc1489-40bc-ad7d-cc60-cfcfeed86030" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_CallbackFailureRestoresExactBaselineAndAbsence" computerName="c7669543e9c7" duration="00:00:00.2160056" startTime="2026-10-06T21:52:04.7515324+00:00" endTime="2026-10-06T21:52:04.7515326+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dd7122d6-ed81-44a5-84d3-bbeca5584e72">
+      <Output>
+        <StdOut>Browser-write отменён, rollback восстановлен: causal callback failure
+FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_ExplicitOriginalLeasePublishesWithoutAmbientAuthority" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="88d2f4cc-5db8-f431-01ee-2c88bf853efa">
+      <Execution id="c495946a-af12-4733-aff1-367064f61cbd" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxTests" name="RealCoordinator_ExplicitOriginalLeasePublishesWithoutAmbientAuthority" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_CommitsExistingAndAbsentMembers" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="757328c7-6494-20d0-85e4-383749c3b4da">
+      <Execution id="02271a52-7918-4781-9957-db62f0a86e60" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxTests" name="RealCoordinator_CommitsExistingAndAbsentMembers" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_CallbackFailureRestoresExactBaselineAndAbsence" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="edbc1489-40bc-ad7d-cc60-cfcfeed86030">
+      <Execution id="dd7122d6-ed81-44a5-84d3-bbeca5584e72" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxTests" name="RealCoordinator_CallbackFailureRestoresExactBaselineAndAbsence" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="757328c7-6494-20d0-85e4-383749c3b4da" executionId="02271a52-7918-4781-9957-db62f0a86e60" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="88d2f4cc-5db8-f431-01ee-2c88bf853efa" executionId="c495946a-af12-4733-aff1-367064f61cbd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="edbc1489-40bc-ad7d-cc60-cfcfeed86030" executionId="dd7122d6-ed81-44a5-84d3-bbeca5584e72" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="3" executed="3" passed="3" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.62]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.37]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.41]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:03.19]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

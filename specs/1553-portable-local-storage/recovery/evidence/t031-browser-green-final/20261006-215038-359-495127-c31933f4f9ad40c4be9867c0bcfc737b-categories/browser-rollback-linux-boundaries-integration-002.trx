@@ -1,0 +1,472 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="112ba119-09d2-42b6-8703-c55a1e742e6f" name="@c7669543e9c7 2026-10-06 21:52:10" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T21:52:10.3962139+00:00" queuing="2026-10-06T21:52:10.3962139+00:00" start="2026-10-06T21:52:05.9252013+00:00" finish="2026-10-06T21:52:20.7460103+00:00" />
+  <TestSettings name="default" id="a32b5716-5b5d-4439-8624-d87043f57bfc">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_21_52_10" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="01d4098e-1e58-4a70-a4c2-45214c56694e" testId="501fb15d-f298-9461-b36b-944e7aab3ddd" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;no-active&quot;)" computerName="c7669543e9c7" duration="00:00:01.8973790" startTime="2026-10-06T21:52:17.4510048+00:00" endTime="2026-10-06T21:52:17.4510051+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="01d4098e-1e58-4a70-a4c2-45214c56694e" />
+    <UnitTestResult executionId="f31d55a7-57a3-4954-98ce-38aae39861f4" testId="e71050f7-cdd4-e283-3993-2d811e1d9515" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;rotate-close&quot;)" computerName="c7669543e9c7" duration="00:00:01.2334413" startTime="2026-10-06T21:52:15.4021203+00:00" endTime="2026-10-06T21:52:15.4021219+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f31d55a7-57a3-4954-98ce-38aae39861f4" />
+    <UnitTestResult executionId="899f7499-f4ba-4204-933e-c24f7c93219e" testId="e9d2d543-7005-207a-ff9d-afd6a1d5e1d6" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline(existed: True, fail: True)" computerName="c7669543e9c7" duration="00:00:00.2137442" startTime="2026-10-06T21:52:09.7759123+00:00" endTime="2026-10-06T21:52:09.7759125+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="899f7499-f4ba-4204-933e-c24f7c93219e">
+      <Output>
+        <StdOut>Browser-write отменён, rollback восстановлен: declared profile callback cut
+FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="cf0fcfe9-b4ee-4cac-a5d7-d0563ded59a1" testId="43777331-3fec-fb5d-2e66-744968941f81" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CommittedCleanupDebt_FreshManagerCleansManifestOrTypedOrphan(afterManifestRemoval: True)" computerName="c7669543e9c7" duration="00:00:00.1103956" startTime="2026-10-06T21:52:13.6618103+00:00" endTime="2026-10-06T21:52:13.6618105+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cf0fcfe9-b4ee-4cac-a5d7-d0563ded59a1">
+      <Output>
+        <StdOut>Browser-write завершён; служебная очистка будет повторена после устранения блокирующего файлового доступа.
+FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="41b07813-3657-4a34-8ba2-6c5c40cb75cf" testId="2ebe1ce2-0f61-cb65-29d2-576f1ee964d7" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.OriginalUiGuard_BlocksOtherOwnerOrRefreshesExactOriginalToken(original: False)" computerName="c7669543e9c7" duration="00:00:00.0411106" startTime="2026-10-06T21:52:10.8811841+00:00" endTime="2026-10-06T21:52:10.8811843+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="41b07813-3657-4a34-8ba2-6c5c40cb75cf">
+      <Output>
+        <StdOut>FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3b728feb-9e70-4f0f-a8b0-09dffa1c9812" testId="a3597419-6371-cfda-cddf-735f1a4007e5" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;absent-authority&quot;)" computerName="c7669543e9c7" duration="00:00:00.1931423" startTime="2026-10-06T21:52:10.0375067+00:00" endTime="2026-10-06T21:52:10.0375069+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3b728feb-9e70-4f0f-a8b0-09dffa1c9812" />
+    <UnitTestResult executionId="03b6854b-9ce1-42f4-8381-27c7e301be59" testId="66ce26cb-8ba4-5464-4cf3-51f0748216cc" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;game-read-failure&quot;)" computerName="c7669543e9c7" duration="00:00:02.6991677" startTime="2026-10-06T21:52:12.7383845+00:00" endTime="2026-10-06T21:52:12.7383847+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="03b6854b-9ce1-42f4-8381-27c7e301be59" />
+    <UnitTestResult executionId="c3977ad3-edd8-4eba-b155-a975b3d06877" testId="ffb00850-166b-4645-acd5-a6430edb8dea" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.TrustedLocalMember_RejectsSymlinkAndPreservesOrdinaryHardlinkAlias(hardlink: True)" computerName="c7669543e9c7" duration="00:00:00.1261336" startTime="2026-10-06T21:52:12.2564833+00:00" endTime="2026-10-06T21:52:12.2564834+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c3977ad3-edd8-4eba-b155-a975b3d06877">
+      <Output>
+        <StdOut>FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ad97cafc-12dd-4116-8cec-30188f4704a3" testId="3130e7d2-e8a1-55f1-69ae-0606cc112fbf" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes(within: True, decision: &quot;rollback&quot;)" computerName="c7669543e9c7" duration="00:00:00.1633842" startTime="2026-10-06T21:52:12.0369934+00:00" endTime="2026-10-06T21:52:12.0369936+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ad97cafc-12dd-4116-8cec-30188f4704a3">
+      <Output>
+        <StdOut>Browser-write отменён, rollback восстановлен: callback cut Продолжение не подтверждено; требуется проверка текущего состояния. Не повторяйте неизвестную операцию.
+FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b380dc81-3139-4a4a-a6ba-f251f9841795" testId="6b3824b9-e995-90ed-b2e9-88fa9360c358" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes(mode: &quot;old-schema&quot;)" computerName="c7669543e9c7" duration="00:00:00.1782562" startTime="2026-10-06T21:52:10.3747179+00:00" endTime="2026-10-06T21:52:10.3747181+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b380dc81-3139-4a4a-a6ba-f251f9841795">
+      <Output>
+        <StdOut>FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e48d49a0-4af9-4c09-8183-afb3655473f7" testId="4d87f48e-dd40-45da-4b3d-e426ac536ef5" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualQteWebRewardResolution_UsesDeclaredPortableParticipant" computerName="c7669543e9c7" duration="00:00:05.5441225" startTime="2026-10-06T21:52:19.2066934+00:00" endTime="2026-10-06T21:52:19.2066937+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e48d49a0-4af9-4c09-8183-afb3655473f7">
+      <Output>
+        <StdOut>Actual QTE action count=15
+FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4da0a274-97a1-49b7-86a8-6e7770ef240a" testId="3b3a05dd-96ce-b44f-e76a-6c0a4e4d282d" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes(mode: &quot;stale-generation&quot;)" computerName="c7669543e9c7" duration="00:00:00.0680009" startTime="2026-10-06T21:52:10.6864917+00:00" endTime="2026-10-06T21:52:10.6864919+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4da0a274-97a1-49b7-86a8-6e7770ef240a">
+      <Output>
+        <StdOut>FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0244b02d-827e-4842-897e-e2a3cb186194" testId="ced2010c-eb14-bf38-2526-656d8fed5a69" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.SuccessfulFirstWriteThenFailedLaterWrite_PreservesCumulativeAuthority" computerName="c7669543e9c7" duration="00:00:00.2159226" startTime="2026-10-06T21:52:19.6668511+00:00" endTime="2026-10-06T21:52:19.6668513+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0244b02d-827e-4842-897e-e2a3cb186194">
+      <Output>
+        <StdOut>Browser-write отменён, rollback восстановлен: rollback earlier successful write
+FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="62c2ddc1-647f-4510-b3fc-b33ce0d54c2a" testId="b81d2217-57ba-989a-58c8-cb20613741c2" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.GenericConsumerClosingCarrier_PreservesAtomicResultAndMappedMainOutcome(decision: &quot;uncertain&quot;)" computerName="c7669543e9c7" duration="00:00:00.0884783" startTime="2026-10-06T21:52:12.9356198+00:00" endTime="2026-10-06T21:52:12.9356200+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="62c2ddc1-647f-4510-b3fc-b33ce0d54c2a">
+      <Output>
+        <StdOut>FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="643ac8e9-cbb5-4a39-8eae-042b96e0813a" testId="25dbd173-4106-8812-1996-8dce4e25b433" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;cached-settings&quot;)" computerName="c7669543e9c7" duration="00:00:01.4298568" startTime="2026-10-06T21:52:14.1678172+00:00" endTime="2026-10-06T21:52:14.1678174+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="643ac8e9-cbb5-4a39-8eae-042b96e0813a" />
+    <UnitTestResult executionId="1d4a92d8-40f1-44d0-a8ff-f6706d94f85c" testId="7568de8a-7da2-1d39-6862-c76250016b87" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.HeldTransaction_ReplacementWaitsForCompleteSettlement" computerName="c7669543e9c7" duration="00:00:00.1815738" startTime="2026-10-06T21:52:13.2945420+00:00" endTime="2026-10-06T21:52:13.2945423+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1d4a92d8-40f1-44d0-a8ff-f6706d94f85c">
+      <Output>
+        <StdOut>FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="41f09454-b482-45ff-8a01-efcce7dd9b02" testId="cae8306a-20ba-0dab-75db-ba714db0c788" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.RevokedOriginalGenerationAfterPublication_RetainsUncertainAndEvidence" computerName="c7669543e9c7" duration="00:00:00.0765857" startTime="2026-10-06T21:52:10.1953935+00:00" endTime="2026-10-06T21:52:10.1953937+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="41f09454-b482-45ff-8a01-efcce7dd9b02">
+      <Output>
+        <StdOut>FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ff9809e6-828d-4b4b-bca2-7826d7c7107b" testId="2a25fb8f-05da-ea0c-387c-933ab58635c9" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes(within: False, decision: &quot;commit&quot;)" computerName="c7669543e9c7" duration="00:00:00.1668466" startTime="2026-10-06T21:52:11.7079104+00:00" endTime="2026-10-06T21:52:11.7079106+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ff9809e6-828d-4b4b-bca2-7826d7c7107b">
+      <Output>
+        <StdOut>Browser-write завершён. Продолжение не подтверждено; требуется проверка текущего состояния. Не повторяйте неизвестную операцию.
+FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7acf37c9-6cb6-41b8-ab49-38b524e4d734" testId="4fb4ed79-01ac-eda6-5869-716929886af4" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingManifestScratch_OriginalPublisherSettlesBeforeBrowserRecovery" computerName="c7669543e9c7" duration="00:00:00.0998001" startTime="2026-10-06T21:52:13.3943667+00:00" endTime="2026-10-06T21:52:13.3943671+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7acf37c9-6cb6-41b8-ab49-38b524e4d734">
+      <Output>
+        <StdOut>FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="bc7c4acb-3dc1-456a-b917-b89aeab3fb36" testId="c3314f06-b984-2896-a7b0-954dc59abdf7" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.GenericConsumerClosingCarrier_PreservesAtomicResultAndMappedMainOutcome(decision: &quot;commit&quot;)" computerName="c7669543e9c7" duration="00:00:00.1300903" startTime="2026-10-06T21:52:12.7194544+00:00" endTime="2026-10-06T21:52:12.7194548+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bc7c4acb-3dc1-456a-b917-b89aeab3fb36">
+      <Output>
+        <StdOut>FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="748f1ac6-8905-4477-ae09-1a39296e64a0" testId="5443307c-02a4-37d3-fe2b-117f9f1c6100" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.SharedWriteAppendCompareExchangeDelete_RecordAndRestoreFirstBaseline" computerName="c7669543e9c7" duration="00:00:00.2433229" startTime="2026-10-06T21:52:19.4544310+00:00" endTime="2026-10-06T21:52:19.4544313+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="748f1ac6-8905-4477-ae09-1a39296e64a0">
+      <Output>
+        <StdOut>Browser-write отменён, rollback восстановлен: rollback all ordinary APIs
+FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4876d409-ebe5-45bf-9eb7-60ebd7f88d0e" testId="46305b92-eade-d663-a607-16c9e5dfba75" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline(existed: False, fail: True)" computerName="c7669543e9c7" duration="00:00:00.4846442" startTime="2026-10-06T21:52:09.3738936+00:00" endTime="2026-10-06T21:52:09.3739096+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4876d409-ebe5-45bf-9eb7-60ebd7f88d0e">
+      <Output>
+        <StdOut>Browser-write отменён, rollback восстановлен: declared profile callback cut
+FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3c224d7b-a9f6-43f0-9554-73a650efee2a" testId="6da460be-d9cc-6bca-ac98-8e7cce03c4f5" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline(existed: False, fail: False)" computerName="c7669543e9c7" duration="00:00:00.1879095" startTime="2026-10-06T21:52:09.5626631+00:00" endTime="2026-10-06T21:52:09.5626633+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3c224d7b-a9f6-43f0-9554-73a650efee2a">
+      <Output>
+        <StdOut>Browser-write завершён.
+FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f97104cb-0bf0-45b3-bc02-32a775de999d" testId="1ee3a2e0-9056-1ec7-34c0-e91c4c721eb8" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ConfirmedRollbackWithCleanupDebt_RemainsRolledBackAndFreshManagerCleans" computerName="c7669543e9c7" duration="00:00:00.2071448" startTime="2026-10-06T21:52:11.2262474+00:00" endTime="2026-10-06T21:52:11.2262476+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f97104cb-0bf0-45b3-bc02-32a775de999d">
+      <Output>
+        <StdOut>FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="64587624-c892-4c1e-a83b-6d7e630c94ad" testId="179bd2e2-d4a3-a035-bfee-7c95e78edc72" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingMemberDecision_SettlesBeforeBrowserRollback" computerName="c7669543e9c7" duration="00:00:00.1318905" startTime="2026-10-06T21:52:10.1179664+00:00" endTime="2026-10-06T21:52:10.1179666+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="64587624-c892-4c1e-a83b-6d7e630c94ad">
+      <Output>
+        <StdOut>FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5baa58a2-e748-46f8-9286-d3a69b119942" testId="3a70c1b6-1573-8f8f-82c5-1963ab4acad8" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline(existed: True, fail: False)" computerName="c7669543e9c7" duration="00:00:00.2077816" startTime="2026-10-06T21:52:09.9846560+00:00" endTime="2026-10-06T21:52:09.9846561+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5baa58a2-e748-46f8-9286-d3a69b119942">
+      <Output>
+        <StdOut>Browser-write завершён.
+FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a09b4c34-5d06-492b-9f67-8b59408bb801" testId="6bd1f6fc-90b2-85f0-415d-8df3a74ab2f4" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes(mode: &quot;unknown-evidence&quot;)" computerName="c7669543e9c7" duration="00:00:00.0622312" startTime="2026-10-06T21:52:10.5282108+00:00" endTime="2026-10-06T21:52:10.5282110+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a09b4c34-5d06-492b-9f67-8b59408bb801">
+      <Output>
+        <StdOut>FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="60669447-1029-46b9-9349-a64c7690f5f7" testId="1a12a1d9-d09f-20f0-7f30-59413c6d1979" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes(within: False, decision: &quot;rollback&quot;)" computerName="c7669543e9c7" duration="00:00:00.1980941" startTime="2026-10-06T21:52:11.5425567+00:00" endTime="2026-10-06T21:52:11.5425569+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="60669447-1029-46b9-9349-a64c7690f5f7">
+      <Output>
+        <StdOut>Browser-write отменён, rollback восстановлен: callback cut Продолжение не подтверждено; требуется проверка текущего состояния. Не повторяйте неизвестную операцию.
+FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5be91cc8-7270-4f69-be4e-0f2552d17433" testId="ea00a853-b796-e66b-f7d4-de278c7ad3a5" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard" computerName="c7669543e9c7" duration="00:00:03.2099859" startTime="2026-10-06T21:52:20.6613319+00:00" endTime="2026-10-06T21:52:20.6613321+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5be91cc8-7270-4f69-be4e-0f2552d17433" />
+    <UnitTestResult executionId="c6f1005e-7f4f-4cfa-8348-e64763f8d43f" testId="056fd680-f1f9-66dd-6a05-b5ae22d6797c" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.TrustedLocalMember_RejectsSymlinkAndPreservesOrdinaryHardlinkAlias(hardlink: False)" computerName="c7669543e9c7" duration="00:00:00.0409501" startTime="2026-10-06T21:52:12.2981432+00:00" endTime="2026-10-06T21:52:12.2981434+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c6f1005e-7f4f-4cfa-8348-e64763f8d43f">
+      <Output>
+        <StdOut>FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a0f4ec70-ca06-4579-abd4-b96012dcaaf4" testId="c2abbe74-fc25-0d70-bfbc-76b23d9a78d6" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;mixed-request&quot;)" computerName="c7669543e9c7" duration="00:00:00.1494241" startTime="2026-10-06T21:52:15.5524823+00:00" endTime="2026-10-06T21:52:15.5524826+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a0f4ec70-ca06-4579-abd4-b96012dcaaf4" />
+    <UnitTestResult executionId="d90431d6-77b8-45a4-8361-333e0c54baa9" testId="2010359b-d2c4-5ac4-3448-d00db6c8e5f9" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes(within: False, decision: &quot;uncertain&quot;)" computerName="c7669543e9c7" duration="00:00:00.0962956" startTime="2026-10-06T21:52:12.1295952+00:00" endTime="2026-10-06T21:52:12.1295954+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d90431d6-77b8-45a4-8361-333e0c54baa9">
+      <Output>
+        <StdOut>Browser-write отменён; rollback завершён не полностью: callback cut; Browser rollback found unknown current bytes; evidence retained. Продолжение не подтверждено; требуется проверка текущего состояния. Не повторяйте неизвестную операцию.
+FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4c3c2e2b-aa3a-4de3-a8c9-6653320dfa07" testId="d54e6b6b-200c-bac3-d341-dd33553bdd33" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ColdMainNonterminal_RefusesBeforeBrowserRecoveryAndArtifacts(state: 3)" computerName="c7669543e9c7" duration="00:00:00.0482914" startTime="2026-10-06T21:52:13.0967530+00:00" endTime="2026-10-06T21:52:13.0967532+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4c3c2e2b-aa3a-4de3-a8c9-6653320dfa07">
+      <Output>
+        <StdOut>FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="34cf76d3-1ac1-4441-9569-85259a110545" testId="d016d659-3f7a-e0b9-f9b0-cc3db052456a" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CommittedCleanupDebt_FreshManagerCleansManifestOrTypedOrphan(afterManifestRemoval: False)" computerName="c7669543e9c7" duration="00:00:00.1337854" startTime="2026-10-06T21:52:13.5507947+00:00" endTime="2026-10-06T21:52:13.5507949+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="34cf76d3-1ac1-4441-9569-85259a110545">
+      <Output>
+        <StdOut>Browser-write завершён; служебная очистка будет повторена после устранения блокирующего файлового доступа.
+FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1e1e9be4-f129-4bf4-9ce7-b1ded7cb40fa" testId="dddef45b-f1a3-3702-1af3-89bddcfad370" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes(mode: &quot;malformed&quot;)" computerName="c7669543e9c7" duration="00:00:00.0856443" startTime="2026-10-06T21:52:10.6184382+00:00" endTime="2026-10-06T21:52:10.6184384+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1e1e9be4-f129-4bf4-9ce7-b1ded7cb40fa">
+      <Output>
+        <StdOut>FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="365e3509-ede1-4f2f-8c41-4c0b0b73fed3" testId="1eb03b39-7056-d145-8d4b-a5bd6904cb1e" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InterruptedRealTransaction_FreshManagerRestoresBeforeReturningLease" computerName="c7669543e9c7" duration="00:00:00.1333536" startTime="2026-10-06T21:52:11.0184469+00:00" endTime="2026-10-06T21:52:11.0184471+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="365e3509-ede1-4f2f-8c41-4c0b0b73fed3">
+      <Output>
+        <StdOut>FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a11a31d7-c63e-4e05-be42-c1e0a9031755" testId="3ca5a7e0-06aa-bf9d-c1ff-2558e8962662" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.OriginalUiGuard_BlocksOtherOwnerOrRefreshesExactOriginalToken(original: True)" computerName="c7669543e9c7" duration="00:00:00.1549772" startTime="2026-10-06T21:52:10.8394453+00:00" endTime="2026-10-06T21:52:10.8394455+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a11a31d7-c63e-4e05-be42-c1e0a9031755">
+      <Output>
+        <StdOut>FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="eca9c94d-924e-4427-8620-802bb915c78b" testId="f2be7987-7f2a-5278-6122-e1b3eec93ac8" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;rotate-read&quot;)" computerName="c7669543e9c7" duration="00:00:00.9611840" startTime="2026-10-06T21:52:09.8439123+00:00" endTime="2026-10-06T21:52:09.8439125+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eca9c94d-924e-4427-8620-802bb915c78b" />
+    <UnitTestResult executionId="10c5367d-966d-4ffd-aafb-758f4d84c376" testId="5b6b191d-706a-d5d0-40cd-3469187d974e" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DirectoryMemberDeletion_RestoresDeclaredBytesOnCallbackFailure" computerName="c7669543e9c7" duration="00:00:00.2895788" startTime="2026-10-06T21:52:12.5894720+00:00" endTime="2026-10-06T21:52:12.5894724+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="10c5367d-966d-4ffd-aafb-758f4d84c376">
+      <Output>
+        <StdOut>Browser-write отменён, rollback восстановлен: directory callback cut
+FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e712b1a9-345d-4fb6-b5bb-3bfc697d3f0e" testId="1658ceb4-dced-930d-d720-119b563203ba" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.GenericConsumerClosingCarrier_PreservesAtomicResultAndMappedMainOutcome(decision: &quot;rollback&quot;)" computerName="c7669543e9c7" duration="00:00:00.1263155" startTime="2026-10-06T21:52:12.8461176+00:00" endTime="2026-10-06T21:52:12.8461178+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e712b1a9-345d-4fb6-b5bb-3bfc697d3f0e">
+      <Output>
+        <StdOut>FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3ce8263e-26ad-42d2-9c9c-b36ad9bc09f1" testId="c50a8dbc-3283-a5bf-b693-5a33c8172939" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ColdMainNonterminal_RefusesBeforeBrowserRecoveryAndArtifacts(state: 2)" computerName="c7669543e9c7" duration="00:00:00.0147482" startTime="2026-10-06T21:52:13.1116281+00:00" endTime="2026-10-06T21:52:13.1116283+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3ce8263e-26ad-42d2-9c9c-b36ad9bc09f1">
+      <Output>
+        <StdOut>FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f86c16f2-47a4-4360-8d0e-f474a4189a7e" testId="bceecbd9-5bd8-3095-d5e9-2a36f29273ac" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes(within: True, decision: &quot;commit&quot;)" computerName="c7669543e9c7" duration="00:00:00.1597251" startTime="2026-10-06T21:52:11.8689420+00:00" endTime="2026-10-06T21:52:11.8689422+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f86c16f2-47a4-4360-8d0e-f474a4189a7e">
+      <Output>
+        <StdOut>Browser-write завершён. Продолжение не подтверждено; требуется проверка текущего состояния. Не повторяйте неизвестную операцию.
+FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1b915ace-4c19-4b38-adb9-bfc3ba3b5523" testId="3582c9bc-4693-82ca-1ce0-3757b5d23575" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes(within: True, decision: &quot;uncertain&quot;)" computerName="c7669543e9c7" duration="00:00:00.1168567" startTime="2026-10-06T21:52:11.3414043+00:00" endTime="2026-10-06T21:52:11.3414045+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1b915ace-4c19-4b38-adb9-bfc3ba3b5523">
+      <Output>
+        <StdOut>Browser-write отменён; rollback завершён не полностью: callback cut; Browser rollback found unknown current bytes; evidence retained. Продолжение не подтверждено; требуется проверка текущего состояния. Не повторяйте неизвестную операцию.
+FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d299f73c-795a-4499-a2c5-19a7b4465c52" testId="7cdaf71d-5158-4a9b-12a8-523f194f58b8" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.OldEmptyOrphanCleanupIntent_IsRetainedWithoutMutation" computerName="c7669543e9c7" duration="00:00:00.0218218" startTime="2026-10-06T21:52:13.4163675+00:00" endTime="2026-10-06T21:52:13.4163677+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d299f73c-795a-4499-a2c5-19a7b4465c52">
+      <Output>
+        <StdOut>FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b57ec34f-0ac9-403b-b57f-b234d751e99d" testId="d439bf14-81d8-028a-6038-0e3ac87e5cd8" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes(mode: &quot;missing-baseline&quot;)" computerName="c7669543e9c7" duration="00:00:00.0889976" startTime="2026-10-06T21:52:10.4659297+00:00" endTime="2026-10-06T21:52:10.4659299+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b57ec34f-0ac9-403b-b57f-b234d751e99d">
+      <Output>
+        <StdOut>FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5adb4ac3-0e1a-4051-ab55-ff566dbc8d27" testId="073842d4-661e-c9e9-18f6-001988157cbd" testName="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.RetainedColdWorkerPrepared_RefusesBeforeBrowserEffects" computerName="c7669543e9c7" duration="00:00:00.1116562" startTime="2026-10-06T21:52:13.0482019+00:00" endTime="2026-10-06T21:52:13.0482022+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5adb4ac3-0e1a-4051-ab55-ff566dbc8d27">
+      <Output>
+        <StdOut>FixtureCleanup rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.GenericConsumerClosingCarrier_PreservesAtomicResultAndMappedMainOutcome(decision: &quot;uncertain&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b81d2217-57ba-989a-58c8-cb20613741c2">
+      <Execution id="62c2ddc1-647f-4510-b3fc-b33ce0d54c2a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="GenericConsumerClosingCarrier_PreservesAtomicResultAndMappedMainOutcome" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes(within: True, decision: &quot;rollback&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="3130e7d2-e8a1-55f1-69ae-0606cc112fbf">
+      <Execution id="ad97cafc-12dd-4116-8cec-30188f4704a3" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes(mode: &quot;stale-generation&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="3b3a05dd-96ce-b44f-e76a-6c0a4e4d282d">
+      <Execution id="4da0a274-97a1-49b7-86a8-6e7770ef240a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes(within: False, decision: &quot;uncertain&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="2010359b-d2c4-5ac4-3448-d00db6c8e5f9">
+      <Execution id="d90431d6-77b8-45a4-8361-333e0c54baa9" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CommittedCleanupDebt_FreshManagerCleansManifestOrTypedOrphan(afterManifestRemoval: False)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d016d659-3f7a-e0b9-f9b0-cc3db052456a">
+      <Execution id="34cf76d3-1ac1-4441-9569-85259a110545" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="CommittedCleanupDebt_FreshManagerCleansManifestOrTypedOrphan" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes(mode: &quot;malformed&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="dddef45b-f1a3-3702-1af3-89bddcfad370">
+      <Execution id="1e1e9be4-f129-4bf4-9ce7-b1ded7cb40fa" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;no-active&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="501fb15d-f298-9461-b36b-944e7aab3ddd">
+      <Execution id="01d4098e-1e58-4a70-a4c2-45214c56694e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ColdMainNonterminal_RefusesBeforeBrowserRecoveryAndArtifacts(state: 3)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d54e6b6b-200c-bac3-d341-dd33553bdd33">
+      <Execution id="4c3c2e2b-aa3a-4de3-a8c9-6653320dfa07" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="ColdMainNonterminal_RefusesBeforeBrowserRecoveryAndArtifacts" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes(mode: &quot;unknown-evidence&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="6bd1f6fc-90b2-85f0-415d-8df3a74ab2f4">
+      <Execution id="a09b4c34-5d06-492b-9f67-8b59408bb801" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.SharedWriteAppendCompareExchangeDelete_RecordAndRestoreFirstBaseline" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="5443307c-02a4-37d3-fe2b-117f9f1c6100">
+      <Execution id="748f1ac6-8905-4477-ae09-1a39296e64a0" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="SharedWriteAppendCompareExchangeDelete_RecordAndRestoreFirstBaseline" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;mixed-request&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c2abbe74-fc25-0d70-bfbc-76b23d9a78d6">
+      <Execution id="a0f4ec70-ca06-4579-abd4-b96012dcaaf4" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.TrustedLocalMember_RejectsSymlinkAndPreservesOrdinaryHardlinkAlias(hardlink: True)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ffb00850-166b-4645-acd5-a6430edb8dea">
+      <Execution id="c3977ad3-edd8-4eba-b155-a975b3d06877" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="TrustedLocalMember_RejectsSymlinkAndPreservesOrdinaryHardlinkAlias" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingManifestScratch_OriginalPublisherSettlesBeforeBrowserRecovery" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="4fb4ed79-01ac-eda6-5869-716929886af4">
+      <Execution id="7acf37c9-6cb6-41b8-ab49-38b524e4d734" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="PendingManifestScratch_OriginalPublisherSettlesBeforeBrowserRecovery" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingMemberDecision_SettlesBeforeBrowserRollback" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="179bd2e2-d4a3-a035-bfee-7c95e78edc72">
+      <Execution id="64587624-c892-4c1e-a83b-6d7e630c94ad" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="PendingMemberDecision_SettlesBeforeBrowserRollback" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ea00a853-b796-e66b-f7d4-de278c7ad3a5">
+      <Execution id="5be91cc8-7270-4f69-be4e-0f2552d17433" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.GenericConsumerClosingCarrier_PreservesAtomicResultAndMappedMainOutcome(decision: &quot;rollback&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="1658ceb4-dced-930d-d720-119b563203ba">
+      <Execution id="e712b1a9-345d-4fb6-b5bb-3bfc697d3f0e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="GenericConsumerClosingCarrier_PreservesAtomicResultAndMappedMainOutcome" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline(existed: False, fail: False)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="6da460be-d9cc-6bca-ac98-8e7cce03c4f5">
+      <Execution id="3c224d7b-a9f6-43f0-9554-73a650efee2a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="DeclaredActualProfileStore_CommitsOrRestoresExactBaseline" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;rotate-read&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="f2be7987-7f2a-5278-6122-e1b3eec93ac8">
+      <Execution id="eca9c94d-924e-4427-8620-802bb915c78b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.RetainedColdWorkerPrepared_RefusesBeforeBrowserEffects" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="073842d4-661e-c9e9-18f6-001988157cbd">
+      <Execution id="5adb4ac3-0e1a-4051-ab55-ff566dbc8d27" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="RetainedColdWorkerPrepared_RefusesBeforeBrowserEffects" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.GenericConsumerClosingCarrier_PreservesAtomicResultAndMappedMainOutcome(decision: &quot;commit&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c3314f06-b984-2896-a7b0-954dc59abdf7">
+      <Execution id="bc7c4acb-3dc1-456a-b917-b89aeab3fb36" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="GenericConsumerClosingCarrier_PreservesAtomicResultAndMappedMainOutcome" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ColdMainNonterminal_RefusesBeforeBrowserRecoveryAndArtifacts(state: 2)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c50a8dbc-3283-a5bf-b693-5a33c8172939">
+      <Execution id="3ce8263e-26ad-42d2-9c9c-b36ad9bc09f1" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="ColdMainNonterminal_RefusesBeforeBrowserRecoveryAndArtifacts" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes(within: True, decision: &quot;uncertain&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="3582c9bc-4693-82ca-1ce0-3757b5d23575">
+      <Execution id="1b915ace-4c19-4b38-adb9-bfc3ba3b5523" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.RevokedOriginalGenerationAfterPublication_RetainsUncertainAndEvidence" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="cae8306a-20ba-0dab-75db-ba714db0c788">
+      <Execution id="41f09454-b482-45ff-8a01-efcce7dd9b02" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="RevokedOriginalGenerationAfterPublication_RetainsUncertainAndEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes(mode: &quot;missing-baseline&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d439bf14-81d8-028a-6038-0e3ac87e5cd8">
+      <Execution id="b57ec34f-0ac9-403b-b57f-b234d751e99d" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes(mode: &quot;old-schema&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="6b3824b9-e995-90ed-b2e9-88fa9360c358">
+      <Execution id="b380dc81-3139-4a4a-a6ba-f251f9841795" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes(within: True, decision: &quot;commit&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="bceecbd9-5bd8-3095-d5e9-2a36f29273ac">
+      <Execution id="f86c16f2-47a4-4360-8d0e-f474a4189a7e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;game-read-failure&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="66ce26cb-8ba4-5464-4cf3-51f0748216cc">
+      <Execution id="03b6854b-9ce1-42f4-8381-27c7e301be59" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes(within: False, decision: &quot;commit&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="2a25fb8f-05da-ea0c-387c-933ab58635c9">
+      <Execution id="ff9809e6-828d-4b4b-bca2-7826d7c7107b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InterruptedRealTransaction_FreshManagerRestoresBeforeReturningLease" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="1eb03b39-7056-d145-8d4b-a5bd6904cb1e">
+      <Execution id="365e3509-ede1-4f2f-8c41-4c0b0b73fed3" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="InterruptedRealTransaction_FreshManagerRestoresBeforeReturningLease" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.TrustedLocalMember_RejectsSymlinkAndPreservesOrdinaryHardlinkAlias(hardlink: False)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="056fd680-f1f9-66dd-6a05-b5ae22d6797c">
+      <Execution id="c6f1005e-7f4f-4cfa-8348-e64763f8d43f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="TrustedLocalMember_RejectsSymlinkAndPreservesOrdinaryHardlinkAlias" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CommittedCleanupDebt_FreshManagerCleansManifestOrTypedOrphan(afterManifestRemoval: True)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="43777331-3fec-fb5d-2e66-744968941f81">
+      <Execution id="cf0fcfe9-b4ee-4cac-a5d7-d0563ded59a1" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="CommittedCleanupDebt_FreshManagerCleansManifestOrTypedOrphan" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;rotate-close&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e71050f7-cdd4-e283-3993-2d811e1d9515">
+      <Execution id="f31d55a7-57a3-4954-98ce-38aae39861f4" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.OriginalUiGuard_BlocksOtherOwnerOrRefreshesExactOriginalToken(original: False)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="2ebe1ce2-0f61-cb65-29d2-576f1ee964d7">
+      <Execution id="41b07813-3657-4a34-8ba2-6c5c40cb75cf" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="OriginalUiGuard_BlocksOtherOwnerOrRefreshesExactOriginalToken" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline(existed: True, fail: True)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e9d2d543-7005-207a-ff9d-afd6a1d5e1d6">
+      <Execution id="899f7499-f4ba-4204-933e-c24f7c93219e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="DeclaredActualProfileStore_CommitsOrRestoresExactBaseline" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ConfirmedRollbackWithCleanupDebt_RemainsRolledBackAndFreshManagerCleans" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="1ee3a2e0-9056-1ec7-34c0-e91c4c721eb8">
+      <Execution id="f97104cb-0bf0-45b3-bc02-32a775de999d" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="ConfirmedRollbackWithCleanupDebt_RemainsRolledBackAndFreshManagerCleans" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.HeldTransaction_ReplacementWaitsForCompleteSettlement" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="7568de8a-7da2-1d39-6862-c76250016b87">
+      <Execution id="1d4a92d8-40f1-44d0-a8ff-f6706d94f85c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="HeldTransaction_ReplacementWaitsForCompleteSettlement" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.SuccessfulFirstWriteThenFailedLaterWrite_PreservesCumulativeAuthority" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ced2010c-eb14-bf38-2526-656d8fed5a69">
+      <Execution id="0244b02d-827e-4842-897e-e2a3cb186194" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="SuccessfulFirstWriteThenFailedLaterWrite_PreservesCumulativeAuthority" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.OldEmptyOrphanCleanupIntent_IsRetainedWithoutMutation" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="7cdaf71d-5158-4a9b-12a8-523f194f58b8">
+      <Execution id="d299f73c-795a-4499-a2c5-19a7b4465c52" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="OldEmptyOrphanCleanupIntent_IsRetainedWithoutMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;absent-authority&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="a3597419-6371-cfda-cddf-735f1a4007e5">
+      <Execution id="3b728feb-9e70-4f0f-a8b0-09dffa1c9812" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualQteWebRewardResolution_UsesDeclaredPortableParticipant" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="4d87f48e-dd40-45da-4b3d-e426ac536ef5">
+      <Execution id="e48d49a0-4af9-4c09-8183-afb3655473f7" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="ActualQteWebRewardResolution_UsesDeclaredPortableParticipant" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline(existed: False, fail: True)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="46305b92-eade-d663-a607-16c9e5dfba75">
+      <Execution id="4876d409-ebe5-45bf-9eb7-60ebd7f88d0e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="DeclaredActualProfileStore_CommitsOrRestoresExactBaseline" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline(existed: True, fail: False)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="3a70c1b6-1573-8f8f-82c5-1963ab4acad8">
+      <Execution id="5baa58a2-e748-46f8-9286-d3a69b119942" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="DeclaredActualProfileStore_CommitsOrRestoresExactBaseline" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.OriginalUiGuard_BlocksOtherOwnerOrRefreshesExactOriginalToken(original: True)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="3ca5a7e0-06aa-bf9d-c1ff-2558e8962662">
+      <Execution id="a11a31d7-c63e-4e05-be42-c1e0a9031755" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="OriginalUiGuard_BlocksOtherOwnerOrRefreshesExactOriginalToken" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DirectoryMemberDeletion_RestoresDeclaredBytesOnCallbackFailure" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="5b6b191d-706a-d5d0-40cd-3469187d974e">
+      <Execution id="10c5367d-966d-4ffd-aafb-758f4d84c376" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="DirectoryMemberDeletion_RestoresDeclaredBytesOnCallbackFailure" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;cached-settings&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="25dbd173-4106-8812-1996-8dce4e25b433">
+      <Execution id="643ac8e9-cbb5-4a39-8eae-042b96e0813a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes(within: False, decision: &quot;rollback&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="1a12a1d9-d09f-20f0-7f30-59413c6d1979">
+      <Execution id="60669447-1029-46b9-9349-a64c7690f5f7" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests" name="ActualClosingFault_RetainsEstablishedDecisionThroughBothEntryRoutes" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="501fb15d-f298-9461-b36b-944e7aab3ddd" executionId="01d4098e-1e58-4a70-a4c2-45214c56694e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e71050f7-cdd4-e283-3993-2d811e1d9515" executionId="f31d55a7-57a3-4954-98ce-38aae39861f4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e9d2d543-7005-207a-ff9d-afd6a1d5e1d6" executionId="899f7499-f4ba-4204-933e-c24f7c93219e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="43777331-3fec-fb5d-2e66-744968941f81" executionId="cf0fcfe9-b4ee-4cac-a5d7-d0563ded59a1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2ebe1ce2-0f61-cb65-29d2-576f1ee964d7" executionId="41b07813-3657-4a34-8ba2-6c5c40cb75cf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a3597419-6371-cfda-cddf-735f1a4007e5" executionId="3b728feb-9e70-4f0f-a8b0-09dffa1c9812" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="66ce26cb-8ba4-5464-4cf3-51f0748216cc" executionId="03b6854b-9ce1-42f4-8381-27c7e301be59" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ffb00850-166b-4645-acd5-a6430edb8dea" executionId="c3977ad3-edd8-4eba-b155-a975b3d06877" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3130e7d2-e8a1-55f1-69ae-0606cc112fbf" executionId="ad97cafc-12dd-4116-8cec-30188f4704a3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6b3824b9-e995-90ed-b2e9-88fa9360c358" executionId="b380dc81-3139-4a4a-a6ba-f251f9841795" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4d87f48e-dd40-45da-4b3d-e426ac536ef5" executionId="e48d49a0-4af9-4c09-8183-afb3655473f7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3b3a05dd-96ce-b44f-e76a-6c0a4e4d282d" executionId="4da0a274-97a1-49b7-86a8-6e7770ef240a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ced2010c-eb14-bf38-2526-656d8fed5a69" executionId="0244b02d-827e-4842-897e-e2a3cb186194" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b81d2217-57ba-989a-58c8-cb20613741c2" executionId="62c2ddc1-647f-4510-b3fc-b33ce0d54c2a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="25dbd173-4106-8812-1996-8dce4e25b433" executionId="643ac8e9-cbb5-4a39-8eae-042b96e0813a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7568de8a-7da2-1d39-6862-c76250016b87" executionId="1d4a92d8-40f1-44d0-a8ff-f6706d94f85c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cae8306a-20ba-0dab-75db-ba714db0c788" executionId="41f09454-b482-45ff-8a01-efcce7dd9b02" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2a25fb8f-05da-ea0c-387c-933ab58635c9" executionId="ff9809e6-828d-4b4b-bca2-7826d7c7107b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4fb4ed79-01ac-eda6-5869-716929886af4" executionId="7acf37c9-6cb6-41b8-ab49-38b524e4d734" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c3314f06-b984-2896-a7b0-954dc59abdf7" executionId="bc7c4acb-3dc1-456a-b917-b89aeab3fb36" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5443307c-02a4-37d3-fe2b-117f9f1c6100" executionId="748f1ac6-8905-4477-ae09-1a39296e64a0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="46305b92-eade-d663-a607-16c9e5dfba75" executionId="4876d409-ebe5-45bf-9eb7-60ebd7f88d0e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6da460be-d9cc-6bca-ac98-8e7cce03c4f5" executionId="3c224d7b-a9f6-43f0-9554-73a650efee2a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1ee3a2e0-9056-1ec7-34c0-e91c4c721eb8" executionId="f97104cb-0bf0-45b3-bc02-32a775de999d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="179bd2e2-d4a3-a035-bfee-7c95e78edc72" executionId="64587624-c892-4c1e-a83b-6d7e630c94ad" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3a70c1b6-1573-8f8f-82c5-1963ab4acad8" executionId="5baa58a2-e748-46f8-9286-d3a69b119942" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6bd1f6fc-90b2-85f0-415d-8df3a74ab2f4" executionId="a09b4c34-5d06-492b-9f67-8b59408bb801" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1a12a1d9-d09f-20f0-7f30-59413c6d1979" executionId="60669447-1029-46b9-9349-a64c7690f5f7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ea00a853-b796-e66b-f7d4-de278c7ad3a5" executionId="5be91cc8-7270-4f69-be4e-0f2552d17433" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="056fd680-f1f9-66dd-6a05-b5ae22d6797c" executionId="c6f1005e-7f4f-4cfa-8348-e64763f8d43f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c2abbe74-fc25-0d70-bfbc-76b23d9a78d6" executionId="a0f4ec70-ca06-4579-abd4-b96012dcaaf4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2010359b-d2c4-5ac4-3448-d00db6c8e5f9" executionId="d90431d6-77b8-45a4-8361-333e0c54baa9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d54e6b6b-200c-bac3-d341-dd33553bdd33" executionId="4c3c2e2b-aa3a-4de3-a8c9-6653320dfa07" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d016d659-3f7a-e0b9-f9b0-cc3db052456a" executionId="34cf76d3-1ac1-4441-9569-85259a110545" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dddef45b-f1a3-3702-1af3-89bddcfad370" executionId="1e1e9be4-f129-4bf4-9ce7-b1ded7cb40fa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1eb03b39-7056-d145-8d4b-a5bd6904cb1e" executionId="365e3509-ede1-4f2f-8c41-4c0b0b73fed3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3ca5a7e0-06aa-bf9d-c1ff-2558e8962662" executionId="a11a31d7-c63e-4e05-be42-c1e0a9031755" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f2be7987-7f2a-5278-6122-e1b3eec93ac8" executionId="eca9c94d-924e-4427-8620-802bb915c78b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5b6b191d-706a-d5d0-40cd-3469187d974e" executionId="10c5367d-966d-4ffd-aafb-758f4d84c376" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1658ceb4-dced-930d-d720-119b563203ba" executionId="e712b1a9-345d-4fb6-b5bb-3bfc697d3f0e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c50a8dbc-3283-a5bf-b693-5a33c8172939" executionId="3ce8263e-26ad-42d2-9c9c-b36ad9bc09f1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bceecbd9-5bd8-3095-d5e9-2a36f29273ac" executionId="f86c16f2-47a4-4360-8d0e-f474a4189a7e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3582c9bc-4693-82ca-1ce0-3757b5d23575" executionId="1b915ace-4c19-4b38-adb9-bfc3ba3b5523" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7cdaf71d-5158-4a9b-12a8-523f194f58b8" executionId="d299f73c-795a-4499-a2c5-19a7b4465c52" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d439bf14-81d8-028a-6038-0e3ac87e5cd8" executionId="b57ec34f-0ac9-403b-b57f-b234d751e99d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="073842d4-661e-c9e9-18f6-001988157cbd" executionId="5adb4ac3-0e1a-4051-ab55-ff566dbc8d27" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="46" executed="46" passed="46" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.40]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.19]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.23]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:14.06]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>
