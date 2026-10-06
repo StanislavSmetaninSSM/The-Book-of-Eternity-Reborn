@@ -27,7 +27,9 @@ public sealed partial class GmWorkerRestartFenceTests
         {
             var p = r.GetProperty(stage);
             foreach (var key in new[] { "accepted", "proposalConsumer", "repairConsumer", "bundleExists", "inboxExists", "publicationAcknowledged" }) Assert.False(p.GetProperty(key).GetBoolean(), r.ToString());
-            Assert.True(p.GetProperty("taskPreserved").GetBoolean());
+            Assert.Equal(!queued, p.GetProperty("taskPreserved").GetBoolean());
+            Assert.Equal(queued, p.GetProperty("taskAbsent").GetBoolean());
+            if (queued) Assert.Equal(r.GetProperty("originalTaskHash").GetString(), p.GetProperty("retiredTaskHash").GetString());
             Assert.Equal("StoppedWithinScope", p.GetProperty("stop").GetString());
             Assert.True(p.GetProperty("outputsSettled").GetBoolean());
             foreach (var key in new[] { "capacity", "entries", "active" }) Assert.Equal(queued ? 0 : 1, p.GetProperty(key).GetInt32());

@@ -56,7 +56,15 @@ lease rotates generation; awaited final bundle boundary raw generation corruptio
 awaited final boundary original owner-lock replacement. Pin exact detached source bytes
 before invalidation, assert retention before/after two original reaper passes. Generation
 byte restoration is only a negative fixture probe and cannot clear PublicationIntent.
-No behavior changes yet. Source unbuilt/unrun; next only worker-restart-publication-races-linux.
+Source9708698f fresh run3executed/0PASS/3FAIL,51.7612724s,3guardianECHILD/0signals/failure/deadline.
+Two causal backend REDs: held-generation and held-owner-loss had4 exact workspace files
+at PublicationIntent, then cleanup deleted the detached source before Retire rejected;
+retained objects/capacity did not retain bytes. Owner loss also left IsUncertain false.
+Queued case observer failed reading task.json: legitimate RotateSessionGeneration
+explicitly deletes worker_tasks (existing contract). Fix its oracle to require absence
+and exact frozen original task hash in retired identity, without changing rotation.
+Evidence worker-r3-races-causal-red; independent diagnosis requested before minimal
+cleanup-authority fix. No backend behavior fix applied in this checkpoint.
 
 ### Evidence already accepted; exclude unchanged repetitions
 

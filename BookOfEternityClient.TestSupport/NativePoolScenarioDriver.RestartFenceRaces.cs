@@ -83,7 +83,9 @@ internal static partial class NativePoolScenarioDriver
                 phase = state.Entries.SingleOrDefault()?.Phase.ToString(), uncertain = execution!.IsUncertain,
                 stop = execution.Authority.StopEvidence?.State.ToString(), outputsSettled = execution.Authority.OutputsSettled,
                 workspaceExists = Directory.Exists(workspace), workspaceBytesPreserved = originalWorkspace.Count > 0 && originalWorkspace.All(p => File.Exists(p.Key) && p.Value.SequenceEqual(File.ReadAllBytes(p.Key))),
-                taskPreserved = originalTask.SequenceEqual(File.ReadAllBytes(taskPath)),
+                taskPreserved = File.Exists(taskPath) && originalTask.SequenceEqual(File.ReadAllBytes(taskPath)),
+                taskAbsent = !File.Exists(taskPath),
+                retiredTaskHash = state.Retired.Length == 1 ? GmWorkerRunRecordCodec.Decode(File.ReadAllBytes(Path.Combine(root, ".boe_runtime", "worker-runs-v1", "retired", state.Retired[0].RunId + ".json"))).Identity.TaskSha256 : null,
                 bundleExists = Directory.Exists(fs.ResolvePath("worker_proposals/worker_proposal_" + task.TaskId)),
                 inboxExists = File.Exists(fs.ResolvePath(GmWorkerBridgePool.GetProposalInboxPath(task.TaskId))),
                 publicationAcknowledged = FenceField<bool>(execution, "_publicationAcknowledged"), error = result.Status.LastError
@@ -97,7 +99,7 @@ internal static partial class NativePoolScenarioDriver
         await reaper.RunPassAsync();
         File.WriteAllText(Path.Combine(output, "fence-race.json"), JsonSerializer.Serialize(new
         { mode, publicationCalls, mutationWaits, contentionCalls, heldPhase = atHold.Phase.ToString(), taskBound = atHold.Identity.TaskSha256 == GmWorkerRunLedgerCodec.Hash(originalTask),
-            originalWorkspaceFiles = originalWorkspace.Count, beforeRetry, afterRetry = Snapshot(), workerStarts = FenceWorkerStarts(output) }));
+            originalTaskHash = GmWorkerRunLedgerCodec.Hash(originalTask), originalWorkspaceFiles = originalWorkspace.Count, beforeRetry, afterRetry = Snapshot(), workerStarts = FenceWorkerStarts(output) }));
         return 0;
     }
 }
