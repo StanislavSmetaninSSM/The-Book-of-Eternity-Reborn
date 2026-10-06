@@ -427,6 +427,27 @@ BoundarySnapshot had received null rather than the original workspace, reporting
 workspaceExists=false without checking the retained tree. Pass the live original
 execution.Identity.WorkspacePath and assert presence before/after retry. No runtime
 change; repeat only warm1 alongside the selected final regressions, not ownership5.
+Final selected regressions at `6c633a84d15f39ac1318c61d644482c014d5b30d`:
+fresh unit/integration builds,262/262 PASS,140.5696605s,15/15 complete descriptors,
+no duplicates/skips/timeout, complete owned/runtime cleanup. Actual discovered host
+count is8 (the planning estimate9 was high). Workspace47 and receipt39 after their
+two shared guards were executed once; storage42/failure54, policy13, authority13,
+consumer4, generation24, load-consumer9, lease-consumer6, default2, warm1.
+Evidence: recovery/evidence/worker-r2-regressions-green/manifest.json (192inputs93artifacts).
+All9guardians ECHILD; one intentional existing helper-loss host test required one
+independent guardian emergency signal (unconfirmed owner stayed alive/undisposable),
+zero failures/deadlines. Warm1 directly confirmed original workspace still exists
+before and after uncertainty retry; slots/lock/Uncertain/zero success remain retained.
+Aggregate audit now31manifests324unique source-bound blobs2740artifacts370gzip;
+latest400/400 distinct PASS, historical756executions691PASS65FAIL.140guardians allECHILD,
+3historical emergency signals (2initial failed root fixture +1intentional host-loss
+regression), zero failures/deadlines. No claim that every historical fixture had
+normal cleanup. Next discovery-only catalog and exact final selection plans, then
+final complete-packet review/restoration. No active test sessions after this run.
+Spec Kit PowerShell prerequisite discovery resolves the existing1553feature/tasks;
+read-only R2 consistency analysis maps the bounded task to US4/FR-012/014/015 and keeps
+real-client/GM acceptance and R3 explicitly uncompleted. Optional git analysis hook
+is already satisfied by the clean published checkpoint; no branch reinitialization.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

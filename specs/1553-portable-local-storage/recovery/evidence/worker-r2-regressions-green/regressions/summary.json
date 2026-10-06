@@ -1,0 +1,162 @@
+{
+  "Categories": [
+    "worker-run-ledger-storage-linux",
+    "worker-run-ledger-failures-linux",
+    "worker-detached-workspace",
+    "worker-quarantine-audit-receipt",
+    "worker-pool-regression-host",
+    "worker-pool-regression-policy",
+    "worker-execution-scoped-evidence",
+    "worker-consumer-execution-evidence",
+    "portable-session-generation",
+    "portable-load-lease-consumers",
+    "portable-coordinated-lease-consumers",
+    "worker-restart-default-controls",
+    "worker-restart-warm-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "6c633a84d15f39ac1318c61d644482c014d5b30d",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-coordinated-lease-consumers",
+      "Seconds": 3.7015983,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "portable-load-lease-consumers",
+      "Seconds": 4.7048927,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-session-generation",
+      "Seconds": 4.6714524,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "worker-consumer-execution-evidence",
+      "Seconds": 3.4767192,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "worker-detached-workspace",
+      "Seconds": 8.2456472,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-execution-scoped-evidence",
+      "Seconds": 3.4716089,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "worker-pool-regression-host",
+      "Seconds": 20.7256615,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-pool-regression-policy",
+      "Seconds": 3.4473363,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-quarantine-audit-receipt",
+      "Seconds": 4.4756854,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-restart-default-controls",
+      "Seconds": 3.7139847,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-restart-warm-linux",
+      "Seconds": 6.5809176,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-run-ledger-failures-linux",
+      "Seconds": 4.666522,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-run-ledger-storage-linux",
+      "Seconds": 3.8780398,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0582244,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.033005,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0441839,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 45.3654093,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 10.4635702,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0039636,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 30,
+  "WallTime": "00:02:20.5696605",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 15,
+    "CompletedDescriptors": 15,
+    "PlannedCases": 262,
+    "CompletedCases": 262,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 262,
+    "Executed": 262,
+    "Passed": 262,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
