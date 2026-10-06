@@ -1,0 +1,68 @@
+{
+  "Categories": [
+    "worker-restart-record"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "fab6c7d988b387ab810426ecbe9ed0b107710929",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "worker-restart-record",
+      "Seconds": 3.0892385,
+      "BudgetMinutes": 2,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0648157,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0273246,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0329774,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 43.9492913,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 7,
+  "WallTime": "00:00:51.2691861",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 35,
+    "CompletedCases": 35,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 35,
+    "Executed": 35,
+    "Passed": 22,
+    "Failed": 13
+  },
+  "DuplicateTests": []
+}

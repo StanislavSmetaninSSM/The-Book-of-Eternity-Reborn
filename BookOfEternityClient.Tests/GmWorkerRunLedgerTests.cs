@@ -50,7 +50,7 @@ public sealed class GmWorkerRunLedgerTests
         Assert.Equal(WorkerLedgerMutationKind.Applied, await owner.AbortBeforeLaunchAsync(entry, expectedSequence));
         var archive = Path.Combine(fixture.Target.DirectoryPath, "retired", entry.Identity.RunId + ".json");
         var bytes = File.ReadAllBytes(archive);
-        Assert.Equal(new WorkerRunRecord(1, entry.Identity, WorkerRunPhase.AbortedBeforeLaunch), GmWorkerRunRecordCodec.Decode(bytes));
+        Assert.Equal(new WorkerRunRecord(2, entry.Identity, WorkerRunPhase.AbortedBeforeLaunch), GmWorkerRunRecordCodec.Decode(bytes));
         var observed = await GmWorkerRunLedger.ObserveAsync(fixture.Target);
         Assert.Equal(WorkerRunObservationKind.Quiescent, observed.Kind);
         Assert.Equal(1, observed.EpochHighWater);
@@ -190,7 +190,7 @@ public sealed class GmWorkerRunLedgerTests
         Assert.Equal(WorkerRunObservationKind.Uncertain, observed.Kind);
         Assert.Equal(2, observed.Sequence);
         Assert.Equal(1, observed.EpochHighWater);
-        Assert.Equal(new WorkerRunRecord(1, identity, WorkerRunPhase.Prepared), Assert.Single(observed.Entries));
+        Assert.Equal(new WorkerRunRecord(2, identity, WorkerRunPhase.Prepared), Assert.Single(observed.Entries));
         await using var replacement = await GmWorkerRunLedger.OpenCoordinatorAsync(fixture.Target);
         Assert.Null(replacement);
         Assert.Equal(bytes, File.ReadAllBytes(fixture.StatePath));
@@ -211,7 +211,7 @@ public sealed class GmWorkerRunLedgerTests
     {
         using var fixture = new LedgerFixture();
         await fixture.Initialize();
-        var record = new WorkerRunRecord(1, GmWorkerRunRecordTests.Identity() with
+        var record = GmWorkerRunRecordTests.CurrentRecord(GmWorkerRunRecordTests.Identity() with
         { RootKey = fixture.Target.RootPath, WorkspacePath = fixture.Preparation().WorkspacePath }, Enum.Parse<WorkerRunPhase>(phase));
         var state = JsonNode.Parse(File.ReadAllBytes(fixture.StatePath))!.AsObject();
         state["Sequence"] = 2; state["EpochHighWater"] = 1;
@@ -252,7 +252,7 @@ public sealed class GmWorkerRunLedgerTests
         switch (mutation)
         {
             case "wrong-root": state["RootKey"] = fixture.Target.RootPath + "-other"; break;
-            case "schema": state["SchemaVersion"] = 2; break;
+            case "schema": state["SchemaVersion"] = 1; break;
             case "unknown": state["unknown"] = "private-payload"; break;
             case "missing": state.Remove("Retired"); break;
             case "duplicate": bytes = Encoding.UTF8.GetBytes(state.ToJsonString().Replace("\"Sequence\":1", "\"Sequence\":1,\"Sequence\":1")); break;
@@ -289,7 +289,7 @@ public sealed class GmWorkerRunLedgerTests
         var state = Path.Combine(fixture.Target.DirectoryPath, "state.json");
         Assert.True(File.Exists(state), "Initialization must persist an actual bounded ledger before acknowledging.");
         using var json = JsonDocument.Parse(await File.ReadAllBytesAsync(state));
-        Assert.Equal(1, json.RootElement.GetProperty("SchemaVersion").GetInt32());
+        Assert.Equal(2, json.RootElement.GetProperty("SchemaVersion").GetInt32());
         Assert.Equal(fixture.Target.RootPath, json.RootElement.GetProperty("RootKey").GetString());
         Assert.Equal(1, json.RootElement.GetProperty("Sequence").GetInt64());
         Assert.Equal(0, json.RootElement.GetProperty("EpochHighWater").GetInt64());

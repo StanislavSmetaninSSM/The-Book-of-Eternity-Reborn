@@ -203,8 +203,8 @@ public sealed class GmWorkerRunLedgerFailureTests
         Assert.Equal(before, File.ReadAllBytes(fixture.State));
         var references = Enumerable.Range(1, 4096).Select(i => new WorkerRunRetiredReference(i.ToString("x32"), i,
             i.ToString("x64"), new string('a', 64))).ToArray();
-        var full = new WorkerLedgerState(1, fixture.Target.RootPath, 4097, 4096, [], references);
-        var record = new WorkerRunRecord(1, GmWorkerRunRecordTests.Identity() with
+        var full = new WorkerLedgerState(2, fixture.Target.RootPath, 4097, 4096, [], references);
+        var record = new WorkerRunRecord(2, GmWorkerRunRecordTests.Identity() with
             { RootKey = fixture.Target.RootPath, Epoch = 4097, RunId = 4097.ToString("x32") }, WorkerRunPhase.Prepared);
         Assert.Throws<InvalidDataException>(() => GmWorkerRunLedgerCodec.AddPrepared(full, record));
     }

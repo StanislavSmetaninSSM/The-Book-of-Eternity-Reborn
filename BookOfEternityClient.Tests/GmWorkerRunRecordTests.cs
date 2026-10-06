@@ -21,16 +21,16 @@ public sealed class GmWorkerRunRecordTests
     [InlineData("Uncertain")]
     public void ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(string phase)
     {
-        var record = new WorkerRunRecord(1, Identity(), Enum.Parse<WorkerRunPhase>(phase));
+        var record = CurrentRecord(Identity(), Enum.Parse<WorkerRunPhase>(phase));
         var observation = GmWorkerRunRecordCodec.Observe(Bytes(record));
         Assert.Equal(WorkerRunObservationKind.Uncertain, observation.Kind);
         Assert.Equal(record, observation.Record);
     }
 
     [Fact]
-    public void PrelaunchAbort_IsOnlyTerminalSyntaxAndRetainsExactIdentity()
+    public void PrelaunchAbort_RetainsExactIdentityWithoutLiveAuthority()
     {
-        var record = new WorkerRunRecord(1, Identity(), WorkerRunPhase.AbortedBeforeLaunch);
+        var record = new WorkerRunRecord(2, Identity(), WorkerRunPhase.AbortedBeforeLaunch);
         var observation = GmWorkerRunRecordCodec.Observe(Bytes(record));
         Assert.Equal(WorkerRunObservationKind.Quiescent, observation.Kind);
         Assert.Equal(record, observation.Record);
@@ -49,7 +49,7 @@ public sealed class GmWorkerRunRecordTests
     [InlineData("duplicate-identity")]
     [InlineData("numeric-phase")]
     [InlineData("unknown-phase")]
-    [InlineData("started-retirement-unavailable")]
+    [InlineData("retirement-without-cleanup-facts")]
     [InlineData("missing-identity-field")]
     [InlineData("unknown-identity-field")]
     [InlineData("relative-root")]
@@ -73,7 +73,7 @@ public sealed class GmWorkerRunRecordTests
     [InlineData("relative-workspace")]
     public void InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(string mutation)
     {
-        var payload = JsonNode.Parse(Bytes(new(1, Identity(), WorkerRunPhase.Prepared)))!.AsObject();
+        var payload = JsonNode.Parse(Bytes(new(2, Identity(), WorkerRunPhase.Prepared)))!.AsObject();
         var identity = payload["Identity"]!.AsObject();
         byte[]? raw = null;
         switch (mutation)
@@ -83,14 +83,14 @@ public sealed class GmWorkerRunRecordTests
             case "invalid-utf8": raw = [0xff]; break;
             case "null": raw = "null"u8.ToArray(); break;
             case "array": raw = "[]"u8.ToArray(); break;
-            case "schema": payload["SchemaVersion"] = 2; break;
+            case "schema": payload["SchemaVersion"] = 1; break;
             case "missing-phase": payload.Remove("Phase"); break;
             case "unknown": payload["secret-payload"] = "do-not-echo"; break;
-            case "duplicate": raw = Encoding.UTF8.GetBytes(payload.ToJsonString().Replace("\"SchemaVersion\":1", "\"SchemaVersion\":1,\"SchemaVersion\":1")); break;
+            case "duplicate": raw = Encoding.UTF8.GetBytes(payload.ToJsonString().Replace("\"SchemaVersion\":2", "\"SchemaVersion\":2,\"SchemaVersion\":2")); break;
             case "duplicate-identity": raw = Encoding.UTF8.GetBytes(payload.ToJsonString().Replace("\"Epoch\":1", "\"Epoch\":1,\"Epoch\":1")); break;
             case "numeric-phase": payload["Phase"] = 0; break;
             case "unknown-phase": payload["Phase"] = "prepared"; break;
-            case "started-retirement-unavailable": payload["Phase"] = "Retired"; break;
+            case "retirement-without-cleanup-facts": payload["Phase"] = "Retired"; break;
             case "missing-identity-field": identity.Remove("WorkerId"); break;
             case "unknown-identity-field": identity["extra"] = true; break;
             case "relative-root": identity["RootKey"] = "relative"; break;
@@ -118,6 +118,10 @@ public sealed class GmWorkerRunRecordTests
         Assert.Equal(WorkerRunObservationKind.Blocked, observation.Kind);
         Assert.Null(observation.Record);
     }
+
+    internal static WorkerRunRecord CurrentRecord(WorkerRunIdentity identity, WorkerRunPhase phase) => new(2, identity, phase,
+        phase is WorkerRunPhase.PublicationIntent or WorkerRunPhase.Published
+            ? new(new("proposal_fixture", new string('b', 64), new string('c', 64), phase == WorkerRunPhase.Published), null) : null);
 
     internal static WorkerRunIdentity Identity() => new(
         Path.GetFullPath(Path.Combine(Path.GetTempPath(), "ledger-record-root")), 1,

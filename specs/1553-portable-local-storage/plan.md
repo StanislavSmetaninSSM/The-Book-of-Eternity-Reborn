@@ -56,6 +56,16 @@ does not prove the former live caller received ACK. Cleanup facts freeze conditi
 audit ID/digest. Retired syntax requires completed cleanup facts and, when publication
 exists, committed publication; unresolved PublicationIntent cannot silently retire.
 This scaffold is unrun and production codec remains schema1 until observed RED.
+Record RED at `fab6c7d988b387ab810426ecbe9ed0b107710929`:35 executed,13 causal
+FAIL (unsupported current positive shapes),22 malformed PASS,51.2691861s; fresh build,
+cleanup complete, no timeout or native launch. Evidence:
+recovery/evidence/worker-r2-record-red/manifest.json. Implemented the bounded pure
+schema2 decoder/validation and current schema2 record/state writers; migrated active
+R1 fixture syntax without adding backward fallback. Started retirement mutation is
+still unavailable: syntax alone cannot archive or mint a live permit. GREEN pending.
+Selected affected categories now: new35-record plus original44-record/42-storage/
+54-failure, because the exact codec bytes/state version changed. Do not repeat native
+process/cold pool yet; its connected path remains missing.
 The older R1/design statements below are history, superseded only as to authorization.
 No product Linux Release, main PTY, live GM, real saves, dependency installation,
 permission/network/security changes or Windows runtime qualification. GM-facing

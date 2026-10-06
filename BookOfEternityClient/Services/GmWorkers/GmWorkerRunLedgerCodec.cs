@@ -16,7 +16,7 @@ internal static class GmWorkerRunLedgerCodec
     internal const int MaximumRetiredEntries = 4096;
     private static readonly UTF8Encoding StrictUtf8 = new(false, true);
     private static readonly JsonSerializerOptions Options = new() { Converters = { new JsonStringEnumConverter() } };
-    internal static WorkerLedgerState Initial(WorkerLedgerTarget target) => new(1, target.RootPath, 1, 0, [], []);
+    internal static WorkerLedgerState Initial(WorkerLedgerTarget target) => new(2, target.RootPath, 1, 0, [], []);
 
     internal static byte[] Encode(WorkerLedgerState state)
     {
@@ -95,7 +95,7 @@ internal static class GmWorkerRunLedgerCodec
 
     private static void Validate(WorkerLedgerState state)
     {
-        if (state.SchemaVersion != 1 || !GmWorkerRunRecordCodec.CanonicalPath(state.RootKey) ||
+        if (state.SchemaVersion != 2 || !GmWorkerRunRecordCodec.CanonicalPath(state.RootKey) ||
             state.Sequence < 1 || state.EpochHighWater < 0 || state.Sequence <= state.EpochHighWater ||
             state.Entries.Length > MaximumActiveEntries || state.Retired.Length > MaximumRetiredEntries ||
             state.EpochHighWater > MaximumRetiredEntries || state.EpochHighWater != state.Entries.Length + state.Retired.Length ||
@@ -106,7 +106,7 @@ internal static class GmWorkerRunLedgerCodec
         foreach (var record in state.Entries)
         {
             _ = GmWorkerRunRecordCodec.Encode(record);
-            if (record.Phase == WorkerRunPhase.AbortedBeforeLaunch || !RootMatches(record.Identity.RootKey, state.RootKey) ||
+            if (record.Phase is WorkerRunPhase.AbortedBeforeLaunch or WorkerRunPhase.Retired || !RootMatches(record.Identity.RootKey, state.RootKey) ||
                 record.Identity.Epoch > state.EpochHighWater || !runs.Add(record.Identity.RunId) ||
                 !epochs.Add(record.Identity.Epoch) || !tasks.Add(TaskKey(record.Identity)))
                 throw GmWorkerRunRecordCodec.Invalid();

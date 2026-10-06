@@ -16,7 +16,7 @@ internal static class GmWorkerRunRecordCodec
         try
         {
             var record = Decode(bytes);
-            return new(record.Phase == WorkerRunPhase.AbortedBeforeLaunch
+            return new(record.Phase is WorkerRunPhase.AbortedBeforeLaunch or WorkerRunPhase.Retired
                 ? WorkerRunObservationKind.Quiescent : WorkerRunObservationKind.Uncertain, record);
         }
         catch (InvalidDataException) { return new(WorkerRunObservationKind.Blocked, null); }
@@ -36,14 +36,15 @@ internal static class GmWorkerRunRecordCodec
         try
         {
             using var json = JsonDocument.Parse(StrictUtf8.GetString(bytes.Span), new JsonDocumentOptions { MaxDepth = 8 });
-            var root = Object(json.RootElement, "SchemaVersion", "Identity", "Phase");
+            var root = Object(json.RootElement, "SchemaVersion", "Identity", "Phase", "Progress");
             var i = Object(root.GetProperty("Identity"), "RootKey", "Epoch", "RunId", "GenerationId",
                 "WorkerId", "TaskId", "TaskSha256", "Backend", "Scope", "HostInstanceId", "WorkspacePath");
             var record = new WorkerRunRecord(root.GetProperty("SchemaVersion").GetInt32(), new(
                 String(i, "RootKey"), i.GetProperty("Epoch").GetInt64(), String(i, "RunId"),
                 String(i, "GenerationId"), String(i, "WorkerId"), String(i, "TaskId"), String(i, "TaskSha256"),
                 EnumValue<WorkerRunBackend>(i, "Backend"), EnumValue<WorkerRunScope>(i, "Scope"),
-                String(i, "HostInstanceId"), String(i, "WorkspacePath")), EnumValue<WorkerRunPhase>(root, "Phase"));
+                String(i, "HostInstanceId"), String(i, "WorkspacePath")), EnumValue<WorkerRunPhase>(root, "Phase"),
+                ReadProgress(root.GetProperty("Progress")));
             Validate(record);
             return record;
         }
@@ -58,7 +59,7 @@ internal static class GmWorkerRunRecordCodec
     internal static void Validate(WorkerRunRecord record)
     {
         var i = record?.Identity;
-        if (record is null || i is null || record.SchemaVersion != 1 || !Enum.IsDefined(record.Phase) ||
+        if (record is null || i is null || record.SchemaVersion != 2 || !Enum.IsDefined(record.Phase) ||
             !CanonicalPath(i.RootKey) || !CanonicalPath(i.WorkspacePath) || i.Epoch < 1 ||
             !Id(i.RunId) || !Id(i.GenerationId, allowEmpty: true) || !Id(i.HostInstanceId) ||
             !Text(i.WorkerId, 1024) || !Text(i.TaskId, 1024) || !Digest(i.TaskSha256) ||
@@ -66,7 +67,54 @@ internal static class GmWorkerRunRecordCodec
                 (WorkerRunBackend.LinuxSystemd, WorkerRunScope.SystemdUnit) or
                 (WorkerRunBackend.LinuxNativeLineage, WorkerRunScope.OrdinarySamePidNamespace)))
             throw Invalid();
+        ValidateProgress(record);
     }
+
+    private static WorkerRunProgress? ReadProgress(JsonElement value)
+    {
+        if (value.ValueKind == JsonValueKind.Null) return null;
+        var progress = Object(value, "Publication", "Cleanup");
+        WorkerRunPublication? publication = null; WorkerRunCleanup? cleanup = null;
+        var p = progress.GetProperty("Publication");
+        if (p.ValueKind != JsonValueKind.Null)
+        {
+            Object(p, "ProposalId", "ProposalSha256", "ContentSha256", "Committed");
+            publication = new(String(p, "ProposalId"), String(p, "ProposalSha256"), String(p, "ContentSha256"), p.GetProperty("Committed").GetBoolean());
+        }
+        var c = progress.GetProperty("Cleanup");
+        if (c.ValueKind != JsonValueKind.Null)
+        {
+            Object(c, "RequiredAudit", "AuditEventId", "AuditSha256");
+            cleanup = new(c.GetProperty("RequiredAudit").GetBoolean(), NullableString(c, "AuditEventId"), NullableString(c, "AuditSha256"));
+        }
+        return new(publication, cleanup);
+    }
+
+    private static void ValidateProgress(WorkerRunRecord record)
+    {
+        var progress = record.Progress; var publication = progress?.Publication; var cleanup = progress?.Cleanup;
+        if (progress is { Publication: null, Cleanup: null } ||
+            publication is not null && (!Text(publication.ProposalId, 1024) || !Digest(publication.ProposalSha256) || !Digest(publication.ContentSha256)) ||
+            cleanup is not null && (cleanup.RequiredAudit
+                ? !Text(cleanup.AuditEventId, 1024) || !Digest(cleanup.AuditSha256)
+                : cleanup.AuditEventId is not null || cleanup.AuditSha256 is not null)) throw Invalid();
+        var valid = record.Phase switch
+        {
+            WorkerRunPhase.Prepared or WorkerRunPhase.LaunchIntent or WorkerRunPhase.ReleaseIntent or
+                WorkerRunPhase.Released or WorkerRunPhase.StopValidated => progress is null,
+            WorkerRunPhase.PublicationIntent => publication is { Committed: false } && cleanup is null,
+            WorkerRunPhase.Published => publication is { Committed: true } && cleanup is null,
+            WorkerRunPhase.CleanupPending => publication is null or { Committed: true },
+            WorkerRunPhase.Retired => cleanup is not null && (publication is null or { Committed: true }),
+            WorkerRunPhase.AbortedBeforeLaunch => publication is null,
+            WorkerRunPhase.Uncertain => true,
+            _ => false
+        };
+        if (!valid) throw Invalid();
+    }
+
+    private static string? NullableString(JsonElement element, string name) =>
+        element.GetProperty(name).ValueKind == JsonValueKind.Null ? null : String(element, name);
 
     internal static InvalidDataException Invalid() => new("Worker run record is invalid.");
     internal static bool Digest(string? value) => value is { Length: 64 } && value.All(c => c is >= '0' and <= '9' or >= 'a' and <= 'f');

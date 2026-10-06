@@ -135,7 +135,7 @@ internal sealed class WorkerRunLedgerPersistence : IDisposable
     {
         var next = GmWorkerRunLedgerCodec.Transition(GmWorkerRunLedgerCodec.Decode(_target, expected), identity, phase);
         PublishExact(expected, GmWorkerRunLedgerCodec.Encode(next),
-            phase == WorkerRunPhase.AbortedBeforeLaunch ? new(1, identity, phase) : null);
+            phase == WorkerRunPhase.AbortedBeforeLaunch ? new(2, identity, phase) : null);
     }
 
     // Only the original adapter can retry this frozen private plan. No new desired state is accepted.

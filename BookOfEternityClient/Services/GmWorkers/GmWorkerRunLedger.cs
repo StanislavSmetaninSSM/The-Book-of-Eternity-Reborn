@@ -170,7 +170,7 @@ internal sealed class WorkerRunLedgerCoordinator : IAsyncDisposable
             WorkerRunRecord record; WorkerLedgerState next;
             try
             {
-                record = new(1, new(_target.RootPath, checked(_state.EpochHighWater + 1), Guid.NewGuid().ToString("N"),
+                record = new(2, new(_target.RootPath, checked(_state.EpochHighWater + 1), Guid.NewGuid().ToString("N"),
                     preparation.GenerationId, preparation.WorkerId, preparation.TaskId, preparation.TaskSha256,
                     preparation.Backend, preparation.Scope, _hostInstance, preparation.WorkspacePath), WorkerRunPhase.Prepared);
                 next = GmWorkerRunLedgerCodec.AddPrepared(_state, record);
