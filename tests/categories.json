@@ -16676,6 +16676,30 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-relay-repair",
+      "responsibility": "T043 real daemon repair-shaped terminal submit, exact current control authority and original turn correlation, real ordinary GM helper completion and stale repair refusal",
+      "excludes": "No provider/live model/gameplay acceptance, unrelated old transport cohorts, systemd or Windows",
+      "changeHints": [
+        "tests/fixtures/ProductionMain/codex-gm-relay.py",
+        "tests/fixtures/ProductionMain/relay-apply-response.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmRelayRepairTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

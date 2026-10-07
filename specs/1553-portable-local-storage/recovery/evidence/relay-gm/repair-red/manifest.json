@@ -1,0 +1,86 @@
+{
+  "Base": "582fe5580206ef23aadeea15abf94409d0f42182",
+  "FalseGreen": "3/3 outer harness only; underlying2 driver failures; never repair qualification",
+  "CausalRED": {
+    "Executed": 3,
+    "Passed": 1,
+    "Failed": 2,
+    "Reason": "Actual daemon-shaped repair misclassified as turn; real and stale authority cases reach actual persistent relay",
+    "CompleteSelection": true,
+    "OwnedCleanup": true
+  },
+  "CompletionParameter": "Real current helper positive already passes; PowerShell7.5.4 ignores unsupported extra argument. Removing it aligns signature, not a claimed independent causal failure.",
+  "ModelCalls": 0,
+  "SourcePins": [
+    {
+      "Path": "tests/fixtures/ProductionMain/codex-gm-relay.py",
+      "Bytes": 8414,
+      "SHA256": "1ce9dc33b08ecbb8526be25deaf063132b7cfaf073b20cf65180defc504df97a"
+    },
+    {
+      "Path": "tests/fixtures/ProductionMain/relay-apply-response.ps1",
+      "Bytes": 2072,
+      "SHA256": "95c9d0d829253bde36e48f5ba030acb599ce98dbc0cbf10bf740219788ba8050"
+    },
+    {
+      "Path": "tests/fixtures/ProductionMain/relay-repair-checks.py",
+      "Bytes": 5623,
+      "SHA256": "f04b747c99a0c0d2557395697528e8be275a90453f3b0934901fd877ce6aaa8d"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmRelayRepairTests.cs",
+      "Bytes": 1922,
+      "SHA256": "eec9dff7e313249350d382d524bbad6fd0e900efb15c071e805665b95804d76e"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "harness-false-green/gm-relay-repair-unit-001.trx",
+      "Bytes": 5754,
+      "SHA256": "c09458288cd32835d116305456aaf434261cbab1fbcdd51e8f72408e0a2c6e36",
+      "StoredPath": "harness-false-green-gm-relay-repair-unit-001.trx.gz",
+      "StoredBytes": 1470,
+      "StoredSHA256": "5f9940b517e019cda13c2c4b16be84df7cd27a178f628ef3d5267f3b0064e972"
+    },
+    {
+      "Path": "harness-false-green/summary.json",
+      "Bytes": 1530,
+      "SHA256": "7f69ed9183985b30ef242831151cd59271ade96b82a7f9af0a8674c911b45e21",
+      "StoredPath": "harness-false-green-summary.json.gz",
+      "StoredBytes": 614,
+      "StoredSHA256": "2cd7752bab7449f080a506ab21698450519355e6bc183261755c8839f27e5ce1"
+    },
+    {
+      "Path": "harness-false-green/plan.json",
+      "Bytes": 993,
+      "SHA256": "3c4a8f481c2fd9e456032287764aa93ed44ce9b0beb196596aa68804112915c3",
+      "StoredPath": "harness-false-green-plan.json.gz",
+      "StoredBytes": 489,
+      "StoredSHA256": "a97dbdc694d93f9a9cfdf9a1dfbfa5f798af6de3a9dc4fe6bc1ff3badfb939b1"
+    },
+    {
+      "Path": "causal-red/gm-relay-repair-unit-001.trx",
+      "Bytes": 13459,
+      "SHA256": "d3983b42cb08db3e3440b7309fdd13fcc0a44fe4527b47b6aaa7e76565cd8d36",
+      "StoredPath": "causal-red-gm-relay-repair-unit-001.trx.gz",
+      "StoredBytes": 2568,
+      "StoredSHA256": "9ba3c3328b78358623a0874a94cdef33e26a3dca8df22a8b7e3266c2018d000a"
+    },
+    {
+      "Path": "causal-red/summary.json",
+      "Bytes": 1434,
+      "SHA256": "fcd714b0a8f5dff971252fe2d277f6fcb818f1b1142e254c6c29aa93c4b9f49a",
+      "StoredPath": "causal-red-summary.json.gz",
+      "StoredBytes": 604,
+      "StoredSHA256": "ea39bbd67dbd971454ffa41ba5b4dae4fbea8ad43915ff18fbc0830acf30df53"
+    },
+    {
+      "Path": "causal-red/plan.json",
+      "Bytes": 991,
+      "SHA256": "455769fc596fcd23e9a1c41603756f04fed64b3fb6a0d25c7f8fee850ef6a0a1",
+      "StoredPath": "causal-red-plan.json.gz",
+      "StoredBytes": 489,
+      "StoredSHA256": "30ed42f1e5f94b5f1962bc39e3d2d1fc20862209d4ea91d7f815b6d86d3618fd"
+    }
+  ]
+}

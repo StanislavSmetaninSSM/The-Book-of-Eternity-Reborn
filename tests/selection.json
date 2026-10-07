@@ -2,15 +2,8 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-relay-transport",
-      "reason": "New real controlled relay transport and execution-close ordering; inert only",
-      "contracts": [
-        "T043-RELAY-GM-BOUNDED"
-      ]
-    },
-    {
-      "category": "gm-relay-view-driver",
-      "reason": "Changed logical view capacity plus directly affected actual driver functions; narrow regression methods only",
+      "category": "gm-relay-repair",
+      "reason": "Causal source-review repair prefix/control path/current helper interface; actual consumer and stale repair, no rerun of unchanged21 transport",
       "contracts": [
         "T043-RELAY-GM-BOUNDED"
       ]
