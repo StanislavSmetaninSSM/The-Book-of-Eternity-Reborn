@@ -7,6 +7,9 @@ GM, Ready override, query/gate answer, prompt replay, auth/config/history copy.
 import errno, fcntl, hashlib, json, os, pty, re, select, socket, struct, subprocess, sys, termios, time, uuid
 from pathlib import Path
 
+def current_client_failure(text):
+    return any(marker in text for marker in ['Мир не смог безопасно завершить действие.', 'Ход прервался', '❌ Ошибка:'])
+
 class PhaseWait:
     """Progress can renew an idle bound, never the original work deadline."""
     def __init__(self, now, total_deadline, idle_seconds=45):
@@ -31,7 +34,8 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-phase-wait':
     except TimeoutError as e:assert 'No observable phase progress' in str(e)
     else:raise AssertionError('Idle phase had no bound')
     w=PhaseWait(0,210);w.observe(0,'preparing');w.observe(9,'snapshot');w.observe(20,'request')
-    print(json.dumps({'InertDriverChecks':3,'Passed':3,'ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
+    assert current_client_failure('❌ Ошибка: Main run metadata or original owner admission is unavailable.'), 'Current main-menu error must stop preparation before a timeout'
+    print(json.dumps({'InertDriverChecks':4,'Passed':4,'ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
 out = Path(sys.argv[1]).resolve()
 base = out / 'play'; session = base / 'game_session'; ship = session / '_runtime'
 assert session.is_dir() and ship.is_dir() and not (session / 'config.json').exists()
@@ -166,7 +170,7 @@ def preparation_phase(test,label,peer,bootstrap=False,offset=0):
             'Original participating admission unavailable','Original operation established a result but continuation is unconfirmed']):
             journal.append({'At':elapsed(),'ObservedPhase':'daemon failure before cleanup'})
             raise RuntimeError('Actual daemon bootstrap failure observed before cleanup')
-        if peer.name=='client' and any(marker in peer.text(offset) for marker in ['Мир не смог безопасно завершить действие.','Ход прервался']):
+        if peer.name=='client' and current_client_failure(peer.text(offset)):
             client_failure_offset=offset
             journal.append({'At':elapsed(),'ObservedPhase':'current client failure during '+label})
             raise RuntimeError('Actual current client preparation failure')

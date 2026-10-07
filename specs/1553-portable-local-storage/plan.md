@@ -1,3 +1,7 @@
+# Current causal scope fix GREEN, live acceptance remains open
+
+T043-CONTINUE-PENDING-PUBLICATION: component causal RED1/1 atb6742f45, minimal runtime9744d191 moves only availability existence read inside original participating admission; selected GREEN2/2, both original pins and cleanup confirmed, independent Sol source PASS. MainMenu error detection driver-only inert causal RED→GREEN. Exact deployed fresh NewGame/OpenCode continuation next after checkpoint/readback/review; no model/game turns yet. [Evidence and limits](opencode-lifecycle-diagnosis.md). Existing historical entries retain their context; no old Uncertain changes.
+
 # Current source hypothesis: console admission before recovery-capable existence read
 
 Progress-aware og8 completed actual daemon bootstrap, then Continue immediately

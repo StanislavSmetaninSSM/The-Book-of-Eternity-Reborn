@@ -1,0 +1,22 @@
+{
+  "RuntimeSourceCommit": "9744d19108ca2e7c9f8701bb5830e5a5b9a9744f",
+  "CausalRED": {
+    "Executed": 1,
+    "Failed": 1,
+    "Source": "b6742f4517d47b38b8b834f6b3652ba674e3ef59"
+  },
+  "GREEN": {
+    "Executed": 2,
+    "Passed": 2
+  },
+  "ComponentHost": "TestSupport; separate production AppContext not yet executed with fix",
+  "IndependentSourceReview": "Sol6.1/xhigh PASS at9744d191",
+  "InertDriverDistinctChecks": 4,
+  "InertNewCaptionRED": true,
+  "InertGREEN": 4,
+  "ModelRequests": 0,
+  "AcceptedGameTurns": 0,
+  "PreparationRefusal": "Comma category passed as one -File value; zero workload; corrected to selection.json",
+  "DriverSHA256": "c975d0fb09f2bcfdd8b6439d7262d9ca75fadac08084645b7bb5cea213bea0c1",
+  "EvidenceReview": "Pending"
+}
