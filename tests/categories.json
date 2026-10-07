@@ -2,6 +2,56 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-main-systemd-controlled-terminal",
+      "responsibility": "S1 real held PTY/pidfd + original coordinator/Bridge with injected bus/cgroup; no live systemd calls",
+      "excludes": "No S2/S3 manager qualification, public SystemdUser/Auto, worker activation, live GM/provider or native Windows claims.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/Systemd*",
+        "BookOfEternityClient/Services/GmRuntime/OwnedTerminalSessionFactory.cs",
+        "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainSystemdControlledTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-main-systemd-contract",
+      "responsibility": "S1 transient scope exact sd-bus request/identity/job/cgroup semantics and closed public activation",
+      "excludes": "No S2/S3 manager qualification, public SystemdUser/Auto, worker activation, live GM/provider or native Windows claims.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/Systemd*",
+        "BookOfEternityClient/Services/GmRuntime/OwnedTerminalSessionFactory.cs",
+        "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainSystemdContractTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-mini-panel-refusal",
       "responsibility": "Unknown original frame panel refuses even without configured blocked words and with unchanged placeholder/footer",
       "excludes": "No post-model pane classifier, provider or broad cohort",
@@ -504,7 +554,7 @@
     },
     {
       "id": "daren-standalone-browser-dispatch",
-      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent × commit/rollback), no broader browser cohort.",
+      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent \u00d7 commit/rollback), no broader browser cohort.",
       "excludes": "No stub profile consumer, gameplay/economy/tier/text/model changes, live console/provider/saves/browser or Windows/fullgame qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",

@@ -60,4 +60,13 @@ internal static class OwnedTerminalSessionFactory
         try { return new(new LinuxOwnedTerminalSession(owner),owner); }
         catch (Exception ex) { throw new OwnedTerminalStartException(new PartialNativeTerminalSession(owner),ex); }
     }
+    internal static async Task<PreparedTerminal> PrepareSystemdControlledAsync(NeutralTerminalLaunch launch, SystemdControlledFixture fixture, string runId, CancellationToken token, Action<int>? held=null)
+    {
+        var prepared=await PrepareNeutralAsync(launch,runId,token,held);
+        try {
+            // Baseline reaches an actual held child, not an unavailable selector.
+            await SystemdUserBus.AttachOriginalAsync(fixture,null!,token);
+            return prepared;
+        } catch(Exception ex) { throw new OwnedTerminalStartException(prepared.Session,ex); }
+    }
 }

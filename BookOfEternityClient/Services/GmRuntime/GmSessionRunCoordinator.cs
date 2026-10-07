@@ -137,6 +137,8 @@ internal sealed partial class GmSessionRunCoordinator
         ReferenceEquals(exit.Owner,this) && ReferenceEquals(exit.Terminal,_terminal) &&
         _terminal.RootExited.IsCompletedSuccessfully && !_terminal.AuthorityLost.IsCompleted && !_uncertain && !_persistence.HasDebt;
     internal Task<IOwnedTerminalSession> LaunchNeutralAsync(NeutralTerminalLaunch launch,CancellationToken token,Action<int>? held=null)=>LaunchAsync((id)=>OwnedTerminalSessionFactory.PrepareNeutralAsync(launch,id,token,held),token);
+    internal Task<IOwnedTerminalSession> LaunchSystemdControlledAsync(NeutralTerminalLaunch launch,SystemdControlledFixture fixture,CancellationToken token,Action<int>? held=null)=>
+        LaunchAsync(id=>OwnedTerminalSessionFactory.PrepareSystemdControlledAsync(launch,fixture,id,token,held),token);
     internal Task<IOwnedTerminalSession> LaunchProductionAsync(ProductionMainConfiguration configuration,CancellationToken token,Action<int>? held=null)=>
         LaunchAsync(id=>OwnedTerminalSessionFactory.PrepareProductionAsync(new(this,configuration),id,token,held),token);
     internal Task<IOwnedTerminalSession> LaunchProductionBoundAsync(ProductionMainConfiguration configuration,string generation,CancellationToken token,Action<int>? held=null)=>

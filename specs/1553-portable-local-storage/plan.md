@@ -1,3 +1,24 @@
+# Current T041-SYSTEMD-MAIN-S1 execution WIP
+
+Owner accepted0868b805 and authorizes S1 only. Original held PTY/pidfd scope
+adapter + private release seam; same coordinator/schema1/Bridge. Public
+SystemdUser/Auto remain closed; no live bus/cgroup writes, setup or model calls.
+Two new narrow categories gm-main-systemd-contract and
+ gm-main-systemd-controlled-terminal. Initial compilable missing-contract
+baseline reaches actual held neutral child, then refuses absent scope attachment;
+contract codec baseline omits required transient properties. RED not yet run.
+Use controlled transport/cgroup observations; actual native child/guardian is
+physical cleanup independent of logical scope proof. No GM prompt/example
+updates: client-owned backend adapter changes no gameplay/authored contract.
+SDK10.0.401 / runtime8.0.31 / PowerShell7.5.4 verified. Existing bin/obj moved
+preservingly to /tmp/systemd-s1/build-cache with project-path symlinks to free
+checkout disk; source unaffected. Spec Kit prerequisites confirmed current
+feature/tasks; equivalent bounded analyze/implement (S1 only), no template reset.
+Execution ledger: test contract baseline + connected held baseline RED; then
+original adapter GREEN/failure cases; affected exact NativeLineage/Windows
+source/Bridge cases; catalog discovery0; independent Sol source/evidence/metadata;
+normal checkpoints/readback; fresh GitHub-only restoration. Stop before S2/S3.
+
 # Current primary systemd-user main design continuation
 
 Accepted bounded relaydc1724af is complete; no further model requests/replay.

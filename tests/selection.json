@@ -2,10 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-relay-driver-acceptance",
-      "reason": "Actual live-r2 JSONL BOM caused driver false-negative and stale cleanup flag; exact driver AST+real trace prove corrected qualification, no oldcohorts",
+      "category": "gm-main-systemd-contract",
+      "reason": "S1 transient scope exact sd-bus request/identity/job/cgroup semantics and closed public activation",
       "contracts": [
-        "T043-RELAY-GM-BOUNDED"
+        "T041-SYSTEMD-MAIN-S1",
+        "#1553"
+      ]
+    },
+    {
+      "category": "gm-main-systemd-controlled-terminal",
+      "reason": "S1 real held PTY/pidfd + original coordinator/Bridge with injected bus/cgroup; no live systemd calls",
+      "contracts": [
+        "T041-SYSTEMD-MAIN-S1",
+        "#1553"
       ]
     }
   ]
