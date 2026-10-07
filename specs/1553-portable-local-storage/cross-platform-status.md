@@ -16,6 +16,9 @@ checkpoint. Recommended next: T050-CLIPBOARD-LINUX; required systemd primary,
 console audio/platform helpers, production workers, Q1/Q2 and platform/live
 qualification remain separate. Metadata actor for `5be3aa31` remains unknown; no
 parallel writer is proved and no repository conflict is observed. No history rewrite.
+Independent actual Sol6.1/xhigh PASS at `c38a5a5bfa0eb2fcb2b14bf927dc9bea4256913e`,
+44 source pins and 29 local links verified. Final carrier remote/readback and fresh
+GitHub-only source restoration are exact-tip writer closure, with no runtime execution.
 
 ## Accepted bounded standalone Daren Linux
 

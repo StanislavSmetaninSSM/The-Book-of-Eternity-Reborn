@@ -1,6 +1,6 @@
 {
   "Task": "T050-SOURCE-INVENTORY-AFTER-DAREN",
-  "Status": "Source inventory WIP; independent review and ordinary publication pending",
+  "Status": "Bounded source inventory independently reviewed PASS; next implementation not started; exact-tip publication/restoration in writer closure",
   "Issue": 1553,
   "AcceptedBase": "d73e2cdf43d63cbda3e9cda033834d0e902ae734",
   "IncomingRemoteSha": "d73e2cdf43d63cbda3e9cda033834d0e902ae734",
@@ -322,12 +322,48 @@
   "IndependentReview": {
     "Model": "gpt-6.1-sol",
     "Reasoning": "xhigh",
-    "Status": "pending"
+    "Agent": "/root/roadmap_after_daren_review",
+    "Verdict": "PASS",
+    "ReviewedCommit": "c38a5a5bfa0eb2fcb2b14bf927dc9bea4256913e",
+    "BlockingFindings": [],
+    "VerifiedSourcePins": 44,
+    "VerifiedNewLocalLinks": 29,
+    "ResolvedFinding": "Ordinary turn GetPlayerInput first uses TextComposer, swallowing clipboard failure before late error fallback; actual consumer + single read criteria corrected",
+    "ReviewerExecution": {
+      "Writes": 0,
+      "Network": 0,
+      "Tests": 0,
+      "Builds": 0,
+      "Probes": 0,
+      "CliLaunches": 0,
+      "Services": 0,
+      "Discovery": 0
+    }
   },
-  "FinalPublicationPolicy": "Normal non-force push; exact remote SHA, independent GitHub changed-file byte readback, clean state; final self-SHA proof in writer response/own host receipt.",
+  "FinalPublicationPolicy": "Normal non-force push; exact remote SHA, independent GitHub changed-file byte readback, clean state and fresh GitHub-only exact-tip source restore per workflow. No binaries/builds/CLI/services/tests executed. Final self-SHA proof in writer response/own host receipt.",
   "ResolvedReviewFinding": {
     "Source": "GetPlayerInput3974–3984 calls TextComposer before late clipboard fallback",
     "Correction": "Both actual turn and Explorer composer consume clipboard failure as empty; next slice must cover real entrypoints and one read per gesture",
     "RuntimeAndTestsChanged": false
-  }
+  },
+  "PublishedCandidates": [
+    {
+      "Commit": "92187ce04293362fdf72a1676fd5c8451e5872f2",
+      "RemoteMatched": true,
+      "ChangedFilesByteReadback": 6,
+      "Clean": true
+    },
+    {
+      "Commit": "daa4475572dd6d1e281209750fcfe7b4e5590a54",
+      "RemoteMatched": true,
+      "ChangedFilesByteReadback": 2,
+      "Clean": true
+    },
+    {
+      "Commit": "c38a5a5bfa0eb2fcb2b14bf927dc9bea4256913e",
+      "RemoteMatched": true,
+      "ChangedFilesByteReadback": 1,
+      "Clean": true
+    }
+  ]
 }

@@ -116,7 +116,13 @@ d73, clean tree на входе, нулевой production/test/catalog delta, �
 
 Spec Kit cross-artifact consistency проверяется вручную по existing artifacts/constitution;
 прежние prerequisites переиспользованы, новые CLI/hooks/test discovery не исполнялись.
-Superpowers/bridge применены к source-backed inventory, отдельному read-only Sol6.1/xhigh
-review и проверенной ordinary публикации. После review здесь будет сохранён его точный
-reviewed SHA и verdict; exact final remote SHA/byte readback — в writer handoff без
-самоссылочного commit. Остановка перед следующим code block.
+Superpowers/bridge применены к source-backed inventory и ordinary публикации.
+Независимый `/root/roadmap_after_daren_review`, **Sol6.1/xhigh PASS** на
+`c38a5a5bfa0eb2fcb2b14bf927dc9bea4256913e`: 44 source pins, 29 links, ordinary
+Git provenance и границы qualification сверены. Исправлена одна содержательная
+неточность: actual turn проходит через composer до позднего clipboard fallback.
+Review не выполнял writes/network/CLI/services/builds/tests/probes/discovery.
+Финальный carrier содержит только verdict/task/status metadata. Exact final remote
+SHA/byte readback и fresh GitHub-only source restore — в writer handoff/own host proof
+без самоссылочного commit. Это восстановление исходников, не новая сборка/qualification.
+Остановка перед следующим code block.
