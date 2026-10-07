@@ -1,5 +1,5 @@
 {
-  "Outcome": "Actual r3 Success; awaiting independent final evidence/metadata review",
+  "Outcome": "Qualified bounded r3 live model turn and original lifecycle; independent Sol source/evidence/metadata PASS",
   "DriverSourceCommit": "1aad7e6faa87fcd5ee855acf9ff88ac1ee152288",
   "RuntimeSourceCommit": "e42b7050cdf0049603b3aa3bc4ffd8e26dda9673",
   "LiveModelResponseGenerated": true,
@@ -397,5 +397,21 @@
       "StoredSHA256": "9af05417470d8bcefd7703ae099352a49a6073d316c7558b3db9e472167869f2"
     }
   ],
-  "HistoricalLimits": "r1 remains Uncertain; r2 actually applied1 but raw driver counter0/client cleanup unqualified; no replay or outcome rewriting. These are distinct isolated NewGames, not two consecutive campaign turns."
+  "HistoricalLimits": "r1 remains Uncertain; r2 actually applied1 but raw driver counter0/client cleanup unqualified; no replay or outcome rewriting. These are distinct isolated NewGames, not two consecutive campaign turns.",
+  "IndependentFinalReview": {
+    "Verdict": "PASS",
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "AgentTask": "/root/relay_final_evidence_review",
+    "ReviewedBase": "1aad7e6faa87fcd5ee855acf9ff88ac1ee152288",
+    "ReviewedCheckpoint": "259fc8e58d25833ce54811505fb2d25b674a1459",
+    "ActionableFindings": 0,
+    "RequiredTestReruns": false,
+    "ArtifactsVerified": 36,
+    "CurrentSourcePinsVerified": 7,
+    "ShippedFilesVerified": 678,
+    "ShippedBytesVerified": 99051904,
+    "Execution": "Read-only; no edits, tests, CLI/provider calls",
+    "Scope": "Final source-delta, r3 application/original lifecycle evidence and handoff metadata; unchanged source has prior independent source reviews"
+  }
 }

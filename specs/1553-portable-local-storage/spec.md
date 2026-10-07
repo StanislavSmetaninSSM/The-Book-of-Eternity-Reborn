@@ -2,8 +2,9 @@
 
 Owner-authorized T043 relay r3 collected after orchestration interruption: one real
 model-generated game action accepted/applied in isolated ordinary NewGame, with
-original M1/fence/T042 and complete original stop/I/O. Final independent review
-and GitHub restoration pending. [Handoff](relay-gm-bounded-handoff.md). This is a
+original M1/fence/T042 and complete original stop/I/O. Independent final Sol
+source/evidence/metadata PASS259fc8e5; final carrier publication/readback and
+exact-tip GitHub restoration required before delivery. [Handoff](relay-gm-bounded-handoff.md). This is a
 controlled neutral CLI transport, not installed Codex/OpenCode compatibility;
 systemd remains deferred. Earlier entries below retain their historical scope.
 

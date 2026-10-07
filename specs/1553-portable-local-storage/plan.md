@@ -3,8 +3,9 @@
 Collected existing r3 without restart/replay: actual model response applied and
 recorded in realm story, original input qualified, queue closed, scoped stop and
 same-identity durable Stopped, all peers exit0/EOF/termios, guardian ECHILD with0
-emergency. Driver BOM fix6/6 previously reviewed; final evidence/metadata review
-and final-tip GitHub restoration pending. [Handoff](relay-gm-bounded-handoff.md)
+emergency. Driver BOM fix6/6 previously reviewed; final Sol source/evidence/
+metadata PASS259fc8e5. Final carrier publication/readback and fresh exact-tip
+GitHub restoration required before delivery. [Handoff](relay-gm-bounded-handoff.md)
 and [exact evidence](recovery/evidence/relay-gm/live-r3/manifest.json).
 Prior OpenCode/Codex failures remain unchanged and do not describe relay r3.
 
