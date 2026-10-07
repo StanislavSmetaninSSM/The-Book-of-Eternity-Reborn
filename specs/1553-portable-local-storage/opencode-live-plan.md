@@ -139,3 +139,14 @@ runtime observation, if qualified, must use existing .NET8/PowerShell7 prerequis
 No CLI/gameplay/controller bypass, private session/auth/config read, new grant,
 main profile/model change or systemd setup. Source plan and first probe receive
 their own checkpoint/readback; runtime and new tests are still unimplemented.
+
+Independent actual Sol6.1/xhigh design PASS at239baf410d93725ff7c043c23e2de21f8dcf5948:
+actual `runtime.lifecycle.ts:257` callback chain confirmed; zero-submit probe in
+scope, source gate before execution. First fixture candidate adds optional
+`--observe-draft` to the existing reviewed driver plus an actual-file read-only
+observer. Both remain unexecuted at this checkpoint. Observation failure now
+prevents overall Success even if original cleanup succeeds; cleanup remains a
+separate fact. No runtime/profile/parser/tests/catalog changes.
+Independent installation/startup evidence PASS at09e44350:13+9 artifacts,
+official platform/wrapper archives and installed bytes,1020 shipped pins, exact
+original stop/ACK/guardian closure; catalog listing is not provider acceptance.

@@ -4,6 +4,7 @@ Arguments: fresh owned output directory, already-published shipped package.
 No provider prompt, terminal-query response, confirmation or readiness override.
 """
 import errno
+import base64
 import fcntl
 import hashlib
 import json
@@ -20,6 +21,8 @@ import time
 import uuid
 
 out, ship = (Path(v).resolve() for v in sys.argv[1:3])
+draft_mode = len(sys.argv) == 4 and sys.argv[3] == '--observe-draft'
+assert len(sys.argv) == 3 or draft_mode
 install = Path('/workspace/qualification-1553-opencode-install')
 binary = install / 'package/node_modules/opencode-linux-x64-baseline/bin/opencode'
 assert hashlib.sha256(binary.read_bytes()).hexdigest() == '77b2cfe4b97df6f15c3673b22100b9f79c711f25ecb9bf513bb82526b15d24fa'
@@ -47,6 +50,13 @@ for name in ['OPENCODE_DISABLE_PROJECT_CONFIG', 'OPENCODE_DISABLE_AUTOUPDATE',
 env.update(NPM_CONFIG_USERCONFIG=str(install / 'empty-user.npmrc'),
            NPM_CONFIG_GLOBALCONFIG=str(install / 'empty-global.npmrc'),
            NPM_CONFIG_CACHE=str(out / 'npm-cache'), NPM_CONFIG_IGNORE_SCRIPTS='true')
+draft = '\n'.join(f'Synthetic draft line {n:02}: Кириллица café; UpdateGuardians is draft text.' for n in range(60))
+if draft_mode:
+    observer_source = Path(__file__).with_name('read-only-draft-observer.py')
+    observer = out / 'draft-observer'
+    assert ' ' not in str(observer)
+    observer.write_bytes(observer_source.read_bytes()); observer.chmod(0o700)
+    env.update(VISUAL=str(observer), EDITOR=str(observer), BOE_DRAFT_PROBE_ROOT=str(out))
 record_path = root / '.boe_runtime/gm-runs/main.json'
 socket_path = str(out / 'tmp' / ('CoreFxPipe_' + pipe))
 master, slave = pty.openpty()
@@ -59,6 +69,9 @@ result = {'ModelPromptsSent': 0, 'KeyboardBytes': 0, 'TerminalQueryAnswers': 0,
           'ConfiguredCommand': command, 'ConfiguredModel': 'opencode/ling-3.1-flash-free',
           'InheritedTERM': os.environ['TERM'], 'NoNeutralPackage': True,
           'Scope': 'ordinary-same-namespace-lineage', 'LogicalLifecycleVerified': False}
+result['DraftProbeMode'] = draft_mode
+result['ManualRpcInputBytes'] = 0
+draft_pasted = editor_requested = False
 
 def elapsed():
     return time.monotonic() - started
@@ -76,7 +89,7 @@ def receive(delay=.02):
         if len(captured) > 524288: raise RuntimeError('Bounded startup output exceeded512KiB')
 
 def rpc(payload, seconds):
-    assert payload['command'] in ['status', 'diagnostics', 'shutdown']
+    assert payload['command'] in ['status', 'diagnostics', 'shutdown'] or (draft_mode and payload['command'] == 'addtext')
     entry = {'AtSeconds': round(elapsed(), 3), 'Request': payload, 'Sent': False}; journal.append(entry)
     with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as peer:
         peer.settimeout(.5); peer.connect(socket_path)
@@ -119,9 +132,38 @@ try:
                 running_identity = record['Identity']; identity = {k[0].lower() + k[1:]: v for k, v in running_identity.items()}
                 identity['backend'] = 2; result['OriginalRunningRecord'] = record; result['OriginalRunningStatus'] = status
         if process.poll() is not None: break
+        if draft_mode and identity is not None and elapsed() >= 6:
+            # Presentation gate is diagnostic-only. It never grants readiness.
+            text = captured.decode('utf-8', errors='replace')
+            assert 'Ask anything...' in text and 'BUILD' in text and 'ctrl+p' in text
+            assert not any(gate in text.lower() for gate in ['permission required', 'allow once', 'allow always', 'sign in', 'api key', 'continue anyway', 'trust this'])
+            if not draft_pasted:
+                body = '\x1b[200~' + draft + '\x1b[201~'
+                draft_pasted = True # mark before send: no ambiguous replay
+                response = rpc({'command': 'addtext', 'text': body}, 1)
+                assert response['ok'] and not response['status']['ready']
+                result['ManualRpcInputBytes'] += len(body.encode())
+                result['PasteAcknowledgedAtSeconds'] = round(elapsed(), 3)
+            elif not editor_requested and elapsed() >= result['PasteAcknowledgedAtSeconds'] + .8:
+                editor_requested = True # one standard editor gesture, no Enter
+                response = rpc({'command': 'addtext', 'text': '\x18e'}, 1)
+                assert response['ok'] and not response['status']['ready']
+                result['ManualRpcInputBytes'] += 2
+                result['EditorGestureAcknowledgedAtSeconds'] = round(elapsed(), 3)
     assert identity is not None, 'No original Running acknowledgement; do not mint a replacement owner'
     result['StartupStatus'] = rpc({'command': 'status'}, 2)
     result['StartupDiagnostics'] = rpc({'command': 'diagnostics'}, 2)
+    if draft_mode:
+        receipt = json.loads((out / 'draft-observer.json').read_bytes())
+        actual = base64.b64decode(receipt['ActualDraftBase64'], validate=True)
+        assert actual == draft.encode(), 'Actual CLI-created draft differs; never submit'
+        assert not Path(receipt['ActualArgvFile']).exists(), 'CLI has not completed its editor-file removal'
+        assert captured.count(b'BOE_READ_ONLY_DRAFT_OBSERVED') == 1
+        result['ActualDraftMatched'] = True
+        result['ActualDraftBytes'] = len(actual)
+        result['ActualDraftSHA256'] = hashlib.sha256(actual).hexdigest()
+        result['CliRemovedEditorFile'] = True
+        result['EditorObserverInvocations'] = 1
     result['ObservationEndedAtSeconds'] = round(elapsed(), 3)
 except Exception as ex:
     result['ObservationFailure'] = type(ex).__name__ + ': ' + str(ex)
@@ -156,7 +198,8 @@ finally:
     for fd in [slave, master]:
         if fd >= 0: os.close(fd)
     result['ForegroundDescriptorsClosed'] = True
-    result['Success'] = result['LogicalLifecycleVerified'] and result['ForegroundTermiosRestored']
+    result['Success'] = (result['LogicalLifecycleVerified'] and result['ForegroundTermiosRestored']
+                         and 'ObservationFailure' not in result and 'CleanupFailure' not in result)
     result['ElapsedSeconds'] = round(elapsed(), 3); result['CapturedBytes'] = len(captured)
     (out / 'startup.raw').write_bytes(captured)
     (out / 'startup-readable.txt').write_text(captured.decode('utf-8', errors='replace').replace('\x1b', '<ESC>'))
