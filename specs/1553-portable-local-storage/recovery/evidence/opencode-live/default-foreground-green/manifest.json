@@ -1,0 +1,127 @@
+{
+  "SourceCommit": "82a6ef70d9c7a507438cc2bd9bbfbe3f6a0eb634",
+  "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json",
+  "Executed": 5,
+  "Passed": 5,
+  "Failed": 0,
+  "Complete": true,
+  "CleanupComplete": true,
+  "SourceReview": "Independent Sol6.1/xhigh SOURCE PASS at82a6ef70",
+  "Scope": "Component only: no CLI/provider/game acceptance",
+  "SourcePins": [
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.MiniPresentation.cs",
+      "Bytes": 6039,
+      "SHA256": "9a4b02645433732c059f1a5ffb9329827999a53f39fff56cd7b577437ae97b66"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/SynchronizedTerminalScreen.cs",
+      "Bytes": 10650,
+      "SHA256": "4129fffc3d2d5f28354ecfea2c2d544ac205480deb4a8ae2eea7833a24d7bd00"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
+      "Bytes": 20668,
+      "SHA256": "92982796e3573122cbd2b8045835b6090b5564010ebd59043a1fb075a109f55e"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.DraftObservation.cs",
+      "Bytes": 8337,
+      "SHA256": "e0ac9791df84c6ad58cf9a18c1133ba421415b821a2f25f16733a6def4bf8bf1"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmMiniDefaultForegroundTests.cs",
+      "Bytes": 3235,
+      "SHA256": "63877d432b283db4f2b79fba711875838b43227e67895ac5787af8fb9f4b87ac"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmConnectedMiniTransactionTests.cs",
+      "Bytes": 14390,
+      "SHA256": "6b709edc00e276ba262aad68e5323f98b217835dfd0b6718404bae976ca02519"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1176248,
+      "SHA256": "8e7fc6242e7d3510b9c19fc297d7300cf5c3824dbf4a4e8b41eea32ad29e0aba"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 402,
+      "SHA256": "634c84deb0ecce5a4fc60bf9feee494fe25bceb3808bf4f4f712cb5cec3698bf"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "green/Build-unit.log",
+      "Bytes": 27708,
+      "SHA256": "8ff8ec79df11b92512390b516d062565f0f1b41bbdc7e8c97d5dc559d968a948",
+      "StoredPath": "green-Build-unit.log.gz",
+      "StoredBytes": 2111,
+      "StoredSHA256": "6e3c90de0fc15c2c79cdc85d2407f06e4b2ea841a51a8faceff93ecb75140b8a"
+    },
+    {
+      "Path": "green/dotnet-test.log",
+      "Bytes": 1634259,
+      "SHA256": "8ec930b17f7b602fddea647a9c6c1b45df29e44bf0dd54a6d02a81337574fe48",
+      "StoredPath": "green-dotnet-test.log.gz",
+      "StoredBytes": 180240,
+      "StoredSHA256": "95c5bc4cf58ff733cd1338cc433306fa0ba8b67cb5fd6869d71bf944b5b1469c"
+    },
+    {
+      "Path": "green/gm-mini-default-foreground-unit-001.trx",
+      "Bytes": 8796,
+      "SHA256": "b942d596de12775c84e9ae2b40b31b944d3758291ec83e84f4c8cbe67f75cfa1",
+      "StoredPath": "green-gm-mini-default-foreground-unit-001.trx.gz",
+      "StoredBytes": 1802,
+      "StoredSHA256": "bb2dbf15f0b878c14780a867a325f9f5b4a2dee775a7ef8404f61a20bdd2a403"
+    },
+    {
+      "Path": "green/plan.json",
+      "Bytes": 2777,
+      "SHA256": "06f9ae83dd5105303ebd951ad5d25db2c9415ed3e52bd146f96b927b922ade67",
+      "StoredPath": "green-plan.json.gz",
+      "StoredBytes": 818,
+      "StoredSHA256": "98359b57a927795086242b668d557df7f3453f411500ae16e32c49fc608fa12c"
+    },
+    {
+      "Path": "green/summary.json",
+      "Bytes": 1909,
+      "SHA256": "6ded8730404d3ddda07515119b538810addd9d9b6ce3e50e636df86c3afe88e7",
+      "StoredPath": "green-summary.json.gz",
+      "StoredBytes": 805,
+      "StoredSHA256": "b6cbb6b58f7557e4224117687675fc9cb12ba01475a74151639dad4a2d74e6dd"
+    },
+    {
+      "Path": "red-plan/Build-unit.log",
+      "Bytes": 27708,
+      "SHA256": "636b6f610d58ffd9cf96ca8a25c896fa4d2771923507bc2dd2cbcc715d073de0",
+      "StoredPath": "red-plan-Build-unit.log.gz",
+      "StoredBytes": 2119,
+      "StoredSHA256": "b742036ddc09448c19f287e9bbd9fc6eec676efdbd65433c73a07e0bf0549b74"
+    },
+    {
+      "Path": "red-plan/dotnet-test.log",
+      "Bytes": 1633397,
+      "SHA256": "4d52a5c428bd2ead84c5174fac70a9740c7ace42ed05981e33435923f6d983df",
+      "StoredPath": "red-plan-dotnet-test.log.gz",
+      "StoredBytes": 179983,
+      "StoredSHA256": "e401bb6c3bf432023a2322124a2d69f5503e589d2039ddb9c2a7a798214b5bae"
+    },
+    {
+      "Path": "red-plan/plan.json",
+      "Bytes": 2778,
+      "SHA256": "e4df90417a62ec553d0a16cfd9ead1b2f37adca99425a3117e7d5c978c9bc856",
+      "StoredPath": "red-plan-plan.json.gz",
+      "StoredBytes": 820,
+      "StoredSHA256": "3634242c2d8418c7816dda5115f43e63e4ca2cacb02398448737d3020282ffa2"
+    },
+    {
+      "Path": "red-plan/summary.json",
+      "Bytes": 1819,
+      "SHA256": "d797fb79871e47ff931e45553e253307ee965392164952e2ffc6cfc25f05b138",
+      "StoredPath": "red-plan-summary.json.gz",
+      "StoredBytes": 803,
+      "StoredSHA256": "964018284a2b256c108651e128ffda3060cdbee0c1045212165472fbbc48a745"
+    }
+  ]
+}
