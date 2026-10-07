@@ -1,5 +1,16 @@
 # Implementation Plan: Trusted local storage and cross-platform runtime
 
+## Current T050 clipboard execution checkpoint
+
+[Bounded plan](clipboard-linux-plan.md) · [Handoff](clipboard-linux-handoff.md) ·
+[Receipts](recovery/clipboard-linux-qualification.json). Runtime/test source
+`b5255b1fb96e405eb1ed195c6437b16ad5788246` has50 distinct narrow PASS (38new+12affected),
+valid catalog discovery with0 executed tests, and separate actual Sol6.1/xhigh
+design/source PASS. Pending independent evidence/metadata and exact-tip GitHub-only
+restore precede closure. No real clipboard/desktop/native Windows/GM/systemd/audio
+or other block qualification; no product model/bridge policy change. The earlier
+recommended clipboard queue below is historical; remaining roadmap is unchanged.
+
 ## Current queue after accepted Daren — source-only checkpoint
 
 Accepted base `d73e2cdf43d63cbda3e9cda033834d0e902ae734`.

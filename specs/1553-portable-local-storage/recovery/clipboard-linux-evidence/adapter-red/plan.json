@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "clipboard-linux-adapter"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "16871c3ea2737ed9f2844656823a49349eb03f90",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 5.1152695,
+  "Descriptors": [
+    {
+      "Name": "clipboard-linux-adapter-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "clipboard-linux-adapter",
+      "Categories": [
+        "clipboard-linux-adapter"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_ReadsSyntheticUnicodeAndParagraphs",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_ReadsSyntheticUnicodeAndParagraphs",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

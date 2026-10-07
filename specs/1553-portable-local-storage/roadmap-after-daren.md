@@ -1,5 +1,13 @@
 # Остаток переноса после принятого Daren
 
+Текущая clipboard delta: runtime/tests `b5255b1fb96e405eb1ed195c6437b16ad5788246`
+дают50 distinct scoped PASS через синтетические reader bytes и реальные console
+consumers; [handoff](clipboard-linux-handoff.md) / [receipts](recovery/clipboard-linux-qualification.json).
+Independent design/source Sol PASS; evidence/metadata/restore closure ещё pending.
+Положительная desktop/Windows qualification и полный T050 открыты. Таблица ниже
+остаётся принятым source-only audit базы Daren, до этой runtime delta; остальные
+границы и provenance не переаудировались.
+
 2026-10-07 UTC · [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553) · `T050-SOURCE-INVENTORY-AFTER-DAREN`.
 База: `d73e2cdf43d63cbda3e9cda033834d0e902ae734`, принята владельцем.
 Это source/inventory audit, не новая runtime qualification: **0 запусков CLI,

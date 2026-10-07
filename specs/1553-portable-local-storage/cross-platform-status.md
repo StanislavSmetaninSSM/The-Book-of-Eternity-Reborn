@@ -1,5 +1,15 @@
 # Cross-platform: текущий статус и восстановление
 
+## T050 clipboard — synthetic execution checkpoint
+
+Runtime/test `b5255b1fb96e405eb1ed195c6437b16ad5788246`:50 distinct PASS
+(38new+12affected), valid catalog/0 executed, independent actual Sol design/source
+PASS. [Handoff](clipboard-linux-handoff.md) / [qualification](recovery/clipboard-linux-qualification.json)
+record source pins, causal REDs, corrected test-assertion failure and original-root
+cleanup/debt. Evidence/metadata/restore closure pending. Actual desktop/native
+Windows, full T050, required systemd primary and remaining roadmap are open;
+historical source-only/next labels below keep their original checkpoint scope.
+
 2026-10-07 · [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553) · ветка `codex/1553-load-filesystem`.
 Этот документ — точка входа после потери контекста. Исторические «next» в старых
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,

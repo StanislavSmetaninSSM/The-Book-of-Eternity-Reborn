@@ -84,19 +84,19 @@ read-only environment inventory; no user buffer command ran.
 
 ## Bounded RED→GREEN sequence
 
-- [ ] Design checkpoint ordinary commit/push + remote/readback; independent Sol review.
-- [ ] First RED: new Linux service fixture reaches real TryReadText and fails old
+- [x] Design checkpoint ordinary commit/push + remote/readback; independent Sol review.
+- [x] First RED: new Linux service fixture reaches real TryReadText and fails old
   Windows-only refusal; real GetPlayerInput counts two reads for literal shortcut,
   and real Ask/composer shows missing failure/premature clipboard acceptance.
   Preparation failures are separate; do not treat compilation failure as RED.
-- [ ] Implement minimal adapter/result/runner and consumers, then GREEN same cases;
+- [x] Implement minimal adapter/result/runner and consumers, then GREEN same cases;
   checkpoint source before expanding failure/limit matrix.
-- [ ] Sequential bounded matrices: each tool/prelaunch selection/no session or tool,
+- [x] Sequential bounded matrices: each tool/prelaunch selection/no session or tool,
   text/Unicode/multiline/invalid UTF8/empty/exit error, stdout/stderr flood, timeout,
   startup failure, scoped cleanup; actual turn/Ask/multiline draft/default on failure,
   literal shortcut/one process/manual acceptance and no replay. Own fixtures never
   invoke real clipboard programs or read/mutate user clipboard; no child descendants.
-- [ ] Existing affected normalization/composer/direct-paste tests only; narrow source
+- [x] Existing affected normalization/composer/direct-paste tests only; narrow source
   guard PlayerInput_MustExposeClipboardPasteShortcut (which currently requires the
   late ResolveClipboardPlayerInput helper) must be adapted and selected. Create two narrow
   categories `clipboard-linux-adapter`, `clipboard-console-consumers`; separate exact
@@ -149,3 +149,5 @@ implementation, not a public guarantee that Process retains an unreaped child.
 Future runtime changes require rechecking that dependency. Test-host cleanup sends
 no numeric PID signal and uses its existing independent12s lifetime; unconfirmed
 exit retains original host/root and reports failure/debt, not successful cleanup.
+
+Execution checkpoint `b5255b1fb96e405eb1ed195c6437b16ad5788246`: final38new+12affected distinctPASS; catalog valid0executed. Source reviewer Sol PASS after stablepidfd and causal fixture corrections. Initial3causalRED and intermediate1culture-sensitive test assertion failure are preserved, not preparation failures. See [handoff](clipboard-linux-handoff.md) and [qualification](recovery/clipboard-linux-qualification.json). Independent evidence/metadata/fresh-restore closure remains pending at this carrier.

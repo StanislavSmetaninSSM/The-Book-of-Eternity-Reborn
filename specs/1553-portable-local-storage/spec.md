@@ -1,5 +1,22 @@
 # Feature Specification: Trusted local storage and cross-platform runtime
 
+## Current T050 clipboard slice — bounded synthetic execution
+
+From accepted roadmap `113edbb00eeeb9172ee3a02e00585f7bde442243`, the existing
+clipboard service now selects one available Wayland/X11 reader, returns typed
+bounded outcomes, and feeds real turn/Ask/shared composer consumers without a
+late reread. Clipboard gestures update a local draft until manual acceptance;
+errors/EOF preserve it and cause no automatic submit/replay. Windows command/STA
+adapter remains. Runtime/tests `b5255b1fb96e405eb1ed195c6437b16ad5788246`:
+38 new +12 affected distinct PASS, catalog valid/0 executed, independent Sol
+design/source PASS. [Plan](clipboard-linux-plan.md) · [Handoff](clipboard-linux-handoff.md).
+Evidence/metadata/fresh-restore closure is pending at this checkpoint. This is
+synthetic wiring qualification; desktop Wayland/X11 and native Windows are open.
+Linux cleanup depends on validated pidfd and reviewed .NET8.0.31 child-table
+synchronization; unsupported capability refuses honestly. Full T050/systemd/
+audio/platform helpers/live game remain open. Historical source-only notes below
+describe their own accepted checkpoints.
+
 ## Current scope after accepted Daren — source-only checkpoint
 
 Owner accepted `d73e2cdf43d63cbda3e9cda033834d0e902ae734`. The current
