@@ -21,6 +21,7 @@
     "⬝■■■■■■⬝",
     "⬝⬝■■■■■■",
     "⬝⬝⬝⬝⬝⬝■■",
+    "⬝⬝⬝⬝⬝⬝⬝■",
     "⬝⬝⬝⬝⬝■■■",
     "⬝⬝⬝⬝■■■■",
     "⬝⬝⬝■■■■■",
@@ -32,5 +33,6 @@
     "holdStart": 30,
     "holdEnd": 9,
     "TotalFrames": 54
-  }
+  },
+  "DerivationCorrection": "Hold-end progress advances as frameIndex-width: frame13 gives final singleton. Corrected14 exact deduplicated frames; prior13-entry claim was incomplete."
 }

@@ -1,0 +1,249 @@
+{
+  "Source": "a8128babfcc7034507df2ff68c9b75432424d45d",
+  "ProviderRequests": 0,
+  "GameTurns": 0,
+  "SourcePins": [
+    {
+      "Path": "BookOfEternityGMBridge/Program.cs",
+      "Bytes": 88769,
+      "SHA256": "8bbe0df4d7f935b594d0b306772a143fef92effc0e04067b06ab90389ea1786b"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/TerminalScreen.cs",
+      "Bytes": 4225,
+      "SHA256": "937a3dd992ae6f96d19c3e7a37da6d3d620b4e8ca3b2774961c5c94a3f335a49"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/SynchronizedTerminalScreen.cs",
+      "Bytes": 10626,
+      "SHA256": "107658ee8137eb6ce8cec4690da97f1852e554fc2ddf3d7aa392a72b97a686ca"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmSynchronizedTerminalPresentationTests.cs",
+      "Bytes": 12745,
+      "SHA256": "96563620411e7379a9cbf7d0fe351765f23d87f153711a0708f67ca0f0f0257c"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs",
+      "Bytes": 12449,
+      "SHA256": "a0719afb67d9eba1f5d39aa13ac171b873d4d491d1de7ff71675e8faebeb8df9"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs",
+      "Bytes": 6443,
+      "SHA256": "939e8b2454d39081947b6eae2a56304e72ffdad28a02d5034f8bac55d097ebae"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.cs",
+      "Bytes": 30915,
+      "SHA256": "db2ae83a53e28f104a1a8166aec63e2a445cc01e2b4309de0b37c21685dfc926"
+    },
+    {
+      "Path": "tests/fixtures/LinuxTerminal/foreground.py",
+      "Bytes": 5372,
+      "SHA256": "655c94f24d786087beb8925ea20ce35737335e5c29830c3f9fe9f4da8c797766"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1164637,
+      "SHA256": "0cfff60d965b4f88b2bb75eaabb461175ebd379a3d4fc31b5517bb3d94ae2973"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 1473,
+      "SHA256": "3fd04b16c07acbbdb73cbe2ed5957a5f445c458b22f5355bd2c020f5c16c9deb"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmExternalDraftObservationTests.cs",
+      "Bytes": 8176,
+      "SHA256": "94fbc96807188a42729df81064f78df36371a8f23654fc0b4d7411eea5d4cdbd"
+    },
+    {
+      "Path": "BookOfEternityClient/Configuration/GmCliInputProfile.cs",
+      "Bytes": 2895,
+      "SHA256": "a07fa2ff57b1b34e0fc4863b7857b259eb3f966777e115cf3b455a3314a48d01"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
+      "Bytes": 20668,
+      "SHA256": "92982796e3573122cbd2b8045835b6090b5564010ebd59043a1fb075a109f55e"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.MiniPresentation.cs",
+      "Bytes": 5804,
+      "SHA256": "1f66cbebdb8967404ba1c7d9facc1dc5790d8124cb8dc5ec4723e9c35c444d7e"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/DraftObservation.cs",
+      "Bytes": 8385,
+      "SHA256": "3ca0e90475c150efb5e5d92aaf8c5955def8683b3eba9d3d9a4ba4fcc6eaffc1"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.DraftObservation.cs",
+      "Bytes": 8337,
+      "SHA256": "e0ac9791df84c6ad58cf9a18c1133ba421415b821a2f25f16733a6def4bf8bf1"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmConnectedMiniTransactionTests.cs",
+      "Bytes": 12860,
+      "SHA256": "fb2afdc031abcf1234f426068fe0a1383ccd3588a4b081c24dcfff12044fe9b2"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
+      "Bytes": 22709,
+      "SHA256": "718f1948f7a35630a8a8245862bf7179de67e37922c3a8171483fd6baa37ca57"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/ProductionMainLaunch.cs",
+      "Bytes": 3009,
+      "SHA256": "46b141084f32f109d9bf921a4f551c0ccd3bae4d557b4ec77d5f649bca07c34b"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/pinned-spinner-glyph-red/Build-unit.log.gz",
+      "Bytes": 27176,
+      "SHA256": "520741f7d6dbfa8b713577de34f1379b31ac5ced6484a64de17a6a223ecd28d9",
+      "StoredSHA256": "1e8b7e334019dc481e3fe8538a558584f956a27d50764b95901405cdddb3f9ba"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/pinned-spinner-glyph-red/dotnet-test.log.gz",
+      "Bytes": 1634328,
+      "SHA256": "d243c364e6deb4f03f831b95adf37baccb687b07722a0632d9c06bd8a5c91709",
+      "StoredSHA256": "d504df75a1a0c5737a4a0df56378a82e1e28a6a7360c72efba32e3362236a27e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/pinned-spinner-glyph-red/summary.json.gz",
+      "Bytes": 3263,
+      "SHA256": "4fcfb62c811a793ddf60a520863da93cf73325d2a336b17af23df7d2297c8da8",
+      "StoredSHA256": "fa4a81f80c82edf4ae340d128643eb1b5da031356d8c3dc732b6b93fb9a5cf14"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/pinned-spinner-glyph-red/gm-connected-mini-refusal-unit-001.trx.gz",
+      "Bytes": 9028,
+      "SHA256": "575d7ea5c3114e815a8dabbf6aca4cc3584d2a98d741311c6165288a17cf695f",
+      "StoredSHA256": "472e307ccb5e2fc544fa60316c5697ac48df9b3e45f320d12a4eadbd180c5d89"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/pinned-spinner-glyph-red/gm-connected-mini-reservation-spinner-unit-002.trx.gz",
+      "Bytes": 8227,
+      "SHA256": "24c1fa5bf68e0702555d2b3ec8da567a503661dfa5c45ad3aa8050f23f69ca32",
+      "StoredSHA256": "b1285deab1e88cde9e294865cad2aed43877927871942ed24bd7dc92a02e22a2"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/pinned-spinner-glyph-red/plan.json.gz",
+      "Bytes": 5194,
+      "SHA256": "80ec61e28daae0467ec219d34404dd5f605a0867f19a694b9675ec63ed99f714",
+      "StoredSHA256": "6d88ddf868fed6723fccd4c3d829c29185cbf15f5de7f1aeb1d856116c0770cb"
+    }
+  ],
+  "RunSummary": {
+    "Categories": [
+      "gm-connected-mini-reservation-spinner",
+      "gm-connected-mini-transaction",
+      "gm-connected-mini-refusal",
+      "gm-connected-mini-review-boundaries"
+    ],
+    "Reasons": [
+      {
+        "category": "gm-connected-mini-reservation-spinner",
+        "reason": "Changed actual mini gesture reservation freshness and pinned busy frames affect positive/unknown and original refusing witness edges; passed native/env/absence/helper/parser cohorts unchanged and excluded",
+        "contracts": [
+          "T043-OPENCODE-LIVE-BOUNDED"
+        ]
+      },
+      {
+        "category": "gm-connected-mini-transaction",
+        "reason": "Changed actual mini gesture reservation freshness and pinned busy frames affect positive/unknown and original refusing witness edges; passed native/env/absence/helper/parser cohorts unchanged and excluded",
+        "contracts": [
+          "T043-OPENCODE-LIVE-BOUNDED"
+        ]
+      },
+      {
+        "category": "gm-connected-mini-refusal",
+        "reason": "Changed actual mini gesture reservation freshness and pinned busy frames affect positive/unknown and original refusing witness edges; passed native/env/absence/helper/parser cohorts unchanged and excluded",
+        "contracts": [
+          "T043-OPENCODE-LIVE-BOUNDED"
+        ]
+      },
+      {
+        "category": "gm-connected-mini-review-boundaries",
+        "reason": "Changed actual mini gesture reservation freshness and pinned busy frames affect positive/unknown and original refusing witness edges; passed native/env/absence/helper/parser cohorts unchanged and excluded",
+        "contracts": [
+          "T043-OPENCODE-LIVE-BOUNDED"
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "a8128babfcc7034507df2ff68c9b75432424d45d",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "gm-connected-mini-refusal",
+        "Seconds": 7.1236089,
+        "BudgetMinutes": 4,
+        "Completed": true
+      },
+      {
+        "Category": "gm-connected-mini-reservation-spinner",
+        "Seconds": 8.0980619,
+        "BudgetMinutes": 4,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.087423,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0555154,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.121542,
+        "Completed": true
+      },
+      {
+        "Name": "Build-unit",
+        "Seconds": 45.125479,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 21,
+    "WallTime": "00:01:06.8512601",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 4,
+      "CompletedDescriptors": 2,
+      "PlannedCases": 19,
+      "CompletedCases": 8,
+      "UnderfilledDescriptors": [
+        "gm-connected-mini-review-boundaries-unit-003",
+        "gm-connected-mini-transaction-unit-004"
+      ],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 8,
+      "Executed": 8,
+      "Passed": 7,
+      "Failed": 1
+    },
+    "DuplicateTests": []
+  }
+}

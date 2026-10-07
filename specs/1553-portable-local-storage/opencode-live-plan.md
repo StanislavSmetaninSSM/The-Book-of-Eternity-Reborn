@@ -520,3 +520,11 @@ original writer reservation, as Enter already did. Exact deduplicated eight-cell
 blocks frames derive from pinned spinner algorithm; no generic spinner/pane
 classifier. Four genuinely affected categories19 cases; other passed boundaries
 excluded. No CLI/provider/game execution yet.
+
+Pinned-spinner a8128bab run planned19, executed8:7PASS1FAIL;11unexecuted after
+category failure. Queued Home and old braille boundaries now PASS, actual blocks
+poisoned parser: U+25A0/U+2B1D both outside existing cell predicate. Admit only
+these two source-pinned cells. Independent source review also corrects omitted
+held-end frame13: source hold progress gives final singleton;14 exact dedup
+frames, not13. Add this exact controlled positive and explicit41-cell bound.
+Four affected categories20 cases pending; no actualCLI/model/game yet.

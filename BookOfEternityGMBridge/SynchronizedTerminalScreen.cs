@@ -58,7 +58,7 @@ internal sealed class SynchronizedTerminalScreen
     }
 
     internal static bool SupportedCell(char c) => c is >= ' ' and <= '~' or >= '\u00a0' and <= '\u024f'
-        or >= '\u0370' and <= '\u052f' or >= '\u2500' and <= '\u259f' or >= '\u2800' and <= '\u28ff'
+        or '\u25a0' or '\u2b1d' or >= '\u0370' and <= '\u052f' or >= '\u2500' and <= '\u259f' or >= '\u2800' and <= '\u28ff'
         && c != '\u00ad' && !char.IsControl(c) && char.GetUnicodeCategory(c) is not
             (System.Globalization.UnicodeCategory.NonSpacingMark or System.Globalization.UnicodeCategory.SpacingCombiningMark
             or System.Globalization.UnicodeCategory.EnclosingMark or System.Globalization.UnicodeCategory.Format);

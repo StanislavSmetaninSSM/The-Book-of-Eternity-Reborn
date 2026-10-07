@@ -36,6 +36,7 @@ public sealed class GmConnectedMiniTransactionTests
     [Theory]
     [InlineData("queued-home", "draft-uncertain")]
     [InlineData("blocks-spinner", "submission-observed")]
+    [InlineData("held-spinner", "submission-observed")]
     [InlineData("braille-spinner", "unknown-outcome")]
     public Task ActualOriginalPipe_ReservationAndPinnedSpinner(string mode,string expected)=>RunConnectedAsync(mode,expected);
 
@@ -140,7 +141,7 @@ public sealed class GmConnectedMiniTransactionTests
                     });
                 }
             }
-            var busySpinner=mode=="braille-spinner"?"⠋":"■⬝⬝⬝⬝⬝⬝⬝";
+            var busySpinner=mode=="braille-spinner"?"⠋":mode=="held-spinner"?"⬝⬝⬝⬝⬝⬝⬝■":"■⬝⬝⬝⬝⬝⬝⬝";
             if(bytes=="\r" && mode=="busy-composer"){
                 screen.Feed(Encoding.UTF8.GetBytes("\u001b[?2026h\u001b[6;1H\u001b[K"+" BUILD  ■⬝⬝⬝⬝⬝⬝⬝ esc interrupt".PadRight(89)+"ctrl+p cmd "+"\u001b[11;46H\u001b[?2026l"));return;
             }
@@ -155,7 +156,7 @@ public sealed class GmConnectedMiniTransactionTests
         finally{if(mode=="denied-removal")File.SetUnixFileMode(h.Root,UnixFileMode.UserRead|UnixFileMode.UserWrite|UnixFileMode.UserExecute);}
         if(observer!=null)await observer;if(queued!=null)await queued;
         Assert.True(editor,"Actual original transaction must reach the standard editor gesture before witness/edge verdict.");
-        if(mode is "success" or "unknown" or "restored-cursor" or "wrapped-edge"){
+        if(mode is "success" or "unknown" or "restored-cursor" or "wrapped-edge" or "blocks-spinner" or "held-spinner" or "braille-spinner"){
             var operations=(System.Collections.IDictionary)h.Get("_promptOperations")!;
             var operation=operations["one"]!;var proof=operation.GetType().GetField("DraftProof")?.GetValue(operation);
             var proofTask=(Task?)proof?.GetType().GetProperty("Task")?.GetValue(proof);
@@ -164,7 +165,7 @@ public sealed class GmConnectedMiniTransactionTests
         Assert.Equal(expected,result.GetProperty("promptDelivery").GetProperty("disposition").GetString());
         var delivered=Encoding.UTF8.GetString(h.Input.Bytes);
         Assert.StartsWith("\u001b[200~"+text+"\u001b[201~\u0018e",delivered);
-        if(mode is "success" or "unknown" or "restored-cursor" or "wrapped-edge")
+        if(mode is "success" or "unknown" or "restored-cursor" or "wrapped-edge" or "blocks-spinner" or "held-spinner" or "braille-spinner")
         {
             Assert.Equal(0,observerExit);Assert.Equal("\u001b[200~"+text+"\u001b[201~\u0018e\u001b[H\u001b[F\r",delivered);
         }

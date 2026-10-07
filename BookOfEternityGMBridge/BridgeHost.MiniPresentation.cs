@@ -72,6 +72,7 @@ internal sealed partial class BridgeHost
         "⬝■■■■■■⬝",
         "⬝⬝■■■■■■",
         "⬝⬝⬝⬝⬝⬝■■",
+        "⬝⬝⬝⬝⬝⬝⬝■",
         "⬝⬝⬝⬝⬝■■■",
         "⬝⬝⬝⬝■■■■",
         "⬝⬝⬝■■■■■",
@@ -86,7 +87,7 @@ internal sealed partial class BridgeHost
         for(var i=0;i<start;i++)if(p.StartupBannerLines[i].Length>v.Columns || v.Cells[i]!=p.StartupBannerLines[i].PadRight(v.Columns))return false;
         if(v.Cells[start].Any(c=>c!=' ') || v.Cells[start+1].Any(c=>c!=' ') || v.Cells.Skip(footer+1).Any(row=>row.Any(c=>c!=' ')))return false;
         var row=v.Cells[footer];const string suffix="ctrl+p cmd ";const string marker=" esc interrupt";
-        return row.Length>=40 && row.StartsWith(" BUILD  ",StringComparison.Ordinal) && MiniBusyFrames.Contains(row.Substring(8,8)) &&
+        return row.Length>=16+marker.Length+suffix.Length && row.StartsWith(" BUILD  ",StringComparison.Ordinal) && MiniBusyFrames.Contains(row.Substring(8,8)) &&
             row.AsSpan(16,marker.Length).SequenceEqual(marker) && row.EndsWith(suffix,StringComparison.Ordinal) &&
             row.AsSpan(16+marker.Length,row.Length-16-marker.Length-suffix.Length).IndexOfAnyExcept(' ')<0;
     }
