@@ -15696,7 +15696,12 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.*"
+            "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.RelocatedRuntimeOnlyPackage_ActualPrepareTurnPublishesLinkedAuthority",
+            "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges",
+            "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.ExplicitSecondPreparation_ReplacesPendingSnapshotWithinExistingContract",
+            "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.OrdinaryPositionalStatusSelector_PreservesExistingDispatcherBoundary",
+            "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.OperationalPrepareInstructions_UseShippedLayoutAndCurrentBoundedLinks",
+            "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.ObservationTimeout_RetainsOriginalGuardianUntilActualExclusiveReap"
           ]
         }
       ]
@@ -15743,6 +15748,29 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.LauncherAndQuickstartDocumentPrepareTurnCommand"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "auxiliary-launcher-storage-refusal",
+      "responsibility": "Causal actual prepared auxiliary consumer maps retained invalid-journal debt to existing preparation stderr/exit2 instead of unhandled process exception",
+      "excludes": "No journal recovery/canonical mutation/fence redesign or previous successful route case replay",
+      "changeHints": [
+        "BookOfEternityClient/Program.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.StorageDebt_RealRouteRetainsTypedPreparationErrorAndExactBytes"
           ]
         }
       ]

@@ -68,7 +68,7 @@ try
         return;
     }
 }
-catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or IOException or UnauthorizedAccessException)
+catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or IOException or InvalidDataException or UnauthorizedAccessException)
 {
     Console.Error.WriteLine($"prepare-live-turn failed: {ex.Message}");
     Environment.ExitCode = 2;

@@ -50,8 +50,12 @@ public sealed class AuxiliaryLauncherPortableTests
     [InlineData("dice", "--dice must contain integers")]
     [InlineData("main", "prepare-live-turn failed")]
     [InlineData("worker", "prepare-live-turn failed")]
-    [InlineData("storage", "prepare-live-turn failed")]
-    public async Task MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(string mode,string diagnostic)
+    public Task MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(string mode,string diagnostic)=>RunRefusal(mode,diagnostic);
+
+    [Fact]
+    public Task StorageDebt_RealRouteRetainsTypedPreparationErrorAndExactBytes()=>RunRefusal("storage","prepare-live-turn failed");
+
+    private static async Task RunRefusal(string mode,string diagnostic)
     {
         await using var f=await AuxiliaryPackageFixture.Create();
         var file=mode switch {"dll"=>"BookOfEternityClient.dll","deps"=>"BookOfEternityClient.deps.json","runtimeconfig"=>"BookOfEternityClient.runtimeconfig.json","helper"=>"Launcher/gm_main_operation.ps1",_=>null};
@@ -75,6 +79,12 @@ public sealed class AuxiliaryLauncherPortableTests
         var args=mode switch {"action"=>new[]{"--dice","14,8,17"},"dice"=>new[]{"--action","test","--dice","21"},_=>null};
         var result=await f.Run(mode,arguments:args);
         Assert.NotEqual(0,result.Exit);Assert.Contains(diagnostic,result.Output+result.Error,StringComparison.Ordinal);
+        if(mode=="storage")
+        {
+            Assert.DoesNotContain("Unhandled exception",result.Error);
+            Assert.Contains("Unknown publication format; evidence retained.",result.Error);
+            Assert.Contains("prepare-turn failed with exit code 2",result.Error);
+        }
         Assert.Equal(before,AuxiliaryLauncherRootBindingTests.Snapshot(f.Files.GameSessionPath));
         if(debt!=null)Assert.Equal(debtBytes,File.ReadAllBytes(debt));
         Assert.False(File.Exists(f.Files.ResolvePath(LiveTurnPreparationService.TurnRequestPath)));

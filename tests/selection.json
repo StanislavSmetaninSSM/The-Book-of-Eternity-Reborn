@@ -21,6 +21,13 @@
       "contracts": [
         "T050-AUXILIARY-LAUNCHER-PORTABLE"
       ]
+    },
+    {
+      "category": "auxiliary-launcher-storage-refusal",
+      "reason": "New causal invalid-publication-journal exception envelope; exact record retention/no writes/no retry through actual route",
+      "contracts": [
+        "T050-AUXILIARY-LAUNCHER-PORTABLE"
+      ]
     }
   ]
 }
