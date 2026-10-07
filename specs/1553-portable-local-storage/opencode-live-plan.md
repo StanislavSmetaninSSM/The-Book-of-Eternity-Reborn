@@ -923,7 +923,7 @@ No runtime/fence weakening. Exact8artifacts archived player-cancel-green-affecte
 759c1618 instrumented daemon1FAIL with actual originalUncertain/ECHILD0emergency:
 trace consumed its cap on preparation before the active failingpin, so actual
 close cause INCONCLUSIVE. Original/prologue/instrumented/helper hashes retained;
-24 owned artifacts include trace. The old trace reached65657bytes: pre-append
+23 owned artifacts include trace. The old trace reached65657bytes: pre-append
 length check allowed one line beyond64KiB. Correct exactbytecap and arm only on
 the existing owner stop-request marker after observedActive; no budget increase,
 no runtime change. Independent Sol approved same diagnostic source beforefirst
@@ -932,3 +932,11 @@ retry. Old generation fixture revised per independent Sol DESIGN PASS into one
 renamed ExternalGenerationChange test: prove heldClear refusal/unchangedbytes,
 fault only own validgeneration+sentinel, always release+observe originalTask,
 require SessionReplaced before oldwrite. Historic oldID remains failed.
+
+8116f7ba actual renamed generation case1/1GREEN: heldClear realrefusal preserved
+exactgeneration/sentinel; ownvalidgenerationfault; originalwrite SessionReplaced
+and replacementsentinelunchanged, originaltask finallyreleased+awaited, no
+timeout, ownedcleanupcomplete. Old ClearRotates ID is historical unqualified;
+this new truthful premise alone is positive, not a retroactivepass. Exact five
+artifacts/sourcepins archived owned-generation-fault-green. Independent Sol
+SOURCE PASS one narrowed armed diagnostic; no other newruntimefix justified.
