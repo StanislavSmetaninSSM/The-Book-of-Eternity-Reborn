@@ -2,11 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-mini-idle-authority",
-      "reason": "Two root-discovered blank-readiness holes with shared fixture installation; standalone observer success excluded from RED",
+      "category": "gm-mini-panel-refusal",
+      "reason": "Independent source finding needs one new causal case; three prior readiness and standalone observer cases excluded",
       "contracts": [
-        "T043-OPENCODE-LIVE-BOUNDED",
-        "T042-manual-takeover"
+        "T043-OPENCODE-LIVE-BOUNDED"
       ]
     }
   ]

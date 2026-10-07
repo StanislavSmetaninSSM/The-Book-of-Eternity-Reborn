@@ -27,7 +27,8 @@ public sealed class GmExternalDraftObservationTests
     private static GmSynchronizedTerminalPresentationTests.ScreenProbe InstallMini(GmBridgePromptOperationTests.PromptHostFixture h)
     {
         var profile=new {TerminalPresentation="synchronized-mini-v1", DraftObservation="external-editor-v1", DraftDirectory=h.Root,
-            IdleMarker=" BUILD",WorkingMarker="esc interrupt",PromptPrefix="",
+            IdleMarker=" BUILD",WorkingMarker="esc interrupt",PromptPrefix="",AutomaticSubmissionLimit=1,
+            StartupBannerLines=new[]{"","█▀▀█  OpenCode","█  █  /workspace/qualification-1553-opencode-q1/empty-cli-scratch","▀▀▀▀",""},
             ObservationTimeoutMilliseconds=1000,BlockedMarkers=new[]{"trust","authentication","sign in"}};
         File.WriteAllText(Path.Combine(h.Root,"config.json"),JsonSerializer.Serialize(new {GmCliInputProfile=profile}));
         var screen=new GmSynchronizedTerminalPresentationTests.ScreenProbe(h.BindingId);
@@ -57,6 +58,16 @@ public sealed class GmExternalDraftObservationTests
         Assert.False((await h.Rpc(new {command="setReady",ready=true})).GetProperty("ok").GetBoolean());
         Assert.Equal("manual draft\n\n",Encoding.UTF8.GetString(h.Input.Bytes));
         Assert.True((bool)h.Binding.GetType().GetField("ManualTakeover")!.GetValue(h.Binding)!);
+    }
+
+    [Fact]
+    public async Task ActualPipe_UnknownPanelCannotBorrowUnchangedComposerFooter()
+    {
+        await using var h=new GmBridgePromptOperationTests.PromptHostFixture();using var screen=InstallMini(h);
+        screen.Feed(GmSynchronizedTerminalPresentationTests.ActualTranscript("startup"));
+        screen.Feed(Encoding.UTF8.GetBytes("\u001b[?2026h\u001b[2;1H\u001b[KUnexpected decision needed\u001b[6;1H\u001b[?2026l"));
+        Assert.False((await h.Rpc(new {command="setReady",ready=true})).GetProperty("ok").GetBoolean());
+        Assert.Empty(h.Input.Bytes);
     }
 
     [Fact]

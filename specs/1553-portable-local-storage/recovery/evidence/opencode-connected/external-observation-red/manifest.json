@@ -52,6 +52,21 @@
       "Path": "tests/selection.json",
       "Bytes": 361,
       "SHA256": "30e76052f7a7811792c69df7edb92a89647f41d42e44fc0423568bb88d886104"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmExternalDraftObservationTests.cs",
+      "Bytes": 5394,
+      "SHA256": "48c951f0548069b8727f6987fe60b5528f2c31b821ca8eb2685c3c4f49b3333c"
+    },
+    {
+      "Path": "BookOfEternityClient/Configuration/GmCliInputProfile.cs",
+      "Bytes": 1958,
+      "SHA256": "9025f811e9824ae7e3da92019534ca3b1cf72be03a5ffd4b4e6bd5873c6d9a60"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
+      "Bytes": 18951,
+      "SHA256": "5b064ea162664e16c8d3a04d854b77d4cc18fb4ce2e6682797da51ce9f0ec4e5"
     }
   ],
   "Artifacts": [
@@ -153,5 +168,9 @@
       "Failed": 2
     },
     "DuplicateTests": []
-  }
+  },
+  "AbsentSources": [
+    "BookOfEternityGMBridge/BridgeHost.MiniPresentation.cs",
+    "BookOfEternityGMBridge/DraftObservation.cs"
+  ]
 }

@@ -421,3 +421,19 @@ and a manual multiline draft ending in blank rows. Proposed narrow rule: first
 idle requires actual styled placeholder; subsequent blank idle only follows a
 verified original automatic submission and no manual takeover. No full-draft
 claim derives from visible blank lines. Checks/source review pending.
+
+edd3036e mini baseline3 executed:1PASS/2causalFAIL, complete cleanup.
+[Receipt](recovery/evidence/opencode-connected/mini-idle-red/manifest.json).
+Independent Sol design PASS for a smaller one-use test profile: owner permits
+1–2 real turns, so qualify one first submission only. Freeze StartupBannerLines
+from source and owned CWD before launch; initial complete frame must match
+all banner/padding/styled placeholder/footer cells, no unknown extras. Consume
+AutomaticSubmissionLimit=1 on the actual original InputLifetime before first
+paste bytes. Neither setReady/manual/Refresh/duplicate/new IDs rearms it; no
+subsequent blank Ready or post-model pane classifier in this bounded profile.
+Legacy/neutral profiles remain unchanged; this is technical test qualification,
+not final mini UX or a general TUI rollout. Full original witness and causal
+Home/End/single Enter are still mandatory. One unknown-panel causal case now
+written before correction; existing executed successes excluded.
+Connected receipt metadata now explicitly pins actual new test/profile/observer
+source and records absent future source files on their historical baseline.

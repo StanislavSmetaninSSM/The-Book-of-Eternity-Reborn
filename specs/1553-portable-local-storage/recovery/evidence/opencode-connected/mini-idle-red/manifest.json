@@ -1,5 +1,5 @@
 {
-  "Source": "ebf091a1a6d6e575826c65a784027eed68ee1c37",
+  "Source": "edd3036ea3a75f358de1591020faffc2783c89da",
   "ProviderRequests": 0,
   "GameTurns": 0,
   "SourcePins": [
@@ -45,18 +45,18 @@
     },
     {
       "Path": "tests/categories.json",
-      "Bytes": 1156968,
-      "SHA256": "cf687c778f89fe63aeeb198ea61d810590c03c38721e4aaca932aa18e6e39926"
+      "Bytes": 1158106,
+      "SHA256": "0a5969b637c5e90ad71d406e350f320b77d32a2562361932763d8a0eb45452c2"
     },
     {
       "Path": "tests/selection.json",
-      "Bytes": 361,
-      "SHA256": "30e76052f7a7811792c69df7edb92a89647f41d42e44fc0423568bb88d886104"
+      "Bytes": 343,
+      "SHA256": "132882f9f08e84d9a3d87632fb1ddf6cbba5a9a8a90e62421a1e6c25ca5a3165"
     },
     {
       "Path": "BookOfEternityClient.Tests/GmExternalDraftObservationTests.cs",
-      "Bytes": 5359,
-      "SHA256": "42c5328ef663cd3ed183656e9139bad02b6bad832721d1020b36760d8f9541a4"
+      "Bytes": 7029,
+      "SHA256": "10562edff7f6d2b6d78fd7ddfb082c2d38072c8de665858a0b3762b3084d46b1"
     },
     {
       "Path": "BookOfEternityClient/Configuration/GmCliInputProfile.cs",
@@ -81,89 +81,84 @@
   ],
   "Artifacts": [
     {
-      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/external-observation-first-green/Build-unit.log.gz",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/mini-idle-red/Build-unit.log.gz",
       "Bytes": 24684,
-      "SHA256": "49d9b464fdbf403a9ed0ff674fae40b383df7ff046e805cf0b335381b8ed4ee6",
-      "StoredSHA256": "ac32f4cd1fbbc5d95dcb782bcb8fb089accce495c90760dc090b2bcc55d4c64c"
+      "SHA256": "dd70b592638da2c5a9bb192042cb20247845124ffd37eb119e463180e8539e13",
+      "StoredSHA256": "d2113297f31bd7af6beeaf1cf16f0a8fc98aa5fe3b3f793427cbb7fe43ed5a1c"
     },
     {
-      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/external-observation-first-green/dotnet-test.log.gz",
-      "Bytes": 1626242,
-      "SHA256": "818554b1660d3e2a8b5679d55752663ed98d32a3ad18881c0a288778f55c8e78",
-      "StoredSHA256": "606018ef787a487fc5cc628cacc14bffa17fc25f8691cd77e4dbf355b21d37c4"
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/mini-idle-red/dotnet-test.log.gz",
+      "Bytes": 1628260,
+      "SHA256": "68aee76d342a23f301aeb7817930f127f525f6d61aa9de3f8569a9e5d8a31540",
+      "StoredSHA256": "9d98efd84d1b763ac135566b757de3f7aff47e0cf71fec94f5fb6fb0129e553a"
     },
     {
-      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/external-observation-first-green/summary.json.gz",
-      "Bytes": 1558,
-      "SHA256": "e1e910d50b25afd978dba064c9e545fc6c302327f4fbf61c07b61eb41f32ac17",
-      "StoredSHA256": "9bfdc017f58b9d31b44a1f63daab3b145966a525086fb030087bce9855371504"
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/mini-idle-red/summary.json.gz",
+      "Bytes": 1447,
+      "SHA256": "1891173975c00a08415cbfead587bab5756da8fc473bb8e5f25aaedc4301d279",
+      "StoredSHA256": "69371b422cd06fbc25263e778548c59de427cd5c1edc73cdaf05fbe188687262"
     },
     {
-      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/external-observation-first-green/gm-external-draft-observation-unit-001.trx.gz",
-      "Bytes": 4530,
-      "SHA256": "014f19164e474166555e739ebef55fe3300511f0c0934bbe81f86ddeaf780f3c",
-      "StoredSHA256": "e2c87032391c5b27c1b3020a43bbd37af86c12540716e4021017bc88b3405551"
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/mini-idle-red/gm-mini-idle-authority-unit-001.trx.gz",
+      "Bytes": 9426,
+      "SHA256": "d69484df79ba10296a036cd018b9f697aab07c72a56b3eb5d3ba580e244dded3",
+      "StoredSHA256": "ed0bdf83b5da2cd7bf232b506272384fb4158d5163af34f015ececffff19aaf2"
     },
     {
-      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/external-observation-first-green/plan.json.gz",
-      "Bytes": 1502,
-      "SHA256": "83bfdba22405cddbd78a051d798d13d8a674f9d0e562b304e38aa3b50e4dc61e",
-      "StoredSHA256": "79203fb3919b27a5f9315bfdc310fbf18cf12b8920c25d48f7d3643a0e552285"
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/mini-idle-red/plan.json.gz",
+      "Bytes": 1736,
+      "SHA256": "990a2901d7531d6ceedaa1cdd8b3cc0776f94a0c77a3bb998cc133ba405f2ca9",
+      "StoredSHA256": "d20ca0d5943a63c954bc2f765ca6b868161a874e5222dfd64474afc01e79c465"
     }
   ],
   "RunSummary": {
     "Categories": [
-      "gm-external-draft-observation"
+      "gm-mini-idle-authority"
     ],
     "Reasons": [],
     "DiscoveryOnly": false,
     "PlanOnly": false,
     "Revision": {
-      "Head": "ebf091a1a6d6e575826c65a784027eed68ee1c37",
+      "Head": "edd3036ea3a75f358de1591020faffc2783c89da",
       "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
       "ChangedFiles": 0
     },
     "CatalogAudit": null,
     "CategoryResults": [
       {
-        "Category": "gm-external-draft-observation",
-        "Seconds": 4.6371716,
-        "BudgetMinutes": 3,
-        "Completed": true
+        "Category": "gm-mini-idle-authority",
+        "Seconds": 3.9643726,
+        "BudgetMinutes": 2,
+        "Completed": false
       }
     ],
     "AdapterResults": [],
     "PhaseResults": [
       {
         "Name": "Revision",
-        "Seconds": 0.0855773,
+        "Seconds": 0.0657174,
         "Completed": true
       },
       {
         "Name": "Changed-paths",
-        "Seconds": 0.0764477,
+        "Seconds": 0.048058,
         "Completed": true
       },
       {
         "Name": "New-paths",
-        "Seconds": 0.1900127,
+        "Seconds": 0.1024899,
         "Completed": true
       },
       {
         "Name": "Build-unit",
-        "Seconds": 44.2581769,
-        "Completed": true
-      },
-      {
-        "Name": "Runtime-cleanup",
-        "Seconds": 0.008104,
+        "Seconds": 40.6149486,
         "Completed": true
       }
     ],
     "Strategy": "SelectedCategories",
-    "TimeoutMinutes": 8,
-    "WallTime": "00:00:55.1081053",
-    "ExitCode": 0,
+    "TimeoutMinutes": 7,
+    "WallTime": "00:00:49.8401022",
+    "ExitCode": 1,
     "TimedOut": false,
     "OwnedTreeCleanupSucceeded": true,
     "RuntimeCleanupSucceeded": true,
@@ -171,16 +166,16 @@
     "Selection": {
       "PlannedDescriptors": 1,
       "CompletedDescriptors": 1,
-      "PlannedCases": 2,
-      "CompletedCases": 2,
+      "PlannedCases": 3,
+      "CompletedCases": 3,
       "UnderfilledDescriptors": [],
       "Complete": true
     },
     "Tests": {
-      "Total": 2,
-      "Executed": 2,
-      "Passed": 2,
-      "Failed": 0
+      "Total": 3,
+      "Executed": 3,
+      "Passed": 1,
+      "Failed": 2
     },
     "DuplicateTests": []
   }

@@ -2,6 +2,29 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-mini-panel-refusal",
+      "responsibility": "Unknown original frame panel refuses even without configured blocked words and with unchanged placeholder/footer",
+      "excludes": "No post-model pane classifier, provider or broad cohort",
+      "changeHints": [
+        "BookOfEternityGMBridge/BridgeHost.MiniPresentation.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmExternalDraftObservationTests.ActualPipe_UnknownPanelCannotBorrowUnchangedComposerFooter"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-mini-idle-authority",
       "responsibility": "Original pipe Ready derives from reliable styled placeholder and refuses initial blank/manual multiline tail",
       "excludes": "Full draft/witness transaction, provider/gameplay, unknown TUI and old cohorts",
