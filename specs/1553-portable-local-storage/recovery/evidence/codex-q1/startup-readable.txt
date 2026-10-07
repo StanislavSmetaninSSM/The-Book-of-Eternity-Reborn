@@ -1,0 +1,15 @@
+
+==============================================
+ Book of Eternity GM Bridge
+==============================================
+Session : /workspace/qualification-1553-codex-q1/fixture-root/game_session
+Client  : /workspace/qualification-1553-codex-q1/fixture-root
+Repo    : /workspace/qualification-1553-codex-q1/ship
+Pipe    : q1-7c8b51e1c513497ab309dbd35faeb793
+This window is the GM CLI host.
+You can type here manually at any time.
+Use `bookofeternity.ps1 ready` after the CLI is fully ready to receive prompts.
+
+WARNING: proceeding, even though we could not create PATH aliases: Read-only file system (os error 30)
+WARNING: TERM is set to "dumb". Codex's interactive TUI may not work in this terminal.
+Continue anyway? [y/N]: 

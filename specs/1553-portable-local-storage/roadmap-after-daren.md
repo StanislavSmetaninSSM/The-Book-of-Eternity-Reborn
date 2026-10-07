@@ -110,6 +110,10 @@ owner-run checklist и полная игровая acceptance. Это завис
 
 ## Codex Q1: что доступно, что не доказано
 
+Новый bounded Q1 после desktop42812722: actual installed `codex-cli0.159.0-alpha.3`, official login `Logged in using ChatGPT`; одна новая обычная M1 startup/stop попытка достигла того же unanswered `TERM=dumb` / `Continue anyway? [y/N]:`. Ввод/ответы/model/queryresponse0; originalRunning→scoped stop/Stopped/ACK/retirement, PTYtermios/EOF/close и guardianECHILD0emergency/failure/deadline подтверждены. [Handoff](codex-q1-handoff.md) / [qualification](recovery/codex-q1-qualification.json). Runtime/VT/profile/tests не менялись. Q1ready/VT **BLOCKED**, не PASS; нужен explicit gate decision и отдельное доказательство presentation, либо другая действительно поддержанная foreground среда. Не повторять неизменённый gate и не подменять TERM.
+
+Ниже сохраняется прежний исторический probe и его границы.
+
 Исторический [F2 receipt](main-run-fence-f2-handoff.md): `/opt/codex/bin/codex`,
 `codex-cli 0.159.0-alpha.3`, help/login-status exit0, `Logged in using ChatGPT`.
 Единственный [production design startup](production-main-admission-design.md#separate-real-codex-qualification)

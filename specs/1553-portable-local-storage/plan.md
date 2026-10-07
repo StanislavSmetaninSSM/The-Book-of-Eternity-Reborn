@@ -1,6 +1,6 @@
-# Current bounded Codex Q1 startup work
+# Current bounded Codex Q1 startup — readiness blocker
 
-Accepted desktop `428127226308b98b630074e05a839200dad748c0`; [Q1 plan](codex-q1-plan.md). Feasibility review precedes one necessary ordinary M1 startup/stop diagnostic in own empty scratch, unchanged `TERM=dumb`, no model prompt or automatic confirmation. Default input profile and neutral-v1 do not qualify Codex TUI. Q1 is WIP; runtime/tests remain unchanged. Primary systemd/Q2/live game/Windows are separate and open. Source: #1553.
+Accepted desktop42812722; one new actual ordinary M1 Codex startup/stop observation completed with retained original owner/main fence and unchanged `TERM=dumb`. Exact gate `Continue anyway? [y/N]:` remained unanswered; keyboard/model/confirmation/queryresponse0. Same-original Running→scoped stop/Stopped/retirement, actual I/O/PTY termios/close, guardianECHILD0emergency/failure/deadline; no replay. Installed0.159.0-alpha.3/officiallogin status confirmed. [Plan](codex-q1-plan.md) / [handoff](codex-q1-handoff.md) / [qualification](recovery/codex-q1-qualification.json). Runtime/parser/profile/tests/catalog unchanged, no cohort reruns. ActualSol design/sourcePASS; evidence/metadata and writer exact-tip remote/restoration pending. Q1 VT/readiness, Q2, systemd/nativeWindows/live game remain open. Source #1553.
 
 # Implementation Plan: Trusted local storage and cross-platform runtime
 

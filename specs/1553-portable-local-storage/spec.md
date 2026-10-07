@@ -1,3 +1,7 @@
+## Current bounded Codex Q1 — startup gate observed
+
+From accepted desktop42812722, one actual ordinary M1 installed Codex startup/stop probe retained original NativeLineage terminal/worker inventory/schema1 fence. Unchanged `TERM=dumb` reached unanswered `Continue anyway? [y/N]:`; zero model/input/confirmation/queryresponse. Same-original scoped stop, actual retirement/Stopped/ACK/PTY cleanup and guardianECHILD confirmed. [Handoff](codex-q1-handoff.md) / [qualification](recovery/codex-q1-qualification.json). Runtime/profile/parser/tests unchanged; Q1 readiness/VT and full FR-013/SC-004 remain open. Need explicit gate decision plus demonstrated presentation, or another supported terminal environment; no TERM-only proof, auth/config workaround or Q2. Source #1553.
+
 # Feature Specification: Trusted local storage and cross-platform runtime
 
 ## Current bounded desktop helper slice

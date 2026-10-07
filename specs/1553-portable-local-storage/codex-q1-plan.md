@@ -44,4 +44,4 @@ Review must distinguish plain warning output from VT correctness, `Ready=false` 
 
 An unexpected CLI confirmation is not authorized for automatic acceptance. Return its exact safe text and choices: explicit owner decision about that confirmation plus separately demonstrated presentation, or another actually supported foreground terminal environment. No TERM workaround or unsupported capability claim. A rendering blocker is technical feasibility, not a change to the game's GM model, CLI contract or Load UX.
 
-Status: WIP plan; independent review and all new CLI invocations/probes are pending. D1 feasibility correction: accepted guardian rejects limits above 30000ms; use its unchanged bytes with 30000ms, retaining the 25s driver cap.
+Status: design/source PASS and one actual M1 startup/stop observation completed; Q1 readiness BLOCKED on unanswered TERM confirmation. See handoff/qualification for actual output and original cleanup. Conditional parser/transcript path was not entered; evidence/metadata/final writer closure pending. D1 guardian bound and S1 foreground success oracle were independently closed before startup. No repetition or runtime changes.

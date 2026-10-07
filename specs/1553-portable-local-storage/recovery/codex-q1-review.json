@@ -17,7 +17,22 @@
     "ExecutedBuildTestsCLIProbes": 0
   },
   "Source": {
-    "Status": "pending"
+    "Verdict": "PASS \u2014 source feasibility",
+    "Candidate": "a8aa533fab866260d7a01a6d1499002c3d695c0a",
+    "Agent": "/root/codex_q1_source_review",
+    "ActualModel": "gpt-6.1-sol",
+    "ActualReasoningEffort": "xhigh",
+    "ProbeSHA256": "3d18109c7a1d1115471b8269d3d780db352401145b696e4e77ff860c525017a0",
+    "MaterialFindings": [
+      {
+        "ID": "S1",
+        "Finding": "Success could precede foreground termios restoration observation.",
+        "Resolution": "Success now requires recorded restoration and descriptor closure; failure evidence retained.",
+        "Status": "closed by actual independent reinspection"
+      }
+    ],
+    "RemainingMaterialFindings": 0,
+    "ReviewerExecutedBuildTestsCLIProbes": 0
   },
   "Evidence": {
     "Status": "pending"
