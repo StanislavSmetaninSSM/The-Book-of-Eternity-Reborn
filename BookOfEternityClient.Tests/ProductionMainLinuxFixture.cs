@@ -54,9 +54,16 @@ internal static class ProductionMainLinuxFixture
         var json=JsonSerializer.Deserialize<Dictionary<string,JsonElement>>(File.ReadAllText(Path.Combine(files.GameSessionPath,"config.json")))!;
         json["GmMainOwnerBackend"]=JsonSerializer.SerializeToElement("NativeLineage");File.WriteAllText(Path.Combine(files.GameSessionPath,"config.json"),JsonSerializer.Serialize(json));
         if(mode=="production-main-console-runtime") {
-            // Isolated current-schema consumer data, not a real GM response or live history.
-            await files.WriteFileAtomicAsync("game_state/meta/soul_state.json","{\"soulName\":\"Контрольная душа\",\"currentRealm\":\"Chaos Sea\",\"currentIncarnation\":0}");
-            await files.WriteFileAtomicAsync("game_state/history/chat_log.json","{\"sessionId\":\"controlled-console-runtime\",\"messages\":[]}");
+            // Use ordinary current-schema initialization before the original main
+            // exists. This prepares data, never submits a GM request or live turn.
+            settings.GmMainOwnerBackend="NativeLineage";
+            var engine=ProductionLoadGameEngine.Create(files,settings);
+            var pending=new BookOfEternityClient.Services.SystemGuardianLibraryService(files,NullLogger<BookOfEternityClient.Services.SystemGuardianLibraryService>.Instance)
+                .BuildFreeformPendingGuardianCreationNode("Нейтральный Хранитель контрольной души.","Контрольная душа");
+            var initialize=(Task<string>)typeof(GameEngine).GetMethod("InitializeChaosSea",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic)!
+                .Invoke(engine,["Контрольная душа","Синий силуэт.",pending,null])!;
+            await initialize.WaitAsync(TimeSpan.FromSeconds(15));
+            Assert.False(File.Exists(files.ResolvePath("input/turn_request.json")));
         }
         if(mode.StartsWith("production-main-load-",StringComparison.Ordinal)) {
             var archiveState=PortableSaveFixture.Seed(files);

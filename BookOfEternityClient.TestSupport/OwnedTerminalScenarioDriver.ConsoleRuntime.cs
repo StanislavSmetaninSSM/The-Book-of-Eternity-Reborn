@@ -18,13 +18,23 @@ internal static partial class OwnedTerminalScenarioDriver
         var main=(GmSessionRunCoordinator)hostType.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
         var methods=new[]{"NormalizeRuntimeUiArtifactsAsync","RefreshRuntimeStateAsync",
             "NormalizePendingRepairArtifactsAsync","NormalizePendingTerminalProtocolFailureArtifactsAsync","HasCurrentSessionAsync"};
-        async Task Invoke(string name)=>await ((Task)typeof(GameEngine).GetMethod(name,BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(engine,null)!).WaitAsync(TimeSpan.FromSeconds(4));
-        foreach(var method in methods)await Invoke(method);
         var pins=(System.Collections.IDictionary)typeof(GmSessionRunCoordinator).GetField("_remotePins",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(main)!;
-        if(pins.Count<methods.Length)throw new InvalidOperationException("Real console runtime consumers did not use original connection pins.");
-        foreach(var pin in pins.Values)
-            if((MainOperationState)pin!.GetType().GetField("State",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(pin)! != MainOperationState.ClosedObserved)
-                throw new InvalidOperationException("Original console pin close unconfirmed.");
+        async Task Invoke(string name) {
+            var task=(Task)typeof(GameEngine).GetMethod(name,BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(engine,null)!;
+            await task.WaitAsync(TimeSpan.FromSeconds(4));
+            if(task is Task<bool> available && !available.Result)throw new InvalidOperationException("Real HasCurrentSession hid Continue on the healthy Running fixture.");
+        }
+        var receipts=new List<object>();
+        foreach(var method in methods) {
+            var previous=pins.Keys.Cast<string>().ToHashSet();await Invoke(method);
+            var added=pins.Keys.Cast<string>().Where(k=>!previous.Contains(k)).ToArray();
+            if(added.Length!=1)throw new InvalidOperationException("Consumer did not acquire exactly one original outer pin: "+method);
+            var pin=pins[added[0]]!;var reply=(MainOperationReply)pin.GetType().GetProperty("Reply",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(pin)!;
+            if(reply.State!=MainOperationState.ClosedObserved || reply.Identity==null || !GmSessionRunValidation.IdentityMatches(reply.Identity,main.Identity))
+                throw new InvalidOperationException("Consumer original identity or close unconfirmed: "+method);
+            receipts.Add(new{Method=method,OriginalReceipt=reply});
+        }
+        evidence["ConsumerReceipts"]=receipts;evidence["HasCurrentSessionConfirmed"]=true;
         evidence["ActualRuntimeMethods"]=methods;evidence["OriginalClosedObservedPins"]=pins.Count;
         await main.BeginStopAsync();
         if(main.Record.Disposition!=GmSessionRunDisposition.Stopping)throw new InvalidOperationException("Original durable Stopping not reached.");

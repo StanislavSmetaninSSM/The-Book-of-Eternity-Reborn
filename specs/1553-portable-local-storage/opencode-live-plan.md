@@ -678,3 +678,13 @@ Running outside participating scope. OriginalScopedRetired/guardianECHILD0EMG,
 runner cleanup complete/no timeout/unique1. No provider/game. Minimal5wrappers
 now reuse existing RunParticipatingCurrentSessionAsync with unchanged cores;
 HasCurrentSession blocked/no-soul stays outside. GREEN and source closure pending.
+
+fece8481 actual1/1GREEN, no timeout/unique1/ownedcleanup complete; independent
+runtime SOURCE PASS. Review limits this initial positive: fixture discarded
+HasCurrentSession bool and aggregate pins did not retain per-consumer identity.
+Strengthen that same narrow case: ordinary current-schema InitializeChaosSea
+before any main owner (no GM request), require HasCurrentSession true and one
+new original-identity ClosedObserved receipt for each real consumer. Then same
+Stopping allfive exact no-effect refusals. No runtime change; rerun justified
+only by this new evidence boundary. Publish the ignored owned durable Stopped
+artifact (.boe_runtime) explicitly without changing original fc1 source/bytes.
