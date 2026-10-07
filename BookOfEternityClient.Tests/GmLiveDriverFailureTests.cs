@@ -12,6 +12,13 @@ public sealed class GmLiveDriverFailureTests
     [InlineData("old-provider")]
     [InlineData("old-client")]
     public async Task ActualDriver_CurrentFailureAndCleanup(string mode)
+        =>await RunInertAsync(mode);
+    [Theory]
+    [InlineData("coalesced-pause")]
+    [InlineData("early-startup")]
+    [InlineData("missing-rollback")]
+    public Task ActualDriver_ReviewPhaseBoundaries(string mode)=>RunInertAsync(mode);
+    private static async Task RunInertAsync(string mode)
     {
         var start=new ProcessStartInfo("/usr/bin/python3"){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true};
         start.ArgumentList.Add(Path.Combine(TestRepoPaths.RepoRoot,"tests/fixtures/ProductionMain/driver-failure-checks.py"));start.ArgumentList.Add(mode);

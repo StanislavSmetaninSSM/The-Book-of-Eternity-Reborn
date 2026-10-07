@@ -16594,7 +16594,32 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmLiveDriverFailureTests.*"
+            "BookOfEternityClient.Tests.GmLiveDriverFailureTests.ActualDriver_CurrentFailureAndCleanup",
+            "BookOfEternityClient.Tests.GmLiveDriverFailureTests.RealProduction_InertRefusalCancelsBeforeOriginalStop",
+            "BookOfEternityClient.Tests.GmLiveDriverFailureTests.HeldOriginalPin_DrainTimeoutRemainsUncertain"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-live-driver-phase-boundaries",
+      "responsibility": "Current client phase ordering, early startup cleanup and evidence required before driver cancellation classification",
+      "excludes": "No provider retries, historical mutation, OpenCode or game acceptance, settings/network, systemd/Windows or unchanged cohorts",
+      "changeHints": [
+        "tests/fixtures/ProductionMain/live-game-one-turn.py"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmLiveDriverFailureTests.ActualDriver_ReviewPhaseBoundaries"
           ]
         }
       ]

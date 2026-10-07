@@ -11,12 +11,18 @@ internal static partial class OwnedTerminalScenarioDriver
     {
         var main=(GmSessionRunCoordinator)type.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
         var files=new FileSystemManager(Path.Combine(folder,"root"),NullLogger<FileSystemManager>.Instance);
+        var terminal=(IOwnedTerminalSession)type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
+        evidence["OriginalTerminalIdentity"]=terminal.Identity;
         await using var original=await GmMainOperationClient.OpenAsync(files,CancellationToken.None);
         object Snapshot() {
             var sync=typeof(GmSessionRunCoordinator).GetField("_sync",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(main)!;
             lock(sync) {
                 var pins=(System.Collections.IDictionary)typeof(GmSessionRunCoordinator).GetField("_remotePins",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(main)!;
-                return new {main.IsUncertain,Disposition=main.Record?.Disposition.ToString(),
+                var input=type.GetField("_inputLifetime",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host);
+                var tasks=new[]{"_outputPumpTask","_keyboardPumpTask","_resizePumpTask","_terminalRootTask","_terminalAuthorityTask","_terminalDisposeTask"}
+                    .ToDictionary(n=>n,n=>((Task?)type.GetField(n,BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host))?.Status.ToString());
+                return new {main.IsUncertain,Disposition=main.Record?.Disposition.ToString(),ManagedTasks=tasks,
+                    InputDrain=(input?.GetType().GetField("DrainTask")?.GetValue(input) as Task)?.Status.ToString(),
                     LifecycleAcquired=typeof(GmSessionRunCoordinator).GetField("_stopLifecycle",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(main)!=null,
                     Pins=pins.Values.Cast<object>().Select(p=>(MainOperationReply)p.GetType().GetProperty("Reply",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(p)!).ToArray()};
             }
@@ -29,7 +35,10 @@ internal static partial class OwnedTerminalScenarioDriver
             typeof(GmSessionRunCoordinator).GetField("_stopLifecycle",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(main)!=null)
             throw new InvalidOperationException("Held original pin did not establish the separate drain-timeout boundary.");
         var physical=receipt.GetProperty("status").GetProperty("terminalStop");
-        if(!physical.GetProperty("cleanupComplete").GetBoolean() || physical.GetProperty("authorityRetained").GetBoolean())
+        if(physical.GetProperty("state").GetString()!="stopped-within-scope" ||
+            physical.GetProperty("identity").GetProperty("runId").GetString()!=terminal.Identity.RunId ||
+            physical.GetProperty("identity").GetProperty("rootPid").GetInt32()!=terminal.Identity.RootPid ||
+            !physical.GetProperty("cleanupComplete").GetBoolean() || physical.GetProperty("authorityRetained").GetBoolean())
             throw new InvalidOperationException("Controlled physical scope did not settle independently.");
         // First terminal close on the same retained connection. This cannot undo
         // already-established Uncertain or mint a second original stop/epoch.
@@ -37,6 +46,7 @@ internal static partial class OwnedTerminalScenarioDriver
         evidence["AfterOriginalClose"]=Snapshot();
         if(!main.IsUncertain || main.Record?.Disposition==GmSessionRunDisposition.Stopped)
             throw new InvalidOperationException("A late close repainted the original drain timeout as logical success.");
-        evidence["LogicalStopConfirmed"]=false;evidence["OriginalShutdownAttempts"]=1;
+        evidence["LogicalStopConfirmed"]=false;evidence["OriginalRpcShutdownAttempts"]=1;
+        evidence["RetainedCleanupCallsRemainInFinallyAndDispose"]=true;
     }
 }

@@ -67,6 +67,7 @@ if controlled_refusal:
     settings['GmCliInputProfile']={'IdleMarker':'NEUTRAL READY','PromptPrefix':'> ','WorkingMarker':'NEUTRAL WORKING','ObservationTimeoutMilliseconds':1800}
     (session/'config.json').write_text(json.dumps(settings,indent=2,ensure_ascii=False)+'\n')
 start=time.monotonic(); peers=[]; journal=[]; original=None; original_record=None; shutdown_attempts=0;cleaning=False;client_exit_attempted=False;client_failure_offset=None;active_phase_deadline=None
+offset=0 # Defined even when the first client startup observation fails.
 result={'AcceptedGameTurns':0,'GenuineActionsSent':0,'GateAnswers':0,'QueryAnswers':0,'ConfiguredModel':'opencode/ling-3.1-flash-free',
         'ConfiguredCommand':command,'ConfiguredCwd':str(session),'NoReadyOverride':True,'OrdinaryNewGame':False,'LogicalLifecycleVerified':False}
 if controlled_refusal:result.update(ConfiguredModel='fixed-inert-no-provider',ControlledRefusal=True,ProviderCalls=0)
@@ -335,7 +336,18 @@ finally:
                     # a GM trust/access/update gate. Acknowledge at most once.
                     text=client.text(offset)
                     fresh_screen='Продолжить' in text or ('Ваш ход' in text and '🌊 > ' in text)
-                    return fresh_screen and (pause_acknowledged or (cancel_sent and not (session/'input/turn_request.json').exists()))
+                    pause_at=text.rfind('Нажмите любую клавишу для продолжения...')
+                    screen_at=max(text.rfind('Продолжить'),text.rfind('🌊 > '))
+                    if pause_at>=0 and screen_at>pause_at and fresh_screen:
+                        # Coalesced output already advanced beyond the pause. An
+                        # Enter now would target the new player prompt, not the pause.
+                        result['ClientSettlement']='error-pause already left; rollback not established'
+                        return True
+                    cancelled='Изменения отменены, прежнее состояние восстановлено.' in text
+                    pending_absent=not any((session/p).exists() for p in ['input/turn_request.json',
+                        'game_state/control/pending_turn_snapshot.json','game_state/control/pending_turn_snapshot.authority.json',
+                        'game_state/control/pending_turn_snapshot'])
+                    return fresh_screen and (pause_acknowledged or (cancel_sent and cancelled and pending_absent))
                 settlement=PhaseWait(time.monotonic(),active_phase_deadline)
                 while not settled():
                     text=client.text(offset)

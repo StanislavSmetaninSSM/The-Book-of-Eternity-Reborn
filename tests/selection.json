@@ -7,6 +7,13 @@
       "contracts": [
         "T043-DRIVER-PROVIDER-FAILURE"
       ]
+    },
+    {
+      "category": "gm-live-driver-phase-boundaries",
+      "reason": "Causal review findings in same cleanup gate: early startup offset, coalesced pause/current prompt and missing rollback evidence",
+      "contracts": [
+        "T043-DRIVER-PROVIDER-FAILURE"
+      ]
     }
   ]
 }

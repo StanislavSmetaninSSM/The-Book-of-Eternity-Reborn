@@ -14,6 +14,12 @@ internal static class ProductionMainLinuxFixture
     {
         Assert.True(OperatingSystem.IsLinux(),"M1 requires actual Linux execution.");
         var repo=TestRepoPaths.RepoRoot;var folder=Path.Combine(repo,"TestResults/production-main",Guid.NewGuid().ToString("N"));Directory.CreateDirectory(folder);
+        if(mode=="driver-provider-refusal") {
+            // TMPDIR contains the native private AF_UNIX bootstrap and managed
+            // pipe socket. The controlled package needs a bounded byte-length root.
+            var own=Path.Combine("/tmp","ld-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(own);
+            File.WriteAllText(Path.Combine(folder,"controlled-root.json"),JsonSerializer.Serialize(new {Root=own,OwnFixtureOnly=true}));folder=own;
+        }
         var package=Path.Combine(folder,"package");var ship=Path.Combine(folder,"ship");var root=Path.Combine(folder,"root");Directory.CreateDirectory(root);
         async Task Prepare(string exe,string[] args,string name,int seconds=50)
         {
@@ -57,7 +63,7 @@ internal static class ProductionMainLinuxFixture
                 InertOnly=true,ProviderCalls=0,SourceCheckoutAtPlayerStartup=false
             }));
             var controlled=new ProcessStartInfo(Path.Combine(package,"host-guardian")){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true};
-            controlled.Environment["PATH"]=playerBin;controlled.Environment["TERM"]="dumb";
+            controlled.Environment["PATH"]=playerBin;controlled.Environment["TERM"]="dumb";controlled.Environment["BOE_BOOTSTRAP_DIAGNOSTIC"]="1";
             foreach(var arg in new[]{"--live-turn",Path.Combine(folder,"guardian.json"),"300000","/usr/bin/python3",Path.Combine(repo,"tests/fixtures/ProductionMain/live-game-one-turn.py"),folder,"--controlled-provider-refusal"})controlled.ArgumentList.Add(arg);
             using var process=Process.Start(controlled)!;
             await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(process,TimeSpan.FromSeconds(305),Path.Combine(folder,"guardian.log"));
