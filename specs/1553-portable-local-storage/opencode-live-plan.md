@@ -169,3 +169,14 @@ and repeats the bounded current-frame drain/check after the socket connects,
 immediately before its one send. A legitimate partial/full redraw outside this
 strict fixture shape is allowed to fail observation; it must not be retried or
 reported as readiness. Runtime renderer qualification remains separate.
+
+Focused source PASS atfcef74fcec400d407b3097492cf498f7957cc240 preceded one
+executed diagnostic. It refused the intermediate empty frame at6.412seconds
+before any paste/editor input; captured1368bytes and one complete empty frame.
+Manual/model/submit/editor invocation counts0. Original scoped stop/retirement,
+durable Stopped/ACK, PTY EOF/termios and guardianECHILD/0emergency confirmed;
+driverExit1 reflects observation refusal, not a cleanup failure.
+[Exact receipt](recovery/evidence/opencode-q1/draft-pending/manifest.json).
+This is an early observation-driver failure, not causal RED for a runtime defect.
+The next driver must wait boundedly for the known completed startup frame instead
+of asserting readiness of its presentation at second6. No unchanged retry.

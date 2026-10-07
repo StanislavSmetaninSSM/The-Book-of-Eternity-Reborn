@@ -2,7 +2,10 @@
 
 Source #1553: [OpenCode live plan](opencode-live-plan.md) tracks owner-authorized
 official workspace installation and a separate free-model test profile. Current
-inventory/version are preparation, not provider/gameplay acceptance. The bounded
+inventory/version are preparation, not provider/gameplay acceptance. Two bounded
+startup observations have original stop/ACK/ECHILD0; full-draft observation and
+readiness still unqualified, input/model/game turns0. [Intermediate-frame refusal](recovery/evidence/opencode-q1/draft-pending/manifest.json).
+The bounded
 [early-exit plan](main-terminal-early-exit-plan.md) is implemented at9340ff08 with
 independent source/evidence PASS and6/6 scoped Linux checks; no old cohorts repeated.
 Original terminal/pidfd/scoped stop/main+worker+generation fence remain required.
