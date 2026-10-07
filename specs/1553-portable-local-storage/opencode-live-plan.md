@@ -643,3 +643,19 @@ diff validation only; no repeated runtime tests. Completed og1 guardian proves
 ECHILD/emergency0; all678 package file byte hashes verified before moving
 _runtime to fresh og2, no game/config/state copied. Next probe source is this
 checkpoint, runtime2e9f66e0 unchanged and actual initial CLI/provider/turns0.
+
+Actualfc1dda09 ordinary NewGame completed and bootstrap cancellation unwound;
+original OpenCode Ready derived without query/gate answers. Continue then refused
+"Main run metadata or original owner admission is unavailable" before player
+prompt/action, daemon turns0/model0. Original same-identity StopACK/Stopped,
+all pipe+PTY EOF/termios; guardianECHILD/driver1/emergency0/failures0.
+Receipt connected-startup-client-pin-red captures62 owned public artifacts.
+Source gap: HasCurrentSession/Continue invoke mutating
+NormalizeRuntimeUiArtifactsAsync outside participating SessionOperationContext;
+RefreshRuntimeStateAsync similarly initializes progression outside that boundary.
+Proposed narrow slice: reuse existing participating wrapper around those whole
+bounded methods; unchanged cores and generation/worker conjunction, no UI/IPC
+under filesystem locks, no pin minted from status. Add actual GameEngine methods
+under original production owner with ClosedObserved receipts and Stopping refusal
+before effects, plus selected source invariant if method signature changes.
+Independent Sol plan review pending; no runtime changes yet.
