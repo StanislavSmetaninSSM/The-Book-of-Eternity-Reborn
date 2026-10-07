@@ -2,6 +2,29 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-synchronized-terminal-foreground",
+      "responsibility": "Exact original foreground fixture latches complete Running expectation, actual inputs/resize/EOF and sole typed shutdown",
+      "excludes": "No other legacy cohort, CLI/provider/gameplay or native Windows",
+      "changeHints": [
+        "tests/fixtures/LinuxTerminal/foreground.py"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.ActualProgram_ForegroundConsoleInputsResizeEofAndScopedStop"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-synchronized-terminal-probe-authority",
       "responsibility": "Exact remaining startup OSC66 probe phase and unmodelled cursor refusal before paint/save/commit",
       "excludes": "No general terminal emulation, automatic witness/dispatch, CLI/provider/gameplay or old cohorts",
@@ -113,7 +136,6 @@
           "tests": [
             "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedView_PartialUtf8AndUnsupportedVtCannotBorrowIdle",
             "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ProfileMutation_DoesNotChangeFrozenSubmitSequence",
-            "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.ActualProgram_ForegroundConsoleInputsResizeEofAndScopedStop",
             "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.ActualBridge_PipeDispatchConsumesOriginalTerminalView"
           ]
         }

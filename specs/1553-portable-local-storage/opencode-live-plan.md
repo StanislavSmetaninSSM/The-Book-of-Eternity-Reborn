@@ -368,3 +368,12 @@ This corrects a legacy fixture gap; runtime stop identity admission is unchanged
 Independent consultation rejected stock manual Q2 shortcut: daemon exposes no
 exact generated payload and typed refusal exits normal response wait. Continue
 connected original-operation witness; never reinterpret NotWritten as delivery.
+
+Fresh6431d7b0 run completes32/32PASS, four descriptors, zero duplicate IDs,
+owned cleanup complete; both actual native fixtures guardianECHILD0emergency/
+0failures/no deadline. [Receipt](recovery/evidence/opencode-connected/presentation-qualified-green/manifest.json).
+Runtime identical reviewed e722339e. This qualifies only bounded presentation,
+not automatic Ready/witness/provider/game. Foreground fixture final failure-only
+correction refuses any shutdown without its already-latched original identity,
+records transport stage and never replays. One exact fresh category selected;
+32 unchanged passing cases are excluded.

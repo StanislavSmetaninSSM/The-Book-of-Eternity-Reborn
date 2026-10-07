@@ -37,10 +37,16 @@ def shutdown_once():
  global shutdown_attempted
  if shutdown_attempted: return None
  shutdown_attempted=True
- request={'command':'shutdown'}
- if original_identity is not None:
-  request.update(expectedMainIdentity=original_identity,rootKey=original_identity['rootKey'])
- response=rpc(request);result['ShutdownReceipt']=response
+ if original_identity is None:
+  result['ShutdownFailure']={'stage':'before-connect','reason':'Original Running identity not observed; no shutdown sent.'}
+  raise RuntimeError('Original Running shutdown expectation unavailable.')
+ request={'command':'shutdown','expectedMainIdentity':original_identity,'rootKey':original_identity['rootKey']}
+ try:
+  response=rpc(request)
+ except Exception as ex:
+  result['ShutdownFailure']={'stage':'connect-send-or-read','reason':type(ex).__name__+': '+str(ex)}
+  raise
+ result['ShutdownReceipt']=response
  return response
 try:
  guardian=subprocess.Popen([str(package/'host-guardian'),str(package/'guardian.json'),'15000',str(dotnet),str(bridge),

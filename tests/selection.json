@@ -2,35 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-synchronized-terminal-probe-authority",
-      "reason": "Changed shared probe cursor, grammar, retained geometry and redirected resize; exact affected consumer failures and transcript contracts need fresh GREEN",
+      "category": "gm-synchronized-terminal-foreground",
+      "reason": "Changed failure-only shutdown branch must refuse missing original identity and retain transport-stage failure;32 successful checks not repeated",
       "contracts": [
         "T043-OPENCODE-LIVE-BOUNDED",
-        "T041-owned-terminal-view"
-      ]
-    },
-    {
-      "category": "gm-synchronized-terminal-presentation",
-      "reason": "Changed shared probe cursor, grammar, retained geometry and redirected resize; exact affected consumer failures and transcript contracts need fresh GREEN",
-      "contracts": [
-        "T043-OPENCODE-LIVE-BOUNDED",
-        "T041-owned-terminal-view"
-      ]
-    },
-    {
-      "category": "gm-synchronized-terminal-boundaries",
-      "reason": "Changed shared probe cursor, grammar, retained geometry and redirected resize; exact affected consumer failures and transcript contracts need fresh GREEN",
-      "contracts": [
-        "T043-OPENCODE-LIVE-BOUNDED",
-        "T041-owned-terminal-view"
-      ]
-    },
-    {
-      "category": "gm-synchronized-terminal-affected",
-      "reason": "Changed shared probe cursor, grammar, retained geometry and redirected resize; exact affected consumer failures and transcript contracts need fresh GREEN",
-      "contracts": [
-        "T043-OPENCODE-LIVE-BOUNDED",
-        "T041-owned-terminal-view"
+        "T041-original-main-fence"
       ]
     }
   ]
