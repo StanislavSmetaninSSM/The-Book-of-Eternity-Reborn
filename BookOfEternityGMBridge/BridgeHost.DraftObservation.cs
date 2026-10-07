@@ -43,7 +43,7 @@ internal sealed partial class BridgeHost
         op.FirstEdge=first[..Math.Min(24,first.Length)];op.LastEdge=last[Math.Max(0,last.Length-24)..];
         op.ExistingDrafts=entries;return true;
     }
-    private static bool SupportedMiniGlyph(char c)=>c is >= ' ' and <= '~' or >= '\u00a0' and <= '\u024f' or >= '\u0370' and <= '\u052f';
+    private static bool SupportedMiniGlyph(char c)=>SynchronizedTerminalScreen.SupportedCell(c);
 
     private async Task ServeDraftObservationAsync(NamedPipeServerStream stream,MainOperationReader reader,BridgeRequest request,CancellationToken token)
     {
@@ -72,7 +72,14 @@ internal sealed partial class BridgeHost
             if(!Convert.FromBase64String(proof.Bytes).AsSpan().SequenceEqual(Encoding.UTF8.GetBytes(op.Snapshot.Text)))throw new IOException("Actual immutable bytes mismatch.");
             lock(_sync)if(!PromptStillOwned(op) || op.Result!=null || !op.DraftArmed)throw new IOException("Original operation revoked before ACK.");
             await MainOperationReader.WriteAsync(stream,new {ok=true},linked.Token);
-            // Helper only closes this connection after its ACK and final unchanged read.
+            var completed=await reader.ReadAsync<JsonElement>(linked.Token);
+            if(completed.ValueKind!=JsonValueKind.Object || completed.GetProperty("command").GetString()!="draftComplete" ||
+                completed.GetProperty("nonce").GetString()!=nonce || completed.GetProperty("path").GetString()!=proof.Path ||
+                DraftObservation.Read(op.Snapshot.Profile.DraftDirectory,proof.Path)!=proof)
+                throw new IOException("Actual helper final read did not complete on this original connection.");
+            lock(_sync)if(!PromptStillOwned(op) || op.Result!=null)throw new IOException("Original operation lost before completion ACK.");
+            await MainOperationReader.WriteAsync(stream,new {ok=true,nonce},linked.Token);
+            // EOF settles a positively completed original connection, never supplies success itself.
             if(await reader.ReadAsync<JsonElement?>(linked.Token)!=null)throw new IOException("Unexpected observer continuation.");
             lock(_sync)if(!PromptStillOwned(op) || op.Result!=null)throw new IOException("Original operation lost before completion.");
             op.DraftProof.TrySetResult(proof);
@@ -88,16 +95,19 @@ internal sealed partial class BridgeHost
     {
         long version;
         lock(_sync){if(!PromptStillOwned(op) || !IsMiniEdge(op,false))return false;version=PromptObservationVersion;op.DraftArmed=true;}
-        await WriteToPtyAsync(op.Input,"\u0018e",false,token);
+        await WriteMiniGestureAsync(op,"\u0018e",()=>IsMiniEdge(op,false),token);
         var proof=await op.DraftProof.Task.WaitAsync(TimeSpan.FromMilliseconds(op.Snapshot.Profile.ObservationTimeoutMilliseconds),token);
-        if(!await ObservePromptAsync(op,version,screen=>!File.Exists(proof.Path) && MiniDraftRegion(op,out _,out _,out _),token))return false;
+        if(!await ObservePromptAsync(op,version,screen=>DraftObservation.IsAbsent(op.Snapshot.Profile.DraftDirectory,proof.Path) && MiniDraftRegion(op,out _,out _,out _),token))return false;
         lock(_sync){if(!PromptStillOwned(op))return false;version=PromptObservationVersion;}
-        await WriteToPtyAsync(op.Input,"\u001b[H",false,token);
+        await WriteMiniGestureAsync(op,"\u001b[H",()=>DraftObservation.IsAbsent(op.Snapshot.Profile.DraftDirectory,proof.Path) && MiniDraftRegion(op,out _,out _,out _),token);
         if(!await ObservePromptAsync(op,version,_=>IsMiniEdge(op,true),token))return false;
         lock(_sync){if(!PromptStillOwned(op))return false;version=PromptObservationVersion;}
-        await WriteToPtyAsync(op.Input,"\u001b[F",false,token);
+        await WriteMiniGestureAsync(op,"\u001b[F",()=>DraftObservation.IsAbsent(op.Snapshot.Profile.DraftDirectory,proof.Path) && IsMiniEdge(op,true),token);
         if(!await ObservePromptAsync(op,version,_=>IsMiniEdge(op,false),token))return false;
         lock(_sync)op.DraftArmed=false;
         return true;
     }
+
+    private Task WriteMiniGestureAsync(PromptOperation op,string bytes,Func<bool> currentView,CancellationToken token)
+        => WriteToPtyCoreAsync(op.Input,bytes,false,token,()=>PromptStillOwned(op) && currentView());
 }

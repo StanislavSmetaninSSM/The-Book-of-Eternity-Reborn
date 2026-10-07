@@ -485,3 +485,17 @@ queued Enter and combining/format glyph failures now causally established. Broke
 symlink is already treated as present; one new isolated denied-parent removal
 case tests the actual access-error-vs-absence defect before changing that boundary.
 No protected permissions/system settings or CLI/model/game requests.
+
+Denied-parent dd1a272a adds1/1causal FAIL through actual original operation:
+File.Exists false led to SubmissionObserved despite inaccessible own directory.
+All five review findings now have causal baseline. Fix WIP requires nonce-bound
+post-final-read completion/final original ACK before EOF settlement; actual
+no-follow ENOENT beneath acquired directory; consumed parser glyph predicate;
+exact pinned current first busy footer/empty textarea/full outside frame. Unknown
+post-submit panes remain UnknownOutcome, never ready. Actual original writer
+core checks mini owner/current view after semaphore acquisition before every
+paste/editor/Home/End/Enter reservation; Enter phase/version linearize there.
+Existing four-argument writer API and default paths remain; no second writer.
+Controlled busy fixture corrected to pinned spinner/gap, cleared one-row composer;
+no actual OpenCode busy claim. Five narrow categories18cases pending, source
+review pending; still0genuine CLI/provider/game processing in this continuation.

@@ -36,17 +36,34 @@ internal static class DraftObservation
             var ack=await reader.ReadAsync<ObserverAck>(deadline.Token)??throw new IOException("Observer acknowledgement lost.");
             if(!ack.Ok)throw new IOException("Original operation rejected draft evidence.");
             if(Read(directory,args[1])!=proof)throw new IOException("Actual draft changed before observer completion.");
+            await MainOperationReader.WriteAsync(pipe,new {command="draftComplete",nonce=hello.Nonce,path=proof.Path},deadline.Token);
+            var complete=await reader.ReadAsync<ObserverAck>(deadline.Token)??throw new IOException("Original completion ACK lost.");
+            if(!complete.Ok || complete.Nonce!=hello.Nonce)throw new IOException("Original completion refused.");
             return 0;
         } catch(Exception ex) { Console.Error.WriteLine("Read-only draft observation refused: "+ex.GetType().Name);return 2; }
     }
     internal sealed record ObserverAck(bool Ok,string? Nonce=null);
 
-    internal static DraftFileProof Read(string directory,string path)
+    internal static bool IsAbsent(string directory,string path)
+    {
+        ValidatePath(directory,path);
+        using var parent=OpenDirectory(directory);
+        if(Statx(parent.DangerousGetHandle().ToInt32(),System.IO.Path.GetFileName(path),0x100,1,out _)==0)return false; // AT_SYMLINK_NOFOLLOW
+        if(Marshal.GetLastPInvokeError()==2)return true; // Actual ENOENT beneath the acquired original directory.
+        throw new IOException("Actual editor absence was not established.");
+    }
+
+    private static void ValidatePath(string directory,string path)
     {
         if(!OperatingSystem.IsLinux() || !Path.IsPathFullyQualified(directory) || !Path.IsPathFullyQualified(path) ||
             directory!=Path.GetFullPath(directory) || path!=Path.GetFullPath(path) || Path.GetDirectoryName(path)!=directory ||
             !Regex.IsMatch(Path.GetFileName(path),@"\A[0-9]{1,20}\.md\z",RegexOptions.CultureInvariant))
             throw new InvalidDataException("Actual editor file is outside the allowed direct temporary directory.");
+    }
+
+    internal static DraftFileProof Read(string directory,string path)
+    {
+        ValidatePath(directory,path);
         // Walk only this allowed directory's ancestors using original directory
         // descriptors; never follow a renamed/symlinked ancestor into another tree.
         using var parent=OpenDirectory(directory);

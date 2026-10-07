@@ -8,7 +8,11 @@ internal sealed partial class BridgeHost
     private bool IsMiniEmptyIdle(GmCliInputProfile profile)
     {
         var view=CaptureTerminalView();
-        if(!profile.IsSupported || _inputLifetime is not {ManualTakeover:false,MiniPasteAttempted:false} || !view.Reliable || !view.CursorVisible || view.PendingWrap || view.Cells==null || view.Foreground==null || view.CursorColumn!=0)
+        return _inputLifetime is {ManualTakeover:false,MiniPasteAttempted:false} && IsMiniInitialFrame(profile,view);
+    }
+    private static bool IsMiniInitialFrame(GmCliInputProfile profile,TerminalViewObservation view)
+    {
+        if(!profile.IsSupported || !view.Reliable || !view.CursorVisible || view.PendingWrap || view.Cells==null || view.Foreground==null || view.CursorColumn!=0)
             return false;
         var rows=view.Cells;var footer=view.CursorRow+2;
         if(footer>=rows.Length || !MiniIdleFooter(profile,rows[footer]) || rows[footer-1].Any(c=>c!=' '))return false;
@@ -59,7 +63,13 @@ internal sealed partial class BridgeHost
     private bool IsMiniWorking(GmCliInputProfile p)
     {
         var v=CaptureTerminalView();
-        return v.Reliable && v.Cells!=null && v.Cells.Any(row=>row.StartsWith(" BUILD  ",StringComparison.Ordinal) &&
-            row.Contains("esc interrupt",StringComparison.Ordinal) && row.EndsWith("ctrl+p cmd ",StringComparison.Ordinal));
+        var start=p.StartupBannerLines.Length;var footer=start+2;
+        if(!v.Reliable || v.PendingWrap || v.Cells==null || footer>=v.Cells.Length || v.CursorRow!=start || v.CursorColumn!=0)return false;
+        for(var i=0;i<start;i++)if(p.StartupBannerLines[i].Length>v.Columns || v.Cells[i]!=p.StartupBannerLines[i].PadRight(v.Columns))return false;
+        if(v.Cells[start].Any(c=>c!=' ') || v.Cells[start+1].Any(c=>c!=' ') || v.Cells.Skip(footer+1).Any(row=>row.Any(c=>c!=' ')))return false;
+        var row=v.Cells[footer];const string suffix="ctrl+p cmd ";const string marker=" esc interrupt";
+        return row.Length>=40 && row.StartsWith(" BUILD  ",StringComparison.Ordinal) && row[8] is >= '\u2800' and <= '\u28ff' &&
+            row.AsSpan(9,marker.Length).SequenceEqual(marker) && row.EndsWith(suffix,StringComparison.Ordinal) &&
+            row.AsSpan(9+marker.Length,row.Length-9-marker.Length-suffix.Length).IndexOfAnyExcept(' ')<0;
     }
 }

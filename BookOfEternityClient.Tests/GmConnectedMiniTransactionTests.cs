@@ -133,7 +133,7 @@ public sealed class GmConnectedMiniTransactionTests
             if(bytes=="\r" && mode=="busy-panel"){
                 screen.Feed(Encoding.UTF8.GetBytes("\u001b[?2026h\u001b[2;1H\u001b[KUnexpected decision needed\u001b[13;1H\u001b[K"+" BUILD  ⠋ esc interrupt".PadRight(89)+"ctrl+p cmd "+"\u001b[6;1H\u001b[?2026l"));return;
             }
-            if(bytes=="\r")screen.Feed(Encoding.UTF8.GetBytes(mode=="unknown"?"\u001b[?1049h":"\u001b[?2026h\u001b[13;1H\u001b[K"+" BUILD  ⠋ esc interrupt".PadRight(89)+"ctrl+p cmd "+"\u001b[6;1H\u001b[?2026l"));
+            if(bytes=="\r")screen.Feed(Encoding.UTF8.GetBytes(mode=="unknown"?"\u001b[?1049h":"\u001b[?2026h\u001b[H\u001b[2J\u001b[2;1H█▀▀█  OpenCode\u001b[3;1H█  █  /workspace/qualification-1553-opencode-q1/empty-cli-scratch\u001b[4;1H▀▀▀▀\u001b[8;1H"+" BUILD  ⠋ esc interrupt".PadRight(89)+"ctrl+p cmd "+"\u001b[6;1H\u001b[?2026l"));
         };
         Assert.True((await h.Rpc(new {command="setReady",ready=true})).GetProperty("ok").GetBoolean());
         JsonElement result;

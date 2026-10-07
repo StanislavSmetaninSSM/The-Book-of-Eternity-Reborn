@@ -1026,7 +1026,10 @@ internal sealed partial class BridgeHost : IDisposable
         }
     }
 
-    private async Task WriteToPtyAsync(InputLifetime input, string text, bool appendEnter, CancellationToken cancellationToken)
+    private Task WriteToPtyAsync(InputLifetime input, string text, bool appendEnter, CancellationToken cancellationToken)
+        =>WriteToPtyCoreAsync(input,text,appendEnter,cancellationToken,null);
+
+    private async Task WriteToPtyCoreAsync(InputLifetime input, string text, bool appendEnter, CancellationToken cancellationToken,Func<bool>? currentView)
     {
         var bytes = Encoding.UTF8.GetBytes(appendEnter ? text + "\r" : text);
         lock (_sync)
@@ -1051,6 +1054,7 @@ internal sealed partial class BridgeHost : IDisposable
                 linked.Token.ThrowIfCancellationRequested();
                 if (_inputClosed || !ReferenceEquals(_inputLifetime, input) || input.Revoked || _pty?.AuthorityLost.IsCompleted == true || _pty?.RootExited.IsCompleted == true)
                     throw new InputLifetimeUnavailableException();
+                if(currentView!=null && !currentView())throw new IOException("Original automatic frame changed before its actual byte reservation.");
                 started = true; // Reservation linearizes before revocation; failures after it are uncertain.
             }
             await input.Input.WriteAsync(bytes, 0, bytes.Length, linked.Token);

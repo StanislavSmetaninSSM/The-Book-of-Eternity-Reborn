@@ -2,8 +2,36 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "gm-connected-mini-transaction",
+      "reason": "Changed connected completion/current-writer/strict busy/removal/glyph mechanisms and actual helper wire; five original byte/cancel/manual/stale refusals genuinely affected; passed native env and old parser/readiness cohorts excluded",
+      "contracts": [
+        "T043-OPENCODE-LIVE-BOUNDED"
+      ]
+    },
+    {
+      "category": "gm-connected-mini-refusal",
+      "reason": "Changed connected completion/current-writer/strict busy/removal/glyph mechanisms and actual helper wire; five original byte/cancel/manual/stale refusals genuinely affected; passed native env and old parser/readiness cohorts excluded",
+      "contracts": [
+        "T043-OPENCODE-LIVE-BOUNDED"
+      ]
+    },
+    {
+      "category": "gm-connected-mini-review-boundaries",
+      "reason": "Changed connected completion/current-writer/strict busy/removal/glyph mechanisms and actual helper wire; five original byte/cancel/manual/stale refusals genuinely affected; passed native env and old parser/readiness cohorts excluded",
+      "contracts": [
+        "T043-OPENCODE-LIVE-BOUNDED"
+      ]
+    },
+    {
       "category": "gm-connected-mini-absence-boundary",
-      "reason": "Seven reviewed boundaries execute1PASS6causalFAIL; broken symlink already retained as present, need one new causal inaccessible own parent for real File.Exists false; previous cases excluded",
+      "reason": "Changed connected completion/current-writer/strict busy/removal/glyph mechanisms and actual helper wire; five original byte/cancel/manual/stale refusals genuinely affected; passed native env and old parser/readiness cohorts excluded",
+      "contracts": [
+        "T043-OPENCODE-LIVE-BOUNDED"
+      ]
+    },
+    {
+      "category": "gm-external-draft-observation",
+      "reason": "Changed connected completion/current-writer/strict busy/removal/glyph mechanisms and actual helper wire; five original byte/cancel/manual/stale refusals genuinely affected; passed native env and old parser/readiness cohorts excluded",
       "contracts": [
         "T043-OPENCODE-LIVE-BOUNDED"
       ]

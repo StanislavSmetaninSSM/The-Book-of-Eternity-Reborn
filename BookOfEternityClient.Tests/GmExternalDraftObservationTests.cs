@@ -98,6 +98,10 @@ public sealed class GmExternalDraftObservationTests
             Assert.Equal("own-connected-operation",proof.GetProperty("nonce").GetString());
             Assert.Equal(Encoding.UTF8.GetBytes(text),Convert.FromBase64String(proof.GetProperty("bytes").GetString()!));
             await MainOperationReader.WriteAsync(pipe,new {ok=true},lifetime.Token);
+            var completed=await reader.ReadAsync<JsonElement>(lifetime.Token);
+            Assert.Equal("draftComplete",completed.GetProperty("command").GetString());
+            Assert.Equal("own-connected-operation",completed.GetProperty("nonce").GetString());
+            await MainOperationReader.WriteAsync(pipe,new {ok=true,nonce="own-connected-operation"},lifetime.Token);
             await child.WaitForExitAsync(lifetime.Token);Assert.Equal(0,child.ExitCode);
             Assert.Equal(text,await File.ReadAllTextAsync(file));
         } finally {

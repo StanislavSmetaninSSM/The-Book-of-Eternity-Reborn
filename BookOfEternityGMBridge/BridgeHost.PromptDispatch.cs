@@ -162,7 +162,8 @@ internal sealed partial class BridgeHost
             long version;
             lock (_sync) version = PromptObservationVersion;
             var text = operation.Snapshot.Text.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", profile.NewlineSequence);
-            await WriteToPtyAsync(operation.Input, profile.PasteStart + text + profile.PasteEnd, false, token);
+            if(profile.IsMini)await WriteMiniGestureAsync(operation,profile.PasteStart+text+profile.PasteEnd,()=>IsMiniInitialFrame(profile,CaptureTerminalView()),token);
+            else await WriteToPtyAsync(operation.Input, profile.PasteStart + text + profile.PasteEnd, false, token);
             lock (_sync) operation.Phase = PromptDeliveryPhase.AwaitingPaste;
             if (!await ObservePromptAsync(operation, version, screen => profile.IsMini ? IsMiniEdge(operation,false) : IsPastedView(profile, screen, text), token))
                 return FinishPrompt(operation, PromptDeliveryDisposition.DraftUncertain, reason, watch.ElapsedMilliseconds);
@@ -174,10 +175,15 @@ internal sealed partial class BridgeHost
                 if (!PromptStillOwned(operation)) throw new OperationCanceledException(token);
                 if (!(profile.IsMini ? IsMiniEdge(operation,false) : IsPastedView(profile, _promptScreenReader(), text)))
                     return FinishPrompt(operation, PromptDeliveryDisposition.DraftUncertain, "paste-view-changed", watch.ElapsedMilliseconds);
-                operation.Phase = PromptDeliveryPhase.SubmitStarted;
+                if(!profile.IsMini)operation.Phase = PromptDeliveryPhase.SubmitStarted;
                 version = PromptObservationVersion;
             }
-            await WriteToPtyAsync(operation.Input, profile.SubmitSequence, false, token);
+            if(profile.IsMini)await WriteMiniGestureAsync(operation,profile.SubmitSequence,()=>{
+                if(!IsMiniEdge(operation,false) || !operation.DraftProof.Task.IsCompletedSuccessfully ||
+                    !DraftObservation.IsAbsent(profile.DraftDirectory,operation.DraftProof.Task.Result.Path))return false;
+                operation.Phase=PromptDeliveryPhase.SubmitStarted;version=PromptObservationVersion;return true;
+            },token);
+            else await WriteToPtyAsync(operation.Input, profile.SubmitSequence, false, token);
             lock (_sync) operation.Phase = PromptDeliveryPhase.AwaitingSubmission;
             if (!await ObservePromptAsync(operation, version, screen => profile.IsMini ? IsMiniWorking(profile) : !IsBlockedView(profile, screen) &&
                     screen.Contains(profile.WorkingMarker, StringComparison.Ordinal) && !IsPastedView(profile, screen, text), token))
