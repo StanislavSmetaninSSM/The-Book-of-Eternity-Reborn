@@ -1,3 +1,7 @@
+# Current bounded Codex Q1 startup work
+
+Accepted desktop `428127226308b98b630074e05a839200dad748c0`; [Q1 plan](codex-q1-plan.md). Feasibility review precedes one necessary ordinary M1 startup/stop diagnostic in own empty scratch, unchanged `TERM=dumb`, no model prompt or automatic confirmation. Default input profile and neutral-v1 do not qualify Codex TUI. Q1 is WIP; runtime/tests remain unchanged. Primary systemd/Q2/live game/Windows are separate and open. Source: #1553.
+
 # Implementation Plan: Trusted local storage and cross-platform runtime
 
 ## Current bounded desktop helper slice
