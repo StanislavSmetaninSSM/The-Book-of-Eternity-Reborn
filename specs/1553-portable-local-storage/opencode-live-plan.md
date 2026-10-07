@@ -445,3 +445,9 @@ and no original manual takeover. MiniPasteAttempted consumes allowance under
 the original PasteStarted lock; no setReady/manual/new operation can rearm it.
 Legacy profiles remain separate. Four causal readiness checks selected; no CLI
 or provider/game run and no full witness/submit qualification yet.
+
+Initial-only readiness88bb9bc9 executes4/4GREEN, fresh build and owned cleanup.
+New connected baseline adds7 original pipe/witness/causal edge scenarios plus
+1 original native terminal environment under independent guardian. Real observer
+receives only actual file; controlled CLI frames are not live OpenCode evidence.
+Runtime witness/terminal env still unchanged; RED pending.

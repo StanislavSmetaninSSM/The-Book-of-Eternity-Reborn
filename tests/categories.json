@@ -16144,6 +16144,31 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-connected-mini-transaction",
+      "responsibility": "T043 actual original pipe, actual read-only observer, full unchanged draft, causal edges, single submit and absorbing cancel/manual/stale/unknown; actual native terminal environment under guardian",
+      "excludes": "No live OpenCode/provider/game acceptance; legacy successful cohorts excluded",
+      "changeHints": [
+        "BookOfEternityGMBridge/BridgeHost.MiniPresentation.cs",
+        "BookOfEternityGMBridge/DraftObservation.cs",
+        "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmConnectedMiniTransactionTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

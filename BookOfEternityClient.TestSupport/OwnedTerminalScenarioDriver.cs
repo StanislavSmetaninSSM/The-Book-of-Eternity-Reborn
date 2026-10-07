@@ -18,6 +18,23 @@ internal static partial class OwnedTerminalScenarioDriver
         IOwnedTerminalSession? session = null;
         try
         {
+            if(mode=="terminal-environment")
+            {
+                var start=new System.Diagnostics.ProcessStartInfo("/bin/sh"){UseShellExecute=false,WorkingDirectory=output};
+                start.ArgumentList.Add("-c");start.ArgumentList.Add("printf '%s\\n' \"$BOE_OWN_TERMINAL_SENTINEL\"; read own_input");
+                start.Environment["BOE_OWN_TERMINAL_SENTINEL"]="own-frozen-Ж";
+                var owner=await NativeLineageOwner.PrepareTerminalAsync(start,GmWorkerNativePackage.Validate(package),Guid.NewGuid().ToString("N"),80,25,CancellationToken.None);
+                session=new LinuxOwnedTerminalSession(owner);await owner.ReleaseTerminalAsync(CancellationToken.None);
+                using var bound=new CancellationTokenSource(TimeSpan.FromSeconds(5));
+                var bytes=new byte[1024];var observed=new StringBuilder();
+                while(!observed.ToString().Contains('\n')){var n=await session.OutputReader.ReadAsync(bytes,bound.Token);if(n==0)throw new EndOfStreamException();observed.Append(Encoding.UTF8.GetString(bytes,0,n));}
+                result["ActualEnvironment"]=observed.ToString();
+                var proof=await session.StopAndObserveAsync(bound.Token);result["StopState"]=proof.State.ToString();
+                while(await session.OutputReader.ReadAsync(bytes,bound.Token)!=0){}
+                await session.DisposeAsync();session=null;
+                if(!observed.ToString().Contains("own-frozen-Ж",StringComparison.Ordinal))throw new InvalidOperationException("Causal RED: terminal owner dropped the original host environment.");
+                result["Success"]=true;return 0;
+            }
             session = await OwnedTerminalSessionFactory.StartNeutralAsync(NeutralTerminalLaunch.Create(package,output), CancellationToken.None,
                 mode == "terminal-gated-fds" ? pid => {
                     var descriptors=Directory.GetFiles($"/proc/{pid}/fd").Select(Path.GetFileName).ToArray();

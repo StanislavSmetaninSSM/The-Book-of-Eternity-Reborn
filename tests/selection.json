@@ -2,15 +2,8 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-mini-idle-authority",
-      "reason": "Changed full-frame initial-only one-use mini readiness: exact placeholder/manual/blank/panel boundaries",
-      "contracts": [
-        "T043-OPENCODE-LIVE-BOUNDED"
-      ]
-    },
-    {
-      "category": "gm-mini-panel-refusal",
-      "reason": "Changed full-frame initial-only one-use mini readiness: exact placeholder/manual/blank/panel boundaries",
+      "category": "gm-connected-mini-transaction",
+      "reason": "New connected original-operation witnesses and dropped terminal environment have no existing positive qualification; prior four readiness successes excluded from this baseline",
       "contracts": [
         "T043-OPENCODE-LIVE-BOUNDED"
       ]

@@ -24,7 +24,7 @@ public sealed class GmExternalDraftObservationTests
         Assert.Empty(h.Input.Bytes);
     }
 
-    private static GmSynchronizedTerminalPresentationTests.ScreenProbe InstallMini(GmBridgePromptOperationTests.PromptHostFixture h)
+    internal static GmSynchronizedTerminalPresentationTests.ScreenProbe InstallMini(GmBridgePromptOperationTests.PromptHostFixture h)
     {
         var profile=new {TerminalPresentation="synchronized-mini-v1", DraftObservation="external-editor-v1", DraftDirectory=h.Root,
             IdleMarker=" BUILD",WorkingMarker="esc interrupt",PromptPrefix="",AutomaticSubmissionLimit=1,
