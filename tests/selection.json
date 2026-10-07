@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-console-newgame-cancel-validation",
-      "reason": "New og4 first action refused before staging; real bootstrap/cancel/preflight diagnostic records exact before/after validator errors. No runtime fix or repeated live startup before cause",
+      "category": "gm-daemon-foreground-stop",
+      "reason": "Independent new og4 originalUncertain shutdown hypothesis: actual isolated idle daemon oneCtrlC after originalActive pin, exact pin receipts and realterminal EOF/termios. Other causalbootstrap issue diagnosed separately; no priorcohorts",
       "contracts": [
         "T043-OPENCODE-LIVE-BOUNDED",
         "T041-RUN-FENCE-F2"

@@ -16388,6 +16388,31 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-daemon-foreground-stop",
+      "responsibility": "#1553 T043 actual idle foreground daemon terminal CtrlC with observed original active pin and scoped owner settlement",
+      "excludes": "No provider, request, user terminal, unrelated daemon cohorts, pin eviction or retry",
+      "changeHints": [
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "BookOfEternityClient/Launcher/gm_main_operation.ps1",
+        "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmDaemonForegroundStopTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

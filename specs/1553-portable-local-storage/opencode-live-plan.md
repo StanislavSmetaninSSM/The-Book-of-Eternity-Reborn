@@ -792,3 +792,24 @@ stopped at config.json absent before diagnostic/cancel/validator. No CLI/owner/
 provider. Add only real StateManager.BootstrapLocalStorageAsync, preserving
 ordinary initialization and same bounded diagnostic assertions; rerun justified
 by corrected preparation. Exact original run receipt retained.
+
+Actual f310f39b corrected preparation gives causal1FAIL, not a new CLI/provider
+attempt. Before initial cancel5 actual validatorErrors: coreValues count1
+(guardians[]/active), absent item identity index, absent wound index/history.
+After awaited ordinary cancel15Errors additionally show unusable leftover
+pending manifest and consequent guardian/realm/afterlife actor baseline refusal.
+Exact structured diagnostics archived newgame-cancel-causal-red. No validation
+weakening or invented replacement authority. Minimal pristine current-schema
+bootstrap/confirmed-cancel cleanup source review requested before fixes.
+The temporary push refusal was resolved by standard workspace activation and
+existing authorization; no credentials/config/auth grant change. f310 remote
+exact/8 changed-file byte readback clean confirmed.
+
+Independent Sol DESIGN PASS for separate gm-daemon-foreground-stop controlled
+originalneutralowner + actual shipped idle daemon in its own controllingPTY.
+Short locked immutable original-pin snapshots before signal/afteractualexitEOF/
+beforeownerstop. Sole CtrlC when an actual daemon pin observedActive; preserve
+any lost pin/Uncertain, no eviction/reconnect/timeouts as completion. An idle
+positive without Active would not exclude og4 race. Whole phase bound includes
+actualEOF/termios and both finally stop/drain paths; guardian30s unchanged.
+Only new category, no current successful console cohorts repeated.
