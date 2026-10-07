@@ -861,3 +861,12 @@ EOF/termios and guardianECHILD/emergency0 do not settle first pin. Five helper
 and four guards did NOT execute because runner stopped at first failure. Exact
 22artifacts archived daemon-foreground-sigint-red. Next actual PowerShell close
 path diagnostic/review required before another patch; no unchanged live retry.
+
+50842c59 new three-case cancellation diagnostic3FAIL is not yet causalRED:
+first ordinary corruption case timed out; its unawaited keyboard callback may
+throw into the existing fire-forget listener, leaving Spectre dynamic display
+active and poisoning two subsequent fixture preparation paths. Actual callback
+errors must be recorded and still consume the one Escape, then asserted after
+real taskcompletion. Fixture-only correction now catches callback failures and
+preserves their exact type; never treats timeout as success. Exact five artifacts
+retained player-cancel-diagnostic-preparation. No ordinary branch runtime change.

@@ -37,6 +37,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         });
         await InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", "Я осматриваю берег Моря Хаоса.")
             .WaitAsync(TimeSpan.FromSeconds(8));
+        Assert.Null(input.CallbackFailure);
         Assert.True(staged);
         Assert.Equal(1, input.EscapeReads);
         Assert.False(_fs.FileExists("input/turn_request.json"));
@@ -82,6 +83,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 await InvokePrivateAsync<bool>(engine, "WaitForGmResponse").WaitAsync(TimeSpan.FromSeconds(8));
         });
         Assert.Equal(1, input.EscapeReads);
+        Assert.Null(input.CallbackFailure);
         Assert.NotEmpty(expected);
         foreach (var (path, bytes) in expected)
             Assert.Equal(bytes, await _fs.ReadFileBytesAsync(path));
@@ -145,13 +147,20 @@ public sealed partial class GameEngineTurnLifecycleTests
     private sealed class NewGameCancelInput : IConsoleInputSource
     {
         private Action? _beforeEscape;
-        public void Arm(Action beforeEscape) { EscapeReads = 0; _beforeEscape = beforeEscape; }
+        public Exception? CallbackFailure { get; private set; }
+        public void Arm(Action beforeEscape) { EscapeReads = 0; CallbackFailure = null; _beforeEscape = beforeEscape; }
         public int EscapeReads { get; private set; }
         public bool IsScripted => true;
         public bool KeyAvailable => EscapeReads == 0;
         public ConsoleKeyInfo ReadKey(bool intercept = true)
         {
-            if (EscapeReads == 0) { _beforeEscape?.Invoke(); EscapeReads++; return Key(ConsoleKey.Escape); }
+            if (EscapeReads == 0)
+            {
+                EscapeReads++;
+                try { _beforeEscape?.Invoke(); }
+                catch (Exception failure) { CallbackFailure = failure; }
+                return Key(ConsoleKey.Escape);
+            }
             return Key(ConsoleKey.Enter);
         }
         public string? ReadLine() => null;
