@@ -7,7 +7,7 @@ qualification — доказательствами конкретного огр
 
 ## Current authorized slice: standalone Daren Linux
 
-Current bounded standalone Daren runtimeac01f773 and real sourcef2a7e0e1:41distinctscopedPASS (37new+4affected), actual public console QTE15actions, exact byte store/rollback, normalization/grant, no-op/pre-cancel, original admission and typed recovery/debt. Actual separate Sol design/source PASS; final evidence/restoration pending. [Handoff](daren-standalone-linux-handoff.md) · [Qualification](recovery/daren-standalone-linux-qualification.json). Fixed trusted-local profile route, existing B1 journal and worker/storage conditions retained. FullT031/T041/game/liveGM/saves/systemd/native Windows/Q1Q2/cold remain open; older pending standalone notes below are historical.
+Current bounded standalone Daren runtimeac01f773 and real sourcef2a7e0e1:41distinctscopedPASS (37new+4affected), actual public console QTE15actions, exact byte store/rollback, normalization/grant, no-op/pre-cancel, original admission and typed recovery/debt. Actual separate Sol design/source/final evidence PASS at39956419; candidate b97157ef restored independently, exact-tip writer verification follows final carrier publication. [Handoff](daren-standalone-linux-handoff.md) · [Qualification](recovery/daren-standalone-linux-qualification.json). Fixed trusted-local profile route, existing B1 journal and worker/storage conditions retained. FullT031/T041/game/liveGM/saves/systemd/native Windows/Q1Q2/cold remain open; older pending standalone notes below are historical.
 
 ## Current direct browser gacha Linux — bounded independent PASS
 

@@ -1,6 +1,6 @@
 {
   "Task": "T031-DAREN-STANDALONE-LINUX",
-  "Status": "Scoped execution/source/candidate restore PASS; final independent evidence verdict and exact-tip writer closure pending",
+  "Status": "Bounded Linux PASS; final carrier remote/readback and exact-tip fresh GitHub-only restoration are performed by writer after publishing and reported in final response",
   "AcceptedBase": "953c48f81f06ef78010bf668133e2b974934e142",
   "DesignReview": {
     "Model": "gpt-6.1-sol",
@@ -538,7 +538,8 @@
     "StaleSelectors": [],
     "TestsExecuted": 0,
     "FreshBuild": true,
-    "Mode": "ValidateCatalog discovery only; no full suite or other test execution"
+    "Mode": "ValidateCatalog discovery only; no full suite or other test execution",
+    "InventoryEntryMeaning": "11,050 discovered methods/files; discovery is not test qualification"
   },
   "CandidateRestoration": {
     "Commit": "b97157ef6154bb9b85d69176ab0674f63b9d10ba",
@@ -582,5 +583,30 @@
     "Commit": "b97157ef6154bb9b85d69176ab0674f63b9d10ba",
     "TrackedFilesByteCompared": 20686,
     "ReadOnlyFullFsck": true
-  }
+  },
+  "FinalEvidenceReview": {
+    "Verdict": "PASS",
+    "ReviewedCommit": "399564194f11e2ad336023fedceb971c2f5fa699",
+    "Agent": "/root/daren_standalone_final_evidence_review",
+    "Model": "gpt-6.1-sol",
+    "Reasoning": "xhigh",
+    "IndependentlyVerifiedManifests": 8,
+    "SourcePins": 391,
+    "Artifacts": 37,
+    "GzipPayloads": 15,
+    "LatestDistinctPassCases": 41,
+    "NewCases": 37,
+    "AffectedCases": 4,
+    "CandidateRestorationBytes": 20686,
+    "BlockingFindings": []
+  },
+  "FinalCarrierPolicy": {
+    "RuntimeAndTestsUnchanged": true,
+    "NormalNonForcePush": true,
+    "ExactRemoteShaAndIndependentChangedFileReadbackRequired": true,
+    "FreshGitHubOnlyExactTipRestoreRequired": true,
+    "PostPushProofLocation": "Owned host scratch and final writer response; no recursive self-SHA commit",
+    "NoTestsRepeatedForRestoration": true
+  },
+  "ProductOrAccessBlockers": []
 }

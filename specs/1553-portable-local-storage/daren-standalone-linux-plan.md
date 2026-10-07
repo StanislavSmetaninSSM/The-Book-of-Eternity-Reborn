@@ -1,6 +1,6 @@
 # T031-DAREN-STANDALONE-LINUX — minimal execution plan
 
-Issue [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553). Branch `codex/1553-load-filesystem`; accepted base `953c48f81f06ef78010bf668133e2b974934e142` (bounded direct browser gacha accepted by owner). User-facing date 2026-10-06 America/Los_Angeles. Sole writer `/root`; independent actual `gpt-6.1-sol/xhigh` design/source/evidence reviews. Status: design/source PASS and41distinct scoped cases PASS; final independent evidence review, final inventory and GitHub-only restoration pending.
+Issue [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553). Branch `codex/1553-load-filesystem`; accepted base `953c48f81f06ef78010bf668133e2b974934e142` (bounded direct browser gacha accepted by owner). User-facing date 2026-10-06 America/Los_Angeles. Sole writer `/root`; independent actual `gpt-6.1-sol/xhigh` design/source/evidence reviews. Status: bounded Linux PASS, actual independent Sol design/source/final evidence PASS at39956419,41distinct scoped cases PASS and candidate b97157ef restored. Exact-tip carrier checks are writer closure.
 
 ## Intent and retained contract
 
@@ -82,3 +82,7 @@ Atb1dc3e46cd618b90f2b496640aa753245bdfb0a7 official runner -PlanOnly -NoBuild di
 ## Mandatory catalog inventory and candidate restore
 
 Reviewer identified docs/testing.md121 mandatoryValidateCatalog evidence gap; no useroverride. Atb97157ef6154bb9b85d69176ab0674f63b9d10ba fresh official -ValidateCatalog completed0tests,ValidTrue/11,050methods/378categories/0unmapped/0stale; complete0 intentionallydiscovery. This is inventory, no fullsuite or repeatedruntime checks. Root audit now8manifests/391sourcepins/37artifacts/15gzip;41distinctlatestPASS unchanged. FreshGitHub-onlycandidateb971 independently checked20,686trackedbytes vsGitHubblobs/writer,cleanHEAD/tree/parent/fullfsck/noalternates/acceptedancestry; proofretained. Actual independent Sol evidence reviewer independently repeated fullbyte/fsck check. Final independent evidence verdict and exact-tip carrier restoration pending; no runtime/test diff.
+
+## Final verdict carrier
+
+Actual separate gpt-6.1-sol/xhigh final evidence/selection PASS at399564194f11e2ad336023fedceb971c2f5fa699:8manifests/391sourcepins/37artifacts/15gzip independently checked;41distinctlatestPASS (37new+4affected),44historicalexecutions=43PASS+1causalRED,cleanup/sourcecontinuity/catalog/candidate restoration verified. No blocking finding. Only boundedT031-DAREN-STANDALONE-LINUX marked complete; fullfeature remains open. Final carrier changes metadata only, no code/tests. Ordinary push/exactremoteSHA+byte readback, then independent freshGitHub-only exact tip restore/byte/tree/parent/fsck/clean proof in ownedhostscratch+writerfinal response; no recursive self-SHA commit and no tests repeated for restoration. Stop before new stage.

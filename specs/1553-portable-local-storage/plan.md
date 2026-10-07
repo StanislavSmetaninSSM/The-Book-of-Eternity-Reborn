@@ -6,7 +6,7 @@
 
 ## T031-DAREN-STANDALONE-LINUX — authorized plan checkpoint
 
-Accepted953c48f8; bounded runtimeac01f773, testsourcef2a7e0e1 and finalcategoryinventoryb1dc3e46.41distinctscopedPASS=37new+4affected across narrow sequential runs, original console/profile/rollback/recovery and main+worker+generation/session/browser admission; no unchanged whole cohorts. Actual Sol6.1/xhigh design/source PASS; final evidence/restoration pending. [Concrete plan](daren-standalone-linux-plan.md) · [Handoff](daren-standalone-linux-handoff.md). No gameplay/model/text/UX/setup/service/auth/network/cold change; original spec/recovery contract reused. Older next/pending sections remain historical.
+Accepted953c48f8; bounded runtimeac01f773, testsourcef2a7e0e1 and finalcategoryinventoryb1dc3e46.41distinctscopedPASS=37new+4affected across narrow sequential runs, original console/profile/rollback/recovery and main+worker+generation/session/browser admission; no unchanged whole cohorts. Actual Sol6.1/xhigh design/source/final evidence PASS at39956419; candidate b97157ef restored independently, exact-tip writer verification follows final carrier publication. [Concrete plan](daren-standalone-linux-plan.md) · [Handoff](daren-standalone-linux-handoff.md). No gameplay/model/text/UX/setup/service/auth/network/cold change; original spec/recovery contract reused. Older next/pending sections remain historical.
 
 ## T031-BROWSER-DIRECT-GACHA-LINUX — bounded independent PASS
 
