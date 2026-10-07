@@ -103,7 +103,7 @@ read-only environment inventory; no user buffer command ran.
   affected regression category if required, no console-explorer/e2e broad cohort.
   Update catalog structurally and current selection. All execution only via
   scripts/test-csharp.ps1; PlanOnly/ValidateCatalog discovery is not executed tests.
-- [ ] Source review; evidence receipts include exact source/hash/commands/executed
+- [x] Source review; evidence receipts include exact source/hash/commands/executed
   counts, fixture PID/arguments/deadline/cleanup, SDK/runtime/PowerShell provenance.
   Catalog validation, independent evidence/metadata review, final remote readback,
   fresh GitHub-only source restoration, handoff and stop.
@@ -150,4 +150,6 @@ Future runtime changes require rechecking that dependency. Test-host cleanup sen
 no numeric PID signal and uses its existing independent12s lifetime; unconfirmed
 exit retains original host/root and reports failure/debt, not successful cleanup.
 
-Execution checkpoint `b5255b1fb96e405eb1ed195c6437b16ad5788246`: final38new+12affected distinctPASS; catalog valid0executed. Source reviewer Sol PASS after stablepidfd and causal fixture corrections. Initial3causalRED and intermediate1culture-sensitive test assertion failure are preserved, not preparation failures. See [handoff](clipboard-linux-handoff.md) and [qualification](recovery/clipboard-linux-qualification.json). Independent evidence/metadata/fresh-restore closure remains pending at this carrier.
+Execution checkpoint `b5255b1fb96e405eb1ed195c6437b16ad5788246`: final38new+12affected distinctPASS; catalog valid0executed. Source reviewer Sol PASS after stablepidfd and causal fixture corrections. Initial3causalRED and intermediate1culture-sensitive test assertion failure are preserved, not preparation failures. See [handoff](clipboard-linux-handoff.md) and [qualification](recovery/clipboard-linux-qualification.json). Independent actual Sol evidence/metadata PASS at61a548ab; candidate GitHub-only restore20,755files verified. Final carrier metadata receives exact-tip push/readback/fresh restore before writer closure.
+
+Final bounded verdict: actual separate Sol design/source/evidence/metadata PASS; evidence and metadata reviewed at `61a548ab5def2ab5fb8136b8215918e7dce54b2f`. [Candidate proof](recovery/clipboard-linux-candidate-restore.json) records20,755byte comparisons, clean/fsck,14source/51artifact pins,0tests. Runtime/tests remain b5255b1f. Final exact-tip writer closure follows carrier publication; no further runtime execution/stage.

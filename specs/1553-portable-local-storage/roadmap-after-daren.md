@@ -3,7 +3,9 @@
 Текущая clipboard delta: runtime/tests `b5255b1fb96e405eb1ed195c6437b16ad5788246`
 дают50 distinct scoped PASS через синтетические reader bytes и реальные console
 consumers; [handoff](clipboard-linux-handoff.md) / [receipts](recovery/clipboard-linux-qualification.json).
-Independent design/source Sol PASS; evidence/metadata/restore closure ещё pending.
+Independent design/source/evidence/metadata Sol PASS; candidate61a548ab
+GitHub-only restore20,755files verified clean/fsck. Final carrier exact-tip
+push/readback/fresh restore precedes writer handoff.
 Положительная desktop/Windows qualification и полный T050 открыты. Таблица ниже
 остаётся принятым source-only audit базы Daren, до этой runtime delta; остальные
 границы и provenance не переаудировались.

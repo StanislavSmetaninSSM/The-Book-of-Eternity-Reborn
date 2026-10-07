@@ -6,7 +6,9 @@ Runtime/test `b5255b1fb96e405eb1ed195c6437b16ad5788246`:50 distinct PASS
 (38new+12affected), valid catalog/0 executed, independent actual Sol design/source
 PASS. [Handoff](clipboard-linux-handoff.md) / [qualification](recovery/clipboard-linux-qualification.json)
 record source pins, causal REDs, corrected test-assertion failure and original-root
-cleanup/debt. Evidence/metadata/restore closure pending. Actual desktop/native
+cleanup/debt. Independent evidence/metadata Sol PASS at61a548ab; candidate
+GitHub-only restore20,755files verified clean/fsck. Final carrier exact-tip
+push/readback/fresh restoration is writer closure. Actual desktop/native
 Windows, full T050, required systemd primary and remaining roadmap are open;
 historical source-only/next labels below keep their original checkpoint scope.
 

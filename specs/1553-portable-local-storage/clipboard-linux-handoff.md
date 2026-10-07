@@ -75,9 +75,15 @@ Actual separate GPT-6.1 Sol/xhigh design PASS at02639eb/29769082 and corrected
 identity plan75fed432; source PASS atb5255b1f. Root remains sole writer. Initial
 source BLOCK (PID signal race, noncausal fallback and missing byte/debt tests) was
 resolved and re-reviewed; no remaining confirmed source defect or essential gap.
-Independent evidence/metadata review and fresh GitHub-only restore are pending
-at this evidence carrier. Every checkpoint was ordinary pushed with exact remote
-SHA and changed-file byte readback. No merge/force/branch deletion/issue closure.
+Independent actual Sol evidence and metadata PASS at `61a548ab5def2ab5fb8136b8215918e7dce54b2f`:14source pins/51artifact hashes and50distinctPASS verified.
+[Candidate GitHub-only restore proof](recovery/clipboard-linux-candidate-restore.json):
+20,755tracked files byte-compared, clean/full fsck, no shallow/alternates, exact
+remote61a548ab. The [verifier](recovery/clipboard-linux-restore-verifier.py) takes
+expected SHA, fresh restored directory, proof destination and optional writer root.
+Final metadata carrier changes no runtime/test source; after ordinary push/readback,
+writer checks fresh restoration of its exact final tip and reports that SHA/proof.
+Every checkpoint was ordinary pushed with exact remote SHA and changed-file byte
+readback. No merge/force/branch deletion/issue closure.
 
 Stop before another block. Positive Wayland/X11 desktop and native Windows remain
 unqualified. Unsupported kernel/libc pidfd and other runtime versions are not newly

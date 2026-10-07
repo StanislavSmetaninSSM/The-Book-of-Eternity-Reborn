@@ -695,6 +695,20 @@
       "Verdict": "PASS",
       "Checkpoint": "b5255b1fb96e405eb1ed195c6437b16ad5788246",
       "PriorFinding": "Linux managed Process.Kill reaping/PID-reuse race; fixed by source-reviewed pidfd capture/self child-table barrier, no Linux PID fallback"
+    },
+    "Evidence": {
+      "Agent": "/root/clipboard_linux_final_evidence_review",
+      "Verdict": "PASS",
+      "Checkpoint": "61a548ab5def2ab5fb8136b8215918e7dce54b2f",
+      "Model": "gpt-6.1-sol",
+      "ReasoningEffort": "xhigh"
+    },
+    "Metadata": {
+      "Agent": "/root/clipboard_linux_metadata_review",
+      "Verdict": "PASS",
+      "Checkpoint": "61a548ab5def2ab5fb8136b8215918e7dce54b2f",
+      "Model": "gpt-6.1-sol",
+      "ReasoningEffort": "xhigh"
     }
   },
   "Limits": [
@@ -705,5 +719,16 @@
     "No actual PID-reuse race forced; kernel identity argument is source-backed; capture failure/debt is controlled real-process test",
     "No GM/provider/browser/Codex/Q1/Q2/systemd/audio/real saves/full game/cold guarantee/bridge paste-submit policy change"
   ],
-  "Closure": "Evidence/metadata review and fresh GitHub-only restoration pending at this evidence checkpoint"
+  "Closure": "Bounded source/evidence/metadata PASS and candidate GitHub-only restore verified. Final carrier is metadata-only; after ordinary push/readback the writer must verify fresh restoration of that exact final tip and report its SHA/proof. No further runtime tests or stage launch.",
+  "CandidateGitHubOnlyRestoration": {
+    "Checkpoint": "61a548ab5def2ab5fb8136b8215918e7dce54b2f",
+    "Proof": "recovery/clipboard-linux-candidate-restore.json",
+    "TrackedFilesByteCompared": 20755,
+    "Clean": true,
+    "FullFsck": true,
+    "LocalObjectOrCacheReuse": false,
+    "SourcePinsVerified": 14,
+    "EvidenceArtifactsVerified": 51,
+    "TestsExecuted": 0
+  }
 }

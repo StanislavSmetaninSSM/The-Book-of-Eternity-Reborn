@@ -10,7 +10,9 @@ errors/EOF preserve it and cause no automatic submit/replay. Windows command/STA
 adapter remains. Runtime/tests `b5255b1fb96e405eb1ed195c6437b16ad5788246`:
 38 new +12 affected distinct PASS, catalog valid/0 executed, independent Sol
 design/source PASS. [Plan](clipboard-linux-plan.md) · [Handoff](clipboard-linux-handoff.md).
-Evidence/metadata/fresh-restore closure is pending at this checkpoint. This is
+Independent evidence/metadata Sol PASS at61a548ab; candidate GitHub-only restore
+20,755files clean/fsck verified. Final metadata carrier receives exact-tip writer
+push/readback/fresh-restore closure before handoff. This is
 synthetic wiring qualification; desktop Wayland/X11 and native Windows are open.
 Linux cleanup depends on validated pidfd and reviewed .NET8.0.31 child-table
 synchronization; unsupported capability refuses honestly. Full T050/systemd/
