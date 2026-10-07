@@ -131,15 +131,27 @@ public sealed partial class BrowserDirectGachaLinuxBoundaryTests
         };
         BrowserPromptWriteResult? result = null;
         var failure = await Record.ExceptionAsync(async () => result = await fixture.PullAsync());
-        Assert.True(revoked); Assert.True(result?.Success != true);
-        if (result != null) Assert.Equal(CommandExecutionState.Failed, result.State);
-        if (failure is MainOperationContinuationException<BrowserPromptWriteResult> carrier)
-            Assert.Equal(MainOperationOutcome.Uncertain, carrier.EstablishedOutcome);
+        Assert.True(revoked);
+        if (failure == null)
+        {
+            Assert.NotNull(result); Assert.False(result.Success); Assert.Equal(CommandExecutionState.Failed, result.State);
+        }
+        else
+        {
+            var carrier = Assert.IsType<MainOperationContinuationException<BrowserPromptWriteResult>>(failure);
+            Assert.Equal(MainOperationOutcome.Uncertain, carrier.EstablishedOutcome); Assert.False(carrier.EstablishedResult.Success);
+        }
         Assert.Equal(newGeneration, File.ReadAllBytes(fixture.Files.SessionGenerationPath)); Assert.Equal(11, fixture.Feathers());
         Assert.Equal(fixture.BeforeSoul, File.ReadAllBytes(fixture.BackupPath()));
         Assert.NotEmpty(Directory.GetFiles(fixture.Files.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root), "browser_write_manifest.json", SearchOption.AllDirectories));
         Assert.Equal(fixture.BeforeHistory, File.ReadAllBytes(fixture.Files.ResolvePath("game_state/history/chat_log.json")));
+        var retained = Directory.GetFiles(fixture.Files.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root), "*", SearchOption.AllDirectories)
+            .Concat(new[] { fixture.Files.ResolvePath(BrowserPendingTurnInspector.TurnRequestPath),
+                fixture.Files.ResolvePath(BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath), fixture.Files.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath),
+                Path.Combine(fixture.Files.RuntimeRootPath, "trusted-local-publication-v1", "active.json") })
+            .Where(File.Exists).Distinct(StringComparer.Ordinal).ToDictionary(path => path, File.ReadAllBytes, StringComparer.Ordinal);
         Assert.NotNull(await Record.ExceptionAsync(() => Fresh(fixture).AcquireCanonicalWriteLeaseAsync()));
         Assert.Equal(newGeneration, File.ReadAllBytes(fixture.Files.SessionGenerationPath));
+        foreach (var evidence in retained) Assert.Equal(evidence.Value, File.ReadAllBytes(evidence.Key));
     }
 }

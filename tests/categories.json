@@ -68,8 +68,14 @@
         "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalRecovery.cs"
       ],
       "related": [
-        "browser-direct-gacha-linux",
-        "browser-direct-gacha-linux-boundaries"
+        {
+          "id": "browser-direct-gacha-linux",
+          "when": "Original long-lived backup/adoption paths change"
+        },
+        {
+          "id": "browser-direct-gacha-linux-boundaries",
+          "when": "Original schema7 or backup admission/recovery gates change"
+        }
       ],
       "requirements": {
         "frontendBuild": false,
