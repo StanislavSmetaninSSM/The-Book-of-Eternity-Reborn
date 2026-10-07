@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="d1b840e6-2ef7-4dc5-8abe-7223b82826db" name="@c7669543e9c7 2026-10-07 04:35:21" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-07T04:35:21.2911521+00:00" queuing="2026-10-07T04:35:21.2911521+00:00" start="2026-10-07T04:35:17.7928622+00:00" finish="2026-10-07T04:35:24.6916433+00:00" />
+  <TestSettings name="default" id="50d77ed3-fd1e-4eb1-b8d1-7f88841ef997">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-07_04_35_21" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="590d0ee2-7c62-4528-9305-52f950159b7a" testId="7420ae83-99eb-5f4d-1432-4ee98fbfcec6" testName="BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests.MissingOrNonexistentFirstRoot_ActualEarlyModeRefusesBeforeWrites(nonexistent: False)" computerName="c7669543e9c7" duration="00:00:01.4576506" startTime="2026-10-07T04:35:21.1884232+00:00" endTime="2026-10-07T04:35:21.1884376+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="590d0ee2-7c62-4528-9305-52f950159b7a" />
+    <UnitTestResult executionId="e43daaa9-1c11-47b1-9b54-2cb6c9a562b0" testId="32d0331e-903b-c485-7929-0a13bb76d76a" testName="BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests.ExistingDirectoryAction_CannotRedirectExplicitSessionRoot" computerName="c7669543e9c7" duration="00:00:02.0694065" startTime="2026-10-07T04:35:24.6132749+00:00" endTime="2026-10-07T04:35:24.6132751+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e43daaa9-1c11-47b1-9b54-2cb6c9a562b0" />
+    <UnitTestResult executionId="d32d81a6-32ff-4c5f-b4fa-365771a81130" testId="5bcc756c-6748-c346-5bee-8b13f9e9d08a" testName="BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests.MissingOrNonexistentFirstRoot_ActualEarlyModeRefusesBeforeWrites(nonexistent: True)" computerName="c7669543e9c7" duration="00:00:01.3534456" startTime="2026-10-07T04:35:22.5417657+00:00" endTime="2026-10-07T04:35:22.5417659+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d32d81a6-32ff-4c5f-b4fa-365771a81130" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests.MissingOrNonexistentFirstRoot_ActualEarlyModeRefusesBeforeWrites(nonexistent: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5bcc756c-6748-c346-5bee-8b13f9e9d08a">
+      <Execution id="d32d81a6-32ff-4c5f-b4fa-365771a81130" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests" name="MissingOrNonexistentFirstRoot_ActualEarlyModeRefusesBeforeWrites" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests.MissingOrNonexistentFirstRoot_ActualEarlyModeRefusesBeforeWrites(nonexistent: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7420ae83-99eb-5f4d-1432-4ee98fbfcec6">
+      <Execution id="590d0ee2-7c62-4528-9305-52f950159b7a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests" name="MissingOrNonexistentFirstRoot_ActualEarlyModeRefusesBeforeWrites" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests.ExistingDirectoryAction_CannotRedirectExplicitSessionRoot" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="32d0331e-903b-c485-7929-0a13bb76d76a">
+      <Execution id="e43daaa9-1c11-47b1-9b54-2cb6c9a562b0" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests" name="ExistingDirectoryAction_CannotRedirectExplicitSessionRoot" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="7420ae83-99eb-5f4d-1432-4ee98fbfcec6" executionId="590d0ee2-7c62-4528-9305-52f950159b7a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="32d0331e-903b-c485-7929-0a13bb76d76a" executionId="e43daaa9-1c11-47b1-9b54-2cb6c9a562b0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5bcc756c-6748-c346-5bee-8b13f9e9d08a" executionId="d32d81a6-32ff-4c5f-b4fa-365771a81130" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="3" executed="3" passed="3" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.18]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.34]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.37]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:06.30]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

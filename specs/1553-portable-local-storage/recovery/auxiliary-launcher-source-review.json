@@ -1,0 +1,16 @@
+{
+  "Agent": "/root/auxiliary_portable_source_review",
+  "Model": "gpt-6.1-sol",
+  "ReasoningEffort": "xhigh",
+  "Verdict": "PASS",
+  "SourceCommit": "39fb7534a8a492dbb22c9ee530d1b6a9397566e5",
+  "OriginalFindings": [
+    "Unrecorded guardian observation timeout falsely settled cleanup",
+    "Active LoadUX/current browser debt wording and shipped source-only doc links"
+  ],
+  "Resolution": "Unsettled registration/original guardian wait to actual ECHILD plus controlled deadline test; active docs corrected/self-contained with GitHub references",
+  "Correction": "Windows path literal was already correct; both expanded failing rows were actual storage debt, not docs. Direct TRX verification supersedes early misattribution.",
+  "FinalDelta": "InvalidDataException added only to preparation errorfilter; exact storage Fact extracted to avoid rerunning successful unrelated cases. Retained16PASS + oldguard1 and remaining4cases endorsed by unchanged success paths.",
+  "ReadOnly": true,
+  "NativeWindows": "unqualified"
+}

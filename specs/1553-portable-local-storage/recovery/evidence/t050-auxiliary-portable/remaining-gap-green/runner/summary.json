@@ -1,0 +1,80 @@
+{
+  "Categories": [
+    "auxiliary-launcher-storage-refusal",
+    "auxiliary-launcher-root-binding"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "39fb7534a8a492dbb22c9ee530d1b6a9397566e5",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "auxiliary-launcher-root-binding",
+      "Seconds": 7.9311219,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "auxiliary-launcher-storage-refusal",
+      "Seconds": 5.0830343,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0543596,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0506461,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0915755,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 35.9052905,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0040494,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:00:53.5126205",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 4,
+    "CompletedCases": 4,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 4,
+    "Executed": 4,
+    "Passed": 4,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

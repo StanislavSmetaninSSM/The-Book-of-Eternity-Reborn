@@ -1,0 +1,59 @@
+{
+  "Categories": [
+    "auxiliary-launcher-storage-refusal",
+    "auxiliary-launcher-root-binding"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "39fb7534a8a492dbb22c9ee530d1b6a9397566e5",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 40.1211245,
+  "Descriptors": [
+    {
+      "Name": "auxiliary-launcher-root-binding-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "auxiliary-launcher-root-binding",
+      "Categories": [
+        "auxiliary-launcher-root-binding"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests.ExistingDirectoryAction_CannotRedirectExplicitSessionRoot|FullyQualifiedName=BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests.MissingOrNonexistentFirstRoot_ActualEarlyModeRefusesBeforeWrites",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests.ExistingDirectoryAction_CannotRedirectExplicitSessionRoot",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests.MissingOrNonexistentFirstRoot_ActualEarlyModeRefusesBeforeWrites",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "auxiliary-launcher-storage-refusal-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "auxiliary-launcher-storage-refusal",
+      "Categories": [
+        "auxiliary-launcher-storage-refusal"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.StorageDebt_RealRouteRetainsTypedPreparationErrorAndExactBytes",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.StorageDebt_RealRouteRetainsTypedPreparationErrorAndExactBytes",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

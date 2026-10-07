@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "auxiliary-launcher-root-binding"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "7f61f520a6490adebd6b2db43915fe001d1ea00d",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.7248081,
+  "Descriptors": [
+    {
+      "Name": "auxiliary-launcher-root-binding-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "auxiliary-launcher-root-binding",
+      "Categories": [
+        "auxiliary-launcher-root-binding"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests.ExistingDirectoryAction_CannotRedirectExplicitSessionRoot",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests.ExistingDirectoryAction_CannotRedirectExplicitSessionRoot",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

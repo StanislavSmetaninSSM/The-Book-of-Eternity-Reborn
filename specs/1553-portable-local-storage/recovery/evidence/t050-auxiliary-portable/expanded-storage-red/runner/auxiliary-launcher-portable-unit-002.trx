@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="10574f20-e460-43d6-bec1-f792822d215a" name="@c7669543e9c7 2026-10-07 04:27:17" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-07T04:27:17.2588246+00:00" queuing="2026-10-07T04:27:17.2588246+00:00" start="2026-10-07T04:27:13.2155923+00:00" finish="2026-10-07T04:27:47.9305534+00:00" />
+  <TestSettings name="default" id="1d310310-eefd-407e-acac-a3cb4b5ca07d">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-07_04_27_17" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="650401d1-579a-483f-bba3-76990c2106cb" testId="9e148a40-93c6-b976-0575-134b803d2abb" testName="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;dotnet&quot;, diagnostic: &quot;dotnet executable is unavailable&quot;)" computerName="c7669543e9c7" duration="00:00:02.0549713" startTime="2026-10-07T04:27:40.6115416+00:00" endTime="2026-10-07T04:27:40.6115420+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="650401d1-579a-483f-bba3-76990c2106cb" />
+    <UnitTestResult executionId="32971cd1-e18d-47bc-a393-04d9b410c7e2" testId="28301dca-c09c-e662-cd0d-394358e40b78" testName="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;runtimeconfig&quot;, diagnostic: &quot;BookOfEternityClient.runtimeconfig.json&quot;)" computerName="c7669543e9c7" duration="00:00:02.6388379" startTime="2026-10-07T04:27:33.0840593+00:00" endTime="2026-10-07T04:27:33.0840595+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="32971cd1-e18d-47bc-a393-04d9b410c7e2" />
+    <UnitTestResult executionId="f273deee-ac5a-4073-98e1-ed50ac8f2c42" testId="b176d423-d3e4-697d-81a0-bb1df80f0d74" testName="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.OrdinaryPositionalStatusSelector_PreservesExistingDispatcherBoundary" computerName="c7669543e9c7" duration="00:00:01.5076077" startTime="2026-10-07T04:27:47.8510724+00:00" endTime="2026-10-07T04:27:47.8510727+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f273deee-ac5a-4073-98e1-ed50ac8f2c42" />
+    <UnitTestResult executionId="c5269dfa-1bf0-42a8-92a5-c649db33b56a" testId="4a5e2bd8-4823-e6cf-f6c6-9f003ba7afe3" testName="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;helper&quot;, diagnostic: &quot;gm_main_operation.ps1&quot;)" computerName="c7669543e9c7" duration="00:00:01.5593251" startTime="2026-10-07T04:27:22.5057469+00:00" endTime="2026-10-07T04:27:22.5057471+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c5269dfa-1bf0-42a8-92a5-c649db33b56a" />
+    <UnitTestResult executionId="af665ad6-2637-46bc-898c-a58a14741c50" testId="1bdb1445-d681-289a-296d-6b0ff3c951b6" testName="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.ExplicitSecondPreparation_ReplacesPendingSnapshotWithinExistingContract" computerName="c7669543e9c7" duration="00:00:03.4145761" startTime="2026-10-07T04:27:46.3428658+00:00" endTime="2026-10-07T04:27:46.3428660+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="af665ad6-2637-46bc-898c-a58a14741c50" />
+    <UnitTestResult executionId="73b9a659-47a7-498c-a0bb-c45be552e631" testId="2fd83f54-22cb-386e-025c-baffb827661b" testName="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;netcore&quot;, diagnostic: &quot;Microsoft.NETCore.App 8&quot;)" computerName="c7669543e9c7" duration="00:00:01.8633770" startTime="2026-10-07T04:27:20.9454850+00:00" endTime="2026-10-07T04:27:20.9454853+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="73b9a659-47a7-498c-a0bb-c45be552e631" />
+    <UnitTestResult executionId="e3411703-721e-475a-936c-c04ccd2fe4c3" testId="936f9b89-7e08-f316-8816-95b46c1ba460" testName="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;storage&quot;, diagnostic: &quot;prepare-live-turn failed&quot;)" computerName="c7669543e9c7" duration="00:00:02.1730740" startTime="2026-10-07T04:27:30.4505464+00:00" endTime="2026-10-07T04:27:30.4505469+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e3411703-721e-475a-936c-c04ccd2fe4c3">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Sub-string not found
+String:    "Unhandled exception. System.IO.InvalidDat"···
+Not found: "prepare-live-turn failed"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(String mode, String diagnostic) in /workspace/native-1553/BookOfEternityClient.Tests/AuxiliaryLauncherPortableTests.cs:line 77
+   at BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(String mode, String diagnostic) in /workspace/native-1553/BookOfEternityClient.Tests/AuxiliaryLauncherPortableTests.cs:line 80
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b6aadf20-318a-4b15-bf09-53ac7b12d1c2" testId="6174f08e-7797-459a-08fd-4c4e7a7b29c0" testName="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;deps&quot;, diagnostic: &quot;BookOfEternityClient.deps.json&quot;)" computerName="c7669543e9c7" duration="00:00:01.6380199" startTime="2026-10-07T04:27:24.1443093+00:00" endTime="2026-10-07T04:27:24.1443095+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b6aadf20-318a-4b15-bf09-53ac7b12d1c2" />
+    <UnitTestResult executionId="6c149ab3-58a6-43e1-8357-82cad352c126" testId="be8dfa13-f7f2-e571-6c2d-e505d055fdf0" testName="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;worker&quot;, diagnostic: &quot;prepare-live-turn failed&quot;)" computerName="c7669543e9c7" duration="00:00:02.1435008" startTime="2026-10-07T04:27:28.2532097+00:00" endTime="2026-10-07T04:27:28.2532103+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6c149ab3-58a6-43e1-8357-82cad352c126" />
+    <UnitTestResult executionId="8fb9c869-5493-40f4-8915-44bb5797e70b" testId="fa765402-07a1-b7b2-c9f5-961243a9f225" testName="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.RelocatedRuntimeOnlyPackage_ActualPrepareTurnPublishesLinkedAuthority" computerName="c7669543e9c7" duration="00:00:02.3117555" startTime="2026-10-07T04:27:42.9264517+00:00" endTime="2026-10-07T04:27:42.9264520+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8fb9c869-5493-40f4-8915-44bb5797e70b" />
+    <UnitTestResult executionId="c6566500-1e18-4ecd-a404-13deab7be9d7" testId="28d81317-662e-9837-eee4-76b881ed2b62" testName="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;action&quot;, diagnostic: &quot;--action is required&quot;)" computerName="c7669543e9c7" duration="00:00:02.5445186" startTime="2026-10-07T04:27:38.5566137+00:00" endTime="2026-10-07T04:27:38.5566139+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c6566500-1e18-4ecd-a404-13deab7be9d7" />
+    <UnitTestResult executionId="bdb2c85e-7d95-49fd-b480-b8a26fbb2e7f" testId="dc416d81-27c6-698d-40e2-2aad342a6784" testName="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.OperationalPrepareInstructions_UseShippedLayoutAndCurrentBoundedLinks" computerName="c7669543e9c7" duration="00:00:00.0024106" startTime="2026-10-07T04:27:47.8542409+00:00" endTime="2026-10-07T04:27:47.8542416+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bdb2c85e-7d95-49fd-b480-b8a26fbb2e7f" />
+    <UnitTestResult executionId="e0e2db59-4b0b-44a9-902e-f3f6609b85a8" testId="b30705b3-85f7-4206-e011-61993ceb315a" testName="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;dice&quot;, diagnostic: &quot;--dice must contain integers&quot;)" computerName="c7669543e9c7" duration="00:00:01.9622167" startTime="2026-10-07T04:27:26.1077762+00:00" endTime="2026-10-07T04:27:26.1077765+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e0e2db59-4b0b-44a9-902e-f3f6609b85a8" />
+    <UnitTestResult executionId="25cfa185-78e7-4d18-8994-b49406a0013b" testId="1f218351-2eb1-fc61-8e7d-f9a0d73eee96" testName="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;dll&quot;, diagnostic: &quot;BookOfEternityClient.dll&quot;)" computerName="c7669543e9c7" duration="00:00:01.8712331" startTime="2026-10-07T04:27:19.0815689+00:00" endTime="2026-10-07T04:27:19.0815696+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="25cfa185-78e7-4d18-8994-b49406a0013b" />
+    <UnitTestResult executionId="7129b7d8-7398-42fd-9912-1348f6d7a8d2" testId="e9b70730-138e-f483-2740-67db549fa72a" testName="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;main&quot;, diagnostic: &quot;prepare-live-turn failed&quot;)" computerName="c7669543e9c7" duration="00:00:02.9241788" startTime="2026-10-07T04:27:36.0103274+00:00" endTime="2026-10-07T04:27:36.0103279+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7129b7d8-7398-42fd-9912-1348f6d7a8d2" />
+    <UnitTestResult executionId="3093c50d-e2a5-4de0-87c6-0d45180ae837" testId="0291ff8c-85be-8fc0-9e5c-6d1c016ec6ec" testName="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;aspnet&quot;, diagnostic: &quot;Microsoft.AspNetCore.App 8&quot;)" computerName="c7669543e9c7" duration="00:00:02.0775235" startTime="2026-10-07T04:27:17.2102558+00:00" endTime="2026-10-07T04:27:17.2103128+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3093c50d-e2a5-4de0-87c6-0d45180ae837" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;storage&quot;, diagnostic: &quot;prepare-live-turn failed&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="936f9b89-7e08-f316-8816-95b46c1ba460">
+      <Execution id="e3411703-721e-475a-936c-c04ccd2fe4c3" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests" name="MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;netcore&quot;, diagnostic: &quot;Microsoft.NETCore.App 8&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2fd83f54-22cb-386e-025c-baffb827661b">
+      <Execution id="73b9a659-47a7-498c-a0bb-c45be552e631" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests" name="MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;action&quot;, diagnostic: &quot;--action is required&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="28d81317-662e-9837-eee4-76b881ed2b62">
+      <Execution id="c6566500-1e18-4ecd-a404-13deab7be9d7" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests" name="MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;main&quot;, diagnostic: &quot;prepare-live-turn failed&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e9b70730-138e-f483-2740-67db549fa72a">
+      <Execution id="7129b7d8-7398-42fd-9912-1348f6d7a8d2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests" name="MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.OrdinaryPositionalStatusSelector_PreservesExistingDispatcherBoundary" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b176d423-d3e4-697d-81a0-bb1df80f0d74">
+      <Execution id="f273deee-ac5a-4073-98e1-ed50ac8f2c42" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests" name="OrdinaryPositionalStatusSelector_PreservesExistingDispatcherBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.OperationalPrepareInstructions_UseShippedLayoutAndCurrentBoundedLinks" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="dc416d81-27c6-698d-40e2-2aad342a6784">
+      <Execution id="bdb2c85e-7d95-49fd-b480-b8a26fbb2e7f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests" name="OperationalPrepareInstructions_UseShippedLayoutAndCurrentBoundedLinks" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;dice&quot;, diagnostic: &quot;--dice must contain integers&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b30705b3-85f7-4206-e011-61993ceb315a">
+      <Execution id="e0e2db59-4b0b-44a9-902e-f3f6609b85a8" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests" name="MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;dll&quot;, diagnostic: &quot;BookOfEternityClient.dll&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1f218351-2eb1-fc61-8e7d-f9a0d73eee96">
+      <Execution id="25cfa185-78e7-4d18-8994-b49406a0013b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests" name="MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;aspnet&quot;, diagnostic: &quot;Microsoft.AspNetCore.App 8&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0291ff8c-85be-8fc0-9e5c-6d1c016ec6ec">
+      <Execution id="3093c50d-e2a5-4de0-87c6-0d45180ae837" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests" name="MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;worker&quot;, diagnostic: &quot;prepare-live-turn failed&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="be8dfa13-f7f2-e571-6c2d-e505d055fdf0">
+      <Execution id="6c149ab3-58a6-43e1-8357-82cad352c126" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests" name="MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;deps&quot;, diagnostic: &quot;BookOfEternityClient.deps.json&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6174f08e-7797-459a-08fd-4c4e7a7b29c0">
+      <Execution id="b6aadf20-318a-4b15-bf09-53ac7b12d1c2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests" name="MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;runtimeconfig&quot;, diagnostic: &quot;BookOfEternityClient.runtimeconfig.json&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="28301dca-c09c-e662-cd0d-394358e40b78">
+      <Execution id="32971cd1-e18d-47bc-a393-04d9b410c7e2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests" name="MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.ExplicitSecondPreparation_ReplacesPendingSnapshotWithinExistingContract" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1bdb1445-d681-289a-296d-6b0ff3c951b6">
+      <Execution id="af665ad6-2637-46bc-898c-a58a14741c50" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests" name="ExplicitSecondPreparation_ReplacesPendingSnapshotWithinExistingContract" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;dotnet&quot;, diagnostic: &quot;dotnet executable is unavailable&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9e148a40-93c6-b976-0575-134b803d2abb">
+      <Execution id="650401d1-579a-483f-bba3-76990c2106cb" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests" name="MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.RelocatedRuntimeOnlyPackage_ActualPrepareTurnPublishesLinkedAuthority" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fa765402-07a1-b7b2-c9f5-961243a9f225">
+      <Execution id="8fb9c869-5493-40f4-8915-44bb5797e70b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests" name="RelocatedRuntimeOnlyPackage_ActualPrepareTurnPublishesLinkedAuthority" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: &quot;helper&quot;, diagnostic: &quot;gm_main_operation.ps1&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4a5e2bd8-4823-e6cf-f6c6-9f003ba7afe3">
+      <Execution id="c5269dfa-1bf0-42a8-92a5-c649db33b56a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests" name="MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="9e148a40-93c6-b976-0575-134b803d2abb" executionId="650401d1-579a-483f-bba3-76990c2106cb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="28301dca-c09c-e662-cd0d-394358e40b78" executionId="32971cd1-e18d-47bc-a393-04d9b410c7e2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b176d423-d3e4-697d-81a0-bb1df80f0d74" executionId="f273deee-ac5a-4073-98e1-ed50ac8f2c42" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4a5e2bd8-4823-e6cf-f6c6-9f003ba7afe3" executionId="c5269dfa-1bf0-42a8-92a5-c649db33b56a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1bdb1445-d681-289a-296d-6b0ff3c951b6" executionId="af665ad6-2637-46bc-898c-a58a14741c50" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2fd83f54-22cb-386e-025c-baffb827661b" executionId="73b9a659-47a7-498c-a0bb-c45be552e631" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="936f9b89-7e08-f316-8816-95b46c1ba460" executionId="e3411703-721e-475a-936c-c04ccd2fe4c3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6174f08e-7797-459a-08fd-4c4e7a7b29c0" executionId="b6aadf20-318a-4b15-bf09-53ac7b12d1c2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="be8dfa13-f7f2-e571-6c2d-e505d055fdf0" executionId="6c149ab3-58a6-43e1-8357-82cad352c126" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fa765402-07a1-b7b2-c9f5-961243a9f225" executionId="8fb9c869-5493-40f4-8915-44bb5797e70b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="28d81317-662e-9837-eee4-76b881ed2b62" executionId="c6566500-1e18-4ecd-a404-13deab7be9d7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dc416d81-27c6-698d-40e2-2aad342a6784" executionId="bdb2c85e-7d95-49fd-b480-b8a26fbb2e7f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b30705b3-85f7-4206-e011-61993ceb315a" executionId="e0e2db59-4b0b-44a9-902e-f3f6609b85a8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1f218351-2eb1-fc61-8e7d-f9a0d73eee96" executionId="25cfa185-78e7-4d18-8994-b49406a0013b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e9b70730-138e-f483-2740-67db549fa72a" executionId="7129b7d8-7398-42fd-9912-1348f6d7a8d2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0291ff8c-85be-8fc0-9e5c-6d1c016ec6ec" executionId="3093c50d-e2a5-4de0-87c6-0d45180ae837" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="16" executed="16" passed="15" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.19]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.44]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.47]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:16.84]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:16.84]       String:    "Unhandled exception. System.IO.InvalidDat"···
+[xUnit.net 00:00:16.84]       Not found: "prepare-live-turn failed"
+[xUnit.net 00:00:16.84]       Stack Trace:
+[xUnit.net 00:00:16.84]         /workspace/native-1553/BookOfEternityClient.Tests/AuxiliaryLauncherPortableTests.cs(77,0): at BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(String mode, String diagnostic)
+[xUnit.net 00:00:16.84]         /workspace/native-1553/BookOfEternityClient.Tests/AuxiliaryLauncherPortableTests.cs(80,0): at BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(String mode, String diagnostic)
+[xUnit.net 00:00:16.84]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:34.25]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-07T04:27:30.4499566+00:00">
+        <Text>[xUnit.net 00:00:16.83]     BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: "storage", diagnostic: "prepare-live-turn failed") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

@@ -1,0 +1,1962 @@
+{
+  "Task": "T050-AUXILIARY-LAUNCHER-PORTABLE",
+  "SourceIssue": 1553,
+  "AcceptedBase": "0c526b3c2749a545fce9dc5ae41053d7045dbb5a",
+  "RuntimeTestCommit": "39fb7534a8a492dbb22c9ee530d1b6a9397566e5",
+  "Phases": [
+    {
+      "Name": "binding-red",
+      "SourceCommit": "3f9baeb395624ff79c970bef2e99d1e28335eda1",
+      "WorkingTreeChangedFiles": 0,
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "DiscoveryOnly": false,
+      "PlanOnly": false,
+      "RunnerOwnedTreeCleanup": true,
+      "Summary": "recovery/evidence/t050-auxiliary-portable/binding-red/runner/summary.json"
+    },
+    {
+      "Name": "package-red",
+      "SourceCommit": "a0a5b972059f01911ec37da0424c5ef09c392582",
+      "WorkingTreeChangedFiles": 0,
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "DiscoveryOnly": false,
+      "PlanOnly": false,
+      "RunnerOwnedTreeCleanup": true,
+      "Summary": "recovery/evidence/t050-auxiliary-portable/package-red/runner/summary.json"
+    },
+    {
+      "Name": "route-green",
+      "SourceCommit": "7f61f520a6490adebd6b2db43915fe001d1ea00d",
+      "WorkingTreeChangedFiles": 0,
+      "ExitCode": 0,
+      "Tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 1,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "DiscoveryOnly": false,
+      "PlanOnly": false,
+      "RunnerOwnedTreeCleanup": true,
+      "Summary": "recovery/evidence/t050-auxiliary-portable/route-green/runner/summary.json"
+    },
+    {
+      "Name": "root-red",
+      "SourceCommit": "7f61f520a6490adebd6b2db43915fe001d1ea00d",
+      "WorkingTreeChangedFiles": 0,
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "DiscoveryOnly": false,
+      "PlanOnly": false,
+      "RunnerOwnedTreeCleanup": true,
+      "Summary": "recovery/evidence/t050-auxiliary-portable/root-red/runner/summary.json"
+    },
+    {
+      "Name": "expanded-storage-red",
+      "SourceCommit": "2a67dd2b8087e8cfb2f006fc76251ff2374db49f",
+      "WorkingTreeChangedFiles": 0,
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 17,
+        "Executed": 17,
+        "Passed": 16,
+        "Failed": 1
+      },
+      "Selection": {
+        "PlannedDescriptors": 3,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 20,
+        "CompletedCases": 17,
+        "UnderfilledDescriptors": [
+          "auxiliary-launcher-root-binding-unit-003"
+        ],
+        "Complete": false
+      },
+      "DiscoveryOnly": false,
+      "PlanOnly": false,
+      "RunnerOwnedTreeCleanup": true,
+      "Summary": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/runner/summary.json"
+    },
+    {
+      "Name": "fixture-settlement-storage-red",
+      "SourceCommit": "721d54833bf879b18c29d5a1a83ba6b90654b6f5",
+      "WorkingTreeChangedFiles": 0,
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 17,
+        "Executed": 17,
+        "Passed": 16,
+        "Failed": 1
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 20,
+        "CompletedCases": 17,
+        "UnderfilledDescriptors": [
+          "auxiliary-launcher-root-binding-unit-002"
+        ],
+        "Complete": false
+      },
+      "DiscoveryOnly": false,
+      "PlanOnly": false,
+      "RunnerOwnedTreeCleanup": true,
+      "Summary": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/runner/summary.json"
+    },
+    {
+      "Name": "remaining-gap-green",
+      "SourceCommit": "39fb7534a8a492dbb22c9ee530d1b6a9397566e5",
+      "WorkingTreeChangedFiles": 0,
+      "ExitCode": 0,
+      "Tests": {
+        "Total": 4,
+        "Executed": 4,
+        "Passed": 4,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 4,
+        "CompletedCases": 4,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "DiscoveryOnly": false,
+      "PlanOnly": false,
+      "RunnerOwnedTreeCleanup": true,
+      "Summary": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/runner/summary.json"
+    },
+    {
+      "Name": "catalog",
+      "SourceCommit": "39fb7534a8a492dbb22c9ee530d1b6a9397566e5",
+      "WorkingTreeChangedFiles": 0,
+      "ExitCode": 0,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "DiscoveryOnly": true,
+      "PlanOnly": false,
+      "RunnerOwnedTreeCleanup": true,
+      "Summary": "recovery/evidence/t050-auxiliary-portable/catalog/runner/summary.json"
+    },
+    {
+      "Name": "final-plan",
+      "SourceCommit": "39fb7534a8a492dbb22c9ee530d1b6a9397566e5",
+      "WorkingTreeChangedFiles": 0,
+      "ExitCode": 0,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 4,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 21,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "auxiliary-launcher-contract-regressions-unit-001",
+          "auxiliary-launcher-portable-unit-002",
+          "auxiliary-launcher-root-binding-unit-003",
+          "auxiliary-launcher-storage-refusal-unit-004"
+        ],
+        "Complete": false
+      },
+      "DiscoveryOnly": false,
+      "PlanOnly": true,
+      "RunnerOwnedTreeCleanup": true,
+      "Summary": "recovery/evidence/t050-auxiliary-portable/final-plan/runner/summary.json"
+    }
+  ],
+  "QualifiedDistinctPASS": 21,
+  "NewQualifiedCases": 20,
+  "ExactPreexistingAffectedCases": 1,
+  "QualifiedCases": [
+    {
+      "Test": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.LauncherAndQuickstartDocumentPrepareTurnCommand",
+      "Phase": "expanded-storage-red",
+      "TRX": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/runner/auxiliary-launcher-contract-regressions-unit-001.trx"
+    },
+    {
+      "Test": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: \"deps\", diagnostic: \"BookOfEternityClient.deps.json\")",
+      "Phase": "fixture-settlement-storage-red",
+      "TRX": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/runner/auxiliary-launcher-portable-unit-001.trx"
+    },
+    {
+      "Test": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: \"netcore\", diagnostic: \"Microsoft.NETCore.App 8\")",
+      "Phase": "fixture-settlement-storage-red",
+      "TRX": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/runner/auxiliary-launcher-portable-unit-001.trx"
+    },
+    {
+      "Test": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: \"main\", diagnostic: \"prepare-live-turn failed\")",
+      "Phase": "fixture-settlement-storage-red",
+      "TRX": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/runner/auxiliary-launcher-portable-unit-001.trx"
+    },
+    {
+      "Test": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: \"aspnet\", diagnostic: \"Microsoft.AspNetCore.App 8\")",
+      "Phase": "fixture-settlement-storage-red",
+      "TRX": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/runner/auxiliary-launcher-portable-unit-001.trx"
+    },
+    {
+      "Test": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.ObservationTimeout_RetainsOriginalGuardianUntilActualExclusiveReap",
+      "Phase": "fixture-settlement-storage-red",
+      "TRX": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/runner/auxiliary-launcher-portable-unit-001.trx"
+    },
+    {
+      "Test": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: \"runtimeconfig\", diagnostic: \"BookOfEternityClient.runtimeconfig.json\")",
+      "Phase": "fixture-settlement-storage-red",
+      "TRX": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/runner/auxiliary-launcher-portable-unit-001.trx"
+    },
+    {
+      "Test": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: \"dice\", diagnostic: \"--dice must contain integers\")",
+      "Phase": "fixture-settlement-storage-red",
+      "TRX": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/runner/auxiliary-launcher-portable-unit-001.trx"
+    },
+    {
+      "Test": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.OperationalPrepareInstructions_UseShippedLayoutAndCurrentBoundedLinks",
+      "Phase": "fixture-settlement-storage-red",
+      "TRX": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/runner/auxiliary-launcher-portable-unit-001.trx"
+    },
+    {
+      "Test": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: \"worker\", diagnostic: \"prepare-live-turn failed\")",
+      "Phase": "fixture-settlement-storage-red",
+      "TRX": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/runner/auxiliary-launcher-portable-unit-001.trx"
+    },
+    {
+      "Test": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.OrdinaryPositionalStatusSelector_PreservesExistingDispatcherBoundary",
+      "Phase": "fixture-settlement-storage-red",
+      "TRX": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/runner/auxiliary-launcher-portable-unit-001.trx"
+    },
+    {
+      "Test": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: \"action\", diagnostic: \"--action is required\")",
+      "Phase": "fixture-settlement-storage-red",
+      "TRX": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/runner/auxiliary-launcher-portable-unit-001.trx"
+    },
+    {
+      "Test": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: \"dotnet\", diagnostic: \"dotnet executable is unavailable\")",
+      "Phase": "fixture-settlement-storage-red",
+      "TRX": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/runner/auxiliary-launcher-portable-unit-001.trx"
+    },
+    {
+      "Test": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: \"dll\", diagnostic: \"BookOfEternityClient.dll\")",
+      "Phase": "fixture-settlement-storage-red",
+      "TRX": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/runner/auxiliary-launcher-portable-unit-001.trx"
+    },
+    {
+      "Test": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(mode: \"helper\", diagnostic: \"gm_main_operation.ps1\")",
+      "Phase": "fixture-settlement-storage-red",
+      "TRX": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/runner/auxiliary-launcher-portable-unit-001.trx"
+    },
+    {
+      "Test": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.ExplicitSecondPreparation_ReplacesPendingSnapshotWithinExistingContract",
+      "Phase": "fixture-settlement-storage-red",
+      "TRX": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/runner/auxiliary-launcher-portable-unit-001.trx"
+    },
+    {
+      "Test": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.RelocatedRuntimeOnlyPackage_ActualPrepareTurnPublishesLinkedAuthority",
+      "Phase": "fixture-settlement-storage-red",
+      "TRX": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/runner/auxiliary-launcher-portable-unit-001.trx"
+    },
+    {
+      "Test": "BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests.MissingOrNonexistentFirstRoot_ActualEarlyModeRefusesBeforeWrites(nonexistent: False)",
+      "Phase": "remaining-gap-green",
+      "TRX": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/runner/auxiliary-launcher-root-binding-unit-001.trx"
+    },
+    {
+      "Test": "BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests.ExistingDirectoryAction_CannotRedirectExplicitSessionRoot",
+      "Phase": "remaining-gap-green",
+      "TRX": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/runner/auxiliary-launcher-root-binding-unit-001.trx"
+    },
+    {
+      "Test": "BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests.MissingOrNonexistentFirstRoot_ActualEarlyModeRefusesBeforeWrites(nonexistent: True)",
+      "Phase": "remaining-gap-green",
+      "TRX": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/runner/auxiliary-launcher-root-binding-unit-001.trx"
+    },
+    {
+      "Test": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.StorageDebt_RealRouteRetainsTypedPreparationErrorAndExactBytes",
+      "Phase": "remaining-gap-green",
+      "TRX": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/runner/auxiliary-launcher-storage-refusal-unit-002.trx"
+    }
+  ],
+  "HistoricalExecuted": 42,
+  "HistoricalPASS": 37,
+  "HistoricalFAIL": 5,
+  "Causality": [
+    "native -File --action binds selector Action; usage RED → renamed positional Command",
+    "relocated package csproj dependency RED → sibling prebuilt DLL GREEN",
+    "existing-directory action redirects root RED → prepare-only first-root binding GREEN",
+    "retained invalid publication journal unhandled exception RED → existing preparation error envelope exit2 GREEN"
+  ],
+  "MixedSourceProof": "Source review PASS39fb7534 verified unchanged success path, retained16PASS at721d5483 + exact oldguardPASS at2a67dd2b; narrow remaining4case run39fb7534. Failed storage theory row was extracted to Fact with identical real consumer body and stricter output assertions; no passing unchanged cohort repeated for catch-only fix.",
+  "PreparationRefusals": [
+    {
+      "Reason": "native comma category argument rejected; corrected PowerShell array",
+      "Executed": 0,
+      "Artifact": "recovery/evidence/t050-auxiliary-portable/zero-workload-native-comma-selection.log.gz"
+    }
+  ],
+  "FixtureCleanup": {
+    "AllRemoved": true,
+    "AllExclusiveEchild": true,
+    "UnsettledRuns": 0,
+    "GuardianReports": 41,
+    "OneControlledObservationTimeout": true,
+    "ExpectedOriginalPidfdEmergencySignals": 1,
+    "OrdinaryRouteEmergencySignals": 0,
+    "GuardianSourceUnchanged": true,
+    "ObservedRootsIncludingOneStorageRED": 20,
+    "PassingFixtureRoots": 19,
+    "PassingFixtureGuardianReports": 39
+  },
+  "Provenance": {
+    "SDK": "10.0.401",
+    "Runtime": "8.0.31",
+    "PowerShell": "7.5.4",
+    "Compiler": "cc (Debian 14.2.0-19) 14.2.0",
+    "CompilerUse": "publisher guardian only; not on player PATH",
+    "PlayerRuntime": "isolated copied dotnet host/host-fxr and shared8 links, sdk absent/list-sdks empty; PATH only dotnet/pwsh",
+    "OS": "Linux x86_64"
+  },
+  "Limits": [
+    "native Windows execution unqualified",
+    "No live GM/provider/browser/game/saves",
+    "Prepared local no-active admission and cold refusal qualified; live original owner accepted M1/F2 source reused, not repeated here",
+    "M1/window/desktop/systemd setup/Q1Q2/auth/network/settings untouched",
+    "No second journal/launcher or gameplay/model/options change",
+    "Unsafe pre-fix observation-disposal path was source-confirmed only; controlled timeout positively executed after retaining original authority",
+    "Evidence paths/timestamps describe own Linux host fixtures; not user-facing schedule"
+  ],
+  "SourcePins": [
+    {
+      "Path": "BookOfEternityClient/Launcher/bookofeternity.ps1",
+      "SHA256": "0e05d358847cefdeaf04da6bafab61a67a1b95118de38fdbb161e122faf29ae4"
+    },
+    {
+      "Path": "BookOfEternityClient/Launcher/gm_main_operation.ps1",
+      "SHA256": "47b93542d18d3b32a3460af796d11053762cc537e2e81884bb7df0951f75d58f"
+    },
+    {
+      "Path": "BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md",
+      "SHA256": "b27249d6e95fe03b5a3aefcfe7588494fd921e53612701d3df619b6c775227c1"
+    },
+    {
+      "Path": "BookOfEternityClient/Program.cs",
+      "SHA256": "4ce4d019ca4c438b0a7672674c39eac12eb43330917454a349d8c1cc8f69c187"
+    },
+    {
+      "Path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "SHA256": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e"
+    },
+    {
+      "Path": "BookOfEternityClient/Configuration/ClientStartupOptions.cs",
+      "SHA256": "414d0eab9dee8ecacc278912b195e5cd83311da255eac1adbc1282b1122c9cca"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/LiveTurnPreparationCli.cs",
+      "SHA256": "05eeddaf25a8c20ffe56d4b1c0589259ead40dd401db6d247521d68d2acb3d78"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "SHA256": "4b365b1a3d4a7bedf79bd89f22f8240338291957a5b6e40630d0c4ba8beff83f"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+      "SHA256": "02cd444581a0bd93fc671cc1b9a6dd29005e485321adf403365f034db3461f14"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "SHA256": "e3b4a5d8ee83dbce297761c6e1e24b95d438544425b934a67499d8151c0d0dba"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "SHA256": "5226c6c86ae76b70d7cbd8eed8cdd5cb734986808afdff7e46108271d8643d3f"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "SHA256": "b93ba7fb3c4349ef73eda1136738ef9c67effffcd174d9d9988d3b05b996b325"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "SHA256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+      "SHA256": "4d00cbfdcca3863067c6398ec28175c78288197e095d394efdb13069daa0e0fc"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs",
+      "SHA256": "78323e87cade8ccc5c27871783cacac6cd086bd235f88883f888f0cdcf91c610"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/WorkerRunLedgerPersistence.cs",
+      "SHA256": "0d18fd381ba2d04688b9031bb95bfaff500ccfab1217928095bc516f681b43c2"
+    },
+    {
+      "Path": "BookOfEternityClient/game_master_daemon.ps1",
+      "SHA256": "8b6c57e4768ba8cdbee60dd2378b7d01f5c339bb43973c85dcaa60128c0c661a"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/AuxiliaryLauncherPortableTests.cs",
+      "SHA256": "e1edb0af17f28b15b304e71f4adb37ab678b54627503ae109223510e6173cece"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/AuxiliaryLauncherRootBindingTests.cs",
+      "SHA256": "c2477f24dd2df100f2ca59cb40ea51596df6d5952c37c207c0f3ee0a18590884"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/LiveTurnPreparationServiceTests.cs",
+      "SHA256": "55b057f368d218b061a7b47e0162f0921019961ab95a2b9e14f5882e188d1f02"
+    },
+    {
+      "Path": "tests/fixtures/LinuxHost/host-guardian.c",
+      "SHA256": "d7963c86632153ec2bf1adf9a7c30dea29e1cea5c274e5fa0ea311a0518cc3db"
+    },
+    {
+      "Path": "scripts/test-csharp.ps1",
+      "SHA256": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1"
+    },
+    {
+      "Path": "tests/categories.json",
+      "SHA256": "c9f6ebe70835ddcf74a4900eab912f44042dfafb2fface8bf620d649a57589f1"
+    },
+    {
+      "Path": "tests/selection.json",
+      "SHA256": "7e8e9c6b0fcb3ffffb6d6fe1396191abc7e81a2ec2cb5e3973e04b9b991a732d"
+    },
+    {
+      "Path": "AGENTS.md",
+      "SHA256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+    },
+    {
+      "Path": "docs/development-workflow.md",
+      "SHA256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+    },
+    {
+      "Path": "docs/testing.md",
+      "SHA256": "20ea808053428488ac21e5b1fee9f05b3e981e503dc8f610f0b25f91d44b84a1"
+    },
+    {
+      "Path": ".specify/memory/constitution.md",
+      "SHA256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944"
+    },
+    {
+      "Path": "specs/1285-rlm-gm-harness/quickstart.md",
+      "SHA256": "3fea76b14b1ee9bedfaafbf527db6ec286ec293a1a92e77c44e33625c74aa1cb"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/binding-red/command.log.gz",
+      "SHA256": "10607d84edbfa25ccde4c1e56e450114caf6bbb15ccbcfee770ea8e41aeb646c",
+      "Bytes": 931
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/binding-red/fixtures/boe-auxiliary-f213b52788fb418197de4701c704f7c0-1-runtime-sdks.json",
+      "SHA256": "10ad84544a10bf339438e1454272ade3d3f39f1713c030b1feb08273e15e22bd",
+      "Bytes": 273
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/binding-red/fixtures/boe-auxiliary-f213b52788fb418197de4701c704f7c0-2-valid.json",
+      "SHA256": "dcaa41109d2a898ad9236e6da85c3b29952df097af24ae69f34275134e5325dd",
+      "Bytes": 1421
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/binding-red/fixtures/boe-auxiliary-f213b52788fb418197de4701c704f7c0-cleanup.json",
+      "SHA256": "df1bc1525f1ca6ef6e4fec4231f606f0b31ae289e75e30c7ff88a8d962cb46a3",
+      "Bytes": 109
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/binding-red/fixtures/boe-auxiliary-f213b52788fb418197de4701c704f7c0-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/binding-red/fixtures/boe-auxiliary-f213b52788fb418197de4701c704f7c0-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/binding-red/fixtures/boe-auxiliary-f213b52788fb418197de4701c704f7c0-publish.log.gz",
+      "SHA256": "5697de07fa4db60f99dff70eb29a310ab4b4f3619672e9d8f7bc3908ab17d838",
+      "Bytes": 115
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/binding-red/runner/Build-unit.log.gz",
+      "SHA256": "cf560a6659223652ac646ac59ee6a711c03a8560e14907c9e4c2bd0a6733ed0d",
+      "Bytes": 2025
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/binding-red/runner/auxiliary-launcher-portable-unit-001.trx",
+      "SHA256": "7ff7a484e275cde5fa7fd098259adaef9048fa451fa2e2362fb39d2ac62aed0f",
+      "Bytes": 4814
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/binding-red/runner/dotnet-test.log.gz",
+      "SHA256": "07812cd521061eaed52bdfd00a61f51f8d4a9ada6dc08cc3987017dcbe17619a",
+      "Bytes": 178082
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/binding-red/runner/plan.json",
+      "SHA256": "e9d2132e1a774e648ee116b454626b7ea58a88bb73275ef705e8573ea20e72f7",
+      "Bytes": 1129
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/binding-red/runner/summary.json",
+      "SHA256": "4ecfd22e232b8ce5f1e027ca604320d834025fabee4a66dab8caaeab3148fac7",
+      "Bytes": 1459
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/catalog/command.log.gz",
+      "SHA256": "6ec88f877ec8b6a73d62da0d903b5a18b60915c422d7c42a00ad2e7a51bd9c7b",
+      "Bytes": 383
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/catalog/runner/Build-integration.log.gz",
+      "SHA256": "c768cbe7ffa46e98901e343fd6637b64196a51db07124ae3dfd881ce1abe7d78",
+      "Bytes": 723
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/catalog/runner/Build-unit.log.gz",
+      "SHA256": "734b006c51f44000a1bd1056e6ae6e4034b8980914cba9aa2e8314a4f8edf746",
+      "Bytes": 292
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/catalog/runner/catalog-audit.json",
+      "SHA256": "da658252d2f9688d59906377dc5667809944fae3ceb3f07d2ae7d28d77d53bfd",
+      "Bytes": 103
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/catalog/runner/dotnet-test.log.gz",
+      "SHA256": "50191814a5238359699a09294c1af10d8927d794f592debb8e517f5dd28060db",
+      "Bytes": 348120
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/catalog/runner/summary.json",
+      "SHA256": "f5bcfec249631cd89ac3e9d7d10d476c3dc3ea727dadde6dcab66044afc17cef",
+      "Bytes": 1599
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/command.log.gz",
+      "SHA256": "edf8a643a86c407714837973305568c734923d4e789f6427648675965b453836",
+      "Bytes": 1495
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-018ce887de56410a8cf5ddb3681f57d1-1-runtime-sdks.json",
+      "SHA256": "f361c987655fa5c6c37848710e9ac27c6dc93981ba5a5c68f03a84b76737f51f",
+      "Bytes": 273
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-018ce887de56410a8cf5ddb3681f57d1-2-deps.json",
+      "SHA256": "d059f321243a04032c47037151edb20e02defa465de7b8d5a75d6015f99eef1a",
+      "Bytes": 732
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-018ce887de56410a8cf5ddb3681f57d1-cleanup.json",
+      "SHA256": "5775ddad8f9fa97b92dd62f2b136cfbffb054e1a4afd6115ac2f57d3ba64628c",
+      "Bytes": 109
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-018ce887de56410a8cf5ddb3681f57d1-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-018ce887de56410a8cf5ddb3681f57d1-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-018ce887de56410a8cf5ddb3681f57d1-publish.log.gz",
+      "SHA256": "c4e173019a1a5041d6438a571eadf18c42b64bf762908f2e31a22e71437b8977",
+      "Bytes": 112
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-0d5bb5d9133c4bf5a2629f15050aa929-1-runtime-sdks.json",
+      "SHA256": "f4dabd41df2c0aa227ac1149f80915c560095acbf9b88384f52f3e0f7eb64d98",
+      "Bytes": 273
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-0d5bb5d9133c4bf5a2629f15050aa929-2-runtimeconfig.json",
+      "SHA256": "69bbee110e5ae95efbc014cc277b85c941a5e8f94b09cd6d4832e18323c0f102",
+      "Bytes": 750
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-0d5bb5d9133c4bf5a2629f15050aa929-cleanup.json",
+      "SHA256": "b525637039533d455fcdf09402be43f7639914af83a1b52bd2268414caa2298b",
+      "Bytes": 109
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-0d5bb5d9133c4bf5a2629f15050aa929-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-0d5bb5d9133c4bf5a2629f15050aa929-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-0d5bb5d9133c4bf5a2629f15050aa929-publish.log.gz",
+      "SHA256": "b792408c2a9ceab2562bfffe014ae10d3e3d542ff9eb3ab0731639d1c73fef91",
+      "Bytes": 114
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-162487de2fff40e0a8a091b3d891703f-1-runtime-sdks.json",
+      "SHA256": "c3359f9607f08d3a29a5756cda30354107b58f3638a3ba4f708105adb0dac8ea",
+      "Bytes": 273
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-162487de2fff40e0a8a091b3d891703f-2-dll.json",
+      "SHA256": "2d4b3f670aa6601743b3caa9f437c7bdcf91a3111788e1843940e3e96ddb721a",
+      "Bytes": 717
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-162487de2fff40e0a8a091b3d891703f-cleanup.json",
+      "SHA256": "c29f4b8e44ab5db641f182e48d63690b00f9dc874b521f76a379cbdf78aef310",
+      "Bytes": 109
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-162487de2fff40e0a8a091b3d891703f-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-162487de2fff40e0a8a091b3d891703f-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-162487de2fff40e0a8a091b3d891703f-publish.log.gz",
+      "SHA256": "0040f32ff2395c6a129aa0a041d5ea95e281aa03f374453f40baad4a62b1e91e",
+      "Bytes": 113
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-18d5f81fcc7b4538a11acf5fcb0da8a0-1-runtime-sdks.json",
+      "SHA256": "79e1475a0fe295d7408919b449fa44cc707fccb7940c679085f2ac6a71c505fc",
+      "Bytes": 273
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-18d5f81fcc7b4538a11acf5fcb0da8a0-2-main.json",
+      "SHA256": "42ae31bb90cdbe827ea32f1ede82ed55742da7fa9af3efa2d13beb2f2bc4ce2f",
+      "Bytes": 740
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-18d5f81fcc7b4538a11acf5fcb0da8a0-cleanup.json",
+      "SHA256": "56dcab90d7860cc6516f64ac7ec72a45d00f943a89c09278c1d1849397dc282d",
+      "Bytes": 109
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-18d5f81fcc7b4538a11acf5fcb0da8a0-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-18d5f81fcc7b4538a11acf5fcb0da8a0-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-18d5f81fcc7b4538a11acf5fcb0da8a0-publish.log.gz",
+      "SHA256": "6c01d010843580194d386272e6973a7b50d0cb02f8849f87cddeeef4c29f7593",
+      "Bytes": 111
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-41885a78cbc64ae8881d102f3cc0c572-1-runtime-sdks.json",
+      "SHA256": "dff3ef812b988ea434cdd8feff6b92cba92226e8c9071563b782cc2303183512",
+      "Bytes": 273
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-41885a78cbc64ae8881d102f3cc0c572-2-ordinary-status.json",
+      "SHA256": "d1065f4461893ca07e00de9e30c7cc2ad9bd54f5af6f26e87503a0cbdb548465",
+      "Bytes": 601
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-41885a78cbc64ae8881d102f3cc0c572-cleanup.json",
+      "SHA256": "50af89b76dfd8240e56b04752a3c9cc4e6d643ba63294584e7da8e89a965d809",
+      "Bytes": 109
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-41885a78cbc64ae8881d102f3cc0c572-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-41885a78cbc64ae8881d102f3cc0c572-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-41885a78cbc64ae8881d102f3cc0c572-publish.log.gz",
+      "SHA256": "6cf28f01fa4bc707b78cecdad4f5a08483ffdb451d01fca5aac9feea99017b65",
+      "Bytes": 115
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-4f471a1977dd41bf93134a7e085b4dd8-1-runtime-sdks.json",
+      "SHA256": "fb02b56f20602b8321a2f33d54bb8345b41c13970983452cb24eb83da63a8935",
+      "Bytes": 273
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-4f471a1977dd41bf93134a7e085b4dd8-2-aspnet.json",
+      "SHA256": "79b8b6889fd03672403706f6cac075088a9fef7c55acebfbb1d35c7f1f0e1b1b",
+      "Bytes": 706
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-4f471a1977dd41bf93134a7e085b4dd8-cleanup.json",
+      "SHA256": "d3f18c52b65293910634f0cfdde800e77f3604bbeed944bdf67ea7b30cc741a9",
+      "Bytes": 109
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-4f471a1977dd41bf93134a7e085b4dd8-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-4f471a1977dd41bf93134a7e085b4dd8-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-4f471a1977dd41bf93134a7e085b4dd8-publish.log.gz",
+      "SHA256": "f76177b4787643624a15d469999f16c3b60e62e785ce2df51288e4fc5eec9636",
+      "Bytes": 114
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-62b2af960c544ee0bff34895f9b14d26-1-runtime-sdks.json",
+      "SHA256": "a11f57dfc09186b38bbe71d566a5b4e66270b120f000c601512684503d07e5e2",
+      "Bytes": 273
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-62b2af960c544ee0bff34895f9b14d26-2-worker.json",
+      "SHA256": "b11edfacffe46d8a6637788831cb870f83293c3fccc1a0410461c539d6c9069b",
+      "Bytes": 759
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-62b2af960c544ee0bff34895f9b14d26-cleanup.json",
+      "SHA256": "519101ff923e9de63031d0c838fa8dbd8415c8e74ea9560031970a48b4313011",
+      "Bytes": 109
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-62b2af960c544ee0bff34895f9b14d26-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-62b2af960c544ee0bff34895f9b14d26-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-62b2af960c544ee0bff34895f9b14d26-publish.log.gz",
+      "SHA256": "ecbe6868b47607b71db410513c1b51b3755a9c857f2333574ed0cbca42de4a22",
+      "Bytes": 115
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-72f62368b75b4810b6133e21a1213942-1-runtime-sdks.json",
+      "SHA256": "001973cafdede560bf9358e73bb3888345a191dd042f8f27ca7013ed7c425f9d",
+      "Bytes": 273
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-72f62368b75b4810b6133e21a1213942-2-valid.json",
+      "SHA256": "90b2007bf4a78c5a2b2a26c6238176410c8704e261c10b89dde66d74e2588bb5",
+      "Bytes": 759
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-72f62368b75b4810b6133e21a1213942-cleanup.json",
+      "SHA256": "967a272ed311e40ecd7815867c792b76f16a77481ec9a4e65bbcb270ffb294ce",
+      "Bytes": 109
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-72f62368b75b4810b6133e21a1213942-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-72f62368b75b4810b6133e21a1213942-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-72f62368b75b4810b6133e21a1213942-publish.log.gz",
+      "SHA256": "20e32c12a65db2ec2ad61414f4003999a8d082c580b1ae42d46b205dcfb57c6d",
+      "Bytes": 114
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-a4d7634aba0f4f1082d6b0e2fbbe29d8-1-runtime-sdks.json",
+      "SHA256": "462b73d42041ae936eb58d8a234cfcec6d0bebd4c8a91e33b1a169fea8d0c8a3",
+      "Bytes": 273
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-a4d7634aba0f4f1082d6b0e2fbbe29d8-2-dotnet.json",
+      "SHA256": "694a30d86de84dd525e70136a73b3e0ca890e16a52f3f928ca835e0245eb9a89",
+      "Bytes": 688
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-a4d7634aba0f4f1082d6b0e2fbbe29d8-cleanup.json",
+      "SHA256": "9e95181d2e1edab3e059fe698589175fbff3a07033f2c58948400413d204a566",
+      "Bytes": 109
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-a4d7634aba0f4f1082d6b0e2fbbe29d8-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-a4d7634aba0f4f1082d6b0e2fbbe29d8-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-a4d7634aba0f4f1082d6b0e2fbbe29d8-publish.log.gz",
+      "SHA256": "bed8dc24a11bf02d9b0958acf5dc1bda733865ca41cbbd11e37fdc1985d3900b",
+      "Bytes": 114
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-aede6ea30a9f4e5cb2597738bf35aa14-1-runtime-sdks.json",
+      "SHA256": "b628b1e31a4074dbf55ec94a7b9b54e4f1f3b31aafe3cce277b86b7fc0bdf8d3",
+      "Bytes": 273
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-aede6ea30a9f4e5cb2597738bf35aa14-2-first.json",
+      "SHA256": "0014670c7666a798e719c5f4f8254a40b50b233a8a8d6b0cfb31ebcbcbcbb979",
+      "Bytes": 759
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-aede6ea30a9f4e5cb2597738bf35aa14-3-second.json",
+      "SHA256": "2afe32ffd8ce9527f9a120e74fa754dc4851d7bff3ecf47b4a610839b46f1d0d",
+      "Bytes": 759
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-aede6ea30a9f4e5cb2597738bf35aa14-cleanup.json",
+      "SHA256": "b859db83d025ae304872bd5f7a48b9820e48bdcee26e5c6fe8c3225fe4e3c751",
+      "Bytes": 109
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-aede6ea30a9f4e5cb2597738bf35aa14-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-aede6ea30a9f4e5cb2597738bf35aa14-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-aede6ea30a9f4e5cb2597738bf35aa14-publish.log.gz",
+      "SHA256": "6258207908003266f873c5c4d4007dc54f927f5730591b42d5a290ed1c837e17",
+      "Bytes": 112
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-af797239b8cb4a07bfa70b824f28da0a-1-runtime-sdks.json",
+      "SHA256": "4f4c21e14877b8240cb3e19c596ffc1bcc44f1ada115ae99b20f2772835908c1",
+      "Bytes": 273
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-af797239b8cb4a07bfa70b824f28da0a-2-helper.json",
+      "SHA256": "8802af74d22c3dce43f769a0c78debc312a9d2f60ec3208facfc157db1aa86c8",
+      "Bytes": 632
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-af797239b8cb4a07bfa70b824f28da0a-cleanup.json",
+      "SHA256": "f995ab3fbc33c99792c8a8a654bb874cc8b697209c8c9e75f5955e83d3845ed7",
+      "Bytes": 109
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-af797239b8cb4a07bfa70b824f28da0a-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-af797239b8cb4a07bfa70b824f28da0a-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-af797239b8cb4a07bfa70b824f28da0a-publish.log.gz",
+      "SHA256": "5d4491d1bb5404306923f04a297d78625d82cc688d5b748db4d1ecab0635c3eb",
+      "Bytes": 111
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-b1d06a8d3eb74791a02c5bb479ee561d-1-runtime-sdks.json",
+      "SHA256": "3efbefee749533c9086b4d725105f20d4f5e7c893126d969f724c72deab49d5f",
+      "Bytes": 273
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-b1d06a8d3eb74791a02c5bb479ee561d-2-storage.json",
+      "SHA256": "d2911b1a57a2f29184fef890118d08e20ffc3501c1b09fc7f21094b755f0f8cb",
+      "Bytes": 3448
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-b1d06a8d3eb74791a02c5bb479ee561d-cleanup.json",
+      "SHA256": "0612100bfa4e6ec25aadb10445223d3a933eed6e3929d1ad96ad742dc9dfe09f",
+      "Bytes": 109
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-b1d06a8d3eb74791a02c5bb479ee561d-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-b1d06a8d3eb74791a02c5bb479ee561d-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-b1d06a8d3eb74791a02c5bb479ee561d-publish.log.gz",
+      "SHA256": "ef42efbbf7d3ee3bd03a459f1b304e4efe84d1f4dea6b504c0eff8a083fc12ca",
+      "Bytes": 114
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-b2b0ee86900a43e696da92fb6260ac09-1-runtime-sdks.json",
+      "SHA256": "4b3f2edd22a08047eb3b228af933837c9df030e9e1ac76723d490fc034334256",
+      "Bytes": 273
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-b2b0ee86900a43e696da92fb6260ac09-2-action.json",
+      "SHA256": "8d0a51de9d5eae9bf0342015fd9733d733a5afff4773edfc32e480ee600040e4",
+      "Bytes": 726
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-b2b0ee86900a43e696da92fb6260ac09-cleanup.json",
+      "SHA256": "1f246ce837d8099c36c9ac56288d284cf19c0cad5f437a261f118b387075dd1e",
+      "Bytes": 109
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-b2b0ee86900a43e696da92fb6260ac09-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-b2b0ee86900a43e696da92fb6260ac09-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-b2b0ee86900a43e696da92fb6260ac09-publish.log.gz",
+      "SHA256": "e4cb0d800accb461bb38af92b0056fdbb8743b2a74facd67dabcda6caa38dad0",
+      "Bytes": 114
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-d9bfc6b4caa946c5aea18badbe8d12ce-1-runtime-sdks.json",
+      "SHA256": "df012d7d6d995f4820f7c9f38d7c43cd2a66b68fe37eec56fe3fa318c793afc9",
+      "Bytes": 273
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-d9bfc6b4caa946c5aea18badbe8d12ce-2-netcore.json",
+      "SHA256": "fe2c54b5419c2d518e8e4b122d711a56b700d12a6db00d0cbeea9d129d8839e9",
+      "Bytes": 704
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-d9bfc6b4caa946c5aea18badbe8d12ce-cleanup.json",
+      "SHA256": "fc9c06d5e3c7871f88edf1fc4821740bd335e05c4ef7aefa2f70af5514946c3b",
+      "Bytes": 109
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-d9bfc6b4caa946c5aea18badbe8d12ce-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-d9bfc6b4caa946c5aea18badbe8d12ce-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-d9bfc6b4caa946c5aea18badbe8d12ce-publish.log.gz",
+      "SHA256": "c7f3fbce69cc4e64084556294aec1c71a9b065637c111e018b849fbd5e503690",
+      "Bytes": 111
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-e52c149c3b5a4698b1d467b03a668e79-1-runtime-sdks.json",
+      "SHA256": "d198d1eab468bf7f8d6faeb7bec58dfe42ca134ea969e381353c0d476db2e21e",
+      "Bytes": 273
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-e52c149c3b5a4698b1d467b03a668e79-2-dice.json",
+      "SHA256": "ae4128e8f9fba6aae0ba2ffd80e1b5e0aacce96518fd169f0cb482c9da554ca2",
+      "Bytes": 766
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-e52c149c3b5a4698b1d467b03a668e79-cleanup.json",
+      "SHA256": "e26042477d81e44e694c4ea6c14b63aa174a785e6b99ef1f674387e2e7a3a4ff",
+      "Bytes": 109
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-e52c149c3b5a4698b1d467b03a668e79-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-e52c149c3b5a4698b1d467b03a668e79-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/fixtures/boe-auxiliary-e52c149c3b5a4698b1d467b03a668e79-publish.log.gz",
+      "SHA256": "b51384ae06f62719f79bc443ce3450af82c1aebaa507710a711e74a6ae64ea94",
+      "Bytes": 115
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/runner/Build-unit.log.gz",
+      "SHA256": "21607e916dc66ff409a486fb30fc45fcf8845b11a0b8f81891ce770a84156ecb",
+      "Bytes": 2024
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/runner/auxiliary-launcher-contract-regressions-unit-001.trx",
+      "SHA256": "ff56b20f042860c3a5d5bb44aa39f0ca3f3036358f86b91fa6dcf899024f07dc",
+      "Bytes": 2961
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/runner/auxiliary-launcher-portable-unit-002.trx",
+      "SHA256": "e72f7cc405df79d325d644517fd537ddd1f12aec7f4707ae0faad6535e5d9115",
+      "Bytes": 29028
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/runner/dotnet-test.log.gz",
+      "SHA256": "47fe46b422e30309d046b8b494580165dab54330eda4ce756f414b21e7a15db5",
+      "Bytes": 178655
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/runner/plan.json",
+      "SHA256": "63d2ad91b588ba5c8294c3698fc6e625c85c1686e4e428a4072741069804563a",
+      "Bytes": 5318
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/expanded-storage-red/runner/summary.json",
+      "SHA256": "7890bd3d500953d278e66f16664d9977853e139f87c2f7cd1f3ac3f44073fab7",
+      "Bytes": 2594
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/final-plan/command.log.gz",
+      "SHA256": "edcb80e1a5f6ea9758fa7647763b77f0f40d92853bf2c64c52dc6925fb819e0b",
+      "Bytes": 1144
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/final-plan/runner/dotnet-test.log.gz",
+      "SHA256": "d8178ac19d82c62129c7fa93df529bfdf5f5a49fcb3cf532d4552b86be844645",
+      "Bytes": 176102
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/final-plan/runner/plan.json",
+      "SHA256": "7879f20050c9aca84e93ecb7c3d757dc489da79d572cd4f4d5f268208b56a740",
+      "Bytes": 6777
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/final-plan/runner/summary.json",
+      "SHA256": "a94004aac108966713b87303eb23f0885b9536c06fc1b6c8fdb8ec3690ca3973",
+      "Bytes": 2778
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/command.log.gz",
+      "SHA256": "f0374af9c5384e73ec10471b214444f6fa550a64b317cbad9f9f0a63ea581d94",
+      "Bytes": 1425
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-0014dfbfc9ce4d5fb3f40bf324d4019a-1-runtime-sdks.json",
+      "SHA256": "5e06aff79e547a3440967b56ca8ce64b02b09574e865a4bba8d0ee1801699ce6",
+      "Bytes": 301
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-0014dfbfc9ce4d5fb3f40bf324d4019a-2-dice.json",
+      "SHA256": "c0166bcebfc03b70b6e51643bf95a944c57ef27273ab20c12159fa49a13098fa",
+      "Bytes": 794
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-0014dfbfc9ce4d5fb3f40bf324d4019a-cleanup.json",
+      "SHA256": "f5376dae89859e2d41b473cfd8be201c85f1eb81e32a05edabaf319405b2093b",
+      "Bytes": 127
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-0014dfbfc9ce4d5fb3f40bf324d4019a-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-0014dfbfc9ce4d5fb3f40bf324d4019a-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-0014dfbfc9ce4d5fb3f40bf324d4019a-publish.log.gz",
+      "SHA256": "a3cc60266ce7dadcb70342e8aa844284ba842f24a749022ce814267ecf191886",
+      "Bytes": 114
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-039f3ae9633044cfb74eea5fdb79e14b-1-runtime-sdks.json",
+      "SHA256": "0278bd5d14d24ccda91a4521c35be275c704c527a4364238847d27f1c7fc22d3",
+      "Bytes": 301
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-039f3ae9633044cfb74eea5fdb79e14b-2-worker.json",
+      "SHA256": "beb4af0f1b4b62d1e28dfb78128fa82a8a488c8a231f0722306a8c6374e586e4",
+      "Bytes": 787
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-039f3ae9633044cfb74eea5fdb79e14b-cleanup.json",
+      "SHA256": "f7f736b05f4dc2927f2221152c4817e23e67da096af837218e1b43de463925b9",
+      "Bytes": 127
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-039f3ae9633044cfb74eea5fdb79e14b-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-039f3ae9633044cfb74eea5fdb79e14b-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-039f3ae9633044cfb74eea5fdb79e14b-publish.log.gz",
+      "SHA256": "7751cf61bfe7c46ae34cb3cad80445a869c0f35b720cc70a813ef1ebe5c00242",
+      "Bytes": 114
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-05af7ca5fa5c461fb357af7bec076a57-1-runtime-sdks.json",
+      "SHA256": "160e832a74777e84d2462407a7a9ff6079a4e1868c5b5d3f4cb91eac3679098e",
+      "Bytes": 301
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-05af7ca5fa5c461fb357af7bec076a57-2-storage.json",
+      "SHA256": "0c6012bc6ff233961420b28bd0d90bd0b648e9828f465554df62f767bdaeb3c2",
+      "Bytes": 3476
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-05af7ca5fa5c461fb357af7bec076a57-cleanup.json",
+      "SHA256": "9030d5dad4a8aa5b0a708f9673bf1a99223ca64e17a5beb3f29e3c55a382aa82",
+      "Bytes": 127
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-05af7ca5fa5c461fb357af7bec076a57-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-05af7ca5fa5c461fb357af7bec076a57-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-05af7ca5fa5c461fb357af7bec076a57-publish.log.gz",
+      "SHA256": "7f9535ff4fa034342f6cf1dfa45ec08cc848b897982b5f7097e3c75eef86425c",
+      "Bytes": 111
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-2f30e3ba60224f09aff29e8b3b514ec8-1-runtime-sdks.json",
+      "SHA256": "869db9885745b7f81aaa9dec60aa4351357d295400799753c8a93549c6ebd475",
+      "Bytes": 301
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-2f30e3ba60224f09aff29e8b3b514ec8-2-ordinary-status.json",
+      "SHA256": "67aae5d268f82800dee37c4b6181cdd0c7c114d723458a78371a1cf129522200",
+      "Bytes": 629
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-2f30e3ba60224f09aff29e8b3b514ec8-cleanup.json",
+      "SHA256": "fb3d04271c68f401bf0017056a72b607c3cb0d42112f91bd7f2359bc19013965",
+      "Bytes": 127
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-2f30e3ba60224f09aff29e8b3b514ec8-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-2f30e3ba60224f09aff29e8b3b514ec8-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-2f30e3ba60224f09aff29e8b3b514ec8-publish.log.gz",
+      "SHA256": "2a781519c43e40b5da310b8812775a55dc187400fd1ddb82c8ba44cc5a7737bc",
+      "Bytes": 114
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-49801d60c1d742979cff4f7db095518f-1-runtime-sdks.json",
+      "SHA256": "22af04c7e2ccbf6079887bf766e106ba7590afe598c5c9593b43c1d3fa22fcb8",
+      "Bytes": 301
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-49801d60c1d742979cff4f7db095518f-2-helper.json",
+      "SHA256": "70c7b03cb63ae2c3259b320f6db97c181c28b9420fad78d86256b3141b260b2d",
+      "Bytes": 660
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-49801d60c1d742979cff4f7db095518f-cleanup.json",
+      "SHA256": "25a1e04ea30e1cb607ecb9ebf32a002235543e524d481a7fc2ab12c26b312888",
+      "Bytes": 127
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-49801d60c1d742979cff4f7db095518f-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-49801d60c1d742979cff4f7db095518f-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-49801d60c1d742979cff4f7db095518f-publish.log.gz",
+      "SHA256": "1a556def58fe28802af89211ed7cd546c71e534ff93d6266ceac308769ea47a9",
+      "Bytes": 115
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-49ff1f507edf4bf3b70a421a04833d18-1-runtime-sdks.json",
+      "SHA256": "8ae7b79464432df0d98e02811a5ab108b934173547215faa9b745dee83a7d8e1",
+      "Bytes": 301
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-49ff1f507edf4bf3b70a421a04833d18-2-deps.json",
+      "SHA256": "465e2a4f486bff64f1386f91620d2613dca4f628a22b1e078371413ff70978c6",
+      "Bytes": 760
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-49ff1f507edf4bf3b70a421a04833d18-cleanup.json",
+      "SHA256": "fc21ec8d54d555d282833db68f0bace84bbb27483a3cf4dc22c43ed40586d0a0",
+      "Bytes": 127
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-49ff1f507edf4bf3b70a421a04833d18-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-49ff1f507edf4bf3b70a421a04833d18-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-49ff1f507edf4bf3b70a421a04833d18-publish.log.gz",
+      "SHA256": "cba1523a55bc50412648ac540f898481abaec94fe8d38742fe487f3be6092c80",
+      "Bytes": 114
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-4f0683f429f141aa9b43bb994b380113-1-runtime-sdks.json",
+      "SHA256": "01bcea9c700963daf4e4464f0b8e7c054a68ef970d8ca5d1308b094a285306c1",
+      "Bytes": 301
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-4f0683f429f141aa9b43bb994b380113-2-dll.json",
+      "SHA256": "5fd075c83828dbfefeb0ba8331b6eabefa6f71527e0042c727c69003e49cd58a",
+      "Bytes": 745
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-4f0683f429f141aa9b43bb994b380113-cleanup.json",
+      "SHA256": "2decc31998860305293d930df20b908c8e9628ec5386d195f3f77288c5553047",
+      "Bytes": 127
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-4f0683f429f141aa9b43bb994b380113-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-4f0683f429f141aa9b43bb994b380113-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-4f0683f429f141aa9b43bb994b380113-publish.log.gz",
+      "SHA256": "4062621056572093e134d2905652818c5723c7b236aa516193948ef2409057d5",
+      "Bytes": 112
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-6b319c0f2db947cbac845c2d513df25b-1-runtime-sdks.json",
+      "SHA256": "42c40fe7a7a371e391dc3ba3eaa7fee38b5a1d726978554e52931af82b87b2c8",
+      "Bytes": 301
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-6b319c0f2db947cbac845c2d513df25b-2-main.json",
+      "SHA256": "9e96dca542aa77bf5d5ad8b3fbcfb415805d5610c664779d7703ba8b500ec49d",
+      "Bytes": 768
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-6b319c0f2db947cbac845c2d513df25b-cleanup.json",
+      "SHA256": "a75406beb412cf28e0b4395e4cb0155438584fb7f6291a1709878cfb6406a483",
+      "Bytes": 127
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-6b319c0f2db947cbac845c2d513df25b-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-6b319c0f2db947cbac845c2d513df25b-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-6b319c0f2db947cbac845c2d513df25b-publish.log.gz",
+      "SHA256": "eb20dd0b5991cfaeb066b5367fe86f1bd0673f779c692ac3abd101cebc479e48",
+      "Bytes": 113
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-86fb42a193084ba6b13bbdb03e81355f-1-runtime-sdks.json",
+      "SHA256": "be515c52a73c959ccbaa99eb9214041bc149b73b43c0b4238f3c1f9cf84c3f68",
+      "Bytes": 301
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-86fb42a193084ba6b13bbdb03e81355f-2-valid.json",
+      "SHA256": "d94094cbf7a799016b389f03293c6e274b1521c7080d7dffb817371d576e8f37",
+      "Bytes": 787
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-86fb42a193084ba6b13bbdb03e81355f-cleanup.json",
+      "SHA256": "76953f0b14980783f982b11a1538c89e218b6039c86b492604ee2f50c8e7d22a",
+      "Bytes": 127
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-86fb42a193084ba6b13bbdb03e81355f-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-86fb42a193084ba6b13bbdb03e81355f-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-86fb42a193084ba6b13bbdb03e81355f-publish.log.gz",
+      "SHA256": "f3d59467441dc4c5dc171cae872948514b44e50ee7607acd76932fcd245d1a6e",
+      "Bytes": 114
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-9534046108da43129b9011106d8c512e-1-runtime-sdks.json",
+      "SHA256": "d14ed0a6680ca1232408e50d923709b9218c049c15c2c59d74461d832f03438d",
+      "Bytes": 301
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-9534046108da43129b9011106d8c512e-2-runtimeconfig.json",
+      "SHA256": "dcc4ed65d68d4bc12862492a747c969f2d14d71afd11081ede275f80bf5fbe57",
+      "Bytes": 778
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-9534046108da43129b9011106d8c512e-cleanup.json",
+      "SHA256": "ef246adbbfb045a55d1f4e59b2e685c4f491f4c2c95e97d104e3a9016985e4ce",
+      "Bytes": 127
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-9534046108da43129b9011106d8c512e-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-9534046108da43129b9011106d8c512e-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-9534046108da43129b9011106d8c512e-publish.log.gz",
+      "SHA256": "abbf9153c6c99aea3032ecbcb04a29f5cce32bc4cbd8a2c80495f12de0dd17f4",
+      "Bytes": 112
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-a302ee7b1de545409117992a789b2e2f-1-runtime-sdks.json",
+      "SHA256": "c8ede3c7ef4d6f2562c60314f2ce04d9762241db7dd59a453c1ac65f531df0e6",
+      "Bytes": 301
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-a302ee7b1de545409117992a789b2e2f-2-dotnet.json",
+      "SHA256": "266c62496c65693324f60e65cf5878e40ce5e51b05e854f32b94639737e82122",
+      "Bytes": 716
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-a302ee7b1de545409117992a789b2e2f-cleanup.json",
+      "SHA256": "b04cbe11ff45810d4b0523dd9c2406e48eef95078ef72ada25e86ac37008fd28",
+      "Bytes": 127
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-a302ee7b1de545409117992a789b2e2f-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-a302ee7b1de545409117992a789b2e2f-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-a302ee7b1de545409117992a789b2e2f-publish.log.gz",
+      "SHA256": "59a39367758e0720fb805e5ad7cbcfc90c39396fe55466cb91b02525a71dcc58",
+      "Bytes": 112
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-cf9490066eee40a3b1c224db50155bea-1-runtime-sdks.json",
+      "SHA256": "1cb9e84cf4d03fec724fa5e6e68017a17b17eb2d204be9ed39d7457fb36814af",
+      "Bytes": 301
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-cf9490066eee40a3b1c224db50155bea-2-aspnet.json",
+      "SHA256": "38eadfb765f4b23ba0b9f1b0e694f761924677ca7e1f580c929a9cb501f0cdf7",
+      "Bytes": 734
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-cf9490066eee40a3b1c224db50155bea-cleanup.json",
+      "SHA256": "f19ea3bcb5646c318e8afe32f59a2af08db85cd0fab9592cc450ca44d76e7b0a",
+      "Bytes": 127
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-cf9490066eee40a3b1c224db50155bea-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-cf9490066eee40a3b1c224db50155bea-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-cf9490066eee40a3b1c224db50155bea-publish.log.gz",
+      "SHA256": "798fe2213323254375aff309ff893f2c66a0075f215ec6d84673640e6499515c",
+      "Bytes": 112
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-d0cef4a77d084140a2e64d88efb680fe-1-runtime-sdks.json",
+      "SHA256": "dad0b50db6d86544e08dd9e77e721b047b92216767949de34b878090932fcb93",
+      "Bytes": 301
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-d0cef4a77d084140a2e64d88efb680fe-2-first.json",
+      "SHA256": "7a3b04614d27996330394d69ed00745a41b2a8540f5777fe0adf11c8c94cd76e",
+      "Bytes": 787
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-d0cef4a77d084140a2e64d88efb680fe-3-second.json",
+      "SHA256": "eb50ddc62bfa81d96d9f9211d20fec3f34fb291fa87a062113261bb2df882e34",
+      "Bytes": 787
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-d0cef4a77d084140a2e64d88efb680fe-cleanup.json",
+      "SHA256": "4a50f195012756d70e57aa4df50f62a822253b6972ab8597bea7d8d34d96bb59",
+      "Bytes": 127
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-d0cef4a77d084140a2e64d88efb680fe-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-d0cef4a77d084140a2e64d88efb680fe-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-d0cef4a77d084140a2e64d88efb680fe-publish.log.gz",
+      "SHA256": "45f8ef39b85cd62bdaa018d57a1ef2936166ccfd240ec69ba0c25d9b4194d490",
+      "Bytes": 111
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-d2b67d3363d44bdb8105688e1755d1e2-1-runtime-sdks.json",
+      "SHA256": "74a1fb3b31adcc92d9172c886d737a15c4ec0e89591c1839ec0d1bf56a114dfe",
+      "Bytes": 301
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-d2b67d3363d44bdb8105688e1755d1e2-2-netcore.json",
+      "SHA256": "67c7b30898e32a41fdc854abb3edc17f40dad9488308a3876227d14fdbbc017b",
+      "Bytes": 732
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-d2b67d3363d44bdb8105688e1755d1e2-cleanup.json",
+      "SHA256": "434e2701fc4af89f4fdaa871be80fd02dac267825e28b93f3d0bf1b60df87ca8",
+      "Bytes": 127
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-d2b67d3363d44bdb8105688e1755d1e2-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-d2b67d3363d44bdb8105688e1755d1e2-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-d2b67d3363d44bdb8105688e1755d1e2-publish.log.gz",
+      "SHA256": "a1cd1f478c26d782ebfafda6214e27b80f27ec97bd392de90a125ce495e88ce2",
+      "Bytes": 114
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-dae0ac60467d45aa8568bac2df48e218-1-runtime-sdks.json",
+      "SHA256": "37a0fe96164c5218c3d33668d6bf634c47e8f2ba1599560f053e224ebd828263",
+      "Bytes": 301
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-dae0ac60467d45aa8568bac2df48e218-2-action.json",
+      "SHA256": "0be9978a89755ad9a87e8d4aee4d570fe867bd81964d56b5f0f1cc97def8d5a4",
+      "Bytes": 754
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-dae0ac60467d45aa8568bac2df48e218-cleanup.json",
+      "SHA256": "1bbf79d66d7a048c90ac6c36971c54e22c0b547f3e8d2f2f72029f78643852b1",
+      "Bytes": 127
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-dae0ac60467d45aa8568bac2df48e218-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-dae0ac60467d45aa8568bac2df48e218-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-dae0ac60467d45aa8568bac2df48e218-publish.log.gz",
+      "SHA256": "a87cccb98b9a868ece7e2d27faa55748e4d34f8276c3afca486338be904cbf21",
+      "Bytes": 112
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-e2e384ead8fe43518893dfe2cc8b0e75-1-runtime-sdks.json",
+      "SHA256": "ee398e3fafa44586fa78953f9df35c5c09943ec21e9924512b1cc0ffc471cfdd",
+      "Bytes": 301
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-e2e384ead8fe43518893dfe2cc8b0e75-2-observed-timeout.json",
+      "SHA256": "c7a68b2a7c163f790df127f56c1b5aeb3988a189b84ba5c79600b92cba18d56f",
+      "Bytes": 305
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-e2e384ead8fe43518893dfe2cc8b0e75-cleanup.json",
+      "SHA256": "4892bde8ab527ad7d73902aa01e3bfb5d34f17a61e3336689a0c5a01f33a78c3",
+      "Bytes": 127
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-e2e384ead8fe43518893dfe2cc8b0e75-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-e2e384ead8fe43518893dfe2cc8b0e75-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/fixtures/boe-auxiliary-e2e384ead8fe43518893dfe2cc8b0e75-publish.log.gz",
+      "SHA256": "18503f6717569bc64d0148a9240bd1df2dfc38bd4d3f0161562557dc87c0ab99",
+      "Bytes": 114
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/runner/Build-unit.log.gz",
+      "SHA256": "35e2bfb2fdfd49804566271f59bccb4fa50f4a843e00e659e6c274a872476211",
+      "Bytes": 2032
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/runner/auxiliary-launcher-portable-unit-001.trx",
+      "SHA256": "fa25c4ee3e5292c5b023937a6173e4b7ee6daf7ff369b4ac6beba57ecd3e13a5",
+      "Bytes": 30483
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/runner/dotnet-test.log.gz",
+      "SHA256": "de94ff8f9a5276a908b1b47f2c9b4c468a60aa98c134d1cabcaf1f147638db6f",
+      "Bytes": 178624
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/runner/plan.json",
+      "SHA256": "68aec2a968a6c71331b27a11fbd29c2d6bb5e36501128b8532c5f21fcf08ef79",
+      "Bytes": 3978
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/fixture-settlement-storage-red/runner/summary.json",
+      "SHA256": "b586e872e717040cde6a03855e16af1a23ba17ee7e1f139aec7cdb68150c4439",
+      "Bytes": 1558
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/package-red/command.log.gz",
+      "SHA256": "edfef9f09d9aca770824511f14cbaec00aeb20d35ae0d95670ea70243951fc59",
+      "Bytes": 1074
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/package-red/fixtures/boe-auxiliary-8545de6ee2c349f7a53dfd8240980fd6-1-runtime-sdks.json",
+      "SHA256": "35bd5d001f459017c3c86d7eb0a41bd2b205c5120328f71e4c3d5c1272da57f2",
+      "Bytes": 273
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/package-red/fixtures/boe-auxiliary-8545de6ee2c349f7a53dfd8240980fd6-2-valid.json",
+      "SHA256": "89b3cc40bd6eac07f7cb58cb803d595d879fd3b0483c6c36b0be30eb8872d7b4",
+      "Bytes": 734
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/package-red/fixtures/boe-auxiliary-8545de6ee2c349f7a53dfd8240980fd6-cleanup.json",
+      "SHA256": "2717c2d1cc5e0c66ec4539108a9ee050d0ea587ecdd2bca6b5788f6363ac9163",
+      "Bytes": 109
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/package-red/fixtures/boe-auxiliary-8545de6ee2c349f7a53dfd8240980fd6-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/package-red/fixtures/boe-auxiliary-8545de6ee2c349f7a53dfd8240980fd6-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/package-red/fixtures/boe-auxiliary-8545de6ee2c349f7a53dfd8240980fd6-publish.log.gz",
+      "SHA256": "5f41c1358013a66da7d3df9a0e237e47ea4775251aa2cded5e4717e506d7258b",
+      "Bytes": 112
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/package-red/runner/Build-unit.log.gz",
+      "SHA256": "489045c2b7f2299dd3caa43ebcaa695c5651270d0599f3fa9456678ecbc37e99",
+      "Bytes": 2035
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/package-red/runner/auxiliary-launcher-portable-unit-001.trx",
+      "SHA256": "f3310dab7d525b608616eda19f12bfe0ff37f8defd544fd176b0b083036ae919",
+      "Bytes": 5910
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/package-red/runner/dotnet-test.log.gz",
+      "SHA256": "1cc0dd8803815a0697011150dd6bb83eb59888aea71df405c735460207fd9f8c",
+      "Bytes": 178569
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/package-red/runner/plan.json",
+      "SHA256": "f7dbc1da3ef2ccf36ce27cdcda12c2cfe575b56c95b68fcf371d0de02496d4e0",
+      "Bytes": 1129
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/package-red/runner/summary.json",
+      "SHA256": "f50211059ab41bc008afa2eeef7feff1f1c3224a20488144a65a0708d3219647",
+      "Bytes": 1459
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/command.log.gz",
+      "SHA256": "d497225fd50b1c1d1e84a0b4836ad26d95bdf66d9c0c02ea555c3b2fddfe12c4",
+      "Bytes": 919
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-8aa306205d5e4a659ecaa5e214d12bb9-1-runtime-sdks.json",
+      "SHA256": "1a10613615d83a4b66514ebefef32146730a7b87c3ee375b044184eaaa0872a4",
+      "Bytes": 301
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-8aa306205d5e4a659ecaa5e214d12bb9-2-storage.json",
+      "SHA256": "678d79bd99da0f6a7e7a2a1e49abb3e73ef32c6aa0293f38126ce58ad3f27ca6",
+      "Bytes": 756
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-8aa306205d5e4a659ecaa5e214d12bb9-cleanup.json",
+      "SHA256": "ecc96906c8bcfa9c91b2090a91bd3f3405de5e6d3950880fb144816f40e4c19e",
+      "Bytes": 127
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-8aa306205d5e4a659ecaa5e214d12bb9-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-8aa306205d5e4a659ecaa5e214d12bb9-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-8aa306205d5e4a659ecaa5e214d12bb9-publish.log.gz",
+      "SHA256": "745cc33c8a7cfebf0367f2c8568485cee8e6dd2136f613ac464e21139c30e7eb",
+      "Bytes": 112
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-9ae97806c12244c39e0342054868003e-1-runtime-sdks.json",
+      "SHA256": "de56ea7f18aa9db1ea10b25891d5e936c493c54b41d03c26bdd9539d0efe8b11",
+      "Bytes": 301
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-9ae97806c12244c39e0342054868003e-2-invalid-first-root.json",
+      "SHA256": "a5d9142e545a227da81a7cb55c9e93c094f86e03157c151b067a5c0ac7cd92b2",
+      "Bytes": 402
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-9ae97806c12244c39e0342054868003e-cleanup.json",
+      "SHA256": "2123d440414a81c6bdd926eafe4a73c8b238fab6e477e6903b9d5797228d9a42",
+      "Bytes": 127
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-9ae97806c12244c39e0342054868003e-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-9ae97806c12244c39e0342054868003e-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-9ae97806c12244c39e0342054868003e-publish.log.gz",
+      "SHA256": "01cdb312515933dab376ea5840acc68c0dcd2de4cf2facdf923f623d08eba079",
+      "Bytes": 114
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-af8334f1592242e28742d336f89b5e4d-1-runtime-sdks.json",
+      "SHA256": "82cefd2b7e16e3674085702e22ec68103378af50d79fb1840084c83c19aa7078",
+      "Bytes": 301
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-af8334f1592242e28742d336f89b5e4d-2-invalid-first-root.json",
+      "SHA256": "d5f778c5016824e6278dd11b30946c046c69b6347eedb7bc7ca7b5e0d654cffc",
+      "Bytes": 402
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-af8334f1592242e28742d336f89b5e4d-cleanup.json",
+      "SHA256": "f159d95ce91b7d55481d47daf03aa781891fbdfff7f1d737c776c310cd32a330",
+      "Bytes": 127
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-af8334f1592242e28742d336f89b5e4d-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-af8334f1592242e28742d336f89b5e4d-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-af8334f1592242e28742d336f89b5e4d-publish.log.gz",
+      "SHA256": "6ebed0dbd2a53b0ee8b8e3c7a065f4220caf6b0a84566625b6388cc8ddeb3ef9",
+      "Bytes": 112
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-ed9a56e0ec634c2f90608f699cedeb74-1-runtime-sdks.json",
+      "SHA256": "5b6ecf6f99262f09fac0769f3fae9698f1a97a05b3e8ad4d59fea4b374f527af",
+      "Bytes": 301
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-ed9a56e0ec634c2f90608f699cedeb74-2-existing-directory-action.json",
+      "SHA256": "740efa8ac2e44b2c931f735c474d3907c9b2778ca421acf8e00a0fb42ace1219",
+      "Bytes": 807
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-ed9a56e0ec634c2f90608f699cedeb74-cleanup.json",
+      "SHA256": "34bc073ac6731a096d7f03282fa6970545dbeb98b699a65846d15c8499eb92b0",
+      "Bytes": 127
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-ed9a56e0ec634c2f90608f699cedeb74-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-ed9a56e0ec634c2f90608f699cedeb74-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/fixtures/boe-auxiliary-ed9a56e0ec634c2f90608f699cedeb74-publish.log.gz",
+      "SHA256": "97e0d7b13e91eba2a0113fb1aea43d1d74b1896f9f1b83070fe601f891cf79ae",
+      "Bytes": 114
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/runner/Build-unit.log.gz",
+      "SHA256": "07a84eaae48d284d7ccd5e0e570c6ee7be3635ad08dfa10e7f83a8d861465e56",
+      "Bytes": 2031
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/runner/auxiliary-launcher-root-binding-unit-001.trx",
+      "SHA256": "94d96d529671b6ddac195884e2a75bcbb46990a7f4f4a2b5bbc96be53c732775",
+      "Bytes": 5991
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/runner/auxiliary-launcher-storage-refusal-unit-002.trx",
+      "SHA256": "69fd7fa3990dc414f696734e137110bc5bbe951a5f633b4113d51b14783fadbc",
+      "Bytes": 3003
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/runner/dotnet-test.log.gz",
+      "SHA256": "aed5500d70477c37646d4b0885c93240d6af56cc70e4b392d9c6b4a54f5adccd",
+      "Bytes": 178359
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/runner/plan.json",
+      "SHA256": "e6ac66728252c3f770a5a8833829bb9986dbb17800b5f47920ee397bb9558498",
+      "Bytes": 2306
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/remaining-gap-green/runner/summary.json",
+      "SHA256": "17fbfb25ea100f74267c7c6b07d95a78bd2cf266938813a00621aa839575989c",
+      "Bytes": 1753
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/root-red/command.log.gz",
+      "SHA256": "f9c76cde7c95752f4887fb60897d3505dc1f76b48907511f3dfe461be3c377dd",
+      "Bytes": 929
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/root-red/fixtures/boe-auxiliary-be0818221b614836acd080e7cb6bb427-1-runtime-sdks.json",
+      "SHA256": "73d7af2fd8defb31743c6a7c19196ebea9db8332f50e0f5c7a2db98956a28577",
+      "Bytes": 273
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/root-red/fixtures/boe-auxiliary-be0818221b614836acd080e7cb6bb427-2-existing-directory-action.json",
+      "SHA256": "96963ee8d281fef3cd676788f60095d6af7efea6cd877f2575e1fd3bf8a1669c",
+      "Bytes": 779
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/root-red/fixtures/boe-auxiliary-be0818221b614836acd080e7cb6bb427-cleanup.json",
+      "SHA256": "61ad57695d8ed7946cf845ea85fb493caf996098196d76b29f74241cbda653b3",
+      "Bytes": 109
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/root-red/fixtures/boe-auxiliary-be0818221b614836acd080e7cb6bb427-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/root-red/fixtures/boe-auxiliary-be0818221b614836acd080e7cb6bb427-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/root-red/fixtures/boe-auxiliary-be0818221b614836acd080e7cb6bb427-publish.log.gz",
+      "SHA256": "55a13639e8af0c0832246fa50adb58ddb5e4dd9e70a83d759ab1181f71730f6a",
+      "Bytes": 112
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/root-red/runner/auxiliary-launcher-root-binding-unit-001.trx",
+      "SHA256": "f11c63249510f1aacca5ad68681840e3407469b1b7cac2bd400b0390cbfb9195",
+      "Bytes": 4796
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/root-red/runner/dotnet-test.log.gz",
+      "SHA256": "37a3cc417df4107d84a28f72c998fd12b15e45c0fa8208fa8e296227451d1bf9",
+      "Bytes": 176417
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/root-red/runner/plan.json",
+      "SHA256": "4234163dd7f8ee1c2ec9cfeab051c01e3aed9804ad83f9245a42945023db3f8b",
+      "Bytes": 1126
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/root-red/runner/summary.json",
+      "SHA256": "47bc4896b03535841427f74728c0feab148bb9c176583e444e600a57c321ded7",
+      "Bytes": 1372
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/route-green/command.log.gz",
+      "SHA256": "24fb5ebc85d3e87205a3df7cc90754c938f2704d9b911a8c2d05d78817dc5db1",
+      "Bytes": 743
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/route-green/fixtures/boe-auxiliary-7a192d6d792a4badaecb65971da21bc0-1-runtime-sdks.json",
+      "SHA256": "ad8b59307c46d2dd99c3aaac14a45481f9571048f33e9acad7681aa3e8191efb",
+      "Bytes": 273
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/route-green/fixtures/boe-auxiliary-7a192d6d792a4badaecb65971da21bc0-2-valid.json",
+      "SHA256": "c9b0a02df208b11775afaa0d394cb2a703f189318250341ceaf6df98f2759980",
+      "Bytes": 759
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/route-green/fixtures/boe-auxiliary-7a192d6d792a4badaecb65971da21bc0-cleanup.json",
+      "SHA256": "aea1b04d6421ef999c231069dfc54f1b01096dbcc9b1cdbc735a62197e58d6a2",
+      "Bytes": 109
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/route-green/fixtures/boe-auxiliary-7a192d6d792a4badaecb65971da21bc0-compiler-version.log.gz",
+      "SHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "Bytes": 203
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/route-green/fixtures/boe-auxiliary-7a192d6d792a4badaecb65971da21bc0-guardian-build.log.gz",
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "Bytes": 20
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/route-green/fixtures/boe-auxiliary-7a192d6d792a4badaecb65971da21bc0-publish.log.gz",
+      "SHA256": "e14d0e4b47a40f145aee3bb520b8756ddd83aef328cac5e9e7e551bff9da0e37",
+      "Bytes": 114
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/route-green/runner/auxiliary-launcher-portable-unit-001.trx",
+      "SHA256": "e3163f653189000c727a07504bf5d3f93fd385518e589f1a4eb8728fa79c3271",
+      "Bytes": 3024
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/route-green/runner/dotnet-test.log.gz",
+      "SHA256": "5f0d41c275ece2c45200e18637725684607e0ddaa4e1147375ed84e90b098b1b",
+      "Bytes": 176199
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/route-green/runner/plan.json",
+      "SHA256": "1fba513f0977285b9145565e5f390f73cacfdee464da8de09f75616cb34c6293",
+      "Bytes": 1128
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/route-green/runner/summary.json",
+      "SHA256": "1b2b9872b01d8ab479b06bab976ea1cc9cd9840e463a44bd8237b82ead07d8ef",
+      "Bytes": 1462
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/spec-kit-prerequisites.json",
+      "SHA256": "c20a966256a3f75aa40c16a1538446dfbd87dc83015cc10790d1db2f2b3312ac",
+      "Bytes": 151
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/zero-workload-native-comma-selection.log.gz",
+      "SHA256": "7e3db1dfedd5d5e3261aaee66fd7febf3e1fba03ad9e627488f10259b289a66f",
+      "Bytes": 224
+    }
+  ],
+  "FinalCarrierClosure": "Exact-tip remote/readback and fresh GitHub-only restore performed by writer after metadata reviews; not yet claimed here."
+}

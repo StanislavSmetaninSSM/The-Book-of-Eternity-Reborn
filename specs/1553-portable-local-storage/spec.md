@@ -1,5 +1,9 @@
 # Feature Specification: Trusted local storage and cross-platform runtime
 
+## Current auxiliary package contract
+
+Owner-authorized T050-AUXILIARY-LAUNCHER-PORTABLE preserves the existing prepare-turn helper: installed/relocated prebuilt client DLL/resources on Linux/Windows, .NET8 shared frameworks and PowerShell7, no source/SDK/compiler at player startup. The ordinary positional launcher and profile CLI/model/options stay; prepare-only first-root identity cannot come from action text. Capability/debt failure is explicit, retains evidence and does not replay. This client-owned package change alters no GM-authored output/game rule and adds no journal. [Plan](auxiliary-launcher-portable-plan.md) / [handoff](auxiliary-launcher-portable-handoff.md); bounded Linux synthetic qualification, no native Windows/live acceptance. Full US5/T050 remains open.
+
 ## Current T050 clipboard slice — bounded synthetic execution
 
 From accepted roadmap `113edbb00eeeb9172ee3a02e00585f7bde442243`, the existing
