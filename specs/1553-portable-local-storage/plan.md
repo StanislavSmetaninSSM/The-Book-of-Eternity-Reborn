@@ -1,3 +1,7 @@
+# Current production continuation: actual turn request, paste observation refusal
+
+Fresh deployed og9 atfaf17fd4/runtime9744d191 passes ordinary NewGame/currentbootstrap/readiness/daemon/Continue and creates real player request. Paste returns originalDraftUncertain/observation-timeout; submit/model/accepted0. OriginalscopeStoppedACK/allpeersnormalexit0+EOF/termios/ECHILD0emergency. Next: independently reviewed exacttranscript causalcheck of known SGR39 draftstyle, minimumfix ifconfirmed and narrow GREEN before another freshattempt; no unchangedretry. [Facts/evidence](opencode-lifecycle-diagnosis.md). Existing oldUncertain remains unchanged.
+
 # Current causal scope fix GREEN, live acceptance remains open
 
 T043-CONTINUE-PENDING-PUBLICATION: component causal RED1/1 atb6742f45, minimal runtime9744d191 moves only availability existence read inside original participating admission; selected GREEN2/2, both original pins and cleanup confirmed, independent Sol source PASS. MainMenu error detection driver-only inert causal RED→GREEN. Exact deployed fresh NewGame/OpenCode continuation next after checkpoint/readback/review; no model/game turns yet. [Evidence and limits](opencode-lifecycle-diagnosis.md). Existing historical entries retain their context; no old Uncertain changes.

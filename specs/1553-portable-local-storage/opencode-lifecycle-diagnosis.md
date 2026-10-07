@@ -1,3 +1,11 @@
+# Current production route reaches real turn, paste observation remains refused
+
+Fresh og9 atfaf17fd4 / runtime9744d191, actual678files/99,051,782bytes. Ordinary NewGame, initial cancellation, original Running bootstrap/derivedReady, real daemon bootstrap, Continue/playerprompt and one genuine action/request succeed. Actual immutable prompt operation2f1200d067ec4f458ee35899bbf63fbe returned DraftUncertain/observation-timeout before submit; no reconstructed input/replay. Accepted game turns0; modelsubmission0. Daemon's6 noticed/cancelled turn iterations do not establish6 submissions.
+
+OriginalRun04a1b2d09ba44c60b6debd4fe43666d3 reached same-identity scoped stop/ACK/durableStopped; actual client/bridge/daemon exit0, allEOF/restoredtermios. GuardianECHILD0emergency/driver1/failures0/deadlinefalse; elapsed62.276. [Public evidence](recovery/evidence/opencode-live/current-turn-paste-refusal/manifest.json); private CLI state excluded. Historical og4/og5 Uncertain unchanged.
+
+Next source hypothesis: actual pasted composer emits SGR39/default foreground (-1); MiniDraftRegion currently admits only explicit0xe2e8f0. Confirm exact child VT prefix through actual parser/matcher, then if causal narrow style support, real pipe/draft-file positive and unknownstyle/sequence negative tests. No fresh live until causal correction/review/GREEN. Source#1553/T043; no general VT promise, provider/config/auth/environment change or gameplay schema/text/model change.
+
 # Component fix verified; deployed live continuation next
 
 Frozen runtime `9744d19108ca2e7c9f8701bb5830e5a5b9a9744f`: targeted GREEN2/2, complete descriptors/cases2/2 and owned cleanup. New case obtains reader original Active pin before real publisher release; both ClosedObserved, HasCurrentSession=true, pending journal absent, unchanged original identity and scoped stop/ACK. Directly affected original console wrapper/Stopping regression also passes. [GREEN](recovery/evidence/opencode-live/pending-availability-green/manifest.json) / [affected](recovery/evidence/opencode-live/pending-availability-affected/manifest.json). This remains component proof, not a claim that og8's unavailable stack was captured. Independent Sol source PASS at9744d191; bounded independent Sol evidence PASS at06d63a11.
