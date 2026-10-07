@@ -78,3 +78,7 @@ Atf2a7e0e1564a1d127f52166ddfdafa668e95be72 admission/changed checks16/16PASS, ex
 ## Final exact inventory
 
 Atb1dc3e46cd618b90f2b496640aa753245bdfb0a7 official runner -PlanOnly -NoBuild discovers3descriptors/41cases (7+30+4),0tests. Completed0/CompleteFalse is intentional discovery-only, not an underfilled execution. Root audit now7manifests/337sourcepins/32artifacts/12gzip; execution/latest counts unchanged. Provisionalhandoff/currentfeatureartifacts aligned; final separate independent evidence and freshGitHub-onlyrestore next. No code/test delta.
+
+## Mandatory catalog inventory and candidate restore
+
+Reviewer identified docs/testing.md121 mandatoryValidateCatalog evidence gap; no useroverride. Atb97157ef6154bb9b85d69176ab0674f63b9d10ba fresh official -ValidateCatalog completed0tests,ValidTrue/11,050methods/378categories/0unmapped/0stale; complete0 intentionallydiscovery. This is inventory, no fullsuite or repeatedruntime checks. Root audit now8manifests/391sourcepins/37artifacts/15gzip;41distinctlatestPASS unchanged. FreshGitHub-onlycandidateb971 independently checked20,686trackedbytes vsGitHubblobs/writer,cleanHEAD/tree/parent/fullfsck/noalternates/acceptedancestry; proofretained. Actual independent Sol evidence reviewer independently repeated fullbyte/fsck check. Final independent evidence verdict and exact-tip carrier restoration pending; no runtime/test diff.

@@ -1,6 +1,6 @@
 {
   "Task": "T031-DAREN-STANDALONE-LINUX",
-  "Status": "Scoped execution/source PASS; independent final evidence and fresh GitHub-only restoration pending",
+  "Status": "Scoped execution/source/candidate restore PASS; final independent evidence verdict and exact-tip writer closure pending",
   "AcceptedBase": "953c48f81f06ef78010bf668133e2b974934e142",
   "DesignReview": {
     "Model": "gpt-6.1-sol",
@@ -53,20 +53,29 @@
   },
   "EvidenceAudit": {
     "Task": "T031-DAREN-STANDALONE-LINUX",
-    "ManifestSets": 7,
+    "ManifestSets": 8,
     "DiscoveryOnlyInventories": [
       {
+        "Mode": "PlanOnly",
         "Source": "b1dc3e46cd618b90f2b496640aa753245bdfb0a7",
         "PlannedCases": 41,
         "PlannedDescriptors": 3,
         "TestsExecuted": 0,
         "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-final-inventory/manifest.json"
+      },
+      {
+        "Mode": "ValidateCatalog",
+        "Source": "b97157ef6154bb9b85d69176ab0674f63b9d10ba",
+        "PlannedCases": 0,
+        "PlannedDescriptors": 0,
+        "TestsExecuted": 0,
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-catalog-validation/manifest.json"
       }
     ],
     "ZeroWorkloadPreparationRefusals": 0,
-    "SourcePinsVerified": 337,
-    "ArtifactsVerified": 32,
-    "GzipArtifactsVerified": 12,
+    "SourcePinsVerified": 391,
+    "ArtifactsVerified": 37,
+    "GzipArtifactsVerified": 15,
     "DistinctRemovedFixtureRoots": 44,
     "GenericRemovedFixtureReceiptsWithoutPath": 4,
     "ExecutionTotalsIncludingSupersededFailures": {
@@ -518,5 +527,60 @@
     "Cases": 41,
     "TestsExecuted": 0,
     "Mode": "PlanOnly/NoBuild, discovery only; completed0 is intentional"
+  },
+  "CatalogValidation": {
+    "Source": "b97157ef6154bb9b85d69176ab0674f63b9d10ba",
+    "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-catalog-validation/manifest.json",
+    "Valid": true,
+    "MethodsInventoried": 11050,
+    "Categories": 378,
+    "Unmapped": [],
+    "StaleSelectors": [],
+    "TestsExecuted": 0,
+    "FreshBuild": true,
+    "Mode": "ValidateCatalog discovery only; no full suite or other test execution"
+  },
+  "CandidateRestoration": {
+    "Commit": "b97157ef6154bb9b85d69176ab0674f63b9d10ba",
+    "Tree": "98726b17b8677b7d2ae0f8d560334b5b35f8ae57",
+    "Parent": "b1dc3e46cd618b90f2b496640aa753245bdfb0a7",
+    "RestoredDirectory": "/workspace/qualification-1553-daren-standalone/candidate-github-restore",
+    "Transport": "fresh clone from GitHub HTTPS only; no local source/object/cache reuse",
+    "Clean": true,
+    "TrackedFilesByteCompared": 20686,
+    "Comparison": "each restored and writer checkout file byte-identical to independent GitHub-fetched blob",
+    "FullFsck": true,
+    "RemoteAfterRestoration": "b97157ef6154bb9b85d69176ab0674f63b9d10ba",
+    "TestsExecutedForRestoration": 0,
+    "AcceptedR3T042TerminalF1F2AndAcceptedF3Ancestry": true,
+    "AcceptedProductionMainDesignAncestry": true,
+    "AcceptedM1AndBrowserPlanAncestry": true,
+    "AcceptedT031Ancestry": true,
+    "AcceptedLoadUxAncestry": true,
+    "RestoredDarenPlan": true,
+    "RestoredDarenQualification": true,
+    "RestoredDarenHandoff": true,
+    "AcceptedDirectGachaAncestry": true,
+    "RestoredDirectGachaPlan": true,
+    "RestoredDirectGachaQualification": true,
+    "RestoredDirectGachaHandoff": true,
+    "RestoredLoadLifecyclePlan": true,
+    "RestoredLoadLifecycleQualification": true,
+    "RestoredLoadLifecycleHandoff": true,
+    "RestoredBrowserQualification": true,
+    "RestoredBrowserPlan": true,
+    "RestoredM1Qualification": true,
+    "RestoredProductionMainDesign": true,
+    "GitAlternatesPresent": false,
+    "Origin": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git"
+  },
+  "CandidateRestorationIndependentReview": {
+    "Agent": "/root/daren_standalone_final_evidence_review",
+    "Model": "gpt-6.1-sol",
+    "Reasoning": "xhigh",
+    "Verdict": "PASS",
+    "Commit": "b97157ef6154bb9b85d69176ab0674f63b9d10ba",
+    "TrackedFilesByteCompared": 20686,
+    "ReadOnlyFullFsck": true
   }
 }
