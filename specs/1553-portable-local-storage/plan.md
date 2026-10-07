@@ -1,3 +1,12 @@
+# Current canonical mutation exception diagnosis
+
+The reviewed phase-aware fresh attempt passed original bootstrap/derivedReady,
+then daemon bootstrap returned a concrete canonical mutation refusal before any
+player action. Original cause is suppressed by the existing C# operation helper.
+Original stop/Stopped/ACK/I-O and guardianECHILD0emergency verified; game/model0.
+Obtain actual exception in a bounded inert original-owner consumer before changing
+behavior or another model attempt. [Currentfacts](opencode-lifecycle-diagnosis.md).
+
 # Fresh attempt recorded; client/request diagnosis in progress
 
 The single authorized fresh attempt at62141cef reused exact677 bt1 package files.

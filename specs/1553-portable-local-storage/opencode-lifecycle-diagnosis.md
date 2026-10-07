@@ -1,3 +1,26 @@
+# Phase-aware current attempt: distinct canonical mutation refusal
+
+Sourceb7625b8f after independent Sol SOURCE PASS and exactremote/readback, same677
+bt1runtimefiles/97,510,857bytes. Fresh `/workspace/og7`, originalrun
+`1d7981896a26498fadbb8e704204c938`. Actual bootstrap/derivedReady succeeded.
+Daemon failed before action at `gm_main_operation.ps1:57`: reply sequence matched
+but `ok=false` for a canonical mutation. The initial participating active admission
+had already succeeded; do not mislabel this as rejected handshake admission.
+C# `GmMainParticipatingControl.RunAsync` catches the mutation exception and replies
+only ok/sequence; the original cause is currently lost. No player action, actual
+request, modelsubmission or acceptedturn. Nounchangedretry authorized by a timeout.
+
+Original scoped stop/ACK/durableStopped, bridge/daemonexit0/1+EOF/restoredtermios
+and foregroundclientSIGINTexit-2/EOF/restoredtermios observed. Client graceful
+menu exit was not qualified (driver used its bounded foreground-stop path).
+GuardianECHILD/0emergency/driverExit1/failures0/deadlinefalse; elapsed29.13s.
+Public [artifactmanifest](recovery/evidence/opencode-live/phase-aware-daemon-refusal/manifest.json)
+retains raw failure and monotonic chunk offsets. Historical Uncertain unchanged.
+
+Next diagnosis is original canonical mutation exception + actual command phase,
+preferably inert original-owner controlled consumer. No generic lifecycle patch,
+newauthority, game change, provider retry, or systemd work.
+
 # Current fresh-attempt boundary (one attempt; not og5 reproduction)
 
 Source62141cef, same exact677 bt1 package files, post-failure bootstrap exception
