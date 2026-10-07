@@ -1,3 +1,20 @@
+# S1 reviewed source/controlled handoff candidate
+
+Runtime `b764117fbb15cc999100d42cee37400e0c65f245` is frozen:42 distinct PASS,
+final28/28 and26 independent guardians ECHILD with0emergency/failure/deadline.
+Independent actual Sol6.1/xhigh source/selection PASS at b764 and evidence PASS
+at f0bb, extended to discovery checkpointfeef8f7a. Catalog427/11176 and
+PlanOnly42/3 executed0tests. [S1 handoff](systemd-main-s1-handoff.md),
+[qualification](recovery/systemd-main-s1-qualification.json) and864gzip artifacts
+retain exact sources/counts/cleanup and historical RED/preparation taxonomy.
+S1 checkbox describes only controlled implementation. Actual manager/native
+cgroup transport and public backend remain unqualified/closed pending S2/S3.
+Next: independent metadata review, final carrier ordinary push/readback and fresh
+GitHub-only restore, then stop. Relay stays shared code;T043-RELAY-REUSABLE-DESIGN
+is a separate next design, with no new provider/network/credentials grants.
+Conditional merge is parent-coordinated only after overall completion/final
+verification/default-branch lookup; no merge now.
+
 # S1 final discovery checkpoint
 
 Frozen runtime `b764117fbb15cc999100d42cee37400e0c65f245` remains unchanged.

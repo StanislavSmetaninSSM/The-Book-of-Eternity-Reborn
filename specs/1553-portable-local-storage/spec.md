@@ -1,12 +1,18 @@
-## Current scope: primary systemd-user main design only
+## Current scope: bounded primary systemd main S1
 
-From accepted bounded relaydc1724af, resume deferred63e99009 under
-T041-SYSTEMD-MAIN. Reuse the ordinary original terminal/coordinator/schema1
-fence and independent main/worker/storage/generation admission. Systemd backend
-remains unimplemented/unqualified. Existing Auto preference/prelaunch declared
-fallback is already settled; explicit SystemdUser never downgrades. No runtime,
-tests, probes, setup or new model requests in this design block.
-[Minimal source-backed slices/environment](systemd-main-design-wip.md).
+T041-SYSTEMD-MAIN-S1 implements the original held PTY/pidfd transient-scope
+adapter and existing coordinator/Bridge seams under controlled observations.
+Frozen runtime `b764117fbb15cc999100d42cee37400e0c65f245`:42 distinct PASS
+(14 contract +24 controlled +4 exact affected); actual Sol6.1/xhigh source,
+selection and evidence PASS. [Bounded handoff](systemd-main-s1-handoff.md).
+No real systemd manager/cgroup qualification or public backend activation follows.
+S2/S3 and overall T041 remain open; public SystemdUser/Auto closed, explicit
+SystemdUser never downgrades, approved prelaunch Auto policy unchanged.
+Original terminal/schema1/main-worker-storage-generation admission is preserved.
+This is a client-owned backend, with no gameplay/GM-authored contract change.
+Relay retention/reusable design is tracked separately after S1; no new provider
+or network authorization follows. Final metadata and writer restoration gates are
+recorded in the qualification carrier. Historical entries below keep their scope.
 
 ## Current bounded result: live GM through test CLI relay
 

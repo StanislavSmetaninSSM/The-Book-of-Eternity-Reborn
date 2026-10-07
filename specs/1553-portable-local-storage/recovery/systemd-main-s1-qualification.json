@@ -61,7 +61,8 @@
     "model": "gpt-6.1-sol",
     "effort": "xhigh",
     "source": "f0bb821d5ea60999f0533e259441e0633847a344",
-    "verdict": "PASS source/controlled packet; discovery supplement pending"
+    "verdict": "PASS source/controlled and discovery supplement",
+    "discoverySource": "feef8f7a5481ad46f47524958e534ec8f429967c"
   },
   "metadataReview": "pending",
   "actualSystemdCalls": 0,
@@ -89,5 +90,6 @@
       "executed": 0,
       "exit": 0
     }
-  }
+  },
+  "handoff": "../systemd-main-s1-handoff.md"
 }

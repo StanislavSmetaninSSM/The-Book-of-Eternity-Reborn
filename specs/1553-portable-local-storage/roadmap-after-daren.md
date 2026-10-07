@@ -1,5 +1,18 @@
 # Остаток переноса после принятого Daren
 
+## Current systemd S1 boundary
+
+[S1 handoff](systemd-main-s1-handoff.md) implements only the original scope adapter
+and coordinator/Bridge seams under controlled observations, runtimeb764117f.
+42distinctPASS and independent Sol source/selection/evidence PASS do not qualify
+a real manager. Public SystemdUser/Auto remain closed; S2 concrete cgroup/native
+API plus already-running-manager qualification and S3 ordinary selection remain
+required. NativeLineage remains the accepted declared fallback.
+The owner also requires preserving the accepted relay in shared code:
+T043-RELAY-REUSABLE-DESIGN follows S1 as a separate bounded design, with no new
+provider/grant/network bypass. Older inventory rows below retain their original
+source boundaries rather than being silently relabeled current.
+
 ## Current bounded desktop helper slice
 
 T050-DESKTOP-HELPERS-PORTABLE implements the named original image/mods/main folder consumers from auxiliary `65674ee83ddeac9c63e368334ea170cf9b700c54`. Frozen runtime/tests `04c9717a5290d001816fb394c276c3a2754f3dad`:23/23controlled Linux cases PASS after6causal consumer REDs; one0test preparation collision kept separate. Managed association retained, truthful Requested/manual path, handled creation/cancel/exception, original pauses, `/mods` next-frame visibility; font unchanged. [Plan](desktop-helpers-portable-plan.md) / [handoff](desktop-helpers-portable-handoff.md) / [qualification](recovery/desktop-helpers-qualification.json). Actual independent Sol6.1/xhigh design/source/evidence/metadata PASS; catalog390/11111methods0executed. Final carrier exact remote/byte readback and fresh GitHub-only restore remain writer closure guards before delivery. Positive desktop Linux/native Windows, unrelated helpers/fullT050/systemd/Q1Q2/liveGM remain unqualified/open. Source: #1553.

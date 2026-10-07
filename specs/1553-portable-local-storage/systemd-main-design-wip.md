@@ -1,3 +1,16 @@
+# Current S1 implementation checkpoint
+
+The accepted design below is historical; its "stop before S1" language describes
+0868b805. Authorized S1 is now implemented at runtime
+`b764117fbb15cc999100d42cee37400e0c65f245`, source/controlled only.
+[Handoff](systemd-main-s1-handoff.md) and [qualification](recovery/systemd-main-s1-qualification.json)
+record42 distinct PASS and independent source/selection/evidence reviews.
+No real user manager/cgroup call or public activation has been qualified.
+Concrete pinned read-only cgroup source, native sd-bus/FD ABI, reliable pruning
+witness and stop observation margin remain S2 acceptance gates;
+`SupportsPidfdScopes=false` and `Pruned` refusal deliberately remain closed.
+S3 is the later ordinary selector/consumer slice. Only S1 closes here.
+
 # T041-SYSTEMD-MAIN — resumed source/design checkpoint
 
 Source [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), FR-009/012/013/014/015. Resumes deferred63e99009 against accepted bounded relay `dc1724afe66a9c0f07942e23e33c2af07aed8293`. **Design only; backend remains unimplemented/unqualified.** No systemd/bus/cgroup/device/CLI probes, builds, tests, settings or runtime changes in this step. Independent Sol6.1/xhigh design **PASS** at `bae009e2617f15679a7fb05ec74676c39181fe93`, no blocking findings. This document replaces the deferred questions with the next bounded plan;63e99009 preserves the original draft.
