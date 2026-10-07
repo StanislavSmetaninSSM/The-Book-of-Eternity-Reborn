@@ -6,6 +6,13 @@ sd-bus binding, original manager/unit/cgroup identity and authoritative kernel
 empty proof. S1 controlled original adapter, S2 positive neutral qualification
 on an already-running user manager, S3 ordinary main selection/consumers.
 No backend implementation or positive systemd claim in this step.
+Independent read-only **gpt-6.1-sol/xhigh design PASS** at clean
+`bae009e2617f15679a7fb05ec74676c39181fe93`: 18 source pins/deferred draft match, no blocking
+findings. Pinned cgroup deletion witness stays unqualified; S2 positive evidence
+is mandatory. Runtime changes/tests/builds/probes/new model requests **0**.
+WIP exact remote/readback5 confirmed; verdict carrier publication/readback and
+fresh direct GitHub-only tracked-byte/fsck/clean restoration precede handoff.
+No product question: approved prelaunch-only Auto policy remains. Stop before S1.
 [Source-backed design and acceptance gates](systemd-main-design-wip.md),
 [source pins](recovery/systemd-main-design-checkpoint.json).
 

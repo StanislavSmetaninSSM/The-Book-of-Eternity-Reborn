@@ -1,5 +1,5 @@
 {
-  "Status": "Design WIP; independent review pending; backend unimplemented/unqualified",
+  "Status": "Independently reviewed design PASS; backend unimplemented/unqualified; stop before S1 implementation",
   "SourceIssue": "#1553",
   "SourceBase": "dc1724afe66a9c0f07942e23e33c2af07aed8293",
   "DeferredDraftCommit": "63e99009",
@@ -117,5 +117,24 @@
     "https://github.com/torvalds/linux/blob/v6.12/kernel/cgroup/cgroup.c",
     "https://github.com/torvalds/linux/blob/v6.12/fs/d_path.c",
     "https://github.com/torvalds/linux/blob/v6.12/fs/kernfs/inode.c"
-  ]
+  ],
+  "IndependentDesignReview": {
+    "Reviewer": "/root/systemd_main_design_review",
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "ReviewedCommit": "bae009e2617f15679a7fb05ec74676c39181fe93",
+    "Verdict": "PASS — design only",
+    "BlockingFindings": 0,
+    "SourcePinsVerified": 18,
+    "Summary": "Original held PTY/pidfd scope adapter, original-manager/unit/cgroup binding, kernel-empty + native-reap + actual I/O/disposal/ACK conjunction, preserved main/worker/generation admission, S1 controlled/S2 positive/S3 production sequence are coherent. Proposed pinned deleted-dentry witness remains a required unqualified technical gate. No new product decision.",
+    "ReviewerWrites": 0,
+    "TestsBuildsRuntimeProbesEnvironmentChangesModelCalls": 0
+  },
+  "VerifiedWipPersistence": {
+    "Commit": "bae009e2617f15679a7fb05ec74676c39181fe93",
+    "RemoteMatched": true,
+    "ChangedFilesByteReadback": 5,
+    "Clean": true
+  },
+  "FinalPublicationAndRestoration": "After verdict-carrier publication: exact remote SHA and changed-file byte readback, then fresh direct GitHub-only clone/full tracked-byte comparison/fsck/clean checkout. Exact final SHA and observed restoration result are returned in handoff; no self-referential commit SHA is embedded."
 }
