@@ -212,6 +212,20 @@
       "Bytes": 2559,
       "SHA256": "a295960768bae62b80490e1daf6708a9c948d56ddbcb079ccf0092b34b2f5689",
       "GzipSHA256": "1a2f617dd415ed3492218bb745688db9938b60f09b63afba489f6a0734e149ee"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/pending-availability-affected/scenario/native-build-provenance.json.gz",
+      "OriginalPath": "TestResults/production-main/b67bbbc3202249f199f76b8795849a83/package/build-provenance.json",
+      "Bytes": 1153,
+      "SHA256": "0cd3edfb340a19649c66149c3e408688076ee6f28997f9c1bf626d49899afb51",
+      "GzipSHA256": "443cee9fc1ef7c94b054970b9e6af20adae35eacdbe048c8d8473c412d39d4b7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/pending-availability-affected/scenario/native-package-manifest.json.gz",
+      "OriginalPath": "TestResults/production-main/b67bbbc3202249f199f76b8795849a83/package/package-manifest.json",
+      "Bytes": 968,
+      "SHA256": "865e29f2774680773fc716ea8fadd588a25f1cf3eefaa795ec6e8e42a7b92e49",
+      "GzipSHA256": "c26eef58efb4917347007e488167eb95513f4015ce7f89a094579b226737b25b"
     }
   ],
   "Package": [

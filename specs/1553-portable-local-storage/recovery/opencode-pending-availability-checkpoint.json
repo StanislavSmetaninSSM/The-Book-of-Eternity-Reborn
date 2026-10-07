@@ -18,5 +18,43 @@
   "AcceptedGameTurns": 0,
   "PreparationRefusal": "Comma category passed as one -File value; zero workload; corrected to selection.json",
   "DriverSHA256": "c975d0fb09f2bcfdd8b6439d7262d9ca75fadac08084645b7bb5cea213bea0c1",
-  "EvidenceReview": "Pending"
+  "EvidenceReview": "Sol6.1/xhigh component EVIDENCE PASS at06d63a11",
+  "Catalog": {
+    "Valid": true,
+    "Categories": 416,
+    "Methods": 11147,
+    "Executed": 0,
+    "Artifacts": [
+      {
+        "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/pending-availability-green/runner/catalog-summary.json.gz",
+        "OriginalBytes": 1600,
+        "SHA256": "399f17a068b37d934ab9b95cd214acf296f00f200a7f1d1e93530f8ab0a00204"
+      },
+      {
+        "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/pending-availability-green/runner/catalog-catalog-audit.json.gz",
+        "OriginalBytes": 103,
+        "SHA256": "2f080278a7a04ee0c58d8f054d4c9ccecd59ffc19cf2adcb40dab9c453d9baf7"
+      }
+    ]
+  },
+  "CaptionAssertionToolTranscript": {
+    "EvidenceKind": "Owner-recorded exec tool return; not original independently retained process log",
+    "RED": {
+      "ChunkId": "25bf2d",
+      "ExitCode": 1,
+      "DriverSHA256": "e0ace1abf5070d94ad4ac89e81fad49b936ab2c7ddea7a4d830d6577844126cd",
+      "Error": "AssertionError: Current main-menu error must stop preparation before a timeout"
+    },
+    "GREEN": {
+      "ChunkId": "83ee27",
+      "DriverSHA256": "c975d0fb09f2bcfdd8b6439d7262d9ca75fadac08084645b7bb5cea213bea0c1",
+      "Output": {
+        "InertDriverChecks": 4,
+        "Passed": 4,
+        "ProcessesStarted": 0,
+        "RuntimeTestsExecuted": 0
+      }
+    },
+    "AdditionalReruns": 0
+  }
 }
