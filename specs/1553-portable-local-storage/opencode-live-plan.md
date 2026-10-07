@@ -886,3 +886,16 @@ selected (five affected guards total). No ordinarycancelruntimefix yet.
 An accidental unisolated OpenCode --version refused EROFS creating statehome
 beforeversion; no protected changes or secret contents. Existing own-XDG1.18.35
 version/provenance remain authoritative; no HOME/auth override or newstartup.
+
+da062f52 actual three cases: one ordinary playercancel causalFAIL after observed
+real staging/singleEscape/actualTaskcompletion because pendingmanifest remained.
+Two negative cases preparationFAIL only: byte-oriented JsonNode.Parse rejected
+ordinary UTF8BOM before fault; callbackerror now exposed, no hangs/Spectre leakage.
+Exact receipt player-cancel-causal-red distinguishes1causal/2preparation. Use
+BOM-aware File.ReadAllText only for fixture discovery, retain exact manifest
+bytes. The reviewed minimum ordinary branch now retires consumed snapshot only
+after confirmed Restore and before deleting backup evidence/domain marker
+cleanup; errors skip cleanup. New runtime WIP/unbuilt; three-case GREEN pending.
+No game/GM rules, schemas or authoring surfaces changed: repairs seed existing
+client-owned authorities and consume existing confirmed rollback; no prompt/
+example contract update required. Original fences/validator/stop remain strict.

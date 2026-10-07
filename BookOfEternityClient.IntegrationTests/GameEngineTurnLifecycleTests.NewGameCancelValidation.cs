@@ -60,7 +60,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             const string authorityPath = "game_state/control/pending_turn_snapshot.authority.json";
             Assert.True(File.Exists(_fs.ResolvePath("input/turn_request.json")));
             var manifest = File.ReadAllBytes(_fs.ResolvePath(manifestPath));
-            var node = JsonNode.Parse(manifest)!.AsObject();
+            // Decode the ordinary UTF-8 BOM for discovery; retain exact bytes as evidence.
+            var node = JsonNode.Parse(File.ReadAllText(_fs.ResolvePath(manifestPath)))!.AsObject();
             var backups = node["rollbackBackups"]!.AsObject().Select(pair => pair.Value!.GetValue<string>()).ToArray();
             Assert.NotEmpty(backups);
             string OwnBackup(string path)

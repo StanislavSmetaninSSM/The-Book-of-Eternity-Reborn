@@ -1406,6 +1406,7 @@ public partial class GameEngine
             _fs.DeleteFile("output/ink_feather_action_result.json");
             _qteSceneService.ClearOfferFile();
             await RestorePreTurnBackup(backedUpFiles);
+            await CleanupPendingTurnSnapshotAsync();
             CleanupAfterCancelledChaosSeaMarkerTurn(action);
             AnsiConsole.MarkupLine("[dim]Изменения отменены, прежнее состояние восстановлено. Позднее завершение событий останется отложенным.[/]");
             CleanupBackup(backedUpFiles);
