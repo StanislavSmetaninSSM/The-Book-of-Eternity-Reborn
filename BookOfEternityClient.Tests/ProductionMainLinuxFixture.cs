@@ -53,7 +53,7 @@ internal static class ProductionMainLinuxFixture
         // Proposed setting is carried as ordinary profile JSON before the property exists.
         var json=JsonSerializer.Deserialize<Dictionary<string,JsonElement>>(File.ReadAllText(Path.Combine(files.GameSessionPath,"config.json")))!;
         json["GmMainOwnerBackend"]=JsonSerializer.SerializeToElement("NativeLineage");File.WriteAllText(Path.Combine(files.GameSessionPath,"config.json"),JsonSerializer.Serialize(json));
-        if(mode=="production-main-console-runtime") {
+        if(mode.StartsWith("production-main-console-",StringComparison.Ordinal)) {
             // Controlled current-schema input sufficient for the real session
             // availability consumer, not an accepted turn or live game history.
             await files.WriteFileAtomicAsync("game_state/meta/soul_state.json","{\"soulName\":\"Контрольная душа\",\"currentRealm\":\"Chaos Sea\",\"currentIncarnation\":0}");

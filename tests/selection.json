@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-console-runtime-admission",
-      "reason": "Causal ordinary Continue failure: real GameEngine normalization/refresh must borrow and close original connection pins and refuse Stopping before canonical effects; five short existing consumers, no unrelated cohort",
+      "category": "gm-console-continue-admission",
+      "reason": "New actual full Continue failure after five consumers qualified; missing output reads take publication recovery lease outside original participating scope. Controlled actual console entrypoint no model/turn, unchanged prior cohort excluded",
       "contracts": [
         "T043-OPENCODE-LIVE-BOUNDED",
         "T041-RUN-FENCE-F2"

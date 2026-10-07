@@ -712,3 +712,25 @@ qualified source. Original installed1.18.35/free model and one-action budget
 unchanged. Deferred systemd checkpoint63e99009 retained. New readback cache
 will fetch shallow tip independently; retired only own branchless3.6GB cache
 after exact latest remote/readback match, working/remote histories unchanged.
+
+Independent EVIDENCE PASS e4a39313 for runtime9e4b20dc,116 source pins/41
+committed artifacts and all678 package bytes verified. Actual e4a fresh og3
+again NewGame/Ready then Continue refusal before action;37.318s, original
+StopACK/Stopped/allEOF/termios/ECHILD0EMG. Both shipped client DLLs match fresh
+5ac3fe642697b67e447da24bec199cf94ef5e3ab08c38b67da7650706ad801c8,
+so package is current. No model/action/acceptedturn. Isolated five-method
+positive did not prove complete Continue; do not promote it to game acceptance.
+Next narrow actual shipped console Continue with E2E typed steps (Enter,
+text/options, D4, Enter, Up, Enter) preserves original neutral owner, no GM
+request, captures actual exception stack and pins/stop. New separate category
+gm-console-continue-admission; unchanged five-consumer GREEN excluded.
+Source hypothesis BuildGameResponseFromFiles missing narrative read triggers
+FileSystemManager.ReadFileAsync publication-read recovery lease outside pin.
+Confirm with actual full-entry causal RED before any runtime fix. Source/design
+review pending, no actualOpenCode retry until that cause closes.
+Independent Sol DESIGN PASS for this full-console causal case. The existing
+RunAsync scripted failure propagates the pre-game-loop stack; if failure is
+instead caught inside EnterGameLoop, a later script mismatch is not its cause.
+Preserve original own diagnostics rather than relabeling it. Only after exact
+missing-read stack, wrap whole BuildGameResponse via existing participating
+scope, preserving its core and generation/worker/recovery conjunction.

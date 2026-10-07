@@ -5,4 +5,7 @@ public sealed class GmConsoleRuntimeAdmissionTests
     [Fact]
     public Task ActualConsoleNormalizationAndRefresh_CloseOriginalPinsAndRefuseStopping()=>
         ProductionMainLinuxFixture.RunAsync("production-main-console-runtime");
+    [Fact]
+    public Task ActualConsoleContinue_MissingOutputReadReachesPlayerAndReturnsToMenu()=>
+        ProductionMainLinuxFixture.RunAsync("production-main-console-continue");
 }

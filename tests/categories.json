@@ -16337,7 +16337,30 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmConsoleRuntimeAdmissionTests.*"
+            "BookOfEternityClient.Tests.GmConsoleRuntimeAdmissionTests.ActualConsoleNormalizationAndRefresh_CloseOriginalPinsAndRefuseStopping"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-console-continue-admission",
+      "responsibility": "#1553 T043 actual shipped console Continue including missing-output publication read and original connection settlement",
+      "excludes": "No provider/model/turn or unchanged five-method cohort",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmConsoleRuntimeAdmissionTests.ActualConsoleContinue_MissingOutputReadReachesPlayerAndReturnsToMenu"
           ]
         }
       ]
