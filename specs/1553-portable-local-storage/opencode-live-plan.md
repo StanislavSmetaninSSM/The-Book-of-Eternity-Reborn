@@ -1035,3 +1035,12 @@ changes or executions afterog5. [Compact diagnosis](opencode-lifecycle-diagnosis
 links allavailable20og5artifacts, distinguishes missinginitiatingexception from
 bootstrap-lost symptom, preserves priorcausal/preparation/cleanup classifications.
 Review pending, no proposedfix/live retry. OriginalUncertainunchanged.
+
+Read-only Astra/xhigh FINAL diagnostic verdict: exact678deploymentbytes and
+20og5/61control artifact hashes verified; phase3 before acceptedA1 localized,
+initiatingcause unknown. Missingexception and reflected-vs-standalone context
+gaps recorded; no socket/deadline/ownership patch or live retry supported.
+[Verdict](recovery/bootstrap-lifecycle-review.json). Runtime/tests unchanged
+afterownerpause. Strace availability inventoryonly, no traceexecuted. Nextone
+inert exactstandalone boundary experiment requires actualsend/recv/dispose/error
+evidence; successfulprobe alone nevercausalRED. Provider/game0, systemddeferred.

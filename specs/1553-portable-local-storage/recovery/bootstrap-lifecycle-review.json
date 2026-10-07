@@ -1,0 +1,47 @@
+{
+  "Task": "T043-OPENCODE-LIVE-BOUNDED",
+  "Reviewer": {
+    "Agent": "/root/bootstrap_lifecycle_astra_review",
+    "Model": "gpt-6-astra",
+    "ReasoningEffort": "xhigh",
+    "ReadOnly": true
+  },
+  "ReviewedSource": "ed02178b8eb2684f318e94fb42ec7d707b70e507",
+  "FactMatrixReviewed": "b648e0ddeb120d3828bb22d5994ea39f51d7a8c5",
+  "MetadataCorrections": "5636a552f0010e1e829f5a28a13f460f48aad8bd",
+  "Verdict": "Failure localized before accepted A1; initiating cause unknown; no runtime correction/live retry supported",
+  "Verified": {
+    "Og5Artifacts": 20,
+    "ControlledArtifacts": 61,
+    "Og5PackageFiles": 678,
+    "Og5PackageBytes": 99049670,
+    "ControlledHelperCases": 5,
+    "ControlledCoordinatedStopCases": 1
+  },
+  "Findings": [
+    {
+      "Severity": "Acceptance blocker",
+      "Finding": "Held-root transfer and Running publication succeeded; bootstrap-lost in phase3 before accepted A1; CLI/parser/daemon/provider not reached"
+    },
+    {
+      "Severity": "P2",
+      "Finding": "Original RunAsync catches suppress initiating startup exception; native raw handshake frames are absent"
+    },
+    {
+      "Severity": "P2",
+      "Finding": "Successful reflected TestSupport AppContext/host-I-O and neutral profile differ from standalone packaged Bridge/mini-editor/private-temp actual composition"
+    }
+  ],
+  "UnsupportedHypotheses": [
+    "Stale deployed bytes",
+    "Provider/model cause before native release",
+    "Deadline exhaustion",
+    "Unconditional .NET Seqpacket shutdown on disposal",
+    "Managed precheck exception as proven cause"
+  ],
+  "NextObservation": "After B1/Running, capture full A1 send/receive vs disposal and original awaited startup exception/errno using one inert original standalone production route; no Ready/daemon/provider/paste/action. Successful diagnostic alone is not causal RED.",
+  "HistoricalUncertainRetained": true,
+  "ProviderRequests": 0,
+  "AcceptedGameTurns": 0,
+  "ReviewerExecutedTestsOrCli": false
+}

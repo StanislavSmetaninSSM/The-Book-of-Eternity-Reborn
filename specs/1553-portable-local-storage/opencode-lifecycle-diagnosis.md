@@ -115,10 +115,12 @@ no exhaustion has been demonstrated. No budget increase or scope weakening propo
 
 ## Review gate and next sequence
 
-Read-only `/root/bootstrap_lifecycle_astra_review` (Astra/xhigh) is reviewing the
+Read-only `/root/bootstrap_lifecycle_astra_review` (Astra/xhigh) reviewed the
 entire source/evidence/deployment chain, seeking minimal cause or unnecessary
 coupling, without new architecture or ownership relaxation. Source/evidence review
-of successful bounded launches is reused. No live attempt until causal conclusion.
+of successful bounded launches is reused. [Final diagnostic verdict](recovery/bootstrap-lifecycle-review.json): failure
+localized before accepted A1, initiating cause unknown; no runtime correction or
+live retry supported. No live attempt until causal conclusion.
 
 If cause is established: one narrow actual-boundary RED, one minimal correction,
 independent review and GREEN, ordinary checkpoint/readback, then one fresh game
@@ -135,3 +137,10 @@ URLs/hashes retained in recovery/bootstrap-dotnet-source-pins.json, source bytes
 locally read-only under /workspace/qualification-1553-bootstrap-diagnosis/.
 Root og4/og5 and historical Codex Uncertain metadata remain intact. Systemd draft
 63e99009 stays deferred; primary systemd/nativeWindows/fullclientVT/cold are open.
+
+Final source inventory: /usr/bin/strace exists. No trace/probe/process/test was
+executed after the owner pause, and no instrumentation/fix has been implemented.
+The next experiment must preserve actual standalone application directory and
+original helper/PTY/guardian scopes; public syscall evidence can reduce invasive
+diagnostic changes, but complete exception capture remains a required boundary.
+Checkpoint is diagnostic-only; bounded live gameplay remains open, not accepted.

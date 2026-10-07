@@ -1,3 +1,5 @@
+Current T043 diagnostic gate (2026-10-07): [lifecycle fact matrix](opencode-lifecycle-diagnosis.md) / [read-only Astra/xhigh verdict](recovery/bootstrap-lifecycle-review.json). Og5 failed before accepted A1; initiating cause unknown. No further runtime changes/live retries until the one precise observation establishes a cause. Historical Uncertain retained; provider/acceptedgame0. Existing T043 remains unchecked.
+
 # Tasks: Trusted local storage and cross-platform runtime
 
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
