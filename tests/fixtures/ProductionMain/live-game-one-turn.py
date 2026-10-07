@@ -6,6 +6,32 @@ GM, Ready override, query/gate answer, prompt replay, auth/config/history copy.
 """
 import errno, fcntl, hashlib, json, os, pty, re, select, socket, struct, subprocess, sys, termios, time, uuid
 from pathlib import Path
+
+class PhaseWait:
+    """Progress can renew an idle bound, never the original work deadline."""
+    def __init__(self, now, total_deadline, idle_seconds=45):
+        self.total_deadline=total_deadline;self.idle_seconds=idle_seconds
+        self.last_progress=now;self.signature=None
+    def observe(self, now, signature):
+        changed=signature!=self.signature
+        if changed:self.signature=signature;self.last_progress=now
+        if now>=self.total_deadline:raise TimeoutError('Original overall work bound')
+        if now-self.last_progress>=self.idle_seconds:raise TimeoutError('No observable phase progress for45s')
+        return changed
+
+if len(sys.argv)==2 and sys.argv[1]=='--check-phase-wait':
+    # Inert driver checks; no package, processes, clipboard, CLI or game data.
+    w=PhaseWait(0,210);w.observe(0,'preparing');w.observe(44,'snapshot');w.observe(88,'request')
+    for now in range(100,210):w.observe(now,now)
+    try:w.observe(210,'more progress')
+    except TimeoutError as e:assert str(e)=='Original overall work bound'
+    else:raise AssertionError('Progress extended the original total bound')
+    w=PhaseWait(0,210);w.observe(0,'preparing');w.observe(44,'preparing')
+    try:w.observe(45,'preparing')
+    except TimeoutError as e:assert 'No observable phase progress' in str(e)
+    else:raise AssertionError('Idle phase had no bound')
+    w=PhaseWait(0,210);w.observe(0,'preparing');w.observe(9,'snapshot');w.observe(20,'request')
+    print(json.dumps({'InertDriverChecks':3,'Passed':3,'ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
 out = Path(sys.argv[1]).resolve()
 base = out / 'play'; session = base / 'game_session'; ship = session / '_runtime'
 assert session.is_dir() and ship.is_dir() and not (session / 'config.json').exists()
@@ -30,7 +56,7 @@ env.update(NPM_CONFIG_USERCONFIG=str(install/'empty-user.npmrc'),NPM_CONFIG_GLOB
         'StartupBannerLines':['','█▀▀█  OpenCode','█  █  '+str(session),'▀▀▀▀',''],'AutomaticSubmissionLimit':1,
         'IdleMarker':' BUILD','WorkingMarker':'interrupt','ObservationTimeoutMilliseconds':15000}
 },indent=2,ensure_ascii=False)+'\n')
-start=time.monotonic(); peers=[]; journal=[]; original=None; original_record=None; shutdown_attempts=0;cleaning=False;client_exit_attempted=False
+start=time.monotonic(); peers=[]; journal=[]; original=None; original_record=None; shutdown_attempts=0;cleaning=False;client_exit_attempted=False;client_failure_offset=None
 result={'AcceptedGameTurns':0,'GenuineActionsSent':0,'GateAnswers':0,'QueryAnswers':0,'ConfiguredModel':'opencode/ling-3.1-flash-free',
         'ConfiguredCommand':command,'ConfiguredCwd':str(session),'NoReadyOverride':True,'OrdinaryNewGame':False,'LogicalLifecycleVerified':False}
 action='Я осторожно осматриваю берег Моря Хаоса и спрашиваю моего Хранителя, где я оказался.'
@@ -67,6 +93,7 @@ def pump(delay=.02):
                 b=b''
             if not b:p.closed_streams.add(fd)
             target=p.echo if kind=='echo' else p.capture
+            if b:journal.append({'At':elapsed(),'Terminal':p.name,'ObservedStream':kind,'ByteStart':len(target),'ByteEnd':len(target)+len(b)})
             target.extend(b)
             if len(target)>4194304:raise RuntimeError('Bounded foreground capture exceeded4MiB')
         p.eof=len(p.closed_streams)==len(p.streams)
@@ -101,6 +128,45 @@ def rpc(payload,seconds=2):
                 item['Response']=json.loads(reply);return item['Response']
         raise TimeoutError('Original RPC outcome unknown; never replay')
 def read_json(p):return json.loads(p.read_text(encoding='utf-8-sig'))
+def staging_signature():
+    # Metadata only in this disposable game's staging namespace. Exclude live
+    # daemon/bridge health files and all CLI XDG/auth/session state.
+    paths=list((session/'game_state').rglob('*.rollback.*'))
+    pending=session/'game_state/control/pending_turn_snapshot'
+    if pending.exists():paths+=list(pending.rglob('*'))
+    paths += [session/'game_state/control/pending_turn_snapshot.json',
+        session/'game_state/control/pending_turn_snapshot.authority.json']
+    rows=[]
+    for p in paths:
+        try:
+            s=p.stat()
+            if p.is_file():rows.append((str(p.relative_to(session)),s.st_size,s.st_mtime_ns))
+        except FileNotFoundError:pass # An observed staging cleanup/replacement.
+    return tuple(sorted(rows))
+def current_request(offset):
+    global client_failure_offset
+    phase=PhaseWait(time.monotonic(),start+210)
+    waiting=False
+    while True:
+        text=client.text(offset)
+        if client.process.poll() is not None:raise RuntimeError('Client exited during current preparation')
+        if 'Мир не смог безопасно завершить действие.' in text or 'Ход прервался' in text:
+            client_failure_offset=offset
+            journal.append({'At':elapsed(),'ObservedPhase':'client-failure-before-captured-request'})
+            raise RuntimeError('Current client reported a real failure before captured request')
+        if time.monotonic()>=phase.total_deadline:raise TimeoutError('Original overall work bound')
+        request_path=session/'input/turn_request.json'
+        if request_path.exists():
+            journal.append({'At':elapsed(),'ObservedPhase':'current-request-present'})
+            return
+        if 'Мастер игры размышляет...' in text and not waiting:
+            journal.append({'At':elapsed(),'ObservedPhase':'waiting-ui-without-captured-request'})
+            waiting=True # Observation only: never authority to submit/replay.
+        signature=(len(client.capture),staging_signature())
+        if phase.observe(time.monotonic(),signature):
+            journal.append({'At':elapsed(),'ObservedPhase':'preparation-progress','ClientBytes':len(client.capture),
+                'StagingFiles':len(signature[1]),'StagingBytes':sum(r[1] for r in signature[1])})
+        pump(.1)
 def fresh_main(client,offset):
     fresh(client,'Продолжить',offset)
     until(lambda:re.search(r'8\.\s*[^\r\n]*Выход',client.text(offset)) is not None,8,'fresh eight-item main menu')
@@ -152,7 +218,7 @@ try:
     fresh(daemon,'Waiting for turns...',0,15)
     offset=len(client.capture);client.send(b'\r','observed Continue selected');fresh_player(client,offset,15);client_prompt=True
     offset=len(client.capture);client.send((action+'\r').encode(),'one genuine game action');result['GenuineActionsSent']=1;client_prompt=False;client_wait=True
-    until(lambda:(session/'input/turn_request.json').exists(),8,'genuine game request')
+    current_request(offset)
     request=read_json(session/'input/turn_request.json');result['ActualRequest']=request;result['ActualRequestSHA256']=hashlib.sha256((session/'input/turn_request.json').read_bytes()).hexdigest()
     assert request['playerAction']==action and request['turnNumber']==1
     assert request['sessionId']==result['InitialBootstrapRequest']['sessionId'] and request['requestId']!=result['InitialBootstrapRequest']['requestId']
@@ -196,11 +262,27 @@ finally:
     if client is not None and client.process.poll() is None:
         try:
             if client_wait:
-                offset=len(client.capture);client.send(b'\x1b','failure: cancel original wait once')
+                offset=client_failure_offset if client_failure_offset is not None else len(client.capture)
+                if client_failure_offset is None:client.send(b'\x1b','failure: cancel original wait once')
+                pause_acknowledged=False
                 def settled():
+                    # An actually rendered client error pause is distinct from
+                    # a GM trust/access/update gate. Acknowledge at most once.
                     text=client.text(offset)
                     return not (session/'input/turn_request.json').exists() and ('Продолжить' in text or ('Ваш ход' in text and '🌊 > ' in text))
-                until(settled,12,'completed original cancellation/rollback and fresh menu/player screen');client_wait=False
+                settlement=PhaseWait(time.monotonic(),start+270)
+                while not settled():
+                    text=client.text(offset)
+                    if 'Нажмите любую клавишу для продолжения...' in text:
+                        if pause_acknowledged:raise RuntimeError('Client repeated error pause during original cleanup')
+                        result['ObservedClientErrorPause']=True
+                        error_path=session/'error_log.txt'
+                        result['OriginalClientErrorLogAvailable']=error_path.exists()
+                        if error_path.exists():(out/'original-client-error.txt').write_bytes(error_path.read_bytes())
+                        offset=len(client.capture);client.send(b'\r','observed client error pause: acknowledge once');pause_acknowledged=True
+                    if client.process.poll() is not None:raise RuntimeError('Client exited before fresh cleanup screen')
+                    settlement.observe(time.monotonic(),len(client.capture));pump(.1)
+                client_wait=False
                 client_prompt='Ваш ход' in client.text(offset) and '🌊 > ' in client.text(offset)
             if client_prompt and not client_exit_attempted:exit_client(client)
             elif client.process.poll() is None:

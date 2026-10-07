@@ -1073,3 +1073,30 @@ this single owner-authorized attempt. Independent short Sol source review preced
 execution, evidence review follows actual outcome.
 
 Driver observation-only correction: pipe is created after StartShellAsync completes or fails, so its first observable durable record can already be Uncertain. Latch that exact original identity for one diagnostic shutdown, then explicitly refuse model progression unless record is Running and current status is not uncertain. This reuses the accepted inert-driver observation rule; no lifecycle, runtime bytes, admission, replay or Ready change.
+
+
+## Phase-aware driver correction after the owner's timing clarification
+
+Source-reviewed plan: timestamp actual output chunks/byte offsets and own game
+staging metadata. The first fresh attempt's8s cutoff does not prove slow preparation,
+deleted request, or game defect; waiting UI was captured without observation time.
+Replace that cutoff with the existing210s overall work limit plus45s without
+observable output/staging progress. Progress never extends the overall limit;
+270s driver cleanup/300s independent guardian remain unchanged. Ready/current
+request/original operation/admission/parser/T042 remain actual requirements.
+Unknown waiting/request phase is evidence, not authority or a replay trigger.
+
+The error catch's press-any-key pause is a real client screen omitted from driver
+cleanup. Acknowledge it only when actually observed, once, and require a fresh
+current menu/player prompt before the existing one-time exit sequence. Repeated
+pause or unknown UI fails safely; no CLI access/trust/update answer. Error logging
+uses an ordinary admission outside the just-finished operation and can be refused
+while the main is Running; absent error_log is not proof of stale pin or cause.
+
+Read-only Sol6.1/xhigh design PASS from /root/codex_live_source_review. Driver-only
+implementation leaves all677 pinned runtime files unchanged. Three inert driver
+checks verify progress beyond8s,45s idle refusal, and original210s cap despite
+continuous progress;3/3 passed,0 processes/runtime tests/provider requests. No
+C# category/catalog change justified for this diagnostic fixture-only delta.
+Source review and ordinary remote preservation precede one fresh isolated attempt
+authorized by the latest owner instruction; no unchanged short-timeout retry.
