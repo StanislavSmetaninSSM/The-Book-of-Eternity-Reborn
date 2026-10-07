@@ -208,3 +208,78 @@ parser/profile remains unsupported/Ready:false, no automatic T042 or real game
 turn. No runtime/tests/catalog changes. Next causal runtime slice must connect
 this witness to original immutable operation and causal post-restoration view;
 actual restored cursor is not assumed from paste cursor or startup row numbers.
+
+## Executable connected runtime continuation
+
+Evidence review PASS at b74c7b1b: all17 artifact pins, original1020-file
+package, actual4919B full draft and both original stop/ACK/ECHILD receipts.
+Runtime remains9340ff08; model requests/game turns0. The following work belongs
+to T043-OPENCODE-LIVE-BOUNDED, not a new game contract or public CLI rollout.
+
+1. **Bounded synchronized presentation.** Extend the consumed `TerminalScreen`
+   with an optional `synchronized-mini-v1` mode, selected by a deeply frozen
+   `GmCliInputProfile.TerminalPresentation` value. Its dimensions are the actual
+   original session size. Retain neutral/legacy behavior by default. Model only
+   demonstrated CUP/erase/save/restore/SGR/cursor visibility, synchronized update,
+   harmless known mode/query/OSC/DCS probes and one-cell Unicode characters.
+   Queries receive no answers and TERM stays unchanged. Unrecognized sequences,
+   unsupported width, partial UTF8/control/frame, resize, EOF or owner loss deny
+   observation. Completed synchronized frames expose actual cells/cursor and a
+   monotonically newer revision; no synthetic clear/home or fabricated composer.
+   Derive the mini region from the actual BUILD footer and focused textarea,
+   its one-row gap, and at most6 visible rows; no permanent startup row number.
+   Empty idle needs exact known footer, focused empty/first-turn placeholder
+   and no blocked panel; BUILD alone does not suffice. Busy is the pinned
+   interrupt footer, independently of model output text. Unknown panels refuse.
+2. **Original operation's read-only witness.** Add optional frozen
+   `DraftObservation=external-editor-v1` and an already-existing owned temporary
+   directory to the same profile. Production configuration installs child-only
+   VISUAL/EDITOR pointing to the existing packaged .NET8 bridge apphost's
+   `--observe-draft` mode, with original pipe, random live challenge and owned
+   TMPDIR. Validate apphost/no-space editor command and directory before process
+   creation; no new launcher, journal, player compiler/Python or GM-specific API.
+   Command/model/args/cwd remain original. Observer mode branches before creating
+   a BridgeHost and receives only the actual CLI-created argv file. Read strict
+   UTF8/max64KiB regular no-follow single-link file twice, prove unchanged
+   identity/size/mtime/bytes, never modify it. On the existing pipe, bind the
+   accepted challenge once to the retained current AwaitingPaste operation and
+   original InputLifetime under the same lock. This live object/connection is
+   the evidence carrier; decoded operation IDs/PIDs/status cannot create one.
+   Reject wrong/duplicate/stale observer, disconnect/late completion, path escape,
+   changed bytes, normalization-incompatible single-line final newline and all
+   observation uncertainty. No expected prompt bytes are passed to the observer.
+3. **Connected T042 sequence.** Keep the original immutable operation/hash and
+   paste wire content. Before Ctrl+X/e require a fresh reliable visible tail of
+   that paste in the idle textarea. Retain the original gate/lifetime throughout
+   the editor roundtrip. Full-file proof is separate from screen proof. After
+   actual editor-file deletion and resumed rendering, send standard buffer-Home,
+   require a fresh frame showing the full draft's first viewport at buffer start;
+   send buffer-End and require a fresh frame showing its last viewport/end cursor.
+   These gestures change neither draft nor history nor submission. The pinned
+   source's unchanged restore plus these causal observations qualify the restored
+   composer; merely a new revision after editor exit is insufficient. Geometry
+   must remain unchanged. Recheck original authority, manual takeover, cancel,
+   current view and gates at each write and the sole Enter linearization. Failure
+   after paste is DraftUncertain; after Enter UnknownOutcome. No replay/auto clear.
+   The same real pipe/output pump/status/daemon consumer participates; legacy
+   prefix dispatch remains unchanged. Blocked gate evidence is evaluated outside
+   the verified draft so UpdateGuardians is not an update prompt; no gate answer.
+4. **Causal qualification and persistence.** New narrow presentation category:
+   actual pinned startup/editor transcripts, split input, Unicode, dynamic rows,
+   query/unknown/width/partial/resize/EOF and idle/busy/gate outcomes. New connected
+   witness category: actual TerminalScreen/output pump and pipe accept loop,
+   long/Unicode draft, mismatched/stale/failed witness, file lifecycle, causal
+   Home/End, manual/cancel/revoke, exact one Enter, duplicate/no replay, unknown
+   working outcome. Choose only precisely affected old T042/input/profile tests,
+   structural catalog/discovery; RED before runtime, small GREEN checkpoints,
+   independent source/evidence review before real dispatch. Test helper controls
+   actual file/streams, never replaces the consumer with a canned GM. After this
+   gate, fresh ordinary NewGame and at most2 actual free-model turns remain the
+   acceptance goal, with original stop/fence/guardian and actual receipt/application.
+
+Qualification is pinned to installed OpenCode1.18.35 mini and demonstrated VT;
+neither arbitrary TUI nor native Windows is claimed. The witness apphost command
+must be representable by the CLI's shell:false editor tokenizer; unsupported
+package-path spelling is an explicit optional-profile capability refusal, not
+a change to the player's ordinary launcher. No prompt/docs/example game update
+is needed: this is client-owned input evidence, no GM-authored field/rule changes.
