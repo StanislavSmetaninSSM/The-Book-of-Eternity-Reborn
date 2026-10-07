@@ -1,0 +1,153 @@
+{
+  "SourceCommit": "58f4c933a21b58c2223e731417775df48ed8d97c",
+  "AcceptedGameTurns": 0,
+  "GenuineActionsSubmitted": 1,
+  "ActualPromptReceivedByModel": true,
+  "ResponsePublished": false,
+  "CompletionExecuted": false,
+  "HistoricalOutcome": "Uncertain preserved; original logical stop/I-O not confirmed",
+  "Guardian": {
+    "ECHILD": true,
+    "EmergencySignals": 0,
+    "DriverExit": 1
+  },
+  "EarliestFailure": "daemon gm_bridge_artifact_write_stall before configured600s turn timeout; causality under read-only review",
+  "AgentTask": "/root/relay_live_gm_turn1",
+  "AgentPublicationGuard": "close-request absence assertion failed before any packet write",
+  "SourcePins": {
+    "BookOfEternityClient/game_master_daemon.ps1": "8b6c57e4768ba8cdbee60dd2378b7d01f5c339bb43973c85dcaa60128c0c661a",
+    "tests/fixtures/ProductionMain/codex-gm-relay.py": "113941f1f3e1a4d2f77c0c3fc12b6dd9e1ff4e3d357973371772e83867f91f22",
+    "tests/fixtures/ProductionMain/live-game-one-turn.py": "667f4e737409de1e35ebf03c84368fbed3fb79f51d942dd5caf0e6e61b78d1fd",
+    "tests/fixtures/ProductionMain/relay-apply-response.ps1": "c2db9f9b9f155259270e02a950d8619730d30b231a05f115cb00e839a83dfc00"
+  },
+  "Artifacts": [
+    {
+      "Path": "probe-result.json",
+      "Bytes": 130533,
+      "SHA256": "5e1d879fbc36af10a7fdfa616d7de6868b35acd89a116cea5526478faa102164",
+      "StoredPath": "probe-result.json.gz",
+      "StoredBytes": 37517,
+      "StoredSHA256": "476562ba9c3c645a07b0890c7069652aa355df2fe471ffb0ced8be15bff9a549"
+    },
+    {
+      "Path": "guardian.json",
+      "Bytes": 97,
+      "SHA256": "4c2b9630bc9414229cb742ad8b6375ed656ddf1e4ec714cc72f2986effa9cfa6",
+      "StoredPath": "guardian.json.gz",
+      "StoredBytes": 107,
+      "StoredSHA256": "4deb9c721641dd9c2e67f867f377ac29c3fd72adaf943afac6ca8828e1a39eb0"
+    },
+    {
+      "Path": "guardian.log",
+      "Bytes": 250,
+      "SHA256": "e6785237a47ff6c27fc076713bd61573fa86761bdfe6455b89a6bb107544208e",
+      "StoredPath": "guardian.log.gz",
+      "StoredBytes": 202,
+      "StoredSHA256": "ebb9dc53051fb5c0e1fbf185405705b06ca782b1a8a5ddb9f3a219574ca71e03"
+    },
+    {
+      "Path": "rpc-journal.json",
+      "Bytes": 20834058,
+      "SHA256": "3105bff8dd71c883e14de9ae4300b94b2f49332cf8097426cff5f61f410be3ca",
+      "StoredPath": "rpc-journal.json.gz",
+      "StoredBytes": 182230,
+      "StoredSHA256": "349cf3a9303caf0faa82fc356bc2d0212197de9a47c4adf3712fa453ddbec12c"
+    },
+    {
+      "Path": "client.raw",
+      "Bytes": 28056,
+      "SHA256": "488d902fefdb39b0cf36fd9d3e799c92fc2b801298b45b6a35bc5394e01f94c2",
+      "StoredPath": "client.raw.gz",
+      "StoredBytes": 2462,
+      "StoredSHA256": "f32eaf07a7ce75722308b0c6786d6524fbfc0c2b9ac2a339c5c2879801a57768"
+    },
+    {
+      "Path": "client-echo.raw",
+      "Bytes": 2,
+      "SHA256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "StoredPath": "client-echo.raw.gz",
+      "StoredBytes": 22,
+      "StoredSHA256": "3827170a82238309b60bbe54f61f44a944267563d05ea7b34f44afe350742c00"
+    },
+    {
+      "Path": "bridge.raw",
+      "Bytes": 40691,
+      "SHA256": "8e4547b222f3b103fcf9c5685fe90463079e86be2a8532c80f01c0132ffcb458",
+      "StoredPath": "bridge.raw.gz",
+      "StoredBytes": 12802,
+      "StoredSHA256": "979a512a5d7f6afb9f7c76c7d7f60a1585bbaabd81fe14adba576a1318f1a579"
+    },
+    {
+      "Path": "daemon.raw",
+      "Bytes": 1436,
+      "SHA256": "96f46af495917bfaa9eec74d8bf8b05bd2b23c1dedf73cd63fbd6efb863cf454",
+      "StoredPath": "daemon.raw.gz",
+      "StoredBytes": 650,
+      "StoredSHA256": "7896bc086dbbe999c84278450214d289c9e699960bbfcc5b3ed28a715be40216"
+    },
+    {
+      "Path": "daemon.log",
+      "Bytes": 1247,
+      "SHA256": "f2ed1e6eb73b4c4ea13d9632c8c0befaf82ac1f03c8b2b8ae6a2bd6062199c3b",
+      "StoredPath": "daemon.log.gz",
+      "StoredBytes": 599,
+      "StoredSHA256": "8d45fa8c72a37d7f58476556dac03c9357445fce5b1b0747b1af89b783f1a151"
+    },
+    {
+      "Path": "actual-turn-request.json",
+      "Bytes": 59175,
+      "SHA256": "a51a3409024e999c9ddb797ff67ee4ffda1c39f139f7a9940959bc4a070d2f53",
+      "StoredPath": "actual-turn-request.json.gz",
+      "StoredBytes": 17936,
+      "StoredSHA256": "daabb1d98e5e98e3b894fc30a9944e328793c77e69c5ab951f6cf40bc837786d"
+    },
+    {
+      "Path": "orchestration.jsonl",
+      "Bytes": 772,
+      "SHA256": "275856140cebdc5e2ef82d325f8a2d080c55ecfc181993398291406cad2a60ca",
+      "StoredPath": "orchestration.jsonl.gz",
+      "StoredBytes": 522,
+      "StoredSHA256": "2790f59e91c1976fcfdc6e0b3247e101c0c5c6520f7fc743a52b436549aacd8c"
+    },
+    {
+      "Path": "queue/close-request.json",
+      "Bytes": 41,
+      "SHA256": "cf76ae9920b3899af802046ce75bed67266a0f432a4ad2c6409d7ea2a57a7a07",
+      "StoredPath": "queue__close-request.json.gz",
+      "StoredBytes": 59,
+      "StoredSHA256": "fd42d0b1a67e2edbb68a43aa11d37bf297812b077887d22ed8a702eb96e255ae"
+    },
+    {
+      "Path": "queue/request-1-0f986b9988a64ae2a1fb85e43ebc1133/dispatch.json",
+      "Bytes": 359,
+      "SHA256": "83d18a6cb20ddd67e95fc18cc7c0891aa2dc15b2fdb68e07bbd4b05afd82ae71",
+      "StoredPath": "queue__request-1-0f986b9988a64ae2a1fb85e43ebc1133__dispatch.json.gz",
+      "StoredBytes": 253,
+      "StoredSHA256": "bd1a4dbb537f0bcc39b748b230ece084919b44aec1c0c2fae148f0df84d35289"
+    },
+    {
+      "Path": "queue/request-1-0f986b9988a64ae2a1fb85e43ebc1133/game-request.json",
+      "Bytes": 59175,
+      "SHA256": "a51a3409024e999c9ddb797ff67ee4ffda1c39f139f7a9940959bc4a070d2f53",
+      "StoredPath": "queue__request-1-0f986b9988a64ae2a1fb85e43ebc1133__game-request.json.gz",
+      "StoredBytes": 17936,
+      "StoredSHA256": "daabb1d98e5e98e3b894fc30a9944e328793c77e69c5ab951f6cf40bc837786d"
+    },
+    {
+      "Path": "queue/request-1-0f986b9988a64ae2a1fb85e43ebc1133/prompt.txt",
+      "Bytes": 40139,
+      "SHA256": "443025bd34bccc00b6606550011ddce8bc09ce98080006f90c404acd00eb1469",
+      "StoredPath": "queue__request-1-0f986b9988a64ae2a1fb85e43ebc1133__prompt.txt.gz",
+      "StoredBytes": 12552,
+      "StoredSHA256": "b5fa0c18494602e485e6a3822d71dabfbde329d855307748bf1e2d79bd771451"
+    },
+    {
+      "Path": "queue/request-1-0f986b9988a64ae2a1fb85e43ebc1133/request.json",
+      "Bytes": 1070,
+      "SHA256": "131019f1c914f3b930b2db370372da461f5d7fe6aafd5cf5644e2f80497e89e7",
+      "StoredPath": "queue__request-1-0f986b9988a64ae2a1fb85e43ebc1133__request.json.gz",
+      "StoredBytes": 550,
+      "StoredSHA256": "10de0887ec60f3fc22880cc7c9cef2a8e3a5e52f8c5f719f926c4b2fca2ce01f"
+    }
+  ]
+}
