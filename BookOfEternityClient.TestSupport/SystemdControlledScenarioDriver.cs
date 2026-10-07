@@ -31,6 +31,8 @@ internal static class SystemdControlledScenarioDriver
         var owner=await GmSessionRunCoordinator.OpenNeutralAsync(files);IOwnedTerminalSession? terminal=null;int held=0;
         var facts2=new Dictionary<string,object?> {["Mode"]=mode};
         var startFailure=mode is "terminal-systemd-start-lost" or "terminal-systemd-start-cancel" or "terminal-systemd-wrong-fd" or "terminal-systemd-wrong-manager" or "terminal-systemd-release-loss" or "terminal-systemd-release-ack" or "terminal-systemd-bind-deadline";
+        using var startCancellation=new CancellationTokenSource();
+        bus.CancelStart=startCancellation.Cancel;
         bus.Mode=mode;cgroup.Mode=mode;
         bus.BeforeRelease=()=>{
             var original=(SystemdOwnedTerminalSession)typeof(GmSessionRunCoordinator).GetField("_terminal",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(owner)!;
@@ -39,7 +41,7 @@ internal static class SystemdControlledScenarioDriver
             native.SetSyntheticObservationFault(new(GmWorkerNativeObservationFaultKind.MalformedStarted));
         };
         try {
-            try {terminal=await owner.LaunchSystemdControlledAsync(launch,fixture,CancellationToken.None,p=>held=p);}
+            try {terminal=await owner.LaunchSystemdControlledAsync(launch,fixture,startCancellation.Token,p=>held=p);}
             catch(OwnedTerminalStartException ex){terminal=ex.Owner;facts2["OriginalException"]=ex.InnerException?.GetType().Name;}
             Require(terminal!=null && held>0,"Missing original held terminal.");
             if(startFailure) {
@@ -82,7 +84,7 @@ internal static class SystemdControlledScenarioDriver
         public Task<string> AuthorityLost=>_lost.Task;
         public bool SupportsPidfdScopes=>true;
         internal int StartCount,StopCount;internal bool SubscribedBeforeStart,ActualPidfd,Disposed;
-        internal string? Root,Mode,FixtureFolder;internal Action? BeforeRelease;internal List<GmSessionRunDisposition> Stages=[];
+        internal string? Root,Mode,FixtureFolder;internal Action? BeforeRelease,CancelStart;internal List<GmSessionRunDisposition> Stages=[];
         public Task SubscribeAsync(CancellationToken token){SubscribedBeforeStart=true;return Task.CompletedTask;}
         public Task StartScopeAsync(SystemdScopeRequest request,CancellationToken token){
             StartCount++;Require(SubscribedBeforeStart,"Subscription followed mutation.");
@@ -92,7 +94,7 @@ internal static class SystemdControlledScenarioDriver
             // Only own root metadata, never environment/cmdline or foreign process.
             ObserveStage(request.Name);Require(Stages[^1]==GmSessionRunDisposition.Prepared,"Scope creation preceded Prepared.");
             if(Mode=="terminal-systemd-start-lost")throw new IOException("controlled possibly-created start receipt lost");
-            if(Mode=="terminal-systemd-start-cancel")throw new OperationCanceledException("controlled cancelled start receipt");
+            if(Mode=="terminal-systemd-start-cancel"){CancelStart!();token.ThrowIfCancellationRequested();}
             return Task.CompletedTask;
         }
         private void ObserveStage(string name) {

@@ -1,3 +1,11 @@
+# S1 catalog preparation correction
+
+Disposal RED attempt at650c1f87 ran0tests: own new related links incorrectly
+used strings instead of id/when objects; runner refused before build/workload.
+Structural catalog fixed. Start-cancel now cancels actual original launch token
+at controlled sent-start boundary, not just a synthetic exception. No production
+change or gameplay request. Native disposal causal verification resumes.
+
 # S1 source review final gap — WIP
 
 ae92abc0 fresh33/33GREEN (contract14 + controlled19);19guardianECHILD0emergency.

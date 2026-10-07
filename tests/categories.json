@@ -10,8 +10,14 @@
         "BookOfEternityGMBridge/Program.cs"
       ],
       "related": [
-        "gm-main-systemd-contract",
-        "gm-main-systemd-controlled-terminal"
+        {
+          "id": "gm-main-systemd-contract",
+          "when": "Original scope or shared held/release admission changes"
+        },
+        {
+          "id": "gm-main-systemd-controlled-terminal",
+          "when": "Scope adapter or actual original Bridge retirement changes"
+        }
       ],
       "requirements": {
         "frontendBuild": false,
