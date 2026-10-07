@@ -1,3 +1,12 @@
+# S1 current causal progress — WIP
+
+8f60042e first GREEN: two original cases2/2, own cleanup complete.
+New contract10cases:9PASS/1causalRED HeldRoot_CannotBindEmptyCgroup
+(no exception on Empty with live held root). Source runtime8f60042e + test delta;
+result20261007-223234-228-898935-19395aba708444cb95981dd9209d5003.
+Next enforce populated-held evidence; full actualBridge/failure matrix and
+source/evidence/metadata reviews pending. No live systemd or public activation.
+
 # Owner follow-up: retained relay, future merge coordination
 
 Relay remains in the shared repository, including its supported test profile and
