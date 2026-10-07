@@ -1,0 +1,37 @@
+{
+  "RunDirectory": "TestResults/test-categories/20261007-162437-829-846863-ffb734a9fd654750b8dc037289a13a58-categories",
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "Bytes": 1613059,
+      "SHA256": "bc1ffc41a773f726c32861b697945ed28f2af26b34cb8fdd9a64533ee984570a",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 179033,
+      "StoredSHA256": "f9bb6d3cfd60b725c46b841a873cc222888483849c7590aca395468e514bb886"
+    },
+    {
+      "Path": "gm-live-driver-failure-unit-001.trx",
+      "Bytes": 22381,
+      "SHA256": "9064023590c627cb42c4bbfe7ca69112c26348a7fdc779bd6cf32e543034794f",
+      "StoredPath": "gm-live-driver-failure-unit-001.trx.gz",
+      "StoredBytes": 2820,
+      "StoredSHA256": "3b37b660ffe686a953642a70039ceb17ad82280f3da2094b2c5d00a9df1e76ef"
+    },
+    {
+      "Path": "plan.json",
+      "Bytes": 1299,
+      "SHA256": "5c3b5d6bf090cca45eacc54b3b116a2bf3cfd8bd6b8051908f5944bb69801c22",
+      "StoredPath": "plan.json.gz",
+      "StoredBytes": 612,
+      "StoredSHA256": "ccc92eb275ab47ce421f5b8e4d3889aae5fbc47e38d916b548a39fe8db6fb5be"
+    },
+    {
+      "Path": "summary.json",
+      "Bytes": 1624,
+      "SHA256": "7d0cae6c9a2b2c79a94f56f7d13bf44f314b6a0778974bd3a4c618a7a6bc152f",
+      "StoredPath": "summary.json.gz",
+      "StoredBytes": 715,
+      "StoredSHA256": "28b1e9b9d43a75319d709f1d4129368f43e2bd9f9adac0a14a4787ff2d28610c"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "RunDirectory": "TestResults/test-categories/20261007-163536-052-849368-af9f88a3b50842d1b5646d62d04f6658-categories",
+  "Artifacts": [
+    {
+      "Path": "Build-unit.log",
+      "Bytes": 27708,
+      "SHA256": "e99d2b2f895f38b7972066a2d5d30eea1e0e854253b35c6e997b8bc9914ceec6",
+      "StoredPath": "Build-unit.log.gz",
+      "StoredBytes": 2117,
+      "StoredSHA256": "e4d7dadff4151d9b43d4b37984eaf3350391aab5c328fc21584f76fbc3565949"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "Bytes": 1638796,
+      "SHA256": "ac8fff6a8b5be66c728d4e108bbd9960067e44450285135e476f82d4b2cc664b",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 181078,
+      "StoredSHA256": "187b0097de03822acae3934a7f112ad9e8b706564e3f0f74151d3500fbdb3252"
+    },
+    {
+      "Path": "gm-live-driver-phase-boundaries-unit-001.trx",
+      "Bytes": 11999,
+      "SHA256": "6642f1e6b240edd4013dc0ff96f40d399144a6b4e5ab9ceb9ac0bcd8755ebb3f",
+      "StoredPath": "gm-live-driver-phase-boundaries-unit-001.trx.gz",
+      "StoredBytes": 2259,
+      "StoredSHA256": "2d0e9f4f8a0475521efed0bc9f036c1a09a96511513308ed6dc013dcffe5cabf"
+    },
+    {
+      "Path": "plan.json",
+      "Bytes": 1062,
+      "SHA256": "96b715a5d69095a83731285a4f7be29a121174e1a3a893b2f42fae1fa6e65ce0",
+      "StoredPath": "plan.json.gz",
+      "StoredBytes": 498,
+      "StoredSHA256": "cb0081f5875f8dcffd195bb05c085573e409b888e1a22a9478477cbda3b1ff40"
+    },
+    {
+      "Path": "summary.json",
+      "Bytes": 1462,
+      "SHA256": "e137c22b59a2ed096b9483be88d158445d8bf9dfded06e3a7c30cab08c022dd6",
+      "StoredPath": "summary.json.gz",
+      "StoredBytes": 612,
+      "StoredSHA256": "942c63285cb1e73139dadd100ef1c51af612d38ac8c06d04064257e4cab42a3d"
+    }
+  ]
+}
