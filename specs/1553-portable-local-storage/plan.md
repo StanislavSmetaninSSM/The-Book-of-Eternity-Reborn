@@ -1,3 +1,17 @@
+# Authorized one fresh live attempt after healthy diagnostics
+
+Owner clarifies that the two healthy standalone observations do not require an
+invented correction or prohibit a fresh live game. Reuse exact677 verified bt1
+runtime files, post-failure exception diagnosis enabled, new isolated root/session,
+ordinary NewGame and initial cancellation, then configured OpenCode1.18.35 with
+opencode/ling-3.1-flash-free. Current bootstrap, derived Ready, original binding and
+T042 operation must succeed before model submission. One attempt, one genuine
+turn (within the authorized1–2); no replay, historical Uncertain changes or
+lifecycle patch. Source#1553/T043. [Current execution plan](opencode-live-plan.md).
+
+The diagnostic blocked-gate wording below records the prior decision; this owner
+clarification supersedes it for the one fresh attempt.
+
 # Inert trace complete; causal gameplay gate blocked
 
 Oneptrace and oneuntraced actualstandalone inertexecution healthy, noinitiatingexception; exact677runtimebytes reused. Causeofhistoricalog5bootstrap-lost remainsunproved, noRED/fix/Green orrealprovider/gameattempt. Stopidenticalretries, preserve historicalUncertain and openT043. [Currentfacts/evidence](opencode-lifecycle-diagnosis.md). Source#1553; model/game0.

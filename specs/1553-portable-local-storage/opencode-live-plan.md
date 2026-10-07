@@ -1055,3 +1055,19 @@ First standalone inert trace421d01c6: healthyA1/close/native-receive, originalSt
 Read-only Astra review ofactualbt1 PASS: one untraced exception-enabled inert contrast is smallestnextobservation. Exact677bt1runtimebytes reused, no rebuild; only tracer removed and bookkeepingchanged. Freshroot/paths/newgameidentity recorded. Bt1freshClientDLL/PDB debugrevision differfromog5; oneXMLabsent, so noexactog5byteclaim. Ifpass: not reproduced, stopidentical retries; iffail: exactexception determines nextcausalcheck, noautomaticfix/livepermission.
 
 Single untracedcontrast d3a8630f elapsed7.069s: originalscope/ACK/durableStopped/I-O/guardianpositive, noexception, exact677bt1runtimebytes,9artifacts; noReady/provider/action. Historicalcause notreproduced; causalRED/fix/Green unavailable. Stopidenticalretries and preserve openliveacceptance. [Evidence](recovery/evidence/opencode-live/standalone-inert-untraced/manifest.json).
+
+
+## Owner clarification — one fresh current live attempt
+
+From b0357794, absence of historical reproduction does not itself block a fresh
+root or demand a speculative fix. Reuse all677 verified bt1 runtime bytes without
+rebuild. Enable BOE_BOOTSTRAP_DIAGNOSTIC=1 only for this controlled attempt. Existing
+live-game-one-turn.py uses actual NewGame, retained original owner/fence, observed
+OpenCode mini Ready, real daemon and one genuine console action. Original operation
+receipt, actual output/history/application, pending settlement and scoped cleanup
+are distinct checks. No provider submission before successful current bootstrap,
+Ready and binding; unknown/gated input or failed ownership stops without replay.
+Old Uncertain records and main user profile remain unchanged. No new lifecycle,
+parser or runtime changes. The earlier stop gate is historical and superseded for
+this single owner-authorized attempt. Independent short Sol source review precedes
+execution, evidence review follows actual outcome.
