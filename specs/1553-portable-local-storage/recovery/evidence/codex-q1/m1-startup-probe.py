@@ -172,7 +172,7 @@ try:
     assert settled["Disposition"] == "Stopped" and settled["Identity"] == running["Identity"]
     assert eof, "Foreground PTY was not actually drained"
     result["OriginalScopedStopReceiptObserved"] = True
-    result["Success"] = True
+    result["LifecycleVerified"] = True
 except Exception as ex:
     # No retry, broad signals, PID-based cleanup or false logical settlement.
     # Independent guardian owns emergency physical cleanup after this driver exits.
@@ -180,11 +180,23 @@ except Exception as ex:
 finally:
     result["LauncherExitCode"] = process.poll() if process is not None else None
     result["ForegroundPtyEOF"] = eof
-    result["ForegroundTermiosRestored"] = termios.tcgetattr(master) == initial
-    if slave >= 0:
-        os.close(slave)
-    os.close(master)
-    result["ForegroundDescriptorsClosed"] = True
+    cleanup_errors = []
+    try:
+        result["ForegroundTermiosRestored"] = termios.tcgetattr(master) == initial
+        if not result["ForegroundTermiosRestored"]:
+            cleanup_errors.append("Original foreground termios was not restored")
+    except Exception as ex:
+        result["ForegroundTermiosRestored"] = False
+        cleanup_errors.append("Foreground termios observation: " + type(ex).__name__ + ": " + str(ex))
+    for descriptor in [slave, master]:
+        if descriptor >= 0:
+            try:
+                os.close(descriptor)
+            except OSError as ex:
+                cleanup_errors.append("Own descriptor closure: " + str(ex))
+    result["ForegroundDescriptorsClosed"] = not any(error.startswith("Own descriptor") for error in cleanup_errors)
+    result["CleanupErrors"] = cleanup_errors
+    result["Success"] = bool(result.get("LifecycleVerified")) and not cleanup_errors
     result["ScratchFilesAfter"] = sorted(str(p.relative_to(scratch)) for p in scratch.rglob("*"))
     result["ElapsedSeconds"] = round(elapsed(), 3)
     result["CapturedBytes"] = len(captured)
