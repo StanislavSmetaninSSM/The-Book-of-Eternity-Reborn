@@ -1,14 +1,14 @@
 # Diagnostic-only prologue injected into the own relocated daemon copy.
 # Function bodies and the ordinary launcher remain untouched. No receipt is minted.
 $global:BoeOwnedCloseTracePath = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../../daemon-close-trace.log'))
-$global:BoeOwnedCloseTraceArmedPath = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../../daemon-stop-request.json'))
+$global:BoeOwnedCloseTraceArmedPath = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../../daemon-waiting.json'))
 $global:BoeOwnedCloseTraceCount = 0
 $ownHelper = Join-Path $PSScriptRoot 'Launcher/gm_main_operation.ps1'
-foreach ($ownLine in @(7,9,10,11,46,49,53,54,55,56,63,67,68,69,70,97,100,102,108,111,122)) {
+foreach ($ownLine in @(7,9,10,11,28,30,31,32,33,46,49,53,54,55,56,63,67,68,69,70,75,77,82,97,100,102,108,111,122)) {
     $ownAction = [scriptblock]::Create(@'
 try {
-    # Ignore preparation traffic. The actual owner snapshot arms this trace
-    # immediately before the sole Ctrl+C against the observed Active pin.
+    # Ignore startup traffic; observe the next heartbeat admission from its
+    # beginning, before the original owner can expose its Active pin.
     if (-not [IO.File]::Exists($global:BoeOwnedCloseTraceArmedPath)) { return }
     if ($global:BoeOwnedCloseTraceCount -ge 700) { return }
     if ([IO.File]::Exists($global:BoeOwnedCloseTracePath) -and [IO.FileInfo]::new($global:BoeOwnedCloseTracePath).Length -ge 65536) { return }
@@ -31,7 +31,9 @@ try {
     }
     $ownPin = if ($null -ne $Context -and $null -ne $Context.originalClose) { $Context.originalClose.pinId } else { 'none' }
     $ownOp = if ($null -ne $Context -and $null -ne $Context.originalClose) { $Context.originalClose.operationId } else { 'none' }
-    $ownText = ('registeredPhase=LINE pid={0} sequence={1} lost={2} closedObserved={3} pin={4} operation={5} closeFailureType={6} closeInnerType={7} bodyFailureType={8}' -f $PID,$Context.sequence,$Context.lost,$Context.closeObserved,$ownPin,$ownOp,$ownType,$ownInner,$ownBodyType) + [Environment]::NewLine
+    $ownHelperPid = if ($null -ne $Context -and $null -ne $Context.process) { $Context.process.Id } else { 0 }
+    $ownReadStatus = if ($null -ne $Context -and $null -ne $Context.pendingRead) { [int]$Context.pendingRead.Status } else { -1 }
+    $ownText = ('registeredPhase=LINE pid={0} sequence={1} lost={2} closedObserved={3} pin={4} operation={5} closeFailureType={6} closeInnerType={7} bodyFailureType={8} helperPid={9} readStatus={10}' -f $PID,$Context.sequence,$Context.lost,$Context.closeObserved,$ownPin,$ownOp,$ownType,$ownInner,$ownBodyType,$ownHelperPid,$ownReadStatus) + [Environment]::NewLine
     $ownBytes = if ([IO.File]::Exists($global:BoeOwnedCloseTracePath)) { [IO.FileInfo]::new($global:BoeOwnedCloseTracePath).Length } else { 0 }
     if ($ownBytes + [Text.Encoding]::UTF8.GetByteCount($ownText) -le 65536) { [IO.File]::AppendAllText($global:BoeOwnedCloseTracePath, $ownText) }
 } catch { }

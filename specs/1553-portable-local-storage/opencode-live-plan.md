@@ -940,3 +940,13 @@ timeout, ownedcleanupcomplete. Old ClearRotates ID is historical unqualified;
 this new truthful premise alone is positive, not a retroactivepass. Exact five
 artifacts/sourcepins archived owned-generation-fault-green. Independent Sol
 SOURCE PASS one narrowed armed diagnostic; no other newruntimefix justified.
+
+b7eee94e armed diagnostic1FAIL, trace6970bytes only laterfinallynewpin; no
+matchingoriginalpin/catch-complete evidence, cause remainsINCONCLUSIVE. Source
+review identified serverActive precedes helper ready stdout and caller retained
+Context.originalClose. Active alone neverproved actualPSbody/close started.
+Independent Sol approved nextminimum: arm at own daemon-waiting marker AFTER
+startup and BEFORE nextheartbeatacquisition; add Open/Dispose observation points,
+actualhelperPID/readTask numericstatus. Keep exactcaps/argv/helperfunctions. No
+runtimepatch basedon missingtrace or ConvertJSON hypothesis; originalUncertain
+retained. Nextdiagnostic differs onlyownedinstrumentation and targets exactgap.
