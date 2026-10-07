@@ -3,6 +3,7 @@ using System.Text.Json;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging.Abstractions;
 using NAudio.Wave;
 using NLayer;

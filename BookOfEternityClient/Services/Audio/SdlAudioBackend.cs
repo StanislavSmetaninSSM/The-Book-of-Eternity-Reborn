@@ -11,11 +11,11 @@ internal sealed class SdlAudioBackend(ISdlAudioApi api) : IAudioPlaybackBackend
     public IAudioPlaybackSession Create(string path, Func<float> volume) => new Session(this, path, volume);
     private void Acquire()
     {
-        lock (_sync) { if (_users == 0) api.Initialize(); _users++; }
+        lock (_sync) { if (_users == 0) _api.Initialize(); _users++; }
     }
     private void Release()
     {
-        lock (_sync) { if (_users == 1) api.Quit(); _users--; }
+        lock (_sync) { if (_users == 1) _api.Quit(); _users--; }
     }
     private sealed class Session(SdlAudioBackend owner, string path, Func<float> volume) : IAudioPlaybackSession
     {
