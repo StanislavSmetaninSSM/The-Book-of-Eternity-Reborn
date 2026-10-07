@@ -3,6 +3,28 @@ import hashlib,json,os,pty,select,signal,subprocess,sys,termios,time
 from pathlib import Path
 repo=Path(__file__).resolve().parents[3];mode=sys.argv[1];own=Path(sys.argv[2]);guardian=sys.argv[3]
 relay=repo/'tests/fixtures/ProductionMain/codex-gm-relay.py'
+if mode=='close-before-snapshot':
+ # Run the actual shared core; pause its last witness read before the real snapshot.
+ # No host substitution, response generation, fake execution or network calls.
+ wrapper=own/'read-barrier.py'
+ wrapper.write_text('''import sys,time
+from pathlib import Path
+sys.path.insert(0,sys.argv.pop(1))
+import relay_cli
+original=relay_cli.read_bounded
+queue=Path(sys.argv[sys.argv.index('--queue')+1])
+def read(path,limit=1048576):
+    data=original(path,limit)
+    if path.name=='pending_turn_snapshot.authority.json' and list(queue.glob('request-*/reply.json')):
+        (queue/'before-snapshot').write_text('paused')
+        deadline=time.monotonic()+4
+        while not (queue/'release-read').exists():
+            if time.monotonic()>deadline:raise TimeoutError('Own read barrier deadline')
+            time.sleep(.01)
+    return data
+relay_cli.read_bounded=read
+sys.exit(relay_cli.main())
+''')
 if mode=='guardian-budgets':
     for prefix,limit,expected in [([],30000,0),([],30001,64),(['--live-turn'],300000,0),(['--live-turn'],300001,64),(['--relay-turn'],750000,0),(['--relay-turn'],750001,64)]:
         p=subprocess.run([guardian,*prefix,str(own/('g-'+str(limit)+'.json')),str(limit),'/usr/bin/true','owned-budget-probe'],capture_output=True,timeout=3)
@@ -36,7 +58,8 @@ def until(test,label,seconds=5):
   assert p.poll() is None,(label,p.returncode,bytes(capture))
   assert time.monotonic()<stop,(label,bytes(capture));pump()
 try:
- p=subprocess.Popen(['/usr/bin/python3',str(relay),'--session',str(session),'--queue',str(queue),'--model','inert-transport-no-model'],stdin=slave,stdout=slave,stderr=slave,env=env)
+ entry=[str(own/'read-barrier.py'),str(repo/'tools/gm-relay')] if mode=='close-before-snapshot' else [str(relay)]
+ p=subprocess.Popen(['/usr/bin/python3',*entry,'--session',str(session),'--queue',str(queue),'--model','inert-transport-no-model'],stdin=slave,stdout=slave,stderr=slave,env=env)
  until(lambda:b'NEUTRAL READY' in capture,'real initial presentation')
  prompt=('real draft Ж🙂 update > \nsecond line '+('x'*9000)).encode()
  os.write(master,b'\x1b[200~'+prompt+b'\x1b[201~')
@@ -53,7 +76,14 @@ try:
   if mode=='wrong-reply':reply['QueueId']='foreign'
   if mode=='stale':(session/'input/turn_request.json').write_text(json.dumps(dict(turn,requestId='replacement')))
   (q/'reply.json').write_text(json.dumps(reply))
-  if mode=='close-held-child':
+  if mode=='close-before-snapshot':
+   until(lambda:(queue/'before-snapshot').exists(),'real last witness read paused')
+   sys.path.insert(0,str(repo/'tools/gm-relay'))
+   from relay_contract import request_close
+   request_close(queue);(queue/'release-read').write_text('release')
+   until(lambda:(queue/'closed.json').exists(),'closed ACK after refused later start')
+   assert not (q/'executing-response.json').exists() and not (q/'started.json').exists() and not (session/'applied').exists(),'Close preceded snapshot but real consumer started'
+  elif mode=='close-held-child':
    until(lambda:(session/'child-entered').exists(),'actual child entered');(queue/'close-request.json').write_text('{}')
    for _ in range(6):pump()
    assert not (queue/'closed.json').exists(),'Close ACK before held consumer exit'

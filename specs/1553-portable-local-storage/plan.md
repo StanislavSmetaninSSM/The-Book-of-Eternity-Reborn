@@ -1,3 +1,16 @@
+# Reusable relay source review close/start finding — causal check next
+
+FirstGREENaa5d7b16:25/25 allfour selected categories, original3main ScopedStop/I/O/
+StoppedACK and12nativeguardians ECHILD/emergency0/failure0/deadlinefalse.
+[FirstGREEN evidence](recovery/evidence/relay-reusable/first-green/manifest.json).
+Independent Sol source reviewer confirmed close publication during pre-snapshot
+witness reads can precede snapshot and still start child. Add one deterministic
+realcore read barrier under boundedPTY/guardian; run causal transportRED before
+runtime fix. Minimal queue-local serialization for protocol close vs final
+open-check/snapshot, no main authority or new journal. Shared controlledmain close
+will use workerAPI; unchanged historical direct-file writers have no stronger
+serialization claim. Source review pending resolution, no liveGM.
+
 # Reusable relay implementation WIP before GREEN
 
 From published causal RED7725eae: one shared tools/gm-relay transport/fixed helper,
