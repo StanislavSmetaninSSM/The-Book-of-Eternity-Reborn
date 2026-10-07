@@ -509,3 +509,6 @@ queue, and (2) exact blocks spinner source replaces the unpinned braille
 assumption. These are controlled evidence only; CLI/provider/game turns remain0.
 Next causal baseline: queued Home repaint without post-Home repaint must refuse;
 source-pinned eight-cell blocks busy must qualify, old braille must refuse.
+
+Reservation/spinner bfa75be2 preparation failed CS0841 (fixture local declaration
+order),0executed; not causal RED. Fixture-only declaration moved before use.
