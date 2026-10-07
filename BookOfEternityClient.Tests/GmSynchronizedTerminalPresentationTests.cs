@@ -113,6 +113,11 @@ public sealed class GmSynchronizedTerminalPresentationTests
     public void UnsupportedGrammarOrFirstFrameProbe_RefusesBeforeFirstCommit(string unsupported)
     {
         using var p = new ScreenProbe("original");
+        // Known actual preamble leaves both probes at blank/home with a save;
+        // the negative must test frame phase, not absence of another prerequisite.
+        p.Feed(Encoding.UTF8.GetBytes(Escape + "[s"));
+        if(unsupported.StartsWith(Escape + "]66;s=2;",StringComparison.Ordinal))
+            p.Feed(Encoding.UTF8.GetBytes(Escape + "]66;w=1; " + Escape + "\\" + Escape + "[H"));
         p.Feed(Encoding.UTF8.GetBytes(Escape + "[?2026h" + unsupported + Escape + "[6;1Hcomposer" + Escape + "[?25h" + Escape + "[?2026l"));
         Assert.False(Value<bool>(p.Capture(), "Reliable"), "An unsupported sequence cannot certify even the first synchronized frame.");
     }
@@ -136,7 +141,7 @@ public sealed class GmSynchronizedTerminalPresentationTests
     public void InitialSpaceProbe_RequiresActualBlankHomeStartupState(string preceding)
     {
         using var p = new ScreenProbe("original");
-        p.Feed(Encoding.UTF8.GetBytes(preceding + Escape + "]66;w=1; " + Escape + "\\" + Escape + "[?2026h" + Escape + "[6;1Hpartial" + Escape + "[?2026l"));
+        p.Feed(Encoding.UTF8.GetBytes(Escape + "[s" + preceding + Escape + "]66;w=1; " + Escape + "\\" + Escape + "[?2026h" + Escape + "[6;1Hpartial" + Escape + "[?2026l"));
         Assert.False(Value<bool>(p.Capture(), "Reliable"));
     }
 

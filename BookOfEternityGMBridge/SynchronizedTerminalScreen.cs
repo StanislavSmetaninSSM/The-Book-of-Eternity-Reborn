@@ -178,6 +178,7 @@ internal sealed class SynchronizedTerminalScreen
     }
     private void EraseRow(int row, int start)
     {
+        if (_column == _columns) { _unsupported = true; return; }
         if (row < 0 || row >= _rows || start < 0 || start > _columns) { _unsupported = true; return; }
         Array.Fill(_cells[row], ' ', start, _columns - start); _dirty = true;
     }
