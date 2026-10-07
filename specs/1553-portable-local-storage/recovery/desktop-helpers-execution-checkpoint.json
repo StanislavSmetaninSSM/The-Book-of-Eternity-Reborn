@@ -35,9 +35,10 @@
     "TestsExecuted": 0
   },
   "Pending": [
-    "Catalog validation",
-    "final independent source/evidence/metadata reviews",
-    "final restore"
+    "Independent evidence/metadata reviews",
+    "Final exact-tip carrier remote/byte readback and GitHub-only restoration"
   ],
-  "Qualified": "Controlled launch adapter through actual Linux consumers only; no positive desktop/native Windows"
+  "Qualified": "Controlled launch adapter through actual Linux consumers only; no positive desktop/native Windows",
+  "RecordCheckpointCommit": "16b0cc1b091bf9f8d8bddebb8e13bc9eaab1a68b",
+  "CurrentQualification": "recovery/desktop-helpers-qualification.json"
 }
