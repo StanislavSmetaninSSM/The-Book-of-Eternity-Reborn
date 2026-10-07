@@ -10,6 +10,18 @@ namespace BookOfEternityClient.Tests;
 // controlled CLI bytes only. These are not live OpenCode/provider receipts.
 public sealed class GmConnectedMiniTransactionTests
 {
+    [Fact]
+    public Task ActualOriginalPipe_DefaultForegroundCompletesFileProofAndSingleSubmit()=>RunConnectedAsync("default-foreground","submission-observed");
+
+    [Fact]
+    public Task ActualOriginalPipe_UnsupportedDraftColorNeverOpensEditorOrSubmits()=>RunConnectedAsync("unsupported-color","draft-uncertain");
+
+    [Fact]
+    public Task ActualOriginalPipe_DefaultForegroundUnknownSequenceNeverSubmits()=>RunConnectedAsync("default-unknown-sequence","draft-uncertain");
+
+    [Fact]
+    public Task ActualOriginalPipe_DefaultForegroundCancellationNeverSubmits()=>RunConnectedAsync("default-cancel","draft-uncertain");
+
     [Theory]
     [InlineData("success", "submission-observed")]
     [InlineData("unknown", "unknown-outcome")]
@@ -75,20 +87,25 @@ public sealed class GmConnectedMiniTransactionTests
             var frame=new StringBuilder("\u001b[?2026h\u001b[H\u001b[2J");
             var banner=new[]{"","█▀▀█  OpenCode","█  █  /workspace/qualification-1553-opencode-q1/empty-cli-scratch","▀▀▀▀",""};
             for(var i=0;i<banner.Length;i++)frame.Append($"\u001b[{i+1};1H").Append(banner[i]);
-            for(var i=0;i<visible.Length;i++)frame.Append($"\u001b[{i+6};1H\u001b[38;2;226;232;240m").Append(visible[i]);
+            var color=mode.StartsWith("default-",StringComparison.Ordinal)?"\u001b[39m":mode=="unsupported-color"?"\u001b[38;2;1;2;3m":"\u001b[38;2;226;232;240m";
+            for(var i=0;i<visible.Length;i++)frame.Append($"\u001b[{i+6};1H").Append(color).Append(visible[i]);
             frame.Append("\u001b[13;1H").Append(" BUILD  ".PadRight(89)+"ctrl+p cmd ");
             frame.Append(home?"\u001b[6;1H":$"\u001b[11;{visible[^1].Length+1}H").Append("\u001b[?25h\u001b[?2026l");
             screen.Feed(Encoding.UTF8.GetBytes(frame.ToString()));
         }
         h.Input.Written=bytes=>
         {
-            if(bytes.StartsWith("\u001b[200~")){Frame(false);return;}
+            if(bytes.StartsWith("\u001b[200~")){
+                Frame(false);
+                if(mode=="default-unknown-sequence")screen.Feed(Encoding.UTF8.GetBytes("\u001b[?1049h"));
+                return;
+            }
             if(bytes=="\u0018e")
             {
                 editor=true;
                 observer=Task.Run(async()=>
                 {
-                    if(mode=="cancel")await h.Rpc(Cancel("cancelPrompt"));
+                    if(mode is "cancel" or "default-cancel")await h.Rpc(Cancel("cancelPrompt"));
                     if(mode=="manual")await h.Rpc(new {command="addText",text="manual"});
                     await File.WriteAllTextAsync(file,mode=="changed"?text+" altered":text,new UTF8Encoding(false));
                     if(mode=="eof"){
@@ -155,8 +172,10 @@ public sealed class GmConnectedMiniTransactionTests
         try{result=await h.Rpc(h.Request("one",text));}
         finally{if(mode=="denied-removal")File.SetUnixFileMode(h.Root,UnixFileMode.UserRead|UnixFileMode.UserWrite|UnixFileMode.UserExecute);}
         if(observer!=null)await observer;if(queued!=null)await queued;
-        Assert.True(editor,"Actual original transaction must reach the standard editor gesture before witness/edge verdict.");
-        if(mode is "success" or "unknown" or "restored-cursor" or "wrapped-edge" or "blocks-spinner" or "held-spinner" or "braille-spinner"){
+        var beforeEditor=mode is "unsupported-color" or "default-unknown-sequence";
+        if(beforeEditor)Assert.False(editor,"Unsupported style/sequence must refuse before the editor gesture.");
+        else Assert.True(editor,"Actual original transaction must reach the standard editor gesture before witness/edge verdict.");
+        if(mode is "success" or "unknown" or "restored-cursor" or "wrapped-edge" or "blocks-spinner" or "held-spinner" or "braille-spinner" or "default-foreground"){
             var operations=(System.Collections.IDictionary)h.Get("_promptOperations")!;
             var operation=operations["one"]!;var proof=operation.GetType().GetField("DraftProof")?.GetValue(operation);
             var proofTask=(Task?)proof?.GetType().GetProperty("Task")?.GetValue(proof);
@@ -164,8 +183,9 @@ public sealed class GmConnectedMiniTransactionTests
         }
         Assert.Equal(expected,result.GetProperty("promptDelivery").GetProperty("disposition").GetString());
         var delivered=Encoding.UTF8.GetString(h.Input.Bytes);
-        Assert.StartsWith("\u001b[200~"+text+"\u001b[201~\u0018e",delivered);
-        if(mode is "success" or "unknown" or "restored-cursor" or "wrapped-edge" or "blocks-spinner" or "held-spinner" or "braille-spinner")
+        Assert.StartsWith("\u001b[200~"+text+"\u001b[201~"+(beforeEditor?"":"\u0018e"),delivered);
+        if(beforeEditor)Assert.Equal("\u001b[200~"+text+"\u001b[201~",delivered);
+        if(mode is "success" or "unknown" or "restored-cursor" or "wrapped-edge" or "blocks-spinner" or "held-spinner" or "braille-spinner" or "default-foreground")
         {
             Assert.Equal(0,observerExit);Assert.Equal("\u001b[200~"+text+"\u001b[201~\u0018e\u001b[H\u001b[F\r",delivered);
         }

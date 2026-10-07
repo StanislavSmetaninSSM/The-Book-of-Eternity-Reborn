@@ -1126,3 +1126,7 @@ Source-review required correction: each phase checks process exit and fresh
 failure before accepting its completion marker. Client checks use the current
 phase byte offset; a prompt followed by a current error in the same capture
 cannot authorize action input. No preliminary daemon-wait driver was executed.
+
+## Resumed T043-MINI-DEFAULT-DRAFT — WIP causal tests
+
+2026-10-07: ordinary existing-auth push restored at5cea95ed; exact remote SHA and changed-file byte readback verified. No credentials/network/settings changes. Historical four500 refusals remain recorded; publication guard cleared. Source-backed design PASS already recorded. New5-case category replays exact committed og9 child VT bytes439..4772/SHAf8327edf and tests actual pipe/default draft + full external observer + one submit, unsupportedRGB, unknownsequence and original cancel. No runtime fix yet; RED/GREEN/catalog/reviews unrun. No GM prompt/schema/text update needed: client-owned terminal style predicate only. No replay of og9; fresh live attempt follows causal proof/minimal correction/review/GREEN/published checkpoint.

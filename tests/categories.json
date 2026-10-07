@@ -16546,6 +16546,35 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-mini-default-foreground",
+      "responsibility": "T043 exact og9 completed child VT default-foreground draft region and original pipe/file-proof submission; unsupported style/sequence and cancellation refuse without replay",
+      "excludes": "Provider, live acceptance, arbitrary terminal defaults/TUI, unchanged mini transaction cohorts and native ownership backends",
+      "changeHints": [
+        "BookOfEternityGMBridge/BridgeHost.MiniPresentation.cs",
+        "BookOfEternityClient.Tests/GmMiniDefaultForegroundTests.cs",
+        "BookOfEternityClient.Tests/GmConnectedMiniTransactionTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMiniDefaultForegroundTests.ActualPastePrefix_DefaultForegroundRetainsExactDraftRegion",
+            "BookOfEternityClient.Tests.GmConnectedMiniTransactionTests.ActualOriginalPipe_DefaultForegroundCompletesFileProofAndSingleSubmit",
+            "BookOfEternityClient.Tests.GmConnectedMiniTransactionTests.ActualOriginalPipe_UnsupportedDraftColorNeverOpensEditorOrSubmits",
+            "BookOfEternityClient.Tests.GmConnectedMiniTransactionTests.ActualOriginalPipe_DefaultForegroundUnknownSequenceNeverSubmits",
+            "BookOfEternityClient.Tests.GmConnectedMiniTransactionTests.ActualOriginalPipe_DefaultForegroundCancellationNeverSubmits"
+          ]
+        }
+      ]
     }
   ]
 }

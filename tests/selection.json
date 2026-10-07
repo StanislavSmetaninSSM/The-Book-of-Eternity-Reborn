@@ -2,19 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-console-pending-availability",
-      "reason": "New causal real pending publisher / actual HasCurrentSession scope boundary; component-only host context",
+      "category": "gm-mini-default-foreground",
+      "reason": "Only changed draft foreground predicate; exact captured prefix causal case, actual original pipe with full external file proof, and affected style/unknown-output/cancel refusals",
       "contracts": [
-        "T043-CONTINUE-PENDING-PUBLICATION",
-        "T041-RUN-FENCE-F2"
-      ]
-    },
-    {
-      "category": "gm-console-runtime-admission",
-      "reason": "Directly affected existing availability wrapper and original pin settlement / durable Stopping refusal",
-      "contracts": [
-        "T043-CONTINUE-PENDING-PUBLICATION",
-        "T041-RUN-FENCE-F2"
+        "T043-MINI-DEFAULT-DRAFT",
+        "T042-INPUT-TRANSACTION"
       ]
     }
   ]
