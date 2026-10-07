@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "gm-connected-mini-transaction",
-      "reason": "New connected original-operation witnesses and dropped terminal environment have no existing positive qualification; prior four readiness successes excluded from this baseline",
+      "reason": "Two current positive witness failures need diagnostics; two new causal restored-cursor/wrapped-edge cases; five unchanged refusals and passed native environment excluded",
       "contracts": [
         "T043-OPENCODE-LIVE-BOUNDED"
       ]

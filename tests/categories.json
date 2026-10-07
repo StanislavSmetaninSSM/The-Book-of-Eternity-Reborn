@@ -16147,8 +16147,8 @@
     },
     {
       "id": "gm-connected-mini-transaction",
-      "responsibility": "T043 actual original pipe, actual read-only observer, full unchanged draft, causal edges, single submit and absorbing cancel/manual/stale/unknown; actual native terminal environment under guardian",
-      "excludes": "No live OpenCode/provider/game acceptance; legacy successful cohorts excluded",
+      "responsibility": "T043 current failed positive actual original witness plus new independently found restored cursor and cross-row suffix boundaries",
+      "excludes": "Five unchanged refusing witness cases and passed native environment are separate owners; no live qualification",
       "changeHints": [
         "BookOfEternityGMBridge/BridgeHost.MiniPresentation.cs",
         "BookOfEternityGMBridge/DraftObservation.cs",
@@ -16165,7 +16165,57 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmConnectedMiniTransactionTests.*"
+            "BookOfEternityClient.Tests.GmConnectedMiniTransactionTests.ActualOriginalPipe_PositiveEdgesAndUnknownSubmit"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-connected-mini-refusal",
+      "responsibility": "T043 exact actual original witness byte/binding/cancel/manual/removal refusal",
+      "excludes": "Five unchanged refusing witness cases and passed native environment are separate owners; no live qualification",
+      "changeHints": [
+        "BookOfEternityGMBridge/BridgeHost.MiniPresentation.cs",
+        "BookOfEternityGMBridge/DraftObservation.cs",
+        "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmConnectedMiniTransactionTests.ActualOriginalPipe_WitnessRefusals"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-connected-mini-environment",
+      "responsibility": "T043 actual native terminal consumed host environment and original guardian cleanup",
+      "excludes": "Five unchanged refusing witness cases and passed native environment are separate owners; no live qualification",
+      "changeHints": [
+        "BookOfEternityGMBridge/BridgeHost.MiniPresentation.cs",
+        "BookOfEternityGMBridge/DraftObservation.cs",
+        "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmConnectedMiniTransactionTests.ActualNativeTerminal_FrozenEnvironmentReachesOriginalHost"
           ]
         }
       ]

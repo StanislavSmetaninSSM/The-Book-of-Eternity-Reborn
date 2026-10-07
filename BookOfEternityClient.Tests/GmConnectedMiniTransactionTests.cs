@@ -12,13 +12,20 @@ public sealed class GmConnectedMiniTransactionTests
 {
     [Theory]
     [InlineData("success", "submission-observed")]
+    [InlineData("unknown", "unknown-outcome")]
+    [InlineData("restored-cursor", "submission-observed")]
+    [InlineData("wrapped-edge", "submission-observed")]
+    public Task ActualOriginalPipe_PositiveEdgesAndUnknownSubmit(string mode,string expected)=>RunConnectedAsync(mode,expected);
+
+    [Theory]
     [InlineData("changed", "draft-uncertain")]
     [InlineData("stale", "draft-uncertain")]
     [InlineData("cancel", "draft-uncertain")]
     [InlineData("manual", "draft-uncertain")]
     [InlineData("unrestored", "draft-uncertain")]
-    [InlineData("unknown", "unknown-outcome")]
-    public async Task ActualOriginalPipe_OneUseWitnessAndCausalEdges(string mode,string expected)
+    public Task ActualOriginalPipe_WitnessRefusals(string mode,string expected)=>RunConnectedAsync(mode,expected);
+
+    private static async Task RunConnectedAsync(string mode,string expected)
     {
         await using var h=new GmBridgePromptOperationTests.PromptHostFixture();
         using var screen=GmExternalDraftObservationTests.InstallMini(h);
@@ -33,6 +40,7 @@ public sealed class GmConnectedMiniTransactionTests
         void Frame(bool home)
         {
             var lines=text.Split('\n');var visible=(home?lines.Take(6):lines.TakeLast(6)).ToArray();
+            if(mode=="wrapped-edge" && !home)visible=lines.TakeLast(5).Take(4).Concat(new[]{lines[^1][..^9].TrimEnd(' '),"unchanged"}).ToArray();
             var frame=new StringBuilder("\u001b[?2026h\u001b[H\u001b[2J");
             var banner=new[]{"","█▀▀█  OpenCode","█  █  /workspace/qualification-1553-opencode-q1/empty-cli-scratch","▀▀▀▀",""};
             for(var i=0;i<banner.Length;i++)frame.Append($"\u001b[{i+1};1H").Append(banner[i]);
@@ -60,7 +68,10 @@ public sealed class GmConnectedMiniTransactionTests
                     using var child=Process.Start(start)!;
                     try{await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(7));observerExit=child.ExitCode;}
                     finally{if(!child.HasExited){child.Kill();await child.WaitForExitAsync();}}
-                    if(observerExit==0 && mode!="unrestored"){File.Delete(file);Frame(false);}
+                    if(observerExit==0 && mode!="unrestored"){
+                        File.Delete(file);Frame(false);
+                        if(mode=="restored-cursor")screen.Feed(Encoding.UTF8.GetBytes("\u001b[?2026h\u001b[11;13H\u001b[?2026l"));
+                    }
                 });return;
             }
             if(bytes=="\u001b[H")Frame(true);
@@ -71,7 +82,7 @@ public sealed class GmConnectedMiniTransactionTests
         var result=await h.Rpc(h.Request("one",text));
         if(observer!=null)await observer;
         Assert.True(editor,"Actual original transaction must reach the standard editor gesture before witness/edge verdict.");
-        if(mode is "success" or "unknown"){
+        if(mode is "success" or "unknown" or "restored-cursor" or "wrapped-edge"){
             var operations=(System.Collections.IDictionary)h.Get("_promptOperations")!;
             var operation=operations["one"]!;var proof=operation.GetType().GetField("DraftProof")?.GetValue(operation);
             var proofTask=(Task?)proof?.GetType().GetProperty("Task")?.GetValue(proof);
@@ -80,7 +91,7 @@ public sealed class GmConnectedMiniTransactionTests
         Assert.Equal(expected,result.GetProperty("promptDelivery").GetProperty("disposition").GetString());
         var delivered=Encoding.UTF8.GetString(h.Input.Bytes);
         Assert.StartsWith("\u001b[200~"+text+"\u001b[201~\u0018e",delivered);
-        if(mode is "success" or "unknown")
+        if(mode is "success" or "unknown" or "restored-cursor" or "wrapped-edge")
         {
             Assert.Equal(0,observerExit);Assert.Equal("\u001b[200~"+text+"\u001b[201~\u0018e\u001b[H\u001b[F\r",delivered);
         }
