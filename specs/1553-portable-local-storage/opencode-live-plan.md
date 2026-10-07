@@ -734,3 +734,14 @@ instead caught inside EnterGameLoop, a later script mismatch is not its cause.
 Preserve original own diagnostics rather than relabeling it. Only after exact
 missing-read stack, wrap whole BuildGameResponse via existing participating
 scope, preserving its core and generation/worker/recovery conjunction.
+
+Actual91b48442 new full-console1/1causalFAIL confirms exact proposed boundary:
+actual shipped child Continue546 → BuildGameResponse56 → ReadFileAsync1264 →
+mainAcquire65. No script mismatch, no game/model request. OriginalScopedRetired,
+guardianECHILD0emergency/failures/no deadline, runner cleanup complete/unique1.
+Minimal whole BuildGameResponse participating wrapper now preserves its core;
+its missing-read recovery leases borrow the same original connection/generation.
+Accepted/Load callers already in SessionOperationContext borrow their existing
+pin; no extra launcher, journal, UI wait or admission weakening. Only new
+gm-console-continue-admission GREEN next; unchanged five-method/oldcohorts
+excluded. Source closure pending before new actual OpenCode launch.

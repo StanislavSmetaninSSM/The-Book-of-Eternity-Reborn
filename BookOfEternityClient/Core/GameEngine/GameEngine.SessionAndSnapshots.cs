@@ -36,6 +36,11 @@ public partial class GameEngine
 
     private async Task<GameResponse> BuildGameResponseFromFiles()
     {
+        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, BuildGameResponseFromFilesCoreAsync);
+    }
+
+    private async Task<GameResponse> BuildGameResponseFromFilesCoreAsync()
+    {
         var response = new GameResponse();
         var spiritualOutput = Interlocked.Exchange(ref _acceptedTurnSpiritualOutput, null);
         IReadOnlyDictionary<string, string?>? acceptedOutputs = null;
