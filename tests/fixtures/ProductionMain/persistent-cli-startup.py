@@ -118,6 +118,9 @@ def rpc(payload, seconds, expected_frame=None):
 def own_foreground():
     os.setsid(); fcntl.ioctl(slave, termios.TIOCSCTTY, 0); os.tcsetpgrp(slave, os.getpid())
 
+class FrameUnavailable(Exception):
+    """Recoverable presentation mismatch only; capture/lifetime faults are fatal."""
+
 def current_diagnostic_frame():
     # A strict throwaway byte/frame gate; this never supplies TerminalScreen or Ready.
     # Drain bounded pending foreground output before examining the most recent commit.
@@ -127,7 +130,8 @@ def current_diagnostic_frame():
     else: raise RuntimeError('Foreground did not settle within the drain bound')
     raw = bytes(captured)
     begin = raw.rfind(b'\x1b[?2026h'); end = raw.rfind(b'\x1b[?2026l')
-    assert begin >= 0 and end > begin and not raw[end + 8:], 'Current complete synchronized frame unavailable'
+    if not (begin >= 0 and end > begin and not raw[end + 8:]):
+        raise FrameUnavailable('Current complete synchronized frame unavailable')
     return raw[begin + 8:end]
 
 def expected_draft_frame(frame):
@@ -151,7 +155,7 @@ def expected_draft_frame(frame):
                     for c in range(0 if params == '2' else column, 100): cells[row, c] = ' '
                 elif code in ['h', 'l'] and params == '?25': visible = code == 'h'
                 elif code == 'q' and params == '1 ': pass
-                else: raise RuntimeError('Unknown/partial diagnostic frame; never send editor gesture')
+                else: raise FrameUnavailable('Unknown/partial diagnostic frame; never send editor gesture')
                 continue
             match = re.match(r'\x1b\]12;#[0-9a-fA-F]{6}\x07', value[i:])
             assert match, 'Unknown diagnostic control payload'
@@ -173,11 +177,14 @@ def expected_draft_frame(frame):
 
 def check_manual_frame(expect_draft):
     frame = current_diagnostic_frame()
-    if expect_draft: expected_draft_frame(frame)
-    else:
-        known = gzip.decompress((Path(__file__).parents[3] / 'specs/1553-portable-local-storage/recovery/evidence/opencode-q1/startup/startup.raw.gz').read_bytes())
-        expected = re.findall(rb'\x1b\[\?2026h(.*?)\x1b\[\?2026l', known, re.S)[-1]
-        assert frame == expected, 'Current mini startup frame changed; never paste'
+    try:
+        if expect_draft: expected_draft_frame(frame)
+        else:
+            known = gzip.decompress((Path(__file__).parents[3] / 'specs/1553-portable-local-storage/recovery/evidence/opencode-q1/startup/startup.raw.gz').read_bytes())
+            expected = re.findall(rb'\x1b\[\?2026h(.*?)\x1b\[\?2026l', known, re.S)[-1]
+            assert frame == expected, 'Current mini startup frame changed; never paste'
+    except AssertionError as ex:
+        raise FrameUnavailable(str(ex)) from ex
     assert elapsed() < observation_seconds and process.poll() is None, 'Original lifetime or observation budget ended'
 
 def known_frame_available(expect_draft):
@@ -185,7 +192,7 @@ def known_frame_available(expect_draft):
     try:
         check_manual_frame(expect_draft)
         return True
-    except (AssertionError, RuntimeError):
+    except FrameUnavailable:
         return False
 
 def before_manual_write(expect_draft):

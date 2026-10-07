@@ -190,3 +190,7 @@ same total25/guardian30; startup-only historical mode remains12/12. No budget
 increase beyond the existing total lifecycle bound. Unknown/gate/partial frames
 receive no input and remain failure if the deadline expires. This source change
 addresses the actual premature assertion, not a runtime defect or Ready override.
+Changed-wait source646681ec was refused before execution because a broad
+RuntimeError catch could swallow the output cap. Correction uses a dedicated
+FrameUnavailable mismatch exception; capture/drain/lifetime/budget failures
+propagate to ObservationFailure and original cleanup. Probe remains unexecuted.
