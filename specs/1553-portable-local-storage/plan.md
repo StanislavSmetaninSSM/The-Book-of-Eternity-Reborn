@@ -1,3 +1,11 @@
+# S1 negative matrix WIP
+
+Source reviewer at8f60042e identified post-cgroup-bind held deadline check;
+new controlled bind-expiry case requires no Running/A1. Expanded actualBridge
+reuses original T042 helper; original output/debt fixtures accept same private
+scope capability. Late-loss and consumed-fixture cases target missing fresh
+evidence/preflight. Runtime corrections not yet applied; tests unrun.
+
 # S1 current causal progress — WIP
 
 8f60042e first GREEN: two original cases2/2, own cleanup complete.

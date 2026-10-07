@@ -13,7 +13,7 @@ namespace BookOfEternityClient.Tests;
 
 internal static class MainRunFenceScenarioDriver
 {
-    internal static async Task<int> RunAsync(string mode,string package,string folder)
+    internal static async Task<int> RunAsync(string mode,string package,string folder,SystemdControlledFixture? systemd=null)
     {
         if(mode=="terminal-main-cold-reader") {
             var files=new FileSystemManager(package,NullLogger<FileSystemManager>.Instance);
@@ -37,7 +37,8 @@ internal static class MainRunFenceScenarioDriver
             var repo=FindRepoRoot();var configuration=new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
             type=Assembly.LoadFrom(Path.Combine(repo,"BookOfEternityGMBridge/bin",configuration,"net8.0/BookOfEternityGMBridge.dll")).GetType("BookOfEternityGMBridge.BridgeHost",true)!;
             host=Activator.CreateInstance(type,[launch.Scratch,"f1-"+Guid.NewGuid().ToString("N")]);
-            type.GetMethod("ConfigureNeutral",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[launch]);
+            if(systemd==null)type.GetMethod("ConfigureNeutral",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[launch]);
+            else type.GetMethod("ConfigureSystemdControlled",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[launch,systemd]);
             byte[]? recoveryIntent=null,recoveryBefore=null;var recoveryAfter=Encoding.UTF8.GetBytes("retained-after");
             var seedFiles=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);var recoveryTarget=seedFiles.ResolvePath("game_state/main-recovery.bin");
             if(mode is "terminal-main-recovery-generation" or "terminal-main-recovery-same") {
@@ -246,6 +247,11 @@ internal static class MainRunFenceScenarioDriver
                 Task<Exception?> blocked;using(ExecutionContext.SuppressFlow())blocked=Task.Run(async()=>{try{await files.ClearGameStateAsync();return null;}catch(Exception e){return e;}});
                 Require(await blocked!=null,"Visible Stopped bypassed original guard.");
                 stopDebt=false;await Call("StopShellAsync");Require(Field("_mainRun")==null && Field("_pty")==null,"Exact Stopped ACK retry retained successful original.");
+                if(systemd!=null) {
+                    error=null;try{await Call("StartShellAsync");}catch(Exception e){error=e;}
+                    Require(error!=null && Field("_mainRun")==null && Field("_pty")==null && Read().Identity==old.Identity,"Consumed scope capability created a new Prepared/owner.");
+                    result["ConsumedFixtureRefusedBeforePrepared"]=true;result["Success"]=true;return 0;
+                }
                 await Call("StartShellAsync");var next=Read();
                 Require(next.Identity.Epoch==old.Identity.Epoch+1 && next.Identity.RunId!=old.Identity.RunId && next.Identity.RootKey==old.Identity.RootKey,"Next confirmed epoch changed root/reused identity.");
                 Require(((IOwnedTerminalSession)Field("_pty")!).Identity.RunId==next.Identity.RunId,"Next epoch original identity mismatch.");

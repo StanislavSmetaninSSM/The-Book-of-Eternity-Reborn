@@ -105,7 +105,8 @@ internal static partial class OwnedTerminalScenarioDriver
         }
         finally { await File.WriteAllTextAsync(Path.Combine(output, "scenario.json"), JsonSerializer.Serialize(result)); }
     }
-    private static async Task<int> RunBridgeAsync(string mode, string package, string folder)
+    internal static Task<int> RunSystemdBridgeAsync(string package,string folder,SystemdControlledFixture fixture)=>RunBridgeAsync("terminal-bridge",package,folder,fixture);
+    private static async Task<int> RunBridgeAsync(string mode, string package, string folder,SystemdControlledFixture? systemd=null)
     {
         var result = new Dictionary<string, object?>(); object? host = null; Task? server = null;
         using var serverCancellation = new CancellationTokenSource();
@@ -138,7 +139,8 @@ internal static partial class OwnedTerminalScenarioDriver
                 await File.WriteAllTextAsync(Path.Combine(folder, "config.json"), JsonSerializer.Serialize(new { GmCliInputProfile = new {
                     IdleMarker="NEUTRAL READY", PromptPrefix="> ", WorkingMarker="NEUTRAL WORKING", ObservationTimeoutMilliseconds=1500 } }));
                 launch=NeutralTerminalLaunch.Create(package,folder);
-                host = Activator.CreateInstance(type, [launch.Scratch, pipe]); Invoke("ConfigureNeutral", launch);
+                host = Activator.CreateInstance(type, [launch.Scratch, pipe]);
+                if(systemd==null)Invoke("ConfigureNeutral",launch);else Invoke("ConfigureSystemdControlled",launch,systemd);
             }
             if(mode=="terminal-partial-start")File.SetUnixFileMode(Path.Combine(package,"neutral-cli"),UnixFileMode.UserRead|UnixFileMode.UserWrite);
             try { await (Task)Invoke("StartShellAsync")!; }
