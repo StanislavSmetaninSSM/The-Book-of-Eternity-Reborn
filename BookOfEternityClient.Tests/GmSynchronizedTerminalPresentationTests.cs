@@ -98,7 +98,7 @@ public sealed class GmSynchronizedTerminalPresentationTests
     public void LegacyNeutral_ViewRemainsSeparateFromOptionalPresentation()
     {
         using var p = new ScreenProbe("legacy", mini: false);
-        p.Feed(Encoding.UTF8.GetBytes(Escape + "[2J" + Escape + "[HNEUTRAL READY\n> "));
+        p.Feed(Encoding.UTF8.GetBytes(Escape + "[2J" + Escape + "[HNEUTRAL READY\r\n> "));
         Assert.True(Value<bool>(p.Capture(), "Reliable"));
         Assert.Equal("NEUTRAL READY\n> ", Value<string>(p.Capture(), "Text"));
     }

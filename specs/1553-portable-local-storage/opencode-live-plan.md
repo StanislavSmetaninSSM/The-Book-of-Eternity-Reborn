@@ -303,3 +303,9 @@ bound reads/ACK/helper waits and join cancellation/retirement. Each gesture reta
 the original write reservation and current observation. The bounded parser causal
 RED may proceed independently; it cannot qualify automatic dispatch before the
 connected witness/operation qualification.
+
+Presentation baseline aaaaa544: fresh build/discovery0 executions then9 actual
+checks,5PASS/4FAIL, complete/owned cleanup. Three causal parser failures; one
+new legacy fixture LF-vs-real-CRLF error corrected before GREEN, not a runtime
+defect. [Exact baseline](recovery/evidence/opencode-connected/presentation-red/manifest.json).
+Runtime still9340ff08; no CLI/provider/game startup.
