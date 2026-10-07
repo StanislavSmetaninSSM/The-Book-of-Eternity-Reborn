@@ -3,7 +3,7 @@
   "License": "MIT",
   "PackageBytes": 101056,
   "PackageSHA256": "625b215f76453180d499c203f711aceedcce6e855c86a65716c0b1275afcb9c6",
-  "PackageSHA512": "aQrCT93NjIrJNXA7wiTSHMp9OUhGNb8YTJAwnsx2FtaNdAe74vwfguFExf6QFNU72XhNPb/bLAcdMbxvaNZgWg==",
+  "PackageSHA512": "1m6i6HamMuOpZqw+ajn7p2v1qC/YF3U7wVTAegB8TW3Fn0SOgv7H3dFizBaDLb3ehUdVd34g9GVDPlcNTqZ32w==",
   "BundledOutputAssemblySHA256": "2cb48f87143445245a8161e9a823a83aa5b369dccae977a2311d0b42685caffa",
   "NativeLibraryFile": "/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.3200.4",
   "NativeLibraryBytes": 1996112,
@@ -12,5 +12,6 @@
   "SystemPackageOrAudioServiceInstalled": false,
   "DefaultAudioDeviceAccessed": false,
   "NativeInitializationUsed": "Only explicit dummy fixture; every open asserts currentdriver=dummy",
-  "PhysicalPlaybackQualified": false
+  "PhysicalPlaybackQualified": false,
+  "NuGetContentHash": "aQrCT93NjIrJNXA7wiTSHMp9OUhGNb8YTJAwnsx2FtaNdAe74vwfguFExf6QFNU72XhNPb/bLAcdMbxvaNZgWg=="
 }

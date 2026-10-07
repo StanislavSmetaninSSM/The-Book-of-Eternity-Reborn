@@ -603,8 +603,8 @@
     },
     {
       "Path": "recovery/evidence/console-audio-linux-provenance/package-native.json",
-      "Bytes": 836,
-      "SHA256": "1349925a7f7acffe243e3ac20ec724cfd7150db09137d6e8efc7dda3fa12925d"
+      "Bytes": 950,
+      "SHA256": "0e2e8ef15d9db161d80c8f0b78fea8b248baa858b2c82869d0b067536e71cc95"
     },
     {
       "Path": "recovery/evidence/console-audio-linux-provenance/versions.txt",
