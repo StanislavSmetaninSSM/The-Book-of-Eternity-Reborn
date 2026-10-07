@@ -87,7 +87,9 @@ Primary [NLayer](https://github.com/naudio/NLayer), [package](https://www.nuget.
 
 ## Causal bounded sequence and verification
 
-- [ ] Publish plan/task checkpoint, independent Sol design review before runtime.
+- [x] Publish plan/task checkpoint; independent Sol6.1/xhigh design PASS at
+  0394ffaeb79486bdc7c2eec41dcfcdd3ab2133e3 (blob c5d2d5b99c82909820002e280dc7735b65a4a3cb).
+  Actual console finally and driver-asserted dummy seam are required; no device/physical claims.
 - [ ] New narrow categories `console-audio-linux` and `browser-audio-isolation`;
   initial child fixture reaches real AudioService.PlayCue on synthetic WAV and
   real browser registered service. Child-only guard prevents any native output
@@ -109,7 +111,7 @@ Primary [NLayer](https://github.com/naudio/NLayer), [package](https://www.nuget.
   SDL2 default reinitialization replacing the dummy driver. Native source: [SDL.c](https://github.com/libsdl-org/SDL/blob/SDL2/src/SDL.c),
   [SDL_audio.c](https://github.com/libsdl-org/SDL/blob/SDL2/src/audio/SDL_audio.c).
   never production default driver/device, no env/system setting override. Production
-  queued backend and real synthetic PCM WAV/zero MP3 frames exercise decoding,
+  queued backend and real synthetic PCM WAV/valid silent MPEG frames (ReadSamples must return >0) exercise decoding,
   queue/drain/volume/scoped close; negative controlled open0/absent library exercises
   explicit capability. Dummy is synthetic output, not physical device qualification.
   If dummy unavailable, record exact limit rather than touch a user device.

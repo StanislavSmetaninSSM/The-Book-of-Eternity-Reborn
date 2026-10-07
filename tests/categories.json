@@ -2,6 +2,54 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "console-audio-linux",
+      "responsibility": "T050 public console audio Linux backend choice and owned lifecycle; synthetic-only guarded/controlled/dummy output",
+      "excludes": "No user devices/physical playback/native Windows/live browser/GM/provider/system packages or unrelated cohorts.",
+      "changeHints": [
+        "BookOfEternityClient/Services/AudioService.cs",
+        "BookOfEternityClient/WebUi/LocalWebUiHost.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "browser-audio-isolation",
+      "responsibility": "T050 real browser DI/settings settlement remains HTML Audio and never initializes server output",
+      "excludes": "No user devices/physical playback/native Windows/live browser/GM/provider/system packages or unrelated cohorts.",
+      "changeHints": [
+        "BookOfEternityClient/Services/AudioService.cs",
+        "BookOfEternityClient/WebUi/LocalWebUiHost.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.BrowserAudioIsolationTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "clipboard-affected-managed",
       "responsibility": "#1553 T050 exact affected existing normalization, TextComposer/direct paste and main input source guards; excludes unrelated console cohorts",
       "excludes": "No real clipboard/desktop/native Windows/GM/provider/bridge/systemd or unrelated existing cohorts.",

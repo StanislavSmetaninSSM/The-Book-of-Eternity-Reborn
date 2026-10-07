@@ -2,24 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "clipboard-linux-adapter",
-      "reason": "T050 bounded synthetic clipboard adapter and real turn/Ask/multiline consumers; failures/limits/EOF/one gesture/manual acceptance; no real desktop clipboard.",
+      "category": "console-audio-linux",
+      "reason": "T050 public console audio Linux backend choice and owned lifecycle; synthetic-only guarded/controlled/dummy output",
       "contracts": [
-        "T050-CLIPBOARD-LINUX"
+        "T050-CONSOLE-AUDIO-LINUX"
       ]
     },
     {
-      "category": "clipboard-console-consumers",
-      "reason": "T050 bounded synthetic clipboard adapter and real turn/Ask/multiline consumers; failures/limits/EOF/one gesture/manual acceptance; no real desktop clipboard.",
+      "category": "browser-audio-isolation",
+      "reason": "T050 real browser DI/settings settlement remains HTML Audio and never initializes server output",
       "contracts": [
-        "T050-CLIPBOARD-LINUX"
-      ]
-    },
-    {
-      "category": "clipboard-affected-managed",
-      "reason": "Only existing tests affected by bounded reader normalization, explicit clipboard acceptance, removed late reread and shared composer/direct terminal paste.",
-      "contracts": [
-        "T050-CLIPBOARD-LINUX"
+        "T050-CONSOLE-AUDIO-LINUX"
       ]
     }
   ]
