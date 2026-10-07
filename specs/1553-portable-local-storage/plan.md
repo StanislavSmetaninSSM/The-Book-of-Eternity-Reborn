@@ -1,3 +1,11 @@
+# Reusable relay discovery supplement
+
+Source70e50948 discovery-only:PlanOnly32cases/4descriptors, catalog429categories/
+11178methods-files; bothExit0/executed0 and completecleanup. [Supplement](recovery/evidence/relay-reusable/discovery/manifest.json).
+Frozenruntime1350a16c and32GREEN unchanged; sourcePASS, evidence review currently
+pending. Corrected finalmanifest command quoting to actualinvocation; no runtime
+or testbehavior change. NativeWindows plannedpostmerge; no merge/S2S3 activation.
+
 # Reusable relay frozen GREEN / source PASS
 
 Frozen runtime/tests1350a16c:32/32PASS (17contract+3actualmain+9transport+3repair),

@@ -1,0 +1,231 @@
+{
+  "source": "70e50948aba8dd87b21c16c4588522c916254283",
+  "runs": [
+    {
+      "label": "plan-only",
+      "summary": {
+        "Categories": [
+          "gm-relay-reusable-contract",
+          "gm-relay-reusable-main",
+          "gm-relay-transport",
+          "gm-relay-repair"
+        ],
+        "Reasons": [],
+        "DiscoveryOnly": false,
+        "PlanOnly": true,
+        "Revision": {
+          "Head": "70e50948aba8dd87b21c16c4588522c916254283",
+          "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "ChangedFiles": 0
+        },
+        "CatalogAudit": null,
+        "CategoryResults": [],
+        "AdapterResults": [],
+        "PhaseResults": [
+          {
+            "Name": "Revision",
+            "Seconds": 0.0650097,
+            "Completed": true
+          },
+          {
+            "Name": "Changed-paths",
+            "Seconds": 0.0444838,
+            "Completed": true
+          },
+          {
+            "Name": "New-paths",
+            "Seconds": 0.1509261,
+            "Completed": true
+          },
+          {
+            "Name": "Runtime-cleanup",
+            "Seconds": 0.0046395,
+            "Completed": true
+          }
+        ],
+        "Strategy": "SelectedCategories",
+        "TimeoutMinutes": 15,
+        "WallTime": "00:00:05.2399732",
+        "ExitCode": 0,
+        "TimedOut": false,
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "RuntimeCleanup": null,
+        "Selection": {
+          "PlannedDescriptors": 4,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 32,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [
+            "gm-relay-repair-unit-001",
+            "gm-relay-reusable-contract-unit-002",
+            "gm-relay-reusable-main-unit-003",
+            "gm-relay-transport-unit-004"
+          ],
+          "Complete": false
+        },
+        "Tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "DuplicateTests": []
+      }
+    },
+    {
+      "label": "catalog",
+      "summary": {
+        "Categories": [
+          null
+        ],
+        "Reasons": [],
+        "DiscoveryOnly": true,
+        "PlanOnly": false,
+        "Revision": {
+          "Head": "70e50948aba8dd87b21c16c4588522c916254283",
+          "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "ChangedFiles": 0
+        },
+        "CatalogAudit": {
+          "Valid": true,
+          "Methods": 11178,
+          "Categories": 429,
+          "Unmapped": [],
+          "StaleSelectors": []
+        },
+        "CategoryResults": [],
+        "AdapterResults": [],
+        "PhaseResults": [
+          {
+            "Name": "Revision",
+            "Seconds": 0.0703643,
+            "Completed": true
+          },
+          {
+            "Name": "Changed-paths",
+            "Seconds": 0.0601463,
+            "Completed": true
+          },
+          {
+            "Name": "New-paths",
+            "Seconds": 0.1213064,
+            "Completed": true
+          },
+          {
+            "Name": "Build-integration",
+            "Seconds": 50.3993519,
+            "Completed": true
+          },
+          {
+            "Name": "Build-unit",
+            "Seconds": 13.9493101,
+            "Completed": true
+          },
+          {
+            "Name": "Runtime-cleanup",
+            "Seconds": 0.0069056,
+            "Completed": true
+          }
+        ],
+        "Strategy": "SelectedCategories",
+        "TimeoutMinutes": 10,
+        "WallTime": "00:01:15.8716537",
+        "ExitCode": 0,
+        "TimedOut": false,
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "RuntimeCleanup": null,
+        "Selection": {
+          "PlannedDescriptors": 0,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 0,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [],
+          "Complete": false
+        },
+        "Tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "DuplicateTests": []
+      }
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "/workspace/native-1553/TestResults/test-categories/20261007-234153-382-927124-c82682ba12ed4689a8df3e59ecb104e7-categories/dotnet-test.log",
+      "stored": "plan-only-dotnet-test.log.gz",
+      "bytes": 1618134,
+      "sha256": "0cf317c1d7fb0e71963da31685d8ee0d09f6fd3f940896ba8a07cb24d1d4d957",
+      "storedSha256": "2422f93f4cae3b177d44db929788b59e4431a9a81e77f332b434420f7875643c"
+    },
+    {
+      "path": "/workspace/native-1553/TestResults/test-categories/20261007-234153-382-927124-c82682ba12ed4689a8df3e59ecb104e7-categories/summary.json",
+      "stored": "plan-only-summary.json.gz",
+      "bytes": 1560,
+      "sha256": "7d85c8e1868282517ca028221105d710b319a3cf8d03d7f8d8905593fecfca7e",
+      "storedSha256": "1584227f7553202a3a88501e1999327f7aaa2b1648dd9a0d01b56e887cb60cb2"
+    },
+    {
+      "path": "/workspace/native-1553/TestResults/test-categories/20261007-234153-382-927124-c82682ba12ed4689a8df3e59ecb104e7-categories/plan.json",
+      "stored": "plan-only-plan.json.gz",
+      "bytes": 3548,
+      "sha256": "19a6c0fe35d24cb661c3cc707c4e0f531957d921af2c940f0cded0c84324dcdc",
+      "storedSha256": "1f2c5039379ce4d1a423659bb8377e41d2b7c21dcd1b4494df4aaed2655581de"
+    },
+    {
+      "path": "/tmp/relay-reusable/plan-only.log",
+      "stored": "plan-only-plan-only.log.gz",
+      "bytes": 3165,
+      "sha256": "188b68b2aab9615ebfcc5ba9238def95c8461bdce85237fb244b3525a9873dd4",
+      "storedSha256": "d2311b8df346631469bf91de63dd8423900e3b30129d6cb4d149cab8baa5d845"
+    },
+    {
+      "path": "/workspace/native-1553/TestResults/test-categories/20261007-234159-903-927223-6d683a80fc884920a31ce99573c32864-categories/Build-unit.log",
+      "stored": "catalog-Build-unit.log.gz",
+      "bytes": 19988,
+      "sha256": "f50158095a166b1392cc94a4a04a8145fa77e3768653645c925a3f8d5a8250a3",
+      "storedSha256": "f35a36a7f2d62e6f9b1cc7a006f0c3068d16555cd80e2a6e298fd025df4400bc"
+    },
+    {
+      "path": "/workspace/native-1553/TestResults/test-categories/20261007-234159-903-927223-6d683a80fc884920a31ce99573c32864-categories/Build-integration.log",
+      "stored": "catalog-Build-integration.log.gz",
+      "bytes": 16422,
+      "sha256": "18197499efd8512c14e0a93a77e49830fe98eac93a7d3bbbf2eab5858e8cafdb",
+      "storedSha256": "f1a5937fd7837e8f648fcc931111cc57cadc43fa4dbed4cf0baf9871ce8ac515"
+    },
+    {
+      "path": "/workspace/native-1553/TestResults/test-categories/20261007-234159-903-927223-6d683a80fc884920a31ce99573c32864-categories/dotnet-test.log",
+      "stored": "catalog-dotnet-test.log.gz",
+      "bytes": 3174885,
+      "sha256": "27ccf2bdc08951be2fbecbce50d21d5860a5acac61e6d6eaca9bd023d556ffdc",
+      "storedSha256": "c55b6a93f2eee59365913027715f7d312e09b8193b6258087b702aeab75bfb7e"
+    },
+    {
+      "path": "/workspace/native-1553/TestResults/test-categories/20261007-234159-903-927223-6d683a80fc884920a31ce99573c32864-categories/summary.json",
+      "stored": "catalog-summary.json.gz",
+      "bytes": 1600,
+      "sha256": "e222962afceab86bfecd1d7d0d0b3df6bf9d4254f4e805891eb32536fda377b5",
+      "storedSha256": "4cd1739b6cff67291926cfd2bc0569a69ce021376cc7b6b2e4fc6f56bd4ff084"
+    },
+    {
+      "path": "/workspace/native-1553/TestResults/test-categories/20261007-234159-903-927223-6d683a80fc884920a31ce99573c32864-categories/catalog-audit.json",
+      "stored": "catalog-catalog-audit.json.gz",
+      "bytes": 103,
+      "sha256": "7d2368223b4e65ca045d6244a64b05e2459af9a431f3a73ff5b31949d1d6d6bb",
+      "storedSha256": "e8a6acfe887cd35b94340fca4dd6e9e4830df5d9ae0774e38d707d73d4c22bc1"
+    },
+    {
+      "path": "/tmp/relay-reusable/catalog.log",
+      "stored": "catalog-catalog.log.gz",
+      "bytes": 682,
+      "sha256": "e3707c4f1ebb93218fd6fb33c99782e1b523f90a4d82a86a1f4eae06579efbd4",
+      "storedSha256": "679c6841a6499ff64533c90f49d5468012dff853a480f1bfb37bc32f85f1bb7b"
+    }
+  ],
+  "TestsExecuted": 0,
+  "interpretation": "PlanOnly32cases/4descriptors and catalog429categories/11178methods/files; discovery/build only, not fullsuite."
+}

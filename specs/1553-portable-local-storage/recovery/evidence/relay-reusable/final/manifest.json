@@ -94,7 +94,7 @@
     },
     "DuplicateTests": []
   },
-  "command": "pwsh -NoLogo -NoProfile -Command & ./scripts/test-csharp.ps1 -Category @(gm-relay-reusable-contract,gm-relay-reusable-main,gm-relay-transport,gm-relay-repair)",
+  "command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-relay-reusable-contract\",\"gm-relay-reusable-main\",\"gm-relay-transport\",\"gm-relay-repair\")'",
   "sourcePins": {
     "tools/gm-relay/relay_contract.py": "b2829ef96eb17e6b3171e89d9eeb79d513aeadaf216a469aaf142814134fede4",
     "tools/gm-relay/relay_cli.py": "9cf8473170548691a35b35c800de4e046b6b097212575e9e0cec50ad69fa8454",
