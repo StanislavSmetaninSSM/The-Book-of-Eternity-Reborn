@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Runtime.ExceptionServices;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -27,6 +28,7 @@ internal sealed class BrowserDirectGachaLinuxFixture(ITestOutputHelper output, s
     internal byte[] BeforeProfile { get; private set; } = [];
     internal byte[] BeforeDice { get; private set; } = [];
     internal byte[] BeforeHistory { get; private set; } = [];
+    internal Exception? StageFailure { get; private set; }
 
     internal async Task InitializeAsync()
     {
@@ -71,12 +73,21 @@ internal sealed class BrowserDirectGachaLinuxFixture(ITestOutputHelper output, s
         BeforeHistory = File.ReadAllBytes(Files.ResolvePath("game_state/history/chat_log.json"));
     }
 
-    internal Task<BrowserPromptWriteResult> PullAsync(LocalUiSessionLockOwner? owner = null) => Service.TryApplyAsync("/gacha",
-        new Dictionary<string, JsonNode?>
+    internal async Task<BrowserPromptWriteResult> PullAsync(LocalUiSessionLockOwner? owner = null)
+    {
+        void Observe(object? sender, FirstChanceExceptionEventArgs args)
+        {
+            if (args.Exception.StackTrace?.Contains("ExplorerLocalTurnRollbackArtifacts.StageFileAsync", StringComparison.Ordinal) == true)
+                StageFailure = args.Exception;
+        }
+        AppDomain.CurrentDomain.FirstChanceException += Observe;
+        try { return await Service.TryApplyAsync("/gacha", new Dictionary<string, JsonNode?>
         {
             ["gacha_banner"] = JsonValue.Create("direct_chaos_sea"), ["feather_cost"] = JsonValue.Create(7),
             ["confirm_gacha_pull"] = JsonValue.Create(true)
-        }, owner ?? new("linux-gacha-fixture", "browser", "Fixture", TimeSpan.FromMinutes(2)));
+        }, owner ?? new("linux-gacha-fixture", "browser", "Fixture", TimeSpan.FromMinutes(2))); }
+        finally { AppDomain.CurrentDomain.FirstChanceException -= Observe; }
+    }
 
     internal string BackupPath() => Assert.Single(Directory.GetFiles(Files.ResolvePath(DirectRoot), "*.rollback.*", SearchOption.AllDirectories));
     internal int Feathers() => JsonNode.Parse(File.ReadAllText(Files.ResolvePath(Soul)))!["inkFeathers"]!["current"]!.GetValue<int>();

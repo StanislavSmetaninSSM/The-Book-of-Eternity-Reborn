@@ -74,3 +74,5 @@ Independent actual Sol6.1/xhigh focused amendment review PASS atb51f4519: existi
 ### Initial preparation failure (not causal RED)
 
 Clean1ca1d83f runner build failed CS0117: fixture named nonexistent CanonicalWriteLeaseClosingAsync; existing accepted fixture uses SessionOperationClosingAsync.0tests executed, owned/runtime cleanup confirmed. [Evidence](recovery/evidence/direct-gacha-prep-build/manifest.json). Correct only fixture hook name, retain runtime base and rerun the same one-case selection with a fresh successful build. Existing compiler warnings remain in captured log; none are silently treated as new runtime defects.
+
+Corrected cleanb0691600 built successfully and executed1/1FAIL with own root removed. The real consumer sanitizes the underlying rollback diagnostic; add read-only first-chance observation restricted to the original Stage stack before calling this causal RED. [Unwitnessed consumer result](recovery/evidence/direct-gacha-consumer-failure-unwitnessed/manifest.json). Runtime remains unchanged.
