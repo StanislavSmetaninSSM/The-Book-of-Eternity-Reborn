@@ -56,6 +56,22 @@ process = None
 eof = False
 original_identity = None
 
+TERM_GATE = (b'WARNING: TERM is set to "dumb". Codex\'s interactive TUI may not work in this terminal.\n'
+             b'Continue anyway? [y/N]:')
+FORBIDDEN_GATES = [b"do you trust", b"trust this", b"accept the terms", b"sign in to codex",
+                   b"grant access", b"update now", b"accept and continue"]
+
+
+def forbidden_gate(data):
+    lower = bytes(data).lower()
+    return any(marker in lower for marker in FORBIDDEN_GATES)
+
+
+def current_term_gate(data):
+    # Normalize only the observed PTY CR expansion, never strip arbitrary VT.
+    plain = bytes(data).replace(b"\r", b"").rstrip(b"\n ")
+    return not forbidden_gate(data) and plain.endswith(TERM_GATE) and plain.count(TERM_GATE) == 1
+
 
 def elapsed():
     return time.monotonic() - started
@@ -124,7 +140,10 @@ try:
     # Exactly one owner-authorized TERM answer; no reply to another gate/query.
     while elapsed() < 8:
         receive()
-        if b'WARNING: TERM is set to "dumb".' in captured and b"Continue anyway? [y/N]:" in captured:
+        if forbidden_gate(captured):
+            gate = "Other CLI confirmation/authentication gate; unanswered"
+            break
+        if current_term_gate(captured):
             gate = "Exact TERM confirmation observed"
             running = json.loads(record_path.read_bytes())
             assert running["Disposition"] == "Running"
@@ -136,6 +155,15 @@ try:
             assert before["status"]["terminalOwnerRetained"] and not before["status"]["terminalUncertain"]
             assert before["status"]["terminalRunId"] == original_identity["runId"]
             assert before["status"]["cliLaunchCommand"] == command
+            # The status read may have drained additional foreground output.
+            # Drain pending bytes and revalidate the CURRENT trailing exact gate.
+            while elapsed() < 8 and not eof and select.select([master], [], [], 0)[0]:
+                receive(0)
+            result["ConfirmationGateRevalidatedAtSeconds"] = round(elapsed(), 3)
+            result["OriginalConfirmationGateStillCurrent"] = current_term_gate(captured)
+            if elapsed() >= 8 or not current_term_gate(captured) or process.poll() is not None:
+                gate = "Exact TERM gate no longer current or startup bound reached; unanswered"
+                break
             offset = len(captured)
             result["TERMAnswersAttempted"] = 1
             journal = {"AtSeconds": round(elapsed(), 3), "Kind": "Exact authorized TERM warning", "BytesHex": "790d", "Attempt": 1}
@@ -150,15 +178,11 @@ try:
             while time.monotonic() < deadline and process.poll() is None:
                 receive()
                 tail = bytes(captured[offset:]).lower()
-                if any(marker in tail for marker in [b"do you trust", b"trust this", b"accept the terms", b"sign in to codex", b"grant access", b"update now", b"accept and continue"]):
+                if forbidden_gate(tail):
                     gate = "Post-TERM confirmation/authentication gate; unanswered"
                     break
             if gate == "Exact TERM confirmation observed":
                 gate = "Post-TERM bounded presentation captured; readiness unqualified"
-            break
-        lower = bytes(captured).lower()
-        if any(marker in lower for marker in [b"do you trust", b"trust this", b"accept the terms", b"sign in to codex"]):
-            gate = "Other CLI confirmation/authentication gate"
             break
         if process.poll() is not None:
             break
