@@ -20,10 +20,37 @@
         {
           "project": "integration",
           "tests": [
+            "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.RealProfileService_CreateUpgradeFreshReadAndOriginalGrant",
             "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.PublicConsoleQte_CompletesOriginalStandaloneRouteWithoutBootstrap",
             "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExactStoreAndOriginalQteRollback_RestoreBytesOrOriginalAbsence",
             "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExistingProfileRead_NormalizesThroughRealStore",
             "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.SupportedCheckAbsentRestoreAndPreCancel_HaveNoPreparationEffects"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "daren-standalone-linux-boundaries",
+      "responsibility": "#1553 T031 exact real standalone profile cuts, original Committed debt/recovery and retained Uncertain at conflict/generation loss. Original main/worker/generation/lease and declared browser refusal.",
+      "excludes": "No stub profile consumer, gameplay/economy/tier/text/model changes, live console/provider/saves/browser or Windows/fullgame qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
+        "BookOfEternityClient/Core/FileSystemManager.DarenLocalStorage.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualProfilePublicationCut_ConfirmsExactRollbackOrOriginalAbsence",
+            "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.RealCompletionCommittedDebt_FreshOriginalRecoveryKeepsReward",
+            "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualPostIntentAuthorityLoss_RetainsUncertainAndRefusesFreshRecovery"
           ]
         }
       ]

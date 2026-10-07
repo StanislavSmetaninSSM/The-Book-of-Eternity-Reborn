@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "daren-standalone-linux",
-      "reason": "Only six new real consumer/no-effect cases; first service oracle already GREEN at ac01f773 and is not repeated without runtime change.",
+      "category": "daren-standalone-linux-boundaries",
+      "reason": "Only new16 publication-cut/debt/Uncertain cases. Prior successful7 consumers excluded while their runtime is unchanged.",
       "contracts": [
         "T031-DAREN-STANDALONE-LINUX",
-        "original fixed client profile/lease and trusted-local publisher"
+        "original B1 decisions/recovery and fixed profile"
       ]
     }
   ]

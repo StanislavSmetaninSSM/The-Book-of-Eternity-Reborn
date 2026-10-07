@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="7f662ad9-688a-4a36-930c-3224addefdbb" name="@c7669543e9c7 2026-10-07 01:21:22" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-07T01:21:22.0635250+00:00" queuing="2026-10-07T01:21:22.0635251+00:00" start="2026-10-07T01:21:18.9846211+00:00" finish="2026-10-07T01:21:22.0696960+00:00" />
+  <TestSettings name="default" id="f32673c3-5f41-4fc9-ab65-836dcfc849e8">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-07_01_21_22" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="275a43bb-9b75-4779-9938-bcab36474ccc" testId="76abf9e1-e422-070e-2b2b-bde60396f319" testName="BookOfEternityClient.Tests.DarenStandaloneLinuxTests.SupportedCheckAbsentRestoreAndPreCancel_HaveNoPreparationEffects" computerName="c7669543e9c7" duration="00:00:00.0180875" startTime="2026-10-07T01:21:21.9610736+00:00" endTime="2026-10-07T01:21:21.9610826+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="275a43bb-9b75-4779-9938-bcab36474ccc">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-daren-standalone-linux-42bab08da7404d6bab8c6c75a378f853 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b36a5b1e-7836-4415-9977-3a6f0569ff12" testId="01aead9d-6218-0992-1a9d-73f81a5846e8" testName="BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExistingProfileRead_NormalizesThroughRealStore(corrupt: True)" computerName="c7669543e9c7" duration="00:00:00.0376738" startTime="2026-10-07T01:21:21.9423762+00:00" endTime="2026-10-07T01:21:21.9423764+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b36a5b1e-7836-4415-9977-3a6f0569ff12">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-daren-standalone-linux-d97de9d00f0f4274bb06081c5f291454 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5721b243-8190-47fd-a6d1-4c23faff1d5d" testId="8e108ed9-ce88-01d6-c316-5951710f005e" testName="BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExactStoreAndOriginalQteRollback_RestoreBytesOrOriginalAbsence(existed: True)" computerName="c7669543e9c7" duration="00:00:00.1774398" startTime="2026-10-07T01:21:21.7459154+00:00" endTime="2026-10-07T01:21:21.7459155+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5721b243-8190-47fd-a6d1-4c23faff1d5d">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-daren-standalone-linux-64fe8e25e02e44749991ecc89a875509 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="694c8b1a-6f66-4794-8e28-5304d3c90fd2" testId="a8097da2-8fae-0de7-75cf-1bd7849cf358" testName="BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExactStoreAndOriginalQteRollback_RestoreBytesOrOriginalAbsence(existed: False)" computerName="c7669543e9c7" duration="00:00:00.0602478" startTime="2026-10-07T01:21:21.8067532+00:00" endTime="2026-10-07T01:21:21.8067534+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="694c8b1a-6f66-4794-8e28-5304d3c90fd2">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-daren-standalone-linux-2de7c9bb9db84ee0b0cb17fc85cfc39e rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="dc67f7f7-758e-4da4-86f7-d254ee2f8dee" testId="cf422807-6d60-4797-f9f7-3f7ee8f896e0" testName="BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExistingProfileRead_NormalizesThroughRealStore(corrupt: False)" computerName="c7669543e9c7" duration="00:00:00.0959498" startTime="2026-10-07T01:21:21.9048387+00:00" endTime="2026-10-07T01:21:21.9048389+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dc67f7f7-758e-4da4-86f7-d254ee2f8dee">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-daren-standalone-linux-618093da94344758af4df9667e61af49 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ccca03a8-7e45-4cd7-8097-2fa4273cf1ab" testId="0500ded4-a130-3af5-5101-fa7dc99319d4" testName="BookOfEternityClient.Tests.DarenStandaloneLinuxTests.PublicConsoleQte_CompletesOriginalStandaloneRouteWithoutBootstrap" computerName="c7669543e9c7" duration="00:00:00.1913080" startTime="2026-10-07T01:21:21.5663055+00:00" endTime="2026-10-07T01:21:21.5663216+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ccca03a8-7e45-4cd7-8097-2fa4273cf1ab">
+      <Output>
+        <StdOut>Actual public console QTE actions=15
+FixtureCleanup root=/tmp/boe-daren-standalone-linux-b918cb7d906841bb8a188259224a2726 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.DarenStandaloneLinuxTests.PublicConsoleQte_CompletesOriginalStandaloneRouteWithoutBootstrap" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="0500ded4-a130-3af5-5101-fa7dc99319d4">
+      <Execution id="ccca03a8-7e45-4cd7-8097-2fa4273cf1ab" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DarenStandaloneLinuxTests" name="PublicConsoleQte_CompletesOriginalStandaloneRouteWithoutBootstrap" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExactStoreAndOriginalQteRollback_RestoreBytesOrOriginalAbsence(existed: True)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="8e108ed9-ce88-01d6-c316-5951710f005e">
+      <Execution id="5721b243-8190-47fd-a6d1-4c23faff1d5d" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DarenStandaloneLinuxTests" name="ExactStoreAndOriginalQteRollback_RestoreBytesOrOriginalAbsence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExistingProfileRead_NormalizesThroughRealStore(corrupt: False)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="cf422807-6d60-4797-f9f7-3f7ee8f896e0">
+      <Execution id="dc67f7f7-758e-4da4-86f7-d254ee2f8dee" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DarenStandaloneLinuxTests" name="ExistingProfileRead_NormalizesThroughRealStore" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExistingProfileRead_NormalizesThroughRealStore(corrupt: True)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="01aead9d-6218-0992-1a9d-73f81a5846e8">
+      <Execution id="b36a5b1e-7836-4415-9977-3a6f0569ff12" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DarenStandaloneLinuxTests" name="ExistingProfileRead_NormalizesThroughRealStore" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExactStoreAndOriginalQteRollback_RestoreBytesOrOriginalAbsence(existed: False)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="a8097da2-8fae-0de7-75cf-1bd7849cf358">
+      <Execution id="694c8b1a-6f66-4794-8e28-5304d3c90fd2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DarenStandaloneLinuxTests" name="ExactStoreAndOriginalQteRollback_RestoreBytesOrOriginalAbsence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.DarenStandaloneLinuxTests.SupportedCheckAbsentRestoreAndPreCancel_HaveNoPreparationEffects" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="76abf9e1-e422-070e-2b2b-bde60396f319">
+      <Execution id="275a43bb-9b75-4779-9938-bcab36474ccc" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DarenStandaloneLinuxTests" name="SupportedCheckAbsentRestoreAndPreCancel_HaveNoPreparationEffects" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="76abf9e1-e422-070e-2b2b-bde60396f319" executionId="275a43bb-9b75-4779-9938-bcab36474ccc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="01aead9d-6218-0992-1a9d-73f81a5846e8" executionId="b36a5b1e-7836-4415-9977-3a6f0569ff12" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8e108ed9-ce88-01d6-c316-5951710f005e" executionId="5721b243-8190-47fd-a6d1-4c23faff1d5d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a8097da2-8fae-0de7-75cf-1bd7849cf358" executionId="694c8b1a-6f66-4794-8e28-5304d3c90fd2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cf422807-6d60-4797-f9f7-3f7ee8f896e0" executionId="dc67f7f7-758e-4da4-86f7-d254ee2f8dee" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0500ded4-a130-3af5-5101-fa7dc99319d4" executionId="ccca03a8-7e45-4cd7-8097-2fa4273cf1ab" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="6" executed="6" passed="6" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.41]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.81]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.83]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.48]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>
