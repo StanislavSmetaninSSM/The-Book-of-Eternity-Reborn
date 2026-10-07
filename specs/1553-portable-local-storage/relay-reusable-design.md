@@ -75,7 +75,8 @@ game acceptance. Stop/signal errors never mint a close ACK or logical success.
 
 Preserve the exact input profile as a shared JSON artifact: IdleMarker
 `NEUTRAL READY`, PromptPrefix `RELAY> `, WorkingMarker `NEUTRAL WORKING`,
-BlockedMarkers `[RELAY ERROR]`, ObservationTimeoutMilliseconds15000. No Auto/
+BlockedMarkers `["RELAY ERROR"]` (plain marker, without literal brackets),
+ObservationTimeoutMilliseconds15000. No Auto/
 SystemdUser activation, input replay, process identity reconstruction, arbitrary
 script execution or changes to client model/command settings.
 
