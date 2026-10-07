@@ -64,7 +64,14 @@
     "verdict": "PASS source/controlled and discovery supplement",
     "discoverySource": "feef8f7a5481ad46f47524958e534ec8f429967c"
   },
-  "metadataReview": "pending",
+  "metadataReview": {
+    "agent": "/root/systemd_s1_metadata_review",
+    "model": "gpt-6.1-sol",
+    "effort": "xhigh",
+    "source": "087df706d2acc4e9420e7dead0c111935c3f12dd",
+    "verdict": "PASS",
+    "correction": "Two inputs including Unicode; second input ASCII. No runtime/evidence change."
+  },
   "actualSystemdCalls": 0,
   "newGmRequests": 0,
   "publicActivation": false,
@@ -91,5 +98,7 @@
       "exit": 0
     }
   },
-  "handoff": "../systemd-main-s1-handoff.md"
+  "handoff": "../systemd-main-s1-handoff.md",
+  "verdict": "PASS bounded S1 source/controlled only",
+  "deliveryGuard": "Final writer carrier must be normally pushed, exact remote/changed-file bytes read back and freshly restored directly from GitHub before delivery; final SHA/proof reported by writer."
 }

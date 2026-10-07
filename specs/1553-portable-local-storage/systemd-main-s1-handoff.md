@@ -95,8 +95,9 @@ no remaining actionable S1 finding. Separate evidence review verified all853
 pre-discovery gzip artifacts, 114 provenance records, 42 distinct TRX identities,
 current pins, connected consumers and historical failure taxonomy: PASS for
 source/controlled scope. The same reviewer passed the discovery supplement at
-`feef8f7a5481ad46f47524958e534ec8f429967c`. Final metadata verdict is recorded
-in the qualification carrier. No full suite, unchanged old cohorts,
+`feef8f7a5481ad46f47524958e534ec8f429967c`. Separate actual gpt-6.1-sol/xhigh metadata review passed clean
+`087df706d2acc4e9420e7dead0c111935c3f12dd` after the input wording correction;
+no remaining actionable finding. The qualification carrier records all verdicts. No full suite, unchanged old cohorts,
 real manager calls or new GM requests were performed. This client-owned adapter
 does not change gameplay/schema/GM-authored commands; no GM prompt/example update
 is required, as accepted in the design.

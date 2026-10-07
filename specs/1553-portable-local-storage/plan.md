@@ -1,3 +1,18 @@
+# S1 final bounded verdict carrier
+
+Independent actual gpt-6.1-sol/xhigh source/selection, evidence/discovery and
+metadata reviews:PASS. Metadata checkedclean087df706 after correcting only the
+handoff Unicode wording; frozenruntimeb764117f remains unchanged. 42distinct
+recordedPASS, final28/28,26guardiansECHILD0emergency/failure/deadline, final
+catalog427/11176 andPlanOnly42/3 with0testexecution. Historical RED/Uncertain and
+preparation/incomplete runs are not promoted. [Reviewed handoff](systemd-main-s1-handoff.md)
+and [qualification](recovery/systemd-main-s1-qualification.json).
+Only boundedS1 closes. Finalwriter gate: normalpush, exactremote/changedbytes,
+freshdirectGitHubclean/tree/fsck restoration, exactSHA/proof in delivery. No
+further runtime/tests or nextslice; no merge. S2/S3/productionworkers/nativeWindows
+and applicable desktop/device environments remain open. Relay and testprofile
+remain sharedcode;T043-RELAY-REUSABLE-DESIGN is the owner's separate followup.
+
 # S1 reviewed source/controlled handoff candidate
 
 Runtime `b764117fbb15cc999100d42cee37400e0c65f245` is frozen:42 distinct PASS,
