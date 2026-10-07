@@ -30,6 +30,8 @@ No systemd setup, native Windows qualification, real user saves, live browser, n
 
 ## Progress
 
-Independent Sol6.1/xhigh amended design PASS (relay_gm_design_review): child/rollback ordering, relay-only budgets and original/repair receipt separation corrected. Implementation/live execution not started. OpenCode access review PASS0a142b13; provider/model calls and accepted turns in that access check0.
+Independent Sol6.1/xhigh amended design PASS (relay_gm_design_review): child/rollback ordering, relay-only budgets and original/repair receipt separation corrected. Implementation exists at172feb0f with known repair defects; live execution not started. OpenCode access review PASS0a142b13; provider/model calls and accepted turns in that access check0.
 
 Causal RED recorded: real transport7/7FAIL (feature/closure/budget absent), neutral/driver14executed13PASS/1FAIL (long draft refused). All selected descriptors complete, owned cleanup complete, model calls0. [Receipts/source pins](recovery/evidence/relay-gm/red/manifest.json). Initial unknown-category0-workload and missing driver-exit assertion are preparation/test-harness defects, not successes.
+
+Reconciliation: parent confirms previous cloud tasks finished and no other writers. Independent Sol6.1/xhigh PASS accepted linear013f→67a559→cca927→172feb plus exact saved chunking delta as understood WIP with unknown provenance. HEAD/source hashes/patch stable, no locks/active git process, no conflict. Historical git zombies were observed only, untouched. Saved21/21 transport receipt is [curated here](recovery/evidence/relay-gm/reconciled-transport/manifest.json); it does not cover real repair or gameplay. Next causal repair: actual daemon prefix/control path and ordinary completion helper without FilesModified.

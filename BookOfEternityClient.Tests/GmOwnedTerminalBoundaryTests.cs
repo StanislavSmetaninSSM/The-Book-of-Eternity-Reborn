@@ -84,11 +84,15 @@ public sealed class GmOwnedTerminalBoundaryTests
     {
         await using var h=new OwnedHost();
         var draft=string.Concat(Enumerable.Repeat("Ж🙂 instruction update > ",450));
-        await h.Feed("\u001b[2J\u001b[HNEUTRAL READY\r\nRELAY> "+draft+"\r\n");
+        async Task FeedChunks(string text) {
+            var bytes=Encoding.UTF8.GetBytes(text);
+            for(var i=0;i<bytes.Length;i+=1024)await h.FeedBytes(bytes.Skip(i).Take(1024).ToArray());
+        }
+        await FeedChunks("\u001b[2J\u001b[HNEUTRAL READY\r\nRELAY> "+draft+"\r\n");
         Assert.True(h.Reliable,"Real daemon instruction exceeds the old4096 logical-column bound.");
         var view=h.Invoke("CaptureTerminalView")!;
         Assert.Equal("NEUTRAL READY\nRELAY> "+draft,(string)view.GetType().GetProperty("Text")!.GetValue(view)!);
-        await h.Feed("\u001b[2J\u001b[H"+new string('x',65537));
+        await FeedChunks("\u001b[2J\u001b[H"+new string('x',65537));
         Assert.False(h.Reliable,"Over-bound output cannot establish readiness.");
     }
     [Fact]
