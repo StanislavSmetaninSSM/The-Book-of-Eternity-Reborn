@@ -46,6 +46,29 @@ internal static class ProductionMainLinuxFixture
             var resolved=(Environment.GetEnvironmentVariable("PATH")??"").Split(Path.PathSeparator).Select(d=>Path.Combine(d,executable)).First(File.Exists);
             File.CreateSymbolicLink(Path.Combine(playerBin,executable),resolved);
         }
+        if(mode=="driver-provider-refusal") {
+            var installed=Path.Combine(folder,"play/game_session/_runtime");Directory.CreateDirectory(Path.GetDirectoryName(installed)!);
+            Directory.Move(ship,installed);File.Copy(fixture,Path.Combine(folder,"configured-neutral-cli"));
+            File.WriteAllText(Path.Combine(folder,"fixture-preparation.json"),JsonSerializer.Serialize(new {
+                Source=source,SourceSha256=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(source))).ToLowerInvariant(),
+                DriverSha256=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(Path.Combine(repo,"tests/fixtures/ProductionMain/live-game-one-turn.py")))).ToLowerInvariant(),
+                BinarySha256=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(fixture))).ToLowerInvariant(),
+                CompilerPath=compiler,CompilerSha256=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(compiler))).ToLowerInvariant(),
+                InertOnly=true,ProviderCalls=0,SourceCheckoutAtPlayerStartup=false
+            }));
+            var controlled=new ProcessStartInfo(Path.Combine(package,"host-guardian")){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true};
+            controlled.Environment["PATH"]=playerBin;controlled.Environment["TERM"]="dumb";
+            foreach(var arg in new[]{"--live-turn",Path.Combine(folder,"guardian.json"),"300000","/usr/bin/python3",Path.Combine(repo,"tests/fixtures/ProductionMain/live-game-one-turn.py"),folder,"--controlled-provider-refusal"})controlled.ArgumentList.Add(arg);
+            using var process=Process.Start(controlled)!;
+            await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(process,TimeSpan.FromSeconds(305),Path.Combine(folder,"guardian.log"));
+            using var guardianReport=JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder,"guardian.json")));
+            Assert.True(guardianReport.RootElement.GetProperty("echild").GetBoolean());Assert.Equal(0,guardianReport.RootElement.GetProperty("emergencySignals").GetInt32());
+            Assert.Equal(0,guardianReport.RootElement.GetProperty("failures").GetInt32());Assert.False(guardianReport.RootElement.GetProperty("deadline").GetBoolean());
+            using var actual=JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder,"probe-result.json")));
+            Assert.True(actual.RootElement.GetProperty("ControlledCleanupVerified").GetBoolean(),actual.RootElement.ToString());
+            Assert.False(actual.RootElement.GetProperty("Success").GetBoolean());Assert.Equal(0,actual.RootElement.GetProperty("AcceptedGameTurns").GetInt32());
+            Assert.Equal(0,process.ExitCode);return;
+        }
         var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);files.EnsureDirectoryStructure();
         var cwd=Path.Combine(root,"work Ж");Directory.CreateDirectory(cwd);
         var command="& '"+fixture.Replace("'","''")+"' '--model' 'gm-model-sentinel' '--arg' 'a b'";

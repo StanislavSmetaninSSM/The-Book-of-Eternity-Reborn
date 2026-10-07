@@ -14,7 +14,9 @@ static volatile sig_atomic_t resized;
 static void winch(int unused) { (void)unused; resized = 1; }
 static void view(const char *draft) { dprintf(1, "\033[2J\033[HNEUTRAL READY\r\n> %s\r\n", draft); }
 int main(int argc, char **argv) {
-    alarm(20);
+    bool driver_refusal = argc == 2 && !strcmp(argv[1], "--driver-refusal-fixture");
+    bool denial_emitted = false;
+    alarm(driver_refusal ? 90 : 20);
     if (!isatty(0) || !isatty(1) || !isatty(2) || tcgetsid(0) != getsid(0) || tcgetpgrp(0) != getpgrp()) return 78;
     char cwd[4096]; if (!getcwd(cwd, sizeof cwd)) return 94;
     dprintf(1, "CONFIGURED_CWD:%s\r\n", cwd);
@@ -28,6 +30,10 @@ int main(int argc, char **argv) {
     dprintf(1, "TTY_READY owned=1 pid=%d sid=%d\r\n", getpid(), getsid(0)); view("");
     char draft[4096] = {0}; size_t used = 0; int submitted = 0; bool canonical = false, paste = false; char escape[8] = {0}; size_t escape_used = 0;
     for (;;) {
+        if (driver_refusal && !denial_emitted && access(".inert-provider-denial-trigger", F_OK) == 0) {
+            denial_emitted = true;
+            dprintf(1, "\r\nForbidden: Domain forbidden\r\n");
+        }
         if (resized) {
             resized = 0; struct winsize size;
             if (ioctl(0, TIOCGWINSZ, &size)) return 82;

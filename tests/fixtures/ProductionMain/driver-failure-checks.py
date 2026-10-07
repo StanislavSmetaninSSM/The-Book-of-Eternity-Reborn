@@ -14,7 +14,7 @@ entry=next(n for n in tree.body if isinstance(n,ast.Try) and any(isinstance(x,as
 clock=[0.0]
 class Peer:
     def __init__(self,text='',code=None):
-        self.capture=bytearray(text.encode());self.code=code;self.sent=[]
+        self.capture=bytearray(text.encode());self.code=code;self.sent=[];self.name='bridge'
         self.process=SimpleNamespace(poll=lambda:self.code)
     def text(self,offset=0):return re.sub(r'\x1b\[[0-9;? ]*[A-Za-z~]','',self.capture[offset:].decode('utf-8',errors='replace'))
     def send(self,data,phase):
@@ -43,7 +43,7 @@ with tempfile.TemporaryDirectory(prefix='own-driver-inert-') as folder:
     ns=dict(time=SimpleNamespace(monotonic=lambda:clock[0]),Path=Path,re=re,json=json,hashlib=hashlib,
         session=session,start=0,client=client,bridge=bridge,daemon=daemon,offset=0,result=result,journal=[],
         client_failure_offset=None,client_wait=True,client_prompt=False,client_exit_attempted=False,
-        active_phase_deadline=None,original={'rootKey':str(session),'runId':'original'},original_record={},
+        active_phase_deadline=None,provider_bridge_offset=0,original={'rootKey':str(session),'runId':'original'},original_record={},
         shutdown_attempts=0,pump=pump,elapsed=lambda:clock[0],rpc=lambda *unused:{'status':{'terminalUncertain':False,'terminalOwnerRetained':True}},
         read_json=lambda p:json.loads(p.read_text()),exit_client=lambda p:setattr(p,'code',0))
     # Only definitions before the first live argument-handling statement. No entrypoint executes.
@@ -53,17 +53,22 @@ with tempfile.TemporaryDirectory(prefix='own-driver-inert-') as folder:
         if isinstance(n,(ast.FunctionDef,ast.ClassDef)):prefix.append(n)
     exec(compile(ast.Module(body=copy.deepcopy(prefix),type_ignores=[]),str(source),'exec'),ns)
     mode=sys.argv[1]
-    if mode in ['provider','client-error','process-exit']:
+    if mode in ['provider','client-error','process-exit','old-provider','old-client']:
         first=next(i for i,n in enumerate(entry.body) if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='story' for t in n.targets))
         nodes=entry.body[first:]
         if mode=='provider':bridge.capture=bytearray(pinned('bridge.raw')[:71484]);expected='provider'
         elif mode=='client-error':client.capture=bytearray('❌ Ошибка: original admission refused\nНажмите любую клавишу для продолжения...'.encode());expected='client'
-        else:bridge.code=17;expected='exited'
+        elif mode=='process-exit':bridge.code=17;expected='exited'
+        elif mode=='old-provider':
+            bridge.capture=bytearray(pinned('bridge.raw')[:71484]);ns['provider_bridge_offset']=len(bridge.capture);expected=None
+        else:
+            client.capture=bytearray('❌ Ошибка: old turn\nНажмите любую клавишу для продолжения...'.encode());ns['offset']=len(client.capture);expected=None
         try:wrap(nodes,'current_wait',ns)()
         except RuntimeError as ex:
             assert expected in str(ex).lower(),str(ex)
             assert clock[0]<1,'Current failure was detected only after a deadline'
-        except TimeoutError as ex:raise AssertionError('Actual current failure fell through to provider timeout') from ex
+        except TimeoutError as ex:
+            if expected is not None:raise AssertionError('Actual current failure fell through to provider timeout') from ex
         else:raise AssertionError('Current failure was ignored')
     elif mode=='error-pause':
         client.capture=bytearray('❌ Ошибка: original admission refused\nНажмите любую клавишу для продолжения...'.encode())

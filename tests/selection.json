@@ -1,7 +1,8 @@
 {
-  "categories": [
+  "schemaVersion": 1,
+  "selections": [
     {
-      "id": "gm-live-driver-failure",
+      "category": "gm-live-driver-failure",
       "reason": "Changed actual provider wait/error-pause/one original stop; causal committed trace and controlled original lifecycle only",
       "contracts": [
         "T043-DRIVER-PROVIDER-FAILURE"

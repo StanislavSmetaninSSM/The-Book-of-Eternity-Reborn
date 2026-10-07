@@ -41,11 +41,13 @@ base = out / 'play'; session = base / 'game_session'; ship = session / '_runtime
 assert session.is_dir() and ship.is_dir() and not (session / 'config.json').exists()
 assert not (session / 'game_state').exists()
 assert os.environ.get('TERM') == 'dumb'
-binary = Path('/workspace/qualification-1553-opencode-install/package/node_modules/opencode-linux-x64-baseline/bin/opencode')
-assert hashlib.sha256(binary.read_bytes()).hexdigest() == '77b2cfe4b97df6f15c3673b22100b9f79c711f25ecb9bf513bb82526b15d24fa'
+controlled_refusal = len(sys.argv)==3 and sys.argv[2]=='--controlled-provider-refusal'
+assert len(sys.argv)==2 or controlled_refusal, 'Only the fixed inert fixture mode is admitted'
+binary = (out/'configured-neutral-cli') if controlled_refusal else Path('/workspace/qualification-1553-opencode-install/package/node_modules/opencode-linux-x64-baseline/bin/opencode')
+if not controlled_refusal:assert hashlib.sha256(binary.read_bytes()).hexdigest() == '77b2cfe4b97df6f15c3673b22100b9f79c711f25ecb9bf513bb82526b15d24fa'
 pipe = 'og-' + uuid.uuid4().hex[:12]
 quote = lambda v: "'" + str(v).replace("'", "''") + "'"
-command = '& ' + quote(binary) + ' --mini --pure --no-replay -m opencode/ling-3.1-flash-free'
+command = '& ' + quote(binary) + (' --driver-refusal-fixture' if controlled_refusal else ' --mini --pure --no-replay -m opencode/ling-3.1-flash-free')
 env = {k:v for k,v in os.environ.items() if not k.upper().startswith('OPENCODE_')}
 for key, folder in [('XDG_CONFIG_HOME','config'),('XDG_DATA_HOME','data'),('XDG_STATE_HOME','state'),('XDG_CACHE_HOME','cache'),('TMPDIR','tmp')]:
     path=out/folder;path.mkdir();env[key]=str(path)
@@ -60,9 +62,14 @@ env.update(NPM_CONFIG_USERCONFIG=str(install/'empty-user.npmrc'),NPM_CONFIG_GLOB
         'StartupBannerLines':['','█▀▀█  OpenCode','█  █  '+str(session),'▀▀▀▀',''],'AutomaticSubmissionLimit':1,
         'IdleMarker':' BUILD','WorkingMarker':'interrupt','ObservationTimeoutMilliseconds':15000}
 },indent=2,ensure_ascii=False)+'\n')
+if controlled_refusal:
+    settings=json.loads((session/'config.json').read_text())
+    settings['GmCliInputProfile']={'IdleMarker':'NEUTRAL READY','PromptPrefix':'> ','WorkingMarker':'NEUTRAL WORKING','ObservationTimeoutMilliseconds':1800}
+    (session/'config.json').write_text(json.dumps(settings,indent=2,ensure_ascii=False)+'\n')
 start=time.monotonic(); peers=[]; journal=[]; original=None; original_record=None; shutdown_attempts=0;cleaning=False;client_exit_attempted=False;client_failure_offset=None;active_phase_deadline=None
 result={'AcceptedGameTurns':0,'GenuineActionsSent':0,'GateAnswers':0,'QueryAnswers':0,'ConfiguredModel':'opencode/ling-3.1-flash-free',
         'ConfiguredCommand':command,'ConfiguredCwd':str(session),'NoReadyOverride':True,'OrdinaryNewGame':False,'LogicalLifecycleVerified':False}
+if controlled_refusal:result.update(ConfiguredModel='fixed-inert-no-provider',ControlledRefusal=True,ProviderCalls=0)
 action='Я осторожно осматриваю берег Моря Хаоса и спрашиваю моего Хранителя, где я оказался.'
 class Terminal:
     def __init__(self,name,args,captured_output=False):
@@ -256,15 +263,32 @@ try:
     preparation_phase(lambda:'Waiting for turns...' in daemon.text(),'daemon bootstrap',daemon,bootstrap=True)
     offset=len(client.capture);client.send(b'\r','observed Continue selected')
     preparation_phase(lambda:'Ваш ход' in client.text(offset) and '🌊 > ' in client.text(offset),'ordinary Continue current player prompt',client,offset=offset);client_prompt=True
+    provider_bridge_offset=len(bridge.capture)
     offset=len(client.capture);client.send((action+'\r').encode(),'one genuine game action');result['GenuineActionsSent']=1;client_prompt=False;client_wait=True
     current_request(offset)
     request=read_json(session/'input/turn_request.json');result['ActualRequest']=request;result['ActualRequestSHA256']=hashlib.sha256((session/'input/turn_request.json').read_bytes()).hexdigest()
     assert request['playerAction']==action and request['turnNumber']==1
     assert request['sessionId']==result['InitialBootstrapRequest']['sessionId'] and request['requestId']!=result['InitialBootstrapRequest']['requestId']
     (out/'actual-turn-request.json').write_bytes((session/'input/turn_request.json').read_bytes())
+    if controlled_refusal:
+        # Own fixed fixture emits only a denial, never an accepted GM response.
+        (session/'.inert-provider-denial-trigger').write_text('one controlled denial\n')
     story=session/'stories/chaos_sea.jsonl';provider_deadline=min(start+210,time.monotonic()+170)
     while time.monotonic()<provider_deadline:
         pump()
+        # Observe current output before another status RPC can obscure the causal
+        # failure. Old startup/turn output is outside this original action's cut.
+        provider_text=bridge.text(provider_bridge_offset)
+        if re.search(r'(?m)^\s*Forbidden: Domain forbidden[ \r]*$',provider_text):
+            result['ObservedProviderFailure']={'Text':'Forbidden: Domain forbidden','At':elapsed(),'BridgeCut':provider_bridge_offset}
+            raise RuntimeError('Actual current provider refusal; no automatic retry')
+        if current_client_failure(client.text(offset)):
+            client_failure_offset=offset
+            result['ObservedCurrentClientFailureAt']=elapsed()
+            raise RuntimeError('Actual current client failure during provider wait')
+        for peer in [client,bridge,daemon]:
+            if peer is not None and peer.process.poll() is not None:
+                raise RuntimeError(peer.name+' exited during current provider wait')
         current=rpc({'command':'status'})['status'];result['LastBridgeStatus']=current
         if current['terminalUncertain'] or not current['terminalOwnerRetained']:raise RuntimeError('Original owner uncertainty; acceptance remains blocked')
         refused=current.get('promptDelivery')
@@ -303,15 +327,15 @@ finally:
         # bridge exit8s, daemon exit8s, EOF5s and connection/disposal margin.
         active_phase_deadline=start+230
         try:
-            if client_wait:
-                offset=client_failure_offset if client_failure_offset is not None else len(client.capture)
-                if client_failure_offset is None:client.send(b'\x1b','failure: cancel original wait once')
-                pause_acknowledged=False
+            if client_wait or current_client_failure(client.text(offset)):
+                offset=client_failure_offset if client_failure_offset is not None else offset
+                pause_acknowledged=False;cancel_sent=False
                 def settled():
                     # An actually rendered client error pause is distinct from
                     # a GM trust/access/update gate. Acknowledge at most once.
                     text=client.text(offset)
-                    return not (session/'input/turn_request.json').exists() and ('Продолжить' in text or ('Ваш ход' in text and '🌊 > ' in text))
+                    fresh_screen='Продолжить' in text or ('Ваш ход' in text and '🌊 > ' in text)
+                    return fresh_screen and (pause_acknowledged or (cancel_sent and not (session/'input/turn_request.json').exists()))
                 settlement=PhaseWait(time.monotonic(),active_phase_deadline)
                 while not settled():
                     text=client.text(offset)
@@ -322,9 +346,13 @@ finally:
                         result['OriginalClientErrorLogAvailable']=error_path.exists()
                         if error_path.exists():(out/'original-client-error.txt').write_bytes(error_path.read_bytes())
                         offset=len(client.capture);client.send(b'\r','observed client error pause: acknowledge once');pause_acknowledged=True
+                        result['ClientSettlement']='error-pause-acknowledged; rollback not established'
+                    elif not pause_acknowledged and not cancel_sent and not current_client_failure(text) and 'Мастер игры размышляет...' in text:
+                        offset=len(client.capture);client.send(b'\x1b','observed current wait: cancel once');cancel_sent=True
                     if client.process.poll() is not None:raise RuntimeError('Client exited before fresh cleanup screen')
                     settlement.observe(time.monotonic(),len(client.capture));pump(.1)
                 client_wait=False
+                if cancel_sent and not pause_acknowledged:result['ClientSettlement']='actual cancellation and fresh screen with request absent'
                 client_prompt='Ваш ход' in client.text(offset) and '🌊 > ' in client.text(offset)
             if client_prompt and not client_exit_attempted:exit_client(client)
             elif client.process.poll() is None:
@@ -368,7 +396,9 @@ finally:
         for fd in [p.master,p.slave]:
             if fd>=0:os.close(fd)
     result['ElapsedSeconds']=elapsed();result['Success']=result['AcceptedGameTurns']==1 and result.get('InputQualified',False) and result['LogicalLifecycleVerified'] and not any(k.endswith('Failure') for k in result) and all(v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
+    if controlled_refusal:
+        result['ControlledCleanupVerified']=bool(result.get('ObservedProviderFailure')) and result['LogicalLifecycleVerified'] and result['ShutdownAttempts']==1 and result.get('ClientSettlement')=='actual cancellation and fresh screen with request absent' and not any(k in result for k in ['ClientCleanupFailure','CleanupFailure','DaemonCleanupFailure','IoCleanupFailure']) and all(v['ExitCode']==0 and v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
     (out/'rpc-journal.json').write_text(json.dumps(journal,indent=2,ensure_ascii=False)+'\n')
     (out/'probe-result.json').write_text(json.dumps(result,indent=2,ensure_ascii=False)+'\n')
     print(json.dumps({k:result.get(k) for k in ['Success','AcceptedGameTurns','GenuineActionsSent','Failure','CleanupFailure','ElapsedSeconds']}))
-sys.exit(0 if result['Success'] else 1)
+sys.exit(0 if result['Success'] or result.get('ControlledCleanupVerified',False) else 1)

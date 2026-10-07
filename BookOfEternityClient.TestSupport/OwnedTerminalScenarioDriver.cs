@@ -118,7 +118,7 @@ internal static partial class OwnedTerminalScenarioDriver
         object? Invoke(string name, params object?[] args) => type.GetMethod(name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)!.Invoke(host, args);
         async Task<JsonElement> Rpc(object request)
         {
-            using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(3));
+            using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(mode=="production-main-driver-held-pin"?12:3));
             using var peer = new NamedPipeClientStream(".", pipe, PipeDirection.InOut, PipeOptions.Asynchronous);
             await peer.ConnectAsync(deadline.Token);
             await peer.WriteAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(request) + "\n"), deadline.Token);
@@ -172,6 +172,9 @@ internal static partial class OwnedTerminalScenarioDriver
             if (!ready.GetProperty("ok").GetBoolean()) throw new InvalidOperationException("Actual session output did not produce a reliable idle view.");
             if(mode.StartsWith("production-main-early-exit",StringComparison.Ordinal))
                 return await RunEarlyExitAsync(mode,type,host!,folder,result,Rpc);
+            if(mode=="production-main-driver-held-pin") {
+                await RunHeldDriverPinAsync(folder,host!,type,Rpc,result);result["Success"]=true;return 0;
+            }
             var binding = ready.GetProperty("status").GetProperty("inputBindingId").GetString(); result["Binding"] = binding;
             object Prompt(string command, string id, string text) => new { command, operationId=id, operationKind="turn", operationRevision="neutral-1", inputBindingId=binding, text, appendEnter=true };
             string? Disposition(JsonElement r) => r.GetProperty("promptDelivery").GetProperty("disposition").GetString();

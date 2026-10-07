@@ -9,6 +9,8 @@ public sealed class GmLiveDriverFailureTests
     [InlineData("process-exit")]
     [InlineData("error-pause")]
     [InlineData("unknown-stop")]
+    [InlineData("old-provider")]
+    [InlineData("old-client")]
     public async Task ActualDriver_CurrentFailureAndCleanup(string mode)
     {
         var start=new ProcessStartInfo("/usr/bin/python3"){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true};
@@ -18,4 +20,8 @@ public sealed class GmLiveDriverFailureTests
         await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(8));
         Assert.True(process.ExitCode==0,(await output)+(await error));
     }
+    [Fact]
+    public Task RealProduction_InertRefusalCancelsBeforeOriginalStop()=>ProductionMainLinuxFixture.RunAsync("driver-provider-refusal");
+    [Fact]
+    public Task HeldOriginalPin_DrainTimeoutRemainsUncertain()=>ProductionMainLinuxFixture.RunAsync("production-main-driver-held-pin");
 }
