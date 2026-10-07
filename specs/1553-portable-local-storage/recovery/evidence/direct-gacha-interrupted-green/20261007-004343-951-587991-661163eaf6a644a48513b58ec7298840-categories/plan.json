@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "browser-direct-gacha-linux-boundaries"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "acb427957792c783800490d07a279319d7ba9fa3",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 57.7995161,
+  "Descriptors": [
+    {
+      "Name": "browser-direct-gacha-linux-boundaries-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "browser-direct-gacha-linux-boundaries",
+      "Categories": [
+        "browser-direct-gacha-linux-boundaries"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}
