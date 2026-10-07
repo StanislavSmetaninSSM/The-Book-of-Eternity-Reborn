@@ -32,9 +32,18 @@ clipboard shortcut check can reread successful clipboard text equal to a shortcu
 3. Concurrent bounded stdout/stderr byte reads + exit under one 2s deadline;
    stdout≤1MiB, stderr≤64KiB. Success only exit0+both EOF+strict UTF8 stdout,
    normalized nonempty text. Windows-controlled exit3 means Empty; other errors
-   are generic Error (stderr content is not logged/displayed). Root Process remains
-   original/unreaped during cleanup; kill only this started foreground reader and
-   wait/reap within 1s, close/cancel own streams. If unconfirmed, retain original
+   are generic Error (stderr content is not logged/displayed). Linux .NET reaps its
+   children independently, so managed Process plus HasExited cannot authorize a PID
+   signal. Preflight pidfd on own self before reader creation; after Process.Start,
+   acquire a pidfd for the returned PID and then check the original managed
+   Process.HasExited. Reject the descriptor if original exit is observed: this
+   excludes a descriptor opened on an already recycled PID. Retain a validated
+   pidfd as stable incarnation identity; Linux cleanup uses pidfd_send_signal only,
+   never Process.Kill/PID/tree fallback. A concurrent exit yields ESRCH, never a
+   signal to another process. If acquisition fails after launch, keep original
+   process/I/O debt until actual exit; do not signal by PID. Windows retains its
+   original Process/OS handle route. Wait/reap within 1s, close/cancel own streams.
+   If unconfirmed, retain original
    cleanup reference/debt and refuse a new read until settled. Do not claim ownership
    of compositor/X11 server/external services or arbitrary descendant trees.
 4. Composer treats a shortcut as one read request. Failure displays escaped Russian
@@ -116,3 +125,11 @@ Independent actual Sol6.1/xhigh `/root/clipboard_linux_design_review` PASS at
 no signal after reap details carried above. Narrow fixture-seam amendment replaces
 the proposed internal constructor with the existing test-host public-service route;
 no runtime/test edits or execution yet. Amendment review precedes execution.
+
+Source review at `30027e4555ab297108c7f69d313910e2b9ef9bca` identified the managed
+Linux Kill race. This bounded identity amendment precedes its implementation and
+requires independent Sol approval. Primary [.NET Process source](https://raw.githubusercontent.com/dotnet/runtime/v8.0.31/src/libraries/System.Diagnostics.Process/src/System/Diagnostics/Process.Unix.cs)
+and [exclusive child reaping/cache source](https://raw.githubusercontent.com/dotnet/runtime/v8.0.31/src/libraries/System.Diagnostics.Process/src/System/Diagnostics/ProcessWaitState.Unix.cs)
+support this correction; no runtime source patch, privilege or signal-permission
+change is proposed. Own synthetic timeout/flood readers have independent8s
+lifetime, so test cleanup remains bounded if pidfd capture is refused.
