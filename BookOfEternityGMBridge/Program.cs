@@ -17,6 +17,7 @@ internal static class Program
 {
     private static async Task<int> Main(string[] args)
     {
+        if (args.Length > 0 && args[0] == "--observe-draft") return await DraftObservation.RunAsync(args);
         if (!TryParseHostArgs(args, out var sessionPath, out var pipeName))
         {
             PrintUsage();

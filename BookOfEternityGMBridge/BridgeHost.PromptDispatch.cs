@@ -246,8 +246,9 @@ internal sealed partial class BridgeHost
         var start = screen.LastIndexOf(p.PromptPrefix, StringComparison.Ordinal);
         return start < 0 ? null : screen[(start + p.PromptPrefix.Length)..].Replace("\r\n", "\n").TrimEnd('\r', '\n');
     }
-    private static bool IsEmptyIdleView(GmCliInputProfile p, string screen) => p.IsSupported && !IsBlockedView(p, screen) &&
-        screen.Contains(p.IdleMarker, StringComparison.Ordinal) && !screen.Contains(p.WorkingMarker, StringComparison.Ordinal) && Composer(p, screen) == "";
+    private bool IsEmptyIdleView(GmCliInputProfile p, string screen) => p.IsMini ? IsMiniEmptyIdle(p) :
+        p.IsSupported && !IsBlockedView(p, screen) && screen.Contains(p.IdleMarker, StringComparison.Ordinal) &&
+        !screen.Contains(p.WorkingMarker, StringComparison.Ordinal) && Composer(p, screen) == "";
     private static bool IsPastedView(GmCliInputProfile p, string screen, string text) => !IsBlockedView(p, screen) &&
         screen.Contains(p.IdleMarker, StringComparison.Ordinal) && !screen.Contains(p.WorkingMarker, StringComparison.Ordinal) &&
         Composer(p, screen) == text.Replace("\r\n", "\n");

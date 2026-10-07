@@ -402,3 +402,14 @@ Fixture IdleMarker corrected to actual observed BUILD footer before implementati
 100-column mini does not show model name there. Model configuration unchanged.
 Foreground final evidence included; current parser source/evidence independent
 Sol PASS at9d83cc3b (32GREEN, historic failures not hidden). No model/game request.
+
+First connected implementation WIP after2causalREDs: existing bridge observer
+mode branches before host construction, bounded readonly nofollow/statx exact
+identity/two reads/name reopen, existing absolute .NET pipe/5s handshake. Fixed
+[Linux statx UAPI](https://github.com/torvalds/linux/blob/v6.12/include/uapi/linux/stat.h)
+ABI supplies only allowed own draft metadata. No files are written by observer.
+Optional frozen mini descriptor now records per-cell foreground and observes
+actual empty/first placeholder style, focused cursor/gap and exact BUILD footer.
+This intermediate work is not automatic transaction qualification: original
+operation observer handler/child environment/causal Home-End/single Enter still
+unimplemented, no CLI/provider/game execution, source/evidence checks pending.

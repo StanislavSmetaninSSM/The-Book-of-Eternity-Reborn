@@ -11,6 +11,8 @@ internal sealed class SynchronizedTerminalScreen
     private readonly string _binding;
     private readonly int _columns, _rows;
     private readonly char[][] _cells;
+    private readonly int[][] _foregroundCells;
+    private int _foreground = -1;
     private int _row, _column, _savedRow, _savedColumn, _scalarBytes, _scalarValue, _scalarMinimum;
     private bool _saved, _visible, _inFrame, _committed, _dirty = true, _unsupported, _ended, _hasPainted;
     private int _spaceProbePhase;
@@ -25,6 +27,7 @@ internal sealed class SynchronizedTerminalScreen
         _columns = Math.Clamp(columns, 1, 512); _rows = Math.Clamp(rows, 1, 128);
         _unsupported = columns != _columns || rows != _rows;
         _cells = Enumerable.Range(0, _rows).Select(_ => Enumerable.Repeat(' ', _columns).ToArray()).ToArray();
+        _foregroundCells = Enumerable.Range(0, _rows).Select(_ => Enumerable.Repeat(-1, _columns).ToArray()).ToArray();
     }
 
     internal TerminalViewObservation Capture()
@@ -32,7 +35,8 @@ internal sealed class SynchronizedTerminalScreen
         var cells = _cells.Select(row => new string(row)).ToArray();
         return new(_binding, _revision, string.Join("\n", cells.Select(row => row.TrimEnd(' '))).TrimEnd('\n'),
             _committed && !_unsupported && !_ended && !_dirty && !_inFrame && !_probeCursorUnknown && _escape == null && _scalarBytes == 0,
-            cells, _row, Math.Min(_column, _columns-1), _visible, _columns, _rows, _column == _columns);
+            cells, _row, Math.Min(_column, _columns-1), _visible, _columns, _rows, _column == _columns,
+            _foregroundCells.Select(row => row.ToArray()).ToArray());
     }
     internal void Fault() => _ended = true;
     internal void Resize(int columns, int rows) { if (columns != _columns || rows != _rows) Fault(); }
@@ -140,11 +144,14 @@ internal sealed class SynchronizedTerminalScreen
         _unsupported = true;
     }
 
-    private static bool Sgr(string code)
+    private bool Sgr(string code)
     {
-        if (code is "0" or "1" or "39" or "49") return true;
+        if (code is "0" or "39") { _foreground = -1; return true; }
+        if (code is "1" or "49") return true;
         var p = code.Split(';');
-        return p.Length == 5 && p[0] is "38" or "48" && p[1] == "2" && p.Skip(2).All(v => DecimalField(v) && int.TryParse(v, out var n) && n is >= 0 and <= 255);
+        if (p.Length != 5 || p[0] is not ("38" or "48") || p[1] != "2" || !p.Skip(2).All(v => DecimalField(v) && int.TryParse(v, out var n) && n is >= 0 and <= 255)) return false;
+        if (p[0] == "38") _foreground = (int.Parse(p[2]) << 16) | (int.Parse(p[3]) << 8) | int.Parse(p[4]);
+        return true;
     }
     private static bool DecimalField(string value) => value.Length > 0 && value.All(char.IsAsciiDigit);
 
@@ -180,12 +187,13 @@ internal sealed class SynchronizedTerminalScreen
     {
         if (_probeCursorUnknown || _column == _columns) { _unsupported = true; return; } // No implicit-wrap model in this pinned subset.
         if (_row >= _rows || _column >= _columns) { _unsupported = true; return; }
-        _cells[_row][_column++] = c; _dirty = true; _hasPainted = true;
+        _foregroundCells[_row][_column] = _foreground; _cells[_row][_column++] = c; _dirty = true; _hasPainted = true;
     }
     private void EraseRow(int row, int start)
     {
         if (_probeCursorUnknown || _column == _columns) { _unsupported = true; return; }
         if (row < 0 || row >= _rows || start < 0 || start > _columns) { _unsupported = true; return; }
         Array.Fill(_cells[row], ' ', start, _columns - start); _dirty = true;
+        Array.Fill(_foregroundCells[row], _foreground, start, _columns - start);
     }
 }

@@ -4,6 +4,8 @@ namespace BookOfEternityClient.Configuration;
 public sealed class GmCliInputProfile
 {
     public string TerminalPresentation { get; set; } = "";
+    public string DraftObservation { get; set; } = "";
+    public string DraftDirectory { get; set; } = "";
     public string IdleMarker { get; set; } = "";
     public string PromptPrefix { get; set; } = "";
     public string WorkingMarker { get; set; } = "";
@@ -15,13 +17,16 @@ public sealed class GmCliInputProfile
     public string ExitSequence { get; set; } = "\u0004";
     public string[] BlockedMarkers { get; set; } = ["trust", "update", "authentication", "sign in"];
     public int ObservationTimeoutMilliseconds { get; set; } = 15000;
-    public bool IsSupported => !string.IsNullOrEmpty(IdleMarker) && !string.IsNullOrEmpty(PromptPrefix) &&
+    public bool IsMini => TerminalPresentation == "synchronized-mini-v1" && DraftObservation == "external-editor-v1" &&
+        !string.IsNullOrEmpty(DraftDirectory) && Path.IsPathFullyQualified(DraftDirectory);
+    public bool IsSupported => !string.IsNullOrEmpty(IdleMarker) && (IsMini || !string.IsNullOrEmpty(PromptPrefix)) &&
         !string.IsNullOrEmpty(WorkingMarker) && !string.IsNullOrEmpty(PasteStart) && !string.IsNullOrEmpty(PasteEnd) &&
         !string.IsNullOrEmpty(NewlineSequence) && !string.IsNullOrEmpty(SubmitSequence) &&
         BlockedMarkers.Length > 0 && BlockedMarkers.All(m => !string.IsNullOrWhiteSpace(m));
     public GmCliInputProfile Snapshot() => new()
     {
         TerminalPresentation = TerminalPresentation ?? "",
+        DraftObservation = DraftObservation ?? "", DraftDirectory = DraftDirectory ?? "",
         IdleMarker = IdleMarker ?? "", PromptPrefix = PromptPrefix ?? "", WorkingMarker = WorkingMarker ?? "",
         PasteStart = PasteStart ?? "", PasteEnd = PasteEnd ?? "", NewlineSequence = NewlineSequence ?? "",
         SubmitSequence = SubmitSequence ?? "", InterruptSequence = InterruptSequence ?? "", ExitSequence = ExitSequence ?? "",
