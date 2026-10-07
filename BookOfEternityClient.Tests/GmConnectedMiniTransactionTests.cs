@@ -71,6 +71,12 @@ public sealed class GmConnectedMiniTransactionTests
         var result=await h.Rpc(h.Request("one",text));
         if(observer!=null)await observer;
         Assert.True(editor,"Actual original transaction must reach the standard editor gesture before witness/edge verdict.");
+        if(mode is "success" or "unknown"){
+            var operations=(System.Collections.IDictionary)h.Get("_promptOperations")!;
+            var operation=operations["one"]!;var proof=operation.GetType().GetField("DraftProof")?.GetValue(operation);
+            var proofTask=(Task?)proof?.GetType().GetProperty("Task")?.GetValue(proof);
+            Assert.True(observerExit==0,$"Actual observer exit={observerExit}; reason={result.GetProperty("promptDelivery").GetProperty("reason")}; witness={proofTask?.Exception}");
+        }
         Assert.Equal(expected,result.GetProperty("promptDelivery").GetProperty("disposition").GetString());
         var delivered=Encoding.UTF8.GetString(h.Input.Bytes);
         Assert.StartsWith("\u001b[200~"+text+"\u001b[201~\u0018e",delivered);
