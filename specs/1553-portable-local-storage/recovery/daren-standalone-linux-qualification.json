@@ -1,6 +1,6 @@
 {
   "Task": "T031-DAREN-STANDALONE-LINUX",
-  "Status": "Bounded Linux PASS; final carrier remote/readback and exact-tip fresh GitHub-only restoration are performed by writer after publishing and reported in final response",
+  "Status": "PASS: bounded standalone Daren Linux; final carrier exact-tip remote/readback/restoration performed by writer after publication",
   "AcceptedBase": "953c48f81f06ef78010bf668133e2b974934e142",
   "DesignReview": {
     "Model": "gpt-6.1-sol",
@@ -585,20 +585,19 @@
     "ReadOnlyFullFsck": true
   },
   "FinalEvidenceReview": {
-    "Verdict": "PASS",
-    "ReviewedCommit": "399564194f11e2ad336023fedceb971c2f5fa699",
-    "Agent": "/root/daren_standalone_final_evidence_review",
     "Model": "gpt-6.1-sol",
     "Reasoning": "xhigh",
-    "IndependentlyVerifiedManifests": 8,
-    "SourcePins": 391,
-    "Artifacts": 37,
-    "GzipPayloads": 15,
-    "LatestDistinctPassCases": 41,
-    "NewCases": 37,
-    "AffectedCases": 4,
-    "CandidateRestorationBytes": 20686,
-    "BlockingFindings": []
+    "Agent": "/root/daren_standalone_final_evidence_review",
+    "Verdict": "PASS",
+    "ReviewedCommit": "399564194f11e2ad336023fedceb971c2f5fa699",
+    "Findings": [],
+    "IndependentlyVerifiedManifestSets": 8,
+    "IndependentlyVerifiedSourcePins": 391,
+    "IndependentlyVerifiedArtifacts": 37,
+    "IndependentlyVerifiedGzipPayloads": 15,
+    "DistinctLatestPassedCases": 41,
+    "CandidateRestorationFilesCompared": 20686,
+    "CatalogValidationConfirmed": true
   },
   "FinalCarrierPolicy": {
     "RuntimeAndTestsUnchanged": true,
@@ -608,5 +607,10 @@
     "PostPushProofLocation": "Owned host scratch and final writer response; no recursive self-SHA commit",
     "NoTestsRepeatedForRestoration": true
   },
-  "ProductOrAccessBlockers": []
+  "ProductOrAccessBlockers": [],
+  "FinalCarrier": {
+    "ReviewedParent": "399564194f11e2ad336023fedceb971c2f5fa699",
+    "Changes": "Verdict/task/status/handoff metadata only; no production/test/catalog delta",
+    "ExactTipClosure": "After ordinary non-force push, require remote HEAD equality, independent changed-file byte readback, fresh GitHub-only clone and all tracked bytes/tree/parent/ancestry/clean/fsck. Exact self-referential tip proof belongs to writer final response/owned host proof, not a recursive commit."
+  }
 }
