@@ -785,3 +785,10 @@ canonical Guardian/profile seeded by NewGame; initial materialization hypothesis
 not established. Existing wait retains cold main guard, so owner-start during
 that wait or racing its boundary is not a supported alternative. If diagnostic
 sets clean, separately reproduce changed M1/daemon boundary; no speculative fix.
+
+Actual d45f9ed4 new diagnostic1FAIL is preparation failure, not causalRED:
+fixture omitted ordinary RunAsync local settings bootstrap; InitializeChaosSea
+stopped at config.json absent before diagnostic/cancel/validator. No CLI/owner/
+provider. Add only real StateManager.BootstrapLocalStorageAsync, preserving
+ordinary initialization and same bounded diagnostic assertions; rerun justified
+by corrected preparation. Exact original run receipt retained.

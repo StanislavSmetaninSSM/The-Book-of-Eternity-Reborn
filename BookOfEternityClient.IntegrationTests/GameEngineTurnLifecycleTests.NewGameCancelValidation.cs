@@ -20,6 +20,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             settings.MusicEnabled = false;
             settings.SoundEnabled = false;
         }, logger: logger);
+        // Ordinary RunAsync bootstraps local settings before NewGameFlow.
+        await GetPrivateField<StateManager>(engine, "_stateManager").BootstrapLocalStorageAsync();
         var guardian = new SystemGuardianLibraryService(_fs,
             Microsoft.Extensions.Logging.Abstractions.NullLogger<SystemGuardianLibraryService>.Instance)
             .BuildFreeformPendingGuardianCreationNode(
