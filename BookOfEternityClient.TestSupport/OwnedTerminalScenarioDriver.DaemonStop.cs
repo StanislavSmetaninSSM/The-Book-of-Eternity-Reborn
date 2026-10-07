@@ -6,7 +6,7 @@ namespace BookOfEternityClient.Tests;
 internal static partial class OwnedTerminalScenarioDriver
 {
     private static async Task RunIdleDaemonStopAsync(string folder, object host, Type type,
-        Func<object,Task<JsonElement>> rpc, Dictionary<string,object?> evidence)
+        Func<object,Task<JsonElement>> rpc, Dictionary<string,object?> evidence, bool coordinated)
     {
         var main = (GmSessionRunCoordinator)type.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
         var sync = typeof(GmSessionRunCoordinator).GetField("_sync",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(main)!;
@@ -33,6 +33,20 @@ internal static partial class OwnedTerminalScenarioDriver
         while(!child.HasExited);
         if(!active.Any(p=>p.State==MainOperationState.Active)) throw new InvalidOperationException("No original active daemon pin observed; stop cause unqualified.");
         evidence["PinsAtSignalRequest"] = active;
+        if (coordinated)
+        {
+            // Do not interrupt the participating caller's admission transport.
+            // The original owner first closes admission and observes actual closes.
+            var receipt = await rpc(new { command="shutdown", rootKey=main.Identity.RootKey, expectedMainIdentity=main.Identity });
+            evidence["OriginalShutdownReceipt"] = receipt;
+            evidence["PinsAfterOriginalShutdown"] = Snapshot();
+            if (!receipt.GetProperty("ok").GetBoolean())
+                throw new InvalidOperationException("Original coordinated stop unconfirmed; daemon transport remains intact.");
+            var record = GmSessionRunRecordCodec.Decode(File.ReadAllBytes(Path.Combine(folder,"root/.boe_runtime/gm-runs/main.json")));
+            if (record.Disposition!=GmSessionRunDisposition.Stopped || !GmSessionRunValidation.IdentityMatches(record.Identity,main.Identity))
+                throw new InvalidOperationException("Original coordinated durable stop is unconfirmed.");
+            evidence["OriginalStoppedBeforeDaemonSignal"] = record;
+        }
         await File.WriteAllTextAsync(Path.Combine(folder,"daemon-stop-request.json"),JsonSerializer.Serialize(active),bound.Token);
         await child.WaitForExitAsync(bound.Token);
         evidence["PinsAfterDaemonExit"] = Snapshot();
@@ -44,8 +58,11 @@ internal static partial class OwnedTerminalScenarioDriver
         if(child.ExitCode!=0 || final.Any(p=>p.State!=MainOperationState.ClosedObserved || p.Identity==null ||
             !GmSessionRunValidation.IdentityMatches(p.Identity,main.Identity)))
             throw new InvalidOperationException("Original daemon foreground stop left an unclosed original pin: "+JsonSerializer.Serialize(final));
-        var stopped=await rpc(new {command="shutdown",rootKey=main.Identity.RootKey,expectedMainIdentity=main.Identity});
-        evidence["OriginalShutdownReceipt"] = stopped;
-        if(!stopped.GetProperty("ok").GetBoolean()) throw new InvalidOperationException("Original daemon stop cleanup unconfirmed.");
+        if (!coordinated)
+        {
+            var stopped=await rpc(new {command="shutdown",rootKey=main.Identity.RootKey,expectedMainIdentity=main.Identity});
+            evidence["OriginalShutdownReceipt"] = stopped;
+            if(!stopped.GetProperty("ok").GetBoolean()) throw new InvalidOperationException("Original daemon stop cleanup unconfirmed.");
+        }
     }
 }

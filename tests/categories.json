@@ -16409,7 +16409,7 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmDaemonForegroundStopTests.*"
+            "BookOfEternityClient.Tests.GmDaemonForegroundStopTests.ActualIdleDaemon_CtrlCClosesOriginalActivePinBeforeScopedStop"
           ]
         }
       ]
@@ -16490,6 +16490,31 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_ExternalGenerationChange_ThrowsBeforeReplacementMutation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-daemon-coordinated-stop",
+      "responsibility": "#1553 T043 actual foreground daemon server-active admission: original fenced shutdown and exact Stopped ACK before physical foreground interrupt",
+      "excludes": "No provider/game request; forced pre-receipt CtrlC remains historical unqualified; no discarded pins, replay or relaxed admission",
+      "changeHints": [
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "BookOfEternityClient/Launcher/gm_main_operation.ps1",
+        "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmDaemonForegroundStopTests.ActualDaemon_OriginalFenceStopsBeforeForegroundInterrupt"
           ]
         }
       ]

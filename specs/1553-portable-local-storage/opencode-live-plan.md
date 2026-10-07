@@ -964,3 +964,15 @@ first (durableStopping/drain/ACK), then separatedaemon terminalEOF; controlled
 neutral proof before one freshgame attempt. No new deferredCtrlC productUX or
 unknownreceipt relaxation implemented. Invalid unconditional positive historical
 daemon test is unqualified; possible retirement must preserve exactID/evidence.
+
+Independent Sol feasibility DESIGN PASS for one main-first controlled test. Same
+serverActive-before-callerReady checkpoint, unchanged16/17/30s bounds: single
+original identity-bound shutdown while transport stays intact, actual pin closes,
+Stopped ACK and full durable identity; only then physical daemon interrupt, EOF
+and termios. A PreparedGrant which cannot activate is still Unresolved: this is
+not a general stop guarantee. No runtime/fence or cooperative CtrlC UX change.
+New exact gm-daemon-coordinated-stop category; old forced interruption ID/result
+remains unqualified, excluded from current positive selection. WIP unbuilt/unrun;
+independent source review and controlled GREEN required before fresh live retry.
+Latest07bcaebd remote exact verified; earlier readback clean assertion refused
+because these already-existing WIP files were dirty, not a publication failure.

@@ -18,8 +18,8 @@
       ]
     },
     {
-      "category": "gm-daemon-foreground-stop",
-      "reason": "Actual idle daemon soleCtrlC with observedActive original pin causal1RED",
+      "category": "gm-daemon-coordinated-stop",
+      "reason": "Original main-first shutdown drains actual participating handshake before separate daemon CtrlC; prior forced admission interruption remains historical Uncertain",
       "contracts": [
         "T043-OPENCODE-LIVE-BOUNDED",
         "T041-RUN-FENCE-F2"

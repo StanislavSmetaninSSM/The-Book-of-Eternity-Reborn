@@ -38,7 +38,7 @@ internal static class ProductionMainLinuxFixture
         }
         Assert.Empty(Directory.GetFiles(ship,"*.cs",SearchOption.AllDirectories));Assert.Empty(Directory.GetFiles(ship,"*.csproj",SearchOption.AllDirectories));
         if(mode=="production-main-consumers") File.Copy(Path.Combine(repo,"tests/fixtures/ProductionMain/consumer-boundaries.ps1"),Path.Combine(ship,"BookOfEternityClient/m1-consumers.ps1"));
-        if(mode=="production-main-daemon-stop") File.Copy(Path.Combine(repo,"tests/fixtures/ProductionMain/idle-daemon-stop.py"),Path.Combine(ship,"idle-daemon-stop.py"));
+        if(mode.StartsWith("production-main-daemon-",StringComparison.Ordinal)) File.Copy(Path.Combine(repo,"tests/fixtures/ProductionMain/idle-daemon-stop.py"),Path.Combine(ship,"idle-daemon-stop.py"));
         if(mode=="production-main-daemon-stop" && Environment.GetEnvironmentVariable("BOE_TEST_FOREGROUND_CLOSE_TRACE")=="1")
             File.Copy(Path.Combine(repo,"tests/fixtures/ProductionMain/daemon-close-diagnostic.ps1"),Path.Combine(ship,"daemon-close-diagnostic.ps1"));
         var playerBin=Path.Combine(folder,"player-bin");Directory.CreateDirectory(playerBin);
