@@ -976,3 +976,13 @@ remains unqualified, excluded from current positive selection. WIP unbuilt/unrun
 independent source review and controlled GREEN required before fresh live retry.
 Latest07bcaebd remote exact verified; earlier readback clean assertion refused
 because these already-existing WIP files were dirty, not a publication failure.
+
+767ef6a7 independent Sol DESIGN/SOURCE PASS main-firsttest; inherited evidence
+labels PinsAtSignalRequest mean pre-shutdown observedActive, and
+PinsBeforeOriginalShutdown means final after daemonexit in coordinatedmode;
+OriginalShutdownReceipt/OriginalStoppedBeforeDaemonSignal carry exact ordering.
+Actual five gm-main-helper-live-linux cases5/5GREEN, freshbuild,29stest/146.73s
+runner, no timeout/duplicates, ownedcleanupcomplete. Each independent native
+guardian ECHILD/zeroemergency; caught-loss preserves logicalUncertain. Exact
+main-helper-live-sigint-green receipt archived. New stoptest running separately
+with already-fresh build; no passing cohort repeated. Provider/game still0.
