@@ -851,3 +851,13 @@ ordinary cancellation/initial+ordinary corruption matrix: actual staging before
 singleEscape callback, authenticated backup fault after capture, preserve exact
 manifest/authority/all remaining post-fault evidence on failed restore. Ordinary
 branch runtime stillunchanged for causalRED. Tests newly added/unrun.
+
+The comma-list CLI invocation was rejected as one unknown category before any
+workload; no test/preparation qualified. Correct PowerShell array invocation on
+e9f74a18 planned10, completed only1: actual daemon causal1FAIL, no timeout,
+cleanupcomplete. SIGINT shielding alone is insufficient: same activepin became
+Unresolved; a subsequent actual-finally status pin ClosedObserved. Daemon exit0/
+EOF/termios and guardianECHILD/emergency0 do not settle first pin. Five helper
+and four guards did NOT execute because runner stopped at first failure. Exact
+22artifacts archived daemon-foreground-sigint-red. Next actual PowerShell close
+path diagnostic/review required before another patch; no unchanged live retry.
