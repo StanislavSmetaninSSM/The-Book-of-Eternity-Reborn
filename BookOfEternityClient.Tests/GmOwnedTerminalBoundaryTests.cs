@@ -64,6 +64,14 @@ public sealed class GmOwnedTerminalBoundaryTests
         await h.Feed("J\u001b[HNEUTRAL READY\r\n> \r\n"); Assert.True(h.Reliable);
     }
     [Fact]
+    public async Task ActualAttach_UsesRetainedLaunchGeometryInsteadOfRereadingConsole()
+    {
+        await using var h=new OwnedHost(mini:true);
+        var view=h.Invoke("CaptureTerminalView")!;
+        Assert.Equal(100,(int)view.GetType().GetProperty("Columns")!.GetValue(view)!);
+        Assert.Equal(25,(int)view.GetType().GetProperty("Rows")!.GetValue(view)!);
+    }
+    [Fact]
     public async Task ActualOwnedView_EraseWithoutHomeCannotCertifyIdle()
     {
         await using var h=new OwnedHost();
@@ -122,12 +130,14 @@ public sealed class GmOwnedTerminalBoundaryTests
         internal readonly ControlledTerminal Terminal=new();
         internal object Input=>Get("_inputLifetime")!;
         internal bool Reliable=>(bool)Invoke("CaptureTerminalView")!.GetType().GetProperty("Reliable")!.GetValue(Invoke("CaptureTerminalView"))!;
-        internal OwnedHost()
+        internal OwnedHost(bool mini=false)
         {
             Directory.CreateDirectory(_scratch); // The inert fixture owns preparation; bridge startup has no pre-admission effects.
+            if(mini)File.WriteAllText(Path.Combine(_scratch,"config.json"),JsonSerializer.Serialize(new {GmCliInputProfile=new {TerminalPresentation="synchronized-mini-v1"}}));
             var configuration=new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
             _type=Assembly.LoadFrom(Path.Combine(TestRepoPaths.RepoRoot,"BookOfEternityGMBridge/bin",configuration,"net8.0/BookOfEternityGMBridge.dll")).GetType("BookOfEternityGMBridge.BridgeHost",true)!;
             _host=Activator.CreateInstance(_type,[_scratch,"unused-"+Guid.NewGuid().ToString("N")])!;
+            if(mini)_type.GetField("_terminalLaunchSize",BindingFlags.Instance|BindingFlags.NonPublic)?.SetValue(_host,new TerminalSize(100,25));
             Invoke("AttachOwnedTerminal",Terminal,new MemoryStream());
         }
         internal object? Get(string n)=>_type.GetField(n,BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(_host);

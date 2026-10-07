@@ -320,3 +320,11 @@ Independent parser review found unsupported acceptance: spaced CUP parameters,
 CUP column Columns+1 and initial OSC66 probes inside the first frame. Four
 new causal boundaries have their own narrow category;9 unchanged successes
 are excluded from this RED. Source qualification withheld pending corrections.
+
+Completed parser source review withholds qualification at7472903c: exact
+CUP/SGR/DCS grammar, initial blank/home OSC66 phase, pending right-margin
+transitions, and geometry reread during launch.14 narrow review-boundary cases
+now cover these before fixes;9 successful transcript cases excluded from RED.
+Retain original launch size for Attach and resize baseline; default neutral
+factory size80x25, configured production size and Windows creation size. No
+general wrap emulator: unsupported pending-wrap LF/BS/save/erase/print refuses.

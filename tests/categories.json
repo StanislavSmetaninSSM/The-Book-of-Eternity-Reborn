@@ -38,7 +38,7 @@
     },
     {
       "id": "gm-synchronized-terminal-boundaries",
-      "responsibility": "Exact CUP grammar/right-edge and initial OSC66 phase refusals in original synchronized view; independent source-review causal deltas",
+      "responsibility": "Exact CUP/SGR/DCS grammar, retained launch geometry, initial OSC66 blank/home phase and unmodelled right-margin transitions; independent source-review causal deltas",
       "excludes": "Provider/CLI/process/input witness and arbitrary terminal emulation",
       "changeHints": [
         "BookOfEternityGMBridge/SynchronizedTerminalScreen.cs"
@@ -59,7 +59,10 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmSynchronizedTerminalPresentationTests.UnsupportedGrammarOrFirstFrameProbe_RefusesBeforeFirstCommit"
+            "BookOfEternityClient.Tests.GmSynchronizedTerminalPresentationTests.UnsupportedGrammarOrFirstFrameProbe_RefusesBeforeFirstCommit",
+            "BookOfEternityClient.Tests.GmSynchronizedTerminalPresentationTests.UnmodelledPendingMarginTransition_CannotCertifyCellsOrCursor",
+            "BookOfEternityClient.Tests.GmSynchronizedTerminalPresentationTests.InitialSpaceProbe_RequiresActualBlankHomeStartupState",
+            "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualAttach_UsesRetainedLaunchGeometryInsteadOfRereadingConsole"
           ]
         }
       ]

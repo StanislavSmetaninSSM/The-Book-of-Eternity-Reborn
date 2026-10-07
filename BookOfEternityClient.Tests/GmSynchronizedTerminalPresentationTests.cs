@@ -117,6 +117,29 @@ public sealed class GmSynchronizedTerminalPresentationTests
         Assert.False(Value<bool>(p.Capture(), "Reliable"), "An unsupported sequence cannot certify even the first synchronized frame.");
     }
 
+    [Theory]
+    [InlineData("\n")]
+    [InlineData("\b")]
+    [InlineData("\u001b[s")]
+    [InlineData("\u001b[K")]
+    [InlineData("Z")]
+    public void UnmodelledPendingMarginTransition_CannotCertifyCellsOrCursor(string transition)
+    {
+        using var p = new ScreenProbe("original");
+        p.Feed(Encoding.UTF8.GetBytes(Escape + "[?2026h" + new string('A', 100) + transition + Escape + "[6;1H" + Escape + "[?2026l"));
+        Assert.False(Value<bool>(p.Capture(), "Reliable"));
+    }
+
+    [Theory]
+    [InlineData("X\u001b[H")]
+    [InlineData("\u001b[2;1H")]
+    public void InitialSpaceProbe_RequiresActualBlankHomeStartupState(string preceding)
+    {
+        using var p = new ScreenProbe("original");
+        p.Feed(Encoding.UTF8.GetBytes(preceding + Escape + "]66;w=1; " + Escape + "\\" + Escape + "[?2026h" + Escape + "[6;1Hpartial" + Escape + "[?2026l"));
+        Assert.False(Value<bool>(p.Capture(), "Reliable"));
+    }
+
     internal static T Value<T>(object obj, string name) => (T)obj.GetType().GetProperty(name)!.GetValue(obj)!;
     internal static byte[] ActualTranscript(string receipt)
     {
