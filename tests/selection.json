@@ -8,6 +8,14 @@
         "T031-BROWSER-DIRECT-GACHA-LINUX",
         "existing trusted-local publication + pending-turn/history ownership"
       ]
+    },
+    {
+      "category": "browser-direct-gacha-linux-boundaries",
+      "reason": "Causal original real-browser-created pending evidence adoption negatives before authority guard",
+      "contracts": [
+        "T031-BROWSER-DIRECT-GACHA-LINUX",
+        "original pending-turn authority and accepted-turn/history ownership"
+      ]
     }
   ]
 }

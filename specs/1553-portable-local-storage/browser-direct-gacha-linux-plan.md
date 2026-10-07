@@ -84,3 +84,7 @@ Cleaned099060 fresh build executed1/1FAIL; original Stage stack proves PlatformN
 Clean069fcd16 fresh build executed1/1FAIL; Stage physical exception is gone, but a later real-consumer failure remains sanitized. [Result](recovery/evidence/direct-gacha-route-first-failure/manifest.json). Widen read-only exception observation to original BrowserAfterlife stack to identify that exact next boundary; no speculative runtime edit or broadened test run.
 
 Clean056b181b1/1FAIL pins next causal boundary: actual after-spend StateManager refresh → AfterlifeEntityProfileState → ResolveBackupPublicationRecovery passed no original lease to legacy-evidence recognition. [Refresh RED](recovery/evidence/direct-gacha-refresh-red/manifest.json). Pass its existing held lease and the original Linux post-preflight acquisition lease; this recognizes only direct backup/current transaction evidence after original main/worker/storage admission. No new recovery/authority. Next same positive GREEN; adoption remains pending.
+
+### First real browser GREEN; adoption RED pending
+
+Clean6663b6ce fresh build1/1PASS [evidence](recovery/evidence/direct-gacha-first-green/manifest.json): real Stage/queue/spend/payload/manifest/authority/history/schema7 cleanup. Add original fresh read/mutation lease + pending inspector/duplicate refusal, real engine capture/validated rollback/scoped cleanup and5authority-context/deletion-debt adoption negatives. Runtime guard still absent; next execute only these new cases, not the unchanged successful first oracle.

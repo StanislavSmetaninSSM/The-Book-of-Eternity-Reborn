@@ -21,7 +21,33 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.*"
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.*",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_TurnLifetime_*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "browser-direct-gacha-linux-boundaries",
+      "responsibility": "#1553 T031 actual Linux direct gacha fault/admission and original turn adoption exact pending authority; rollback/Uncertain/committed cleanup debt, main/worker/generation/UI conjunction.",
+      "excludes": "No stub browser/Stage, gameplay odds/rewards/currency/GM text changes, live browser/provider/real saves, standalone Daren, Windows or whole-game qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts",
+        "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_*"
           ]
         }
       ]

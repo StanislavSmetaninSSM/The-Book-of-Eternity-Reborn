@@ -18,6 +18,7 @@ using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging.Abstractions;
 using Spectre.Console;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
@@ -61,9 +62,11 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     private readonly FileSystemManager _fs;
     private string? _armedCanonicalWriteFailurePath;
     private int _remainingCanonicalWriteFailureMatches;
+    private readonly ITestOutputHelper? _directGachaOutput;
 
-    public GameEngineTurnLifecycleTests()
+    public GameEngineTurnLifecycleTests(ITestOutputHelper? output = null)
     {
+        _directGachaOutput = output;
         _rootPath = Path.Combine(Path.GetTempPath(), "boe-gameengine-turnlifecycle-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_rootPath);
         _fs = new FileSystemManager(
