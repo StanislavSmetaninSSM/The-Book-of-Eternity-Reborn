@@ -17,6 +17,8 @@ public sealed class GmLiveDriverFailureTests
     [InlineData("coalesced-pause")]
     [InlineData("early-startup")]
     [InlineData("missing-rollback")]
+    [InlineData("post-esc-pause")]
+    [InlineData("repeated-pause")]
     public Task ActualDriver_ReviewPhaseBoundaries(string mode)=>RunInertAsync(mode);
     private static async Task RunInertAsync(string mode)
     {
