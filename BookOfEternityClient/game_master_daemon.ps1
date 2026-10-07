@@ -3286,8 +3286,9 @@ function Test-GmBridgeArtifactWritingStall {
         ""
     }
 
-    $combinedOutput = $visibleScreenText + "`n" + $recentOutputTail
-    $hasArtifactIntent = Test-GmBridgeArtifactWritingIntent -Text $combinedOutput
+    # The raw tail survives screen clears and may contain our echoed request.
+    # Historical instructions are diagnostics, not current artifact-writing intent.
+    $hasArtifactIntent = Test-GmBridgeArtifactWritingIntent -Text $visibleScreenText
 
     if ($hasArtifactIntent -and -not $WatchState.ContainsKey("firstArtifactIntentElapsed")) {
         $WatchState.firstArtifactIntentElapsed = $ElapsedSeconds

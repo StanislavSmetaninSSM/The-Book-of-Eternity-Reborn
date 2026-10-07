@@ -49,3 +49,5 @@ Causal artifact-stall slice: independent Sol diagnosis identifies old echoed pro
 Independent relay_repair_source_review Sol6.1/xhigh approved this minimum causal plan: stale-tail classification reconstructed from exact raw/source (no captured diagnostics object); no heartbeat/bypass/larger timeout. Corrected initial category PlanOnly namespace error was preparation0tests, not RED.
 
 Artifact-stall causal RED:7executed/5PASS/2FAIL (echo-only, intent-cleared), complete2descriptors/owned cleanup,0model/process/game writes in inert functions. [Exact RED](recovery/evidence/relay-gm/artifact-stall-red/manifest.json). Production function still unchanged. Fresh build of both selected projects succeeded; next Python/PowerShell-only correction can use NoBuild.
+
+Current-screen-only minimum fix yields fresh7/7GREEN, complete2descriptors/owned cleanup; [exact GREEN](recovery/evidence/relay-gm/artifact-stall-green/manifest.json). No larger budget/profile bypass/history erasure. Source/evidence review+catalog validation pending before next fresh live root.
