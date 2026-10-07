@@ -2,27 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "daren-standalone-linux",
-      "reason": "Final ownership:7 new actual profile/console/exact rollback/normalization/no-effect cases, verified in two disjoint runs. No gameplay cohort.",
+      "category": "clipboard-linux-adapter",
+      "reason": "Initial causal RED for real adapter/consumer; synthetic owned process/inputs only. No unrelated completed checks.",
       "contracts": [
-        "T031-DAREN-STANDALONE-LINUX",
-        "fixed profile service/console/QTE rollback"
+        "T050-CLIPBOARD-LINUX"
       ]
     },
     {
-      "category": "daren-standalone-linux-boundaries",
-      "reason": "Final ownership:30 new publication/recovery/typed original admission/cancel/failure/serialization/declaration cases, verified in sequential bounded sets.",
+      "category": "clipboard-console-consumers",
+      "reason": "Initial causal RED for real adapter/consumer; synthetic owned process/inputs only. No unrelated completed checks.",
       "contracts": [
-        "T031-DAREN-STANDALONE-LINUX",
-        "main/worker/generation/session and B1 decisions"
-      ]
-    },
-    {
-      "category": "daren-standalone-browser-dispatch",
-      "reason": "Exactly4 affected declared browser profile rows (absent/existing \u00d7 commit/rollback) because original store/shared hook changed.",
-      "contracts": [
-        "T031-DAREN-STANDALONE-LINUX",
-        "original declared external profile participant"
+        "T050-CLIPBOARD-LINUX"
       ]
     }
   ]

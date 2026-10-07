@@ -2,6 +2,56 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "clipboard-console-consumers",
+      "responsibility": "#1553 T050 actual GetPlayerInput/TextComposer and SpectreExplorerConsole.Ask, single read/manual acceptance/draft/error/EOF with synthetic-only clipboard data",
+      "excludes": "No real clipboard, desktop/native Windows qualification, GM/provider/bridge/systemd/gameplay or unrelated console cohorts.",
+      "changeHints": [
+        "BookOfEternityClient/Services/ClipboardService.cs",
+        "BookOfEternityClient/Core/TextComposer.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "clipboard-linux-adapter",
+      "responsibility": "#1553 T050 public clipboard service under isolated synthetic Wayland/X11 command process, bounded typed read/output/deadline/cleanup; no actual user clipboard",
+      "excludes": "No real clipboard, desktop/native Windows qualification, GM/provider/bridge/systemd/gameplay or unrelated console cohorts.",
+      "changeHints": [
+        "BookOfEternityClient/Services/ClipboardService.cs",
+        "BookOfEternityClient/Core/TextComposer.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "daren-standalone-linux",
       "responsibility": "#1553 T031 real Linux standalone Daren profile lifecycle, original public console QTE, exact rollback/read/normalization/no-op/pre-cancel; isolated original leases and publisher.",
       "excludes": "No stub profile consumer, gameplay/economy/tier/text/model changes, live console/provider/saves/browser or Windows/fullgame qualification.",
@@ -55,7 +105,7 @@
     },
     {
       "id": "daren-standalone-browser-dispatch",
-      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent \u00d7 commit/rollback), no broader browser cohort.",
+      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent × commit/rollback), no broader browser cohort.",
       "excludes": "No stub profile consumer, gameplay/economy/tier/text/model changes, live console/provider/saves/browser or Windows/fullgame qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
