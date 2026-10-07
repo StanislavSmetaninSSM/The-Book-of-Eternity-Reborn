@@ -698,3 +698,17 @@ ClosedObserved replies. Those inputs qualify consumer admission, not complete
 live history. Actual ordinary NewGame evidence remains separately fc1. No
 speculative pending-authority deletion/cancel or runtime change. Recheck same
 strengthened narrow case after this fixture correction.
+
+9e4b20dc SOURCE PASS and strengthened actual1/1GREEN: HasCurrentSession=true,
+exactly5 new per-consumer original-identity ClosedObserved replies; durable
+Stopping and all5 exact no-effect refusals. OriginalStopped record archived,
+ScopedRetired/guardianECHILDdriver0/emergency0/failures0/no deadline; runner
+cleanup complete/unique1. CatalogVALID408/11140,0execution. Only new selected
+category changed; no unrelated successful cohort repeated. Actual provider/
+acceptedgame still0. Own fresh og3 package678files/99045054B moved from completed
+qualified fixture, client+bridge only/no game/config/state copied. Next ordinary
+live NewGame driver unchanged from source-reviewed fc1; runtime from this
+qualified source. Original installed1.18.35/free model and one-action budget
+unchanged. Deferred systemd checkpoint63e99009 retained. New readback cache
+will fetch shallow tip independently; retired only own branchless3.6GB cache
+after exact latest remote/readback match, working/remote histories unchanged.
