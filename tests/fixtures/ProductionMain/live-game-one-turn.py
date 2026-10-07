@@ -133,11 +133,14 @@ try:
     launcher=str(ship/'BookOfEternityClient/Launcher/bookofeternity.ps1')
     bridge=Terminal('bridge',['pwsh','-NoLogo','-NoProfile','-File',launcher,'start-bridge','visible','-SessionPath',str(session)])
     record_path=base/'.boe_runtime/gm-runs/main.json';socket_path=out/'tmp'/('CoreFxPipe_'+pipe)
-    until(lambda:record_path.exists() and socket_path.exists() and read_json(record_path)['Disposition']=='Running',10,'original Running')
+    until(lambda:record_path.exists() and socket_path.exists() and read_json(record_path)['Disposition'] in ['Running','Uncertain'],10,'original Running')
     record=read_json(record_path);status=rpc({'command':'status'})
     assert status['ok'] and status['status']['terminalOwnerRetained'] and status['status']['terminalRunId']==record['Identity']['RunId']
     original_record=record['Identity'];original={k[0].lower()+k[1:]:v for k,v in original_record.items()};original['backend']=2
-    result['OriginalRunningRecord']=record;result['OriginalRunningStatus']=status
+    result['ObservedStartupRecord']=record;result['OriginalRunningStatus']=status
+    if record['Disposition']!='Running' or status['status']['terminalUncertain']:
+        raise RuntimeError('Current original bootstrap failed; no model submission or replay')
+    result['OriginalRunningRecord']=record
     assert status['status']['cliLaunchCommand']==command and status['status']['shellWorkingDirectory']==str(session)
     def ready():
         status=rpc({'command':'status'})['status'];result['LastStartupStatus']=status

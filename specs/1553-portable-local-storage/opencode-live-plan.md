@@ -1071,3 +1071,5 @@ Old Uncertain records and main user profile remain unchanged. No new lifecycle,
 parser or runtime changes. The earlier stop gate is historical and superseded for
 this single owner-authorized attempt. Independent short Sol source review precedes
 execution, evidence review follows actual outcome.
+
+Driver observation-only correction: pipe is created after StartShellAsync completes or fails, so its first observable durable record can already be Uncertain. Latch that exact original identity for one diagnostic shutdown, then explicitly refuse model progression unless record is Running and current status is not uncertain. This reuses the accepted inert-driver observation rule; no lifecycle, runtime bytes, admission, replay or Ready change.
